@@ -1,0 +1,18 @@
+# Reverse proxy from Caddy to development servers.
+#
+# Port: Service
+# =============
+# 1560: Caddy
+# 1561: Backend (uvicorn / FastAPI)
+# 1562: Front-end (Webpack / Angular)
+
+http://localhost:1560
+
+reverse_proxy /api http://localhost:1561
+reverse_proxy /api/* http://localhost:1561
+reverse_proxy /docs http://localhost:1561
+reverse_proxy /docs/* http://localhost:1561
+reverse_proxy /auth http://localhost:1561
+reverse_proxy /auth/* http://localhost:1561
+reverse_proxy /openapi.json http://localhost:1561
+reverse_proxy * http://localhost:1562

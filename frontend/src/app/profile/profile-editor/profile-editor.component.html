@@ -1,0 +1,38 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <mat-card>
+        <mat-card-header *ngIf="profile.id; else registration">
+            <mat-card-title>Update your Profile</mat-card-title>
+        </mat-card-header>
+        <ng-template #registration>
+            <mat-card-header>
+                <mat-card-title>Welcome to CSXL! Please verify and complete your profile below.</mat-card-title>
+                <mat-card-subtitle>
+                    Once your profile is setup you will be able to take advantage of CSXL initiatives such as
+                    enrolling in workshops, reserving a desk during coworking hours, and more!
+                </mat-card-subtitle>
+            </mat-card-header>
+        </ng-template>
+        <mat-card-content>
+            <mat-form-field appearance="fill">
+                <mat-label>First Name</mat-label>
+                <input matInput placeholder="Jane" formControlName="first_name" name="first_name" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Last Name</mat-label>
+                <input matInput placeholder="Doe" formControlName="last_name" name="last_name" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>UNC Email</mat-label>
+                <input matInput type="email" placeholder="jane.doe@unc.edu" formControlName="email" name="email" required>
+                <mat-error *ngIf="profileForm.value.email">Must provide a valid UNC email address.</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Pronouns</mat-label>
+                <input matInput placeholder="she / her / hers" formControlName="pronouns" name="pronouns" required>
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button type="submit" [disabled]="profileForm.invalid">SAVE</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

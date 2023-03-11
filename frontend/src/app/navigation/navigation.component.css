@@ -1,0 +1,35 @@
+.mdc-list-item.mdc-list-item--with-one-line.logo-item {
+    height: 64px;
+    padding: 0;
+    margin: -8px 0 0 0;
+    text-align: center;
+}
+
+.logo {
+    margin: 0;
+    height: 32px;
+}
+
+.sidenav-container {
+    height: 100%;
+}
+
+.sidenav {
+    width: 200px;
+}
+
+.sidenav .mat-toolbar {
+    background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    overflow: hidden;
+    background: #4786C6;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+}
