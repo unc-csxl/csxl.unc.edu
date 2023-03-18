@@ -56,7 +56,7 @@ def authenticated_pid(
 
 @api.get('/verify')
 def auth_verify(token: str, continue_to: str = '/'):
-    return jwt.decode(token, _JWT_SECRET, options={'verify_signature': True})
+    return jwt.decode(token, _JWT_SECRET, algorithms=[_JST_ALGORITHM], options={'verify_signature': True})
 
 
 @api.get('/auth', include_in_schema=False)
