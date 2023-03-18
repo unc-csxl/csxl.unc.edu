@@ -2,21 +2,20 @@
 
 import sqlalchemy
 from sqlalchemy.orm import Session
-from env import getenv
+from .env import getenv
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-def _engine_str() -> str:
+def _engine_str(database=getenv("POSTGRES_DATABASE")) -> str:
     """Helper function for reading settings from environment variables to produce connection string."""
     dialect = "postgresql+psycopg2"
     user = getenv("POSTGRES_USER")
     password = getenv("POSTGRES_PASSWORD")
     host = getenv("POSTGRES_HOST")
     port = getenv("POSTGRES_PORT")
-    database = getenv("POSTGRES_DATABASE")
     return f"{dialect}://{user}:{password}@{host}:{port}/{database}"
 
 

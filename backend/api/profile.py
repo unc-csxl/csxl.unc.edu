@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends
-from api.authentication import authenticated_pid
-from services import UserService
-
-from models import User, ProfileForm
+from .authentication import authenticated_pid
+from ..services import UserService
+from ..models import User, ProfileForm
 
 api = APIRouter(prefix="/api/profile")
 

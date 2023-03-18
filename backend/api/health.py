@@ -1,7 +1,7 @@
 """Health check routes are used by the production system to monitor whether the system is live and running."""
 
 from fastapi import APIRouter, Depends
-from services.health import HealthService
+from ..services.health import HealthService
 
 
 __authors__ = ["Kris Jordan"]

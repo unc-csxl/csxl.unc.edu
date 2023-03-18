@@ -10,7 +10,7 @@ In this context health does not refer to correctness as much as running, connect
 
 from fastapi import Depends
 from sqlalchemy import text
-from database import Session, db_session
+from ..database import Session, db_session
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

@@ -6,5 +6,5 @@
 # For more information, see: https://honcho.readthedocs.io/en/latest/index.html#what-are-procfiles
 
 proxy: caddy run
-backend: cd backend && uvicorn --port=1561 --reload main:app
+backend: uvicorn --port=1561 --reload backend.main:app
 frontend: cd frontend && ng serve

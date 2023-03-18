@@ -1,10 +1,10 @@
 
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Self
 from .entity_base import EntityBase
 from .user_role_entity import user_role_table
-from typing import Self
-from models import Role
+from ..models import Role
 
 class RoleEntity(EntityBase):
     __tablename__ = "role"

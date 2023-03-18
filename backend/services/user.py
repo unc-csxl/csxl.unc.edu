@@ -1,9 +1,9 @@
 from fastapi import Depends
-from database import db_session
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from models import User
-from entities import UserEntity
+from ..database import db_session
+from ..models import User
+from ..entities import UserEntity
 
 class UserService:
 

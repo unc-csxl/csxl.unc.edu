@@ -3,10 +3,10 @@
 
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from models import User
 from typing import Self
 from .entity_base import EntityBase
 from .user_role_entity import user_role_table
+from ..models import User
 
 
 __authors__ = ['Kris Jordan']

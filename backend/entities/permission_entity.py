@@ -1,10 +1,10 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Self
 from .entity_base import EntityBase
 from .user_entity import UserEntity
 from .role_entity import RoleEntity
-from models import Permission
-from typing import Self
+from ..models import Permission
 
 
 class PermissionEntity(EntityBase):
