@@ -1,12 +1,29 @@
 
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
-from models import User
-from typing import Self
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
+from .user_role_entity import user_role_table
+from typing import Self
+from models import Role
 
 class RoleEntity(EntityBase):
     __tablename__ = "role"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, unique=True)
+
+    users: Mapped[list['UserEntity']] = relationship(secondary=user_role_table, back_populates='roles')
+    permissions: Mapped[list['PermissionEntity']] = relationship(back_populates='role')
+
+    @classmethod
+    def from_model(cls, model: Role) -> Self:
+        return cls(
+            id=model.id,
+            name=model.name
+        )
+
+    def to_model(self) -> Role:
+        return Role(
+            id=self.id,
+            name=self.name
+        )

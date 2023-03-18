@@ -1,12 +1,9 @@
-from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
-from models import User
-from typing import Self
+from sqlalchemy import Table, Column, ForeignKey
 from .entity_base import EntityBase
 
-class UserRole(EntityBase):
-    __tablename__ = "user"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    pid: Mapped[int] = mapped_column(Integer, unique=True, index=True)
-    onyen: Mapped[str] = mapped_column(String(32), unique=True, index=True)
+user_role_table = Table(
+    "user_role",
+    EntityBase.metadata,
+    Column('user_id', ForeignKey('user.id'), primary_key=True),
+    Column('role_id', ForeignKey('role.id'), primary_key=True)
+)

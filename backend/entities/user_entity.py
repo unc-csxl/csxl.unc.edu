@@ -1,33 +1,37 @@
-"""User accounts for all registered users in the application."""
+'''User accounts for all registered users in the application.'''
 
 
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from models import User
 from typing import Self
 from .entity_base import EntityBase
+from .user_role_entity import user_role_table
 
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
-__license__ = "MIT"
+__authors__ = ['Kris Jordan']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 
 class UserEntity(EntityBase):
-    __tablename__ = "user"
+    __tablename__ = 'user'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     pid: Mapped[int] = mapped_column(Integer, unique=True, index=True)
     onyen: Mapped[str] = mapped_column(String(32), unique=True, index=True)
     email: Mapped[str] = mapped_column(
-        String(32), unique=True, index=True, nullable=False, default=""
+        String(32), unique=True, index=True, nullable=False, default=''
     )
     first_name: Mapped[str] = mapped_column(
-        String(64), nullable=False, default="")
+        String(64), nullable=False, default='')
     last_name: Mapped[str] = mapped_column(
-        String(64), nullable=False, default="")
+        String(64), nullable=False, default='')
     pronouns: Mapped[str] = mapped_column(
-        String(32), nullable=False, default="")
+        String(32), nullable=False, default='')
+
+    roles: Mapped[list['RoleEntity']] = relationship(secondary=user_role_table, back_populates='users')
+    permissions: Mapped['PermissionEntity'] = relationship(back_populates='user')
 
     @classmethod
     def from_model(cls, model: User) -> Self:
