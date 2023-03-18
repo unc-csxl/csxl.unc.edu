@@ -45,3 +45,7 @@ Once the Dev Container begins, open a terminal and complete the following:
         1. Wait until you see "frontend.1 | Compiled successfully" emitted from the Angular dev server.
     2. Open `localhost:1560` in a browser and you should see the XL site running locally in development.
     3. To stop the development servers, press `Ctrl+C` in the terminal running `honcho` and close VSCode.
+
+## Develop in Branches
+
+Before beginning any feature work, fixes, or other modifications, you should checkout a branch to keep the history separate from the `main` line history until it is ready deploying into production.
