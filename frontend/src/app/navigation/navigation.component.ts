@@ -23,16 +23,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
   public isHandset: boolean = false;
   private isHandsetSubscription!: Subscription;
 
-  public profile?: Profile;
-  private profileSubscription!: Subscription;
-
-  public showAdmin$ = this.permissionService.check('admin', '*');
+  public profile$ = this.profileService.profile$;
 
   constructor(
     public auth: AuthenticationService,
     public router: Router,
-    public profileService: ProfileService,
-    private permissionService: PermissionService,
+    public permission: PermissionService,
+    private profileService: ProfileService,
     private breakpointObserver: BreakpointObserver,
     protected navigationService: NavigationTitleService,
     protected errorDialog: MatDialog
@@ -41,13 +38,11 @@ export class NavigationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.errorDialogSubscription = this.initErrorDialog();
     this.isHandsetSubscription = this.initResponsiveMenu();
-    this.profileSubscription = this.initProfile();
   }
 
   ngOnDestroy(): void {
     this.errorDialogSubscription.unsubscribe();
     this.isHandsetSubscription.unsubscribe();
-    this.profileSubscription.unsubscribe();
   }
 
   hideMobileSidenav(nav: MatSidenav): void {
@@ -71,12 +66,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
         .observe(Breakpoints.HandsetPortrait)
         .pipe(map(result => result.matches))
         .subscribe(isHandset => this.isHandset = isHandset);
-  }
-
-  private initProfile() {
-    return this.profileService.profile$.subscribe(profile => {
-      this.profile = profile;
-    });
   }
 
 }

@@ -8,19 +8,12 @@
           <img class="logo" src="/assets/chubby-logo.png" alt="Computer Science Experience Labs Logo">
         </a>
         <mat-divider></mat-divider>
-        <div mat-subheader>Gain Experience</div>
-        <a mat-list-item href="/workshops">Workshops</a>
         <a mat-list-item routerLink="/coworking">Coworking</a>
+        <a mat-list-item *ngIf="permission.check('checkin.create', 'checkin/')" routerLink="/checkin">Checkin</a>
         <mat-divider></mat-divider>
-        <div mat-subheader>Grow Community</div>
-        <a mat-list-item routerLink="/clubs" routerLinkActive="active">Clubs</a>
-        <mat-divider></mat-divider>
-        <div mat-subheader>Go Places</div>
-        <a mat-list-item href="https://cs.unc.edu/experience/career/" target="_blank">Careers <mat-icon class="mat-icon-">open_in_new</mat-icon></a>
-        <mat-divider></mat-divider>
-        <a *ngIf="profile === undefined; else authenticated" mat-list-item href="/auth?continue_to={{router.url}}">Sign in</a>
+        <a *ngIf="(profile$ | async) === undefined; else authenticated" mat-list-item href="/auth?continue_to={{router.url}}">Sign in</a>
         <ng-template #authenticated mat-list-item>
-          <a mat-list-item *ngIf="showAdmin$ | async" routerLink="/admin">Admin</a>
+          <a mat-list-item *ngIf="permission.check('admin.*', '*') | async" routerLink="/admin">Admin</a>
           <a mat-list-item routerLink="/profile">Profile</a>
           <a mat-list-item (click)="auth.signOut()">Sign out</a>
         </ng-template>
