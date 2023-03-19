@@ -71,7 +71,8 @@ def bearer_token_bootstrap(
         if getenv('MODE') == 'development':
             testing_authentication = True
         else:
-            raise HTTPException(status_code=400, detail='Naughty request')
+            onyen = request.headers['uid']
+            raise HTTPException(status_code=400, detail=f'Tsk, tsk. That is a naughty request {onyen}.')
 
     if HOST == AUTH_SERVER_HOST or ('testing_authentication' in locals() and testing_authentication):
         # Production App Request
