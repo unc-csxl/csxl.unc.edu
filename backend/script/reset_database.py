@@ -1,10 +1,10 @@
 """Reset the database by dropping all tables, creating tables, and inserting demo data."""
 
 import sys
-import entities
-from env import getenv
-from database import engine
 from sqlalchemy.orm import Session
+from ..database import engine
+from ..env import getenv
+from .. import entities
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -40,7 +40,7 @@ with Session(engine) as session:
 
 # Add Users to Roles
 with Session(engine) as session:
-    from entities import UserEntity, RoleEntity
+    from ..entities import UserEntity, RoleEntity
     from .dev_data import user_roles
     for user, role in user_roles.pairs:
         user_entity = session.get(UserEntity, user.id)
@@ -50,8 +50,10 @@ with Session(engine) as session:
 
 # Add Permissions to Users/Roles
 with Session(engine) as session:
-    from entities import PermissionEntity
+    from ..entities import PermissionEntity
     from .dev_data import permissions
-    to_entity = PermissionEntity.from_model
-    session.add_all([to_entity(model) for model in permissions.models])
+    for role, permission in permissions.pairs:
+        entity = PermissionEntity.from_model(permission)
+        entity.role = session.get(RoleEntity, role.id)
+        session.add(entity)
     session.commit()
