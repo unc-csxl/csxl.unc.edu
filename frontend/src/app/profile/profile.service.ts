@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, mergeMap, Observable, of, shareReplay } from 'rxjs';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { mergeMap, Observable, of, shareReplay } from 'rxjs';
+import { AuthenticationService } from '../authentication.service';
 
 export interface Permission {
   id?: number;
@@ -39,19 +39,6 @@ export class ProfileService {
         }
       }),
       shareReplay(1)
-    );
-  }
-
-  hasPermission(action: string, resource: string): Observable<boolean> {
-    return this.profile$.pipe(
-      map(profile => {
-        console.log('hasPermission');
-        if (profile === undefined) {
-          return false; 
-        } else {
-          return true;
-        }
-      })
     );
   }
 

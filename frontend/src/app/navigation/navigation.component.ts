@@ -6,9 +6,10 @@ import { NavigationService as NavigationTitleService } from './navigation.servic
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { MatSidenav } from '@angular/material/sidenav';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { AuthenticationService } from '../authentication.service';
 import { Router } from '@angular/router';
 import { Profile, ProfileService } from '../profile/profile.service';
+import { PermissionService } from '../permission.service';
 
 @Component({
   selector: 'app-navigation',
@@ -25,12 +26,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
   public profile?: Profile;
   private profileSubscription!: Subscription;
 
-  public showAdmin$ = this.profileService.hasPermission('admin', '*');
+  public showAdmin$ = this.permissionService.check('admin', '*');
 
   constructor(
     public auth: AuthenticationService,
     public router: Router,
     public profileService: ProfileService,
+    private permissionService: PermissionService,
     private breakpointObserver: BreakpointObserver,
     protected navigationService: NavigationTitleService,
     protected errorDialog: MatDialog
