@@ -1,1 +1,1 @@
-# Force `services` to be treated as a package for `pytest` purposes.
+# Treat `services` as a package.

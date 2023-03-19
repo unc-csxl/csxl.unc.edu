@@ -32,15 +32,16 @@ def reset_database():
             text(f'GRANT ALL PRIVILEGES ON DATABASE {POSTGRES_DATABASE} TO {POSTGRES_USER}'))
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def test_engine() -> Engine:
     reset_database()
     return create_engine(_engine_str(POSTGRES_DATABASE))
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function')
 def test_session(test_engine: Engine):
     from .. import entities
+    entities.EntityBase.metadata.drop_all(test_engine)
     entities.EntityBase.metadata.create_all(test_engine)
     session = Session(test_engine)
     try:
