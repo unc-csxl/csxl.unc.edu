@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { mergeMap, Observable, of, shareReplay } from 'rxjs';
+import { map, mergeMap, Observable, of, shareReplay } from 'rxjs';
 import { AuthenticationService } from '../authentication/authentication.service';
 
-export enum Role {
-  STUDENT = 0,
-  STAFF = 1,
-  FACULTY = 2,
-  ADMIN = 3
+export interface Permission {
+  id?: number;
+  action: string;
+  resource: string;
 }
 
 export interface Profile {
@@ -20,6 +19,7 @@ export interface Profile {
   pronouns: string | null;
   registered: boolean;
   role: number;
+  permissions: Permission[];
 }
 
 @Injectable({
@@ -39,6 +39,19 @@ export class ProfileService {
         }
       }),
       shareReplay(1)
+    );
+  }
+
+  hasPermission(action: string, resource: string): Observable<boolean> {
+    return this.profile$.pipe(
+      map(profile => {
+        console.log('hasPermission');
+        if (profile === undefined) {
+          return false; 
+        } else {
+          return true;
+        }
+      })
     );
   }
 

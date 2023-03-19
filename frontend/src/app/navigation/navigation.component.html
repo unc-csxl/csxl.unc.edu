@@ -20,7 +20,7 @@
         <mat-divider></mat-divider>
         <a *ngIf="profile === undefined; else authenticated" mat-list-item href="/auth?continue_to={{router.url}}">Sign in</a>
         <ng-template #authenticated mat-list-item>
-          <a mat-list-item *ngIf="profile?.role == Role.ADMIN" routerLink="/admin">Admin</a>
+          <a mat-list-item *ngIf="showAdmin$ | async" routerLink="/admin">Admin</a>
           <a mat-list-item routerLink="/profile">Profile</a>
           <a mat-list-item (click)="auth.signOut()">Sign out</a>
         </ng-template>

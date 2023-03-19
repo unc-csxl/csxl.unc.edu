@@ -11,9 +11,18 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile } from '../profile/profile.service';
+import { profileResolver } from '../profile/profile.resolver';
+import { isAuthenticated } from './gate.guard';
 
 @Component({ template: '' })
 export class GateComponent {
+
+    public static Route = { 
+        path: 'gate', 
+        component: GateComponent,
+        canActivate: [isAuthenticated],
+        resolve: { profile: profileResolver } 
+    }
 
     constructor(private route: ActivatedRoute, private router: Router) {
         const profile = route.snapshot.data['profile'] as Profile | undefined;

@@ -5,6 +5,9 @@ import { NavigationService } from "./navigation/navigation.service";
 
 @Injectable({providedIn: 'root'})
 export class AppTitleStrategy extends TitleStrategy {
+
+    public static Provider = { provide: TitleStrategy, useClass: AppTitleStrategy };
+
     constructor(private readonly title: Title, private navigationService: NavigationService) {
         super();
     }

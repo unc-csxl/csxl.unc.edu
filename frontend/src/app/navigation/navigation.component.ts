@@ -8,7 +8,7 @@ import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Router } from '@angular/router';
-import { Profile, ProfileService, Role } from '../profile/profile.service';
+import { Profile, ProfileService } from '../profile/profile.service';
 
 @Component({
   selector: 'app-navigation',
@@ -17,8 +17,6 @@ import { Profile, ProfileService, Role } from '../profile/profile.service';
 })
 export class NavigationComponent implements OnInit, OnDestroy {
 
-  public Role: typeof Role = Role;
-
   private errorDialogSubscription!: Subscription;
 
   public isHandset: boolean = false;
@@ -26,6 +24,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   public profile?: Profile;
   private profileSubscription!: Subscription;
+
+  public showAdmin$ = this.profileService.hasPermission('admin', '*');
 
   constructor(
     public auth: AuthenticationService,
@@ -72,7 +72,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   private initProfile() {
-    return this.profileService.profile$.subscribe(profile => this.profile = profile);
+    return this.profileService.profile$.subscribe(profile => {
+      this.profile = profile;
+    });
   }
 
 }
