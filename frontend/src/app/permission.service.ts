@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { Profile, ProfileService } from './profile/profile.service';
+import { Profile, ProfileService, Permission } from './profile/profile.service';
+
 
 @Injectable({
     providedIn: 'root'
@@ -19,13 +20,29 @@ export class PermissionService {
                 if (profile === undefined) {
                     return false;
                 } else {
-                    if (profile.permissions.length === 0) {
-                        return false;
-                    }
-                    return true;
+                    return this.hasPermission(profile.permissions, action, resource);
                 }
             })
         );
+    }
+
+    private hasPermission(permissions: Permission[], action: string, resource: string) {
+        let permission = permissions.find((p) => this.checkPermission(p, action, resource));
+        return permission !== undefined;
+    }
+
+    private checkPermission(permission: Permission, action: string, resource: string) {
+        let actionRegExp = this.expandPattern(permission.action);
+        if (actionRegExp.test(action)) {
+            let resourceRegExp = this.expandPattern(permission.resource);
+            return resourceRegExp.test(resource);
+        } else {
+            return false;
+        }
+    }
+
+    private expandPattern(pattern: string): RegExp {
+        return new RegExp(`^${pattern.replaceAll('*', '.*')}$`);
     }
 
 }
