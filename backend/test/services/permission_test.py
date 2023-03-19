@@ -63,8 +63,8 @@ def test_no_permission(permission: PermissionService):
 
 def test_grant_role_permission(permission: PermissionService):
     assert permission.check(ambassador, 'checkin.delete', 'checkin') is False
-    p = Permission(action='checkin.delete', resource='*', role=ambassador_role)
-    permission.grant(root, p)
+    p = Permission(action='checkin.delete', resource='*')
+    permission.grant(root, ambassador_role, p)
     assert permission.check(ambassador, 'checkin.delete', 'checkin')
 
 

@@ -25,16 +25,12 @@ class PermissionEntity(EntityBase):
         return cls(
             id=model.id,
             action=model.action,
-            resource=model.resource,
-            user_id=model.user.id if model.user else None,
-            role_id=model.role.id if model.role else None
+            resource=model.resource
         )
 
     def to_model(self) -> Permission:
         return Permission(
             id=self.id,
             action=self.action,
-            resource=self.resource,
-            role=self.role.to_model() if self.role else None,
-            user=self.user.to_model() if self.user else None
+            resource=self.resource
         )

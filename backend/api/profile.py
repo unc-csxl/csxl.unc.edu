@@ -1,21 +1,21 @@
 from fastapi import APIRouter, Depends
 from .authentication import authenticated_pid
 from ..services import UserService
-from ..models import User, ProfileForm
+from ..models import User, NewUser, ProfileForm
 
 api = APIRouter(prefix="/api/profile")
 
 PID = 0
 ONYEN = 1
 
-@api.get("", response_model=User, tags=['profile'])
+@api.get("", response_model=User | NewUser, tags=['profile'])
 def read_profile(pid_onyen: tuple[int, str] = Depends(authenticated_pid), user_svc: UserService = Depends()):
     pid, onyen = pid_onyen
     user = user_svc.get(pid)
     if user:
         return user
     else:
-        return User(id=None, pid=pid, onyen=onyen)
+        return NewUser(pid=pid, onyen=onyen)
 
 
 @api.put("", response_model=User, tags=['profile'])

@@ -1,6 +1,6 @@
 """Package for all models in the application."""
 
-from .user import User, ProfileForm
+from .user import User, ProfileForm, NewUser
 from .role import Role
 from .permission import Permission
 
