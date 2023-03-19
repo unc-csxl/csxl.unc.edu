@@ -9,11 +9,11 @@
         </a>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/coworking">Coworking</a>
-        <a mat-list-item *ngIf="permission.check('checkin.create', 'checkin/')" routerLink="/checkin">Checkin</a>
+        <a mat-list-item *ngIf="checkinPermission$ | async" routerLink="/checkin">Checkin</a>
         <mat-divider></mat-divider>
         <a *ngIf="(profile$ | async) === undefined; else authenticated" mat-list-item href="/auth?continue_to={{router.url}}">Sign in</a>
         <ng-template #authenticated mat-list-item>
-          <a mat-list-item *ngIf="permission.check('admin.*', '*') | async" routerLink="/admin">Admin</a>
+          <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/admin">Admin</a>
           <a mat-list-item routerLink="/profile">Profile</a>
           <a mat-list-item (click)="auth.signOut()">Sign out</a>
         </ng-template>

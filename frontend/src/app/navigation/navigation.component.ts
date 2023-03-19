@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NavigationService as NavigationTitleService } from './navigation.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,17 +23,23 @@ export class NavigationComponent implements OnInit, OnDestroy {
   public isHandset: boolean = false;
   private isHandsetSubscription!: Subscription;
 
-  public profile$ = this.profileService.profile$;
+  public profile$: Observable<Profile | undefined>;
+  public checkinPermission$: Observable<boolean>;
+  public adminPermission$: Observable<boolean>;
 
   constructor(
     public auth: AuthenticationService,
     public router: Router,
-    public permission: PermissionService,
+    private permission: PermissionService,
     private profileService: ProfileService,
     private breakpointObserver: BreakpointObserver,
     protected navigationService: NavigationTitleService,
     protected errorDialog: MatDialog
-  ) {}
+  ) {
+    this.profile$ = profileService.profile$;
+    this.checkinPermission$ = this.permission.check('checkin.create', 'checkin/');
+    this.adminPermission$ = this.permission.check('admin.view', 'admin/')
+  }
 
   ngOnInit(): void {
     this.errorDialogSubscription = this.initErrorDialog();

@@ -1,6 +1,7 @@
 """Reset the database by dropping all tables, creating tables, and inserting demo data."""
 
 import sys
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from ..database import engine
 from ..env import getenv
@@ -29,6 +30,7 @@ with Session(engine) as session:
     from .dev_data import users
     to_entity = entities.UserEntity.from_model
     session.add_all([to_entity(model) for model in users.models])
+    session.execute(text(f'ALTER SEQUENCE {entities.UserEntity.__table__}_id_seq RESTART WITH {len(users.models) + 1}'))
     session.commit()
 
 # Add Roles
