@@ -38,6 +38,7 @@ with Session(engine) as session:
     from .dev_data import roles
     to_entity = entities.RoleEntity.from_model
     session.add_all([to_entity(model) for model in roles.models])
+    session.execute(text(f'ALTER SEQUENCE {entities.RoleEntity.__table__}_id_seq RESTART WITH {len(roles.models) + 1}'))
     session.commit()
 
 # Add Users to Roles
@@ -58,4 +59,5 @@ with Session(engine) as session:
         entity = PermissionEntity.from_model(permission)
         entity.role = session.get(RoleEntity, role.id)
         session.add(entity)
+    session.execute(text(f'ALTER SEQUENCE permission_id_seq RESTART WITH {len(permissions.pairs) + 1}'))
     session.commit()
