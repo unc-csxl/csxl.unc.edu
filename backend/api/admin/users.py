@@ -29,4 +29,4 @@ def list_users(
             page=page, page_size=page_size, order_by=order_by, filter=filter)
         return user_service.list(subject, pagination_params)
     except UserPermissionError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=403, detail=str(e))

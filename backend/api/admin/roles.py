@@ -23,7 +23,7 @@ def list_roles(
     try:
         return role_service.list(subject)
     except UserPermissionError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=403, detail=str(e))
 
 
 @api.get("/{id}", tags=["Roles"])
@@ -35,7 +35,7 @@ def role_details(
     try:
         return role_service.details(subject, id)
     except UserPermissionError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=403, detail=str(e))
 
 
 @api.post('/{id}/permission', tags=["Roles"])
@@ -48,7 +48,7 @@ def grant_permission(
     try:
         return role_service.grant(subject, id, permission)
     except UserPermissionError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=403, detail=str(e))
 
 
 @api.delete("/{id}/permission/{permissionId}", tags=["Roles"])
@@ -61,7 +61,7 @@ def revoke_permission(
     try:
         return role_service.revoke(subject, id, permissionId)
     except UserPermissionError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=403, detail=str(e))
 
 
 @api.post('/{id}/member', tags=["Roles"])
@@ -74,7 +74,7 @@ def add_member(
     try:
         return role_service.add(subject, id, member)
     except UserPermissionError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=403, detail=str(e))
 
 
 @api.delete("/{id}/member/{userId}", tags=["Roles"])
@@ -87,4 +87,4 @@ def remove_member(
     try:
         return role_service.remove(subject, id, userId)
     except UserPermissionError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=403, detail=str(e))
