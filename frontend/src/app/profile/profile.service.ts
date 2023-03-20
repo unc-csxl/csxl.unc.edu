@@ -46,4 +46,9 @@ export class ProfileService {
     return this.http.put<Profile>("/api/profile", profile);
   }
 
+  search(query: string) {
+    let encodedQuery = encodeURIComponent(query);
+    return this.http.get<Profile[]>(`/api/user?q=${encodedQuery}`);
+  }
+
 }

@@ -1,7 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { debounceTime, filter, mergeMap, Observable, of, ReplaySubject, startWith } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Permission, Profile } from 'src/app/profile/profile.service';
+import { Permission, Profile, ProfileService } from 'src/app/profile/profile.service';
 import { RoleDetails } from 'src/app/role';
 import { RoleAdminService } from '../role-admin.service';
 
@@ -10,7 +13,7 @@ import { RoleAdminService } from '../role-admin.service';
     templateUrl: './admin-role-details.component.html',
     styleUrls: ['./admin-role-details.component.css']
 })
-export class AdminRoleDetailsComponent {
+export class AdminRoleDetailsComponent implements OnInit {
 
     public role: RoleDetails;
 
@@ -18,6 +21,11 @@ export class AdminRoleDetailsComponent {
         action: '',
         resource: ''
     };
+
+    public userLookup: FormControl = new FormControl();
+    private filteredUsers: ReplaySubject<Profile[]> = new ReplaySubject();
+    public filteredUsers$: Observable<Profile[]> = this.filteredUsers.asObservable();
+    public selectedUser?: Profile;
 
     public static Route = {
         path: 'roles/:id',
@@ -34,6 +42,7 @@ export class AdminRoleDetailsComponent {
 
     constructor(
         private roleAdminService: RoleAdminService,
+        private profileService: ProfileService,
         private router: Router,
         route: ActivatedRoute,
     ) {
@@ -41,7 +50,16 @@ export class AdminRoleDetailsComponent {
         this.role = data.role;
     }
 
-    public grantPermission() {
+    public ngOnInit() {
+        this.filteredUsers$ = this.userLookup.valueChanges.pipe(
+            startWith(''),
+            filter((search: string) => search.length > 2),
+            debounceTime(100),
+            mergeMap((search) => this.profileService.search(search))
+        );
+    }
+
+    public onGrantPermission() {
         if (this.grantPermissionForm.action === '' || this.grantPermissionForm.resource === '') {
             return;
         }
@@ -57,7 +75,26 @@ export class AdminRoleDetailsComponent {
         });
     }
 
-    public onRemoveUser(user: Profile) {
+    public onOptionSelected(event: MatAutocompleteSelectedEvent) {
+        let user = event.option.value as Profile;
+        this.selectedUser = user;
+        this.userLookup.setValue('');
+    }
+
+    public onAddMember() {
+        if (!this.selectedUser) { return; }
+        this.roleAdminService.add(this.role.id, this.selectedUser).subscribe((role: RoleDetails) => {
+            this.role = role;
+            this.selectedUser = undefined;
+        })
+    }
+
+    public changeSelectedMember() {
+        this.selectedUser = undefined;
+        this.userLookup.setValue('');
+    }
+
+    public onRemoveMember(user: Profile) {
         this.roleAdminService.remove(this.role.id, user.id!).subscribe(() => {
             this.role.users = this.role.users.filter(u => u !== user);
         });

@@ -25,12 +25,13 @@ class RoleService:
         return role.to_details_model()
 
     def grant(self, subject: User, id: int, permission: Permission):
+        self._permission.enforce(subject, 'role.grant_permission', f'role/{id}')
         role = self.details(subject, id)
         self._permission.grant(subject, role, permission)
         return self.details(subject, id)
 
     def revoke(self, subject: User, id: int, permissionId: int):
-        self._permission.enforce(subject, 'role.revoke', f'role/{id}')
+        self._permission.enforce(subject, 'role.revoke_permission', f'role/{id}')
         role = self._session.get(RoleEntity, id)
         permission = self._session.get(PermissionEntity, permissionId)
         assert role is permission.role
@@ -38,8 +39,17 @@ class RoleService:
         self._session.commit()
         return True
 
+    def add(self, subject: User, id: int, member: User):
+        self._permission.enforce(subject, 'role.add_member', f'role/{id}')
+        role = self._session.get(RoleEntity, id)
+        user = self._session.get(UserEntity, member.id)
+        if user:
+            role.users.append(user)
+            self._session.commit()
+        return self.details(subject, id)
+
     def remove(self, subject: User, id: int, userId: int):
-        self._permission.enforce(subject, 'role.remove', f'role/{id}')
+        self._permission.enforce(subject, 'role.remove_member', f'role/{id}')
         role = self._session.get(RoleEntity, id)
         user = self._session.get(UserEntity, userId)
         role.users.remove(user)

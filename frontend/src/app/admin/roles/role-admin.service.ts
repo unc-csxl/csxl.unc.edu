@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Role, RoleDetails } from 'src/app/role';
-import { Permission } from 'src/app/profile/profile.service';
+import { Permission, Profile } from 'src/app/profile/profile.service';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -23,6 +23,10 @@ export class RoleAdminService {
 
     revoke(roleId: number, permissionId: number) {
         return this.http.delete(`/api/admin/roles/${roleId}/permission/${permissionId}`);
+    }
+
+    add(roleId: number, user: Profile) {
+        return this.http.post<RoleDetails>(`/api/admin/roles/${roleId}/member`, user);
     }
 
     remove(roleId: number, userId: number) {
