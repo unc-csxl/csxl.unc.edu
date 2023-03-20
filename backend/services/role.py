@@ -3,7 +3,7 @@ from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
 from ..database import db_session
 from ..models import User, Role, RoleDetails
-from ..entities import RoleEntity, PermissionEntity
+from ..entities import RoleEntity, PermissionEntity, UserEntity
 from .permission import PermissionService
 
 
@@ -30,5 +30,13 @@ class RoleService:
         permission = self._session.get(PermissionEntity, permissionId)
         assert role is permission.role
         self._session.delete(permission)
+        self._session.commit()
+        return True
+
+    def remove(self, subject: User, id: int, userId: int):
+        self._permission.enforce(subject, 'role.remove', f'role/{id}')
+        role = self._session.get(RoleEntity, id)
+        user = self._session.get(UserEntity, userId)
+        role.users.remove(user)
         self._session.commit()
         return True

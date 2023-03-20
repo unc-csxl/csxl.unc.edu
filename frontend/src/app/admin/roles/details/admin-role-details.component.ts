@@ -43,7 +43,9 @@ export class AdminRoleDetailsComponent {
     }
 
     public onRemoveUser(user: Profile) {
-        console.log(user);
+        this.roleAdminService.remove(this.role.id, user.id!).subscribe(() => {
+            this.role.users = this.role.users.filter(u => u !== user);
+        });
     }
 
 }

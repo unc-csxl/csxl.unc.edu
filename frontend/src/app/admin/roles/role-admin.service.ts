@@ -20,4 +20,8 @@ export class RoleAdminService {
         return this.http.delete(`/api/admin/roles/${roleId}/permission/${permissionId}`)
     }
 
+    remove(roleId: number, userId: number) {
+        return this.http.delete(`/api/admin/roles/${roleId}/member/${userId}`)
+    }
+
 }

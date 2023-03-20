@@ -49,3 +49,16 @@ def revoke_permission(
         return role_service.revoke(subject, id, permissionId)
     except UserPermissionError as e:
         raise HTTPException(status_code=401, detail=str(e))
+
+
+@api.delete("/{id}/member/{userId}", tags=["Roles"])
+def revoke_member(
+    id: int,
+    userId: int,
+    subject: User = Depends(registered_user),
+    role_service: RoleService = Depends()
+) -> bool:
+    try:
+        return role_service.remove(subject, id, userId)
+    except UserPermissionError as e:
+        raise HTTPException(status_code=401, detail=str(e))
