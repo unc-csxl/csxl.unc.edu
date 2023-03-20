@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Role, RoleDetails } from 'src/app/role';
 import { Permission } from 'src/app/profile/profile.service';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class RoleAdminService {
@@ -16,12 +17,16 @@ export class RoleAdminService {
         return this.http.get<RoleDetails>(`/api/admin/roles/${id}`);
     }
 
+    grant(roleId: number, permission: Permission): Observable<RoleDetails> {
+        return this.http.post<RoleDetails>(`/api/admin/roles/${roleId}/permission`, permission);
+    }
+
     revoke(roleId: number, permissionId: number) {
-        return this.http.delete(`/api/admin/roles/${roleId}/permission/${permissionId}`)
+        return this.http.delete(`/api/admin/roles/${roleId}/permission/${permissionId}`);
     }
 
     remove(roleId: number, userId: number) {
-        return this.http.delete(`/api/admin/roles/${roleId}/member/${userId}`)
+        return this.http.delete(`/api/admin/roles/${roleId}/member/${userId}`);
     }
 
 }

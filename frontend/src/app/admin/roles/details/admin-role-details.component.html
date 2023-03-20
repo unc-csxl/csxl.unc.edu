@@ -6,17 +6,21 @@
     <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Action</th>
         <td mat-cell *matCellDef="let permission">{{ permission.action }}</td>
+        <td mat-footer-cell *matFooterCellDef><mat-form-field appearance="fill"><mat-label>Action</mat-label><input matInput [(ngModel)]="grantPermissionForm.action"></mat-form-field></td>
     </ng-container>
     <ng-container matColumnDef="resource">
         <th mat-header-cell *matHeaderCellDef>Resource</th>
         <td mat-cell *matCellDef="let permission">{{ permission.resource }}</td>
+        <td mat-footer-cell *matFooterCellDef><mat-form-field appearance="fill"><mat-label>Resource</mat-label><input [(ngModel)]="grantPermissionForm.resource" matInput></mat-form-field></td>
     </ng-container>
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let permission"><button mat-button color="warn" (click)="onRevokePermission(permission)">Revoke</button></td>
+        <td mat-footer-cell *matFooterCellDef><button mat-raised-button color="primary" (click)="grantPermission()">Grant</button></td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="['action', 'resource', 'actions']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['action', 'resource', 'actions'];"></tr>
+    <tr mat-footer-row *matFooterRowDef="['action', 'resource', 'actions']"></tr>
 </table>
 
 

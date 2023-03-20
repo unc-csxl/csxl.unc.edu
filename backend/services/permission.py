@@ -4,7 +4,7 @@ from functools import lru_cache
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from ..database import db_session
-from ..models import User, Permission, Role
+from ..models import User, Permission, Role, RoleDetails
 from ..entities import UserEntity, PermissionEntity, RoleEntity
 
 
@@ -27,21 +27,19 @@ class PermissionService:
         permissions = user_permissions + roles_permissions
         return [permission.to_model() for permission in permissions]
 
-    def grant(self, grantor: User, grantee: User | Role, permission: Permission) -> bool:
+    def grant(self, grantor: User, grantee: User | Role | RoleDetails, permission: Permission) -> bool:
         # To grant a permission, two things must be true:
         # 1. Grantor must have `permission.grant` action permission
         # 2. Grantor must have permission to carry out the permission in question
-        if not self.check(grantor, 'permission.grant', permission.action):
-            return False
-        elif not self.check(grantor, permission.action, permission.resource):
-            return False
+        self.enforce(grantor, 'permission.grant', permission.action)
+        self.enforce(grantor, permission.action, permission.resource)
 
         # Grant Permission
         permission_entity = PermissionEntity.from_model(permission)
         if type(grantee) is User:
             user_entity = self._session.get(UserEntity, grantee.id)
             permission_entity.user = user_entity
-        elif type(grantee) is Role:
+        elif type(grantee) is Role or type(grantee) is RoleDetails:
             role_entity = self._session.get(RoleEntity, grantee.id)
             permission_entity.role = role_entity
         else:

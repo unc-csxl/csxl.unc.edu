@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from ...services import RoleService, UserPermissionError
-from ...models import User, Role, RoleDetails
+from ...models import User, Role, RoleDetails, Permission
 from ..authentication import registered_user
 
 
@@ -34,6 +34,19 @@ def role_details(
 ) -> RoleDetails:
     try:
         return role_service.details(subject, id)
+    except UserPermissionError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+
+@api.post('/{id}/permission', tags=["Roles"])
+def grant_permission(
+    id: int,
+    permission: Permission,
+    subject: User = Depends(registered_user),
+    role_service: RoleService = Depends()
+) -> RoleDetails:
+    try:
+        return role_service.grant(subject, id, permission)
     except UserPermissionError as e:
         raise HTTPException(status_code=401, detail=str(e))
 

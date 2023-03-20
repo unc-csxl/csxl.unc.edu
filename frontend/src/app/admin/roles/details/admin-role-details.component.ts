@@ -14,6 +14,11 @@ export class AdminRoleDetailsComponent {
 
     public role: RoleDetails;
 
+    public grantPermissionForm: Permission = {
+        action: '',
+        resource: ''
+    };
+
     public static Route = {
         path: 'roles/:id',
         component: AdminRoleDetailsComponent,
@@ -34,6 +39,16 @@ export class AdminRoleDetailsComponent {
     ) {
         let data = route.snapshot.data as { role: RoleDetails };
         this.role = data.role;
+    }
+
+    public grantPermission() {
+        if (this.grantPermissionForm.action === '' || this.grantPermissionForm.resource === '') {
+            return;
+        }
+        this.roleAdminService.grant(this.role.id, this.grantPermissionForm).subscribe((role: RoleDetails) => {
+            this.role = role;
+            this.grantPermissionForm = { action: '', resource: '' };
+        });
     }
 
     public onRevokePermission(permission: Permission) {

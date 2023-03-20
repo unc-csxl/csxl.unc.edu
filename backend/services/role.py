@@ -2,9 +2,9 @@ from fastapi import Depends
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
 from ..database import db_session
-from ..models import User, Role, RoleDetails
+from ..models import User, Role, RoleDetails, Permission
 from ..entities import RoleEntity, PermissionEntity, UserEntity
-from .permission import PermissionService
+from .permission import PermissionService, UserPermissionError
 
 
 class RoleService:
@@ -23,6 +23,11 @@ class RoleService:
         self._permission.enforce(subject, 'role.details', f'role/{id}')
         role = self._session.get(RoleEntity, id)
         return role.to_details_model()
+
+    def grant(self, subject: User, id: int, permission: Permission):
+        role = self.details(subject, id)
+        self._permission.grant(subject, role, permission)
+        return self.details(subject, id)
 
     def revoke(self, subject: User, id: int, permissionId: int):
         self._permission.enforce(subject, 'role.revoke', f'role/{id}')
