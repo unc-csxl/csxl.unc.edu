@@ -10,6 +10,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators'
 import { NavigationService } from './navigation.service';
+import { AuthenticationService } from '../authentication.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,8 @@ import { NavigationService } from './navigation.service';
 export class HttpRequestInterceptor implements HttpInterceptor {
 
   constructor(
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private authService: AuthenticationService
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -36,7 +38,12 @@ export class HttpRequestInterceptor implements HttpInterceptor {
               this.navigationService.setSending(false);
             }
             if (e instanceof HttpErrorResponse) {
+              if (e.status === 401) {
+                this.authService.signOut();
+              } else {
                 this.navigationService.error(e);
+              }
+              throw e;
             }
             return of(e);
         }),

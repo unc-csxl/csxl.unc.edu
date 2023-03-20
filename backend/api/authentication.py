@@ -45,10 +45,14 @@ def authenticated_pid(
     token: HTTPAuthorizationCredentials | None = Depends(HTTPBearer())
 ) -> tuple[int, str]:
     if token:
-        auth_info = jwt.decode(
-            token.credentials, _JWT_SECRET, algorithms=[_JST_ALGORITHM])
-        return int(auth_info['pid']), auth_info['uid']
+        try:
+            auth_info = jwt.decode(
+                token.credentials, _JWT_SECRET, algorithms=[_JST_ALGORITHM])
+            return int(auth_info['pid']), auth_info['uid']
+        except jwt.exceptions.InvalidSignatureError:
+            ...
     raise HTTPException(status_code=401, detail='Unauthorized')
+
 
 
 @api.get('/verify')
