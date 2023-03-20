@@ -36,3 +36,16 @@ def role_details(
         return role_service.details(subject, id)
     except UserPermissionError as e:
         raise HTTPException(status_code=401, detail=str(e))
+
+
+@api.delete("/{id}/permission/{permissionId}", tags=["Roles"])
+def revoke_permission(
+    id: int,
+    permissionId: int,
+    subject: User = Depends(registered_user),
+    role_service: RoleService = Depends()
+) -> bool:
+    try:
+        return role_service.revoke(subject, id, permissionId)
+    except UserPermissionError as e:
+        raise HTTPException(status_code=401, detail=str(e))

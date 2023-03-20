@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatList, MatListModule } from '@angular/material/list';
 import { AdminComponent } from './admin.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { MatSelectModule } from '@angular/material/select';
@@ -35,6 +36,7 @@ import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.co
     MatFormFieldModule,
     MatInputModule,
     MatPaginatorModule,
+    MatListModule,
     FormsModule,
   ]
 })
