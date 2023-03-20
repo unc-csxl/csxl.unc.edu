@@ -1,0 +1,11 @@
+<h2>{{role.name}}</h2>
+
+<h3>Permissions</h3>
+<ul>
+    <li *ngFor="let permission of role.permissions">{{ permission.action }} / {{ permission.resource }}</li>
+</ul>
+
+<h3>Users</h3>
+<ul>
+    <li *ngFor="let user of role.users">{{ user.first_name }} {{ user.last_name }}</li>
+</ul>

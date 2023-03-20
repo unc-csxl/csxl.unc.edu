@@ -1,8 +1,6 @@
 """Permissions can grant acccess of actions + resources to users and roles."""
 
 from pydantic import BaseModel
-from .user import User
-from .role import Role
 
 
 __authors__ = ["Kris Jordan"]

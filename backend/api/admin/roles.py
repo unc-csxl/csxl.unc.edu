@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from ...services import RoleService, UserPermissionError
-from ...models import User, PaginationParams, Role
+from ...models import User, Role, RoleDetails
 from ..authentication import registered_user
 
 
@@ -16,11 +16,23 @@ api = APIRouter(prefix="/api/admin/roles")
 
 
 @api.get("", tags=["Roles"])
-def list_users(
+def list_roles(
     subject: User = Depends(registered_user),
     role_service: RoleService = Depends(),
 ) -> list[Role]:
     try:
         return role_service.list(subject)
+    except UserPermissionError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+
+@api.get("/{id}", tags=["Roles"])
+def role_details(
+    id: int,
+    subject: User = Depends(registered_user),
+    role_service: RoleService = Depends(),
+) -> RoleDetails:
+    try:
+        return role_service.details(subject, id)
     except UserPermissionError as e:
         raise HTTPException(status_code=401, detail=str(e))

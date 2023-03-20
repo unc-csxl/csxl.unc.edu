@@ -5,7 +5,7 @@ import { Profile, ProfileService } from '../profile/profile.service';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: []
+  styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
 
@@ -14,7 +14,6 @@ export class AdminComponent implements OnInit {
   public links = [
     { label: 'Users', path: '/admin/users' },
     { label: 'Roles', path: '/admin/roles' },
-    { label: 'Checkins', path: '/admin/checkins' },
   ];
 
   constructor(public profileService: ProfileService) {

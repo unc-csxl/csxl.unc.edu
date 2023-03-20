@@ -11,7 +11,7 @@ import { PageEvent } from '@angular/material/paginator';
 @Component({
   selector: 'app-admin-users-list',
   templateUrl: './admin-users-list.component.html',
-  styleUrls: ['./admin-users-list.component.css']
+  styleUrls: []
 })
 export class AdminUsersListComponent {
 

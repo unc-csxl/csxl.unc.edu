@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Role } from 'src/app/role';
+import { AdminRoleDetailsComponent } from '../details/admin-role-details.component';
 import { RoleAdminService } from '../role-admin.service';
 
 @Component({
@@ -20,7 +21,7 @@ export class AdminRolesListComponent {
         component: AdminRolesListComponent,
         title: 'Role Administration',
         canActivate: [permissionGuard('role.list', 'role/')],
-        resolve: { roles: () => inject(RoleAdminService).list() }
+        resolve: { roles: () => inject(RoleAdminService).list() },
     }
 
     constructor(

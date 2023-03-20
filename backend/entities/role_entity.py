@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
 from .user_role_entity import user_role_table
-from ..models import Role
+from ..models import Role, RoleDetails
 
 class RoleEntity(EntityBase):
     __tablename__ = "role"
@@ -26,4 +26,12 @@ class RoleEntity(EntityBase):
         return Role(
             id=self.id,
             name=self.name
+        )
+
+    def to_details_model(self) -> RoleDetails:
+        return RoleDetails(
+            id=self.id,
+            name=self.name,
+            permissions=[permission.to_model() for permission in self.permissions],
+            users=[user.to_model() for user in self.users]
         )

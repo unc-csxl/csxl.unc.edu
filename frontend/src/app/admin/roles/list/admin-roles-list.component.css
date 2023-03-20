@@ -1,11 +1,3 @@
-.content {
-    margin: 1em;
-}
-
-table {
-    width: 100%;
-}
-
 .mat-mdc-row .mat-mdc-cell {
     border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
