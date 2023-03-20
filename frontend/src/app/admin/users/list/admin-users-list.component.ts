@@ -6,11 +6,10 @@ import { permissionGuard } from 'src/app/permission.guard';
 
 import { Paginated } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
-import { first } from 'rxjs';
 
 
 @Component({
-  selector: 'app-user-admin',
+  selector: 'app-admin-users-list',
   templateUrl: './admin-users-list.component.html',
   styleUrls: ['./admin-users-list.component.css']
 })

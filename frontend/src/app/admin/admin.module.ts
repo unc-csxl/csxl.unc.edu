@@ -12,12 +12,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule} from '@angular/forms';
+
 import { AdminUsersListComponent } from './users/list/admin-users-list.component';
+import { AdminRolesListComponent } from './roles/list/admin-roles-list.component';
 
 @NgModule({
   declarations: [
     AdminComponent,
-    AdminUsersListComponent
+    AdminUsersListComponent,
+    AdminRolesListComponent
   ],
   imports: [
     CommonModule,
