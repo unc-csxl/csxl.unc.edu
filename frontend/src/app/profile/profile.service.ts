@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { mergeMap, Observable, of, shareReplay } from 'rxjs';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { AuthenticationService } from '../authentication.service';
 
-export enum Role {
-  STUDENT = 0,
-  STAFF = 1,
-  FACULTY = 2,
-  ADMIN = 3
+export interface Permission {
+  id?: number;
+  action: string;
+  resource: string;
 }
 
 export interface Profile {
@@ -20,6 +19,7 @@ export interface Profile {
   pronouns: string | null;
   registered: boolean;
   role: number;
+  permissions: Permission[];
 }
 
 @Injectable({
@@ -44,6 +44,11 @@ export class ProfileService {
 
   put(profile: Profile) {
     return this.http.put<Profile>("/api/profile", profile);
+  }
+
+  search(query: string) {
+    let encodedQuery = encodeURIComponent(query);
+    return this.http.get<Profile[]>(`/api/user?q=${encodedQuery}`);
   }
 
 }

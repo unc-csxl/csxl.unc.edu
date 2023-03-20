@@ -5,6 +5,9 @@ import { NavigationService } from "./navigation/navigation.service";
 
 @Injectable({providedIn: 'root'})
 export class AppTitleStrategy extends TitleStrategy {
+
+    public static Provider = { provide: TitleStrategy, useClass: AppTitleStrategy };
+
     constructor(private readonly title: Title, private navigationService: NavigationService) {
         super();
     }
@@ -15,7 +18,7 @@ export class AppTitleStrategy extends TitleStrategy {
             this.title.setTitle(`${title} | CS Experience Labs | CSXL at UNC-Chapel Hill`);
             this.navigationService.setTitle(title);
         } else {
-            this.title.setTitle('CS Experience Labs at The University of North Carolina at Chapel Hill');
+            this.title.setTitle('Computer Science Experience Labs at The University of North Carolina at Chapel Hill');
             this.navigationService.setTitle('Gain Experience, Grow Community & Go Places');
         }
     }

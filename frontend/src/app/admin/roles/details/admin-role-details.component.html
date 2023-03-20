@@ -1,0 +1,60 @@
+<h2>Role: {{role.name}}</h2>
+
+<h3>Permissions</h3>
+
+<table mat-table [dataSource]="role.permissions">
+    <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let permission">{{ permission.action }}</td>
+        <td mat-footer-cell *matFooterCellDef><mat-form-field appearance="fill"><mat-label>Action</mat-label><input matInput [(ngModel)]="grantPermissionForm.action"></mat-form-field></td>
+    </ng-container>
+    <ng-container matColumnDef="resource">
+        <th mat-header-cell *matHeaderCellDef>Resource</th>
+        <td mat-cell *matCellDef="let permission">{{ permission.resource }}</td>
+        <td mat-footer-cell *matFooterCellDef><mat-form-field appearance="fill"><mat-label>Resource</mat-label><input [(ngModel)]="grantPermissionForm.resource" matInput></mat-form-field></td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let permission"><button mat-button color="warn" (click)="onRevokePermission(permission)">Revoke</button></td>
+        <td mat-footer-cell *matFooterCellDef><button mat-raised-button color="primary" (click)="onGrantPermission()">Grant</button></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['action', 'resource', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['action', 'resource', 'actions'];"></tr>
+    <tr mat-footer-row *matFooterRowDef="['action', 'resource', 'actions']"></tr>
+</table>
+
+
+<h3 class="title">Members</h3>
+
+<form>
+<table mat-table [dataSource]="role.users">
+    <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef>User</th>
+        <td mat-cell *matCellDef="let user">{{ user.first_name }} {{ user.last_name }}</td>
+        <td mat-footer-cell *matFooterCellDef>
+            <div *ngIf="selectedUser; else search" class="selected-user">
+                <button mat-form-field mat-button (click)="changeSelectedMember()">{{ selectedUser.first_name }} {{ selectedUser.last_name }}</button>
+            </div>
+            <ng-template #search>
+                <mat-form-field appearance="fill">
+                    <mat-label>User</mat-label>
+                    <input type="text" placeholder="Find User" aria-label="User" matInput [matAutocomplete]="auto" [formControl]="userLookup">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+                        <mat-option *ngFor="let option of filteredUsers$ | async" [value]="option">
+                            {{ option.first_name }} {{ option.last_name }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </ng-template>
+        </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let user"><button mat-button color="warn" (click)="onRemoveMember(user)">Remove</button></td>
+        <td mat-footer-cell *matFooterCellDef><button mat-raised-button color="primary" (click)="onAddMember()" [disabled]="selectedUser === undefined">Add</button></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['user', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['user', 'actions'];"></tr>
+    <tr mat-footer-row *matFooterRowDef="['user', 'actions']"></tr>
+</table>
+</form>

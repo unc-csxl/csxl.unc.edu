@@ -8,7 +8,7 @@ Usage: python3 -m script.create_database
 
 import sqlalchemy
 import sys
-from env import getenv
+from ..env import getenv
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

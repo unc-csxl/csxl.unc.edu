@@ -31,7 +31,7 @@ import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.component';
 import { HomeComponent } from './home/home.component';
-import { GateComponent } from './authentication/gate.component';
+import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 
 @NgModule({

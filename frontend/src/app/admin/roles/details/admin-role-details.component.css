@@ -1,0 +1,13 @@
+h3 {
+    margin-top: 24px;
+}
+
+.selected-user {
+    padding: 16px;
+}
+
+.mat-mdc-footer-row td {
+    padding-top: 16px;
+    border-top: black 2px solid;
+    background: rgba(0, 0, 0, 0.5);
+}

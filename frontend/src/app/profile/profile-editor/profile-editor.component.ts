@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Route } from '@angular/router';
-import { isAuthenticated } from 'src/app/authentication/gate.guard';
+import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
 import { Profile, ProfileService } from '../profile.service';
 
