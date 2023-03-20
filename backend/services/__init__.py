@@ -1,2 +1,2 @@
 from .user import UserService
-from .permission import PermissionService
+from .permission import PermissionService, UserPermissionError

@@ -1,5 +1,6 @@
 """Package for all models in the application."""
 
+from .pagination import Paginated, PaginationParams
 from .user import User, ProfileForm, NewUser
 from .role import Role
 from .permission import Permission

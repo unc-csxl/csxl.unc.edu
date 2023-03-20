@@ -9,7 +9,8 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
 const routes: Routes = [
   HomeComponent.Route,
   ProfileEditorComponent.Route,
-  GateComponent.Route
+  GateComponent.Route,
+  { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
 ];
 
 @NgModule({

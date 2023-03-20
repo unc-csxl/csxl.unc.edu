@@ -8,6 +8,12 @@ from ..models import User, Permission, Role
 from ..entities import UserEntity, PermissionEntity, RoleEntity
 
 
+class UserPermissionError(Exception):
+    def __init__(self, action: str, resource: str):
+        super().__init__(
+            f'Not authorized to perform `{action}` on `{resource}`')
+
+
 class PermissionService:
 
     _session: Session
@@ -37,7 +43,7 @@ class PermissionService:
             permission_entity.user = user_entity
         elif type(grantee) is Role:
             role_entity = self._session.get(RoleEntity, grantee.id)
-            permission_entity.role = role_entity 
+            permission_entity.role = role_entity
         else:
             raise ValueError('grantee must be User or Role')
 
@@ -60,6 +66,10 @@ class PermissionService:
         self._session.delete(permission_entity)
         self._session.commit()
         return True
+
+    def enforce(self, subject: User, action: str, resource: str) -> None:
+        if self.check(subject, action, resource) is False:
+            raise UserPermissionError(action, resource)
 
     def check(self, subject: User, action: str, resource: str) -> bool:
         # Check user permissions
