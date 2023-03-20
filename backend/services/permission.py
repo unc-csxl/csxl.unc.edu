@@ -56,10 +56,9 @@ class PermissionService:
         permission_entity = self._session.get(PermissionEntity, permission.id)
         if permission_entity is None:
             return False
-        elif not self.enforce(revoker, 'permission.revoke', f'permission/{permission_entity.id}'):
-            return False
-        elif not self.enforce(revoker, permission_entity.action, permission_entity.resource):
-            return False
+
+        self.enforce(revoker, 'permission.revoke', f'permission/{permission_entity.id}')
+        self.enforce(revoker, permission_entity.action, permission_entity.resource)
 
         self._session.delete(permission_entity)
         self._session.commit()
