@@ -18,6 +18,6 @@ RUN pip install --no-cache-dir --upgrade -r /workspace/backend/requirements.txt
 COPY --from=build /workspace/static /workspace/static
 COPY ./backend /workspace/backend
 WORKDIR /workspace
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"]
 ENV TZ="America/New_York"
 EXPOSE 8080
