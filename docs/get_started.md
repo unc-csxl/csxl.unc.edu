@@ -47,3 +47,17 @@ Once the Dev Container begins, open a terminal and complete the following:
 ## Develop in Branches
 
 Before beginning any feature work, fixes, or other modifications, you should checkout a branch to keep the history separate from the `main` line history until it is ready deploying into production.
+
+## Authorize as Alternate Users
+
+When running in a development environment, it is helpful to be able to switch between authenticated users.
+Our current mechanism for doing so is a special authorization route that only works in development:
+
+Change users route pattern: `http://localhost:1560/auth/as/{onyen}/{pid}`
+
+For reference, here are some mock personas that are installed in the `reset_database` script from above:
+
+1. Sol Student: <http://localhost:1560/auth/as/sol/100000000>
+2. Arden Ambassador: <http://localhost:1560/auth/as/arden/100000001>
+3. Merritt Manager: <http://localhost:1560/auth/as/merritt/100000002>
+4. Super User: <http://localhost:1560/auth/as/root/999999999>

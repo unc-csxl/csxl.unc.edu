@@ -9,7 +9,9 @@ __license__ = "MIT"
 
 pairs = [
     (roles.sudoer, Permission(action="*", resource="*")),
+    (roles.staff, Permission(action="admin.*", resource="*")),
     (roles.staff, Permission(action="user.*", resource="*")),
+    (roles.staff, Permission(action="role.*", resource="*")),
     (roles.staff, Permission(action="checkin.*", resource="*")),
     (roles.ambassador, Permission(action="user.search", resource="*")),
     (roles.ambassador, Permission(action="checkin.*", resource="*"))
