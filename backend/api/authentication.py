@@ -4,6 +4,20 @@ This module provides a `registered_user` dependency injection function for other
 to use to both ensure a user is authenticated and resolve to the logged in User's model.
 Further, this module provides the routes and logic for backend authentication.
 
+The router is mounted at `/auth` and provides the following endpoints:
+
+    /auth
+        Redirects to the authentication server to authenticate the user.
+
+    /auth/as/{uid}/{pid}
+        Redirects to the authentication server to authenticate the user as
+        another user. This route is only available in development mode.
+
+    /auth/verify
+        Verifies the validity of a JWT token and returns the decoded token. This is
+        the end-point a development/staging server requests of the production server
+        to verify the legitimacy of delegated authentication.
+
 The implementation of auth routes are nuanced due to UNC Cloud Apps' Single Sign-On (SSO)
 proxy service. In production, there is a proxy sitting in front of the app that
 integrates with UNC's SSO/Shibboleth service for authentication. For more information
@@ -28,27 +42,16 @@ In development, the proxy is not present. Instead, there are two options for aut
     A. The production server authentication works as usual, but if the `origin` parameter is
        detected alongside the SSO headers, the user will be redirected back to the `origin` 
        server with a JWT `token` query parameter. This token is signed by the production server.
-    B. Back on the development/staging server, the `token` query parameter a backchannel request
-       is made to the production server to verify the token's validity. If the token is valid,
-       the development/staging server then issues a new `token` to the client that is signed
-       by the development/staging server. This token is then used for all subsequent requests.
+    B. Back on the development/staging server, we need to verify that the token given to the route
+       was actually signed by the production server. If we did not do this, a malicious user could
+       simply generate a token and pass it to the development server to gain access. Thus, an HTTP
+       request from the development/stage server is made to the production server's `/auth/verify` route
+       to verify the token's validity. If the token is valid, the development/staging server then 
+       issues a new `token` to the client that is signed by the development/staging server. 
+       This token is then used for all subsequent requests.
 2. If an unauthenticated user visits /auth/as/{uid}/{pid} in development, they are authenticated
     as the user with the given `uid` and `pid`, which are their ONYEN and PID, respectively. 
     This route is only available in development mode.
-
-The router is mounted at `/auth` and provides the following endpoints:
-
-    /auth
-        Redirects to the authentication server to authenticate the user.
-
-    /auth/as/{uid}/{pid}
-        Redirects to the authentication server to authenticate the user as
-        another user. This route is only available in development mode.
-
-    /auth/verify
-        Verifies the validity of a JWT token and returns the decoded token. This is
-        the end-point a development/staging server requests of the production server
-        to verify the legitimacy of delegated authentication.
 
 Finally, the `authenticated_pid` function ensures a user is authenticated with PID and Onyen, 
 but does not require that the user be registered in the database. This is only really useful 
