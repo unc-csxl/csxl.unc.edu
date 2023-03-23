@@ -1,3 +1,60 @@
+"""User authentication over HTTP via Headers and/or HTTP JWT Bearer Tokens.
+
+This module provides a `registered_user` dependency injection function for other routes
+to use to both ensure a user is authenticated and resolve to the logged in User's model.
+Further, this module provides the routes and logic for backend authentication.
+
+The implementation of auth routes are nuanced due to UNC Cloud Apps' Single Sign-On (SSO)
+proxy service. In production, there is a proxy sitting in front of the app that
+integrates with UNC's SSO/Shibboleth service for authentication. For more information
+on this proxy service, see the [official CloudApps documentation](https://help.unc.edu/sp?id=kb_article_view&sysparm_article=KB0011256)
+
+In production, the proxy intercepts all routes prefixed with `/auth`. Two paths follow:
+
+1. If the user is not logged in, the proxy redirects the user to the authentication server.
+2. If the user is logged in, the proxy sets the `uid` and `pid` headers to the user's
+    Onyen and PID, respectively, and forwards the request to our app.
+
+Once the request is forwarded to our app server, the `uid` and `pid` headers are used to
+generate a JWT token and persist it in the client's local storage via a the _set_client_token
+function. The frontend client code then uses this token, via JwtToken imported in AppModule,
+to set the HTTP Authorization header on all subsequent API requests thanks to the @auth0/angular-jwt
+library's [HTTP Interceptor](https://www.npmjs.com/package/@auth0/angular-jwt).
+
+In development, the proxy is not present. Instead, there are two options for authentication:
+
+1. If an unauthenticated user visits /auth in development, or staging, they are redirected
+   to the production `csxl.unc.edu/auth` route with an additional query parameter `origin`.
+    A. The production server authentication works as usual, but if the `origin` parameter is
+       detected alongside the SSO headers, the user will be redirected back to the `origin` 
+       server with a JWT `token` query parameter. This token is signed by the production server.
+    B. Back on the development/staging server, the `token` query parameter a backchannel request
+       is made to the production server to verify the token's validity. If the token is valid,
+       the development/staging server then issues a new `token` to the client that is signed
+       by the development/staging server. This token is then used for all subsequent requests.
+2. If an unauthenticated user visits /auth/as/{uid}/{pid} in development, they are authenticated
+    as the user with the given `uid` and `pid`, which are their ONYEN and PID, respectively. 
+    This route is only available in development mode.
+
+The router is mounted at `/auth` and provides the following endpoints:
+
+    /auth
+        Redirects to the authentication server to authenticate the user.
+
+    /auth/as/{uid}/{pid}
+        Redirects to the authentication server to authenticate the user as
+        another user. This route is only available in development mode.
+
+    /auth/verify
+        Verifies the validity of a JWT token and returns the decoded token. This is
+        the end-point a development/staging server requests of the production server
+        to verify the legitimacy of delegated authentication.
+
+Finally, the `authenticated_pid` function ensures a user is authenticated with PID and Onyen, 
+but does not require that the user be registered in the database. This is only really useful 
+for routes used in the process of registering a user.
+"""
+
 import jwt
 import requests
 from datetime import datetime, timedelta
@@ -29,6 +86,7 @@ def registered_user(
     user_service: UserService = Depends(),
     token: HTTPAuthorizationCredentials | None = Depends(HTTPBearer())
 ) -> User:
+    """Returns the authenticated user or raises a 401 HTTPException if the user is not authenticated."""
     if token:
         try:
             auth_info = jwt.decode(
@@ -44,6 +102,7 @@ def registered_user(
 def authenticated_pid(
     token: HTTPAuthorizationCredentials | None = Depends(HTTPBearer())
 ) -> tuple[int, str]:
+    """Returns the authenticated user's PID and Onyen or raises a 401 HTTPException if the user is not authenticated."""
     if token:
         try:
             auth_info = jwt.decode(
@@ -52,7 +111,6 @@ def authenticated_pid(
         except jwt.exceptions.InvalidSignatureError:
             ...
     raise HTTPException(status_code=401, detail='Unauthorized')
-
 
 
 @api.get('/verify')
@@ -70,13 +128,15 @@ def bearer_token_bootstrap(
     origin: str | None = None,
     token: str | None = None,
 ):
+    """Handles authentication in both production and development. See the module docstring for more details."""
     if request.url.path.startswith('/auth/as/'):
         # Authenticate as another user in development using special route.
         if getenv('MODE') == 'development':
             testing_authentication = True
         else:
             onyen = request.headers['uid']
-            raise HTTPException(status_code=400, detail=f'Tsk, tsk. That is a naughty request {onyen}.')
+            raise HTTPException(
+                status_code=400, detail=f'Tsk, tsk. That is a naughty request {onyen}.')
 
     if HOST == AUTH_SERVER_HOST or ('testing_authentication' in locals() and testing_authentication):
         # Production App Request
