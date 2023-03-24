@@ -1,3 +1,8 @@
+"""User Service.
+
+The User Service provides access to the User model and its associated database operations.
+"""
+
 from fastapi import Depends
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
@@ -6,6 +11,10 @@ from ..models import User, Paginated, PaginationParams
 from ..entities import UserEntity
 from .permission import PermissionService
 
+__authors__ = ['Kris Jordan']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 
 class UserService:
 
@@ -13,10 +22,19 @@ class UserService:
     _permission: PermissionService
 
     def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
+        """Initialize the User Service."""
         self._session = session
         self._permission = permission
 
     def get(self, pid: int) -> User | None:
+        """Get a User by PID.
+
+        Args:
+            pid: The PID of the user.
+
+        Returns:
+            User | None: The user or None if not found.
+        """
         query = select(UserEntity).where(UserEntity.pid == pid)
         user_entity: UserEntity = self._session.scalar(query)
         if user_entity is None:
@@ -26,7 +44,16 @@ class UserService:
             model.permissions = self._permission.get_permissions(model)
             return model
 
-    def search(self, subject: User, query: str) -> list[User]:
+    def search(self, _subject: User, query: str) -> list[User]:
+        """Search for users by their name, onyen, email.
+
+        Args:
+            subject: The user performing the action.
+            query: The search query.
+
+        Returns:
+            list[User]: The list of users matching the query.
+        """
         statement = select(UserEntity)
         criteria = or_(
             UserEntity.first_name.ilike(f'%{query}%'),
@@ -53,14 +80,19 @@ class UserService:
         return [entity.to_model() for entity in entities]
 
     def list(self, subject: User, pagination_params: PaginationParams) -> Paginated[User]:
-        """
-        Retrieves users in a paginated format that match a query
+        """List Users.
 
-        Parameters:
-            pagination_params (pagination_params): Contains pagination details including query and page size
+        The subject must have the 'user.list' permission on the 'user/' resource.
+
+        Args:
+            subject: The user performing the action.
+            pagination_params: The pagination parameters.
+
         Returns:
-            Paginated[User]: Object that contains matching users in a paginated format
-        """
+            Paginated[User]: The paginated list of users.
+
+        Raises:
+            PermissionError: If the subject does not have the required permission."""
         self._permission.enforce(subject, 'user.list', 'user/')
 
         statement = select(UserEntity)
@@ -89,44 +121,44 @@ class UserService:
 
         return Paginated(items=[entity.to_model() for entity in entities], length=length, params=pagination_params)
 
-    def save(self, user: User) -> User | None:
-        """
-        Creates a user based on the input object and adds it to the table.
-        If the user's ID is unique to the table, a new entry is added.
-        If the user's ID already exists in the table, the existing entry is updated.
+    def create(self, subject: User, user: User) -> User:
+        """Create a User.
 
-        Parameters:
-            user (User): User to add to table
+        If the subject is not the user, the subject must have the `user.create` permission.
+
+        Args:
+            subject: The user performing the action.
+            user: The user to create.
+
         Returns:
-            User: Object added to table
-        """
-        if user.id:
-            entity = self._session.get(UserEntity, user.id)
-            entity.update(user)
-        else:
-            entity = UserEntity.from_model(user)
-            self._session.add(entity)
+            The created User.
+
+        Raises:
+            PermissionError: If the subject does not have permission to create the user."""
+        if subject != user:
+            self._permission.enforce(subject, 'user.create', 'user/')
+        entity = UserEntity.from_model(user)
+        self._session.add(entity)
         self._session.commit()
         return entity.to_model()
-    
-    
-    def delete(self, pid: int) -> None:
-        """
-        Delete the user based on the provided PID.
-        If no item exists to delete, a debug description is displayed.
 
-        Parameters:
-            pid (int): Unique user PID
-        """
+    def update(self, subject: User, user: User) -> User:
+        """Update a User.
 
-        # Find user to delete
-        user=self._session.query(UserEntity).filter(UserEntity.pid == pid).first()
+        If the subject is not the user, the subject must have the `user.update` permission.
 
-        # Ensure object exists
-        if user:
-            # Delete object and commit
-            self._session.delete(user)
-            self._session.commit()
-        else:
-            # Raise exception
-            raise Exception(f"No user found with PID: {pid}")
+        Args:
+            subject: The user performing the action.
+            user: The user to update.
+
+        Returns:
+            The updated User.
+
+        Raises:
+            PermissionError: If the subject does not have permission to update the user."""
+        if subject != user:
+            self._permission.enforce(subject, 'user.update', f'user/{user.id}')
+        entity = self._session.get(UserEntity, user.id)
+        entity.update(user)
+        self._session.commit()
+        return entity.to_model()
