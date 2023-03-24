@@ -1,83 +1,65 @@
 # Authentication and Authorization
 
-This document serves CSXL Developers who need authentication and authorization functionality
-in their feature work.
+This document is for CSXL Developers who need authentication and authorization in their feature work.
 
-Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) Shibboleth
-service. This allows username, password, and UNC affinity to be handled by UNC ITS and
-our application is able to depend upon it. For more information on SSO, see ITS' [official
-documentation](https://its.unc.edu/2017/07/24/shibboleth/). For the implementation details
-on _how_ authentication works in this application, see [backend/api/authentication.py].
+Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) Shibboleth service. This allows username, password, and UNC affinity to be handled by UNC ITS and our application takes a dependency upon it. For more information on SSO, see ITS' [official documentation](https://its.unc.edu/2017/07/24/shibboleth/). For the implementation details on *how* authentication works in this application, see [backend/api/authentication.py].
 
 ## Authentication
 
-Authentication is verifying _who_ the "subject" accessing a system is. The term "subject" is
-chosen in the security world as this is not always a person. A subject may also be an automated 
-program accessing a system on behalf of a person, group, or organization. The CSXL application 
-is, for now, foremost a user-facing application that serves the people of the computer science 
-department at UNC. Thus, a "subject" is a person and user of the application for our concerns.
+Authentication is verifying *who* the "subject" accessing a system is. The term "subject" is chosen intentionally in the security lexicon. A subject may be a person, but alternatively an automated program accessing a system on behalf of a person, group, or organization. The CSXL application is, for now, foremost a user-facing application that serves the people of the computer science department at UNC. Thus, a "subject" is a person and user of the CSXL application for our concerns.
 
 ## Authorization
 
-Authorization is verifying _what_ a subject/user _has permission_ to do within the system.
-For example, the leader of a workshop may have permission to edit a workshop's details,
-whereas a registered participant of a workshop would not. Additionally, a site administrator
-may every permission possible, whereas a standard user does not.
+Authorization is verifying a subject/user *has permission* to carry out an *action* on a *resource* within the system. For example, the leader of a workshop may have permission to edit a workshop's details, whereas a registered participant of a workshop would not. Additionally, a site administrator may every permission possible, whereas a newly registered user does not.
 
-Authorization concerns in the `csxl.unc.edu` application should be thought of as the union
-of two different rule sets:
+Authorization concerns in the `csxl.unc.edu` application can be thought of as the union of two distinct rule sets:
 
-1. Feature and Model-specific Rules
+1. Feature-specific Rules
 
-When a feature of the website, in one or more of its models, is related to one or more
-users in the system, it is likely these users will need authorization to carry out specific
-actions on these models. For example, a user who has registered for a workshop should
-be able to unregister themselves if a conflict has arisen. This user should not be able to
-unregister other users, though. A workshop leader may be able to modify the details of
-_their_ workshop, but not someone else's.
+When a feature of the website, via one or more of its models, is related to one or more users in the system, it is likely these users will need authorization to carry out specific actions on these models. This authorization is achieved via feature-specific rules. For example, a user who has registered for a workshop should be able to unregister themselves if a conflict has arisen. This user should not be able to unregister *other* users, though. A workshop leader may be able to modify the details of *their* workshop, but not someone else's.
 
-The logic for enforcing feature and model-specific concerns should be specified in 
-backend service layer methods. Developers are encouraged to factor this logic out into
-reusable helper functions as it is likely many service methods will rely upon the same
-logic. All backend service layer methods which have authorization concerns should accept 
-a `subject: User` as their first parameter. This represents the user attempting to
-carry out the action and whose authorization should be verified.  If your backend service 
-layer method determines the subject does not have permission to carry out the operation,
-you should raise a `backend.services.permission.UserPermissionError`. Example usage
-of this exception:
+The logic for enforcing feature-specific concerns should be specified in the feature's backend service layer methods. Developers are encouraged to factor out this logic into reusable helper functions; it is likely many service methods will rely upon the same logic.
+
+All backend service layer methods with authorization concerns should accept a `subject: User` as their first parameter. This represents the user attempting to carry out the action and whose authorization needs verification. If your backend service layer method determines the subject does not have permission to carry out the operation, raise a `backend.services.permission.UserPermissionError`. Example usage of this exception:
 
 ```python
 raise UserPermissionError('workshops.update', f'workshops/{workshop.id}`)
 ```
 
-For administrative concerns discussed next, the first argument is conventionally specified 
-as `service.method` and the second as the target _path_ of the model being operated on,
-without the leading `api/`.  In the above example, you could assume `/api/workshops/1` was
-the FastAPI path to the model being operated on.
+For administrative concerns discussed next, the first argument is conventionally specified as `service.method` and the second as the target *path* of the primary model being operated on, without the leading `api/`. In the above example, you could assume `/api/workshops/1` was the FastAPI path to the model being operated on.
 
-2. Administrative Concerns
+2. Administrative Permission Rules
 
-The second kind of authorization concern to support are administrative permissions orthogonal
-to the feature and model-specific rules. For example, a site administrator needs to be
-able to carry out any action on any model. Alternatively, a CSXL Workshop Manager needs
-to be able to create new workshops, assign workshop leads, and edit any of them. Administrative
-permissions are built into the site via Roles and Permissions.
+The second kind of authorization rules are administrative permissions. For example, a site administrator needs permission to carry out any action on every resource. Alternatively, the Workshop Administrator needs to be able to create new workshops, assign workshop leads, and edit any of them. Administrative permissions are built into the site via Roles and Permissions.
 
-In the development environment, after resetting the database, sign in as the [Super User](http://localhost:1560/auth/as/root/999999999) and go to the Admin > Roles page. If you open the Staff
-role, you will see it has permissions to action `role.*` on resource `*`. The `*` implies 
-"matches anything following". Thus, users with the Staff role have permission to carry out
-any action in the `services.role` service on all roles. You can see "Merritt Manager" is a user
-who has "Staff" role capabilities. If you navigate back to Roles and then to the "Sudoers" role,
-you will see why the "Super User" you are signed in as has authorization for all actions on
-all resources.
+The facilities for this kind of authorization is built into the site. Feature developers need to use the Permission API to check for administrative permissions where appropriate. Generally, there are two appropriate places for administrative permisssion rule enforcement:
 
+A. Everywhere there is feature-specific authorization rule there should be a check for administrative permission. Rule-of-thumb, everywhere your feature raises a `UserPermissionError`, you should also check for the corresponding administrative permission rule before raising the error.
 
+B. Admin-only aspects of a feature.
+
+Permissions are assigned to Roles and Users can be members of many Roles. A Permission *grants* access to carry out action(s) over resource(s). The action and resource are specified as strings where the action refers to a protected backend service method and the resource refers to a model's path. Permissions strings can be specified with wildcard asterisks implying "match all".
+
+To see how administrative permissions are managed in the app, in the development environment, after resetting the database, sign in as the [Super User](http://localhost:1560/auth/as/root/999999999) and go to the Admin > Roles page. Open the Staff role to see it has permissions to action `role.*` on resource `*`. The `*` implies "matches anything following". Thus, users with the Staff role have permission to carry out any action in the `services.role` service on all roles. You can see "Merritt Manager" is a user who has "Staff" role capabilities. If you navigate back to Roles and then to the "Sudoers" role, you will see the "Super User" you are signed in as has authorization for all actions on all resources.
 
 ## Common Development Concerns
 
 ### Backend Routes Requiring a Registered User
 
-### Testing Authenticated Routes via FastAPI
+Thanks to FastAPI's dependency injection system and the `registered_user` helper function in [backend/api/authentication.py], adding authentication to a route is as easy as adding a parameter. For example, [backend/api/roles.py]'s `list_roles` function is defined as:
+
+```python
+@api.get("", tags=["Roles"])
+def list_roles(
+    subject: User = Depends(registered_user),
+    role_service: RoleService = Depends(),
+) -> list[Role]:
+    ...
+```
+
+By adding the parameter `subject`, which _depends_ on the `registered_user` helper function, FastAPI's dependency injection system automatically calls `registered_user`, which in turn depends on the authentication bearer token set during sign in and a corresponding registered user existing in the database. Thus, within the route function, `subject` is bound to the current signed in User. By adding this parameter, you will see the OpenAPI routes automatically become protected.
+
+### Testing Authenticated Routes via OpenAPI
 
 ### Protecting Backend Service Methods
 
