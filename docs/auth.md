@@ -87,6 +87,10 @@ In the OpenAPI user interface found at `/docs`, look for the Green Authorize but
 
 ### Protecting Backend Service Methods
 
+Backend service methods are _the most important place_ to correctly verify authorization. Failing to properly verify authorization here means users will be able to take actions they should not have permission to.
+
+As an example, consider _updating a user's profile details_. The "feature" is a user's profile. The feature-specific rule is _a user can update their own profile_. This test is implemented in [backend/services/user.py](backend/services/user.py)
+
 ### Frontend Features Requiring a Registered User
 
 ### Frontend Features Requiring Authorization
