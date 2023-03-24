@@ -45,7 +45,7 @@ def update_profile(
     than registered_user.
 
     ProfileForm is used here, rather than User, for similar registration-specific
-    purposes. Importantly, it does not include the ID.
+    purposes. Importantly, ProfileForm doesn't contain an ID field.
     """
     pid, onyen = pid_onyen
     user = user_svc.get(pid)
