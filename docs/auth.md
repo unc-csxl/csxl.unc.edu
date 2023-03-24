@@ -2,9 +2,22 @@
 
 This document is for CSXL Developers who need authentication and authorization in their feature work.
 
-Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) Shibboleth service. This allows username, password, and UNC affinity to be handled by UNC ITS and our application takes a dependency upon it. For more information on SSO, see ITS' [official documentation](https://its.unc.edu/2017/07/24/shibboleth/). For the implementation details on *how* authentication works in this application, see [backend/api/authentication.py].
+## Table of Contents
+
+* [Authentication](#authentication)
+* [Authorization](#authorization)
+  * [Feature-specific rules](#1-feature-specific-rules)
+  * [Administrative Permission Rules](#2-administrative-permission-rules)
+* [Common Development Concerns](#common-development-concerns)
+  * [Backend Routes Requiring a Registered User](#backend-routes-requiring-a-registered-user)
+  * [Testing Protected Routes via OpenAPI](#testing-authenticated-routes-via-openapi)
+  * [Protecting Backend Service Methods](#protecting-backend-service-methods)
+  * [Frontend Features Requiring a Registered User](#frontend-features-requiring-a-registered-user)
+  * [Frontend Features Requiring Authorization](#frontend-features-requiring-authorization)
 
 ## Authentication
+
+Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) Shibboleth service. This allows username, password, and UNC affinity to be handled by UNC ITS and our application takes a dependency upon it. For more information on SSO, see ITS' [official documentation](https://its.unc.edu/2017/07/24/shibboleth/). For the implementation details on *how* authentication works in this application, see [backend/api/authentication.py](backend/api/authentication.py).
 
 Authentication is verifying *who* the "subject" accessing a system is. The term "subject" is chosen intentionally in the security lexicon. A subject may be a person, but alternatively an automated program accessing a system on behalf of a person, group, or organization. The CSXL application is, for now, foremost a user-facing application that serves the people of the computer science department at UNC. Thus, a "subject" is a person and user of the CSXL application for our concerns.
 
@@ -14,13 +27,13 @@ Authorization is verifying a subject/user *has permission* to carry out an *acti
 
 Authorization concerns in the `csxl.unc.edu` application can be thought of as the union of two distinct rule sets:
 
-1. Feature-specific Rules
+## 1. Feature-specific Rules
 
 When a feature of the website, via one or more of its models, is related to one or more users in the system, it is likely these users will need authorization to carry out specific actions on these models. This authorization is achieved via feature-specific rules. For example, a user who has registered for a workshop should be able to unregister themselves if a conflict has arisen. This user should not be able to unregister *other* users, though. A workshop leader may be able to modify the details of *their* workshop, but not someone else's.
 
 The logic for enforcing feature-specific concerns should be specified in the feature's backend service layer methods. Developers are encouraged to factor out this logic into reusable helper functions; it is likely many service methods will rely upon the same logic.
 
-All backend service layer methods with authorization concerns should accept a `subject: User` as their first parameter. This represents the user attempting to carry out the action and whose authorization needs verification. If your backend service layer method determines the subject does not have permission to carry out the operation, raise a `backend.services.permission.UserPermissionError`. Example usage of this exception:
+All backend service layer methods with authorization concerns should accept a `subject: User` as their first parameter. This represents the user attempting to carry out the action and whose authorization needs verification. If your backend service layer method determines the subject does not have permission to carry out the operation, raise a [`backend.services.permission.UserPermissionError`](backend/services/permission.py). Example usage of this exception:
 
 ```python
 raise UserPermissionError('workshops.update', f'workshops/{workshop.id}`)
@@ -28,7 +41,7 @@ raise UserPermissionError('workshops.update', f'workshops/{workshop.id}`)
 
 For administrative concerns discussed next, the first argument is conventionally specified as `service.method` and the second as the target *path* of the primary model being operated on, without the leading `api/`. In the above example, you could assume `/api/workshops/1` was the FastAPI path to the model being operated on.
 
-2. Administrative Permission Rules
+## 2. Administrative Permission Rules
 
 The second kind of authorization rules are administrative permissions. For example, a site administrator needs permission to carry out any action on every resource. Alternatively, the Workshop Administrator needs to be able to create new workshops, assign workshop leads, and edit any of them. Administrative permissions are built into the site via Roles and Permissions.
 
@@ -57,9 +70,20 @@ def list_roles(
     ...
 ```
 
-By adding the parameter `subject`, which _depends_ on the `registered_user` helper function, FastAPI's dependency injection system automatically calls `registered_user`, which in turn depends on the authentication bearer token set during sign in and a corresponding registered user existing in the database. Thus, within the route function, `subject` is bound to the current signed in User. By adding this parameter, you will see the OpenAPI routes automatically become protected.
+By adding the parameter `subject`, which *depends* on the `registered_user` helper function, FastAPI's dependency injection system automatically calls `registered_user`, which in turn depends on the authentication bearer token set during sign in and a corresponding registered user existing in the database. Thus, within the route function, `subject` is bound to the current signed in User. By adding this parameter, you will see the OpenAPI routes automatically become protected.
 
 ### Testing Authenticated Routes via OpenAPI
+
+To use authorization protected routes via OpenAPI at `/docs`, you will need to authenticate yourself by adding your signed-in HTTP Bearer Token.
+
+To find your token, which our application persists in `localStorage`:
+
+1. Login to your development application via the front-end
+2. Open Developer Tools
+3. Go to Application > Storage > Local Storage > localhost:1560
+4. Copy the *full* value associated with the `bearerToken` key.
+
+In the OpenAPI user interface found at `/docs`, look for the Green Authorize button and paste in your bearer token.
 
 ### Protecting Backend Service Methods
 
