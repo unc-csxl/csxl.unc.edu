@@ -89,8 +89,25 @@ In the OpenAPI user interface found at `/docs`, look for the Green Authorize but
 
 Backend service methods are _the most important place_ to correctly verify authorization. Failing to properly verify authorization here means users will be able to take actions they should not have permission to.
 
-As an example, consider _updating a user's profile details_. The "feature" is a user's profile. The feature-specific rule is _a user can update their own profile_. This test is implemented in [backend/services/user.py](backend/services/user.py)
+As an example, consider _updating a user's profile details_. The "feature" is a user's profile. The feature-specific rule is _a user can update their own profile_. This verification is implemented in [backend/services/user.py](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/backend/services/user.py#L145). Notice the negation of the rule is specified in the `if` such that if the rule is `True` (the user is the subject), execution carries on into the method. However, if the feature-specific rule does not hold, we then call the [`PermissionService`](backend/services/permission.py)'s `enforce` method, giving it the `subject` user, action string (`user.update`), and resource (`user/{id}`). This method handles the logic for checking whether `subject` has administrative access to carry out this action on the resource. If the `subject` does, this procedure returns nothing. If they do not, it raises a `UserPermissionError` for you. This demonstrates an idiomatic way of verifying the `subject` is authorized.
+
+If your feature-specific rules are more involved than a simple equality check, you should refactor these rules out into a method of its own with a well chosen name. This will help keep your service's methods easier to read and reason through. Additionally, it makes it easier to write unit tests specifically targetting your feature-specific rule logic.
 
 ### Frontend Features Requiring a Registered User
 
+To test whether a user is signed in on the frontend Angular application, your Component can
+use dependency injection to gain access to the [`ProfileService`](https://github.com/unc-csxl/csxl.unc.edu/blob/main/frontend/src/app/profile/profile.service.ts). The `ProfileService` provides a public member `profile$`, of type `Observable<Profile | undefined>` which your components can subscribe to from their templates. 
+
+As an example of this, consider [`NavigationComponent`](frontend/src/app/navigation):
+
+1. [The `NavigationComponent` projects `profile$` as a public property of its own. This property is initialized in the constructor.](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/frontend/src/app/navigation/navigation.component.ts#L39)
+2. [The `NavigationComponent`'s template subscribes to `profile$` with an async pipe and uses `ngIf` to show "Sign In" versus the navigation items shown to a user who is signed in.](https://github.com/unc-csxl/csxl.unc.edu/blob/main/frontend/src/app/navigation/navigation.component.html#L11)
+
 ### Frontend Features Requiring Authorization
+
+For feature-specific rule authorization, the alpha version of the CSXL web app that COMP590 Spring 2023 is starting from does not yet have an idiomatic example in the frontend. As a feature developer, you will need to come up with a solution of how your frontend UI will handle feature-specific authorization concerns.
+
+For administrative permission rule authorization, the [PermissionService](frontend/src/app/permission.service.ts) provides helper methods for verifying administrative permissions. For an idiomatic example use case for administrative permission checking, see [`NavigationComponent`](frontend/src/app/navigation)'s `adminPermission$` `Observable<boolean>`:
+
+1. [The permission is initialized in the constructor via `PermissionService`'s `check` method.](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/frontend/src/app/navigation/navigation.component.ts#L41)
+2. [The permission is checked in the HTML template using an async pipe.](https://github.com/unc-csxl/csxl.unc.edu/blob/main/frontend/src/app/navigation/navigation.component.html#L13)
