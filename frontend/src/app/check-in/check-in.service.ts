@@ -1,7 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Profile, ProfileService } from '../profile/profile.service';
+import { Observable, of } from 'rxjs';
+import { Profile } from '../profile/profile.service';
+
+export interface CheckIn {
+  profile: Profile;
+  time: Date;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +18,18 @@ export class CheckInService {
     private http: HttpClient
   ) { }
 
+  private connect_to_backend : boolean = false;
+
   new_check_in(profile: Profile) : Observable<Profile> {
-    return this.http.post<Profile>("/api/check-in", profile)
+
+    if (this.connect_to_backend) {
+      return this.http.post<Profile>("/api/check-in", profile)
+    }
+    else {
+      return of(profile)
+    }
+
+
   }
 
 }
