@@ -1,1 +1,10 @@
-<p>check-in works!</p>
+<mat-card>
+    <div class="content" *ngIf="(isAuthenticated | async)"> 
+        <mat-card-actions >
+            <button mat-raised-button type="submit" (click)="onClick()">CHECK IN</button>
+        </mat-card-actions>
+    </div>
+    <div class="content" *ngIf="!(isAuthenticated | async)">
+        <p>You must sign-in before checking-in!</p>
+    </div>
+</mat-card>
