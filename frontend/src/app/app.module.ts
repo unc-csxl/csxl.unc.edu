@@ -33,6 +33,7 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
+import { CheckInComponent } from './check-in/check-in.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
     ErrorDialogComponent,
     HomeComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
+    CheckInComponent
   ],
   imports: [
     BrowserModule,
