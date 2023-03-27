@@ -25,12 +25,12 @@ export class CheckInComponent {
     this.isAuthenticated = authService.isAuthenticated$;
   }
 
-  public onClick() : void {
+  public userClicked() : void {
     this.profileService.profile$.subscribe({
-      next: (profile) => {
-        if (profile !== undefined) {
-          this.checkInService.new_check_in(profile).subscribe({
-            next: (profile) => this.onSuccess(profile),
+      next: (data) => {
+        if (data !== undefined) {
+          this.checkInService.new_check_in(data).subscribe({
+            next: (result) => this.onSuccess(result),
             error: (err) => this.onError(err)
           })
         }

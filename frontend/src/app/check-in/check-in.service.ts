@@ -8,14 +8,13 @@ export interface CheckIn {
   time: Date;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class CheckInService {
 
   constructor(
-    private http: HttpClient
+    private htpClient: HttpClient
   ) { }
 
   private connect_to_backend : boolean = false;
@@ -23,7 +22,7 @@ export class CheckInService {
   new_check_in(profile: Profile) : Observable<Profile> {
 
     if (this.connect_to_backend) {
-      return this.http.post<Profile>("/api/check-in", profile)
+      return this.htpClient.post<Profile>("/api/check-in", profile)
     }
     else {
       return of(profile)
