@@ -193,7 +193,7 @@ def _handle_auth_in_production(
         if origin == 'localhost':
             target = 'http://localhost:1560/auth'  # TODO: Make this port an env variable
         else:
-            target = f'https://{HOST}/auth'
+            target = f'https://{origin}/auth'
         return RedirectResponse(
             f'{target}?token={token}&continue_to={continue_to}',
             headers={'Cache-Control': 'no-cache'},
