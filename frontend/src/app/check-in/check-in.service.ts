@@ -17,16 +17,10 @@ export class CheckInService {
     private htpClient: HttpClient
   ) { }
 
-  private connect_to_backend : boolean = false;
-
   new_check_in(profile: Profile) : Observable<Profile> {
 
-    if (this.connect_to_backend) {
-      return this.htpClient.post<Profile>("/api/check-in", profile)
-    }
-    else {
-      return of(profile)
-    }
+
+    return this.htpClient.post<Profile>("/api/check-in", profile)
 
 
   }
