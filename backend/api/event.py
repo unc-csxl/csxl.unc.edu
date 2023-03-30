@@ -3,9 +3,9 @@ from backend.services.event import EventService
 from backend.models.event import Event
 from datetime import datetime
 
-api = APIRouter(prefix="/api/admin/events")
+api = APIRouter(prefix="/api/events")
 
-@api.get("/", tags=['Event'])
+@api.get("", tags=['Event'])
 def get_events(event_service: EventService = Depends()) -> list[Event]:
     """
     Get all events
@@ -38,7 +38,7 @@ def get_events_from_time_range(start: datetime, end: datetime, event_service: Ev
     # Return all events
     return event_service.get_from_time_range(start, end)
 
-@api.post("/", tags=['Event'])
+@api.post("", tags=['Event'])
 def new_event(event: Event, event_service: EventService = Depends()) -> Event:
     """
     Create event
@@ -72,7 +72,7 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("/", responses={404: {"model": None}}, tags=['Event'])
+@api.put("", responses={404: {"model": None}}, tags=['Event'])
 def update_event(organization: Event, event_service: EventService = Depends()) -> Event:
     """
     Update event

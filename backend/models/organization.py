@@ -19,7 +19,8 @@ class Organization(BaseModel):
     linked_in: str
     youtube: str
     heel_life: str
-    events: list['Event'] # Stores the list of events that the Organization has (generated from relationship with "event" table)
+    events: list['Event'] = [] # Stores the list of events that the Organization has (generated from relationship with "event" table)
+
 
 from backend.models.event import Event
 

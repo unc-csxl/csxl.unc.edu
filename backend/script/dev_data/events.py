@@ -1,6 +1,6 @@
 """Sample Event models to use in the development environment."""
 
-from ...models import Event
+from backend.entities.event_entity import EventEntity
 import datetime
 
 __authors__ = ["Kris Jordan"]
@@ -8,7 +8,7 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-event1 = Event(
+event1 = EventEntity(
     id=1, 
     name="HackNC", 
     time=datetime.datetime.fromtimestamp(1680110861), 
@@ -18,7 +18,7 @@ event1 = Event(
     org_id=12
     )
 
-event2 = Event(
+event2 = EventEntity(
     id=2, 
     name="CS+Social Good", 
     time=datetime.datetime.fromtimestamp(1880110861), 

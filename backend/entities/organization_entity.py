@@ -37,6 +37,7 @@ class OrganizationEntity(EntityBase):
         # Back-populates the `organization` field of `EventEntity`
     events: Mapped[list["EventEntity"]] = relationship(back_populates="organization")
 
+
     @classmethod
     def from_model(cls, model: Organization) -> Self:
         """
@@ -57,4 +58,8 @@ class OrganizationEntity(EntityBase):
         Returns:
             Organization: `Organization` object from the entity
         """
-        return Organization(id=self.id, name=self.name, logo=self.logo, short_description=self.short_description, long_description=self.long_description, website=self.website, email=self.email, instagram=self.instagram, linked_in=self.linked_in, youtube=self.youtube, heel_life=self.heel_life)
+        from backend.models.event import Event
+        from backend.entities.event_entity import EventEntity
+
+        return Organization(id=self.id, name=self.name, logo=self.logo, short_description=self.short_description, long_description=self.long_description, website=self.website, email=self.email, instagram=self.instagram, linked_in=self.linked_in, youtube=self.youtube, heel_life=self.heel_life, events=[])
+

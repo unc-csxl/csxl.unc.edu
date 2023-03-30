@@ -49,4 +49,8 @@ class EventEntity(EntityBase):
         Returns:
             Event: `Event` object from the entity
         """
-        return Event(id=self.id, name=self.name, time=self.time, location=self.location, description=self.description, public=self.public, org_id=self.org_id)
+        from backend.models.organization import Organization;
+
+        return Event(id=self.id, name=self.name, time=self.time, location=self.location, description=self.description, public=self.public, org_id=self.org_id, organization=self.organization.to_model())
+
+from backend.entities.organization_entity import OrganizationEntity;

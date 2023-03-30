@@ -4,7 +4,7 @@ from backend.models.organization import Organization
 
 api = APIRouter(prefix="/api/organizations")
 
-@api.get("/", response_model=list[Organization], tags=['Organization'])
+@api.get("", response_model=list[Organization], tags=['Organization'])
 def get_organizations(organization_service: OrganizationService = Depends()) -> list[Organization]:
     """
     Get all organizations
@@ -16,7 +16,7 @@ def get_organizations(organization_service: OrganizationService = Depends()) -> 
     # Return all organizations
     return organization_service.all()
 
-@api.post("/", response_model=Organization, tags=['Organization'])
+@api.post("", response_model=Organization, tags=['Organization'])
 def new_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Create organization
@@ -70,7 +70,7 @@ def get_organization_from_name(name: str, organization_service: OrganizationServ
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("/", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
+@api.put("", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
 def update_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Update organization
