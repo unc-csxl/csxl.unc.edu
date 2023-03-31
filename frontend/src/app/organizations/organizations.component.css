@@ -1,0 +1,148 @@
+.page-container {
+    padding: 1.5rem;
+}
+
+.search-bar {
+    width: 100%;
+    border-radius: 100%;
+}
+
+mat-card {
+    width: 325px;
+    height: 175px;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
+    margin: 0;
+    justify-content: space-between;
+}
+
+.mdc-card__media:first-child {
+    border-radius: 100%;
+}
+
+.organization-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1rem;
+    column-gap: 1rem;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    row-gap: 0.6rem;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.left-container {
+   display: flex;
+   align-items: center;
+   width: 100%;
+   justify-content: flex-start;
+}
+
+.logo {
+    height: auto;
+    height: auto;
+    max-width: 2.5rem;
+    max-height: 2.5rem;
+    border-radius: 2.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0;
+}
+
+.name {
+    font-size: 1.15rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    margin: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+            line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.members {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+}
+
+.member-icon {
+    margin-right: 0.5rem;
+}
+
+.member-count {
+    text-align: center;
+    margin: 0;
+}
+
+.description {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.description p {
+    margin: 0;
+    height: 40px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.links {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.link-icons {
+    width: 144px;
+    height: 48px;
+    overflow: hidden;
+    display: -webkit-box;
+}
+
+mat-card-actions {
+    padding: 0;
+}
+
+.mat-mdc-outlined-button {
+    z-index: 0 !important;
+}
+
+.cssg-image {
+    background-image: url('https://dl.airtable.com/.attachments/ab52dc10185afca21ba558c88f8fbedf/e83a53d6/9bb27e74-fd00-4c7a-92bf-feb32e1d0aebaad4b06d-ea9b-454b-aee3-de5943ae2613.pngpresetmed-sq');
+    background-size: cover;
+  }
+
+  .mat-icon, .mat-icon svg {
+    color: white;
+    fill: white;
+  }

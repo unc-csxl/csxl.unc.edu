@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppTitleStrategy } from './app-title.strategy';
 import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
+import { OrganizationsComponent } from './organizations/organizations.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 
 
@@ -11,6 +12,7 @@ const routes: Routes = [
   ProfileEditorComponent.Route,
   GateComponent.Route,
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
+  OrganizationsComponent.Route
 ];
 
 @NgModule({

@@ -1,0 +1,66 @@
+<div class="page-container">
+  <!-- Search Bar -->
+  <mat-form-field class="search-bar" appearance="outline" color="accent">
+    <mat-label>Search</mat-label>
+    <input matInput type="text" [(ngModel)]="searchBarQuery">
+    <button *ngIf="searchBarQuery; else noSearch" matSuffix mat-icon-button aria-label="Clear" (click)="searchBarQuery=''">
+      <mat-icon>close</mat-icon>
+    </button>
+    <ng-template #noSearch>
+      <mat-icon matSuffix>search</mat-icon>
+    </ng-template>
+  </mat-form-field>
+
+  <!-- Flex View -->
+  <div class="organization-cards">
+    <mat-card class="card" *ngFor="let organization of (organizations$ | filter: searchBarQuery) | async">
+      <div class="card-content">
+        <mat-card-header class="header">
+          <div class="left-container">
+            <img mat-card-image src={{organization.logo}} class="logo">
+            <mat-card-title class="name">{{organization.name}}</mat-card-title>
+          </div>
+          <div class="members">
+            <mat-icon class="member-icon" fontIcon="group"></mat-icon>
+            <p class="member-count">--</p>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="description">
+          <p>{{organization.short_description}}</p>
+        </mat-card-content>
+        <mat-card-actions class="links">
+          <div class="link-icons">
+            <a href={{organization.website}} target="_blank" *ngIf="organization.website != ''">
+              <button mat-icon-button color="basic">
+                <mat-icon fontIcon="link"></mat-icon>
+              </button>
+            </a>
+            <a href={{organization.email}} target="_blank" *ngIf="organization.email != ''">
+              <button mat-icon-button color="basic">
+                <mat-icon fontIcon="mail"></mat-icon>
+              </button>
+            </a>
+            <a href={{organization.instagram}} target="_blank" *ngIf="organization.instagram != ''">
+              <button mat-icon-button color="basic">
+                <mat-icon svgIcon="instagram"></mat-icon>
+              </button>
+            </a>
+            <a href={{organization.linked_in}} target="_blank" *ngIf="organization.linked_in != ''">
+              <button mat-icon-button color="basic">
+                <mat-icon svgIcon="linkedin"></mat-icon>
+              </button>
+            </a>
+            <a href={{organization.youtube}} target="_blank" *ngIf="organization.youtube != ''">
+              <button mat-icon-button color="basic">
+                <mat-icon svgIcon="youtube"></mat-icon>
+              </button>
+            </a>
+          </div>
+          <div>
+            <button mat-stroked-button>DETAILS</button>
+          </div>
+        </mat-card-actions>
+      </div>
+    </mat-card>
+  </div>
+</div>

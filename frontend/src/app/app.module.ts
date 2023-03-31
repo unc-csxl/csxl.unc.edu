@@ -24,6 +24,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import {MatGridListModule} from '@angular/material/grid-list';
+import { FormsModule } from '@angular/forms';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -33,6 +35,8 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
+import { OrganizationsComponent } from './organizations/organizations.component';
+import { FilterPipe } from './filter/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -41,7 +45,9 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
     ErrorDialogComponent,
     HomeComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
+    OrganizationsComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
@@ -64,6 +70,8 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
     MatSnackBarModule,
     MatTabsModule,
     MatToolbarModule,
+    MatGridListModule,
+    FormsModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

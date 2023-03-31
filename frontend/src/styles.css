@@ -8,3 +8,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     max-width: 640px;
     margin: 1em;
 }
+
+.mdc-notched-outline__notch {
+    border-left: 1px solid rgba(0,0,0,0);
+    border-right: none !important; 
+}
+
+.mdc-card__actions {
+    min-height: 0px !important;
+}
