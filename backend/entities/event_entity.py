@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from backend.models.event import Event
+from backend.models.event import Event, EventSummary
 
 from datetime import datetime
 
@@ -30,6 +30,10 @@ class EventEntity(EntityBase):
         # Back-populates the `events` field of `OrganizationEntity`
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 
+    # Bi-Directional Relationship Fields
+    users: Mapped[list["UserEntity"]] = relationship(secondary="registrations", back_populates="events")
+    user_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="event")
+
     @classmethod
     def from_model(cls, model: Event) -> Self:
         """
@@ -49,8 +53,34 @@ class EventEntity(EntityBase):
         Returns:
             Event: `Event` object from the entity
         """
-        from backend.models.organization import Organization;
+        return Event(id=self.id, 
+                     name=self.name, 
+                     time=self.time, 
+                     location=self.location, 
+                     description=self.description, 
+                     public=self.public, 
+                     org_id=self.org_id,
+                     organization=self.organization.to_summary(),
+                     users=[user.to_summary() for user in self.users],
+                     user_associations=[association.to_model() for association in self.user_associations])
 
-        return Event(id=self.id, name=self.name, time=self.time, location=self.location, description=self.description, public=self.public, org_id=self.org_id, organization=self.organization.to_model())
+    def to_summary(self) -> EventSummary:
+        """
+        Converts a `EventSummary` object into a `EventSummary`
+        
+        Returns:
+            Event: `EventSummary` object from the entity
+        """
+        return EventSummary(id=self.id, 
+                     name=self.name, 
+                     time=self.time, 
+                     location=self.location, 
+                     description=self.description, 
+                     public=self.public, 
+                     org_id=self.org_id,
+                     organization=self.organization.to_summary())
 
 from backend.entities.organization_entity import OrganizationEntity;
+from backend.entities.user_entity import UserEntity;
+from backend.entities.registration_entity import RegistrationEntity;
+

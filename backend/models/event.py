@@ -9,14 +9,41 @@ class Event(BaseModel):
     of the `Event` database in the PostgreSQL database
     """
     
-    id: int
+    id: int | None=None
     name: str
     time: datetime
     location: str
     description: str
     public: bool
     org_id: int
-    organization: 'Organization' # Stores the organization hosting the event (generated from relationship with "organization" table)
+    organization: 'OrganizationSummary' # Stores the organization hosting the event (generated from relationship with "organization" table)
 
-from backend.models.organization import Organization
+    users: list['UserSummary'] = []
+    user_associations: list['Registration'] = []
+
+class EventSummary(BaseModel):
+    """
+    Model to represent an `Event` object in a relationship
+
+    This model is based on the `Event` model, which defines the shape
+    of the `Event` database in the PostgreSQL database
+
+    This model exists to prevent infinite recursion with bidirectional
+    relationship mapping.
+    """
+
+    id: int | None=None
+    name: str
+    time: datetime
+    location: str
+    description: str
+    public: bool
+    org_id: int
+    organization: 'OrganizationSummary' # Stores the organization hosting the event (generated from relationship with "organization" table)
+
+from backend.models.organization import OrganizationSummary
+from backend.models.registration import Registration;
+from backend.models.user import UserSummary;
+
 Event.update_forward_refs()
+EventSummary.update_forward_refs()

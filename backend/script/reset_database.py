@@ -64,22 +64,6 @@ with Session(engine) as session:
     session.execute(text(f'ALTER SEQUENCE permission_id_seq RESTART WITH {len(permissions.pairs) + 1}'))
     session.commit()
 
-# Add Organization Roles
-with Session(engine) as session:
-    from .dev_data import org_roles
-    to_entity = entities.OrgRoleEntity.from_model
-    session.add_all([to_entity(model) for model in org_roles.models])
-    session.execute(text(f'ALTER SEQUENCE {entities.OrgRoleEntity.__table__}_id_seq RESTART WITH {len(org_roles.models) + 1}'))
-    session.commit()
-
-# Add Registrations
-with Session(engine) as session:
-    from .dev_data import registrations
-    to_entity = entities.RegistrationEntity.from_model
-    session.add_all([to_entity(model) for model in registrations.models])
-    session.execute(text(f'ALTER SEQUENCE {entities.RegistrationEntity.__table__}_id_seq RESTART WITH {len(registrations.models) + 1}'))
-    session.commit()
-
 # Add Organizations
 with Session(engine) as session:
     from ..entities import OrganizationEntity
@@ -96,4 +80,20 @@ with Session(engine) as session:
     for event in events.models:
         entity = EventEntity.from_model(event)
         session.add(entity)
+    session.commit()
+
+# Add Registrations
+with Session(engine) as session:
+    from .dev_data import registrations
+    to_entity = entities.RegistrationEntity.from_model
+    session.add_all([to_entity(model) for model in registrations.models])
+    session.execute(text(f'ALTER SEQUENCE {entities.RegistrationEntity.__table__}_id_seq RESTART WITH {len(registrations.models) + 1}'))
+    session.commit()
+
+# Add Organization Roles
+with Session(engine) as session:
+    from .dev_data import org_roles
+    to_entity = entities.OrgRoleEntity.from_model
+    session.add_all([to_entity(model) for model in org_roles.models])
+    session.execute(text(f'ALTER SEQUENCE {entities.OrgRoleEntity.__table__}_id_seq RESTART WITH {len(org_roles.models) + 1}'))
     session.commit()

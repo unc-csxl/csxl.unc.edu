@@ -1,7 +1,7 @@
 """Definition of SQLAlchemy table-backed object mapping entity for RegistrationEntity."""
 
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey, Integer
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
 from backend.models.registration import Registration
@@ -14,11 +14,15 @@ class RegistrationEntity(EntityBase):
   # Unique ID for a registration
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
   # User ID associated with registration
-  user_id: Mapped[int] = mapped_column(Integer)
+  user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
   # Event ID associated with registration
-  event_id: Mapped[int] = mapped_column(Integer)
+  event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), primary_key=True)
   # Status of Registration (0 = Registered, 1 = Registered + Attended)
   status: Mapped[int] = mapped_column(Integer)
+
+  # Bi-Directional Relationship Fields
+  event: Mapped['EventEntity'] = relationship(back_populates="user_associations")
+  user: Mapped['UserEntity'] = relationship(back_populates="event_associations")
 
   @classmethod
   def from_model(cls, model: Registration) -> Self:
@@ -41,4 +45,7 @@ class RegistrationEntity(EntityBase):
         Registration: a valid `Registration` model from the entity
         
     """
-    return Registration(id=self.id, user_id=self.user_id, event_id=self.event_id, status=self.status)
+    return Registration(id=self.id, user_id=self.user_id, event_id=self.event_id, status=self.status, event=self.event.to_summary(), user=self.user.to_summary())
+  
+from backend.entities.event_entity import EventEntity
+from backend.entities.user_entity import UserEntity

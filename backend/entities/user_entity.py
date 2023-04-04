@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
 from .user_role_entity import user_role_table
-from ..models import User
+from backend.models.user import User, UserSummary
 
 
 __authors__ = ['Kris Jordan']
@@ -33,6 +33,13 @@ class UserEntity(EntityBase):
     roles: Mapped[list['RoleEntity']] = relationship(secondary=user_role_table, back_populates='users')
     permissions: Mapped['PermissionEntity'] = relationship(back_populates='user')
 
+    # Bi-Directional Relationship Fields
+    events: Mapped[list["EventEntity"]] = relationship(secondary="registrations", back_populates="users")
+    event_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="user")
+
+    organizations: Mapped[list["OrganizationEntity"]] = relationship(secondary="org_role", back_populates="users")
+    organization_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="user")
+
     @classmethod
     def from_model(cls, model: User) -> Self:
         return cls(
@@ -54,6 +61,10 @@ class UserEntity(EntityBase):
             first_name=self.first_name,
             last_name=self.last_name,
             pronouns=self.pronouns,
+            events=[event.to_summary() for event in self.events],
+            event_associations=[association.to_model() for association in self.event_associations],
+            organizations=[organization.to_summary() for organization in self.organizations],
+            organization_associations=[association.to_model() for association in self.organization_associations]
         )
 
     def update(self, model: User) -> None:
@@ -61,3 +72,25 @@ class UserEntity(EntityBase):
         self.first_name = model.first_name
         self.last_name = model.last_name
         self.pronouns = model.pronouns
+
+    def to_summary(self) -> UserSummary:
+        """
+        Converts a `UserSummary` object into a `UserSummary`
+        
+        Returns:
+            User: `UserSummary` object from the entity
+        """
+        return UserSummary(
+            id=self.id,
+            pid=self.pid,
+            onyen=self.onyen,
+            email=self.email,
+            first_name=self.first_name,
+            last_name=self.last_name,
+            pronouns=self.pronouns
+        )
+    
+from backend.entities.event_entity import EventEntity
+from backend.entities.registration_entity import RegistrationEntity
+from backend.entities.organization_entity import OrganizationEntity
+from backend.entities.org_role_entity import OrgRoleEntity

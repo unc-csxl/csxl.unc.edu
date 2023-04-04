@@ -8,8 +8,15 @@ class OrgRole(BaseModel):
     of the `Role` database in the PostgreSQL database
     """
     
-    id: int | None
+    id: int | None=None
     user_id: int
     org_id: int
     membership_type: int
+    event: 'EventSummary' = None
+    user: 'UserSummary' = None
+
+
+from backend.models.event import EventSummary;
+from backend.models.user import UserSummary;
+OrgRole.update_forward_refs()
 

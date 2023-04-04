@@ -17,7 +17,20 @@ class User(BaseModel):
     email: str = ""
     pronouns: str = ""
     permissions: list['Permission'] = []
+    events: list['EventSummary'] = []
+    event_associations: list['Registration'] = []
+    organizations: list['OrganizationSummary'] = []
+    organization_associations: list['OrgRole'] = []
 
+class UserSummary(BaseModel):
+    id: int | None = None
+    pid: int
+    onyen: str = ""
+    first_name: str = ""
+    last_name: str = ""
+    email: str = ""
+    pronouns: str = ""
+    permissions: list['Permission'] = []
 
 class NewUser(BaseModel):
     pid: int
@@ -38,5 +51,11 @@ class ProfileForm(BaseModel):
 
 # Python... :sob:... necessary due to circularity (TODO: refactor to remove circularity)
 from .permission import Permission
+from backend.models.event import EventSummary;
+from backend.models.registration import Registration;
+from backend.models.org_role import OrgRole;
+from backend.models.organization import OrganizationSummary;
+
 User.update_forward_refs()
 NewUser.update_forward_refs()
+UserSummary.update_forward_refs()

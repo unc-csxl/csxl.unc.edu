@@ -13,3 +13,12 @@ class Registration(BaseModel):
   user_id: int
   event_id: int
   status: int
+  event: 'EventSummary'
+  user: 'UserSummary'
+
+
+from backend.models.event import EventSummary;
+from backend.models.user import UserSummary;
+Registration.update_forward_refs()
+
+

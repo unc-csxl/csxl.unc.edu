@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
 from backend.models import Role
-from backend.models.organization import Organization
+from backend.models.organization import Organization, OrganizationSummary
 
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
@@ -35,7 +35,10 @@ class OrganizationEntity(EntityBase):
     # All of the events hosted by the organization
         # Generated from a relationship with the "events" table
         # Back-populates the `organization` field of `EventEntity`
-    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization")
+    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization", cascade="all, delete")
+
+    users: Mapped[list["UserEntity"]] = relationship(secondary="org_role", back_populates="organizations")
+    user_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="organization")
 
 
     @classmethod
@@ -61,5 +64,40 @@ class OrganizationEntity(EntityBase):
         from backend.models.event import Event
         from backend.entities.event_entity import EventEntity
 
-        return Organization(id=self.id, name=self.name, logo=self.logo, short_description=self.short_description, long_description=self.long_description, website=self.website, email=self.email, instagram=self.instagram, linked_in=self.linked_in, youtube=self.youtube, heel_life=self.heel_life, events=[])
+        return Organization(id=self.id, 
+                            name=self.name, 
+                            logo=self.logo, 
+                            short_description=self.short_description, 
+                            long_description=self.long_description, 
+                            website=self.website, 
+                            email=self.email, 
+                            instagram=self.instagram, 
+                            linked_in=self.linked_in, 
+                            youtube=self.youtube, 
+                            heel_life=self.heel_life, 
+                            events=[event.to_model() for event in self.events],
+                            users=[user.to_summary() for user in self.users],
+                            user_associations=[association.to_model() for association in self.user_associations])
+    
+    def to_summary(self) -> OrganizationSummary:
+        """
+        Converts a `OrganizationEntity` object into a `OrganizationSummary`
+        
+        Returns:
+            Organization: `OrganizationSummary` object from the entity
+        """
 
+        return OrganizationSummary(id=self.id, 
+                            name=self.name, 
+                            logo=self.logo, 
+                            short_description=self.short_description, 
+                            long_description=self.long_description, 
+                            website=self.website, 
+                            email=self.email, 
+                            instagram=self.instagram, 
+                            linked_in=self.linked_in, 
+                            youtube=self.youtube, 
+                            heel_life=self.heel_life)
+
+from backend.entities.user_entity import UserEntity
+from backend.entities.org_role_entity import OrgRoleEntity
