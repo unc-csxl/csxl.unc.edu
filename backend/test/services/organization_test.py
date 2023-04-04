@@ -19,6 +19,19 @@ root = Organization(
     youtube="youtube", 
     heel_life="heellife")
 
+root2 = Organization(
+    id=2, 
+    name="test", 
+    logo="logo", 
+    short_description="description", 
+    long_description="description", 
+    website="website", 
+    email="email", 
+    instagram="instagram", 
+    linked_in="linkedin", 
+    youtube="youtube", 
+    heel_life="heellife")
+
 updated = Organization(
     id=1, 
     name="new org", 
@@ -38,6 +51,13 @@ def organization(test_session: Session):
 
 def test_no_organizations(organization: OrganizationService):
     assert len(organization.all()) is 0
+
+def test_get_all_organizations(organization: OrganizationService):
+    organization.create(root)
+    assert len(organization.all()) is 1
+    organization.create(root2)
+    assert len(organization.all()) is 2
+    assert organization.all()[1].id is 2
 
 def test_create_organization_and_get_by_id(organization: OrganizationService):
     org = organization.create(root)
