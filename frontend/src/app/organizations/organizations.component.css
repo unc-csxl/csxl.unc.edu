@@ -1,3 +1,12 @@
+/** 
+* organizations.component.css 
+* 
+* Organization cards should be displayed in a simple way that displays the
+* basic information of the organization. It should be searchable with an
+* easy to use search bar. Some mat ui preset styles are overridden.
+*
+*/
+
 .page-container {
     padding: 1.5rem;
 }
@@ -74,7 +83,7 @@ mat-card {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 1; /* number of lines to show */
+    -webkit-line-clamp: 1;
             line-clamp: 1;
     -webkit-box-orient: vertical;
 }
@@ -110,7 +119,7 @@ mat-card {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-line-clamp: 2;
             line-clamp: 2;
     -webkit-box-orient: vertical;
 }
@@ -133,16 +142,12 @@ mat-card-actions {
     padding: 0;
 }
 
+/* Override Mat UI's preset z-index for button */
 .mat-mdc-outlined-button {
     z-index: 0 !important;
 }
 
-.cssg-image {
-    background-image: url('https://dl.airtable.com/.attachments/ab52dc10185afca21ba558c88f8fbedf/e83a53d6/9bb27e74-fd00-4c7a-92bf-feb32e1d0aebaad4b06d-ea9b-454b-aee3-de5943ae2613.pngpresetmed-sq');
-    background-size: cover;
-  }
-
-  .mat-icon, .mat-icon svg {
-    color: white;
-    fill: white;
-  }
+.mat-icon, .mat-icon svg {
+color: white;
+fill: white;
+}
