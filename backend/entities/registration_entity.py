@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from backend.models.registration import Registration
+from backend.models.registration import Registration, RegistrationSummary
 
 class RegistrationEntity(EntityBase):
   """Serves as the database model schema defining the shape of the `Registrations` table."""
@@ -45,7 +45,28 @@ class RegistrationEntity(EntityBase):
         Registration: a valid `Registration` model from the entity
         
     """
-    return Registration(id=self.id, user_id=self.user_id, event_id=self.event_id, status=self.status, event=self.event.to_summary(), user=self.user.to_summary())
+    return Registration(
+      id=self.id, 
+      user_id=self.user_id, 
+      event_id=self.event_id, 
+      status=self.status, 
+      event=self.event.to_summary(), 
+      user=self.user.to_summary()
+    )
+
+  def to_summary(self) -> RegistrationSummary:
+    """
+    Converts a `OrgRoleEntity` object into a `OrgRoleSummary`
+    
+    Returns:
+        OrgRoleSummary: `OrgRoleSummary` object from the entity
+    """
+    return RegistrationSummary(
+      id=self.id, 
+      user_id=self.user_id, 
+      event_id=self.event_id, 
+      status=self.status
+    )
   
 from backend.entities.event_entity import EventEntity
 from backend.entities.user_entity import UserEntity

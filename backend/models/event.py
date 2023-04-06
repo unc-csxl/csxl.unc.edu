@@ -39,7 +39,6 @@ class EventSummary(BaseModel):
     description: str
     public: bool
     org_id: int
-    organization: 'OrganizationSummary' # Stores the organization hosting the event (generated from relationship with "organization" table)
 
 from backend.models.organization import OrganizationSummary
 from backend.models.registration import Registration;

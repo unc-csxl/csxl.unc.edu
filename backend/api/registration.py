@@ -1,7 +1,7 @@
 """Registration routes are used to update the Registrations table"""
 
 from fastapi import APIRouter, Depends, HTTPException
-from backend.models.registration import Registration
+from backend.models.registration import Registration, RegistrationSummary
 from backend.services.registration import RegistrationService
 
 api = APIRouter(prefix="/api/registrations")
@@ -20,7 +20,7 @@ def get_registrations(registrations_service: RegistrationService = Depends()) ->
   return registrations_service.all()
 
 @api.post("", response_model=Registration, tags=['Registration'])
-def create_registration(registration: Registration, registrations_service: RegistrationService = Depends()) -> Registration:
+def create_registration(registration: RegistrationSummary, registrations_service: RegistrationService = Depends()) -> Registration:
   """
   Create a registration by a user for an event.
 

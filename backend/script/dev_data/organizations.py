@@ -1,7 +1,6 @@
 from backend.entities.organization_entity import OrganizationEntity
 
 acm = OrganizationEntity(
-    id=1, 
     name="ACM at Carolina", 
     logo="https://dl.airtable.com/.attachments/c72384ed058dd7cf56c6cb297570262f/11bd17cb/b8ab1d8e-ee34-449f-ae5f-e843896455c704688f5b-d1b0-411e-9f69-14c063114d55.jpgpresetmed-sq", 
     short_description="Largest community and professional society for Tar Heels who study computing.", 
@@ -14,7 +13,6 @@ acm = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/acm-at-carolina")
 
 appteam = OrganizationEntity(
-    id=2, 
     name="App Team Carolina", 
     logo="https://dl.airtable.com/.attachments/58aaab436127601b5544bf8f559bfcd1/034538d4/7152b831-64e9-42d3-8915-fbff8c43cb77fe0a6fad-7559-42d3-ade4-bb7a0c0fc077.pngpresetmed-sq", 
     short_description="UNC Chapel Hillâ€™s iOS development team.", 
@@ -27,7 +25,6 @@ appteam = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/appteamcarolina")
 
 bit = OrganizationEntity(
-    id=3, 
     name="Black in Technology", 
     logo="https://dl.airtable.com/.attachments/f437d085e3db041edc891679130f3b37/40d43f6b/01330403-6ba0-4da0-b227-90c588fd50441286457e-8bd4-4521-a6aa-56f63b99965f.pngpresetmed-sq", 
     short_description="Increasing Black and other ethnic participation in the fields of technology and Computer Science.", 
@@ -40,7 +37,6 @@ bit = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/bit")
 
 cdc = OrganizationEntity(
-    id=4, 
     name="Carolina Analytics & Data Science Club", 
     logo="https://dl.airtable.com/.attachments/644c2dafa455c7a53d869fd797990d20/4ba7a500/4d7605e7-721d-4781-823d-2cff07387a37ea2ca23d-76fb-4fdf-b933-21720d7ea135.pngpresetmed-sq", 
     short_description="Provides students interested in Data Science opportunities to grow.", 
@@ -53,7 +49,6 @@ cdc = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/carolinadatascience")
 
 arvr = OrganizationEntity(
-    id=5, 
     name="Carolina Augmented and Virtual Reality", 
     logo="https://dl.airtable.com/.attachments/3d4776ced1a7b739de1cccd6a0d85f37/a9f18db5/08e57a5b-a08a-4e0b-b6b5-3c7d2115e3685a39d954-7ec5-4a99-a4ea-691ed5f8e12b.jpegpresetmed-sq", 
     short_description="Students explore XR technologies and connect to clients to create real-world applications.", 
@@ -66,7 +61,6 @@ arvr = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/carvr")
 
 cssg = OrganizationEntity(
-    id=6, 
     name="CS+Social Good", 
     logo="https://dl.airtable.com/.attachments/ab52dc10185afca21ba558c88f8fbedf/e83a53d6/9bb27e74-fd00-4c7a-92bf-feb32e1d0aebaad4b06d-ea9b-454b-aee3-de5943ae2613.pngpresetmed-sq", 
     short_description="We build apps for nonprofits and organizations for social good.", 
@@ -79,7 +73,6 @@ cssg = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/cssg")
 
 ctf = OrganizationEntity(
-    id=7, 
     name="Cybersecurity CTF Club", 
     logo="https://dl.airtable.com/.attachments/07245aca05f79eaa1242877465fda7c8/eaae296b/b7015dec-588a-478f-9813-b0d6ef694eaa48fdeded-7fd8-4170-b5b6-aa17b0dd7fd2.pngpresetmed-sq", 
     short_description="Hands-on computer security club, developing practical technical abilities through workshops and competitions.", 
@@ -92,7 +85,6 @@ ctf = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/ntropy-unc")
 
 enablingtech = OrganizationEntity(
-    id=8, 
     name="Enabling Technology", 
     logo="https://dl.airtable.com/.attachments/1900c5df3bc476ae38a0df19d702bc8f/b906b411/logoET.png", 
     short_description="We create and design computer programs for children and teenagers with disabilities.", 
@@ -105,7 +97,6 @@ enablingtech = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/enablingtechnologyclub")
 
 esports = OrganizationEntity(
-    id=9, 
     name="ESports", 
     logo="https://dl.airtable.com/.attachments/512400c8d9a0bb184fe4e995d6abc072/03e35c4d/FullImage-Transparent-.png", 
     short_description="Our goal is to provide a positive and welcoming environment for everyone to pursue their interests in video-game culture. Whether that interest is in content creation, casting, game development, playing video games, getting into competitive esports, or simply watching video games, we are here to ensure that everyone has the space and resources to do so.", 
@@ -118,7 +109,6 @@ esports = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/esports")
 
 gamedev = OrganizationEntity(
-    id=10, 
     name="Game Development Club", 
     logo="https://dl.airtable.com/.attachments/d21154906f355c21e2b04a9e0cfe9467/9a977622/a220d6f5-299b-4675-b362-96492df65ed6851c3611-f126-4b23-adb6-ca067e027acc.pngpresetmed-sq", 
     short_description="A community for anyone interested in learning how to develop video games for all experience levels.", 
@@ -131,7 +121,6 @@ gamedev = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/uncgamedev")
 
 gwc = OrganizationEntity(
-    id=11, 
     name="Girls Who Code", 
     logo="https://dl.airtable.com/.attachments/8657dd60ff178e91bd95dd9af2fdfdf5/622e4c1a/GWC_SEO_Logo-300x158.png", 
     short_description="Debugging the gender gap by providing opportunities to expose middle and high school girls to computer science at an earlier age.", 
@@ -144,7 +133,6 @@ gwc = OrganizationEntity(
     heel_life="")
 
 hacknc = OrganizationEntity(
-    id=12, 
     name="HackNC", 
     logo="https://dl.airtable.com/.attachments/e39d53ea08ea6a76f321ad6d8b963cc5/be043d31/logo.png", 
     short_description="Organizes UNC's annual co-ed inclusive, beginner-friendly hackathon.", 
@@ -157,7 +145,6 @@ hacknc = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/hacknc")
 
 ktp = OrganizationEntity(
-    id=13, 
     name="Kappa Theta Pi", 
     logo="https://dl.airtable.com/.attachments/acfc9df642625fa663e893a841d17e74/c7243624/d6d661a3-7b5f-4655-8f23-6451b2efade3c87979d6-9dba-4518-8c03-ffdb527da70e.pngpresetmed-sq", 
     short_description="Technology-focused, co-ed professional fraternity.", 
@@ -170,7 +157,6 @@ ktp = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/uncktp")
 
 pearlhacks = OrganizationEntity(
-    id=14, 
     name="Pearl Hacks", 
     logo="https://dl.airtable.com/.attachments/8e835dee57eaa1518902b5c43a8808ce/18a9bd64/4f1a4ee2-315a-4001-98b8-bdaba68215a5dbf8cb84-0c1c-4e90-be8b-5c0273a9cac0.pngpresetmed-sq", 
     short_description="Hackathon for women and nonbinary students catering to first-time hackers looking for a supportive environment to explore technology.", 
@@ -183,7 +169,6 @@ pearlhacks = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/pearlhacks")
 
 pm = OrganizationEntity(
-    id=15, 
     name="Product Management Club", 
     logo="https://dl.airtable.com/.attachments/499ee8a406f3f5d1566125d44d0e1422/2fe76d11/logoo-150x150.png", 
     short_description="We partner with local tech startups and develop features for their products.", 
@@ -196,7 +181,6 @@ pm = OrganizationEntity(
     heel_life="")
 
 queerhack = OrganizationEntity(
-    id=16, 
     name="queer_hack", 
     logo="https://dl.airtable.com/.attachments/c3b4781c7154f4cf322fed9eed290cf9/d35d4cc8/e3f41924-2dc6-470c-ba65-f668b293acd49d54aad8-87c3-466f-af61-8710ecedf25d.pngpresetmed-sq", 
     short_description="A community for LGBTQ+ students in tech.", 
@@ -209,7 +193,6 @@ queerhack = OrganizationEntity(
     heel_life="https://heellife.unc.edu/organization/queer_hack")
 
 wics = OrganizationEntity(
-    id=17, 
     name="Women in Computer Science", 
     logo="https://dl.airtable.com/.attachments/8ea125095908a9e78c7d3174897ac175/e2837aef/Screen-Shot-2022-02-28-at-1.51.24-PM-300x184.png", 
     short_description="Social, professional, and academic organization to empower and enable women in computer science.", 

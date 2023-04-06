@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from ..database import db_session
-from backend.models.event import Event
+from backend.models.event import Event, EventSummary
 from ..entities import EventEntity
 from datetime import datetime
 
@@ -29,7 +29,7 @@ class EventService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, event: Event) -> Event:
+    def create(self, event: EventSummary) -> Event:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -41,7 +41,7 @@ class EventService:
         """
 
         # Checks if the role already exists in the table
-        if self._session.get(EventEntity, event.id):
+        if event.id:
             # Raise exception
             raise Exception(f"Duplicate event found with ID: {event.id}")
         else:

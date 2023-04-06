@@ -75,7 +75,7 @@ class UserEntity(EntityBase):
 
     def to_summary(self) -> UserSummary:
         """
-        Converts a `UserSummary` object into a `UserSummary`
+        Converts a `UserEntity` object into a `UserSummary`
         
         Returns:
             User: `UserSummary` object from the entity

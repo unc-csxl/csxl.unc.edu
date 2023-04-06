@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, APIRouter
-from backend.models.org_role import OrgRole
+from backend.models.org_role import OrgRole, OrgRoleSummary
 from backend.services.org_role import OrgRoleService
 
 api = APIRouter(prefix="/api/orgroles")
@@ -17,7 +17,7 @@ def get_roles(role_service: OrgRoleService = Depends()) -> list[OrgRole]:
     return role_service.all()
 
 @api.post("", tags=['Org Role'])
-def new_role(role: OrgRole, role_service: OrgRoleService = Depends()) -> OrgRole:
+def new_role(role: OrgRoleSummary, role_service: OrgRoleService = Depends()) -> OrgRole:
     """
     Create or update role
 

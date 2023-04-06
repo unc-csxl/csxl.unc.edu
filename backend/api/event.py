@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from backend.services.event import EventService
-from backend.models.event import Event
+from backend.models.event import Event, EventSummary
 from datetime import datetime
 
 api = APIRouter(prefix="/api/events")
@@ -39,7 +39,7 @@ def get_events_from_time_range(start: datetime, end: datetime, event_service: Ev
     return event_service.get_from_time_range(start, end)
 
 @api.post("", tags=['Event'])
-def new_event(event: Event, event_service: EventService = Depends()) -> Event:
+def new_event(event: EventSummary, event_service: EventService = Depends()) -> Event:
     """
     Create event
     Returns:

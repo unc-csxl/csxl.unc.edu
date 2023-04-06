@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from backend.entities.org_role_entity import OrgRoleEntity
-from backend.models.org_role import OrgRole
+from backend.models.org_role import OrgRole, OrgRoleSummary
 from ..database import db_session
 
 class OrgRoleService:
@@ -29,7 +29,7 @@ class OrgRoleService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, role: OrgRole) -> OrgRole:
+    def create(self, role: OrgRoleSummary) -> OrgRole:
         """
         Creates a role based on the input object and adds it to the table.
         If the role's PID is unique to the table, a new entry is added.
@@ -42,7 +42,7 @@ class OrgRoleService:
         """
 
         # Checks if the role already exists in the table
-        if self._session.get(OrgRoleEntity, role.id):
+        if role.id:
 
             # If so, update existing entry
             role_entity = OrgRoleEntity.from_model(role)
@@ -55,22 +55,18 @@ class OrgRoleService:
                     org_id = role_entity.org_id,
                     membership_type = role_entity.membership_type
             ))
-
-            # Commit changes
-            self._session.commit()
-
-            # Return updated object
-            return role_entity.to_model()
         else:
             # Otherwise, create new object
             role_entity = OrgRoleEntity.from_model(role)
 
-            # Add new object to table and commit changes
+            # Add new object to table
             self._session.add(role_entity)
-            self._session.commit()
 
-            # Return added object
-            return role_entity.to_model()
+        # Commit changes
+        self._session.commit()
+
+        # Return updated/added object
+        return role_entity.to_model()
 
     def get_from_userid(self, user_id: int) -> list[OrgRole]:
         """

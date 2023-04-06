@@ -8,14 +8,12 @@ __license__ = "MIT"
 
 
 role1 = OrgRoleEntity(
-    #id=1, 
     user_id=1, 
     org_id=1, 
     membership_type = 1
     )
 
 role2 = OrgRoleEntity(
-    #id=2, 
     user_id=2, 
     org_id=1, 
     membership_type = 0

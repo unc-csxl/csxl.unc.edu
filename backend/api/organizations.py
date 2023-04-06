@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from backend.services.organization import OrganizationService
-from backend.models.organization import Organization
+from backend.models.organization import Organization, OrganizationSummary
 
 api = APIRouter(prefix="/api/organizations")
 
@@ -17,7 +17,7 @@ def get_organizations(organization_service: OrganizationService = Depends()) -> 
     return organization_service.all()
 
 @api.post("", response_model=Organization, tags=['Organization'])
-def new_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> Organization:
+def new_organization(organization: OrganizationSummary, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Create organization
 

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from backend.entities.entity_base import EntityBase
 
-from backend.models.org_role import OrgRole
+from backend.models.org_role import OrgRole, OrgRoleSummary
 
 class OrgRoleEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Role` table"""
@@ -41,12 +41,33 @@ class OrgRoleEntity(EntityBase):
 
     def to_model(self) -> OrgRole:
         """
-        Converts a `OrgRoleEntity` object into a `Role`
+        Converts a `OrgRoleEntity` object into a `OrgRole`
         
         Returns:
             OrgRole: `OrgRole` object from the entity
         """
-        return OrgRole(id=self.id, user_id=self.user_id, org_id=self.org_id, membership_type=self.membership_type)
+        return OrgRole(
+            id=self.id, 
+            user_id=self.user_id, 
+            org_id=self.org_id, 
+            membership_type=self.membership_type,
+            organization=self.organization.to_summary(),
+            user=self.user.to_summary()
+        )
+
+    def to_summary(self) -> OrgRoleSummary:
+        """
+        Converts a `OrgRoleEntity` object into a `OrgRoleSummary`
+        
+        Returns:
+            OrgRoleSummary: `OrgRoleSummary` object from the entity
+        """
+        return OrgRoleSummary(
+            id=self.id, 
+            user_id=self.user_id, 
+            org_id=self.org_id, 
+            membership_type=self.membership_type,
+        )
 
 from backend.entities.user_entity import UserEntity
 from backend.entities.organization_entity import OrganizationEntity
