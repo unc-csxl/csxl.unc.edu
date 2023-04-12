@@ -1,0 +1,119 @@
+ <!-- HTML Structure of Profile Page -->
+ 
+ <div class="profile-grid">
+  <!-- Profile Information Card -->
+  <div class="profile-card-container">
+    <mat-card class="profile-card">
+      <!-- Profile Card Header (Avatar, Name, Edit) -->
+      <mat-card-header class="profile-header">
+        <div class="left-header-info">
+          <p *ngIf="profile.first_name && profile.last_name" class="user-avatar">
+            {{profile.first_name.charAt(0)}}{{profile.last_name.charAt(0)}}
+          </p>
+          <mat-card-title class="user-name">{{profile.first_name}} {{profile.last_name}}</mat-card-title>
+        </div>
+        <div>
+          <!-- Button to Open Profile Editor Page -->
+          <a routerLink="/profile-editor">
+            <button mat-icon-button color="basic">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </a>
+        </div>
+      </mat-card-header>
+
+      <!-- Profile Personal Information -->
+      <mat-card-content class="user-info">
+        <p class="user-info-label">
+          Email
+        </p>
+        <p class="user-info-detail">{{profile.email}}</p>
+        <p class="user-info-label">
+          Pronouns
+        </p>
+        <p class="user-info-detail">{{profile.pronouns}}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Event Registrations Card -->
+  <div class="events-card-container">
+    <mat-card class="events-card">
+      <!-- Event Registratoins Card Header -->
+      <mat-card-header class="events-header">
+        <mat-card-title class="title">My Events</mat-card-title>
+      </mat-card-header>
+      <!-- Events Info -->
+      <mat-card-content class="events-info">
+        <mat-list class="events-list">
+          <div mat-subheader class="event-subheader">Upcoming Events</div>
+          <!-- Event List (Current/Upcoming) -->
+          <mat-expansion-panel class="event" *ngFor="let event of (events | eventFilter: 'current')">
+            <mat-expansion-panel-header class="expansion-box">
+              <mat-panel-title class="event-preview">
+                <p class="event-name">{{event.name}}</p>
+              </mat-panel-title>
+              <mat-panel-description class="event-time">
+                  <mat-icon class="calendar-icon">calendar_today</mat-icon>
+                  <div>{{event.time | date: 'MMM d, h:mm a'}}</div>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <!-- Panel Expands to Reveal Event Detail Below -->
+            <div class="event-detail" appearance="fill">
+              <div>
+                <div class="event-detail-time"><mat-icon class="event-detail-icon">calendar_today</mat-icon><p>{{event.time | date: 'MMMM d @ h:mm a'}}</p></div>
+                <div class="event-detail-info"><mat-icon class="event-detail-icon">location_on</mat-icon><p>{{event.location}}</p></div>
+                <div class="event-detail-info"><mat-icon class="event-detail-icon">info</mat-icon><p>{{event.description}}</p></div>
+              </div>
+              <!-- Cancel Event Registration -->
+              <div class="cancel-button">
+                <button mat-stroked-button (click)="cancelRegistration(event.id)">Cancel Registration</button>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <div mat-subheader class="event-subheader">Past Events</div>
+          <!-- Event List (Past) -->
+          <mat-expansion-panel class="event" *ngFor="let event of (events | eventFilter: 'past')">
+            <mat-expansion-panel-header class="expansion-box">
+              <mat-panel-title class="event-preview">
+                <p class="event-name">{{event.name}}</p>
+              </mat-panel-title>
+              <mat-panel-description class="event-time">
+                  <mat-icon class="calendar-icon">calendar_today</mat-icon>
+                  <div>{{event.time | date: 'MMM d, h:mm a'}}</div>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <!-- Panel Expands to Reveal Event Detail Below -->
+            <div class="event-detail" appearance="fill">
+              <div class="event-detail-time"><mat-icon class="event-detail-icon">calendar_today</mat-icon><p>{{event.time | date: 'MMMM d @ h:mm a'}}</p></div>
+              <div class="event-detail-info"><mat-icon class="event-detail-icon">location_on</mat-icon><p>{{event.location}}</p></div>
+              <div class="event-detail-info"><mat-icon class="event-detail-icon">info</mat-icon><p>{{event.description}}</p></div>
+            </div>
+          </mat-expansion-panel>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Organizations Card -->
+  <div class="organizations-card-container">
+    <mat-card class="organizations-card">
+      <mat-card-header class="organizations-header">
+        <mat-card-title class="title">My Organizations</mat-card-title>
+      </mat-card-header>
+      <!-- Organizations Info -->
+      <mat-card-content class="organizations-info">
+        <mat-list class="organizations-list">
+          <div *ngFor="let organization of organizations">
+            <!-- Organization w/ Detail Information -->
+            <div class="organization">
+              <div matListItemTitle class="organization-name">{{organization.name}}</div>
+              <div><button mat-button class="organization-link">Link</button></div>
+            </div>
+          </div>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

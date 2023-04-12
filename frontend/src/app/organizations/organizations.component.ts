@@ -5,7 +5,8 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { profileResolver } from '../profile/profile.resolver';
-import { OrganizationsService, Organization } from './organizations.service';
+import { OrganizationsService } from './organizations.service';
+import { OrganizationSummary } from '../models.module';
 
 @Component({
   selector: 'app-organizations',
@@ -24,7 +25,7 @@ export class OrganizationsComponent {
   }
 
   /** Store Observable list of Organizations */
-  public organizations$: Observable<Organization[]>;
+  public organizations$: Observable<OrganizationSummary[]>;
 
   /** Store searchBarQuery */
   searchBarQuery = "";

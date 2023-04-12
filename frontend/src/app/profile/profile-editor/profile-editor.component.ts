@@ -4,7 +4,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Route } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
-import { Profile, ProfileService } from '../profile.service';
+import { ProfileService } from '../profile.service';
+import { Profile } from 'src/app/models.module';
 
 @Component({
   selector: 'app-profile-editor',
@@ -14,9 +15,9 @@ import { Profile, ProfileService } from '../profile.service';
 export class ProfileEditorComponent implements OnInit {
 
   public static Route: Route = {
-    path: 'profile',
+    path: 'profile-editor',
     component: ProfileEditorComponent, 
-    title: 'Profile', 
+    title: 'Profile Editor', 
     canActivate: [isAuthenticated], 
     resolve: { profile: profileResolver }
   };

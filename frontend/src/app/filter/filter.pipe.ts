@@ -2,8 +2,8 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Organization } from '../organizations/organizations.service';
 import { map } from 'rxjs/operators';
+import { OrganizationSummary } from '../models.module';
 
 @Pipe({
   name: 'filter'
@@ -11,11 +11,11 @@ import { map } from 'rxjs/operators';
 export class FilterPipe implements PipeTransform {
 
   /** Returns a mapped array of organizations that start with the input string (if search query provided). 
-   * @param {Observable<Organization[]>} organizations: observable list of valid Organization models
+   * @param {Observable<OrganizationSummary[]>} organizations: observable list of valid Organization models
    * @param {String} searchQuery: input string to filter by
-   * @returns {Observable<Organization[]>}
+   * @returns {Observable<OrganizationSummary[]>}
   */
-  transform(organizations: Observable<Organization[]>, searchQuery: String): any {
+  transform(organizations: Observable<OrganizationSummary[]>, searchQuery: String): any {
     // If a search query is provided, return the organizations that start with the search query.
     if (searchQuery) {
       return organizations.pipe(

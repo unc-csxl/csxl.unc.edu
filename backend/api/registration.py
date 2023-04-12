@@ -101,20 +101,20 @@ def mark_attended(registration: Registration, registrations_service: Registratio
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("", response_model=None, tags=['Registration'])
-def delete_registration(registration: Registration, registrations_service: RegistrationService = Depends()) -> None:
+@api.delete("/registration/{reg_id}", response_model=None, tags=['Registration'])
+def delete_registration(reg_id: int, registrations_service: RegistrationService = Depends()) -> None:
   """
-  Delete Registration for Event based on the User and the Event.
+  Delete Registration for Event by Registration ID
 
   Parameters:
-    registration: a valid Registration model.
+    reg_id: an integer that represents a Registration ID
     registration_service: a valid RegistrationService.
 
   Raises:
     HTTPException 404 if delete_registration() raises an Exception.
   """
   try:
-    registrations_service.delete_registration(registration)
+    registrations_service.delete_registration(reg_id)
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 

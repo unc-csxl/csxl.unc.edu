@@ -1,4 +1,5 @@
-import { Permission, Profile } from "./profile/profile.service";
+import { Permission, Profile } from "./models.module";
+
 
 export interface Role {
     id: number;

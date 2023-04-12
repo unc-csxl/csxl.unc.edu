@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { Profile, ProfileService, Permission } from './profile/profile.service';
+import { ProfileService } from './profile/profile.service';
+import { Permission, Profile } from './models.module';
 
 
 @Injectable({

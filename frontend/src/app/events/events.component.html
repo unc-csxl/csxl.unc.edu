@@ -1,0 +1,22 @@
+<p>events works!</p>
+<div class="container">
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let event of events$ | async">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{event.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{event.location}}
+            </mat-panel-description>
+            <mat-panel-description>
+              {{event.time.toDateString()}}
+            </mat-panel-description>
+            <mat-panel-description>
+                Time
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>{{event.description}}</p>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

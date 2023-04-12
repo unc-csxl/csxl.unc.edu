@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Profile, ProfileService } from '../profile/profile.service';
+import { ProfileService } from '../profile/profile.service';
+import { Profile } from '../models.module';
 
 @Component({
   selector: 'app-admin',

@@ -123,25 +123,25 @@ class RegistrationService:
     else:
       raise ValueError(f"The user with the ID {registration.user_id} is not registered for the event with the ID {registration.event_id}.")
       
-  def delete_registration(self, registration: Registration) -> None:
+  def delete_registration(self, reg_id: int) -> None:
     """
     Delete a User's registration for an Event.
 
     Parameters:
-      registration: a valid Registration model.
+      reg_id: an integer that represents a Registration ID
 
     Raises:
       ValueError if there is no Registration for the specified User and Event.
     """
-    # Query the Registrations table for a registration associated with the specified user_id and event_id.
-    entity = self._session.query(RegistrationEntity).get(registration.id)
+    # Query the Registrations table for a registration associated with the specified id
+    entity = self._session.query(RegistrationEntity).filter(RegistrationEntity.id == reg_id).one_or_none()
       
     # If a registration was found, delete the registration.
     if entity:
       self._session.delete(entity)
       self._session.commit()
     else:
-      raise ValueError(f"The user with the ID {registration.user_id} is not registered for the event with the ID {registration.event_id}.")
+      raise ValueError(f"The user with the ID {entity.user_id} is not registered for the event with the ID {entity.event_id}.")
     
   def clear_registrations(self, event_id: int):
     """

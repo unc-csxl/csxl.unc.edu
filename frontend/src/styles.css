@@ -17,3 +17,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mdc-card__actions {
     min-height: 0px !important;
 }
+
+.mat-expansion-panel-body {
+    background-color: #525252 !important;
+}

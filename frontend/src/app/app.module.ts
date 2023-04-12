@@ -37,6 +37,10 @@ import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { OrganizationsComponent } from './organizations/organizations.component';
 import { FilterPipe } from './filter/filter.pipe';
+import { EventsComponent } from './events/events.component';
+import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
+import { EventFilterPipe } from './filter/event-filter.pipe';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -47,7 +51,10 @@ import { FilterPipe } from './filter/filter.pipe';
     GateComponent,
     ProfileEditorComponent,
     OrganizationsComponent,
-    FilterPipe
+    FilterPipe,
+    EventsComponent,
+    ProfilePageComponent,
+    EventFilterPipe
   ],
   imports: [
     BrowserModule,
@@ -72,6 +79,7 @@ import { FilterPipe } from './filter/filter.pipe';
     MatToolbarModule,
     MatGridListModule,
     FormsModule,
+    MatExpansionModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
