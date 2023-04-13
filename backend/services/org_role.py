@@ -45,7 +45,7 @@ class OrgRoleService:
         if role.id:
 
             # If so, update existing entry
-            role_entity = OrgRoleEntity.from_model(role)
+            role_entity = self._session.query(OrgRoleEntity).get((role.id, role.user_id, role.org_id))
             self._session.execute(
                 update(OrgRoleEntity)
                 .where(OrgRoleEntity.id == role.id)

@@ -38,7 +38,7 @@ class UserService:
         entities = self._session.execute(statement).scalars()
         return [entity.to_model() for entity in entities]
     
-    def getAll(self) -> list[User]:
+    def all(self) -> list[User]:
         """
         Retrieves all users from the table
 

@@ -1,13 +1,11 @@
 import pytest
 
 from sqlalchemy.orm import Session
-from ...models import Organization
-from ...entities import OrganizationEntity
+from ...models import OrganizationSummary
 from ...services import OrganizationService
 
 # Mock Models
-root = Organization(
-    id=1, 
+org1 = OrganizationSummary(
     name="test", 
     logo="logo", 
     short_description="description", 
@@ -19,8 +17,7 @@ root = Organization(
     youtube="youtube", 
     heel_life="heellife")
 
-root2 = Organization(
-    id=2, 
+org2 = OrganizationSummary(
     name="test", 
     logo="logo", 
     short_description="description", 
@@ -32,7 +29,7 @@ root2 = Organization(
     youtube="youtube", 
     heel_life="heellife")
 
-updated = Organization(
+org1_updated = OrganizationSummary(
     id=1, 
     name="new org", 
     logo="logo", 
@@ -53,31 +50,37 @@ def test_no_organizations(organization: OrganizationService):
     assert len(organization.all()) is 0
 
 def test_get_all_organizations(organization: OrganizationService):
-    organization.create(root)
+    organization.create(org1)
     assert len(organization.all()) is 1
-    organization.create(root2)
+    organization.create(org2)
     assert len(organization.all()) is 2
     assert organization.all()[1].id is 2
 
 def test_create_organization_and_get_by_id(organization: OrganizationService):
-    org = organization.create(root)
+    org = organization.create(org1)
     assert organization.get_from_id(1).id == org.id
 
+def test_get_all_organizations(organization: OrganizationService):
+    organization.create(org1)
+    assert len(organization.all()) is 1
+    organization.create(org2)
+    assert len(organization.all()) is 2
+    assert organization.all()[1].id is 2
 
 def test_get_by_name(organization: OrganizationService):
-    org = organization.create(root)
+    org = organization.create(org1)
     assert organization.get_from_name("test").email == org.email
 
 
 def test_delete(organization: OrganizationService):
-    organization.create(root)
+    organization.create(org1)
     assert len(organization.all()) is 1
     organization.delete(1)
     assert len(organization.all()) is 0
 
 
 def test_update(organization: OrganizationService):
-    org = organization.create(root)
+    org = organization.create(org1)
     assert organization.get_from_id(1).name == org.name
-    new_org = organization.update(updated)
+    new_org = organization.update(org1_updated)
     assert organization.get_from_id(1).name == new_org.name
