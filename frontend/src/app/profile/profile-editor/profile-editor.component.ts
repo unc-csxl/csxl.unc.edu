@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Route } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
 import { ProfileService } from '../profile.service';
@@ -31,7 +31,7 @@ export class ProfileEditorComponent implements OnInit {
     pronouns: ''
   });
 
-  constructor(route: ActivatedRoute, protected formBuilder: FormBuilder, protected profileService: ProfileService, protected snackBar: MatSnackBar) {
+  constructor(route: ActivatedRoute, private router: Router, protected formBuilder: FormBuilder, protected profileService: ProfileService, protected snackBar: MatSnackBar) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
     form.get('lastname')?.addValidators(Validators.required);
@@ -62,6 +62,7 @@ export class ProfileEditorComponent implements OnInit {
           error: (err) => this.onError(err)
         } 
       );
+      this.router.navigate(['/profile']);
     }
   }
 

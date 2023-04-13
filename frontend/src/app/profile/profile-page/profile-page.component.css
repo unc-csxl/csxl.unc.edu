@@ -8,6 +8,10 @@
 *
 */
 
+p {
+  font-size: 1.15em;
+}
+
 .profile-grid {
   display: grid;
   padding: 24px;
@@ -69,7 +73,6 @@
   height: 40px;
   line-height: 40px;
   border-radius: 100%;
-  font-size: 1.15em;
 }
 
 .user-name {
@@ -97,11 +100,6 @@
 .user-info-label {
   font-weight: 500;
   margin-bottom: 0;
-  font-size: 1.15em;
-}
-
-.user-info-detail {
-  font-size: 1.15em;
 }
 
 /** Events Card CSS */
@@ -115,9 +113,13 @@
   grid-area: span 2;
 }
 
+.text-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .event-subheader {
   font-weight: 500;
-  font-size: 1.15em;
 }
 
 .mat-mdc-list-base {
@@ -125,7 +127,6 @@
 }
 
 .event-name {
-  font-size: 1.15em;
   text-overflow: ellipsis;
   margin: 0;
   overflow: hidden;
@@ -173,7 +174,6 @@
 .event-detail-info p {
   margin: 0;
   width: 89%;
-  font-size: 1.15em;
 }
 
 .event-detail-icon {
@@ -193,7 +193,6 @@
     display: flex;
     align-items: flex-start;
     margin-bottom: 0.75rem;
-    font-size: 1.15em;
   }
 
   .event-time {
@@ -223,6 +222,9 @@
   -webkit-box-orient: vertical;
 }
 
+.organization-link {
+  z-index: 0;
+}
 .organization-link {
   z-index: 0;
 }

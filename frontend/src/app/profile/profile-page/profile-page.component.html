@@ -48,6 +48,7 @@
         <mat-list class="events-list">
           <div mat-subheader class="event-subheader">Upcoming Events</div>
           <!-- Event List (Current/Upcoming) -->
+          <p *ngIf="(events | eventFilter: 'current').length === 0">You are currently not registered for any events. <span class="text-link" routerLink="/events">Click here</span> to explore upcoming CS events!</p>
           <mat-expansion-panel class="event" *ngFor="let event of (events | eventFilter: 'current')">
             <mat-expansion-panel-header class="expansion-box">
               <mat-panel-title class="event-preview">
@@ -74,6 +75,7 @@
 
           <div mat-subheader class="event-subheader">Past Events</div>
           <!-- Event List (Past) -->
+          <p *ngIf="(events | eventFilter: 'past').length === 0">You have not previously attended any events yet.</p>
           <mat-expansion-panel class="event" *ngFor="let event of (events | eventFilter: 'past')">
             <mat-expansion-panel-header class="expansion-box">
               <mat-panel-title class="event-preview">
@@ -105,11 +107,13 @@
       <!-- Organizations Info -->
       <mat-card-content class="organizations-info">
         <mat-list class="organizations-list">
+          <p *ngIf="organizations.length === 0">You are currently not following any organizations. <span class="text-link" routerLink="/organizations">Click here</span> to explore UNC's CS organizations!</p>
           <div *ngFor="let organization of organizations">
             <!-- Organization w/ Detail Information -->
             <div class="organization">
               <div matListItemTitle class="organization-name">{{organization.name}}</div>
-              <div><button mat-button class="organization-link">Link</button></div>
+              <!-- Delete Organization Membership -->
+              <button mat-icon-button (click)="deleteOrgMembership(organization.id!)"><mat-icon>delete_forever</mat-icon></button>
             </div>
           </div>
         </mat-list>
