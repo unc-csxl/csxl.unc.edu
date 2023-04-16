@@ -70,6 +70,14 @@ export class ProfilePageComponent {
     location.reload();
   }
 
+  /**
+   * Helper function to build the URL for each organization.
+   * @param id ID of the organization
+   * @returns URL for the organization
+   */
+  routeBuilder(id: Number | null): string {
+    return "/organization/" + id;
+
   async deleteOrgMembership(org_id: Number): Promise<void> {
     this.profileService.deleteOrgMembership(org_id);
 

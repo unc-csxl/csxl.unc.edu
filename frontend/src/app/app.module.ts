@@ -26,6 +26,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker'; 
+import { MatNativeDateModule } from '@angular/material/core'
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -41,6 +43,8 @@ import { EventsComponent } from './events/events.component';
 import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
 import { EventFilterPipe } from './filter/event-filter.pipe';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { OrgDetailsComponent } from './org-details/org-details.component';
+import { EventEditorComponent } from './event-editor/event-editor.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +58,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
     FilterPipe,
     EventsComponent,
     ProfilePageComponent,
-    EventFilterPipe
+    EventFilterPipe,
+    OrgDetailsComponent,
+    EventEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -80,6 +86,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatGridListModule,
     FormsModule,
     MatExpansionModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

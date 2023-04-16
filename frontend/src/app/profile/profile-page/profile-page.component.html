@@ -112,6 +112,7 @@
             <!-- Organization w/ Detail Information -->
             <div class="organization">
               <div matListItemTitle class="organization-name">{{organization.name}}</div>
+              <div><a href={{routeBuilder(organization.id)}}><button mat-button class="organization-link">Link</button></a></div>
               <!-- Delete Organization Membership -->
               <button mat-icon-button (click)="deleteOrgMembership(organization.id!)"><mat-icon>delete_forever</mat-icon></button>
             </div>

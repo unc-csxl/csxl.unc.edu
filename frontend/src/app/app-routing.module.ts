@@ -7,6 +7,8 @@ import { OrganizationsComponent } from './organizations/organizations.component'
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
 import { EventsComponent } from './events/events.component';
+import { OrgDetailsComponent } from './org-details/org-details.component';
+import { EventEditorComponent } from './event-editor/event-editor.component';
 
 
 const routes: Routes = [
@@ -16,7 +18,9 @@ const routes: Routes = [
   GateComponent.Route,
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   OrganizationsComponent.Route,
-  EventsComponent.Route
+  EventsComponent.Route,
+  OrgDetailsComponent.Route,
+  EventEditorComponent.Route
 ];
 
 @NgModule({

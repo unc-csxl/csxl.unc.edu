@@ -1,0 +1,173 @@
+<!-- HTML Structure of Organization Details Page -->
+
+<div class="organization-grid">
+  <!-- Organization Information Card -->
+  <div class="organization-card-container">
+    <mat-card class="organization-card">
+      <!-- Organization Card Header (Image, Name, Description) -->
+      <mat-card-header class="organization-header">
+        <div class="left-header-info">
+          <!-- ERROR WITH LOGO -->
+          <img mat-card-image src={{organization!.logo}} class="logo">
+        </div>
+        <div class="right-header-info">
+          <!-- Organization Name, Social Media, and Star -->
+          <div class="organization-top-header-group">
+            <!-- Organization Name -->
+            <div class="organization-name-section">
+              <mat-card-title class="user-name">{{(organization$ | async)?.name}}</mat-card-title>
+            </div>
+            <!-- Organization Icons -->
+            <div class="organization-icons-section">
+              <div class="link-icons">
+                <a href={{organization!.website}} target="_blank" *ngIf="organization!.website != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon fontIcon="link"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.email}} target="_blank" *ngIf="(organization$ | async)!.email != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon fontIcon="mail"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.instagram}} target="_blank" *ngIf="organization!.instagram != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon svgIcon="instagram"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.linked_in}} target="_blank" *ngIf="organization!.linked_in != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon svgIcon="linkedin"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.youtube}} target="_blank" *ngIf="organization!.youtube != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon svgIcon="youtube"></mat-icon>
+                  </button>
+                </a>
+
+                <!-- Star button -->
+                <button *ngIf="profile && profile.first_name" mat-icon-button color="basic" (click)="starOrganization()">
+                  <mat-icon *ngIf="permValue >= 0">star</mat-icon>
+                  <mat-icon *ngIf="permValue < 0">star_outlined</mat-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+          <!-- Organization Description -->
+          <p class="organization-description">{{(organization$ | async)?.long_description}}</p>
+        </div>
+      </mat-card-header>
+    </mat-card>
+  </div>
+
+  <!-- Executive Members Card -->
+  <div class="members-card-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title class="title">Executive Members</mat-card-title>
+      </mat-card-header>
+      <!-- Member Info -->
+      <mat-card-content>
+        <mat-list>
+          <div *ngFor="let associations of (organization$ | async)?.user_associations">
+            <div *ngIf="associations.membership_type > 0" class="member">
+              <div matListItemTitle class="member-name">{{associations.user?.first_name + " " +
+                associations.user?.last_name}}</div>
+              <div><button mat-button class="member-link">Contact</button></div>
+            </div>
+          </div>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Event Registrations Card -->
+  <div class="events-card-container">
+    <mat-card class="events-card">
+      <!-- Event Registratoins Card Header -->
+      <mat-card-header class="events-header">
+        <div class="events-header-left">
+          <mat-card-title class="title">All Events</mat-card-title>
+        </div>
+        <div class="events-header-right">
+          <a [routerLink]="['/organization', organization!.id, 'event-editor']">
+            <button *ngIf="adminPermission" mat-raised-button type="submit">Add Event</button>
+          </a>
+        </div>
+      </mat-card-header>
+      <!-- Events Info -->
+      <mat-card-content class="events-info">
+        <mat-list class="events-list">
+          <div mat-subheader class="event-subheader">Upcoming Events</div>
+          <!-- Event List (Current/Upcoming) -->
+          <mat-expansion-panel class="event"
+            *ngFor="let event of ((organization$ | async)?.events! | eventFilter: 'current')">
+            <mat-expansion-panel-header class="expansion-box">
+              <mat-panel-title class="event-preview">
+                <p class="event-name">{{event.name}}</p>
+              </mat-panel-title>
+              <mat-panel-description class="event-time">
+                <mat-icon class="calendar-icon">calendar_today</mat-icon>
+                <div>{{event.time | date: 'MMM d, h:mm a'}}</div>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <!-- Panel Expands to Reveal Event Detail Below -->
+            <div class="event-detail" appearance="fill">
+              <div>
+                <div class="event-detail-time"><mat-icon class="event-detail-icon">calendar_today</mat-icon>
+                  <p>{{event.time | date: 'MMMM d @ h:mm a'}}</p>
+                </div>
+                <div class="event-detail-info"><mat-icon class="event-detail-icon">location_on</mat-icon>
+                  <p>{{event.location}}</p>
+                </div>
+                <div class="event-detail-info"><mat-icon class="event-detail-icon">info</mat-icon>
+                  <p>{{event.description}}</p>
+                </div>
+                <button *ngIf="adminPermission" mat-raised-button type="submit" (click)="deleteEvent(event.id)">Delete
+                  Event</button>
+                <button *ngIf="adminPermission" mat-raised-button type="submit">Edit Event</button>
+              </div>
+              <!-- Cancel Event Registration -->
+              <div class="cancel-button">
+                <!-- <button mat-stroked-button (click)="">Cancel Registration</button> -->
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <div mat-subheader class="event-subheader">Past Events</div>
+          <!-- Event List (Past) -->
+          <mat-expansion-panel class="event"
+            *ngFor="let event of ((organization$ | async)?.events! | eventFilter: 'past')">
+            <mat-expansion-panel-header class="expansion-box">
+              <mat-panel-title class="event-preview">
+                <p class="event-name">{{event.name}}</p>
+              </mat-panel-title>
+              <mat-panel-description class="event-time">
+                <mat-icon class="calendar-icon">calendar_today</mat-icon>
+                <div>{{event.time | date: 'MMM d, h:mm a'}}</div>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <!-- Panel Expands to Reveal Event Detail Below -->
+            <div class="event-detail" appearance="fill">
+              <div class="event-detail-time"><mat-icon class="event-detail-icon">calendar_today</mat-icon>
+                <p>{{event.time | date: 'MMMM d @ h:mm a'}}</p>
+              </div>
+              <div class="event-detail-info"><mat-icon class="event-detail-icon">location_on</mat-icon>
+                <p>{{event.location}}</p>
+              </div>
+              <div class="event-detail-info"><mat-icon class="event-detail-icon">info</mat-icon>
+                <p>{{event.description}}</p>
+              </div>
+              <button *ngIf="adminPermission" mat-raised-button type="submit" (click)="deleteEvent(event.id)">Delete
+                Event</button>
+              <button *ngIf="adminPermission" mat-raised-button type="submit">Edit Event</button>
+            </div>
+          </mat-expansion-panel>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>
