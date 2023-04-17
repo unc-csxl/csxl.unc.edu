@@ -45,7 +45,6 @@ import { EventsComponent } from './events/events.component';
 import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
 import { EventFilterPipe } from './filter/event-filter.pipe';
 import { EventsFilterPipe } from './eventsFilter/eventsFilter.pipe';
-import {MatExpansionModule} from '@angular/material/expansion';
 import { OrgDetailsComponent } from './org-details/org-details.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 

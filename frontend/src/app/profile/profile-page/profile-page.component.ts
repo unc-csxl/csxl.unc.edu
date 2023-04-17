@@ -5,10 +5,8 @@ import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ProfileService } from '../profile.service';
-import { EventSummary, OrganizationSummary, Profile } from 'src/app/models.module';
+import { Event, OrganizationSummary, Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { waitForAsync } from '@angular/core/testing';
-import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-profile-page',
@@ -29,7 +27,7 @@ export class ProfilePageComponent {
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
   /** Store the list of events. */
-  public events: EventSummary[];
+  public events: Event[];
   public organizations: OrganizationSummary[];
 
   constructor(route: ActivatedRoute, private router: Router, protected profileService: ProfileService, protected snackBar: MatSnackBar) {
@@ -77,7 +75,12 @@ export class ProfilePageComponent {
    */
   routeBuilder(id: Number | null): string {
     return "/organization/" + id;
+  }
 
+  /** Event handler to delete an organization for a user when "Delete Organization" button is clicked.
+   * @param org_id: Number representing the organization to be deleted for the user
+   * @returns {void}
+  */
   async deleteOrgMembership(org_id: Number): Promise<void> {
     this.profileService.deleteOrgMembership(org_id);
 

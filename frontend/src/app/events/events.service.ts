@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { mergeMap, Observable, shareReplay, of, subscribeOn } from 'rxjs';
-import { Profile, RegistrationSummary, EventSummary } from '../models.module';
+import { Profile, RegistrationSummary, Event } from '../models.module';
 import { AuthenticationService } from '../authentication.service';
 
 @Injectable({
@@ -30,10 +30,10 @@ export class EventsService {
   }
 
   /** Returns all event entries from the backend database table using the backend HTTP get request. 
-   * @returns {Observable<EventSummary[]>}
+   * @returns {Observable<Event[]>}
   */
-  getEvents(): Observable<EventSummary[]> {
-    return this.http.get<EventSummary[]>("/api/events");
+  getEvents(): Observable<Event[]> {
+    return this.http.get<Event[]>("/api/events");
   }
 
   /** Create a registration from the backend

@@ -1,8 +1,10 @@
+/** Constructs the Event editor which allows organization members to create events */
+
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EventSummary2 } from 'src/app/models.module';
+import { EventSummary } from 'src/app/models.module';
 import { OrgDetailsService } from '../org-details/org-details.service';
 
 @Component({
@@ -17,7 +19,7 @@ export class EventEditorComponent {
     title: 'New Event', 
   };
 
-  public event: EventSummary2;
+  public event: EventSummary;
   id: string = '';
 
   public eventForm = this.formBuilder.group({
@@ -57,6 +59,9 @@ export class EventEditorComponent {
     });
   }
 
+  /** Event handler to handle submitting the Create Event Form.
+   * @returns {void}
+  */
   onSubmit(): void {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value)
@@ -69,10 +74,16 @@ export class EventEditorComponent {
     }
   }
 
-  private onSuccess(event: EventSummary2) {
+  /** Opens a confirmation snackbar when an event is successfully created.
+   * @returns {void}
+  */
+  private onSuccess(event: EventSummary) {
     this.snackBar.open("Event Added", "", { duration: 2000 })
   }
 
+  /** Opens a confirmation snackbar when there is an error creating an event.
+   * @returns {void}
+  */
   private onError(err: any) {
     console.error("How to handle this?");
   }

@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { mergeMap, Observable, of, shareReplay } from 'rxjs';
 import { AuthenticationService } from '../authentication.service';
-import { EventSummary, OrganizationSummary, OrgRole, Profile, Registration } from '../models.module';
+import { Event, OrganizationSummary, OrgRole, Profile, Registration } from '../models.module';
 
 @Injectable({
   providedIn: 'root'
@@ -67,10 +67,10 @@ export class ProfileService {
 
   /** Returns all organization entries for the current user from the backend database table 
    * using the backend HTTP get request. 
-   * @returns {EventSummary[]}
+   * @returns {Event[]}
   */
-  getUserEvents(): EventSummary[] {
-    var events: EventSummary[] = [];
+  getUserEvents(): Event[] {
+    var events: Event[] = [];
     if (this.profile$) {
       this.profile$.subscribe(profile => events = profile!.events)
     }
@@ -110,7 +110,7 @@ export class ProfileService {
    * @param org_id: Number representing the org role to be deleted for the user
    * @returns {void}
   */
-  deleteOrgMembership(org_id: Number) {
+  deleteOrgMembership(org_id: Number): void {
      // Store the list of registrations from the profile.
      var org_roles: OrgRole[] = [];
      // Store the current user's ID.

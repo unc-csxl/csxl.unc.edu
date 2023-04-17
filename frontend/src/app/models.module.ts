@@ -17,7 +17,7 @@ export interface Profile {
   registered: boolean;
   role: number;
   permissions: Permission[];    
-  events:EventSummary[];
+  events:Event[];
   event_associations: Registration[];
   organizations: OrganizationSummary[];
   organization_associations: OrgRole[];
@@ -86,8 +86,8 @@ export interface OrgRoleSummary {
   membership_type: Number;
 }
 
-/** Interface for EventSummary Type (used on frontend for event requests) */
-export interface EventSummary {
+/** Interface for Event Type (used on frontend for event requests) */
+export interface Event {
   id: Number | null;
   name: string;
   time: Date;
@@ -95,10 +95,13 @@ export interface EventSummary {
   description: string;
   public: Boolean;
   org_id: Number;
-  organization: OrganizationSummary; 
+  organization: OrganizationSummary;
+  users: UserSummary[];
+  user_associations: Registration[];
 }
 
-export interface EventSummary2 {
+/** Interface for EventSummary Type (used on frontend for creating events) */
+export interface EventSummary {
   id: Number | null;
   name: string;
   time: Date;
@@ -128,7 +131,7 @@ export interface RegistrationSummary {
 
 /** Interface for Organization Type */
 export interface Organization {
-  id: Number
+  id: Number | null
   slug: String
   name: String
   logo: String

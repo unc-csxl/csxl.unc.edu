@@ -60,7 +60,7 @@
             <mat-panel-description class="mobile">
               {{event.location}}<br>{{event.time | date: 'MMMM d'}}
             </mat-panel-description>
-            <mat-icon (click)="register(event.id)">person_add</mat-icon>
+            <mat-icon (click)="register(event.id)" *ngIf="checkCurrentEvent(event.time) && profile != null">person_add</mat-icon>
           </mat-expansion-panel-header>
           <p class="eventDescrip">{{event.description}}</p>
         </mat-expansion-panel>

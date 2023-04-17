@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Route } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Observable, Subscription, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { OrgDetailsService } from './org-details.service';
-import { Organization, OrganizationSummary, Profile } from '../models.module';
+import { Organization, Profile } from '../models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '../profile/profile.resolver';
 

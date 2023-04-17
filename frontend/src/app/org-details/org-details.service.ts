@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, mergeMap, of, shareReplay } from 'rxjs';
-import { EventSummary2, OrgRoleSummary, Organization, OrganizationSummary, Profile } from '../models.module';
+import { EventSummary, OrgRoleSummary, Organization, Profile } from '../models.module';
 import { AuthenticationService } from '../authentication.service';
 
 @Injectable({
@@ -30,16 +30,25 @@ export class OrgDetailsService {
     );
   }
 
+  /** Returns an Observable Organization based on the given id.
+   * @param id: a valid string representing the id of the organization to be added.
+   * @returns {void}
+   */
   getOrganization(id: string): Observable<Organization> {
     return this.http.get<Organization>("/api/organizations/" + id);
   }
 
-  create(event: EventSummary2) {
-    return this.http.post<EventSummary2>("/api/events", event);
+  /** Toggles the star status of the organization.
+   * @param event: a valid EventSummary model that represents the event to be created
+   * @returns {void}
+   */
+  create(event: EventSummary) {
+    return this.http.post<EventSummary>("/api/events", event);
   }
 
-  /**
-   * Toggles the star status of the organization.
+  /** Toggles the star status of the organization.
+   * @param orgId: number representing the ID of the organization to be "starred"
+   * @returns {void}
    */
   starOrganization(orgId: number) {
 
@@ -75,11 +84,11 @@ export class OrgDetailsService {
     }
   }
 
-  /**
-   * Delete an event that the organization is hosting.
+  /** Delete an event that the organization is hosting.
+   * @param eventId: number representing the ID of the event to be deleted.
+   * @returns {void}
    */
   deleteEvent(eventId: number) {
-
     // Make the call to delete the event.
     this.http.delete<void>(`/api/events/${eventId}`).subscribe(() => console.log('Delete successful.'));
   }

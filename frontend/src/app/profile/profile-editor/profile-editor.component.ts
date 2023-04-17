@@ -62,7 +62,9 @@ export class ProfileEditorComponent implements OnInit {
           error: (err) => this.onError(err)
         } 
       );
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/profile']).then(() => {
+        window.location.reload();
+      });
     }
   }
 

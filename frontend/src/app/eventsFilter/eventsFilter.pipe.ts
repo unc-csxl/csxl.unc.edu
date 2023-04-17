@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EventSummary } from '../models.module';
+import { Event } from '../models.module';
 import { map } from 'rxjs/operators';
 
 @Pipe({
@@ -9,11 +9,11 @@ import { map } from 'rxjs/operators';
 export class EventsFilterPipe implements PipeTransform {
 
   /** Returns a mapped array of events that are filtered 
-   * @param {Observable<EventSummary[]>} events: observable list of valid Event models
+   * @param {Observable<Event[]>} events: observable list of valid Event models
    * @param {String} searchQuery: input string to filter by
-   * @returns {Observable<EventSummary[]>}
+   * @returns {Observable<EventS[]>}
   */
-  transform(events: Observable<EventSummary[]>, searchQuery: String, start: Date | null | undefined, end: Date | null | undefined, organizations: String[] | null): any {
+  transform(events: Observable<Event[]>, searchQuery: String, start: Date | null | undefined, end: Date | null | undefined, organizations: String[] | null): any {
     // If a search query is provided, filter out the events that don't include that search query
     if (searchQuery) {
       events = events.pipe(

@@ -1,10 +1,8 @@
 /** 
-* profile-page.component.css 
+* org-details.component.css 
 * 
-* The profile page should include basic information about the user, the
-* user's organizations, and the user's past/upcoming events in a simple,
-* easily navigable manner. Major details about events should be
-* expandable so the screen is not overcrowded.
+* The organization details page should include basic information about the 
+* organization, the organization members, and the organization's events.
 *
 */
 
