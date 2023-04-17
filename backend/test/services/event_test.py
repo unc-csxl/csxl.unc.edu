@@ -44,6 +44,7 @@ event3 = EventSummary(
 
 org1 = Organization(
     name="test", 
+    slug="HackNC",
     logo="logo", 
     short_description="description", 
     long_description="description", 
@@ -56,6 +57,7 @@ org1 = Organization(
 
 org2 = Organization(
     name="test", 
+    slug="HackNC",
     logo="logo", 
     short_description="description", 
     long_description="description", 

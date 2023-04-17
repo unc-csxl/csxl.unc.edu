@@ -7,6 +7,7 @@ from ...services import OrganizationService
 # Mock Models
 org1 = OrganizationSummary(
     name="test", 
+    slug="ABC",
     logo="logo", 
     short_description="description", 
     long_description="description", 
@@ -19,6 +20,7 @@ org1 = OrganizationSummary(
 
 org2 = OrganizationSummary(
     name="test", 
+    slug="CBA",
     logo="logo", 
     short_description="description", 
     long_description="description", 
@@ -32,6 +34,7 @@ org2 = OrganizationSummary(
 org1_updated = OrganizationSummary(
     id=1, 
     name="new org", 
+    slug="ABC",
     logo="logo", 
     short_description="description", 
     long_description="description", 

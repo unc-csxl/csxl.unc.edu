@@ -20,7 +20,7 @@ def get_users(user_service: UserService = Depends()) -> list[User]:
 		"""
 
 		# Return all roles
-		return user_service.getAll()
+		return user_service.all()
 
 @api.post("", tags=['User'])
 def new_user(user: User, user_service: UserService = Depends()) -> User:

@@ -27,6 +27,7 @@ role1_updated = OrgRoleSummary(
 org1 = OrganizationSummary(
     name="test", 
     logo="logo", 
+    slug="HackNC",
     short_description="description", 
     long_description="description", 
     website="website", 
