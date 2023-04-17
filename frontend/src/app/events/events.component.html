@@ -1,22 +1,68 @@
-<p>events works!</p>
+<!-- HTML Structure of Events Page -->
+
 <div class="container">
+  <!-- Top Bar of Filters -->
+  <div class="horizontal">
+    <!-- Date Range Picker -->
+    <mat-form-field appearance="fill" color="accent" class="datePicker">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+        <input matStartDate formControlName="start" placeholder="Start date">
+        <input matEndDate formControlName="end" placeholder="End date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker color="accent"></mat-date-range-picker>
+    
+      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+      <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+    </mat-form-field>
+
+    <!-- Search Bar -->
+    <mat-form-field class="search-bar" appearance="outline" color="accent">
+      <mat-label>Search</mat-label>
+      <input matInput type="text" [(ngModel)]="searchBarQuery">
+      <button *ngIf="searchBarQuery" matSuffix mat-icon-button aria-label="Clear" (click)="searchBarQuery=''">
+        <mat-icon>close</mat-icon>
+      </button>
+      <ng-template #noSearch>
+        <mat-icon matSuffix>search</mat-icon>
+      </ng-template>
+    </mat-form-field>
+
+    <!-- Organizations Select -->
+    <mat-form-field appearance="fill" color="accent" class="orgSelect">
+      <mat-label>Organizations</mat-label>
+      <mat-select [formControl]="organizations" multiple>
+        <mat-option *ngFor="let org of organizationsList$ | async" [value]="org.name">{{org.slug}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Reset Button -->
+    <button mat-stroked-button (click)="reset()">Reset</button>
+  </div>
+
+    <!-- Event Expansion Panels -->
     <mat-accordion>
-        <mat-expansion-panel *ngFor="let event of events$ | async">
+        <mat-expansion-panel *ngFor="let event of (events$ | eventsFilter: searchBarQuery:range.value.start:range.value.end:organizations.value) | async" hideToggle>
           <mat-expansion-panel-header>
-            <mat-panel-title>
+            <mat-panel-title class="event-name">
               {{event.name}}
             </mat-panel-title>
-            <mat-panel-description>
-              {{event.location}}
+            <mat-panel-description class="desktop">
+              {{event.organization.name}}
             </mat-panel-description>
-            <mat-panel-description>
-              {{event.time.toDateString()}}
+            <mat-panel-description class="mobile">
+              {{event.organization.slug}}
             </mat-panel-description>
-            <mat-panel-description>
-                Time
+            <mat-panel-description class="desktop">
+              {{event.location}} | {{event.time | date: 'MMMM d @ h:mm a'}}
             </mat-panel-description>
+            <mat-panel-description class="mobile">
+              {{event.location}}<br>{{event.time | date: 'MMMM d'}}
+            </mat-panel-description>
+            <mat-icon (click)="register(event.id)">person_add</mat-icon>
           </mat-expansion-panel-header>
-          <p>{{event.description}}</p>
+          <p class="eventDescrip">{{event.description}}</p>
         </mat-expansion-panel>
     </mat-accordion>
 </div>

@@ -26,8 +26,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker'; 
-import { MatNativeDateModule } from '@angular/material/core'
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -42,6 +44,7 @@ import { FilterPipe } from './filter/filter.pipe';
 import { EventsComponent } from './events/events.component';
 import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
 import { EventFilterPipe } from './filter/event-filter.pipe';
+import { EventsFilterPipe } from './eventsFilter/eventsFilter.pipe';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { OrgDetailsComponent } from './org-details/org-details.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
@@ -59,6 +62,7 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
     EventsComponent,
     ProfilePageComponent,
     EventFilterPipe,
+    EventsFilterPipe,
     OrgDetailsComponent,
     EventEditorComponent
   ],
@@ -84,6 +88,10 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
     MatTabsModule,
     MatToolbarModule,
     MatGridListModule,
+    MatExpansionModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
     FormsModule,
     MatExpansionModule,
     MatDatepickerModule,

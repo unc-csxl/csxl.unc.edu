@@ -1,3 +1,14 @@
+/** 
+* events.component.css 
+* 
+* Events are shown as expansion panels that show the event name,
+* host organization, and time. Clicking on the panel will expand
+* the panel and show the event's description. The top bar will have
+* a date range picker, search bar, organization select, and reset button
+* for filtering functionality. The top bar of filters will be in a row.
+* 
+*/
+
 .mat-mdc-form-field + .mat-mdc-form-field {
     margin-left: 8px;
   }
@@ -12,4 +23,111 @@ mat-expansion-panel {
 
 mat-panel-title {
     padding-right: 5rem;
+}
+
+.horizontal {
+    display: flex;
+    direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.form-field {
+    margin: 0 8px 16px 0;
+  }
+
+button {
+    margin-top: 0.75rem;
+  }
+
+.search-bar {
+    width: 35%;
+    border-radius: 100%;
+}
+
+.event-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+            line-clamp: 1;
+    -webkit-box-orient: vertical;
+    width: 100%;
+  }
+
+  .desktop {
+    display: inline;
+  }
+
+  .mobile {
+    display: none;
+  }
+
+  mat-icon:hover {
+    color: #4786C6;
+  }
+
+  /* Mobile CSS to make our UI more user friendly for phones */
+
+  @media only screen and (max-width: 768px) {
+    .horizontal {
+      flex-direction: column;
+      margin-bottom: 1rem;
+      align-items: center;
+      justify-content: center;
+      padding-top: 1rem;
+    }
+
+    button {
+      margin-top: 0;
+    }
+
+    mat-expansion-panel {
+      padding: 2rem;
+      margin: 0;
+      margin-bottom: 1rem;
+  }
+
+  mat-expansion-panel-header {
+    padding: 0;
+  }
+
+  .desktop {
+    display: none;
+  }
+
+  .mobile {
+    display: inline;
+  }
+
+  .container {
+    margin: 0.5rem 1rem;
+  }
+
+  .search-bar {
+    width: 85vw;
+  }
+
+  .datePicker {
+    width: 85vw;
+  }
+
+  .orgSelect {
+    width: 85vw;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 1.5rem;
+  }
+
+  .event-name {
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2;
+    margin-right: 0;
+  }
+
+  .eventDescrip {
+    margin-top: 0.5rem;
+  }
 }

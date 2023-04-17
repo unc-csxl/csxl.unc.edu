@@ -10,6 +10,7 @@ class Organization(BaseModel):
     
     id: int | None=None
     name: str
+    slug: str
     logo: str
     short_description: str
     long_description: str
@@ -36,6 +37,7 @@ class OrganizationSummary(BaseModel):
 
     id: int | None=None
     name: str
+    slug: str
     logo: str
     short_description: str
     long_description: str

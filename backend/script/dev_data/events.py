@@ -10,7 +10,7 @@ __license__ = "MIT"
 
 event1 = EventEntity(
     name="HackNC Hackathon", 
-    time=datetime.datetime.fromtimestamp(1680110861), 
+    time=datetime.datetime.fromtimestamp(1681653600), 
     location="Fetzer Gym", 
     description="HackNC is an annual, student-run hackathon hosted by the University of North Carolina at Chapel Hill.", 
     public=True, 
@@ -18,8 +18,8 @@ event1 = EventEntity(
     )
 
 event2 = EventEntity(
-    name="CS+Social Good Scavenger Hunt", 
-    time=datetime.datetime.fromtimestamp(1880110861), 
+    name="CSSG Scavenger Hunt", 
+    time=datetime.datetime.fromtimestamp(1681765200), 
     location="Sitterson", 
     description="CS+SG is hosting a Womxn in Tech Week Scavenger Hunt to celebrate womxn in tech!", 
     public=True, 
@@ -28,7 +28,7 @@ event2 = EventEntity(
 
 event3 = EventEntity(
     name="PearlHacks Hackathon", 
-    time=datetime.datetime.fromtimestamp(1680764400), 
+    time=datetime.datetime.fromtimestamp(1681819200), 
     location="Great Hall", 
     description="PearlHacks is an annual, student-run hackathon specifically for women and nonbinary students.", 
     public=False, 
@@ -37,13 +37,31 @@ event3 = EventEntity(
 
 event4 = EventEntity(
     name="Black in Technology GBM", 
-    time=datetime.datetime.fromtimestamp(1365231600), 
+    time=datetime.datetime.fromtimestamp(1681929000), 
     location="Sitterson", 
     description="This is a general body meeting for Black in Technology. All are welcome.", 
-    public=False, 
+    public=True, 
     org_id=3
     )
 
+event5 = EventEntity(
+    name="Club Meeting", 
+    time=datetime.datetime.fromtimestamp(1682026200), 
+    location="Sitterson", 
+    description="Meeting time for app team members to code together and have snacks!", 
+    public=False, 
+    org_id=2
+    )
+
+event6 = EventEntity(
+    name="Project Showcase", 
+    time=datetime.datetime.fromtimestamp(1682103600), 
+    location="Sitterson", 
+    description="CSSG's end of semester showcase where everyone shows off their projects! Pizza will be provided.", 
+    public=False, 
+    org_id=6
+    )
+
 models = [
-    event1, event2, event3, event4
+    event1, event2, event3, event4, event5, event6
 ]

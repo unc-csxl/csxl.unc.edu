@@ -14,6 +14,8 @@ class OrganizationEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Name of the organization
     name: Mapped[str] = mapped_column(String)
+    # Slug of the organization
+    slug: Mapped[str] = mapped_column(String)
     # Logo of the organization
     logo: Mapped[str] = mapped_column(String)
     # Short description of the organization
@@ -35,7 +37,7 @@ class OrganizationEntity(EntityBase):
     # All of the events hosted by the organization
         # Generated from a relationship with the "events" table
         # Back-populates the `organization` field of `EventEntity`
-    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization", cascade='all, delete-orphan')
+    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization", cascade="all, delete")
 
     users: Mapped[list["UserEntity"]] = relationship(secondary="org_role", back_populates="organizations")
     user_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="organization")
@@ -52,7 +54,7 @@ class OrganizationEntity(EntityBase):
         Returns:
             OrganizationEntity: Entity created from model
         """
-        return cls(id=model.id, name=model.name, logo=model.logo, short_description=model.short_description, long_description=model.long_description, website=model.website, email=model.email, instagram=model.instagram, linked_in=model.linked_in, youtube=model.youtube, heel_life=model.heel_life)
+        return cls(id=model.id, name=model.name, slug=model.slug, logo=model.logo, short_description=model.short_description, long_description=model.long_description, website=model.website, email=model.email, instagram=model.instagram, linked_in=model.linked_in, youtube=model.youtube, heel_life=model.heel_life)
 
     def to_model(self) -> Organization:
         """
@@ -66,6 +68,7 @@ class OrganizationEntity(EntityBase):
 
         return Organization(id=self.id, 
                             name=self.name, 
+                            slug=self.slug,
                             logo=self.logo, 
                             short_description=self.short_description, 
                             long_description=self.long_description, 
@@ -89,6 +92,7 @@ class OrganizationEntity(EntityBase):
 
         return OrganizationSummary(id=self.id, 
                             name=self.name, 
+                            slug=self.slug,
                             logo=self.logo, 
                             short_description=self.short_description, 
                             long_description=self.long_description, 
@@ -100,4 +104,3 @@ class OrganizationEntity(EntityBase):
                             heel_life=self.heel_life)
 
 from backend.entities.user_entity import UserEntity
-from backend.entities.org_role_entity import OrgRoleEntity

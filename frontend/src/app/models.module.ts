@@ -57,6 +57,7 @@ export interface Organization {
 export interface OrganizationSummary {
   id: Number | null;
   name: String;
+  slug: String;
   logo: String;
   short_description: String;
   long_description: String;
@@ -115,4 +116,28 @@ export interface Registration {
   status: Number;
   event: EventSummary;
   user: UserSummary;
+}
+
+/** Interface for RegistrationSummary Type (used on frontend for registration requests) */
+export interface RegistrationSummary {
+  id: Number | null;
+  user_id: Number;
+  event_id: Number;
+  status: Number;
+}
+
+/** Interface for Organization Type */
+export interface Organization {
+  id: Number
+  slug: String
+  name: String
+  logo: String
+  short_description: String
+  long_description: String
+  website: String
+  email: String
+  instagram: String
+  linked_in: String
+  youtube: String
+  heel_life: String
 }

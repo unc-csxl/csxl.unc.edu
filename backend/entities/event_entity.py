@@ -32,7 +32,7 @@ class EventEntity(EntityBase):
 
     # Bi-Directional Relationship Fields
     users: Mapped[list["UserEntity"]] = relationship(secondary="registrations", back_populates="events")
-    user_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="event", cascade="all, delete-orphan")
+    user_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="event")
 
     @classmethod
     def from_model(cls, model: Event) -> Self:
@@ -83,4 +83,3 @@ class EventEntity(EntityBase):
 from backend.entities.organization_entity import OrganizationEntity;
 from backend.entities.user_entity import UserEntity;
 from backend.entities.registration_entity import RegistrationEntity;
-
