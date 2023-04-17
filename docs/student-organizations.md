@@ -159,5 +159,7 @@ There are a few important things to consider:
 
 ## Future Work
 
-> **Prompt:** What directions could this feature be taken in? Given more time, what would you hope was added or improved next?
-
+Our feature is making great progress by this sprint, however there are a few things we might like to add or improve:
+- Allow admins of organizations to see the lists of members who starred their organization.
+- Allow the admin of the entire CSXL site to see a list of all registered users.
+- Improve the event creation process and add email reminders.
