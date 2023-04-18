@@ -222,11 +222,9 @@ p {
   -webkit-line-clamp: 1;
           line-clamp: 1;
   -webkit-box-orient: vertical;
+  text-decoration: none;
 }
 
-.organization-link {
-  z-index: 0;
-}
-.organization-link {
-  z-index: 0;
+.organization-name:hover {
+  color:#b9b9b9;
 }
