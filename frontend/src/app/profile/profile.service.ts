@@ -65,7 +65,7 @@ export class ProfileService {
     return organizations;
   }
 
-  /** Returns all organization entries for the current user from the backend database table 
+  /** Returns all event entries for the current user from the backend database table 
    * using the backend HTTP get request. 
    * @returns {Event[]}
   */

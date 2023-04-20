@@ -60,7 +60,10 @@
             <mat-panel-description class="mobile">
               {{event.location}}<br>{{event.time | date: 'MMMM d'}}
             </mat-panel-description>
-            <mat-icon (click)="register(event.id)" *ngIf="checkCurrentEvent(event.time) && profile != null">person_add</mat-icon>
+            <!-- Registration Button (if not registered) -->
+            <mat-icon (click)="register(event.id)" *ngIf="checkCurrentEvent(event.time) && !checkIsRegistered(event.id) && profile != null">person_add</mat-icon>
+            <!-- Cancel Registration Button (if registered) -->
+            <mat-icon (click)="unregister(event.id)" *ngIf="checkCurrentEvent(event.time) && checkIsRegistered(event.id) && profile != null">delete_forever</mat-icon>
           </mat-expansion-panel-header>
           <p class="eventDescrip">{{event.description}}</p>
         </mat-expansion-panel>

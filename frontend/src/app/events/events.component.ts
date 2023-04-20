@@ -6,7 +6,7 @@ import { EventsService } from './events.service';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Profile, Event, OrganizationSummary, RegistrationSummary } from 'src/app/models.module';
+import { Profile, Event, OrganizationSummary } from 'src/app/models.module';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { ProfileService } from '../profile/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -67,7 +67,7 @@ export class EventsComponent {
   }
 
   /** Registration Functionality */
-  register = async (eventId: Number) => {
+  async register(eventId: Number) {
     if (this.profile.id !== null) {
       this.eventsService.register(eventId);
 
@@ -82,6 +82,19 @@ export class EventsComponent {
     }
   }
 
+  async unregister(eventId: Number) {
+    if (this.profile.id !== null) {
+      this.profileService.deleteRegistration(eventId);
+
+      // Open snack bar to notify user that the registration was canceled.
+      this.snackBar.open("Registration Canceled", "", { duration: 2000 })
+      await new Promise(f => setTimeout(f, 750));
+
+      // Reload the window to update the events.
+      location.reload();
+    }
+  }
+
   /** Returns whether or not the event is a past or current event
    * @param event_time: Date object representing the time of the event 
    * @returns {boolean}
@@ -91,6 +104,10 @@ export class EventsComponent {
       return false;
     }
     return true;
+  }
+
+  checkIsRegistered(eventId: Number): boolean {
+    return this.eventsService.checkIsRegistered(eventId);
   }
 
   constructor(route: ActivatedRoute, private eventsService: EventsService, private orgService: OrganizationsService, protected snackBar: MatSnackBar, private profileService: ProfileService) {
