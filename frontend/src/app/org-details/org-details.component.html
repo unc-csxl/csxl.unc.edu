@@ -57,6 +57,9 @@
           </div>
           <!-- Organization Description -->
           <p class="organization-description">{{(organization$ | async)?.long_description}}</p>
+          <a [routerLink]="['/organization', organization!.id, 'org-editor']">
+            <button *ngIf="adminPermission" mat-raised-button type="submit">Edit Organization</button>
+          </a>
         </div>
       </mat-card-header>
     </mat-card>

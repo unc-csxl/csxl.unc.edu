@@ -47,6 +47,7 @@ import { EventFilterPipe } from './filter/event-filter.pipe';
 import { EventsFilterPipe } from './eventsFilter/eventsFilter.pipe';
 import { OrgDetailsComponent } from './org-details/org-details.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
+import { OrgEditorComponent } from './org-editor/org-editor.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
     EventFilterPipe,
     EventsFilterPipe,
     OrgDetailsComponent,
-    EventEditorComponent
+    EventEditorComponent,
+    OrgEditorComponent
   ],
   imports: [
     BrowserModule,

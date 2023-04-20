@@ -9,7 +9,7 @@ import { ProfilePageComponent } from './profile/profile-page/profile-page.compon
 import { EventsComponent } from './events/events.component';
 import { OrgDetailsComponent } from './org-details/org-details.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
-
+import { OrgEditorComponent } from './org-editor/org-editor.component';
 
 const routes: Routes = [
   HomeComponent.Route,
@@ -20,7 +20,8 @@ const routes: Routes = [
   OrganizationsComponent.Route,
   EventsComponent.Route,
   OrgDetailsComponent.Route,
-  EventEditorComponent.Route
+  EventEditorComponent.Route,
+  OrgEditorComponent.Route
 ];
 
 @NgModule({
