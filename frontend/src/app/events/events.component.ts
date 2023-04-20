@@ -66,8 +66,10 @@ export class EventsComponent {
     let profile = this.profile;
   }
 
-  /** Registration Functionality */
-  async register(eventId: Number) {
+  /** Registers a user for the given event
+   * @param eventId: number representing the id of the event the user should be registered for
+  */
+  async register(eventId: number) {
     if (this.profile.id !== null) {
       this.eventsService.register(eventId);
 

@@ -53,10 +53,10 @@ export class ProfilePageComponent {
   }
 
   /** Event handler to delete a registration when "Cancel Registration" button is clicked.
-   * @param event_id: Number representing the event registration to be deleted for the user
+   * @param event_id: number representing the event registration to be deleted for the user
    * @returns {void}
   */
-  async cancelRegistration(event_id: Number): Promise<void> {
+  async cancelRegistration(event_id: number): Promise<void> {
     // Call the profileService's deleteRegistration() method.
     this.profileService.deleteRegistration(event_id);
 
@@ -73,15 +73,15 @@ export class ProfilePageComponent {
    * @param id ID of the organization
    * @returns URL for the organization
    */
-  routeBuilder(id: Number | null): string {
+  routeBuilder(id: number | null): string {
     return "/organization/" + id;
   }
 
   /** Event handler to delete an organization for a user when "Delete Organization" button is clicked.
-   * @param org_id: Number representing the organization to be deleted for the user
+   * @param org_id: number representing the organization to be deleted for the user
    * @returns {void}
   */
-  async deleteOrgMembership(org_id: Number): Promise<void> {
+  async deleteOrgMembership(org_id: number): Promise<void> {
     this.profileService.deleteOrgMembership(org_id);
 
     // Open snack bar to notify user that the organization membership was deleted.

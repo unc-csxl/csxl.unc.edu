@@ -57,10 +57,10 @@ export class OrgDetailsService {
       this.profile$.subscribe(profile => {
         
         // Check if item is already starred
-        let assocFilter = profile!.organization_associations!.filter((orgRole) => orgRole.org_id?.valueOf() == orgId);
-        if (assocFilter && assocFilter!.length > 0 && assocFilter[0].membership_type.valueOf() >= 0) {
+        let assocFilter = profile!.organization_associations!.filter((orgRole) => orgRole.org_id == orgId);
+        if (assocFilter && assocFilter!.length > 0 && assocFilter[0].membership_type >= 0) {
           // If so, delete the star
-          const orgRoleId = assocFilter[0].id!.valueOf();
+          const orgRoleId = assocFilter[0].id!;
           console.log(orgRoleId);
           this.http.delete<void>(`/api/orgroles/${orgRoleId}`).subscribe(() => console.log('Delete successful.'));
         }

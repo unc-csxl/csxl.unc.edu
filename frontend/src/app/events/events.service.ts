@@ -66,12 +66,12 @@ export class EventsService {
   }
 
   /** Create a registration from the backend
-   * @param event_id: Number representing the event id
+   * @param id: Number representing the event id
    * @returns {void}
   */
-  async register(id: Number) {
+  async register(id: number) {
     // Store the current user's ID.
-    var user_id: Number = -1;
+    var user_id: number = -1;
     
     // If a user is currently logged in, register them for the appropriate event.
     if (this.profile$) {

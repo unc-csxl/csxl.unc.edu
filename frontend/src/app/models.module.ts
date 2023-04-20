@@ -37,7 +37,7 @@ export interface UserSummary {
 
 /** Interface for Organization Type (used on frontend for organization detail) */
 export interface Organization {
-  id: Number | null;
+  id: number | null;
   name: String;
   logo: String;
   short_description: String;
@@ -55,7 +55,7 @@ export interface Organization {
 
 /** Interface for OrganizationSummary Type (used on frontend for organization requests) */
 export interface OrganizationSummary {
-  id: Number | null;
+  id: number | null;
   name: String;
   slug: String;
   logo: String;
@@ -71,30 +71,30 @@ export interface OrganizationSummary {
 
 /** Interface for OrgRole Type (defines relationships between users and organizations) */
 export interface OrgRole {
-  id: Number| null;
-  user_id: Number;
-  org_id: Number;
-  membership_type: Number;
+  id: number| null;
+  user_id: number;
+  org_id: number;
+  membership_type: number;
   organization: OrganizationSummary | null;
   user: UserSummary | null;
 }
 /** Interface for OrgRole Type (defines relationships between users and organizations) */
 export interface OrgRoleSummary {
-  id: Number| null;
-  user_id: Number;
-  org_id: Number;
-  membership_type: Number;
+  id: number| null;
+  user_id: number;
+  org_id: number;
+  membership_type: number;
 }
 
 /** Interface for Event Type (used on frontend for event requests) */
 export interface Event {
-  id: Number | null;
+  id: number | null;
   name: string;
   time: Date;
   location: string;
   description: string;
   public: Boolean;
-  org_id: Number;
+  org_id: number;
   organization: OrganizationSummary;
   users: UserSummary[];
   user_associations: Registration[];
@@ -102,36 +102,36 @@ export interface Event {
 
 /** Interface for EventSummary Type (used on frontend for creating events) */
 export interface EventSummary {
-  id: Number | null;
+  id: number | null;
   name: string;
   time: Date;
   location: string;
   description: string;
   public: Boolean;
-  org_id: Number;
+  org_id: number;
 }
 
 /** Interface for Registration Type (defines relationships between users and events) */
 export interface Registration {
-  id: Number | null;
-  user_id: Number;
-  event_id: Number;
-  status: Number;
+  id: number | null;
+  user_id: number;
+  event_id: number;
+  status: number;
   event: EventSummary;
   user: UserSummary;
 }
 
 /** Interface for RegistrationSummary Type (used on frontend for registration requests) */
 export interface RegistrationSummary {
-  id: Number | null;
-  user_id: Number;
-  event_id: Number;
-  status: Number;
+  id: number | null;
+  user_id: number;
+  event_id: number;
+  status: number;
 }
 
 /** Interface for Organization Type */
 export interface Organization {
-  id: Number | null
+  id: number | null
   slug: String
   name: String
   logo: String

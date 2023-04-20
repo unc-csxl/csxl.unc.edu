@@ -59,10 +59,10 @@ export class OrganizationsComponent {
       orgs.map((org) => {
         const filter = this.profile.organization_associations.filter(oa => oa.org_id == org.id);
         if(filter && filter.length > 0) {
-          this.permValues.set(org.id!.valueOf(), filter[0].membership_type.valueOf());
+          this.permValues.set(org.id!, filter[0].membership_type);
         }
         else {
-          this.permValues.set(org.id!.valueOf(), -1)
+          this.permValues.set(org.id!, -1)
         }
       })
     })
@@ -76,11 +76,11 @@ export class OrganizationsComponent {
   /**
    * Event handler to toggle the star status of an organization.
    */
-  async starOrganization(orgId: Number): Promise<void> {
+  async starOrganization(orgId: number): Promise<void> {
     
     // If user is an admin, they should not be able to unstar the organization.
     const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
-    if(filter && filter.length > 0 && filter[0].membership_type.valueOf() >= 1) {
+    if(filter && filter.length > 0 && filter[0].membership_type >= 1) {
 
       // Open snack bar to notify user that the event was deleted.
       this.snackBar.open("You cannot unstar this organization because you are an admin.", "", { duration: 2000 })
@@ -88,7 +88,7 @@ export class OrganizationsComponent {
     else {
       if(this.profile && this.profile.first_name) {
         // Call the orgDetailsService's starOrganization() method.
-        this.orgDetailService.starOrganization(orgId.valueOf());
+        this.orgDetailService.starOrganization(orgId);
           
         // Set slight delay so page reloads after API calls finish running.
         await new Promise(f => setTimeout(f, 200));

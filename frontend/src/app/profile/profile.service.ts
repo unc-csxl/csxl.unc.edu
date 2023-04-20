@@ -78,14 +78,14 @@ export class ProfileService {
   }
 
   /** Delete a registration from the backend
-   * @param event_id: Number representing the event registration to be deleted for the user
+   * @param event_id: number representing the event registration to be deleted for the user
    * @returns {void}
   */
-  deleteRegistration(event_id: Number) {
+  deleteRegistration(event_id: number) {
     // Store the list of registrations from the profile.
     var registrations: Registration[] = [];
     // Store the current user's ID.
-    var user_id: Number | null = null;
+    var user_id: number | null = null;
 
     // If a user is currently logged in, get their registrations and delete the appropriate registration.
     if (this.profile$) {
@@ -107,14 +107,14 @@ export class ProfileService {
   }
 
   /** Delete an org role from the backend
-   * @param org_id: Number representing the org role to be deleted for the user
+   * @param org_id: number representing the org role to be deleted for the user
    * @returns {void}
   */
-  deleteOrgMembership(org_id: Number): void {
+  deleteOrgMembership(org_id: number): void {
      // Store the list of registrations from the profile.
      var org_roles: OrgRole[] = [];
      // Store the current user's ID.
-     var user_id: Number | null = null;
+     var user_id: number | null = null;
  
      // If a user is currently logged in, get their organizations and delete the appropriate organization.
      if (this.profile$) {
