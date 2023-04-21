@@ -84,7 +84,7 @@ export class EventsComponent {
     }
   }
 
-  async unregister(eventId: Number) {
+  async unregister(eventId: number) {
     if (this.profile.id !== null) {
       this.profileService.deleteRegistration(eventId);
 

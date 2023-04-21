@@ -16,6 +16,21 @@ export class FilterPipe implements PipeTransform {
    * @returns {Observable<OrganizationSummary[]>}
   */
   transform(organizations: Observable<OrganizationSummary[]>, searchQuery: String): any {
+    // Sort the organizations list alphabetically by name
+    organizations = organizations.pipe(
+      map(orgs => orgs.sort((a: OrganizationSummary, b: OrganizationSummary) => {
+        if(a.name < b.name) {
+          return -1;
+        }
+        else if(a.name > b.name) {
+          return 1;
+        }
+        else {
+          return 0;
+        }
+      }))
+    )
+    
     // If a search query is provided, return the organizations that start with the search query.
     if (searchQuery) {
       return organizations.pipe(
