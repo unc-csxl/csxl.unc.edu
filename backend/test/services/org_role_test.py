@@ -54,15 +54,18 @@ def user(test_session: Session):
     return UserService(test_session)
 
 def test_no_org_roles(org_role_service: OrgRoleService):
+    """Tests that the test session initially contains no org roles"""
     assert len(org_role_service.all()) is 0
 
 def test_create_org_role(org_role_service: OrgRoleService, organization: OrganizationService, user: UserService):
+    """Tests that an organization role can be added using create()"""
     organization.create(org1)
     user.save(root)
     org_role = org_role_service.create(role1)
     assert org_role.user_id == role1.user_id
 
 def test_get_all_org_roles(org_role_service: OrgRoleService, organization: OrganizationService, user: UserService):
+    """Tests that all org roles can be retrieved using all()"""
     organization.create(org1)
     user.save(root)
     org_role_service.create(role1)
@@ -72,6 +75,7 @@ def test_get_all_org_roles(org_role_service: OrgRoleService, organization: Organ
     assert org_role_service.all()[1].membership_type is 0
 
 def test_get_from_userid(org_role_service: OrgRoleService, organization: OrganizationService, user: UserService):
+    """Tests that all org role entries for a user can be retrieved by its id using get_from_userid()"""
     organization.create(org1)
     user.save(root)
     org_role_service.create(role1)
@@ -79,6 +83,7 @@ def test_get_from_userid(org_role_service: OrgRoleService, organization: Organiz
     assert len(org_role_service.get_from_userid(1)) == 2
 
 def test_get_from_orgid(org_role_service: OrgRoleService, organization: OrganizationService, user: UserService):
+    """Tests that all org role entries for an organization can be retrieved by the org id"""
     organization.create(org1)
     user.save(root)
     org_role_service.create(role1)
@@ -87,6 +92,7 @@ def test_get_from_orgid(org_role_service: OrgRoleService, organization: Organiza
 
 
 def test_delete(org_role_service: OrgRoleService, organization: OrganizationService, user: UserService):
+    """Tests that you can delete an org role entry"""
     organization.create(org1)
     user.save(root)
     org_role_service.create(role1)
@@ -96,6 +102,7 @@ def test_delete(org_role_service: OrgRoleService, organization: OrganizationServ
 
 
 def test_update(org_role_service: OrgRoleService, organization: OrganizationService, user: UserService):
+    """Tests tha an existing org role entry can be updated by calling create() with an updated role"""
     organization.create(org1)
     user.save(root)
     org_role = org_role_service.create(role1)

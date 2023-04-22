@@ -77,14 +77,17 @@ def organization(test_session: Session):
     return OrganizationService(test_session)
 
 def test_no_events(event_service: EventService):
+    """Tests that the test session initially contains no events"""
     assert len(event_service.all()) is 0
 
 def test_create_event_and_get_by_id(event_service: EventService, organization: OrganizationService):
+    """Tests that you can create an event and retrieve it using its id in the get_from_id() method"""
     organization.create(org1)
     event = event_service.create(event1)
     assert event_service.get_from_id(1).id == event.id
 
 def test_get_all_events(event_service: EventService, organization: OrganizationService):
+    """Tests that the test session initially contains no registrations"""
     organization.create(org1)
     organization.create(org2)
     event_service.create(event1)
@@ -94,12 +97,14 @@ def test_get_all_events(event_service: EventService, organization: OrganizationS
     assert event_service.all()[1].id is 2
 
 def test_get_by_org_id(event_service: EventService, organization: OrganizationService):
+    """Tests that an event can be retrieved using get_from_org_id()"""
     organization.create(org1)
     event_service.create(event1)
     event_service.create(event3)
     assert len(event_service.get_from_org_id(1)) == 2
 
 def test_get_from_time_range(event_service: EventService, organization: OrganizationService):
+    """Tests that you can retrieve multiple events in a time range using get_from_time_range()"""
     organization.create(org1)
     organization.create(org2)
     event_service.create(event1)
@@ -111,6 +116,7 @@ def test_get_from_time_range(event_service: EventService, organization: Organiza
 
 
 def test_delete(event_service: EventService, organization: OrganizationService):
+    """Tests that you can delete an event by its id"""
     organization.create(org1)
     event_service.create(event1)
     assert len(event_service.all()) is 1
@@ -119,6 +125,7 @@ def test_delete(event_service: EventService, organization: OrganizationService):
 
 
 def test_update(event_service: EventService, organization: OrganizationService):
+    """Tests that you can update an existing event using update()"""
     organization.create(org1)
     event = event_service.create(event1)
     assert event_service.get_from_id(1).location == event.location

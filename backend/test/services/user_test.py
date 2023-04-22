@@ -18,13 +18,16 @@ def user_service(test_session: Session):
     return UserService(test_session)
 
 def test_no_users(user_service: UserService):
+    """Tests that the test session initially contains no users"""
     assert len(user_service.all()) is 0
 
 def test_create_user(user_service: UserService):
+    """Tests that user can be added to table using save() method"""
     user_service.save(root)
     assert len(user_service.all()) is 1
 
 def test_get_all_users(user_service: UserService):
+    """Tests that all users can be retrieved using all() method"""
     user_service.save(root)
     assert len(user_service.all()) is 1
     user_service.save(sol_student)
@@ -32,17 +35,20 @@ def test_get_all_users(user_service: UserService):
     assert user_service.all()[1].id is 2
 
 def test_search_users(user_service: UserService):
+    """Tests that a user can be searched for by their name using search()"""
     user_service.save(sol_student)
     found_users = user_service.search(root, "Sol")
     assert found_users[0].first_name == "Sol"
 
 def test_delete(user_service: UserService):
+    """Tests that a user is removed from the table when calling delete()"""
     user_service.save(root)
     assert len(user_service.all()) is 1
     user_service.delete(999999999)
     assert len(user_service.all()) is 0
 
 def test_update(user_service: UserService):
+    """Tests that an existing user is modified when calling save() with an updated user"""
     user1 = user_service.save(root)
     assert user1.first_name == "Super"
     new_user = user_service.save(root_updated)

@@ -80,9 +80,11 @@ def org_service(test_session: Session):
     return OrganizationService(test_session)
 
 def test_no_registrations(registration: RegistrationService):
+    """Tests that the test session initially contains no registrations"""
     assert len(registration.all()) is 0
 
 def test_get_all_registrations(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
+    """Tests creating a new registration and checks that it was added to table successfully"""
     user_service.save(root)
     org_service.create(org1)
     event_service.create(event1)
@@ -94,6 +96,7 @@ def test_get_all_registrations(registration: RegistrationService, user_service: 
     assert registration.all()[1].id is 2
 
 def test_create_registration_and_get_by_user(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
+    """Tests that a newly added can be retrieved using the get_by_user() method"""
     user_service.save(root)
     org_service.create(org1)
     event_service.create(event1)
@@ -101,6 +104,7 @@ def test_create_registration_and_get_by_user(registration: RegistrationService, 
     assert registration.get_by_user(1,0)[0].status == reg.status == 0
 
 def test_get_all_registrations(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
+    """Tests creating two registrations and tests that the all() method retrieves both"""
     user_service.save(root)
     org_service.create(org1)
     event_service.create(event1)
@@ -112,6 +116,7 @@ def test_get_all_registrations(registration: RegistrationService, user_service: 
     assert registration.all()[1].id is 2
 
 def test_get_by_event(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
+    """Tests that you can retrive a registration by its event id using get_by_event()"""
     user_service.save(root)
     org_service.create(org1)
     event_service.create(event1)
@@ -119,6 +124,7 @@ def test_get_by_event(registration: RegistrationService, user_service: UserServi
     assert registration.get_by_event(1,0)[0].status == reg.status == 0
 
 def test_delete_registration(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
+    """Tests that all() returns one less registration after calling delete_registration()"""
     user_service.save(root)
     org_service.create(org1)
     event_service.create(event1)
@@ -128,6 +134,7 @@ def test_delete_registration(registration: RegistrationService, user_service: Us
     assert len(registration.all()) is 0
 
 def test_clear_registrations(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
+    """Tests that calling clear_registration() will clear our multiple registrations"""
     user_service.save(root)
     org_service.create(org1)
     event_service.create(event1)
@@ -140,6 +147,7 @@ def test_clear_registrations(registration: RegistrationService, user_service: Us
     assert len(registration.all()) is 0
 
 def test_update_status(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
+    """Tests that a registration can be updated after it is created using update_status()"""
     user_service.save(root)
     org_service.create(org1)
     event_service.create(event1)
