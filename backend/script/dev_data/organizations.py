@@ -211,7 +211,7 @@ queerhack = OrganizationEntity(
 wics = OrganizationEntity(
     name="Women in Computer Science", 
     slug="WICS",
-    logo="https://dl.airtable.com/.attachments/8ea125095908a9e78c7d3174897ac175/e2837aef/Screen-Shot-2022-02-28-at-1.51.24-PM-300x184.png", 
+    logo="https://se-images.campuslabs.com/clink/images/a0a4f53b-5f5f-41c5-9abb-f76c398a16994fcb0c01-02b0-4525-bfc8-3a5c44640175.PNG?preset=med-sq", 
     short_description="Social, professional, and academic organization to empower and enable women in computer science.", 
     long_description="The Women in Computer Science club at UNC Chapel Hill (WiCS) is a social, professional, and academic organization to empower and enable women in computer science. We host a variety of events throughout the year aimed at bringing together the women in tech here on campus and supporting them through mentorship, informative talks, and networking events. We frequently team up with the other organizations in the Computer Science department dedicated to eradicating the gender gap for co-hosted events and coordinate with Girls Who Code and PearlHacks each year.", 
     website="", 

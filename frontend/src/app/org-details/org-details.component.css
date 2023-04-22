@@ -15,22 +15,6 @@
     column-gap: 24px;
   }
   
-  /** Make cards display in one column, with the event card appearing last */
-  @media only screen and (max-device-width: 730px) {
-    .organization-grid {
-      display: grid;
-      padding: 24px;
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr;
-      row-gap: 15px;
-      column-gap: 24px;
-    }
-  
-    .events-card-container {
-      order: 1;
-    }
-  }
-  
   .mat-mdc-card {
     margin: 0 !important;
     max-width: 100%;
@@ -220,7 +204,7 @@
   
   .event-detail-icon {
     margin-right: 1rem;
-    width: 24px;
+    width: 35px;
   }
   
   .cancel-button {
@@ -271,5 +255,93 @@
 
   .logo {
     width: 80px;
-    border-radius: 50%;
+    border-radius: 50% !important;
+}
+
+.link {
+  color: #4786C6;
+}
+
+.link:hover {
+  color: #396a9c;
+}
+
+.desktop {
+  display: inline;
+}
+
+.mobile {
+  display: none;
+}
+
+button {
+  margin-right: 0.5rem;
+}
+
+ /** Make cards display in one column, with the event card appearing last */
+ @media only screen and (max-device-width: 1000px) {
+  .organization-grid {
+    display: grid;
+    padding: 24px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    row-gap: 15px;
+    column-gap: 24px;
+  }
+
+  .events-card-container {
+    order: 1;
+  }
+
+  .mobile {
+    display: inline !important;
+  }
+  
+  .desktop {
+    display: none !important;
+  }
+
+  .header-info {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .organization-grid {
+    display: inline;
+  }
+
+  .organization-card-mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .logo-mobile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50% !important;
+    margin-right: 0.5rem;
+  }
+
+  .organization-header {
+    flex-direction: column;
+    justify-content: left;
+    align-items: flex-start !important;
+  }
+
+  .organization-name-section {
+    width: 100%;
+  }
+
+  .organization-icons-section {
+    width: 100%;
+  }
+
+  button {
+    width: 2rem;
+  }
+
+  .mat-mdc-card {
+    margin: 1rem !important;
+  }
 }

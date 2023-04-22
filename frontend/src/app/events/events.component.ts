@@ -6,7 +6,7 @@ import { EventsService } from './events.service';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Profile, Event, OrganizationSummary } from 'src/app/models.module';
+import { Profile, Event, EventSummary, OrganizationSummary } from 'src/app/models.module';
 import { OrganizationsService } from '../organizations/organizations.service';
 import { ProfileService } from '../profile/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -25,7 +25,7 @@ export class EventsComponent {
   public organizationsList$: Observable<OrganizationSummary[]>;
 
   /** Store Observable list of Registrations */
-  public registrations: Event[] = [];
+  public registrations: EventSummary[] = [];
 
   /** Store searchBarQuery */
   searchBarQuery = "";

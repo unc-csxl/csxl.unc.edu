@@ -104,3 +104,4 @@ class OrganizationEntity(EntityBase):
                             heel_life=self.heel_life)
 
 from backend.entities.user_entity import UserEntity
+from backend.entities.org_role_entity import OrgRoleEntity

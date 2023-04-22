@@ -65,7 +65,6 @@ export class OrgDetailsService {
           this.http.delete<void>(`/api/orgroles/${orgRoleId}`).subscribe(() => console.log('Delete successful.'));
         }
         else {
-          console.log("WHY ARE U HERE?")
           // If not, add the star
 
           // Create new org role object to post

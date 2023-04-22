@@ -1,13 +1,13 @@
 <!-- HTML Structure of Organization Details Page -->
 
 <div class="organization-grid">
-  <!-- Organization Information Card -->
-  <div class="organization-card-container">
+  <!-- Organization Information Card for Desktop Users -->
+  <div class="organization-card-container desktop">
     <mat-card class="organization-card">
       <!-- Organization Card Header (Image, Name, Description) -->
       <mat-card-header class="organization-header">
         <div class="left-header-info">
-          <!-- ERROR WITH LOGO -->
+          <!-- Organization Logo -->
           <img mat-card-image src={{organization!.logo}} class="logo">
         </div>
         <div class="right-header-info">
@@ -57,9 +57,64 @@
           </div>
           <!-- Organization Description -->
           <p class="organization-description">{{(organization$ | async)?.long_description}}</p>
-          <a [routerLink]="['/organization', organization!.id, 'org-editor']">
-            <button *ngIf="adminPermission" mat-raised-button type="submit">Edit Organization</button>
-          </a>
+        </div>
+      </mat-card-header>
+    </mat-card>
+  </div>
+
+   <!-- Organization Information Card for Mobile Users -->
+   <div class="organization-card-container mobile">
+    <mat-card class="organization-card-mobile">
+      <!-- Organization Card Header (Image, Name, Description) -->
+      <mat-card-header class="organization-header">
+        <div class="header-info">
+          <!-- Organization Logo -->
+          <img mat-card-image src={{organization!.logo}} class="logo-mobile">
+          <!-- Organization Name -->
+          <div class="organization-name-section">
+            <mat-card-title class="user-name">{{(organization$ | async)?.name}}</mat-card-title>
+          </div>
+        </div>
+          <!-- Organization Description -->
+          <p class="organization-description">{{(organization$ | async)?.long_description}}</p>
+           <!-- Organization Name, Social Media, and Star -->
+           <div class="organization-top-header-group">
+            <!-- Organization Icons -->
+            <div class="organization-icons-section">
+              <div class="link-icons">
+                <a href={{organization!.website}} target="_blank" *ngIf="organization!.website != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon fontIcon="link"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.email}} target="_blank" *ngIf="(organization$ | async)!.email != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon fontIcon="mail"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.instagram}} target="_blank" *ngIf="organization!.instagram != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon svgIcon="instagram"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.linked_in}} target="_blank" *ngIf="organization!.linked_in != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon svgIcon="linkedin"></mat-icon>
+                  </button>
+                </a>
+                <a href={{organization!.youtube}} target="_blank" *ngIf="organization!.youtube != ''">
+                  <button mat-icon-button color="basic">
+                    <mat-icon svgIcon="youtube"></mat-icon>
+                  </button>
+                </a>
+
+                <!-- Star button -->
+                <button *ngIf="profile && profile.first_name" mat-icon-button color="basic" (click)="starOrganization()">
+                  <mat-icon *ngIf="permValue >= 0">star</mat-icon>
+                  <mat-icon *ngIf="permValue < 0">star_outlined</mat-icon>
+                </button>
+              </div>
+            </div>
         </div>
       </mat-card-header>
     </mat-card>
@@ -74,13 +129,16 @@
       <!-- Member Info -->
       <mat-card-content>
         <mat-list>
-          <div *ngFor="let associations of (organization$ | async)?.user_associations">
+          <div *ngFor="let associations of executives">
             <div *ngIf="associations.membership_type > 0" class="member">
               <div matListItemTitle class="member-name">{{associations.user?.first_name + " " +
                 associations.user?.last_name}}</div>
-              <div><button mat-button class="member-link">Contact</button></div>
+              <div><a href="mailto:{{associations?.user?.email}}"><button mat-button class="member-link">Contact</button></a></div>
             </div>
           </div>
+          <p *ngIf="executives.length == 0">
+              There are currently no executive members for this organization.
+          </p>
         </mat-list>
       </mat-card-content>
     </mat-card>
@@ -138,6 +196,9 @@
               </div>
             </div>
           </mat-expansion-panel>
+          <p *ngIf="((organization$ | async)?.events! | eventFilter: 'current')?.length == 0">
+            You are currently not registered for any events. <a class="link" href="./events">Click here</a> to explore upcoming CS events!
+          </p>
 
           <div mat-subheader class="event-subheader">Past Events</div>
           <!-- Event List (Past) -->
@@ -168,9 +229,11 @@
               <button *ngIf="adminPermission" mat-raised-button type="submit">Edit Event</button>
             </div>
           </mat-expansion-panel>
+          <p *ngIf="((organization$ | async)?.events! | eventFilter: 'past')?.length == 0">
+            You have not previously attended any events yet.
+          </p>
         </mat-list>
       </mat-card-content>
     </mat-card>
   </div>
-
 </div>

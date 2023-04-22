@@ -83,3 +83,4 @@ class EventEntity(EntityBase):
 from backend.entities.organization_entity import OrganizationEntity;
 from backend.entities.user_entity import UserEntity;
 from backend.entities.registration_entity import RegistrationEntity;
+

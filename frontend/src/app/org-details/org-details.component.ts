@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Route } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, tap } from 'rxjs';
 import { OrgDetailsService } from './org-details.service';
-import { Organization, Profile } from '../models.module';
+import { Organization, OrgRole, Profile } from '../models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '../profile/profile.resolver';
 
@@ -34,6 +34,9 @@ export class OrgDetailsComponent {
   /** Stores whether the user has admin permission over the current organization. */
   public adminPermission: boolean = false;
 
+  /** Stores executives of the current organization */
+  public executives: OrgRole[] = [];
+
   constructor(private orgDetailsService: OrgDetailsService, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, private route: ActivatedRoute, protected snackBar: MatSnackBar) {
     /** Import Logos using MatIconRegistry */
     iconRegistry.addSvgIcon('instagram', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/instagram.svg'));
@@ -51,13 +54,21 @@ export class OrgDetailsComponent {
     // Retrieve Organization using OrgDetailsService
     this.organization$ = this.orgDetailsService.getOrganization(this.id);
     this.organization$.subscribe(org => this.organization = org);
+    this.organization$.subscribe(org => {
+      org.user_associations.forEach((association) => {
+          if(association.membership_type >= 1) {
+              this.executives.push(association);
+              console.log(this.executives);
+          }
+      })
+    })
 
     // Set permission value if profile exists
     if(this.profile) {
       let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.id);
       if(assocFilter.length > 0) {
-        this.permValue = assocFilter[0].membership_type;
-        this.adminPermission = (this.permValue >= 2);
+        this.permValue = assocFilter[0].membership_type.valueOf();
+        this.adminPermission = (this.permValue >= 1);
       }
     }
   }
@@ -73,12 +84,11 @@ export class OrgDetailsComponent {
   async starOrganization(): Promise<void> {
     
     // If user is an admin, they should not be able to unstar the organization.
-    if(this.permValue == 1) {
-      this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 })
+    if(this.adminPermission) {
 
-    } else if (this.permValue == 2) {
-      this.snackBar.open("You cannot unstar this organization because you are a manager.", "", { duration: 2000 })
-    } 
+      // Open snack bar to notify user that the event was deleted.
+      this.snackBar.open("You cannot unstar this organization because you are an admin.", "", { duration: 2000 })
+    }
     else {
       if(this.profile && this.profile.first_name) {
         // Call the orgDetailsService's starOrganization() method.
