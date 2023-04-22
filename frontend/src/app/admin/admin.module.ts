@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,6 +20,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AdminUsersListComponent } from './users/list/admin-users-list.component';
 import { AdminRolesListComponent } from './roles/list/admin-roles-list.component';
 import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.component';
+import { AdminOrganizationsListComponent } from './organizations/list/admin-organizations-list.component';
+import { AdminOrganizationDetailsComponent } from './organizations/details/admin-organization-details.component';
 
 @NgModule({
   declarations: [
@@ -26,12 +29,15 @@ import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.co
     AdminUsersListComponent,
     AdminRolesListComponent,
     AdminRoleDetailsComponent,
+    AdminOrganizationsListComponent,
+    AdminOrganizationDetailsComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     MatTabsModule,
     MatTableModule,
+    MatCardModule,
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,

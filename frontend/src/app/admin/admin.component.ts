@@ -15,6 +15,7 @@ export class AdminComponent implements OnInit {
   public links = [
     { label: 'Users', path: '/admin/users' },
     { label: 'Roles', path: '/admin/roles' },
+    { label: 'Organizations', path: '/admin/organizations'}
   ];
 
   constructor(public profileService: ProfileService) {

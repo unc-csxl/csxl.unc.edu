@@ -53,7 +53,7 @@ class OrgRoleService:
                     id = role_entity.id,
                     user_id = role_entity.user_id,
                     org_id = role_entity.org_id,
-                    membership_type = role_entity.membership_type
+                    membership_type = role.membership_type
             ))
         else:
             # Otherwise, create new object

@@ -69,7 +69,7 @@ export class EventsService {
    * @param id: Number representing the event id
    * @returns {void}
   */
-  async register(id: number) {
+  register(id: number) {
     // Store the current user's ID.
     var user_id: number = -1;
     

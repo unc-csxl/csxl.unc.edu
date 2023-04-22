@@ -7,6 +7,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ProfileService } from '../profile.service';
 import { Event, OrganizationSummary, Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { OrgDetailsService } from 'src/app/org-details/org-details.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -30,7 +31,7 @@ export class ProfilePageComponent {
   public events: Event[];
   public organizations: OrganizationSummary[];
 
-  constructor(route: ActivatedRoute, private router: Router, protected profileService: ProfileService, protected snackBar: MatSnackBar) {
+  constructor(route: ActivatedRoute, private router: Router, protected profileService: ProfileService, protected orgDetailsService: OrgDetailsService, protected snackBar: MatSnackBar) {
     /** Get currently-logged-in user. */
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
@@ -77,18 +78,33 @@ export class ProfilePageComponent {
     return "/organization/" + id;
   }
 
-  /** Event handler to delete an organization for a user when "Delete Organization" button is clicked.
-   * @param org_id: number representing the organization to be deleted for the user
-   * @returns {void}
-  */
-  async deleteOrgMembership(org_id: number): Promise<void> {
-    this.profileService.deleteOrgMembership(org_id);
+  /**
+   * Event handler to toggle the star status of an organization.
+   */
+  async deleteOrgMembership(orgId: number): Promise<void> {
 
-    // Open snack bar to notify user that the organization membership was deleted.
-    this.snackBar.open("Organization Unfollowed", "", { duration: 2000 })
-    await new Promise(f => setTimeout(f, 750));
+    // If user is an admin/exec, they should not be able to unstar the organization.
+    const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
+    console.log(filter)
+    if(filter && filter.length > 0 && filter[0].membership_type !== 0) {
+      if (filter[0].membership_type == 1) {
+        this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });
+      } else if (filter[0].membership_type == 2) {
+        this.snackBar.open("You cannot unstar this organization because you are an manager", "", { duration: 2000 })
+      }
+    }
+    else {
+      if(this.profile && this.profile.first_name) {
+        // Call the orgDetailsService's starOrganization() method.
+        this.orgDetailsService.starOrganization(orgId);
+          
+        // Set slight delay so page reloads after API calls finish running.
+        await new Promise(f => setTimeout(f, 200));
 
-    // Reload the window to update the organizations.
-    location.reload();
+        // Reload the window to update the events.
+        location.reload();
+      }
+    }
   }
+  
 }

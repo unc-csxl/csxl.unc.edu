@@ -80,10 +80,12 @@ export class OrganizationsComponent {
     
     // If user is an admin, they should not be able to unstar the organization.
     const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
-    if(filter && filter.length > 0 && filter[0].membership_type >= 1) {
-
-      // Open snack bar to notify user that the event was deleted.
-      this.snackBar.open("You cannot unstar this organization because you are an admin.", "", { duration: 2000 })
+    if(filter && filter.length > 0) {
+      if (filter[0].membership_type == 1) {
+        this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });
+      } else if (filter[0].membership_type == 2) {
+        this.snackBar.open("You cannot unstar this organization because you are a manager.", "", { duration: 2000 })
+      }
     }
     else {
       if(this.profile && this.profile.first_name) {

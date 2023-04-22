@@ -56,7 +56,7 @@ export class OrgDetailsComponent {
     if(this.profile) {
       let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.id);
       if(assocFilter.length > 0) {
-        this.permValue = assocFilter[0].membership_type.valueOf();
+        this.permValue = assocFilter[0].membership_type;
         this.adminPermission = (this.permValue >= 2);
       }
     }
@@ -73,11 +73,12 @@ export class OrgDetailsComponent {
   async starOrganization(): Promise<void> {
     
     // If user is an admin, they should not be able to unstar the organization.
-    if(this.adminPermission) {
+    if(this.permValue == 1) {
+      this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 })
 
-      // Open snack bar to notify user that the event was deleted.
-      this.snackBar.open("You cannot unstar this organization because you are an admin.", "", { duration: 2000 })
-    }
+    } else if (this.permValue == 2) {
+      this.snackBar.open("You cannot unstar this organization because you are a manager.", "", { duration: 2000 })
+    } 
     else {
       if(this.profile && this.profile.first_name) {
         // Call the orgDetailsService's starOrganization() method.
