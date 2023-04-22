@@ -29,36 +29,53 @@
       </ng-template>
     </mat-form-field>
 
-    <!-- Organizations Select -->
-    <mat-form-field appearance="fill" color="accent" class="orgSelect">
-      <mat-label>Organizations</mat-label>
-      <mat-select [formControl]="organizations" multiple>
-        <mat-option *ngFor="let org of organizationsList$ | async" [value]="org.name">{{org.slug}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <!-- Organizations Select -->
+      <mat-form-field appearance="fill" color="accent" class="orgSelect desktop">
+        <mat-label>Organizations</mat-label>
+        <mat-select [formControl]="organizations" multiple>
+          <mat-option *ngFor="let org of organizationsList$ | async" [value]="org.name">{{org.slug}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <!-- Reset Button -->
-    <button mat-stroked-button (click)="reset()">Reset</button>
+      <!-- Reset Button -->
+      <button mat-stroked-button class="desktop" (click)="reset()">Reset</button>
+
+    <div class="mobile-row mobile">
+      <!-- Organizations Select -->
+      <mat-form-field appearance="fill" color="accent" class="orgSelect">
+        <mat-label>Organizations</mat-label>
+        <mat-select [formControl]="organizations" multiple>
+          <mat-option *ngFor="let org of organizationsList$ | async" [value]="org.name">{{org.slug}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Reset Button -->
+      <button mat-stroked-button (click)="reset()">Reset</button>
+    </div>
   </div>
 
     <!-- Event Expansion Panels -->
     <mat-accordion>
         <mat-expansion-panel *ngFor="let event of (events$ | eventsFilter: searchBarQuery:range.value.start:range.value.end:organizations.value) | async" hideToggle>
           <mat-expansion-panel-header>
-            <mat-panel-title class="event-name">
+            <!-- Mobile Event Cards -->
+            <div class="mobile-column mobile">
+              <mat-panel-title class="event-name">
+                {{event.name}}
+              </mat-panel-title>
+              <mat-panel-description class="mobile">
+                {{event.organization.slug}} | {{event.location}} | {{event.time | date: 'M/d @ h:mmaaaaa'}}
+              </mat-panel-description>
+            </div>
+            <!-- Desktop Event Cards -->
+            <mat-panel-title class="event-name desktop">
               {{event.name}}
             </mat-panel-title>
             <mat-panel-description class="desktop">
               {{event.organization.name}}
             </mat-panel-description>
-            <mat-panel-description class="mobile">
-              {{event.organization.slug}}
-            </mat-panel-description>
             <mat-panel-description class="desktop">
               {{event.location}} | {{event.time | date: 'MMMM d @ h:mm a'}}
-            </mat-panel-description>
-            <mat-panel-description class="mobile">
-              {{event.location}}<br>{{event.time | date: 'MMMM d'}}
             </mat-panel-description>
             <!-- Registration Button (if not registered) -->
             <mat-icon (click)="register(event.id)" *ngIf="checkCurrentEvent(event.time) && !checkIsRegistered(event.id) && profile != null">person_add</mat-icon>

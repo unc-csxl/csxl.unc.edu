@@ -79,7 +79,8 @@ button {
     }
 
     button {
-      margin-top: 0;
+      margin-left: 1rem;
+      margin-top: 0.25rem;
     }
 
     mat-expansion-panel {
@@ -113,7 +114,7 @@ button {
   }
 
   .orgSelect {
-    width: 85vw;
+    width: 55vw;
   }
 
   button {
@@ -122,12 +123,20 @@ button {
   }
 
   .event-name {
-    -webkit-line-clamp: 2; /* number of lines to show */
-            line-clamp: 2;
-    margin-right: 0;
+    overflow: visible;
   }
 
   .eventDescrip {
     margin-top: 0.5rem;
+  }
+
+  .mobile-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .mobile-column {
+    display: flex;
+    flex-direction: column;
   }
 }
