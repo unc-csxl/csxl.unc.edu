@@ -2,6 +2,8 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { EventSummary } from '../models.module';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Pipe({
   name: 'eventFilter'
@@ -14,6 +16,11 @@ export class EventFilterPipe implements PipeTransform {
    * @returns {EventSummary[]}
   */
   transform(value: EventSummary[], input: String): any {
+    // Sort the events list by date
+    value = value.sort(
+      (a: EventSummary, b: EventSummary) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0
+    );
+    
     // If input is 'past', filter for events that have a Date less than the current Date.
     if (input === "past") {
       return value.filter(val => new Date(val.time) < new Date());

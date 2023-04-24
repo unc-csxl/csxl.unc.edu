@@ -14,6 +14,11 @@ export class EventsFilterPipe implements PipeTransform {
    * @returns {Observable<EventS[]>}
   */
   transform(events: Observable<Event[]>, searchQuery: String, start: Date | null | undefined, end: Date | null | undefined, organizations: String[] | null): any {
+    // Sort the events list by date
+    events = events.pipe(
+      map(events => events.sort((a: Event, b: Event) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0))
+    )
+    
     // If a search query is provided, filter out the events that don't include that search query
     if (searchQuery) {
       events = events.pipe(
