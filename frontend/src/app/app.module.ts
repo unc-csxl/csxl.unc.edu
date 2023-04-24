@@ -24,12 +24,13 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -95,6 +96,7 @@ import { OrgEditorComponent } from './org-editor/org-editor.component';
     MatSelectModule,
     FormsModule,
     MatExpansionModule,
+    MatTooltipModule,
     MatDatepickerModule,
     MatNativeDateModule,
     JwtModule.forRoot({
@@ -112,4 +114,4 @@ import { OrgEditorComponent } from './org-editor/org-editor.component';
   }],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

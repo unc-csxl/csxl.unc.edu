@@ -28,11 +28,21 @@
           <!-- Container for Logo and Name to allow for left alignment -->
           <div class="left-container">
             <img mat-card-image src={{organization.logo}} class="logo">
-            <mat-card-title class="name">{{organization.name}}</mat-card-title>
+            <div *ngIf="organization.name.length < 20">
+              <mat-card-title class="name">
+                {{organization.name}}
+              </mat-card-title>
+            </div>
+            <div *ngIf="organization.name.length >= 20">
+              <mat-card-title class="name" #name matTooltip={{organization.name}} matTooltipPosition="above">
+                {{organization.slug}}
+              </mat-card-title>
+            </div>
           </div>
           <!-- Display number of members in an organization. -->
           <!-- Star button -->
-          <button *ngIf="profile && profile.first_name" mat-icon-button color="basic" (click)="starOrganization(organization.id)">
+          <button *ngIf="profile && profile.first_name" mat-icon-button color="basic"
+            (click)="starOrganization(organization.id)">
             <mat-icon *ngIf="permValues.get(organization.id)! >= 0">star</mat-icon>
             <mat-icon *ngIf="permValues.get(organization.id)! < 0">star_outlined</mat-icon>
           </button>
@@ -40,7 +50,8 @@
         </mat-card-header>
         <!-- Organization Description -->
         <mat-card-content class="description">
-          <p>{{organization.short_description}}</p>
+          <p matTooltip={{organization.short_description}}
+            [matTooltipDisabled]="organization.short_description.length < 85">{{organization.short_description}}</p>
         </mat-card-content>
         <!-- Organization Links & Details -->
         <mat-card-actions class="links">
@@ -51,7 +62,7 @@
                 <mat-icon fontIcon="link"></mat-icon>
               </button>
             </a>
-            <a href={{organization.email}} target="_blank" *ngIf="organization.email != ''">
+            <a href="mailto:{{organization.email}}" target="_blank" *ngIf="organization.email != ''">
               <button mat-icon-button color="basic">
                 <mat-icon fontIcon="mail"></mat-icon>
               </button>
