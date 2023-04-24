@@ -21,3 +21,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .event .mat-expansion-panel-body {
     background-color:#525252;
 }
+
+.mdc-text-field__input::-webkit-calendar-picker-indicator {
+    display: block !important;
+    filter: invert(1);
+}

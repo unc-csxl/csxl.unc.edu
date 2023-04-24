@@ -1,25 +1,21 @@
-<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="adminPermission">
     <mat-card>
         <mat-card-header>
-            <mat-card-title>Create New Event</mat-card-title>
+            <mat-card-title>Edit Event</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" color="accent">
                 <mat-label>Event Name</mat-label>
                 <input matInput placeholder="New Event" formControlName="name" name="name" required>
             </mat-form-field>
-            <mat-form-field appearance="fill">
-                <mat-label>Time</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="time" name="time" required>
-                <mat-hint>MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
+            <mat-form-field appearance="fill" color="accent">
+                <input matInput type="datetime-local" formControlName="time" name="time" required>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" color="accent">
                 <mat-label>Location</mat-label>
                 <input matInput placeholder="The Pit" formControlName="location" name="location" required>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" color="accent">
                 <mat-label>Description</mat-label>
                 <input matInput placeholder="Event description here." formControlName="description" name="description">
             </mat-form-field>
@@ -29,3 +25,6 @@
         </mat-card-actions>
     </mat-card>
 </form>
+
+<!-- Message for Non-Authenicated Users -->
+<p *ngIf="!adminPermission">You do not have permission to view this page</p>

@@ -19,10 +19,10 @@ export class FilterPipe implements PipeTransform {
     // Sort the organizations list alphabetically by name
     organizations = organizations.pipe(
       map(orgs => orgs.sort((a: OrganizationSummary, b: OrganizationSummary) => {
-        if(a.name < b.name) {
+        if(a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
         }
-        else if(a.name > b.name) {
+        else if(a.name.toLowerCase() > b.name.toLowerCase()) {
           return 1;
         }
         else {
