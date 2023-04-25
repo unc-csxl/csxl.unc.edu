@@ -53,12 +53,19 @@
                 </button>
               </div>
             </div>
-
           </div>
+
           <!-- Organization Description -->
           <p class="organization-description">{{(organization$ | async)?.long_description}}</p>
+
+          <!-- Link to Organization Editor -->
         </div>
       </mat-card-header>
+      <mat-card-footer>
+        <a [routerLink]="['/organization', organization!.id, 'org-editor']">
+          <button *ngIf="adminPermission" mat-raised-button type="submit" class="edit-org-button">Edit Organization</button>
+        </a>
+      </mat-card-footer>
     </mat-card>
   </div>
 
@@ -74,6 +81,11 @@
           <div class="organization-name-section">
             <mat-card-title class="user-name">{{(organization$ | async)?.name}}</mat-card-title>
           </div>
+          <!-- Star button -->
+          <button *ngIf="profile && profile.first_name" mat-icon-button color="basic" (click)="starOrganization()">
+            <mat-icon *ngIf="permValue >= 0">star</mat-icon>
+            <mat-icon *ngIf="permValue < 0">star_outlined</mat-icon>
+          </button>
         </div>
           <!-- Organization Description -->
           <p class="organization-description">{{(organization$ | async)?.long_description}}</p>
@@ -107,16 +119,15 @@
                     <mat-icon svgIcon="youtube"></mat-icon>
                   </button>
                 </a>
-
-                <!-- Star button -->
-                <button *ngIf="profile && profile.first_name" mat-icon-button color="basic" (click)="starOrganization()">
-                  <mat-icon *ngIf="permValue >= 0">star</mat-icon>
-                  <mat-icon *ngIf="permValue < 0">star_outlined</mat-icon>
-                </button>
               </div>
             </div>
         </div>
       </mat-card-header>
+      <mat-card-footer>
+        <a [routerLink]="['/organization', organization!.id, 'org-editor']">
+          <button *ngIf="adminPermission" mat-raised-button type="submit" class="edit-org-button">Edit Organization</button>
+        </a>
+      </mat-card-footer>
     </mat-card>
   </div>
 
@@ -133,7 +144,7 @@
             <div *ngIf="associations.membership_type > 0" class="member">
               <div matListItemTitle class="member-name">{{associations.user?.first_name + " " +
                 associations.user?.last_name}}</div>
-              <div><a href="mailto:{{associations?.user?.email}}"><button mat-button class="member-link">Contact</button></a></div>
+              <div><a href="mailto:{{associations?.user?.email}}"><button mat-raised-button class="member-link">Contact</button></a></div>
             </div>
           </div>
           <p *ngIf="executives.length == 0">

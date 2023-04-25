@@ -69,6 +69,14 @@
     height: 48px;
   }
 
+  mat-card-footer {
+    margin: 0 1rem 1.25rem 1rem;
+  }
+
+  .edit-org-button {
+    margin-left: 6rem;
+  }
+
   .user-avatar {
     margin-right: 1rem;
     margin-bottom: 0;
@@ -338,10 +346,14 @@ button {
   }
 
   button {
-    width: 2rem;
+    width: max-content;
   }
 
   .mat-mdc-card {
     margin: 1rem !important;
+  }
+
+  .edit-org-button {
+    margin-left: 0;
   }
 }

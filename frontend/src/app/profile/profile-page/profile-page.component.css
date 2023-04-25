@@ -118,6 +118,11 @@ p {
 .text-link {
   text-decoration: underline;
   cursor: pointer;
+  color: #4786C6;
+}
+
+.text-link:hover {
+  color: #396a9c;
 }
 
 .event-subheader {
