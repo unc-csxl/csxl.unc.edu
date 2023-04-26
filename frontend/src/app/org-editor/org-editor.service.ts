@@ -27,6 +27,11 @@ export class OrgEditorService {
   */
 
   updateOrganization(org: OrganizationSummary): Observable<OrganizationSummary> {
-    return this.http.put<OrganizationSummary>("/api/organizations", org);
+    if (org.id) {
+      return this.http.put<OrganizationSummary>("/api/organizations", org);
+    } else {
+      return this.http.post<OrganizationSummary>("/api/organizations", org);
+    }
+    
   }
 }

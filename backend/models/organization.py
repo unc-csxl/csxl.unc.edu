@@ -53,3 +53,4 @@ from backend.models.user import UserSummary
 from backend.models.org_role import OrgRole
 
 Organization.update_forward_refs()
+OrganizationSummary.update_forward_refs()

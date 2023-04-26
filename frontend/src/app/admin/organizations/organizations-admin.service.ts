@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { OrgRole, OrgRoleSummary, Organization, Profile } from 'src/app/models.module';
+import { OrgRole, OrgRoleSummary, Organization, OrganizationSummary, Profile } from 'src/app/models.module';
 
 @Injectable({ providedIn: 'root' })
 export class OrganizationsAdminService {
@@ -11,7 +11,7 @@ export class OrganizationsAdminService {
     /** Returns a list of all Organizations
      * @returns {Organization[]}
      */
-    list() {
+    list(): Observable<Organization[]> {
         return this.http.get<Organization[]>("/api/organizations");
     }
 
@@ -60,6 +60,14 @@ export class OrganizationsAdminService {
             }
         }
         return this.http.post<OrgRole>(`/api/orgroles`, newRole);
+    }
+
+    createOrganization(newOrg: OrganizationSummary) {
+        return this.http.post<Organization>("/api/organizations", newOrg)
+    }
+
+    deleteOrganization(org_id: number) {
+        return this.http.delete<Organization>(`/api/organizations/${org_id}`);
     }
 
 }

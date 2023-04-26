@@ -20,3 +20,7 @@ h3 {
     border-top: black 2px solid;
     background: rgba(0, 0, 0, 0.5);
 }
+
+.delete-button {
+    margin-top: 1rem;
+}

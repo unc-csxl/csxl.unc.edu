@@ -37,10 +37,10 @@ class OrganizationEntity(EntityBase):
     # All of the events hosted by the organization
         # Generated from a relationship with the "events" table
         # Back-populates the `organization` field of `EventEntity`
-    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization", cascade="all, delete")
+    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization",cascade="all,delete")
 
     users: Mapped[list["UserEntity"]] = relationship(secondary="org_role", back_populates="organizations")
-    user_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="organization")
+    user_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="organization",cascade="all,delete")
 
 
     @classmethod

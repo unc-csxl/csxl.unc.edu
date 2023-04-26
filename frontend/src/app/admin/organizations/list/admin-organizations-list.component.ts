@@ -1,10 +1,12 @@
 /** Constructs the Admin Organization List page and stores/retrieves any necessary data for it. */
 
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { OrganizationsAdminService } from '../organizations-admin.service';
 import { Organization } from 'src/app/models.module';
+import { Observable } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
     selector: 'app-admin-organizations-list',
@@ -14,9 +16,11 @@ import { Organization } from 'src/app/models.module';
 export class AdminOrganizationsListComponent {
 
     /** Organizations List */
-    public organizations: Organization[];
+    public organizations$: Observable<Organization[]>;
 
     public displayedColumns: string[] = ['name'];
+
+    dataSource = new MatTableDataSource<Organization>();
 
     /** Route information to be used in Admin Routing Module */
     public static Route = {
@@ -24,19 +28,28 @@ export class AdminOrganizationsListComponent {
         component: AdminOrganizationsListComponent,
         title: 'Organization Administration',
         canActivate: [permissionGuard('organizations.list', 'organizations/')],
-        resolve: { organizations: () => inject(OrganizationsAdminService).list() },
     }
 
     constructor(
         private router: Router,
         route: ActivatedRoute,
+        private orgAdminService: OrganizationsAdminService,
+        private _cd: ChangeDetectorRef
     ) {
-        let data = route.snapshot.data as { organizations: Organization[] };
-        this.organizations = data.organizations;
+        this.organizations$ = orgAdminService.list();
     }
-
+    ngOnInit() {
+        this.orgAdminService.list().subscribe(organizations => {
+            this.dataSource.data = organizations;
+            this._cd.detectChanges();
+        });
+    }
     onClick(organization: Organization) {
         this.router.navigate(['admin', 'organizations', organization.id]);
+    }
+
+    createOrganization() {
+        this.router.navigate(['organization', '-1', 'org-editor']);
     }
 
 }

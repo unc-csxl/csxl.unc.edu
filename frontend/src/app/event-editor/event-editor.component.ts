@@ -97,7 +97,6 @@ export class EventEditorComponent {
        if(assocFilter.length > 0) {
          this.permValue = assocFilter[0].membership_type.valueOf();
          this.adminPermission = (this.permValue >= 1);
-         console.log(this.adminPermission);
        }
      }
 

@@ -16,3 +16,9 @@
 .mat-mdc-row:hover .mat-mdc-cell {
     border-color: white;
 }
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

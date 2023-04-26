@@ -25,7 +25,7 @@
                     <mat-icon fontIcon="link"></mat-icon>
                   </button>
                 </a>
-                <a href={{organization!.email}} target="_blank" *ngIf="(organization$ | async)!.email != ''">
+                <a href="mailto:{{organization!.email}}" target="_blank" *ngIf="(organization$ | async)!.email != ''">
                   <button mat-icon-button color="basic">
                     <mat-icon fontIcon="mail"></mat-icon>
                   </button>
@@ -99,7 +99,7 @@
                     <mat-icon fontIcon="link"></mat-icon>
                   </button>
                 </a>
-                <a href={{organization!.email}} target="_blank" *ngIf="(organization$ | async)!.email != ''">
+                <a href="mailto:{{organization!.email}}" target="_blank" *ngIf="(organization$ | async)!.email != ''">
                   <button mat-icon-button color="basic">
                     <mat-icon fontIcon="mail"></mat-icon>
                   </button>

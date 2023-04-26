@@ -58,7 +58,6 @@ export class OrgDetailsComponent {
       org.user_associations.forEach((association) => {
           if(association.membership_type >= 1) {
               this.executives.push(association);
-              console.log(this.executives);
           }
       })
     })
@@ -67,8 +66,8 @@ export class OrgDetailsComponent {
     if(this.profile) {
       let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.id);
       if(assocFilter.length > 0) {
-        this.permValue = assocFilter[0].membership_type.valueOf();
-        this.adminPermission = (this.permValue >= 1);
+        this.permValue = assocFilter[0].membership_type;
+        this.adminPermission = (this.permValue >= 2);
       }
     }
   }

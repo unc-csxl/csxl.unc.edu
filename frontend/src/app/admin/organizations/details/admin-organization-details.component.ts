@@ -32,10 +32,10 @@ export class AdminOrganizationDetailsComponent implements OnInit {
         component: AdminOrganizationDetailsComponent,
         title: 'Organization Administration',
         canActivate: [permissionGuard('organizations.details', 'organizations/{id}')],
-        resolve: { 
+        resolve: {
             organization: (route: ActivatedRouteSnapshot) => {
                 const id = parseInt(route.paramMap.get('id')!);
-                return inject(OrganizationsAdminService).details(id); 
+                return inject(OrganizationsAdminService).details(id);
             }
         }
     }
@@ -87,7 +87,7 @@ export class AdminOrganizationDetailsComponent implements OnInit {
                 // Update the organization in the component
                 this.organizationsAdminService.details(org_role.org_id).subscribe(org => this.organization = org);
                 this.selectedUser = undefined;
-        })
+            })
     }
 
     /** Event handler for removing a manager from the organization 
@@ -97,5 +97,12 @@ export class AdminOrganizationDetailsComponent implements OnInit {
         this.organizationsAdminService.removeManager(org_role).subscribe(() => {
             this.organizationsAdminService.details(org_role.org_id).subscribe(org => this.organization = org);
         });
+    }
+
+    deleteOrganization(org_id: number) {
+        this.organizationsAdminService.deleteOrganization(org_id).subscribe(() => console.log('Delete successful.'));
+
+        // Navigate back to list of orgs.
+        this.router.navigate(['/admin/organizations']).then(() => location.reload());
     }
 }

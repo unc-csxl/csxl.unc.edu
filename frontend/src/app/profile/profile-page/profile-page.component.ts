@@ -85,7 +85,6 @@ export class ProfilePageComponent {
 
     // If user is an admin/exec, they should not be able to unstar the organization.
     const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
-    console.log(filter)
     if(filter && filter.length > 0 && filter[0].membership_type !== 0) {
       if (filter[0].membership_type == 1) {
         this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });

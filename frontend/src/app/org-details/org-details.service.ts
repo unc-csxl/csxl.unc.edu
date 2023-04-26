@@ -61,7 +61,6 @@ export class OrgDetailsService {
         if (assocFilter && assocFilter!.length > 0 && assocFilter[0].membership_type >= 0) {
           // If so, delete the star
           const orgRoleId = assocFilter[0].id!;
-          console.log(orgRoleId);
           this.http.delete<void>(`/api/orgroles/${orgRoleId}`).subscribe(() => console.log('Delete successful.'));
         }
         else {
