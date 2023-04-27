@@ -11,6 +11,58 @@ In addition, this feature should allow administrators of CS organizations to *ed
 
 This feature would also **help to standarize the CS organization events system** so students, organization administrators, and CSXL administrators can *keep track of organization membership, event interest, and event attendance*.
 
+## Features and Design Choices
+
+### Organization List Page
+
+![Organization list page view](https://github.com/comp423-23s/final-project-team-a3/blob/documentation-sprint-2/docs/images/organizations-page.png)
+
+The organization list page is easily accessible from the sidebar and shows users a list of all of the Computer Science organizations at UNC. Users are able to see important information about organizations at a glance, as well as access organizations' social media profiles to learn more about the organizations and get involved. If the user wishes to see more information and potentially join the organization, users can press the "Details" button.
+
+This page also includes a smart seach bar that searches queries over variations of organization names, acronyms, descriptions, and other details based on user input. This would allow users to not only find organizations by name, but also to potentially explore organizations based on topics that interest them.
+
+The organization list page is fully-responsive and in a grid page. We preferred the grid organization so that users can see a large amount of organization on the screen without wasting space, as well as providing each organization tile with just the right optimized amount of space.
+
+### Profile Page
+
+![Profile page](https://github.com/comp423-23s/final-project-team-a3/blob/documentation-sprint-2/docs/images/profile-page.png)
+
+The profile page serves as the central hub for users to access and modify their own user information, check their status on which organizations they are apart of, as well as review which events they have signed up for and attended.
+
+The profile page displays all of this information is easy-to-digest tiles, providing important information on the top-left, organizations below that, and all user events on the right-hand side.
+
+The events pane also includes drop-downs containing more information about events. We believed that this was the best design approach so that users are able to both see an uncluttered list of events as well as see more details about future or past events.
+
+The profile page is also fully-responsive so that users are able to easily check their information on mobile devices without sacrifing ease-of-use.
+
+### Events Page
+
+![Events page](https://github.com/comp423-23s/final-project-team-a3/blob/documentation-sprint-2/docs/images/events-page.png)
+
+Just like the organization list page, the event page is easily accessible from the sidebar and shows users a list of all of the upcoming events hosted by Computer Science organizations at UNC. Users are able to see important information about these events at a glance. Users are also able to register for the events with the button on the right side of each tile. Once registered, students are able to see which events they are registered for in the profile page.
+
+This page also includes a search bar, as well as a date and organization filter so users can easily select which events they would like to see. The events list page is also fully-responsive for easy viewing on mobile devices.
+
+### Administrative Pages
+
+There are also many pages added that allow for users of different administrative permission levels to access the page and modify data.
+
+#### Organization Manager Page
+
+![Admin page](https://github.com/comp423-23s/final-project-team-a3/blob/documentation-sprint-2/docs/images/org-admin-page.png)
+
+Managers of an organization are able to see more buttons on the organization page. They are able to add, edit, and delete events hosted by the organizations, as well as edit information about their organization, right from the page.
+
+#### Administrator View - Organization List Page
+
+![Admin org list page](https://github.com/comp423-23s/final-project-team-a3/blob/documentation-sprint-2/docs/images/admin-org-list.png)
+
+The administrator of the CSXL site is able to see a full list of all organizations on the CSXL site, as well as add new ones.
+
+![Admin org list edit page](https://github.com/comp423-23s/final-project-team-a3/blob/documentation-sprint-2/docs/images/admin-org-detail.png)
+
+In addition, the administrator of the CSXL site is also able to appoint *managers* to organizations, as you can see above. These managers then have control over the organization and can post events.
+
 ## Implementation
 
 ### Database
@@ -91,30 +143,6 @@ These relationships now work great and are represented in all of the *data model
 Due to specific quirks with Python and the backend architecture, there were significant errors with relationhip fields when converting from *entities* to *models* and vice-versa.  When we convert one entity to a model, we also have to convert all of the encapsulated entities into models as well. For two models that are related, this causes `.to_model()` from one to call the other, which calls the original, leading to an infinite spiral down into the dark world of recursion.
 
 The solution to this was to create new, unique models that contained *all of the same information **except** the relationship fields*. These are known as `Summary` models. Through converting the encapsulated entities into *summary* models rather than regular models, we stop the infinite chain of recursion. This solution makes the code less readable because now there are duplicate models that with only one difference in the fields. This however is the most optimal solution for our purposes.
-
-### Design Choices
-
-#### Organization List Page
-
-> INSERT IMAGE HERE
-
-The organization list page is easily accessible from the sidebar and shows users a list of all of the Computer Science organizations at UNC. Users are able to see important information about organizations at a glance, as well as access organizations' social media profiles to learn more about the organizations and get involved. If the user wishes to see more information and potentially join the organization, users can press the "Details" button.
-
-This page also includes a smart seach bar that searches queries over variations of organization names, acronyms, descriptions, and other details based on user input. This would allow users to not only find organizations by name, but also to potentially explore organizations based on topics that interest them.
-
-The organization list page is fully-responsive and in a grid page. We preferred the grid organization so that users can see a large amount of organization on the screen without wasting space, as well as providing each organization tile with just the right optimized amount of space.
-
-#### Profile Page
-
-> INSERT IMAGE HERE
-
-The profile page serves as the central hub for users to access and modify their own user information, check their status on which organizations they are apart of, as well as review which events they have signed up for and attended.
-
-The profile page displays all of this information is easy-to-digest tiles, providing important information on the top-left, organizations below that, and all user events on the right-hand side.
-
-The events pane also includes drop-downs containing more information about events. We believed that this was the best design approach so that users are able to both see an uncluttered list of events as well as see more details about future or past events.
-
-The profile page is also fully-responsive so that users are able to easily check their information on mobile devices without sacrifing ease-of-use.
 
 ## Development Concerns
 
