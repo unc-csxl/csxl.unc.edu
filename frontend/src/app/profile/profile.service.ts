@@ -14,11 +14,9 @@ import { Event, OrganizationSummary, OrgRole, Profile, Registration } from '../m
 export class ProfileService {
 
   /** Store profile */
-  /** Store profile */
   public profile$: Observable<Profile | undefined>;
 
   constructor(protected http: HttpClient, protected auth: AuthenticationService) {
-    /** If profile is authenticated, display profile page. */
     /** If profile is authenticated, display profile page. */
     this.profile$ = this.auth.isAuthenticated$.pipe(
       mergeMap(isAuthenticated => {
@@ -33,22 +31,16 @@ export class ProfileService {
   }
 
   /** Updates the profile and returns the updated version of the profile.
-  * @returns {Observable<Profile>}
-  */
-  /** Updates the profile and returns the updated version of the profile.
-  * @returns {Observable<Profile>}
-  */
-  put(profile: Profile) {
+   * @returns {Observable<Profile>}
+   */
+  put = (profile: Profile) => {
     return this.http.put<Profile>("/api/profile", profile);
   }
 
   /** Gets and returns a profile.
-  * @returns {Observable<Profile>}
-  */
-  /** Gets and returns a profile.
-  * @returns {Observable<Profile>}
-  */
-  search(query: string) {
+   * @returns {Observable<Profile>}
+   */
+  search = (query: string) => {
     let encodedQuery = encodeURIComponent(query);
     return this.http.get<Profile[]>(`/api/user?q=${encodedQuery}`);
   }
@@ -56,8 +48,8 @@ export class ProfileService {
   /** Returns all organization entries for the current user from the backend database table 
    * using the backend HTTP get request. 
    * @returns {OrganizationSummary[]}
-  */
-  getUserOrganizations(): OrganizationSummary[] {
+   */
+  getUserOrganizations = () => {
     var organizations: OrganizationSummary[] = [];
     if (this.profile$) {
       this.profile$.subscribe(profile => organizations = profile!.organizations);
@@ -68,8 +60,8 @@ export class ProfileService {
   /** Returns all event entries for the current user from the backend database table 
    * using the backend HTTP get request. 
    * @returns {Event[]}
-  */
-  getUserEvents(): Event[] {
+   */
+  getUserEvents = () => {
     var events: Event[] = [];
     if (this.profile$) {
       this.profile$.subscribe(profile => events = profile!.events)
@@ -80,8 +72,8 @@ export class ProfileService {
   /** Delete a registration from the backend
    * @param event_id: number representing the event registration to be deleted for the user
    * @returns {void}
-  */
-  deleteRegistration(event_id: number) {
+   */
+  deleteRegistration = (event_id: number) => {
     // Store the list of registrations from the profile.
     var registrations: Registration[] = [];
     // Store the current user's ID.
@@ -109,8 +101,8 @@ export class ProfileService {
   /** Delete an org role from the backend
    * @param org_id: number representing the org role to be deleted for the user
    * @returns {void}
-  */
-  deleteOrgMembership(org_id: number): void {
+   */
+  deleteOrgMembership = (org_id: number) =>{
      // Store the list of registrations from the profile.
      var org_roles: OrgRole[] = [];
      // Store the current user's ID.

@@ -37,18 +37,24 @@ export class AdminOrganizationsListComponent {
         private _cd: ChangeDetectorRef
     ) {
         this.organizations$ = orgAdminService.list();
-    }
-    ngOnInit() {
+
         this.orgAdminService.list().subscribe(organizations => {
             this.dataSource.data = organizations;
             this._cd.detectChanges();
         });
     }
-    onClick(organization: Organization) {
+
+    /** Event handler for opening the Admin Organization Details for the given organization
+     * @param organization: a valid Organization model
+     */
+    onClick = (organization: Organization) => {
+        // Navigate to the organization's detail page
         this.router.navigate(['admin', 'organizations', organization.id]);
     }
 
-    createOrganization() {
+    /** Event handler to open the Organization Editor to create a new organization */
+    createOrganization = () => {
+        // Navigate to the org editor for a new organization (id = -1)
         this.router.navigate(['organization', '-1', 'org-editor']);
     }
 

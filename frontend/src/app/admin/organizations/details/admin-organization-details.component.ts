@@ -59,13 +59,13 @@ export class AdminOrganizationDetailsComponent implements OnInit {
         );
     }
 
-    public onOptionSelected(event: MatAutocompleteSelectedEvent) {
+    public onOptionSelected = (event: MatAutocompleteSelectedEvent) => {
         let user = event.option.value as Profile;
         this.selectedUser = user;
         this.userLookup.setValue('');
     }
 
-    public changeSelectedMember() {
+    public changeSelectedMember = () => {
         this.selectedUser = undefined;
         this.userLookup.setValue('');
     }
@@ -73,13 +73,13 @@ export class AdminOrganizationDetailsComponent implements OnInit {
     /** Returns a list of OrgRoles representing the Organization's Managers
      * @returns {OrgRole[]}
      */
-    public getOrgManagers(): OrgRole[] {
+    public getOrgManagers = () => {
         // Filter the organization's OrgRoles for only manager roles
         return this.organization.user_associations.filter((association) => association.membership_type >= 2);
     }
 
     /** Event handler for adding a manager to the organization */
-    public onAddManager() {
+    public onAddManager = () => {
         if (!this.selectedUser) { return; }
         // Add the manager based on the selectedUser (from the form) and the current organization id
         this.organizationsAdminService.addManager(this.selectedUser, this.organization)
@@ -93,13 +93,16 @@ export class AdminOrganizationDetailsComponent implements OnInit {
     /** Event handler for removing a manager from the organization 
      * @param org_role: a valid OrgRole model representing the role (manager) to remove from the organization
     */
-    public onRemoveManager(org_role: OrgRole) {
+    public onRemoveManager = (org_role: OrgRole) => {
         this.organizationsAdminService.removeManager(org_role).subscribe(() => {
             this.organizationsAdminService.details(org_role.org_id).subscribe(org => this.organization = org);
         });
     }
 
-    deleteOrganization(org_id: number) {
+    /** Event handler for deleting an organization
+     * @param org_id: id of the organization you want to delete
+    */
+    deleteOrganization = (org_id: number) => {
         this.organizationsAdminService.deleteOrganization(org_id).subscribe(() => console.log('Delete successful.'));
 
         // Navigate back to list of orgs.

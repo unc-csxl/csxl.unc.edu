@@ -1,7 +1,8 @@
 <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="adminPermission">
     <mat-card>
         <mat-card-header>
-            <mat-card-title>Edit Event</mat-card-title>
+            <mat-card-title *ngIf="event_id == -1">Create Event</mat-card-title>
+            <mat-card-title *ngIf="event_id != -1">Update Event</mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <mat-form-field appearance="fill" color="accent">

@@ -62,14 +62,14 @@ export class EventsComponent {
   public profile: Profile;
 
   /** Initialize the profile to be the currently-logged-in user's profile. */
-  ngOnInit(): void {
+  ngOnInit() {
     let profile = this.profile;
   }
 
   /** Registers a user for the given event
    * @param eventId: number representing the id of the event the user should be registered for
-  */
-  async register(eventId: number) {
+   */
+  register = async (eventId: number) => {
     if (this.profile.id !== null) {
       this.eventsService.register(eventId);
 
@@ -84,7 +84,10 @@ export class EventsComponent {
     }
   }
 
-  async unregister(eventId: number) {
+  /** Unregisters a user for the given event
+   * @param eventId: number representing the id of the event the user should be unregistered for
+   */
+  unregister = async (eventId: number) => {
     if (this.profile.id !== null) {
       this.profileService.deleteRegistration(eventId);
 
@@ -100,15 +103,19 @@ export class EventsComponent {
   /** Returns whether or not the event is a past or current event
    * @param event_time: Date object representing the time of the event 
    * @returns {boolean}
-  */
-  checkCurrentEvent(event_time: Date): boolean {
+   */
+  checkCurrentEvent = (event_time: Date) => {
     if (new Date(event_time) < new Date()) {
       return false;
     }
     return true;
   }
 
-  checkIsRegistered(eventId: Number): boolean {
+  /** Returns whether or not a user is registered for an event
+   * @param eventId: ID of the event
+   * @returns {boolean}
+   */
+  checkIsRegistered = (eventId: number) => {
     return this.eventsService.checkIsRegistered(eventId);
   }
 

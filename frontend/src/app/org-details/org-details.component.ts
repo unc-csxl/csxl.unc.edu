@@ -48,10 +48,10 @@ export class OrgDetailsComponent {
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
     
-    // Load current route ID
+    /** Load current route ID */
     this.route.params.subscribe( params => this.id=params["id"]);
 
-    // Retrieve Organization using OrgDetailsService
+    /** Retrieve Organization using OrgDetailsService */ 
     this.organization$ = this.orgDetailsService.getOrganization(this.id);
     this.organization$.subscribe(org => this.organization = org);
     this.organization$.subscribe(org => {
@@ -62,7 +62,7 @@ export class OrgDetailsComponent {
       })
     })
 
-    // Set permission value if profile exists
+    /** Set permission value if profile exists */
     if(this.profile) {
       let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.id);
       if(assocFilter.length > 0) {
@@ -73,14 +73,12 @@ export class OrgDetailsComponent {
   }
 
   /** Initialize the profile to be the currently-logged-in user's profile. */
-  ngOnInit(): void {
+  ngOnInit() {
     let profile = this.profile;
   }
 
-  /**
-   * Event handler to toggle the star status of an organization.
-   */
-  async starOrganization(): Promise<void> {
+  /** Event handler to toggle the star status of an organization. */
+  starOrganization = async () => {
     
     // If user is an admin, they should not be able to unstar the organization.
     if(this.adminPermission) {
@@ -105,8 +103,8 @@ export class OrgDetailsComponent {
   /** Event handler to delete an event.
    * @param event_id: Number representing the event to be deleted.
    * @returns {void}
-  */
-  async deleteEvent(event_id: number): Promise<void> {
+   */
+  deleteEvent = async (event_id: number) => {
     // Call the orgDetailsService's deleteEvent() method.
     this.orgDetailsService.deleteEvent(event_id);
 

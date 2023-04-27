@@ -2,7 +2,6 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { OrganizationSummary } from '../models.module';
 
 @Injectable({
@@ -15,8 +14,8 @@ export class OrganizationsService {
 
   /** Returns all organization entries from the backend database table using the backend HTTP get request. 
    * @returns {Observable<OrganizationSummary[]>}
-  */
-  getOrganizations(): Observable<OrganizationSummary[]> {
+   */
+  getOrganizations = () => {
     return this.http.get<OrganizationSummary[]>("/api/organizations");
   }
 }

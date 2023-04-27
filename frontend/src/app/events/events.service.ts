@@ -33,7 +33,7 @@ export class EventsService {
    * @param eventId: a valid Number representing the ID of the event
    * @returns {boolean}
   */
-  checkIsRegistered(eventId: Number): boolean {
+  checkIsRegistered = (eventId: number) => {
     var registrations: Registration[] = [];
     // Store the current user's ID.
     var user_id: Number | null = null;
@@ -61,7 +61,7 @@ export class EventsService {
   /** Returns all event entries from the backend database table using the backend HTTP get request. 
    * @returns {Observable<Event[]>}
   */
-  getEvents(): Observable<Event[]> {
+  getEvents = () => {
     return this.http.get<Event[]>("/api/events");
   }
 
@@ -69,7 +69,7 @@ export class EventsService {
    * @param id: Number representing the event id
    * @returns {void}
   */
-  register(id: number) {
+  register = (id: number) => {
     // Store the current user's ID.
     var user_id: number = -1;
     

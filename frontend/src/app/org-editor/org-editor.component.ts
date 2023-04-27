@@ -18,7 +18,7 @@ export class OrgEditorComponent {
   public static Route: Route = {
     path: 'organization/:id/org-editor',
     component: OrgEditorComponent,
-    title: 'Update Organization',
+    title: 'Organization Editor',
     resolve: { profile: profileResolver }
   };
 
@@ -35,9 +35,10 @@ export class OrgEditorComponent {
   /** Stores whether the user has admin permission over the current organization. */
   public adminPermission: boolean = false;
 
-  /** Store the organization id.  */
+  /** Store the organization id. */
   org_id: number = -1;
 
+  /** Organization Editor Form */
   public orgForm = this.formBuilder.group({
     name: "",
     slug: "",
@@ -67,7 +68,7 @@ export class OrgEditorComponent {
     let org_id = this.route.snapshot.params['id'];
     this.org_id = org_id;
 
-    // Set permission value if profile exists
+    /** Set permission value if profile exists */
     if (this.profile) {
       if (permissionGuard('organizations.editor', 'organizations/{id}')) {
         this.adminPermission = true;
@@ -80,6 +81,7 @@ export class OrgEditorComponent {
       }
     }
 
+    /** Initialize organization */
     this.org = {
       id: null,
       name: "",
@@ -101,30 +103,58 @@ export class OrgEditorComponent {
     }
   }
 
-  ngOnInit(): void {
-    // Retrieve Organization using OrgDetailsService
-    let org = this.org;
-    if (this.org_id != -1) {
-      this.orgForm.setValue({
-        name: String(org.name),
-        slug: String(org.slug),
-        logo: String(org.logo),
-        short_description: String(org.short_description),
-        long_description: String(org.long_description),
-        email: String(org.email),
-        website: String(org.website),
-        instagram: String(org.instagram),
-        linked_in: String(org.linked_in),
-        youtube: String(org.youtube),
-        heel_life: String(org.heel_life)
-      });
+  ngOnInit() {
+    /** Get currently-logged-in user. */
+    const data = this.route.snapshot.data as { profile: Profile };
+    this.profile = data.profile;
+
+    /** Get id from the url */
+    let org_id = this.route.snapshot.params['id'];
+    this.org_id = org_id;
+
+    /** Set permission value if profile exists */
+    if (this.profile) {
+      if (permissionGuard('organizations.editor', 'organizations/{id}')) {
+        this.adminPermission = true;
+      } else {
+        let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.org_id);
+        if (assocFilter.length > 0) {
+          this.permValue = assocFilter[0].membership_type;
+          this.adminPermission = (this.permValue >= 1);
+        }
+      }
     }
+
+    /** If you are editing an org (id not default -1) */
+    if (this.org_id != -1) {
+      /** Get the organization and set the form to the org's values */
+      this.orgEditorService.getOrganization(this.org_id).subscribe((org) => { 
+        this.org = org;
+
+        this.orgForm.setValue({
+          name: org.name,
+          slug: org.slug,
+          logo: org.logo,
+          short_description: org.short_description,
+          long_description: org.long_description,
+          email: org.email,
+          website: org.website,
+          instagram: org.instagram,
+          linked_in: org.linked_in,
+          youtube: org.youtube,
+          heel_life: org.heel_life
+        });
+      
+      });
+
+    }
+
   }
 
   /** Event handler to handle submitting the Update Organization Form.
    * @returns {void}
-  */
-  onSubmit(): void {
+   */
+  onSubmit = () => {
     if (this.orgForm.valid) {
       Object.assign(this.org, this.orgForm.value)
       this.orgEditorService.updateOrganization(this.org).subscribe(
@@ -138,16 +168,17 @@ export class OrgEditorComponent {
 
   /** Opens a confirmation snackbar when an organization is successfully updated.
    * @returns {void}
-  */
-  private onSuccess(org: OrganizationSummary) {
+   */
+  private onSuccess = (org: OrganizationSummary) => {
     this.router.navigate(['/organization/', org.id]);
     this.snackBar.open("Organization Updated", "", { duration: 2000 })
   }
 
-  /** Opens a confirmation snackbar when there is an error updating an organization.
+  /** Opens a snackbar when there is an error updating an organization.
    * @returns {void}
-  */
-  private onError(err: any) {
+   */
+  private onError = (err: any) => {
     console.error("Error: Organization Not Updated");
+    this.snackBar.open("Error: Organization Not Updated", "", { duration: 2000 })
   }
 }

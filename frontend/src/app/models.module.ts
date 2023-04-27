@@ -38,16 +38,16 @@ export interface UserSummary {
 /** Interface for Organization Type (used on frontend for organization detail) */
 export interface Organization {
   id: number | null;
-  name: String;
-  logo: String;
-  short_description: String;
-  long_description: String;
-  website: String;
-  email: String;
-  instagram: String;
-  linked_in: String;
-  youtube: String;
-  heel_life: String;
+  name: string;
+  logo: string;
+  short_description: string;
+  long_description: string;
+  website: string;
+  email: string;
+  instagram: string;
+  linked_in: string;
+  youtube: string;
+  heel_life: string;
   events: EventSummary[];
   users: UserSummary[];
   user_associations: OrgRole[];
@@ -56,17 +56,17 @@ export interface Organization {
 /** Interface for OrganizationSummary Type (used on frontend for organization requests) */
 export interface OrganizationSummary {
   id: number | null;
-  name: String;
-  slug: String;
-  logo: String;
-  short_description: String;
-  long_description: String;
-  website: String;
-  email: String;
-  instagram: String;
-  linked_in: String;
-  youtube: String;
-  heel_life: String;
+  name: string;
+  slug: string;
+  logo: string;
+  short_description: string;
+  long_description: string;
+  website: string;
+  email: string;
+  instagram: string;
+  linked_in: string;
+  youtube: string;
+  heel_life: string;
 }
 
 /** Interface for OrgRole Type (defines relationships between users and organizations) */
@@ -132,15 +132,15 @@ export interface RegistrationSummary {
 /** Interface for Organization Type */
 export interface Organization {
   id: number | null
-  slug: String
-  name: String
-  logo: String
-  short_description: String
-  long_description: String
-  website: String
-  email: String
-  instagram: String
-  linked_in: String
-  youtube: String
-  heel_life: String
+  slug: string
+  name: string
+  logo: string
+  short_description: string
+  long_description: string
+  website: string
+  email: string
+  instagram: string
+  linked_in: string
+  youtube: string
+  heel_life: string
 }

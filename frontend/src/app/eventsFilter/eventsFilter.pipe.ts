@@ -10,10 +10,10 @@ export class EventsFilterPipe implements PipeTransform {
 
   /** Returns a mapped array of events that are filtered 
    * @param {Observable<Event[]>} events: observable list of valid Event models
-   * @param {String} searchQuery: input string to filter by
+   * @param {string} searchQuery: input string to filter by
    * @returns {Observable<EventS[]>}
-  */
-  transform(events: Observable<Event[]>, searchQuery: String, start: Date | null | undefined, end: Date | null | undefined, organizations: String[] | null): any {
+   */
+  transform = (events: Observable<Event[]>, searchQuery: string, start: Date | null | undefined, end: Date | null | undefined, organizations: String[] | null) => {
     // Sort the events list by date
     events = events.pipe(
       map(events => events.sort((a: Event, b: Event) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0))

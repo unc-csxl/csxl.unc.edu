@@ -10,12 +10,12 @@ import { map } from 'rxjs/operators';
 })
 export class EventFilterPipe implements PipeTransform {
 
-    /** Returns a filtered array of events based on the past/current query input. 
+  /** Returns a filtered array of events based on the past/current query input. 
    * @param {EventSummary[]} events: list of valid EventSummary models
    * @param {String} input: input string to filter by (past/current)
    * @returns {EventSummary[]}
-  */
-  transform(value: EventSummary[], input: String): any {
+   */
+  transform = (value: EventSummary[], input: String) => {
     // Sort the events list by date
     value = value.sort(
       (a: EventSummary, b: EventSummary) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0

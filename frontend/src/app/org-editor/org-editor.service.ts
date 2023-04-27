@@ -2,7 +2,6 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { OrganizationSummary } from '../models.module';
 
 @Injectable({
@@ -16,17 +15,16 @@ export class OrgEditorService {
   /** Returns the organization object from the backend database table using the backend HTTP get request. 
    * @param id: Number representing the organization id
    * @returns {Observable<OrganizationSummary>}
-  */
-  getOrganization(id: Number): Observable<OrganizationSummary> {
+   */
+  getOrganization = (id: Number) => {
     return this.http.get<OrganizationSummary>("/api/organizations/" + id);
   }
 
   /** Returns the updated organization object from the backend database table using the backend HTTP put request. 
    * @param org: OrganizationSummary representing the updated organization
    * @returns {Observable<OrganizationSummary>}
-  */
-
-  updateOrganization(org: OrganizationSummary): Observable<OrganizationSummary> {
+   */
+  updateOrganization = (org: OrganizationSummary) => {
     if (org.id) {
       return this.http.put<OrganizationSummary>("/api/organizations", org);
     } else {

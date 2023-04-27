@@ -14,8 +14,8 @@ export class FilterPipe implements PipeTransform {
    * @param {Observable<OrganizationSummary[]>} organizations: observable list of valid Organization models
    * @param {String} searchQuery: input string to filter by
    * @returns {Observable<OrganizationSummary[]>}
-  */
-  transform(organizations: Observable<OrganizationSummary[]>, searchQuery: String): any {
+   */
+  transform = (organizations: Observable<OrganizationSummary[]>, searchQuery: String) => {
     // Sort the organizations list alphabetically by name
     organizations = organizations.pipe(
       map(orgs => orgs.sort((a: OrganizationSummary, b: OrganizationSummary) => {

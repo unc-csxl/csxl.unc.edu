@@ -69,18 +69,17 @@ export class OrganizationsComponent {
     }
     
     /** Initialize the profile to be the currently-logged-in user's profile. */
-    ngOnInit(): void {
+    ngOnInit() {
       let profile = this.profile;
     }
 
-  /**
-   * Event handler to toggle the star status of an organization.
+  /** Event handler to toggle the star status of an organization.
+   * @param orgId: a number representing the ID of the organization to be starred
    */
-  async starOrganization(orgId: number): Promise<void> {
+  starOrganization = async (orgId: number) => {
     
     // If user is an admin, they should not be able to unstar the organization.
     const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
-    console.log(filter)
     if(filter && filter.length > 0 && filter[0].membership_type !== 0) {
       if (filter[0].membership_type == 1) {
         this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });

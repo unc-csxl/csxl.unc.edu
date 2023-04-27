@@ -18,7 +18,7 @@ export class EventEditorComponent {
   public static Route: Route = {
     path: 'organization/:org_id/event/:event_id/edit',
     component: EventEditorComponent, 
-    title: 'Edit Event', 
+    title: 'Event Editor', 
     resolve: { profile: profileResolver } 
   };
 
@@ -78,8 +78,8 @@ export class EventEditorComponent {
     }
   }
 
-  ngOnInit(): void {
-     /** Get currently-logged-in user. */
+  ngOnInit() {
+     // Get currently-logged-in user.
      const data = this.route.snapshot.data as { profile: Profile };
      this.profile = data.profile;
 
@@ -95,31 +95,33 @@ export class EventEditorComponent {
      if(this.profile) {
        let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.org_id);
        if(assocFilter.length > 0) {
-         this.permValue = assocFilter[0].membership_type.valueOf();
+         this.permValue = assocFilter[0].membership_type;
          this.adminPermission = (this.permValue >= 1);
        }
      }
 
-    if(this.event_id != -1) {
-      this.eventEditorService.getEvent(this.event_id).subscribe((event) => {
-        this.event = event;
-  
-        if(event) {
-          this.eventForm.setValue({
-            name: event.name,
-            time: event.time,
-            location: event.location,
-            description: event.description
-          });
-        }
-      });
+     // If the event exists (id not default -1)
+      if(this.event_id != -1) {
+        // Get the event and set the form values to the existing event info
+        this.eventEditorService.getEvent(this.event_id).subscribe((event) => {
+          this.event = event;
+    
+          if(event) {
+            this.eventForm.setValue({
+              name: event.name,
+              time: event.time,
+              location: event.location,
+              description: event.description
+            });
+          }
+        });
     }
   }
 
   /** Event handler to handle submitting the Create Event Form.
    * @returns {void}
   */
-  onSubmit(): void {
+  onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value)
       if(this.event_id == -1) {
@@ -145,14 +147,14 @@ export class EventEditorComponent {
   /** Opens a confirmation snackbar when an event is successfully created.
    * @returns {void}
   */
-  private onSuccess(event: EventSummary) {
+  private onSuccess = (event: EventSummary) => {
     this.snackBar.open("Event Edited", "", { duration: 2000 })
   }
 
   /** Opens a confirmation snackbar when there is an error creating an event.
    * @returns {void}
   */
-  private onError(err: any) {
+  private onError = (err: any) => {
     console.error("Event not edited");
   }
 }

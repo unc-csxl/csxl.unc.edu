@@ -5,7 +5,8 @@
     <!-- Update Organization Card -->
     <mat-card>
         <mat-card-header>
-            <mat-card-title>Update Organization</mat-card-title>
+            <mat-card-title *ngIf="org_id != -1">Update Organization</mat-card-title>
+            <mat-card-title *ngIf="org_id == -1">Create Organization</mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <!-- Organization Name Field -->

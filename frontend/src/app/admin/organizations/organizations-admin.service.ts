@@ -11,7 +11,7 @@ export class OrganizationsAdminService {
     /** Returns a list of all Organizations
      * @returns {Organization[]}
      */
-    list(): Observable<Organization[]> {
+    list = () => {
         return this.http.get<Organization[]>("/api/organizations");
     }
 
@@ -19,7 +19,7 @@ export class OrganizationsAdminService {
      * @param id: a number representing an Organization id
      * @returns {Organization}
      */
-    details(id: Number) {
+    details = (id: number) => {
         return this.http.get<Organization>(`/api/organizations/${id}`);
     }
 
@@ -27,7 +27,7 @@ export class OrganizationsAdminService {
      * @param org_role: a valid OrgRole model
      * @returns {OrgRole}
      */
-    removeManager(org_role: OrgRole) {
+    removeManager = (org_role: OrgRole) => {
         const updatedRole: OrgRoleSummary = {
             id: org_role.id,
             user_id: org_role.user_id,
@@ -38,12 +38,12 @@ export class OrganizationsAdminService {
         return this.http.post<OrgRole>(`/api/orgroles`, updatedRole);
     }
 
-    /** Updates manager status for the specified user in the organization
-     * @param user_id: a number representing the id of the user to be given manager status
-     * @param org_id: a number representing the organization the user should get access to
+    /** Adds a manager to an organization
+     * @param user: Profile of the user you want to add as a manager
+     * @param organization: Organization that you want to add a manager to
      * @returns {Observable<OrgRole>}
      */
-    addManager(user: Profile, organization: Organization): Observable<OrgRole> {
+    addManager = (user: Profile, organization: Organization) => {
         const newRole: OrgRoleSummary = {
             id: null,
             user_id: user.id!,
@@ -62,11 +62,19 @@ export class OrganizationsAdminService {
         return this.http.post<OrgRole>(`/api/orgroles`, newRole);
     }
 
-    createOrganization(newOrg: OrganizationSummary) {
+    /** Creates an organization
+     * @param newOrg: Organization object that you want to add to the database
+     * @returns {Observable<Organization>}
+     */
+    createOrganization = (newOrg: OrganizationSummary) => {
         return this.http.post<Organization>("/api/organizations", newOrg)
     }
 
-    deleteOrganization(org_id: number) {
+    /** Deletes an organization
+     * @param org_id: id of the organization object to delete
+     * @returns {Observable<Organization>}
+     */
+    deleteOrganization = (org_id: number) => {
         return this.http.delete<Organization>(`/api/organizations/${org_id}`);
     }
 

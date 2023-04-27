@@ -42,7 +42,7 @@ export class ProfileEditorComponent implements OnInit {
     this.profile = data.profile;
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     let profile = this.profile;
 
     this.profileForm.setValue({
@@ -53,7 +53,7 @@ export class ProfileEditorComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  onSubmit = () => {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value)
       this.profileService.put(this.profile).subscribe(
@@ -68,11 +68,11 @@ export class ProfileEditorComponent implements OnInit {
     }
   }
 
-  private onSuccess(profile: Profile) {
+  private onSuccess = (profile: Profile) => {
     this.snackBar.open("Profile Saved", "", { duration: 2000 })
   }
 
-  private onError(err: any) {
+  private onError = (err: any) => {
     console.error("How to handle this?");
   }
 

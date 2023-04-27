@@ -32,17 +32,17 @@ export class OrgDetailsService {
 
   /** Returns an Observable Organization based on the given id.
    * @param id: a valid string representing the id of the organization to be added.
-   * @returns {void}
+   * @returns {Observable<Organization>}
    */
-  getOrganization(id: string): Observable<Organization> {
+  getOrganization = (id: string) => {
     return this.http.get<Organization>("/api/organizations/" + id);
   }
 
-  /** Toggles the star status of the organization.
+  /** Creates an event in the backend table based on the given event model
    * @param event: a valid EventSummary model that represents the event to be created
-   * @returns {void}
+   * @returns {Observable<EventSummary>}
    */
-  create(event: EventSummary) {
+  create = (event: EventSummary) => {
     return this.http.post<EventSummary>("/api/events", event);
   }
 
@@ -50,7 +50,7 @@ export class OrgDetailsService {
    * @param orgId: number representing the ID of the organization to be "starred"
    * @returns {void}
    */
-  starOrganization(orgId: number) {
+  starOrganization = (orgId: number) => {
 
     // First, ensure profile exists
     if (this.profile$) {
@@ -65,7 +65,6 @@ export class OrgDetailsService {
         }
         else {
           // If not, add the star
-
           // Create new org role object to post
           const newOrgRole: OrgRoleSummary = {
             id: null,
@@ -87,7 +86,7 @@ export class OrgDetailsService {
    * @param eventId: number representing the ID of the event to be deleted.
    * @returns {void}
    */
-  deleteEvent(eventId: number) {
+  deleteEvent = (eventId: number) => {
     // Make the call to delete the event.
     this.http.delete<void>(`/api/events/${eventId}`).subscribe(() => console.log('Delete successful.'));
   }

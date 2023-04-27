@@ -27,8 +27,11 @@ export class ProfilePageComponent {
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
+
   /** Store the list of events. */
   public events: Event[];
+
+    /** Store the list of organizations. */
   public organizations: OrganizationSummary[];
 
   constructor(route: ActivatedRoute, private router: Router, protected profileService: ProfileService, protected orgDetailsService: OrgDetailsService, protected snackBar: MatSnackBar) {
@@ -49,7 +52,7 @@ export class ProfilePageComponent {
   }
 
   /** Initialize the profile to be the currently-logged-in user's profile. */
-  ngOnInit(): void {
+  ngOnInit() {
     let profile = this.profile;
   }
 
@@ -57,7 +60,7 @@ export class ProfilePageComponent {
    * @param event_id: number representing the event registration to be deleted for the user
    * @returns {void}
   */
-  async cancelRegistration(event_id: number): Promise<void> {
+  cancelRegistration = async (event_id: number) => {
     // Call the profileService's deleteRegistration() method.
     this.profileService.deleteRegistration(event_id);
 
@@ -69,19 +72,18 @@ export class ProfilePageComponent {
     location.reload();
   }
 
-  /**
-   * Helper function to build the URL for each organization.
+  /** Helper function to build the URL for each organization.
    * @param id ID of the organization
    * @returns URL for the organization
    */
-  routeBuilder(id: number | null): string {
+  routeBuilder = (id: number | null) => {
     return "/organization/" + id;
   }
 
-  /**
-   * Event handler to toggle the star status of an organization.
+  /** Event handler to toggle the star status of an organization.
+   * @param orgId: a number representing the ID of the organiztion of to delete membership from
    */
-  async deleteOrgMembership(orgId: number): Promise<void> {
+  deleteOrgMembership = async (orgId: number) => {
 
     // If user is an admin/exec, they should not be able to unstar the organization.
     const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
