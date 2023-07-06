@@ -16,6 +16,9 @@ class User(BaseModel):
     last_name: str = ""
     email: str = ""
     pronouns: str = ""
+    github: str = ""
+    github_id: int | None = None
+    github_avatar: str | None = None
     permissions: list['Permission'] = []
 
 

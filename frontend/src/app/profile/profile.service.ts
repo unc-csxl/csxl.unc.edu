@@ -17,6 +17,9 @@ export interface Profile {
   last_name: string | null;
   email: string | null;
   pronouns: string | null;
+  github: string | null;
+  github_id: number | null;
+  github_avatar: string | null;
   registered: boolean;
   role: number;
   permissions: Permission[];
@@ -27,9 +30,13 @@ export interface Profile {
 })
 export class ProfileService {
 
-  public profile$: Observable<Profile | undefined>;
+  public profile$!: Observable<Profile | undefined>;
 
   constructor(protected http: HttpClient, protected auth: AuthenticationService) {
+    this.refreshProfile();
+  }
+
+  private refreshProfile() {
     this.profile$ = this.auth.isAuthenticated$.pipe(
       mergeMap(isAuthenticated => {
         if (isAuthenticated) {
@@ -49,6 +56,14 @@ export class ProfileService {
   search(query: string) {
     let encodedQuery = encodeURIComponent(query);
     return this.http.get<Profile[]>(`/api/user?q=${encodedQuery}`);
+  }
+
+  getGitHubOAuthLoginURL(): Observable<string> {
+    return this.http.get<string>("/auth/github_oauth_login_url");
+  }
+
+  unlinkGitHub() {
+    return this.http.delete("/auth/github");
   }
 
 }
