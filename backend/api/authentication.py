@@ -156,25 +156,25 @@ def bearer_token_bootstrap(
             return _verify_delegated_auth_token(continue_to, token)
 
 
-@api.get('/auth/github_oauth_login_url', include_in_schema=False)
+@api.get('/oauth/github_oauth_login_url', include_in_schema=False)
 def github_oauth_login_url(subject: User = Depends(registered_user), github_service: GitHubService = Depends()) -> str:
     """Return the GitHub OAuth login URL with the appropriate callback URL."""
-    redirect_uri = _github_oauth_redirect_uri
+    redirect_uri = _github_oauth_redirect_uri()
     return github_service.get_oauth_login_url(redirect_uri)
 
 
-@api.get('/auth/github', include_in_schema=False)
+@api.get('/oauth/github', include_in_schema=False)
 def github_oauth(code: str):
     """Upon return from GitHub with a code, this route produces bootstrapping HTML for linking the user's GitHub account.
     
     The reason this step is necessary is because the user's CSXL bearer token is only available in localStorage. Thus,
     it is not visible in the return from GitHub's OAuth page. The HTML produced by this route contains JavaScript that
-    will extract the token from localStorage and then POST it to the /auth/github route below.
+    will extract the token from localStorage and then POST it to the /oauth/github route below.
     """
     return _link_github_html(code)
 
 
-@api.post('/auth/github', include_in_schema=False)
+@api.post('/oauth/github', include_in_schema=False)
 def github_link(code: str, subject: User = Depends(registered_user), github_service: GitHubService = Depends()):
     """Link the user's GitHub account with their CSXL account."""
     redirect_uri = _github_oauth_redirect_uri()
@@ -185,7 +185,7 @@ def github_link(code: str, subject: User = Depends(registered_user), github_serv
             status_code=400, detail="Failed to link GitHub account.")
 
 
-@api.delete('/auth/github', include_in_schema=False)
+@api.delete('/oauth/github', include_in_schema=False)
 def github_unlink(subject: User = Depends(registered_user), github_service: GitHubService = Depends()):
     """Unlink user's GitHub account with their CSXL account."""
     github_service.remove_association(subject)
@@ -251,7 +251,7 @@ def _github_oauth_redirect_uri():
     else:
         redirect_protocol = 'https'
 
-    return f'{redirect_protocol}://{HOST}/auth/github'
+    return f'{redirect_protocol}://{HOST}/oauth/github'
 
 
 def _set_client_token(token: str, continue_to: str):
@@ -308,7 +308,7 @@ def _link_github_html(code: str):
             <p id='message'>One sec while we associate your GitHub account with CSXL!</p>
             <script type='application/javascript'>
                 let token = localStorage.getItem('bearerToken');
-                fetch('/auth/github?code={code}', {{
+                fetch('/oauth/github?code={code}', {{
                     method: 'POST',
                     headers: {{
                         'Content-Type': 'application/json',
