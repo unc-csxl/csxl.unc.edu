@@ -17,6 +17,7 @@ COPY ./backend/requirements.txt /workspace/backend/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /workspace/backend/requirements.txt
 COPY --from=build /workspace/static /workspace/static
 COPY ./backend /workspace/backend
+COPY ./alembic.ini /workspace/alembic.ini
 WORKDIR /workspace
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"]
 ENV TZ="America/New_York"
