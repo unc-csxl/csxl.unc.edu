@@ -288,6 +288,7 @@ def _set_client_token(token: str, continue_to: str):
 
 
 def _link_github_html(code: str):
+    current_time = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
     data = f'''
     <html>
         <head>
@@ -316,7 +317,7 @@ def _link_github_html(code: str):
                     }}
                 }}).then(response => {{
                     if (response.status === 200) {{
-                        window.location.href = '/profile';
+                        window.location.href = '/profile?time={current_time}';
                     }} else {{
                         window.location.href = '/profile?error=github';
                     }}
@@ -333,6 +334,7 @@ def _link_github_html(code: str):
 
 
 def _set_client_token(token: str, continue_to: str):
+    current_time = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
     data = f'''
     <html>
         <head>
@@ -353,7 +355,7 @@ def _set_client_token(token: str, continue_to: str):
             <p id='message'>One sec while we load the CSXL app!</p>
             <script type='application/javascript'>
                 localStorage.setItem('bearerToken', '{token}');
-                window.location.href = '/gate?continue_to={continue_to}';
+                window.location.href = '/gate?continue_to={continue_to}&time={current_time}';
             </script>
         </body>
     </html>
