@@ -12,3 +12,7 @@
     margin-left: 8px;
     margin-bottom: 8px;
 }
+
+.mat-mdc-card-title a, .mat-mdc-card-title a:hover, .mat-mdc-card-title a:visited {
+    color: #fff;
+}

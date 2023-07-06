@@ -72,4 +72,16 @@ export class ProfileEditorComponent implements OnInit {
     console.error("How to handle this?");
   }
 
+  linkWithGitHub(): void {
+    this.profileService.getGitHubOAuthLoginURL().subscribe((url) => {
+      window.location.href = url;
+    });
+  }
+
+  unlinkGitHub() {
+    this.profileService.unlinkGitHub().subscribe({
+      next: () => this.profile.github = '',
+    });
+  }
+
 }
