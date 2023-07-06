@@ -67,7 +67,7 @@ from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 from fastapi.responses import RedirectResponse
 from ..env import getenv
-from ..services import UserService
+from ..services import UserService, GitHubService
 from ..models import User
 
 
@@ -156,6 +156,42 @@ def bearer_token_bootstrap(
             return _verify_delegated_auth_token(continue_to, token)
 
 
+@api.get('/auth/github_oauth_login_url', include_in_schema=False)
+def github_oauth_login_url(subject: User = Depends(registered_user), github_service: GitHubService = Depends()) -> str:
+    """Return the GitHub OAuth login URL with the appropriate callback URL."""
+    redirect_uri = _github_oauth_redirect_uri
+    return github_service.get_oauth_login_url(redirect_uri)
+
+
+@api.get('/auth/github', include_in_schema=False)
+def github_oauth(code: str):
+    """Upon return from GitHub with a code, this route produces bootstrapping HTML for linking the user's GitHub account.
+    
+    The reason this step is necessary is because the user's CSXL bearer token is only available in localStorage. Thus,
+    it is not visible in the return from GitHub's OAuth page. The HTML produced by this route contains JavaScript that
+    will extract the token from localStorage and then POST it to the /auth/github route below.
+    """
+    return _link_github_html(code)
+
+
+@api.post('/auth/github', include_in_schema=False)
+def github_link(code: str, subject: User = Depends(registered_user), github_service: GitHubService = Depends()):
+    """Link the user's GitHub account with their CSXL account."""
+    redirect_uri = _github_oauth_redirect_uri()
+    if github_service.link_with_user(subject, code, redirect_uri):
+        return "Successfully linked GitHub account."
+    else:
+        raise HTTPException(
+            status_code=400, detail="Failed to link GitHub account.")
+
+
+@api.delete('/auth/github', include_in_schema=False)
+def github_unlink(subject: User = Depends(registered_user), github_service: GitHubService = Depends()):
+    """Unlink user's GitHub account with their CSXL account."""
+    github_service.remove_association(subject)
+    return "Successfully unlinked GitHub account."
+
+
 def _delegate_to_auth_server(continue_to: str):
     return RedirectResponse(
         f'https://{AUTH_SERVER_HOST}/auth?origin={HOST}&continue_to={continue_to}'
@@ -190,7 +226,7 @@ def _handle_auth_in_production(
         return _set_client_token(token, continue_to)
     else:
         # Development Authentication Request (origin is app in development)
-        if origin == 'localhost':
+        if origin.startswith('localhost'):
             target = 'http://localhost:1560/auth'  # TODO: Make this port an env variable
         else:
             target = f'https://{origin}/auth'
@@ -207,6 +243,93 @@ def _generate_token(uid: any, pid: any):
         algorithm=_JST_ALGORITHM,
     )
     return token
+
+
+def _github_oauth_redirect_uri():
+    if HOST.startswith('localhost'):
+        redirect_protocol = 'http'
+    else:
+        redirect_protocol = 'https'
+
+    return f'{redirect_protocol}://{HOST}/auth/github'
+
+
+def _set_client_token(token: str, continue_to: str):
+    data = f'''
+    <html>
+        <head>
+            <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
+            <style>
+                html {{
+                    background: #303030;
+                    color: white;
+                    font: 400 14px/20px 'Helvetica Neue', sans-serif;
+                    letter-spacing: normal;
+                    text-align: center;
+                    margin: 1em;
+                }}
+            </style>
+        </head>
+        <body>
+            <h1 id='header'>Loading CSXL ...</h1>
+            <p id='message'>One sec while we load the CSXL app!</p>
+            <script type='application/javascript'>
+                localStorage.setItem('bearerToken', '{token}');
+                window.location.href = '/gate?continue_to={continue_to}';
+            </script>
+        </body>
+    </html>
+    '''
+    return Response(
+        content=data,
+        media_type='text/html',
+        headers={'Cache-Control': 'no-cache'},
+    )
+
+
+def _link_github_html(code: str):
+    data = f'''
+    <html>
+        <head>
+            <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
+            <style>
+                html {{
+                    background: #303030;
+                    color: white;
+                    font: 400 14px/20px 'Helvetica Neue', sans-serif;
+                    letter-spacing: normal;
+                    text-align: center;
+                    margin: 1em;
+                }}
+            </style>
+        </head>
+        <body>
+            <h1 id='header'>Linking your GitHub account with CSXL ...</h1>
+            <p id='message'>One sec while we associate your GitHub account with CSXL!</p>
+            <script type='application/javascript'>
+                let token = localStorage.getItem('bearerToken');
+                fetch('/auth/github?code={code}', {{
+                    method: 'POST',
+                    headers: {{
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token,
+                    }}
+                }}).then(response => {{
+                    if (response.status === 200) {{
+                        window.location.href = '/profile';
+                    }} else {{
+                        window.location.href = '/profile?error=github';
+                    }}
+                }});
+            </script>
+        </body>
+    </html>
+    '''
+    return Response(
+        content=data,
+        media_type='text/html',
+        headers={'Cache-Control': 'no-cache'},
+    )
 
 
 def _set_client_token(token: str, continue_to: str):

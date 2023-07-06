@@ -29,6 +29,12 @@ class UserEntity(EntityBase):
         String(64), nullable=False, default='')
     pronouns: Mapped[str] = mapped_column(
         String(32), nullable=False, default='')
+    github: Mapped[str] = mapped_column(
+        String(32), nullable=False, default='')
+    github_id: Mapped[int] = mapped_column(
+        Integer, nullable=True)
+    github_avatar: Mapped[str] = mapped_column(
+        String(), nullable=True)
 
     roles: Mapped[list['RoleEntity']] = relationship(secondary=user_role_table, back_populates='users')
     permissions: Mapped['PermissionEntity'] = relationship(back_populates='user')
@@ -50,6 +56,9 @@ class UserEntity(EntityBase):
             first_name=model.first_name,
             last_name=model.last_name,
             pronouns=model.pronouns,
+            github=model.github,
+            github_id=model.github_id,
+            github_avatar=model.github_avatar,
         )
 
     def to_model(self) -> User:
@@ -60,6 +69,9 @@ class UserEntity(EntityBase):
             email=self.email,
             first_name=self.first_name,
             last_name=self.last_name,
+            github=self.github,
+            github_id=self.github_id,
+            github_avatar=self.github_avatar,
             pronouns=self.pronouns,
             events=[event.to_summary() for event in self.events],
             event_associations=[association.to_model() for association in self.event_associations],
@@ -72,6 +84,9 @@ class UserEntity(EntityBase):
         self.first_name = model.first_name
         self.last_name = model.last_name
         self.pronouns = model.pronouns
+        self.github = model.github
+        self.github_id = model.github_id
+        self.github_avatar = model.github_avatar
 
     def to_summary(self) -> UserSummary:
         """

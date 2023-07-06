@@ -17,7 +17,10 @@ export class ProfileService {
   public profile$: Observable<Profile | undefined>;
 
   constructor(protected http: HttpClient, protected auth: AuthenticationService) {
-    /** If profile is authenticated, display profile page. */
+    this.refreshProfile();
+  }
+
+  private refreshProfile() {
     this.profile$ = this.auth.isAuthenticated$.pipe(
       mergeMap(isAuthenticated => {
         if (isAuthenticated) {
@@ -125,6 +128,14 @@ export class ProfileService {
          }
        }
      }
+  }
+
+  getGitHubOAuthLoginURL(): Observable<string> {
+    return this.http.get<string>("/auth/github_oauth_login_url");
+  }
+
+  unlinkGitHub() {
+    return this.http.delete("/auth/github");
   }
 
 }
