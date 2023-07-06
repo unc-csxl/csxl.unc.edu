@@ -59,11 +59,11 @@ export class ProfileService {
   }
 
   getGitHubOAuthLoginURL(): Observable<string> {
-    return this.http.get<string>("/auth/github_oauth_login_url");
+    return this.http.get<string>("/oauth/github_oauth_login_url");
   }
 
   unlinkGitHub() {
-    return this.http.delete("/auth/github");
+    return this.http.delete("/oauth/github");
   }
 
 }
