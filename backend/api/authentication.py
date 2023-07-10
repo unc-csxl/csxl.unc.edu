@@ -116,8 +116,15 @@ def authenticated_pid(
     raise HTTPException(status_code=401, detail='Unauthorized')
 
 
-@api.get('/verify')
+@api.get('/verify', include_in_schema=False)
 def auth_verify(token: str, continue_to: str = '/'):
+    """Verify the legitimacy of a token for delegated authentication purposes.
+    
+    This endpoint is used to facilitate SSO authentication in development and staging environments.
+    For usage, see the helper function _verify_delegated_auth_token below.
+    
+    The staging environment will ultimately dispatch to the production environment's verify
+    route, here, in order to verify the token (and then reissue using its own signing)."""
     return jwt.decode(token, _JWT_SECRET, algorithms=[_JST_ALGORITHM], options={'verify_signature': True})
 
 
