@@ -10,14 +10,18 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 description = """
-Welcome to the UNC Computer Science **Experience Labs** Application Programming Interface
+Welcome to the UNC Computer Science **Experience Labs** RESTful Application Programming Interface.
 """
 
 app = FastAPI(
     title="UNC CS Experience Labs API",
     version="0.0.1",
     description=description,
-    openapi_tags=[health.openapi_tags],
+    openapi_tags=[
+        profile.openapi_tags,
+        user.openapi_tags,
+        health.openapi_tags,
+    ],
 )
 
 app.include_router(user.api)
