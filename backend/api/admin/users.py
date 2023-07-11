@@ -10,12 +10,12 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-openapi_tags = {"name": "User Admin API", "description": ""}
+openapi_tags = {"name": "(Admin) Users", "description": ""}
 
 api = APIRouter(prefix="/api/admin/users")
 
 
-@api.get("", tags=["List Users"])
+@api.get("", tags=["(Admin Only) Users"])
 def list_users(
     subject: User = Depends(registered_user),
     user_service: UserService = Depends(),
