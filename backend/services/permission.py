@@ -18,6 +18,7 @@ __license__ = "MIT"
 
 class UserPermissionError(Exception):
     """UserPermissionError is raised when a user attempts to perform an action they are not authorized to perform."""
+
     def __init__(self, action: str, resource: str):
         super().__init__(
             f'Not authorized to perform `{action}` on `{resource}`')
@@ -30,17 +31,17 @@ class PermissionService:
 
     def __init__(self, session: Session = Depends(db_session)):
         """Initialize a new PermissionService instance.
-        
+
         Args:
             session (Session): The SQLAlchemy session to use for database operations."""
         self._session = session
 
     def get_permissions(self, subject: User) -> list[Permission]:
         """Get the permissions for a user.
-        
+
         Args:
             subject (User): The user to get permissions for.
-            
+
         Returns:
             list[Permission]: The permissions for the user."""
         user_permissions = self._get_user_permissions(subject)
@@ -55,15 +56,15 @@ class PermissionService:
 
         1. Grantor must have `permission.grant` action permission on the action being granted
         2. Grantor must have permission to carry out the permission being granted
-        
+
         Args:
             grantor (User): The user granting the permission.
             grantee (User | Role | RoleDetails): The user or role to grant the permission to.
             permission (Permission): The permission to grant.
-            
+
         Returns:
             bool: True if the permission was granted, False otherwise.
-            
+
         Raises:
             ValueError: If the grantee is not a User or Role.
             UserPermissionError: If the grantor does not have permission to grant the permission.
@@ -88,14 +89,14 @@ class PermissionService:
 
     def revoke(self, revoker: User, permission: Permission) -> bool:
         """Revoke a permission from a user or role.
-        
+
         Args:
             revoker (User): The user revoking the permission.
             permission (Permission): The permission to revoke (must have its id attribute assigned).
-            
+
         Returns:
             bool: True if the permission was revoked, False otherwise.
-            
+
         Raises:
             UserPermissionError: If the revoker does not have permission to revoke the permission."""
         if permission.id is None:
@@ -116,7 +117,7 @@ class PermissionService:
 
     def enforce(self, subject: User, action: str, resource: str) -> None:
         """Enforce a permission for a user.
-        
+
         Args:
             subject (User): The user to enforce the permission for.
             action (str): The action to enforce the subject has permission to perform.
@@ -124,7 +125,7 @@ class PermissionService:
 
         Returns:
             None
-            
+
         Raises:
             UserPermissionError: If the subject does not have permission to carry out the action on the resource."""
         if self.check(subject, action, resource) is False:
@@ -132,10 +133,10 @@ class PermissionService:
 
     def check(self, subject: User, action: str, resource: str) -> bool:
         """Check if a user has permission to carry out an action on a resource.
-        
+
         Args:
             subject (User): The user to check permissions for.
-            
+
         Returns:
             bool: True if the user has permission to carry out the action on the resource, False otherwise."""
         # Check user permissions
@@ -149,10 +150,10 @@ class PermissionService:
 
     def _get_user_permissions(self, subject: User) -> list[PermissionEntity]:
         """Get the permissions for a user.
-        
+
         Args:
             subject (User): The user to get permissions for.
-            
+
         Returns:
             list[PermissionEntity]: The permissions for the user."""
         user_query = select(PermissionEntity).where(
@@ -162,10 +163,10 @@ class PermissionService:
 
     def _get_user_roles_permissions(self, subject: User) -> list[PermissionEntity]:
         """Get the permissions for a user's roles.
-        
+
         Args:
             subject (User): The user to get permissions for.
-            
+
         Returns:
             list[PermissionEntity]: The permissions for the user's roles."""
         user_entity = self._session.get(UserEntity, subject.id)
@@ -180,12 +181,12 @@ class PermissionService:
 
     def _has_permission(self, permissions: list[PermissionEntity], action: str, resource: str) -> bool:
         """Check if a user has permission to carry out an action on a resource in a list of permissions.
-        
+
         Args:
             permissions (list[PermissionEntity]): The permissions to check.
             action (str): The action in question.
             resource (str): The resource in question.
-            
+
         Returns:
             bool: True if the user has permission to carry out the action on the resource, False otherwise."""
         for permission in permissions:
@@ -195,12 +196,12 @@ class PermissionService:
 
     def _check_permission(self, permission: PermissionEntity, action: str, resource: str) -> bool:
         """Check if a user has permission to carry out an action on a resource.
-        
+
         Args:
             permission (PermissionEntity): The permission to check.
             action (str): The action in question.
             resource (str): The resource in question. 
-            
+
         Returns:
             bool: True if the user has permission to carry out the action on the resource, False otherwise."""
         action_re = self._expand_pattern(permission.action)
@@ -213,7 +214,7 @@ class PermissionService:
     @lru_cache()
     def _expand_pattern(self, pattern: str) -> re.Pattern:
         """Expand a permission pattern into a regular expression.
-        
+
         This function is memoized to avoid recompiling the same regular expression multiple times.
 
         Args:
