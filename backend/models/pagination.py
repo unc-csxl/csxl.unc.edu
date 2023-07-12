@@ -1,3 +1,5 @@
+"""Models for paginating results via the API."""
+
 from typing import Generic, TypeVar
 from pydantic import BaseModel
 from pydantic.generics import GenericModel
@@ -6,6 +8,7 @@ T = TypeVar("T")
 
 
 class PaginationParams(BaseModel):
+    """Parameters passed from the client to paginate results."""
     page: int = 0
     page_size: int = 10
     order_by: str = ""
@@ -13,7 +16,7 @@ class PaginationParams(BaseModel):
 
 
 class Paginated(GenericModel, Generic[T]):
-    """Generic, abstract class for paginating models."""
+    """Generic class for returning paginating results to the client."""
     items: list[T]
     length: int
     params: PaginationParams

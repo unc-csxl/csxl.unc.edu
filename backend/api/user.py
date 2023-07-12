@@ -1,14 +1,18 @@
+"""User operations open to registered users such as searching for fellow user profiles."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from ..services import UserService
 from ..models import User
 from .authentication import registered_user
 
 api = APIRouter(prefix="/api/user")
+openapi_tags = { "name": "Users", "description": "User profile search and related operations."}
 
 
-@api.get("", response_model=list[User], tags=['User'])
+@api.get("", response_model=list[User], tags=['Users'])
 def search(q: str, subject: User = Depends(registered_user), user_svc: UserService = Depends()):
-		return user_svc.search(subject, q)
+    """Search for users based on a query string which matches against name, onyen, and email address."""
+    return user_svc.search(subject, q)
 
 @api.get("/all", tags=['User'])
 def get_users(user_service: UserService = Depends()) -> list[User]:
@@ -56,19 +60,4 @@ def get_user(pid: int, user_service: UserService = Depends()) -> User:
     except Exception as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response
-        raise HTTPException(status_code=404, detail=str(e))
-
-@api.delete("/{pid}", tags=['User'])
-def delete_user(pid: int, user_service = Depends(UserService)):
-    """
-    Delete user based on pid
-    """
-
-    # Try to delete user
-    try:
-        # Return deleted role
-        return user_service.delete(pid)
-    except Exception as e:
-        # Raise 404 exception if search fails
-        # - This would occur if there is no response or if item to delete does not exist
         raise HTTPException(status_code=404, detail=str(e))

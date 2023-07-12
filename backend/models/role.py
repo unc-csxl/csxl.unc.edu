@@ -10,6 +10,7 @@ __license__ = "MIT"
 
 
 class Role(BaseModel):
+    """A role is a group of related access controls users can be added to."""
     id: int | None = None
     name: str
     

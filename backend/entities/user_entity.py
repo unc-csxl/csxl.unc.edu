@@ -1,4 +1,4 @@
-'''User accounts for all registered users in the application.'''
+"""User accounts for all registered users in the application."""
 
 
 from sqlalchemy import Integer, String
@@ -15,6 +15,8 @@ __license__ = 'MIT'
 
 
 class UserEntity(EntityBase):
+    """Entity for Users in the database."""
+
     __tablename__ = 'user'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -36,8 +38,10 @@ class UserEntity(EntityBase):
     github_avatar: Mapped[str] = mapped_column(
         String(), nullable=True)
 
-    roles: Mapped[list['RoleEntity']] = relationship(secondary=user_role_table, back_populates='users')
-    permissions: Mapped['PermissionEntity'] = relationship(back_populates='user')
+    roles: Mapped[list['RoleEntity']] = relationship(
+        secondary=user_role_table, back_populates='users')
+    permissions: Mapped['PermissionEntity'] = relationship(
+        back_populates='user')
 
     # Bi-Directional Relationship Fields
     events: Mapped[list["EventEntity"]] = relationship(secondary="registrations", back_populates="users")
@@ -48,6 +52,13 @@ class UserEntity(EntityBase):
 
     @classmethod
     def from_model(cls, model: User) -> Self:
+        """Create a UserEntity from a User model.
+        
+        Args:
+            model (User): The model to create the entity from.
+            
+        Returns:
+            Self: The entity (not yet persisted)."""
         return cls(
             id=model.id,
             pid=model.pid,
@@ -62,6 +73,10 @@ class UserEntity(EntityBase):
         )
 
     def to_model(self) -> User:
+        """Create a User model from a UserEntity.
+        
+        Returns:
+            User: A User model for API usage."""
         return User(
             id=self.id,
             pid=self.pid,
@@ -80,6 +95,13 @@ class UserEntity(EntityBase):
         )
 
     def update(self, model: User) -> None:
+        """Update a UserEntity from a User model.
+        
+        Args:
+            model (User): The model to update the entity from.
+            
+        Returns:
+            None"""
         self.email = model.email
         self.first_name = model.first_name
         self.last_name = model.last_name
