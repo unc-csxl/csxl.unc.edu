@@ -75,8 +75,6 @@ __authors__ = ['Kris Jordan']
 __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
-openapi_tags = {'name': 'TODO', 'description': 'TODO'}
-
 api = APIRouter()
 
 HOST = getenv('HOST')
@@ -119,10 +117,10 @@ def authenticated_pid(
 @api.get('/verify', include_in_schema=False)
 def auth_verify(token: str, continue_to: str = '/'):
     """Verify the legitimacy of a token for delegated authentication purposes.
-    
+
     This endpoint is used to facilitate SSO authentication in development and staging environments.
     For usage, see the helper function _verify_delegated_auth_token below.
-    
+
     The staging environment will ultimately dispatch to the production environment's verify
     route, here, in order to verify the token (and then reissue using its own signing)."""
     return jwt.decode(token, _JWT_SECRET, algorithms=[_JST_ALGORITHM], options={'verify_signature': True})
@@ -173,7 +171,7 @@ def github_oauth_login_url(subject: User = Depends(registered_user), github_serv
 @api.get('/oauth/github', include_in_schema=False)
 def github_oauth(code: str):
     """Upon return from GitHub with a code, this route produces bootstrapping HTML for linking the user's GitHub account.
-    
+
     The reason this step is necessary is because the user's CSXL bearer token is only available in localStorage. Thus,
     it is not visible in the return from GitHub's OAuth page. The HTML produced by this route contains JavaScript that
     will extract the token from localStorage and then POST it to the /oauth/github route below.
