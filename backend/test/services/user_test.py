@@ -66,17 +66,24 @@ def permission_svc_mock():
 
 @pytest.fixture()
 def user_svc(test_session: Session, permission_svc_mock: PermissionService):
+    """This fixture is used to test the UserService class with a mocked PermissionService."""
     return UserService(test_session, permission_svc_mock)
 
+@pytest.fixture()
+def user_svc_integration(test_session: Session):
+    """This fixture is used to test the UserService class with a real PermissionService."""
+    return UserService(test_session, PermissionService(test_session))
 
-def test_get(user_svc: UserService):
+
+def test_get(user_svc_integration: UserService):
     """Test that a user can be retrieved by PID."""
-    user = user_svc.get(ambassador.pid)
+    user = user_svc_integration.get(ambassador.pid)
     assert user is not None
     assert user.id == ambassador.id
     assert user.pid == ambassador.pid
     assert user.onyen == ambassador.onyen
     assert user.email == ambassador.email
+    assert user.permissions == [ambassador_permission]
 
 
 def test_search_by_first_name(user_svc: UserService):
@@ -211,8 +218,9 @@ def test_create_user_enforces_permission(user_svc: UserService, permission_svc_m
         root, 'user.create', 'user/')
 
 
-def test_update_user_as_user(user_svc: UserService):
+def test_update_user_as_user(user_svc: UserService, permission_svc_mock: PermissionService):
     """Test that a user can update their own information."""
+    permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
     user.first_name = 'Andy'
     user.last_name = 'Ambassy'
@@ -223,8 +231,9 @@ def test_update_user_as_user(user_svc: UserService):
     assert updated_user.last_name == 'Ambassy'
 
 
-def test_update_user_as_root(user_svc: UserService):
+def test_update_user_as_root(user_svc: UserService, permission_svc_mock: PermissionService):
     """Test that a user can be updated by a root user as an administrator."""
+    permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
     user.first_name = 'Andy'
     user.last_name = 'Ambassy'
@@ -237,6 +246,7 @@ def test_update_user_as_root(user_svc: UserService):
 
 def test_update_user_enforces_permission(user_svc: UserService, permission_svc_mock: PermissionService):
     """Test that user.update on user/ is enforced by the update method"""
+    permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
     user_svc.update(root, user)
     permission_svc_mock.enforce.assert_called_with(

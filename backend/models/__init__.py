@@ -2,7 +2,7 @@
 
 from .pagination import Paginated, PaginationParams
 from .permission import Permission
-from .user import User, ProfileForm, NewUser
+from .user import User, UserDetails, ProfileForm, UnregisteredUser
 from .role import Role
 from .role_details import RoleDetails
 
