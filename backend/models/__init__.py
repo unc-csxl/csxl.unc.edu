@@ -3,7 +3,8 @@
 from .pagination import Paginated, PaginationParams
 from .permission import Permission
 from .user import User, ProfileForm, UnregisteredUser
-from .role import Role, RoleDetails
+from .role import Role
+from .role_details import RoleDetails
 from .organization import Organization
 from .org_role import OrgRoleDetail, OrgRole
 from .registration import RegistrationDetail, Registration

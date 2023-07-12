@@ -12,6 +12,7 @@ __license__ = "MIT"
 
 class User(UnregisteredUser):
     """A user is a registered user of the application."""
+
     id: int | None = None
     github: str = ""
     github_id: int | None = None
@@ -20,6 +21,7 @@ class User(UnregisteredUser):
 
 class ProfileForm(BaseModel):
     """A profile form is a form for updating a user's profile."""
+
     first_name: str
     last_name: str
     email: str

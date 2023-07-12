@@ -10,6 +10,7 @@ __license__ = "MIT"
 
 class Permission(BaseModel):
     """A permission grants access to an action on a resource."""
+
     id: int | None = None
     action: str
     resource: str

@@ -5,9 +5,8 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
-from .user_role_entity import user_role_table
-from backend.models.user import User
-from backend.models.user_details import UserDetails
+from .user_role_table import user_role_table
+from ..models import User, UserDetails
 
 
 __authors__ = ['Kris Jordan']

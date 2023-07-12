@@ -1,7 +1,10 @@
-"""Entrypoint of backend API exposing the FastAPI `app` to be served by an application server such as uvicorn."""
+"""Entrypoint of backend API exposing the FastAPI `app`.
+
+This application should be mounted in an app server such as uvicorn."""
 
 from fastapi import FastAPI
 from .api import health, static_files, profile, authentication, user, organizations, event, registration, org_role
+from .api.coworking import status
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 
@@ -10,7 +13,8 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 description = """
-Welcome to the UNC Computer Science **Experience Labs** RESTful Application Programming Interface.
+Welcome to the UNC Computer Science **Experience Labs**
+RESTful Application Programming Interface.
 """
 
 app = FastAPI(
@@ -20,12 +24,14 @@ app = FastAPI(
     openapi_tags=[
         profile.openapi_tags,
         user.openapi_tags,
+        status.openapi_tags,
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
     ],
 )
 
+app.include_router(status.api)
 app.include_router(user.api)
 app.include_router(profile.api)
 app.include_router(health.api)

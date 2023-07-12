@@ -1,4 +1,4 @@
-"""SQLAlchemy DB Engine and Session niceties for FastAPI dependency injection."""
+"""SQLAlchemy DB Engine/Session niceties for FastAPI dependency injection."""
 
 import sqlalchemy
 from sqlalchemy.orm import Session
@@ -10,7 +10,7 @@ __license__ = "MIT"
 
 
 def _engine_str(database=getenv("POSTGRES_DATABASE")) -> str:
-    """Helper function for reading settings from environment variables to produce connection string."""
+    """Helper function for to produce connection strings from env vars."""
     dialect = "postgresql+psycopg2"
     user = getenv("POSTGRES_USER")
     password = getenv("POSTGRES_PASSWORD")
@@ -24,7 +24,7 @@ engine = sqlalchemy.create_engine(_engine_str(), echo=True)
 
 
 def db_session():
-    """Generator function offering dependency injection of SQLAlchemy Sessions."""
+    """Dependency injection for SQLAlchemy Sessions."""
     session = Session(engine)
     try:
         yield session
