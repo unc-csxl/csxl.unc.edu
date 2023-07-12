@@ -125,28 +125,16 @@ def auth_verify(token: str, continue_to: str = '/'):
     route, here, in order to verify the token (and then reissue using its own signing)."""
     return jwt.decode(token, _JWT_SECRET, algorithms=[_JST_ALGORITHM], options={'verify_signature': True})
 
-
 @api.get('/auth', include_in_schema=False)
-@api.get('/auth/as/{uid}/{pid}', include_in_schema=False)
 def bearer_token_bootstrap(
-    request: Request,
     uid: str | None = Header(None),
     pid: int | None = Header(None),
     continue_to: str = '/',
     origin: str | None = None,
     token: str | None = None,
+    development_authentication: bool = False
 ):
-    """Handles authentication in both production and development. See the module docstring for more details."""
-    if request.url.path.startswith('/auth/as/'):
-        # Authenticate as another user in development using special route.
-        if getenv('MODE') == 'development':
-            testing_authentication = True
-        else:
-            onyen = request.headers['uid']
-            raise HTTPException(
-                status_code=400, detail=f'Tsk, tsk. That is a naughty request {onyen}.')
-
-    if HOST == AUTH_SERVER_HOST or ('testing_authentication' in locals() and testing_authentication):
+    if HOST == AUTH_SERVER_HOST or development_authentication:
         # Production App Request
         if uid is not None and pid is not None:
             return _handle_auth_in_production(uid, pid, continue_to, origin)
@@ -159,6 +147,25 @@ def bearer_token_bootstrap(
             return _delegate_to_auth_server(continue_to)
         else:
             return _verify_delegated_auth_token(continue_to, token)
+    
+
+@api.get('/auth/as/{uid}/{pid}', include_in_schema=False)
+def bearer_token_impersonate(
+    request: Request,
+    uid: str | None,
+    pid: int | None,
+    continue_to: str = '/',
+    origin: str | None = None,
+    token: str | None = None,
+):
+    """Authenticate as another user in development mode only using this special route."""
+    if getenv('MODE') == 'development':
+        return bearer_token_bootstrap(uid, pid, continue_to, origin, token, True)
+    else:
+        onyen = request.headers['uid']
+        raise HTTPException(
+            status_code=400, detail=f'Tsk, tsk. That is a naughty request {onyen}.')
+
 
 
 @api.get('/oauth/github_oauth_login_url', include_in_schema=False)
