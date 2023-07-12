@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
 from .user_role_entity import user_role_table
-from ..models import User
+from ..models import User, UserDetails
 
 
 __authors__ = ['Kris Jordan']
@@ -46,10 +46,10 @@ class UserEntity(EntityBase):
     @classmethod
     def from_model(cls, model: User) -> Self:
         """Create a UserEntity from a User model.
-        
+
         Args:
             model (User): The model to create the entity from.
-            
+
         Returns:
             Self: The entity (not yet persisted)."""
         return cls(
@@ -67,7 +67,7 @@ class UserEntity(EntityBase):
 
     def to_model(self) -> User:
         """Create a User model from a UserEntity.
-        
+
         Returns:
             User: A User model for API usage."""
         return User(
@@ -85,10 +85,10 @@ class UserEntity(EntityBase):
 
     def update(self, model: User) -> None:
         """Update a UserEntity from a User model.
-        
+
         Args:
             model (User): The model to update the entity from.
-            
+
         Returns:
             None"""
         self.email = model.email

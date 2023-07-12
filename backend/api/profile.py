@@ -5,7 +5,7 @@ This API is used to retrieve and update a user's profile."""
 from fastapi import APIRouter, Depends
 from .authentication import authenticated_pid
 from ..services import UserService
-from ..models import User, NewUser, ProfileForm
+from ..models import UserDetails, User, UnregisteredUser, ProfileForm
 
 __authors__ = ['Kris Jordan']
 __copyright__ = 'Copyright 2023'
@@ -19,7 +19,7 @@ PID = 0
 ONYEN = 1
 
 
-@api.get("", response_model=User | NewUser, tags=['Profile'])
+@api.get("", response_model=UserDetails | UnregisteredUser, tags=['Profile'])
 def read_profile(pid_onyen: tuple[int, str] = Depends(authenticated_pid), user_svc: UserService = Depends()):
     """Retrieve a user's profile. If the user does not exist, return a NewUser.
 
@@ -31,7 +31,7 @@ def read_profile(pid_onyen: tuple[int, str] = Depends(authenticated_pid), user_s
     if user:
         return user
     else:
-        return NewUser(pid=pid, onyen=onyen)
+        return UnregisteredUser(pid=pid, onyen=onyen)
 
 
 @api.put("", response_model=User, tags=['Profile'])

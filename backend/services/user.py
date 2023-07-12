@@ -7,7 +7,7 @@ from fastapi import Depends
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
 from ..database import db_session
-from ..models import User, Paginated, PaginationParams
+from ..models import User, UserDetails, Paginated, PaginationParams
 from ..entities import UserEntity
 from .permission import PermissionService
 
@@ -26,7 +26,7 @@ class UserService:
         self._session = session
         self._permission = permission
 
-    def get(self, pid: int) -> User | None:
+    def get(self, pid: int) -> UserDetails | None:
         """Get a User by PID.
 
         Args:
@@ -40,9 +40,11 @@ class UserService:
         if user_entity is None:
             return None
         else:
-            model = user_entity.to_model()
-            model.permissions = self._permission.get_permissions(model)
-            return model
+            user = user_entity.to_model()
+            user_fields = user.dict()
+            user_fields['permissions'] = self._permission.get_permissions(user)
+            user_details = UserDetails(**user_fields)
+            return user_details
 
     def search(self, _subject: User, query: str) -> list[User]:
         """Search for users by their name, onyen, email.
