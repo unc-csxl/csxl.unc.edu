@@ -11,13 +11,15 @@ __authors__ = ['Kris Jordan']
 __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
+
 api = APIRouter(prefix="/api/profile")
+openapi_tags = { "name": "Profile", "description": "Update and retrieve your CSXL profile as an authenticated user."}
 
 PID = 0
 ONYEN = 1
 
 
-@api.get("", response_model=User | NewUser, tags=['profile'])
+@api.get("", response_model=User | NewUser, tags=['Profile'])
 def read_profile(pid_onyen: tuple[int, str] = Depends(authenticated_pid), user_svc: UserService = Depends()):
     """Retrieve a user's profile. If the user does not exist, return a NewUser.
 
@@ -32,7 +34,7 @@ def read_profile(pid_onyen: tuple[int, str] = Depends(authenticated_pid), user_s
         return NewUser(pid=pid, onyen=onyen)
 
 
-@api.put("", response_model=User, tags=['profile'])
+@api.put("", response_model=User, tags=['Profile'])
 def update_profile(
     profile: ProfileForm,
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),

@@ -1,4 +1,4 @@
-"""Health check routes are used by the production system to monitor whether the system is live and running."""
+"""User administration API."""
 
 from fastapi import APIRouter, Depends, HTTPException
 from ...services import UserService, UserPermissionError
@@ -10,12 +10,12 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-openapi_tags = {"name": "User Admin API", "description": ""}
+openapi_tags = {"name": "(Admin) Users", "description": "User administration end points."}
 
 api = APIRouter(prefix="/api/admin/users")
 
 
-@api.get("", tags=["List Users"])
+@api.get("", tags=["(Admin) Users"])
 def list_users(
     subject: User = Depends(registered_user),
     user_service: UserService = Depends(),
@@ -24,6 +24,7 @@ def list_users(
     order_by: str = "first_name",
     filter: str = ""
 ) -> Paginated[User]:
+    """List users via standard backend pagination query parameters."""
     try:
         pagination_params = PaginationParams(
             page=page, page_size=page_size, order_by=order_by, filter=filter)

@@ -9,6 +9,7 @@ __license__ = "MIT"
 
 
 class User(BaseModel):
+    """A user is a registered user of the application."""
     id: int | None = None
     pid: int
     onyen: str = ""
@@ -23,6 +24,7 @@ class User(BaseModel):
 
 
 class NewUser(BaseModel):
+    """A new user is a user that has not yet been registered."""
     pid: int
     onyen: str
     first_name: str = ''
@@ -33,6 +35,7 @@ class NewUser(BaseModel):
 
 
 class ProfileForm(BaseModel):
+    """A profile form is a form for updating a user's profile."""
     first_name: str
     last_name: str
     email: str
