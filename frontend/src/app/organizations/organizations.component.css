@@ -147,11 +147,6 @@ mat-card-actions {
     z-index: 0 !important;
 }
 
-.mat-icon, .mat-icon svg {
-color: white;
-fill: white;
-}
-
 .details-link {
     text-decoration: none;
 }

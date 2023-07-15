@@ -5,7 +5,10 @@
         [opened]="isHandset === false">
       <mat-nav-list (click)="hideMobileSidenav(drawer)">
         <a mat-list-item class="logo-item" routerLink="/" routerLinkActive="active">
-          <img class="logo" src="/assets/lil-logo.png" alt="Computer Science Experience Labs Logo">
+          <picture>
+            <source class="logo" srcset="/assets/lil-logo-dark.png" media="(prefers-color-scheme: dark)" alt="Computer Science Experience Labs Logo">
+            <img class="logo" src="/assets/lil-logo-light.png" alt="Computer Science Experience Labs Logo">
+          </picture>
         </a>
         <mat-divider></mat-divider>
         <a *ngIf="(profile$ | async) === undefined;" mat-list-item routerLink="/organizations">Organizations</a>

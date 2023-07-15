@@ -94,11 +94,6 @@ p {
   margin: 0;
 }
 
-.mat-icon, .mat-icon svg {
-  color: white;
-  fill: white;
-}
-
 .user-info-label {
   font-weight: 500;
   margin-bottom: 0;
@@ -168,7 +163,6 @@ p {
 }
 
 .mat-expansion-panel-header {
-  background-color: #525252 !important;
   border: none !important;
 }
 
