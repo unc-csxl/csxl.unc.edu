@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from backend.models.event import Event, EventSummary
+from backend.models.event import EventDetail, Event
 
 from datetime import datetime
 
@@ -25,7 +25,7 @@ class EventEntity(EntityBase):
     public: Mapped[bool] = mapped_column(Boolean)
     # ID of the organization hosting the event
     org_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
-    # Organization hosting the event
+    # OrganizationDetail hosting the event
         # Generated from a relationship with the "organization table"
         # Back-populates the `events` field of `OrganizationEntity`
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
@@ -35,25 +35,25 @@ class EventEntity(EntityBase):
     user_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="event",cascade="all,delete")
 
     @classmethod
-    def from_model(cls, model: Event) -> Self:
+    def from_model(cls, model: EventDetail) -> Self:
         """
-        Class method that converts a `Event` object into a `EventEntity`
+        Class method that converts a `EventDetail` object into a `EventEntity`
         
         Parameters:
-            - model (Event): Model to convert into an entity
+            - model (EventDetail): Model to convert into an entity
         Returns:
             EventEntity: Entity created from model
         """
         return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public, org_id=model.org_id)
 
-    def to_model(self) -> Event:
+    def to_model(self) -> EventDetail:
         """
-        Converts a `EventEntity` object into a `Event`
+        Converts a `EventEntity` object into a `EventDetail`
         
         Returns:
-            Event: `Event` object from the entity
+            EventDetail: `EventDetail` object from the entity
         """
-        return Event(id=self.id, 
+        return EventDetail(id=self.id, 
                      name=self.name, 
                      time=self.time, 
                      location=self.location, 
@@ -64,14 +64,14 @@ class EventEntity(EntityBase):
                      users=[user.to_summary() for user in self.users],
                      user_associations=[association.to_model() for association in self.user_associations])
 
-    def to_summary(self) -> EventSummary:
+    def to_summary(self) -> Event:
         """
-        Converts a `EventSummary` object into a `EventSummary`
+        Converts a `Event` object into a `Event`
         
         Returns:
-            Event: `EventSummary` object from the entity
+            EventDetail: `Event` object from the entity
         """
-        return EventSummary(id=self.id, 
+        return Event(id=self.id, 
                      name=self.name, 
                      time=self.time, 
                      location=self.location, 

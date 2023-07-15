@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from backend.entities.org_role_entity import OrgRoleEntity
-from backend.models.org_role import OrgRole, OrgRoleSummary
+from backend.models.org_role import OrgRoleDetail, OrgRole
 from ..database import db_session
 
 class OrgRoleService:
@@ -15,7 +15,7 @@ class OrgRoleService:
         """Initializes the `RoleService` session"""
         self._session = session
 
-    def all(self) -> list[OrgRole]:
+    def all(self) -> list[OrgRoleDetail]:
         """
         Retrieves all roles from the table
 
@@ -29,16 +29,16 @@ class OrgRoleService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, role: OrgRoleSummary) -> OrgRole:
+    def create(self, role: OrgRole) -> OrgRoleDetail:
         """
         Creates a role based on the input object and adds it to the table.
         If the role's PID is unique to the table, a new entry is added.
         If the role's PID already exists in the table, the existing entry is updated.
 
         Parameters:
-            role (OrgRole): Role to add to table
+            role (OrgRoleDetail): Role to add to table
         Returns:
-            OrgRole: Object added to table
+            OrgRoleDetail: Object added to table
         """
 
         # Checks if the role already exists in the table
@@ -68,7 +68,7 @@ class OrgRoleService:
         # Return updated/added object
         return role_entity.to_model()
 
-    def get_from_userid(self, user_id: int) -> list[OrgRole]:
+    def get_from_userid(self, user_id: int) -> list[OrgRoleDetail]:
         """
         Get all roles matching the provided user id.
         If none retrieved, a debug description is displayed.
@@ -76,7 +76,7 @@ class OrgRoleService:
         Parameters:
             user_id (int): Unique user ID
         Returns:
-            list[OrgRole]: All matching `Role` objects
+            list[OrgRoleDetail]: All matching `Role` objects
         """
 
         # Query roles with matching user id
@@ -90,7 +90,7 @@ class OrgRoleService:
             # Raise exception
             raise Exception(f"No role found with User ID: {user_id}")
 
-    def get_from_orgid(self, org_id: int) -> list[OrgRole]:
+    def get_from_orgid(self, org_id: int) -> list[OrgRoleDetail]:
         """
         Get all roles matching the provided organization id.
         If none retrieved, a debug description is displayed.
@@ -98,7 +98,7 @@ class OrgRoleService:
         Parameters:
             org_id (int): Unique organization ID
         Returns:
-            list[OrgRole]: All matching `OrgRole` objects
+            list[OrgRoleDetail]: All matching `OrgRoleDetail` objects
         """
 
         # Query roles with matching organization id
@@ -110,7 +110,7 @@ class OrgRoleService:
             return [role.to_model() for role in roles]
         else:
             # Raise exception
-            raise Exception(f"No role found with Organization ID: {org_id}")
+            raise Exception(f"No role found with OrganizationDetail ID: {org_id}")
 
     def delete(self, id: int) -> None:
         """

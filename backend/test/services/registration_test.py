@@ -1,29 +1,29 @@
 import pytest
 
 from sqlalchemy.orm import Session
-from ...models import RegistrationSummary, UserSummary, EventSummary, Organization
+from ...models import Registration, UserSummary, Event, OrganizationDetail
 from ...services import RegistrationService, UserService, EventService, OrganizationService
 import datetime
 
 # Mock Models
-registration1 = RegistrationSummary( 
+registration1 = Registration( 
     user_id=1, 
     event_id=1, 
     status=0
     )
-registration2 = RegistrationSummary(
+registration2 = Registration(
     user_id=1, 
     event_id=2, 
     status=0
     )
-registration_updated = RegistrationSummary( 
+registration_updated = Registration( 
     user_id=1, 
     event_id=1, 
     status=1
     )
 root = UserSummary(pid=999999999, onyen='root', first_name="Super", last_name="User",
              email="root@cs.unc.edu", pronouns="they / them")
-event1 = EventSummary(
+event1 = Event(
     name="HackNC", 
     time=datetime.datetime.fromtimestamp(1680110861), 
     location="Fetzer Gym", 
@@ -31,7 +31,7 @@ event1 = EventSummary(
     public=True, 
     org_id=1,
     )
-event2 = EventSummary(
+event2 = Event(
     name="CS+Social Good", 
     time=datetime.datetime.fromtimestamp(1880110861), 
     location="Sitterson", 
@@ -40,7 +40,7 @@ event2 = EventSummary(
     org_id=1,
     )
 
-event3 = EventSummary(
+event3 = Event(
     name="HackNC", 
     time=datetime.datetime.fromtimestamp(1880110861), 
     location="Sitterson", 
@@ -49,7 +49,7 @@ event3 = EventSummary(
     org_id=1,
     )
 
-org1 = Organization(
+org1 = OrganizationDetail(
     name="test", 
     slug="HackNC",
     logo="logo", 

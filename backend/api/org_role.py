@@ -1,28 +1,28 @@
 from fastapi import FastAPI, Depends, HTTPException, APIRouter
-from backend.models.org_role import OrgRole, OrgRoleSummary
+from backend.models.org_role import OrgRoleDetail, OrgRole
 from backend.services.org_role import OrgRoleService
 
 api = APIRouter(prefix="/api/orgroles")
 
 @api.get("", tags=['Org Role'])
-def get_roles(role_service: OrgRoleService = Depends()) -> list[OrgRole]:
+def get_roles(role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
     """
     Get all roles
 
     Returns:
-        list[OrgRole]: All `OrgRole`s in the `OrgRole` database table
+        list[OrgRoleDetail]: All `OrgRoleDetail`s in the `OrgRole` database table
     """
 
     # Return all roles
     return role_service.all()
 
 @api.post("", tags=['Org Role'])
-def new_role(role: OrgRoleSummary, role_service: OrgRoleService = Depends()) -> OrgRole:
+def new_role(role: OrgRole, role_service: OrgRoleService = Depends()) -> OrgRoleDetail:
     """
     Create or update role
 
     Returns:
-        OrgRole: Latest iteration of the created or updated role after changes made
+        OrgRoleDetail: Latest iteration of the created or updated role after changes made
     """
 
     # Try to create / update role
@@ -35,7 +35,7 @@ def new_role(role: OrgRoleSummary, role_service: OrgRoleService = Depends()) -> 
         raise HTTPException(status_code=422, detail=str(e))
 
 @api.get("/user/{user_id}", responses={404: {"model": None}}, tags=['Org Role'])
-def get_role_from_userid(user_id: int, role_service: OrgRoleService = Depends()) -> list[OrgRole]:
+def get_role_from_userid(user_id: int, role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
     """
     Get all roles with matching user_id
 
@@ -53,12 +53,12 @@ def get_role_from_userid(user_id: int, role_service: OrgRoleService = Depends())
         raise HTTPException(status_code=404, detail=str(e))
 
 @api.get("/org/{org_id}", responses={404: {"model": None}}, tags=['Org Role'])
-def get_role_from_orgid(org_id: int, role_service: OrgRoleService = Depends()) -> list[OrgRole]:
+def get_role_from_orgid(org_id: int, role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
     """
     Get all roles with matching org_id
 
     Returns:
-        list[OrgRole]: All roles with matching org_id
+        list[OrgRoleDetail]: All roles with matching org_id
     """
 
     # Try to get all roles with matching org_id

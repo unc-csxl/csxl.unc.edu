@@ -1,6 +1,7 @@
 """Role is the data object for groups of related access controls users can be added to."""
 
 from pydantic import BaseModel
+from . import User, Permission
 
 
 __authors__ = ["Kris Jordan"]
@@ -11,3 +12,7 @@ __license__ = "MIT"
 class Role(BaseModel):
     id: int | None = None
     name: str
+    
+class RoleDetails(Role):
+    permissions: list[Permission]
+    users: list[User]

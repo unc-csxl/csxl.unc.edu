@@ -1,11 +1,11 @@
 import pytest
 
 from sqlalchemy.orm import Session
-from ...models import OrganizationSummary
+from ...models import Organization
 from ...services import OrganizationService
 
 # Mock Models
-org1 = OrganizationSummary(
+org1 = Organization(
     name="test", 
     slug="ABC",
     logo="logo", 
@@ -18,7 +18,7 @@ org1 = OrganizationSummary(
     youtube="youtube", 
     heel_life="heellife")
 
-org2 = OrganizationSummary(
+org2 = Organization(
     name="test", 
     slug="CBA",
     logo="logo", 
@@ -31,7 +31,7 @@ org2 = OrganizationSummary(
     youtube="youtube", 
     heel_life="heellife")
 
-org1_updated = OrganizationSummary(
+org1_updated = Organization(
     id=1, 
     name="new org", 
     slug="ABC",

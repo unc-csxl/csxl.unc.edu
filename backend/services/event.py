@@ -2,12 +2,12 @@ from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from ..database import db_session
-from backend.models.event import Event, EventSummary
+from backend.models.event import EventDetail, Event
 from ..entities import EventEntity
 from datetime import datetime
 
 class EventService:
-    """Service that performs all of the actions on the `Event` table"""
+    """Service that performs all of the actions on the `EventDetail` table"""
 
     # Current SQLAlchemy Session
     _session: Session
@@ -16,28 +16,28 @@ class EventService:
         """Initializes the `EventService` session"""
         self._session = session
 
-    def all(self) -> list[Event]:
+    def all(self) -> list[EventDetail]:
         """
         Retrieves all events from the table
         Returns:
-            list[Event]: List of all `Event`
+            list[EventDetail]: List of all `EventDetail`
         """
-        # Select all entries in `Event` table
+        # Select all entries in `EventDetail` table
         query = select(EventEntity)
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, event: EventSummary) -> Event:
+    def create(self, event: Event) -> EventDetail:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
         If the event's ID already exists in the table, raise an exception.
         Parameters:
-            event (Event): Event to add to table
+            event (EventDetail): EventDetail to add to table
         Returns:
-            Event: Object added to table
+            EventDetail: Object added to table
         """
 
         # Checks if the role already exists in the table
@@ -55,14 +55,14 @@ class EventService:
             # Return added object
             return event_entity.to_model()
 
-    def get_from_id(self, id: int) -> Event:
+    def get_from_id(self, id: int) -> EventDetail:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
         Parameters:
             id (int): Unique event ID
         Returns:
-            Event: Object with corresponding ID
+            EventDetail: Object with corresponding ID
         """
 
         # Query the event with matching id
@@ -76,41 +76,41 @@ class EventService:
             # Raise exception
             raise Exception(f"No event found with ID: {id}")
 
-    def get_from_org_id(self, org_id: int) -> list[Event]:
+    def get_from_org_id(self, org_id: int) -> list[EventDetail]:
         """
         Get all the events hosted by an organization with id
         Parameters:
             org_id (int): Unique organization ID
         Returns:
-            list[Event]: Object with corresponding organization ID
+            list[EventDetail]: Object with corresponding organization ID
         """
 
         # Query the event with matching org id
         events = self._session.query(EventEntity).filter(EventEntity.org_id == org_id).all()
         return [event.to_model() for event in events]
 
-    def get_from_time_range(self, start: datetime, end: datetime) -> list[Event]:
+    def get_from_time_range(self, start: datetime, end: datetime) -> list[EventDetail]:
         """
         Get all the events within a time/date range
         Parameters:
             start (datetime): Start time of range
             end (datetime): End time of range
         Returns:
-            list[Event]: Object with corresponding organization ID
+            list[EventDetail]: Object with corresponding organization ID
         """
 
         # Query the event with matching org id
         events = self._session.query(EventEntity).filter(EventEntity.time < end).filter(EventEntity.time > start).all()
         return [event.to_model() for event in events]
     
-    def update(self, event: Event) -> Event:
+    def update(self, event: EventDetail) -> EventDetail:
         """
         Update the event
         If none found with that id, a debug description is displayed.
         Parameters:
-            event (Event): Event to add to table
+            event (EventDetail): EventDetail to add to table
         Returns:
-            Event: Updated event object
+            EventDetail: Updated event object
         """
 
         # Query the event with matching id

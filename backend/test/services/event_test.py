@@ -1,11 +1,11 @@
 import pytest
 
 from sqlalchemy.orm import Session
-from ...models import EventSummary, Organization
+from ...models import Event, OrganizationDetail
 from ...services import EventService, OrganizationService
 import datetime
 
-event1_updated = EventSummary(
+event1_updated = Event(
     id=1, 
     name="HackNC", 
     time=datetime.datetime.fromtimestamp(1680110861), 
@@ -15,7 +15,7 @@ event1_updated = EventSummary(
     org_id=12,
     )
 
-event1 = EventSummary(
+event1 = Event(
     name="HackNC", 
     time=datetime.datetime.fromtimestamp(1680110861), 
     location="Fetzer Gym", 
@@ -24,7 +24,7 @@ event1 = EventSummary(
     org_id=1,
     )
 
-event2 = EventSummary(
+event2 = Event(
     name="CS+Social Good", 
     time=datetime.datetime.fromtimestamp(1880110861), 
     location="Sitterson", 
@@ -33,7 +33,7 @@ event2 = EventSummary(
     org_id=2,
     )
 
-event3 = EventSummary(
+event3 = Event(
     name="HackNC", 
     time=datetime.datetime.fromtimestamp(1880110861), 
     location="Sitterson", 
@@ -42,7 +42,7 @@ event3 = EventSummary(
     org_id=1,
     )
 
-org1 = Organization(
+org1 = OrganizationDetail(
     name="test", 
     slug="HackNC",
     logo="logo", 
@@ -55,7 +55,7 @@ org1 = Organization(
     youtube="youtube", 
     heel_life="heellife")
 
-org2 = Organization(
+org2 = OrganizationDetail(
     name="test", 
     slug="HackNC",
     logo="logo", 

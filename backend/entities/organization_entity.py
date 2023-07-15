@@ -3,10 +3,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
 from backend.models import Role
-from backend.models.organization import Organization, OrganizationSummary
+from backend.models.organization import OrganizationDetail, Organization
 
 class OrganizationEntity(EntityBase):
-    """Serves as the database model schema defining the shape of the `Organization` table"""
+    """Serves as the database model schema defining the shape of the `OrganizationDetail` table"""
 
     __tablename__ = "organization"
 
@@ -44,29 +44,29 @@ class OrganizationEntity(EntityBase):
 
 
     @classmethod
-    def from_model(cls, model: Organization) -> Self:
+    def from_model(cls, model: OrganizationDetail) -> Self:
         """
-        Class method that converts a `Organization` object into a `OrganizationEntity`
+        Class method that converts a `OrganizationDetail` object into a `OrganizationEntity`
         
         Parameters:
-            - model (Organization): Model to convert into an entity
+            - model (OrganizationDetail): Model to convert into an entity
 
         Returns:
             OrganizationEntity: Entity created from model
         """
         return cls(id=model.id, name=model.name, slug=model.slug, logo=model.logo, short_description=model.short_description, long_description=model.long_description, website=model.website, email=model.email, instagram=model.instagram, linked_in=model.linked_in, youtube=model.youtube, heel_life=model.heel_life)
 
-    def to_model(self) -> Organization:
+    def to_model(self) -> OrganizationDetail:
         """
-        Converts a `OrganizationEntity` object into a `Organization`
+        Converts a `OrganizationEntity` object into a `OrganizationDetail`
         
         Returns:
-            Organization: `Organization` object from the entity
+            OrganizationDetail: `OrganizationDetail` object from the entity
         """
-        from backend.models.event import Event
+        from backend.models.event import EventDetail
         from backend.entities.event_entity import EventEntity
 
-        return Organization(id=self.id, 
+        return OrganizationDetail(id=self.id, 
                             name=self.name, 
                             slug=self.slug,
                             logo=self.logo, 
@@ -82,15 +82,15 @@ class OrganizationEntity(EntityBase):
                             users=[user.to_summary() for user in self.users],
                             user_associations=[association.to_model() for association in self.user_associations])
     
-    def to_summary(self) -> OrganizationSummary:
+    def to_summary(self) -> Organization:
         """
-        Converts a `OrganizationEntity` object into a `OrganizationSummary`
+        Converts a `OrganizationEntity` object into a `Organization`
         
         Returns:
-            Organization: `OrganizationSummary` object from the entity
+            OrganizationDetail: `Organization` object from the entity
         """
 
-        return OrganizationSummary(id=self.id, 
+        return Organization(id=self.id, 
                             name=self.name, 
                             slug=self.slug,
                             logo=self.logo, 

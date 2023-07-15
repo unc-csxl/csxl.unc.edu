@@ -1,13 +1,13 @@
-"""Registration routes are used to update the Registrations table"""
+"""RegistrationDetail routes are used to update the Registrations table"""
 
 from fastapi import APIRouter, Depends, HTTPException
-from backend.models.registration import Registration, RegistrationSummary
+from backend.models.registration import RegistrationDetail, Registration
 from backend.services.registration import RegistrationService
 
 api = APIRouter(prefix="/api/registrations")
 
-@api.get("", response_model=list[Registration], tags=['Registration'])
-def get_registrations(registrations_service: RegistrationService = Depends()) -> list[Registration]:
+@api.get("", response_model=list[RegistrationDetail], tags=['RegistrationDetail'])
+def get_registrations(registrations_service: RegistrationService = Depends()) -> list[RegistrationDetail]:
   """
   Get all registrations for all events.
 
@@ -15,21 +15,21 @@ def get_registrations(registrations_service: RegistrationService = Depends()) ->
     registration_service: a valid RegistrationService.
 
   Returns:
-    list[Role]: All `Registration`s in the `Registrations` database table
+    list[Role]: All `RegistrationDetail`s in the `Registrations` database table
   """
   return registrations_service.all()
 
-@api.post("", response_model=Registration, tags=['Registration'])
-def create_registration(registration: RegistrationSummary, registrations_service: RegistrationService = Depends()) -> Registration:
+@api.post("", response_model=RegistrationDetail, tags=['RegistrationDetail'])
+def create_registration(registration: Registration, registrations_service: RegistrationService = Depends()) -> RegistrationDetail:
   """
   Create a registration by a user for an event.
 
   Parameters:
-    registration: a valid Registration model.
+    registration: a valid RegistrationDetail model.
     registration_service: a valid RegistrationService.
 
   Returns:
-    The Registration object for the user.
+    The RegistrationDetail object for the user.
 
   Raises:
     HTTPException 422 if create() raises an Exception.
@@ -39,10 +39,10 @@ def create_registration(registration: RegistrationSummary, registrations_service
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/user/{user_id}/{status}", response_model=list[Registration], tags=['Registration'])
-def get_registrations_by_user(user_id: int, status: int, registrations_service: RegistrationService = Depends()) -> list[Registration]:
+@api.get("/user/{user_id}/{status}", response_model=list[RegistrationDetail], tags=['RegistrationDetail'])
+def get_registrations_by_user(user_id: int, status: int, registrations_service: RegistrationService = Depends()) -> list[RegistrationDetail]:
   """
-  Get all Registration objects associated with a User based on attendance status.
+  Get all RegistrationDetail objects associated with a User based on attendance status.
 
   Parameters:
     user_id: an Integer representing a unique identifier for a user.
@@ -60,10 +60,10 @@ def get_registrations_by_user(user_id: int, status: int, registrations_service: 
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 
-@api.get("/event/{event_id}/{status}", response_model=list[Registration], tags=['Registration'])
-def get_registrations_by_event(event_id: int, status: int, registrations_service: RegistrationService = Depends()) -> list[Registration]:
+@api.get("/event/{event_id}/{status}", response_model=list[RegistrationDetail], tags=['RegistrationDetail'])
+def get_registrations_by_event(event_id: int, status: int, registrations_service: RegistrationService = Depends()) -> list[RegistrationDetail]:
   """
-  Get all registrations associated with an Event based on attendance status.
+  Get all registrations associated with an EventDetail based on attendance status.
 
   Parameters:
     event_id: an Integer representing a unique identifier for an event.
@@ -81,17 +81,17 @@ def get_registrations_by_event(event_id: int, status: int, registrations_service
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("", response_model=Registration, tags=['Registration'])
-def mark_attended(registration: Registration, registrations_service: RegistrationService = Depends()) -> Registration:
+@api.put("", response_model=RegistrationDetail, tags=['RegistrationDetail'])
+def mark_attended(registration: RegistrationDetail, registrations_service: RegistrationService = Depends()) -> RegistrationDetail:
   """
-  Update a User's attendance status for an Event.
+  Update a User's attendance status for an EventDetail.
 
   Parameters:
-    registration: a valid Registration model.
+    registration: a valid RegistrationDetail model.
     registration_service: a valid RegistrationService.
 
   Returns:
-    The updated Registration object
+    The updated RegistrationDetail object
 
   Raises:
     HTTPException 404 if update_status() raises an Exception.
@@ -101,13 +101,13 @@ def mark_attended(registration: Registration, registrations_service: Registratio
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/registration/{reg_id}", response_model=None, tags=['Registration'])
+@api.delete("/registration/{reg_id}", response_model=None, tags=['RegistrationDetail'])
 def delete_registration(reg_id: int, registrations_service: RegistrationService = Depends()) -> None:
   """
-  Delete Registration for Event by Registration ID
+  Delete RegistrationDetail for EventDetail by RegistrationDetail ID
 
   Parameters:
-    reg_id: an integer that represents a Registration ID
+    reg_id: an integer that represents a RegistrationDetail ID
     registration_service: a valid RegistrationService.
 
   Raises:
@@ -118,7 +118,7 @@ def delete_registration(reg_id: int, registrations_service: RegistrationService 
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{event_id}", response_model=None, tags=['Registration'])
+@api.delete("/{event_id}", response_model=None, tags=['RegistrationDetail'])
 def clear_event_registrations(event_id: int, registrations_service: RegistrationService = Depends()) -> None:
   """
   Clear all registrations for an event.

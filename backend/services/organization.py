@@ -2,11 +2,11 @@ from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from ..database import db_session
-from backend.models.organization import Organization, OrganizationSummary
+from backend.models.organization import OrganizationDetail, Organization
 from backend.entities.organization_entity import OrganizationEntity
 
 class OrganizationService:
-    """Service that performs all of the actions on the `Organization` table"""
+    """Service that performs all of the actions on the `OrganizationDetail` table"""
 
     # Current SQLAlchemy Session
     _session: Session
@@ -15,30 +15,30 @@ class OrganizationService:
         """Initializes the `OrganizationService` session"""
         self._session = session
 
-    def all(self) -> list[Organization]:
+    def all(self) -> list[OrganizationDetail]:
         """
         Retrieves all organizations from the table
 
         Returns:
-            list[Organization]: List of all `Organization`
+            list[OrganizationDetail]: List of all `OrganizationDetail`
         """
-        # Select all entries in `Organization` table
+        # Select all entries in `OrganizationDetail` table
         query = select(OrganizationEntity)
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, organization: OrganizationSummary) -> Organization:
+    def create(self, organization: Organization) -> OrganizationDetail:
         """
         Creates a organization based on the input object and adds it to the table.
         If the organization's ID is unique to the table, a new entry is added.
         If the organization's ID already exists in the table, it raises an error.
 
         Parameters:
-            organization (Organization): Organization to add to table
+            organization (OrganizationDetail): OrganizationDetail to add to table
         Returns:
-            Organization: Object added to table
+            OrganizationDetail: Object added to table
         """
 
         # Checks if the organization already exists in the table
@@ -58,7 +58,7 @@ class OrganizationService:
             # Return added object
             return organization_entity.to_model()
 
-    def get_from_id(self, id: int) -> Organization:
+    def get_from_id(self, id: int) -> OrganizationDetail:
         """
         Get the organization from an id
         If none retrieved, a debug description is displayed.
@@ -66,7 +66,7 @@ class OrganizationService:
         Parameters:
             id (int): Unique organization ID
         Returns:
-            Organization: Object with corresponding ID
+            OrganizationDetail: Object with corresponding ID
         """
 
         # Query the organization with matching id
@@ -80,15 +80,15 @@ class OrganizationService:
             # Raise exception
             raise Exception(f"No organization found with ID: {id}")
 
-    def get_from_name(self, name: str) -> Organization:
+    def get_from_name(self, name: str) -> OrganizationDetail:
         """
         Get the organization from name (string)
         If none retrieved, a debug description is displayed.
 
         Parameters:
-            name (str): Organization name
+            name (str): OrganizationDetail name
         Returns:
-            Organization: Object with corresponding name
+            OrganizationDetail: Object with corresponding name
         """
 
         # Query the organization with matching id
@@ -102,15 +102,15 @@ class OrganizationService:
             # Raise exception
             raise Exception(f"No organization found with name: {name}")
 
-    def update(self, organization: Organization) -> Organization:
+    def update(self, organization: OrganizationDetail) -> OrganizationDetail:
         """
         Update the organization
         If none found with that id, a debug description is displayed.
 
         Parameters:
-            organization (Organization): Organization to add to table
+            organization (OrganizationDetail): OrganizationDetail to add to table
         Returns:
-            Organization: Updated organization object
+            OrganizationDetail: Updated organization object
         """
 
         # Query the organization with matching id

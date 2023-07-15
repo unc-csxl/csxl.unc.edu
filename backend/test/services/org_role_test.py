@@ -1,30 +1,30 @@
 import pytest
 
 from sqlalchemy.orm import Session
-from ...models import OrgRoleSummary, OrganizationSummary, UserSummary
+from ...models import OrgRole, Organization, UserSummary
 from ...services import OrgRoleService, OrganizationService, UserService
 
 
-role1 = OrgRoleSummary(
+role1 = OrgRole(
     user_id=1, 
     org_id=1, 
     membership_type = 1
     )
 
-role2 = OrgRoleSummary(
+role2 = OrgRole(
     user_id=1, 
     org_id=1, 
     membership_type = 0
     )
 
-role1_updated = OrgRoleSummary(
+role1_updated = OrgRole(
     id=1,
     user_id=1, 
     org_id=1, 
     membership_type = 1
     )
 
-org1 = OrganizationSummary(
+org1 = Organization(
     name="test", 
     logo="logo", 
     slug="HackNC",

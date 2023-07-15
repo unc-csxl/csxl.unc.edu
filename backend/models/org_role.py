@@ -12,10 +12,8 @@ class OrgRole(BaseModel):
     user_id: int
     org_id: int
     membership_type: int
-    organization: 'OrganizationSummary' = None
-    user: 'UserSummary' = None
-
-class OrgRoleSummary(BaseModel):
+    
+class OrgRoleDetail(OrgRole):
     """
     Model to represent `Role` connections between users and organizations
     
@@ -23,12 +21,10 @@ class OrgRoleSummary(BaseModel):
     of the `Role` database in the PostgreSQL database
     """
     
-    id: int | None=None
-    user_id: int
-    org_id: int
-    membership_type: int
+    organization: 'Organization' = None
+    user: 'UserSummary' = None
 
-from backend.models.organization import OrganizationSummary
+from backend.models.organization import Organization
 from backend.models.user import UserSummary;
-OrgRole.update_forward_refs()
+OrgRoleDetail.update_forward_refs()
 

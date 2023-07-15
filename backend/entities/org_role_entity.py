@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from backend.entities.entity_base import EntityBase
 
-from backend.models.org_role import OrgRole, OrgRoleSummary
+from backend.models.org_role import OrgRoleDetail, OrgRole
 
 class OrgRoleEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Role` table"""
@@ -17,7 +17,7 @@ class OrgRoleEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # User ID for the role
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
-    # Organization ID for the role
+    # OrganizationDetail ID for the role
     org_id: Mapped[int] = mapped_column(ForeignKey("organization.id"), primary_key=True)
     # Type of membership (0 = Member, 1 = Executive, 2 = Manager)
     membership_type: Mapped[int] = mapped_column(Integer)
@@ -27,7 +27,7 @@ class OrgRoleEntity(EntityBase):
     organization: Mapped['OrganizationEntity'] = relationship(back_populates="user_associations")
 
     @classmethod
-    def from_model(cls, model: OrgRole) -> Self:
+    def from_model(cls, model: OrgRoleDetail) -> Self:
         """
         Class method that converts a `Role` object into a `RoleEntity`
         
@@ -39,14 +39,14 @@ class OrgRoleEntity(EntityBase):
         """
         return cls(id=model.id, user_id=model.user_id, org_id=model.org_id, membership_type=model.membership_type)
 
-    def to_model(self) -> OrgRole:
+    def to_model(self) -> OrgRoleDetail:
         """
-        Converts a `OrgRoleEntity` object into a `OrgRole`
+        Converts a `OrgRoleEntity` object into a `OrgRoleDetail`
         
         Returns:
-            OrgRole: `OrgRole` object from the entity
+            OrgRoleDetail: `OrgRoleDetail` object from the entity
         """
-        return OrgRole(
+        return OrgRoleDetail(
             id=self.id, 
             user_id=self.user_id, 
             org_id=self.org_id, 
@@ -55,14 +55,14 @@ class OrgRoleEntity(EntityBase):
             user=self.user.to_summary()
         )
 
-    def to_summary(self) -> OrgRoleSummary:
+    def to_summary(self) -> OrgRole:
         """
-        Converts a `OrgRoleEntity` object into a `OrgRoleSummary`
+        Converts a `OrgRoleEntity` object into a `OrgRole`
         
         Returns:
-            OrgRoleSummary: `OrgRoleSummary` object from the entity
+            OrgRole: `OrgRole` object from the entity
         """
-        return OrgRoleSummary(
+        return OrgRole(
             id=self.id, 
             user_id=self.user_id, 
             org_id=self.org_id, 

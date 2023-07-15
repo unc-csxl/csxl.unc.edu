@@ -1,4 +1,4 @@
-"""Sample Event models to use in the development environment."""
+"""Sample EventDetail models to use in the development environment."""
 
 from backend.entities.event_entity import EventEntity
 import datetime

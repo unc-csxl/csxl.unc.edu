@@ -1,28 +1,28 @@
 from fastapi import APIRouter, Depends, HTTPException
 from backend.services.organization import OrganizationService
-from backend.models.organization import Organization, OrganizationSummary
+from backend.models.organization import OrganizationDetail, Organization
 
 api = APIRouter(prefix="/api/organizations")
 
-@api.get("", response_model=list[Organization], tags=['Organization'])
-def get_organizations(organization_service: OrganizationService = Depends()) -> list[Organization]:
+@api.get("", response_model=list[OrganizationDetail], tags=['OrganizationDetail'])
+def get_organizations(organization_service: OrganizationService = Depends()) -> list[OrganizationDetail]:
     """
     Get all organizations
 
     Returns:
-        list[Organization]: All `Organizations`s in the `Organization` database table
+        list[OrganizationDetail]: All `Organizations`s in the `Organization` database table
     """
 
     # Return all organizations
     return organization_service.all()
 
-@api.post("", response_model=Organization, tags=['Organization'])
-def new_organization(organization: OrganizationSummary, organization_service: OrganizationService = Depends()) -> Organization:
+@api.post("", response_model=OrganizationDetail, tags=['OrganizationDetail'])
+def new_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> OrganizationDetail:
     """
     Create organization
 
     Returns:
-        Organization: Created organization
+        OrganizationDetail: Created organization
     """
 
     # Try to create organization
@@ -34,13 +34,13 @@ def new_organization(organization: OrganizationSummary, organization_service: Or
         # - This would occur if the request body is shaped incorrectly
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{id}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
-def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> Organization:
+@api.get("/{id}", responses={404: {"model": None}}, response_model=OrganizationDetail, tags=['OrganizationDetail'])
+def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> OrganizationDetail:
     """
     Get organization with matching id
 
     Returns:
-        Organization: Organization with matching id
+        OrganizationDetail: OrganizationDetail with matching id
     """
     
     # Try to get organization with matching id
@@ -52,13 +52,13 @@ def get_organization_from_id(id: int, organization_service: OrganizationService 
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.get("/name/{name}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
-def get_organization_from_name(name: str, organization_service: OrganizationService = Depends()) -> Organization:
+@api.get("/name/{name}", responses={404: {"model": None}}, response_model=OrganizationDetail, tags=['OrganizationDetail'])
+def get_organization_from_name(name: str, organization_service: OrganizationService = Depends()) -> OrganizationDetail:
     """
     Get organization with matching name
 
     Returns:
-        Organization: Organization with matching name
+        OrganizationDetail: OrganizationDetail with matching name
     """
     
     # Try to get organization with matching name
@@ -70,13 +70,13 @@ def get_organization_from_name(name: str, organization_service: OrganizationServ
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
-def update_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> Organization:
+@api.put("", responses={404: {"model": None}}, response_model=OrganizationDetail, tags=['OrganizationDetail'])
+def update_organization(organization: OrganizationDetail, organization_service: OrganizationService = Depends()) -> OrganizationDetail:
     """
     Update organization
 
     Returns:
-        Organization: Updated organization
+        OrganizationDetail: Updated organization
     """
 
     # Try to update organization
@@ -88,7 +88,7 @@ def update_organization(organization: Organization, organization_service: Organi
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{id}", response_model=None, tags=['Organization'])
+@api.delete("/{id}", response_model=None, tags=['OrganizationDetail'])
 def delete_organization(id: int, organization_service = Depends(OrganizationService)):
     """
     Delete organization based on id

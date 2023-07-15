@@ -1,10 +1,10 @@
-"""Registration is the data object for a User's registration to an event."""
+"""RegistrationDetail is the data object for a User's registration to an event."""
 
 from pydantic import BaseModel
 
-class Registration(BaseModel):
+class RegistrationDetail(BaseModel):
   """
-  Model to represent `Registration` connections between users and organizations
+  Model to represent `RegistrationDetail` connections between users and organizations
     
   This model is based on the `RegistrationEntity` model, which defines the shape
   of the `Registrations` database in the PostgreSQL database
@@ -13,12 +13,12 @@ class Registration(BaseModel):
   user_id: int
   event_id: int
   status: int
-  event: 'EventSummary'
+  event: 'Event'
   user: 'UserSummary'
 
-class RegistrationSummary(BaseModel):
+class Registration(BaseModel):
   """
-  Model to represent `Registration` connections between users and organizations
+  Model to represent `RegistrationDetail` connections between users and organizations
     
   This model is based on the `RegistrationEntity` model, which defines the shape
   of the `Registrations` database in the PostgreSQL database
@@ -29,8 +29,8 @@ class RegistrationSummary(BaseModel):
   status: int
 
 
-from backend.models.event import EventSummary;
+from backend.models.event import Event;
 from backend.models.user import UserSummary;
-Registration.update_forward_refs()
+RegistrationDetail.update_forward_refs()
 
 
