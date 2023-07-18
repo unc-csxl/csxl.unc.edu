@@ -1,0 +1,28 @@
+<mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+        <!-- Mobile Event Cards -->
+        <div class="mobile-column mobile">
+            <mat-panel-title class="event-name">
+                {{event.name}}
+            </mat-panel-title>
+            <mat-panel-description class="mobile">
+                {{event.organization.slug}} | {{event.location}} | {{event.time | date: 'M/d @ h:mmaaaaa'}}
+            </mat-panel-description>
+        </div>
+        <!-- Desktop Event Cards -->
+        <mat-panel-title class="event-name desktop">
+            {{event.name}}
+        </mat-panel-title>
+        <mat-panel-description class="desktop">
+            {{event.organization.name}}
+        </mat-panel-description>
+        <mat-panel-description class="desktop">
+            {{event.location}} | {{event.time | date: 'MMMM d @ h:mm a'}}
+        </mat-panel-description>
+        <!-- Registration Button (if not registered) -->
+        <mat-icon (click)="registerButtonPressed(event.id!)" *ngIf='canRegister'>person_add</mat-icon>
+        <!-- Cancel Registration Button (if registered) -->
+        <mat-icon (click)="unregisterButtonPressed(event.id!)" *ngIf='canUnregister'>delete_forever</mat-icon>
+    </mat-expansion-panel-header>
+    <p class="eventDescrip">{{event.description}}</p>
+</mat-expansion-panel>

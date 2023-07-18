@@ -72,14 +72,6 @@ export class ProfilePageComponent {
     location.reload();
   }
 
-  /** Helper function to build the URL for each organization.
-   * @param id ID of the organization
-   * @returns URL for the organization
-   */
-  routeBuilder = (id: number | null) => {
-    return "/organization/" + id;
-  }
-
   /** Event handler to toggle the star status of an organization.
    * @param orgId: a number representing the ID of the organiztion of to delete membership from
    */

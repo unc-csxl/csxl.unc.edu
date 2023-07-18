@@ -45,16 +45,6 @@ button {
     border-radius: 100%;
 }
 
-.event-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1; /* number of lines to show */
-            line-clamp: 1;
-    -webkit-box-orient: vertical;
-    width: 100%;
-  }
-
   .desktop {
     display: inline;
   }
@@ -122,13 +112,6 @@ button {
     padding: 1.5rem;
   }
 
-  .event-name {
-    overflow: visible;
-  }
-
-  .eventDescrip {
-    margin-top: 0.5rem;
-  }
 
   .mobile-row {
     display: flex;

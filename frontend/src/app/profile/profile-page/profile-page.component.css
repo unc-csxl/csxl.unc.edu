@@ -8,10 +8,6 @@
 *
 */
 
-p {
-  font-size: 1.15em;
-}
-
 .profile-grid {
   display: grid;
   padding: 24px;
@@ -19,6 +15,10 @@ p {
   grid-template-rows: 0fr 2fr;
   row-gap: 15px;
   column-gap: 24px;
+}
+
+.events-card-container {
+  grid-area: span 2;
 }
 
 /** Make cards display in one column, with the event card appearing last */
@@ -37,193 +37,3 @@ p {
   }
 }
 
-.mat-mdc-card {
-  margin: 0 !important;
-  max-width: 100%;
-}
-
-/** Profile Card CSS */
-.mdc-list-item--with-two-lines .mdc-list-item__primary-text, .mdc-list-item--with-three-lines .mdc-list-item__primary-text {
-  margin-bottom: 0;
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.left-header-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.user-avatar {
-  margin-right: 1rem;
-  margin-bottom: 0;
-  background-color: #4786C6;
-  text-align: center;
-  vertical-align: middle;
-  justify-content: center;
-  min-width: 40px;
-  min-height: 40px;
-  max-width: 40px;
-  max-height: 40px;
-  line-height: 40px;
-  border-radius: 100%;
-}
-
-.user-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1; /* number of lines to show */
-          line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-
-.mat-mdc-card-avatar {
-  margin-bottom: 0 !important;
-}
-
-.mdc-list-group__subheader {
-  margin: 0;
-}
-
-.user-info-label {
-  font-weight: 500;
-  margin-bottom: 0;
-}
-
-/** Events Card CSS */
-.mdc-list-item {
-  padding: 0 !important;
-  display: flex;
-  align-items: baseline;
-}
-
-.events-card-container {
-  grid-area: span 2;
-}
-
-.text-link {
-  text-decoration: underline;
-  cursor: pointer;
-  color: #4786C6;
-}
-
-.text-link:hover {
-  color: #396a9c;
-}
-
-.event-subheader {
-  font-weight: 500;
-}
-
-.mat-mdc-list-base {
-  padding: 0;
-}
-
-.event-name {
-  text-overflow: ellipsis;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-          line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-
-.event-preview {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  width: 100%;
-  flex: 3;
-}
-
-.event {
-  margin-bottom: 1rem;
-}
-
-.calendar-icon {
-  margin-right: 0.5rem;
-}
-
-.event-time {
-  display: flex;
-  justify-content: flex-start;
-  max-width: 150px;
-}
-
-.mat-expansion-panel-header {
-  border: none !important;
-}
-
-.event-detail-info {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 0.75rem;
-}
-
-.event-detail-info p {
-  margin: 0;
-  width: 89%;
-}
-
-.event-detail-icon {
-  margin-right: 1rem;
-  width: 24px;
-}
-
-.cancel-button {
-  display: flex;
-  justify-content: flex-end;
-}
-
-/** Move event time to the expansion detail when the screen width reaches 950px. */
-@media only screen and (max-device-width: 950px) {
-  .event-detail-time {
-    display: block;
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
-  }
-
-  .event-time {
-    display: none;
-  }
-}
-
-@media only screen and (min-device-width: 951px) {
-  .event-detail-time {
-    display: none;
-  }
-}
-
-/** Organizations Card CSS */
-.organization {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.organization-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-          line-clamp: 1;
-  -webkit-box-orient: vertical;
-  text-decoration: none;
-}
-
-.organization-name:hover {
-  color:#b9b9b9;
-}

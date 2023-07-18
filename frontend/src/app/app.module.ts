@@ -50,6 +50,20 @@ import { OrgDetailsComponent } from './org-details/org-details.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 import { OrgEditorComponent } from './org-editor/org-editor.component';
 
+/* UI Widgets */
+import { SocialMediaIcon } from './widgets/social-media-icon/social-media-icon.widget';
+import { OrganizationCard } from './widgets/organization-card/organization-card.widget';
+import { SearchBar } from './widgets/search-bar/search-bar.widget';
+import { ProfileAboutCard } from './widgets/profile-about-card/profile-about-card.widget';
+import { ProfileEventsCard } from './widgets/profile-events-card/profile-events-card.widget';
+import { ProfileEventDropdown } from './widgets/profile-event-dropdown/profile-event-dropdown.widget';
+import { ProfileOrganizationsCard } from './widgets/profile-organizations-card/profile-organizations-card.widget';
+import { EventDropdown } from './widgets/event-dropdown/event-dropdown.widget';
+import { OrgDetailsInfoCard } from './widgets/org-details-info-card/org-details-info-card.widget';
+import { OrgDetailsExecMembersCard } from './widgets/org-details-exec-members-card/org-details-exec-members-card.widget';
+import { OrgDetailsEventsCard } from './widgets/org-details-events-card/org-details-events-card.widget';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +80,18 @@ import { OrgEditorComponent } from './org-editor/org-editor.component';
     EventsFilterPipe,
     OrgDetailsComponent,
     EventEditorComponent,
-    OrgEditorComponent
+    OrgEditorComponent,
+    SocialMediaIcon,
+    OrganizationCard,
+    SearchBar,
+    ProfileAboutCard,
+    ProfileEventsCard,
+    ProfileEventDropdown,
+    ProfileOrganizationsCard,
+    EventDropdown,
+    OrgDetailsInfoCard,
+    OrgDetailsExecMembersCard,
+    OrgDetailsEventsCard
   ],
   imports: [
     BrowserModule,

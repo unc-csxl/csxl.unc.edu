@@ -1,8 +1,6 @@
 /** Constructs the Organizations page and stores/retrieves any necessary data for it. */
 
 import { Component } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { profileResolver } from '../profile/profile.resolver';
 import { OrganizationsService } from './organizations.service';
@@ -40,12 +38,7 @@ export class OrganizationsComponent {
   /** Stores the user permission value for current organization. */
   public permValues: Map<number, number> = new Map();
 
-  constructor(private organizationService: OrganizationsService, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, protected orgDetailService: OrgDetailsService, private route: ActivatedRoute, protected snackBar: MatSnackBar) {
-    /** Import Logos using MatIconRegistry */
-    iconRegistry.addSvgIcon('instagram', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/instagram.svg'));
-    iconRegistry.addSvgIcon('github', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/github.svg'));
-    iconRegistry.addSvgIcon('linkedin', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/linkedin.svg'))
-    iconRegistry.addSvgIcon('youtube', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/youtube.svg'))
+  constructor(private organizationService: OrganizationsService, protected orgDetailService: OrgDetailsService, private route: ActivatedRoute, protected snackBar: MatSnackBar) {
     
     /** Get currently-logged-in user. */
     const data = route.snapshot.data as { profile: Profile };

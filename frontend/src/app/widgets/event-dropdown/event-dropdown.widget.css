@@ -1,0 +1,66 @@
+mat-expansion-panel {
+    margin-bottom: 1rem;
+}
+
+mat-panel-title {
+    padding-right: 5rem;
+}
+
+.event-name {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    /* number of lines to show */
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.desktop {
+    display: inline;
+}
+
+.mobile {
+    display: none;
+}
+
+mat-icon:hover {
+    color: #4786C6;
+}
+
+/* Mobile CSS to make our UI more user friendly for phones */
+
+@media only screen and (max-width: 768px) {
+
+    mat-expansion-panel {
+        padding: 2rem;
+        margin: 0;
+        margin-bottom: 1rem;
+    }
+
+    mat-expansion-panel-header {
+        padding: 0;
+    }
+
+    .desktop {
+        display: none;
+    }
+
+    .mobile {
+        display: inline;
+    }
+
+    .event-name {
+        overflow: visible;
+    }
+
+    .eventDescrip {
+        margin-top: 0.5rem;
+    }
+
+    .mobile-column {
+        display: flex;
+        flex-direction: column;
+    }
+}

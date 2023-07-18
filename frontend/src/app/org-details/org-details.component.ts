@@ -22,7 +22,7 @@ export class OrgDetailsComponent {
   };
 
   public organization$: Observable<Organization>;
-  public organization: Organization | null = null;
+  public organization: Organization | undefined = undefined;
   id: string = '';
 
   /** Store the currently-logged-in user's profile.  */

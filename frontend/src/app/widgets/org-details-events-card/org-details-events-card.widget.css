@@ -1,0 +1,79 @@
+.mat-mdc-card {
+    margin: 0 !important;
+    max-width: 100%;
+}
+
+.mdc-list-item {
+    padding: 0 !important;
+    display: flex;
+    align-items: baseline;
+}
+
+.event-subheader {
+    font-weight: 500;
+    font-size: 1.15em;
+}
+
+.mat-mdc-list-base {
+    padding: 0;
+}
+
+.events-header {
+    display: flex;
+    flex-direction: row;
+}
+
+.events-header-left {
+    display: flex;
+    flex-direction: row;
+    width: 75%;
+}
+
+.events-header-right {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 25%;
+}
+
+.cancel-button {
+    display: flex;
+    justify-content: flex-end
+}
+
+/** Make cards display in one column, with the event card appearing last */
+@media only screen and (max-device-width: 1000px) {
+    .organization-grid {
+        display: grid;
+        padding: 24px;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        row-gap: 15px;
+        column-gap: 24px;
+    }
+
+    .events-card-container {
+        order: 1;
+    }
+
+    .header-info {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .organization-grid {
+        display: inline;
+    }
+
+
+    button {
+        width: max-content;
+    }
+
+    .mat-mdc-card {
+        margin: 1rem !important;
+    }
+
+    .edit-org-button {
+        margin-left: 0;
+    }
+}

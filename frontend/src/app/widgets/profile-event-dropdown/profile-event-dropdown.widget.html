@@ -1,0 +1,37 @@
+<mat-expansion-panel class="event">
+    <mat-expansion-panel-header class="expansion-box">
+        <mat-panel-title class="event-preview">
+            <p class="event-name">{{event.name}}</p>
+        </mat-panel-title>
+        <mat-panel-description class="event-time">
+            <mat-icon class="calendar-icon">calendar_today</mat-icon>
+            <div>{{event.time | date: 'MMM d, h:mm a'}}</div>
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+    <!-- Panel Expands to Reveal Event Detail Below -->
+    <div class="event-detail" appearance="fill">
+        <div>
+            <div class="event-detail-time"><mat-icon class="event-detail-icon">calendar_today</mat-icon>
+                <p>{{event.time | date: 'MMMM d @ h:mm a'}}</p>
+            </div>
+            <div class="event-detail-info"><mat-icon class="event-detail-icon">location_on</mat-icon>
+                <p>{{event.location}}</p>
+            </div>
+            <div class="event-detail-info"><mat-icon class="event-detail-icon">info</mat-icon>
+                <p>{{event.description}}</p>
+            </div>
+
+            <button *ngIf='isAdmin' mat-raised-button type="submit" (click)="deleteEventButtonPressed(event.id!)">
+                Delete Event
+            </button>
+            <a [routerLink]="['/organization', event.org_id, 'event', event.id, 'edit']" class="edit-button">
+                <button *ngIf='isAdmin' mat-raised-button type="submit">Edit Event</button>
+            </a>
+
+        </div>
+        <!-- Cancel Event Registration -->
+        <div class="cancel-button" *ngIf='showCancelButton'>
+            <button mat-stroked-button (click)="cancelRegistrationButtonPressed(event.id!)">Cancel Registration</button>
+        </div>
+    </div>
+</mat-expansion-panel>

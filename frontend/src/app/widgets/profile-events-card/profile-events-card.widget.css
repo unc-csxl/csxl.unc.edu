@@ -1,0 +1,37 @@
+.mat-mdc-card {
+    margin: 0 !important;
+    max-width: 100%;
+}
+
+.mdc-list-item {
+    padding: 0 !important;
+    display: flex;
+    align-items: baseline;
+}
+
+.events-card-container {
+    grid-area: span 2;
+}
+
+.text-link {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #4786C6;
+}
+
+.text-link:hover {
+    color: #396a9c;
+}
+
+.event-subheader {
+    font-weight: 500;
+    margin: 0px;
+}
+
+.mat-mdc-list-base {
+    padding: 0;
+}
+
+.event-placeholder-text {
+    margin-top: 4px;
+}

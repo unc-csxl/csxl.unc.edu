@@ -2,95 +2,18 @@
 
 <div class="page-container">
   <!-- Search Bar -->
-  <mat-form-field class="search-bar" appearance="outline" color="accent">
-    <mat-label>Search</mat-label>
-    <input matInput type="text" [(ngModel)]="searchBarQuery">
-    <!-- Search/Clear Icon Logic -->
-    <button *ngIf="searchBarQuery; else noSearch" matSuffix mat-icon-button aria-label="Clear"
-      (click)="searchBarQuery=''">
-      <!-- "Clear" appears if there is a search query. -->
-      <mat-icon>close</mat-icon>
-    </button>
-    <ng-template #noSearch>
-      <!-- "Search" appears if there is no search query. -->
-      <mat-icon matSuffix>search</mat-icon>
-    </ng-template>
-  </mat-form-field>
+  <search-bar [(searchBarQuery)]='searchBarQuery'/>
 
   <!-- Organizations -->
   <div class="organization-cards">
     <!-- Display card for each organization, potentially filtered based on the search query. -->
-    <mat-card class="card" *ngFor="let organization of (organizations$ | filter: searchBarQuery) | async">
-      <!-- Card Content -->
-      <div class="card-content">
-        <!-- Card Header Row (Logo, Name, Members) -->
-        <mat-card-header class="header">
-          <!-- Container for Logo and Name to allow for left alignment -->
-          <div class="left-container">
-            <img mat-card-image src={{organization.logo}} class="logo">
-            <div *ngIf="organization.name.length < 20">
-              <mat-card-title class="name">
-                {{organization.name}}
-              </mat-card-title>
-            </div>
-            <div *ngIf="organization.name.length >= 20">
-              <mat-card-title class="name" #name matTooltip={{organization.name}} matTooltipPosition="above">
-                {{organization.slug}}
-              </mat-card-title>
-            </div>
-          </div>
-          <!-- Display number of members in an organization. -->
-          <!-- Star button -->
-          <button *ngIf="profile && profile.first_name" mat-icon-button color="basic"
-            (click)="starOrganization(organization.id!)">
-            <mat-icon *ngIf="permValues.get(organization.id!)! >= 0">star</mat-icon>
-            <mat-icon *ngIf="permValues.get(organization.id!)! < 0">star_outlined</mat-icon>
-          </button>
-
-        </mat-card-header>
-        <!-- Organization Description -->
-        <mat-card-content class="description">
-          <p matTooltip={{organization.short_description}}
-            [matTooltipDisabled]="organization.short_description.length < 85">{{organization.short_description}}</p>
-        </mat-card-content>
-        <!-- Organization Links & Details -->
-        <mat-card-actions class="links">
-          <!-- Icon only appears if the organization actually has a corresponding link -->
-          <div class="link-icons">
-            <a href={{organization.website}} target="_blank" *ngIf="organization.website != ''">
-              <button mat-icon-button color="basic">
-                <mat-icon fontIcon="link"></mat-icon>
-              </button>
-            </a>
-            <a href="mailto:{{organization.email}}" target="_blank" *ngIf="organization.email != ''">
-              <button mat-icon-button color="basic">
-                <mat-icon fontIcon="mail"></mat-icon>
-              </button>
-            </a>
-            <a href={{organization.instagram}} target="_blank" *ngIf="organization.instagram != ''">
-              <button mat-icon-button color="basic">
-                <mat-icon svgIcon="instagram"></mat-icon>
-              </button>
-            </a>
-            <a href={{organization.linked_in}} target="_blank" *ngIf="organization.linked_in != ''">
-              <button mat-icon-button color="basic">
-                <mat-icon svgIcon="linkedin"></mat-icon>
-              </button>
-            </a>
-            <a href={{organization.youtube}} target="_blank" *ngIf="organization.youtube != ''">
-              <button mat-icon-button color="basic">
-                <mat-icon svgIcon="youtube"></mat-icon>
-              </button>
-            </a>
-          </div>
-          <!-- Link to Individual Organization Page -->
-          <div>
-            <a class="details-link" [routerLink]="['/organization', organization.id]">
-              <button mat-stroked-button>DETAILS</button>
-            </a>
-          </div>
-        </mat-card-actions>
-      </div>
-    </mat-card>
+    <organization-card 
+      class='card'
+      [organization]='organization'
+      [profile]='profile'
+      [profilePermissions]='permValues'
+      (onStarClicked)='starOrganization($event)'
+      *ngFor='let organization of (organizations$ | filter: searchBarQuery) | async'
+    />
   </div>
-</div>
+</div>  

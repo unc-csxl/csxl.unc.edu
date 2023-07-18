@@ -1,0 +1,24 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title class="title">Executive Members</mat-card-title>
+    </mat-card-header>
+    <!-- Member Info -->
+    <mat-card-content>
+        <mat-list>
+            <div *ngFor="let associations of executives">
+                <div *ngIf="associations.membership_type > 0" class="member">
+                    <div matListItemTitle class="member-name">{{associations.user?.first_name + " " +
+                        associations.user?.last_name}}</div>
+                    <div>
+                        <a href="mailto:{{associations?.user?.email}}">
+                            <button mat-raised-button class="member-link">Contact</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <p *ngIf="executives.length == 0">
+                There are currently no executive members for this organization.
+            </p>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

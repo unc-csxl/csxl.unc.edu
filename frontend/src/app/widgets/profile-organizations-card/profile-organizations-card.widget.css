@@ -1,0 +1,28 @@
+.mat-mdc-card {
+    margin: 0 !important;
+    max-width: 100%;
+}
+
+.organization {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.organization-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-decoration: none;
+}
+
+.organization-name:hover {
+    color: #b9b9b9;
+}
+
+.organization-placeholder-text {
+    margin-top: 4px;
+}
