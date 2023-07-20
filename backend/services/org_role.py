@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from backend.entities.org_role_entity import OrgRoleEntity
 from backend.models.org_role import OrgRoleDetail, OrgRole
 from ..database import db_session
+from ..models import User
+from .permission import PermissionService
 
 class OrgRoleService:
     """Service that performs all of the actions on the `Role` table"""
@@ -11,9 +13,10 @@ class OrgRoleService:
     # Current SQLAlchemy Session
     _session: Session
 
-    def __init__(self, session: Session = Depends(db_session)):
+    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
         """Initializes the `RoleService` session"""
         self._session = session
+        self._permission = permission
 
     def all(self) -> list[OrgRoleDetail]:
         """
@@ -29,7 +32,7 @@ class OrgRoleService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, role: OrgRole) -> OrgRoleDetail:
+    def create(self, role: OrgRole, subject: User) -> OrgRoleDetail:
         """
         Creates a role based on the input object and adds it to the table.
         If the role's PID is unique to the table, a new entry is added.
@@ -40,6 +43,10 @@ class OrgRoleService:
         Returns:
             OrgRoleDetail: Object added to table
         """
+
+        # Check if you are trying to create an executive or manager.
+        if (role.membership_type >= 1):
+            self._permission.enforce(subject, 'organizations.details', f'organizations/{id}')
 
         # Checks if the role already exists in the table
         if role.id:
@@ -110,9 +117,9 @@ class OrgRoleService:
             return [role.to_model() for role in roles]
         else:
             # Raise exception
-            raise Exception(f"No role found with OrganizationDetail ID: {org_id}")
+            raise Exception(f"No role found with Organization ID: {org_id}")
 
-    def delete(self, id: int) -> None:
+    def delete(self, id: int, subject: User) -> None:
         """
         Delete the role based on the provided ID.
         If no item exists to delete, a debug description is displayed.
@@ -120,6 +127,9 @@ class OrgRoleService:
         Parameters:
             id (int): Unique role ID
         """
+
+        # Prevent delete if not admin
+        self._permission.enforce(subject, 'organizations.details', f'organizations/{id}')
 
         # Find object to delete
         obj=self._session.query(OrgRoleEntity).filter(OrgRoleEntity.id == id).first()

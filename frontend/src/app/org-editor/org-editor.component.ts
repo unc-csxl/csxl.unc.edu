@@ -7,6 +7,7 @@ import { OrgEditorService } from './org-editor.service';
 import { Observable } from 'rxjs';
 import { profileResolver } from '../profile/profile.resolver';
 import { permissionGuard } from '../permission.guard';
+import { PermissionService } from '../permission.service';
 
 
 @Component({
@@ -53,7 +54,7 @@ export class OrgEditorComponent {
     heel_life: ""
   });
 
-  constructor(private route: ActivatedRoute, private router: Router, protected formBuilder: FormBuilder, protected snackBar: MatSnackBar, private orgEditorService: OrgEditorService) {
+  constructor(private route: ActivatedRoute, private router: Router, protected formBuilder: FormBuilder, protected snackBar: MatSnackBar, private orgEditorService: OrgEditorService, private permission: PermissionService) {
     /** Add validators to the form */
     const form = this.orgForm;
     form.get('name')?.addValidators(Validators.required);
@@ -70,8 +71,8 @@ export class OrgEditorComponent {
 
     /** Set permission value if profile exists */
     if (this.profile) {
-      if (permissionGuard('organizations.editor', 'organizations/{id}')) {
-        this.adminPermission = true;
+      if (this.org_id == -1) {
+        this.permission.check('admin.view', 'admin/').subscribe((perm) => this.adminPermission = perm)
       } else {
         let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.org_id);
         if (assocFilter.length > 0) {
@@ -114,8 +115,8 @@ export class OrgEditorComponent {
 
     /** Set permission value if profile exists */
     if (this.profile) {
-      if (permissionGuard('organizations.editor', 'organizations/{id}')) {
-        this.adminPermission = true;
+      if (this.org_id == -1) {
+        this.permission.check('admin.view', 'admin/').subscribe((perm) => this.adminPermission = perm)
       } else {
         let assocFilter = this.profile.organization_associations.filter((orgRole) => orgRole.org_id == +this.org_id);
         if (assocFilter.length > 0) {

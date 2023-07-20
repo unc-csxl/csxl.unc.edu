@@ -1,6 +1,8 @@
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from backend.models.user import User
 from ..database import db_session
 from backend.models.registration import RegistrationDetail, Registration
 from backend.entities.registration_entity import RegistrationEntity
@@ -28,7 +30,7 @@ class RegistrationService:
     entities = self._session.scalars(query).all()
     return [entity.to_model() for entity in entities]
 
-  def create(self, registration: Registration) -> RegistrationDetail:
+  def create(self, registration: Registration, subject: User) -> RegistrationDetail:
     """
     register a User for an EventDetail.
 
@@ -41,6 +43,11 @@ class RegistrationService:
     Raises:
       ValueError if registration does not exist.
     """      
+
+    # Prevent registration if the user you are trying to register is not the same as current user
+    if registration.user_id != subject.id:
+      self._permission.enforce(subject, 'admin.*', f'*')
+
     # Attempt to get RegistrationEntity based on the IDs of the given user and event.
     entity = self._session.query(RegistrationEntity).filter(
       RegistrationEntity.user_id == registration.user_id,
@@ -95,7 +102,7 @@ class RegistrationService:
     # Return the registrations as a list of RegistrationDetail models.
     return [entity.to_model() for entity in entities]
     
-  def update_status(self, registration: RegistrationDetail) -> RegistrationDetail:
+  def update_status(self, registration: RegistrationDetail, subject: User) -> RegistrationDetail:
     """
     Update a RegistrationDetail's status to attended (1).
 
@@ -108,6 +115,10 @@ class RegistrationService:
     Raises:
       ValueError if there is no RegistrationDetail for the specified User and EventDetail.
     """
+    # Prevent update if the user you are trying to register is not the same as current user
+    if registration.user_id != subject.id:
+      self._permission.enforce(subject, 'admin.*', f'*')
+
     # Query the Registrations table for a registration associated with the specified user_id and event_id.
     entity = self._session.query(RegistrationEntity).filter(
       RegistrationEntity.user_id == registration.user_id, 
@@ -123,7 +134,7 @@ class RegistrationService:
     else:
       raise ValueError(f"The user with the ID {registration.user_id} is not registered for the event with the ID {registration.event_id}.")
       
-  def delete_registration(self, reg_id: int) -> None:
+  def delete_registration(self, reg_id: int, subject: User) -> None:
     """
     Delete a User's registration for an EventDetail.
 
@@ -133,9 +144,14 @@ class RegistrationService:
     Raises:
       ValueError if there is no RegistrationDetail for the specified User and EventDetail.
     """
+
     # Query the Registrations table for a registration associated with the specified id
     entity = self._session.query(RegistrationEntity).filter(RegistrationEntity.id == reg_id).one_or_none()
-      
+
+    # Prevent registration if the user you are trying to register is not the same as current user
+    if entity.user_id != subject.id:
+      self._permission.enforce(subject, 'admin.*', f'*')  
+
     # If a registration was found, delete the registration.
     if entity:
       self._session.delete(entity)
@@ -143,7 +159,7 @@ class RegistrationService:
     else:
       raise ValueError(f"The user with the ID {entity.user_id} is not registered for the event with the ID {entity.event_id}.")
     
-  def clear_registrations(self, event_id: int):
+  def clear_registrations(self, event_id: int, subject: User):
     """
     Clear all registrations for an EventDetail.
 
@@ -153,6 +169,9 @@ class RegistrationService:
     Raises:
       ValueError if an event with the specified ID does not exist.
     """
+    # Prevent registration if the user you are trying to register is not the same as current user
+    self._permission.enforce(subject, 'admin.*', f'*')  
+
     # Query the Registrations table for all events matching the event_id.
     registrations = self._session.query(RegistrationEntity).filter(RegistrationEntity.event_id == event_id).all()
       
