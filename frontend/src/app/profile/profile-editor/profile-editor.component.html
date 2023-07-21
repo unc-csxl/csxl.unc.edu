@@ -36,23 +36,3 @@
         </mat-card-actions>
     </mat-card>
 </form>
-
-<mat-card *ngIf="profile.id">
-    <div *ngIf="profile.github !== ''; else associate_github">
-        <mat-card-header>
-            <img mat-card-avatar [src]="profile.github_avatar">
-            <mat-card-title>GitHub / <a href="https://github.com/{{profile.github}}" target="_blank">{{ profile.github }}</a></mat-card-title>
-        </mat-card-header>
-        <mat-card-actions>
-            <button mat-raised-button (click)="unlinkGitHub()">Unlink GitHub</button>
-        </mat-card-actions>
-    </div>
-    <ng-template #associate_github>
-        <mat-card-header>
-            <mat-card-title>Link Your GitHub Account</mat-card-title>
-        </mat-card-header>
-        <mat-card-actions>
-            <button mat-raised-button (click)="linkWithGitHub()">Link with GitHub</button>
-        </mat-card-actions>
-    </ng-template>
-</mat-card>

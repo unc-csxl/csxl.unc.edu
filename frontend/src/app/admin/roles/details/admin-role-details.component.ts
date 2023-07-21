@@ -4,9 +4,10 @@ import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@an
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { debounceTime, filter, mergeMap, Observable, of, ReplaySubject, startWith } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Permission, Profile, ProfileService } from 'src/app/profile/profile.service';
+import { ProfileService } from 'src/app/profile/profile.service';
 import { RoleDetails } from 'src/app/role';
 import { RoleAdminService } from '../role-admin.service';
+import { Permission, Profile } from 'src/app/models.module';
 
 @Component({
     selector: 'app-admin-role-details',

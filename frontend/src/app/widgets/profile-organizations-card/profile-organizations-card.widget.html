@@ -1,0 +1,23 @@
+<mat-card class="organizations-card">
+    <mat-card-header class="organizations-header">
+        <mat-card-title class="title">My Organizations</mat-card-title>
+    </mat-card-header>
+    <!-- Organizations Info -->
+    <mat-card-content class="organizations-info">
+        <mat-list class="organizations-list">
+            <p class="organization-placeholder-text" *ngIf="organizations.length === 0">You are currently not following any organizations. <span
+                    class="text-link" routerLink="/organizations">Click here</span> to explore UNC's CS organizations!
+            </p>
+            <div *ngFor="let organization of organizations">
+                <!-- Organization w/ Detail Information -->
+                <div class="organization">
+                    <a matListItemTitle class="organization-name"
+                        href={{routeBuilder(organization.id)}}>{{organization.name}}</a>
+                    <!-- Delete Organization Membership -->
+                    <button mat-icon-button
+                        (click)="deleteOrgMembershipButtonPressed(organization.id!)"><mat-icon>delete_forever</mat-icon></button>
+                </div>
+            </div>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

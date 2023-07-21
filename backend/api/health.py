@@ -1,8 +1,4 @@
-"""Confirm system health via monitorable API end points.
-
-Production systems monitor these end points upon deployment, and at regular intervals, to ensure the service is running.
-"""
-
+"""Health check routes are used by the production system to monitor whether the system is live and running."""
 
 from fastapi import APIRouter, Depends
 from ..services.health import HealthService
@@ -12,7 +8,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-openapi_tags = { "name": "System Health", "description": "Production systems monitor these end points upon deployment, and at regular intervals, to ensure the service is running."}
+openapi_tags = {"name": "System Health", "description": "Service health endpoints."}
 
 api = APIRouter(prefix="/api/health")
 

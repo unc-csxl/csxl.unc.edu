@@ -1,0 +1,153 @@
+.mat-mdc-card {
+    margin: 0 !important;
+    max-width: 100%;
+}
+
+/** Profile Card CSS */
+.mdc-list-item--with-two-lines .mdc-list-item__primary-text,
+.mdc-list-item--with-three-lines .mdc-list-item__primary-text {
+    margin-bottom: 0;
+}
+
+
+.organization-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.left-header-info {
+    display: flex;
+    flex-direction: row;
+    width: 10%;
+}
+
+.right-header-info {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
+
+.organization-top-header-group {
+    display: flex;
+    flex-direction: row;
+}
+
+.organization-name-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    width: 50%;
+    height: 48px;
+}
+
+.organization-icons-section {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 50%;
+    height: 48px;
+}
+
+mat-card-footer {
+    margin: 0 1rem 1.25rem 1rem;
+}
+
+.edit-org-button {
+    margin-left: 6rem;
+}
+
+.user-avatar {
+    margin-right: 1rem;
+    margin-bottom: 0;
+    background-color: #4786C6;
+    text-align: center;
+    vertical-align: middle;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 100%;
+    font-size: 1.15em;
+}
+
+.user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    /* number of lines to show */
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.mat-mdc-card-avatar {
+    margin-bottom: 0 !important;
+}
+
+.mdc-list-group__subheader {
+    margin: 0;
+}
+
+.user-info-label {
+    font-weight: 500;
+    margin-bottom: 0;
+    font-size: 1.15em;
+}
+
+.organization-description {
+    font-size: 1.15em;
+}
+
+.logo {
+    width: 80px;
+    border-radius: 50% !important;
+}
+
+/** Make cards display in one column, with the event card appearing last */
+@media only screen and (max-device-width: 1000px) {
+
+    .left-header-info {}
+
+    .right-header-info {}
+
+    .organization-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50% !important;
+        margin-right: 0.5rem;
+    }
+
+    .organization-header {
+        flex-direction: column;
+        justify-content: left;
+        align-items: flex-start !important;
+    }
+
+    .organization-name-section {
+        width: 100%;
+    }
+
+    .organization-icons-section {
+        width: 100%;
+    }
+
+    button {
+        width: max-content;
+    }
+
+    .mat-mdc-card {
+        margin: 1rem !important;
+    }
+
+    .edit-org-button {
+        margin-left: 0;
+    }
+}

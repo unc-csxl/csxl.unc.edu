@@ -1,0 +1,80 @@
+.event-name {
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.event-preview {
+    display: flex;
+    flex: 3;
+    width: 100%;
+    padding: 0.5rem 0;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.event {
+    margin-bottom: 1rem;
+}
+
+.calendar-icon {
+    margin-right: 0.5rem;
+}
+
+.event-time {
+    display: flex;
+    max-width: 150px;
+    justify-content: flex-start;
+}
+
+.mat-expansion-panel-header {
+    border: none !important;
+}
+
+.event-detail-info {
+    display: flex;
+    margin-bottom: 0.75rem;
+    align-items: flex-start;
+}
+
+.event-detail-info p {
+    width: 89%;
+    margin: 0;
+}
+
+.event-detail-icon {
+    width: 24px;
+    margin-right: 1rem;
+}
+
+.cancel-button {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.edit-button {
+    margin-left: 8px;
+}
+
+/** Move event time to the expansion detail when the screen width reaches 950px. */
+@media only screen and (max-device-width: 950px) {
+    .event-detail-time {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+    }
+
+    .event-time {
+        display: none;
+    }
+}
+
+@media only screen and (min-device-width: 951px) {
+    .event-detail-time {
+        display: none;
+    }
+}

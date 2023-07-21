@@ -1,0 +1,28 @@
+<mat-card>
+    <!-- Profile Card Header (Avatar, Name, Edit) -->
+    <mat-card-header class="profile-header">
+
+        <div class="left-header-info">
+            <!-- Profile Image -->
+            <p *ngIf="profile.first_name && profile.last_name" class="user-avatar">
+                {{profile.first_name.charAt(0)}}{{profile.last_name.charAt(0)}}</p>
+            <!-- Username -->
+            <mat-card-title class="user-name">{{profile.first_name}} {{profile.last_name}}</mat-card-title>
+        </div>
+
+        <!-- Button to Open Profile Editor Page -->
+        <a routerLink="/profile-editor">
+            <button mat-icon-button color="basic">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </a>
+    </mat-card-header>
+
+    <!-- Profile Personal Information -->
+    <mat-card-content class="user-info">
+        <p class="user-info-label">Email</p>
+        <p class="user-info-detail">{{profile.email}}</p>
+        <p class="user-info-label">Pronouns</p>
+        <p class="user-info-detail">{{profile.pronouns}}</p>
+    </mat-card-content>
+</mat-card>

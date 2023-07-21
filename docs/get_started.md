@@ -48,10 +48,6 @@ Once the Dev Container begins, open a terminal and complete the following:
 
 Before beginning any feature work, fixes, or other modifications, you should checkout a branch to keep the history separate from the `main` line history until it is ready deploying into production.
 
-## Adding Authorization Restricted Features
-
-See [docs/auth.md] for more detailed information on authentication and authorization development concerns.
-
 ## Authorize as Alternate Users
 
 When running in a development environment, it is helpful to be able to switch between authenticated users.

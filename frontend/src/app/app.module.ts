@@ -24,6 +24,13 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -33,6 +40,29 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
+import { OrganizationsComponent } from './organizations/organizations.component';
+import { FilterPipe } from './filter/filter.pipe';
+import { EventsComponent } from './events/events.component';
+import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
+import { EventFilterPipe } from './filter/event-filter.pipe';
+import { EventsFilterPipe } from './eventsFilter/eventsFilter.pipe';
+import { OrgDetailsComponent } from './org-details/org-details.component';
+import { EventEditorComponent } from './event-editor/event-editor.component';
+import { OrgEditorComponent } from './org-editor/org-editor.component';
+
+/* UI Widgets */
+import { SocialMediaIcon } from './widgets/social-media-icon/social-media-icon.widget';
+import { OrganizationCard } from './widgets/organization-card/organization-card.widget';
+import { SearchBar } from './widgets/search-bar/search-bar.widget';
+import { ProfileAboutCard } from './widgets/profile-about-card/profile-about-card.widget';
+import { ProfileEventsCard } from './widgets/profile-events-card/profile-events-card.widget';
+import { ProfileEventDropdown } from './widgets/profile-event-dropdown/profile-event-dropdown.widget';
+import { ProfileOrganizationsCard } from './widgets/profile-organizations-card/profile-organizations-card.widget';
+import { EventDropdown } from './widgets/event-dropdown/event-dropdown.widget';
+import { OrgDetailsInfoCard } from './widgets/org-details-info-card/org-details-info-card.widget';
+import { OrgDetailsExecMembersCard } from './widgets/org-details-exec-members-card/org-details-exec-members-card.widget';
+import { OrgDetailsEventsCard } from './widgets/org-details-events-card/org-details-events-card.widget';
+
 
 @NgModule({
   declarations: [
@@ -41,7 +71,27 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
     ErrorDialogComponent,
     HomeComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
+    OrganizationsComponent,
+    FilterPipe,
+    EventsComponent,
+    ProfilePageComponent,
+    EventFilterPipe,
+    EventsFilterPipe,
+    OrgDetailsComponent,
+    EventEditorComponent,
+    OrgEditorComponent,
+    SocialMediaIcon,
+    OrganizationCard,
+    SearchBar,
+    ProfileAboutCard,
+    ProfileEventsCard,
+    ProfileEventDropdown,
+    ProfileOrganizationsCard,
+    EventDropdown,
+    OrgDetailsInfoCard,
+    OrgDetailsExecMembersCard,
+    OrgDetailsEventsCard
   ],
   imports: [
     BrowserModule,
@@ -64,6 +114,16 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
     MatSnackBarModule,
     MatTabsModule,
     MatToolbarModule,
+    MatGridListModule,
+    MatExpansionModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    FormsModule,
+    MatExpansionModule,
+    MatTooltipModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
@@ -79,4 +139,4 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
   }],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,0 +1,49 @@
+<mat-card class="events-card">
+    <!-- Event Registrations Card Header -->
+    <mat-card-header class="events-header">
+        <!-- Title -->
+        <div class="events-header-left">
+            <mat-card-title class="title">All Events</mat-card-title>
+        </div>
+        <!-- Edit Button -->
+        <div class="events-header-right">
+            <a [routerLink]="['/organization', organization!.id, 'event', '-1', 'edit']">
+                <button *ngIf="isAdmin" mat-raised-button type="submit">Add Event</button>
+            </a>
+        </div>
+    </mat-card-header>
+
+    <!-- Events Info -->
+    <mat-card-content class="events-info">
+        <mat-list class="events-list">
+            <div mat-subheader class="event-subheader">Upcoming Events</div>
+            <!-- Event List (Current/Upcoming) -->
+            <profile-event-dropdown
+                [event]='event'
+                [isCurrent]='true'
+                [showCancelButton]='false'
+                [isAdmin]='true'
+                (onDeleteEventButtonPressed)='deleteEventButtonPressed(event.id!)'
+                *ngFor='let event of (organization!.events! | eventFilter: "current")'
+            />
+
+            <p *ngIf="(organization!.events! | eventFilter: 'current')?.length == 0">
+                You are currently not registered for any events. <a class="link" href="./events">Click here</a> to
+                explore upcoming CS events!
+            </p>
+
+            <div mat-subheader class="event-subheader">Past Events</div>
+            <!-- Event List (Past) -->
+            <profile-event-dropdown
+                [event]='event'
+                [isCurrent]='false'
+                [showCancelButton]='false'
+                *ngFor='let event of (organization!.events! | eventFilter: "past")'
+            />
+
+            <p *ngIf="(organization!.events! | eventFilter: 'past')?.length == 0">
+                You have not previously attended any events yet.
+            </p>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

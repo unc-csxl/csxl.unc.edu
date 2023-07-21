@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Profile } from 'src/app/profile/profile.service';
 import { Paginated, PaginationParams } from 'src/app/pagination';
+import { Profile } from 'src/app/models.module';
 
 @Injectable({ providedIn: 'root' })
 export class UserAdminService {

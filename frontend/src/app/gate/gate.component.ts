@@ -10,9 +10,9 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Profile } from '../profile/profile.service';
 import { profileResolver } from '../profile/profile.resolver';
 import { isAuthenticated } from './gate.guard';
+import { Profile } from '../models.module';
 
 @Component({ template: '' })
 export class GateComponent {

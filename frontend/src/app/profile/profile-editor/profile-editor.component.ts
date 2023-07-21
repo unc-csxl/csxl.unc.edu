@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Route } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
-import { Profile, ProfileService } from '../profile.service';
+import { ProfileService } from '../profile.service';
+import { Profile } from 'src/app/models.module';
 
 @Component({
   selector: 'app-profile-editor',
@@ -14,9 +15,9 @@ import { Profile, ProfileService } from '../profile.service';
 export class ProfileEditorComponent implements OnInit {
 
   public static Route: Route = {
-    path: 'profile',
+    path: 'profile-editor',
     component: ProfileEditorComponent, 
-    title: 'Profile', 
+    title: 'Profile Editor', 
     canActivate: [isAuthenticated], 
     resolve: { profile: profileResolver }
   };
@@ -30,7 +31,7 @@ export class ProfileEditorComponent implements OnInit {
     pronouns: ''
   });
 
-  constructor(route: ActivatedRoute, protected formBuilder: FormBuilder, protected profileService: ProfileService, protected snackBar: MatSnackBar) {
+  constructor(route: ActivatedRoute, private router: Router, protected formBuilder: FormBuilder, protected profileService: ProfileService, protected snackBar: MatSnackBar) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
     form.get('lastname')?.addValidators(Validators.required);
@@ -41,7 +42,7 @@ export class ProfileEditorComponent implements OnInit {
     this.profile = data.profile;
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     let profile = this.profile;
 
     this.profileForm.setValue({
@@ -52,7 +53,7 @@ export class ProfileEditorComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  onSubmit = () => {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value)
       this.profileService.put(this.profile).subscribe(
@@ -61,27 +62,18 @@ export class ProfileEditorComponent implements OnInit {
           error: (err) => this.onError(err)
         } 
       );
+      this.router.navigate(['/profile']).then(() => {
+        window.location.reload();
+      });
     }
   }
 
-  private onSuccess(profile: Profile) {
+  private onSuccess = (profile: Profile) => {
     this.snackBar.open("Profile Saved", "", { duration: 2000 })
   }
 
-  private onError(err: any) {
+  private onError = (err: any) => {
     console.error("How to handle this?");
-  }
-
-  linkWithGitHub(): void {
-    this.profileService.getGitHubOAuthLoginURL().subscribe((url) => {
-      window.location.href = url;
-    });
-  }
-
-  unlinkGitHub() {
-    this.profileService.unlinkGitHub().subscribe({
-      next: () => this.profile.github = '',
-    });
   }
 
 }

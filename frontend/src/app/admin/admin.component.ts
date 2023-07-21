@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Profile, ProfileService } from '../profile/profile.service';
+import { ProfileService } from '../profile/profile.service';
+import { Profile } from '../models.module';
 
 @Component({
   selector: 'app-admin',
@@ -14,6 +15,7 @@ export class AdminComponent implements OnInit {
   public links = [
     { label: 'Users', path: '/admin/users' },
     { label: 'Roles', path: '/admin/roles' },
+    { label: 'Organizations', path: '/admin/organizations'}
   ];
 
   constructor(public profileService: ProfileService) {

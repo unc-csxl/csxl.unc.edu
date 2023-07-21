@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Profile } from 'src/app/profile/profile.service';
 import { UserAdminService } from 'src/app/admin/users/user-admin.service';
 import { permissionGuard } from 'src/app/permission.guard';
 
 import { Paginated } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
+import { Profile } from 'src/app/models.module';
 
 
 @Component({

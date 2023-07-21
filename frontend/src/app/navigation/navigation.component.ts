@@ -8,8 +8,9 @@ import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthenticationService } from '../authentication.service';
 import { Router } from '@angular/router';
-import { Profile, ProfileService } from '../profile/profile.service';
+import { ProfileService } from '../profile/profile.service';
 import { PermissionService } from '../permission.service';
+import { Profile } from '../models.module';
 
 @Component({
   selector: 'app-navigation',

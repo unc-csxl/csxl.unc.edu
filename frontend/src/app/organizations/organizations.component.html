@@ -1,0 +1,19 @@
+<!-- HTML Structure of Organizations Page -->
+
+<div class="page-container">
+  <!-- Search Bar -->
+  <search-bar [(searchBarQuery)]='searchBarQuery'/>
+
+  <!-- Organizations -->
+  <div class="organization-cards">
+    <!-- Display card for each organization, potentially filtered based on the search query. -->
+    <organization-card 
+      class='card'
+      [organization]='organization'
+      [profile]='profile'
+      [profilePermissions]='permValues'
+      (onStarClicked)='starOrganization($event)'
+      *ngFor='let organization of (organizations$ | filter: searchBarQuery) | async'
+    />
+  </div>
+</div>  
