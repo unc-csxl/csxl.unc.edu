@@ -1,7 +1,7 @@
 import pytest
 
 from sqlalchemy.orm import Session
-from ...models import Registration, UserSummary, Event, OrganizationDetail
+from ...models import Registration, UserDetails, Event, OrganizationDetail
 from ...services import RegistrationService, UserService, EventService, OrganizationService
 import datetime
 
@@ -21,7 +21,7 @@ registration_updated = Registration(
     event_id=1, 
     status=1
     )
-root = UserSummary(pid=999999999, onyen='root', first_name="Super", last_name="User",
+root = UserDetails(pid=999999999, onyen='root', first_name="Super", last_name="User",
              email="root@cs.unc.edu", pronouns="they / them")
 event1 = Event(
     name="HackNC", 
@@ -85,8 +85,8 @@ def test_no_registrations(registration: RegistrationService):
 
 def test_get_all_registrations(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
     """Tests creating a new registration and checks that it was added to table successfully"""
-    user_service.save(root)
-    org_service.create(org1)
+    # user_service.create(root)
+    org_service.create(root, org1)
     event_service.create(event1)
     event_service.create(event2)
     registration.create(registration1)
@@ -97,7 +97,7 @@ def test_get_all_registrations(registration: RegistrationService, user_service: 
 
 def test_create_registration_and_get_by_user(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
     """Tests that a newly added can be retrieved using the get_by_user() method"""
-    user_service.save(root)
+    # user_service.create(root)
     org_service.create(org1)
     event_service.create(event1)
     reg = registration.create(registration1)
@@ -105,7 +105,7 @@ def test_create_registration_and_get_by_user(registration: RegistrationService, 
 
 def test_get_all_registrations(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
     """Tests creating two registrations and tests that the all() method retrieves both"""
-    user_service.save(root)
+    # user_service.create(root)
     org_service.create(org1)
     event_service.create(event1)
     event_service.create(event2)
@@ -117,7 +117,7 @@ def test_get_all_registrations(registration: RegistrationService, user_service: 
 
 def test_get_by_event(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
     """Tests that you can retrive a registration by its event id using get_by_event()"""
-    user_service.save(root)
+    user_service.create(root)
     org_service.create(org1)
     event_service.create(event1)
     reg = registration.create(registration1)
@@ -125,7 +125,7 @@ def test_get_by_event(registration: RegistrationService, user_service: UserServi
 
 def test_delete_registration(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
     """Tests that all() returns one less registration after calling delete_registration()"""
-    user_service.save(root)
+    user_service.create(root)
     org_service.create(org1)
     event_service.create(event1)
     registration.create(registration1)
@@ -135,7 +135,7 @@ def test_delete_registration(registration: RegistrationService, user_service: Us
 
 def test_clear_registrations(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
     """Tests that calling clear_registration() will clear our multiple registrations"""
-    user_service.save(root)
+    user_service.create(root)
     org_service.create(org1)
     event_service.create(event1)
     event_service.create(event2)
@@ -148,7 +148,7 @@ def test_clear_registrations(registration: RegistrationService, user_service: Us
 
 def test_update_status(registration: RegistrationService, user_service: UserService, event_service: EventService, org_service: OrganizationService):
     """Tests that a registration can be updated after it is created using update_status()"""
-    user_service.save(root)
+    user_service.create(root)
     org_service.create(org1)
     event_service.create(event1)
     reg = registration.create(registration1)

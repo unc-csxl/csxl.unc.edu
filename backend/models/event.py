@@ -19,23 +19,3 @@ class Event(BaseModel):
     description: str
     public: bool
     org_id: int
-    
-class EventDetail(Event):
-    """
-    Model to represent `EventDetail` connections between users and organizations
-    
-    This model is based on the `EventEntity` model, which defines the shape
-    of the `EventDetail` database in the PostgreSQL database
-    """
-    
-    organization: 'Organization' # Stores the organization hosting the event (generated from relationship with "organization" table)
-
-    users: list['UserSummary'] = []
-    user_associations: list['RegistrationDetail'] = []
-
-from backend.models.organization import Organization
-from backend.models.registration import RegistrationDetail;
-from backend.models.user import UserSummary;
-
-EventDetail.update_forward_refs()
-Event.update_forward_refs()

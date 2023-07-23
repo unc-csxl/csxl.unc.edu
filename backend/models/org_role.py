@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from .user import User
+from .organization import Organization
 
 class OrgRole(BaseModel):
     """
@@ -21,10 +23,5 @@ class OrgRoleDetail(OrgRole):
     of the `Role` database in the PostgreSQL database
     """
     
-    organization: 'Organization' = None
-    user: 'UserSummary' = None
-
-from backend.models.organization import Organization
-from backend.models.user import UserSummary;
-OrgRoleDetail.update_forward_refs()
-
+    organization: Organization = None
+    user: User | None = None

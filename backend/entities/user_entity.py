@@ -6,7 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
 from .user_role_entity import user_role_table
-from backend.models.user import User, UserSummary
+from backend.models.user import User
+from backend.models.user_details import UserDetails
 
 
 __authors__ = ['Kris Jordan']
@@ -110,14 +111,14 @@ class UserEntity(EntityBase):
         self.github_id = model.github_id
         self.github_avatar = model.github_avatar
 
-    def to_summary(self) -> UserSummary:
+    def to_summary(self) -> UserDetails:
         """
         Converts a `UserEntity` object into a `UserSummary`
         
         Returns:
             User: `UserSummary` object from the entity
         """
-        return UserSummary(
+        return UserDetails(
             id=self.id,
             pid=self.pid,
             onyen=self.onyen,
@@ -127,7 +128,3 @@ class UserEntity(EntityBase):
             pronouns=self.pronouns
         )
     
-from backend.entities.event_entity import EventEntity
-from backend.entities.registration_entity import RegistrationEntity
-from backend.entities.organization_entity import OrganizationEntity
-from backend.entities.org_role_entity import OrgRoleEntity

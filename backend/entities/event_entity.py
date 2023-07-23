@@ -2,7 +2,8 @@ from sqlalchemy import ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from backend.models.event import EventDetail, Event
+from ..models.event import Event
+from ..models.event_detail import EventDetail
 
 from datetime import datetime
 
@@ -79,8 +80,3 @@ class EventEntity(EntityBase):
                      public=self.public, 
                      org_id=self.org_id,
                      organization=self.organization.to_summary())
-
-from backend.entities.organization_entity import OrganizationEntity;
-from backend.entities.user_entity import UserEntity;
-from backend.entities.registration_entity import RegistrationEntity;
-

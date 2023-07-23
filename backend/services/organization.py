@@ -2,8 +2,9 @@ from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from ..database import db_session
-from backend.models.organization import OrganizationDetail, Organization
-from backend.entities.organization_entity import OrganizationEntity
+from ..models.organization import Organization
+from ..models.organization_detail import OrganizationDetail
+from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService
 

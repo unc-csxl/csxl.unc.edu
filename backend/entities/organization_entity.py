@@ -3,7 +3,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
 from backend.models import Role
-from backend.models.organization import OrganizationDetail, Organization
+from backend.models.organization import Organization
+from backend.models.organization_detail import OrganizationDetail
 
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `OrganizationDetail` table"""
@@ -102,6 +103,3 @@ class OrganizationEntity(EntityBase):
                             linked_in=self.linked_in, 
                             youtube=self.youtube, 
                             heel_life=self.heel_life)
-
-from backend.entities.user_entity import UserEntity
-from backend.entities.org_role_entity import OrgRoleEntity

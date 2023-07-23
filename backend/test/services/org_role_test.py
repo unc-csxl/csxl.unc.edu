@@ -1,7 +1,7 @@
 import pytest
 
 from sqlalchemy.orm import Session
-from ...models import OrgRole, Organization, UserSummary
+from ...models import OrgRole, Organization, UserDetails
 from ...services import OrgRoleService, OrganizationService, UserService
 
 
@@ -37,7 +37,7 @@ org1 = Organization(
     youtube="youtube", 
     heel_life="heellife")
 
-root = UserSummary(pid=999999999, onyen='root', first_name="Super", last_name="User",
+root = UserDetails(pid=999999999, onyen='root', first_name="Super", last_name="User",
              email="root@cs.unc.edu", pronouns="they / them")
 
 
