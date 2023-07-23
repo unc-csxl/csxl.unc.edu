@@ -2,9 +2,12 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from backend.models import Role
-from backend.models.organization import Organization
-from backend.models.organization_detail import OrganizationDetail
+from ..models.role import Role
+from ..models.organization import Organization
+from ..models.organization_detail import OrganizationDetail
+from ..models.event_detail import EventDetail
+from .event_entity import EventEntity
+
 
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `OrganizationDetail` table"""
@@ -64,9 +67,6 @@ class OrganizationEntity(EntityBase):
         Returns:
             OrganizationDetail: `OrganizationDetail` object from the entity
         """
-        from backend.models.event import EventDetail
-        from backend.entities.event_entity import EventEntity
-
         return OrganizationDetail(id=self.id, 
                             name=self.name, 
                             slug=self.slug,

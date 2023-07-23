@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..services import OrganizationService, UserService
-from backend.models.organization import OrganizationDetail, Organization
+from ..models.organization import Organization
+from ..models.organization_detail import OrganizationDetail
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 from ..env import getenv

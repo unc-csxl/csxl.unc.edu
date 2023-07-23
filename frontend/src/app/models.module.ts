@@ -18,6 +18,9 @@ export interface Profile {
   role: number;
   permissions: Permission[];    
   events:Event[];
+  github: string | null;
+  github_id: number | null;
+  github_avatar: string | null;
   event_associations: Registration[];
   organizations: OrganizationSummary[];
   organization_associations: OrgRole[];

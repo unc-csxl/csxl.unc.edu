@@ -14,7 +14,7 @@ import { Event, OrganizationSummary, OrgRole, Profile, Registration } from '../m
 export class ProfileService {
 
   /** Store profile */
-  public profile$: Observable<Profile | undefined>;
+  public profile$!: Observable<Profile | undefined>;
 
   constructor(protected http: HttpClient, protected auth: AuthenticationService) {
     this.refreshProfile();

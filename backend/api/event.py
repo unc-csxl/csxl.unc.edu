@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from backend.services.event import EventService
-from backend.models.event import EventDetail, Event
+from ..services.event import EventService
+from ..models.event import Event
+from ..models.event_detail import EventDetail
 from datetime import datetime
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
