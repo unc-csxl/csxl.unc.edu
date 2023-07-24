@@ -22,7 +22,7 @@ def get_registrations(registrations_service: RegistrationService = Depends()) ->
   return registrations_service.all()
 
 @api.post("", response_model=RegistrationDetail, tags=['RegistrationDetail'])
-def create_registration(registration: Registration, registrations_service: RegistrationService = Depends(), subject: User = Depends(registered_user)) -> RegistrationDetail:
+def create_registration(registration: Registration, subject: User = Depends(registered_user), registrations_service: RegistrationService = Depends()) -> RegistrationDetail:
   """
   Create a registration by a user for an event.
 
@@ -38,7 +38,7 @@ def create_registration(registration: Registration, registrations_service: Regis
     HTTPException 422 if create() raises an Exception.
   """
   try:
-    return registrations_service.create(registration, subject)
+    return registrations_service.create(subject, registration)
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
@@ -85,7 +85,7 @@ def get_registrations_by_event(event_id: int, status: int, registrations_service
     raise HTTPException(status_code=404, detail=str(e))
 
 @api.put("", response_model=RegistrationDetail, tags=['RegistrationDetail'])
-def mark_attended(registration: RegistrationDetail, registrations_service: RegistrationService = Depends(), subject: User = Depends(registered_user)) -> RegistrationDetail:
+def mark_attended(registration: RegistrationDetail, subject: User = Depends(registered_user), registrations_service: RegistrationService = Depends()) -> RegistrationDetail:
   """
   Update a User's attendance status for an EventDetail.
 
@@ -100,12 +100,12 @@ def mark_attended(registration: RegistrationDetail, registrations_service: Regis
     HTTPException 404 if update_status() raises an Exception.
   """
   try:
-    return registrations_service.update_status(registration, subject)
+    return registrations_service.update_status(subject, registration)
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 
 @api.delete("/registration/{reg_id}", response_model=None, tags=['RegistrationDetail'])
-def delete_registration(reg_id: int, registrations_service: RegistrationService = Depends(), subject: User = Depends(registered_user)) -> None:
+def delete_registration(reg_id: int, subject: User = Depends(registered_user), registrations_service: RegistrationService = Depends()) -> None:
   """
   Delete RegistrationDetail for EventDetail by RegistrationDetail ID
 
@@ -117,12 +117,12 @@ def delete_registration(reg_id: int, registrations_service: RegistrationService 
     HTTPException 404 if delete_registration() raises an Exception.
   """
   try:
-    registrations_service.delete_registration(reg_id, subject)
+    registrations_service.delete_registration(subject, reg_id)
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 
 @api.delete("/{event_id}", response_model=None, tags=['RegistrationDetail'])
-def clear_event_registrations(event_id: int, registrations_service: RegistrationService = Depends(), subject: User = Depends(registered_user)) -> None:
+def clear_event_registrations(event_id: int, subject: User = Depends(registered_user), registrations_service: RegistrationService = Depends()) -> None:
   """
   Clear all registrations for an event.
 
@@ -135,7 +135,7 @@ def clear_event_registrations(event_id: int, registrations_service: Registration
   """
 
   try:
-    registrations_service.clear_registrations(event_id, subject)
+    registrations_service.clear_registrations(subject, event_id)
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 

@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.models.user import User
+from backend.services.permission import UserPermissionError
 from ..database import db_session
 from backend.models.registration import RegistrationDetail, Registration
 from backend.entities.registration_entity import RegistrationEntity
@@ -44,9 +45,13 @@ class RegistrationService:
       ValueError if registration does not exist.
     """      
 
-    # Prevent registration if the user you are trying to register is not the same as current user
-    if registration.user_id != subject.id:
-      self._permission.enforce(subject, 'admin.*', f'*')
+    # Check that user has permission to create registrations for organization
+    org_roles = [org_role for org_role in subject.organization_associations if
+        org_role.org_id == registration.event.org_id and org_role.membership_type > 0]
+      
+    # If no role is found and user is not trying to create their own reg, raise an exception
+    if (len(org_roles) <= 0 and subject.id != registration.user_id):
+        raise UserPermissionError('registration.create', f'registrations')
 
     # Attempt to get RegistrationEntity based on the IDs of the given user and event.
     entity = self._session.query(RegistrationEntity).filter(
@@ -102,7 +107,7 @@ class RegistrationService:
     # Return the registrations as a list of RegistrationDetail models.
     return [entity.to_model() for entity in entities]
     
-  def update_status(self, registration: RegistrationDetail, subject: User) -> RegistrationDetail:
+  def update_status(self, subject: User, registration: RegistrationDetail) -> RegistrationDetail:
     """
     Update a RegistrationDetail's status to attended (1).
 
@@ -115,9 +120,13 @@ class RegistrationService:
     Raises:
       ValueError if there is no RegistrationDetail for the specified User and EventDetail.
     """
-    # Prevent update if the user you are trying to register is not the same as current user
-    if registration.user_id != subject.id:
-      self._permission.enforce(subject, 'admin.*', f'*')
+    # Check that user has permission to update registration
+    org_roles = [org_role for org_role in subject.organization_associations if
+        org_role.org_id == registration.event.org_id and org_role.membership_type > 0]
+      
+    # If no role is found and user is not trying to update their own reg, raise an exception
+    if (len(org_roles) <= 0 and subject.id != registration.user_id):
+        raise UserPermissionError('registration.update', f'registrations')
 
     # Query the Registrations table for a registration associated with the specified user_id and event_id.
     entity = self._session.query(RegistrationEntity).filter(
@@ -134,7 +143,7 @@ class RegistrationService:
     else:
       raise ValueError(f"The user with the ID {registration.user_id} is not registered for the event with the ID {registration.event_id}.")
       
-  def delete_registration(self, reg_id: int, subject: User) -> None:
+  def delete_registration(self, subject: User, reg_id: int) -> None:
     """
     Delete a User's registration for an EventDetail.
 
@@ -148,18 +157,22 @@ class RegistrationService:
     # Query the Registrations table for a registration associated with the specified id
     entity = self._session.query(RegistrationEntity).filter(RegistrationEntity.id == reg_id).one_or_none()
 
-    # Prevent registration if the user you are trying to register is not the same as current user
-    if entity.user_id != subject.id:
-      self._permission.enforce(subject, 'admin.*', f'*')  
-
     # If a registration was found, delete the registration.
     if entity:
+      # Check that user has permission to delete registration
+      org_roles = [org_role for org_role in subject.organization_associations if
+          org_role.org_id == entity.event.org_id and org_role.membership_type > 0]
+      
+      # If no role is found and user is not trying to delete their own reg, raise an exception
+      if (len(org_roles) <= 0 and subject.id != entity.user_id):
+          raise UserPermissionError('registration.delete', f'registrations/{reg_id}')
+
       self._session.delete(entity)
       self._session.commit()
     else:
       raise ValueError(f"The user with the ID {entity.user_id} is not registered for the event with the ID {entity.event_id}.")
     
-  def clear_registrations(self, event_id: int, subject: User):
+  def clear_registrations(self, subject: User, event_id: int):
     """
     Clear all registrations for an EventDetail.
 
@@ -169,14 +182,20 @@ class RegistrationService:
     Raises:
       ValueError if an event with the specified ID does not exist.
     """
-    # Prevent registration if the user you are trying to register is not the same as current user
-    self._permission.enforce(subject, 'admin.*', f'*')  
-
     # Query the Registrations table for all events matching the event_id.
     registrations = self._session.query(RegistrationEntity).filter(RegistrationEntity.event_id == event_id).all()
       
-    # If registrations were found, delete each one.
+    # If registrations were found
     if len(registrations) > 0:
+      # Check that user has permission to clear registrations for organization
+      org_roles = [org_role for org_role in subject.organization_associations if
+          org_role.org_id == registration[0].event.org_id and org_role.membership_type > 0]
+      
+      # If no role is found, raise an exception
+      if (len(org_roles) <= 0):
+          raise UserPermissionError('registration.delete', f'registrations/{event_id}')
+
+      # Delete each registration
       for registration in registrations:
         self._session.delete(registration)
         self._session.commit()
