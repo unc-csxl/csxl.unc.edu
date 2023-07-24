@@ -6,7 +6,7 @@ from ..models.organization import Organization
 from ..models.organization_detail import OrganizationDetail
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
-from .permission import PermissionService
+from .permission import PermissionService, UserPermissionError
 
 class OrganizationService:
     """Service that performs all of the actions on the `Organization` table"""
@@ -33,7 +33,7 @@ class OrganizationService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, organization: Organization, subject: User) -> OrganizationDetail:
+    def create(self, subject: User, organization: Organization) -> OrganizationDetail:
         """
         Creates a organization based on the input object and adds it to the table.
         If the organization's ID is unique to the table, a new entry is added.
@@ -45,8 +45,13 @@ class OrganizationService:
             OrganizationDetail: Object added to table
         """
 
-        # Check if the user has permission to create an organization
-        self._permission.enforce(subject, 'organizations.list', f'organizations/')
+        # Check if user has manager permissions for the organization
+        org_roles = [org_role for org_role in subject.organization_associations if
+            org_role.org_id == organization.id and org_role.membership_type > 0]
+        
+        # If no role is found, raise an exception
+        if(len(org_roles) <=0):
+            raise UserPermissionError('organization.create', f'organizations')
 
         # Checks if the organization already exists in the table
         if organization.id:
@@ -109,7 +114,7 @@ class OrganizationService:
             # Raise exception
             raise Exception(f"No organization found with name: {name}")
 
-    def update(self, organization: OrganizationDetail) -> OrganizationDetail:
+    def update(self, subject: User, organization: OrganizationDetail) -> OrganizationDetail:
         """
         Update the organization
         If none found with that id, a debug description is displayed.
@@ -119,6 +124,14 @@ class OrganizationService:
         Returns:
             OrganizationDetail: Updated organization object
         """
+
+        # Check if user has manager permissions for the organization
+        org_roles = [org_role for org_role in subject.organization_associations if
+            org_role.org_id == organization.id and org_role.membership_type > 0]
+        
+        # If no role is found, raise an exception
+        if(len(org_roles) <=0):
+            raise UserPermissionError('organization.update', f'organizations')
 
         # Query the organization with matching id
         obj = self._session.query(OrganizationEntity).get(organization.id)
@@ -144,7 +157,7 @@ class OrganizationService:
             raise Exception(f"No organization found with ID: {organization.id}")
 
     
-    def delete(self, id: int, subject: User) -> None:
+    def delete(self, subject: User, id: int) -> None:
         """
         Delete the organization based on the provided ID.
         If no item exists to delete, a debug description is displayed.
@@ -153,14 +166,19 @@ class OrganizationService:
             id (int): Unique organization ID
         """
 
-        # Check if the user has permission to create an organization
-        self._permission.enforce(subject, 'organizations.list', f'organizations/{id}')
-
         # Find object to delete
         obj=self._session.query(OrganizationEntity).get(id)
 
         # Ensure object exists
         if obj:
+             # Check if user has manager permissions for the organization
+            org_roles = [org_role for org_role in subject.organization_associations if
+                org_role.org_id == obj.id and org_role.membership_type > 0]
+        
+            # If no role is found, raise an exception
+            if(len(org_roles) <=0):
+                raise UserPermissionError('organization.delete', f'organizations/{id}')
+            
             # Delete object and commit
             self._session.delete(obj)
             self._session.commit()

@@ -49,7 +49,6 @@ class EventService:
             org_role.org_id == event.org_id and org_role.membership_type > 0]
         
         # If no role is found, raise an exception
-        # TO-DO: FIX ERROR RAISED
         if(len(org_roles) <=0):
             raise UserPermissionError('event.create', f'events')
 
@@ -131,7 +130,6 @@ class EventService:
             org_role.org_id == event.org_id and org_role.membership_type > 0]
         
         # If no role is found, raise an exception
-        # TO-DO: FIX ERROR RAISED
         if(len(org_roles) <=0):
             raise UserPermissionError('event.update', f'events')
 
@@ -172,7 +170,6 @@ class EventService:
                 org_role.org_id == obj.org_id and org_role.membership_type > 0]
             
             # If no role is found, raise an exception
-            # TO-DO: FIX ERROR RAISED
             if(len(org_roles) <=0):
                 raise UserPermissionError('event.delete', f'events/{obj.org_id}')
             
