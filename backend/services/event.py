@@ -1,6 +1,9 @@
 from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
+
+from backend.models.user import User
+from backend.services.permission import UserPermissionError
 from ..database import db_session
 from ..models.event import Event
 from ..models.event_detail import EventDetail
@@ -30,7 +33,7 @@ class EventService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, event: Event) -> EventDetail:
+    def create(self, subject: User, event: Event) -> EventDetail:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -40,6 +43,15 @@ class EventService:
         Returns:
             EventDetail: Object added to table
         """
+
+        # Check if user has manager permissions for the organization
+        org_roles = [org_role for org_role in subject.organization_associations if
+            org_role.org_id == event.org_id and org_role.membership_type > 0]
+        
+        # If no role is found, raise an exception
+        # TO-DO: FIX ERROR RAISED
+        if(len(org_roles) <=0):
+            raise UserPermissionError('event.create', f'events')
 
         # Checks if the role already exists in the table
         if event.id:
@@ -104,7 +116,7 @@ class EventService:
         events = self._session.query(EventEntity).filter(EventEntity.time < end).filter(EventEntity.time > start).all()
         return [event.to_model() for event in events]
     
-    def update(self, event: EventDetail) -> EventDetail:
+    def update(self, subject: User, event: EventDetail) -> EventDetail:
         """
         Update the event
         If none found with that id, a debug description is displayed.
@@ -113,6 +125,15 @@ class EventService:
         Returns:
             EventDetail: Updated event object
         """
+
+        # Check if user has manager permissions for the organization
+        org_roles = [org_role for org_role in subject.organization_associations if
+            org_role.org_id == event.org_id and org_role.membership_type > 0]
+        
+        # If no role is found, raise an exception
+        # TO-DO: FIX ERROR RAISED
+        if(len(org_roles) <=0):
+            raise UserPermissionError('event.update', f'events')
 
         # Query the event with matching id
         obj = self._session.query(EventEntity).get(event.id)
@@ -133,7 +154,7 @@ class EventService:
             raise Exception(f"No event found with ID: {event.id}")
 
     
-    def delete(self, id: int) -> None:
+    def delete(self, subject: User, id: int) -> None:
         """
         Delete the event based on the provided ID.
         If no item exists to delete, a debug description is displayed.
@@ -146,6 +167,15 @@ class EventService:
 
         # Ensure object exists
         if obj:
+            # Check if user has manager permissions for the organization
+            org_roles = [org_role for org_role in subject.organization_associations if
+                org_role.org_id == obj.org_id and org_role.membership_type > 0]
+            
+            # If no role is found, raise an exception
+            # TO-DO: FIX ERROR RAISED
+            if(len(org_roles) <=0):
+                raise UserPermissionError('event.delete', f'events/{obj.org_id}')
+            
             # Delete object and commit
             self._session.delete(obj)
             self._session.commit()
