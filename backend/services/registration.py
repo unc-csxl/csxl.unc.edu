@@ -35,6 +35,15 @@ class RegistrationService:
     query = select(RegistrationEntity)
     entities = self._session.scalars(query).all()
     return [entity.to_model() for entity in entities]
+  
+  def check_permissions(self, subject: User, registration: RegistrationDetail, action: str, resource: str):
+    # Check that user has permission to modify registrations for the organization
+    org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
+        org_role.org_id == registration.event.org_id and org_role.membership_type > 0]
+      
+    # If no role is found, raise an exception
+    if (len(org_roles) <= 0):
+        raise UserPermissionError('registration.update', f'registrations')
 
   def create(self, subject: User, registration: Registration) -> RegistrationDetail:
     """
@@ -122,13 +131,8 @@ class RegistrationService:
     Raises:
       ValueError if there is no RegistrationDetail for the specified User and EventDetail.
     """
-    # Check that user has permission to update registration
-    org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
-        org_role.org_id == registration.event.org_id and org_role.membership_type > 0]
-      
-    # If no role is found and user is not trying to update their own reg, raise an exception
-    if (len(org_roles) <= 0 and subject.id != registration.user_id):
-        raise UserPermissionError('registration.update', f'registrations')
+    # Check that user has permission to modify organization registrations
+    self.check_permissions(subject, registration, 'registration.update', f'registrations')
 
     # Query the Registrations table for a registration associated with the specified user_id and event_id.
     entity = self._session.query(RegistrationEntity).filter(
@@ -157,19 +161,17 @@ class RegistrationService:
     """
 
     # Query the Registrations table for a registration associated with the specified id
-    entity = self._session.query(RegistrationEntity).filter(RegistrationEntity.id == reg_id).one_or_none()
+    registration = self._session.query(RegistrationEntity).filter(RegistrationEntity.id == reg_id).one_or_none()
 
-    # If a registration was found, delete the registration.
-    if entity:
-      # Check that user has permission to delete registration
-      org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
-          org_role.org_id == entity.event.org_id and org_role.membership_type > 0]
-      
-      # If no role is found and user is not trying to delete their own reg, raise an exception
-      if (len(org_roles) <= 0 and subject.id != entity.user_id):
-          raise UserPermissionError('registration.delete', f'registrations/{reg_id}')
+    # If a registration was found
+    if registration:
+      # If user is not trying to delete their own reg
+      if (subject.id != registration.user_id):
+          # Check that user has permission to modify organization registrations
+          self.check_permissions(subject, registration, 'registration.delete', f'registrations/{reg_id}')
 
-      self._session.delete(entity)
+      # Delete Registration
+      self._session.delete(registration)
       self._session.commit()
     else:
       raise ValueError(f"The user with the ID {subject.id} is not registered for the requested event.")
@@ -190,12 +192,7 @@ class RegistrationService:
     # If registrations were found
     if len(registrations) > 0:
       # Check that user has permission to clear registrations for organization
-      org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
-          org_role.org_id == registrations[0].event.org_id and org_role.membership_type > 0]
-      
-      # If no role is found, raise an exception
-      if (len(org_roles) <= 0):
-          raise UserPermissionError('registration.delete', f'registrations/{event_id}')
+      self.check_permissions(subject, registrations[0], 'registration.delete', f'registrations/{event_id}')
 
       # Delete each registration
       for registration in registrations:
