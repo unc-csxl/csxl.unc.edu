@@ -98,8 +98,8 @@ class OrgRoleService:
             # Convert entries to a model and return
             return [role.to_model() for role in roles]
         else:
-            # Raise exception
-            raise Exception(f"No role found with User ID: {user_id}")
+            # Return an empty list
+            return []
 
     def get_from_orgid(self, org_id: int) -> list[OrgRoleDetail]:
         """
@@ -120,8 +120,8 @@ class OrgRoleService:
             # Convert entries to a model and return
             return [role.to_model() for role in roles]
         else:
-            # Raise exception
-            raise Exception(f"No role found with Organization ID: {org_id}")
+            # Return empty list
+            return []
 
     def delete(self, subject: User, id: int) -> None:
         """

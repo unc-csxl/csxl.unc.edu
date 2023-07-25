@@ -55,7 +55,7 @@ def new_event(event: Event, subject: User = Depends(registered_user), event_serv
     # Try to create event
     try:
         return event_service.create(subject, event)
-    except:
+    except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 @api.get("/{id}", responses={404: {"model": None}}, tags=['Event'])
@@ -84,7 +84,7 @@ def update_event(event: EventDetail, subject: User = Depends(registered_user), e
     """
     try:
         return event_service.update(subject, event)
-    except:
+    except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 @api.delete("/{id}", tags=['Event'])

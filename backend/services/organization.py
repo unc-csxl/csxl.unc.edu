@@ -1,6 +1,8 @@
 from fastapi import Depends
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
+
+from backend.services.org_role import OrgRoleService
 from ..database import db_session
 from ..models.organization import Organization
 from ..models.organization_detail import OrganizationDetail
@@ -14,10 +16,11 @@ class OrganizationService:
     # Current SQLAlchemy Session
     _session: Session
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
+    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends(), org_roles: OrgRoleService = Depends()):
         """Initializes the `OrganizationService` session"""
         self._session = session
         self._permission = permission
+        self._org_roles = org_roles
 
     def all(self) -> list[OrganizationDetail]:
         """
@@ -45,13 +48,8 @@ class OrganizationService:
             OrganizationDetail: Object added to table
         """
 
-        # Check if user has manager permissions for the organization
-        org_roles = [org_role for org_role in subject.organization_associations if
-            org_role.org_id == organization.id and org_role.membership_type > 0]
-        
-        # If no role is found, raise an exception
-        if(len(org_roles) <=0):
-            raise UserPermissionError('organization.create', f'organizations')
+        # Check if user has admin permissions
+        self._permission.enforce(subject, 'organization.create', f'organizations')
 
         # Checks if the organization already exists in the table
         if organization.id:
@@ -126,7 +124,7 @@ class OrganizationService:
         """
 
         # Check if user has manager permissions for the organization
-        org_roles = [org_role for org_role in subject.organization_associations if
+        org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
             org_role.org_id == organization.id and org_role.membership_type > 0]
         
         # If no role is found, raise an exception
@@ -165,20 +163,14 @@ class OrganizationService:
         Parameters:
             id (int): Unique organization ID
         """
+        # Check if user has admin permissions
+        self._permission.enforce(subject, 'organization.create', f'organizations')
 
         # Find object to delete
         obj=self._session.query(OrganizationEntity).get(id)
 
         # Ensure object exists
-        if obj:
-             # Check if user has manager permissions for the organization
-            org_roles = [org_role for org_role in subject.organization_associations if
-                org_role.org_id == obj.id and org_role.membership_type > 0]
-        
-            # If no role is found, raise an exception
-            if(len(org_roles) <=0):
-                raise UserPermissionError('organization.delete', f'organizations/{id}')
-            
+        if obj:            
             # Delete object and commit
             self._session.delete(obj)
             self._session.commit()

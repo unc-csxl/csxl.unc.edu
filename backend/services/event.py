@@ -3,6 +3,7 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from backend.models.user import User
+from backend.services.org_role import OrgRoleService
 from backend.services.permission import UserPermissionError
 from ..database import db_session
 from ..models.event import Event
@@ -16,9 +17,10 @@ class EventService:
     # Current SQLAlchemy Session
     _session: Session
 
-    def __init__(self, session: Session = Depends(db_session)):
+    def __init__(self, session: Session = Depends(db_session), org_roles: OrgRoleService = Depends()):
         """Initializes the `EventService` session"""
         self._session = session
+        self._org_roles = org_roles
 
     def all(self) -> list[EventDetail]:
         """
@@ -45,7 +47,7 @@ class EventService:
         """
 
         # Check if user has manager permissions for the organization
-        org_roles = [org_role for org_role in subject.organization_associations if
+        org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
             org_role.org_id == event.org_id and org_role.membership_type > 0]
         
         # If no role is found, raise an exception
@@ -124,9 +126,8 @@ class EventService:
         Returns:
             EventDetail: Updated event object
         """
-
         # Check if user has manager permissions for the organization
-        org_roles = [org_role for org_role in subject.organization_associations if
+        org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
             org_role.org_id == event.org_id and org_role.membership_type > 0]
         
         # If no role is found, raise an exception
