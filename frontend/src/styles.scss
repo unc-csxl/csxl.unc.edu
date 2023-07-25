@@ -64,5 +64,5 @@ $light-theme: mat.define-light-theme((
 
 // Apply the light theme only when the user prefers light themes.
 @media (prefers-color-scheme: light) {
-    @include mat.all-component-themes($light-theme);
+    @include mat.all-component-colors($light-theme);
 }

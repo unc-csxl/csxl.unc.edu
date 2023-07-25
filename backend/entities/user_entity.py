@@ -78,7 +78,7 @@ class UserEntity(EntityBase):
 
         Returns:
             User: A User model for API usage."""
-        return User(
+        return UserDetails(
             id=self.id,
             pid=self.pid,
             onyen=self.onyen,
@@ -118,7 +118,7 @@ class UserEntity(EntityBase):
         Returns:
             User: `UserSummary` object from the entity
         """
-        return UserDetails(
+        return User(
             id=self.id,
             pid=self.pid,
             onyen=self.onyen,
