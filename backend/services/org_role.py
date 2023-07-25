@@ -5,7 +5,7 @@ from backend.entities.org_role_entity import OrgRoleEntity
 from backend.models.org_role import OrgRoleDetail, OrgRole
 from ..database import db_session
 from ..models import User
-from .permission import PermissionService
+from .permission import PermissionService, UserPermissionError
 
 class OrgRoleService:
     """Service that performs all of the actions on the `Role` table"""
@@ -32,7 +32,7 @@ class OrgRoleService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, role: OrgRole, subject: User) -> OrgRoleDetail:
+    def create(self, subject: User, role: OrgRole) -> OrgRoleDetail:
         """
         Creates a role based on the input object and adds it to the table.
         If the role's PID is unique to the table, a new entry is added.
@@ -44,9 +44,13 @@ class OrgRoleService:
             OrgRoleDetail: Object added to table
         """
 
-        # Check if you are trying to create an executive or manager.
+        # Check if exec/manager role is being created
         if (role.membership_type >= 1):
-            self._permission.enforce(subject, 'organizations.details', f'organizations/{id}')
+            # Check to ensure user has admin permissions
+            self._permission.enforce(subject, 'admin.create_orgrole', f'orgroles')
+        elif (subject.id != role.user_id):
+            # If normal membership role is being created, check that user is creating their own role
+            raise UserPermissionError('admin.create_orgrole', f'orgroles')
 
         # Checks if the role already exists in the table
         if role.id:
@@ -119,7 +123,7 @@ class OrgRoleService:
             # Raise exception
             raise Exception(f"No role found with Organization ID: {org_id}")
 
-    def delete(self, id: int, subject: User) -> None:
+    def delete(self, subject: User, id: int) -> None:
         """
         Delete the role based on the provided ID.
         If no item exists to delete, a debug description is displayed.
@@ -128,16 +132,21 @@ class OrgRoleService:
             id (int): Unique role ID
         """
 
-        # Prevent delete if not admin
-        self._permission.enforce(subject, 'organizations.details', f'organizations/{id}')
-
         # Find object to delete
-        obj=self._session.query(OrgRoleEntity).filter(OrgRoleEntity.id == id).first()
+        role=self._session.query(OrgRoleEntity).filter(OrgRoleEntity.id == id).first()
 
         # Ensure object exists
-        if obj:
+        if role:
+            # Check if exec/manager role is being deleted
+            if (role.membership_type >= 1):
+                # Check to ensure user has admin permissions
+                self._permission.enforce(subject, 'admin.delete_orgrole', f'orgroles/{id}')
+            elif (subject.id != role.user_id):
+                # If normal membership role is being deleted, ensure user is deleting their own role
+                raise UserPermissionError('admin.create_orgrole', f'orgroles')
+
             # Delete object and commit
-            self._session.delete(obj)
+            self._session.delete(role)
             self._session.commit()
         else:
             # Raise exception

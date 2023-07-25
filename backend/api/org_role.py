@@ -20,7 +20,7 @@ def get_roles(role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
     return role_service.all()
 
 @api.post("", tags=['Org Role'])
-def new_role(role: OrgRole, role_service: OrgRoleService = Depends(), subject: User = Depends(registered_user)) -> OrgRoleDetail:
+def new_role(role: OrgRole, subject: User = Depends(registered_user), role_service: OrgRoleService = Depends()) -> OrgRoleDetail:
     """
     Create or update role
 
@@ -31,7 +31,7 @@ def new_role(role: OrgRole, role_service: OrgRoleService = Depends(), subject: U
     # Try to create / update role
     try:
         # Return created / updated role
-        return role_service.create(role, subject)
+        return role_service.create(subject, role)
     except Exception as e:
         # Raise 422 exception if creation fails
         # - This would occur if the request body is shaped incorrectly
@@ -74,7 +74,7 @@ def get_role_from_orgid(org_id: int, role_service: OrgRoleService = Depends()) -
         raise HTTPException(status_code=404, detail=str(e))
 
 @api.delete("/{id}", tags=['Org Role'])
-def delete_role(id: int, role_service = Depends(OrgRoleService), subject: User = Depends(registered_user)):
+def delete_role(id: int, subject: User = Depends(registered_user), role_service = Depends(OrgRoleService)):
     """
     Delete role based on id
     """
@@ -82,7 +82,7 @@ def delete_role(id: int, role_service = Depends(OrgRoleService), subject: User =
     # Try to delete role
     try:
         # Return deleted role
-        return role_service.delete(id, subject)
+        return role_service.delete(subject, id)
     except Exception as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response or if item to delete does not exist

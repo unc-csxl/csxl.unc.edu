@@ -13,7 +13,7 @@ pairs = [
     (roles.staff, Permission(action="user.*", resource="*")),
     (roles.staff, Permission(action="role.*", resource="*")),
     (roles.staff, Permission(action="checkin.*", resource="*")),
-    (roles.staff, Permission(action="organizations.*", resource="*")),
+    (roles.staff, Permission(action="organization.*", resource="*")),
     (roles.ambassador, Permission(action="user.search", resource="*")),
     (roles.ambassador, Permission(action="checkin.*", resource="*"))
 ]
