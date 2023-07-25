@@ -31,6 +31,14 @@ class OrgRoleService:
 
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
+    
+    def check_permissions(self, subject: User, role: OrgRole, action: str, resource: str):
+        if (role.membership_type >= 1):
+            # Check to ensure user has admin permissions
+            self._permission.enforce(subject, action, resource)
+        elif (subject.id != role.user_id):
+            # If normal membership role is being created/deleted, check that user is creating/deleting own role
+            raise UserPermissionError(action, resource)
 
     def create(self, subject: User, role: OrgRole) -> OrgRoleDetail:
         """
@@ -43,14 +51,8 @@ class OrgRoleService:
         Returns:
             OrgRoleDetail: Object added to table
         """
-
-        # Check if exec/manager role is being created
-        if (role.membership_type >= 1):
-            # Check to ensure user has admin permissions
-            self._permission.enforce(subject, 'admin.create_orgrole', f'orgroles')
-        elif (subject.id != role.user_id):
-            # If normal membership role is being created, check that user is creating their own role
-            raise UserPermissionError('admin.create_orgrole', f'orgroles')
+        # Ensure user has proper permissions to create a new role
+        self.check_permissions(subject, role, 'admin.create_orgrole', f'orgroles')
 
         # Checks if the role already exists in the table
         if role.id:
@@ -137,13 +139,8 @@ class OrgRoleService:
 
         # Ensure object exists
         if role:
-            # Check if exec/manager role is being deleted
-            if (role.membership_type >= 1):
-                # Check to ensure user has admin permissions
-                self._permission.enforce(subject, 'admin.delete_orgrole', f'orgroles/{id}')
-            elif (subject.id != role.user_id):
-                # If normal membership role is being deleted, ensure user is deleting their own role
-                raise UserPermissionError('admin.create_orgrole', f'orgroles')
+            # Ensure user has proper permissions to delete a role
+            self.check_permissions(subject, role, 'admin.delete_orgrole', f'orgroles/{id}')
 
             # Delete object and commit
             self._session.delete(role)
