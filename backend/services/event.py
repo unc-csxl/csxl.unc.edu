@@ -34,6 +34,15 @@ class EventService:
 
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
+    
+    def check_permissions(self, subject: User, event: Event, action: str, resource: str):
+        # Check if user has manager permissions for the organization
+        org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
+            org_role.org_id == event.org_id and org_role.membership_type > 0]
+        
+        # If no role is found, raise an exception
+        if(len(org_roles) <=0):
+            raise UserPermissionError(action, resource)
 
     def create(self, subject: User, event: Event) -> EventDetail:
         """
@@ -45,14 +54,8 @@ class EventService:
         Returns:
             EventDetail: Object added to table
         """
-
-        # Check if user has manager permissions for the organization
-        org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
-            org_role.org_id == event.org_id and org_role.membership_type > 0]
-        
-        # If no role is found, raise an exception
-        if(len(org_roles) <=0):
-            raise UserPermissionError('event.create', f'events')
+        # Ensure user manages organization corresponding to event
+        self.check_permissions(subject, event, 'event.create', f'events')
 
         # Checks if the role already exists in the table
         if event.id:
@@ -126,13 +129,8 @@ class EventService:
         Returns:
             EventDetail: Updated event object
         """
-        # Check if user has manager permissions for the organization
-        org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
-            org_role.org_id == event.org_id and org_role.membership_type > 0]
-        
-        # If no role is found, raise an exception
-        if(len(org_roles) <=0):
-            raise UserPermissionError('event.update', f'events')
+        # Ensure user manages organization corresponding to event
+        self.check_permissions(subject, event, 'event.update', f'events')
 
         # Query the event with matching id
         obj = self._session.query(EventEntity).get(event.id)
@@ -162,20 +160,15 @@ class EventService:
         """
 
         # Find object to delete
-        obj=self._session.query(EventEntity).get(id)
+        event=self._session.query(EventEntity).get(id)
 
         # Ensure object exists
-        if obj:
-            # Check if user has manager permissions for the organization
-            org_roles = [org_role for org_role in subject.organization_associations if
-                org_role.org_id == obj.org_id and org_role.membership_type > 0]
-            
-            # If no role is found, raise an exception
-            if(len(org_roles) <=0):
-                raise UserPermissionError('event.delete', f'events/{obj.org_id}')
+        if event:
+            # Ensure user manages organization corresponding to event
+            self.check_permissions(subject, event, 'event.delete', f'events/{event.org_id}')
             
             # Delete object and commit
-            self._session.delete(obj)
+            self._session.delete(event)
             self._session.commit()
         else:
             # Raise exception
