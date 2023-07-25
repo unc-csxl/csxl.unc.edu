@@ -2,12 +2,13 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from ..models.role import Role
 from ..models.organization import Organization
 from ..models.organization_detail import OrganizationDetail
-from ..models.event_detail import EventDetail
 from .event_entity import EventEntity
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `OrganizationDetail` table"""

@@ -7,7 +7,9 @@ from backend.api.authentication import registered_user
 from backend.models.user import User
 from ..env import getenv
 
-from backend.services.user import UserService
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 api = APIRouter(prefix="/api/events")
 

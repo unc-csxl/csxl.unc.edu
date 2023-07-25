@@ -6,6 +6,10 @@ from .entity_base import EntityBase
 from typing import Self
 from backend.models.registration import RegistrationDetail, Registration
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 class RegistrationEntity(EntityBase):
   """Serves as the database model schema defining the shape of the `Registrations` table."""
   

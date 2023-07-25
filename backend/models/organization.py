@@ -1,5 +1,9 @@
 from pydantic import BaseModel
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 class Organization(BaseModel):
     """
     Model to represent an `OrganizationDetail` object in a relationship

@@ -1,3 +1,5 @@
+"""Definition of the RegistrationService used to update the RegistrationEntity."""
+
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -10,7 +12,9 @@ from ..database import db_session
 from backend.models.registration import RegistrationDetail, Registration
 from backend.entities.registration_entity import RegistrationEntity
 
-"""Definition of the RegistrationService used to update the RegistrationEntity."""
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 class RegistrationService:
 

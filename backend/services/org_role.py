@@ -7,6 +7,10 @@ from ..database import db_session
 from ..models import User
 from .permission import PermissionService, UserPermissionError
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 class OrgRoleService:
     """Service that performs all of the actions on the `Role` table"""
 

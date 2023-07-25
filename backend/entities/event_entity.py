@@ -7,6 +7,10 @@ from ..models.event_detail import EventDetail
 
 from datetime import datetime
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
 

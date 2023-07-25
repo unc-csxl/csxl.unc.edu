@@ -3,6 +3,10 @@ from .event import Event
 from .user import User
 from .org_role import OrgRole
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 class OrganizationDetail(Organization):
     """
     Model to represent an `OrganizationDetail` object

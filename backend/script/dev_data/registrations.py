@@ -2,10 +2,9 @@
 
 from backend.entities.registration_entity import RegistrationEntity
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
-__license__ = "MIT"
-
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 registration1 = RegistrationEntity( 
     user_id=1, 

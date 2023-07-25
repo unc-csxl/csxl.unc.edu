@@ -6,6 +6,10 @@ from backend.models.registration import RegistrationDetail, Registration
 from backend.models.user import User
 from backend.services.registration import RegistrationService
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 api = APIRouter(prefix="/api/registrations")
 
 @api.get("", response_model=list[RegistrationDetail], tags=['RegistrationDetail'])

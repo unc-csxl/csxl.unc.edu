@@ -2,10 +2,9 @@
 
 from backend.entities.org_role_entity import OrgRoleEntity
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
-__license__ = "MIT"
-
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 role1 = OrgRoleEntity(
     user_id=1, 

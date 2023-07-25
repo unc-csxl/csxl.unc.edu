@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.models.user import User
@@ -10,6 +10,10 @@ from ..models.event import Event
 from ..models.event_detail import EventDetail
 from ..entities import EventEntity
 from datetime import datetime
+
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 class EventService:
     """Service that performs all of the actions on the `EventDetail` table"""

@@ -2,6 +2,10 @@ from pydantic import BaseModel
 from .user import User
 from .organization import Organization
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 class OrgRole(BaseModel):
     """
     Model to represent `Role` connections between users and organizations

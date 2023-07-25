@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.services.org_role import OrgRoleService
@@ -9,6 +9,10 @@ from ..models.organization_detail import OrganizationDetail
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService, UserPermissionError
+
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 class OrganizationService:
     """Service that performs all of the actions on the `Organization` table"""

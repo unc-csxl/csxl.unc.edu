@@ -4,6 +4,10 @@ from pydantic import BaseModel
 from .event import Event
 from .user import User
 
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
+
 class Registration(BaseModel):
   """
   Model to represent `RegistrationDetail` connections between users and organizations

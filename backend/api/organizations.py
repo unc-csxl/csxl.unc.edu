@@ -1,9 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..services import OrganizationService, UserService
+from ..services import OrganizationService
 from ..models.organization import Organization
 from ..models.organization_detail import OrganizationDetail
 from backend.api.authentication import registered_user
 from backend.models.user import User
+
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 api = APIRouter(prefix="/api/organizations")
 

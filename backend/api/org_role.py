@@ -3,7 +3,10 @@ from backend.models.org_role import OrgRole, OrgRoleDetail
 from backend.services.org_role import OrgRoleService
 from backend.api.authentication import registered_user
 from backend.models.user import User
-from backend.services.permission import UserPermissionError
+
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 api = APIRouter(prefix="/api/orgroles")
 

@@ -3,10 +3,9 @@
 from backend.entities.event_entity import EventEntity
 import datetime
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
-__license__ = "MIT"
-
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 event1 = EventEntity(
     name="HackNC Hackathon", 

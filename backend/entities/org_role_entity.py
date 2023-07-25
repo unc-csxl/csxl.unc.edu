@@ -1,12 +1,13 @@
-"""Definitions of SQLAlchemy table-backed object mappings called entities."""
-
-
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from backend.entities.entity_base import EntityBase
 
 from backend.models.org_role import OrgRoleDetail, OrgRole
+
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 class OrgRoleEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Role` table"""
