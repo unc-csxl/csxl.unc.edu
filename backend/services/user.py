@@ -11,17 +11,20 @@ from ..models import User, UserDetails, Paginated, PaginationParams
 from ..entities import UserEntity
 from .permission import PermissionService
 
-__authors__ = ['Kris Jordan']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 
 class UserService:
-
     _session: Session
     _permission: PermissionService
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
+    ):
         """Initialize the User Service."""
         self._session = session
         self._permission = permission
@@ -41,8 +44,8 @@ class UserService:
             return None
         else:
             user = user_entity.to_model()
-            user_fields = user.dict()
-            user_fields['permissions'] = self._permission.get_permissions(user)
+            user_fields = user.model_dump()
+            user_fields["permissions"] = self._permission.get_permissions(user)
             user_details = UserDetails(**user_fields)
             return user_details
 
@@ -58,15 +61,15 @@ class UserService:
         """
         statement = select(UserEntity)
         criteria = or_(
-            UserEntity.first_name.ilike(f'%{query}%'),
-            UserEntity.last_name.ilike(f'%{query}%'),
-            UserEntity.onyen.ilike(f'%{query}%'),
-            UserEntity.email.ilike(f'%{query}%'),
+            UserEntity.first_name.ilike(f"%{query}%"),
+            UserEntity.last_name.ilike(f"%{query}%"),
+            UserEntity.onyen.ilike(f"%{query}%"),
+            UserEntity.email.ilike(f"%{query}%"),
         )
         statement = statement.where(criteria).limit(10)
         entities = self._session.execute(statement).scalars()
         return [entity.to_model() for entity in entities]
-    
+
     def all(self) -> list[User]:
         """
         Retrieves all users from the table
@@ -81,7 +84,9 @@ class UserService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def list(self, subject: User, pagination_params: PaginationParams) -> Paginated[User]:
+    def list(
+        self, subject: User, pagination_params: PaginationParams
+    ) -> Paginated[User]:
         """List Users.
 
         The subject must have the 'user.list' permission on the 'user/' resource.
@@ -95,16 +100,16 @@ class UserService:
 
         Raises:
             PermissionError: If the subject does not have the required permission."""
-        self._permission.enforce(subject, 'user.list', 'user/')
+        self._permission.enforce(subject, "user.list", "user/")
 
         statement = select(UserEntity)
         length_statement = select(func.count()).select_from(UserEntity)
-        if pagination_params.filter != '':
+        if pagination_params.filter != "":
             query = pagination_params.filter
             criteria = or_(
-                UserEntity.first_name.ilike(f'%{query}%'),
-                UserEntity.last_name.ilike(f'%{query}%'),
-                UserEntity.onyen.ilike(f'%{query}%'),
+                UserEntity.first_name.ilike(f"%{query}%"),
+                UserEntity.last_name.ilike(f"%{query}%"),
+                UserEntity.onyen.ilike(f"%{query}%"),
             )
             statement = statement.where(criteria)
             length_statement = length_statement.where(criteria)
@@ -112,16 +117,21 @@ class UserService:
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
 
-        if pagination_params.order_by != '':
+        if pagination_params.order_by != "":
             statement = statement.order_by(
-                getattr(UserEntity, pagination_params.order_by))
+                getattr(UserEntity, pagination_params.order_by)
+            )
 
         statement = statement.offset(offset).limit(limit)
 
         length = self._session.execute(length_statement).scalar()
         entities = self._session.execute(statement).scalars()
 
-        return Paginated(items=[entity.to_model() for entity in entities], length=length, params=pagination_params)
+        return Paginated(
+            items=[entity.to_model() for entity in entities],
+            length=length,
+            params=pagination_params,
+        )
 
     def create(self, subject: User, user: User) -> User:
         """Create a User.
@@ -136,9 +146,10 @@ class UserService:
             The created User.
 
         Raises:
-            PermissionError: If the subject does not have permission to create the user."""
+            PermissionError: If the subject does not have permission to create the user.
+        """
         if subject != user:
-            self._permission.enforce(subject, 'user.create', 'user/')
+            self._permission.enforce(subject, "user.create", "user/")
         entity = UserEntity.from_model(user)
         self._session.add(entity)
         self._session.commit()
@@ -157,9 +168,10 @@ class UserService:
             The updated User.
 
         Raises:
-            PermissionError: If the subject does not have permission to update the user."""
+            PermissionError: If the subject does not have permission to update the user.
+        """
         if subject != user:
-            self._permission.enforce(subject, 'user.update', f'user/{user.id}')
+            self._permission.enforce(subject, "user.update", f"user/{user.id}")
         entity = self._session.get(UserEntity, user.id)
         entity.update(user)
         self._session.commit()

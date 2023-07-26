@@ -6,9 +6,10 @@ from ..models.organization import Organization
 from ..models.organization_detail import OrganizationDetail
 from .event_entity import EventEntity
 
-__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `OrganizationDetail` table"""
@@ -40,67 +41,91 @@ class OrganizationEntity(EntityBase):
     # Heel Life for the organization
     heel_life: Mapped[str] = mapped_column(String)
     # All of the events hosted by the organization
-        # Generated from a relationship with the "events" table
-        # Back-populates the `organization` field of `EventEntity`
-    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization",cascade="all,delete")
+    # Generated from a relationship with the "events" table
+    # Back-populates the `organization` field of `EventEntity`
+    events: Mapped[list["EventEntity"]] = relationship(
+        back_populates="organization", cascade="all,delete"
+    )
 
-    users: Mapped[list["UserEntity"]] = relationship(secondary="org_role", back_populates="organizations")
-    user_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="organization",cascade="all,delete")
-
+    users: Mapped[list["UserEntity"]] = relationship(
+        secondary="org_role", back_populates="organizations"
+    )
+    # user_associations: Mapped[list["OrgRoleEntity"]] = relationship(
+    #     back_populates="organization", cascade="all,delete"
+    # )
 
     @classmethod
     def from_model(cls, model: OrganizationDetail) -> Self:
         """
         Class method that converts a `OrganizationDetail` object into a `OrganizationEntity`
-        
+
         Parameters:
             - model (OrganizationDetail): Model to convert into an entity
 
         Returns:
             OrganizationEntity: Entity created from model
         """
-        return cls(id=model.id, name=model.name, slug=model.slug, logo=model.logo, short_description=model.short_description, long_description=model.long_description, website=model.website, email=model.email, instagram=model.instagram, linked_in=model.linked_in, youtube=model.youtube, heel_life=model.heel_life)
+        return cls(
+            id=model.id,
+            name=model.name,
+            slug=model.slug,
+            logo=model.logo,
+            short_description=model.short_description,
+            long_description=model.long_description,
+            website=model.website,
+            email=model.email,
+            instagram=model.instagram,
+            linked_in=model.linked_in,
+            youtube=model.youtube,
+            heel_life=model.heel_life,
+        )
 
     def to_model(self) -> OrganizationDetail:
         """
         Converts a `OrganizationEntity` object into a `OrganizationDetail`
-        
+
         Returns:
             OrganizationDetail: `OrganizationDetail` object from the entity
         """
-        return OrganizationDetail(id=self.id, 
-                            name=self.name, 
-                            slug=self.slug,
-                            logo=self.logo, 
-                            short_description=self.short_description, 
-                            long_description=self.long_description, 
-                            website=self.website, 
-                            email=self.email, 
-                            instagram=self.instagram, 
-                            linked_in=self.linked_in, 
-                            youtube=self.youtube, 
-                            heel_life=self.heel_life, 
-                            events=[event.to_model() for event in self.events],
-                            users=[user.to_summary() for user in self.users],
-                            user_associations=[association.to_model() for association in self.user_associations])
-    
+        return OrganizationDetail(
+            id=self.id,
+            name=self.name,
+            slug=self.slug,
+            logo=self.logo,
+            short_description=self.short_description,
+            long_description=self.long_description,
+            website=self.website,
+            email=self.email,
+            instagram=self.instagram,
+            linked_in=self.linked_in,
+            youtube=self.youtube,
+            heel_life=self.heel_life,
+            events=[event.to_model() for event in self.events],
+            users=[user.to_summary() for user in self.users],
+            user_associations=[
+                association.to_model() for association in self.user_associations
+            ],
+        )
+
     def to_summary(self) -> Organization:
         """
         Converts a `OrganizationEntity` object into a `Organization`
-        
+
         Returns:
             OrganizationDetail: `Organization` object from the entity
         """
 
-        return Organization(id=self.id, 
-                            name=self.name, 
-                            slug=self.slug,
-                            logo=self.logo, 
-                            short_description=self.short_description, 
-                            long_description=self.long_description, 
-                            website=self.website, 
-                            email=self.email, 
-                            instagram=self.instagram, 
-                            linked_in=self.linked_in, 
-                            youtube=self.youtube, 
-                            heel_life=self.heel_life)
+        return Organization(
+            id=self.id,
+            name=self.name,
+            slug=self.slug,
+            logo=self.logo,
+            short_description=self.short_description,
+            long_description=self.long_description,
+            website=self.website,
+            email=self.email,
+            instagram=self.instagram,
+            linked_in=self.linked_in,
+            youtube=self.youtube,
+            heel_life=self.heel_life,
+        )

@@ -9,46 +9,44 @@ from .user_role_table import user_role_table
 from ..models import User, UserDetails
 
 
-__authors__ = ['Kris Jordan']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 
 class UserEntity(EntityBase):
     """Entity for Users in the database."""
 
-    __tablename__ = 'user'
+    __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     pid: Mapped[int] = mapped_column(Integer, unique=True, index=True)
     onyen: Mapped[str] = mapped_column(String(32), unique=True, index=True)
     email: Mapped[str] = mapped_column(
-        String(32), unique=True, index=True, nullable=False, default=''
+        String(32), unique=True, index=True, nullable=False, default=""
     )
-    first_name: Mapped[str] = mapped_column(
-        String(64), nullable=False, default='')
-    last_name: Mapped[str] = mapped_column(
-        String(64), nullable=False, default='')
-    pronouns: Mapped[str] = mapped_column(
-        String(32), nullable=False, default='')
-    github: Mapped[str] = mapped_column(
-        String(32), nullable=False, default='')
-    github_id: Mapped[int] = mapped_column(
-        Integer, nullable=True)
-    github_avatar: Mapped[str] = mapped_column(
-        String(), nullable=True)
+    first_name: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    last_name: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    pronouns: Mapped[str] = mapped_column(String(32), nullable=False, default="")
+    github: Mapped[str] = mapped_column(String(32), nullable=False, default="")
+    github_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    github_avatar: Mapped[str] = mapped_column(String(), nullable=True)
 
-    roles: Mapped[list['RoleEntity']] = relationship(
-        secondary=user_role_table, back_populates='users')
-    permissions: Mapped['PermissionEntity'] = relationship(
-        back_populates='user')
+    roles: Mapped[list["RoleEntity"]] = relationship(
+        secondary=user_role_table, back_populates="users"
+    )
+    permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
 
     # Bi-Directional Relationship Fields
-    events: Mapped[list["EventEntity"]] = relationship(secondary="registrations", back_populates="users")
-    event_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="user")
+    events: Mapped[list["EventEntity"]] = relationship(
+        secondary="registrations", back_populates="users"
+    )
+    # event_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="user")
 
-    organizations: Mapped[list["OrganizationEntity"]] = relationship(secondary="org_role", back_populates="users")
-    organization_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="user")
+    organizations: Mapped[list["OrganizationEntity"]] = relationship(
+        secondary="org_role", back_populates="users"
+    )
+    # organization_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="user")
 
     @classmethod
     def from_model(cls, model: User) -> Self:
@@ -89,9 +87,15 @@ class UserEntity(EntityBase):
             github_avatar=self.github_avatar,
             pronouns=self.pronouns,
             events=[event.to_summary() for event in self.events],
-            event_associations=[association.to_model() for association in self.event_associations],
-            organizations=[organization.to_summary() for organization in self.organizations],
-            organization_associations=[association.to_model() for association in self.organization_associations]
+            # event_associations=[
+            #     association.to_model() for association in self.event_associations
+            # ],
+            organizations=[
+                organization.to_summary() for organization in self.organizations
+            ],
+            # organization_associations=[
+            #     association.to_model() for association in self.organization_associations
+            # ],
         )
 
     def update(self, model: User) -> None:
@@ -113,7 +117,7 @@ class UserEntity(EntityBase):
     def to_summary(self) -> UserDetails:
         """
         Converts a `UserEntity` object into a `UserSummary`
-        
+
         Returns:
             User: `UserSummary` object from the entity
         """
@@ -124,6 +128,5 @@ class UserEntity(EntityBase):
             email=self.email,
             first_name=self.first_name,
             last_name=self.last_name,
-            pronouns=self.pronouns
+            pronouns=self.pronouns,
         )
-    
