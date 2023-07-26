@@ -8,27 +8,10 @@ from ...models import User, PaginationParams
 from ...services import UserService, PermissionService
 
 from .core_data import setup_insert_data_fixture
+from .fixtures import user_svc, user_svc_integration, permission_svc_mock
 
 from .user_data import root, ambassador, user
 from .permission_data import ambassador_permission
-
-
-@pytest.fixture()
-def permission_svc_mock():
-    """This mocks the PermissionService class to avoid testing its implementation here."""
-    return create_autospec(PermissionService)
-
-
-@pytest.fixture()
-def user_svc(session: Session, permission_svc_mock: PermissionService):
-    """This fixture is used to test the UserService class with a mocked PermissionService."""
-    return UserService(session, permission_svc_mock)
-
-
-@pytest.fixture()
-def user_svc_integration(session: Session):
-    """This fixture is used to test the UserService class with a real PermissionService."""
-    return UserService(session, PermissionService(session))
 
 
 def test_get(user_svc_integration: UserService):

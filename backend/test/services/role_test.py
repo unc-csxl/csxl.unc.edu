@@ -8,24 +8,11 @@ from ...models import Permission
 from ...services import RoleService, PermissionService
 
 from .core_data import setup_insert_data_fixture
+from .fixtures import role_svc, permission_svc_mock
 
 from .role_data import root_role, ambassador_role
 from .user_data import root, ambassador, user
 from .permission_data import ambassador_permission
-
-
-@pytest.fixture()
-def permission_svc_mock():
-    """This mocks the PermissionService class to avoid testing its implementation here."""
-    return create_autospec(PermissionService)
-
-
-@pytest.fixture()
-def role_svc(session: Session, permission_svc_mock: PermissionService):
-    return RoleService(session, permission_svc_mock)
-
-
-# Tests of RoleService
 
 
 def test_list(role_svc: RoleService):
