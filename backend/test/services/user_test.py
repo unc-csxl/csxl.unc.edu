@@ -1,15 +1,14 @@
 """Tests for the UserService class."""
 
-from unittest.mock import create_autospec
-import pytest
-from sqlalchemy.orm import Session
-from sqlalchemy import text
+# Tested Dependencies
 from ...models import User, PaginationParams
 from ...services import UserService, PermissionService
 
+# Data Setup and Injected Service Fixtures
 from .core_data import setup_insert_data_fixture
 from .fixtures import user_svc, user_svc_integration, permission_svc_mock
 
+# Data Models for Fake Data Inserted in Setup
 from .user_data import root, ambassador, user
 from .permission_data import ambassador_permission
 
