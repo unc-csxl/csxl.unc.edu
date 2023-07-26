@@ -1,143 +1,161 @@
+"""Tests for the OrgRoleService class."""
+
+# PyTest
 import pytest
+from unittest.mock import create_autospec
 
-from sqlalchemy.orm import Session
-from ...models import OrgRole, Organization, UserDetails
-from ...services import OrgRoleService, OrganizationService, UserService
+# Tested Dependencies
+from ...models import OrgRoleDetail
+from ...services import OrgRoleService
 
+# Injected Service Fixtures
+from .fixtures import org_role_svc_integration
 
-role1 = OrgRole(user_id=1, org_id=1, membership_type=1)
+# Explicitly import Data Fixture to load entities in database
+from .core_data import setup_insert_data_fixture
 
-role2 = OrgRole(user_id=1, org_id=1, membership_type=0)
+# Data Models for Fake Data Inserted in Setup
+from .org_role_data import org_roles, to_add, to_star, cads_leader_role
 
-role1_updated = OrgRole(id=1, user_id=1, org_id=1, membership_type=1)
+# from .event_data import events, cads_event, time_range, to_add, new_cads
 
-org1 = Organization(
-    name="test",
-    logo="logo",
-    slug="HackNC",
-    short_description="description",
-    long_description="description",
-    website="website",
-    email="email",
-    instagram="instagram",
-    linked_in="linkedin",
-    youtube="youtube",
-    heel_life="heellife",
-)
+from .organization_data import cads
 
-root = UserDetails(
-    pid=999999999,
-    onyen="root",
-    first_name="Super",
-    last_name="User",
-    email="root@cs.unc.edu",
-    pronouns="they / them",
-)
+from .user_data import root, user, cads_leader, ambassador
+
+__authors__ = ["Ajay Gandecha"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
+# Test Functions
+
+# Test `OrgRoleService.all()`
 
 
-@pytest.fixture()
-def org_role_service(session: Session):
-    return OrgRoleService(session)
+def test_get_all(org_role_svc_integration: OrgRoleService):
+    """Test that all org roles can be retrieved."""
+    fetched_org_roles = org_role_svc_integration.all()
+    assert fetched_org_roles is not None
+    assert len(fetched_org_roles) == len(org_roles)
+    assert isinstance(fetched_org_roles[0], OrgRoleDetail)
 
 
-@pytest.fixture()
-def organization(session: Session):
-    return OrganizationService(session)
+# Test `OrgRoleService.get_from_userid()`
 
 
-@pytest.fixture()
-def user(session: Session):
-    return UserService(session)
+def test_get_from_userid(org_role_svc_integration: OrgRoleService):
+    """Test that org roles can be retrieved based on a given user ID."""
+    fetched_org_roles = org_role_svc_integration.get_from_userid(cads_leader.id)
+    assert fetched_org_roles is not None
+    assert len(fetched_org_roles) == 1
+    assert isinstance(fetched_org_roles[0], OrgRoleDetail)
+    assert fetched_org_roles[0].user_id == cads_leader.id
 
 
-def test_no_org_roles(org_role_service: OrgRoleService):
-    """Tests that the test session initially contains no org roles"""
-    assert len(org_role_service.all()) is 0
+# Test `OrgRoleService.get_from_orgid()`
 
 
-def test_create_org_role(
-    org_role_service: OrgRoleService,
-    organization: OrganizationService,
-    user: UserService,
-):
-    """Tests that an organization role can be added using create()"""
-    organization.create(org1)
-    user.save(root)
-    org_role = org_role_service.create(role1)
-    assert org_role.user_id == role1.user_id
+def test_get_from_orgid(org_role_svc_integration: OrgRoleService):
+    """Test that org roles can be retrieved based on a given org ID."""
+    fetched_org_roles = org_role_svc_integration.get_from_orgid(cads.id)
+    assert fetched_org_roles is not None
+    assert len(fetched_org_roles) == 1
+    assert isinstance(fetched_org_roles[0], OrgRoleDetail)
+    assert fetched_org_roles[0].org_id == cads.id
 
 
-def test_get_all_org_roles(
-    org_role_service: OrgRoleService,
-    organization: OrganizationService,
-    user: UserService,
-):
-    """Tests that all org roles can be retrieved using all()"""
-    organization.create(org1)
-    user.save(root)
-    org_role_service.create(role1)
-    assert len(org_role_service.all()) is 1
-    org_role_service.create(role2)
-    assert len(org_role_service.all()) is 2
-    assert org_role_service.all()[1].membership_type is 0
+# Test `OrgRoleService.create()`
 
 
-def test_get_from_userid(
-    org_role_service: OrgRoleService,
-    organization: OrganizationService,
-    user: UserService,
-):
-    """Tests that all org role entries for a user can be retrieved by its id using get_from_userid()"""
-    organization.create(org1)
-    user.save(root)
-    org_role_service.create(role1)
-    org_role_service.create(role2)
-    assert len(org_role_service.get_from_userid(1)) == 2
+def test_create_enforces_permission(org_role_svc_integration: OrgRoleService):
+    """Test that the service enforces permissions when attempting to create an org role."""
 
-
-def test_get_from_orgid(
-    org_role_service: OrgRoleService,
-    organization: OrganizationService,
-    user: UserService,
-):
-    """Tests that all org role entries for an organization can be retrieved by the org id"""
-    organization.create(org1)
-    user.save(root)
-    org_role_service.create(role1)
-    org_role_service.create(role2)
-    assert len(org_role_service.get_from_orgid(1)) == 2
-
-
-def test_delete(
-    org_role_service: OrgRoleService,
-    organization: OrganizationService,
-    user: UserService,
-):
-    """Tests that you can delete an org role entry"""
-    organization.create(org1)
-    user.save(root)
-    org_role_service.create(role1)
-    assert len(org_role_service.all()) is 1
-    org_role_service.delete(1)
-    assert len(org_role_service.all()) is 0
-
-
-def test_update(
-    org_role_service: OrgRoleService,
-    organization: OrganizationService,
-    user: UserService,
-):
-    """Tests tha an existing org role entry can be updated by calling create() with an updated role"""
-    organization.create(org1)
-    user.save(root)
-    org_role = org_role_service.create(role1)
-    assert (
-        org_role_service.get_from_userid(1)[0].membership_type
-        == org_role.membership_type
+    # Setup to test permission enforcement on the PermissionService.
+    org_role_svc_integration._permission = create_autospec(
+        org_role_svc_integration._permission
     )
-    new_role = org_role_service.create(role1_updated)
-    assert (
-        org_role_service.get_from_userid(1)[0].membership_type
-        == new_role.membership_type
-        == role1_updated.membership_type
+
+    # Test permissions with root user (admin permission)
+    org_role_svc_integration.create(root, to_add)
+    org_role_svc_integration._permission.enforce.assert_called_with(
+        root, "admin.create_orgrole", "orgroles"
     )
+
+
+def test_create_org_role_as_root_for_other_user(
+    org_role_svc_integration: OrgRoleService,
+):
+    """Test that the root user is able to create new org roles for any user."""
+    created_org_role = org_role_svc_integration.create(root, to_add)
+    assert created_org_role is not None
+    assert created_org_role.id is not None
+
+
+def test_create_organization_as_user_for_other_user(
+    org_role_svc_integration: OrgRoleService,
+):
+    """Test that any user is *unable* to create new org roles for users other than themself."""
+    try:
+        org_role_svc_integration.create(user, to_add)
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because a `UserPermissionError` was thrown as expected
+
+
+def test_create_org_role_as_user_for_self_star(
+    org_role_svc_integration: OrgRoleService,
+):
+    """Test that the root user is able to create new org roles for themself with val of 0 (starring an org)."""
+    created_org_role = org_role_svc_integration.create(user, to_star)
+    assert created_org_role is not None
+    assert created_org_role.id is not None
+
+
+def test_create_org_role_as_user_for_self_higher_than_star(
+    org_role_svc_integration: OrgRoleService,
+):
+    """Test that the root user is *unable* to create new org roles for themself with val of 1+ (higher than star)."""
+    try:
+        org_role_svc_integration.create(ambassador, to_add)
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because a `UserPermissionError` was thrown as expected
+
+
+# Test `OrgRoleService.delete()`
+
+
+def test_delete_enforces_permission(org_role_svc_integration: OrgRoleService):
+    """Test that the service enforces permissions when attempting to delete an org role."""
+
+    # Setup to test permission enforcement on the PermissionService.
+    org_role_svc_integration._permission = create_autospec(
+        org_role_svc_integration._permission
+    )
+
+    # Test permissions with root user (admin permission)
+    org_role_svc_integration.delete(root, cads_leader_role.id)
+    org_role_svc_integration._permission.enforce.assert_called_with(
+        root, "admin.delete_orgrole", f"orgroles/{cads_leader_role.id}"
+    )
+
+
+def test_delete_org_role_as_root(org_role_svc_integration: OrgRoleService):
+    """Test that the root user is able to delete org roles."""
+    org_role_svc_integration.delete(root, cads_leader_role.id)
+
+    try:
+        org_role_svc_integration.get_from_id(cads.id)
+        org_role_svc_integration.get_from_name(cads.name)
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because an error was thrown when we found no org role
+
+
+def test_delete_org_role_as_user(org_role_svc_integration: OrgRoleService):
+    """Test that any user is *unable* to delete org roles."""
+    try:
+        org_role_svc_integration.delete(user, cads_leader_role.id)
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because a `UserPermissionError` was thrown as expected

@@ -45,7 +45,16 @@ user = User(
     last_name="Student",
 )
 
-users = [root, ambassador, user]
+cads_leader = User(
+    id=4,
+    pid=555555555,
+    onyen="cadsleader",
+    email="cadsleader@unc.edu",
+    first_name="Larry",
+    last_name="Leader",
+)
+
+users = [root, ambassador, user, cads_leader]
 
 roles_users = {
     role_data.root_role.id: [root],

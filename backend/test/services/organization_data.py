@@ -93,17 +93,6 @@ new_cads = Organization(
     heel_life="https://heellife.unc.edu/organization/carolinadatascience",
 )
 
-cads_leader = User(
-    id=4,
-    pid=555555555,
-    onyen="cadsleader",
-    email="cadsleader@unc.edu",
-    first_name="Larry",
-    last_name="Leader",
-)
-
-cads_leader_role = OrgRole(user_id=4, org_id=1, membership_type=2)
-
 # Data Functions
 
 
@@ -119,10 +108,6 @@ def insert_fake_data(session: Session):
         session.add(entity)
         entities.append(entity)
 
-    # Create entities for test user data to support test organization data
-    session.add(UserEntity.from_model(cads_leader))
-    session.add(OrgRoleEntity.from_model(cads_leader_role))
-    print(OrgRoleEntity.from_model(cads_leader_role))
     # Reset table IDs to prevent ID conflicts
     reset_table_id_seq(
         session, OrganizationEntity, OrganizationEntity.id, len(organizations) + 1

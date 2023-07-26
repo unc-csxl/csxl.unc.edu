@@ -11,6 +11,7 @@ from . import role_data
 from . import permission_data
 from . import organization_data
 from . import event_data
+from . import org_role_data
 
 
 @pytest.fixture(autouse=True)
@@ -20,5 +21,6 @@ def setup_insert_data_fixture(session: Session):
     permission_data.insert_fake_data(session)
     organization_data.insert_fake_data(session)
     event_data.insert_fake_data(session)
+    org_role_data.insert_fake_data(session)
     session.commit()
     yield

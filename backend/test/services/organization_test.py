@@ -19,11 +19,10 @@ from .organization_data import (
     organizations,
     to_add,
     organization_names,
-    cads_leader,
     cads,
     new_cads,
 )
-from .user_data import root, user
+from .user_data import root, user, cads_leader
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

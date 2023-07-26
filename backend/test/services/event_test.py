@@ -17,9 +17,9 @@ from .core_data import setup_insert_data_fixture
 # Data Models for Fake Data Inserted in Setup
 from .event_data import events, cads_event, time_range, to_add, new_cads
 
-from .organization_data import cads_leader, cads
+from .organization_data import cads
 
-from .user_data import user
+from .user_data import user, cads_leader
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
