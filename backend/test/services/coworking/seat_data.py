@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ....entities.coworking import SeatEntity
 from ....models.coworking import SeatDetails
 
+from ..reset_table_id_seq import reset_table_id_seq
 from .room_data import the_xl
 
 __authors__ = ["Kris Jordan"]
@@ -117,6 +118,7 @@ def insert_fake_data(session: Session):
     for seat in seats:
         entity = SeatEntity.from_model(seat)
         session.add(entity)
+    reset_table_id_seq(session, SeatEntity, SeatEntity.id, len(seats) + 1)
 
 
 @pytest.fixture(autouse=True)

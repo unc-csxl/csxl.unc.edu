@@ -8,6 +8,7 @@ from ....models.coworking import Reservation, ReservationState, ReservationReque
 from .times import *
 
 from ..core_data import user_data
+from ..reset_table_id_seq import reset_table_id_seq
 from . import seat_data
 from . import operating_hours_data
 
@@ -97,10 +98,9 @@ def insert_fake_data(session: Session):
     for reservation in reservations:
         entity = ReservationEntity.from_model(reservation, session)
         session.add(entity)
-    session.execute(
-        text(
-            f"ALTER SEQUENCE {ReservationEntity.__table__}_id_seq RESTART WITH {len(reservations) + 1}"
-        )
+
+    reset_table_id_seq(
+        session, ReservationEntity, ReservationEntity.id, len(reservations) + 1
     )
 
 

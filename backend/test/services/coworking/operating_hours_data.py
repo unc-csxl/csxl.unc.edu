@@ -13,6 +13,7 @@ import pytest
 from sqlalchemy.orm import Session
 from ....entities.coworking import OperatingHoursEntity
 from ....models.coworking import OperatingHours
+from ..reset_table_id_seq import reset_table_id_seq
 from .times import *
 
 __authors__ = ["Kris Jordan"]
@@ -33,6 +34,10 @@ def insert_fake_data(session: Session):
     for operating_hours in all:
         entity = OperatingHoursEntity.from_model(operating_hours)
         session.add(entity)
+
+    reset_table_id_seq(
+        session, OperatingHoursEntity, OperatingHoursEntity.id, len(all) + 1
+    )
 
 
 @pytest.fixture(autouse=True)

@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.orm import Session
 from ....entities.coworking import RoomEntity
 from ....models.coworking import RoomDetails
+from ..reset_table_id_seq import reset_table_id_seq
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -67,6 +68,8 @@ def insert_fake_data(session: Session):
     for room in rooms:
         entity = RoomEntity.from_model(room)
         session.add(entity)
+
+    # Don't need to reset room sequence because its ID is a string
 
 
 @pytest.fixture(autouse=True)
