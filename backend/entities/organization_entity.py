@@ -48,11 +48,11 @@ class OrganizationEntity(EntityBase):
     )
 
     users: Mapped[list["UserEntity"]] = relationship(
-        secondary="org_role", back_populates="organizations"
+        secondary="org_role", back_populates="organizations", viewonly=True
     )
-    # user_associations: Mapped[list["OrgRoleEntity"]] = relationship(
-    #     back_populates="organization", cascade="all,delete"
-    # )
+    user_associations: Mapped[list["OrgRoleEntity"]] = relationship(
+        back_populates="organization", cascade="all,delete"
+    )
 
     @classmethod
     def from_model(cls, model: OrganizationDetail) -> Self:

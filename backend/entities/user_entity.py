@@ -44,9 +44,11 @@ class UserEntity(EntityBase):
     # event_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="user")
 
     organizations: Mapped[list["OrganizationEntity"]] = relationship(
-        secondary="org_role", back_populates="users"
+        secondary="org_role", back_populates="users", viewonly=True
     )
-    # organization_associations: Mapped[list["OrgRoleEntity"]] = relationship(back_populates="user")
+    organization_associations: Mapped[list["OrgRoleEntity"]] = relationship(
+        back_populates="user"
+    )
 
     @classmethod
     def from_model(cls, model: User) -> Self:

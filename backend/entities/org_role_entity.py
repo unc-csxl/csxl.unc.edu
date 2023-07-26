@@ -25,12 +25,12 @@ class OrgRoleEntity(EntityBase):
     membership_type: Mapped[int] = mapped_column(Integer)
 
     # Bi-Directional Relationship Fields
-    # user: Mapped["UserEntity"] = relationship(
-    #     back_populates="organization_associations"
-    # )
-    # organization: Mapped["OrganizationEntity"] = relationship(
-    #     back_populates="user_associations"
-    # )
+    user: Mapped["UserEntity"] = relationship(
+        back_populates="organization_associations"
+    )
+    organization: Mapped["OrganizationEntity"] = relationship(
+        back_populates="user_associations"
+    )
 
     @classmethod
     def from_model(cls, model: OrgRoleDetail) -> Self:
