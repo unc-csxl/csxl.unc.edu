@@ -13,7 +13,6 @@ from .fixtures import organization_svc_integration
 
 # Explicitly import Data Fixture to load entities in database
 from .core_data import setup_insert_data_fixture
-from .organization_data import fake_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
 from .organization_data import (
@@ -32,7 +31,7 @@ __license__ = "MIT"
 
 # Test Functions
 
-# Test `OrganizationService.get()`
+# Test `OrganizationService.all()`
 
 
 def test_get_all(organization_svc_integration: OrganizationService):
@@ -47,7 +46,7 @@ def test_get_all(organization_svc_integration: OrganizationService):
 
 
 def test_get_from_id(organization_svc_integration: OrganizationService):
-    """Test that organizations can be retrieved based on their name."""
+    """Test that organizations can be retrieved based on their ID."""
     fetched_organization = organization_svc_integration.get_from_id(cads.id)
     assert fetched_organization is not None
     assert isinstance(fetched_organization, OrganizationDetail)

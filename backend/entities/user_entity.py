@@ -41,7 +41,9 @@ class UserEntity(EntityBase):
     events: Mapped[list["EventEntity"]] = relationship(
         secondary="registrations", back_populates="users"
     )
-    # event_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="user")
+    event_associations: Mapped[list["RegistrationEntity"]] = relationship(
+        back_populates="user"
+    )
 
     organizations: Mapped[list["OrganizationEntity"]] = relationship(
         secondary="org_role", back_populates="users", viewonly=True
@@ -89,15 +91,15 @@ class UserEntity(EntityBase):
             github_avatar=self.github_avatar,
             pronouns=self.pronouns,
             events=[event.to_summary() for event in self.events],
-            # event_associations=[
-            #     association.to_model() for association in self.event_associations
-            # ],
+            event_associations=[
+                association.to_model() for association in self.event_associations
+            ],
             organizations=[
                 organization.to_summary() for organization in self.organizations
             ],
-            # organization_associations=[
-            #     association.to_model() for association in self.organization_associations
-            # ],
+            organization_associations=[
+                association.to_model() for association in self.organization_associations
+            ],
         )
 
     def update(self, model: User) -> None:

@@ -26,8 +26,8 @@ class RegistrationEntity(EntityBase):
     status: Mapped[int] = mapped_column(Integer)
 
     # Bi-Directional Relationship Fields
-    # event: Mapped['EventEntity'] = relationship(back_populates="user_associations")
-    # user: Mapped['UserEntity'] = relationship(back_populates="event_associations")
+    event: Mapped["EventEntity"] = relationship(back_populates="user_associations")
+    user: Mapped["UserEntity"] = relationship(back_populates="event_associations")
 
     @classmethod
     def from_model(cls, model: RegistrationDetail) -> Self:

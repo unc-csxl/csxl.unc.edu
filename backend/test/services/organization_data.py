@@ -1,7 +1,4 @@
-"""Mock data for organizations.
-
-Three users are setup for testing and development purposes:
-"""
+"""Mock data for organizations."""
 
 import pytest
 from sqlalchemy.orm import Session
@@ -36,6 +33,7 @@ cads = Organization(
 )
 
 cssg = Organization(
+    id=2,
     name="CS+Social Good",
     slug="CSSG",
     logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cssg.png",
@@ -50,6 +48,7 @@ cssg = Organization(
 )
 
 appteam = OrganizationEntity(
+    id=3,
     name="App Team Carolina",
     slug="App Team",
     logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/appteam.jpg",

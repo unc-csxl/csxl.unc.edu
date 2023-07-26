@@ -9,6 +9,7 @@ from ...services import (
     RoleService,
     OrganizationService,
     OrgRoleService,
+    EventService,
 )
 
 __authors__ = ["Kris Jordan"]
@@ -50,3 +51,9 @@ def organization_svc_integration(session: Session):
     return OrganizationService(
         session, PermissionService(session), OrgRoleService(session)
     )
+
+
+@pytest.fixture()
+def event_svc_integration(session: Session):
+    """This fixture is used to test the EventService class with a real PermissionService."""
+    return EventService(session, OrgRoleService(session))

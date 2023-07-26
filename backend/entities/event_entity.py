@@ -40,7 +40,9 @@ class EventEntity(EntityBase):
     users: Mapped[list["UserEntity"]] = relationship(
         secondary="registrations", back_populates="events"
     )
-    # user_associations: Mapped[list["RegistrationEntity"]] = relationship(back_populates="event",cascade="all,delete")
+    user_associations: Mapped[list["RegistrationEntity"]] = relationship(
+        back_populates="event", cascade="all,delete"
+    )
 
     @classmethod
     def from_model(cls, model: EventDetail) -> Self:
