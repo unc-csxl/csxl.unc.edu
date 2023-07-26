@@ -21,8 +21,8 @@ def permission_svc_mock():
 
 
 @pytest.fixture()
-def role_svc(test_session: Session, permission_svc_mock: PermissionService):
-    return RoleService(test_session, permission_svc_mock)
+def role_svc(session: Session, permission_svc_mock: PermissionService):
+    return RoleService(session, permission_svc_mock)
 
 
 # Tests of RoleService

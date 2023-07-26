@@ -8,6 +8,7 @@ from sqlalchemy.exc import OperationalError, ProgrammingError
 
 from ...database import _engine_str
 from ...env import getenv
+from ... import entities
 
 POSTGRES_DATABASE = f'{getenv("POSTGRES_DATABASE")}_test'
 POSTGRES_USER = getenv("POSTGRES_USER")
@@ -39,13 +40,11 @@ def reset_database():
 @pytest.fixture(scope="session")
 def test_engine() -> Engine:
     reset_database()
+    return create_engine(_engine_str(POSTGRES_DATABASE))
 
 
 @pytest.fixture(scope="function")
-def test_session(test_engine: Engine):
-    from ... import entities
-
-    test_engine = create_engine(_engine_str(POSTGRES_DATABASE))
+def session(test_engine: Engine):
     entities.EntityBase.metadata.drop_all(test_engine)
     entities.EntityBase.metadata.create_all(test_engine)
     session = Session(test_engine)

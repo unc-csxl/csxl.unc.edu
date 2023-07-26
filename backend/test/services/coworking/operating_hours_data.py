@@ -27,6 +27,7 @@ future = OperatingHours(
 tomorrow = OperatingHours(id=3, start=AN_HOUR_AGO + ONE_DAY, end=IN_TWO_HOURS + ONE_DAY)
 all = [today, future, tomorrow]
 
+
 def insert_fake_data(session: Session):
     """Fake data insert factored out of the fixture for use in dev reset scripts."""
     for operating_hours in all:
@@ -35,6 +36,6 @@ def insert_fake_data(session: Session):
 
 
 @pytest.fixture(autouse=True)
-def fake_data_fixture(test_session: Session):
-    insert_fake_data(test_session)
-    test_session.commit()
+def fake_data_fixture(session: Session):
+    insert_fake_data(session)
+    session.commit()

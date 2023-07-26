@@ -63,13 +63,13 @@ pair_a = RoomDetails(
 rooms = [the_xl, group_a, group_b, group_c, pair_a]
 
 
-def insert_fake_data(test_session: Session):
+def insert_fake_data(session: Session):
     for room in rooms:
         entity = RoomEntity.from_model(room)
-        test_session.add(entity)
+        session.add(entity)
 
 
 @pytest.fixture(autouse=True)
-def fake_data_fixture(test_session: Session):
-    insert_fake_data(test_session)
-    test_session.commit()
+def fake_data_fixture(session: Session):
+    insert_fake_data(session)
+    session.commit()

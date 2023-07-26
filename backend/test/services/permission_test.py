@@ -14,8 +14,8 @@ from .permission_data import ambassador_permission
 
 
 @pytest.fixture()
-def permission(test_session: Session):
-    return PermissionService(test_session)
+def permission(session: Session):
+    return PermissionService(session)
 
 
 def test_no_permission(permission: PermissionService):

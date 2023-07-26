@@ -112,13 +112,14 @@ reservable_seats = [seat for seat in seats if seat.reservable]
 
 unreservable_seats = [seat for seat in seats if not seat.reservable]
 
-def insert_fake_data(test_session: Session):
+
+def insert_fake_data(session: Session):
     for seat in seats:
         entity = SeatEntity.from_model(seat)
-        test_session.add(entity)
+        session.add(entity)
 
 
 @pytest.fixture(autouse=True)
-def fake_data_fixture(test_session: Session):
-    insert_fake_data(test_session)
-    test_session.commit()
+def fake_data_fixture(session: Session):
+    insert_fake_data(session)
+    session.commit()

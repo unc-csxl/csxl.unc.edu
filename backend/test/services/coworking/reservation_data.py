@@ -93,11 +93,11 @@ def test_request(overrides=None) -> ReservationRequest:
     return ReservationRequest(**reservation_data)
 
 
-def insert_fake_data(test_session: Session):
+def insert_fake_data(session: Session):
     for reservation in reservations:
-        entity = ReservationEntity.from_model(reservation, test_session)
-        test_session.add(entity)
-    test_session.execute(
+        entity = ReservationEntity.from_model(reservation, session)
+        session.add(entity)
+    session.execute(
         text(
             f"ALTER SEQUENCE {ReservationEntity.__table__}_id_seq RESTART WITH {len(reservations) + 1}"
         )
@@ -105,6 +105,6 @@ def insert_fake_data(test_session: Session):
 
 
 @pytest.fixture(autouse=True)
-def fake_data_fixture(test_session: Session):
-    insert_fake_data(test_session)
-    test_session.commit()
+def fake_data_fixture(session: Session):
+    insert_fake_data(session)
+    session.commit()

@@ -19,27 +19,27 @@ __license__ = "MIT"
 
 
 @pytest.fixture()
-def permission_svc(test_session: Session):
+def permission_svc(session: Session):
     """PermissionService fixture."""
-    return PermissionService(test_session)
+    return PermissionService(session)
 
 
 @pytest.fixture()
-def operating_hours_svc(test_session: Session):
+def operating_hours_svc(session: Session):
     """OperatingHoursService fixture."""
-    return OperatingHoursService(test_session)
+    return OperatingHoursService(session)
 
 
 @pytest.fixture()
-def room_svc(test_session: Session):
+def room_svc(session: Session):
     """RoomService fixture."""
-    return RoomService(test_session)
+    return RoomService(session)
 
 
 @pytest.fixture()
-def seat_svc(test_session: Session):
+def seat_svc(session: Session):
     """SeatService fixture."""
-    return SeatService(test_session)
+    return SeatService(session)
 
 
 @pytest.fixture()
@@ -50,7 +50,7 @@ def policy_svc():
 
 @pytest.fixture()
 def reservation_svc(
-    test_session: Session,
+    session: Session,
     policy_svc: PolicyService,
     permission_svc: PermissionService,
     operating_hours_svc: OperatingHoursService,
@@ -58,7 +58,7 @@ def reservation_svc(
 ):
     """ReservationService fixture."""
     return ReservationService(
-        test_session, permission_svc, policy_svc, operating_hours_svc, seat_svc
+        session, permission_svc, policy_svc, operating_hours_svc, seat_svc
     )
 
 

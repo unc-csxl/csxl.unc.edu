@@ -20,15 +20,15 @@ def permission_svc_mock():
 
 
 @pytest.fixture()
-def user_svc(test_session: Session, permission_svc_mock: PermissionService):
+def user_svc(session: Session, permission_svc_mock: PermissionService):
     """This fixture is used to test the UserService class with a mocked PermissionService."""
-    return UserService(test_session, permission_svc_mock)
+    return UserService(session, permission_svc_mock)
 
 
 @pytest.fixture()
-def user_svc_integration(test_session: Session):
+def user_svc_integration(session: Session):
     """This fixture is used to test the UserService class with a real PermissionService."""
-    return UserService(test_session, PermissionService(test_session))
+    return UserService(session, PermissionService(session))
 
 
 def test_get(user_svc_integration: UserService):

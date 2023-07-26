@@ -6,57 +6,64 @@ from ...services import OrganizationService
 
 # Mock Models
 org1 = Organization(
-    name="test", 
+    name="test",
     slug="ABC",
-    logo="logo", 
-    short_description="description", 
-    long_description="description", 
-    website="website", 
-    email="email", 
-    instagram="instagram", 
-    linked_in="linkedin", 
-    youtube="youtube", 
-    heel_life="heellife")
+    logo="logo",
+    short_description="description",
+    long_description="description",
+    website="website",
+    email="email",
+    instagram="instagram",
+    linked_in="linkedin",
+    youtube="youtube",
+    heel_life="heellife",
+)
 
 org2 = Organization(
-    name="test", 
+    name="test",
     slug="CBA",
-    logo="logo", 
-    short_description="description", 
-    long_description="description", 
-    website="website", 
-    email="email", 
-    instagram="instagram", 
-    linked_in="linkedin", 
-    youtube="youtube", 
-    heel_life="heellife")
+    logo="logo",
+    short_description="description",
+    long_description="description",
+    website="website",
+    email="email",
+    instagram="instagram",
+    linked_in="linkedin",
+    youtube="youtube",
+    heel_life="heellife",
+)
 
 org1_updated = Organization(
-    id=1, 
-    name="new org", 
+    id=1,
+    name="new org",
     slug="ABC",
-    logo="logo", 
-    short_description="description", 
-    long_description="description", 
-    website="website", 
-    email="email", 
-    instagram="instagram", 
-    linked_in="linkedin", 
-    youtube="youtube", 
-    heel_life="heellife")
+    logo="logo",
+    short_description="description",
+    long_description="description",
+    website="website",
+    email="email",
+    instagram="instagram",
+    linked_in="linkedin",
+    youtube="youtube",
+    heel_life="heellife",
+)
+
 
 @pytest.fixture()
-def organization(test_session: Session):
-    return OrganizationService(test_session)
+def organization(session: Session):
+    return OrganizationService(session)
+
 
 def test_no_organizations(organization: OrganizationService):
     """Tests that the test session initially contains no organizations"""
     assert len(organization.all()) is 0
 
+
 def test_create_organization_and_get_by_id(organization: OrganizationService):
     """Tests that an organization can be created and retrieved using get_from_id()"""
     org = organization.create(org1)
     assert organization.get_from_id(1).id == org.id
+
 
 def test_get_all_organizations(organization: OrganizationService):
     """Tests that the all() method returns all created organizations"""
@@ -65,6 +72,7 @@ def test_get_all_organizations(organization: OrganizationService):
     organization.create(org2)
     assert len(organization.all()) is 2
     assert organization.all()[1].id is 2
+
 
 def test_get_by_name(organization: OrganizationService):
     """Tests that an organization can be retrieved by its name using get_from_name()"""

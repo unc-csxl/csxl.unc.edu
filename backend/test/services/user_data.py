@@ -70,7 +70,7 @@ def insert_fake_data(session: Session):
 
 
 @pytest.fixture(autouse=True)
-def fake_data_fixture(test_session: Session):
-    insert_fake_data(test_session)
-    test_session.commit()
+def fake_data_fixture(session: Session):
+    insert_fake_data(session)
+    session.commit()
     yield
