@@ -5,6 +5,10 @@ from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
 from ...services import PermissionService, UserService, RoleService
 
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 @pytest.fixture()
 def permission_svc(session: Session):

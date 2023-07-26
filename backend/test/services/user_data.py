@@ -14,6 +14,10 @@ from ...entities.user_role_table import user_role_table
 from .reset_table_id_seq import reset_table_id_seq
 from . import role_data
 
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 root = User(
     id=1,
     pid=999999999,

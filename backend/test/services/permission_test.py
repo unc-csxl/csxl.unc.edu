@@ -13,6 +13,10 @@ from .role_data import ambassador_role
 from .user_data import root, ambassador, user
 from .permission_data import ambassador_permission
 
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 def test_no_permission(permission_svc: PermissionService):
     """Tests that user initially has no permissions"""
