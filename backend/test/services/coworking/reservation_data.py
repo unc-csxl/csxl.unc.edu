@@ -7,7 +7,7 @@ from ....entities.coworking import ReservationEntity
 from ....models.coworking import Reservation, ReservationState, ReservationRequest
 from .times import *
 
-from . import user_data
+from ..core_data import user_data
 from . import seat_data
 from . import operating_hours_data
 

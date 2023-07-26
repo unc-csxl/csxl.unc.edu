@@ -13,7 +13,13 @@ from ..database import engine
 from ..env import getenv
 from .. import entities
 
-from ..test.services.coworking import room_data, seat_data, reservation_data, operating_hours_data, user_data
+from ..test.services import role_data, user_data, permission_data
+from ..test.services.coworking import (
+    room_data,
+    seat_data,
+    reservation_data,
+    operating_hours_data,
+)
 
 if getenv("MODE") != "development":
     print("This script can only be run in development mode.", file=sys.stderr)
@@ -26,7 +32,9 @@ entities.EntityBase.metadata.create_all(engine)
 
 
 with Session(engine) as session:
+    role_data.insert_fake_data(session)
     user_data.insert_fake_data(session)
+    permission_data.insert_fake_data(session)
     operating_hours_data.insert_fake_data(session)
     room_data.insert_fake_data(session)
     seat_data.insert_fake_data(session)

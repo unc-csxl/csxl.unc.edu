@@ -21,17 +21,17 @@ from .times import *
 # Import the setup_teardown fixture explicitly to load entities in database.
 # The order in which these fixtures run is dependent on their imported alias.
 # Since there are relationship dependencies between the entities, order matters.
-from .user_data import fake_data_fixture as insert_order_0
+from ..core_data import setup_insert_data_fixture as insert_order_0
 from .operating_hours_data import fake_data_fixture as insert_order_1
 from .room_data import fake_data_fixture as insert_order_2
 from .seat_data import fake_data_fixture as insert_order_3
 from .reservation_data import fake_data_fixture as insert_order_4
 
 # Import the fake model data in a namespace for test assertions
+from ..core_data import user_data
 from . import operating_hours_data
 from . import seat_data
 from . import reservation_data
-from . import user_data
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -332,7 +332,8 @@ def test_draft_reservation_has_reservation_conflict(
 ):
     with pytest.raises(ReservationError):
         reservation = reservation_svc.draft_reservation(
-            user_data.user, reservation_data.test_request({"users": [user_data.user]})
+            user_data.user,
+            reservation_data.test_request({"users": [user_data.user]}),
         )
 
 

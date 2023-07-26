@@ -5,7 +5,8 @@ from ....services.coworking.status import StatusService
 from ....models.coworking.availability import SeatAvailability
 from datetime import timedelta
 
-from . import user_data, reservation_data, operating_hours_data
+from ..core_data import user_data
+from . import reservation_data, operating_hours_data
 
 
 def test_status_dispatch(status_svc: StatusService):
