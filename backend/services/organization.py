@@ -10,9 +10,10 @@ from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService, UserPermissionError
 
-__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 class OrganizationService:
     """Service that performs all of the actions on the `Organization` table"""
@@ -20,7 +21,12 @@ class OrganizationService:
     # Current SQLAlchemy Session
     _session: Session
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends(), org_roles: OrgRoleService = Depends()):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
+        org_roles: OrgRoleService = Depends(),
+    ):
         """Initializes the `OrganizationService` session"""
         self._session = session
         self._permission = permission
@@ -53,14 +59,13 @@ class OrganizationService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, 'organization.create', f'organizations')
+        self._permission.enforce(subject, "organization.create", f"organizations")
 
         # Checks if the organization already exists in the table
         if organization.id:
-
             # If so, raise an error
             raise Exception(f"Duplicate organization found with ID: {organization.id}")
-            
+
         else:
             # Otherwise, create new object
             organization_entity = OrganizationEntity.from_model(organization)
@@ -106,7 +111,9 @@ class OrganizationService:
         """
 
         # Query the organization with matching id
-        organization = self._session.query(OrganizationEntity).filter(OrganizationEntity.name == name)[0]
+        organization = self._session.query(OrganizationEntity).filter(
+            OrganizationEntity.name == name
+        )[0]
 
         # Check if result is null
         if organization:
@@ -116,7 +123,9 @@ class OrganizationService:
             # Raise exception
             raise Exception(f"No organization found with name: {name}")
 
-    def update(self, subject: User, organization: OrganizationDetail) -> OrganizationDetail:
+    def update(
+        self, subject: User, organization: OrganizationDetail
+    ) -> OrganizationDetail:
         """
         Update the organization
         If none found with that id, a debug description is displayed.
@@ -128,12 +137,16 @@ class OrganizationService:
         """
 
         # Check if user has manager permissions for the organization
-        org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
-            org_role.org_id == organization.id and org_role.membership_type > 0]
-        
+        org_roles = [
+            org_role
+            for org_role in self._org_roles.get_from_userid(subject.id)
+            if org_role.org_id == organization.id and org_role.membership_type > 0
+        ]
+
+        print(org_roles)
         # If no role is found, raise an exception
-        if(len(org_roles) <=0):
-            raise UserPermissionError('organization.update', f'organizations')
+        if len(org_roles) <= 0:
+            raise UserPermissionError("organization.update", f"organizations")
 
         # Query the organization with matching id
         obj = self._session.query(OrganizationEntity).get(organization.id)
@@ -141,16 +154,16 @@ class OrganizationService:
         # Check if result is null
         if obj:
             # Update organization object
-            obj.name=organization.name
-            obj.logo=organization.logo
-            obj.short_description=organization.short_description
-            obj.long_description=organization.long_description
-            obj.website=organization.website
-            obj.email=organization.email
-            obj.instagram=organization.instagram
-            obj.linked_in=organization.linked_in
-            obj.youtube=organization.youtube
-            obj.heel_life=organization.heel_life
+            obj.name = organization.name
+            obj.logo = organization.logo
+            obj.short_description = organization.short_description
+            obj.long_description = organization.long_description
+            obj.website = organization.website
+            obj.email = organization.email
+            obj.instagram = organization.instagram
+            obj.linked_in = organization.linked_in
+            obj.youtube = organization.youtube
+            obj.heel_life = organization.heel_life
             self._session.commit()
             # Return updated object
             return obj.to_model()
@@ -158,7 +171,6 @@ class OrganizationService:
             # Raise exception
             raise Exception(f"No organization found with ID: {organization.id}")
 
-    
     def delete(self, subject: User, id: int) -> None:
         """
         Delete the organization based on the provided ID.
@@ -168,13 +180,13 @@ class OrganizationService:
             id (int): Unique organization ID
         """
         # Check if user has admin permissions
-        self._permission.enforce(subject, 'organization.create', f'organizations')
+        self._permission.enforce(subject, "organization.create", f"organizations")
 
         # Find object to delete
-        obj=self._session.query(OrganizationEntity).get(id)
+        obj = self._session.query(OrganizationEntity).get(id)
 
         # Ensure object exists
-        if obj:            
+        if obj:
             # Delete object and commit
             self._session.delete(obj)
             self._session.commit()
