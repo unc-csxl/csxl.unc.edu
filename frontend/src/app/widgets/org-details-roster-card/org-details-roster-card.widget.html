@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title class="title">All Members</mat-card-title>
+    </mat-card-header>
+    <!-- Member Info -->
+    <mat-card-content>
+        <mat-list>
+            <p>
+                There are currently {{membersCount}} members in this organization.
+            </p>
+            <a [routerLink]="['/organization', organizationId, 'roster']">
+                <button *ngIf='profile' mat-raised-button type="submit" class="roster-link">View Roster</button>
+            </a>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

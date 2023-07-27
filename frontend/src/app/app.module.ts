@@ -65,6 +65,7 @@ import { OrgDetailsExecMembersCard } from './widgets/org-details-exec-members-ca
 import { OrgDetailsEventsCard } from './widgets/org-details-events-card/org-details-events-card.widget';
 import { RosterDropdown } from './widgets/roster-dropdown/roster-dropdown.widget';
 import { RosterListCard } from './widgets/roster-list-card/roster-list-card.widget';
+import { OrgDetailsRosterCard } from './widgets/org-details-roster-card/org-details-roster-card.widget';
 
 @NgModule({
   declarations: [
@@ -96,7 +97,8 @@ import { RosterListCard } from './widgets/roster-list-card/roster-list-card.widg
     OrgDetailsEventsCard,
     OrgRosterComponent,
     RosterDropdown,
-    RosterListCard
+    RosterListCard,
+    OrgDetailsRosterCard
   ],
   imports: [
     BrowserModule,

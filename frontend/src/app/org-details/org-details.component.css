@@ -27,8 +27,8 @@
   grid-area: span 2;
 }
 
- /** Make cards display in one column, with the event card appearing last */
- @media only screen and (max-device-width: 1000px) {
+/** Make cards display in one column, with the event card appearing last */
+@media only screen and (max-device-width: 1000px) {
   .events-card-container {
     order: 1;
   }

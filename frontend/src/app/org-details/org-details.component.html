@@ -11,6 +11,8 @@
   <!-- Executive Members Card -->
   <div class="members-card-container">
     <org-details-exec-members-card [executives]='executives' />
+    <org-details-roster-card [profile]="profile" [membersCount]="organization?.user_associations?.length ?? 0"
+      [organizationId]="organization!.id!" />
   </div>
 
   <!-- Event Registrations Card -->
