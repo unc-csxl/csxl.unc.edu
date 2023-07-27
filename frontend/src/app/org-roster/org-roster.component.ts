@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, ResolveFn, Route, Router } from '@angular/router';
 import { profileResolver } from '../profile/profile.resolver';
 import { Observable, ReplaySubject, debounceTime, filter, map, mergeMap, startWith } from 'rxjs';
 import { OrgRole, OrgRoleSummary, Organization, OrganizationSummary, Profile } from '../models.module';
@@ -12,6 +12,24 @@ import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ProfileService } from '../profile/profile.service';
 
+let titleResolver: ResolveFn<string> = () => {
+  let route = inject(ActivatedRoute);
+  let orgId = route.snapshot.params['id'];
+  if (orgId) {
+    let orgDetailSvc = inject(OrgDetailsService);
+    let org$ = orgDetailSvc.getOrganization(orgId);
+    return org$.pipe(map(org => {
+      if (org) {
+        return `${org.name} Roster`;
+      } else {
+        return "Oranization Roster (undefined org)"
+      }
+    }))
+  } else {
+    return "Organization Roster (undefined route)";
+  }
+}
+
 @Component({
   selector: 'app-org-roster',
   templateUrl: './org-roster.component.html',
@@ -21,7 +39,7 @@ export class OrgRosterComponent {
   public static Route: Route = {
     path: 'organization/:id/roster',
     component: OrgRosterComponent,
-    title: 'Organization Roster',
+    title: titleResolver,
     resolve: { profile: profileResolver }
   };
 
