@@ -25,15 +25,19 @@ reservation_2: Reservation
 reservation_3: Reservation
 # Future reservations for a half-hour toward end of day, with half hour til close
 reservation_4: Reservation
+# Draft reservation for user tomorrow
+reservation_5: Reservation
 
 # Lists used for access
 active_reservations: list[Reservation]
+draft_reservations: list[Reservation]
+confirmed_reservations: list[Reservation]
 reservations: list[Reservation]
 
 
 def instantiate_global_models(time: dict[str, datetime]):
-    global reservation_1, reservation_2, reservation_3, reservation_4
-    global active_reservations, reservations
+    global reservation_1, reservation_2, reservation_3, reservation_4, reservation_5
+    global active_reservations, reservations, draft_reservations, confirmed_reservations
     reservation_1 = Reservation(
         id=1,
         start=time[THIRTY_MINUTES_AGO],
@@ -89,8 +93,30 @@ def instantiate_global_models(time: dict[str, datetime]):
         seats=[seat_data.reservable_seats[0], seat_data.reservable_seats[1]],
     )
 
+    # Draft future reservation
+    reservation_5 = Reservation(
+        id=5,
+        start=operating_hours_data.tomorrow.start,
+        end=operating_hours_data.tomorrow.end + ONE_HOUR,
+        created_at=time[NOW],
+        updated_at=time[NOW],
+        walkin=False,
+        rom=None,
+        state=ReservationState.DRAFT,
+        users=[user_data.user],
+        seats=[seat_data.reservable_seats[0]],
+    )
+
     active_reservations = [reservation_1]
-    reservations = [reservation_1, reservation_2, reservation_3, reservation_4]
+    confirmed_reservations = [reservation_4]
+    draft_reservations = [reservation_5]
+    reservations = [
+        reservation_1,
+        reservation_2,
+        reservation_3,
+        reservation_4,
+        reservation_5,
+    ]
 
 
 def test_request(overrides=None) -> ReservationRequest:

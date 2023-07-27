@@ -76,7 +76,7 @@ class ReservationService:
             self._permission_svc.enforce(
                 subject,
                 "coworking.reservation.read",
-                f"coworking.reservation.users/{focus.id}",
+                f"user/{focus.id}",
             )
         #
         now = datetime.now()
@@ -105,6 +105,11 @@ class ReservationService:
             )
             .all()
         )
+
+        reservations = self._state_transition_reservation_entities_by_time(
+            datetime.now(), reservations
+        )
+
         return [reservation.to_model() for reservation in reservations]
 
     def get_seat_reservations(
@@ -135,8 +140,64 @@ class ReservationService:
             )
             .all()
         )
-        # TODO: Check for garbage collection of expired drafts and past due
+
+        reservations = self._state_transition_reservation_entities_by_time(
+            datetime.now(), reservations
+        )
+
         return [reservation.to_model() for reservation in reservations]
+
+    def _state_transition_reservation_entities_by_time(
+        self, cutoff: datetime, reservations: list[ReservationEntity]
+    ) -> list[ReservationEntity]:
+        """Private, internal helper method for transitioning reservation entities
+        based on time. Three transitions are time-based:
+
+        1. Draft -> Cancelled following PolicyService#reservation_draft_timeout() after
+           the reservation's created at.
+        2. Confirmed -> Cancelled following PolicyService#reservation_checkin_timeout() after
+            the reservation's start.
+        3. Checked In -> Checked Out following the reservation's end.
+
+        Args:
+            moment (datetime): The time in which checks of expiration are made against. In
+                production, this is the current time.
+            reservations (list[ReservationEntity]): The list of entities to state transition.
+
+        Returns:
+            list[ReservationEntity] - All ReservationEntities that were not state transitioned.
+        """
+        valid: list[ReservationEntity] = []
+        dirty = False
+        for reservation in reservations:
+            if (
+                reservation.state == ReservationState.DRAFT
+                and reservation.created_at
+                + self._policy_svc.reservation_draft_timeout()
+                < cutoff
+            ):
+                reservation.state = ReservationState.CANCELLED
+                dirty = True
+            elif (
+                reservation.state == ReservationState.CONFIRMED
+                and reservation.start + self._policy_svc.reservation_checkin_timeout()
+                < cutoff
+            ):
+                reservation.state = ReservationState.CANCELLED
+                dirty = True
+            elif (
+                reservation.state == ReservationState.CHECKED_IN
+                and reservation.end <= cutoff
+            ):
+                reservation.state = ReservationState.CHECKED_OUT
+                dirty = True
+            else:
+                valid.append(reservation)
+
+        if dirty:
+            self._session.commit()
+
+        return valid
 
     def seat_availability(
         self, seats: list[Seat], bounds: TimeRange
@@ -225,8 +286,41 @@ class ReservationService:
     def draft_reservation(
         self, subject: User, request: ReservationRequest
     ) -> Reservation:
-        """When a user begins the process of making a reservation, a draft holds its place and checks its validity."""
-        # TODO: Restrict to user == reservation.users[], or permission to draft reservations as admin
+        """When a user begins the process of making a reservation, a draft holds its place until confired.
+
+        For launch, reservations are limited to a single user. Reservations must either be made by and for
+        the subject initiating the request, or by an admin with permission to complete the action
+        "coworking.reservation.draft" for resource "user/{user.id}".
+
+        Args:
+            subject (User): The user initiating the draft request.
+            request (ReservationRequest): The requested reservation.
+
+        Returns:
+            Reservation: The DRAFT reservation.
+
+        Raises:
+            ReservationError: If the requested reservation cannot be satisfied.
+
+        Future work:
+            * Think about errors/validations of drafts that can be edited rather than raising exceptions.
+            * Multi-user reservations
+                * Check for equality between users and available seats
+                * Limit users and seats counts to policy
+            * Clean-up / Refactor Implementation
+        """
+        # For the time being, reservations are limited to one user. As soon as
+        # possible, we'd like to add multi-user reservations so that pairs and teams
+        # can be simplified.
+        if len(request.users) > 1:
+            raise ReservationError("Multi-user reservations not yet supproted.")
+
+        # Enforce Reservation Draft Permissions
+        if subject.id not in [user.id for user in request.users]:
+            for user in request.users:
+                self._permission_svc.enforce(
+                    subject, "coworking.reservation.draft", f"user/{user.id}"
+                )
 
         # Bound start
         now = datetime.now()
@@ -328,10 +422,6 @@ class ReservationService:
         self, subject: User, reservation: Reservation
     ) -> Reservation:
         """If a user wants to check out of their reservation early, this frees up the resource."""
-        ...
-
-    def garbage_collection(self):
-        """Delete reservations that are never confirmed or have expired."""
         ...
 
     # Private helper methods
