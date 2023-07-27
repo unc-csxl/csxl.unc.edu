@@ -20,10 +20,14 @@
                 <mat-label>Description</mat-label>
                 <input matInput placeholder="Event description here." formControlName="description" name="description">
             </mat-form-field>
+            <!-- Public Field -->
+            <p><mat-checkbox formControlName="public">Allow anyone to attend this event.</mat-checkbox></p>
+
         </mat-card-content>
         <mat-card-actions>
             <button mat-raised-button type="submit" [disabled]="eventForm.invalid">SAVE</button>
         </mat-card-actions>
+
     </mat-card>
 </form>
 

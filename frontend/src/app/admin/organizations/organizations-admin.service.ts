@@ -89,6 +89,31 @@ export class OrganizationsAdminService {
         return this.http.post<OrgRole>(`/api/orgroles`, newRole);
     }
 
+    /** Adds an admin to an organization
+ * @param user: Profile of the user you want to add as an admin
+ * @param organization: Organization that you want to add an admin to
+ * @returns {Observable<OrgRole>}
+ */
+    addAdmin = (user: Profile, organization: Organization) => {
+        const newRole: OrgRoleSummary = {
+            id: null,
+            user_id: user.id!,
+            org_id: organization.id!,
+            membership_type: 2,
+            timestamp: new Date()
+        }
+        // Check if the user role already exists
+        for (let role of organization.user_associations) {
+            if (role.user_id == user.id && role.org_id == organization.id) {
+                // Set the newRole model id to the id of the role that matches the user and org
+                newRole.id = role.id;
+                // Update the org role with the post request
+                return this.http.post<OrgRole>(`/api/orgroles`, newRole);
+            }
+        }
+        return this.http.post<OrgRole>(`/api/orgroles`, newRole);
+    }
+
     /** Creates an organization
      * @param newOrg: Organization object that you want to add to the database
      * @returns {Observable<Organization>}

@@ -82,7 +82,7 @@ export class AdminOrganizationDetailsComponent implements OnInit {
     public onAddManager = () => {
         if (!this.selectedUser) { return; }
         // Add the manager based on the selectedUser (from the form) and the current organization id
-        this.organizationsAdminService.addManager(this.selectedUser, this.organization)
+        this.organizationsAdminService.addAdmin(this.selectedUser, this.organization)
             .subscribe((org_role: OrgRole) => {
                 // Update the organization in the component
                 this.organizationsAdminService.details(org_role.org_id).subscribe(org => this.organization = org);

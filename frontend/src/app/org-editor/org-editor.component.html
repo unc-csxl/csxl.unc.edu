@@ -1,6 +1,6 @@
- <!-- HTML Structure of Profile Page -->
+<!-- HTML Structure of Profile Page -->
 
- <!-- Update Organization Form -->
+<!-- Update Organization Form -->
 <form [formGroup]="orgForm" (ngSubmit)="onSubmit()" *ngIf="adminPermission">
     <!-- Update Organization Card -->
     <mat-card>
@@ -27,12 +27,14 @@
             <!-- Short Description Field -->
             <mat-form-field appearance="fill" color="accent">
                 <mat-label>Short Description</mat-label>
-                <input matInput placeholder="Enter short description here." formControlName="short_description" name="short_description">
+                <input matInput placeholder="Enter short description here." formControlName="short_description"
+                    name="short_description">
             </mat-form-field>
             <!-- Long Description Field -->
             <mat-form-field appearance="fill" color="accent">
                 <mat-label>Long Description</mat-label>
-                <input matInput placeholder="Enter long description here." formControlName="long_description" name="long_description">
+                <input matInput placeholder="Enter long description here." formControlName="long_description"
+                    name="long_description">
             </mat-form-field>
             <!-- Website Field -->
             <mat-form-field appearance="fill" color="accent">
@@ -64,6 +66,9 @@
                 <mat-label>HeelLife</mat-label>
                 <input matInput placeholder="" formControlName="heel_life" name="heel_life">
             </mat-form-field>
+            <!-- Public Field -->
+            <p><mat-checkbox formControlName="public">Allow anyone to join your organization.</mat-checkbox></p>
+
         </mat-card-content>
         <mat-card-actions>
             <!-- Submit Button -->

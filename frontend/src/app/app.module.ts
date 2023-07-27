@@ -32,6 +32,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -135,6 +136,7 @@ import { RosterAddMemberCard } from './widgets/roster-add-member-card/roster-add
     MatDatepickerModule,
     MatNativeDateModule,
     MatAutocompleteModule,
+    MatCheckboxModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

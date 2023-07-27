@@ -51,7 +51,8 @@ export class OrgEditorComponent {
     instagram: "",
     linked_in: "",
     youtube: "",
-    heel_life: ""
+    heel_life: "",
+    public: false
   });
 
   constructor(private route: ActivatedRoute, private router: Router, protected formBuilder: FormBuilder, protected snackBar: MatSnackBar, private orgEditorService: OrgEditorService, private permission: PermissionService) {
@@ -145,7 +146,7 @@ export class OrgEditorComponent {
           linked_in: org.linked_in,
           youtube: org.youtube,
           heel_life: org.heel_life,
-          // public: org.public
+          public: org.public
         });
 
       });
