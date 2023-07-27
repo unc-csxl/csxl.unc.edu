@@ -60,6 +60,10 @@
     margin-left: 8px;
 }
 
+a {
+    text-decoration: none !important;
+}
+
 /** Move event time to the expansion detail when the screen width reaches 950px. */
 @media only screen and (max-device-width: 950px) {
     .event-detail-time {
