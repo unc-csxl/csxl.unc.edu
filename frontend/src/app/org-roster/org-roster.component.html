@@ -1,9 +1,12 @@
 <!-- HTML Structure of Organization Roster Page -->
 
-<div class="page-container">
+<div class="page-container" *ngIf="profile">
 
     <roster-list-card [orgRoles]="orgRoles" [isManager]="managerPermission" [isAdmin]="adminPermission"
         [profile]="profile!" (onRemoveMemberButtonPressed)="deleteMember($event)"
         (onPromoteMemberButtonPressed)="promoteMember($event)" (onDemoteMemberButtonPressed)="demoteMember($event)" />
 
 </div>
+
+<!-- Message for Non-Authenicated Users -->
+<p *ngIf="!profile">You do not have permission to view this page. Please log in first.</p>
