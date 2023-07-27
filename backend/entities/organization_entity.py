@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
@@ -40,6 +40,9 @@ class OrganizationEntity(EntityBase):
     youtube: Mapped[str] = mapped_column(String)
     # Heel Life for the organization
     heel_life: Mapped[str] = mapped_column(String)
+    # Whether the organization can be joined by anyone or not
+    public: Mapped[bool] = mapped_column(Boolean)
+
     # All of the events hosted by the organization
     # Generated from a relationship with the "events" table
     # Back-populates the `organization` field of `EventEntity`
@@ -78,6 +81,7 @@ class OrganizationEntity(EntityBase):
             linked_in=model.linked_in,
             youtube=model.youtube,
             heel_life=model.heel_life,
+            public=model.public,
         )
 
     def to_model(self) -> OrganizationDetail:
@@ -100,6 +104,7 @@ class OrganizationEntity(EntityBase):
             linked_in=self.linked_in,
             youtube=self.youtube,
             heel_life=self.heel_life,
+            public=self.public,
             events=[event.to_model() for event in self.events],
             users=[user.to_summary() for user in self.users],
             user_associations=[
@@ -128,4 +133,5 @@ class OrganizationEntity(EntityBase):
             linked_in=self.linked_in,
             youtube=self.youtube,
             heel_life=self.heel_life,
+            public=self.public,
         )

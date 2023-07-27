@@ -30,6 +30,7 @@ cads = Organization(
     linked_in="https://www.linkedin.com/company/carolina-data/",
     youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
     heel_life="https://heellife.unc.edu/organization/carolinadatascience",
+    public=True,
 )
 
 cssg = Organization(
@@ -45,6 +46,7 @@ cssg = Organization(
     linked_in="",
     youtube="",
     heel_life="https://heellife.unc.edu/organization/cssg",
+    public=False,
 )
 
 appteam = OrganizationEntity(
@@ -60,6 +62,7 @@ appteam = OrganizationEntity(
     linked_in="https://www.linkedin.com/company/appteamcarolina",
     youtube="",
     heel_life="https://heellife.unc.edu/organization/appteamcarolina",
+    public=False,
 )
 
 organizations = [cads, cssg, appteam]
@@ -77,6 +80,7 @@ to_add = OrganizationEntity(
     linked_in="",
     youtube="",
     heel_life="",
+    public=True,
 )
 
 new_cads = OrganizationEntity(
@@ -92,6 +96,7 @@ new_cads = OrganizationEntity(
     linked_in="https://www.linkedin.com/company/carolina-data/",
     youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
     heel_life="https://heellife.unc.edu/organization/carolinadatascience",
+    public=True,
 )
 
 # Data Functions

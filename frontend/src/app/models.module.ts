@@ -16,8 +16,8 @@ export interface Profile {
   pronouns: string | null;
   registered: boolean;
   role: number;
-  permissions: Permission[];    
-  events:Event[];
+  permissions: Permission[];
+  events: Event[];
   github: string | null;
   github_id: number | null;
   github_avatar: string | null;
@@ -51,6 +51,7 @@ export interface Organization {
   linked_in: string;
   youtube: string;
   heel_life: string;
+  public: boolean;
   events: EventSummary[];
   users: UserSummary[];
   user_associations: OrgRole[];
@@ -70,11 +71,12 @@ export interface OrganizationSummary {
   linked_in: string;
   youtube: string;
   heel_life: string;
+  public: boolean;
 }
 
 /** Interface for OrgRole Type (defines relationships between users and organizations) */
 export interface OrgRole {
-  id: number| null;
+  id: number | null;
   user_id: number;
   org_id: number;
   membership_type: number;
@@ -83,7 +85,7 @@ export interface OrgRole {
 }
 /** Interface for OrgRole Type (defines relationships between users and organizations) */
 export interface OrgRoleSummary {
-  id: number| null;
+  id: number | null;
   user_id: number;
   org_id: number;
   membership_type: number;
@@ -146,4 +148,5 @@ export interface Organization {
   linked_in: string
   youtube: string
   heel_life: string
+  public: boolean
 }

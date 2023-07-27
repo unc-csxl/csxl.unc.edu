@@ -164,6 +164,7 @@ class OrganizationService:
             obj.linked_in = organization.linked_in
             obj.youtube = organization.youtube
             obj.heel_life = organization.heel_life
+            obj.public = organization.public
             self._session.commit()
             # Return updated object
             return obj.to_model()

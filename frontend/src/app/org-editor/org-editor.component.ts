@@ -95,7 +95,8 @@ export class OrgEditorComponent {
       instagram: "",
       linked_in: "",
       youtube: "",
-      heel_life: ""
+      heel_life: "",
+      public: false
     };
 
     /** Retrieve the event with the eventEditorService */
@@ -129,7 +130,7 @@ export class OrgEditorComponent {
     /** If you are editing an org (id not default -1) */
     if (this.org_id != -1) {
       /** Get the organization and set the form to the org's values */
-      this.orgEditorService.getOrganization(this.org_id).subscribe((org) => { 
+      this.orgEditorService.getOrganization(this.org_id).subscribe((org) => {
         this.org = org;
 
         this.orgForm.setValue({
@@ -143,9 +144,10 @@ export class OrgEditorComponent {
           instagram: org.instagram,
           linked_in: org.linked_in,
           youtube: org.youtube,
-          heel_life: org.heel_life
+          heel_life: org.heel_life,
+          // public: org.public
         });
-      
+
       });
 
     }

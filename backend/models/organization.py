@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 
-__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 class Organization(BaseModel):
     """
@@ -15,7 +16,7 @@ class Organization(BaseModel):
     relationship mapping.
     """
 
-    id: int | None=None
+    id: int | None = None
     name: str
     slug: str
     logo: str
@@ -27,3 +28,4 @@ class Organization(BaseModel):
     linked_in: str
     youtube: str
     heel_life: str
+    public: bool
