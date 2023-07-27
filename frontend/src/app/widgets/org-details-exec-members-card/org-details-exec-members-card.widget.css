@@ -3,18 +3,29 @@
     max-width: 100%;
 }
 
-.mat-mdc-list-base { padding: 0; }
+.mat-mdc-list-base {
+    padding: 0;
+}
 
 .member {
     display: flex;
-    align-items: center; justify-content: space-between;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .member-name {
-    overflow: hidden; text-overflow: ellipsis;
-    display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 
 .member-link {
     z-index: 0;
+}
+
+a {
+    text-decoration: none !important;
 }

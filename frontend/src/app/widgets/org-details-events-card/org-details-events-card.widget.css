@@ -40,6 +40,10 @@
     justify-content: flex-end
 }
 
+a {
+    text-decoration: none !important;
+}
+
 /** Make cards display in one column, with the event card appearing last */
 @media only screen and (max-device-width: 1000px) {
     .organization-grid {

@@ -30,3 +30,7 @@
     z-index: 0;
     text-decoration: none;
 }
+
+a {
+    text-decoration: none !important;
+}
