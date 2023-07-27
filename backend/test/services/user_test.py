@@ -9,7 +9,8 @@ from .core_data import setup_insert_data_fixture
 from .fixtures import user_svc, user_svc_integration, permission_svc_mock
 
 # Data Models for Fake Data Inserted in Setup
-from .user_data import root, ambassador, user
+from .user_data import root, ambassador, user, cads_leader
+from . import user_data
 from .permission_data import ambassador_permission
 
 __authors__ = ["Kris Jordan"]
@@ -71,7 +72,7 @@ def test_search_by_email(user_svc: UserService):
 def test_search_match_multiple(user_svc: UserService):
     """Test that many users result from an ambiguous search pattern."""
     users = user_svc.search(ambassador, "@unc.edu")
-    assert len(users) == 3
+    assert len(users) == len(user_data.users)
 
 
 def test_search_no_match(user_svc: UserService):
@@ -93,7 +94,7 @@ def test_list_second_page(user_svc: UserService):
     """Test that subsequent pages of users are produced."""
     pagination_params = PaginationParams(page=1, page_size=2, order_by="id", filter="")
     users = user_svc.list(ambassador, pagination_params)
-    assert len(users.items) == 1
+    assert len(users.items) == len(user_data.users) - 2
     assert users.items[0].id == user.id
 
 
@@ -107,13 +108,14 @@ def test_list_beyond(user_svc: UserService):
 def test_list_order_by(user_svc: UserService):
     """Test that users are ordered by the specified field."""
     pagination_params = PaginationParams(
-        page=0, page_size=3, order_by="first_name", filter=""
+        page=0, page_size=len(user_data.users), order_by="first_name", filter=""
     )
     users = user_svc.list(ambassador, pagination_params)
-    assert len(users.items) == 3
-    assert users.items[0].id == ambassador.id
-    assert users.items[1].id == root.id
-    assert users.items[2].id == user.id
+    assert len(users.items) == len(user_data.users)
+    user_models_copy = user_data.users[:]
+    user_models_copy.sort(key=lambda user: user.first_name)
+    for i in range(len(users.items)):
+        assert users.items[i].id == user_models_copy[i].id
 
 
 def test_list_filter(user_svc: UserService):
