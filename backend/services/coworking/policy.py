@@ -43,3 +43,9 @@ class PolicyService:
 
     def extend_duration(self, _subject: User) -> timedelta:
         return timedelta(hours=1)
+
+    def reservation_draft_timeout(self) -> timedelta:
+        return timedelta(minutes=5)
+
+    def reservation_checkin_timeout(self) -> timedelta:
+        return timedelta(minutes=10)

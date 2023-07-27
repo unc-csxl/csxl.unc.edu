@@ -3,9 +3,14 @@
 import pytest
 from unittest.mock import create_autospec
 
+from ....services import PermissionService
 from ....services.coworking import ReservationService, PolicyService
 from ....services.coworking.reservation import ReservationError
 from ....models.coworking import Reservation, TimeRange, ReservationState
+
+# Some internal methods use SQLAlchemy layer and are tested here
+from sqlalchemy.orm import Session
+from ....entities.coworking import ReservationEntity
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 # Dependent fixtures (seat_svc) are required to be imported in the testing module.
@@ -45,8 +50,9 @@ def test_get_current_reservations_for_user_as_user(
     reservations = reservation_svc.get_current_reservations_for_user(
         user_data.user, user_data.user
     )
-    assert len(reservations) == 1
+    assert len(reservations) == 2
     assert reservations[0].id == reservation_data.reservation_1.id
+    assert reservations[1].id == reservation_data.reservation_5.id
 
     reservations = reservation_svc.get_current_reservations_for_user(
         user_data.ambassador, user_data.ambassador
@@ -67,7 +73,7 @@ def test_get_current_reservations_for_user_permissions(
     reservation_svc._permission_svc.enforce.assert_called_with(
         user_data.root,
         "coworking.reservation.read",
-        f"coworking.reservation.users/{user_data.user.id}",
+        f"user/{user_data.user.id}",
     )
 
 
@@ -103,6 +109,110 @@ def test_get_seat_reservations_unreserved_seats(
         seat_data.unreservable_seats, current
     )
     assert len(reservations) == 0
+
+
+def test_state_transition_reservation_entities_by_time_noop(
+    session: Session, reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    entities: list[ReservationEntity] = [
+        session.get(ReservationEntity, reservation.id)
+        for reservation in reservation_data.active_reservations
+    ]
+    collected = reservation_svc._state_transition_reservation_entities_by_time(
+        time[NOW], entities
+    )
+    assert collected is not entities
+    assert collected == entities
+
+
+def test_state_transition_reservation_entities_by_time_expired_active(
+    session: Session, reservation_svc: ReservationService
+):
+    entities: list[ReservationEntity] = [
+        session.get(ReservationEntity, reservation.id)
+        for reservation in reservation_data.active_reservations
+    ]
+    cutoff = entities[0].end
+    collected = reservation_svc._state_transition_reservation_entities_by_time(
+        cutoff, entities
+    )
+
+    assert len(collected) == len(entities) - 1
+    reservation = session.get(ReservationEntity, entities[0].id, populate_existing=True)
+    assert reservation.state == ReservationState.CHECKED_OUT
+
+
+def test_state_transition_reservation_entities_by_time_active_draft(
+    session: Session, reservation_svc: ReservationService, policy_svc: PolicyService
+):
+    entities: list[ReservationEntity] = [
+        session.get(ReservationEntity, reservation.id)
+        for reservation in reservation_data.draft_reservations
+    ]
+    cutoff = entities[0].created_at + policy_svc.reservation_draft_timeout()
+    collected = reservation_svc._state_transition_reservation_entities_by_time(
+        cutoff, entities
+    )
+    assert len(collected) == len(entities)
+    assert collected[0].state == ReservationState.DRAFT
+
+
+def test_state_transition_reservation_entities_by_time_expired_draft(
+    session: Session, reservation_svc: ReservationService, policy_svc: PolicyService
+):
+    policy_mock = create_autospec(PolicyService)
+    policy_mock.reservation_draft_timeout.return_value = (
+        policy_svc.reservation_draft_timeout()
+    )
+    reservation_svc._policy_svc = policy_mock
+
+    entities: list[ReservationEntity] = [
+        session.get(ReservationEntity, reservation.id)
+        for reservation in reservation_data.draft_reservations
+    ]
+    cutoff = (
+        entities[0].created_at
+        + policy_svc.reservation_draft_timeout()
+        + timedelta(seconds=1)
+    )
+    collected = reservation_svc._state_transition_reservation_entities_by_time(
+        cutoff, entities
+    )
+    assert len(collected) == len(entities) - 1
+
+    reservation = session.get(ReservationEntity, entities[0].id, populate_existing=True)
+    assert reservation.state == ReservationState.CANCELLED
+
+    policy_mock.reservation_draft_timeout.assert_called_once()
+
+
+def test_state_transition_reservation_entities_by_time_checkin_timeout(
+    session: Session, reservation_svc: ReservationService, policy_svc: PolicyService
+):
+    policy_mock = create_autospec(PolicyService)
+    policy_mock.reservation_checkin_timeout.return_value = (
+        policy_svc.reservation_checkin_timeout()
+    )
+    reservation_svc._policy_svc = policy_mock
+
+    entities: list[ReservationEntity] = [
+        session.get(ReservationEntity, reservation.id)
+        for reservation in reservation_data.confirmed_reservations
+    ]
+    cutoff = (
+        entities[0].start
+        + policy_svc.reservation_checkin_timeout()
+        + timedelta(seconds=1)
+    )
+    collected = reservation_svc._state_transition_reservation_entities_by_time(
+        cutoff, entities
+    )
+    assert len(collected) == len(entities) - 1
+
+    reservation = session.get(ReservationEntity, entities[0].id, populate_existing=True)
+    assert reservation.state == ReservationState.CANCELLED
+
+    policy_mock.reservation_checkin_timeout.assert_called_once()
 
 
 def test_seat_availability_in_past(
@@ -144,8 +254,8 @@ def test_seat_availability_while_completely_open(
 ):
     """All reservable seats should be available."""
     tomorrow = TimeRange(
-        start=operating_hours_data.tomorrow.start,
-        end=operating_hours_data.tomorrow.start + ONE_HOUR,
+        start=operating_hours_data.future.start,
+        end=operating_hours_data.future.start + ONE_HOUR,
     )
     available_seats = reservation_svc.seat_availability(
         seat_data.reservable_seats, tomorrow
@@ -235,7 +345,7 @@ def test_draft_reservation_in_past(
 def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationService):
     """Walkin time limit should be bounded by PolicyService#walkin_initial_duration"""
     reservation = reservation_svc.draft_reservation(
-        user_data.ambassador,
+        user_data.user,
         reservation_data.test_request(
             {
                 "users": [user_data.user],
@@ -295,8 +405,8 @@ def test_draft_reservation_future(reservation_svc: ReservationService):
     future_reservation_limit = (
         reservation_svc._policy_svc.maximum_initial_reservation_duration(user_data.user)
     )
-    start = operating_hours_data.tomorrow.start
-    end = operating_hours_data.tomorrow.start + future_reservation_limit
+    start = operating_hours_data.future.start
+    end = operating_hours_data.future.start + future_reservation_limit
     reservation = reservation_svc.draft_reservation(
         user_data.user,
         reservation_data.test_request(
@@ -318,7 +428,7 @@ def test_future_reservation_unreservable(reservation_svc: ReservationService):
         start = operating_hours_data.tomorrow.start
         end = operating_hours_data.tomorrow.start + ONE_HOUR
         reservation = reservation_svc.draft_reservation(
-            user_data.user,
+            user_data.ambassador,
             reservation_data.test_request(
                 {
                     "seats": seat_data.unreservable_seats,
@@ -361,11 +471,24 @@ def test_draft_reservation_has_no_users(reservation_svc: ReservationService):
         )
 
 
-# TODO:
-# Enforce permissions
-# Check for equality between users and available seats
-# Limit users and seats counts to policy
-# Clean-up / Refactor Implementation
-# Documentation Standards for #draft_reservation
-# Think about errors/validations of drafts that can be edited rather
-#  than raising exceptions.
+def test_draft_reservation_permissions(reservation_svc: ReservationService):
+    permission_svc = create_autospec(PermissionService)
+    permission_svc.enforce.return_value = None
+    reservation_svc._permission_svc = permission_svc
+    reservation = reservation_svc.draft_reservation(
+        user_data.root, reservation_data.test_request()
+    )
+    assert reservation.id is not None
+    permission_svc.enforce.assert_called_once_with(
+        user_data.root, "coworking.reservation.draft", f"user/{user_data.ambassador.id}"
+    )
+
+
+def test_draft_reservation_one_user_for_now(reservation_svc: ReservationService):
+    with pytest.raises(ReservationError):
+        reservation_svc.draft_reservation(
+            user_data.ambassador,
+            reservation_data.test_request(
+                {"users": [user_data.root, user_data.ambassador]}
+            ),
+        )
