@@ -1,9 +1,11 @@
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from backend.entities.entity_base import EntityBase
 
 from backend.models.org_role import OrgRoleDetail, OrgRole
+
+from datetime import datetime
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -23,6 +25,8 @@ class OrgRoleEntity(EntityBase):
     org_id: Mapped[int] = mapped_column(ForeignKey("organization.id"), primary_key=True)
     # Type of membership (0 = Member, 1 = Executive, 2 = Manager)
     membership_type: Mapped[int] = mapped_column(Integer)
+    # Time of the event
+    timestamp: Mapped[datetime] = mapped_column(DateTime)
 
     # Bi-Directional Relationship Fields
     user: Mapped["UserEntity"] = relationship(
@@ -48,6 +52,7 @@ class OrgRoleEntity(EntityBase):
             user_id=model.user_id,
             org_id=model.org_id,
             membership_type=model.membership_type,
+            timestamp=model.timestamp,
         )
 
     def to_model(self) -> OrgRoleDetail:
@@ -62,6 +67,7 @@ class OrgRoleEntity(EntityBase):
             user_id=self.user_id,
             org_id=self.org_id,
             membership_type=self.membership_type,
+            timestamp=self.timestamp,
             organization=self.organization.to_summary(),
             user=self.user.to_summary(),
         )
@@ -78,6 +84,7 @@ class OrgRoleEntity(EntityBase):
             user_id=self.user_id,
             org_id=self.org_id,
             membership_type=self.membership_type,
+            timestamp=self.timestamp,
         )
 
 

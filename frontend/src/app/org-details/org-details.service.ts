@@ -84,7 +84,8 @@ export class OrgDetailsService {
                 id: null,
                 user_id: profile!.id!,
                 org_id: orgId,
-                membership_type: 0
+                membership_type: 0,
+                timestamp: new Date()
               }
 
               // Post new org role object
@@ -135,7 +136,8 @@ export class OrgDetailsService {
             id: null,
             user_id: profile!.id!,
             org_id: orgId,
-            membership_type: 0
+            membership_type: 0,
+            timestamp: new Date()
           }
 
           // Post new org role object

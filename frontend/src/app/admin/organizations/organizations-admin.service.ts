@@ -32,7 +32,8 @@ export class OrganizationsAdminService {
             id: org_role.id,
             user_id: org_role.user_id,
             org_id: org_role.org_id,
-            membership_type: 1
+            membership_type: 1,
+            timestamp: org_role.timestamp
         }
         // update the manager role (type = 0) rather than deleting them
         return this.http.post<OrgRole>(`/api/orgroles`, updatedRole);
@@ -48,7 +49,8 @@ export class OrganizationsAdminService {
             id: null,
             user_id: user.id!,
             org_id: organization.id!,
-            membership_type: 2
+            membership_type: 2,
+            timestamp: new Date()
         }
         // Check if the user role already exists
         for (let role of organization.user_associations) {

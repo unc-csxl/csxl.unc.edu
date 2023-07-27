@@ -78,6 +78,7 @@ class OrgRoleService:
                     user_id=role_entity.user_id,
                     org_id=role_entity.org_id,
                     membership_type=role.membership_type,
+                    timestamp=role.timestamp,
                 )
             )
         else:

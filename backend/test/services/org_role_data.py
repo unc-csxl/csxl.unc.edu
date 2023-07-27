@@ -7,6 +7,7 @@ from ...models.org_role import OrgRole
 from ...entities.org_role_entity import OrgRoleEntity
 
 from .reset_table_id_seq import reset_table_id_seq
+import datetime
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -14,13 +15,29 @@ __license__ = "MIT"
 
 # Sample Data Objects
 
-cads_leader_role = OrgRole(id=1, user_id=4, org_id=1, membership_type=2)
+cads_leader_role = OrgRole(
+    id=1,
+    user_id=4,
+    org_id=1,
+    membership_type=2,
+    timestamp=datetime.datetime.fromtimestamp(1690732800),
+)
 
 org_roles = [cads_leader_role]
 
-to_add = OrgRoleEntity(user_id=2, org_id=2, membership_type=1)
+to_add = OrgRoleEntity(
+    user_id=2,
+    org_id=2,
+    membership_type=1,
+    timestamp=datetime.datetime.fromtimestamp(1690732800),
+)
 
-to_star = OrgRoleEntity(user_id=3, org_id=2, membership_type=0)
+to_star = OrgRoleEntity(
+    user_id=3,
+    org_id=2,
+    membership_type=0,
+    timestamp=datetime.datetime.fromtimestamp(1690732800),
+)
 
 # Data Functions
 

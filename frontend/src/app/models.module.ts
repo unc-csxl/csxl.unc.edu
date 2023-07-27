@@ -80,6 +80,7 @@ export interface OrgRole {
   user_id: number;
   org_id: number;
   membership_type: number;
+  timestamp: Date;
   organization: OrganizationSummary | null;
   user: UserSummary | null;
 }
@@ -89,6 +90,7 @@ export interface OrgRoleSummary {
   user_id: number;
   org_id: number;
   membership_type: number;
+  timestamp: Date;
 }
 
 /** Interface for Event Type (used on frontend for event requests) */

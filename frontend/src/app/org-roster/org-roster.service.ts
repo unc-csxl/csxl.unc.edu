@@ -36,7 +36,8 @@ export class OrgRosterService {
             id: orgRole.id,
             user_id: orgRole.user_id,
             org_id: orgRole.org_id,
-            membership_type: 1
+            membership_type: 1,
+            timestamp: orgRole.timestamp
         }
         return this.http.post<OrgRoleSummary>("/api/orgroles", newSummary);
     }
@@ -46,7 +47,8 @@ export class OrgRosterService {
             id: orgRole.id,
             user_id: orgRole.user_id,
             org_id: orgRole.org_id,
-            membership_type: 0
+            membership_type: 0,
+            timestamp: orgRole.timestamp
         }
         return this.http.post<OrgRoleSummary>("/api/orgroles", newSummary);
     }
