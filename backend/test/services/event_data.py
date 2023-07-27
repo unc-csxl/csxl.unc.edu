@@ -37,13 +37,12 @@ cssg_event = Event(
 events = [cads_event, cssg_event]
 
 to_add = EventEntity(
-    id=3,
-    name="CS+Social Good New Event",
+    name="CADS New Event",
     time=datetime.datetime.fromtimestamp(1880110865),
     location="Sitterson",
     description="Club meeting",
     public=True,
-    org_id=2,
+    org_id=1,
 )
 
 new_cads = Event(

@@ -79,7 +79,8 @@ to_add = OrganizationEntity(
     heel_life="",
 )
 
-new_cads = Organization(
+new_cads = OrganizationEntity(
+    id=1,
     name="Carolina Analytics & Data Science Club",
     slug="CADS",
     logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cads.png",
