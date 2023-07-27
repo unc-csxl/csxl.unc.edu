@@ -16,16 +16,21 @@
                 <div class="organization-icons-section">
                     <div class="link-icons">
 
-                        <social-media-icon [fontIcon]='"link"' [href]='organization!.website' *ngIf='organization!.website != ""' />
-                        <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization!.email' *ngIf='organization!.email != ""' />
-                        <social-media-icon [svgIcon]='"instagram"' [href]='organization!.instagram' *ngIf='organization!.instagram != ""' />
-                        <social-media-icon [svgIcon]='"linkedin"' [href]='organization!.linked_in' *ngIf='organization!.linked_in != ""' />
-                        <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube' *ngIf='organization!.youtube != ""' />
+                        <social-media-icon [fontIcon]='"link"' [href]='organization!.website'
+                            *ngIf='organization!.website != ""' />
+                        <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization!.email'
+                            *ngIf='organization!.email != ""' />
+                        <social-media-icon [svgIcon]='"instagram"' [href]='organization!.instagram'
+                            *ngIf='organization!.instagram != ""' />
+                        <social-media-icon [svgIcon]='"linkedin"' [href]='organization!.linked_in'
+                            *ngIf='organization!.linked_in != ""' />
+                        <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
+                            *ngIf='organization!.youtube != ""' />
 
                         <!-- Star button -->
                         <button *ngIf="profile && profile.first_name" mat-icon-button color="basic"
                             (click)="starClicked()">
-                            <mat-icon>{{profilePermission >= 0 ? "star" : "star_outlined"}}</mat-icon>
+                            <mat-icon>{{profilePermission >= 0 ? "person_off" : "person_add"}}</mat-icon>
                         </button>
                     </div>
                 </div>

@@ -15,7 +15,7 @@
 
         <!-- Star button -->
         <button *ngIf="profile && profile.first_name" mat-icon-button color="basic" (click)="starClicked()">
-            <mat-icon>{{profilePermissions.get(organization.id!)! >= 0 ? "star" : "star_outlined"}}</mat-icon>
+            <mat-icon>{{profilePermissions.get(organization.id!)! >= 0 ? "person_off" : "person_add"}}</mat-icon>
         </button>
     </mat-card-header>
 
@@ -32,9 +32,12 @@
         <!-- Icon only appears if the organization actually has a corresponding link -->
         <div class="link-icons">
             <social-media-icon [fontIcon]='"link"' [href]='organization.website' *ngIf='organization.website != ""' />
-            <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization.email' *ngIf='organization.email != ""' />
-            <social-media-icon [svgIcon]='"instagram"' [href]='organization.instagram' *ngIf='organization.instagram != ""' />
-            <social-media-icon [svgIcon]='"linkedin"' [href]='organization.linked_in' *ngIf='organization.linked_in != ""' />
+            <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization.email'
+                *ngIf='organization.email != ""' />
+            <social-media-icon [svgIcon]='"instagram"' [href]='organization.instagram'
+                *ngIf='organization.instagram != ""' />
+            <social-media-icon [svgIcon]='"linkedin"' [href]='organization.linked_in'
+                *ngIf='organization.linked_in != ""' />
             <social-media-icon [svgIcon]='"youtube"' [href]='organization.youtube' *ngIf='organization.youtube != ""' />
         </div>
         <!-- Link to Individual Organization Page -->

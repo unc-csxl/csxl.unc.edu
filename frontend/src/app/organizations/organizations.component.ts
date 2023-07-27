@@ -17,12 +17,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class OrganizationsComponent {
 
   /** Route information to be used in App Routing Module */
-  public static Route = { 
+  public static Route = {
     path: 'organizations',
     title: 'CS Organizations',
     component: OrganizationsComponent,
     canActivate: [],
-    resolve: { profile: profileResolver } 
+    resolve: { profile: profileResolver }
   }
 
   /** Store Observable list of Organizations */
@@ -34,12 +34,12 @@ export class OrganizationsComponent {
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
-  
+
   /** Stores the user permission value for current organization. */
   public permValues: Map<number, number> = new Map();
 
   constructor(private organizationService: OrganizationsService, protected orgDetailService: OrgDetailsService, private route: ActivatedRoute, protected snackBar: MatSnackBar) {
-    
+
     /** Get currently-logged-in user. */
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
@@ -51,7 +51,7 @@ export class OrganizationsComponent {
     this.organizations$.subscribe((orgs) => {
       orgs.map((org) => {
         const filter = this.profile.organization_associations.filter(oa => oa.org_id == org.id);
-        if(filter && filter.length > 0) {
+        if (filter && filter.length > 0) {
           this.permValues.set(org.id!, filter[0].membership_type);
         }
         else {
@@ -59,21 +59,22 @@ export class OrganizationsComponent {
         }
       })
     })
-    }
-    
-    /** Initialize the profile to be the currently-logged-in user's profile. */
-    ngOnInit() {
-      let profile = this.profile;
-    }
+  }
 
-  /** Event handler to toggle the star status of an organization.
+  /** Initialize the profile to be the currently-logged-in user's profile. */
+  ngOnInit() {
+    let profile = this.profile;
+  }
+
+  /**
+   * Event handler to toggle membership status of an organization.
    * @param orgId: a number representing the ID of the organization to be starred
    */
-  starOrganization = async (orgId: number) => {
-    
+  toggleOrganizationMembership = async (orgId: number) => {
+
     // If user is an admin, they should not be able to unstar the organization.
     const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
-    if(filter && filter.length > 0 && filter[0].membership_type !== 0) {
+    if (filter && filter.length > 0 && filter[0].membership_type !== 0) {
       if (filter[0].membership_type == 1) {
         this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });
       } else if (filter[0].membership_type == 2) {
@@ -81,10 +82,33 @@ export class OrganizationsComponent {
       }
     }
     else {
-      if(this.profile && this.profile.first_name) {
+      if (this.profile && this.profile.first_name) {
+        // Call the orgDetailsService's toggleOrganizationMembership() method.
+        this.orgDetailService.toggleOrganizationMembership(orgId);
+      }
+    }
+  }
+
+  /** Event handler to toggle the star status of an organization.
+   * @deprecated
+   * @param orgId: a number representing the ID of the organization to be starred
+   */
+  starOrganization = async (orgId: number) => {
+
+    // If user is an admin, they should not be able to unstar the organization.
+    const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
+    if (filter && filter.length > 0 && filter[0].membership_type !== 0) {
+      if (filter[0].membership_type == 1) {
+        this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });
+      } else if (filter[0].membership_type == 2) {
+        this.snackBar.open("You cannot unstar this organization because you are a manager.", "", { duration: 2000 })
+      }
+    }
+    else {
+      if (this.profile && this.profile.first_name) {
         // Call the orgDetailsService's starOrganization() method.
         this.orgDetailService.starOrganization(orgId);
-          
+
         // Set slight delay so page reloads after API calls finish running.
         await new Promise(f => setTimeout(f, 200));
 

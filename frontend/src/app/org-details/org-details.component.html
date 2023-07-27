@@ -4,28 +4,18 @@
 
   <!-- Organization Information Card -->
   <div class="organization-card-container">
-    <org-details-info-card 
-      [organization]='organization'
-      [profile]='profile'
-      [profilePermission]='permValue'
-      [isAdmin]='adminPermission'
-      (onStarClicked)='starOrganization()'
-    />
+    <org-details-info-card [organization]='organization' [profile]='profile' [profilePermission]='permValue'
+      [isAdmin]='adminPermission' (onStarClicked)='toggleOrganizationMembership()' />
   </div>
 
   <!-- Executive Members Card -->
   <div class="members-card-container">
-    <org-details-exec-members-card 
-      [executives]='executives'
-    />
+    <org-details-exec-members-card [executives]='executives' />
   </div>
 
   <!-- Event Registrations Card -->
   <div class="events-card-container">
-    <org-details-events-card 
-      [organization]='organization'
-      [isAdmin]='adminPermission'
-      (onDeleteEventButtonPressed)='deleteEvent($event)'
-    />
+    <org-details-events-card [organization]='organization' [isAdmin]='adminPermission'
+      (onDeleteEventButtonPressed)='deleteEvent($event)' />
   </div>
 </div>
