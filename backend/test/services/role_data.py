@@ -17,7 +17,6 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 root_role = Role(id=1, name="root")
-root_users = []
 ambassador_role = Role(id=2, name="ambassadors")
 
 roles = [root_role, ambassador_role]
