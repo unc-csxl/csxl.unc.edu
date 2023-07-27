@@ -87,7 +87,7 @@ def test_create_org_role_as_root_for_other_user(
     assert created_org_role.id is not None
 
 
-def test_create_organization_as_user_for_other_user(
+def test_create_org_role_as_user_for_other_user(
     org_role_svc_integration: OrgRoleService,
 ):
     """Test that any user is *unable* to create new org roles for users other than themself."""
