@@ -19,6 +19,7 @@ from ..test.services.coworking import (
     seat_data,
     reservation_data,
     operating_hours_data,
+    time,
 )
 
 if getenv("MODE") != "development":
@@ -32,11 +33,12 @@ entities.EntityBase.metadata.create_all(engine)
 
 
 with Session(engine) as session:
+    time = time.time_data()
     role_data.insert_fake_data(session)
     user_data.insert_fake_data(session)
     permission_data.insert_fake_data(session)
-    operating_hours_data.insert_fake_data(session)
+    operating_hours_data.insert_fake_data(session, time)
     room_data.insert_fake_data(session)
     seat_data.insert_fake_data(session)
-    reservation_data.insert_fake_data(session)
+    reservation_data.insert_fake_data(session, time)
     session.commit()

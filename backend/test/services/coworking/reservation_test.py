@@ -16,7 +16,7 @@ from .fixtures import (
     policy_svc,
     operating_hours_svc,
 )
-from .times import *
+from .time import *
 
 # Import the setup_teardown fixture explicitly to load entities in database.
 # The order in which these fixtures run is dependent on their imported alias.
@@ -71,37 +71,45 @@ def test_get_current_reservations_for_user_permissions(
     )
 
 
-def test_get_seat_reservations_none(reservation_svc: ReservationService):
+def test_get_seat_reservations_none(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
     """Get all reservations for a time range with no reservations."""
     in_the_past = TimeRange(
-        start=THIRTY_MINUTES_AGO - FIVE_MINUTES,
-        end=THIRTY_MINUTES_AGO - ONE_MINUTE,
+        start=time[THIRTY_MINUTES_AGO] - FIVE_MINUTES,
+        end=time[THIRTY_MINUTES_AGO] - ONE_MINUTE,
     )
     reservations = reservation_svc.get_seat_reservations(seat_data.seats, in_the_past)
     assert len(reservations) == 0
 
 
-def test_get_seat_reservations_active(reservation_svc: ReservationService):
+def test_get_seat_reservations_active(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
     """Get all reservations that are active (not cancelled or checked out)."""
-    current = TimeRange(start=NOW, end=IN_THIRTY_MINUTES)
+    current = TimeRange(start=time[NOW], end=time[IN_THIRTY_MINUTES])
     reservations = reservation_svc.get_seat_reservations(seat_data.seats, current)
     assert len(reservations) == len(reservation_data.active_reservations)
     assert isinstance(reservations[0], Reservation)
     assert reservations[0].id == reservation_data.reservation_1.id
 
 
-def test_get_seat_reservations_unreserved_seats(reservation_svc: ReservationService):
+def test_get_seat_reservations_unreserved_seats(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
     """Get reservations for unreserved seats (expecting no matches)."""
-    current = TimeRange(start=NOW, end=IN_THIRTY_MINUTES)
+    current = TimeRange(start=time[NOW], end=time[IN_THIRTY_MINUTES])
     reservations = reservation_svc.get_seat_reservations(
         seat_data.unreservable_seats, current
     )
     assert len(reservations) == 0
 
 
-def test_seat_availability_in_past(reservation_svc: ReservationService):
+def test_seat_availability_in_past(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
     """There is no seat availability in the past."""
-    past = TimeRange(start=THIRTY_MINUTES_AGO, end=NOW)
+    past = TimeRange(start=time[THIRTY_MINUTES_AGO], end=time[NOW])
     available_seats = reservation_svc.seat_availability(seat_data.seats, past)
     assert len(available_seats) == 0
 
@@ -117,10 +125,13 @@ def test_seat_availability_while_closed(reservation_svc: ReservationService):
 
 
 def test_seat_availability_truncate_start(
-    reservation_svc: ReservationService, policy_svc: PolicyService
+    reservation_svc: ReservationService,
+    policy_svc: PolicyService,
+    time: dict[str, datetime],
 ):
     recent_past_to_five_minutes = TimeRange(
-        start=NOW - policy_svc.minimum_reservation_duration(), end=NOW + FIVE_MINUTES
+        start=time[NOW] - policy_svc.minimum_reservation_duration(),
+        end=time[NOW] + FIVE_MINUTES,
     )
     available_seats = reservation_svc.seat_availability(
         seat_data.seats, recent_past_to_five_minutes
@@ -142,9 +153,11 @@ def test_seat_availability_while_completely_open(
     assert len(available_seats) == len(seat_data.reservable_seats)
 
 
-def test_seat_availability_with_reservation(reservation_svc: ReservationService):
+def test_seat_availability_with_reservation(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
     """Test data has one of the reservable seats reserved."""
-    today = TimeRange(start=NOW, end=IN_THIRTY_MINUTES)
+    today = TimeRange(start=time[NOW], end=time[IN_THIRTY_MINUTES])
     available_seats = reservation_svc.seat_availability(
         seat_data.reservable_seats, today
     )
@@ -189,7 +202,9 @@ def test_xl_closing_soon(reservation_svc: ReservationService):
     assert len(available_seats) == 0
 
 
-def test_draft_reservation_open_seats(reservation_svc: ReservationService):
+def test_draft_reservation_open_seats(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
     """Request with an open seat."""
     reservation = reservation_svc.draft_reservation(
         user_data.ambassador, reservation_data.test_request()
@@ -197,22 +212,24 @@ def test_draft_reservation_open_seats(reservation_svc: ReservationService):
     assert reservation is not None
     assert reservation.id is not None
     assert reservation.state == ReservationState.DRAFT
-    assert_equal_times(datetime.now(), reservation.start)
-    assert_equal_times(IN_THIRTY_MINUTES, reservation.end)
-    assert_equal_times(datetime.now(), reservation.created_at)
-    assert_equal_times(datetime.now(), reservation.updated_at)
+    assert_equal_times(time[NOW], reservation.start)
+    assert_equal_times(time[IN_THIRTY_MINUTES], reservation.end)
+    assert_equal_times(time[NOW], reservation.created_at)
+    assert_equal_times(time[NOW], reservation.updated_at)
     assert len(reservation.seats) == 1
     assert len(reservation.users) == 1
     assert reservation.users[0].id == user_data.ambassador.id
 
 
-def test_draft_reservation_in_past(reservation_svc: ReservationService):
+def test_draft_reservation_in_past(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
     """Request a reservation that starts in the past. Its start should be now, instead."""
     reservation = reservation_svc.draft_reservation(
         user_data.ambassador,
-        reservation_data.test_request({"start": THIRTY_MINUTES_AGO}),
+        reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
     )
-    assert_equal_times(NOW, reservation.start)
+    assert_equal_times(time[NOW], reservation.start)
 
 
 def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationService):

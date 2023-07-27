@@ -14,23 +14,38 @@ from sqlalchemy.orm import Session
 from ....entities.coworking import OperatingHoursEntity
 from ....models.coworking import OperatingHours
 from ..reset_table_id_seq import reset_table_id_seq
-from .times import *
+from .time import *
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-today = OperatingHours(id=1, start=AN_HOUR_AGO, end=IN_TWO_HOURS)
-future = OperatingHours(
-    id=2, start=AN_HOUR_AGO + 2 * ONE_DAY, end=IN_TWO_HOURS + 2 * ONE_DAY
-)
-# Intentionally mis-ordering the insertion ID of tomorrow vs. future to test orderings in API
-tomorrow = OperatingHours(id=3, start=AN_HOUR_AGO + ONE_DAY, end=IN_TWO_HOURS + ONE_DAY)
-all = [today, future, tomorrow]
+today: OperatingHours
+tomorrow: OperatingHours
+future: OperatingHours
+all: list[OperatingHours] = []
 
 
-def insert_fake_data(session: Session):
+def insert_fake_data(session: Session, time: dict[str, datetime]):
     """Fake data insert factored out of the fixture for use in dev reset scripts."""
+
+    # We're definining these values here so that they can depend on times generated per
+    # test run.
+    global today, future, tomorrow, all
+
+    today = OperatingHours(id=1, start=time[AN_HOUR_AGO], end=time[IN_TWO_HOURS])
+
+    future = OperatingHours(
+        id=2,
+        start=time[AN_HOUR_AGO] + 2 * ONE_DAY,
+        end=time[IN_TWO_HOURS] + 2 * ONE_DAY,
+    )
+    # Intentionally mis-ordering the insertion ID of tomorrow vs. future to test orderings in API
+    tomorrow = OperatingHours(
+        id=3, start=time[AN_HOUR_AGO] + ONE_DAY, end=time[IN_TWO_HOURS] + ONE_DAY
+    )
+    all = [today, future, tomorrow]
+
     for operating_hours in all:
         entity = OperatingHoursEntity.from_model(operating_hours)
         session.add(entity)
@@ -41,6 +56,7 @@ def insert_fake_data(session: Session):
 
 
 @pytest.fixture(autouse=True)
-def fake_data_fixture(session: Session):
-    insert_fake_data(session)
+def fake_data_fixture(session: Session, time: dict[str, datetime]):
+    insert_fake_data(session, time)
     session.commit()
+    yield
