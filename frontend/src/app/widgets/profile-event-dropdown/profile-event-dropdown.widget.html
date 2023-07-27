@@ -21,7 +21,8 @@
                 <p>{{event.description}}</p>
             </div>
 
-            <button *ngIf='isAdmin' mat-raised-button type="submit" (click)="deleteEventButtonPressed(event.id!)">
+            <button *ngIf='isAdmin' mat-raised-button type="submit" color="warn"
+                (click)="deleteEventButtonPressed(event.id!)">
                 Delete Event
             </button>
             <a [routerLink]="['/organization', event.org_id, 'event', event.id, 'edit']" class="edit-button">
