@@ -1,5 +1,5 @@
 .mat-mdc-card {
-    margin: 16px 0 0 0 !important;
+    margin: 0 !important;
     max-width: 100%;
 }
 
@@ -29,4 +29,8 @@
 
 mat-card-content {
     margin-top: 8px;
+}
+
+selected-user {
+    margin: 8px 0 16px 0;
 }

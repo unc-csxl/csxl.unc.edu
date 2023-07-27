@@ -2,6 +2,11 @@
 
 <div class="page-container" *ngIf="profile">
 
+    <roster-add-member-card [selectedUser]="selectedUser" [userLookup]="userLookup" [filteredUsers]="filteredUsers"
+        [filteredUsers$]="filteredUsers$" (onChangeSelectedMember)="changeSelectedMember()"
+        (onOptionPressed)="onOptionSelected($event)" (onAddManagerPressed)="onAddManager($event)"
+        *ngIf="managerPermission" />
+
     <roster-list-card [orgRoles]="orgRoles" [isManager]="managerPermission" [isAdmin]="adminPermission"
         [profile]="profile!" (onRemoveMemberButtonPressed)="deleteMember($event)"
         (onPromoteMemberButtonPressed)="promoteMember($event)" (onDemoteMemberButtonPressed)="demoteMember($event)" />

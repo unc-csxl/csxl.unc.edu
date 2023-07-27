@@ -31,6 +31,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -66,6 +67,7 @@ import { OrgDetailsEventsCard } from './widgets/org-details-events-card/org-deta
 import { RosterDropdown } from './widgets/roster-dropdown/roster-dropdown.widget';
 import { RosterListCard } from './widgets/roster-list-card/roster-list-card.widget';
 import { OrgDetailsRosterCard } from './widgets/org-details-roster-card/org-details-roster-card.widget';
+import { RosterAddMemberCard } from './widgets/roster-add-member-card/roster-add-member-card.widget';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,8 @@ import { OrgDetailsRosterCard } from './widgets/org-details-roster-card/org-deta
     OrgRosterComponent,
     RosterDropdown,
     RosterListCard,
-    OrgDetailsRosterCard
+    OrgDetailsRosterCard,
+    RosterAddMemberCard
   ],
   imports: [
     BrowserModule,
@@ -131,6 +134,7 @@ import { OrgDetailsRosterCard } from './widgets/org-details-roster-card/org-deta
     MatTooltipModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatAutocompleteModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

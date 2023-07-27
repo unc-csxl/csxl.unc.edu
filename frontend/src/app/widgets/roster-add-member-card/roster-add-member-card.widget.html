@@ -1,0 +1,40 @@
+<mat-card class="roster-card">
+    <!-- Roster Card Header -->
+    <mat-card-header>
+        <mat-card-title class="title">Add Member</mat-card-title>
+        <mat-card-subtitle>Select a CSXL user from the list to add them as a member of your
+            organization.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+
+        <!-- Form -->
+        <form>
+            <ng-container matColumnDef="user">
+                <!-- Display the Organization's Manager Users -->
+                <!-- Select a User -->
+                <div *ngIf="selectedUser; else search" class="selected-user">
+                    <button mat-form-field mat-button (click)="changeSelectedMember()">{{ selectedUser.first_name }} {{
+                        selectedUser.last_name }}</button>
+                </div>
+                <!-- Form to Get a New User -->
+                <ng-template #search>
+                    <mat-form-field appearance="outline">
+                        <mat-label>User</mat-label>
+                        <input type="text" placeholder="Find User" aria-label="User" matInput [matAutocomplete]="auto"
+                            [formControl]="userLookup">
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+                            <mat-option *ngFor="let option of filteredUsers$ | async" [value]="option">
+                                {{ option.first_name }} {{ option.last_name }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </ng-template>
+            </ng-container>
+        </form>
+
+        <!-- Button to add Manager -->
+        <button mat-raised-button (click)="onAddManager()" [disabled]="selectedUser === undefined">Add</button>
+
+    </mat-card-content>
+</mat-card>

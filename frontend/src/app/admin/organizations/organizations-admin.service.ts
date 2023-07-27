@@ -49,7 +49,32 @@ export class OrganizationsAdminService {
             id: null,
             user_id: user.id!,
             org_id: organization.id!,
-            membership_type: 2,
+            membership_type: 1,
+            timestamp: new Date()
+        }
+        // Check if the user role already exists
+        for (let role of organization.user_associations) {
+            if (role.user_id == user.id && role.org_id == organization.id) {
+                // Set the newRole model id to the id of the role that matches the user and org
+                newRole.id = role.id;
+                // Update the org role with the post request
+                return this.http.post<OrgRole>(`/api/orgroles`, newRole);
+            }
+        }
+        return this.http.post<OrgRole>(`/api/orgroles`, newRole);
+    }
+
+    /** Adds a member to an organization
+     * @param user: Profile of the user you want to add as a member
+     * @param organization: Organization that you want to add a member to
+     * @returns {Observable<OrgRole>}
+     */
+    addMember = (user: Profile, organization: Organization) => {
+        const newRole: OrgRoleSummary = {
+            id: null,
+            user_id: user.id!,
+            org_id: organization.id!,
+            membership_type: 0,
             timestamp: new Date()
         }
         // Check if the user role already exists
