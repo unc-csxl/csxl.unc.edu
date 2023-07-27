@@ -1,0 +1,32 @@
+.mat-mdc-card {
+    margin: 0 !important;
+    max-width: 100%;
+}
+
+.mdc-list-item {
+    padding: 0 !important;
+    display: flex;
+    align-items: baseline;
+}
+
+.text-link {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #4786C6;
+}
+
+.text-link:hover {
+    color: #396a9c;
+}
+
+.mat-mdc-list-base {
+    padding: 0;
+}
+
+.roster-placeholder-text {
+    margin-top: 4px;
+}
+
+mat-card-content {
+    margin-top: 8px;
+}

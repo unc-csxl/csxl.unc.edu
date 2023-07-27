@@ -10,6 +10,7 @@ import { EventsComponent } from './events/events.component';
 import { OrgDetailsComponent } from './org-details/org-details.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 import { OrgEditorComponent } from './org-editor/org-editor.component';
+import { OrgRosterComponent } from './org-roster/org-roster.component';
 
 const routes: Routes = [
   HomeComponent.Route,
@@ -21,7 +22,8 @@ const routes: Routes = [
   EventsComponent.Route,
   OrgDetailsComponent.Route,
   EventEditorComponent.Route,
-  OrgEditorComponent.Route
+  OrgEditorComponent.Route,
+  OrgRosterComponent.Route
 ];
 
 @NgModule({
@@ -32,4 +34,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [AppTitleStrategy.Provider]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

@@ -1,0 +1,41 @@
+<mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+        <!-- Mobile Event Cards -->
+        <div class="mobile-column mobile">
+            <mat-panel-title class="user-name">
+                {{orgRole.user?.first_name + " " + orgRole.user?.last_name}} <span
+                    class="pronouns">({{orgRole.user?.pronouns}})</span>
+            </mat-panel-title>
+            <mat-panel-description class="member-type mobile">
+                {{membershipTypeText(orgRole.membership_type)}}
+            </mat-panel-description>
+        </div>
+        <!-- Desktop Event Cards -->
+        <div class="desktop-row desktop">
+            <p class="user-name desktop">
+                {{orgRole.user?.first_name + " " + orgRole.user?.last_name}} <span
+                    class="pronouns">({{orgRole.user?.pronouns}})</span>
+            </p>
+            <p class="member-type desktop">
+                {{membershipTypeText(orgRole.membership_type)}}
+            </p>
+        </div>
+    </mat-expansion-panel-header>
+    <!-- Dropdown elements -->
+    <p class="field" *ngIf="isManager"><strong>ONYEN:</strong> {{orgRole.user?.onyen}}</p>
+    <p class="field" *ngIf="isManager"><strong>Email:</strong> {{orgRole.user?.email}}</p>
+    <p class="field"><strong>Member Since:</strong> {{"Unknown"}}</p>
+
+    <button mat-raised-button class="manager-buttons" type="submit" color="warn"
+        (click)="removeMemberButtonPressed(orgRole.id!)" *ngIf="isManager && orgRole.user_id != profile.id">
+        Remove
+    </button>
+    <button mat-raised-button class="manager-buttons" type="submit" (click)="promoteMemberButtonPressed()"
+        *ngIf="isAdmin && orgRole.membership_type < 1">
+        Promote to Manager
+    </button>
+    <button mat-raised-button class="manager-buttons" type="submit" (click)="demoteMemberButtonPressed()"
+        *ngIf="isAdmin && orgRole.membership_type == 1">
+        Demote to Member
+    </button>
+</mat-expansion-panel>

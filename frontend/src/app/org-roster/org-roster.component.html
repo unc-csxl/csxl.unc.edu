@@ -1,0 +1,9 @@
+<!-- HTML Structure of Organization Roster Page -->
+
+<div class="page-container">
+
+    <roster-list-card [orgRoles]="orgRoles" [isManager]="managerPermission" [isAdmin]="adminPermission"
+        [profile]="profile!" (onRemoveMemberButtonPressed)="deleteMember($event)"
+        (onPromoteMemberButtonPressed)="promoteMember($event)" (onDemoteMemberButtonPressed)="demoteMember($event)" />
+
+</div>

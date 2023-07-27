@@ -2,7 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { OrganizationSummary } from '../models.module';
+import { OrgRoleSummary, OrganizationSummary } from '../models.module';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,6 @@ export class OrgEditorService {
     } else {
       return this.http.post<OrganizationSummary>("/api/organizations", org);
     }
-    
+
   }
 }

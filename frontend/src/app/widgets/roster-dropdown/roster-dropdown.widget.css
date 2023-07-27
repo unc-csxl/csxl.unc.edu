@@ -1,0 +1,89 @@
+mat-expansion-panel {
+    margin-bottom: 1rem;
+}
+
+.mobile {
+    display: none;
+}
+
+mat-icon:hover {
+    color: #4786C6;
+}
+
+.pronouns,
+.member-type {
+    color: rgba(0, 0, 0, 0.54);
+    padding-left: 8px;
+}
+
+.manager-buttons {
+    margin-right: 8px;
+}
+
+.member-type {
+    text-align: right;
+}
+
+.desktop-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.user-name {
+    width: 70%;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.member-type {
+    width: 30%;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* Mobile CSS to make our UI more user friendly for phones */
+
+@media only screen and (max-width: 768px) {
+
+    mat-expansion-panel {
+        padding: 2rem;
+        margin: 0;
+        margin-bottom: 1rem;
+    }
+
+    mat-expansion-panel-header {
+        padding: 0;
+    }
+
+    .desktop {
+        display: none;
+    }
+
+    .mobile {
+        display: inline;
+    }
+
+    .user-name {
+        overflow: visible;
+    }
+
+    .field {
+        margin-top: 0.5rem;
+    }
+
+    .mobile-column {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
+@media (prefers-color-scheme: dark) {
+
+    .pronouns,
+    .member-type {
+        color: rgba(255, 255, 255, 0.7);
+    }
+}

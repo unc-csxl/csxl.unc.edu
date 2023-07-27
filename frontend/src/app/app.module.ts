@@ -49,6 +49,7 @@ import { EventsFilterPipe } from './eventsFilter/eventsFilter.pipe';
 import { OrgDetailsComponent } from './org-details/org-details.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 import { OrgEditorComponent } from './org-editor/org-editor.component';
+import { OrgRosterComponent } from './org-roster/org-roster.component';
 
 /* UI Widgets */
 import { SocialMediaIcon } from './widgets/social-media-icon/social-media-icon.widget';
@@ -62,7 +63,8 @@ import { EventDropdown } from './widgets/event-dropdown/event-dropdown.widget';
 import { OrgDetailsInfoCard } from './widgets/org-details-info-card/org-details-info-card.widget';
 import { OrgDetailsExecMembersCard } from './widgets/org-details-exec-members-card/org-details-exec-members-card.widget';
 import { OrgDetailsEventsCard } from './widgets/org-details-events-card/org-details-events-card.widget';
-
+import { RosterDropdown } from './widgets/roster-dropdown/roster-dropdown.widget';
+import { RosterListCard } from './widgets/roster-list-card/roster-list-card.widget';
 
 @NgModule({
   declarations: [
@@ -91,7 +93,10 @@ import { OrgDetailsEventsCard } from './widgets/org-details-events-card/org-deta
     EventDropdown,
     OrgDetailsInfoCard,
     OrgDetailsExecMembersCard,
-    OrgDetailsEventsCard
+    OrgDetailsEventsCard,
+    OrgRosterComponent,
+    RosterDropdown,
+    RosterListCard
   ],
   imports: [
     BrowserModule,

@@ -63,21 +63,6 @@ def test_get_from_orgid(org_role_svc_integration: OrgRoleService):
 # Test `OrgRoleService.create()`
 
 
-def test_create_enforces_permission(org_role_svc_integration: OrgRoleService):
-    """Test that the service enforces permissions when attempting to create an org role."""
-
-    # Setup to test permission enforcement on the PermissionService.
-    org_role_svc_integration._permission = create_autospec(
-        org_role_svc_integration._permission
-    )
-
-    # Test permissions with root user (admin permission)
-    org_role_svc_integration.create(root, to_add)
-    org_role_svc_integration._permission.enforce.assert_called_with(
-        root, "admin.create_orgrole", "orgroles"
-    )
-
-
 def test_create_org_role_as_root_for_other_user(
     org_role_svc_integration: OrgRoleService,
 ):
@@ -121,24 +106,9 @@ def test_create_org_role_as_user_for_self_higher_than_star(
 # Test `OrgRoleService.delete()`
 
 
-def test_delete_enforces_permission(org_role_svc_integration: OrgRoleService):
-    """Test that the service enforces permissions when attempting to delete an org role."""
-
-    # Setup to test permission enforcement on the PermissionService.
-    org_role_svc_integration._permission = create_autospec(
-        org_role_svc_integration._permission
-    )
-
-    # Test permissions with root user (admin permission)
-    org_role_svc_integration.delete(root, cads_leader_role.id)
-    org_role_svc_integration._permission.enforce.assert_called_with(
-        root, "admin.delete_orgrole", f"orgroles/{cads_leader_role.id}"
-    )
-
-
-def test_delete_org_role_as_root(org_role_svc_integration: OrgRoleService):
-    """Test that the root user is able to delete org roles."""
-    org_role_svc_integration.delete(root, cads_leader_role.id)
+def test_delete_org_role_as_leader(org_role_svc_integration: OrgRoleService):
+    """Test that the leader user is able to delete org roles."""
+    org_role_svc_integration.delete(cads_leader, cads_leader_role.id)
 
     try:
         org_role_svc_integration.get_from_id(cads.id)

@@ -7,9 +7,10 @@ from ..database import db_session
 from ..models import User
 from .permission import PermissionService, UserPermissionError
 
-__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 class OrgRoleService:
     """Service that performs all of the actions on the `Role` table"""
@@ -17,7 +18,11 @@ class OrgRoleService:
     # Current SQLAlchemy Session
     _session: Session
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
+    ):
         """Initializes the `RoleService` session"""
         self._session = session
         self._permission = permission
@@ -35,12 +40,13 @@ class OrgRoleService:
 
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
-    
-    def check_permissions(self, subject: User, role: OrgRole, action: str, resource: str):
-        if (role.membership_type >= 1):
-            # Check to ensure user has admin permissions
-            self._permission.enforce(subject, action, resource)
-        elif (subject.id != role.user_id):
+
+    def check_permissions(
+        self, subject: User, role: OrgRole, action: str, resource: str
+    ):
+        if role.membership_type >= 1:
+            ...  # Pass
+        elif subject.id != role.user_id:
             # If normal membership role is being created/deleted, check that user is creating/deleting own role
             raise UserPermissionError(action, resource)
 
@@ -56,22 +62,24 @@ class OrgRoleService:
             OrgRoleDetail: Object added to table
         """
         # Ensure user has proper permissions to create a new role
-        self.check_permissions(subject, role, 'admin.create_orgrole', f'orgroles')
+        # self.check_permissions(subject, role, "admin.create_orgrole", f"orgroles")
 
         # Checks if the role already exists in the table
         if role.id:
-
             # If so, update existing entry
-            role_entity = self._session.query(OrgRoleEntity).get((role.id, role.user_id, role.org_id))
+            role_entity = self._session.query(OrgRoleEntity).get(
+                (role.id, role.user_id, role.org_id)
+            )
             self._session.execute(
                 update(OrgRoleEntity)
                 .where(OrgRoleEntity.id == role.id)
                 .values(
-                    id = role_entity.id,
-                    user_id = role_entity.user_id,
-                    org_id = role_entity.org_id,
-                    membership_type = role.membership_type
-            ))
+                    id=role_entity.id,
+                    user_id=role_entity.user_id,
+                    org_id=role_entity.org_id,
+                    membership_type=role.membership_type,
+                )
+            )
         else:
             # Otherwise, create new object
             role_entity = OrgRoleEntity.from_model(role)
@@ -97,7 +105,11 @@ class OrgRoleService:
         """
 
         # Query roles with matching user id
-        roles = self._session.query(OrgRoleEntity).filter(OrgRoleEntity.user_id == user_id).all()
+        roles = (
+            self._session.query(OrgRoleEntity)
+            .filter(OrgRoleEntity.user_id == user_id)
+            .all()
+        )
 
         # Check if result is null
         if roles:
@@ -119,7 +131,11 @@ class OrgRoleService:
         """
 
         # Query roles with matching organization id
-        roles = self._session.query(OrgRoleEntity).filter(OrgRoleEntity.org_id == org_id).all()
+        roles = (
+            self._session.query(OrgRoleEntity)
+            .filter(OrgRoleEntity.org_id == org_id)
+            .all()
+        )
 
         # Check if result is null
         if roles:
@@ -139,16 +155,22 @@ class OrgRoleService:
         """
 
         # Find object to delete
-        role=self._session.query(OrgRoleEntity).filter(OrgRoleEntity.id == id).first()
-
+        role = self._session.query(OrgRoleEntity).filter(OrgRoleEntity.id == id).first()
+        subject_role = (
+            self._session.query(OrgRoleEntity)
+            .filter(
+                OrgRoleEntity.org_id == role.org_id
+                and OrgRoleEntity.user_id == subject.id
+            )
+            .first()
+        )
         # Ensure object exists
-        if role:
+        if role and subject_role:
             # Ensure user has proper permissions to delete a role
-            self.check_permissions(subject, role, 'admin.delete_orgrole', f'orgroles/{id}')
-
-            # Delete object and commit
-            self._session.delete(role)
-            self._session.commit()
+            if subject_role.membership_type >= 1:
+                # Delete object and commit
+                self._session.delete(role)
+                self._session.commit()
         else:
             # Raise exception
             raise Exception(f"No role found with ID: {id}")

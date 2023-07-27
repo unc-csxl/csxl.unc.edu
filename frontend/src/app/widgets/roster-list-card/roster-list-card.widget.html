@@ -1,0 +1,21 @@
+<mat-card class="roster-card">
+    <!-- Roster Card Header -->
+    <mat-card-header>
+        <mat-card-title class="title">All Members</mat-card-title>
+        <mat-card-subtitle>There are currently {{orgRoles.length}} members in this organization.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <!-- Roster List -->
+        <mat-list class="member-list">
+            <!-- Dropdowns for all Members -->
+            <mat-accordion>
+                <!-- Create Dropdown for Every User -->
+                <roster-dropdown [orgRole]="role" [isManager]="isManager" [isAdmin]="isAdmin" [profile]="profile!"
+                    (onRemoveMemberButtonPressed)="removeMemberButtonPressed($event)"
+                    (onPromoteMemberButtonPressed)="promoteMemberButtonPressed($event)"
+                    (onDemoteMemberButtonPressed)="demoteMemberButtonPressed($event)" *ngFor="let role of orgRoles" />
+            </mat-accordion>
+        </mat-list>
+    </mat-card-content>
+</mat-card>
