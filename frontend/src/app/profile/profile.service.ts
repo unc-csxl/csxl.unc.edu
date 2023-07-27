@@ -105,29 +105,29 @@ export class ProfileService {
    * @param org_id: number representing the org role to be deleted for the user
    * @returns {void}
    */
-  deleteOrgMembership = (org_id: number) =>{
-     // Store the list of registrations from the profile.
-     var org_roles: OrgRole[] = [];
-     // Store the current user's ID.
-     var user_id: number | null = null;
- 
-     // If a user is currently logged in, get their organizations and delete the appropriate organization.
-     if (this.profile$) {
-       // Get the organizations (ogranization associations) from the profile Observable.
-       this.profile$.subscribe(profile => org_roles = profile!.organization_associations);
-       // Get the user_id from the profile Observable.
-       this.profile$.subscribe(profile => user_id = profile!.id);
- 
-       // For each organization in the list of organizations
-       for (let org of org_roles) {
-         // If the organization's event and user IDs match the desired org and user IDs
-         if (org.org_id == org_id && org.user_id == user_id) {
-           // Make the call to delete the organization
-           this.http.delete<void>(`/api/orgroles/${org.id}`).subscribe(() => console.log('Delete successful.'));
-           break;
-         }
-       }
-     }
+  deleteOrgMembership = (org_id: number) => {
+    // Store the list of registrations from the profile.
+    var org_roles: OrgRole[] = [];
+    // Store the current user's ID.
+    var user_id: number | null = null;
+
+    // If a user is currently logged in, get their organizations and delete the appropriate organization.
+    if (this.profile$) {
+      // Get the organizations (ogranization associations) from the profile Observable.
+      this.profile$.subscribe(profile => org_roles = profile!.organization_associations);
+      // Get the user_id from the profile Observable.
+      this.profile$.subscribe(profile => user_id = profile!.id);
+
+      // For each organization in the list of organizations
+      for (let org of org_roles) {
+        // If the organization's event and user IDs match the desired org and user IDs
+        if (org.org_id == org_id && org.user_id == user_id) {
+          // Make the call to delete the organization
+          this.http.delete<void>(`/api/orgroles/${org.id}`).subscribe(() => console.log('Delete successful.'));
+          break;
+        }
+      }
+    }
   }
 
   getGitHubOAuthLoginURL(): Observable<string> {

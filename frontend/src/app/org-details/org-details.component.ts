@@ -7,6 +7,7 @@ import { OrgDetailsService } from './org-details.service';
 import { Organization, OrgRole, Profile } from '../models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '../profile/profile.resolver';
+import { OrgRosterService } from '../org-roster/org-roster.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   let orgId = route.params['id'];
@@ -51,7 +52,13 @@ export class OrgDetailsComponent {
   /** Stores executives of the current organization */
   public executives: OrgRole[] = [];
 
-  constructor(private orgDetailsService: OrgDetailsService, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, private route: ActivatedRoute, protected snackBar: MatSnackBar) {
+  constructor(
+    private orgDetailsService: OrgDetailsService,
+    private orgRosterService: OrgRosterService,
+    iconRegistry: MatIconRegistry,
+    sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    protected snackBar: MatSnackBar) {
     /** Import Logos using MatIconRegistry */
     iconRegistry.addSvgIcon('instagram', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/instagram.svg'));
     iconRegistry.addSvgIcon('github', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/github.svg'));
@@ -69,10 +76,13 @@ export class OrgDetailsComponent {
     this.organization$ = this.orgDetailsService.getOrganization(this.id);
     this.organization$.subscribe(org => this.organization = org);
     this.organization$.subscribe(org => {
-      org.user_associations.forEach((association) => {
-        if (association.membership_type >= 1) {
-          this.executives.push(association);
-        }
+      this.organization = org;
+      this.orgRosterService.getRolesForOrganization(org.id!).subscribe((associations) => {
+        associations.forEach((association) => {
+          if (association.membership_type >= 1) {
+            this.executives.push(association);
+          }
+        })
       })
     })
 

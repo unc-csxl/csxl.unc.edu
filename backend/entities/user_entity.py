@@ -74,7 +74,7 @@ class UserEntity(EntityBase):
             github_avatar=model.github_avatar,
         )
 
-    def to_model(self) -> User:
+    def to_model(self) -> UserDetails:
         """Create a User model from a UserEntity.
 
         Returns:
@@ -118,9 +118,9 @@ class UserEntity(EntityBase):
         self.github_id = model.github_id
         self.github_avatar = model.github_avatar
 
-    def to_summary(self) -> UserDetails:
+    def to_summary(self) -> User:
         """
-        Converts a `UserEntity` object into a `UserSummary`
+        Converts a `UserEntity` object into a `User`
 
         Returns:
             User: `UserSummary` object from the entity

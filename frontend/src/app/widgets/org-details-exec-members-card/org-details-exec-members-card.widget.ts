@@ -10,7 +10,7 @@ export class OrgDetailsExecMembersCard {
 
     @Input() executives!: OrgRole[];
 
-    constructor() {2}
+    constructor() { }
 
 }
 
