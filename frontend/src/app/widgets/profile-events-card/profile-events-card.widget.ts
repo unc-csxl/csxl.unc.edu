@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { EventSummary } from '../../models.module';
+import { EventSummary, Profile } from '../../models.module';
 
 @Component({
     selector: 'profile-events-card',
@@ -9,9 +9,10 @@ import { EventSummary } from '../../models.module';
 export class ProfileEventsCard {
 
     @Input() events!: EventSummary[];
+    @Input() profile!: Profile;
     @Output() onCancelRegistrationButtonPressed = new EventEmitter<number>();
 
-    constructor() {}
+    constructor() { }
 
     cancelRegistrationButtonPressed(id: number) {
         this.onCancelRegistrationButtonPressed.emit(id)

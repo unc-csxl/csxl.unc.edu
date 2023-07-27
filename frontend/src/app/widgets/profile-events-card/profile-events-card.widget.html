@@ -12,29 +12,26 @@
             <div mat-subheader class="event-subheader">Upcoming Events</div>
 
             <!-- Default Text if None -->
-            <p class="event-placeholder-text" *ngIf="(events | eventFilter: 'current').length === 0">You are currently not registered for any events.
-                <span class="text-link" routerLink="/events">Click here</span> to explore upcoming CS events!</p>
+            <p class="event-placeholder-text" *ngIf="(events | eventFilter:profile:'current').length === 0">You are
+                currently not registered for any events.
+                <span class="text-link" routerLink="/events">Click here</span> to explore upcoming CS events!
+            </p>
 
             <!-- Dropdowns for all Upcoming Events -->
             <profile-event-dropdown [event]='event'
-                (onCancelRegistrationButtonPressed)='cancelRegistrationButtonPressed(event.id!)'
-                [isCurrent]='true'
-                *ngFor='let event of (events | eventFilter: "current")'
-            />
+                (onCancelRegistrationButtonPressed)='cancelRegistrationButtonPressed(event.id!)' [isCurrent]='true'
+                *ngFor='let event of (events | eventFilter:profile:"current")' />
 
             <!-- Past Events -->
             <div mat-subheader class="event-subheader">Past Events</div>
 
             <!-- Default Text if None -->
-            <p class="event-placeholder-text" *ngIf="(events | eventFilter: 'past').length === 0">You have not previously attended any events yet.</p>
+            <p class="event-placeholder-text" *ngIf="(events | eventFilter:profile:'past').length === 0">You have not
+                previously attended any events yet.</p>
 
             <!-- Dropdowns for all Past Events -->
-            <profile-event-dropdown
-                [event]='event'
-                [isCurrent]='false'
-                [showCancelButton]='false'
-                *ngFor='let event of (events | eventFilter: "past")'
-            />
+            <profile-event-dropdown [event]='event' [isCurrent]='false' [showCancelButton]='false'
+                *ngFor='let event of (events | eventFilter:profile:"past")' />
         </mat-list>
     </mat-card-content>
 </mat-card>

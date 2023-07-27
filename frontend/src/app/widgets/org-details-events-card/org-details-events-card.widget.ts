@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Organization } from '../../models.module';
+import { Organization, Profile } from '../../models.module';
 
 @Component({
     selector: 'org-details-events-card',
@@ -9,10 +9,11 @@ import { Organization } from '../../models.module';
 export class OrgDetailsEventsCard {
 
     @Input() organization?: Organization;
+    @Input() profile!: Profile;
     @Input() isAdmin: boolean = false;
     @Output() onDeleteEventButtonPressed = new EventEmitter<number>();
 
-    constructor() {}
+    constructor() { }
 
     deleteEventButtonPressed(id: number) {
         this.onDeleteEventButtonPressed.emit(id)

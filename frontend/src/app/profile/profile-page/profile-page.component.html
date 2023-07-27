@@ -1,27 +1,21 @@
- <!-- HTML Structure of Profile Page -->
- 
- <div class="profile-grid">
+<!-- HTML Structure of Profile Page -->
+
+<div class="profile-grid">
 
   <!-- Profile Information Card -->
   <div class="profile-card-container">
-    <profile-about-card 
-      [profile]='profile'
-    />
+    <profile-about-card [profile]='profile' />
   </div>
 
   <!-- Event Registrations Card -->
   <div class="events-card-container">
-    <profile-events-card
-      [events]='events'
-      (onCancelRegistrationButtonPressed)='cancelRegistration($event)'
-    />
+    <profile-events-card [events]='events' [profile]="profile"
+      (onCancelRegistrationButtonPressed)='cancelRegistration($event)' />
   </div>
 
   <!-- Organizations Card -->
   <div class="organizations-card-container">
-    <profile-organizations-card
-      [organizations]='organizations'
-      (onDeleteOrgMembershipButtonPressed)='deleteOrgMembership($event)'
-    />
+    <profile-organizations-card [organizations]='organizations'
+      (onDeleteOrgMembershipButtonPressed)='deleteOrgMembership($event)' />
   </div>
 </div>

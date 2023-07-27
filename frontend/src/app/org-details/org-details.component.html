@@ -15,7 +15,7 @@
 
   <!-- Event Registrations Card -->
   <div class="events-card-container">
-    <org-details-events-card [organization]='organization' [isAdmin]='adminPermission'
+    <org-details-events-card [organization]='organization' [isAdmin]='adminPermission' [profile]="profile"
       (onDeleteEventButtonPressed)='deleteEvent($event)' />
   </div>
 </div>
