@@ -16,11 +16,7 @@ from .core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
 from .org_role_data import org_roles, to_add, to_star, cads_leader_role
-
-# from .event_data import events, cads_event, time_range, to_add, new_cads
-
 from .organization_data import cads
-
 from .user_data import root, user, cads_leader, ambassador
 
 __authors__ = ["Ajay Gandecha"]

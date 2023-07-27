@@ -2,7 +2,6 @@
 
 # PyTest
 import pytest
-from unittest.mock import create_autospec
 
 # Tested Dependencies
 from ...models import EventDetail

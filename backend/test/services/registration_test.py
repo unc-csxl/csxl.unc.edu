@@ -1,203 +1,133 @@
+"""Tests for the RegistrationService class."""
+
+# PyTest
 import pytest
 
-from sqlalchemy.orm import Session
-from ...models import Registration, UserDetails, Event, OrganizationDetail
-from ...services import (
-    RegistrationService,
-    UserService,
-    EventService,
-    OrganizationService,
-)
-import datetime
+# Tested Dependencies
+from ...models import RegistrationDetail
+from ...services import RegistrationService
 
-# Mock Models
-registration1 = Registration(user_id=1, event_id=1, status=0)
-registration2 = Registration(user_id=1, event_id=2, status=0)
-registration_updated = Registration(user_id=1, event_id=1, status=1)
-root = UserDetails(
-    pid=999999999,
-    onyen="root",
-    first_name="Super",
-    last_name="User",
-    email="root@cs.unc.edu",
-    pronouns="they / them",
-)
-event1 = Event(
-    name="HackNC",
-    time=datetime.datetime.fromtimestamp(1680110861),
-    location="Fetzer Gym",
-    description="HackNC is an annual, student-run hackathon hosted by the University of North Carolina at Chapel Hill.",
-    public=True,
-    org_id=1,
-)
-event2 = Event(
-    name="CS+Social Good",
-    time=datetime.datetime.fromtimestamp(1880110861),
-    location="Sitterson",
-    description="Club meeting",
-    public=True,
-    org_id=1,
-)
+# Injected Service Fixtures
+from .fixtures import registration_svc_integration
 
-event3 = Event(
-    name="HackNC",
-    time=datetime.datetime.fromtimestamp(1880110861),
-    location="Sitterson",
-    description="Club meeting",
-    public=True,
-    org_id=1,
-)
+# Explicitly import Data Fixture to load entities in database
+from .core_data import setup_insert_data_fixture
 
-org1 = OrganizationDetail(
-    name="test",
-    slug="HackNC",
-    logo="logo",
-    short_description="description",
-    long_description="description",
-    website="website",
-    email="email",
-    instagram="instagram",
-    linked_in="linkedin",
-    youtube="youtube",
-    heel_life="heellife",
-)
+# Data Models for Fake Data Inserted in Setup
+from .registration_data import registrations, user_cdc_registration, to_add
+from .event_data import cads_event
+from .user_data import user, cads_leader, ambassador
+
+__authors__ = ["Ajay Gandecha"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
+# Test Functions
+
+# Test `RegistrationService.all()`
 
 
-@pytest.fixture()
-def registration(session: Session):
-    return RegistrationService(session)
+def test_get_all(registration_svc_integration: RegistrationService):
+    """Test that all registrations can be retrieved."""
+    fetched_registrations = registration_svc_integration.all()
+    assert fetched_registrations is not None
+    assert len(fetched_registrations) == len(registrations)
+    assert isinstance(fetched_registrations[0], RegistrationDetail)
 
 
-@pytest.fixture()
-def user_service(session: Session):
-    return UserService(session)
+# Test `RegistrationService.get_by_user()`
 
 
-@pytest.fixture()
-def event_service(session: Session):
-    return EventService(session)
+def test_get_by_user(registration_svc_integration: RegistrationService):
+    """Test that registrations can be retrieved based on a given user ID."""
+    fetched_registrations = registration_svc_integration.get_by_user(user.id, 0)
+    assert fetched_registrations is not None
+    assert len(fetched_registrations) == 1
+    assert isinstance(fetched_registrations[0], RegistrationDetail)
+    assert fetched_registrations[0].user_id == user.id
 
 
-@pytest.fixture()
-def org_service(session: Session):
-    return OrganizationService(session)
+# Test `RegistrationService.get_by_event()`
 
 
-def test_no_registrations(registration: RegistrationService):
-    """Tests that the test session initially contains no registrations"""
-    assert len(registration.all()) is 0
+def test_get_by_event(registration_svc_integration: RegistrationService):
+    """Test that registrations can be retrieved based on a given event ID."""
+    fetched_registrations = registration_svc_integration.get_by_event(cads_event.id, 0)
+    assert fetched_registrations is not None
+    assert len(fetched_registrations) == 1
+    assert isinstance(fetched_registrations[0], RegistrationDetail)
+    assert fetched_registrations[0].user_id == user.id
 
 
-def test_get_all_registrations(
-    registration: RegistrationService,
-    user_service: UserService,
-    event_service: EventService,
-    org_service: OrganizationService,
+# Test `RegistrationService.create()`
+
+
+def test_create_registration_as_self(registration_svc_integration: RegistrationService):
+    """Test that the user is able to create new registrations for themself."""
+    created_registration = registration_svc_integration.create(user, to_add)
+    assert created_registration is not None
+    assert created_registration.id is not None
+
+
+def test_create_registration_as_not_self(
+    registration_svc_integration: RegistrationService,
 ):
-    """Tests creating a new registration and checks that it was added to table successfully"""
-    # user_service.create(root)
-    org_service.create(root, org1)
-    event_service.create(event1)
-    event_service.create(event2)
-    registration.create(registration1)
-    assert len(registration.all()) is 1
-    registration.create(registration2)
-    assert len(registration.all()) is 2
-    assert registration.all()[1].id is 2
+    """Test that any user is *unable* to create new registrations for other people."""
+    try:
+        registration_svc_integration.create(ambassador, to_add)
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because a `UserPermissionError` was thrown as expected
 
 
-def test_create_registration_and_get_by_user(
-    registration: RegistrationService,
-    user_service: UserService,
-    event_service: EventService,
-    org_service: OrganizationService,
+# Test `RegistrationService.update_status()`
+
+
+def test_update_registration_as_leader(
+    registration_svc_integration: RegistrationService,
 ):
-    """Tests that a newly added can be retrieved using the get_by_user() method"""
-    # user_service.create(root)
-    org_service.create(org1)
-    event_service.create(event1)
-    reg = registration.create(registration1)
-    assert registration.get_by_user(1, 0)[0].status == reg.status == 0
+    """Test that an org leader is able to update the status of their orgs registrations."""
+    original_registration = registration_svc_integration.get_by_user(user.id, 0)[0]
+    updated_registration = registration_svc_integration.update_status(
+        cads_leader, original_registration
+    )
+    assert updated_registration is not None
+    assert updated_registration.id is not None
+    assert updated_registration.status == 1
 
 
-def test_get_all_registrations(
-    registration: RegistrationService,
-    user_service: UserService,
-    event_service: EventService,
-    org_service: OrganizationService,
+def test_update_registration_as_not_leader(
+    registration_svc_integration: RegistrationService,
 ):
-    """Tests creating two registrations and tests that the all() method retrieves both"""
-    # user_service.create(root)
-    org_service.create(org1)
-    event_service.create(event1)
-    event_service.create(event2)
-    registration.create(registration1)
-    assert len(registration.all()) is 1
-    registration.create(registration2)
-    assert len(registration.all()) is 2
-    assert registration.all()[1].id is 2
+    """Test that any nobody except the leader can update the status of a registration."""
+    try:
+        original_registration = registration_svc_integration.get_by_user(user.id, 0)[0]
+        registration_svc_integration.update_status(user, original_registration)
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because a `UserPermissionError` was thrown as expected
 
 
-def test_get_by_event(
-    registration: RegistrationService,
-    user_service: UserService,
-    event_service: EventService,
-    org_service: OrganizationService,
+# Test `RegistrationService.delete()`
+
+
+def test_delete_registration_as_self(registration_svc_integration: RegistrationService):
+    """Test that the user is able to delete registrations for themself."""
+    try:
+        registration_svc_integration.delete_registration(user, user_cdc_registration.id)
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because an error was thrown when we found no registration
+
+
+def test_delete_registration_as_not_self(
+    registration_svc_integration: RegistrationService,
 ):
-    """Tests that you can retrive a registration by its event id using get_by_event()"""
-    user_service.create(root)
-    org_service.create(org1)
-    event_service.create(event1)
-    reg = registration.create(registration1)
-    assert registration.get_by_event(1, 0)[0].status == reg.status == 0
-
-
-def test_delete_registration(
-    registration: RegistrationService,
-    user_service: UserService,
-    event_service: EventService,
-    org_service: OrganizationService,
-):
-    """Tests that all() returns one less registration after calling delete_registration()"""
-    user_service.create(root)
-    org_service.create(org1)
-    event_service.create(event1)
-    registration.create(registration1)
-    assert len(registration.all()) is 1
-    registration.delete_registration(1)
-    assert len(registration.all()) is 0
-
-
-def test_clear_registrations(
-    registration: RegistrationService,
-    user_service: UserService,
-    event_service: EventService,
-    org_service: OrganizationService,
-):
-    """Tests that calling clear_registration() will clear our multiple registrations"""
-    user_service.create(root)
-    org_service.create(org1)
-    event_service.create(event1)
-    event_service.create(event2)
-    registration.create(registration1)
-    registration.create(registration2)
-    assert len(registration.all()) is 2
-    registration.clear_registrations(1)
-    registration.clear_registrations(2)
-    assert len(registration.all()) is 0
-
-
-def test_update_status(
-    registration: RegistrationService,
-    user_service: UserService,
-    event_service: EventService,
-    org_service: OrganizationService,
-):
-    """Tests that a registration can be updated after it is created using update_status()"""
-    user_service.create(root)
-    org_service.create(org1)
-    event_service.create(event1)
-    reg = registration.create(registration1)
-    assert registration.get_by_user(1, 0)[0].status == 0
-    registration.update_status(reg)
-    assert registration.get_by_user(1, 1)[0].status == 1
+    """Test that any user is *unable* to delete registrations for other people."""
+    try:
+        registration_svc_integration.delete_registration(
+            ambassador, user_cdc_registration.id
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+    except:
+        ...  # Test passes, because a `UserPermissionError` was thrown as expected

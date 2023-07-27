@@ -1,10 +1,10 @@
-"""Mock data for organization roles."""
+"""Mock data for event egistrations."""
 
 import pytest
 import datetime
 from sqlalchemy.orm import Session
-from ...models.org_role import OrgRole
-from ...entities.org_role_entity import OrgRoleEntity
+from ...models.registration import Registration
+from ...entities.registration_entity import RegistrationEntity
 
 from .reset_table_id_seq import reset_table_id_seq
 
@@ -14,31 +14,31 @@ __license__ = "MIT"
 
 # Sample Data Objects
 
-cads_leader_role = OrgRole(id=1, user_id=4, org_id=1, membership_type=2)
+user_cdc_registration = Registration(id=1, user_id=3, event_id=1, status=0)
 
-org_roles = [cads_leader_role]
+registrations = [user_cdc_registration]
 
-to_add = OrgRoleEntity(user_id=2, org_id=2, membership_type=1)
-
-to_star = OrgRoleEntity(user_id=3, org_id=2, membership_type=0)
+to_add = RegistrationEntity(id=1, user_id=3, event_id=2, status=0)
 
 # Data Functions
 
 
 def insert_fake_data(session: Session):
-    """Inserts fake org role data into the test session."""
+    """Inserts fake event data into the test session."""
 
-    global org_roles
+    global registrations
 
-    # Create entities for test org role data
+    # Create entities for test registration data
     entities = []
-    for org_role in org_roles:
-        entity = OrgRoleEntity.from_model(org_role)
+    for registration in registrations:
+        entity = RegistrationEntity.from_model(registration)
         session.add(entity)
         entities.append(entity)
 
     # Reset table IDs to prevent ID conflicts
-    reset_table_id_seq(session, OrgRoleEntity, OrgRoleEntity.id, len(org_roles) + 1)
+    reset_table_id_seq(
+        session, RegistrationEntity, RegistrationEntity.id, len(registrations) + 1
+    )
 
     # Commit all changes
     session.commit()
