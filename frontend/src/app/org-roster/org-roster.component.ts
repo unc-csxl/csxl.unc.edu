@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, ResolveFn, Route, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
 import { profileResolver } from '../profile/profile.resolver';
 import { Observable, ReplaySubject, debounceTime, filter, map, mergeMap, startWith } from 'rxjs';
 import { OrgRole, OrgRoleSummary, Organization, OrganizationSummary, Profile } from '../models.module';
@@ -12,22 +12,18 @@ import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ProfileService } from '../profile/profile.service';
 
-let titleResolver: ResolveFn<string> = () => {
-  let route = inject(ActivatedRoute);
-  let orgId = route.snapshot.params['id'];
-  if (orgId) {
-    let orgDetailSvc = inject(OrgDetailsService);
-    let org$ = orgDetailSvc.getOrganization(orgId);
-    return org$.pipe(map(org => {
-      if (org) {
-        return `${org.name} Roster`;
-      } else {
-        return "Oranization Roster (undefined org)"
-      }
-    }))
-  } else {
-    return "Organization Roster (undefined route)";
-  }
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  let orgId = route.params['id'];
+
+  let orgDetailSvc = inject(OrgDetailsService);
+  let org$ = orgDetailSvc.getOrganization(orgId);
+  return org$.pipe(map(org => {
+    if (org) {
+      return `${org.name}'s Roster`;
+    } else {
+      return "Oranization Roster"
+    }
+  }))
 }
 
 @Component({
@@ -129,6 +125,8 @@ export class OrgRosterComponent {
         this.orgRoles = orgRoles.sort((a, b) => b.membership_type - a.membership_type)
       })
     }
+
+
   }
 
   /** Retrieves the list of users for the Add User dropdown. */

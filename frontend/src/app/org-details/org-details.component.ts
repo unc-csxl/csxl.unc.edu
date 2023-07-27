@@ -1,12 +1,26 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Route } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Observable, Subscription, tap } from 'rxjs';
+import { Observable, Subscription, map, tap } from 'rxjs';
 import { OrgDetailsService } from './org-details.service';
 import { Organization, OrgRole, Profile } from '../models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '../profile/profile.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  let orgId = route.params['id'];
+
+  let orgDetailSvc = inject(OrgDetailsService);
+  let org$ = orgDetailSvc.getOrganization(orgId);
+  return org$.pipe(map(org => {
+    if (org) {
+      return `${org.name}`;
+    } else {
+      return "Organization Details"
+    }
+  }))
+}
 
 @Component({
   selector: 'app-org-details',
@@ -17,7 +31,7 @@ export class OrgDetailsComponent {
   public static Route: Route = {
     path: 'organization/:id',
     component: OrgDetailsComponent,
-    title: 'Organization Details',
+    title: titleResolver,
     resolve: { profile: profileResolver }
   };
 
