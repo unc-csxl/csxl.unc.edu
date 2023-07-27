@@ -21,7 +21,7 @@ class RegistrationService:
   _session: Session
 
   def __init__(self, session: Session = Depends(db_session), org_roles: OrgRoleService = Depends(), events: EventService = Depends()):
-    """Initializes the `RoleService` session"""
+    """Initializes the `RoleService` session `OrgRoleService`, and `EventService"""
     self._session = session
     self._org_roles = org_roles
     self._events = events
@@ -31,36 +31,46 @@ class RegistrationService:
     Get a list of all Registrations.
 
     Returns:
-      list of Registrations
-
-    Raises:
-      None
+      list[RegistrationDetail]: list of Registrations
     """
     query = select(RegistrationEntity)
     entities = self._session.scalars(query).all()
     return [entity.to_model() for entity in entities]
   
   def check_permissions(self, subject: User, registration: RegistrationDetail, action: str, resource: str):
+    """
+    Determine if currently logged in user has permission to make changes to the OrgRole
+
+    Parameters:
+        subject: a valid User model representing the currently logged in User
+        registration: a valid RegistraitonDetail model
+        action: a str representing the action attempted
+        resource: a str representing the path of the action
+
+    Raises:
+        UserPermissionError if user does not have permission make changes to the Registration
+    """
+            
     # Check that user has permission to modify registrations for the organization
     org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
         org_role.org_id == registration.event.org_id and org_role.membership_type > 0]
       
     # If no role is found, raise an exception
     if (len(org_roles) <= 0):
-        raise UserPermissionError('registration.update', f'registrations')
+        raise UserPermissionError(action, resource)
 
   def create(self, subject: User, registration: Registration) -> RegistrationDetail:
     """
-    register a User for an EventDetail.
+    Register a User for an Event.
 
     Parameters:
-      registration: a valid RegistrationDetail model.
+      registration: a valid Registration model.
 
     Returns:
       The RegistrationDetail object.
 
     Raises:
-      ValueError if registration does not exist.
+      ValueError if registration already exists
     """      
 
     # If user is not creating a registration for themself
@@ -97,6 +107,7 @@ class RegistrationService:
     Returns:
       list of Registrations
     """
+
     # Query the Registrations table for all entries with the specified user_id and status.
     entities = self._session.query(RegistrationEntity).filter(
         RegistrationEntity.user_id == user_id, RegistrationEntity.status == status).all()
@@ -113,8 +124,9 @@ class RegistrationService:
       status: an Integer representing if the user has registered for (0) or attended (1) an event.
 
     Returns:
-      list of Registrations
+      list[RegistrationDetail]: list of Registrations
     """
+
     # Query the Registrations table for all entries associated with the specified event_id and status.
     entities = self._session.query(RegistrationEntity).filter(
       RegistrationEntity.event_id == event_id, RegistrationEntity.status == status).all()
@@ -127,10 +139,11 @@ class RegistrationService:
     Update a RegistrationDetail's status to attended (1).
 
     Parameters:
+      subject: a valid User model representing the currently logged in User
       registration: a valid RegistrationDetail model.
 
     Returns:
-      list of Registrations
+      list[RegistrationDetail]: list of Registrations
 
     Raises:
       ValueError if there is no RegistrationDetail for the specified User and EventDetail.
@@ -158,6 +171,7 @@ class RegistrationService:
     Delete a User's registration for an EventDetail.
 
     Parameters:
+      subject: a valid User model representing the currently logged in User
       reg_id: an integer that represents a RegistrationDetail ID
 
     Raises:
@@ -185,6 +199,7 @@ class RegistrationService:
     Clear all registrations for an EventDetail.
 
     Parameters:
+      subject: a valid User model representing the currently logged in User
       event_id: an Integer representing a unique identifier for an event.
 
     Raises:

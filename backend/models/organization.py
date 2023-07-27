@@ -4,13 +4,12 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-
 class Organization(BaseModel):
     """
-    Model to represent an `OrganizationDetail` object in a relationship
+    Model to represent an `Organization` object in a relationship
 
-    This model is based on the `OrganizationDetail` model, which defines the shape
-    of the `OrganizationDetail` database in the PostgreSQL database
+    This model is based on the `OrganizationEntity` model, which defines the shape
+    of the `Organization` database in the PostgreSQL database
 
     This model exists to prevent infinite recursion with bidirectional
     relationship mapping.

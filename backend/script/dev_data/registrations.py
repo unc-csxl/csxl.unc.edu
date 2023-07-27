@@ -1,4 +1,4 @@
-"""Sample RegistrationDetail models to use in the development environment."""
+"""Sample Registration models to use in the development environment."""
 
 from backend.entities.registration_entity import RegistrationEntity
 

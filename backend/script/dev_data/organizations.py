@@ -1,3 +1,5 @@
+"""Sample Organization models to use in the development environment."""
+
 from backend.entities.organization_entity import OrganizationEntity
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]

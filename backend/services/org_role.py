@@ -13,7 +13,7 @@ __license__ = "MIT"
 
 
 class OrgRoleService:
-    """Service that performs all of the actions on the `Role` table"""
+    """Service that performs all of the actions on the `OrgRole` table"""
 
     # Current SQLAlchemy Session
     _session: Session
@@ -23,7 +23,7 @@ class OrgRoleService:
         session: Session = Depends(db_session),
         permission: PermissionService = Depends(),
     ):
-        """Initializes the `RoleService` session"""
+        """Initializes the `OrgRoleService` session and `PermissionService`"""
         self._session = session
         self._permission = permission
 
@@ -32,7 +32,7 @@ class OrgRoleService:
         Retrieves all roles from the table
 
         Returns:
-            list[Role]: List of all `Roles`
+            list[OrgRoleDetail]: List of all `OrgRoles`
         """
         # Select all entries in `Role` table
         query = select(OrgRoleEntity)
@@ -44,6 +44,18 @@ class OrgRoleService:
     def check_permissions(
         self, subject: User, role: OrgRole, action: str, resource: str
     ):
+        """
+        Determine if currently logged in user has permission to make changes to the OrgRole
+
+        Parameters:
+            subject: a valid User model representing the currently logged in User
+            role: a valid OrgRole model
+            action: a str representing the action attempted
+            resource: a str representing the path of the action
+
+        Raises:
+            UserPermissionError if user does not have permission make changes to the OrgRole
+        """
         if role.membership_type >= 1:
             ...  # Pass
         elif subject.id != role.user_id:
@@ -57,7 +69,9 @@ class OrgRoleService:
         If the role's PID already exists in the table, the existing entry is updated.
 
         Parameters:
-            role (OrgRoleDetail): Role to add to table
+            subject: a valid User model representing the currently logged in User
+            role: a valid OrgRole model
+
         Returns:
             OrgRoleDetail: Object added to table
         """
@@ -101,8 +115,9 @@ class OrgRoleService:
 
         Parameters:
             user_id (int): Unique user ID
+
         Returns:
-            list[OrgRoleDetail]: All matching `Role` objects
+            list[OrgRoleDetail]: All matching `OrgRole` objects
         """
 
         # Query roles with matching user id
@@ -127,6 +142,7 @@ class OrgRoleService:
 
         Parameters:
             org_id (int): Unique organization ID
+
         Returns:
             list[OrgRoleDetail]: All matching `OrgRoleDetail` objects
         """
@@ -152,7 +168,11 @@ class OrgRoleService:
         If no item exists to delete, a debug description is displayed.
 
         Parameters:
-            id (int): Unique role ID
+            subject: a valid User model representing the currently logged in User
+            id: an int representing a unique OrgRole ID
+
+        Raises:
+            Exception if the OrgRole corresponding to the ID does not exist
         """
 
         # Find object to delete

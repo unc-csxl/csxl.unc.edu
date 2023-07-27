@@ -7,13 +7,10 @@ __license__ = 'MIT'
 
 class Event(BaseModel):
     """
-    Model to represent an `EventDetail` object in a relationship
+    Model to represent an `Event` object in a relationship
 
-    This model is based on the `EventDetail` model, which defines the shape
-    of the `EventDetail` database in the PostgreSQL database
-
-    This model exists to prevent infinite recursion with bidirectional
-    relationship mapping.
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database
     """
 
     id: int | None=None

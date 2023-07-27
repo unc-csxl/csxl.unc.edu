@@ -20,9 +20,9 @@ class RegistrationEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # User ID associated with registration
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
-    # EventDetail ID associated with registration
+    # Event ID associated with registration
     event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), primary_key=True)
-    # Status of RegistrationDetail (0 = Registered, 1 = Registered + Attended)
+    # Status of Registration (0 = Registered, 1 = Registered + Attended)
     status: Mapped[int] = mapped_column(Integer)
 
     # Bi-Directional Relationship Fields

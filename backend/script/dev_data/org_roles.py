@@ -1,4 +1,4 @@
-"""Sample OrganizationDetail Role models to use in the development environment."""
+"""Sample OrgRole models to use in the development environment."""
 
 from backend.entities.org_role_entity import OrgRoleEntity
 import datetime

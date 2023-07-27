@@ -1,3 +1,5 @@
+"""Definition of SQLAlchemy table-backed object mapping entity for EventEntity."""
+
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
@@ -10,7 +12,6 @@ from datetime import datetime
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
-
 
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
@@ -27,11 +28,12 @@ class EventEntity(EntityBase):
     location: Mapped[str] = mapped_column(String)
     # Description of the event
     description: Mapped[str] = mapped_column(String)
-    # Whether the event is public or not
+    # Whether the event is public or not (can be seen by non-members)
     public: Mapped[bool] = mapped_column(Boolean)
     # ID of the organization hosting the event
     org_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
-    # OrganizationDetail hosting the event
+
+    # Organization hosting the event
     # Generated from a relationship with the "organization table"
     # Back-populates the `events` field of `OrganizationEntity`
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
@@ -50,7 +52,8 @@ class EventEntity(EntityBase):
         Class method that converts a `EventDetail` object into a `EventEntity`
 
         Parameters:
-            - model (EventDetail): Model to convert into an entity
+            model (EventDetail): Model to convert into an entity
+
         Returns:
             EventEntity: Entity created from model
         """
