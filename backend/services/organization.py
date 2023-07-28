@@ -2,7 +2,6 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.services.org_role import OrgRoleService
 from ..database import db_session
 from ..models.organization import Organization
 from ..models.organization_detail import OrganizationDetail
@@ -25,12 +24,10 @@ class OrganizationService:
         self,
         session: Session = Depends(db_session),
         permission: PermissionService = Depends(),
-        org_roles: OrgRoleService = Depends(),
     ):
         """Initializes the `OrganizationService` session"""
         self._session = session
         self._permission = permission
-        self._org_roles = org_roles
 
     def all(self) -> list[OrganizationDetail]:
         """
@@ -138,9 +135,11 @@ class OrganizationService:
 
         # Check if user has manager permissions for the organization
         org_roles = [
-            org_role
-            for org_role in self._org_roles.get_from_userid(subject.id)
-            if org_role.org_id == organization.id and org_role.membership_type > 0
+            o_r
+            for o_r in organization.user_associations
+            if o_r.user_id == subject.id
+            and o_r.org_id == organization.id
+            and o_r.membership_type > 0
         ]
 
         print(org_roles)

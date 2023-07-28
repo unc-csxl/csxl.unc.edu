@@ -49,11 +49,7 @@ def role_svc(session: Session, permission_svc_mock: PermissionService):
 @pytest.fixture()
 def organization_svc_integration(session: Session):
     """This fixture is used to test the OrganizationService class with a real PermissionService."""
-    return OrganizationService(
-        session,
-        PermissionService(session),
-        OrgRoleService(session, PermissionService(session)),
-    )
+    return OrganizationService(session, PermissionService(session))
 
 
 @pytest.fixture()
@@ -65,7 +61,9 @@ def event_svc_integration(session: Session):
 @pytest.fixture()
 def org_role_svc_integration(session: Session):
     """This fixture is used to test the OrgRoleService class with a real PermissionService."""
-    return OrgRoleService(session, PermissionService(session))
+    return OrgRoleService(
+        session, PermissionService(session), OrganizationService(session)
+    )
 
 
 @pytest.fixture()

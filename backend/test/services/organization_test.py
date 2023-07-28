@@ -107,10 +107,12 @@ def test_update_organization_as_leader(
     """Test that the root user is able to create new organizations.
     Note: Test data's website field is updated
     """
-    updated_organization = organization_svc_integration.update(cads_leader, new_cads)
+    cads = organization_svc_integration.get_from_id(1)
+    cads.website = "https://cads.cs.unc.edu/"
+    updated_organization = organization_svc_integration.update(cads_leader, cads)
     assert updated_organization is not None
     assert updated_organization.id is not None
-    assert updated_organization.website == new_cads.website
+    assert updated_organization.website == "https://cads.cs.unc.edu/"
 
 
 def test_update_organization_as_user(organization_svc_integration: OrganizationService):

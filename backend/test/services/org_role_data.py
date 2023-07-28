@@ -25,16 +25,16 @@ cads_leader_role = OrgRole(
 
 org_roles = [cads_leader_role]
 
-to_add = OrgRoleEntity(
+to_add = OrgRole(
     user_id=2,
-    org_id=2,
+    org_id=1,
     membership_type=1,
     timestamp=datetime.datetime.fromtimestamp(1690732800),
 )
 
-to_star = OrgRoleEntity(
+to_star = OrgRole(
     user_id=3,
-    org_id=2,
+    org_id=1,
     membership_type=0,
     timestamp=datetime.datetime.fromtimestamp(1690732800),
 )

@@ -67,7 +67,7 @@ def test_create_org_role_as_root_for_other_user(
     org_role_svc_integration: OrgRoleService,
 ):
     """Test that the root user is able to create new org roles for any user."""
-    created_org_role = org_role_svc_integration.create(root, to_add)
+    created_org_role = org_role_svc_integration.create(cads_leader, to_add)
     assert created_org_role is not None
     assert created_org_role.id is not None
 

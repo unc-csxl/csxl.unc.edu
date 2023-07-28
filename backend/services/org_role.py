@@ -6,6 +6,7 @@ from backend.models.org_role import OrgRoleDetail, OrgRole
 from ..database import db_session
 from ..models import User
 from .permission import PermissionService, UserPermissionError
+from .organization import OrganizationService
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -22,10 +23,12 @@ class OrgRoleService:
         self,
         session: Session = Depends(db_session),
         permission: PermissionService = Depends(),
+        organizations: OrganizationService = Depends(),
     ):
         """Initializes the `RoleService` session"""
         self._session = session
         self._permission = permission
+        self._organizations = organizations
 
     def all(self) -> list[OrgRoleDetail]:
         """
@@ -41,14 +44,36 @@ class OrgRoleService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def check_permissions(
-        self, subject: User, role: OrgRole, action: str, resource: str
-    ):
-        if role.membership_type >= 1:
-            ...  # Pass
-        elif subject.id != role.user_id:
-            # If normal membership role is being created/deleted, check that user is creating/deleting own role
-            raise UserPermissionError(action, resource)
+    def check_permissions(self, subject: User, role: OrgRole):
+        # First, ensure that permissions fail if anyone except the site admin add someone with member type 2.
+        adding_org_leader = role.membership_type == 2
+
+        # Second, check if the subject is has executive permissions in the organization.
+        # Also ensure that no current member of an organization is upgrading their own membership type.
+        subject_org_permissions = [
+            o_r for o_r in self.get_from_userid(subject.id) if o_r.org_id == role.org_id
+        ]
+        has_permission = (
+            len(subject_org_permissions) > 0
+            and subject_org_permissions[0].membership_type >= 1
+        )
+        is_not_upgrading_self = (
+            len(subject_org_permissions) > 0
+            and subject_org_permissions[0].user_id != role.user_id
+        )
+        is_joining_as_member = role.membership_type == 0
+
+        # Third, check if a user is attempting to add themselves to a public organization only.
+        org_is_public = self._organizations.get_from_id(role.org_id).public
+
+        if adding_org_leader:
+            self._permission.enforce(subject, "admin.create_orgrole", f"orgroles")
+        elif has_permission and is_not_upgrading_self:
+            ...  # Permission granted
+        elif org_is_public and is_joining_as_member:
+            ...  # Permission granted
+        else:
+            raise UserPermissionError("admin.create_orgrole", f"orgroles")
 
     def create(self, subject: User, role: OrgRole) -> OrgRoleDetail:
         """
@@ -62,7 +87,7 @@ class OrgRoleService:
             OrgRoleDetail: Object added to table
         """
         # Ensure user has proper permissions to create a new role
-        # self.check_permissions(subject, role, "admin.create_orgrole", f"orgroles")
+        self.check_permissions(subject, role)
 
         # Checks if the role already exists in the table
         if role.id:
