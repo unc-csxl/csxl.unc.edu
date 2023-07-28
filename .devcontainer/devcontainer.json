@@ -27,7 +27,11 @@
                 "python.formatting.provider": "black",
                 "python.formatting.blackPath": "/home/vscode/.local/bin/black",
                 "editor.formatOnSave": true,
-                "editor.formatOnSaveMode": "file"
+                "editor.formatOnSaveMode": "file",
+                "python.analysis.diagnosticSeverityOverrides": {
+                    "reportMissingParameterType": "error",
+                    "reportGeneralTypeIssues": "error"
+                }
             }
         }
     }
