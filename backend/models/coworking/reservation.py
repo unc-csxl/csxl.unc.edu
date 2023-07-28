@@ -25,8 +25,6 @@ class Reservation(TimeRange):
     users: list[User] = []
     seats: list[Seat] = []
     room: Room | None = None
-    created_at: datetime
-    updated_at: datetime
     walkin: bool = False
     created_at: datetime | None = None
     updated_at: datetime | None = None

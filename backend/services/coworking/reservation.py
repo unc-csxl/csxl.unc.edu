@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from random import random
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
-from ...models import User
+from ...models.user import User, UserIdentity
 from ...models.coworking import (
     Seat,
     Reservation,
@@ -87,7 +87,7 @@ class ReservationService:
         return self._get_active_reservations_for_user(focus, time_range)
 
     def _get_active_reservations_for_user(
-        self, focus: User, time_range: TimeRange
+        self, focus: UserIdentity, time_range: TimeRange
     ) -> list[Reservation]:
         reservations = (
             self._session.query(ReservationEntity)
@@ -264,7 +264,7 @@ class ReservationService:
 
         # Remove seats with availability below threshold
         available_seats = self._prune_seats_below_availability_threshold(
-            seat_availability_dict.values(),
+            list(seat_availability_dict.values()),
             self._policy_svc.minimum_reservation_duration()
             - MINUMUM_RESERVATION_EPSILON,
         )
@@ -358,7 +358,11 @@ class ReservationService:
                 raise ReservationError("Users may not have conflicting reservations.")
 
         # Look at the seats - match bounds of assigned seat's availability
-        seat_availability = self.seat_availability(request.seats, bounds)
+        # TODO: Fetch all seats
+        seats: list[Seat] = SeatEntity.get_models_from_identities(
+            self._session, request.seats
+        )
+        seat_availability = self.seat_availability(seats, bounds)
 
         if not is_walkin:
             seat_availability = [seat for seat in seat_availability if seat.reservable]
@@ -448,10 +452,13 @@ class ReservationService:
                 **seat.model_dump(),
             )
             for seat in seats
+            if seat.id is not None
         }
 
     def _remove_reservations_from_availability(
-        self, seat_availability_dict, reservations
+        self,
+        seat_availability_dict: dict[int, SeatAvailability],
+        reservations: list[Reservation],
     ):
         for reservation in reservations:
             if len(reservation.seats) > 0:

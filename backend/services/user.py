@@ -8,7 +8,7 @@ from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
 from ..database import db_session
 from ..models import User, Paginated, PaginationParams
-from ..models.user_details import UserPermissions
+from ..models.user_details import UserPermissions, UserDetails
 from ..entities import UserEntity
 from .permission import PermissionService
 
@@ -40,7 +40,7 @@ class UserService:
             UserPermissions | None: The user or None if not found.
         """
         query = select(UserEntity).where(UserEntity.pid == pid)
-        user_entity: UserEntity = self._session.scalar(query)
+        user_entity: UserEntity | None = self._session.scalar(query)
         if user_entity is None:
             return None
         else:
@@ -48,6 +48,26 @@ class UserService:
             user_fields = user.model_dump()
             user_fields["permissions"] = self._permission.get_permissions(user)
             user_details = UserPermissions(**user_fields)
+            return user_details
+
+    def get_details(self, pid: int) -> UserDetails | None:
+        """Get a User with relation details by PID.
+
+        Args:
+            pid: The PID of the user.
+
+        Returns:
+            UserDetails | None: The user or None if not found.
+        """
+        query = select(UserEntity).where(UserEntity.pid == pid)
+        user_entity: UserEntity | None = self._session.scalar(query)
+        if user_entity is None:
+            return None
+        else:
+            user = user_entity.to_details_model()
+            user_fields = user.model_dump()
+            user_fields["permissions"] = self._permission.get_permissions(user)
+            user_details = UserDetails(**user_fields)
             return user_details
 
     def search(self, _subject: User, query: str) -> list[User]:
@@ -87,7 +107,7 @@ class UserService:
 
     def list(
         self, subject: User, pagination_params: PaginationParams
-    ) -> Paginated[User]:
+    ) -> Paginated[UserDetails]:
         """List Users.
 
         The subject must have the 'user.list' permission on the 'user/' resource.
@@ -97,7 +117,7 @@ class UserService:
             pagination_params: The pagination parameters.
 
         Returns:
-            Paginated[User]: The paginated list of users.
+            Paginated[UserDetails]: The paginated list of users.
 
         Raises:
             PermissionError: If the subject does not have the required permission."""
@@ -125,7 +145,7 @@ class UserService:
 
         statement = statement.offset(offset).limit(limit)
 
-        length = self._session.execute(length_statement).scalar()
+        length = self._session.execute(length_statement).scalar() or 0
         entities = self._session.execute(statement).scalars()
 
         return Paginated(

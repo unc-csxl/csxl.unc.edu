@@ -121,7 +121,7 @@ def instantiate_global_models(time: dict[str, datetime]):
     ]
 
 
-def test_request(overrides=None) -> ReservationRequest:
+def test_request(overrides: dict | None = None) -> ReservationRequest:
     # Generate default values for the Reservation
     reservation_data = {
         "start": datetime.now(),

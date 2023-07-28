@@ -2,7 +2,8 @@
 
 from .pagination import Paginated, PaginationParams
 from .permission import Permission
-from .user import User, ProfileForm, UnregisteredUser
+from .user import User, ProfileForm
+from .unregistered_user import UnregisteredUser
 from .role import Role
 from .role_details import RoleDetails
 from .organization import Organization
@@ -20,4 +21,22 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-__all__ = ["Paginated", "PaginationParams", "Permission", "User", "ProfileForm", "UnregisteredUser", "UserDetails", "Role", "RoleDetails", "Organization", "OrganizationDetail", "OrgRoleDetail", "OrgRole", "RegistrationDetail", "Registration", "Event", "EventDetail"]
+__all__ = [
+    "Paginated",
+    "PaginationParams",
+    "Permission",
+    "User",
+    "ProfileForm",
+    "UnregisteredUser",
+    "UserDetails",
+    "Role",
+    "RoleDetails",
+    "Organization",
+    "OrganizationDetail",
+    "OrgRoleDetail",
+    "OrgRole",
+    "RegistrationDetail",
+    "Registration",
+    "Event",
+    "EventDetail",
+]

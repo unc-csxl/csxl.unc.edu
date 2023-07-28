@@ -5,13 +5,13 @@ not automatically reset the id counter of the database. This helper function
 emits a SQL statament to do so."""
 
 from sqlalchemy import text
-from sqlalchemy.orm import Session, DeclarativeBase, MappedColumn
+from sqlalchemy.orm import Session, DeclarativeBase, InstrumentedAttribute
 
 
 def reset_table_id_seq(
     session: Session,
-    entity: DeclarativeBase,
-    entity_id_column: MappedColumn,
+    entity: type[DeclarativeBase],
+    entity_id_column: InstrumentedAttribute,
     next_id: int,
 ) -> None:
     """Reset the ID sequence of an entity table.

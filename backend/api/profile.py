@@ -7,38 +7,41 @@ from .authentication import authenticated_pid
 from ..services import UserService
 from ..models import UserDetails, User, UnregisteredUser, ProfileForm
 
-__authors__ = ['Kris Jordan']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 
 api = APIRouter(prefix="/api/profile")
-openapi_tags = { "name": "Profile", "description": "Update and retrieve your CSXL profile as an authenticated user."}
+openapi_tags = {
+    "name": "Profile",
+    "description": "Update and retrieve your CSXL profile as an authenticated user.",
+}
 
-PID = 0
-ONYEN = 1
 
-
-@api.get("", response_model=UserDetails | UnregisteredUser, tags=['Profile'])
-def read_profile(pid_onyen: tuple[int, str] = Depends(authenticated_pid), user_svc: UserService = Depends()):
+@api.get("", response_model=UserDetails | UnregisteredUser, tags=["Profile"])
+def read_profile(
+    pid_onyen: tuple[int, str] = Depends(authenticated_pid),
+    user_svc: UserService = Depends(),
+):
     """Retrieve a user's profile. If the user does not exist, return a NewUser.
 
     To handle new users, we rely only on the authenticated_pid dependency rather than
     registered_user.
     """
     pid, onyen = pid_onyen
-    user = user_svc.get(pid)
+    user = user_svc.get_details(pid)
     if user:
         return user
     else:
         return UnregisteredUser(pid=pid, onyen=onyen)
 
 
-@api.put("", response_model=User, tags=['Profile'])
+@api.put("", response_model=User, tags=["Profile"])
 def update_profile(
     profile: ProfileForm,
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_svc: UserService = Depends()
+    user_svc: UserService = Depends(),
 ):
     """Update a user's profile. If the user does not exist, create a new user.
 

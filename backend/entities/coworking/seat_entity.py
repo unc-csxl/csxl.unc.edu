@@ -1,9 +1,10 @@
 """Entity for Seats."""
 
 from sqlalchemy import Integer, String, Boolean, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session, joinedload
 from ..entity_base import EntityBase
 from ...models.coworking import SeatDetails
+from ...models.coworking.seat import SeatIdentity, Seat
 from typing import Self
 
 __authors__ = ["Kris Jordan"]
@@ -46,6 +47,19 @@ class SeatEntity(EntityBase):
             y=self.y,
             room=self.room.to_model(),
         )
+
+    @classmethod
+    def get_models_from_identities(
+        cls, session: Session, identities: list[SeatIdentity]
+    ) -> list[Seat]:
+        seat_ids = [seat.id for seat in identities]
+        entities = (
+            session.query(cls)
+            .filter(cls.id.in_(seat_ids))
+            .options(joinedload(SeatEntity.room))
+            .all()
+        )
+        return [entity.to_model() for entity in entities]
 
     @classmethod
     def from_model(cls, model: SeatDetails) -> Self:

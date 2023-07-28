@@ -1,7 +1,8 @@
 """Tests for the UserService class."""
 
 # Tested Dependencies
-from ...models import User, PaginationParams
+from ...models.user import User, NewUser
+from ...models.pagination import PaginationParams
 from ...services import UserService, PermissionService
 
 # Data Setup and Injected Service Fixtures
@@ -139,7 +140,7 @@ def test_list_enforces_permission(
 
 def test_create_user_as_user_registration(user_svc: UserService):
     """Test that a user can be created for registration purposes."""
-    new_user = User(pid=123456789, onyen="new_user", email="new_user@unc.edu")
+    new_user = NewUser(pid=123456789, onyen="new_user", email="new_user@unc.edu")
     created_user = user_svc.create(new_user, new_user)
     assert created_user is not None
     assert created_user.id is not None
@@ -147,7 +148,7 @@ def test_create_user_as_user_registration(user_svc: UserService):
 
 def test_create_user_as_root(user_svc: UserService):
     """Test that a user can be created by a root user as an administrator."""
-    new_user = User(pid=123456789, onyen="new_user", email="new_user@unc.edu")
+    new_user = NewUser(pid=123456789, onyen="new_user", email="new_user@unc.edu")
     created_user = user_svc.create(root, new_user)
     assert created_user is not None
     assert created_user.id is not None
@@ -157,7 +158,7 @@ def test_create_user_enforces_permission(
     user_svc: UserService, permission_svc_mock: PermissionService
 ):
     """Test that user.create on user/ is enforced by the create method"""
-    new_user = User(pid=123456789, onyen="new_user", email="new_user@unc.edu")
+    new_user = NewUser(pid=123456789, onyen="new_user", email="new_user@unc.edu")
     user_svc.create(root, new_user)
     permission_svc_mock.enforce.assert_called_with(root, "user.create", "user/")
 
@@ -168,6 +169,7 @@ def test_update_user_as_user(
     """Test that a user can update their own information."""
     permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
+    assert user is not None
     user.first_name = "Andy"
     user.last_name = "Ambassy"
     updated_user = user_svc.update(ambassador, user)
@@ -183,6 +185,7 @@ def test_update_user_as_root(
     """Test that a user can be updated by a root user as an administrator."""
     permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
+    assert user is not None
     user.first_name = "Andy"
     user.last_name = "Ambassy"
     updated_user = user_svc.update(root, user)
@@ -198,6 +201,7 @@ def test_update_user_enforces_permission(
     """Test that user.update on user/ is enforced by the update method"""
     permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
+    assert user is not None
     user_svc.update(root, user)
     permission_svc_mock.enforce.assert_called_with(
         root, "user.update", f"user/{user.id}"

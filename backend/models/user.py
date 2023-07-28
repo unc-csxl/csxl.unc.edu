@@ -1,7 +1,6 @@
 """User model serves as the data object for representing registered users across application layers."""
 
 from pydantic import BaseModel
-from .unregistered_user import UnregisteredUser
 
 
 __authors__ = ["Kris Jordan"]
@@ -9,29 +8,28 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-class User(UnregisteredUser, BaseModel):
+class UserIdentity(BaseModel):
+    """Users are identified in the system by their `id` field."""
+
+    id: int
+
+
+class User(UserIdentity, BaseModel):
     """A user is a registered user of the application."""
 
-    id: int | None = None
+    pid: int = 0
+    onyen: str = ""
+    first_name: str = ""
+    last_name: str = ""
+    email: str = ""
+    pronouns: str = ""
     github: str = ""
     github_id: int | None = None
     github_avatar: str | None = None
 
 
-class UserPartial(User, BaseModel):
-    pid: int | None = None
-    onyen: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
-    email: str | None = None
-    pronouns: str | None = None
-    github: str | None = None
-    github_id: int | None = None
-    github_avatar: str | None = None
-
-
-class UserIdentity(UserPartial, BaseModel):
-    id: int
+class NewUser(User, BaseModel):
+    id: int | None = None
 
 
 class ProfileForm(BaseModel):
