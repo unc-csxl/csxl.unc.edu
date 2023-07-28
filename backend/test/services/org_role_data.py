@@ -23,7 +23,15 @@ cads_leader_role = OrgRole(
     timestamp=datetime.datetime.fromtimestamp(1690732800),
 )
 
-org_roles = [cads_leader_role]
+super_role = OrgRole(
+    id=1,
+    user_id=1,
+    org_id=1,
+    membership_type=0,
+    timestamp=datetime.datetime.fromtimestamp(1690732800),
+)
+
+org_roles = [cads_leader_role, super_role]
 
 to_add = OrgRole(
     user_id=2,

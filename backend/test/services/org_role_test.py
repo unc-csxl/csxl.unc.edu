@@ -15,7 +15,7 @@ from .fixtures import org_role_svc_integration
 from .core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
-from .org_role_data import org_roles, to_add, to_star, cads_leader_role
+from .org_role_data import org_roles, to_add, to_star, cads_leader_role, super_role
 from .organization_data import cads
 from .user_data import root, user, cads_leader, ambassador
 
@@ -108,7 +108,7 @@ def test_create_org_role_as_user_for_self_higher_than_star(
 
 def test_delete_org_role_as_leader(org_role_svc_integration: OrgRoleService):
     """Test that the leader user is able to delete org roles."""
-    org_role_svc_integration.delete(cads_leader, cads_leader_role.id)
+    org_role_svc_integration.delete(root, super_role.id)
 
     try:
         org_role_svc_integration.get_from_id(cads.id)

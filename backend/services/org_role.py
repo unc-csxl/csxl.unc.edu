@@ -201,10 +201,11 @@ class OrgRoleService:
         # Ensure object exists
         if role and subject_role:
             # Ensure user has proper permissions to delete a role
-            if subject_role.membership_type >= 1:
-                # Delete object and commit
-                self._session.delete(role)
-                self._session.commit()
+            self.check_permissions(subject, role)
+
+            # Delete object and commit
+            self._session.delete(role)
+            self._session.commit()
         else:
             # Raise exception
             raise Exception(f"No role found with ID: {id}")
