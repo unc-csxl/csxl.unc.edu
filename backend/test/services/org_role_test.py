@@ -55,7 +55,7 @@ def test_get_from_orgid(org_role_svc_integration: OrgRoleService):
     """Test that org roles can be retrieved based on a given org ID."""
     fetched_org_roles = org_role_svc_integration.get_from_orgid(cads.id)
     assert fetched_org_roles is not None
-    assert len(fetched_org_roles) == 1
+    assert len(fetched_org_roles) == len(org_roles)
     assert isinstance(fetched_org_roles[0], OrgRoleDetail)
     assert fetched_org_roles[0].org_id == cads.id
 
