@@ -79,6 +79,20 @@ class UserEntity(EntityBase):
 
         Returns:
             User: A User model for API usage."""
+        return User(
+            id=self.id,
+            pid=self.pid,
+            onyen=self.onyen,
+            email=self.email,
+            first_name=self.first_name,
+            last_name=self.last_name,
+            github=self.github,
+            github_id=self.github_id,
+            github_avatar=self.github_avatar,
+            pronouns=self.pronouns,
+        )
+
+    def to_details_model(self) -> UserDetails:
         return UserDetails(
             id=self.id,
             pid=self.pid,

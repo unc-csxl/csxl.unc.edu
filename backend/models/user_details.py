@@ -5,11 +5,17 @@ from .organization import Organization
 from .org_role import OrgRole
 from .user import User
 
-class UserDetails(User):
+
+class UserPermissions(User):
+    """UserPermissions adds Permissions to the User model."""
+
+    permissions: list["Permission"] = []
+
+
+class UserDetails(UserPermissions):
     """UserDetails extends User model to include relations."""
-    permissions: list['Permission'] = []
+
     events: list[Event] = []
     event_associations: list[Registration] = []
     organizations: list[Organization] = []
     organization_associations: list[OrgRole] = []
-

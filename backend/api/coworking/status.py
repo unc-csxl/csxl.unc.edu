@@ -8,16 +8,26 @@ from ...services.coworking import StatusService
 from ...models import User
 from ...models.coworking import Status
 
-__authors__ = ['Kris Jordan']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 
 api = APIRouter(prefix="/api/coworking/status")
-openapi_tags = { "name": "Coworking", "description": "TODO"}
+openapi_tags = {
+    "name": "Coworking",
+    "description": "The XL's coworking facilities are reserved and managed via these endpoints.",
+}
 
 
-@api.get("", response_model=Status, tags=['Coworking'])
-def get_coworking_status(subject: User = Depends(registered_user), status_svc: StatusService = Depends()):
-    """TODO DOCUMENT"""
+@api.get("", response_model=Status, tags=["Coworking"])
+def get_coworking_status(
+    subject: User = Depends(registered_user), status_svc: StatusService = Depends()
+):
+    """Status endpoint supports the primary screen of the coworking features.
+
+    It returns information about upcoming, active reservations the subject holds.
+    It also fetches the current seat availability of the XL during operating hours.
+    Finally, it provides a list of upcoming hours.
+    """
     return status_svc.get_coworking_status(subject)

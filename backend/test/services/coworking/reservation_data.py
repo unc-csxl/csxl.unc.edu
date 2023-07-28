@@ -5,6 +5,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from ....entities.coworking import ReservationEntity
 from ....models.coworking import Reservation, ReservationState, ReservationRequest
+from ....models.user import UserIdentity
+from ....models.coworking.seat import SeatIdentity
 from .time import *
 
 from ..core_data import user_data
@@ -124,8 +126,8 @@ def test_request(overrides=None) -> ReservationRequest:
     reservation_data = {
         "start": datetime.now(),
         "end": datetime.now() + THIRTY_MINUTES,
-        "users": [user_data.ambassador],
-        "seats": [seat_data.monitor_seat_01],
+        "users": [UserIdentity(id=user_data.ambassador.id)],
+        "seats": [SeatIdentity(id=seat_data.monitor_seat_01.id)],
     }
 
     # Override the defaults if provided in the overrides dictionary

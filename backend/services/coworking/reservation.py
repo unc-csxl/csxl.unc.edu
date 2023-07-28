@@ -103,6 +103,7 @@ class ReservationService:
             .options(
                 joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
             )
+            .order_by(ReservationEntity.start)
             .all()
         )
 

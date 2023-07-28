@@ -3,7 +3,7 @@
 from pydantic import BaseModel, validator
 
 from .room import Room
-from .seat import Seat
+from .seat import SeatIdentity
 from .time_range import TimeRange
 from .availability_list import AvailabilityList
 
@@ -14,8 +14,7 @@ class RoomAvailability(Room, AvailabilityList):
     ...
 
 
-class SeatAvailability(Seat, AvailabilityList):
+class SeatAvailability(SeatIdentity, AvailabilityList):
     """A seat that is available for a given time range."""
 
     ...
-

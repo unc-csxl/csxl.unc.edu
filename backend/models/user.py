@@ -9,14 +9,29 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-
-class User(UnregisteredUser):
+class User(UnregisteredUser, BaseModel):
     """A user is a registered user of the application."""
 
     id: int | None = None
     github: str = ""
     github_id: int | None = None
     github_avatar: str | None = None
+
+
+class UserPartial(User, BaseModel):
+    pid: int | None = None
+    onyen: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
+    pronouns: str | None = None
+    github: str | None = None
+    github_id: int | None = None
+    github_avatar: str | None = None
+
+
+class UserIdentity(UserPartial, BaseModel):
+    id: int
 
 
 class ProfileForm(BaseModel):

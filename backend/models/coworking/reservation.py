@@ -1,8 +1,8 @@
 from enum import Enum
 from datetime import datetime
-from ...models import User
+from ...models.user import User, UserIdentity
 from .room import Room
-from .seat import Seat
+from .seat import Seat, SeatIdentity
 from .time_range import TimeRange
 
 
@@ -15,13 +15,15 @@ class ReservationState(str, Enum):
 
 
 class ReservationRequest(TimeRange):
-    id: int | None = None
+    users: list[UserIdentity] = []
+    seats: list[SeatIdentity] = []
+
+
+class Reservation(TimeRange):
+    id: int
+    state: ReservationState
     users: list[User] = []
     seats: list[Seat] = []
-
-
-class Reservation(ReservationRequest):
-    state: ReservationState
     room: Room | None = None
     created_at: datetime
     updated_at: datetime

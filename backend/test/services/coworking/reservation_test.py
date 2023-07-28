@@ -7,6 +7,8 @@ from ....services import PermissionService
 from ....services.coworking import ReservationService, PolicyService
 from ....services.coworking.reservation import ReservationError
 from ....models.coworking import Reservation, TimeRange, ReservationState
+from ....models.user import UserIdentity
+from ....models.coworking.seat import SeatIdentity
 
 # Some internal methods use SQLAlchemy layer and are tested here
 from sqlalchemy.orm import Session
@@ -348,7 +350,7 @@ def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationServi
         user_data.user,
         reservation_data.test_request(
             {
-                "users": [user_data.user],
+                "users": [UserIdentity(**user_data.user.model_dump())],
                 "start": reservation_data.reservation_1.end,
                 "end": reservation_data.reservation_1.end
                 + reservation_svc._policy_svc.walkin_initial_duration(user_data.user)
@@ -371,8 +373,10 @@ def test_draft_reservation_some_taken_seats(reservation_svc: ReservationService)
         reservation_data.test_request(
             {
                 "seats": [
-                    reservation_data.reservation_1.seats[0],
-                    seat_data.monitor_seat_01,
+                    SeatIdentity(
+                        **reservation_data.reservation_1.seats[0].model_dump()
+                    ),
+                    SeatIdentity(**seat_data.monitor_seat_01.model_dump()),
                 ]
             }
         ),
@@ -389,10 +393,13 @@ def test_draft_reservation_seat_availability_truncated(
         user_data.user,
         reservation_data.test_request(
             {
-                "users": [user_data.user],
+                "users": [UserIdentity(**user_data.user.model_dump())],
                 "start": reservation_data.reservation_1.end,
                 "end": operating_hours_data.today.end,
-                "seats": reservation_data.reservation_4.seats,
+                "seats": [
+                    SeatIdentity(**seat.model_dump())
+                    for seat in reservation_data.reservation_4.seats
+                ],
             }
         ),
     )
@@ -411,8 +418,11 @@ def test_draft_reservation_future(reservation_svc: ReservationService):
         user_data.user,
         reservation_data.test_request(
             {
-                "users": [user_data.user],
-                "seats": seat_data.reservable_seats,
+                "users": [UserIdentity(**user_data.user.model_dump())],
+                "seats": [
+                    SeatIdentity(**seat.model_dump())
+                    for seat in seat_data.reservable_seats
+                ],
                 "start": start,
                 "end": end,
             }
@@ -431,7 +441,10 @@ def test_future_reservation_unreservable(reservation_svc: ReservationService):
             user_data.ambassador,
             reservation_data.test_request(
                 {
-                    "seats": seat_data.unreservable_seats,
+                    "seats": [
+                        SeatIdentity(**seat.model_dump())
+                        for seat in seat_data.unreservable_seats
+                    ],
                     "start": start,
                     "end": end,
                 }
@@ -447,7 +460,9 @@ def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService)
             reservation_data.test_request(
                 {
                     "seats": [
-                        reservation_data.reservation_1.seats[0],
+                        SeatIdentity(
+                            **reservation_data.reservation_1.seats[0].model_dump()
+                        ),
                     ]
                 }
             ),
@@ -460,7 +475,9 @@ def test_draft_reservation_has_reservation_conflict(
     with pytest.raises(ReservationError):
         reservation = reservation_svc.draft_reservation(
             user_data.user,
-            reservation_data.test_request({"users": [user_data.user]}),
+            reservation_data.test_request(
+                {"users": [UserIdentity(**user_data.user.model_dump())]}
+            ),
         )
 
 
@@ -489,6 +506,11 @@ def test_draft_reservation_one_user_for_now(reservation_svc: ReservationService)
         reservation_svc.draft_reservation(
             user_data.ambassador,
             reservation_data.test_request(
-                {"users": [user_data.root, user_data.ambassador]}
+                {
+                    "users": [
+                        UserIdentity(**user_data.root.model_dump()),
+                        UserIdentity(**user_data.ambassador.model_dump()),
+                    ]
+                }
             ),
         )
