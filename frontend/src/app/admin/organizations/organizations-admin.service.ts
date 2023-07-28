@@ -130,4 +130,11 @@ export class OrganizationsAdminService {
         return this.http.delete<Organization>(`/api/organizations/${org_id}`);
     }
 
+    /** Get Org Role data for an organization
+     * @param org_id: id of the organization object to delete
+     */
+    getOrgRolesForOrg = (org_id: number) => {
+        return this.http.get<OrgRole[]>(`/api/orgroles/org/${org_id}`);
+    }
+
 }

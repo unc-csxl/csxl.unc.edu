@@ -26,6 +26,8 @@ export class AdminOrganizationDetailsComponent implements OnInit {
     public filteredUsers$: Observable<Profile[]> = this.filteredUsers.asObservable();
     public selectedUser?: Profile;
 
+    public orgRoles: OrgRole[] = [];
+
     /** Route information to be used in Admin Routing Module */
     public static Route = {
         path: 'organizations/:id',
@@ -48,6 +50,7 @@ export class AdminOrganizationDetailsComponent implements OnInit {
     ) {
         let data = route.snapshot.data as { organization: Organization };
         this.organization = data.organization;
+        this.getOrgManagers();
     }
 
     public ngOnInit() {
@@ -75,7 +78,9 @@ export class AdminOrganizationDetailsComponent implements OnInit {
      */
     public getOrgManagers = () => {
         // Filter the organization's OrgRoles for only manager roles
-        return this.organization.user_associations.filter((association) => association.membership_type >= 2);
+        this.organizationsAdminService.getOrgRolesForOrg(this.organization.id!).subscribe(orgRoles =>
+            this.orgRoles = orgRoles.filter(association => association.membership_type >= 2)
+        )
     }
 
     /** Event handler for adding a manager to the organization */
