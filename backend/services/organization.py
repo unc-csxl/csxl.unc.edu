@@ -13,7 +13,6 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-
 class OrganizationService:
     """Service that performs all of the actions on the `Organization` table"""
 
@@ -25,7 +24,7 @@ class OrganizationService:
         session: Session = Depends(db_session),
         permission: PermissionService = Depends(),
     ):
-        """Initializes the `OrganizationService` session"""
+        """Initializes the `OrganizationService` session, `PermissionService`, and `OrgRoleService`"""
         self._session = session
         self._permission = permission
 
@@ -50,7 +49,9 @@ class OrganizationService:
         If the organization's ID already exists in the table, it raises an error.
 
         Parameters:
+            subject: a valid User model representing the currently logged in User
             organization (OrganizationDetail): OrganizationDetail to add to table
+
         Returns:
             OrganizationDetail: Object added to table
         """
@@ -80,9 +81,13 @@ class OrganizationService:
         If none retrieved, a debug description is displayed.
 
         Parameters:
-            id (int): Unique organization ID
+            id: an int representing a unique organization ID
+
         Returns:
             OrganizationDetail: Object with corresponding ID
+
+        Raises:
+            Exception if no organization is found with the corresponding ID
         """
 
         # Query the organization with matching id
@@ -102,7 +107,8 @@ class OrganizationService:
         If none retrieved, a debug description is displayed.
 
         Parameters:
-            name (str): OrganizationDetail name
+            name: a str representing an Organization name
+
         Returns:
             OrganizationDetail: Object with corresponding name
         """
@@ -128,7 +134,9 @@ class OrganizationService:
         If none found with that id, a debug description is displayed.
 
         Parameters:
+            subject: a valid User model representing the currently logged in User
             organization (OrganizationDetail): OrganizationDetail to add to table
+
         Returns:
             OrganizationDetail: Updated organization object
         """
@@ -142,7 +150,6 @@ class OrganizationService:
             and o_r.membership_type > 0
         ]
 
-        print(org_roles)
         # If no role is found, raise an exception
         if len(org_roles) <= 0:
             raise UserPermissionError("organization.update", f"organizations")
@@ -177,7 +184,11 @@ class OrganizationService:
         If no item exists to delete, a debug description is displayed.
 
         Parameters:
-            id (int): Unique organization ID
+            subject: a valid User model representing the currently logged in User
+            id: an int representing a unique organization ID
+
+        Raises:
+            Exception if no organization is found with the corresponding ID
         """
         # Check if user has admin permissions
         self._permission.enforce(subject, "organization.create", f"organizations")

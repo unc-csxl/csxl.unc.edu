@@ -11,10 +11,10 @@ __license__ = "MIT"
 
 class OrgRole(BaseModel):
     """
-    Model to represent `Role` connections between users and organizations
+    Model to represent `OrgRole` connections between users and organizations
 
-    This model is based on the `RoleEntity` model, which defines the shape
-    of the `Role` database in the PostgreSQL database
+    This model is based on the `OrgRoleEntity` model, which defines the shape
+    of the `OrgRole` database in the PostgreSQL database
     """
 
     id: int | None = None
@@ -25,12 +25,6 @@ class OrgRole(BaseModel):
 
 
 class OrgRoleDetail(OrgRole):
-    """
-    Model to represent `Role` connections between users and organizations
-
-    This model is based on the `RoleEntity` model, which defines the shape
-    of the `Role` database in the PostgreSQL database
-    """
-
+    """Represent an OrgRole, but also include its associated organization and user objects."""
     organization: Organization = None
     user: User | None = None

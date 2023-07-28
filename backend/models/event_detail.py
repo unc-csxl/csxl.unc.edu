@@ -8,14 +8,7 @@ __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
 class EventDetail(Event):
-    """
-    Model to represent `EventDetail` connections between users and organizations
-    
-    This model is based on the `EventEntity` model, which defines the shape
-    of the `EventDetail` database in the PostgreSQL database
-    """
-    
-    organization: Organization # Stores the organization hosting the event (generated from relationship with "organization" table)
-
+    """Represent an Event, but also include its organization object, registered users, and registration objects."""
+    organization: Organization
     users: list[User] = []
     user_associations: list[Registration] = []

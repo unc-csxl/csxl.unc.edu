@@ -1,3 +1,5 @@
+"""Definition of SQLAlchemy table-backed object mapping entity for OrganizationEntity."""
+
 from sqlalchemy import Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
@@ -9,7 +11,6 @@ from .event_entity import EventEntity
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
-
 
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `OrganizationDetail` table"""

@@ -16,22 +16,24 @@ __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
 class EventService:
-    """Service that performs all of the actions on the `EventDetail` table"""
+    """Service that performs all of the actions on the `Event` table"""
 
     # Current SQLAlchemy Session
     _session: Session
 
     def __init__(self, session: Session = Depends(db_session), org_roles: OrgRoleService = Depends()):
-        """Initializes the `EventService` session"""
+        """Initializes the `EventService` session and `OrgRoleService`"""
         self._session = session
         self._org_roles = org_roles
 
     def all(self) -> list[EventDetail]:
         """
         Retrieves all events from the table
+
         Returns:
             list[EventDetail]: List of all `EventDetail`
         """
+
         # Select all entries in `EventDetail` table
         query = select(EventEntity)
         entities = self._session.scalars(query).all()
@@ -40,6 +42,19 @@ class EventService:
         return [entity.to_model() for entity in entities]
     
     def check_permissions(self, subject: User, event: Event, action: str, resource: str):
+        """
+        Determine if currently logged in user has permission to make changes to the event
+
+        Parameters:
+            subject: a valid User model representing the currently logged in User
+            event: a valid Event model
+            action: a str representing the action attempted
+            resource: a str representing the path of the action
+
+        Raises:
+            UserPermissionError if user does not have permission make changes to the event
+        """
+
         # Check if user has manager permissions for the organization
         org_roles = [org_role for org_role in self._org_roles.get_from_userid(subject.id) if
             org_role.org_id == event.org_id and org_role.membership_type > 0]
@@ -53,11 +68,18 @@ class EventService:
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
         If the event's ID already exists in the table, raise an exception.
+        
         Parameters:
+            subject: a valid User model representing the currently logged in User
             event (EventDetail): EventDetail to add to table
+
         Returns:
             EventDetail: Object added to table
+
+        Raises:
+            Exception if the role already exists in the backend database
         """
+
         # Ensure user manages organization corresponding to event
         self.check_permissions(subject, event, 'event.create', f'events')
 
@@ -80,8 +102,10 @@ class EventService:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
+
         Parameters:
-            id (int): Unique event ID
+            id: an int representing a unique event ID
+
         Returns:
             EventDetail: Object with corresponding ID
         """
@@ -100,8 +124,10 @@ class EventService:
     def get_from_org_id(self, org_id: int) -> list[EventDetail]:
         """
         Get all the events hosted by an organization with id
+
         Parameters:
-            org_id (int): Unique organization ID
+            org_id: an int representing a unique organization ID
+
         Returns:
             list[EventDetail]: Object with corresponding organization ID
         """
@@ -113,9 +139,11 @@ class EventService:
     def get_from_time_range(self, start: datetime, end: datetime) -> list[EventDetail]:
         """
         Get all the events within a time/date range
+
         Parameters:
-            start (datetime): Start time of range
-            end (datetime): End time of range
+            start: a datetime object representing the start time of range
+            end: a datetime object represneting the end time of range
+
         Returns:
             list[EventDetail]: Object with corresponding organization ID
         """
@@ -128,10 +156,15 @@ class EventService:
         """
         Update the event
         If none found with that id, a debug description is displayed.
+
         Parameters:
-            event (EventDetail): EventDetail to add to table
+            event: a valid EventDetail model
+
         Returns:
             EventDetail: Updated event object
+
+        Raises:
+            Exception if the requested event does not exist in the backend database
         """
         # Ensure user manages organization corresponding to event
         self.check_permissions(subject, event, 'event.update', f'events')
@@ -159,8 +192,13 @@ class EventService:
         """
         Delete the event based on the provided ID.
         If no item exists to delete, a debug description is displayed.
+
         Parameters:
-            id (int): Unique event ID
+            subject: a valid User model representing the currently logged in User
+            id: an int representing a unique event ID
+
+        Raises:
+            Exception if no event is found with the corresponding ID
         """
 
         # Find object to delete

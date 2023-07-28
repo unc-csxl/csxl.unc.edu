@@ -1,3 +1,5 @@
+"""Definition of SQLAlchemy table-backed object mapping entity for OrgRoleEntity."""
+
 from sqlalchemy import ForeignKey, Integer, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
@@ -11,9 +13,8 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-
 class OrgRoleEntity(EntityBase):
-    """Serves as the database model schema defining the shape of the `Role` table"""
+    """Serves as the database model schema defining the shape of the `OrgRole` table"""
 
     __tablename__ = "org_role"
 
@@ -21,11 +22,11 @@ class OrgRoleEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # User ID for the role
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
-    # OrganizationDetail ID for the role
+    # Organization ID for the role
     org_id: Mapped[int] = mapped_column(ForeignKey("organization.id"), primary_key=True)
     # Type of membership (0 = Member, 1 = Executive, 2 = Manager)
     membership_type: Mapped[int] = mapped_column(Integer)
-    # Time of the event
+    # Time role was created
     timestamp: Mapped[datetime] = mapped_column(DateTime)
 
     # Bi-Directional Relationship Fields
@@ -42,7 +43,7 @@ class OrgRoleEntity(EntityBase):
         Class method that converts a `Role` object into a `RoleEntity`
 
         Parameters:
-            - model (Role): Model to convert into an entity
+            model (Role): Model to convert into an entity
 
         Returns:
             RoleEntity: Entity created from model

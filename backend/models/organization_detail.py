@@ -8,12 +8,9 @@ __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
 class OrganizationDetail(Organization):
-    """
-    Model to represent an `OrganizationDetail` object
+    """Represent a Role, but also include its events, members (users), and organization roles (user_associations)."""
     
-    This model is based on the `OrganizationEntity` model, which defines the shape
-    of the `OrganizationDetail` database in the PostgreSQL database
-    """
-    events: list[Event] = [] # Stores the list of events that the OrganizationDetail has (generated from relationship with "event" table)
+    # Stores the list of events that the OrganizationDetail has (generated from relationship with "event" table)
+    events: list[Event] = []
     users: list[User] = []
     user_associations: list[OrgRole] = []

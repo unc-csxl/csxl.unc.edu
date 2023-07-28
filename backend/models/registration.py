@@ -21,11 +21,6 @@ class Registration(BaseModel):
   status: int
 
 class RegistrationDetail(Registration):
-  """
-  Model to represent `RegistrationDetail` connections between users and organizations
-    
-  This model is based on the `RegistrationEntity` model, which defines the shape
-  of the `Registrations` database in the PostgreSQL database
-  """
+  """Represent a Registration, but also include its associated event and user objects."""
   event: Event
   user: User
