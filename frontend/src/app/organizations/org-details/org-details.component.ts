@@ -3,16 +3,15 @@ import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angul
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable, Subscription, map, tap } from 'rxjs';
-import { OrgDetailsService } from './org-details.service';
-import { Organization, OrgRole, Profile } from '../models.module';
+import { Organization, OrgRole, Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { profileResolver } from '../profile/profile.resolver';
-import { OrgRosterService } from '../org-roster/org-roster.service';
+import { profileResolver } from 'src/app/profile/profile.resolver';
+import { OrganizationsService } from '../organizations.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   let orgId = route.params['id'];
 
-  let orgDetailSvc = inject(OrgDetailsService);
+  let orgDetailSvc = inject(OrganizationsService);
   let org$ = orgDetailSvc.getOrganization(orgId);
   return org$.pipe(map(org => {
     if (org) {
@@ -53,8 +52,7 @@ export class OrgDetailsComponent {
   public executives: OrgRole[] = [];
 
   constructor(
-    private orgDetailsService: OrgDetailsService,
-    private orgRosterService: OrgRosterService,
+    private orgService: OrganizationsService,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
     private route: ActivatedRoute,
@@ -73,11 +71,11 @@ export class OrgDetailsComponent {
     this.route.params.subscribe(params => this.id = params["id"]);
 
     /** Retrieve Organization using OrgDetailsService */
-    this.organization$ = this.orgDetailsService.getOrganization(this.id);
+    this.organization$ = this.orgService.getOrganizationDetail(this.id);
     this.organization$.subscribe(org => this.organization = org);
     this.organization$.subscribe(org => {
       this.organization = org;
-      this.orgRosterService.getRolesForOrganization(org.id!).subscribe((associations) => {
+      this.orgService.getRolesForOrganization(org.id!).subscribe((associations) => {
         associations.forEach((association) => {
           if (association.membership_type >= 1) {
             this.executives.push(association);
@@ -113,7 +111,7 @@ export class OrgDetailsComponent {
     else {
       if (this.profile && this.profile.first_name) {
         // Call the orgDetailsService's toggleOrganizationMembership() method.
-        this.orgDetailsService.toggleOrganizationMembership(+this.id);
+        this.orgService.toggleOrganizationMembership(+this.id);
       }
     }
   }
@@ -124,7 +122,7 @@ export class OrgDetailsComponent {
    */
   deleteEvent = async (event_id: number) => {
     // Call the orgDetailsService's deleteEvent() method.
-    this.orgDetailsService.deleteEvent(event_id);
+    this.orgService.deleteEvent(event_id);
 
     // Open snack bar to notify user that the event was deleted.
     this.snackBar.open("Deleted event", "", { duration: 2000 })

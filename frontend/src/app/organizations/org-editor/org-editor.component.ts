@@ -3,11 +3,11 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { OrganizationSummary, Profile } from 'src/app/models.module';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { OrgEditorService } from './org-editor.service';
 import { Observable } from 'rxjs';
-import { profileResolver } from '../profile/profile.resolver';
-import { permissionGuard } from '../permission.guard';
-import { PermissionService } from '../permission.service';
+import { profileResolver } from 'src/app/profile/profile.resolver';
+import { permissionGuard } from 'src/app/permission.guard';
+import { PermissionService } from 'src/app/permission.service';
+import { OrganizationsService } from '../organizations.service';
 
 
 @Component({
@@ -55,7 +55,13 @@ export class OrgEditorComponent {
     public: false
   });
 
-  constructor(private route: ActivatedRoute, private router: Router, protected formBuilder: FormBuilder, protected snackBar: MatSnackBar, private orgEditorService: OrgEditorService, private permission: PermissionService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    protected formBuilder: FormBuilder,
+    protected snackBar: MatSnackBar,
+    private orgService: OrganizationsService,
+    private permission: PermissionService) {
     /** Add validators to the form */
     const form = this.orgForm;
     form.get('name')?.addValidators(Validators.required);
@@ -102,7 +108,7 @@ export class OrgEditorComponent {
 
     /** Retrieve the event with the eventEditorService */
     if (this.org_id != -1) {
-      orgEditorService.getOrganization(this.org_id).subscribe((org) => this.org = org);
+      orgService.getOrganization(this.org_id).subscribe((org) => this.org = org);
     }
   }
 
@@ -131,7 +137,7 @@ export class OrgEditorComponent {
     /** If you are editing an org (id not default -1) */
     if (this.org_id != -1) {
       /** Get the organization and set the form to the org's values */
-      this.orgEditorService.getOrganization(this.org_id).subscribe((org) => {
+      this.orgService.getOrganization(this.org_id).subscribe((org) => {
         this.org = org;
 
         this.orgForm.setValue({
@@ -161,7 +167,7 @@ export class OrgEditorComponent {
   onSubmit = () => {
     if (this.orgForm.valid) {
       Object.assign(this.org, this.orgForm.value)
-      this.orgEditorService.updateOrganization(this.org).subscribe(
+      this.orgService.updateOrganization(this.org).subscribe(
         {
           next: (org) => this.onSuccess(org),
           error: (err) => this.onError(err)

@@ -1,21 +1,20 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
-import { profileResolver } from '../profile/profile.resolver';
+import { profileResolver } from 'src/app/profile/profile.resolver';
 import { Observable, ReplaySubject, debounceTime, filter, map, mergeMap, startWith } from 'rxjs';
-import { OrgRole, OrgRoleSummary, Organization, OrganizationSummary, Profile } from '../models.module';
-import { PermissionService } from '../permission.service';
-import { OrgRosterService } from './org-roster.service';
-import { OrgDetailsService } from '../org-details/org-details.service';
+import { OrgRole, OrgRoleSummary, Organization, OrganizationSummary, Profile } from 'src/app/models.module';
+import { PermissionService } from 'src/app/permission.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { OrganizationsAdminService } from '../admin/organizations/organizations-admin.service';
+import { OrganizationsAdminService } from 'src/app/admin/organizations/organizations-admin.service';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { ProfileService } from '../profile/profile.service';
+import { ProfileService } from 'src/app/profile/profile.service';
+import { OrganizationsService } from '../organizations.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   let orgId = route.params['id'];
 
-  let orgDetailSvc = inject(OrgDetailsService);
+  let orgDetailSvc = inject(OrganizationsService);
   let org$ = orgDetailSvc.getOrganization(orgId);
   return org$.pipe(map(org => {
     if (org) {
@@ -70,8 +69,7 @@ export class OrgRosterComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private orgRosterService: OrgRosterService,
-    private orgDetailService: OrgDetailsService,
+    private orgService: OrganizationsService,
     private organizationsAdminService: OrganizationsAdminService,
     private permission: PermissionService,
     private profileService: ProfileService,
@@ -118,10 +116,10 @@ export class OrgRosterComponent {
 
     /** Retrieve the organization with the orgDetailService */
     if (this.org_id != -1) {
-      orgDetailService.getOrganization(`${this.org_id}`).subscribe((org) => this.org = org);
+      orgService.getOrganizationDetail(`${this.org_id}`).subscribe((org) => this.org = org);
 
       /** Retrieve the organization roles  */
-      orgRosterService.getRolesForOrganization(this.org_id).subscribe((orgRoles) => {
+      orgService.getRolesForOrganization(this.org_id).subscribe((orgRoles) => {
         this.orgRoles = orgRoles.sort((a, b) => b.membership_type - a.membership_type)
       })
     }
@@ -146,7 +144,7 @@ export class OrgRosterComponent {
       // First, ask user to confirm using a snackbar.
       let deleteRoleSnackBarRef = this.snackBar.open("Are you sure you want to remove this member?", "Yes");
       deleteRoleSnackBarRef.onAction().subscribe(() => {
-        this.orgRosterService.deleteRoleFromOrganization(id).subscribe(() => {
+        this.orgService.deleteRoleFromOrganization(id).subscribe(() => {
           console.log('Delete successful.');
           location.reload();
         })
@@ -158,7 +156,7 @@ export class OrgRosterComponent {
   promoteMember = async (role: OrgRoleSummary) => {
 
     if (this.adminPermission) {
-      this.orgRosterService.promoteRole(role).subscribe(() => {
+      this.orgService.promoteRole(role).subscribe(() => {
         console.log('Promotion successful.');
         location.reload();
       });
@@ -172,7 +170,7 @@ export class OrgRosterComponent {
       // First, ask user to confirm using a snackbar.
       let demoteRoleSnackBarRef = this.snackBar.open("Are you sure you want to demote this member?", "Yes");
       demoteRoleSnackBarRef.onAction().subscribe(() => {
-        this.orgRosterService.demoteRole(role).subscribe(() => {
+        this.orgService.demoteRole(role).subscribe(() => {
           console.log('Demotion successful.');
           location.reload();
         });

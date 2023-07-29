@@ -5,9 +5,9 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventSummary, Profile } from 'src/app/models.module';
-import { OrgDetailsService } from '../../org-details/org-details.service';
 import { profileResolver } from '../../profile/profile.resolver';
 import { EventsService } from '../events.service';
+import { OrganizationsService } from 'src/app/organizations/organizations.service';
 
 @Component({
   selector: 'app-event-editor',
@@ -51,7 +51,7 @@ export class EventEditorComponent {
     private route: ActivatedRoute,
     private router: Router,
     protected formBuilder: FormBuilder,
-    protected orgDetailsService: OrgDetailsService,
+    protected orgService: OrganizationsService,
     protected snackBar:
       MatSnackBar,
     private eventService: EventsService) {
@@ -134,7 +134,7 @@ export class EventEditorComponent {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value)
       if (this.event_id == -1) {
-        this.orgDetailsService.create(this.event).subscribe(
+        this.orgService.create(this.event).subscribe(
           {
             next: (event) => this.onSuccess(event),
             error: (err) => this.onError(err)

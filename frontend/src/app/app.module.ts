@@ -43,15 +43,15 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
-import { OrganizationsComponent } from './organizations/organizations.component';
 import { FilterPipe } from './filter/filter.pipe';
 import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
 import { EventsFilterPipe } from './events/events-filter/events-filter.pipe';
 import { ProfileEventsFilterPipe } from './profile/profile-page/profile-events-filter/event-filter.pipe';
-import { OrgDetailsComponent } from './org-details/org-details.component';
+import { OrgDetailsComponent } from './organizations/org-details/org-details.component';
 import { EventEditorComponent } from './events/event-editor/event-editor.component';
-import { OrgEditorComponent } from './org-editor/org-editor.component';
-import { OrgRosterComponent } from './org-roster/org-roster.component';
+import { OrganizationsPageComponent } from './organizations/organizations-page/organizations-page.component';
+import { OrgEditorComponent } from './organizations/org-editor/org-editor.component';
+import { OrgRosterComponent } from './organizations/org-roster/org-roster.component';
 
 /* UI Widgets */
 import { SocialMediaIcon } from './widgets/social-media-icon/social-media-icon.widget';
@@ -87,7 +87,6 @@ import { EventsPageComponent } from './events/events-page/events-page.component'
     HomeComponent,
     GateComponent,
     ProfileEditorComponent,
-    OrganizationsComponent,
     FilterPipe,
     ProfilePageComponent,
     ProfileEventsFilterPipe,
@@ -120,7 +119,8 @@ import { EventsPageComponent } from './events/events-page/events-page.component'
     CoworkingTentativeDropInCard,
     CoworkingInProgressDropInCard,
     CoworkingExpiredDropInCard,
-    EventsPageComponent
+    EventsPageComponent,
+    OrganizationsPageComponent
   ],
   imports: [
     BrowserModule,

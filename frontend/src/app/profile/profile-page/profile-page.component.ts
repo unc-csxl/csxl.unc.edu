@@ -7,7 +7,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ProfileService } from '../profile.service';
 import { Event, OrganizationSummary, Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { OrgDetailsService } from 'src/app/org-details/org-details.service';
+import { OrganizationsService } from 'src/app/organizations/organizations.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -19,9 +19,9 @@ export class ProfilePageComponent {
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
     path: 'profile',
-    component: ProfilePageComponent, 
-    title: 'Profile', 
-    canActivate: [isAuthenticated], 
+    component: ProfilePageComponent,
+    title: 'Profile',
+    canActivate: [isAuthenticated],
     resolve: { profile: profileResolver }
   };
 
@@ -31,10 +31,15 @@ export class ProfilePageComponent {
   /** Store the list of events. */
   public events: Event[];
 
-    /** Store the list of organizations. */
+  /** Store the list of organizations. */
   public organizations: OrganizationSummary[];
 
-  constructor(route: ActivatedRoute, private router: Router, protected profileService: ProfileService, protected orgDetailsService: OrgDetailsService, protected snackBar: MatSnackBar) {
+  constructor(
+    route: ActivatedRoute,
+    private router: Router,
+    protected profileService: ProfileService,
+    protected orgService: OrganizationsService,
+    protected snackBar: MatSnackBar) {
     /** Get currently-logged-in user. */
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
@@ -79,7 +84,7 @@ export class ProfilePageComponent {
 
     // If user is an admin/exec, they should not be able to unstar the organization.
     const filter = this.profile.organization_associations.filter(oa => oa.org_id == orgId);
-    if(filter && filter.length > 0 && filter[0].membership_type !== 0) {
+    if (filter && filter.length > 0 && filter[0].membership_type !== 0) {
       if (filter[0].membership_type == 1) {
         this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });
       } else if (filter[0].membership_type == 2) {
@@ -87,10 +92,10 @@ export class ProfilePageComponent {
       }
     }
     else {
-      if(this.profile && this.profile.first_name) {
-        // Call the orgDetailsService's starOrganization() method.
-        this.orgDetailsService.starOrganization(orgId);
-          
+      if (this.profile && this.profile.first_name) {
+        // Call the orgDetailsService's toggleOrganizationMembership() method.
+        this.orgService.toggleOrganizationMembership(orgId);
+
         // Set slight delay so page reloads after API calls finish running.
         await new Promise(f => setTimeout(f, 200));
 
@@ -99,5 +104,5 @@ export class ProfilePageComponent {
       }
     }
   }
-  
+
 }
