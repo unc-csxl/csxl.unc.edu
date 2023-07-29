@@ -69,6 +69,10 @@ import { RosterDropdown } from './widgets/roster-dropdown/roster-dropdown.widget
 import { RosterListCard } from './widgets/roster-list-card/roster-list-card.widget';
 import { OrgDetailsRosterCard } from './widgets/org-details-roster-card/org-details-roster-card.widget';
 import { RosterAddMemberCard } from './widgets/roster-add-member-card/roster-add-member-card.widget';
+import { CoworkingTopCard } from './widgets/coworking-top-card/coworking-top-card.widget';
+import { CoworkingDropInCard } from './widgets/coworking-dropin-card/coworking-dropin-card.widget';
+import { CoworkingReserveCard } from './widgets/coworking-reserve-card/coworking-reserve-card.widget';
+import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +91,8 @@ import { RosterAddMemberCard } from './widgets/roster-add-member-card/roster-add
     OrgDetailsComponent,
     EventEditorComponent,
     OrgEditorComponent,
+    CoworkingPageComponent,
+
     SocialMediaIcon,
     OrganizationCard,
     SearchBar,
@@ -102,7 +108,10 @@ import { RosterAddMemberCard } from './widgets/roster-add-member-card/roster-add
     RosterDropdown,
     RosterListCard,
     OrgDetailsRosterCard,
-    RosterAddMemberCard
+    RosterAddMemberCard,
+    CoworkingTopCard,
+    CoworkingDropInCard,
+    CoworkingReserveCard
   ],
   imports: [
     BrowserModule,

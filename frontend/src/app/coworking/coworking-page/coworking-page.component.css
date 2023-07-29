@@ -1,0 +1,44 @@
+/** 
+* coworking.component.css 
+* 
+* The coworking page is the hub for students to reserve materials from
+* the CSXL coworking space.
+*
+*/
+
+.coworking-grid {
+    display: grid;
+    padding: 24px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0fr 2fr;
+    row-gap: 15px;
+    column-gap: 24px;
+}
+
+.coworking-top-card-container {
+    grid-column: span 3;
+}
+
+.dropin-card-container {
+    grid-area: span 2;
+}
+
+.reserve-card-container {
+    grid-area: span 1;
+}
+
+/** Make cards display in one column, with the event card appearing last */
+@media only screen and (max-device-width: 730px) {
+    .coworking-grid {
+        display: grid;
+        padding: 24px;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        row-gap: 15px;
+        column-gap: 24px;
+    }
+
+    .dropin-card-container {
+        order: 1;
+    }
+}
