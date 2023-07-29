@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Role, RoleDetails } from 'src/app/role';
 import { Observable } from 'rxjs';
-import { Permission, Profile } from 'src/app/models.module';
+import { Permission, Profile, Role, RoleDetails } from 'src/app/models.module';
 
 @Injectable({ providedIn: 'root' })
 export class RoleAdminService {

@@ -152,3 +152,17 @@ export interface Organization {
   heel_life: string
   public: boolean
 }
+
+/** Interface for the Role Type */
+export interface Role {
+  id: number;
+  name: string;
+}
+
+/** Interface for the RoleDetails Type */
+export interface RoleDetails {
+  id: number;
+  name: string;
+  permissions: Permission[];
+  users: Profile[];
+}

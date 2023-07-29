@@ -5,9 +5,8 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { debounceTime, filter, mergeMap, Observable, of, ReplaySubject, startWith } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
 import { ProfileService } from 'src/app/profile/profile.service';
-import { RoleDetails } from 'src/app/role';
 import { RoleAdminService } from '../role-admin.service';
-import { Permission, Profile } from 'src/app/models.module';
+import { Permission, Profile, RoleDetails } from 'src/app/models.module';
 
 @Component({
     selector: 'app-admin-role-details',
@@ -33,10 +32,10 @@ export class AdminRoleDetailsComponent implements OnInit {
         component: AdminRoleDetailsComponent,
         title: 'Role Administration',
         canActivate: [permissionGuard('role.details', 'role/{id}')],
-        resolve: { 
+        resolve: {
             role: (route: ActivatedRouteSnapshot) => {
                 const id = parseInt(route.paramMap.get('id')!);
-                return inject(RoleAdminService).details(id); 
+                return inject(RoleAdminService).details(id);
             }
         }
     }

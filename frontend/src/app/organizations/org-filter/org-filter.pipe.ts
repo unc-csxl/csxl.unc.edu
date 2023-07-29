@@ -3,12 +3,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OrganizationSummary } from '../models.module';
+import { OrganizationSummary } from '../../models.module';
 
 @Pipe({
-  name: 'filter'
+  name: 'organizationFilter'
 })
-export class FilterPipe implements PipeTransform {
+export class OrganizationFilterPipe implements PipeTransform {
 
   /** Returns a mapped array of organizations that start with the input string (if search query provided). 
    * @param {Observable<OrganizationSummary[]>} organizations: observable list of valid Organization models
@@ -19,10 +19,10 @@ export class FilterPipe implements PipeTransform {
     // Sort the organizations list alphabetically by name
     organizations = organizations.pipe(
       map(orgs => orgs.sort((a: OrganizationSummary, b: OrganizationSummary) => {
-        if(a.name.toLowerCase() < b.name.toLowerCase()) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
         }
-        else if(a.name.toLowerCase() > b.name.toLowerCase()) {
+        else if (a.name.toLowerCase() > b.name.toLowerCase()) {
           return 1;
         }
         else {
@@ -30,12 +30,12 @@ export class FilterPipe implements PipeTransform {
         }
       }))
     )
-    
+
     // If a search query is provided, return the organizations that start with the search query.
     if (searchQuery) {
       return organizations.pipe(
         map(organizations => organizations
-          .filter(org => 
+          .filter(org =>
             org.name.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
             org.short_description.toLowerCase().includes(searchQuery.toLowerCase()) ||
             org.long_description.toLowerCase().includes(searchQuery.toLowerCase()))));

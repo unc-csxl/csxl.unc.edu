@@ -1,8 +1,8 @@
-import { FilterPipe } from './filter.pipe';
+import { OrganizationFilterPipe } from './org-filter.pipe';
 
 describe('FilterPipe', () => {
   it('create an instance', () => {
-    const pipe = new FilterPipe();
+    const pipe = new OrganizationFilterPipe();
     expect(pipe).toBeTruthy();
   });
 });

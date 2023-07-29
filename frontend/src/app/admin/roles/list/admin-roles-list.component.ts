@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Role } from 'src/app/role';
+import { Role } from 'src/app/models.module';
 import { AdminRoleDetailsComponent } from '../details/admin-role-details.component';
 import { RoleAdminService } from '../role-admin.service';
 

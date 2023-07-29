@@ -43,7 +43,7 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
-import { FilterPipe } from './filter/filter.pipe';
+import { OrganizationFilterPipe } from './organizations/org-filter/org-filter.pipe';
 import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
 import { EventsFilterPipe } from './events/events-filter/events-filter.pipe';
 import { ProfileEventsFilterPipe } from './profile/profile-page/profile-events-filter/event-filter.pipe';
@@ -87,7 +87,7 @@ import { EventsPageComponent } from './events/events-page/events-page.component'
     HomeComponent,
     GateComponent,
     ProfileEditorComponent,
-    FilterPipe,
+    OrganizationFilterPipe,
     ProfilePageComponent,
     ProfileEventsFilterPipe,
     EventsFilterPipe,
