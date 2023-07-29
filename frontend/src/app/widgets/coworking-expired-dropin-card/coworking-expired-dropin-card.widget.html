@@ -1,0 +1,21 @@
+<mat-card>
+    <!-- Card Header -->
+    <mat-card-header class="dropin-header">
+        <mat-card-title>Drop-in Reservation</mat-card-title>
+    </mat-card-header>
+
+    <!-- Card Content -->
+    <mat-card-content>
+        <p>Your drop-in reservation has expired.</p>
+        <!-- Expiration Section -->
+        <mat-divider />
+        <h4>Reservation Expired at 1:25PM.</h4>
+        <p>Please pack up your belongings, gather any of your trash, and tidy up before departing. Thank you for
+            visiting the CSXL coworking space!</p>
+        <!-- Check Out Section -->
+        <mat-divider />
+        <a [routerLink]="[]">
+            <button mat-raised-button type="submit" color="accent" class="cancel-button">Complete Check Out</button>
+        </a>
+    </mat-card-content>
+</mat-card>

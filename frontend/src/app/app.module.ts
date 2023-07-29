@@ -75,6 +75,9 @@ import { CoworkingDropInCard } from './widgets/coworking-dropin-card/coworking-d
 import { CoworkingReserveCard } from './widgets/coworking-reserve-card/coworking-reserve-card.widget';
 import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
 import { ReservationEditorComponent } from './coworking/reservation-editor/reservation-editor.component';
+import { CoworkingTentativeDropInCard } from './widgets/coworking-tentative-dropin-card/coworking-tentative-dropin-card.widget';
+import { CoworkingInProgressDropInCard } from './widgets/coworking-inprogress-dropin-card/coworking-inprogress-dropin-card.widget';
+import { CoworkingExpiredDropInCard } from './widgets/coworking-expired-dropin-card/coworking-expired-dropin-card.widget';
 
 @NgModule({
   declarations: [
@@ -114,7 +117,10 @@ import { ReservationEditorComponent } from './coworking/reservation-editor/reser
     CoworkingTopCard,
     CoworkingDropInCard,
     CoworkingReserveCard,
-    ReservationEditorComponent
+    ReservationEditorComponent,
+    CoworkingTentativeDropInCard,
+    CoworkingInProgressDropInCard,
+    CoworkingExpiredDropInCard
   ],
   imports: [
     BrowserModule,
