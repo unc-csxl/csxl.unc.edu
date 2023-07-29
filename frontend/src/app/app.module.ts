@@ -45,12 +45,11 @@ import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { OrganizationsComponent } from './organizations/organizations.component';
 import { FilterPipe } from './filter/filter.pipe';
-import { EventsComponent } from './events/events.component';
 import { ProfilePageComponent } from './profile/profile-page/profile-page.component';
-import { EventFilterPipe } from './filter/event-filter.pipe';
-import { EventsFilterPipe } from './eventsFilter/eventsFilter.pipe';
+import { EventsFilterPipe } from './events/events-filter/events-filter.pipe';
+import { ProfileEventsFilterPipe } from './profile/profile-page/profile-events-filter/event-filter.pipe';
 import { OrgDetailsComponent } from './org-details/org-details.component';
-import { EventEditorComponent } from './event-editor/event-editor.component';
+import { EventEditorComponent } from './events/event-editor/event-editor.component';
 import { OrgEditorComponent } from './org-editor/org-editor.component';
 import { OrgRosterComponent } from './org-roster/org-roster.component';
 
@@ -78,6 +77,7 @@ import { ReservationEditorComponent } from './coworking/reservation-editor/reser
 import { CoworkingTentativeDropInCard } from './widgets/coworking-tentative-dropin-card/coworking-tentative-dropin-card.widget';
 import { CoworkingInProgressDropInCard } from './widgets/coworking-inprogress-dropin-card/coworking-inprogress-dropin-card.widget';
 import { CoworkingExpiredDropInCard } from './widgets/coworking-expired-dropin-card/coworking-expired-dropin-card.widget';
+import { EventsPageComponent } from './events/events-page/events-page.component';
 
 @NgModule({
   declarations: [
@@ -89,9 +89,8 @@ import { CoworkingExpiredDropInCard } from './widgets/coworking-expired-dropin-c
     ProfileEditorComponent,
     OrganizationsComponent,
     FilterPipe,
-    EventsComponent,
     ProfilePageComponent,
-    EventFilterPipe,
+    ProfileEventsFilterPipe,
     EventsFilterPipe,
     OrgDetailsComponent,
     EventEditorComponent,
@@ -120,7 +119,8 @@ import { CoworkingExpiredDropInCard } from './widgets/coworking-expired-dropin-c
     ReservationEditorComponent,
     CoworkingTentativeDropInCard,
     CoworkingInProgressDropInCard,
-    CoworkingExpiredDropInCard
+    CoworkingExpiredDropInCard,
+    EventsPageComponent
   ],
   imports: [
     BrowserModule,

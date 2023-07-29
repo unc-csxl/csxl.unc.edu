@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Event } from '../models.module';
+import { Event } from '../../models.module';
 import { map } from 'rxjs/operators';
-import { Profile } from '../models.module';
+import { Profile } from '../../models.module';
 
 @Pipe({
   name: 'eventsFilter'

@@ -12,7 +12,8 @@
             <div mat-subheader class="event-subheader">Upcoming Events</div>
 
             <!-- Default Text if None -->
-            <p class="event-placeholder-text" *ngIf="(events | eventFilter:profile:'current').length === 0">You are
+            <p class="event-placeholder-text" *ngIf="(events | profileEventsFilter:profile:'current').length === 0">You
+                are
                 currently not registered for any events.
                 <span class="text-link" routerLink="/events">Click here</span> to explore upcoming CS events!
             </p>
@@ -20,18 +21,19 @@
             <!-- Dropdowns for all Upcoming Events -->
             <profile-event-dropdown [event]='event'
                 (onCancelRegistrationButtonPressed)='cancelRegistrationButtonPressed(event.id!)' [isCurrent]='true'
-                *ngFor='let event of (events | eventFilter:profile:"current")' />
+                *ngFor='let event of (events | profileEventsFilter:profile:"current")' />
 
             <!-- Past Events -->
             <div mat-subheader class="event-subheader">Past Events</div>
 
             <!-- Default Text if None -->
-            <p class="event-placeholder-text" *ngIf="(events | eventFilter:profile:'past').length === 0">You have not
+            <p class="event-placeholder-text" *ngIf="(events | profileEventsFilter:profile:'past').length === 0">You
+                have not
                 previously attended any events yet.</p>
 
             <!-- Dropdowns for all Past Events -->
             <profile-event-dropdown [event]='event' [isCurrent]='false' [showCancelButton]='false'
-                *ngFor='let event of (events | eventFilter:profile:"past")' />
+                *ngFor='let event of (events | profileEventsFilter:profile:"past")' />
         </mat-list>
     </mat-card-content>
 </mat-card>

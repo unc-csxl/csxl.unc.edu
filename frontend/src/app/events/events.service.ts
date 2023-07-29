@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { mergeMap, Observable, shareReplay, of, subscribeOn } from 'rxjs';
-import { Profile, RegistrationSummary, Event, Registration } from '../models.module';
+import { Profile, RegistrationSummary, Event, Registration, EventSummary } from '../models.module';
 import { AuthenticationService } from '../authentication.service';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class EventsService {
   /** Store profile */
   public profile$: Observable<Profile | undefined>;
 
-  constructor(private http: HttpClient, protected auth: AuthenticationService) { 
+  constructor(private http: HttpClient, protected auth: AuthenticationService) {
     /** If profile is authenticated, display profile page. */
     this.profile$ = this.auth.isAuthenticated$.pipe(
       mergeMap(isAuthenticated => {
@@ -72,7 +72,7 @@ export class EventsService {
   register = (id: number) => {
     // Store the current user's ID.
     var user_id: number = -1;
-    
+
     // If a user is currently logged in, register them for the appropriate event.
     if (this.profile$) {
       // Get the correct user id
@@ -89,7 +89,23 @@ export class EventsService {
         if (!this.checkIsRegistered(registration.event_id)) {
           this.http.post<RegistrationSummary>("/api/registrations", registration).subscribe((res) => console.log("succesfully registered!"));
         }
-      }); 
+      });
     }
+  }
+
+  /** Returns the event object from the backend database table using the backend HTTP get request. 
+ * @param id: Number representing the event id
+ * @returns {Observable<EventSummary>}
+ */
+  getEvent = (id: Number) => {
+    return this.http.get<EventSummary>("/api/events/" + id);
+  }
+
+  /** Returns the updated event object from the backend database table using the backend HTTP put request. 
+   * @param event: EventSummary representing the updated event
+   * @returns {Observable<EventSummary>}
+   */
+  updateEvent = (event: EventSummary) => {
+    return this.http.put<EventSummary>("/api/events", event);
   }
 }

@@ -11,7 +11,7 @@ __license__ = "MIT"
 class UserIdentity(BaseModel):
     """Users are identified in the system by their `id` field."""
 
-    id: int
+    id: int | None = None
 
 
 class User(UserIdentity, BaseModel):

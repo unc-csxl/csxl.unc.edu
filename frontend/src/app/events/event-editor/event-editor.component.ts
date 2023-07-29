@@ -5,9 +5,9 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventSummary, Profile } from 'src/app/models.module';
-import { OrgDetailsService } from '../org-details/org-details.service';
-import { EventEditorService } from './event-editor.service';
-import { profileResolver } from '../profile/profile.resolver';
+import { OrgDetailsService } from '../../org-details/org-details.service';
+import { profileResolver } from '../../profile/profile.resolver';
+import { EventsService } from '../events.service';
 
 @Component({
   selector: 'app-event-editor',
@@ -47,7 +47,14 @@ export class EventEditorComponent {
   /** Stores whether the user has admin permission over the current organization. */
   public adminPermission: boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router, protected formBuilder: FormBuilder, protected orgDetailsService: OrgDetailsService, protected snackBar: MatSnackBar, private eventEditorService: EventEditorService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    protected formBuilder: FormBuilder,
+    protected orgDetailsService: OrgDetailsService,
+    protected snackBar:
+      MatSnackBar,
+    private eventService: EventsService) {
     /** Add validators to the form */
     const form = this.eventForm;
     form.get('name')?.addValidators(Validators.required);
@@ -75,7 +82,7 @@ export class EventEditorComponent {
 
     /** Retrieve the event with the eventEditorService */
     if (this.event_id != -1) {
-      eventEditorService.getEvent(this.event_id).subscribe((event) => this.event = event);
+      eventService.getEvent(this.event_id).subscribe((event) => this.event = event);
     }
   }
 
@@ -104,7 +111,7 @@ export class EventEditorComponent {
     // If the event exists (id not default -1)
     if (this.event_id != -1) {
       // Get the event and set the form values to the existing event info
-      this.eventEditorService.getEvent(this.event_id).subscribe((event) => {
+      this.eventService.getEvent(this.event_id).subscribe((event) => {
         this.event = event;
 
         if (event) {
@@ -135,7 +142,7 @@ export class EventEditorComponent {
         );
       }
       else {
-        this.eventEditorService.updateEvent(this.event).subscribe(
+        this.eventService.updateEvent(this.event).subscribe(
           {
             next: (event) => this.onSuccess(event),
             error: (err) => this.onError(err)

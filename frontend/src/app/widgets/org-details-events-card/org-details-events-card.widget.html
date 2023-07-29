@@ -20,9 +20,9 @@
             <!-- Event List (Current/Upcoming) -->
             <profile-event-dropdown [event]='event' [isCurrent]='true' [showCancelButton]='false' [isAdmin]='isAdmin'
                 (onDeleteEventButtonPressed)='deleteEventButtonPressed(event.id!)'
-                *ngFor='let event of (organization!.events! | eventFilter:profile:"current")' />
+                *ngFor='let event of (organization!.events! | profileEventsFilter:profile:"current")' />
 
-            <p *ngIf="(organization!.events! | eventFilter:profile:'current')?.length == 0">
+            <p *ngIf="(organization!.events! | profileEventsFilter:profile:'current')?.length == 0">
                 You are currently not registered for any events. <a class="link" href="./events">Click here</a> to
                 explore upcoming CS events!
             </p>
@@ -30,9 +30,9 @@
             <div mat-subheader class="event-subheader">Past Events</div>
             <!-- Event List (Past) -->
             <profile-event-dropdown [event]='event' [isCurrent]='false' [showCancelButton]='false'
-                *ngFor='let event of (organization!.events! | eventFilter:profile:"past")' />
+                *ngFor='let event of (organization!.events! | profileEventsFilter:profile:"past")' />
 
-            <p *ngIf="(organization!.events! | eventFilter:profile:'past')?.length == 0">
+            <p *ngIf="(organization!.events! | profileEventsFilter:profile:'past')?.length == 0">
                 You have not previously attended any events yet.
             </p>
         </mat-list>

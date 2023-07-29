@@ -1,4 +1,4 @@
-import { EventsFilterPipe } from './eventsFilter.pipe';
+import { EventsFilterPipe } from './events-filter.pipe';
 
 describe('EventsFilterPipe', () => {
   it('create an instance', () => {

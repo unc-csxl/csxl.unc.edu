@@ -1,14 +1,14 @@
 /** Creates a filter pipe for events based on date. */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { EventSummary, Profile } from '../models.module';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EventSummary, Profile } from 'src/app/models.module';
 
 @Pipe({
-  name: 'eventFilter'
+  name: 'profileEventsFilter'
 })
-export class EventFilterPipe implements PipeTransform {
+export class ProfileEventsFilterPipe implements PipeTransform {
 
   /** Returns a filtered array of events based on the past/current query input. 
    * @param {EventSummary[]} events: list of valid EventSummary models
@@ -16,7 +16,7 @@ export class EventFilterPipe implements PipeTransform {
    * @returns {EventSummary[]}
    */
   transform = (events: EventSummary[], subject: Profile, input: String) => {
-    // Sort the events list by date
+    //Sort the events list by date
     events = events.sort(
       (a: EventSummary, b: EventSummary) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0
     );
