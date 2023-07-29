@@ -10,6 +10,7 @@ from ...models.coworking import (
     Seat,
     Reservation,
     ReservationRequest,
+    ReservationIdentity,
     TimeRange,
     SeatAvailability,
     ReservationState,
@@ -291,7 +292,7 @@ class ReservationService:
 
         For launch, reservations are limited to a single user. Reservations must either be made by and for
         the subject initiating the request, or by an admin with permission to complete the action
-        "coworking.reservation.draft" for resource "user/{user.id}".
+        "coworking.reservation.manage" for resource "user/{user.id}".
 
         Args:
             subject (User): The user initiating the draft request.
@@ -320,7 +321,7 @@ class ReservationService:
         if subject.id not in [user.id for user in request.users]:
             for user in request.users:
                 self._permission_svc.enforce(
-                    subject, "coworking.reservation.draft", f"user/{user.id}"
+                    subject, "coworking.reservation.manage", f"user/{user.id}"
                 )
 
         # Bound start
@@ -395,39 +396,57 @@ class ReservationService:
         self, subject: User, reservation: Reservation
     ) -> Reservation:
         """Users should be able to change reservations without hassle. Different restrictions apply to changes based on state of reservation."""
-        ...
+        raise NotImplementedError()
 
     def confirm_reservation(
-        self, subject: User, reservation: Reservation
+        self, subject: User, reservation: ReservationIdentity
     ) -> Reservation:
         """When the user is ready to commit to a reservation, this method ensures it is valid and changes state to confirmed."""
-        ...
+        entity = self._session.get(ReservationEntity, reservation.id)
+        if entity is None:
+            raise LookupError(f"Reservation(id={reservation.id}) does not exist")
+
+        # Ensure permissions to manage reservations for all users in reservation
+        model = entity.to_model()
+        if subject not in model.users:
+            for user in model.users:
+                self._permission_svc.enforce(
+                    subject, "coworking.reservation.manage", f"user/{user.id}"
+                )
+
+        # Only drafts can be confirmed; no-op for other attempts
+        if entity.state == ReservationState.DRAFT:
+            entity.state = ReservationState.CONFIRMED
+            self._session.add(entity)
+            self._session.commit()
+
+        return entity.to_model()
 
     def cancel_reservation(
         self, subject: User, reservation: Reservation
     ) -> Reservation:
         """If the user no longer needs their reservation, or an admin has reason to cancel it, this cancels the reservation."""
-        ...
+        raise NotImplementedError()
 
     def self_checkin_reservation(
         self, subject: User, reservation: Reservation, checkin_code: str
     ) -> Reservation:
         """When the user is ready to check-in for their reservation near the reserved time, via a checkin-code, this endpoint is used."""
         # TODO: Should check-in be on the join table between reservation and user??
-        ...
+        raise NotImplementedError()
 
     def staff_checkin_reservation(
         self, subject: User, reservation: Reservation
     ) -> Reservation:
         """Staff members with the correct permissions can check users in to their reservations directly."""
         # TODO: Should check-in be on the join table between reservation and user??
-        ...
+        raise NotImplementedError()
 
     def checkout_reservation(
         self, subject: User, reservation: Reservation
     ) -> Reservation:
         """If a user wants to check out of their reservation early, this frees up the resource."""
-        ...
+        raise NotImplementedError()
 
     # Private helper methods
 

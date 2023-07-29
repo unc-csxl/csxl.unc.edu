@@ -8,7 +8,13 @@ from .time_range import TimeRange
 
 from .operating_hours import OperatingHours
 
-from .reservation import Reservation, ReservationRequest, ReservationState
+from .reservation import (
+    Reservation,
+    ReservationRequest,
+    ReservationState,
+    ReservationPartial,
+    ReservationIdentity,
+)
 
 from .availability_list import AvailabilityList
 from .availability import SeatAvailability, RoomAvailability
@@ -24,6 +30,9 @@ __all__ = [
     "OperatingHours",
     "Reservation",
     "ReservationState",
+    "ReservationRequest",
+    "ReservationPartial",
+    "ReservationIdentity",
     "AvailabilityList",
     "RoomAvailability",
     "SeatAvailability",
