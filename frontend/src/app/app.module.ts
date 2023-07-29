@@ -33,6 +33,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from "@angular/material/chips";
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -73,6 +74,7 @@ import { CoworkingTopCard } from './widgets/coworking-top-card/coworking-top-car
 import { CoworkingDropInCard } from './widgets/coworking-dropin-card/coworking-dropin-card.widget';
 import { CoworkingReserveCard } from './widgets/coworking-reserve-card/coworking-reserve-card.widget';
 import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
+import { ReservationEditorComponent } from './coworking/reservation-editor/reservation-editor.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +113,8 @@ import { CoworkingPageComponent } from './coworking/coworking-page/coworking-pag
     RosterAddMemberCard,
     CoworkingTopCard,
     CoworkingDropInCard,
-    CoworkingReserveCard
+    CoworkingReserveCard,
+    ReservationEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -146,6 +149,7 @@ import { CoworkingPageComponent } from './coworking/coworking-page/coworking-pag
     MatNativeDateModule,
     MatAutocompleteModule,
     MatCheckboxModule,
+    MatChipsModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

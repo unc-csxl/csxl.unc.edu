@@ -1,0 +1,49 @@
+<form [formGroup]="reservationForm" (ngSubmit)="{}" *ngIf="profile">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Create Reservation</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <!-- Who -->
+            <mat-form-field class="example-chip-list">
+                <mat-label>Who</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Choose people" required>
+                    <mat-chip-row>
+                        {{profile.first_name + " " + profile.last_name}}
+                    </mat-chip-row>
+                    <input placeholder="Add more people..." [matChipInputFor]="chipGrid" />
+                </mat-chip-grid>
+            </mat-form-field>
+            <!-- What -->
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Workspace</mat-label>
+                <mat-select required>
+                    <mat-option value="option1">Monitors</mat-option>
+                    <mat-option value="option2">Sit/Stand Desks</mat-option>
+                    <mat-option value="option3">Conference Table Seats</mat-option>
+                    <mat-option value="option4">Common Area Seats</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- When -->
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Time</mat-label>
+                <mat-select required>
+                    <mat-option value="option1">Next Drop-In at 11:30AM</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Where -->
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Location</mat-label>
+                <mat-select required>
+                    <mat-option value="option1">The XL (SN156)</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button type="submit">Reserve</button>
+        </mat-card-actions>
+
+    </mat-card>
+</form>
+
+<!-- Message for Non-Authenicated Users -->

@@ -12,6 +12,7 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
 import { OrgEditorComponent } from './org-editor/org-editor.component';
 import { OrgRosterComponent } from './org-roster/org-roster.component';
 import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
+import { ReservationEditorComponent } from './coworking/reservation-editor/reservation-editor.component';
 
 const routes: Routes = [
   HomeComponent.Route,
@@ -25,7 +26,8 @@ const routes: Routes = [
   EventEditorComponent.Route,
   OrgEditorComponent.Route,
   OrgRosterComponent.Route,
-  CoworkingPageComponent.Route
+  CoworkingPageComponent.Route,
+  ReservationEditorComponent.Route
 ];
 
 @NgModule({
