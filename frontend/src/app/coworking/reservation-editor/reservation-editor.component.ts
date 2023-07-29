@@ -1,4 +1,10 @@
-/** Constructs the Reservation editor which allows users to create or edit reservations. */
+/**
+ * The Reservation Editor allows students to both create and edit reservations.
+ * 
+ * @author Ajay Gandecha
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route } from '@angular/router';

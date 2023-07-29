@@ -1,4 +1,11 @@
-/** Constructs the Profile page and stores/retrieves any necessary data for it. */
+/**
+ * The Profile Page Component displays is the hub for students to access their
+ * information.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Component } from '@angular/core';
 import { isAuthenticated } from 'src/app/gate/gate.guard';

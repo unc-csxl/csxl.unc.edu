@@ -1,3 +1,12 @@
+/**
+ * The Organization Detail Component displays more information and options regarding
+ * UNC CS organizations.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';

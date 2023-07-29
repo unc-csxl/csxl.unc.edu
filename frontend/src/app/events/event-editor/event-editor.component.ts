@@ -1,4 +1,10 @@
-/** Constructs the Event editor which allows organization members to create events */
+/**
+ * The Event Editor Component allows organizations to edit information about their events.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';

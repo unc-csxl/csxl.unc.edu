@@ -1,3 +1,12 @@
+/**
+ * The Organization Roster Component enables organization members to view other students
+ * in their organization and it enables organization leaders to manage their rosters.
+ * 
+ * @author Ajay Gandecha
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
 import { profileResolver } from 'src/app/profile/profile.resolver';

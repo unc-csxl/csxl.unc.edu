@@ -1,3 +1,11 @@
+/**
+ * This pipe serves as the filter for the events page.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Event } from '../../models.module';

@@ -1,4 +1,10 @@
-/** Creates a filter pipe for events based on date. */
+/**
+ * This pipe filters events based on their date.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';

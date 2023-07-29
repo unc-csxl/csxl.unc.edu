@@ -1,4 +1,10 @@
-/** Constructs the Events page and stores/retrieves any necessary data for it. */
+/**
+ * The Events Page Component allows students see events hosted by CS organizations.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Component } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';

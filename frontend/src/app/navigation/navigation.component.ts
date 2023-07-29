@@ -1,3 +1,12 @@
+/**
+ * The Navigation Component serves as the central hub for navigation across the CSXL web application.
+ * This component holds the sidebar that is universally shown on all pages of the application.
+ * 
+ * @author Kris Jordan
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subscription } from 'rxjs';
@@ -70,9 +79,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   private initResponsiveMenu() {
     return this.breakpointObserver
-        .observe(Breakpoints.HandsetPortrait)
-        .pipe(map(result => result.matches))
-        .subscribe(isHandset => this.isHandset = isHandset);
+      .observe(Breakpoints.HandsetPortrait)
+      .pipe(map(result => result.matches))
+      .subscribe(isHandset => this.isHandset = isHandset);
   }
 
 }

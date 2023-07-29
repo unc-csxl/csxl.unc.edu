@@ -1,4 +1,12 @@
-/** Constructs the Organizations page and stores/retrieves any necessary data for it. */
+/**
+ * The Organization Page Component serves as a hub for students to browse all of the CS
+ * organizations at UNC. Students are also able to join public organizations, filter
+ * based on interests, and access social media pages of organizations to stay up-to-date.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';

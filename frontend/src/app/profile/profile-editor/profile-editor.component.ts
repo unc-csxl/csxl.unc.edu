@@ -1,3 +1,12 @@
+/**
+ * The Profile Editor Component allows students to edit information
+ * for their CSXL profiles.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,9 +25,9 @@ export class ProfileEditorComponent implements OnInit {
 
   public static Route: Route = {
     path: 'profile-editor',
-    component: ProfileEditorComponent, 
-    title: 'Profile Editor', 
-    canActivate: [isAuthenticated], 
+    component: ProfileEditorComponent,
+    title: 'Profile Editor',
+    canActivate: [isAuthenticated],
     resolve: { profile: profileResolver }
   };
 
@@ -60,7 +69,7 @@ export class ProfileEditorComponent implements OnInit {
         {
           next: (user) => this.onSuccess(user),
           error: (err) => this.onError(err)
-        } 
+        }
       );
       this.router.navigate(['/profile']).then(() => {
         window.location.reload();

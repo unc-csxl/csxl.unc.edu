@@ -1,4 +1,10 @@
-/** Creates a filter pipe for search bars used throughout the application. */
+/**
+ * This is the pipe used to filter organizations on the organizations page.
+ * 
+ * @author Jade Keegan
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';

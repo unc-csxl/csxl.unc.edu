@@ -1,3 +1,12 @@
+/**
+ * The Coworking Component serves as the hub for students to create reservations
+ * for tables, rooms, and equipment from the CSXL.
+ * 
+ * @author Ajay Gandecha
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';

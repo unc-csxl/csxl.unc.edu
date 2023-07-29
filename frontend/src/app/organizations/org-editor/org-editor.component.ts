@@ -1,3 +1,12 @@
+/**
+ * The Organization Editor Component allows organization managers to edit information
+ * about thier organization which is publically displayed on the organizations page.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { OrganizationSummary, Profile } from 'src/app/models.module';
