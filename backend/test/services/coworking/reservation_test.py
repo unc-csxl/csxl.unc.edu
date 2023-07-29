@@ -590,8 +590,32 @@ def test_change_reservation_cancel_confirmed(reservation_svc: ReservationService
     assert ReservationState.CANCELLED == reservation.state
 
 
-def change_reservation_cancel_checkedin_noop(reservation_svc: ReservationService):
+def test_change_reservation_cancel_checkedin_noop(reservation_svc: ReservationService):
     reservation = reservation_svc.change_reservation(
         user_data.user, ReservationPartial(id=1, state=ReservationState.CANCELLED)
     )
     assert ReservationState.CHECKED_IN == reservation.state
+
+
+def test_change_reservation_checkout(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=1, state=ReservationState.CHECKED_OUT)
+    )
+    assert ReservationState.CHECKED_OUT == reservation.state
+
+
+def test_change_reservation_checkout_draft_noop(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=5, state=ReservationState.CHECKED_OUT)
+    )
+    assert ReservationState.DRAFT == reservation.state
+
+
+def test_change_reservation_checkout_confirmed_noop(
+    reservation_svc: ReservationService,
+):
+    reservation = reservation_svc.change_reservation(
+        user_data.ambassador,
+        ReservationPartial(id=4, state=ReservationState.CHECKED_OUT),
+    )
+    assert ReservationState.CONFIRMED == reservation.state

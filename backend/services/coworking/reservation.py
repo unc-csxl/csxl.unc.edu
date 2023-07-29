@@ -431,6 +431,8 @@ class ReservationService:
                 valid_transition = True
             case (RS.CONFIRMED, RS.CANCELLED):
                 valid_transition = True
+            case (RS.CHECKED_IN, RS.CHECKED_OUT):
+                valid_transition = True
             case _:
                 return False
 
@@ -438,12 +440,6 @@ class ReservationService:
             entity.state = delta
 
         return True
-
-    def cancel_reservation(
-        self, subject: User, reservation: Reservation
-    ) -> Reservation:
-        """If the user no longer needs their reservation, or an admin has reason to cancel it, this cancels the reservation."""
-        raise NotImplementedError()
 
     def self_checkin_reservation(
         self, subject: User, reservation: Reservation, checkin_code: str
