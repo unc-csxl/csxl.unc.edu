@@ -3,10 +3,15 @@
 import pytest
 from unittest.mock import create_autospec
 
-from ....services import PermissionService
+from ....services import PermissionService, UserPermissionError
 from ....services.coworking import ReservationService, PolicyService
 from ....services.coworking.reservation import ReservationError
-from ....models.coworking import Reservation, TimeRange, ReservationState
+from ....models.coworking import (
+    Reservation,
+    TimeRange,
+    ReservationState,
+    ReservationPartial,
+)
 from ....models.user import UserIdentity
 from ....models.coworking.seat import SeatIdentity
 
@@ -497,7 +502,9 @@ def test_draft_reservation_permissions(reservation_svc: ReservationService):
     )
     assert reservation.id is not None
     permission_svc.enforce.assert_called_once_with(
-        user_data.root, "coworking.reservation.draft", f"user/{user_data.ambassador.id}"
+        user_data.root,
+        "coworking.reservation.manage",
+        f"user/{user_data.ambassador.id}",
     )
 
 
@@ -514,3 +521,54 @@ def test_draft_reservation_one_user_for_now(reservation_svc: ReservationService)
                 }
             ),
         )
+
+
+def test_confirm_reservation_mainline(reservation_svc: ReservationService):
+    reservation = reservation_svc.confirm_reservation(
+        user_data.user, reservation_data.reservation_5
+    )
+    assert reservation_data.reservation_5.id == reservation.id
+    assert ReservationState.CONFIRMED == reservation.state
+
+
+def test_confirm_reservation_not_found(reservation_svc: ReservationService):
+    request_reservation = ReservationPartial(id=999)
+    with pytest.raises(LookupError):
+        reservation_svc.confirm_reservation(user_data.user, request_reservation)
+
+
+def test_confirm_reservation_already_confirmed(reservation_svc: ReservationService):
+    reservation = reservation_svc.confirm_reservation(
+        user_data.ambassador, reservation_data.reservation_4
+    )
+    assert ReservationState.CONFIRMED == reservation.state
+
+
+def test_confirm_reservation_already_checked_in(reservation_svc: ReservationService):
+    reservation = reservation_svc.confirm_reservation(
+        user_data.user, reservation_data.reservation_1
+    )
+    assert reservation_data.reservation_1.state == reservation.state
+    assert ReservationState.CONFIRMED != reservation.state
+
+
+def test_confirm_reservation_without_permission(reservation_svc: ReservationService):
+    with pytest.raises(UserPermissionError):
+        reservation = reservation_svc.confirm_reservation(
+            user_data.user, reservation_data.reservation_4
+        )
+
+
+def test_confirm_reservation_permissions(reservation_svc: ReservationService):
+    permission_svc = create_autospec(PermissionService)
+    permission_svc.enforce.return_value = None
+    reservation_svc._permission_svc = permission_svc
+    reservation = reservation_svc.confirm_reservation(
+        user_data.root, reservation_data.reservation_5
+    )
+    assert reservation.id is not None
+    permission_svc.enforce.assert_called_once_with(
+        user_data.root,
+        "coworking.reservation.manage",
+        f"user/{reservation_data.reservation_5.users[0].id}",
+    )

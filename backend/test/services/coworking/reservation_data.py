@@ -103,7 +103,7 @@ def instantiate_global_models(time: dict[str, datetime]):
         created_at=time[NOW],
         updated_at=time[NOW],
         walkin=False,
-        rom=None,
+        room=None,
         state=ReservationState.DRAFT,
         users=[user_data.user],
         seats=[seat_data.reservable_seats[0]],
