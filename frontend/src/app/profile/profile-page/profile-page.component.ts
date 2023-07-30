@@ -78,10 +78,11 @@ export class ProfilePageComponent {
 
     // Open snack bar to notify user that the registration was canceled.
     this.snackBar.open("Registration Canceled", "", { duration: 2000 })
-    await new Promise(f => setTimeout(f, 750));
 
-    // Reload the window to update the events.
-    location.reload();
+    this.profileService.refreshProfile();
+    this.profileService.profile$.subscribe(profile => this.profile = profile!);
+
+    this.events = this.profileService.getUserEvents()!;
   }
 
   /** Event handler to toggle the star status of an organization.
@@ -100,14 +101,21 @@ export class ProfilePageComponent {
     }
     else {
       if (this.profile && this.profile.first_name) {
-        // Call the orgDetailsService's toggleOrganizationMembership() method.
-        this.orgService.toggleOrganizationMembership(orgId);
-
-        // Set slight delay so page reloads after API calls finish running.
-        await new Promise(f => setTimeout(f, 200));
-
-        // Reload the window to update the events.
-        location.reload();
+        // If here, the memership can be deleted
+        // First, confirm with the user in a snackbar
+        let deleteMembershipSnackBarRef = this.snackBar.open("Are you sure you want to leave this organization?", "Leave");
+        deleteMembershipSnackBarRef.onAction().subscribe(() => {
+          // If snackbar button pressed, delete membership
+          const orgRoleId = filter[0].id!;
+          this.orgService.deleteOrganizationRole(orgRoleId).subscribe(() => {
+            this.snackBar.open("You have left the organization.", "", { duration: 2000 });
+            this.profileService.refreshProfile();
+            this.profileService.profile$.subscribe(profile => {
+              this.profile = profile!
+              this.organizations = this.profile.organizations!
+            });
+          })
+        })
       }
     }
   }
