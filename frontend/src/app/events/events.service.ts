@@ -67,30 +67,22 @@ export class EventsService {
 
   /** Create a registration from the backend
    * @param id: Number representing the event id
-   * @returns {void}
+   * @returns {Observer<RegistrationSummary>}
   */
-  register = (id: number) => {
-    // Store the current user's ID.
-    var user_id: number = -1;
+  register = (id: number, userId: number) => {
 
-    // If a user is currently logged in, register them for the appropriate event.
-    if (this.profile$) {
-      // Get the correct user id
-      this.profile$.subscribe(profile => {
-        user_id = profile!.id!;
-        // Create Registration
-        const registration: RegistrationSummary = {
-          id: null,
-          user_id: user_id,
-          event_id: id,
-          status: 0
-        };
+    const registration: RegistrationSummary = {
+      id: null,
+      user_id: userId,
+      event_id: id,
+      status: 0
+    };
 
-        if (!this.checkIsRegistered(registration.event_id)) {
-          this.http.post<RegistrationSummary>("/api/registrations", registration).subscribe((res) => console.log("succesfully registered!"));
-        }
-      });
-    }
+    return this.http.post<RegistrationSummary>("/api/registrations", registration);
+  }
+
+  unregister = (id: number) => {
+    return this.http.delete<void>(`/api/registrations/registration/${id}`);
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request. 

@@ -12,7 +12,7 @@ import { EventsService } from '../events.service';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Profile, Event, EventSummary, OrganizationSummary } from 'src/app/models.module';
+import { Profile, Event, EventSummary, OrganizationSummary, Registration } from 'src/app/models.module';
 import { OrganizationsService } from 'src/app/organizations/organizations.service';
 import { ProfileService } from 'src/app/profile/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -30,8 +30,6 @@ export class EventsPageComponent {
   /** Store Observable list of Organizations */
   public organizationsList$: Observable<OrganizationSummary[]>;
 
-  /** Store Observable list of Registrations */
-  public registrations: EventSummary[] = [];
 
   /** Store searchBarQuery */
   searchBarQuery = "";
@@ -67,6 +65,9 @@ export class EventsPageComponent {
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
+  public canRegisterMap: Map<number, boolean> = new Map();
+  public canUnregisterMap: Map<number, boolean> = new Map();
+
   /** Initialize the profile to be the currently-logged-in user's profile. */
   ngOnInit() {
     let profile = this.profile;
@@ -77,14 +78,25 @@ export class EventsPageComponent {
    */
   register = async (eventId: number) => {
     if (this.profile.id !== null) {
-      this.eventsService.register(eventId);
+      this.events$.subscribe(events => {
+        const eventToRegister = events.filter(e => e.id == eventId)[0]
 
-      // Open snack bar to notify user that the registration was created.
-      this.snackBar.open("Registered", "", { duration: 2000 })
-      await new Promise(f => setTimeout(f, 750));
+        this.eventsService.register(eventId, this.profile!.id!).subscribe(registration => {
+          // Open snack bar to notify user that the registration was created.
+          this.snackBar.open("Registered", "", { duration: 2000 })
 
-      // Reload the window to update the registrations.
-      location.reload();
+          this.profileService.refreshProfile();
+          this.profileService.profile$.subscribe(profile => {
+
+            this.profile = profile!
+
+            // Reload the window to update the registrations.
+            this.canRegisterMap.set(eventId, this.canRegisterForEvent(eventToRegister))
+            this.canUnregisterMap.set(eventId, this.canUnRegisterForEvent(eventToRegister))
+
+          });
+        })
+      })
     } else {
       this.snackBar.open("Please fill out your profile information!", "", { duration: 2000 })
     }
@@ -95,14 +107,25 @@ export class EventsPageComponent {
    */
   unregister = async (eventId: number) => {
     if (this.profile.id !== null) {
-      this.profileService.deleteRegistration(eventId);
+      this.events$.subscribe(events => {
+        const eventToUnregister = events.filter(e => e.id == eventId)[0]
+        const registrationToDelete = this.profile.event_associations.filter(r => r.event_id == eventId && r.user_id == this.profile!.id!)[0]
 
-      // Open snack bar to notify user that the registration was canceled.
-      this.snackBar.open("Registration Canceled", "", { duration: 2000 })
-      await new Promise(f => setTimeout(f, 750));
+        // this.profileService.deleteRegistration(eventId);
+        this.eventsService.unregister(registrationToDelete.id!).subscribe(_ => {
+          // Open snack bar to notify user that the registration was canceled.
+          this.snackBar.open("Registration Canceled", "", { duration: 2000 })
 
-      // Reload the window to update the events.
-      location.reload();
+          this.profileService.refreshProfile();
+          this.profileService.profile$.subscribe(profile => {
+            this.profile = profile!
+
+            this.canRegisterMap.set(eventId, this.canRegisterForEvent(eventToUnregister))
+            this.canUnregisterMap.set(eventId, this.canUnRegisterForEvent(eventToUnregister))
+          });
+
+        })
+      })
     }
   }
 
@@ -122,7 +145,18 @@ export class EventsPageComponent {
    * @returns {boolean}
    */
   checkIsRegistered = (eventId: number) => {
-    return this.eventsService.checkIsRegistered(eventId);
+
+    // If a user is currently logged in, get their registrations and determine if the registration is valid
+    if (this.profile) {
+      // For each registration in the list of registrations
+      for (let reg of this.profile!.event_associations) {
+        // If the registration's event and user IDs match the desired event and user IDs
+        if (reg.event_id == eventId && reg.user_id == this.profile!.id!) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   constructor(route: ActivatedRoute, private eventsService: EventsService, private orgService: OrganizationsService, protected snackBar: MatSnackBar, private profileService: ProfileService) {
@@ -132,12 +166,23 @@ export class EventsPageComponent {
     /** Retrieve Organizations using OrganizationsService */
     this.organizationsList$ = this.orgService.getOrganizations();
 
-    /** Retrieve User Registrations using ProfileService */
-    this.registrations = this.profileService.getUserEvents();
-
     /** Get currently-logged-in user. */
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
+
+    this.events$.subscribe(events => {
+      events.forEach(event => {
+        this.canRegisterMap.set(event.id!, this.canRegisterForEvent(event))
+        this.canUnregisterMap.set(event.id!, this.canUnRegisterForEvent(event))
+      })
+    })
   }
 
+  canRegisterForEvent = (event: Event) => {
+    return this.checkCurrentEvent(event.time) && !this.checkIsRegistered(event.id!) && this.profile != null
+  }
+
+  canUnRegisterForEvent = (event: Event) => {
+    return this.checkCurrentEvent(event.time) && this.checkIsRegistered(event.id!) && this.profile != null
+  }
 }

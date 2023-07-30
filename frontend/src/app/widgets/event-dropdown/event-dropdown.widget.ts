@@ -9,13 +9,13 @@ import { Event } from '../../models.module';
 export class EventDropdown {
 
     @Input() event!: Event;
-    @Input() canRegister: boolean = true;
-    @Input() canUnregister: boolean = true;
+    @Input() canRegister: Map<number, boolean> = new Map();
+    @Input() canUnregister: Map<number, boolean> = new Map();
 
     @Output() onRegisterButtonPressed = new EventEmitter<number>();
     @Output() onUnregisterButtonPressed = new EventEmitter<number>();
 
-    constructor() {}
+    constructor() { }
 
     registerButtonPressed(id: number) {
         this.onRegisterButtonPressed.emit(id)

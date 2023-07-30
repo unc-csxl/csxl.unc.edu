@@ -51,9 +51,7 @@
     <!-- Event Expansion Panels -->
     <mat-accordion>
         <!-- Create Dropdown for Every Event (matching query) -->
-        <event-dropdown [event]='event'
-            [canRegister]='checkCurrentEvent(event.time) && !checkIsRegistered(event.id!) && profile != null'
-            [canUnregister]='checkCurrentEvent(event.time) && checkIsRegistered(event.id!) && profile != null'
+        <event-dropdown [event]='event' [canRegister]='canRegisterMap' [canUnregister]='canUnregisterMap'
             (onRegisterButtonPressed)='register($event)' (onUnregisterButtonPressed)='unregister($event)'
             *ngFor='let event of (events$ | eventsFilter: profile:searchBarQuery:range.value.start:range.value.end:organizations.value) | async' />
     </mat-accordion>

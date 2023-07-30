@@ -20,9 +20,10 @@
             {{event.location}} | {{event.time | date: 'MMMM d @ h:mm a'}}
         </mat-panel-description>
         <!-- Registration Button (if not registered) -->
-        <mat-icon (click)="registerButtonPressed(event.id!)" *ngIf='canRegister'>person_add</mat-icon>
+        <mat-icon (click)="registerButtonPressed(event.id!)" *ngIf='canRegister.get(event!.id!)'>person_add</mat-icon>
         <!-- Cancel Registration Button (if registered) -->
-        <mat-icon (click)="unregisterButtonPressed(event.id!)" *ngIf='canUnregister'>delete_forever</mat-icon>
+        <mat-icon (click)="unregisterButtonPressed(event.id!)"
+            *ngIf='canUnregister.get(event!.id!)'>delete_forever</mat-icon>
     </mat-expansion-panel-header>
     <p class="eventDescrip">{{event.description}}</p>
 </mat-expansion-panel>
