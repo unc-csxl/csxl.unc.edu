@@ -523,48 +523,25 @@ def test_draft_reservation_one_user_for_now(reservation_svc: ReservationService)
         )
 
 
-def test_confirm_reservation_mainline(reservation_svc: ReservationService):
-    reservation = reservation_svc.confirm_reservation(
-        user_data.user, reservation_data.reservation_5
-    )
-    assert reservation_data.reservation_5.id == reservation.id
-    assert ReservationState.CONFIRMED == reservation.state
-
-
-def test_confirm_reservation_not_found(reservation_svc: ReservationService):
+def test_change_reservation_not_found(reservation_svc: ReservationService):
     request_reservation = ReservationPartial(id=999)
     with pytest.raises(LookupError):
-        reservation_svc.confirm_reservation(user_data.user, request_reservation)
+        reservation_svc.change_reservation(user_data.user, request_reservation)
 
 
-def test_confirm_reservation_already_confirmed(reservation_svc: ReservationService):
-    reservation = reservation_svc.confirm_reservation(
-        user_data.ambassador, reservation_data.reservation_4
-    )
-    assert ReservationState.CONFIRMED == reservation.state
-
-
-def test_confirm_reservation_already_checked_in(reservation_svc: ReservationService):
-    reservation = reservation_svc.confirm_reservation(
-        user_data.user, reservation_data.reservation_1
-    )
-    assert reservation_data.reservation_1.state == reservation.state
-    assert ReservationState.CONFIRMED != reservation.state
-
-
-def test_confirm_reservation_without_permission(reservation_svc: ReservationService):
+def test_change_reservation_without_permission(reservation_svc: ReservationService):
     with pytest.raises(UserPermissionError):
-        reservation = reservation_svc.confirm_reservation(
-            user_data.user, reservation_data.reservation_4
+        reservation = reservation_svc.change_reservation(
+            user_data.user, ReservationPartial(id=4, state=ReservationState.CONFIRMED)
         )
 
 
-def test_confirm_reservation_permissions(reservation_svc: ReservationService):
+def test_change_reservation_enforces_permissions(reservation_svc: ReservationService):
     permission_svc = create_autospec(PermissionService)
     permission_svc.enforce.return_value = None
     reservation_svc._permission_svc = permission_svc
-    reservation = reservation_svc.confirm_reservation(
-        user_data.root, reservation_data.reservation_5
+    reservation = reservation_svc.change_reservation(
+        user_data.root, ReservationPartial(id=5, state=ReservationState.CONFIRMED)
     )
     assert reservation.id is not None
     permission_svc.enforce.assert_called_once_with(
@@ -572,3 +549,73 @@ def test_confirm_reservation_permissions(reservation_svc: ReservationService):
         "coworking.reservation.manage",
         f"user/{reservation_data.reservation_5.users[0].id}",
     )
+
+
+def test_change_reservation_state_confirmed(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=5, state=ReservationState.CONFIRMED)
+    )
+    assert reservation_data.reservation_5.id == reservation.id
+    assert ReservationState.CONFIRMED == reservation.state
+
+
+def test_change_reservation_state_confirmed_idempotent(
+    reservation_svc: ReservationService,
+):
+    reservation = reservation_svc.change_reservation(
+        user_data.ambassador, ReservationPartial(id=4, state=ReservationState.CONFIRMED)
+    )
+    assert ReservationState.CONFIRMED == reservation.state
+
+
+def test_change_reservation_state_noop(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=1, state=ReservationState.CONFIRMED)
+    )
+    assert reservation_data.reservation_1.state == reservation.state
+    assert ReservationState.CONFIRMED != reservation.state
+
+
+def test_change_reservation_cancel_draft(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=5, state=ReservationState.CANCELLED)
+    )
+    assert ReservationState.CANCELLED == reservation.state
+
+
+def test_change_reservation_cancel_confirmed(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.ambassador, ReservationPartial(id=4, state=ReservationState.CANCELLED)
+    )
+    assert ReservationState.CANCELLED == reservation.state
+
+
+def test_change_reservation_cancel_checkedin_noop(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=1, state=ReservationState.CANCELLED)
+    )
+    assert ReservationState.CHECKED_IN == reservation.state
+
+
+def test_change_reservation_checkout(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=1, state=ReservationState.CHECKED_OUT)
+    )
+    assert ReservationState.CHECKED_OUT == reservation.state
+
+
+def test_change_reservation_checkout_draft_noop(reservation_svc: ReservationService):
+    reservation = reservation_svc.change_reservation(
+        user_data.user, ReservationPartial(id=5, state=ReservationState.CHECKED_OUT)
+    )
+    assert ReservationState.DRAFT == reservation.state
+
+
+def test_change_reservation_checkout_confirmed_noop(
+    reservation_svc: ReservationService,
+):
+    reservation = reservation_svc.change_reservation(
+        user_data.ambassador,
+        ReservationPartial(id=4, state=ReservationState.CHECKED_OUT),
+    )
+    assert ReservationState.CONFIRMED == reservation.state

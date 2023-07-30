@@ -19,12 +19,12 @@ class ReservationIdentity(BaseModel):
     id: int
 
 
-class ReservationRequest(TimeRange, BaseModel):
+class ReservationRequest(TimeRange):
     users: list[UserIdentity] = []
     seats: list[SeatIdentity] = []
 
 
-class Reservation(ReservationIdentity, TimeRange, BaseModel):
+class Reservation(ReservationIdentity, TimeRange):
     state: ReservationState
     users: list[User] = []
     seats: list[Seat] = []

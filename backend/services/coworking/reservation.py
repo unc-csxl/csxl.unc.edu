@@ -11,6 +11,7 @@ from ...models.coworking import (
     Reservation,
     ReservationRequest,
     ReservationIdentity,
+    ReservationPartial,
     TimeRange,
     SeatAvailability,
     ReservationState,
@@ -393,40 +394,52 @@ class ReservationService:
         return draft.to_model()
 
     def change_reservation(
-        self, subject: User, reservation: Reservation
+        self, subject: User, delta: ReservationPartial
     ) -> Reservation:
         """Users should be able to change reservations without hassle. Different restrictions apply to changes based on state of reservation."""
-        raise NotImplementedError()
-
-    def confirm_reservation(
-        self, subject: User, reservation: ReservationIdentity
-    ) -> Reservation:
-        """When the user is ready to commit to a reservation, this method ensures it is valid and changes state to confirmed."""
-        entity = self._session.get(ReservationEntity, reservation.id)
+        entity = self._session.get(ReservationEntity, delta.id)
         if entity is None:
-            raise LookupError(f"Reservation(id={reservation.id}) does not exist")
+            raise LookupError(f"Reservation(id={delta.id}) does not exist")
 
         # Ensure permissions to manage reservations for all users in reservation
-        model = entity.to_model()
-        if subject not in model.users:
-            for user in model.users:
+        current = entity.to_model()
+        if subject not in current.users:
+            for user in current.users:
                 self._permission_svc.enforce(
                     subject, "coworking.reservation.manage", f"user/{user.id}"
                 )
 
-        # Only drafts can be confirmed; no-op for other attempts
-        if entity.state == ReservationState.DRAFT:
-            entity.state = ReservationState.CONFIRMED
-            self._session.add(entity)
+        # Handle Requested Changes
+        dirty = False
+        if delta.state is not None and delta.state != entity.state:
+            dirty = dirty or self._change_state(entity, delta.state)
+
+        if dirty:  # and valid():
             self._session.commit()
 
         return entity.to_model()
 
-    def cancel_reservation(
-        self, subject: User, reservation: Reservation
-    ) -> Reservation:
-        """If the user no longer needs their reservation, or an admin has reason to cancel it, this cancels the reservation."""
-        raise NotImplementedError()
+    def _change_state(self, entity: ReservationEntity, delta: ReservationState) -> bool:
+        RS = ReservationState
+
+        transition = (entity.state, delta)
+        valid_transition = False
+        match transition:
+            case (RS.DRAFT, RS.CONFIRMED):
+                valid_transition = True
+            case (RS.DRAFT, RS.CANCELLED):
+                valid_transition = True
+            case (RS.CONFIRMED, RS.CANCELLED):
+                valid_transition = True
+            case (RS.CHECKED_IN, RS.CHECKED_OUT):
+                valid_transition = True
+            case _:
+                return False
+
+        if valid_transition:
+            entity.state = delta
+
+        return True
 
     def self_checkin_reservation(
         self, subject: User, reservation: Reservation, checkin_code: str
