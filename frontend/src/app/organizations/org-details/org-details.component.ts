@@ -171,12 +171,18 @@ export class OrgDetailsComponent {
    */
   deleteEvent = async (event_id: number) => {
     // Call the orgDetailsService's deleteEvent() method.
-    this.orgService.deleteEvent(event_id).subscribe(_ => {
-      this.organization$ = this.orgService.getOrganizationDetail(this.id);
-      this.organization$.subscribe(organization => {
-        this.organization = organization;
-        this.snackBar.open("Deleted event", "", { duration: 2000 });
-      });
+    let deleteEventSnackBarRef = this.snackBar.open("Are you sure you want to leave this event?", "Delete");
+    deleteEventSnackBarRef.onAction().subscribe(() => {
+
+      this.orgService.deleteEvent(event_id).subscribe(_ => {
+        this.organization$ = this.orgService.getOrganizationDetail(this.id);
+        this.organization$.subscribe(organization => {
+          this.organization = organization;
+          this.snackBar.open("Deleted event", "", { duration: 2000 });
+        });
+      })
+
     })
+
   }
 }
