@@ -20,7 +20,7 @@ export class ProfileService {
     this.refreshProfile();
   }
 
-  private refreshProfile() {
+  public refreshProfile() {
     this.profile$ = this.auth.isAuthenticated$.pipe(
       mergeMap(isAuthenticated => {
         if (isAuthenticated) {

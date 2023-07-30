@@ -15,7 +15,10 @@
 
         <!-- Star button -->
         <button *ngIf="profile && profile.first_name" mat-icon-button color="basic" (click)="starClicked()">
-            <mat-icon>{{profilePermissions.get(organization.id!)! >= 0 ? "person_off" : "person_add"}}</mat-icon>
+            <mat-icon *ngIf="profilePermissions.get(organization.id!)! >= 0">person_off</mat-icon>
+            <mat-icon *ngIf="profilePermissions.get(organization.id!)! < 0">person_add</mat-icon>
+
+            <!-- <mat-icon>{{profilePermissions.get(organization.id!)! >= 0 ? "person_off" : "person_add"}}</mat-icon> -->
         </button>
     </mat-card-header>
 

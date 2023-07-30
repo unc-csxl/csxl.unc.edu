@@ -16,6 +16,7 @@ import { Organization, OrgRole, Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { OrganizationsService } from '../organizations.service';
+import { ProfileService } from 'src/app/profile/profile.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   let orgId = route.params['id'];
@@ -62,6 +63,7 @@ export class OrgDetailsComponent {
 
   constructor(
     private orgService: OrganizationsService,
+    private profileService: ProfileService,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
     private route: ActivatedRoute,
@@ -108,19 +110,57 @@ export class OrgDetailsComponent {
     let profile = this.profile;
   }
 
-  /** Event handler to toggle the star status of an organization. */
+  /**
+   * Event handler to toggle membership status of an organization.
+   * @param orgId: a number representing the ID of the organization to be starred
+   */
   toggleOrganizationMembership = async () => {
 
     // If user is an admin, they should not be able to unstar the organization.
-    if (this.adminPermission) {
-
-      // Open snack bar to notify user that the event was deleted.
-      this.snackBar.open("You cannot unstar this organization because you are an admin.", "", { duration: 2000 })
+    const filter = this.profile.organization_associations.filter(oa => oa.org_id == this.organization!.id);
+    if (filter && filter.length > 0 && filter[0].membership_type >= 0) {
+      if (filter[0].membership_type == 1) {
+        this.snackBar.open("You cannot unstar this organization because you are an executive.", "", { duration: 2000 });
+      } else if (filter[0].membership_type == 2) {
+        this.snackBar.open("You cannot unstar this organization because you are a manager.", "", { duration: 2000 })
+      }
+      else {
+        // If here, the memership can be deleted
+        // First, confirm with the user in a snackbar
+        let deleteMembershipSnackBarRef = this.snackBar.open("Are you sure you want to leave this organization?", "Leave");
+        deleteMembershipSnackBarRef.onAction().subscribe(() => {
+          // If snackbar button pressed, delete membership
+          const orgRoleId = filter[0].id!;
+          this.orgService.deleteOrganizationRole(orgRoleId).subscribe(() => {
+            this.snackBar.open("You have left the organization.", "", { duration: 2000 });
+            this.profileService.refreshProfile();
+            this.profileService.profile$.subscribe(profile => this.profile = profile!);
+            this.permValue = -1;
+          })
+        })
+      }
     }
     else {
+      // Check if user is authenticated
       if (this.profile && this.profile.first_name) {
-        // Call the orgDetailsService's toggleOrganizationMembership() method.
-        this.orgService.toggleOrganizationMembership(+this.id);
+        // Get data on organization we are adding to.
+        this.organization$.subscribe((org) => {
+
+          // Then, check if organization is public or not.
+          if (org.public) {
+            // If public, join organization.
+            this.orgService.createOrganizationRole(this.profile!.id!, this.organization!.id!).subscribe((newOrgRole) => {
+              this.snackBar.open(`Welcome to ${org.slug}!`, "", { duration: 2000 });
+              this.profileService.refreshProfile();
+              this.profileService.profile$.subscribe(profile => this.profile = profile!);
+              this.permValue = 0;
+            })
+          }
+          else {
+            // If not public, show a snackbar.
+            this.snackBar.open(`To join ${org.slug}, you must be added manually by the organization!`, "Close");
+          }
+        })
       }
     }
   }

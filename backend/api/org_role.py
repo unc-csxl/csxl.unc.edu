@@ -8,13 +8,14 @@ from backend.services.org_role import OrgRoleService
 from backend.api.authentication import registered_user
 from backend.models.user import User
 
-__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 api = APIRouter(prefix="/api/orgroles")
 
-@api.get("", tags=['Org Role'])
+
+@api.get("", tags=["Org Role"])
 def get_roles(role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
     """
     Get all roles
@@ -29,8 +30,13 @@ def get_roles(role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
     # Return all roles
     return role_service.all()
 
-@api.post("", tags=['Org Role'])
-def new_role(role: OrgRole, subject: User = Depends(registered_user), role_service: OrgRoleService = Depends()) -> OrgRoleDetail:
+
+@api.post("", tags=["Org Role"])
+def new_role(
+    role: OrgRole,
+    subject: User = Depends(registered_user),
+    role_service: OrgRoleService = Depends(),
+) -> OrgRoleDetail:
     """
     Create or update role
 
@@ -53,8 +59,11 @@ def new_role(role: OrgRole, subject: User = Depends(registered_user), role_servi
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/user/{user_id}", responses={404: {"model": None}}, tags=['Org Role'])
-def get_role_from_userid(user_id: int, role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
+
+@api.get("/user/{user_id}", responses={404: {"model": None}}, tags=["Org Role"])
+def get_role_from_userid(
+    user_id: int, role_service: OrgRoleService = Depends()
+) -> list[OrgRoleDetail]:
     """
     Get all roles with matching user_id
 
@@ -69,20 +78,23 @@ def get_role_from_userid(user_id: int, role_service: OrgRoleService = Depends())
         HTTPException 404 if get_from_userid() raises an Exception
     """
 
-    try: 
+    try:
         # Try to get and return all roles associated with the user_id
         return role_service.get_from_userid(user_id)
     except Exception as e:
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.get("/org/{org_id}", responses={404: {"model": None}}, tags=['Org Role'])
-def get_role_from_orgid(org_id: int, role_service: OrgRoleService = Depends()) -> list[OrgRoleDetail]:
+
+@api.get("/org/{org_id}", responses={404: {"model": None}}, tags=["Org Role"])
+def get_role_from_orgid(
+    org_id: int, role_service: OrgRoleService = Depends()
+) -> list[OrgRoleDetail]:
     """
     Get all roles with matching org_id
 
     Parameters:
-        org_id: an int representing 
+        org_id: an int representing
         role_service: a valid OrgRoleService
 
     Returns:
@@ -92,15 +104,20 @@ def get_role_from_orgid(org_id: int, role_service: OrgRoleService = Depends()) -
         HTTPException 404 if get_from_orgid() raises an Exception
     """
 
-    try: 
+    try:
         # Try to get and return all roles with matching org_id
         return role_service.get_from_orgid(org_id)
     except Exception as e:
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{id}", tags=['Org Role'])
-def delete_role(id: int, subject: User = Depends(registered_user), role_service = Depends(OrgRoleService)):
+
+@api.delete("/{id}", tags=["Org Role"])
+def delete_role(
+    id: int,
+    subject: User = Depends(registered_user),
+    role_service: OrgRoleService = Depends(OrgRoleService),
+):
     """
     Delete role based on id
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { OrganizationSummary, Profile } from 'src/app/models.module';
 
 @Component({
@@ -13,7 +13,7 @@ export class OrganizationCard {
     @Input() profilePermissions!: Map<number, number>
     @Output() onStarClicked = new EventEmitter<number>();
 
-    constructor() {}
+    constructor() { }
 
     starClicked() {
         this.onStarClicked.emit(this.organization!.id!);

@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { EventSummary, OrgRole, OrgRoleSummary, Organization, OrganizationSummary, Profile } from '../models.module';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, mergeMap, of, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable, mergeMap, of, shareReplay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +71,34 @@ export class OrganizationsService {
    */
   create = (event: EventSummary) => {
     return this.http.post<EventSummary>("/api/events", event);
+  }
+
+  /**
+   * Deletes an organization role in the database.
+   * @param id: Id of the OrgRole to delete.
+   * @returns {Observable<void>}
+   */
+  deleteOrganizationRole = (id: number) => {
+    return this.http.delete<void>(`/api/orgroles/${id}`);
+  }
+
+  /**
+ * Creates an organization role in the database.
+ * @param userId: ID of the user to create the role for.
+ * @param orgId: ID of the organization to create the role for.
+ * @returns {Observable<OrgRoleSummary>}
+ */
+  createOrganizationRole = (userId: number, orgId: number) => {
+    const newOrgRole: OrgRoleSummary = {
+      id: null,
+      user_id: userId,
+      org_id: orgId,
+      membership_type: 0,
+      timestamp: new Date()
+    }
+
+    // Post new org role object
+    return this.http.post<OrgRoleSummary>(`/api/orgroles`, newOrgRole);
   }
 
   /**
