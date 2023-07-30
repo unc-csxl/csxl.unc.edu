@@ -16,77 +16,67 @@
             anim id est laborum.</p> -->
 
         <!-- Coworking Dropdowns -->
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Monitors
-                </mat-panel-title>
-                <mat-panel-description>
-                    <i>Next available 7 minutes.</i>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div style="display: grid; grid-template-columns: 1fr 2fr;">
-                <p>[IMAGE HERE]</p>
-                <p>Some description of the monitors here. The CSXL's monitors are all 4k and connect to your
-                    computer with USB-C, so you can connect to this display and charge your computer at the same time.
-                </p>
+        <mat-list>
+            <mat-divider />
+            <mat-divider />
+            <div style="display: flex; flex-direction: row; width: 100%;">
+                <p style="width: 70%; margin-left: 12px;"><span class="bolded">Monitor</span></p>
+                <p style="text-align: right; width: 30%; margin-right: 12px; color: rgba(0, 0, 0, 0.54);"><i>Next
+                        Available in 7 minutes.</i></p>
             </div>
-            <mat-action-row>
-                <a [routerLink]="['/reservation/create']">
-                    <button mat-raised-button color="primary">Reserve</button>
-                </a>
-            </mat-action-row>
-        </mat-expansion-panel>
+            <mat-divider />
+            <mat-divider />
+            <div style="display: flex; flex-direction: row; width: 100%;">
+                <p style="width: 50%; margin-left: 12px;"><span class="bolded">Sit-Stand Desks</span></p>
+                <div
+                    style="display: flex; flex-direction: row-reverse; width:50%; margin-right: 12px; align-items: center;">
+                    <a [routerLink]="['']">
+                        <button mat-raised-button color="primary">Reserve</button>
+                    </a>
+                    <p style="text-align: right; color: rgba(0, 0, 0, 0.54); margin-right: 12px;">6
+                        Available Now.</p>
+                </div>
+            </div>
+            <mat-divider />
+
+            <mat-divider />
+            <div style="margin-top: 12px; margin-bottom: 12px;">
+                <mat-card>
+                    <div style="display: flex; flex-direction: row; width: 100%;">
+                        <p style="width: 70%; margin-left: 12px;"><span class="bolded">Conference Table Seats</span></p>
+                        <p style="text-align: right; width: 30%; margin-right: 12px; color: rgba(0, 0, 0, 0.54);">10
+                            Available Now.</p>
+                    </div>
+                </mat-card>
+            </div>
+            <mat-divider />
+            <div style="margin-top: 12px; margin-bottom: 12px;">
+                <mat-card>
+                    <div style="display: flex; flex-direction: row; width: 100%;">
+                        <p style="width: 50%; margin-left: 12px;"><span class="bolded">Conference Area Seats</span></p>
+                        <div
+                            style="display: flex; flex-direction: row-reverse; width:50%; margin-right: 12px; align-items: center;">
+                            <a [routerLink]="['']">
+                                <button mat-raised-button color="primary">Reserve</button>
+                            </a>
+                            <p style="text-align: right; color: rgba(0, 0, 0, 0.54); margin-right: 12px;">15
+                                Available Now.</p>
+                        </div>
+                    </div>
+
+                </mat-card>
+            </div>
+
+            <mat-divider />
+        </mat-list>
 
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Sit/Stand Desks
+                    Super Comfy Sofa
                 </mat-panel-title>
                 <mat-panel-description>
-                    6 Available now.
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div style="display: grid; grid-template-columns: 1fr 2fr;">
-                <p>[IMAGE HERE]</p>
-                <p>Some description of the sit-stand desks here.
-                </p>
-            </div>
-            <mat-action-row>
-                <a [routerLink]="['/reservation/create']">
-                    <button mat-raised-button color="primary">Reserve</button>
-                </a>
-            </mat-action-row>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Conference Table Seats
-                </mat-panel-title>
-                <mat-panel-description>
-                    10 Available now.
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div style="display: grid; grid-template-columns: 1fr 2fr;">
-                <p>[IMAGE HERE]</p>
-                <p>Some description of the conference table seats here.
-                </p>
-            </div>
-            <mat-action-row>
-                <a [routerLink]="['/reservation/create']">
-                    <button mat-raised-button color="primary">Reserve</button>
-                </a>
-            </mat-action-row>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Common Area Seats
-                </mat-panel-title>
-                <mat-panel-description>
-                    15 Available now.
+                    1 Available now.
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <div style="display: grid; grid-template-columns: 1fr 2fr;">
