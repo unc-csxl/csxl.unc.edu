@@ -409,10 +409,23 @@ class ReservationService:
                     subject, "coworking.reservation.manage", f"user/{user.id}"
                 )
 
-        # Handle Requested Changes
+        # Handle Requested State Changes
         dirty = False
         if delta.state is not None and delta.state != entity.state:
             dirty = dirty or self._change_state(entity, delta.state)
+
+        # Handle Requested Seat Changes?
+        if delta.seats is not None:
+            raise NotImplementedError("Changing seats not yet supported.")
+
+        # Handle Requested Party Changes
+        if delta.users is not None:
+            raise NotImplementedError("Changing party not yet supported.")
+
+        # Handle Requested Time Changes (TODO)
+        if delta.start is not None or delta.end is not None or delta.seats is not None:
+            # TODO: Assure these requested changes are valid within policies
+            raise NotImplementedError("Changing start/end not yet supported")
 
         if dirty:  # and valid():
             self._session.commit()
@@ -453,12 +466,6 @@ class ReservationService:
     ) -> Reservation:
         """Staff members with the correct permissions can check users in to their reservations directly."""
         # TODO: Should check-in be on the join table between reservation and user??
-        raise NotImplementedError()
-
-    def checkout_reservation(
-        self, subject: User, reservation: Reservation
-    ) -> Reservation:
-        """If a user wants to check out of their reservation early, this frees up the resource."""
         raise NotImplementedError()
 
     # Private helper methods
