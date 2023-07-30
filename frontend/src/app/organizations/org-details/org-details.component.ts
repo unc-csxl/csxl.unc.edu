@@ -171,13 +171,12 @@ export class OrgDetailsComponent {
    */
   deleteEvent = async (event_id: number) => {
     // Call the orgDetailsService's deleteEvent() method.
-    this.orgService.deleteEvent(event_id);
-
-    // Open snack bar to notify user that the event was deleted.
-    this.snackBar.open("Deleted event", "", { duration: 2000 })
-    await new Promise(f => setTimeout(f, 750));
-
-    // Reload the window to update the events.
-    location.reload();
+    this.orgService.deleteEvent(event_id).subscribe(_ => {
+      this.organization$ = this.orgService.getOrganizationDetail(this.id);
+      this.organization$.subscribe(organization => {
+        this.organization = organization;
+        this.snackBar.open("Deleted event", "", { duration: 2000 });
+      });
+    })
   }
 }

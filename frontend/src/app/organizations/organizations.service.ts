@@ -170,7 +170,7 @@ export class OrganizationsService {
    */
   deleteEvent = (eventId: number) => {
     // Make the call to delete the event.
-    this.http.delete<void>(`/api/events/${eventId}`).subscribe(() => console.log('Delete successful.'));
+    return this.http.delete<void>(`/api/events/${eventId}`);
   }
 
   /** Returns the organization roles for an organization using the backend HTTP get request.
