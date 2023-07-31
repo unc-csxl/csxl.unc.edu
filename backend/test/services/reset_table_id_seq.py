@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session, DeclarativeBase, InstrumentedAttribute
 def reset_table_id_seq(
     session: Session,
     entity: type[DeclarativeBase],
-    entity_id_column: InstrumentedAttribute,
+    entity_id_column: InstrumentedAttribute[int],
     next_id: int,
 ) -> None:
     """Reset the ID sequence of an entity table.
