@@ -6,7 +6,8 @@ from ....models.coworking.availability import SeatAvailability
 from datetime import timedelta
 
 from ..core_data import user_data
-from . import reservation_data, operating_hours_data
+from . import operating_hours_data
+from .reservation import reservation_data
 
 # Since there are relationship dependencies between the entities, order matters.
 from .time import *
@@ -14,7 +15,7 @@ from ..core_data import setup_insert_data_fixture as insert_order_0
 from .operating_hours_data import fake_data_fixture as insert_order_1
 from .room_data import fake_data_fixture as insert_order_2
 from .seat_data import fake_data_fixture as insert_order_3
-from .reservation_data import fake_data_fixture as insert_order_4
+from .reservation.reservation_data import fake_data_fixture as insert_order_4
 
 
 def test_status_dispatch(status_svc: StatusService):

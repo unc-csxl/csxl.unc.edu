@@ -3,16 +3,16 @@
 import pytest
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from ....entities.coworking import ReservationEntity
-from ....models.coworking import Reservation, ReservationState, ReservationRequest
-from ....models.user import UserIdentity
-from ....models.coworking.seat import SeatIdentity
-from .time import *
+from .....entities.coworking import ReservationEntity
+from .....models.coworking import Reservation, ReservationState, ReservationRequest
+from .....models.user import UserIdentity
+from .....models.coworking.seat import SeatIdentity
+from ..time import *
 
-from ..core_data import user_data
-from ..reset_table_id_seq import reset_table_id_seq
-from . import seat_data
-from . import operating_hours_data
+from ...core_data import user_data
+from ...reset_table_id_seq import reset_table_id_seq
+from .. import seat_data
+from .. import operating_hours_data
 
 
 __authors__ = ["Kris Jordan"]
