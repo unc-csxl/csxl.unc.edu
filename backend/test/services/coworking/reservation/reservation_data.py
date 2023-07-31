@@ -135,7 +135,9 @@ def test_request(overrides: dict | None = None) -> ReservationRequest:
         reservation_data.update(overrides)
 
     # Create the Reservation model
-    return ReservationRequest(**reservation_data)
+    return ReservationRequest(
+        start=reservation_data["start"], end=reservation_data["end"], **reservation_data
+    )
 
 
 @pytest.fixture(autouse=True)

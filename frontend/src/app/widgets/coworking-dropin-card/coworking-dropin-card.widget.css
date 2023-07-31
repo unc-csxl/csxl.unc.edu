@@ -1,3 +1,39 @@
+/* Begin Action List Styling */
+.mdc-list-item.mdc-list-item--with-trailing-meta .mdc-list-item__end {
+    height: 100%;
+    vertical-align: middle;
+    font-size: 32px;
+}
+
+.mdc-list-item--with-trailing-meta.mdc-list-item--with-two-lines .mdc-list-item__end::before {
+    height: 40px;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start {
+    font-size: 24px;
+    background: #4786C6;
+    width: 36px;
+    height: 50%;
+    text-align: center;
+    margin-bottom: 0;
+    margin-left: 8px;
+    margin-right: 8px;
+    padding-bottom: 0;
+    line-height: 36px;
+    border-radius: 100%;
+    color: white;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start.unavailable {
+    background: red;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start.upcoming {
+    background: #234261;
+}
+
+/* End Action List Styling */
+
 .mat-mdc-card {
     margin: 0 !important;
     max-width: 100%;
@@ -8,11 +44,6 @@
     margin-bottom: 0.5rem;
     align-items: center;
     justify-content: space-between;
-}
-
-.mdc-list-item--with-two-lines .mdc-list-item__primary-text,
-.mdc-list-item--with-three-lines .mdc-list-item__primary-text {
-    margin-bottom: 0;
 }
 
 .mdc-list-group__subheader {
