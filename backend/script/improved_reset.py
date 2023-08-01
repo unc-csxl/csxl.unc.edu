@@ -17,10 +17,10 @@ from ..test.services import role_data, user_data, permission_data
 from ..test.services.coworking import (
     room_data,
     seat_data,
-    reservation_data,
     operating_hours_data,
     time,
 )
+from ..test.services.coworking.reservation import reservation_data
 
 if getenv("MODE") != "development":
     print("This script can only be run in development mode.", file=sys.stderr)

@@ -1,5 +1,37 @@
 <!-- HTML Structure of Coworking Page -->
 
+
+<ng-container *ngIf="status$ | async as status">
+
+  <ng-container *ngIf="isOpen$ | async; else closed">
+
+    <ng-container *ngIf="nextOperatingHours$ | async as operatingHours">
+      Open until {{ operatingHours.end | date:"h:ma" }}
+    </ng-container>
+
+    <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
+      {{ activeReservation.seats[0].title }}
+    </ng-container>
+    <ng-template #dropin>
+      Drop-in Card
+    </ng-template>
+
+  </ng-container>
+  <ng-template #closed>
+    Closed! (TODO) Upcoming hours:
+    <ul>
+      <li *ngFor="let hours of status.operating_hours">
+        {{ hours.start }} to {{ hours.end }}
+      </li>
+    </ul>
+  </ng-template>
+
+
+</ng-container>
+
+
+
+
 <div class="coworking-top-grid">
   <div class="coworking-top-card-container">
     <coworking-top-card />
@@ -26,18 +58,21 @@
     <coworking-reserve-card />
   </div>
 
-  <!-- Drop In Tentative Card -->
+  <!-- Drop In Tentative Card 
   <div class="other-dropin-card-container">
     <coworking-tentative-dropin-card />
   </div>
+  -->
 
-  <!-- Drop In In-Progress Card -->
+  <!-- Drop In In-Progress Card 
   <div class="other-dropin-card-container">
     <coworking-inprogress-dropin-card />
   </div>
+  -->
 
-  <!-- Drop In Expired Card -->
+  <!-- Drop In Expired Card 
   <div class="other-dropin-card-container">
     <coworking-expired-dropin-card />
   </div>
+  -->
 </div>
