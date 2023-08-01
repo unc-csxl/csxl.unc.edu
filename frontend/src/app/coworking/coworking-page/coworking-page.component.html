@@ -1,33 +1,36 @@
 <!-- HTML Structure of Coworking Page -->
 
+<div class="coworking-grid">
 
-<ng-container *ngIf="status$ | async as status">
+  <ng-container *ngIf="status$ | async as status">
 
-  <ng-container *ngIf="isOpen$ | async; else closed">
+    <ng-container *ngIf="isOpen$ | async; else closed">
 
-    <ng-container *ngIf="nextOperatingHours$ | async as operatingHours">
-      Open until {{ operatingHours.end | date:"h:ma" }}
+      <ng-container *ngIf="nextOperatingHours$ | async as operatingHours">
+        Open until {{ operatingHours.end | date:"h:ma" }}
+      </ng-container>
+
+      <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
+        <div>Active Reservation: {{ activeReservation.seats[0].title }} {{ activeReservation.end }} (TODO)</div>
+      </ng-container>
+      <ng-template #dropin>
+        <div class="dropin-card-container">
+          <coworking-dropin-card [seat_availability]="status.seat_availability" (onSeatsSelected)="reserve($event)" />
+        </div>
+      </ng-template>
+
     </ng-container>
-
-    <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
-      {{ activeReservation.seats[0].title }}
-    </ng-container>
-    <ng-template #dropin>
-      Drop-in Card
+    <ng-template #closed>
+      Closed! (TODO) Upcoming hours:
+      <ul>
+        <li *ngFor="let hours of status.operating_hours">
+          {{ hours.start }} to {{ hours.end }}
+        </li>
+      </ul>
     </ng-template>
 
+
   </ng-container>
-  <ng-template #closed>
-    Closed! (TODO) Upcoming hours:
-    <ul>
-      <li *ngFor="let hours of status.operating_hours">
-        {{ hours.start }} to {{ hours.end }}
-      </li>
-    </ul>
-  </ng-template>
-
-
-</ng-container>
 
 
 
@@ -58,21 +61,4 @@
     <coworking-reserve-card />
   </div>
 
-  <!-- Drop In Tentative Card 
-  <div class="other-dropin-card-container">
-    <coworking-tentative-dropin-card />
-  </div>
-  -->
-
-  <!-- Drop In In-Progress Card 
-  <div class="other-dropin-card-container">
-    <coworking-inprogress-dropin-card />
-  </div>
-  -->
-
-  <!-- Drop In Expired Card 
-  <div class="other-dropin-card-container">
-    <coworking-expired-dropin-card />
-  </div>
-  -->
 </div>

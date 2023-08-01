@@ -7,20 +7,20 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
-import { CoworkingStatus, OperatingHours, Reservation } from '../coworking.models';
-import { Observable, map } from 'rxjs';
+import { CoworkingStatus, OperatingHours, Reservation, SeatAvailability } from '../coworking.models';
+import { Observable, Subscription, map, timer } from 'rxjs';
 
 @Component({
   selector: 'app-coworking-page',
   templateUrl: './coworking-page.component.html',
   styleUrls: ['./coworking-page.component.css']
 })
-export class CoworkingPageComponent implements OnInit {
+export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   public status$: Observable<CoworkingStatus>;
 
@@ -28,6 +28,8 @@ export class CoworkingPageComponent implements OnInit {
   public isOpen$: Observable<boolean>;
 
   public activeReservation$: Observable<Reservation | undefined>;
+
+  private timerSubscription!: Subscription;
 
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
@@ -44,9 +46,19 @@ export class CoworkingPageComponent implements OnInit {
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
   }
-  
+
+  reserve(seatSelection: SeatAvailability[]) {
+    this.coworkingService.draftReservation(seatSelection).subscribe(reservation => {
+      console.log(reservation);
+    });
+  }
+
   ngOnInit(): void {
-    this.coworkingService.pullStatus();
+    this.timerSubscription = timer(0, 10000).subscribe(() => this.coworkingService.pullStatus());
+  }
+
+  ngOnDestroy(): void {
+    this.timerSubscription.unsubscribe();
   }
 
   private initNextOperatingHours(): Observable<OperatingHours | undefined> {

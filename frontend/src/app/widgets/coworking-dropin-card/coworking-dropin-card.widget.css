@@ -25,7 +25,7 @@
 }
 
 .mdc-list-item--with-leading-icon .mdc-list-item__start.unavailable {
-    background: red;
+    background: #612d23;
 }
 
 .mdc-list-item--with-leading-icon .mdc-list-item__start.upcoming {

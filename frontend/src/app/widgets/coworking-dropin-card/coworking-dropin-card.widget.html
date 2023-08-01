@@ -9,36 +9,38 @@
     <mat-card-content>
         <p>The following seats are available for drop-ins. Reserve here and check-in within 10 minutes.</p>
         <!-- Coworking Dropdowns -->
+        <!-- TODO: Refactor these list items to widgets? -->
         <mat-action-list>
-            <mat-list-item>
-                <h3 matListItemTitle>Monitor Desk (Sitting)</h3>
-                <div matListItemIcon class="upcoming">1</div>
-                <p matListItemLine>Reservable at 1:52pm (7 minute wait)</p>
-                <h3 matListItemMeta>&rsaquo;</h3>
-            </mat-list-item>
-            <mat-list-item>
-                <h3 matListItemTitle>Monitor Desk (Stand or Sit)</h3>
-                <div matListItemIcon>3</div>
-                <p matListItemLine>Reservable now</p>
-                <div matListItemMeta>&rsaquo;</div>
-            </mat-list-item>
-            <mat-list-item disabled="disabled">
-                <h3 matListItemTitle>Conference Table Seat</h3>
-                <div matListItemIcon class="unavailable">0</div>
-                <p matListItemLine>None available until 3pm</p>
-            </mat-list-item>
-            <mat-list-item>
-                <h3 matListItemTitle>Round Table Seat</h3>
-                <div matListItemIcon>12</div>
-                <p matListItemLine>Reservable now</p>
-                <h3 matListItemMeta>&rsaquo;</h3>
-            </mat-list-item>
-            <mat-list-item>
-                <h3 matListItemTitle>Bar Table Seat</h3>
-                <div matListItemIcon>3</div>
-                <p matListItemLine>Reservable now</p>
-                <h3 matListItemMeta>&rsaquo;</h3>
-            </mat-list-item>
+            <ng-container *ngFor="let category of categories">
+                <ng-container *ngIf="category.reservable_now; else reservable_soon">
+                    <mat-list-item (click)="reserve(category)">
+                        <h3 matListItemTitle>{{ category.title }}</h3>
+                        <div matListItemIcon>{{ category.seats_available_now.length }}</div>
+                        <p matListItemLine>{{ category.availabilityString() }}</p>
+                        <h3 matListItemMeta>&rsaquo;</h3>
+                    </mat-list-item>
+                </ng-container>
+
+                <ng-template #reservable_soon>
+                    <ng-container *ngIf="category.reservable_soon; else not_reservable">
+                        <mat-list-item (click)="reserve(category)">
+                            <h3 matListItemTitle>{{ category.title }}</h3>
+                            <div matListItemIcon class="upcoming">{{ category.seats_available_soon.length }}</div>
+                            <p matListItemLine>{{ category.availabilityString() }}</p>
+                            <h3 matListItemMeta>&rsaquo;</h3>
+                        </mat-list-item>
+                    </ng-container>
+                </ng-template>
+
+                <ng-template #not_reservable>
+                    <mat-list-item disabled="disabled">
+                        <h3 matListItemTitle>{{ category.title }}</h3>
+                        <div matListItemIcon class="unavailable">0</div>
+                        <p matListItemLine>None available</p>
+                        <h3 matListItemMeta>&rsaquo;</h3>
+                    </mat-list-item>
+                </ng-template>
+            </ng-container>
         </mat-action-list>
 
     </mat-card-content>
