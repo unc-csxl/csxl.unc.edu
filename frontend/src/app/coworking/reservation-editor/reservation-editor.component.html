@@ -8,10 +8,19 @@
             <mat-form-field class="example-chip-list">
                 <mat-label>Who</mat-label>
                 <mat-chip-grid #chipGrid aria-label="Choose people" required>
-                    <mat-chip-row>
-                        {{profile.first_name + " " + profile.last_name}}
+                    <mat-chip-row *ngFor="let person of people" (removed)="onOptionDeselected(person)">
+                        {{person.first_name + " " + person.last_name}}
+                        <button matChipRemove *ngIf="person.id !== profile.id">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
                     </mat-chip-row>
-                    <input placeholder="Add more people..." [matChipInputFor]="chipGrid" />
+                    <input #whoInput type="text" placeholder="Add more people..." aria-label="More people"
+                        [matChipInputFor]="chipGrid" matInput [matAutocomplete]="auto" [formControl]="userLookup" />
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+                        <mat-option *ngFor="let option of filteredUsers$ | async" [value]="option">
+                            {{ option.first_name }} {{ option.last_name }}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-chip-grid>
             </mat-form-field>
             <!-- What -->
