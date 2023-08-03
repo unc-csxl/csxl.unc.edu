@@ -9,6 +9,8 @@
                 <mat-label>Who</mat-label>
                 <mat-chip-grid #chipGrid aria-label="Choose people" required>
                     <mat-chip-row *ngFor="let person of people" (removed)="onOptionDeselected(person)">
+                        <img matChipAvatar src="https://material.angular.io/assets/img/examples/shiba1.jpg"
+                            alt="Photo of a Shiba Inu" />
                         {{person.first_name + " " + person.last_name}}
                         <button matChipRemove *ngIf="person.id !== profile.id">
                             <mat-icon>cancel</mat-icon>
