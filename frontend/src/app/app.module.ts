@@ -78,6 +78,9 @@ import { CoworkingTentativeDropInCard } from './widgets/coworking-tentative-drop
 import { CoworkingInProgressDropInCard } from './widgets/coworking-inprogress-dropin-card/coworking-inprogress-dropin-card.widget';
 import { CoworkingExpiredDropInCard } from './widgets/coworking-expired-dropin-card/coworking-expired-dropin-card.widget';
 import { EventsPageComponent } from './events/events-page/events-page.component';
+import { CoworkingHoursCard } from './widgets/coworking-hours-card/coworking-hours-card.widget';
+import { CoworkingHoursCardDialog } from './widgets/coworking-hours-card/coworking-hours-card-dialog/coworking-hours-card-dialog.widget';
+
 
 @NgModule({
   declarations: [
@@ -120,7 +123,9 @@ import { EventsPageComponent } from './events/events-page/events-page.component'
     CoworkingInProgressDropInCard,
     CoworkingExpiredDropInCard,
     EventsPageComponent,
-    OrganizationsPageComponent
+    OrganizationsPageComponent,
+    CoworkingHoursCard,
+    CoworkingHoursCardDialog
   ],
   imports: [
     BrowserModule,
