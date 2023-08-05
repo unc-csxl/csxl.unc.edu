@@ -36,12 +36,47 @@
                 </mat-select>
             </mat-form-field>
             <!-- When -->
-            <mat-form-field appearance="fill" color="accent">
-                <mat-label>Time</mat-label>
-                <mat-select required>
-                    <mat-option value="option1">Next Drop-In at 11:30AM</mat-option>
-                </mat-select>
-            </mat-form-field>
+            <div class="when-group">
+                <mat-form-field appearance="fill" color="accent">
+                    <mat-label>Start Time</mat-label>
+                    <mat-select required>
+                        <mat-option value="option1">9:00AM</mat-option>
+                        <mat-option value="option1">9:15AM</mat-option>
+                        <mat-option value="option1">9:30AM</mat-option>
+                        <mat-option value="option1">9:45AM</mat-option>
+                        <mat-option value="option1">10:00AM</mat-option>
+                        <mat-option value="option1">...</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill" color="accent">
+                    <mat-label>End Time</mat-label>
+                    <mat-select required>
+                        <mat-option value="option1">9:00AM</mat-option>
+                        <mat-option value="option1">9:15AM</mat-option>
+                        <mat-option value="option1">9:30AM</mat-option>
+                        <mat-option value="option1">9:45AM</mat-option>
+                        <mat-option value="option1">10:00AM</mat-option>
+                        <mat-option value="option1">...</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <mat-divider />
+            <div style="margin-left: 18px; margin-right: 18px;">
+                <div style="display: flex; flex-direction: row;">
+                    <p style="width: 50%;">Time Range: {{formatLabel(startSlider.valueAsNumber)}} =
+                        {{formatLabel(endSlider.valueAsNumber)}}
+                    </p>
+                    <p style="width: 50%; text-align: right;">Duration: {{durationString(startSlider.valueAsNumber,
+                        endSlider.valueAsNumber)}}</p>
+                </div>
+                <mat-slider min="1691240400" max="1691280000" showTickMarks discrete step="900" style="width: 100%;"
+                    [displayWith]="formatLabel">
+                    <input value="1691244000" matSliderStartThumb #startSlider>
+                    <input value="1691251200" matSliderEndThumb #endSlider>
+                </mat-slider>
+            </div>
+            <mat-divider />
+
             <!-- Where -->
             <mat-form-field appearance="fill" color="accent">
                 <mat-label>Location</mat-label>

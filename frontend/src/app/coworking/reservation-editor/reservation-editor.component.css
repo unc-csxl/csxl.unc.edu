@@ -12,3 +12,9 @@
     margin-left: 8px;
     margin-bottom: 8px;
 }
+
+.when-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+}

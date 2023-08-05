@@ -92,4 +92,21 @@ export class ReservationEditorComponent {
     this.people.splice(this.people.indexOf(person), 1);
     this.userLookup.setValue('');
   }
+
+  /** Formatter for the when tickmark thumbnail */
+  formatLabel = (value: number): string => {
+    let d = new Date(0);
+    d.setUTCSeconds(value);
+
+    return `${d.getHours() > 12 ? d.getHours() - 12 : d.getHours()}:${d.getMinutes() == 0 ? "00" : d.getMinutes()}${d.getHours() >= 12 ? "PM" : "AM"}`;
+  }
+
+  durationString = (start: number, end: number): string => {
+    let minutes = (end - start) / 60
+    if (minutes >= 60) {
+      return `${Math.floor(minutes / 60)}hr ${minutes % 60}min`
+    }
+    return `${minutes % 60}min`
+  }
+
 }
