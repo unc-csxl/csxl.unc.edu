@@ -1,20 +1,17 @@
-<mat-card>
-    <!-- Coworking Card Header -->
-    <mat-card-header class="header">
-        <!--  class="user-name" -->
-        <mat-card-title>CSXL Hours</mat-card-title>
-    </mat-card-header>
-
-    <!-- Coworking Information -->
-    <mat-card-content>
-        <mat-list>
-            <mat-list-item>
-                <h3 matListItemTitle>We're Open!</h3>
-                <p matListItemLine>The XL closes at 8:00PM.</p>
-            </mat-list-item>
-        </mat-list>
-
-        <button mat-raised-button type="submit" class="hours-button" (click)="openDialog()">See Hours</button>
-
-    </mat-card-content>
-</mat-card>
+<mat-expansion-panel [expanded]="openOperatingHours === undefined">
+    <mat-expansion-panel-header class="header">
+        <mat-panel-title class="hours-title open" *ngIf="openOperatingHours; else closed"><span class="badge">Open</span> until {{ openOperatingHours!.end|date:"h:mma"|lowercase }}</mat-panel-title>
+        <ng-template #closed>
+            <mat-panel-title class="hours-title closed"><span class="badge">Closed</span></mat-panel-title>
+        </ng-template>
+    </mat-expansion-panel-header>
+    <div>
+        <h3>Upcoming Hours</h3>
+        <ul>
+            <li *ngFor="let hours of operatingHours">
+                {{ hours.start|date:"EEEE M/d" }} 
+                from {{ hours.start|date:"h:mma"|lowercase}} to {{ hours.end|date:"h:mma"|lowercase }}
+            </li>
+        </ul>
+    </div>
+</mat-expansion-panel>

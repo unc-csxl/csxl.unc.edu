@@ -1,21 +1,9 @@
-<!-- HTML Structure of Coworking Page -->
-<div class="coworking-top-grid">
-  <div class="coworking-top-card-container">
-    <coworking-top-card />
-  </div>
-  <div class="reserve-card-container">
-    <coworking-hours-card />
-  </div>
-</div>
 
 <div class="coworking-reservations-grid">
   <ng-container *ngIf="status$ | async as status">
 
-    <ng-container *ngIf="isOpen$ | async; else closed">
-
-      <ng-container *ngIf="nextOperatingHours$ | async as operatingHours">
-        Open until {{ operatingHours.end | date:"h:ma" }}
-      </ng-container>
+    <ng-container *ngIf="openOperatingHours$ | async as openOperatingHours">
+      <coworking-hours-card [operatingHours]="status.operating_hours" [openOperatingHours]="openOperatingHours" />
 
       <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
         <div>Active Reservation: {{ activeReservation.seats[0].title }} {{ activeReservation.end }} (TODO)</div>
@@ -25,23 +13,20 @@
           <coworking-dropin-card [seat_availability]="status.seat_availability" (onSeatsSelected)="reserve($event)" />
         </div>
       </ng-template>
-
     </ng-container>
+
     <ng-template #closed>
-      Closed! (TODO) Upcoming hours:
-      <ul>
-        <li *ngFor="let hours of status.operating_hours">
-          {{ hours.start }} to {{ hours.end }}
-        </li>
-      </ul>
+      <coworking-hours-card />
     </ng-template>
 
+    <!-- Future Reservation Card -->
+    <coworking-reserve-card />
 
   </ng-container>
+</div>
 
-  <!-- Future Reservation Card -->
-  <div class="reserve-card-container">
-    <coworking-reserve-card />
+<div class="coworking-top-grid">
+  <div class="coworking-top-card-container">
+    <coworking-top-card />
   </div>
-
 </div>

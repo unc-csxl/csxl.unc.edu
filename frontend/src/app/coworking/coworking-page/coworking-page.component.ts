@@ -24,7 +24,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   public status$: Observable<CoworkingStatus>;
 
-  public nextOperatingHours$: Observable<OperatingHours | undefined>;
+  public openOperatingHours$: Observable<OperatingHours | undefined>;
   public isOpen$: Observable<boolean>;
 
   public activeReservation$: Observable<Reservation | undefined>;
@@ -42,7 +42,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   constructor(route: ActivatedRoute, private router: Router, private coworkingService: CoworkingService) {
     this.status$ = coworkingService.status$;
-    this.nextOperatingHours$ = this.initNextOperatingHours();
+    this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
   }
@@ -69,7 +69,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   private initIsOpen(): Observable<boolean> {
-    return this.nextOperatingHours$.pipe(map(hours => {
+    return this.openOperatingHours$.pipe(map(hours => {
       let now = new Date();
       return hours !== undefined && hours.start <= now && hours.end > now;
     }));

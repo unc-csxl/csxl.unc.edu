@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { CoworkingHoursCardDialog } from './coworking-hours-card-dialog/coworking-hours-card-dialog.widget';
+import { Component, Input } from '@angular/core';
+import { OperatingHours } from 'src/app/coworking/coworking.models';
 
 @Component({
     selector: 'coworking-hours-card',
@@ -9,11 +8,7 @@ import { CoworkingHoursCardDialog } from './coworking-hours-card-dialog/coworkin
 })
 export class CoworkingHoursCard {
 
-    constructor(public dialog: MatDialog) { }
+    @Input() operatingHours!: OperatingHours[];
+    @Input() openOperatingHours?: OperatingHours;
 
-    openDialog = () => {
-        this.dialog.open(CoworkingHoursCardDialog, {
-            width: '400px',
-        });
-    }
 }
