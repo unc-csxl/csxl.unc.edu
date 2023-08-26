@@ -9,7 +9,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 
 /* UI / Material Dependencies */
 import { NgForOf } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,6 +33,7 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,8 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
     MatSnackBarModule,
     MatTabsModule,
     MatToolbarModule,
+    FormsModule,
+    RouterModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

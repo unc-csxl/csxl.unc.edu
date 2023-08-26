@@ -23,7 +23,7 @@ def get_organizations(organization_service: OrganizationService = Depends()) -> 
         organization_service: a valid OrganizationService
 
     Returns:
-        list[OrganizationDetail]: All `Organizations`s in the `Organization` database table
+        list[Organization]: All `Organizations`s in the `Organization` database table
     """
 
     # Return all organizations

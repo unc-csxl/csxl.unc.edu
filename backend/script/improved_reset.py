@@ -13,14 +13,14 @@ from ..database import engine
 from ..env import getenv
 from .. import entities
 
-from ..test.services import role_data, user_data, permission_data
-from ..test.services.coworking import (
-    room_data,
-    seat_data,
-    operating_hours_data,
-    time,
-)
-from ..test.services.coworking.reservation import reservation_data
+from ..test.services import role_data, user_data, permission_data, organization_data
+# from ..test.services.coworking import (
+#     room_data,
+#     seat_data,
+#     operating_hours_data,
+#     time,
+# )
+# from ..test.services.coworking.reservation import reservation_data
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -37,12 +37,13 @@ entities.EntityBase.metadata.create_all(engine)
 
 
 with Session(engine) as session:
-    time = time.time_data()
+    #time = time.time_data()
     role_data.insert_fake_data(session)
     user_data.insert_fake_data(session)
     permission_data.insert_fake_data(session)
-    operating_hours_data.insert_fake_data(session, time)
-    room_data.insert_fake_data(session)
-    seat_data.insert_fake_data(session)
-    reservation_data.insert_fake_data(session, time)
+    organization_data.insert_fake_data(session)
+    #operating_hours_data.insert_fake_data(session, time)
+    #room_data.insert_fake_data(session)
+    #seat_data.insert_fake_data(session)
+    #reservation_data.insert_fake_data(session, time)
     session.commit()

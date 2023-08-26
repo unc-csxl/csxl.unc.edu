@@ -1,0 +1,98 @@
+mat-card {
+    display: flex;
+    flex-direction: column;
+    width: 325px;
+    height: 175px;
+    padding: 0 1rem;
+    margin: 0;
+    justify-content: space-between;
+    align-items: center;
+    row-gap: 0.6rem;
+}
+
+.mdc-card__media:first-child {
+    border-radius: 100%;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.left-container {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.logo {
+    height: auto;
+    max-width: 2.5rem;
+    max-height: 2.5rem;
+    margin-right: 1rem;
+    margin-bottom: 0;
+    border-radius: 2.5rem;
+}
+
+.name {
+    height: 2.5rem;
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 2.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.description {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+}
+
+.description p {
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.links {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.link-icons {
+    width: 144px;
+    height: 48px;
+    overflow: hidden;
+    display: -webkit-box;
+}
+
+mat-card-actions {
+    padding: 0;
+}
+
+/* Override Mat UI's preset z-index for button */
+.mat-mdc-outlined-button {
+    z-index: 0 !important;
+}
+
+.details-link {
+    text-decoration: none;
+}

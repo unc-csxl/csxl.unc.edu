@@ -34,7 +34,7 @@ class OrganizationService:
         Returns:
             list[Organization]: List of all `Organization`
         """
-        # Select all entries in `OrganizationDetail` table
+        # Select all entries in `Organization` table
         query = select(OrganizationEntity)
         entities = self._session.scalars(query).all()
 
