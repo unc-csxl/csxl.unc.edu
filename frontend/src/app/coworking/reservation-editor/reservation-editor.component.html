@@ -1,0 +1,105 @@
+<form [formGroup]="reservationForm" (ngSubmit)="{}" *ngIf="profile">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Create Reservation</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <!-- Who -->
+            <mat-form-field class="example-chip-list">
+                <mat-label>Who</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Choose people" required>
+                    <mat-chip-row *ngFor="let person of people" (removed)="onOptionDeselected(person)">
+                        <img matChipAvatar src="https://material.angular.io/assets/img/examples/shiba1.jpg"
+                            alt="Photo of a Shiba Inu" />
+                        {{person.first_name + " " + person.last_name}}
+                        <button matChipRemove *ngIf="person.id !== profile.id">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                    <input #whoInput type="text" placeholder="Add more people..." aria-label="More people"
+                        [matChipInputFor]="chipGrid" matInput [matAutocomplete]="auto" [formControl]="userLookup" />
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+                        <mat-option *ngFor="let option of filteredUsers$ | async" [value]="option">
+                            {{ option.first_name }} {{ option.last_name }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-chip-grid>
+            </mat-form-field>
+            <!-- What -->
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Workspace</mat-label>
+                <mat-select required>
+                    <mat-option value="option1">Monitors</mat-option>
+                    <mat-option value="option2">Sit/Stand Desks</mat-option>
+                    <mat-option value="option3">Conference Table Seats</mat-option>
+                    <mat-option value="option4">Common Area Seats</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- When -->
+            <div class="when-group">
+                <mat-form-field appearance="fill" color="accent">
+                    <mat-label>Start Time</mat-label>
+                    <mat-select required>
+                        <mat-option value="option1">9:00AM</mat-option>
+                        <mat-option value="option1">9:15AM</mat-option>
+                        <mat-option value="option1">9:30AM</mat-option>
+                        <mat-option value="option1">9:45AM</mat-option>
+                        <mat-option value="option1">10:00AM</mat-option>
+                        <mat-option value="option1">...</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill" color="accent">
+                    <mat-label>End Time</mat-label>
+                    <mat-select required>
+                        <mat-option value="option1">9:00AM</mat-option>
+                        <mat-option value="option1">9:15AM</mat-option>
+                        <mat-option value="option1">9:30AM</mat-option>
+                        <mat-option value="option1">9:45AM</mat-option>
+                        <mat-option value="option1">10:00AM</mat-option>
+                        <mat-option value="option1">...</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <mat-divider />
+            <div style="margin-left: 18px; margin-right: 18px;">
+                <div style="display: flex; flex-direction: row;">
+                    <p style="width: 50%;">Time Range: {{formatLabel(startSlider.valueAsNumber)}} =
+                        {{formatLabel(endSlider.valueAsNumber)}}
+                    </p>
+                    <p style="width: 50%; text-align: right;">Duration: {{durationString(startSlider.valueAsNumber,
+                        endSlider.valueAsNumber)}}</p>
+                </div>
+                <mat-slider min="1691240400" max="1691280000" showTickMarks discrete step="900" style="width: 100%;"
+                    [displayWith]="formatLabel">
+                    <input value="1691244000" matSliderStartThumb #startSlider>
+                    <input value="1691251200" matSliderEndThumb #endSlider>
+                </mat-slider>
+            </div>
+            <mat-divider />
+
+            <!-- Where -->
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Location</mat-label>
+                <mat-select required>
+                    <mat-option value="option1">The XL (SN156)</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- Specific Reservation -->
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Table</mat-label>
+                <mat-select required>
+                    <mat-option value="option1">A1</mat-option>
+                    <mat-option value="option1">A2</mat-option>
+                    <mat-option value="option1">A3</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button type="submit">Reserve</button>
+        </mat-card-actions>
+
+    </mat-card>
+</form>
+
+<!-- Message for Non-Authenicated Users -->

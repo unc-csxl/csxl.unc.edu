@@ -1,0 +1,32 @@
+
+<div class="coworking-reservations-grid">
+  <ng-container *ngIf="status$ | async as status">
+
+    <ng-container *ngIf="openOperatingHours$ | async as openOperatingHours; else closed">
+      <coworking-hours-card [operatingHours]="status.operating_hours" [openOperatingHours]="openOperatingHours" />
+
+      <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
+        <div>Active Reservation: {{ activeReservation.seats[0].title }} {{ activeReservation.end }} (TODO)</div>
+      </ng-container>
+      <ng-template #dropin>
+        <div class="dropin-card-container">
+          <coworking-dropin-card [seat_availability]="status.seat_availability" (onSeatsSelected)="reserve($event)" />
+        </div>
+      </ng-template>
+    </ng-container>
+
+    <ng-template #closed>
+      <coworking-hours-card [operatingHours]="status.operating_hours"/>
+    </ng-template>
+
+    <!-- Future Reservation Card -->
+    <coworking-reserve-card />
+
+  </ng-container>
+</div>
+
+<div class="coworking-top-grid">
+  <div class="coworking-top-card-container">
+    <coworking-top-card />
+  </div>
+</div>

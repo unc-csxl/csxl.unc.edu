@@ -7,10 +7,12 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpRequestInterceptor } from './navigation/http-request.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 
-/* UI / Material Dependencies */
+/* Angular UI Dependencies */
 import { NgForOf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
+
+/* Material UI Dependencies */
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -24,6 +26,16 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from "@angular/material/chips";
+
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -35,6 +47,18 @@ import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { RouterModule } from '@angular/router';
 
+/* UI Widgets */
+import { CoworkingTopCard } from './widgets/coworking-top-card/coworking-top-card.widget';
+import { CoworkingDropInCard } from './widgets/coworking-dropin-card/coworking-dropin-card.widget';
+import { CoworkingReserveCard } from './widgets/coworking-reserve-card/coworking-reserve-card.widget';
+import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
+import { ReservationEditorComponent } from './coworking/reservation-editor/reservation-editor.component';
+import { CoworkingTentativeDropInCard } from './widgets/coworking-tentative-dropin-card/coworking-tentative-dropin-card.widget';
+import { CoworkingInProgressDropInCard } from './widgets/coworking-inprogress-dropin-card/coworking-inprogress-dropin-card.widget';
+import { CoworkingExpiredDropInCard } from './widgets/coworking-expired-dropin-card/coworking-expired-dropin-card.widget';
+import { CoworkingHoursCard } from './widgets/coworking-hours-card/coworking-hours-card.widget';
+import { CoworkingHoursCardDialog } from './widgets/coworking-hours-card/coworking-hours-card-dialog/coworking-hours-card-dialog.widget';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,9 +66,22 @@ import { RouterModule } from '@angular/router';
     ErrorDialogComponent,
     HomeComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
+    CoworkingPageComponent,
+
+    /* Widgets */
+    CoworkingTopCard,
+    CoworkingDropInCard,
+    CoworkingReserveCard,
+    ReservationEditorComponent,
+    CoworkingTentativeDropInCard,
+    CoworkingInProgressDropInCard,
+    CoworkingExpiredDropInCard,
+    CoworkingHoursCard,
+    CoworkingHoursCardDialog,
   ],
   imports: [
+    /* Angular */
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -52,6 +89,8 @@ import { RouterModule } from '@angular/router';
     AppRoutingModule,
     LayoutModule,
     ReactiveFormsModule,
+
+    /* Material UI */
     MatButtonModule,
     MatCardModule,
     MatDialogModule,
@@ -82,4 +121,4 @@ import { RouterModule } from '@angular/router';
   }],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

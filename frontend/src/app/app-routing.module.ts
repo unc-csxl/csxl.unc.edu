@@ -4,12 +4,14 @@ import { AppTitleStrategy } from './app-title.strategy';
 import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
+import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
 
 
 const routes: Routes = [
   HomeComponent.Route,
   ProfileEditorComponent.Route,
   GateComponent.Route,
+  CoworkingPageComponent.Route,
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organization/organization.module').then(m => m.OrganizationModule) },
 ];
@@ -22,4 +24,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [AppTitleStrategy.Provider]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
