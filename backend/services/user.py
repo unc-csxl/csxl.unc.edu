@@ -36,7 +36,7 @@ class UserService:
             User | None: The user or None if not found.
         """
         query = select(UserEntity).where(UserEntity.pid == pid)
-        user_entity: UserEntity = self._session.scalar(query)
+        user_entity: UserEntity | None = self._session.scalar(query)
         if user_entity is None:
             return None
         else:
