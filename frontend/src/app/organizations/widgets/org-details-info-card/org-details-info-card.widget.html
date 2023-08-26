@@ -1,0 +1,50 @@
+<mat-card class="organization-card">
+    <!-- Organization Card Header (Image, Name, Description) -->
+    <mat-card-header class="organization-header">
+        <div class="left-header-info">
+            <!-- Organization Logo -->
+            <img mat-card-image src={{organization!.logo}} class="logo">
+        </div>
+        <div class="right-header-info">
+            <!-- Organization Name, Social Media, and Star -->
+            <div class="organization-top-header-group">
+                <!-- Organization Name -->
+                <div class="organization-name-section">
+                    <mat-card-title class="user-name">{{organization!.name}}</mat-card-title>
+                </div>
+                <!-- Organization Icons -->
+                <div class="organization-icons-section">
+                    <div class="link-icons">
+
+                        <social-media-icon [fontIcon]='"link"' [href]='organization!.website'
+                            *ngIf='organization!.website != ""' />
+                        <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization!.email'
+                            *ngIf='organization!.email != ""' />
+                        <social-media-icon [svgIcon]='"instagram"' [href]='organization!.instagram'
+                            *ngIf='organization!.instagram != ""' />
+                        <social-media-icon [svgIcon]='"linkedin"' [href]='organization!.linked_in'
+                            *ngIf='organization!.linked_in != ""' />
+                        <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
+                            *ngIf='organization!.youtube != ""' />
+
+                        <!-- Join button -->
+                        <!-- <button *ngIf="profile && profile.first_name" mat-icon-button color="basic"
+                            (click)="starClicked()">
+                            <mat-icon>{{profilePermission >= 0 ? "person_off" : "person_add"}}</mat-icon>
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organization Description -->
+            <p class="organization-description">{{organization!.long_description}}</p>
+
+            <!-- Link to Organization Editor -->
+        </div>
+    </mat-card-header>
+    <!-- <mat-card-footer>
+        <a [routerLink]="['/organization', organization!.id, 'org-editor']">
+            <button *ngIf='isAdmin' mat-raised-button type="submit" class="edit-org-button">Edit Organization</button>
+        </a>
+    </mat-card-footer> -->
+</mat-card>

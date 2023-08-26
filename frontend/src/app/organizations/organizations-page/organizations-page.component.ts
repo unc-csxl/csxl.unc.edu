@@ -23,6 +23,15 @@ import { Profile, ProfileService } from 'src/app/profile/profile.service';
 })
 export class OrganizationsPageComponent {
 
+  /** Route information to be used in App Routing Module */
+  public static Route = {
+    path: '',
+    title: 'CS Organizations',
+    component: OrganizationsPageComponent,
+    canActivate: [],
+    resolve: { profile: profileResolver }
+  }
+
   /** Store Observable list of Organizations */
   public organizations$: Observable<Organization[]>;
 

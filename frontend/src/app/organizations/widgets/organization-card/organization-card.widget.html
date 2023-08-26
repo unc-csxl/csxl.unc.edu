@@ -43,7 +43,7 @@
             <social-media-icon [svgIcon]='"youtube"' [href]='organization.youtube' *ngIf='organization.youtube != ""' />
         </div>
         <!-- Link to Individual Organization Page -->
-        <a class="details-link" [routerLink]="['/organization', organization.id]">
+        <a class="details-link" [routerLink]="['/organizations', organization.id]">
             <button mat-stroked-button>DETAILS</button>
         </a>
     </mat-card-actions>

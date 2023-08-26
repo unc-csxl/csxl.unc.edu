@@ -58,7 +58,7 @@ export class OrganizationsService {
    * @param id: Number representing the organization id
    * @returns {Observable<Organization>}
    */
-  getOrganization = (id: Number) => {
+  getOrganization = (id: string) => {
     return this.http.get<Organization>("/api/organizations/" + id);
   }
 

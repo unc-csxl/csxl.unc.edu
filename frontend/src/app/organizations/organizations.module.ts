@@ -28,6 +28,7 @@ import { OrganizationFilterPipe } from './org-filter/org-filter.pipe';
 import { OrganizationCard } from './widgets/organization-card/organization-card.widget';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
+import { OrgDetailsInfoCard } from './widgets/org-details-info-card/org-details-info-card.widget';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { SharedModule } from '../shared/shared.module';
     OrganizationFilterPipe,
 
     // UI Widgets
-    OrganizationCard
+    OrganizationCard,
+    OrgDetailsInfoCard
   ],
   imports: [
     CommonModule,
