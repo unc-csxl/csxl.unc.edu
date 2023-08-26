@@ -1,6 +1,7 @@
 """Seat data for tests."""
 
 import pytest
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from ....entities.coworking import SeatEntity
 from ....models.coworking import SeatDetails
@@ -125,3 +126,7 @@ def insert_fake_data(session: Session):
 def fake_data_fixture(session: Session):
     insert_fake_data(session)
     session.commit()
+
+
+def delete_all(session: Session):
+    session.execute(delete(SeatEntity))

@@ -1,7 +1,7 @@
 """Reservation data for tests."""
 
 import pytest
-from sqlalchemy import text
+from sqlalchemy import text, select
 from sqlalchemy.orm import Session
 from .....entities.coworking import ReservationEntity
 from .....models.coworking import Reservation, ReservationState, ReservationRequest
@@ -154,3 +154,8 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
     reset_table_id_seq(
         session, ReservationEntity, ReservationEntity.id, len(reservations) + 1
     )
+
+def delete_future_data(session: Session, time: dict[str, datetime]):
+    reservations = session.scalars(select(ReservationEntity).where(ReservationEntity.end >= time[NOW])).all()
+    for reservation in reservations:
+        session.delete(reservation)
