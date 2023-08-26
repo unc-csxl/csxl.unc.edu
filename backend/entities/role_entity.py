@@ -4,7 +4,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
-from .user_role_entity import user_role_table
+from .user_role_table import user_role_table
 from ..models import Role, RoleDetails
 
 __authors__ = ["Kris Jordan"]
