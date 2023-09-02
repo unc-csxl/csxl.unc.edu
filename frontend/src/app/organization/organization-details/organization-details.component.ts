@@ -13,18 +13,18 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable, map } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Organization, OrganizationsService } from '../organizations.service';
-import { Profile, ProfileService } from 'src/app/profile/profile.service';
+import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
+import { Organization, OrganizationService } from '../organization.service';
+import { Profile, ProfileService } from '/workspace/frontend/src/app/profile/profile.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
-  let orgId = route.params['id'];
+  let organizationId = route.params['id'];
 
-  let orgDetailSvc = inject(OrganizationsService);
-  let org$ = orgDetailSvc.getOrganization(orgId);
-  return org$.pipe(map(org => {
-    if (org) {
-      return `${org.name}`;
+  let organizationDetailSvc = inject(OrganizationService);
+  let organization$ = organizationDetailSvc.getOrganization(organizationId);
+  return organization$.pipe(map(organization => {
+    if (organization) {
+      return `${organization.name}`;
     } else {
       return "Organization Details"
     }
@@ -32,14 +32,14 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 }
 
 @Component({
-  selector: 'app-org-details',
-  templateUrl: './org-details.component.html',
-  styleUrls: ['./org-details.component.css']
+  selector: 'app-organization-details',
+  templateUrl: './organization-details.component.html',
+  styleUrls: ['./organization-details.component.css']
 })
-export class OrgDetailsComponent {
+export class OrganizationDetailsComponent {
   public static Route: Route = {
     path: ':id',
-    component: OrgDetailsComponent,
+    component: OrganizationDetailsComponent,
     title: titleResolver,
     resolve: { profile: profileResolver }
   };
@@ -52,7 +52,7 @@ export class OrgDetailsComponent {
   public profile: Profile;
 
   constructor(
-    private orgService: OrganizationsService,
+    private orgService: OrganizationService,
     private profileService: ProfileService,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
@@ -73,7 +73,7 @@ export class OrgDetailsComponent {
 
     /** Retrieve Organization using OrgDetailsService */
     this.organization$ = this.orgService.getOrganization(this.id);
-    this.organization$.subscribe(org => this.organization = org);
+    this.organization$.subscribe(organization => this.organization = organization);
 
   }
 

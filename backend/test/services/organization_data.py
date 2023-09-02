@@ -311,8 +311,8 @@ def insert_fake_data(session: Session):
 
     # Create entities for test organization data
     entities = []
-    for org in organizations:
-        entity = OrganizationEntity.from_model(org)
+    for organization in organizations:
+        entity = OrganizationEntity.from_model(organization)
         session.add(entity)
         entities.append(entity)
 

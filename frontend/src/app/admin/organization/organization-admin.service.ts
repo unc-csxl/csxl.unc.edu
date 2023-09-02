@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Organization } from 'src/app/organizations/organizations.service';
+import { Organization } from 'src/app/organization/organization.service';
 
 @Injectable({ providedIn: 'root' })
-export class OrganizationsAdminService {
+export class OrganizationAdminService {
 
     constructor(protected http: HttpClient) { }
 

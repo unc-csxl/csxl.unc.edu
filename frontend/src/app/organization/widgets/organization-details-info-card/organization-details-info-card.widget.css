@@ -54,7 +54,7 @@ mat-card-footer {
     margin: 0 1rem 1.25rem 1rem;
 }
 
-.edit-org-button {
+.edit-organization-button {
     margin-left: 6rem;
 }
 
@@ -151,7 +151,7 @@ a {
         margin: 1rem !important;
     }
 
-    .edit-org-button {
+    .edit-organization-button {
         margin-left: 0;
     }
 }
