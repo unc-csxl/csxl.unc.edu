@@ -2,16 +2,21 @@
   <ng-container *ngIf="status$ | async as status">
 
     <ng-container *ngIf="openOperatingHours$ | async as openOperatingHours; else closed">
+
       <coworking-hours-card [operatingHours]="status.operating_hours" [openOperatingHours]="openOperatingHours" />
 
       <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
-        <div>Active Reservation: {{ activeReservation.seats[0].title }} {{ activeReservation.end }} (TODO)</div>
+        <coworking-tentative-dropin-card [reservation]="activeReservation"
+          (onConfirm)="coworkingService.confirmReservation($event)"
+          (onCancel)="coworkingService.cancelReservation($event)"></coworking-tentative-dropin-card>
       </ng-container>
+
       <ng-template #dropin>
         <div class="dropin-card-container">
           <coworking-dropin-card [seat_availability]="status.seat_availability" (onSeatsSelected)="reserve($event)" />
         </div>
       </ng-template>
+
     </ng-container>
 
     <ng-template #closed>

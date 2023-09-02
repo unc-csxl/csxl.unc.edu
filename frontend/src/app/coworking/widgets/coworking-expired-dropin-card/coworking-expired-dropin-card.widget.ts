@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Profile } from '../../models.module';
+import { Profile } from '../../../models.module';
 
 @Component({
     selector: 'coworking-expired-dropin-card',

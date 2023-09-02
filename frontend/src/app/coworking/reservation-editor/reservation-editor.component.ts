@@ -24,9 +24,9 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 export class ReservationEditorComponent {
 
   public static Route: Route = {
-    path: 'reservation/create',
+    path: 'coworking/reservation/:reservationId',
     component: ReservationEditorComponent,
-    title: 'Create Registration',
+    title: 'Co-lab Reservation',
     resolve: { profile: profileResolver }
   };
 

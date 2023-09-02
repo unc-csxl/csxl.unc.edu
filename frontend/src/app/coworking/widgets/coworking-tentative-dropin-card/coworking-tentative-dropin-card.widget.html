@@ -1,0 +1,29 @@
+<mat-card>
+    <!-- Card Header -->
+    <mat-card-header class="dropin-header">
+        <mat-card-title>Confirm Your Drop-in Reservation</mat-card-title>
+    </mat-card-header>
+
+    <!-- Card Content -->
+    <mat-card-content>
+
+        <h3><label>When</label> <strong>Now</strong> until <strong>{{ reservation.end|date:'shortTime' }}</strong></h3>
+        <p>After confirming, check-in by {{ checkinDeadline(reservation.created_at)|date:'shortTime' }}.
+        </p>
+        <mat-divider />
+
+        <h3><label>What</label> <strong>{{ reservation.seats[0].title }}</strong></h3>
+        <mat-divider />
+
+        <h3><label>Where</label> <strong>The XL in Sitterson 156</strong></h3>
+
+        <mat-card-actions align="end">
+            <button mat-raised-button type="submit" class="reserve-button"
+                (click)="onCancel.emit(reservation)">Cancel</button>
+            &nbsp;
+            <button mat-raised-button type="submit" color="primary" class="reserve-button"
+                (click)="onConfirm.emit(reservation)">Confirm in {{ timeout$ | async }}</button>
+        </mat-card-actions>
+    </mat-card-content>
+
+</mat-card>

@@ -45,6 +45,8 @@ export interface ReservationJSON extends TimeRangeJSON {
     users: Profile[];
     seats: Seat[];
     walkin: boolean;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface Reservation extends TimeRange {
@@ -52,10 +54,16 @@ export interface Reservation extends TimeRange {
     users: Profile[];
     seats: Seat[];
     walkin: boolean;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export const parseReservationJSON = (json: ReservationJSON): Reservation => {
-    return Object.assign({}, json, parseTimeRange(json));
+    const timestamps = {
+        created_at: new Date(json.created_at),
+        updated_at: new Date(json.updated_at)
+    };
+    return Object.assign({}, json, parseTimeRange(json), timestamps);
 };
 
 export interface SeatAvailabilityJSON extends Seat {
@@ -91,9 +99,7 @@ export const parseCoworkingStatusJSON = (json: CoworkingStatusJSON): CoworkingSt
     }
 };
 
-export interface ReservationRequest {
-    start: Date;
-    end: Date;
+export interface ReservationRequest extends TimeRange {
     users: Profile[];
     seats: Seat[];
 }

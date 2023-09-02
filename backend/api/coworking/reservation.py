@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationService, ReservationError
 from ...models import User
-from ...models.coworking import Reservation, ReservationRequest
+from ...models.coworking import Reservation, ReservationRequest, ReservationPartial, ReservationState
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -27,3 +27,20 @@ def draft_reservation(
         return reservation_svc.draft_reservation(subject, reservation_request)
     except ReservationError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+@api.put("/reservation/{id}", tags=["Coworking"])
+def update_reservation(
+    id: int,
+    reservation: ReservationPartial,
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends()
+) -> Reservation:
+    return reservation_svc.change_reservation(subject, reservation)
+
+@api.delete("/reservation/{id}", tags=["Coworking"])
+def cancel_reservation(
+    id: int,
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends()
+) -> Reservation:
+    return reservation_svc.change_reservation(subject, ReservationPartial(id=id, state=ReservationState.CANCELLED))

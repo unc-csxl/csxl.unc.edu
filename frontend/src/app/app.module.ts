@@ -48,16 +48,12 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
 import { RouterModule } from '@angular/router';
 
 /* UI Widgets */
-import { CoworkingTopCard } from './widgets/coworking-top-card/coworking-top-card.widget';
-import { CoworkingDropInCard } from './widgets/coworking-dropin-card/coworking-dropin-card.widget';
-import { CoworkingReserveCard } from './widgets/coworking-reserve-card/coworking-reserve-card.widget';
+import { CoworkingHoursCard } from './coworking/widgets/coworking-hours-card/coworking-hours-card.widget';
+import { CoworkingDropInCard } from './coworking/widgets/coworking-dropin-card/coworking-dropin-card.widget';
 import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
 import { ReservationEditorComponent } from './coworking/reservation-editor/reservation-editor.component';
-import { CoworkingTentativeDropInCard } from './widgets/coworking-tentative-dropin-card/coworking-tentative-dropin-card.widget';
-import { CoworkingInProgressDropInCard } from './widgets/coworking-inprogress-dropin-card/coworking-inprogress-dropin-card.widget';
-import { CoworkingExpiredDropInCard } from './widgets/coworking-expired-dropin-card/coworking-expired-dropin-card.widget';
-import { CoworkingHoursCard } from './widgets/coworking-hours-card/coworking-hours-card.widget';
-import { CoworkingHoursCardDialog } from './widgets/coworking-hours-card/coworking-hours-card-dialog/coworking-hours-card-dialog.widget';
+import { CoworkingExpiredDropInCard } from './coworking/widgets/coworking-expired-dropin-card/coworking-expired-dropin-card.widget';
+import { CoworkingTentativeDropInCard } from './coworking/widgets/coworking-tentative-dropin-card/coworking-tentative-dropin-card.widget';
 
 @NgModule({
   declarations: [
@@ -70,15 +66,11 @@ import { CoworkingHoursCardDialog } from './widgets/coworking-hours-card/coworki
     CoworkingPageComponent,
 
     /* Widgets */
-    CoworkingTopCard,
     CoworkingDropInCard,
-    CoworkingReserveCard,
     ReservationEditorComponent,
-    CoworkingTentativeDropInCard,
-    CoworkingInProgressDropInCard,
     CoworkingExpiredDropInCard,
     CoworkingHoursCard,
-    CoworkingHoursCardDialog,
+    CoworkingTentativeDropInCard,
   ],
   imports: [
     /* Angular */

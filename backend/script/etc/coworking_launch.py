@@ -41,8 +41,8 @@ with Session(engine) as session:
     for i in range(12):
         seats.append(SeatDetails(
             id=i,
-            title="Monitor Bench",
-            shorthand="MB",
+            title="Sitting Desk with Monitor",
+            shorthand="Sit",
             reservable=False,
             has_monitor=True,
             sit_stand=False,
@@ -55,8 +55,8 @@ with Session(engine) as session:
     for i in range(12, 18):
         seats.append(SeatDetails(
             id=i,
-            title="Monitor Bench",
-            shorthand="MB",
+            title="Standing Desk with Monitor",
+            shorthand="Stand",
             reservable=False,
             has_monitor=True,
             sit_stand=True,
@@ -69,8 +69,8 @@ with Session(engine) as session:
     for i in range(18, 42):
         seats.append(SeatDetails(
             id=i,
-            title="Collab Area",
-            shorthand="CA",
+            title="Communal Area Seat",
+            shorthand="Communal",
             reservable=False,
             has_monitor=False,
             sit_stand=False,

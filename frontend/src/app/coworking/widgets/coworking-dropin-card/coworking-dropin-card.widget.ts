@@ -53,9 +53,9 @@ class SeatCategory {
     }
 }
 
-const MONITOR_SITTING = 0;
-const MONITOR_STANDING = 1;
-const COMMON_AREA = 2;
+const SITTING_BENCH = 0;
+const STANDING_BENCH = 1;
+const COLLAB_AREA = 2;
 
 @Component({
     selector: 'coworking-dropin-card',
@@ -79,12 +79,12 @@ export class CoworkingDropInCard implements OnChanges {
         for (let seat of this.seat_availability) {
             if (seat.has_monitor) {
                 if (seat.sit_stand) {
-                    this.categories[MONITOR_STANDING].push(seat);
+                    this.categories[STANDING_BENCH].push(seat);
                 } else {
-                    this.categories[MONITOR_SITTING].push(seat);
+                    this.categories[SITTING_BENCH].push(seat);
                 }
             } else {
-                this.categories[COMMON_AREA].push(seat);
+                this.categories[COLLAB_AREA].push(seat);
             }
         }
     }
@@ -95,9 +95,9 @@ export class CoworkingDropInCard implements OnChanges {
 
     private initCategories(): SeatCategory[] {
         return [
-            new SeatCategory("Monitor Desk (Sitting)"),
-            new SeatCategory("Monitor Desk (Sit or Stand)"),
-            new SeatCategory("Common Area"),
+            new SeatCategory("Sitting Desk with Monitor"),
+            new SeatCategory("Standing Desk with Monitor"),
+            new SeatCategory("Communal Area Seat"),
         ];
     }
 

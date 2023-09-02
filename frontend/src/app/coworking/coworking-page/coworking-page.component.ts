@@ -40,7 +40,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     resolve: { profile: profileResolver }
   };
 
-  constructor(route: ActivatedRoute, private router: Router, private coworkingService: CoworkingService) {
+  constructor(route: ActivatedRoute, private router: Router, public coworkingService: CoworkingService) {
     this.status$ = coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
@@ -48,13 +48,11 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   reserve(seatSelection: SeatAvailability[]) {
-    this.coworkingService.draftReservation(seatSelection).subscribe(reservation => {
-      console.log(reservation);
-    });
+    this.coworkingService.draftReservation(seatSelection).subscribe();
   }
 
   ngOnInit(): void {
-    this.timerSubscription = timer(0, 10000).subscribe(() => this.coworkingService.pullStatus());
+    this.timerSubscription = timer(0, 10000).subscribe(() => this.coworkingService.pollStatus());
   }
 
   ngOnDestroy(): void {
