@@ -1,6 +1,6 @@
-"""Organizations API
+"""Organization API
 
-Organizations routes are used to create, retrieve, and update Organizations."""
+Organization routes are used to create, retrieve, and update Organizations."""
 
 from fastapi import APIRouter, Depends, HTTPException
 from ..services import OrganizationService
@@ -12,7 +12,7 @@ __authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
 __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
-api = APIRouter(prefix="/api/organizations")
+api = APIRouter(prefix="/api/organization")
 
 @api.get("", response_model=list[Organization], tags=['Organization'])
 def get_organizations(organization_service: OrganizationService = Depends()) -> list[Organization]:
@@ -23,7 +23,7 @@ def get_organizations(organization_service: OrganizationService = Depends()) -> 
         organization_service: a valid OrganizationService
 
     Returns:
-        list[Organization]: All `Organizations`s in the `Organization` database table
+        list[Organization]: All `Organization`s in the `Organization` database table
     """
 
     # Return all organizations

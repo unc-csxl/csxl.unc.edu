@@ -51,7 +51,7 @@ export class OrganizationService {
    * @returns {Observable<Organization[]>}
    */
   getOrganizations = () => {
-    return this.http.get<Organization[]>("/api/organizations");
+    return this.http.get<Organization[]>("/api/organization");
   }
 
   /** Returns the organization object from the backend database table using the backend HTTP get request. 
@@ -59,7 +59,7 @@ export class OrganizationService {
    * @returns {Observable<Organization>}
    */
   getOrganization = (id: string) => {
-    return this.http.get<Organization>("/api/organizations/" + id);
+    return this.http.get<Organization>("/api/organization/" + id);
   }
 
 }
