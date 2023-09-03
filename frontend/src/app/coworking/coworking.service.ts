@@ -7,34 +7,58 @@ import { Profile } from '../models.module';
 
 const ONE_HOUR = 60 * 60 * 1000;
 
-// class ReactiveValue<T> implements OnDestroy {
-//     private stream: Subject<T> = new ReplaySubject(1);
-//     public stream$: Observable<T> = this.stream.asObservable();
-//     private last!: T;
+abstract class RxObject<T> {
 
-//     ngOnDestroy(): void {
+    protected value!: T;
+    protected subject: Subject<T> = new ReplaySubject(1);
 
-//     }
-// }
+    public value$: Observable<T> = this.subject.asObservable();
+
+    set(value: T): void {
+        this.value = value;
+        this.notify();
+    }
+
+    protected notify() {
+        this.subject.next(this.value);
+    }
+
+}
+
+class RxCoworkingStatus extends RxObject<CoworkingStatus> {
+
+    pushReservation(reservation: Reservation): void {
+        this.value.my_reservations.push(reservation);
+        this.notify();
+    }
+
+    updateReservation(reservation: Reservation): void {
+        this.value.my_reservations = this.value.my_reservations.map((r) => {
+            return r.id !== reservation.id ? r : reservation;
+        });
+        this.notify();
+    }
+
+    removeReservation(reservationToRemove: Reservation): void {
+        this.value.my_reservations = this.value.my_reservations.filter(reservation => reservationToRemove.id !== reservation.id);
+        this.notify();
+    }
+
+}
 
 
 @Injectable({
     providedIn: 'root'
 })
-export class CoworkingService implements OnDestroy {
+export class CoworkingService {
 
-    private status: Subject<CoworkingStatus> = new ReplaySubject(1);
-    public status$: Observable<CoworkingStatus>;
-    private lastStatus!: CoworkingStatus;
-    private lastStatusSubscription: Subscription;
+    private status: RxCoworkingStatus = new RxCoworkingStatus();
+    public status$: Observable<CoworkingStatus> = this.status.value$;
 
     private profile: Profile | undefined;
     private profileSubscription!: Subscription;
 
     public constructor(protected http: HttpClient, protected profileSvc: ProfileService) {
-        this.status$ = this.status.asObservable();
-        this.lastStatusSubscription = this.status$.subscribe(status => this.lastStatus = status);
-
         this.profileSubscription = this.profileSvc.profile$.subscribe(profile => this.profile = profile);
     }
 
@@ -45,7 +69,7 @@ export class CoworkingService implements OnDestroy {
     public pollStatus(): void {
         this.http.get<CoworkingStatusJSON>("/api/coworking/status")
             .pipe(map(parseCoworkingStatusJSON))
-            .subscribe(status => this.status.next(status));
+            .subscribe(status => this.status.set(status));
     }
 
     draftReservation(seatSelection: SeatAvailability[]) {
@@ -60,46 +84,18 @@ export class CoworkingService implements OnDestroy {
             start,
             end
         }).pipe(
-            /* Is there a cleaner way of doing this kind of update of a ReplaySubject? */
-            tap(reservation => {
-                this.status$
-                    .pipe(first())
-                    .subscribe(currentStatus => {
-                        let nextStatus = Object.assign({}, currentStatus);
-                        nextStatus.my_reservations.unshift(parseReservationJSON(reservation));
-                        this.status.next(nextStatus);
-                    });
-            })
+            tap(reservation => this.status.pushReservation(parseReservationJSON(reservation)))
         );
     }
 
     confirmReservation(reservation: Reservation) {
-        this.http.put<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`, { id: reservation.id, state: "CONFIRMED" }).subscribe((updatedReservation) => {
-            this.status$
-                .pipe(first())
-                .subscribe(currentStatus => {
-                    let nextStatus = Object.assign({}, currentStatus);
-                    nextStatus.my_reservations = nextStatus.my_reservations.map(reservation => {
-                        if (reservation.id === updatedReservation.id) {
-                            return parseReservationJSON(updatedReservation);
-                        } else {
-                            return reservation;
-                        }
-                    });
-                    this.status.next(nextStatus);
-                });
-        });
+        this.http.put<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`, { id: reservation.id, state: "CONFIRMED" })
+            .subscribe((updatedReservation) => this.status.updateReservation(parseReservationJSON(updatedReservation)));
     }
 
     cancelReservation(reservation: Reservation) {
         this.http.delete<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`).subscribe((cancelledReservation => {
-            this.status$
-                .pipe(first())
-                .subscribe(currentStatus => {
-                    let nextStatus = Object.assign({}, currentStatus);
-                    nextStatus.my_reservations = nextStatus.my_reservations.filter(reservation => reservation.id != cancelledReservation.id)
-                    this.status.next(nextStatus);
-                });
+            this.status.removeReservation(parseReservationJSON(cancelledReservation))
         }));
     }
 }
