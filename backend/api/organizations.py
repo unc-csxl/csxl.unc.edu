@@ -12,7 +12,7 @@ __authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
 __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
-api = APIRouter(prefix="/api/organization")
+api = APIRouter(prefix="/api/organizations")
 
 @api.get("", response_model=list[Organization], tags=['Organization'])
 def get_organizations(organization_service: OrganizationService = Depends()) -> list[Organization]:

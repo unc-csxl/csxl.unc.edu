@@ -11,15 +11,15 @@ export class OrganizationAdminService {
      * @returns {Organization[]}
      */
     list = () => {
-        return this.http.get<Organization[]>("/api/organization");
+        return this.http.get<Organization[]>("/api/organizations");
     }
 
     /** Creates an organization
      * @param newOrg: Organization object that you want to add to the database
      * @returns {Observable<Organization>}
      */
-    createOrganization = (newOrg: Organization) => {
-        return this.http.post<Organization>("/api/organization", newOrg)
+    createOrganization = (newOrganization: Organization) => {
+        return this.http.post<Organization>("/api/organization", newOrganization)
     }
 
     /** Deletes an organization
@@ -27,6 +27,6 @@ export class OrganizationAdminService {
      * @returns {Observable<Organization>}
      */
     deleteOrganization = (org_id: number) => {
-        return this.http.delete<Organization>(`/api/organization/${org_id}`);
+        return this.http.delete<Organization>(`/api/organizations/${org_id}`);
     }
 }
