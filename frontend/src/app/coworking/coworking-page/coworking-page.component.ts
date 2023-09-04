@@ -33,7 +33,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
-    path: 'coworking',
+    path: '',
     component: CoworkingPageComponent,
     title: 'Coworking',
     canActivate: [isAuthenticated],

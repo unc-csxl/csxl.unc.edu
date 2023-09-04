@@ -26,6 +26,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   public profile$: Observable<Profile | undefined>;
   public checkinPermission$: Observable<boolean>;
   public adminPermission$: Observable<boolean>;
+  public ambassadorPermission$: Observable<boolean>;
 
   constructor(
     public auth: AuthenticationService,
@@ -39,6 +40,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.profile$ = this.profileService.profile$;
     this.checkinPermission$ = this.permission.check('checkin.create', 'checkin/');
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
+    this.ambassadorPermission$ = this.permission.check('coworking.reservation.*', '*');
   }
 
   ngOnInit(): void {

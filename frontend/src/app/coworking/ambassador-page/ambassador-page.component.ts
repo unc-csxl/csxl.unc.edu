@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Route } from '@angular/router';
-import { isAuthenticated } from 'src/app/gate/gate.guard';
+import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 
 @Component({
@@ -12,11 +12,15 @@ export class AmbassadorPageComponent {
 
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
-    path: 'coworking/ambassador',
+    path: 'ambassador',
     component: AmbassadorPageComponent,
-    title: 'Ambassador',
-    canActivate: [isAuthenticated], /* TODO: Base on Permissions */
+    title: 'XL Ambassador',
+    canActivate: [permissionGuard('coworking.reservation.*', '*')],
     resolve: { profile: profileResolver }
   };
+
+  constructor() {
+    console.log("AMB")
+  }
 
 }

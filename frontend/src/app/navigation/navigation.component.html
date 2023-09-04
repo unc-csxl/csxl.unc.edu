@@ -18,16 +18,20 @@
         <mat-divider *ngIf="adminPermission$ | async"></mat-divider>
         <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/admin">Admin</a>
         <mat-divider></mat-divider>
-        <a mat-list-item routerLink="/coworking/ambassador">Ambassador</a>
-        <a mat-list-item routerLink="/profile">Profile</a>
-        <mat-divider></mat-divider>
+        <div *ngIf="ambassadorPermission$ | async">
+          <a mat-list-item routerLink="/coworking/ambassador">Ambassador</a>
+          <mat-divider></mat-divider>
+        </div>
         <a mat-list-item routerLink="/organizations">Organizations</a>
         <a mat-list-item routerLink="/about">About</a>
+<<<<<<< HEAD
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/profile">Profile</a>
         <mat-divider></mat-divider>
+=======
+        <a mat-list-item routerLink="/profile">Profile</a>
+>>>>>>> 8910c65 (Fix routing and navigation for ambassador coworking)
         <a mat-list-item (click)="auth.signOut()">Sign out</a>
-        </div>
         <ng-template #unauthenticated>
           <a mat-list-item href="/auth?continue_to={{router.url}}">Sign in</a>
         </ng-template>

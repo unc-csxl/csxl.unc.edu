@@ -4,13 +4,8 @@ import { CoworkingPageComponent } from './coworking-page/coworking-page.componen
 import { AmbassadorPageComponent } from './ambassador-page/ambassador-page.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: CoworkingPageComponent,
-    children: [
-      AmbassadorPageComponent.Route,
-    ]
-  },
+  CoworkingPageComponent.Route,
+  AmbassadorPageComponent.Route
 ];
 
 @NgModule({
