@@ -4,48 +4,10 @@ import { Observable, ReplaySubject, Subject, Subscription, first, map, tap } fro
 import { CoworkingStatus, CoworkingStatusJSON, Reservation, ReservationJSON, ReservationRequest, Seat, SeatAvailability, parseCoworkingStatusJSON, parseReservationJSON } from './coworking.models';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
+import { RxObject } from '../rx-object';
+import { RxCoworkingStatus } from './rx-coworking-status';
 
 const ONE_HOUR = 60 * 60 * 1000;
-
-abstract class RxObject<T> {
-
-    protected value!: T;
-    protected subject: Subject<T> = new ReplaySubject(1);
-
-    public value$: Observable<T> = this.subject.asObservable();
-
-    set(value: T): void {
-        this.value = value;
-        this.notify();
-    }
-
-    protected notify() {
-        this.subject.next(this.value);
-    }
-
-}
-
-class RxCoworkingStatus extends RxObject<CoworkingStatus> {
-
-    pushReservation(reservation: Reservation): void {
-        this.value.my_reservations.push(reservation);
-        this.notify();
-    }
-
-    updateReservation(reservation: Reservation): void {
-        this.value.my_reservations = this.value.my_reservations.map((r) => {
-            return r.id !== reservation.id ? r : reservation;
-        });
-        this.notify();
-    }
-
-    removeReservation(reservationToRemove: Reservation): void {
-        this.value.my_reservations = this.value.my_reservations.filter(reservation => reservationToRemove.id !== reservation.id);
-        this.notify();
-    }
-
-}
-
 
 @Injectable({
     providedIn: 'root'
@@ -77,19 +39,20 @@ export class CoworkingService {
 
         let start = seatSelection[0].availability[0].start;
         let end = new Date(start.getTime() + ONE_HOUR);
-
-        return this.http.post<ReservationJSON>("/api/coworking/reservation", {
+        let reservation = {
             users: [this.profile],
             seats: seatSelection.map(seatAvailability => { return { "id": seatAvailability.id } }),
             start,
             end
-        }).pipe(
-            tap(reservation => this.status.pushReservation(parseReservationJSON(reservation)))
-        );
+        };
+
+        return this.http.post<ReservationJSON>("/api/coworking/reservation", reservation)
+            .pipe(tap(reservation => this.status.pushReservation(parseReservationJSON(reservation))));
     }
 
     confirmReservation(reservation: Reservation) {
-        this.http.put<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`, { id: reservation.id, state: "CONFIRMED" })
+        let reservationPartial = { id: reservation.id, state: "CONFIRMED" };
+        this.http.put<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`, reservationPartial)
             .subscribe((updatedReservation) => this.status.updateReservation(parseReservationJSON(updatedReservation)));
     }
 
