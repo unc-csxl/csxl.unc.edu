@@ -6,10 +6,12 @@ import { HomeComponent } from './home/home.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
 import { AmbassadorPageComponent } from './coworking/ambassador-page/ambassador-page.component';
+import { AboutComponent } from './about/about.component';
 
 
 const routes: Routes = [
   HomeComponent.Route,
+  AboutComponent.Route,
   ProfileEditorComponent.Route,
   GateComponent.Route,
   CoworkingPageComponent.Route,

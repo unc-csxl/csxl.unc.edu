@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { Observable, ReplaySubject, Subject, Subscription, first, map, tap } from 'rxjs';
-import { CoworkingStatus, CoworkingStatusJSON, Reservation, ReservationJSON, ReservationRequest, Seat, SeatAvailability, parseCoworkingStatusJSON, parseReservationJSON } from './coworking.models';
+import { Injectable } from '@angular/core';
+import { Observable, Subscription, map, tap } from 'rxjs';
+import { CoworkingStatus, CoworkingStatusJSON, Reservation, ReservationJSON, SeatAvailability, parseCoworkingStatusJSON, parseReservationJSON } from './coworking.models';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
-import { RxObject } from '../rx-object';
 import { RxCoworkingStatus } from './rx-coworking-status';
 
 const ONE_HOUR = 60 * 60 * 1000;

@@ -20,11 +20,15 @@
         <a mat-list-item routerLink="/coworking/ambassador">XL Ambassador</a>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/organizations">Organizations</a>
+        <a mat-list-item routerLink="/about">About</a>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/profile">Profile</a>
         <mat-divider></mat-divider>
         <a mat-list-item (click)="auth.signOut()">Sign out</a>
-      </ng-template>
+        </div>
+        <ng-template #unauthenticated>
+          <a mat-list-item href="/auth?continue_to={{router.url}}">Sign in</a>
+        </ng-template>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
