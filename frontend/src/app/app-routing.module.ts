@@ -16,6 +16,7 @@ const routes: Routes = [
   GateComponent.Route,
   CoworkingPageComponent.Route,
   AmbassadorPageComponent.Route,
+  { path: 'coworking', title: 'Cowork in the XL', loadChildren: () => import('./coworking/coworking.module').then(m => m.CoworkingModule) },
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organization/organization.module').then(m => m.OrganizationModule) },
 ];

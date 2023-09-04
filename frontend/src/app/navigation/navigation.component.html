@@ -17,7 +17,9 @@
       <ng-template #authenticated mat-list-item>
         <mat-divider *ngIf="adminPermission$ | async"></mat-divider>
         <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/admin">Admin</a>
-        <a mat-list-item routerLink="/coworking/ambassador">XL Ambassador</a>
+        <mat-divider></mat-divider>
+        <a mat-list-item routerLink="/coworking/ambassador">Ambassador</a>
+        <a mat-list-item routerLink="/profile">Profile</a>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/organizations">Organizations</a>
         <a mat-list-item routerLink="/about">About</a>

@@ -14,7 +14,7 @@ export class AmbassadorPageComponent {
   public static Route: Route = {
     path: 'coworking/ambassador',
     component: AmbassadorPageComponent,
-    title: 'XL Ambassador',
+    title: 'Ambassador',
     canActivate: [isAuthenticated], /* TODO: Base on Permissions */
     resolve: { profile: profileResolver }
   };

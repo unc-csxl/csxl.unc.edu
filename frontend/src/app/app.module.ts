@@ -47,13 +47,6 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
-import { CoworkingPageComponent } from './coworking/coworking-page/coworking-page.component';
-
-/* UI Widgets */
-import { CoworkingHoursCard } from './coworking/widgets/coworking-hours-card/coworking-hours-card.widget';
-import { CoworkingDropInCard } from './coworking/widgets/coworking-dropin-card/coworking-dropin-card.widget';
-import { CoworkingReservationEditor } from './coworking/widgets/coworking-reservation-editor/coworking-reservation-editor';
-import { CoworkingReservationCard } from './coworking/widgets/coworking-reservation-card/coworking-reservation-card';
 
 @NgModule({
   declarations: [
@@ -64,13 +57,6 @@ import { CoworkingReservationCard } from './coworking/widgets/coworking-reservat
     AboutComponent,
     GateComponent,
     ProfileEditorComponent,
-    CoworkingPageComponent,
-
-    /* Widgets */
-    CoworkingDropInCard,
-    CoworkingReservationEditor,
-    CoworkingReservationCard,
-    CoworkingHoursCard,
   ],
   imports: [
     /* Angular */
