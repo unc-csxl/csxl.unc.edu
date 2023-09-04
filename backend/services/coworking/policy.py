@@ -31,7 +31,7 @@ class PolicyService:
 
     def minimum_reservation_duration(self) -> timedelta:
         """The minimum amount of time a reservation can be made for."""
-        return timedelta(minutes=30)
+        return timedelta(minutes=10)
 
     def maximum_initial_reservation_duration(self, _subject: User) -> timedelta:
         """The maximum amount of time a reservation can be made for before extending."""

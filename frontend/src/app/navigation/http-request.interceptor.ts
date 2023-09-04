@@ -13,14 +13,14 @@ import { NavigationService } from './navigation.service';
 import { AuthenticationService } from '../authentication.service';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class HttpRequestInterceptor implements HttpInterceptor {
 
   constructor(
     private navigationService: NavigationService,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (request.method === "GET") {
@@ -32,29 +32,28 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError((e) => {
+          if (request.method === "GET") {
+            this.navigationService.setLoading(false);
+          } else {
+            this.navigationService.setSending(false);
+          }
+          if (e instanceof HttpErrorResponse) {
+            if (e.status === 401) {
+              this.authService.signOut();
+            } else {
+              throw e;
+            }
+          }
+          return of(e);
+        }),
+        tap((e) => {
+          if (e instanceof HttpResponse) {
             if (request.method === "GET") {
               this.navigationService.setLoading(false);
             } else {
               this.navigationService.setSending(false);
             }
-            if (e instanceof HttpErrorResponse) {
-              if (e.status === 401) {
-                this.authService.signOut();
-              } else {
-                this.navigationService.error(e);
-              }
-              throw e;
-            }
-            return of(e);
-        }),
-        tap((e) => {
-            if (e instanceof HttpResponse) {
-              if (request.method === "GET") {
-                this.navigationService.setLoading(false);
-              } else {
-                this.navigationService.setSending(false);
-              }
-            }
+          }
         })
       );
   }

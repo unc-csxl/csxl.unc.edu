@@ -47,6 +47,7 @@ export interface ReservationJSON extends TimeRangeJSON {
     walkin: boolean;
     created_at: string;
     updated_at: string;
+    state: string;
 }
 
 export interface Reservation extends TimeRange {
@@ -56,6 +57,7 @@ export interface Reservation extends TimeRange {
     walkin: boolean;
     created_at: Date;
     updated_at: Date;
+    state: string;
 }
 
 export const parseReservationJSON = (json: ReservationJSON): Reservation => {

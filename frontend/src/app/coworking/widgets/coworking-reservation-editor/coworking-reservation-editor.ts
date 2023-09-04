@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Reservation } from '../../coworking.models';
-import { Observable, interval, map, timeInterval, timer } from 'rxjs';
+import { Observable, map, timer } from 'rxjs';
 
 @Component({
-    selector: 'coworking-tentative-dropin-card',
-    templateUrl: './coworking-tentative-dropin-card.widget.html',
-    styleUrls: ['./coworking-tentative-dropin-card.widget.css']
+    selector: 'coworking-reservation-editor',
+    templateUrl: './coworking-reservation-editor.html',
+    styleUrls: ['./coworking-reservation-editor.css']
 })
-export class CoworkingTentativeDropInCard implements OnInit {
+export class CoworkingReservationEditor implements OnInit {
 
     @Input() reservation!: Reservation;
 

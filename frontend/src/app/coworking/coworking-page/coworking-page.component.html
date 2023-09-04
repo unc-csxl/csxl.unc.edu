@@ -6,9 +6,14 @@
       <coworking-hours-card [operatingHours]="status.operating_hours" [openOperatingHours]="openOperatingHours" />
 
       <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
-        <coworking-tentative-dropin-card [reservation]="activeReservation"
-          (onConfirm)="coworkingService.confirmReservation($event)"
-          (onCancel)="coworkingService.cancelReservation($event)"></coworking-tentative-dropin-card>
+        <coworking-reservation-editor *ngIf="activeReservation.state === 'DRAFT'; else showReservation"
+          [reservation]="activeReservation" (onConfirm)="coworkingService.confirmReservation($event)"
+          (onCancel)="coworkingService.cancelReservation($event)"></coworking-reservation-editor>
+        <ng-template #confirmed>CONFIRMED</ng-template>
+
+        <ng-template #showReservation>
+          <coworking-reservation-card [reservation]="activeReservation"></coworking-reservation-card>
+        </ng-template>
       </ng-container>
 
       <ng-template #dropin>

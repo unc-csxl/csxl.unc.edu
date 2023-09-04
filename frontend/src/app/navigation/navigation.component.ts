@@ -36,9 +36,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
     protected navigationService: NavigationTitleService,
     protected errorDialog: MatDialog
   ) {
-    this.profile$ = profileService.profile$;
+    this.profile$ = this.profileService.profile$;
     this.checkinPermission$ = this.permission.check('checkin.create', 'checkin/');
-    this.adminPermission$ = this.permission.check('admin.view', 'admin/')
+    this.adminPermission$ = this.permission.check('admin.view', 'admin/');
   }
 
   ngOnInit(): void {
@@ -69,9 +69,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   private initResponsiveMenu() {
     return this.breakpointObserver
-        .observe(Breakpoints.HandsetPortrait)
-        .pipe(map(result => result.matches))
-        .subscribe(isHandset => this.isHandset = isHandset);
+      .observe(Breakpoints.HandsetPortrait)
+      .pipe(map(result => result.matches))
+      .subscribe(isHandset => this.isHandset = isHandset);
   }
 
 }
