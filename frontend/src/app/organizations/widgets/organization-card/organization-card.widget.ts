@@ -19,6 +19,10 @@ export class OrganizationCard {
     // starClicked() {
     //     this.onStarClicked.emit(this.organization!.id!);
     // }
+
+    isTooltipDisabled(element: HTMLElement) {
+        return element.scrollHeight <= element.clientHeight;
+    }
 }
 
 

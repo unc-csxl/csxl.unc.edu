@@ -9,8 +9,8 @@
             <img mat-card-image src={{organization.logo}} class="logo">
             <!-- Organization Name -->
             <mat-card-title class="name" [matTooltip]='organization.name' matTooltipPosition="above"
-                [matTooltipDisabled]="organization.name.length < 20">
-                {{organization.name.length < 20 ? organization.name : organization.slug}} </mat-card-title>
+                [matTooltipDisabled]="organization.name.length < 25">
+                {{organization.name.length < 25 ? organization.name : organization.slug}} </mat-card-title>
         </div>
 
         <!-- Organization Join Button button -->
@@ -24,7 +24,7 @@
     <!-- Organization Description -->
     <mat-card-content class="description">
         <p [matTooltip]='organization.short_description'
-            [matTooltipDisabled]='organization.short_description.length < 85'>
+            [matTooltipDisabled]="isTooltipDisabled(organizationDescription)" #organizationDescription>
             {{organization.short_description}}
         </p>
     </mat-card-content>
