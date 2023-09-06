@@ -15,11 +15,11 @@ export class OrganizationAdminService {
     }
 
     /** Creates an organization
-     * @param newOrg: Organization object that you want to add to the database
+     * @param newOrganization: Organization object that you want to add to the database
      * @returns {Observable<Organization>}
      */
     createOrganization = (newOrganization: Organization) => {
-        return this.http.post<Organization>("/api/organization", newOrganization)
+        return this.http.post<Organization>("/api/organizations", newOrganization)
     }
 
     /** Deletes an organization
