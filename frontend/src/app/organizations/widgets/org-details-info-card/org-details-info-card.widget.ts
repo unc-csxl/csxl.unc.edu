@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Organization } from '../../organizations.service';
 import { Profile } from 'src/app/profile/profile.service';
 
@@ -11,14 +11,8 @@ export class OrgDetailsInfoCard {
 
     @Input() organization?: Organization;
     @Input() profile?: Profile;
-    // @Input() profilePermission!: number;
     // @Input() isAdmin: boolean = false;
-    // @Output() onStarClicked = new EventEmitter<number>();
 
     constructor() {}
-
-    // starClicked() {
-    //     this.onStarClicked.emit(this.organization!.id!);
-    // }
 }
 
