@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Organization } from '../../organizations.service';
 import { Profile } from 'src/app/profile/profile.service';
 
@@ -12,13 +12,12 @@ export class OrganizationCard {
     @Input() organization!: Organization
     @Input() profile?: Profile
     @Input() profilePermissions!: Map<number, number>
-    //@Output() onStarClicked = new EventEmitter<number>();
 
     constructor() { }
 
-    // starClicked() {
-    //     this.onStarClicked.emit(this.organization!.id!);
-    // }
+    isTooltipDisabled(element: HTMLElement) {
+        return element.scrollHeight <= element.clientHeight;
+    }
 }
 
 
