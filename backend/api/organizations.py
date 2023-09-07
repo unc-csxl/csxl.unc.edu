@@ -77,29 +77,6 @@ def get_organization_from_id(slug: str, organization_service: OrganizationServic
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.get("/name/{name}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
-def get_organization_from_name(name: str, organization_service: OrganizationService = Depends()) -> Organization:
-    """
-    Get organization with matching name
-
-    Parameters:
-        name: a str representing the name of the organization
-        organization_service: an OrganizationService
-
-    Returns:
-        OrganizationDetail: OrganizationDetail with matching name
-
-    Raises:
-        HTTPException 404 if get_from_name() raises an Exception
-    """
-    
-    try: 
-        # Try to get and return organization with matching name
-        return organization_service.get_from_name(name)
-    except Exception as e:
-        # Raise 404 exception if search fails (no response)
-        raise HTTPException(status_code=404, detail=str(e))
-
 @api.put("", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
 def update_organization(organization: Organization, subject: User = Depends(registered_user), organization_service: OrganizationService = Depends()) -> Organization:
     """
