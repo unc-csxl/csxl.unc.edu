@@ -8,26 +8,26 @@
  * @license MIT
  */
 
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Organization, OrganizationsService } from '../organizations.service';
+import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
+import { Organization, OrganizationService } from '../organization.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Profile, ProfileService } from 'src/app/profile/profile.service';
+import { Profile, ProfileService } from '/workspace/frontend/src/app/profile/profile.service';
 
 @Component({
-  selector: 'app-organizations-page',
-  templateUrl: './organizations-page.component.html',
-  styleUrls: ['./organizations-page.component.css']
+  selector: 'app-organization-page',
+  templateUrl: './organization-page.component.html',
+  styleUrls: ['./organization-page.component.css']
 })
-export class OrganizationsPageComponent {
+export class OrganizationPageComponent {
 
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: '',
     title: 'CS Organizations',
-    component: OrganizationsPageComponent,
+    component: OrganizationPageComponent,
     canActivate: [],
     resolve: { profile: profileResolver }
   }
@@ -45,7 +45,7 @@ export class OrganizationsPageComponent {
   public permValues: Map<number, number> = new Map();
 
   constructor(
-    private organizationService: OrganizationsService,
+    private organizationService: OrganizationService,
     private profileService: ProfileService,
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,

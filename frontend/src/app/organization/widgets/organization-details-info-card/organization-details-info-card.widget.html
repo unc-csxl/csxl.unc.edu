@@ -6,7 +6,7 @@
             <img mat-card-image src={{organization!.logo}} class="logo">
         </div>
         <div class="right-header-info">
-            <!-- Organization Name, Social Media, and Star -->
+            <!-- Organization Name and Social Media -->
             <div class="organization-top-header-group">
                 <!-- Organization Name -->
                 <div class="organization-name-section">
@@ -26,12 +26,6 @@
                             *ngIf='organization!.linked_in != ""' />
                         <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
                             *ngIf='organization!.youtube != ""' />
-
-                        <!-- Join button -->
-                        <!-- <button *ngIf="profile && profile.first_name" mat-icon-button color="basic"
-                            (click)="starClicked()">
-                            <mat-icon>{{profilePermission >= 0 ? "person_off" : "person_add"}}</mat-icon>
-                        </button> -->
                     </div>
                 </div>
             </div>
@@ -42,9 +36,4 @@
             <!-- Link to Organization Editor -->
         </div>
     </mat-card-header>
-    <!-- <mat-card-footer>
-        <a [routerLink]="['/organization', organization!.id, 'org-editor']">
-            <button *ngIf='isAdmin' mat-raised-button type="submit" class="edit-org-button">Edit Organization</button>
-        </a>
-    </mat-card-footer> -->
 </mat-card>

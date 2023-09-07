@@ -1,4 +1,4 @@
-import { OrganizationFilterPipe } from './org-filter.pipe';
+import { OrganizationFilterPipe } from './organization-filter.pipe';
 
 describe('FilterPipe', () => {
   it('create an instance', () => {

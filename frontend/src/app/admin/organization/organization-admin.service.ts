@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Organization } from 'src/app/organizations/organizations.service';
+import { Organization } from 'src/app/organization/organization.service';
 
 @Injectable({ providedIn: 'root' })
-export class OrganizationsAdminService {
+export class OrganizationAdminService {
 
     constructor(protected http: HttpClient) { }
 
@@ -15,11 +15,11 @@ export class OrganizationsAdminService {
     }
 
     /** Creates an organization
-     * @param newOrg: Organization object that you want to add to the database
+     * @param newOrganization: Organization object that you want to add to the database
      * @returns {Observable<Organization>}
      */
-    createOrganization = (newOrg: Organization) => {
-        return this.http.post<Organization>("/api/organizations", newOrg)
+    createOrganization = (newOrganization: Organization) => {
+        return this.http.post<Organization>("/api/organizations", newOrganization)
     }
 
     /** Deletes an organization

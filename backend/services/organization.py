@@ -56,7 +56,7 @@ class OrganizationService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "organization.create", f"organizations")
+        self._permission.enforce(subject, "organization.create", f"organization")
 
         # Checks if the organization already exists in the table
         if organization.id:
@@ -168,7 +168,7 @@ class OrganizationService:
             Exception if no organization is found with the corresponding slug
         """
         # Check if user has admin permissions
-        self._permission.enforce(subject, "organization.create", f"organizations")
+        self._permission.enforce(subject, "organization.create", f"")
 
         # Find object to delete
         obj = self._session.query(OrganizationEntity).get(slug)

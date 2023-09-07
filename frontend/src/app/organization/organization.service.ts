@@ -28,7 +28,7 @@ export interface Organization {
 @Injectable({
     providedIn: 'root'
 })
-export class OrganizationsService {
+export class OrganizationService {
 
   /** Store profile observable*/
   public profile$: Observable<Profile | undefined>;
