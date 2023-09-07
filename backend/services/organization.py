@@ -74,23 +74,23 @@ class OrganizationService:
             # Return added object
             return organization_entity.to_model()
 
-    def get_from_id(self, id: int) -> Organization:
+    def get_from_slug(self, slug: str) -> Organization:
         """
-        Get the organization from an id
+        Get the organization from a slug
         If none retrieved, a debug description is displayed.
 
         Parameters:
-            id: an int representing a unique organization ID
+            slug: a string representing a unique organization slug
 
         Returns:
-            Organization: Object with corresponding ID
+            Organization: Object with corresponding slug
 
         Raises:
-            Exception if no organization is found with the corresponding ID
+            Exception if no organization is found with the corresponding slug
         """
 
         # Query the organization with matching id
-        organization = self._session.query(OrganizationEntity).get(id)
+        organization = self._session.query(OrganizationEntity).get(slug)
 
         # Check if result is null
         if organization:
@@ -98,32 +98,7 @@ class OrganizationService:
             return organization.to_model()
         else:
             # Raise exception
-            raise Exception(f"No organization found with ID: {id}")
-
-    def get_from_name(self, name: str) -> Organization:
-        """
-        Get the organization from name (string)
-        If none retrieved, a debug description is displayed.
-
-        Parameters:
-            name: a str representing an Organization name
-
-        Returns:
-            Organization: Object with corresponding name
-        """
-
-        # Query the organization with matching id
-        organization = self._session.query(OrganizationEntity).filter(
-            OrganizationEntity.name == name
-        )[0]
-
-        # Check if result is null
-        if organization:
-            # Convert entry to a model and return
-            return organization.to_model()
-        else:
-            # Raise exception
-            raise Exception(f"No organization found with name: {name}")
+            raise Exception(f"No organization found with slug: {slug}")
 
     def update(
         self, subject: User, organization: Organization
@@ -160,6 +135,7 @@ class OrganizationService:
         if obj:
             # Update organization object
             obj.name = organization.name
+            obj.slug = organization.slug
             obj.logo = organization.logo
             obj.short_description = organization.short_description
             obj.long_description = organization.long_description
@@ -177,23 +153,23 @@ class OrganizationService:
             # Raise exception
             raise Exception(f"No organization found with ID: {organization.id}")
 
-    def delete(self, subject: User, id: int) -> None:
+    def delete(self, subject: User, slug: str) -> None:
         """
-        Delete the organization based on the provided ID.
+        Delete the organization based on the provided slug.
         If no item exists to delete, a debug description is displayed.
 
         Parameters:
             subject: a valid User model representing the currently logged in User
-            id: an int representing a unique organization ID
+            slug: a string representing a unique organization slug
 
         Raises:
-            Exception if no organization is found with the corresponding ID
+            Exception if no organization is found with the corresponding slug
         """
         # Check if user has admin permissions
         self._permission.enforce(subject, "organization.create", f"organizations")
 
         # Find object to delete
-        obj = self._session.query(OrganizationEntity).get(id)
+        obj = self._session.query(OrganizationEntity).get(slug)
 
         # Ensure object exists
         if obj:
@@ -202,4 +178,4 @@ class OrganizationService:
             self._session.commit()
         else:
             # Raise exception
-            raise Exception(f"No organization found with ID: {id}")
+            raise Exception(f"No organization found with slug: {slug}")
