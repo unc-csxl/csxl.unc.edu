@@ -89,8 +89,10 @@ class OrganizationService:
             Exception if no organization is found with the corresponding slug
         """
 
-        # Query the organization with matching id
-        organization = self._session.query(OrganizationEntity).get(slug)
+        # Query the organization with matching slug
+        organization = self._session.query(OrganizationEntity).filter(
+            OrganizationEntity.slug == slug
+        )[0]
 
         # Check if result is null
         if organization:

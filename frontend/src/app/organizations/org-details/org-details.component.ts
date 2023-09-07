@@ -18,10 +18,10 @@ import { Organization, OrganizationsService } from '../organizations.service';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
-  let orgId = route.params['id'];
+  let orgSlug = route.params['slug'];
 
   let orgDetailSvc = inject(OrganizationsService);
-  let org$ = orgDetailSvc.getOrganization(orgId);
+  let org$ = orgDetailSvc.getOrganization(orgSlug);
   return org$.pipe(map(org => {
     if (org) {
       return `${org.name}`;
