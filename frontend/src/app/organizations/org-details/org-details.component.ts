@@ -38,7 +38,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 })
 export class OrgDetailsComponent {
   public static Route: Route = {
-    path: ':id',
+    path: ':slug',
     component: OrgDetailsComponent,
     title: titleResolver,
     resolve: { profile: profileResolver }
@@ -46,7 +46,7 @@ export class OrgDetailsComponent {
 
   public organization$: Observable<Organization>;
   public organization: Organization | undefined = undefined;
-  id: string = '';
+  slug: string = '';
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
@@ -68,11 +68,11 @@ export class OrgDetailsComponent {
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
 
-    /** Load current route ID */
-    this.route.params.subscribe(params => this.id = params["id"]);
+    /** Load current route slug */
+    this.route.params.subscribe(params => this.slug = params["slug"]);
 
     /** Retrieve Organization using OrgDetailsService */
-    this.organization$ = this.orgService.getOrganization(this.id);
+    this.organization$ = this.orgService.getOrganization(this.slug);
     this.organization$.subscribe(org => this.organization = org);
 
   }
