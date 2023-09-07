@@ -13,6 +13,10 @@ export class OrganizationCard {
     @Input() profile?: Profile
     @Input() profilePermissions!: Map<number, number>
 
+    isTooltipDisabled(element: HTMLElement) {
+        return element.scrollHeight <= element.clientHeight;
+    }
+
     constructor() { }
 }
 
