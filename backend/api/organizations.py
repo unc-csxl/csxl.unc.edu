@@ -99,13 +99,13 @@ def update_organization(organization: Organization, subject: User = Depends(regi
         # Raise 404 exception if update fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{id}", response_model=None, tags=['Organization'])
-def delete_organization(id: int, subject: User = Depends(registered_user), organization_service = Depends(OrganizationService)):
+@api.delete("/{slug}", response_model=None, tags=['Organization'])
+def delete_organization(slug: str, subject: User = Depends(registered_user), organization_service = Depends(OrganizationService)):
     """
-    Delete organization based on id
+    Delete organization based on slug
 
     Parameters:
-        id: an int representing a unique identifier for an Organization
+        slug: a string representing a unique identifier for an Organization
         subject: a valid User model representing the currently logged in User
         organization_service: a valid OrganizationService
 
@@ -115,7 +115,7 @@ def delete_organization(id: int, subject: User = Depends(registered_user), organ
 
     try:
         # Try to delete organization
-        organization_service.delete(subject, id)
+        organization_service.delete(subject, slug)
     except Exception as e:
         # Raise 404 exception if delete fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
