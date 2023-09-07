@@ -54,7 +54,7 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         raise HTTPException(status_code=422, detail=str(e))
 
 @api.get("/{slug}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
-def get_organization_from_id(slug: str, organization_service: OrganizationService = Depends()) -> Organization:
+def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Get organization with matching slug
 
