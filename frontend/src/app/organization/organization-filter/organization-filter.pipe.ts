@@ -9,7 +9,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Organization } from '../organizations.service';
+import { Organization } from '../organization.service';
 
 @Pipe({
   name: 'organizationFilter'
@@ -41,10 +41,10 @@ export class OrganizationFilterPipe implements PipeTransform {
     if (searchQuery) {
       return organizations.pipe(
         map(organizations => organizations
-          .filter(org =>
-            org.name.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
-            org.short_description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            org.long_description.toLowerCase().includes(searchQuery.toLowerCase()))));
+          .filter(organization =>
+            organization.name.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
+            organization.short_description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            organization.long_description.toLowerCase().includes(searchQuery.toLowerCase()))));
     } else {
       // Otherwise, return the original list.
       return organizations;

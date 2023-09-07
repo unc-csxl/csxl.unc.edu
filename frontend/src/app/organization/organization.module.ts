@@ -18,29 +18,29 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { OrganizationsPageComponent } from './organizations-page/organizations-page.component';
-import { OrganizationsRoutingModule } from './organizations-routing.module';
-import { OrgDetailsComponent } from './org-details/org-details.component';
+import { OrganizationPageComponent } from './organization-page/organization-page.component';
+import { OrganizationRoutingModule } from './organization-routing.module';
+import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 
-import { OrganizationFilterPipe } from './org-filter/org-filter.pipe';
+import { OrganizationFilterPipe } from './organization-filter/organization-filter.pipe';
 
 /* UI Widgets */
 import { OrganizationCard } from './widgets/organization-card/organization-card.widget';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
-import { OrgDetailsInfoCard } from './widgets/org-details-info-card/org-details-info-card.widget';
+import { OrganizationDetailsInfoCard } from './widgets/organization-details-info-card/organization-details-info-card.widget';
 
 @NgModule({
   declarations: [
-    OrganizationsPageComponent,
-    OrgDetailsComponent,
+    OrganizationPageComponent,
+    OrganizationDetailsComponent,
 
     // Pipes
     OrganizationFilterPipe,
 
     // UI Widgets
     OrganizationCard,
-    OrgDetailsInfoCard
+    OrganizationDetailsInfoCard
   ],
   imports: [
     CommonModule,
@@ -59,9 +59,9 @@ import { OrgDetailsInfoCard } from './widgets/org-details-info-card/org-details-
     ReactiveFormsModule,
     MatIconModule,
     MatTooltipModule,
-    OrganizationsRoutingModule,
+    OrganizationRoutingModule,
     RouterModule,
     SharedModule
   ]
 })
-export class OrganizationsModule { }
+export class OrganizationModule { }

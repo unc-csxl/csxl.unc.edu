@@ -11,7 +11,7 @@ const routes: Routes = [
   ProfileEditorComponent.Route,
   GateComponent.Route,
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
-  { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organizations/organizations.module').then(m => m.OrganizationsModule) },
+  { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organization/organization.module').then(m => m.OrganizationModule) },
 ];
 
 @NgModule({

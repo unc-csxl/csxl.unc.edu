@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Organization } from '../../organizations.service';
-import { Profile } from 'src/app/profile/profile.service';
+import { Organization } from '../../organization.service';
+import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 
 @Component({
     selector: 'organization-card',
@@ -14,10 +14,6 @@ export class OrganizationCard {
     @Input() profilePermissions!: Map<number, number>
 
     constructor() { }
-
-    isTooltipDisabled(element: HTMLElement) {
-        return element.scrollHeight <= element.clientHeight;
-    }
 }
 
 
