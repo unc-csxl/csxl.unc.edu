@@ -53,26 +53,26 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{id}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
-def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> Organization:
+@api.get("/{slug}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
+def get_organization_from_id(slug: str, organization_service: OrganizationService = Depends()) -> Organization:
     """
-    Get organization with matching id
+    Get organization with matching slug
 
     Parameters:
-        id: an int representing a unique identifier for an Organization
+        slug: a string representing a unique identifier for an Organization
         organization_service: a valid OrganizationService
 
     Returns:
-        OrganizationDetail: OrganizationDetail with matching id
+        OrganizationDetail: OrganizationDetail with matching slug
 
     Raises:
-        HTTPException 404 if get_from_id() raises an Exception
+        HTTPException 404 if get_from_slug() raises an Exception
     """
     
-    # Try to get organization with matching id
+    # Try to get organization with matching slug
     try: 
         # Return organization
-        return organization_service.get_from_id(id)
+        return organization_service.get_from_slug(slug)
     except Exception as e:
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
