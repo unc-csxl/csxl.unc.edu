@@ -13,8 +13,9 @@ __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
 api = APIRouter(prefix="/api/organizations")
+openapi_tags = { "name": "Organizations", "description": "Create, update, delete, and retrieve CS Organizations."}
 
-@api.get("", response_model=list[Organization], tags=['Organization'])
+@api.get("", response_model=list[Organization], tags=['Organizations'])
 def get_organizations(organization_service: OrganizationService = Depends()) -> list[Organization]:
     """
     Get all organizations
@@ -29,7 +30,7 @@ def get_organizations(organization_service: OrganizationService = Depends()) -> 
     # Return all organizations
     return organization_service.all()
 
-@api.post("", response_model=Organization, tags=['Organization'])
+@api.post("", response_model=Organization, tags=['Organizations'])
 def new_organization(organization: Organization, subject: User = Depends(registered_user), organization_service: OrganizationService = Depends()) -> Organization:
     """
     Create organization
@@ -53,7 +54,7 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{id}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
+@api.get("/{id}", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
 def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Get organization with matching id
@@ -77,7 +78,7 @@ def get_organization_from_id(id: int, organization_service: OrganizationService 
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.get("/name/{name}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
+@api.get("/name/{name}", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
 def get_organization_from_name(name: str, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Get organization with matching name
@@ -100,7 +101,7 @@ def get_organization_from_name(name: str, organization_service: OrganizationServ
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
+@api.put("", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
 def update_organization(organization: Organization, subject: User = Depends(registered_user), organization_service: OrganizationService = Depends()) -> Organization:
     """
     Update organization
@@ -122,7 +123,7 @@ def update_organization(organization: Organization, subject: User = Depends(regi
         # Raise 404 exception if update fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{id}", response_model=None, tags=['Organization'])
+@api.delete("/{id}", response_model=None, tags=['Organizations'])
 def delete_organization(id: int, subject: User = Depends(registered_user), organization_service = Depends(OrganizationService)):
     """
     Delete organization based on id

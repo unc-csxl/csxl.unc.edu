@@ -13,36 +13,6 @@ __license__ = "MIT"
 
 # Sample Data Objects
 
-cads = Organization(
-    name="Carolina Analytics & Data Science Club",
-    slug="CADS",
-    logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cads.png",
-    short_description="Provides students interested in Data Science opportunities to grow.",
-    long_description="CADS provides students interested in Data Science opportunities to grow personally, intellectually, professionally, and socially among a support network of students, professors, and career professionals. This mission is to be accomplished through events, including a speaker series from industry professionals, data case competition, workshops, and investigating and analyzing University and community data to drive community-based projects and solutions.",
-    website="https://carolinadata.unc.edu/",
-    email="carolinadatascience@gmail.com",
-    instagram="https://www.instagram.com/carolinadatascience/",
-    linked_in="https://www.linkedin.com/company/carolina-data/",
-    youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
-    heel_life="https://heellife.unc.edu/organization/carolinadatascience",
-    public=True,
-)
-
-cssg = Organization(
-    name="CS+Social Good",
-    slug="CSSG",
-    logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cssg.png",
-    short_description="We build apps for nonprofits and organizations for social good.",
-    long_description="Through technology, we have the opportunity to be a part of the positive change and evolution of a growing world of possibility. We aim to give nonprofits and organizations for social good in the Chapel Hill area the tools to effectively complete their goals with the use of knowledge and programs. We partner with 2-3 organizations per semester and develop custom technology solutions for their needs. These groups include 501(c) organizations, student groups, and Ph.D. candidates.",
-    website="https://cssgunc.org/",
-    email="cssgunc@gmail.com",
-    instagram="https://www.instagram.com/unc_cssg/",
-    linked_in="",
-    youtube="",
-    heel_life="https://heellife.unc.edu/organization/cssg",
-    public=False,
-)
-
 appteam = OrganizationEntity(
     name="App Team Carolina",
     slug="App Team",
@@ -88,7 +58,22 @@ bit = OrganizationEntity(
     public = False,
 )
 
-arvr = OrganizationEntity(
+cads = Organization(
+    name="Carolina Analytics & Data Science Club",
+    slug="CADS",
+    logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cads.png",
+    short_description="Provides students interested in Data Science opportunities to grow.",
+    long_description="CADS provides students interested in Data Science opportunities to grow personally, intellectually, professionally, and socially among a support network of students, professors, and career professionals. This mission is to be accomplished through events, including a speaker series from industry professionals, data case competition, workshops, and investigating and analyzing University and community data to drive community-based projects and solutions.",
+    website="https://carolinadata.unc.edu/",
+    email="carolinadatascience@gmail.com",
+    instagram="https://www.instagram.com/carolinadatascience/",
+    linked_in="https://www.linkedin.com/company/carolina-data/",
+    youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
+    heel_life="https://heellife.unc.edu/organization/carolinadatascience",
+    public=True,
+)
+
+carvr = OrganizationEntity(
     name="Carolina Augmented and Virtual Reality", 
     slug="CARVR",
     logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/arvr.png", 
@@ -101,6 +86,21 @@ arvr = OrganizationEntity(
     youtube="", 
     heel_life="https://heellife.unc.edu/organization/carvr",
     public = False,
+)
+
+cssg = Organization(
+    name="CS+Social Good",
+    slug="CSSG",
+    logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cssg.png",
+    short_description="We build apps for nonprofits and organizations for social good.",
+    long_description="Through technology, we have the opportunity to be a part of the positive change and evolution of a growing world of possibility. We aim to give nonprofits and organizations for social good in the Chapel Hill area the tools to effectively complete their goals with the use of knowledge and programs. We partner with 2-3 organizations per semester and develop custom technology solutions for their needs. These groups include 501(c) organizations, student groups, and Ph.D. candidates.",
+    website="https://cssgunc.org/",
+    email="cssgunc@gmail.com",
+    instagram="https://www.instagram.com/unc_cssg/",
+    linked_in="",
+    youtube="",
+    heel_life="https://heellife.unc.edu/organization/cssg",
+    public=False,
 )
 
 ctf = OrganizationEntity(
@@ -268,7 +268,7 @@ wics = OrganizationEntity(
     public = False,
 )
 
-organizations = [cads, cssg, appteam, acm, bit, arvr, ctf, enablingtech, esports, gamedev, gwc, hacknc, ktp, pearlhacks, pm, queerhack, wics]
+organizations = [appteam, acm, bit, cads, carvr, cssg, ctf, enablingtech, esports, gamedev, gwc, hacknc, ktp, pearlhacks, pm, queerhack, wics]
 
 # Data Functions
 
