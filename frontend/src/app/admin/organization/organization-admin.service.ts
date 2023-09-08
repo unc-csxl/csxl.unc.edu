@@ -23,10 +23,10 @@ export class OrganizationAdminService {
     }
 
     /** Deletes an organization
-     * @param org_id: id of the organization object to delete
+     * @param organization_id: id of the organization object to delete
      * @returns {Observable<Organization>}
      */
-    deleteOrganization = (org_id: number) => {
-        return this.http.delete<Organization>(`/api/organizations/${org_id}`);
+    deleteOrganization = (organization_id: number) => {
+        return this.http.delete<Organization>(`/api/organizations/${organization_id}`);
     }
 }
