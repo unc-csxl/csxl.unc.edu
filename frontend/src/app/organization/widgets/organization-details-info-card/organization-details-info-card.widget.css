@@ -12,14 +12,13 @@
 
 .organization-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 0.5rem;
 }
 
 .left-header-info {
-    display: flex;
-    flex-direction: row;
+    /* padding-top: 0.75rem; */
     width: 10%;
 }
 
