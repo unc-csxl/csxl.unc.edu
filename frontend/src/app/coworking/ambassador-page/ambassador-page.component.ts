@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
+import { CoworkingService } from '../coworking.service';
+import { Observable } from 'rxjs';
+import { Reservation } from '../coworking.models';
 
 @Component({
   selector: 'app-coworking-ambassador-page',
@@ -19,8 +22,10 @@ export class AmbassadorPageComponent {
     resolve: { profile: profileResolver }
   };
 
-  constructor() {
-    console.log("AMB")
+  reservations$: Observable<Reservation[]>;
+
+  constructor(public coworkingSvc: CoworkingService) {
+    this.reservations$ = coworkingSvc.listActiveAndUpcomingReservations();
   }
 
 }

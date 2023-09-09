@@ -60,4 +60,11 @@ export class CoworkingService {
             this.status.removeReservation(parseReservationJSON(cancelledReservation))
         }));
     }
+
+    listActiveAndUpcomingReservations(): Observable<Reservation[]> {
+        return this.http.get<ReservationJSON[]>('/api/coworking/ambassador').pipe(map(
+            reservations => reservations.map(reservation => parseReservationJSON(reservation))
+        ));
+    }
+
 }

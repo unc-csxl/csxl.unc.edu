@@ -12,6 +12,7 @@ import { CoworkingDropInCard } from './widgets/coworking-dropin-card/coworking-d
 import { MatListModule } from '@angular/material/list';
 import { CoworkingHoursCard } from './widgets/coworking-hours-card/coworking-hours-card.widget';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatCardModule,
     MatDividerModule,
     MatListModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatButtonModule
   ]
 })
 export class CoworkingModule { }

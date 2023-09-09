@@ -1,4 +1,4 @@
-"""Coworking Reservation API
+"""Coworking Client Reservation API
 
 This API is used to make and manage reservations."""
 
@@ -15,7 +15,6 @@ __license__ = "MIT"
 
 api = APIRouter(prefix="/api/coworking")
 
-
 @api.post("/reservation", tags=["Coworking"])
 def draft_reservation(
     reservation_request: ReservationRequest,
@@ -28,14 +27,16 @@ def draft_reservation(
     except ReservationError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
+
 @api.put("/reservation/{id}", tags=["Coworking"])
 def update_reservation(
-    id: int,
     reservation: ReservationPartial,
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends()
 ) -> Reservation:
+    """Modify a reservation."""
     return reservation_svc.change_reservation(subject, reservation)
+
 
 @api.delete("/reservation/{id}", tags=["Coworking"])
 def cancel_reservation(
@@ -43,4 +44,5 @@ def cancel_reservation(
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends()
 ) -> Reservation:
+    """Cancel a reservation."""
     return reservation_svc.change_reservation(subject, ReservationPartial(id=id, state=ReservationState.CANCELLED))

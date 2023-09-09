@@ -1,1 +1,7 @@
 Ambassador Page
+
+<ul *ngIf="reservations$ | async as reservations">
+    <li *ngFor="let reservation of reservations">
+        {{ reservation.users[0]!.first_name }}
+    </li>
+</ul>

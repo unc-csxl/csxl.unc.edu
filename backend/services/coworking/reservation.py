@@ -10,7 +10,6 @@ from ...models.coworking import (
     Seat,
     Reservation,
     ReservationRequest,
-    ReservationIdentity,
     ReservationPartial,
     TimeRange,
     SeatAvailability,
@@ -403,8 +402,8 @@ class ReservationService:
 
         # Ensure permissions to manage reservations for all users in reservation
         current = entity.to_model()
-        if subject not in current.users:
-            for user in current.users:
+        for user in current.users:
+            if subject.id != user.id:
                 self._permission_svc.enforce(
                     subject, "coworking.reservation.manage", f"user/{user.id}"
                 )
@@ -453,6 +452,27 @@ class ReservationService:
             entity.state = delta
 
         return True
+
+    def list_active_and_upcoming(self, subject: User) -> list[Reservation]:
+        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
+        now = datetime.now()
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start < now + timedelta(minutes=10),
+                ReservationEntity.end > now,
+                ReservationEntity.state.in_(
+                    (ReservationState.CONFIRMED, ReservationState.CHECKED_IN, ReservationState.CHECKED_OUT)
+                ),
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start.desc())
+            .all()
+        )
+        return [reservation.to_model() for reservation in reservations]
 
     def self_checkin_reservation(
         self, subject: User, reservation: Reservation, checkin_code: str
