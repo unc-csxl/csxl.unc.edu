@@ -33,4 +33,8 @@ export class AmbassadorPageComponent {
     this.ambassadorService.fetchReservations();
   }
 
+  checkIn(reservation: Reservation) {
+    this.ambassadorService.checkIn(reservation);
+  }
+
 }

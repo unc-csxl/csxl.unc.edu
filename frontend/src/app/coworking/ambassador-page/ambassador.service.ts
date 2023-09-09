@@ -22,4 +22,15 @@ export class AmbassadorService {
             );
     }
 
+    checkIn(reservation: Reservation): void {
+        this.http
+            .put<ReservationJSON>(`/api/coworking/ambassador/checkin`, {
+                id: reservation.id,
+                state: 'CHECKED_IN'
+            })
+            .subscribe(reservationJson => {
+                this.reservations.updateReservation(parseReservationJSON(reservationJson));
+            });
+    }
+
 }

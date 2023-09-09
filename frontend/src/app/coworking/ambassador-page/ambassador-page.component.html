@@ -23,8 +23,8 @@
             </ng-container>
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
-                <td mat-cell *matCellDef>
-                    <button mat-raised-button color="primary">Check-in</button>
+                <td mat-cell *matCellDef="let reservation">
+                    <button mat-raised-button color="primary" (click)="checkIn(reservation)">Check-in</button>
                     <button mat-button color="warn">Cancel</button>
                 </td>
             </ng-container>

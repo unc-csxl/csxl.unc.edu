@@ -474,19 +474,27 @@ class ReservationService:
         )
         return [reservation.to_model() for reservation in reservations]
 
-    def self_checkin_reservation(
-        self, subject: User, reservation: Reservation, checkin_code: str
-    ) -> Reservation:
-        """When the user is ready to check-in for their reservation near the reserved time, via a checkin-code, this endpoint is used."""
-        # TODO: Should check-in be on the join table between reservation and user??
-        raise NotImplementedError()
-
     def staff_checkin_reservation(
         self, subject: User, reservation: Reservation
     ) -> Reservation:
         """Staff members with the correct permissions can check users in to their reservations directly."""
-        # TODO: Should check-in be on the join table between reservation and user??
-        raise NotImplementedError()
+        entity = self._session.get(ReservationEntity, reservation.id)
+        if entity is None:
+            raise LookupError(f"Reservation(id={reservation.id}) does not exist")
+
+        # Ensure permissions to manage reservation checkins
+        self._permission_svc.enforce(subject, "coworking.reservation.checkIn", f"user/*")
+
+        # Update state iff ReservationState is current CONFIRMED 
+        if entity.state == ReservationState.CONFIRMED:
+            entity.state = ReservationState.CHECKED_IN
+            self._session.commit()
+        elif entity.state in (ReservationState.CANCELLED, ReservationState.CHECKED_OUT, ReservationState.DRAFT):
+            raise ReservationError(f"Cannot check in from current state of {entity.state}")
+        else:
+            ... # Idempotent case of ReservationState.CHECKED_IN
+
+        return entity.to_model()
 
     # Private helper methods
 
