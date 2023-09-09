@@ -55,11 +55,11 @@ export class OrganizationService {
   }
 
   /** Returns the organization object from the backend database table using the backend HTTP get request. 
-   * @param id: Number representing the organization id
+   * @param slug: String representing the organization slug
    * @returns {Observable<Organization>}
    */
-  getOrganization = (id: string) => {
-    return this.http.get<Organization>("/api/organizations/" + id);
+  getOrganization = (slug: string) => {
+    return this.http.get<Organization>("/api/organizations/" + slug);
   }
 
 }

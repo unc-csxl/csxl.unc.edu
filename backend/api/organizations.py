@@ -54,49 +54,26 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{id}", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
-def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> Organization:
+@api.get("/{slug}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
+def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> Organization:
     """
-    Get organization with matching id
+    Get organization with matching slug
 
     Parameters:
-        id: an int representing a unique identifier for an Organization
+        slug: a string representing a unique identifier for an Organization
         organization_service: a valid OrganizationService
 
     Returns:
-        OrganizationDetail: OrganizationDetail with matching id
+        OrganizationDetail: OrganizationDetail with matching slug
 
     Raises:
-        HTTPException 404 if get_from_id() raises an Exception
+        HTTPException 404 if get_from_slug() raises an Exception
     """
     
-    # Try to get organization with matching id
+    # Try to get organization with matching slug
     try: 
         # Return organization
-        return organization_service.get_from_id(id)
-    except Exception as e:
-        # Raise 404 exception if search fails (no response)
-        raise HTTPException(status_code=404, detail=str(e))
-
-@api.get("/name/{name}", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
-def get_organization_from_name(name: str, organization_service: OrganizationService = Depends()) -> Organization:
-    """
-    Get organization with matching name
-
-    Parameters:
-        name: a str representing the name of the organization
-        organization_service: an OrganizationService
-
-    Returns:
-        OrganizationDetail: OrganizationDetail with matching name
-
-    Raises:
-        HTTPException 404 if get_from_name() raises an Exception
-    """
-    
-    try: 
-        # Try to get and return organization with matching name
-        return organization_service.get_from_name(name)
+        return organization_service.get_from_slug(slug)
     except Exception as e:
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
@@ -123,13 +100,13 @@ def update_organization(organization: Organization, subject: User = Depends(regi
         # Raise 404 exception if update fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{id}", response_model=None, tags=['Organizations'])
-def delete_organization(id: int, subject: User = Depends(registered_user), organization_service = Depends(OrganizationService)):
+@api.delete("/{slug}", response_model=None, tags=['Organization'])
+def delete_organization(slug: str, subject: User = Depends(registered_user), organization_service = Depends(OrganizationService)):
     """
-    Delete organization based on id
+    Delete organization based on slug
 
     Parameters:
-        id: an int representing a unique identifier for an Organization
+        slug: a string representing a unique identifier for an Organization
         subject: a valid User model representing the currently logged in User
         organization_service: a valid OrganizationService
 
@@ -139,7 +116,7 @@ def delete_organization(id: int, subject: User = Depends(registered_user), organ
 
     try:
         # Try to delete organization
-        organization_service.delete(subject, id)
+        organization_service.delete(subject, slug)
     except Exception as e:
         # Raise 404 exception if delete fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
