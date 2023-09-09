@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { CoworkingService } from '../coworking.service';
 import { Observable, map } from 'rxjs';
 import { Reservation } from '../coworking.models';
+import { AmbassadorService } from './ambassador.service';
 
 @Component({
   selector: 'app-coworking-ambassador-page',
@@ -27,9 +27,10 @@ export class AmbassadorPageComponent {
 
   columnsToDisplay = ['name', 'seat', 'start', 'end', 'actions'];
 
-  constructor(public coworkingSvc: CoworkingService) {
-    this.reservations$ = coworkingSvc.listActiveAndUpcomingReservations();
+  constructor(public ambassadorService: AmbassadorService) {
+    this.reservations$ = this.ambassadorService.reservations$;
     this.upcomingReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CONFIRMED')));
+    this.ambassadorService.fetchReservations();
   }
 
 }

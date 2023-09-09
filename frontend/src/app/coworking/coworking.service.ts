@@ -61,10 +61,4 @@ export class CoworkingService {
         }));
     }
 
-    listActiveAndUpcomingReservations(): Observable<Reservation[]> {
-        return this.http.get<ReservationJSON[]>('/api/coworking/ambassador').pipe(map(
-            reservations => reservations.map(reservation => parseReservationJSON(reservation))
-        ));
-    }
-
 }
