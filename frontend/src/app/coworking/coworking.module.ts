@@ -13,6 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { CoworkingHoursCard } from './widgets/coworking-hours-card/coworking-hours-card.widget';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatDividerModule,
     MatListModule,
     MatExpansionModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ]
 })
 export class CoworkingModule { }

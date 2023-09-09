@@ -3,7 +3,7 @@ import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Reservation } from '../coworking.models';
 
 @Component({
@@ -23,9 +23,13 @@ export class AmbassadorPageComponent {
   };
 
   reservations$: Observable<Reservation[]>;
+  upcomingReservations$: Observable<Reservation[]>;
+
+  columnsToDisplay = ['name', 'seat', 'start', 'end', 'actions'];
 
   constructor(public coworkingSvc: CoworkingService) {
     this.reservations$ = coworkingSvc.listActiveAndUpcomingReservations();
+    this.upcomingReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CONFIRMED')));
   }
 
 }
