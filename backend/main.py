@@ -20,6 +20,7 @@ app = FastAPI(
     openapi_tags=[
         profile.openapi_tags,
         user.openapi_tags,
+        organizations.openapi_tags,
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
@@ -28,10 +29,10 @@ app = FastAPI(
 
 app.include_router(user.api)
 app.include_router(profile.api)
+app.include_router(organizations.api)
 app.include_router(health.api)
 app.include_router(authentication.api)
 app.include_router(admin_users.api)
 app.include_router(admin_roles.api)
-app.include_router(organizations.api)
 
 app.mount("/", static_files.StaticFileMiddleware(directory="./static"))
