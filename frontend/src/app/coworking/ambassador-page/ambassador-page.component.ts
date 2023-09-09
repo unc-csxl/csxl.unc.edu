@@ -24,17 +24,22 @@ export class AmbassadorPageComponent {
 
   reservations$: Observable<Reservation[]>;
   upcomingReservations$: Observable<Reservation[]>;
+  activeReservations$: Observable<Reservation[]>;
 
   columnsToDisplay = ['name', 'seat', 'start', 'end', 'actions'];
 
   constructor(public ambassadorService: AmbassadorService) {
     this.reservations$ = this.ambassadorService.reservations$;
     this.upcomingReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CONFIRMED')));
+    this.activeReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CHECKED_IN')));
     this.ambassadorService.fetchReservations();
   }
 
   checkIn(reservation: Reservation) {
     this.ambassadorService.checkIn(reservation);
+  }
+
+  checkOut(reservation: Reservation) {
   }
 
 }
