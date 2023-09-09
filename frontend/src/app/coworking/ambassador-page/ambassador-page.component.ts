@@ -40,6 +40,7 @@ export class AmbassadorPageComponent {
   }
 
   checkOut(reservation: Reservation) {
+    this.ambassadorService.checkOut(reservation);
   }
 
 }

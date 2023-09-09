@@ -33,4 +33,15 @@ export class AmbassadorService {
             });
     }
 
+    checkOut(reservation: Reservation) {
+        this.http
+            .put<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`, {
+                id: reservation.id,
+                state: 'CHECKED_OUT'
+            })
+            .subscribe(reservationJson => {
+                this.reservations.updateReservation(parseReservationJSON(reservationJson));
+            });
+    }
+
 }
