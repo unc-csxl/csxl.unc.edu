@@ -159,6 +159,12 @@ a {
     }
 }
 
+@media only screen and (max-device-width: 1280px) {
+    .right-header-info {
+        width: 100%;
+    }
+}
+
 /** Make card name and description larger for monitors */
 @media only screen and (min-device-width: 2000px) {
     
