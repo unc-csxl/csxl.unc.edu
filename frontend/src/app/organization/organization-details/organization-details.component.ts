@@ -18,17 +18,18 @@ import { Organization, OrganizationService } from '../organization.service';
 import { Profile, ProfileService } from '/workspace/frontend/src/app/profile/profile.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
-  let organizationId = route.params['id'];
+  let organizationSlug = route.params['slug'];
 
   let organizationDetailSvc = inject(OrganizationService);
-  let organization$ = organizationDetailSvc.getOrganization(organizationId);
+  let organization$ = organizationDetailSvc.getOrganization(organizationSlug);
   return organization$.pipe(map(organization => {
     if (organization) {
       return `${organization.name}`;
-    } else {
+    }
+    else {
       return "Organization Details"
     }
-  }))
+}));
 }
 
 @Component({
@@ -38,7 +39,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 })
 export class OrganizationDetailsComponent {
   public static Route: Route = {
-    path: ':id',
+    path: ':slug',
     component: OrganizationDetailsComponent,
     title: titleResolver,
     resolve: { profile: profileResolver }
@@ -46,7 +47,7 @@ export class OrganizationDetailsComponent {
 
   public organization$: Observable<Organization>;
   public organization: Organization | undefined = undefined;
-  id: string = '';
+  slug: string = '';
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
@@ -68,11 +69,11 @@ export class OrganizationDetailsComponent {
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
 
-    /** Load current route ID */
-    this.route.params.subscribe(params => this.id = params["id"]);
+    /** Load current route slug */
+    this.route.params.subscribe(params => this.slug = params["slug"]);
 
     /** Retrieve Organization using OrgDetailsService */
-    this.organization$ = this.orgService.getOrganization(this.id);
+    this.organization$ = this.orgService.getOrganization(this.slug);
     this.organization$.subscribe(organization => this.organization = organization);
 
   }
