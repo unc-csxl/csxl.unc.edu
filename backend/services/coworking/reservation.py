@@ -400,12 +400,14 @@ class ReservationService:
         if entity is None:
             raise LookupError(f"Reservation(id={delta.id}) does not exist")
 
-        # Ensure permissions to manage reservations for all users in reservation
+        # Either the current user is party to the reservation or an admin has 
+        # permission to manage reservations for all users.
         current = entity.to_model()
-        for user in current.users:
-            if subject.id != user.id:
+        user_ids = set((user.id for user in current.users))
+        if subject.id not in user_ids:
+            for user_id in user_ids:
                 self._permission_svc.enforce(
-                    subject, "coworking.reservation.manage", f"user/{user.id}"
+                    subject, "coworking.reservation.manage", f"user/{user_id}"
                 )
 
         # Handle Requested State Changes
