@@ -10,5 +10,5 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-class SeatDetails(Seat):
+class SeatDetails(Seat, BaseModel):
     room: Room
