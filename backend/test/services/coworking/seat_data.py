@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from ....entities.coworking import SeatEntity
-from ....models.coworking import SeatDetails
+from ....models.coworking.seat_details import SeatDetails
 
 from ..reset_table_id_seq import reset_table_id_seq
 from .room_data import the_xl

@@ -1,8 +1,5 @@
 """ReservationService#seat_availability tests"""
 
-import pytest
-from unittest.mock import create_autospec
-
 from .....services.coworking import ReservationService, PolicyService
 from .....models.coworking import (
     TimeRange,
@@ -126,10 +123,10 @@ def test_seat_availability_all_reserved(reservation_svc: ReservationService):
     assert len(available_seats) == 0
 
 
-def test_seat_availability_xl_closing_soon(reservation_svc: ReservationService):
+def test_seat_availability_xl_closing_soon(reservation_svc: ReservationService, policy_svc: PolicyService):
     """When the XL is open and upcoming walkins are available, but the closing hour is under default walkin duration."""
     near_closing = TimeRange(
-        start=operating_hours_data.tomorrow.end - THIRTY_MINUTES + FIVE_MINUTES,
+        start=operating_hours_data.tomorrow.end - (policy_svc.minimum_reservation_duration() - 2 * ONE_MINUTE),
         end=operating_hours_data.tomorrow.end,
     )
     available_seats = reservation_svc.seat_availability(seat_data.seats, near_closing)
