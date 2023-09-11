@@ -227,7 +227,7 @@ def test_draft_reservation_has_conflict_but_ok(
         })
     )
     assert reservation.id is not None
-    assert_equal_times(reservation.end, conflict.start - ONE_MINUTE)
+    assert_equal_times(conflict.start, reservation.end)
 
 
 def test_draft_reservation_has_no_users(reservation_svc: ReservationService):
