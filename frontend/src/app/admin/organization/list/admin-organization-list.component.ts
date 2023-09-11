@@ -1,12 +1,13 @@
 /** Constructs the Admin Organization List page and stores/retrieves any necessary data for it. */
 
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { OrganizationAdminService } from '/workspace/frontend/src/app/admin/organization/organization-admin.service';
 import { Organization } from 'src/app/organization/organization.service';
 import { Observable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-admin-organization-list',
@@ -33,7 +34,8 @@ export class AdminOrganizationListComponent {
     constructor(
         private router: Router,
         private organizationAdminService: OrganizationAdminService,
-        private _cd: ChangeDetectorRef
+        private _cd: ChangeDetectorRef,
+        private snackBar: MatSnackBar
     ) {
         this.organizations$ = organizationAdminService.list();
 
@@ -42,12 +44,23 @@ export class AdminOrganizationListComponent {
             this._cd.detectChanges();
         });
     }
+    
+    /** Event handler to open the Organization Editor to create a new organization */
+    createOrganization = () => {
+        // Navigate to the org editor for a new organization (slug = create)
+        this.router.navigate(['organizations', 'new', 'edit']);
+    }
 
-    /** Event handler for opening the Admin Organization Details for the given organization
-     * @param organization: a valid Organization model
+    /** Delete an organization object from the backend database table using the backend HTTP post request. 
+     * @param organization_id: unique number representing the updated organization
+     * @returns void
      */
-    onClick = (organization: Organization) => {
-        // Navigate to the organization's detail page
-        this.router.navigate(['admin', 'organizations', organization.id]);
+    deleteOrganization = (organization_id: number) => {
+        let confirmDelete = this.snackBar.open("Are you sure you want to delete this organization?", "Delete");
+        confirmDelete.onAction().subscribe(() => {
+            this.organizationAdminService.deleteOrganization(organization_id).subscribe(() => {
+            this.snackBar.open("This organization has been deleted.", "", { duration: 2000 });
+          })
+        });
     }
 }
