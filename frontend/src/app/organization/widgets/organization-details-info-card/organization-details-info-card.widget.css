@@ -12,14 +12,13 @@
 
 .organization-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    padding-bottom: 16px;
 }
 
 .left-header-info {
-    display: flex;
-    flex-direction: row;
+    padding-top: 0.5rem;
     width: 10%;
 }
 
@@ -32,6 +31,8 @@
 .organization-top-header-group {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 .organization-name-section {
@@ -47,7 +48,7 @@
     display: flex;
     flex-direction: row-reverse;
     width: 50%;
-    height: 48px;
+    height: 5vh;
 }
 
 mat-card-footer {
@@ -97,11 +98,12 @@ mat-card-footer {
 }
 
 .organization-description {
-    font-size: 1.15em;
+    font-size: 1rem;
+    margin-top: 0;
 }
 
 .logo {
-    width: 80px;
+    width: 85%;
     border-radius: 50% !important;
 }
 
@@ -110,11 +112,11 @@ a {
 }
 
 /** Make cards display in one column, with the event card appearing last */
-@media only screen and (max-device-width: 1000px) {
+@media only screen and (max-width: 1180px) {
 
-    .left-header-info {}
-
-    .right-header-info {}
+    .right-header-info {
+        width: 100%;
+    }
 
     .organization-card {
         display: flex;
@@ -141,6 +143,7 @@ a {
 
     .organization-icons-section {
         width: 100%;
+        height: 100% !important;
     }
 
     button {
@@ -154,4 +157,28 @@ a {
     .edit-organization-button {
         margin-left: 0;
     }
+}
+
+@media only screen and (max-width: 1280px) {
+    .right-header-info {
+        width: 100%;
+    }
+}
+
+/** Make card name and description larger for monitors */
+@media only screen and (min-width: 2000px) {
+    
+    .organization-description {
+        font-size: 1.5rem;
+    }
+
+    .user-name {
+        font-size: 2rem;
+        line-height: 2.5rem;
+    }
+
+    .organization-name-section {
+        height: 5vh;
+    }
+    
 }
