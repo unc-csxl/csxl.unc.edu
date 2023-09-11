@@ -28,7 +28,7 @@ class TimeRange(BaseModel):
 
     @field_validator("end")
     @classmethod
-    def check_end_greater_than_start(cls, v, info: FieldValidationInfo):
+    def check_end_greater_than_start(cls, v: datetime, info: FieldValidationInfo):
         if v <= info.data["start"]:
             raise ValueError("end must be greater than start")
         return v
