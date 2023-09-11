@@ -31,7 +31,7 @@
 .organization-top-header-group {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 }
 
@@ -112,7 +112,7 @@ a {
 }
 
 /** Make cards display in one column, with the event card appearing last */
-@media only screen and (max-device-width: 1180px) {
+@media only screen and (max-width: 1180px) {
 
     .right-header-info {
         width: 100%;
@@ -143,7 +143,7 @@ a {
 
     .organization-icons-section {
         width: 100%;
-        height: 100%;
+        height: 100% !important;
     }
 
     button {
@@ -159,14 +159,14 @@ a {
     }
 }
 
-@media only screen and (max-device-width: 1280px) {
+@media only screen and (max-width: 1280px) {
     .right-header-info {
         width: 100%;
     }
 }
 
 /** Make card name and description larger for monitors */
-@media only screen and (min-device-width: 2000px) {
+@media only screen and (min-width: 2000px) {
     
     .organization-description {
         font-size: 1.5rem;
