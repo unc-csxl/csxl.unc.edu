@@ -19,22 +19,37 @@ export class NavigationService {
   private _error: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   public error$ = this._error.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   setTitle(title: string) {
-    this.title.next(title);
+    this._deferToNextChangeDetectionCycle(() => this.title.next(title));
   }
 
   setLoading(state: boolean) {
-    this.loading.next(state);
+    this._deferToNextChangeDetectionCycle(() => this.loading.next(state));
   }
 
   setSending(state: boolean) {
-    this.sending.next(state);
+    this._deferToNextChangeDetectionCycle(() => this.sending.next(state));
   }
 
   error(e: HttpErrorResponse) {
-    this._error.next(`Response: ${e.status} ${e.statusText}\nEndpoint: ${e.url}`);
+    this._deferToNextChangeDetectionCycle(() => this._error.next(`Response: ${e.status} ${e.statusText}\nEndpoint: ${e.url}`));
+  }
+
+  /**
+   * For reasons that seem related to HttpRequestInterceptor's lifecycle of asynchronous operations
+   * being outside the general lifecycle of change detection in angular components, the following
+   * workaround method is used to defer updating navigation state until the next tick and, therefore,
+   * next change detection cycle.
+   * 
+   * Additional investigation may help determine a better means for achieving this, but for now
+   * it avoids the previously commonly seen error of front-end state being changed outside CD cycle.
+   *  
+   * @param operation the logic moved to next tick.
+   */
+  private _deferToNextChangeDetectionCycle(operation: () => void) {
+    setTimeout(operation, 0);
   }
 
 }
