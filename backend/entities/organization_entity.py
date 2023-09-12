@@ -18,9 +18,9 @@ class OrganizationEntity(EntityBase):
     # Unique ID for the organization
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Name of the organization
-    name: Mapped[str] = mapped_column(String)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
     # Slug of the organization
-    slug: Mapped[str] = mapped_column(String)
+    slug: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     # Logo of the organization
     logo: Mapped[str] = mapped_column(String)
     # Short description of the organization
@@ -40,7 +40,7 @@ class OrganizationEntity(EntityBase):
     # Heel Life for the organization
     heel_life: Mapped[str] = mapped_column(String)
     # Whether the organization can be joined by anyone or not
-    public: Mapped[bool] = mapped_column(Boolean)
+    public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
 
     @classmethod
