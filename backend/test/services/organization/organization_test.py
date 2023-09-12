@@ -44,28 +44,14 @@ def test_get_all(organization_svc_integration: OrganizationService):
 # Test `OrganizationService.get_from_id()`
 
 
-def test_get_from_id(organization_svc_integration: OrganizationService):
+def test_get_from_slug(organization_svc_integration: OrganizationService):
     """Test that organizations can be retrieved based on their ID."""
-    fetched_organization = organization_svc_integration.get_from_id(cads.id)
+    fetched_organization = organization_svc_integration.get_from_slug(cads.slug)
     assert fetched_organization is not None
     assert isinstance(fetched_organization, Organization)
-    assert fetched_organization.id == cads.id
-
-
-# Test `OrganizationService.get_from_name()`
-
-
-def test_get_from_name(organization_svc_integration: OrganizationService):
-    """Test that organizations can be retrieved based on their name."""
-    for name in organization_names:
-        fetched_organization = organization_svc_integration.get_from_name(name)
-        assert fetched_organization is not None
-        assert isinstance(fetched_organization, Organization)
-        assert fetched_organization.name == name
-
+    assert fetched_organization.slug == cads.slug
 
 # Test `OrganizationService.create()`
-
 
 def test_create_enforces_permission(organization_svc_integration: OrganizationService):
     """Test that the service enforces permissions when attempting to create an organization."""
@@ -78,7 +64,7 @@ def test_create_enforces_permission(organization_svc_integration: OrganizationSe
     # Test permissions with root user (admin permission)
     organization_svc_integration.create(root, to_add)
     organization_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.create", "organizations"
+        root, "organization.create", "organization"
     )
 
 
@@ -136,19 +122,18 @@ def test_delete_enforces_permission(organization_svc_integration: OrganizationSe
     )
 
     # Test permissions with root user (admin permission)
-    organization_svc_integration.delete(root, cads.id)
+    organization_svc_integration.delete(root, cads.slug)
     organization_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.create", "organizations"
+        root, "organization.create", "organization"
     )
 
 
 def test_delete_organization_as_root(organization_svc_integration: OrganizationService):
     """Test that the root user is able to delete organizations."""
-    organization_svc_integration.delete(root, cads.id)
+    organization_svc_integration.delete(root, cads.slug)
 
     try:
-        organization_svc_integration.get_from_id(cads.id)
-        organization_svc_integration.get_from_name(cads.name)
+        organization_svc_integration.get_from_slug(cads.slug)
         pytest.fail()  # Fail test if no error was thrown above
     except:
         ...  # Test passes, because an error was thrown when we found no organization
@@ -157,7 +142,7 @@ def test_delete_organization_as_root(organization_svc_integration: OrganizationS
 def test_delete_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to delete organizations."""
     try:
-        organization_svc_integration.delete(user, cads.id)
+        organization_svc_integration.delete(user, cads.slug)
         pytest.fail()  # Fail test if no error was thrown above
     except:
         ...  # Test passes, because a `UserPermissionError` was thrown as expected

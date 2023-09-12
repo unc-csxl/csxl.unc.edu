@@ -128,7 +128,7 @@ class OrganizationService:
 
         # If no role is found, raise an exception
         if len(org_roles) <= 0:
-            raise UserPermissionError("organization.update", f"organizations")
+            raise UserPermissionError("organization.update", f"organization")
 
         # Query the organization with matching id
         obj = self._session.query(OrganizationEntity).get(organization.id)
@@ -168,10 +168,12 @@ class OrganizationService:
             Exception if no organization is found with the corresponding slug
         """
         # Check if user has admin permissions
-        self._permission.enforce(subject, "organization.create", f"")
+        self._permission.enforce(subject, "organization.create", f"organization")
 
         # Find object to delete
-        obj = self._session.query(OrganizationEntity).get(slug)
+        obj = self._session.query(OrganizationEntity).filter(
+            OrganizationEntity.slug == slug
+        )[0]
 
         # Ensure object exists
         if obj:
