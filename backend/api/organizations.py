@@ -54,7 +54,7 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{slug}", responses={404: {"model": None}}, response_model=Organization, tags=['Organization'])
+@api.get("/{slug}", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
 def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Get organization with matching slug
@@ -100,7 +100,7 @@ def update_organization(organization: Organization, subject: User = Depends(regi
         # Raise 404 exception if update fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{slug}", response_model=None, tags=['Organization'])
+@api.delete("/{slug}", response_model=None, tags=['Organizations'])
 def delete_organization(slug: str, subject: User = Depends(registered_user), organization_service = Depends(OrganizationService)):
     """
     Delete organization based on slug
