@@ -1,4 +1,4 @@
-<mat-card class="organization-card">
+<mat-card class="organization-card" *ngIf="organization !== undefined">
     <!-- Organization Card Header (Image, Name, Description) -->
     <mat-card-header class="organization-header">
         <div class="left-header-info" *ngIf="!isTablet && !isHandset">
@@ -9,7 +9,8 @@
             <!-- Organization Name, Logo, and Social Media -->
             <div class="organization-top-header-group">
                 <!-- Organization Logo (Tablets/Phones) -->
-                <img mat-card-image src={{organization!.logo}} class="logo" *ngIf="isTablet || isHandset" [ngStyle]="{'width': '32px', 'height': '32px', 'margin-right':'16px'}">
+                <img mat-card-image src={{organization!.logo}} class="logo" *ngIf="isTablet || isHandset"
+                    [ngStyle]="{'width': '32px', 'height': '32px', 'margin-right':'16px'}">
                 <!-- Organization Name -->
                 <div class="organization-name-section">
                     <mat-card-title class="user-name">{{organization!.name}}</mat-card-title>
