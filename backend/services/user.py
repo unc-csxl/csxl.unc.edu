@@ -33,7 +33,7 @@ class UserService:
             pid: The PID of the user.
 
         Returns:
-            User | None: The user or None if not found.
+            UserDetails | None: The user or None if not found.
         """
         query = select(UserEntity).where(UserEntity.pid == pid)
         user_entity: UserEntity | None = self._session.scalar(query)

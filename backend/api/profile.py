@@ -34,7 +34,7 @@ def read_profile(pid_onyen: tuple[int, str] = Depends(authenticated_pid), user_s
         return UnregisteredUser(pid=pid, onyen=onyen)
 
 
-@api.put("", response_model=User, tags=['Profile'])
+@api.put("", response_model=UserDetails, tags=['Profile'])
 def update_profile(
     profile: ProfileForm,
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
@@ -68,4 +68,9 @@ def update_profile(
         user.pronouns = profile.pronouns
         user.onyen = onyen
         user = user_svc.update(user, user)
-    return user
+
+    user_details = user_svc.get(user.pid)
+    if user_details:
+        return user_details
+    else:
+        raise Exception("Unexpected internal server error.")

@@ -3,6 +3,7 @@
 import { Component } from '@angular/core';
 import { profileResolver } from '../profile/profile.resolver';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Profile } from '../models.module';
 
 @Component({
   selector: 'app-home',
@@ -16,8 +17,13 @@ export class HomeComponent {
   }
 
   constructor(route: ActivatedRoute, router: Router) {
-    if (route.snapshot.data['profile']) {
-      router.navigateByUrl("/coworking")
+    let profile: Profile | undefined = route.snapshot.data['profile'];
+    if (profile) {
+      if (profile.id) {
+        router.navigateByUrl("/coworking");
+      } else {
+        router.navigateByUrl("/profile");
+      }
     } else {
       router.navigateByUrl("/about");
     }
