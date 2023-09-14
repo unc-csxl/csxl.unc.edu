@@ -1,0 +1,35 @@
+/** 
+* organization-details.component.css 
+* 
+* The organization details page should include basic information about the 
+* organization, the organization members, and the organization's events.
+*
+*/
+
+.organization-grid {
+    display: grid;
+    padding: 24px;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 0fr 2fr;
+    row-gap: 15px;
+    column-gap: 24px;
+  }
+  
+  .organization-card-container {
+    grid-column: span 2;
+  }
+  
+  .events-card-container {
+    grid-area: span 2;
+  }
+  
+  .events-card-container {
+    grid-area: span 2;
+  }
+  
+  /** Make cards display in one column, with the event card appearing last */
+  @media only screen and (max-device-width: 1000px) {
+    .events-card-container {
+      order: 1;
+    }
+  }

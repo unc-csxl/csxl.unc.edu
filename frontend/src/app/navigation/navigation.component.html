@@ -1,39 +1,39 @@
 <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer class="sidenav" fixedInViewport
-        [attr.role]="isHandset ? 'dialog' : 'navigation'"
-        [mode]="isHandset ? 'over' : 'side'"
-        [opened]="isHandset === false">
-      <mat-nav-list (click)="hideMobileSidenav(drawer)">
-        <a mat-list-item class="logo-item" routerLink="/" routerLinkActive="active">
-          <img class="logo" src="/assets/lil-logo.png" alt="Computer Science Experience Labs Logo">
-        </a>
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="isHandset ? 'dialog' : 'navigation'"
+    [mode]="isHandset ? 'over' : 'side'" [opened]="isHandset === false">
+    <mat-nav-list (click)="hideMobileSidenav(drawer)">
+      <a mat-list-item class="logo-item" routerLink="/" routerLinkActive="active">
+        <picture>
+          <source class="logo" srcset="/assets/lil-logo.png" media="(prefers-color-scheme: dark)"
+            alt="Computer Science Experience Labs Logo">
+          <img class="logo" src="/assets/lil-logo-light.png" alt="Computer Science Experience Labs Logo">
+        </picture>
+      </a>
+      <mat-divider></mat-divider>
+      <a *ngIf="(profile$ | async) === undefined; else authenticated" mat-list-item
+        href="/auth?continue_to={{router.url}}">Sign in</a>
+      <ng-template #authenticated mat-list-item>
+        <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/admin">Admin</a>
         <mat-divider></mat-divider>
-        <a *ngIf="(profile$ | async) === undefined; else authenticated" mat-list-item href="/auth?continue_to={{router.url}}">Sign in</a>
-        <ng-template #authenticated mat-list-item>
-          <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/admin">Admin</a>
-          <mat-divider></mat-divider>
-          <a mat-list-item routerLink="/profile">Profile</a>
-          <a mat-list-item (click)="auth.signOut()">Sign out</a>
-        </ng-template>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content>
-      <mat-toolbar color="primary">
-        <button
-          type="button"
-          aria-label="Toggle sidenav"
-          mat-icon-button
-          (click)="drawer.toggle()"
-          *ngIf="isHandset">
-          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-        </button>
-        <span>{{ navigationService.title$ | async }}</span>
-      </mat-toolbar>
-      <mat-progress-bar *ngIf="navigationService.loading$ | async" mode="query" color="accent"></mat-progress-bar>
-      <mat-progress-bar *ngIf="navigationService.sending$ | async" mode="indeterminate" color="accent"></mat-progress-bar>
-      <div>
-        <router-outlet></router-outlet>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-  
+        <a mat-list-item routerLink="/profile">Profile</a>
+        <mat-divider></mat-divider>
+        <a mat-list-item routerLink="/organizations">Organizations</a>
+        <mat-divider></mat-divider>
+        <a mat-list-item (click)="auth.signOut()">Sign out</a>
+      </ng-template>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>{{ navigationService.title$ | async }}</span>
+    </mat-toolbar>
+    <mat-progress-bar *ngIf="navigationService.loading$ | async" mode="query" color="accent"></mat-progress-bar>
+    <mat-progress-bar *ngIf="navigationService.sending$ | async" mode="indeterminate" color="accent"></mat-progress-bar>
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

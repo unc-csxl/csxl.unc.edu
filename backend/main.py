@@ -1,7 +1,7 @@
 """Entrypoint of backend API exposing the FastAPI `app` to be served by an application server such as uvicorn."""
 
 from fastapi import FastAPI
-from .api import health, static_files, profile, authentication, user
+from .api import health, organizations, static_files, profile, authentication, user
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 
@@ -20,6 +20,7 @@ app = FastAPI(
     openapi_tags=[
         profile.openapi_tags,
         user.openapi_tags,
+        organizations.openapi_tags,
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
@@ -28,8 +29,10 @@ app = FastAPI(
 
 app.include_router(user.api)
 app.include_router(profile.api)
+app.include_router(organizations.api)
 app.include_router(health.api)
 app.include_router(authentication.api)
 app.include_router(admin_users.api)
 app.include_router(admin_roles.api)
+
 app.mount("/", static_files.StaticFileMiddleware(directory="./static"))

@@ -1,0 +1,22 @@
+/** 
+* organization-page.component.css 
+* 
+* Organization cards should be displayed in a simple way that displays the
+* basic information of the organization. It should be searchable with an
+* easy to use search bar. Some mat ui preset styles are overridden.
+*
+*/
+
+.page-container {
+    padding: 1.5rem;
+}
+
+.organization-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1rem;
+    column-gap: 1rem;
+}

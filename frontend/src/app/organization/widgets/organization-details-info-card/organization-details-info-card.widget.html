@@ -1,0 +1,59 @@
+<mat-card class="organization-card" *ngIf="organization !== undefined">
+    <!-- Organization Card Header (Image, Name, Description) -->
+    <mat-card-header class="organization-header">
+        <div class="left-header-info" *ngIf="!isTablet && !isHandset">
+            <!-- Organization Logo (Laptops/Monitors) -->
+            <img mat-card-image src={{organization!.logo}} class="logo">
+        </div>
+        <div class="right-header-info">
+            <!-- Organization Name, Logo, and Social Media -->
+            <div class="organization-top-header-group">
+                <!-- Organization Logo (Tablets/Phones) -->
+                <img mat-card-image src={{organization!.logo}} class="logo" *ngIf="isTablet || isHandset"
+                    [ngStyle]="{'width': '32px', 'height': '32px', 'margin-right':'16px'}">
+                <!-- Organization Name -->
+                <div class="organization-name-section">
+                    <mat-card-title class="user-name">{{organization!.name}}</mat-card-title>
+                </div>
+                <!-- Organization Icons (Laptops/Monitors/Tablets)-->
+                <div class="organization-icons-section" *ngIf="!isHandset">
+                    <div class="link-icons">
+
+                        <social-media-icon [fontIcon]='"link"' [href]='organization!.website'
+                            *ngIf='organization!.website != ""' />
+                        <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization!.email'
+                            *ngIf='organization!.email != ""' />
+                        <social-media-icon [svgIcon]='"instagram"' [href]='organization!.instagram'
+                            *ngIf='organization!.instagram != ""' />
+                        <social-media-icon [svgIcon]='"linkedin"' [href]='organization!.linked_in'
+                            *ngIf='organization!.linked_in != ""' />
+                        <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
+                            *ngIf='organization!.youtube != ""' />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organization Description -->
+            <p class="organization-description">{{organization!.long_description}}</p>
+
+            <!-- Organization Icons (Phones)-->
+            <div class="organization-icons-section" *ngIf="isHandset" [ngStyle]="{'flex-direction': 'row'}">
+                <div class="link-icons">
+
+                    <social-media-icon [fontIcon]='"link"' [href]='organization!.website'
+                        *ngIf='organization!.website != ""' />
+                    <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization!.email'
+                        *ngIf='organization!.email != ""' />
+                    <social-media-icon [svgIcon]='"instagram"' [href]='organization!.instagram'
+                        *ngIf='organization!.instagram != ""' />
+                    <social-media-icon [svgIcon]='"linkedin"' [href]='organization!.linked_in'
+                        *ngIf='organization!.linked_in != ""' />
+                    <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
+                        *ngIf='organization!.youtube != ""' />
+                </div>
+            </div>
+
+            <!-- Link to Organization Editor -->
+        </div>
+    </mat-card-header>
+</mat-card>
