@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { mergeMap, Observable, of, shareReplay } from 'rxjs';
+import { BehaviorSubject, mergeMap, Observable, of, share, shareReplay, Subject, tap } from 'rxjs';
 import { AuthenticationService } from '../authentication.service';
 
 export interface Permission {
@@ -30,27 +30,33 @@ export interface Profile {
 })
 export class ProfileService {
 
-  public profile$!: Observable<Profile | undefined>;
+  private profile: Subject<Profile | undefined> = new BehaviorSubject<Profile | undefined>(undefined);
+  public profile$: Observable<Profile | undefined>;
+
+  private isAuthenticated: boolean = false;
 
   constructor(protected http: HttpClient, protected auth: AuthenticationService) {
-    this.refreshProfile();
-  }
-
-  private refreshProfile() {
     this.profile$ = this.auth.isAuthenticated$.pipe(
       mergeMap(isAuthenticated => {
+        this.isAuthenticated = isAuthenticated;
         if (isAuthenticated) {
-          return this.http.get<Profile>('/api/profile');
+          this.refreshProfile();
+          return this.profile.asObservable()
         } else {
           return of(undefined);
         }
-      }),
-      shareReplay(1)
+      })
     );
   }
 
+  private refreshProfile() {
+    if (this.isAuthenticated) {
+      this.http.get<Profile>('/api/profile').subscribe(profile => this.profile.next(profile));
+    }
+  }
+
   put(profile: Profile) {
-    return this.http.put<Profile>("/api/profile", profile);
+    return this.http.put<Profile>("/api/profile", profile).pipe(tap(profile => this.profile.next(profile)));
   }
 
   search(query: string) {
