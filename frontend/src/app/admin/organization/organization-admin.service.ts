@@ -26,7 +26,7 @@ export class OrganizationAdminService {
      * @param organization_id: id of the organization object to delete
      * @returns {Observable<Organization>}
      */
-    deleteOrganization = (organization_id: number) => {
-        return this.http.delete<Organization>(`/api/organizations/${organization_id}`);
+    deleteOrganization = (slug: string) => {
+        return this.http.delete<Organization>(`/api/organizations/${slug}`);
     }
 }

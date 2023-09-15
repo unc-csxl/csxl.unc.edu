@@ -41,7 +41,6 @@ export class AdminOrganizationListComponent {
 
         this.organizationAdminService.list().subscribe(organizations => {
             this.dataSource.data = organizations;
-            this._cd.detectChanges();
         });
     }
     
@@ -55,10 +54,10 @@ export class AdminOrganizationListComponent {
      * @param organization_id: unique number representing the updated organization
      * @returns void
      */
-    deleteOrganization = (organization_id: number) => {
+    deleteOrganization = (slug: string) => {
         let confirmDelete = this.snackBar.open("Are you sure you want to delete this organization?", "Delete");
         confirmDelete.onAction().subscribe(() => {
-            this.organizationAdminService.deleteOrganization(organization_id).subscribe(() => {
+            this.organizationAdminService.deleteOrganization(slug).subscribe(() => {
             this.snackBar.open("This organization has been deleted.", "", { duration: 2000 });
           })
         });

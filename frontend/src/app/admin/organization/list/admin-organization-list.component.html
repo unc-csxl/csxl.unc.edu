@@ -11,7 +11,7 @@
             <td mat-cell *matCellDef="let element">
                 <div class="row">
                     <p>{{element.name}}</p>
-                    <button mat-stroked-button (click)="deleteOrganization(element.id)">Delete</button>
+                    <button mat-stroked-button (click)="deleteOrganization(element.slug)">Delete</button>
                 </div>
             </td>
         </ng-container>
