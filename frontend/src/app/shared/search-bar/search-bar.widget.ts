@@ -15,6 +15,10 @@ export class SearchBar {
     onTextChanged() {
         this.searchBarQueryChange.emit(this.searchBarQuery)
     }
+    clearSearch() {
+        this.searchBarQuery = ""
+        this.searchBarQueryChange.emit(this.searchBarQuery)
+    }
 }
 
 
