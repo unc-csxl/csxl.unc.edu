@@ -44,7 +44,7 @@ class SeatCategory {
             result += " in ";
             let now = new Date();
             let start = this.seats_available_soon[0].availability[0].start;
-            let delta = Math.ceil((start.getMilliseconds() - now.getMilliseconds()) / (60 * 1000));
+            let delta = Math.ceil((start.getTime() - now.getTime()) / (60 * 1000));
             result += ` ${delta} minutes`;
         } else {
             return "None available";
