@@ -51,6 +51,10 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.coworkingService.draftReservation(seatSelection).subscribe();
   }
 
+  cancel(reservation: Reservation) {
+    this.coworkingService.cancelReservation(reservation);
+  }
+
   ngOnInit(): void {
     this.timerSubscription = timer(0, 10000).subscribe(() => this.coworkingService.pollStatus());
   }
@@ -77,7 +81,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     return this.status$.pipe(map(status => {
       let reservations = status.my_reservations;
       let now = new Date();
-      return reservations.find(reservation => reservation.start <= now && reservation.end > now);
+      return reservations.find(reservation => reservation.end > now);
     }));
   }
 

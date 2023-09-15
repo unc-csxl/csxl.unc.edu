@@ -7,8 +7,10 @@
     <!-- Card Content -->
     <mat-card-content>
 
-        <h3><label>When</label> <strong>Now</strong> until <strong>{{ reservation.end|date:'shortTime' }}</strong></h3>
-        <p>After confirming, check-in by {{ checkinDeadline(reservation.created_at)|date:'shortTime' }}.
+        <h3><label>When</label> <strong>{{ reservation.start|date:'shortTime' }}</strong> until <strong>{{
+                reservation.end|date:'shortTime' }}</strong></h3>
+        <p>Check-in between {{ reservation.start|date:'shortTime' }} and {{
+            checkinDeadline(reservation.start)|date:'shortTime' }} to avoid cancellation.
         </p>
         <mat-divider />
 
@@ -18,9 +20,8 @@
         <h3><label>Where</label> <strong>The XL in Sitterson 156</strong></h3>
 
         <mat-card-actions align="end">
-            <button mat-raised-button type="submit" class="reserve-button">Cancel</button>
-            &nbsp;
-            <button mat-raised-button type="submit" color="primary" class="reserve-button">Confirm</button>
+            <button mat-raised-button type="submit" class="reserve-button"
+                (click)="onCancel.emit(reservation)">Cancel</button>
         </mat-card-actions>
     </mat-card-content>
 

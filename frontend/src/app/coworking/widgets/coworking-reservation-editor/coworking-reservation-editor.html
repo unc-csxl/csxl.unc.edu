@@ -7,8 +7,10 @@
     <!-- Card Content -->
     <mat-card-content>
 
-        <h3><label>When</label> <strong>Now</strong> until <strong>{{ reservation.end|date:'shortTime' }}</strong></h3>
-        <p>After confirming, check-in by {{ checkinDeadline(reservation.created_at)|date:'shortTime' }}.
+        <h3><label>When</label> <strong>{{ reservation.start|date:'shortTime' }}</strong> until <strong>{{
+                reservation.end|date:'shortTime' }}</strong></h3>
+        <p>After confirming, check in between {{ reservation.start|date:'shortTime' }} and {{
+            checkinDeadline(reservation.start)|date:'shortTime' }}.
         </p>
         <mat-divider />
 

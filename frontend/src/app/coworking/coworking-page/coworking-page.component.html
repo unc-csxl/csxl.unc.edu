@@ -12,7 +12,8 @@
         <ng-template #confirmed>CONFIRMED</ng-template>
 
         <ng-template #showReservation>
-          <coworking-reservation-card [reservation]="activeReservation"></coworking-reservation-card>
+          <coworking-reservation-card [reservation]="activeReservation"
+            (onCancel)="cancel($event)"></coworking-reservation-card>
         </ng-template>
       </ng-container>
 

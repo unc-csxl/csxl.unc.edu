@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Reservation } from '../../coworking.models';
 
 @Component({
@@ -9,6 +9,8 @@ import { Reservation } from '../../coworking.models';
 export class CoworkingReservationCard implements OnInit {
 
     @Input() reservation!: Reservation;
+
+    @Output() onCancel = new EventEmitter<Reservation>();
 
     ngOnInit(): void { }
 
