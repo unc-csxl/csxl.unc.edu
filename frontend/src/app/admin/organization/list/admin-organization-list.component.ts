@@ -1,6 +1,13 @@
-/** Constructs the Admin Organization List page and stores/retrieves any necessary data for it. */
+/**
+ * The Admin Organization List page retrieves and displays a list of
+ * CS organizations and provides functionality to create/delete them.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
 
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { OrganizationAdminService } from '/workspace/frontend/src/app/admin/organization/organization-admin.service';
@@ -34,7 +41,6 @@ export class AdminOrganizationListComponent {
     constructor(
         private router: Router,
         private organizationAdminService: OrganizationAdminService,
-        private _cd: ChangeDetectorRef,
         private snackBar: MatSnackBar
     ) {
         this.organizations$ = organizationAdminService.list();
@@ -45,7 +51,7 @@ export class AdminOrganizationListComponent {
     }
     
     /** Event handler to open the Organization Editor to create a new organization */
-    createOrganization = () => {
+    createOrganization(): void {
         // Navigate to the org editor for a new organization (slug = create)
         this.router.navigate(['organizations', 'new', 'edit']);
     }
@@ -54,7 +60,7 @@ export class AdminOrganizationListComponent {
      * @param organization_id: unique number representing the updated organization
      * @returns void
      */
-    deleteOrganization = (slug: string) => {
+    deleteOrganization(slug: string): void {
         let confirmDelete = this.snackBar.open("Are you sure you want to delete this organization?", "Delete");
         confirmDelete.onAction().subscribe(() => {
             this.organizationAdminService.deleteOrganization(slug).subscribe(() => {

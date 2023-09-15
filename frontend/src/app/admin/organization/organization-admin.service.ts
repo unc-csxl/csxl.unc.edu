@@ -1,6 +1,16 @@
+/**
+ * The Organization Admin Service abstracts backend calls from the
+ * Admin organization List Component.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Organization } from 'src/app/organization/organization.service';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class OrganizationAdminService {
@@ -8,9 +18,9 @@ export class OrganizationAdminService {
     constructor(protected http: HttpClient) { }
 
     /** Returns a list of all Organizations
-     * @returns {Organization[]}
+     * @returns {Observable<Organization[]>}
      */
-    list = () => {
+    list(): Observable<Organization[]> {
         return this.http.get<Organization[]>("/api/organizations");
     }
 
@@ -18,7 +28,7 @@ export class OrganizationAdminService {
      * @param newOrganization: Organization object that you want to add to the database
      * @returns {Observable<Organization>}
      */
-    createOrganization = (newOrganization: Organization) => {
+    createOrganization(newOrganization: Organization): Observable<Organization> {
         return this.http.post<Organization>("/api/organizations", newOrganization)
     }
 
@@ -26,7 +36,7 @@ export class OrganizationAdminService {
      * @param organization_id: id of the organization object to delete
      * @returns {Observable<Organization>}
      */
-    deleteOrganization = (slug: string) => {
+    deleteOrganization(slug: string): Observable<Organization> {
         return this.http.delete<Organization>(`/api/organizations/${slug}`);
     }
 }
