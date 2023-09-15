@@ -11,4 +11,9 @@ export class RxReservations extends RxObject<Reservation[]> {
         this.notify();
     }
 
+    remove(reservation: Reservation) {
+        this.value = this.value.filter(r => r.id !== reservation.id);
+        this.notify();
+    }
+
 }

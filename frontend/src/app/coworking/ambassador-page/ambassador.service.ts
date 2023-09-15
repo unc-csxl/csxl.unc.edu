@@ -44,4 +44,16 @@ export class AmbassadorService {
             });
     }
 
+    cancel(reservation: Reservation) {
+        this.http
+            .put<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`, {
+                id: reservation.id,
+                state: 'CANCELLED'
+            })
+            .subscribe({
+                next: (_) => { this.reservations.remove(reservation) },
+                error: (err) => { alert(err); }
+            });
+    }
+
 }
