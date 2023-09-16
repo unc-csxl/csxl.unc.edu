@@ -14,7 +14,7 @@ import { profileResolver } from '/workspace/frontend/src/app/profile/profile.res
 import { Organization, OrganizationService } from '../organization.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Profile, ProfileService } from '/workspace/frontend/src/app/profile/profile.service';
+import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 
 @Component({
   selector: 'app-organization-page',
@@ -46,21 +46,15 @@ export class OrganizationPageComponent {
 
   constructor(
     private organizationService: OrganizationService,
-    private profileService: ProfileService,
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
   ) {
 
     /** Get currently-logged-in user. */
-    const data = route.snapshot.data as { profile: Profile };
+    const data = this.route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
 
     /** Retrieve Organizations using OrganizationsService */
     this.organizations$ = this.organizationService.getOrganizations();
-  }
-
-  /** Initialize the profile to be the currently-logged-in user's profile. */
-  ngOnInit() {
-    let profile = this.profile;
   }
 }

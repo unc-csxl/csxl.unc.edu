@@ -54,7 +54,6 @@ export class OrganizationDetailsComponent {
 
   constructor(
     private orgService: OrganizationService,
-    private profileService: ProfileService,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
     private route: ActivatedRoute,
@@ -76,10 +75,5 @@ export class OrganizationDetailsComponent {
     this.organization$ = this.orgService.getOrganization(this.slug);
     this.organization$.subscribe(organization => this.organization = organization);
 
-  }
-
-  /** Initialize the profile to be the currently-logged-in user's profile. */
-  ngOnInit() {
-    let profile = this.profile;
   }
 }

@@ -50,7 +50,7 @@ export class OrganizationService {
   /** Returns all organization entries from the backend database table using the backend HTTP get request. 
    * @returns {Observable<Organization[]>}
    */
-  getOrganizations = () => {
+  getOrganizations(): Observable<Organization[]> {
     return this.http.get<Organization[]>("/api/organizations");
   }
 
@@ -58,7 +58,7 @@ export class OrganizationService {
    * @param slug: String representing the organization slug
    * @returns {Observable<Organization>}
    */
-  getOrganization = (slug: string) => {
+  getOrganization(slug: string): Observable<Organization> {
     return this.http.get<Organization>("/api/organizations/" + slug);
   }
 
@@ -66,7 +66,7 @@ export class OrganizationService {
    * @param org: OrganizationSummary representing the updated organization
    * @returns {Observable<Organization>}
    */
-    createOrganization = (organization: Organization) => {
+    createOrganization(organization: Organization): Observable<Organization> {
       return this.http.post<Organization>("/api/organizations", organization);
     }
 

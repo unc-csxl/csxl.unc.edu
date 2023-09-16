@@ -7,4 +7,4 @@
 
 proxy: caddy run
 backend: uvicorn --port=1561 --reload backend.main:app
-frontend: cd frontend && ng serve --poll=2000
+frontend: cd frontend && ng serve --poll 2000

@@ -106,7 +106,7 @@ export class OrganizationEditorComponent {
   /** Event handler to handle submitting the Update Organization Form.
    * @returns {void}
    */
-  onSubmit = () => {
+  onSubmit(): void {
     if (this.organizationForm.valid) {
       Object.assign(this.organization, this.organizationForm.value)
       this.organizationService.createOrganization(this.organization).subscribe(
@@ -121,7 +121,7 @@ export class OrganizationEditorComponent {
   /** Opens a confirmation snackbar when an organization is successfully updated.
    * @returns {void}
    */
-  private onSuccess = (organization: Organization) => {
+  private onSuccess(organization: Organization): void {
     this.router.navigate(['/organizations/', organization.slug]);
     this.snackBar.open("Organization Created", "", { duration: 2000 })
   }
@@ -129,7 +129,7 @@ export class OrganizationEditorComponent {
   /** Opens a snackbar when there is an error updating an organization.
    * @returns {void}
    */
-  private onError = (err: any) => {
+  private onError(err: any): void {
     console.error("Error: Organization Not Created");
     this.snackBar.open("Error: Organization Not Created", "", { duration: 2000 })
   }
