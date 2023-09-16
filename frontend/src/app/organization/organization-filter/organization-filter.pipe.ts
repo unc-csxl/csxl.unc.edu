@@ -17,23 +17,15 @@ import { Organization } from '../organization.service';
 export class OrganizationFilterPipe implements PipeTransform {
 
   /** Returns a mapped array of organizations that start with the input string (if search query provided). 
-   * @param {Observable<OrganizationSummary[]>} organizations: observable list of valid Organization models
+   * @param {Observable<Organization[]>} organizations: observable list of valid Organization models
    * @param {String} searchQuery: input string to filter by
-   * @returns {Observable<OrganizationSummary[]>}
+   * @returns {Observable<Organization[]>}
    */
-  transform = (organizations: Observable<Organization[]>, searchQuery: String) => {
+  transform(organizations: Observable<Organization[]>, searchQuery: String): Observable<Organization[]> {
     // Sort the organizations list alphabetically by name
     organizations = organizations.pipe(
       map(orgs => orgs.sort((a: Organization, b: Organization) => {
-        if (a.name.toLowerCase() < b.name.toLowerCase()) {
-          return -1;
-        }
-        else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-          return 1;
-        }
-        else {
-          return 0;
-        }
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }))
     )
 
@@ -42,7 +34,7 @@ export class OrganizationFilterPipe implements PipeTransform {
       return organizations.pipe(
         map(organizations => organizations
           .filter(organization =>
-            organization.name.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
+            organization.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             organization.short_description.toLowerCase().includes(searchQuery.toLowerCase()) ||
             organization.long_description.toLowerCase().includes(searchQuery.toLowerCase()))));
     } else {
