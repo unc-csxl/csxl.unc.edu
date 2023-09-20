@@ -137,6 +137,7 @@ class OrganizationService:
         if obj:
             # Update organization object
             obj.name = organization.name
+            obj.shorthand = organization.shorthand
             obj.slug = organization.slug
             obj.logo = organization.logo
             obj.short_description = organization.short_description
