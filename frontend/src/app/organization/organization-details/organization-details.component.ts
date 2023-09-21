@@ -7,31 +7,19 @@
  * @license MIT
  */
 
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { map } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
-import { Organization, OrganizationService } from '../organization.service';
+import { Organization } from '../organization.service';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationResolver } from '/workspace/frontend/src/app/organization/organization.resolver'
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
-  let organizationSlug = route.params['slug'];
-
-  let organizationDetailSvc = inject(OrganizationService);
-  let organization$ = organizationDetailSvc.getOrganization(organizationSlug);
-  return organization$.pipe(map(organization => {
-    if (organization) {
-      return `${organization.name}`;
-    }
-    else {
-      return "Organization Details"
-    }
-}));
-}
+  return route.parent!.data['organization'].name;
+};
 
 @Component({
   selector: 'app-organization-details',
@@ -42,8 +30,8 @@ export class OrganizationDetailsComponent {
   public static Route: Route = {
     path: ':slug',
     component: OrganizationDetailsComponent,
-    title: titleResolver,
     resolve: { profile: profileResolver, organization: organizationResolver },
+    children: [{ path: '', title: titleResolver, component: OrganizationDetailsComponent }]
   };
 
   /** Store the currently-logged-in user's profile.  */
