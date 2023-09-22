@@ -29,7 +29,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
     else {
       return "Organization Details"
     }
-}));
+  }));
 }
 
 @Component({
@@ -58,11 +58,6 @@ export class OrganizationDetailsComponent {
     sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar) {
-    /** Import Logos using MatIconRegistry */
-    iconRegistry.addSvgIcon('instagram', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/instagram.svg'));
-    iconRegistry.addSvgIcon('github', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/github.svg'));
-    iconRegistry.addSvgIcon('linkedin', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/linkedin.svg'))
-    iconRegistry.addSvgIcon('youtube', sanitizer.bypassSecurityTrustResourceUrl('https://simpleicons.org/icons/youtube.svg'))
 
     /** Get currently-logged-in user. */
     const data = route.snapshot.data as { profile: Profile };
