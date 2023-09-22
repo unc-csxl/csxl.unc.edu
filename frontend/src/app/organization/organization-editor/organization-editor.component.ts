@@ -120,6 +120,10 @@ export class OrganizationEditorComponent {
     }
   }
 
+  /** Event handler to handle the first change in the organization name field
+   * Automatically generates a slug from the organization name (that can be edited)
+   * @returns {void}
+   */
   generateSlug(): void {
     const name = this.organizationForm.controls['name'].value;
     const slug = this.organizationForm.controls['slug'].value;
