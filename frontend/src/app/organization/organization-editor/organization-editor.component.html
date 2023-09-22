@@ -11,7 +11,7 @@
             <!-- Organization Name Field -->
             <mat-form-field appearance="fill" color="accent">
                 <mat-label>Organization Name</mat-label>
-                <input matInput placeholder="" formControlName="name" name="name" required>
+                <input matInput placeholder="" (change)="generateSlug()" formControlName="name" name="name" required>
             </mat-form-field>
             <!-- Shorthand Field -->
             <mat-form-field appearance="fill" color="accent">

@@ -15,7 +15,7 @@ __license__ = "MIT"
 
 appteam = OrganizationEntity(
     name="App Team Carolina",
-    shorthand="App Team"
+    shorthand="App Team",
     slug="app-team",
     logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/appteam.jpg",
     short_description="UNC Chapel Hill's iOS development team.",

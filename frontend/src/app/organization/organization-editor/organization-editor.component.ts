@@ -9,7 +9,7 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { profileResolver } from 'src/app/profile/profile.resolver';
@@ -47,6 +47,7 @@ export class OrganizationEditorComponent {
   public organizationForm = this.formBuilder.group({
     name: "",
     slug: "",
+    shorthand: "",
     logo: "",
     short_description: "",
     long_description: "",
@@ -89,6 +90,7 @@ export class OrganizationEditorComponent {
     this.organization = {
       id: null,
       name: "",
+      shorthand: "",
       slug: "",
       logo: "",
       short_description: "",
@@ -115,6 +117,15 @@ export class OrganizationEditorComponent {
           error: (err) => this.onError(err)
         }
       );
+    }
+  }
+
+  generateSlug(): void {
+    const name = this.organizationForm.controls['name'].value;
+    const slug = this.organizationForm.controls['slug'].value;
+    if(name && !slug) {
+      var generatedSlug = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, "-");
+      this.organizationForm.setControl("slug", new FormControl(generatedSlug));
     }
   }
 
