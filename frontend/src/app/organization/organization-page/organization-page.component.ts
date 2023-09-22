@@ -15,6 +15,7 @@ import { Organization, OrganizationService } from '../organization.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import { organizationResolver } from '../organization.resolver';
 
 @Component({
   selector: 'app-organization-page',
@@ -29,11 +30,11 @@ export class OrganizationPageComponent {
     title: 'CS Organizations',
     component: OrganizationPageComponent,
     canActivate: [],
-    resolve: { profile: profileResolver }
+    resolve: { profile: profileResolver, organizations: organizationResolver }
   }
 
   /** Store Observable list of Organizations */
-  public organizations$: Observable<Organization[]>;
+  public organizations: Organization[];
 
   /** Store searchBarQuery */
   public searchBarQuery = "";
@@ -51,10 +52,9 @@ export class OrganizationPageComponent {
   ) {
 
     /** Get currently-logged-in user. */
-    const data = this.route.snapshot.data as { profile: Profile };
+    const data = this.route.snapshot.data as { profile: Profile, organizations: Organization[] };
     this.profile = data.profile;
+    this.organizations = data.organizations;
 
-    /** Retrieve Organizations using OrganizationsService */
-    this.organizations$ = this.organizationService.getOrganizations();
   }
 }

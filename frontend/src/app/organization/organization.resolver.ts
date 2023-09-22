@@ -11,6 +11,9 @@ import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
 import { Organization, OrganizationService } from "./organization.service"
 
-export const organizationResolver: ResolveFn<Organization | undefined> = (route, state) => {
+export const organizationResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
+    return inject(OrganizationService).getOrganizations();
+};
+export const organizationDetailResolver: ResolveFn<Organization | undefined> = (route, state) => {
     return inject(OrganizationService).getOrganization(route.paramMap.get('slug')!);
 };
