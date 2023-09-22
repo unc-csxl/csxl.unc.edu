@@ -11,26 +11,26 @@
             <!-- Organization Name Field -->
             <mat-form-field appearance="fill" color="accent">
                 <mat-label>Organization Name</mat-label>
-                <input matInput placeholder="" formControlName="name" name="name" required>
+                <input matInput placeholder="" formControlName="name" name="name">
             </mat-form-field>
             <!-- Slug Field -->
-            <mat-form-field appearance="fill" color="accent">
+            <mat-form-field hintLabel="Must contain only letters, numbers, or dashes" appearance="fill" color="accent">
                 <mat-label>Slug</mat-label>
-                <input matInput placeholder="" formControlName="slug" name="slug" required>
+                <input matInput placeholder="" formControlName="slug" name="slug">
             </mat-form-field>
             <!-- Logo Field -->
             <mat-form-field appearance="fill" color="accent">
-                <mat-label>Logo</mat-label>
-                <input matInput placeholder="" formControlName="logo" name="logo" required>
+                <mat-label>Logo Link</mat-label>
+                <input matInput placeholder="" formControlName="logo" name="logo">
             </mat-form-field>
             <!-- Short Description Field -->
-            <mat-form-field appearance="fill" color="accent">
+            <mat-form-field hintLabel="Max 150 characters" appearance="fill" color="accent">
                 <mat-label>Short Description</mat-label>
                 <input matInput placeholder="Enter short description here." formControlName="short_description"
                     name="short_description">
             </mat-form-field>
             <!-- Long Description Field -->
-            <mat-form-field appearance="fill" color="accent">
+            <mat-form-field hintLabel="Max 2000 characters" appearance="fill" color="accent">
                 <mat-label>Long Description</mat-label>
                 <input matInput placeholder="Enter long description here." formControlName="long_description"
                     name="long_description">
@@ -44,6 +44,7 @@
             <mat-form-field appearance="fill" color="accent">
                 <mat-label>Email</mat-label>
                 <input matInput placeholder="" formControlName="email" name="email">
+                <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
             </mat-form-field>
             <!-- Instagram Field -->
             <mat-form-field appearance="fill" color="accent">
