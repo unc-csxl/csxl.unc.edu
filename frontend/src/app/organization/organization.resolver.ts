@@ -14,6 +14,7 @@ import { Organization, OrganizationService } from "./organization.service"
 export const organizationResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
     return inject(OrganizationService).getOrganizations();
 };
+
 export const organizationDetailResolver: ResolveFn<Organization | undefined> = (route, state) => {
     return inject(OrganizationService).getOrganization(route.paramMap.get('slug')!);
 };

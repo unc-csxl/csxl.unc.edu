@@ -1,5 +1,5 @@
 /**
- * The Organization Admin Service abstracts backend calls from the
+ * The Admin Organization Service abstracts backend calls from the
  * Admin organization List Component.
  * 
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
@@ -9,11 +9,11 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Organization } from 'src/app/organization/organization.service';
+import { Organization } from "/workspace/frontend/src/app/organization/organization.service";
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class OrganizationAdminService {
+export class AdminOrganizationService {
 
     constructor(protected http: HttpClient) { }
 
@@ -40,3 +40,5 @@ export class OrganizationAdminService {
         return this.http.delete<Organization>(`/api/organizations/${slug}`);
     }
 }
+
+export { Organization };

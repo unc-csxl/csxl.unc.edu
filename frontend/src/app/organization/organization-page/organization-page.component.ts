@@ -9,9 +9,8 @@
  */
 
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
-import { Organization, OrganizationService } from '../organization.service';
+import { Organization } from '../organization.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
@@ -46,7 +45,6 @@ export class OrganizationPageComponent {
   public permValues: Map<number, number> = new Map();
 
   constructor(
-    private organizationService: OrganizationService,
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
   ) {
