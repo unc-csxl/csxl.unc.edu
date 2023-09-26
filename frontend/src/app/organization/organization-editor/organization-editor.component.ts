@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,8 +28,8 @@ export class OrganizationEditorComponent {
     path: ':slug/edit',
     component: OrganizationEditorComponent,
     title: 'Organization Editor',
-    resolve: { profile: profileResolver },
-    canActivate: [permissionGuard('admin.view', 'admin/')]
+    canActivate: [permissionGuard('admin.view', 'admin/')],
+    resolve: { profile: profileResolver }
   };
 
   /** Store the organization and its observable.  */
