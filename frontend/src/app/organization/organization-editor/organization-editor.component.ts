@@ -16,6 +16,7 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { Organization, OrganizationService } from '../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
+import { permissionGuard } from 'src/app/permission.guard';
 
 @Component({
   selector: 'app-organization-editor',
@@ -27,6 +28,7 @@ export class OrganizationEditorComponent {
     path: ':slug/edit',
     component: OrganizationEditorComponent,
     title: 'Organization Editor',
+    canActivate: [permissionGuard('admin.view', 'admin/')],
     resolve: { profile: profileResolver }
   };
 

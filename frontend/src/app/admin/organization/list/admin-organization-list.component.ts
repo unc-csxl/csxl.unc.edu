@@ -8,13 +8,13 @@
  */
 
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { OrganizationAdminService } from '/workspace/frontend/src/app/admin/organization/organization-admin.service';
 import { Organization } from 'src/app/organization/organization.service';
-import { Observable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { adminOrganizationResolver } from "/workspace/frontend/src/app/admin/organization/admin-organization.resolver";
+import { AdminOrganizationService } from '../admin-organization.service';
 
 @Component({
     selector: 'app-admin-organization-list',
@@ -24,11 +24,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AdminOrganizationListComponent {
 
     /** Organizations List */
-    public organizations$: Observable<Organization[]>;
+    public organizations: Organization[];
 
     public displayedColumns: string[] = ['name'];
-
-    dataSource = new MatTableDataSource<Organization>();
 
     /** Route information to be used in Admin Routing Module */
     public static Route = {
@@ -36,18 +34,17 @@ export class AdminOrganizationListComponent {
         component: AdminOrganizationListComponent,
         title: 'Organization Administration',
         canActivate: [permissionGuard('organization.list', 'organization/')],
+        resolve: { organizations: adminOrganizationResolver }
     }
 
     constructor(
         private router: Router,
-        private organizationAdminService: OrganizationAdminService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private adminOrganizationService: AdminOrganizationService,
+        private route: ActivatedRoute
     ) {
-        this.organizations$ = organizationAdminService.list();
-
-        this.organizationAdminService.list().subscribe(organizations => {
-            this.dataSource.data = organizations;
-        });
+        const data = this.route.snapshot.data as { organizations: Organization[] };
+        this.organizations = data.organizations;
     }
     
     /** Event handler to open the Organization Editor to create a new organization */
@@ -63,7 +60,7 @@ export class AdminOrganizationListComponent {
     deleteOrganization(slug: string): void {
         let confirmDelete = this.snackBar.open("Are you sure you want to delete this organization?", "Delete");
         confirmDelete.onAction().subscribe(() => {
-            this.organizationAdminService.deleteOrganization(slug).subscribe(() => {
+            this.adminOrganizationService.deleteOrganization(slug).subscribe(() => {
             this.snackBar.open("This organization has been deleted.", "", { duration: 2000 });
           })
         });
