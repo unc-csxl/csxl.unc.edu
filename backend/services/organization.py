@@ -92,7 +92,7 @@ class OrganizationService:
         # Query the organization with matching slug
         organization = self._session.query(OrganizationEntity).filter(
             OrganizationEntity.slug == slug
-        )[0]
+        ).one_or_none();
 
         # Check if result is null
         if organization:
