@@ -14,6 +14,7 @@ class Organization(BaseModel):
 
     id: int | None = None
     name: str
+    shorthand: str
     slug: str
     logo: str
     short_description: str

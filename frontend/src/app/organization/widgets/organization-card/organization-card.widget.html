@@ -10,7 +10,7 @@
             <!-- Organization Name -->
             <mat-card-title class="name" [matTooltip]='organization.name' matTooltipPosition="above"
                 [matTooltipDisabled]="organization.name.length < 25">
-                {{organization.name.length < 25 ? organization.name : organization.slug}} </mat-card-title>
+                {{organization.name.length < 25 ? organization.name : organization.shorthand}} </mat-card-title>
         </div>
 
     </mat-card-header>

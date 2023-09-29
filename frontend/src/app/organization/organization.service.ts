@@ -28,6 +28,7 @@ export interface Organization {
     heel_life: string;
     public: boolean;
     slug: string;
+    shorthand: string;
 }
 
 @Injectable({
