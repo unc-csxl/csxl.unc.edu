@@ -60,8 +60,8 @@ class OrganizationService:
 
         # Checks if the organization already exists in the table
         if organization.id:
-            # If so, raise an error
-            raise Exception(f"Duplicate organization found with ID: {organization.id}")
+            # Set id to None so database can handle setting the id
+            organization.id = None
 
         else:
             # Otherwise, create new object
