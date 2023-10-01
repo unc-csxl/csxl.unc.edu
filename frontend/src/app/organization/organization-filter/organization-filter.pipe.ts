@@ -21,22 +21,18 @@ export class OrganizationFilterPipe implements PipeTransform {
    * @param {String} searchQuery: input string to filter by
    * @returns {Observable<Organization[]>}
    */
-  transform(organizations: Observable<Organization[]>, searchQuery: String): Observable<Organization[]> {
+  transform(organizations: Organization[], searchQuery: String): Organization[] {
     // Sort the organizations list alphabetically by name
-    organizations = organizations.pipe(
-      map(orgs => orgs.sort((a: Organization, b: Organization) => {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      }))
-    )
+    organizations = organizations.sort((a: Organization, b: Organization) => {
+      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    })
 
     // If a search query is provided, return the organizations that start with the search query.
     if (searchQuery) {
-      return organizations.pipe(
-        map(organizations => organizations
-          .filter(organization =>
-            organization.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            organization.short_description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            organization.long_description.toLowerCase().includes(searchQuery.toLowerCase()))));
+      return organizations.filter(organization =>
+        organization.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        organization.short_description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        organization.long_description.toLowerCase().includes(searchQuery.toLowerCase()));
     } else {
       // Otherwise, return the original list.
       return organizations;

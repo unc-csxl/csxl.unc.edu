@@ -16,6 +16,7 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { Organization, OrganizationService } from '../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
+import { permissionGuard } from 'src/app/permission.guard';
 
 @Component({
   selector: 'app-organization-editor',
@@ -27,6 +28,7 @@ export class OrganizationEditorComponent {
     path: ':slug/edit',
     component: OrganizationEditorComponent,
     title: 'Organization Editor',
+    canActivate: [permissionGuard('admin.view', 'admin/')],
     resolve: { profile: profileResolver }
   };
 
@@ -59,6 +61,7 @@ export class OrganizationEditorComponent {
     short_description: this.shortDescription,
     long_description: this.longDescription,
     email: this.email,
+    shorthand: "",
     website: "",
     instagram: "",
     linked_in: "",
@@ -96,6 +99,7 @@ export class OrganizationEditorComponent {
     this.organization = {
       id: null,
       name: "",
+      shorthand: "",
       slug: "",
       logo: "",
       short_description: "",
@@ -122,6 +126,19 @@ export class OrganizationEditorComponent {
           error: (err) => this.onError(err)
         }
       );
+    }
+  }
+
+  /** Event handler to handle the first change in the organization name field
+   * Automatically generates a slug from the organization name (that can be edited)
+   * @returns {void}
+   */
+  generateSlug(): void {
+    const name = this.organizationForm.controls['name'].value;
+    const slug = this.organizationForm.controls['slug'].value;
+    if(name && !slug) {
+      var generatedSlug = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, "-");
+      this.organizationForm.setControl("slug", new FormControl(generatedSlug));
     }
   }
 

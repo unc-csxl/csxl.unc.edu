@@ -11,7 +11,12 @@
             <!-- Organization Name Field -->
             <mat-form-field appearance="fill" color="accent">
                 <mat-label>Organization Name</mat-label>
-                <input matInput placeholder="" formControlName="name" name="name">
+                <input matInput placeholder="" (change)="generateSlug()" formControlName="name" name="name" required>
+            </mat-form-field>
+            <!-- Shorthand Field -->
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Shorthand</mat-label>
+                <input matInput placeholder="" formControlName="shorthand" name="shorthand" required>
             </mat-form-field>
             <!-- Slug Field -->
             <mat-form-field hintLabel="Must contain only lowercase letters, numbers, or dashes" appearance="fill" color="accent">
