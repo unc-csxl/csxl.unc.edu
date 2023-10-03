@@ -34,7 +34,8 @@
             </div>
 
             <!-- Organization Description -->
-            <p class="organization-description">{{organization!.long_description}}</p>
+            <p class="organization-description">{{organization!.long_description ? organization.long_description :
+                organization.short_description}}</p>
 
             <!-- Organization Icons (Phones)-->
             <div class="organization-icons-section" *ngIf="isHandset" [ngStyle]="{'flex-direction': 'row'}">

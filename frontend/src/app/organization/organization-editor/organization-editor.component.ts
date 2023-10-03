@@ -45,15 +45,23 @@ export class OrganizationEditorComponent {
   /** Store the organization id. */
   organization_slug: string = 'new';
 
+  /** Add validators to the form */
+  name = new FormControl('', [Validators.required]);
+  slug = new FormControl('', [Validators.required, Validators.pattern('^[a-z0-9-]+$')]);
+  logo = new FormControl('', [Validators.required]);
+  email = new FormControl('', [Validators.email]);
+  shortDescription = new FormControl('', [Validators.required, Validators.maxLength(150)]);
+  longDescription = new FormControl('', [Validators.maxLength(2000)]);
+
   /** Organization Editor Form */
   public organizationForm = this.formBuilder.group({
-    name: "",
-    slug: "",
+    name: this.name,
+    slug: this.slug,
+    logo: this.logo,
+    short_description: this.shortDescription,
+    long_description: this.longDescription,
+    email: this.email,
     shorthand: "",
-    logo: "",
-    short_description: "",
-    long_description: "",
-    email: "",
     website: "",
     instagram: "",
     linked_in: "",
@@ -62,6 +70,10 @@ export class OrganizationEditorComponent {
     public: false
   });
 
+  getEmailErrorMessage() {
+    return this.email.hasError('email') ? 'Not a valid email' : '';
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -69,11 +81,6 @@ export class OrganizationEditorComponent {
     protected snackBar: MatSnackBar,
     private organizationService: OrganizationService,
     private permission: PermissionService) {
-    /** Add validators to the form */
-    const form = this.organizationForm;
-    form.get('name')?.addValidators(Validators.required);
-    form.get('logo')?.addValidators(Validators.required);
-    form.get('short_description')?.addValidators(Validators.required);
 
     /** Get currently-logged-in user. */
     const data = this.route.snapshot.data as { profile: Profile };
