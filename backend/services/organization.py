@@ -60,8 +60,8 @@ class OrganizationService:
 
         # Checks if the organization already exists in the table
         if organization.id:
-            # If so, raise an error
-            raise Exception(f"Duplicate organization found with ID: {organization.id}")
+            # Set id to None so database can handle setting the id
+            organization.id = None
 
         else:
             # Otherwise, create new object
@@ -92,7 +92,7 @@ class OrganizationService:
         # Query the organization with matching slug
         organization = self._session.query(OrganizationEntity).filter(
             OrganizationEntity.slug == slug
-        )[0]
+        ).one_or_none();
 
         # Check if result is null
         if organization:
@@ -117,18 +117,8 @@ class OrganizationService:
             Organization: Updated organization object
         """
 
-        # Check if user has manager permissions for the organization
-        org_roles = [
-            o_r
-            for o_r in organization.user_associations
-            if o_r.user_id == subject.id
-            and o_r.org_id == organization.id
-            and o_r.membership_type > 0
-        ]
-
-        # If no role is found, raise an exception
-        if len(org_roles) <= 0:
-            raise UserPermissionError("organization.update", f"organization")
+        # Check if user has admin permissions
+        self._permission.enforce(subject, "organization.create", f"organization")
 
         # Query the organization with matching id
         obj = self._session.query(OrganizationEntity).get(organization.id)
