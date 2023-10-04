@@ -4,6 +4,9 @@
 import pytest
 from unittest.mock import create_autospec
 
+from backend.services.organization import OrganizationNotFoundError
+from backend.services.permission import UserPermissionError
+
 # Tested Dependencies
 from ....models import Organization
 from ....services import OrganizationService
@@ -77,11 +80,9 @@ def test_create_organization_as_root(organization_svc_integration: OrganizationS
 
 def test_create_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to create new organizations."""
-    try:
+    with pytest.raises(UserPermissionError):
         organization_svc_integration.create(user, to_add)
         pytest.fail()  # Fail test if no error was thrown above
-    except:
-        ...  # Test passes, because a `UserPermissionError` was thrown as expected
 
 
 # Test `OrganizationService.update()`
@@ -103,14 +104,8 @@ def test_create_organization_as_user(organization_svc_integration: OrganizationS
 
 def test_update_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to create new organizations."""
-    try:
+    with pytest.raises(UserPermissionError):
         organization_svc_integration.update(user, new_cads)
-        pytest.fail()  # Fail test if no error was thrown above
-    except:
-        ...  # Test passes, because a `UserPermissionError` was thrown as expected
-
-
-# Test `OrganizationService.delete()`
 
 
 def test_delete_enforces_permission(organization_svc_integration: OrganizationService):
@@ -131,18 +126,11 @@ def test_delete_enforces_permission(organization_svc_integration: OrganizationSe
 def test_delete_organization_as_root(organization_svc_integration: OrganizationService):
     """Test that the root user is able to delete organizations."""
     organization_svc_integration.delete(root, cads.slug)
-
-    try:
+    with pytest.raises(OrganizationNotFoundError):
         organization_svc_integration.get_from_slug(cads.slug)
-        pytest.fail()  # Fail test if no error was thrown above
-    except:
-        ...  # Test passes, because an error was thrown when we found no organization
 
 
 def test_delete_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to delete organizations."""
-    try:
+    with pytest.raises(UserPermissionError):
         organization_svc_integration.delete(user, cads.slug)
-        pytest.fail()  # Fail test if no error was thrown above
-    except:
-        ...  # Test passes, because a `UserPermissionError` was thrown as expected
