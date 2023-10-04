@@ -12,6 +12,8 @@ const routes: Routes = [
   GateComponent.Route,
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organization/organization.module').then(m => m.OrganizationModule) },
+  { path: 'experimental', title: 'Experimental', loadChildren: () => import('./experimental/experimental.module').then(m => m.ExperimentalModule) },
+
 ];
 
 @NgModule({
@@ -22,4 +24,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [AppTitleStrategy.Provider]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

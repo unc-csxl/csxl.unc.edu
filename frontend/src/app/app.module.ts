@@ -34,6 +34,7 @@ import { HomeComponent } from './home/home.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { RouterModule } from '@angular/router';
+import { ExperimentalComponent } from './experimental/experimental.component';
 
 @NgModule({
   declarations: [
@@ -82,4 +83,4 @@ import { RouterModule } from '@angular/router';
   }],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
