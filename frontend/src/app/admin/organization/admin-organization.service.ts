@@ -10,22 +10,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Organization } from "../../..//app/organization/organization.service";
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { RxOrganization } from '../../../app/organization/rx-organization';
 import { Organizations } from '../../../app/organization/organization.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminOrganizationService {
     private organizations: RxOrganization = new RxOrganization();
-    public organization$: Observable<Organizations> = this.organizations.value$;
+    public organizations$: Observable<Organizations> = this.organizations.value$;
 
     constructor(protected http: HttpClient) { }
 
     /** Returns a list of all Organizations
      * @returns {Observable<Organization[]>}
      */
-    list(): Observable<Organization[]> {
-        return this.http.get<Organization[]>("/api/organizations");
+    list(): void {
+        this.http.get<Organization[]>("/api/organizations").subscribe(
+            (organizations) => this.organizations.set({organizations})
+        );
     }
 
     /** Creates an organization
@@ -41,9 +43,12 @@ export class AdminOrganizationService {
      * @param organization_id: id of the organization object to delete
      * @returns {Observable<Organization>}
      */
-    deleteOrganization(slug: string): Observable<Organization> {
-        return this.http.delete<Organization>(`/api/organizations/${slug}`).pipe(tap(removedOrganization => {
-            this.organizations.removeOrganization((removedOrganization))
-        }));
+    deleteOrganization(organizationToRemove: Organization): Observable<Organization> {
+        return this.http.delete<Organization>(`/api/organizations/${organizationToRemove.slug}`).pipe(
+            tap(_ => {  
+             this.organizations.removeOrganization(organizationToRemove);
+             console.log(this.organizations);
+            }
+        ));
     }
 }

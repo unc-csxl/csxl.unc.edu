@@ -12,7 +12,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Organization, Organizations } from 'src/app/organization/organization.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { adminOrganizationResolver } from "/workspace/frontend/src/app/admin/organization/admin-organization.resolver";
 import { AdminOrganizationService } from '../admin-organization.service';
 import { Observable } from 'rxjs';
 
@@ -25,6 +24,7 @@ export class AdminOrganizationListComponent {
 
     /** Organizations List */
     public organizations$: Observable<Organizations>;
+    // public organizations: Organization[];
 
     public displayedColumns: string[] = ['name'];
 
@@ -34,7 +34,7 @@ export class AdminOrganizationListComponent {
         component: AdminOrganizationListComponent,
         title: 'Organization Administration',
         canActivate: [permissionGuard('organization.list', 'organization/')],
-        resolve: { organizations: adminOrganizationResolver }
+        // resolve: { organizations: adminOrganizationResolver }
     }
 
     constructor(
@@ -43,8 +43,12 @@ export class AdminOrganizationListComponent {
         private adminOrganizationService: AdminOrganizationService,
         private route: ActivatedRoute
     ) {
-        const data = this.route.snapshot.data as { organizations: Organization[] };
-        this.organizations$ = adminOrganizationService.organization$;
+        this.organizations$ = adminOrganizationService.organizations$;
+        adminOrganizationService.list();
+        // return service.organizations$;
+
+        // const data = this.route.snapshot.data as { organizations: Organizations };
+        // this.organizations = data.organizations.organizations;
     }
     
     /** Event handler to open the Organization Editor to create a new organization */
@@ -57,10 +61,10 @@ export class AdminOrganizationListComponent {
      * @param organization_id: unique number representing the updated organization
      * @returns void
      */
-    deleteOrganization(slug: string): void {
+    deleteOrganization(organization: Organization): void {
         let confirmDelete = this.snackBar.open("Are you sure you want to delete this organization?", "Delete");
         confirmDelete.onAction().subscribe(() => {
-            this.adminOrganizationService.deleteOrganization(slug).subscribe(() => {
+            this.adminOrganizationService.deleteOrganization(organization).subscribe(() => {
             this.snackBar.open("This organization has been deleted.", "", { duration: 2000 });
           })
         });

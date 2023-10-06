@@ -1,6 +1,6 @@
 <!-- HTML Structure of Admin Organizations List -->
-<div class="content">
-    <table mat-table *ngIf="organizations$ | async as organizations" [dataSource]="organizations.organizations">
+<div class="content" *ngIf="organizations$ | async as organizations">
+    <table mat-table [dataSource]="organizations.organizations">
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
                 <div class="header">
@@ -11,7 +11,7 @@
             <td mat-cell *matCellDef="let element">
                 <div class="row">
                     <p>{{element.name}}</p>
-                    <button mat-stroked-button (click)="deleteOrganization(element.slug)">Delete</button>
+                    <button mat-stroked-button (click)="deleteOrganization(element)">Delete</button>
                 </div>
             </td>
         </ng-container>

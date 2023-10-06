@@ -17,7 +17,7 @@ export class RxOrganization extends RxObject<Organizations> {
 
     removeOrganization(organizationToRemove: Organization): void {
         this.value.organizations = this.value.organizations.filter(organization => 
-          organizationToRemove.id !== organization.id);
+          organizationToRemove.slug !== organization.slug);
         this.notify();
     }
 
