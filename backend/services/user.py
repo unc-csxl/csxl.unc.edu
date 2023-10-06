@@ -80,7 +80,7 @@ class UserService:
             Paginated[User]: The paginated list of users.
 
         Raises:
-            PermissionError: If the subject does not have the required permission."""
+            PermissionException: If the subject does not have the required permission."""
         self._permission.enforce(subject, 'user.list', 'user/')
 
         statement = select(UserEntity)

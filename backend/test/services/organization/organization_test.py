@@ -4,8 +4,8 @@
 import pytest
 from unittest.mock import create_autospec
 
-from backend.services.organization import OrganizationNotFoundError
-from backend.services.permission import UserPermissionError
+from backend.services.organization import OrganizationNotFoundException
+from backend.services.permission import UserPermissionException
 
 # Tested Dependencies
 from ....models import Organization
@@ -80,7 +80,7 @@ def test_create_organization_as_root(organization_svc_integration: OrganizationS
 
 def test_create_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to create new organizations."""
-    with pytest.raises(UserPermissionError):
+    with pytest.raises(UserPermissionException):
         organization_svc_integration.create(user, to_add)
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -104,7 +104,7 @@ def test_create_organization_as_user(organization_svc_integration: OrganizationS
 
 def test_update_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to create new organizations."""
-    with pytest.raises(UserPermissionError):
+    with pytest.raises(UserPermissionException):
         organization_svc_integration.update(user, new_cads)
 
 
@@ -126,11 +126,11 @@ def test_delete_enforces_permission(organization_svc_integration: OrganizationSe
 def test_delete_organization_as_root(organization_svc_integration: OrganizationService):
     """Test that the root user is able to delete organizations."""
     organization_svc_integration.delete(root, cads.slug)
-    with pytest.raises(OrganizationNotFoundError):
+    with pytest.raises(OrganizationNotFoundException):
         organization_svc_integration.get_from_slug(cads.slug)
 
 
 def test_delete_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to delete organizations."""
-    with pytest.raises(UserPermissionError):
+    with pytest.raises(UserPermissionException):
         organization_svc_integration.delete(user, cads.slug)
