@@ -9,15 +9,18 @@
           <img class="logo" src="/assets/lil-logo-light.png" alt="Computer Science Experience Labs Logo">
         </picture>
       </a>
-      <mat-divider></mat-divider>
+      <mat-divider *ngIf="(profile$ | async) === undefined;" m></mat-divider>
+      <a *ngIf="(profile$ | async) === undefined;" mat-list-item routerLink="/organizations">Organizations</a>
+      <mat-divider *ngIf="(profile$ | async) === undefined;" m></mat-divider>
       <a *ngIf="(profile$ | async) === undefined; else authenticated" mat-list-item
         href="/auth?continue_to={{router.url}}">Sign in</a>
       <ng-template #authenticated mat-list-item>
+        <mat-divider *ngIf="adminPermission$ | async"></mat-divider>
         <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/admin">Admin</a>
         <mat-divider></mat-divider>
-        <a mat-list-item routerLink="/profile">Profile</a>
-        <mat-divider></mat-divider>
         <a mat-list-item routerLink="/organizations">Organizations</a>
+        <mat-divider></mat-divider>
+        <a mat-list-item routerLink="/profile">Profile</a>
         <mat-divider></mat-divider>
         <a mat-list-item (click)="auth.signOut()">Sign out</a>
       </ng-template>
