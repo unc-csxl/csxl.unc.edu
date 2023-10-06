@@ -3,7 +3,7 @@
 This API is for administrative purposes only."""
 
 from fastapi import APIRouter, Depends, HTTPException
-from ...services import RoleService, UserPermissionError
+from ...services import RoleService, UserPermissionException
 from ...models import User, Role, RoleDetails, Permission
 from ..authentication import registered_user
 
@@ -25,7 +25,7 @@ def list_roles(
     """List all roles in the system for administrators."""
     try:
         return role_service.list(subject)
-    except UserPermissionError as e:
+    except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))
 
 
@@ -38,7 +38,7 @@ def role_details(
     """Get details about a specific role in the system for administrators."""
     try:
         return role_service.details(subject, id)
-    except UserPermissionError as e:
+    except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))
 
 
@@ -52,7 +52,7 @@ def grant_permission_to_role(
     """Grant a permission to a role."""
     try:
         return role_service.grant_permission(subject, id, permission)
-    except UserPermissionError as e:
+    except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))
 
 
@@ -66,7 +66,7 @@ def revoke_permission_from_role(
     """Revoke a permission from a role."""
     try:
         return role_service.revoke_permission(subject, id, permissionId)
-    except UserPermissionError as e:
+    except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))
 
 
@@ -80,7 +80,7 @@ def add_member_to_role(
     """Add a member to a role."""
     try:
         return role_service.add_member(subject, id, member)
-    except UserPermissionError as e:
+    except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))
 
 
@@ -94,5 +94,5 @@ def remove_member_from_role(
     """Remove a member from a role."""
     try:
         return role_service.remove_member(subject, id, userId)
-    except UserPermissionError as e:
+    except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))

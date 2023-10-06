@@ -3,6 +3,9 @@
 Organization routes are used to create, retrieve, and update Organizations."""
 
 from fastapi import APIRouter, Depends, HTTPException
+
+from backend.services.organization import OrganizationNotFoundException
+from backend.services.permission import UserPermissionException
 from ..services import OrganizationService
 from ..models.organization import Organization
 from backend.api.authentication import registered_user
@@ -74,7 +77,7 @@ def get_organization_from_slug(slug: str, organization_service: OrganizationServ
     try: 
         # Return organization
         return organization_service.get_from_slug(slug)
-    except Exception as e:
+    except OrganizationNotFoundException as e:
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -96,7 +99,7 @@ def update_organization(organization: Organization, subject: User = Depends(regi
     try: 
         # Return updated organization
         return organization_service.update(subject, organization)
-    except Exception as e:
+    except (OrganizationNotFoundException, UserPermissionException) as e:
         # Raise 404 exception if update fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -117,6 +120,6 @@ def delete_organization(slug: str, subject: User = Depends(registered_user), org
     try:
         # Try to delete organization
         organization_service.delete(subject, slug)
-    except Exception as e:
+    except OrganizationNotFoundException as e:
         # Raise 404 exception if delete fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
