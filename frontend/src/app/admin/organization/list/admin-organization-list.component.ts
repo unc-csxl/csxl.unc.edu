@@ -10,11 +10,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Organization } from 'src/app/organization/organization.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { Organization, Organizations } from 'src/app/organization/organization.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { adminOrganizationResolver } from "/workspace/frontend/src/app/admin/organization/admin-organization.resolver";
 import { AdminOrganizationService } from '../admin-organization.service';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-admin-organization-list',
@@ -24,7 +24,7 @@ import { AdminOrganizationService } from '../admin-organization.service';
 export class AdminOrganizationListComponent {
 
     /** Organizations List */
-    public organizations: Organization[];
+    public organizations$: Observable<Organizations>;
 
     public displayedColumns: string[] = ['name'];
 
@@ -44,7 +44,7 @@ export class AdminOrganizationListComponent {
         private route: ActivatedRoute
     ) {
         const data = this.route.snapshot.data as { organizations: Organization[] };
-        this.organizations = data.organizations;
+        this.organizations$ = adminOrganizationService.organization$;
     }
     
     /** Event handler to open the Organization Editor to create a new organization */

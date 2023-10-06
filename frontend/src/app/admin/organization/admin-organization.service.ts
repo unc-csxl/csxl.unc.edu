@@ -9,11 +9,15 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Organization } from "/workspace/frontend/src/app/organization/organization.service";
-import { Observable } from 'rxjs';
+import { Organization } from "../../..//app/organization/organization.service";
+import { Observable, tap } from 'rxjs';
+import { RxOrganization } from '../../../app/organization/rx-organization';
+import { Organizations } from '../../../app/organization/organization.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminOrganizationService {
+    private organizations: RxOrganization = new RxOrganization();
+    public organization$: Observable<Organizations> = this.organizations.value$;
 
     constructor(protected http: HttpClient) { }
 
@@ -29,7 +33,8 @@ export class AdminOrganizationService {
      * @returns {Observable<Organization>}
      */
     createOrganization(newOrganization: Organization): Observable<Organization> {
-        return this.http.post<Organization>("/api/organizations", newOrganization)
+        return this.http.post<Organization>("/api/organizations", newOrganization).pipe(tap(organization => 
+            this.organizations.pushOrganization(organization)));
     }
 
     /** Deletes an organization
@@ -37,8 +42,8 @@ export class AdminOrganizationService {
      * @returns {Observable<Organization>}
      */
     deleteOrganization(slug: string): Observable<Organization> {
-        return this.http.delete<Organization>(`/api/organizations/${slug}`);
+        return this.http.delete<Organization>(`/api/organizations/${slug}`).pipe(tap(removedOrganization => {
+            this.organizations.removeOrganization((removedOrganization))
+        }));
     }
 }
-
-export { Organization };

@@ -17,6 +17,7 @@ import { PermissionService } from 'src/app/permission.service';
 import { Organization, OrganizationService } from '../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
 import { permissionGuard } from 'src/app/permission.guard';
+import { AdminOrganizationService } from 'src/app/admin/organization/admin-organization.service';
 
 @Component({
   selector: 'app-organization-editor',
@@ -80,6 +81,7 @@ export class OrganizationEditorComponent {
     protected formBuilder: FormBuilder,
     protected snackBar: MatSnackBar,
     private organizationService: OrganizationService,
+    private adminOrganizationService: AdminOrganizationService,
     private permission: PermissionService) {
 
     /** Get currently-logged-in user. */
@@ -120,7 +122,7 @@ export class OrganizationEditorComponent {
   onSubmit(): void {
     if (this.organizationForm.valid) {
       Object.assign(this.organization, this.organizationForm.value)
-      this.organizationService.createOrganization(this.organization).subscribe(
+      this.adminOrganizationService.createOrganization(this.organization).subscribe(
         {
           next: (organization) => this.onSuccess(organization),
           error: (err) => this.onError(err)

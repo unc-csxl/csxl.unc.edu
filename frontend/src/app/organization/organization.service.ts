@@ -31,6 +31,10 @@ export interface Organization {
     shorthand: string;
 }
 
+export interface Organizations {
+  organizations: Organization[]
+}
+
 @Injectable({
     providedIn: 'root'
 })
