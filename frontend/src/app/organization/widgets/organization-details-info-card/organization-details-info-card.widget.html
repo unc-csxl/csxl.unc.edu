@@ -29,6 +29,11 @@
                             *ngIf='organization!.linked_in != ""' />
                         <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
                             *ngIf='organization!.youtube != ""' />
+                        <a [routerLink]="['/organizations', organization!.slug, 'edit']">
+                            <button mat-icon-button color="basic">
+                                <mat-icon *ngIf="adminPermission$ | async">edit</mat-icon>
+                            </button>
+                        </a> 
                     </div>
                 </div>
             </div>
@@ -51,6 +56,11 @@
                         *ngIf='organization!.linked_in != ""' />
                     <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
                         *ngIf='organization!.youtube != ""' />
+                    <a [routerLink]="['/organizations', organization!.slug, 'edit']">
+                        <button mat-icon-button color="basic">
+                            <mat-icon *ngIf="adminPermission$ | async">edit</mat-icon>
+                        </button>
+                    </a> 
                 </div>
             </div>
 
