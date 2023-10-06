@@ -61,7 +61,8 @@ export class AdminOrganizationListComponent {
         let confirmDelete = this.snackBar.open("Are you sure you want to delete this organization?", "Delete");
         confirmDelete.onAction().subscribe(() => {
             this.adminOrganizationService.deleteOrganization(slug).subscribe(() => {
-            this.snackBar.open("This organization has been deleted.", "", { duration: 2000 });
+                this.organizations = this.organizations.filter(o => o.slug !== slug);
+                this.snackBar.open("This organization has been deleted.", "", { duration: 2000 });
           })
         });
     }
