@@ -29,9 +29,9 @@
                             *ngIf='organization!.linked_in != ""' />
                         <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
                             *ngIf='organization!.youtube != ""' />
-                        <a [routerLink]="['/organizations', organization!.slug, 'edit']">
+                        <a [routerLink]="['/organizations', organization!.slug, 'edit']" *ngIf="adminPermission$ | async">
                             <button mat-icon-button color="basic">
-                                <mat-icon *ngIf="adminPermission$ | async">edit</mat-icon>
+                                <mat-icon>edit</mat-icon>
                             </button>
                         </a> 
                     </div>
@@ -56,15 +56,14 @@
                         *ngIf='organization!.linked_in != ""' />
                     <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
                         *ngIf='organization!.youtube != ""' />
-                    <a [routerLink]="['/organizations', organization!.slug, 'edit']">
+                    <!-- Link to Organization Editor -->
+                    <a [routerLink]="['/organizations', organization!.slug, 'edit']" *ngIf="adminPermission$ | async">
                         <button mat-icon-button color="basic">
-                            <mat-icon *ngIf="adminPermission$ | async">edit</mat-icon>
+                            <mat-icon>edit</mat-icon>
                         </button>
                     </a> 
                 </div>
-            </div>
-
-            <!-- Link to Organization Editor -->
+            </div> 
         </div>
     </mat-card-header>
 </mat-card>
