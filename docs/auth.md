@@ -33,10 +33,10 @@ When a feature of the website, via one or more of its models, is related to one 
 
 The logic for enforcing feature-specific concerns should be specified in the feature's backend service layer methods. Developers are encouraged to factor out this logic into reusable helper functions; it is likely many service methods will rely upon the same logic.
 
-All backend service layer methods with authorization concerns should accept a `subject: User` as their first parameter. This represents the user attempting to carry out the action and whose authorization needs verification. If your backend service layer method determines the subject does not have permission to carry out the operation, raise a [`backend.services.permission.UserPermissionError`](backend/services/permission.py). Example usage of this exception:
+All backend service layer methods with authorization concerns should accept a `subject: User` as their first parameter. This represents the user attempting to carry out the action and whose authorization needs verification. If your backend service layer method determines the subject does not have permission to carry out the operation, raise a [`backend.services.permission.UserPermissionException`](backend/services/permission.py). Example usage of this exception:
 
 ```python
-raise UserPermissionError('workshops.update', f'workshops/{workshop.id}`)
+raise UserPermissionException('workshops.update', f'workshops/{workshop.id}`)
 ```
 
 For administrative concerns discussed next, the first argument is conventionally specified as `service.method` and the second as the target *path* of the primary model being operated on, without the leading `api/`. In the above example, you could assume `/api/workshops/1` was the FastAPI path to the model being operated on.
@@ -47,7 +47,7 @@ The second kind of authorization rules are administrative permissions. For examp
 
 The facilities for this kind of authorization is built into the site. Feature developers need to use the Permission API to check for administrative permissions where appropriate. Generally, there are two appropriate places for administrative permisssion rule enforcement:
 
-A. Everywhere there is feature-specific authorization rule there should be a check for administrative permission. Rule-of-thumb, everywhere your feature raises a `UserPermissionError`, you should also check for the corresponding administrative permission rule before raising the error.
+A. Everywhere there is feature-specific authorization rule there should be a check for administrative permission. Rule-of-thumb, everywhere your feature raises a `UserPermissionException`, you should also check for the corresponding administrative permission rule before raising the error.
 
 B. Admin-only aspects of a feature.
 
@@ -89,7 +89,7 @@ In the OpenAPI user interface found at `/docs`, look for the Green Authorize but
 
 Backend service methods are _the most important place_ to correctly verify authorization. Failing to properly verify authorization here means users will be able to take actions they should not have permission to.
 
-As an example, consider _updating a user's profile details_. The "feature" is a user's profile. The feature-specific rule is _a user can update their own profile_. This verification is implemented in [backend/services/user.py](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/backend/services/user.py#L145). Notice the negation of the rule is specified in the `if` such that if the rule is `True` (the user is the subject), execution carries on into the method. However, if the feature-specific rule does not hold, we then call the [`PermissionService`](backend/services/permission.py)'s `enforce` method, giving it the `subject` user, action string (`user.update`), and resource (`user/{id}`). This method handles the logic for checking whether `subject` has administrative access to carry out this action on the resource. If the `subject` does, this procedure returns nothing. If they do not, it raises a `UserPermissionError` for you. This demonstrates an idiomatic way of verifying the `subject` is authorized.
+As an example, consider _updating a user's profile details_. The "feature" is a user's profile. The feature-specific rule is _a user can update their own profile_. This verification is implemented in [backend/services/user.py](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/backend/services/user.py#L145). Notice the negation of the rule is specified in the `if` such that if the rule is `True` (the user is the subject), execution carries on into the method. However, if the feature-specific rule does not hold, we then call the [`PermissionService`](backend/services/permission.py)'s `enforce` method, giving it the `subject` user, action string (`user.update`), and resource (`user/{id}`). This method handles the logic for checking whether `subject` has administrative access to carry out this action on the resource. If the `subject` does, this procedure returns nothing. If they do not, it raises a `UserPermissionException` for you. This demonstrates an idiomatic way of verifying the `subject` is authorized.
 
 If your feature-specific rules are more involved than a simple equality check, you should refactor these rules out into a method of its own with a well chosen name. This will help keep your service's methods easier to read and reason through. Additionally, it makes it easier to write unit tests specifically targetting your feature-specific rule logic.
 

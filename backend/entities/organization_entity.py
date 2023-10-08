@@ -19,6 +19,8 @@ class OrganizationEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Name of the organization
     name: Mapped[str] = mapped_column(String, nullable=False, default="")
+    # Short hand name of the organization
+    shorthand: Mapped[str] = mapped_column(String, nullable=False)
     # Slug of the organization
     slug: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     # Logo of the organization
@@ -57,6 +59,7 @@ class OrganizationEntity(EntityBase):
         return cls(
             id=model.id,
             name=model.name,
+            shorthand=model.shorthand,
             slug=model.slug,
             logo=model.logo,
             short_description=model.short_description,
@@ -80,6 +83,7 @@ class OrganizationEntity(EntityBase):
         return Organization(
             id=self.id,
             name=self.name,
+            shorthand=self.shorthand,
             slug=self.slug,
             logo=self.logo,
             short_description=self.short_description,

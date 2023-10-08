@@ -1,12 +1,17 @@
-/** Abstracts HTTP request functionality for organizations away from the backend database */
+/**
+ * The Organization Service abstracts HTTP requests to the backend
+ * from the components.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, mergeMap, of, shareReplay } from 'rxjs';
-import { Profile } from '../profile/profile.service';
-
+import { Observable } from 'rxjs';
 
 /** Interface for Organization Type (used on frontend for organization detail) */
 export interface Organization {
@@ -23,28 +28,16 @@ export interface Organization {
     heel_life: string;
     public: boolean;
     slug: string;
+    shorthand: string;
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class OrganizationService {
-
-  /** Store profile observable*/
-  public profile$: Observable<Profile | undefined>;
-
-  constructor(protected http: HttpClient, protected auth: AuthenticationService, protected snackBar: MatSnackBar) {
-    /** If profile is authenticated, display profile page. */
-    this.profile$ = this.auth.isAuthenticated$.pipe(
-      mergeMap(isAuthenticated => {
-        if (isAuthenticated) {
-          return this.http.get<Profile>('/api/profile');
-        } else {
-          return of(undefined);
-        }
-      }),
-      shareReplay(1)
-    );
+  constructor(protected http: HttpClient, 
+              protected auth: AuthenticationService, 
+              protected snackBar: MatSnackBar) {
   }
 
   /** Returns all organization entries from the backend database table using the backend HTTP get request. 
@@ -63,11 +56,19 @@ export class OrganizationService {
   }
 
   /** Returns the new organization object from the backend database table using the backend HTTP post request. 
-   * @param org: OrganizationSummary representing the updated organization
+   * @param organization: OrganizationSummary representing the new organization
    * @returns {Observable<Organization>}
    */
     createOrganization(organization: Organization): Observable<Organization> {
       return this.http.post<Organization>("/api/organizations", organization);
     }
+  
+    /** Returns the updated organization object from the backend database table using the backend HTTP put request. 
+    * @param organization: OrganizationSummary representing the updated organization
+    * @returns {Observable<Organization>}
+    */
+     updateOrganization(organization: Organization): Observable<Organization> {
+       return this.http.put<Organization>("/api/organizations", organization);
+     }
 
 }

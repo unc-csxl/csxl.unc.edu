@@ -29,12 +29,18 @@
                             *ngIf='organization!.linked_in != ""' />
                         <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
                             *ngIf='organization!.youtube != ""' />
+                        <a [routerLink]="['/organizations', organization!.slug, 'edit']" *ngIf="adminPermission$ | async">
+                            <button mat-icon-button color="basic">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </a> 
                     </div>
                 </div>
             </div>
 
             <!-- Organization Description -->
-            <p class="organization-description">{{organization!.long_description}}</p>
+            <p class="organization-description">{{organization!.long_description ? organization.long_description :
+                organization.short_description}}</p>
 
             <!-- Organization Icons (Phones)-->
             <div class="organization-icons-section" *ngIf="isHandset" [ngStyle]="{'flex-direction': 'row'}">
@@ -50,10 +56,14 @@
                         *ngIf='organization!.linked_in != ""' />
                     <social-media-icon [svgIcon]='"youtube"' [href]='organization!.youtube'
                         *ngIf='organization!.youtube != ""' />
+                    <!-- Link to Organization Editor -->
+                    <a [routerLink]="['/organizations', organization!.slug, 'edit']" *ngIf="adminPermission$ | async">
+                        <button mat-icon-button color="basic">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </a> 
                 </div>
-            </div>
-
-            <!-- Link to Organization Editor -->
+            </div> 
         </div>
     </mat-card-header>
 </mat-card>

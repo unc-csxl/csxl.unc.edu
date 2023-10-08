@@ -16,8 +16,8 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-class UserPermissionError(Exception):
-    """UserPermissionError is raised when a user attempts to perform an action they are not authorized to perform."""
+class UserPermissionException(Exception):
+    """UserPermissionException is raised when a user attempts to perform an action they are not authorized to perform."""
 
     def __init__(self, action: str, resource: str):
         super().__init__(
@@ -67,7 +67,7 @@ class PermissionService:
 
         Raises:
             ValueError: If the grantee is not a User or Role.
-            UserPermissionError: If the grantor does not have permission to grant the permission.
+            UserPermissionException: If the grantor does not have permission to grant the permission.
         """
         self.enforce(grantor, 'permission.grant', permission.action)
         self.enforce(grantor, permission.action, permission.resource)
@@ -98,7 +98,7 @@ class PermissionService:
             bool: True if the permission was revoked, False otherwise.
 
         Raises:
-            UserPermissionError: If the revoker does not have permission to revoke the permission."""
+            UserPermissionException: If the revoker does not have permission to revoke the permission."""
         if permission.id is None:
             return False
 
@@ -127,9 +127,9 @@ class PermissionService:
             None
 
         Raises:
-            UserPermissionError: If the subject does not have permission to carry out the action on the resource."""
+            UserPermissionException: If the subject does not have permission to carry out the action on the resource."""
         if self.check(subject, action, resource) is False:
-            raise UserPermissionError(action, resource)
+            raise UserPermissionException(action, resource)
 
     def check(self, subject: User, action: str, resource: str) -> bool:
         """Check if a user has permission to carry out an action on a resource.

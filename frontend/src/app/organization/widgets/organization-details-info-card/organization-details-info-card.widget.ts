@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Organization } from '../../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
+import { PermissionService } from 'src/app/permission.service';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'organization-details-info-card',
@@ -21,7 +23,12 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
     public isTablet: boolean = false;
     private isTabletSubscription!: Subscription;
 
-    constructor(private breakpointObserver: BreakpointObserver) {}
+    /** Stores whether the user has admin permission over the current organization. */
+    public adminPermission$: Observable<boolean>;
+
+    constructor(private breakpointObserver: BreakpointObserver, private permission: PermissionService) {
+        this.adminPermission$ = this.permission.check('admin.view', 'admin/');
+    }
 
     ngOnInit(): void {
         this.isHandsetSubscription = this.initHandset();

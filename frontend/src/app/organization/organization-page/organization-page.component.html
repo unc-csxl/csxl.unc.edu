@@ -9,6 +9,6 @@
         <!-- Display card for each organization, potentially filtered based on the search query. -->
         <organization-card class='card' [organization]='organization' [profile]='profile'
             [profilePermissions]='permValues'
-            *ngFor='let organization of (organizations$ | organizationFilter: searchBarQuery) | async' />
+            *ngFor='let organization of (organizations | organizationFilter: searchBarQuery)' />
     </div>
 </div>
