@@ -473,7 +473,6 @@ class ReservationService:
             self._session.query(ReservationEntity)
             .join(ReservationEntity.users)
             .filter(
-                ReservationEntity.start < now + timedelta(minutes=10),
                 ReservationEntity.end > now,
                 ReservationEntity.state.in_(
                     (ReservationState.CONFIRMED, ReservationState.CHECKED_IN, ReservationState.CHECKED_OUT)
