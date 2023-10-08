@@ -46,7 +46,10 @@ export class CoworkingService {
         };
 
         return this.http.post<ReservationJSON>("/api/coworking/reservation", reservation)
-            .pipe(tap(reservation => this.status.pushReservation(parseReservationJSON(reservation))));
+            .pipe(
+                map(parseReservationJSON),
+                tap(reservation => this.status.pushReservation(reservation))
+            );
     }
 
     confirmReservation(reservation: Reservation) {

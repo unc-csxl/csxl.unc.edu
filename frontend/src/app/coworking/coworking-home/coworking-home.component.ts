@@ -2,7 +2,7 @@
  * The Coworking Component serves as the hub for students to create reservations
  * for tables, rooms, and equipment from the CSXL.
  * 
- * @author Ajay Gandecha
+ * @author Kris Jordan, Ajay Gandecha
  * @copyright 2023
  * @license MIT
  */
@@ -16,9 +16,9 @@ import { CoworkingStatus, OperatingHours, Reservation, SeatAvailability } from '
 import { Observable, Subscription, map, timer } from 'rxjs';
 
 @Component({
-  selector: 'app-coworking-page',
-  templateUrl: './coworking-page.component.html',
-  styleUrls: ['./coworking-page.component.css']
+  selector: 'app-coworking-home',
+  templateUrl: './coworking-home.component.html',
+  styleUrls: ['./coworking-home.component.css']
 })
 export class CoworkingPageComponent implements OnInit, OnDestroy {
 
@@ -40,7 +40,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     resolve: { profile: profileResolver }
   };
 
-  constructor(route: ActivatedRoute, private router: Router, public coworkingService: CoworkingService) {
+  constructor(route: ActivatedRoute, public coworkingService: CoworkingService, private router: Router) {
     this.status$ = coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
@@ -48,7 +48,11 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   reserve(seatSelection: SeatAvailability[]) {
-    this.coworkingService.draftReservation(seatSelection).subscribe();
+    this.coworkingService.draftReservation(seatSelection).subscribe({
+      next: (reservation) => {
+        this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
+      }
+    });
   }
 
   cancel(reservation: Reservation) {

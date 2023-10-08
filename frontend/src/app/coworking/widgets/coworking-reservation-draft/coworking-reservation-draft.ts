@@ -3,11 +3,11 @@ import { Reservation } from '../../coworking.models';
 import { Observable, map, timer } from 'rxjs';
 
 @Component({
-    selector: 'coworking-reservation-editor',
-    templateUrl: './coworking-reservation-editor.html',
-    styleUrls: ['./coworking-reservation-editor.css']
+    selector: 'coworking-reservation-draft',
+    templateUrl: './coworking-reservation-draft.html',
+    styleUrls: ['./coworking-reservation-draft.css']
 })
-export class CoworkingReservationEditor implements OnInit {
+export class CoworkingReservationDraft implements OnInit {
 
     @Input() reservation!: Reservation;
 

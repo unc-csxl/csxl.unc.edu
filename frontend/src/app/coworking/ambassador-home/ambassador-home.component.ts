@@ -7,9 +7,9 @@ import { Reservation } from '../coworking.models';
 import { AmbassadorService } from './ambassador.service';
 
 @Component({
-  selector: 'app-coworking-ambassador-page',
-  templateUrl: './ambassador-page.component.html',
-  styleUrls: ['./ambassador-page.component.css']
+  selector: 'app-coworking-ambassador-home',
+  templateUrl: './ambassador-home.component.html',
+  styleUrls: ['./ambassador-home.component.css']
 })
 export class AmbassadorPageComponent {
 
