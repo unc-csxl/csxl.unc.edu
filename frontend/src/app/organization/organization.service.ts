@@ -56,11 +56,19 @@ export class OrganizationService {
   }
 
   /** Returns the new organization object from the backend database table using the backend HTTP post request. 
-   * @param org: OrganizationSummary representing the updated organization
+   * @param organization: OrganizationSummary representing the new organization
    * @returns {Observable<Organization>}
    */
     createOrganization(organization: Organization): Observable<Organization> {
       return this.http.post<Organization>("/api/organizations", organization);
     }
+  
+    /** Returns the updated organization object from the backend database table using the backend HTTP put request. 
+    * @param organization: OrganizationSummary representing the updated organization
+    * @returns {Observable<Organization>}
+    */
+     updateOrganization(organization: Organization): Observable<Organization> {
+       return this.http.put<Organization>("/api/organizations", organization);
+     }
 
 }

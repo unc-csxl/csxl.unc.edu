@@ -1,7 +1,7 @@
 """User administration API."""
 
 from fastapi import APIRouter, Depends, HTTPException
-from ...services import UserService, UserPermissionError
+from ...services import UserService, UserPermissionException
 from ...models import User, Paginated, PaginationParams
 from ..authentication import registered_user
 
@@ -29,5 +29,5 @@ def list_users(
         pagination_params = PaginationParams(
             page=page, page_size=page_size, order_by=order_by, filter=filter)
         return user_service.list(subject, pagination_params)
-    except UserPermissionError as e:
+    except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))

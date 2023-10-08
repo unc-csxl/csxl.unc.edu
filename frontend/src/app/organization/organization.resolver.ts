@@ -16,5 +16,25 @@ export const organizationResolver: ResolveFn<Organization[] | undefined> = (rout
 };
 
 export const organizationDetailResolver: ResolveFn<Organization | undefined> = (route, state) => {
-    return inject(OrganizationService).getOrganization(route.paramMap.get('slug')!);
+    if(route.paramMap.get('slug')! != "new") {
+        return inject(OrganizationService).getOrganization(route.paramMap.get('slug')!);
+    }
+    else {
+        return {
+            id: null,
+            name: "",
+            shorthand: "",
+            slug: "",
+            logo: "",
+            short_description: "",
+            long_description: "",
+            email: "",
+            website: "",
+            instagram: "",
+            linked_in: "",
+            youtube: "",
+            heel_life: "",
+            public: false
+          };
+    }
 };

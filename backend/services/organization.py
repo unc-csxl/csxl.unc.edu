@@ -6,11 +6,18 @@ from ..database import db_session
 from ..models.organization import Organization
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
-from .permission import PermissionService, UserPermissionError
+from .permission import PermissionService, UserPermissionException
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
+
+class OrganizationNotFoundException(Exception):
+    """OrganizationNotFoundException is raised when trying to access an organization that does not exist."""
+
+    def __init__(self, id: str):
+        super().__init__(
+            f'No organization found matching slug/id: {id}')
 
 class OrganizationService:
     """Service that performs all of the actions on the `Organization` table"""
@@ -86,7 +93,7 @@ class OrganizationService:
             Organization: Object with corresponding slug
 
         Raises:
-            Exception if no organization is found with the corresponding slug
+            OrganizationNotFoundException if no organization is found with the corresponding slug
         """
 
         # Query the organization with matching slug
@@ -100,7 +107,7 @@ class OrganizationService:
             return organization.to_model()
         else:
             # Raise exception
-            raise Exception(f"No organization found with slug: {slug}")
+            raise OrganizationNotFoundException(slug)
 
     def update(
         self, subject: User, organization: Organization
@@ -115,6 +122,9 @@ class OrganizationService:
 
         Returns:
             Organization: Updated organization object
+
+        Raises:
+            OrganizationNotFoundException: If no organization is found with the corresponding ID
         """
 
         # Check if user has admin permissions
@@ -144,7 +154,7 @@ class OrganizationService:
             return obj.to_model()
         else:
             # Raise exception
-            raise Exception(f"No organization found with ID: {organization.id}")
+            raise OrganizationNotFoundException(organization.id)
 
     def delete(self, subject: User, slug: str) -> None:
         """
@@ -156,7 +166,7 @@ class OrganizationService:
             slug: a string representing a unique organization slug
 
         Raises:
-            Exception if no organization is found with the corresponding slug
+            OrganizationNotFoundException: If no organization is found with the corresponding slug
         """
         # Check if user has admin permissions
         self._permission.enforce(subject, "organization.create", f"organization")
@@ -173,4 +183,4 @@ class OrganizationService:
             self._session.commit()
         else:
             # Raise exception
-            raise Exception(f"No organization found with slug: {slug}")
+            raise OrganizationNotFoundException(slug)

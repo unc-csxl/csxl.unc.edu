@@ -9,6 +9,7 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Organization } from 'src/app/organization/organization.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -33,8 +34,7 @@ export class AdminOrganizationListComponent {
         path: 'organizations',
         component: AdminOrganizationListComponent,
         title: 'Organization Administration',
-        canActivate: [permissionGuard('organization.list', 'organization/')],
-        // resolve: { organizations: adminOrganizationResolver }
+        canActivate: [permissionGuard('organization.list', 'organization/')]
     }
 
     constructor(
@@ -45,10 +45,6 @@ export class AdminOrganizationListComponent {
     ) {
         this.organizations$ = adminOrganizationService.organizations$;
         adminOrganizationService.list();
-        // return service.organizations$;
-
-        // const data = this.route.snapshot.data as { organizations: Organizations };
-        // this.organizations = data.organizations.organizations;
     }
     
     /** Event handler to open the Organization Editor to create a new organization */
