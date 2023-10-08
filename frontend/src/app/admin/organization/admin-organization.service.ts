@@ -12,12 +12,11 @@ import { HttpClient } from '@angular/common/http';
 import { Organization } from "../../..//app/organization/organization.service";
 import { Observable, tap, throwError } from 'rxjs';
 import { RxOrganization } from '../../../app/organization/rx-organization';
-import { Organizations } from '../../../app/organization/organization.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminOrganizationService {
     private organizations: RxOrganization = new RxOrganization();
-    public organizations$: Observable<Organizations> = this.organizations.value$;
+    public organizations$: Observable<Organization[]> = this.organizations.value$;
 
     constructor(protected http: HttpClient) { }
 
@@ -26,7 +25,7 @@ export class AdminOrganizationService {
      */
     list(): void {
         this.http.get<Organization[]>("/api/organizations").subscribe(
-            (organizations) => this.organizations.set({organizations})
+            (organizations) => this.organizations.set(organizations)
         );
     }
 

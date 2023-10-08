@@ -1,22 +1,22 @@
 import { RxObject } from "../rx-object";
-import { Organization, Organizations } from "./organization.service"
+import { Organization } from "./organization.service"
 
-export class RxOrganization extends RxObject<Organizations> {
+export class RxOrganization extends RxObject<Organization[]> {
 
     pushOrganization(organization: Organization): void {
-        this.value.organizations.push(organization);
+        this.value.push(organization);
         this.notify();
     }
 
     updateOrganization(organization: Organization): void {
-        this.value.organizations = this.value.organizations.map((o) => {
+        this.value = this.value.map((o) => {
             return o.id !== organization.id ? o : organization;
         });
         this.notify();
     }
 
     removeOrganization(organizationToRemove: Organization): void {
-        this.value.organizations = this.value.organizations.filter(organization => 
+        this.value = this.value.filter(organization => 
           organizationToRemove.slug !== organization.slug);
         this.notify();
     }

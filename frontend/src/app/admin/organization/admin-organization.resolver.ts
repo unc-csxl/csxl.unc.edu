@@ -9,10 +9,10 @@
 
 import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
-import { Organizations } from "/workspace/frontend/src/app/organization/organization.service";
 import { AdminOrganizationService } from "./admin-organization.service"
+import { Organization } from "src/app/organization/organization.service";
 
-export const adminOrganizationResolver: ResolveFn<Organizations | undefined> = (route, state) => {
+export const adminOrganizationResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
     let service = inject(AdminOrganizationService);
     service.list();
     return service.organizations$;
