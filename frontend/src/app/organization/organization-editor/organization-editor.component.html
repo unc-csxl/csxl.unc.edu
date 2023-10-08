@@ -1,7 +1,7 @@
 <!-- HTML Structure of Profile Page -->
 
 <!-- Update Organization Form -->
-<form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" *ngIf="adminPermission">
+<form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" *ngIf="adminPermission$ | async">
     <!-- Update Organization Card -->
     <mat-card>
         <mat-card-header>
@@ -78,6 +78,3 @@
         </mat-card-actions>
     </mat-card>
 </form>
-
-<!-- Message for Non-Authenicated Users -->
-<p *ngIf="!adminPermission">You do not have permission to view this page.</p>
