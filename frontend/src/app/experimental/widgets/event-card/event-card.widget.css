@@ -6,4 +6,5 @@
 
 .mat-mdc-card:hover {
     background-color: #525252;
+    cursor: pointer;
 }
