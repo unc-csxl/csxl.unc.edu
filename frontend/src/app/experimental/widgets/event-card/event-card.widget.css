@@ -3,3 +3,7 @@
     max-width: 100%;
     /* background-color: #525252 !important; */
 }
+
+.mat-mdc-card:hover {
+    background-color: #525252;
+}

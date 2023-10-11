@@ -11,9 +11,9 @@
                 <mat-card-title>October 28th</mat-card-title>
                 <mat-divider style="padding-bottom: 8px;" />
 
-                <button (click)="onEventCardClicked()">
+                <!-- <button (click)="onEventCardClicked()">
                     Test
-                </button>
+                </button> -->
 
                 <event-card id="firstcard" eventName="HackNC Hackathon" eventOrganizationName="HackNC"
                     eventTimeText="10:00 AM - All day" eventLocation="Great Hall (Student Union)" />
@@ -38,14 +38,6 @@
                     eventTimeText="12:00 PM - 3 hours" eventLocation="Sitterson Lower Lobby" />
 
             </mat-card>
-        </div>
-
-        <div class="details-column">
-            <event-detail-card [eventName]="'HackNC Hackathon'" [eventOrganization]="sampleOrganization"
-                [eventStartText]="'Oct. 28th, 10:00 AM'" [eventEndText]="'Oct. 29th, 10:00 AM'"
-                [eventLocation]="'Woolen Gym'"
-                [eventDescription]="'HackNC is a weekend for students of all skill levels to broaden their talents. Your challenge is to make an awesome project in just 24 hours. You will have access to hands-on workshops and demos from our sponsors, as well as exciting talks about the awesome things happening right now with computer science and technology - not to mention all of the free food, shirts, stickers, and swag!'"
-                [requiresPreregistration]="true" />
         </div>
     </div>
 </div>

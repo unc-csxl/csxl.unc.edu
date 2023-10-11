@@ -4,7 +4,7 @@
 
 .events-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    /* grid-template-columns: 1fr 1fr; */
     /* grid-template-rows: 0fr 2fr; */
     row-gap: 15px;
     column-gap: 24px;
@@ -28,40 +28,6 @@
     max-width: 100%;
 }
 
-.organization-section:hover {
-    background-color: #525252;
-}
-
 .details-column {
     height: 100%;
-}
-
-#firstcard {
-    .mat-mdc-card {
-        background-color: #525252 !important;
-    }
-}
-
-/* .filter-button {
-    height: 56px;
-    width: 56px;
-    border-width: 1px !important;
-} */
-
-@media only screen and (max-width: 680px) {
-
-    .events-grid {
-        display: flex;
-        flex-direction: column-reverse;
-    }
-
-    .details-column {
-        width: 100%;
-    }
-}
-
-@media only screen and (max-width: 1180px) {
-    .events-grid {
-        grid-template-columns: 1fr 1fr;
-    }
 }

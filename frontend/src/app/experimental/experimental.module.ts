@@ -26,13 +26,17 @@ import { ExperimentalRoutingModule } from './experimental-routing.module';
 import { EventCard } from './widgets/event-card/event-card.widget';
 import { EventDetailCard } from './widgets/event-detail-card/event-detail-card.widget';
 import { EventDetailDialog } from './event-detail-dialog';
+import { EventDetailsComponent } from './event-details/event-details.component';
+import { EventPageComponent } from './event-page/event-page.component';
 
 @NgModule({
   declarations: [
     ExperimentalComponent,
     EventCard,
     EventDetailCard,
-    EventDetailDialog
+    EventDetailDialog,
+    EventDetailsComponent,
+    EventPageComponent
   ],
   imports: [
     CommonModule,

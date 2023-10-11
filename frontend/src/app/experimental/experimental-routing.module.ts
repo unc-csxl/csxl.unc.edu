@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ExperimentalComponent } from './experimental.component';
+import { EventDetailsComponent } from './event-details/event-details.component';
 
 const routes: Routes = [
-    ExperimentalComponent.Route
+    ExperimentalComponent.Route,
+    EventDetailsComponent.Route
 ];
 
 @NgModule({
