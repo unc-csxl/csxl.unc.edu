@@ -12,7 +12,7 @@ export class EventDetailsComponent {
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: 'detail',
-    title: 'Experimental - Event Detail',
+    title: 'Event Detail - TODO: Make Title Dynamic',
     component: EventDetailsComponent,
     canActivate: [],
     resolve: { profile: profileResolver }
