@@ -14,11 +14,11 @@
         href="/auth?continue_to={{router.url}}">Sign in</a>
       <ng-template #authenticated mat-list-item>
         <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/admin">Admin</a>
-        <a mat-list-item *ngIf="adminPermission$ | async" routerLink="/experimental">Experimental</a>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/profile">Profile</a>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/organizations">Organizations</a>
+        <a mat-list-item routerLink="/events">Events</a>
         <mat-divider></mat-divider>
         <a mat-list-item (click)="auth.signOut()">Sign out</a>
       </ng-template>
