@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
 from ..models.organization import Organization
+from ..models.organization_details import OrganizationDetails
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -96,4 +97,28 @@ class OrganizationEntity(EntityBase):
             youtube=self.youtube,
             heel_life=self.heel_life,
             public=self.public
+        )
+        
+    def to_details_model(self) -> OrganizationDetails:
+        """Create a RoleDetails model from a RoleEntity, with permissions and members included.
+
+        Returns:
+            RoleDetails: A RoleDetails model for API usage.
+        """
+        return OrganizationDetails(
+            id=self.id,
+            name=self.name,
+            shorthand=self.shorthand,
+            slug=self.slug,
+            logo=self.logo,
+            short_description=self.short_description,
+            long_description=self.long_description,
+            website=self.website,
+            email=self.email,
+            instagram=self.instagram,
+            linked_in=self.linked_in,
+            youtube=self.youtube,
+            heel_life=self.heel_life,
+            public=self.public,
+            events=self.events
         )
