@@ -2,25 +2,24 @@ from fastapi import APIRouter, Depends, HTTPException
 from backend.api.authentication import registered_user
 from backend.models.user import User
 from backend.services.event import EventNotFoundException, EventService
-from backend.models.event import EventDetail, Event
+from backend.models.event import Event, EventDetails
 from backend.services.permission import UserPermissionException
-from backend.services.user import UserService
 
 api = APIRouter(prefix="/api/events")
 
 @api.get("", tags=['Event'])
-def get_events(event_service: EventService = Depends()) -> list[EventDetail]:
+def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events
     Returns:
-        list[EventDetail]: All `EventDetail`s in the `Event` database table
+        list[Event]: All `Event`s in the `Event` database table
     """
 
     # Return all events
     return event_service.all()
 
-@api.get("/org/{id}", tags=['Event'])
-def get_events_from_org_id(org_id: int, event_service: EventService = Depends()) -> list[Event]:
+@api.get("/organization/{id}", tags=['Event'])
+def get_events_from_organization_id(organization_id: int, event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events from an organization
     Returns:
@@ -28,10 +27,10 @@ def get_events_from_org_id(org_id: int, event_service: EventService = Depends())
     """
 
     # Return all events
-    return event_service.get_events_from_org_id(org_id)
+    return event_service.get_events_from_organization_id(organization_id)
 
 @api.post("", tags=['Event'])
-def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> Event:
+def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
     """
     Create event
 
@@ -56,7 +55,7 @@ def new_event(event: Event, subject: User = Depends(registered_user), event_serv
         raise HTTPException(status_code=422, detail=str(e))
     
 @api.get("/{id}", responses={404: {"model": None}}, tags=['Event'])
-def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event:
+def get_event_from_id(id: int, event_service: EventService = Depends()) -> EventDetails:
     """
     Get event with matching id
 
@@ -81,7 +80,7 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
         raise HTTPException(status_code=404, detail=str(e))
 
 @api.put("", responses={404: {"model": None}}, tags=['Event'])
-def update_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> Event:
+def update_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
     """
     Update event
 
