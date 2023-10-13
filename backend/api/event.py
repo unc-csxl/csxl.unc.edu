@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from backend.api.authentication import registered_user
 from backend.models.user import User
-from backend.services.event import EventService
+from backend.services.event import EventNotFoundException, EventService
 from backend.models.event import EventDetail, Event
+from backend.services.permission import UserPermissionException
 from backend.services.user import UserService
 
 api = APIRouter(prefix="/api/events")
@@ -40,6 +41,9 @@ def new_event(event: Event, subject: User = Depends(registered_user), event_serv
 
     Returns:
         Event: latest iteration of the created or updated event after changes made
+
+    Raises:
+        HTTPException 404 if create() raises an Exception
     """
 
     # Try to create event
@@ -62,13 +66,16 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
     
     Returns:
         Event: Event with matching id
+    
+    Raises:
+        HTTPException 404 if update() raises an Exception
     """
     
     # Try to get event with matching id
     try: 
         # Return event
         return event_service.get_from_id(id)
-    except Exception as e:
+    except (EventNotFoundException, UserPermissionException) as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
@@ -86,13 +93,13 @@ def update_event(event: Event, subject: User = Depends(registered_user), event_s
         Event: Updated event
 
     Raises:
-
+        HTTPException 404 if update() raises an Exception
     """
 
     try: 
         # Return updated event
         return event_service.update(subject, event)
-    except Exception as e:
+    except (EventNotFoundException, UserPermissionException) as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
@@ -107,13 +114,13 @@ def delete_event(id: int, subject: User = Depends(registered_user), event_servic
         event_service: a valid EventService
     
     Raises:
-        
+        HTTPException 404 if delete() raises an Exception
     """
    
     try:
         # Try to delete event
         event_service.delete(subject, id)
-    except Exception as e:
+    except (EventNotFoundException, UserPermissionException) as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response or if item to delete does not exist
         raise HTTPException(status_code=404, detail=str(e))

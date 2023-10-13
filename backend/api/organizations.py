@@ -94,7 +94,8 @@ def update_organization(organization: Organization, subject: User = Depends(regi
     Returns:
         Organization: Updated organization
 
-    Raises HTTPException 404 if update() raises an Exception
+    Raises:
+        HTTPException 404 if update() raises an Exception
     """
     try: 
         # Return updated organization

@@ -7,6 +7,13 @@ from ..database import db_session
 from backend.models.event import Event
 from ..entities import EventEntity
 
+class EventNotFoundException(Exception):
+    """EventNotFoundException is raised when trying to access an event that does not exist."""
+
+    def __init__(self, id: str):
+        super().__init__(
+            f'No event found with matching ID: {id}')
+
 class EventService:
     """Service that performs all of the actions on the `Event` table"""
 
@@ -48,6 +55,7 @@ class EventService:
         # Checks if the role already exists in the table
         if event.id:
             # Raise exception
+            # should this be changed?
             raise Exception(f"Duplicate event found with ID: {event.id}")
         else:
             # Otherwise, create new object
@@ -81,7 +89,7 @@ class EventService:
             return event.to_model()
         else:
             # Raise exception
-            raise Exception(f"No event found with ID: {id}")
+            raise EventNotFoundException(id);
 
     def get_events_from_org_id(self, org_id: int) -> list[Event]:
         """
@@ -127,7 +135,7 @@ class EventService:
             return obj.to_model()
         else:
             # Raise exception
-            raise Exception(f"No event found with ID: {event.id}")
+            raise EventNotFoundException(id);
 
     
     def delete(self, subject: User, id: int) -> None:
@@ -150,4 +158,4 @@ class EventService:
             self._session.commit()
         else:
             # Raise exception
-            raise Exception(f"No event found with ID: {id}")
+            raise EventNotFoundException(id);
