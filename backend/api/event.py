@@ -1,18 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
+from backend.api.authentication import registered_user
+from backend.models.user import User
 from backend.services.event import EventService
 from backend.models.event import EventDetail, Event
-from datetime import datetime
-from fastapi.security import HTTPBearer
-from fastapi.security.http import HTTPAuthorizationCredentials
-import jwt
-from ..env import getenv
-
 from backend.services.user import UserService
 
 api = APIRouter(prefix="/api/events")
-
-_JWT_SECRET = getenv('JWT_SECRET')
-_JST_ALGORITHM = 'HS256'
 
 @api.get("", tags=['Event'])
 def get_events(event_service: EventService = Depends()) -> list[EventDetail]:
@@ -37,7 +30,7 @@ def get_events_from_org_id(org_id: int, event_service: EventService = Depends())
     return event_service.get_events_from_org_id(org_id)
 
 @api.post("", tags=['Event'])
-def new_event(event: Event, event_service: EventService = Depends()) -> Event:
+def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> Event:
     """
     Create event
 
@@ -52,7 +45,7 @@ def new_event(event: Event, event_service: EventService = Depends()) -> Event:
     # Try to create event
     try:
         # Return created event
-        return event_service.create(event)
+        return event_service.create(subject, event)
     except Exception as e:
         # Raise 422 exception if creation fails
         # - This would occur if the request body is shaped incorrectly
@@ -81,7 +74,7 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
         raise HTTPException(status_code=404, detail=str(e))
 
 @api.put("", responses={404: {"model": None}}, tags=['Event'])
-def update_event(event: Event, event_service: EventService = Depends()) -> Event:
+def update_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> Event:
     """
     Update event
 
@@ -95,14 +88,14 @@ def update_event(event: Event, event_service: EventService = Depends()) -> Event
 
     try: 
         # Return updated event
-        return event_service.update(event)
+        return event_service.update(subject, event)
     except Exception as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
 @api.delete("/{id}", tags=['Event'])
-def delete_event(id: int, event_service = Depends(EventService)):
+def delete_event(id: int, subject: User = Depends(registered_user), event_service = Depends(EventService)):
     """
     Delete event based on id
 
@@ -113,7 +106,7 @@ def delete_event(id: int, event_service = Depends(EventService)):
    
     try:
         # Try to delete event
-        event_service.delete(id)
+        event_service.delete(subject, id)
     except Exception as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response or if item to delete does not exist
