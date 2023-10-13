@@ -38,10 +38,10 @@ class EventService:
         If the event's ID already exists in the table, raise an exception.
 
         Parameters:
-            event (Event): Event to add to table
+            event: a valid Event model representing the event to be added
 
         Returns:
-            Event: Object added to table
+            Event: a valid Event model representing added event
         """
         self._permission.enforce(subject, "event.create", f"event")
 
@@ -88,10 +88,10 @@ class EventService:
         Get all the events hosted by an organization with id
 
         Parameters:
-            org_id (int): Unique organization ID
+            org_id: an int representing a unique organization ID
 
         Returns:
-            list[Event]: Object with corresponding organization ID
+            list[Event]: a list of valid Event models
         """
 
         # Query the event with matching org id
@@ -101,7 +101,7 @@ class EventService:
     def update(self, subject: User, event: Event) -> Event:
         """
         Update the event
-        If none found with that id, a debug description is displayed.
+        If none found, a debug description is displayed.
 
         Parameters:
             event: a valid Event model

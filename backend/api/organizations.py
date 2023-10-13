@@ -44,7 +44,7 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         organization_service: a valid OrganizationService
 
     Returns:
-        OrganizationDetail: Created organization
+        Organization: Created organization
 
     Raises:
         HTTPException 422 if create() raises an Exception
@@ -67,7 +67,7 @@ def get_organization_from_slug(slug: str, organization_service: OrganizationServ
         organization_service: a valid OrganizationService
 
     Returns:
-        OrganizationDetail: OrganizationDetail with matching slug
+        Organization: Organization with matching slug
 
     Raises:
         HTTPException 404 if get_from_slug() raises an Exception
@@ -87,7 +87,7 @@ def update_organization(organization: Organization, subject: User = Depends(regi
     Update organization
 
     Parameters:
-        organization: a valid OrganizationDetail model
+        organization: a valid Organization model
         subject: a valid User model representing the currently logged in User
         organization_service: a valid OrganizationService
 

@@ -84,6 +84,9 @@ def update_event(event: Event, subject: User = Depends(registered_user), event_s
 
     Returns:
         Event: Updated event
+
+    Raises:
+
     """
 
     try: 
@@ -102,6 +105,9 @@ def delete_event(id: int, subject: User = Depends(registered_user), event_servic
     Parameters:
         id: an int representing a unique event ID
         event_service: a valid EventService
+    
+    Raises:
+        
     """
    
     try:

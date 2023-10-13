@@ -109,9 +109,7 @@ class OrganizationService:
             # Raise exception
             raise OrganizationNotFoundException(slug)
 
-    def update(
-        self, subject: User, organization: Organization
-    ) -> Organization:
+    def update(self, subject: User, organization: Organization) -> Organization:
         """
         Update the organization
         If none found with that id, a debug description is displayed.
