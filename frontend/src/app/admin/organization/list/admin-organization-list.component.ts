@@ -24,7 +24,6 @@ export class AdminOrganizationListComponent {
 
     /** Organizations List */
     public organizations$: Observable<Organization[]>;
-    // public organizations: Organization[];
 
     public displayedColumns: string[] = ['name'];
 
@@ -33,14 +32,13 @@ export class AdminOrganizationListComponent {
         path: 'organizations',
         component: AdminOrganizationListComponent,
         title: 'Organization Administration',
-        canActivate: [permissionGuard('organization.list', 'organization/')]
+        canActivate: [ permissionGuard('organization.list', 'organization/') ]
     }
 
     constructor(
         private router: Router,
         private snackBar: MatSnackBar,
-        private adminOrganizationService: AdminOrganizationService,
-        private route: ActivatedRoute
+        private adminOrganizationService: AdminOrganizationService
     ) {
         this.organizations$ = adminOrganizationService.organizations$;
         adminOrganizationService.list();
