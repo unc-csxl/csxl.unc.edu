@@ -1,7 +1,7 @@
-from pydantic import BaseModel
-from datetime import datetime
+from backend.models import event
+from backend.models.organization import Organization
 
-class Event(BaseModel):
+class EventDetails(event):
     """
     Model to represent `Event` connections between users and organizations
     
@@ -9,9 +9,5 @@ class Event(BaseModel):
     of the `Event` database in the PostgreSQL database
     """
     
-    id: int | None=None
-    name: str
-    time: datetime
-    location: str
-    description: str
-    public: bool
+    organization_id: int
+    organization: Organization

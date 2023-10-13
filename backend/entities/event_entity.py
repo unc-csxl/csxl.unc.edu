@@ -2,6 +2,8 @@
 
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event import Event
@@ -69,13 +71,18 @@ class EventEntity(EntityBase):
                      description=self.description, 
                      public=self.public)
     
-                     # TODO: fields that connect events to other entities
-                     #org_id=self.org_id,
-                     #organization=self.organization.to_summary(),
-                     #users=[user.to_summary() for user in self.users],
-                     #user_associations=[association.to_model() for association in self.user_associations])
+    def to_details_model(self) -> EventDetails:
+        """Create a RoleDetails model from a RoleEntity, with permissions and members included.
 
-# TODO: Imports to entities that have relationships with events
-# from backend.entities.organization_entity import OrganizationEntity;
-# from backend.entities.user_entity import UserEntity;
-# from backend.entities.registration_entity import RegistrationEntity;
+        Returns:
+            RoleDetails: A RoleDetails model for API usage.
+        """
+        return EventDetails(id=self.id, 
+                            name=self.name, 
+                            time=self.time, 
+                            location=self.location, 
+                            description=self.description, 
+                            public=self.public,
+                            organization_id=self.organization_id,
+                            organization=self.organization.to_model()
+        )
