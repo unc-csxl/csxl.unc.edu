@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
+from backend.models.event_details import EventDetails
 from ..entities import EventEntity
 
 class EventNotFoundException(Exception):
@@ -24,7 +25,7 @@ class EventService:
         """Initializes the `EventService` session"""
         self._session = session
 
-    def all(self) -> list[Event]:
+    def all(self) -> list[EventDetails]:
         """
         Retrieves all events from the table
 
@@ -38,7 +39,7 @@ class EventService:
         # Convert entries to a model and return
         return [entity.to_model() for entity in entities]
 
-    def create(self, subject: User, event: Event) -> Event:
+    def create(self, subject: User, event: Event) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -68,7 +69,7 @@ class EventService:
             # Return added object
             return event_entity.to_model()
 
-    def get_from_id(self, id: int) -> Event:
+    def get_from_id(self, id: int) -> EventDetails:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
@@ -91,7 +92,7 @@ class EventService:
             # Raise exception
             raise EventNotFoundException(id);
 
-    def get_events_from_organization_id(self, organization_id: int) -> list[Event]:
+    def get_events_from_organization_id(self, organization_id: int) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with id
 
@@ -106,7 +107,7 @@ class EventService:
         events = self._session.query(EventEntity).filter(EventEntity.organization_id == organization_id).all()
         return [event.to_model() for event in events]
 
-    def update(self, subject: User, event: Event) -> Event:
+    def update(self, subject: User, event: Event) -> EventDetails:
         """
         Update the event
         If none found, a debug description is displayed.

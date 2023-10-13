@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from backend.api.authentication import registered_user
 from backend.models.user import User
 from backend.services.event import EventNotFoundException, EventService
-from backend.models.event import Event, EventDetails
+from backend.models.event import Event
+from backend.models.event_details import EventDetails
 from backend.services.permission import UserPermissionException
 
 api = APIRouter(prefix="/api/events")
