@@ -1,7 +1,7 @@
-from backend.models import event
+from backend.models.event import Event
 from backend.models.organization import Organization
 
-class EventDetails(event):
+class EventDetails(Event):
     """
     Model to represent `Event` connections between users and organizations
     
