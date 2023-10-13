@@ -1,11 +1,10 @@
 """Definition of SQLAlchemy table-backed object mapping entity for EventEntity."""
 
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event import Event
-
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
@@ -29,7 +28,9 @@ class EventEntity(EntityBase):
     description: Mapped[str] = mapped_column(String)
     # Whether the event is public or not
     public: Mapped[bool] = mapped_column(Boolean)
-    # ID of the organization hosting the event
+    # Organization hosting the event
+    organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
+    organization: Mapped['OrganizationEntity'] = relationship(back_populates="events")
 
     # TODO: Fields that establish relationships with events table
     # org_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
