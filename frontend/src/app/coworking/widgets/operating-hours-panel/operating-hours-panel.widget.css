@@ -2,8 +2,8 @@
     padding: 0 16px;
 }
 
-.hours-title { 
-    font-size: 20px; 
+.hours-title {
+    font-size: 20px;
     font-weight: 500;
     margin: 0;
     letter-spacing: 0.25px;
@@ -29,4 +29,8 @@
 
 .closed .badge {
     background: #612d23;
+}
+
+.mat-expansion-panel {
+    max-width: 640px;
 }
