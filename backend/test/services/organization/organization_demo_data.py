@@ -14,6 +14,7 @@ __license__ = "MIT"
 # Sample Data Objects
 
 appteam = OrganizationEntity(
+    id=1,
     name="App Team Carolina",
     shorthand="App Team",
     slug="app-team",
@@ -30,6 +31,7 @@ appteam = OrganizationEntity(
 )
 
 acm = OrganizationEntity(
+    id=2,
     name="ACM at Carolina", 
     shorthand="ACM",
     slug="acm",
@@ -46,6 +48,7 @@ acm = OrganizationEntity(
 )
 
 bit = OrganizationEntity(
+    id=3,
     name="Black in Technology", 
     shorthand="BIT",
     slug="bit",
@@ -62,6 +65,7 @@ bit = OrganizationEntity(
 )
 
 cads = Organization(
+    id=4,
     name="Carolina Analytics & Data Science Club",
     shorthand="CADS",
     slug="cads",
@@ -78,6 +82,7 @@ cads = Organization(
 )
 
 carvr = OrganizationEntity(
+    id=5,
     name="Carolina Augmented and Virtual Reality", 
     shorthand="CARVR",
     slug="carvr",
@@ -94,6 +99,7 @@ carvr = OrganizationEntity(
 )
 
 cssg = Organization(
+    id=6,
     name="CS+Social Good",
     shorthand="CSSG",
     slug="cssg",
@@ -110,6 +116,7 @@ cssg = Organization(
 )
 
 ctf = OrganizationEntity(
+    id=7,
     name="Cybersecurity CTF Club",
     shorthand="CTF", 
     slug="ctf",
@@ -126,6 +133,7 @@ ctf = OrganizationEntity(
 )
 
 enablingtech = OrganizationEntity(
+    id=8,
     name="Enabling Technology", 
     shorthand="Enabling Tech",
     slug="enabling-tech",
@@ -142,6 +150,7 @@ enablingtech = OrganizationEntity(
 )
 
 esports = OrganizationEntity(
+    id=9,
     name="ESports", 
     shorthand="ESports",
     slug="esports",
@@ -158,6 +167,7 @@ esports = OrganizationEntity(
 )
 
 gamedev = OrganizationEntity(
+    id=10,
     name="Game Development Club", 
     shorthand="Game Dev",
     slug = "game-dev",
@@ -174,6 +184,7 @@ gamedev = OrganizationEntity(
 )
 
 gwc = OrganizationEntity(
+    id=11,
     name="Girls Who Code", 
     shorthand="GWC",
     slug = "gwc",
@@ -190,6 +201,7 @@ gwc = OrganizationEntity(
 )
 
 hacknc = OrganizationEntity(
+    id=12,
     name="HackNC", 
     shorthand="HackNC",
     slug="hacknc", 
@@ -206,6 +218,7 @@ hacknc = OrganizationEntity(
 )
 
 ktp = OrganizationEntity(
+    id=13,
     name="Kappa Theta Pi", 
     shorthand="KTP",
     slug = "ktp",
@@ -222,6 +235,7 @@ ktp = OrganizationEntity(
 )
 
 pearlhacks = OrganizationEntity(
+    id=14,
     name="Pearl Hacks",
     shorthand="Pearl Hacks", 
     slug="pearl-hacks", 
@@ -238,6 +252,7 @@ pearlhacks = OrganizationEntity(
 )
 
 pm = OrganizationEntity(
+    id=15,
     name="Product Management Club", 
     shorthand="PM Club",
     slug = "pm-club",
@@ -254,6 +269,7 @@ pm = OrganizationEntity(
 )
 
 queerhack = OrganizationEntity(
+    id=16,
     name="queer_hack", 
     shorthand="queer_hack",
     slug="queer-hack",
@@ -270,6 +286,7 @@ queerhack = OrganizationEntity(
 )
 
 wics = OrganizationEntity(
+    id=17,
     name="Women in Computer Science", 
     shorthand="WICS",
     slug="wics",
