@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from .....services import PermissionService, UserPermissionError
+from .....services import PermissionService, UserPermissionException
 from .....services.coworking import ReservationService, PolicyService
 from .....services.coworking.reservation import ReservationError
 from .....models.coworking import (

@@ -12,7 +12,7 @@ from .fixtures import user_svc, user_svc_integration, permission_svc_mock
 # Data Models for Fake Data Inserted in Setup
 from .user_data import root, ambassador, user, cads_leader
 from . import user_data
-from .permission_data import ambassador_permission
+from .permission_data import ambassador_permission, ambassador_permission_coworking_reservation
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -27,7 +27,7 @@ def test_get(user_svc_integration: UserService):
     assert user.pid == ambassador.pid
     assert user.onyen == ambassador.onyen
     assert user.email == ambassador.email
-    assert user.permissions == [ambassador_permission]
+    assert user.permissions == [ambassador_permission, ambassador_permission_coworking_reservation]
 
 
 def test_search_by_first_name(user_svc: UserService):

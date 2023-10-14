@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from pydantic import BaseModel, field_validator, FieldValidationInfo, validator
+from pydantic import BaseModel, field_validator, ValidationInfo, validator
 from typing import Self
 
 __authors__ = ["Kris Jordan"]
@@ -28,7 +28,7 @@ class TimeRange(BaseModel):
 
     @field_validator("end")
     @classmethod
-    def check_end_greater_than_start(cls, v: datetime, info: FieldValidationInfo):
+    def check_end_greater_than_start(cls, v: datetime, info: ValidationInfo):
         if v <= info.data["start"]:
             raise ValueError("end must be greater than start")
         return v

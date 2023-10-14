@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from .....services import PermissionService, UserPermissionError
+from .....services import PermissionService, UserPermissionException
 from .....services.coworking import ReservationService
 from .....services.coworking.reservation import ReservationError
 from .....models.coworking import ReservationState
@@ -50,7 +50,7 @@ def test_change_reservation_not_found(reservation_svc: ReservationService):
 
 
 def test_change_reservation_without_permission(reservation_svc: ReservationService):
-    with pytest.raises(UserPermissionError):
+    with pytest.raises(UserPermissionException):
         reservation = reservation_svc.change_reservation(
             user_data.user, ReservationPartial(id=4, state=ReservationState.CONFIRMED)
         )
