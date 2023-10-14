@@ -29,7 +29,7 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-class ReservationError(Exception):
+class ReservationException(Exception):
     def __init__(self, message: str):
         super().__init__(message)
 
@@ -315,7 +315,7 @@ class ReservationService:
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
         if len(request.users) > 1:
-            raise ReservationError("Multi-user reservations not yet supproted.")
+            raise ReservationException("Multi-user reservations not yet supproted.")
 
         # Enforce Reservation Draft Permissions
         if subject.id not in [user.id for user in request.users]:
@@ -348,7 +348,7 @@ class ReservationService:
             .all()
         )
         if len(user_entities) == 0:
-            raise ReservationError(
+            raise ReservationException(
                 "At least one valid user is required to make a reservation."
             )
 
@@ -361,13 +361,13 @@ class ReservationService:
                 if len(nonconflicting) == 1:
                     bounds = nonconflicting[0]
                 else:
-                    raise ReservationError("Users may not have conflicting reservations.")
+                    raise ReservationException("Users may not have conflicting reservations.")
         else:
             # Multiple users all need to not have conflicts
             for user in request.users:
                 conflicts = self._get_active_reservations_for_user(user, bounds)
                 if len(conflicts) > 0:
-                    raise ReservationError("Users may not have conflicting reservations.")
+                    raise ReservationException("Users may not have conflicting reservations.")
 
         # Look at the seats - match bounds of assigned seat's availability
         # TODO: Fetch all seats
@@ -380,7 +380,7 @@ class ReservationService:
             seat_availability = [seat for seat in seat_availability if seat.reservable]
 
         if len(seat_availability) == 0:
-            raise ReservationError("The requested seat(s) are no longer available.")
+            raise ReservationException("The requested seat(s) are no longer available.")
 
         # TODO (limit to # of users on request if multiple users)
         # Here we constrain the reservation start/end to that of the best available seat requested.
@@ -502,7 +502,7 @@ class ReservationService:
             entity.state = ReservationState.CHECKED_IN
             self._session.commit()
         elif entity.state in (ReservationState.CANCELLED, ReservationState.CHECKED_OUT, ReservationState.DRAFT):
-            raise ReservationError(f"Cannot check in from current state of {entity.state}")
+            raise ReservationException(f"Cannot check in from current state of {entity.state}")
         else:
             ... # Idempotent case of ReservationState.CHECKED_IN
 

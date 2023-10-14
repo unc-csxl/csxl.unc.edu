@@ -5,7 +5,7 @@ from unittest.mock import create_autospec
 
 from .....services import PermissionService, UserPermissionException
 from .....services.coworking import ReservationService
-from .....services.coworking.reservation import ReservationError
+from .....services.coworking.reservation import ReservationException
 from .....models.coworking import ReservationState
 
 from .....models.user import UserIdentity

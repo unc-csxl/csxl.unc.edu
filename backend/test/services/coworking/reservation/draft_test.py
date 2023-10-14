@@ -5,7 +5,7 @@ from unittest.mock import create_autospec
 
 from .....services import PermissionService
 from .....services.coworking import ReservationService
-from .....services.coworking.reservation import ReservationError
+from .....services.coworking.reservation import ReservationException
 from .....models.coworking import ReservationState
 
 from .....models.user import UserIdentity
@@ -162,7 +162,7 @@ def test_draft_reservation_future(reservation_svc: ReservationService):
 
 def test_draft_reservation_future_unreservable(reservation_svc: ReservationService):
     """When a reservation is not a walk-in, only unreservable seats are available."""
-    with pytest.raises(ReservationError):
+    with pytest.raises(ReservationException):
         start = operating_hours_data.tomorrow.start
         end = operating_hours_data.tomorrow.start + ONE_HOUR
         reservation = reservation_svc.draft_reservation(
@@ -182,7 +182,7 @@ def test_draft_reservation_future_unreservable(reservation_svc: ReservationServi
 
 def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService):
     """Request with all closed seats errors."""
-    with pytest.raises(ReservationError):
+    with pytest.raises(ReservationException):
         reservation = reservation_svc.draft_reservation(
             user_data.ambassador,
             reservation_data.test_request(
@@ -200,7 +200,7 @@ def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService)
 def test_draft_reservation_has_reservation_conflict(
     reservation_svc: ReservationService,
 ):
-    with pytest.raises(ReservationError):
+    with pytest.raises(ReservationException):
         reservation = reservation_svc.draft_reservation(
             user_data.user,
             reservation_data.test_request(
@@ -231,7 +231,7 @@ def test_draft_reservation_has_conflict_but_ok(
 
 
 def test_draft_reservation_has_no_users(reservation_svc: ReservationService):
-    with pytest.raises(ReservationError):
+    with pytest.raises(ReservationException):
         reservation = reservation_svc.draft_reservation(
             user_data.user, reservation_data.test_request({"users": []})
         )
@@ -253,7 +253,7 @@ def test_draft_reservation_permissions(reservation_svc: ReservationService):
 
 
 def test_draft_reservation_one_user_for_now(reservation_svc: ReservationService):
-    with pytest.raises(ReservationError):
+    with pytest.raises(ReservationException):
         reservation_svc.draft_reservation(
             user_data.ambassador,
             reservation_data.test_request(

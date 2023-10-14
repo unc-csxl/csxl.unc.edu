@@ -4,7 +4,7 @@ This API is used to make and manage reservations."""
 
 from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
-from ...services.coworking.reservation import ReservationService, ReservationError
+from ...services.coworking.reservation import ReservationService, ReservationException
 from ...models import User
 from ...models.coworking import Reservation, ReservationRequest, ReservationPartial, ReservationState
 
@@ -24,7 +24,7 @@ def draft_reservation(
     """Draft a reservation request."""
     try:
         return reservation_svc.draft_reservation(subject, reservation_request)
-    except ReservationError as e:
+    except ReservationException as e:
         raise HTTPException(status_code=422, detail=str(e))
 
 
