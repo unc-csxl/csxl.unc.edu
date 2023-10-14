@@ -22,6 +22,7 @@ openapi_tags = { "name": "Events", "description": "Create, update, delete, and r
 def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events
+
     Returns:
         list[Event]: All `Event`s in the `Event` database table
     """
@@ -29,16 +30,21 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     # Return all events
     return event_service.all()
 
-@api.get("/organization/{id}", response_model=list[EventDetails], tags=['Events'])
-def get_events_from_organization_id(organization_id: int, event_service: EventService = Depends()) -> list[EventDetails]:
+@api.get("/organization/{slug}", response_model=list[EventDetails], tags=['Events'])
+def get_events_from_organization(slug: str, event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events from an organization
+
+    Parameters:
+        slug: a valid str representing a unique Organization
+        event_service: a valid EventService
+
     Returns:
-        list[EventDetails]: All `Event`s in the `Event` database table from a specific organization
+        list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
     """
 
     # Return all events
-    return event_service.get_events_from_organization_id(organization_id)
+    return event_service.get_events_from_organization(slug)
 
 @api.post("", response_model=EventDetails, tags=['Events'])
 def new_event(event: EventDetails, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
@@ -51,7 +57,7 @@ def new_event(event: EventDetails, subject: User = Depends(registered_user), eve
         event_service: a valid EventService
 
     Returns:
-        Event: latest iteration of the created or updated event after changes made
+        EventDetails: latest iteration of the created or updated event after changes made
 
     Raises:
         HTTPException 404 if create() raises an Exception
@@ -72,11 +78,11 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
     Get event with matching id
 
     Parameters:
-        id: an int representing a unique event ID
+        id: an int representing a unique Event ID
         event_service: a valid EventService
     
     Returns:
-        Event: Event with matching id
+        EventDetails: a valid EventDetails model corresponding to the given event id
     
     Raises:
         HTTPException 404 if update() raises an Exception
@@ -102,7 +108,7 @@ def update_event(event: EventDetails, subject: User = Depends(registered_user), 
         event_service: a valid EventService
 
     Returns:
-        Event: Updated event
+        EventDetails: a valid EventDetails model representing the updated Event
 
     Raises:
         HTTPException 404 if update() raises an Exception

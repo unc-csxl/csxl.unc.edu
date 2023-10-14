@@ -22,7 +22,7 @@ class EventService:
     # Current SQLAlchemy Session
     _session: Session
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends(),):
+    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
         """Initializes the `EventService` session"""
         self._session = session
         self._permission = permission
@@ -32,7 +32,7 @@ class EventService:
         Retrieves all events from the table
 
         Returns:
-            list[Event]: List of all `Event`
+            list[EventDetails]: List of all `EventDetails`
         """
         # Select all entries in `Event` table
         query = select(EventEntity)
@@ -48,12 +48,13 @@ class EventService:
         If the event's ID already exists in the table, raise an exception.
 
         Parameters:
+            subject: a valid User model representing the currently logged in User
             event: a valid Event model representing the event to be added
 
         Returns:
-            Event: a valid Event model representing added event
+            EventDetails: a valid EventDetails model representing the new Event
         """
-        self._permission.enforce(subject, "event.create", f"event")
+        self._permission.enforce(subject, "events.create", f"events")
 
         # Checks if the role already exists in the table
         if event.id:
@@ -77,7 +78,7 @@ class EventService:
         If none retrieved, a debug description is displayed.
 
         Parameters:
-            id (int): Unique event ID
+            id: a valid int representing a unique event ID
 
         Returns:
             Event: Object with corresponding ID
@@ -94,19 +95,19 @@ class EventService:
             # Raise exception
             raise EventNotFoundException(id);
 
-    def get_events_from_organization_id(self, organization_id: int) -> list[EventDetails]:
+    def get_events_from_organization(self, slug: str) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with id
 
         Parameters:
-            organization_id: an int representing a unique organization ID
+            slug: a valid str representing a unique Organization slug
 
         Returns:
-            list[Event]: a list of valid Event models
+            list[EventDetail]: a list of valid EventDetails models
         """
 
-        # Query the event with matching organization id
-        events = self._session.query(EventEntity).filter(EventEntity.organization_id == organization_id).all()
+        # Query the event with matching organization slug
+        events = self._session.query(EventEntity).filter(EventEntity.organization_slug == slug).all()
         return [event.to_details_model() for event in events]
 
     def update(self, subject: User, event: EventDetails) -> EventDetails:
@@ -118,9 +119,9 @@ class EventService:
             event: a valid Event model
 
         Returns:
-            Event: Updated event object
+            EventDetails: a valid EventDetails model representing the updated event object
         """
-        self._permission.enforce(subject, "event.update", f"event")
+        self._permission.enforce(subject, "events.update", f"events")
 
         # Query the event with matching id
         obj = self._session.query(EventEntity).get(event.id)
@@ -149,7 +150,7 @@ class EventService:
         Parameters:
             id: an int representing a unique event ID
         """
-        self._permission.enforce(subject, "event.delete", f"event")
+        self._permission.enforce(subject, "events.delete", f"events")
 
         # Find object to delete
         obj=self._session.query(EventEntity).get(id)
