@@ -15,8 +15,8 @@ __license__ = "MIT"
 
 root_role_permission = Permission(id=1, action="*", resource="*")
 ambassador_permission = Permission(id=2, action="checkin.create", resource="checkin")
-ambassador_permission = Permission(id=3, action="coworking.reservation.*", resource="*")
-permissions = [root_role_permission, ambassador_permission]
+ambassador_permission_coworking_reservation = Permission(id=3, action="coworking.reservation.*", resource="*")
+permissions = [root_role_permission, ambassador_permission, ambassador_permission_coworking_reservation]
 
 
 def insert_fake_data(session: Session):
@@ -28,13 +28,14 @@ def insert_fake_data(session: Session):
     )
     session.add(root_permission_entity)
 
-    ambassador_permission_entity = PermissionEntity(
-        id=ambassador_permission.id,
-        role_id=role_data.ambassador_role.id,
-        action=ambassador_permission.action,
-        resource=ambassador_permission.resource,
-    )
-    session.add(ambassador_permission_entity)
+    for i in range(1, len(permissions)):
+        ambassador_permission_entity = PermissionEntity(
+            id=permissions[i].id,
+            role_id=role_data.ambassador_role.id,
+            action=permissions[i].action,
+            resource=permissions[i].resource,
+        )
+        session.add(ambassador_permission_entity)
 
     reset_table_id_seq(
         session, PermissionEntity, PermissionEntity.id, len(permissions) + 1
