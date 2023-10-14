@@ -76,7 +76,13 @@ class EventEntity(EntityBase):
         """
         Create an EventEntity based on a detail model.
         """
-        return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public, organization_id=model.organization_id)
+        return cls(id=model.id, 
+                   name=model.name, 
+                   time=model.time, 
+                   location=model.location, 
+                   description=model.description, 
+                   public=model.public, 
+                   organization_id=model.organization_id)
 
         
     def to_details_model(self) -> EventDetails:
@@ -91,6 +97,6 @@ class EventEntity(EntityBase):
                             location=self.location, 
                             description=self.description, 
                             public=self.public,
-                            organization_id=self.organization_id,
+                            organization_slug=self.organization_slug,
                             organization=self.organization.to_model()
         )
