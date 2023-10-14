@@ -7,6 +7,7 @@ from ..database import db_session
 from backend.models.event import Event
 from backend.models.event_details import EventDetails
 from ..entities import EventEntity
+from .permission import PermissionService
 
 class EventNotFoundException(Exception):
     """EventNotFoundException is raised when trying to access an event that does not exist."""
@@ -21,9 +22,10 @@ class EventService:
     # Current SQLAlchemy Session
     _session: Session
 
-    def __init__(self, session: Session = Depends(db_session)):
+    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends(),):
         """Initializes the `EventService` session"""
         self._session = session
+        self._permission = permission
 
     def all(self) -> list[EventDetails]:
         """
@@ -37,9 +39,9 @@ class EventService:
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return
-        return [entity.to_model() for entity in entities]
+        return [entity.to_details_model() for entity in entities]
 
-    def create(self, subject: User, event: Event) -> EventDetails:
+    def create(self, subject: User, event: EventDetails) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -57,17 +59,17 @@ class EventService:
         if event.id:
             # Raise exception
             # should this be changed?
-            raise Exception(f"Duplicate event found with ID: {event.id}")
-        else:
-            # Otherwise, create new object
-            event_entity = EventEntity.from_model(event)
+            event.id = None
+        
+        # Otherwise, create new object
+        event_entity = EventEntity.from_details_model(event)
 
-            # Add new object to table and commit changes
-            self._session.add(event_entity)
-            self._session.commit()
+        # Add new object to table and commit changes
+        self._session.add(event_entity)
+        self._session.commit()
 
-            # Return added object
-            return event_entity.to_model()
+        # Return added object
+        return event_entity.to_details_model()
 
     def get_from_id(self, id: int) -> EventDetails:
         """
@@ -82,12 +84,12 @@ class EventService:
         """
 
         # Query the event with matching id
-        event = self._session.query(EventEntity).get(id)
+        entity = self._session.query(EventEntity).get(id)
 
         # Check if result is null
-        if event:
+        if entity:
             # Convert entry to a model and return
-            return event.to_model()
+            return entity.to_details_model()
         else:
             # Raise exception
             raise EventNotFoundException(id);
@@ -105,9 +107,9 @@ class EventService:
 
         # Query the event with matching organization id
         events = self._session.query(EventEntity).filter(EventEntity.organization_id == organization_id).all()
-        return [event.to_model() for event in events]
+        return [event.to_details_model() for event in events]
 
-    def update(self, subject: User, event: Event) -> EventDetails:
+    def update(self, subject: User, event: EventDetails) -> EventDetails:
         """
         Update the event
         If none found, a debug description is displayed.
@@ -133,7 +135,7 @@ class EventService:
             obj.public=event.public
             self._session.commit()
             # Return updated object
-            return obj.to_model()
+            return obj.to_details_model()
         else:
             # Raise exception
             raise EventNotFoundException(id);

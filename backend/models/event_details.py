@@ -10,4 +10,4 @@ class EventDetails(Event):
     """
     
     organization_id: int
-    organization: Organization
+    organization: Organization | None = None

@@ -71,6 +71,14 @@ class EventEntity(EntityBase):
                      description=self.description, 
                      public=self.public)
     
+    @classmethod
+    def from_details_model(cls, model: EventDetails):
+        """
+        Create an EventEntity based on a detail model.
+        """
+        return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public, organization_id=model.organization_id)
+
+        
     def to_details_model(self) -> EventDetails:
         """Create a RoleDetails model from a RoleEntity, with permissions and members included.
 

@@ -18,7 +18,7 @@ __license__ = 'MIT'
 api = APIRouter(prefix="/api/events")
 openapi_tags = { "name": "Events", "description": "Create, update, delete, and retrieve CS Events."}
 
-@api.get("", response_model=list[EventDetails], tags=['Event'])
+@api.get("", response_model=list[EventDetails], tags=['Events'])
 def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events
@@ -29,7 +29,7 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     # Return all events
     return event_service.all()
 
-@api.get("/organization/{id}", response_model=list[EventDetails], tags=['Event'])
+@api.get("/organization/{id}", response_model=list[EventDetails], tags=['Events'])
 def get_events_from_organization_id(organization_id: int, event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events from an organization
@@ -40,8 +40,8 @@ def get_events_from_organization_id(organization_id: int, event_service: EventSe
     # Return all events
     return event_service.get_events_from_organization_id(organization_id)
 
-@api.post("", response_model=EventDetails, tags=['Event'])
-def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
+@api.post("", response_model=EventDetails, tags=['Events'])
+def new_event(event: EventDetails, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
     """
     Create event
 
@@ -66,7 +66,7 @@ def new_event(event: Event, subject: User = Depends(registered_user), event_serv
         # - This would occur if the request body is shaped incorrectly
         raise HTTPException(status_code=422, detail=str(e))
     
-@api.get("/{id}", responses={404: {"model": None}}, response_model=EventDetails, tags=['Event'])
+@api.get("/{id}", responses={404: {"model": None}}, response_model=EventDetails, tags=['Events'])
 def get_event_from_id(id: int, event_service: EventService = Depends()) -> EventDetails:
     """
     Get event with matching id
@@ -91,8 +91,8 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("", responses={404: {"model": None}}, response_model=EventDetails, tags=['Event'])
-def update_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
+@api.put("", responses={404: {"model": None}}, response_model=EventDetails, tags=['Events'])
+def update_event(event: EventDetails, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
     """
     Update event
 
@@ -116,7 +116,7 @@ def update_event(event: Event, subject: User = Depends(registered_user), event_s
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{id}", tags=['Event'])
+@api.delete("/{id}", tags=['Events'])
 def delete_event(id: int, subject: User = Depends(registered_user), event_service = Depends(EventService)):
     """
     Delete event based on id
