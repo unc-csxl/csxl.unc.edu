@@ -8,9 +8,9 @@
  */
 
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Organization } from 'src/app/organization/organization.service';
+import { Organization } from '../../../organization/organization.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AdminOrganizationService } from '../admin-organization.service';
 import { Observable } from 'rxjs';

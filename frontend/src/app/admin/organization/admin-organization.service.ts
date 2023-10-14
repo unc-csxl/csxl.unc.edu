@@ -9,9 +9,9 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Organization } from "../../..//app/organization/organization.service";
-import { Observable, tap, throwError } from 'rxjs';
-import { RxOrganization } from '../../../app/organization/rx-organization';
+import { Observable, tap } from 'rxjs';
+import { RxOrganization } from '../../organization/rx-organization';
+import { Organization } from '../../organization/organization.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminOrganizationService {
@@ -44,10 +44,7 @@ export class AdminOrganizationService {
      */
     deleteOrganization(organizationToRemove: Organization): Observable<Organization> {
         return this.http.delete<Organization>(`/api/organizations/${organizationToRemove.slug}`).pipe(
-            tap(_ => {  
-             this.organizations.removeOrganization(organizationToRemove);
-             console.log(this.organizations);
-            }
+            tap(_ => { this.organizations.removeOrganization(organizationToRemove); }
         ));
     }
 }
