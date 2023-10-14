@@ -1,14 +1,24 @@
+"""Event API
+
+Event routes are used to create, retrieve, and update Events."""
+
 from fastapi import APIRouter, Depends, HTTPException
-from backend.api.authentication import registered_user
-from backend.models.user import User
-from backend.services.event import EventNotFoundException, EventService
-from backend.models.event import Event
-from backend.models.event_details import EventDetails
-from backend.services.permission import UserPermissionException
+
+from ..services.event import EventNotFoundException, EventService
+from ..services.permission import UserPermissionException
+from ..models.event import Event
+from ..models.event_details import EventDetails
+from ..api.authentication import registered_user
+from ..models.user import User
+
+__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
+__copyright__ = 'Copyright 2023'
+__license__ = 'MIT'
 
 api = APIRouter(prefix="/api/events")
+openapi_tags = { "name": "Events", "description": "Create, update, delete, and retrieve CS Events."}
 
-@api.get("", tags=['Event'])
+@api.get("", response_model=list[EventDetails], tags=['Event'])
 def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events
@@ -19,24 +29,25 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     # Return all events
     return event_service.all()
 
-@api.get("/organization/{id}", tags=['Event'])
+@api.get("/organization/{id}", response_model=list[EventDetails], tags=['Event'])
 def get_events_from_organization_id(organization_id: int, event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events from an organization
     Returns:
-        list[Event]: All `Event`s in the `Event` database table from a specific organization
+        list[EventDetails]: All `Event`s in the `Event` database table from a specific organization
     """
 
     # Return all events
     return event_service.get_events_from_organization_id(organization_id)
 
-@api.post("", tags=['Event'])
+@api.post("", response_model=EventDetails, tags=['Event'])
 def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
     """
     Create event
 
     Parameters:
         event: a valid Event model
+        subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
 
     Returns:
@@ -55,7 +66,7 @@ def new_event(event: Event, subject: User = Depends(registered_user), event_serv
         # - This would occur if the request body is shaped incorrectly
         raise HTTPException(status_code=422, detail=str(e))
     
-@api.get("/{id}", responses={404: {"model": None}}, tags=['Event'])
+@api.get("/{id}", responses={404: {"model": None}}, response_model=EventDetails, tags=['Event'])
 def get_event_from_id(id: int, event_service: EventService = Depends()) -> EventDetails:
     """
     Get event with matching id
@@ -80,13 +91,14 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("", responses={404: {"model": None}}, tags=['Event'])
+@api.put("", responses={404: {"model": None}}, response_model=EventDetails, tags=['Event'])
 def update_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
     """
     Update event
 
     Parameters:
         event: a valid Event model
+        subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
 
     Returns:
@@ -111,6 +123,7 @@ def delete_event(id: int, subject: User = Depends(registered_user), event_servic
 
     Parameters:
         id: an int representing a unique event ID
+        subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
     
     Raises:
