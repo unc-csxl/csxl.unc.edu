@@ -6,7 +6,7 @@ from ..database import db_session
 from ..models.organization import Organization
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
-from .permission import PermissionService, UserPermissionException
+from .permission import PermissionService
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -109,9 +109,7 @@ class OrganizationService:
             # Raise exception
             raise OrganizationNotFoundException(slug)
 
-    def update(
-        self, subject: User, organization: Organization
-    ) -> Organization:
+    def update(self, subject: User, organization: Organization) -> Organization:
         """
         Update the organization
         If none found with that id, a debug description is displayed.
