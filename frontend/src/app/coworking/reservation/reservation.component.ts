@@ -6,11 +6,11 @@
  * @license MIT
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, map, mergeMap, take, timer } from 'rxjs';
+import { Observable, Subscription, map, mergeMap, take, tap, timer } from 'rxjs';
 import { Reservation } from '../coworking.models';
 import { ReservationService } from './reservation.service';
 
@@ -28,7 +28,7 @@ const titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot): Observ
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.css'],
 })
-export class ReservationComponent {
+export class ReservationComponent implements OnInit, OnDestroy {
 
   public static Route: Route = {
     path: 'reservation/:id',
@@ -42,11 +42,20 @@ export class ReservationComponent {
   public id: number;
   public reservation$: Observable<Reservation>;
   public draftConfirmationDeadline$!: Observable<string>;
+  private timerSubscription!: Subscription;
 
   constructor(public route: ActivatedRoute, public reservationService: ReservationService, public router: Router) {
     this.id = parseInt(route.snapshot.params['id']);
     this.reservation$ = reservationService.get(this.id);
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
+  }
+
+  ngOnInit(): void {
+    this.timerSubscription = timer(0, 10000).pipe(tap(_ => this.reservationService.get(this.id))).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.timerSubscription.unsubscribe();
   }
 
   checkinDeadline(reservationStart: Date): Date {
