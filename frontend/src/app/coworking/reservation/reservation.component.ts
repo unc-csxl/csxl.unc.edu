@@ -6,18 +6,19 @@
  * @license MIT
  */
 
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, map, mergeMap, timer } from 'rxjs';
+import { Observable, map, mergeMap, take, timer } from 'rxjs';
 import { Reservation } from '../coworking.models';
 import { ReservationService } from './reservation.service';
 
 const titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot): Observable<string> => {
   let reservationService = inject(ReservationService);
   let reservationTitle = (reservation: Reservation): string => {
-    return `Reservation #${reservation.id} (${reservation.state})`;
+    return `Reservation #${reservation.id}`; // TODO: Include State of Reservation in future version
+    // of this application when the fix for this bug lands: https://github.com/angular/angular/issues/51401
   };
   return reservationService.get(parseInt(route.params['id'])).pipe(map(reservationTitle));
 };
@@ -32,6 +33,7 @@ export class ReservationComponent {
   public static Route: Route = {
     path: 'reservation/:id',
     component: ReservationComponent,
+    runGuardsAndResolvers: "always",
     title: titleResolver,
     canActivate: [isAuthenticated],
     resolve: { profile: profileResolver }
@@ -41,41 +43,52 @@ export class ReservationComponent {
   public reservation$: Observable<Reservation>;
   public draftConfirmationDeadline$!: Observable<string>;
 
-  constructor(public route: ActivatedRoute, public reservationService: ReservationService) {
+  constructor(public route: ActivatedRoute, public reservationService: ReservationService, public router: Router) {
     this.id = parseInt(route.snapshot.params['id']);
     this.reservation$ = reservationService.get(this.id);
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
-  }
-
-  initDraftConfirmationDeadline(): Observable<string> {
-    const reservationDraftDeadline = (reservation: Reservation) => reservation.created_at.getTime() + 5 /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */;
-    const deadlineString = (deadline: number): string => {
-      const now = (new Date().getTime())
-      const delta = (deadline - now) / 1000 /* milliseconds */;
-      if (delta > 60) {
-        return `Confirm in ${Math.ceil(delta / 60)} minutes`;
-      } else if (delta > 0) {
-        return `Confirm in ${delta} seconds`;
-      } else {
-        this.cancel();
-        return "Cancelling...";
-      }
-    }
-
-    return timer(0, 1000).pipe(
-      mergeMap(() => this.reservation$),
-      /* Map to deadline. */
-      map(reservationDraftDeadline),
-      map(deadlineString)
-    );
   }
 
   checkinDeadline(reservationStart: Date): Date {
     return new Date(reservationStart.getTime() + (10 * 60 * 1000));
   }
 
-  cancel(reservation?: Reservation): void { }
+  cancel(reservation: Reservation): void {
+    this.reservationService.cancel(reservation).subscribe();
+  }
 
-  confirm(reservation: Reservation): void { }
+  confirm(reservation: Reservation): void {
+    this.reservationService.confirm(reservation).subscribe();
+  }
+
+  checkout(reservation: Reservation): void {
+    this.reservationService.checkout(reservation).subscribe();
+  }
+
+  private initDraftConfirmationDeadline(): Observable<string> {
+
+    const fiveMinutes = 5 /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */;
+
+    const reservationDraftDeadline = (reservation: Reservation) => reservation.created_at.getTime() + fiveMinutes;
+
+    const deadlineString = (deadline: number): string => {
+      const now = (new Date().getTime())
+      const delta = (deadline - now) / 1000 /* milliseconds */;
+      if (delta > 60) {
+        return `Confirm in ${Math.ceil(delta / 60)} minutes`;
+      } else if (delta > 0) {
+        return `Confirm in ${Math.ceil(delta)} seconds`;
+      } else {
+        this.reservation$.pipe(take(1)).subscribe(reservation => this.cancel(reservation));
+        return "Cancelling...";
+      }
+    }
+
+    return timer(0, 1000).pipe(
+      mergeMap(() => this.reservation$),
+      map(reservationDraftDeadline),
+      map(deadlineString)
+    );
+  }
 
 }

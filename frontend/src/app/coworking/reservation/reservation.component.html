@@ -2,13 +2,33 @@
 
     <mat-card>
         <!-- Card Header -->
-        <mat-card-header class="dropin-header" [ngSwitch]="reservation.state">
-            <mat-card-title *ngSwitchCase="'DRAFT'">Confirm Reservation Details</mat-card-title>
-            <mat-card-title *ngSwitchCase="'CONFIRMED'">Confirmed</mat-card-title>
-            <mat-card-title *ngSwitchCase="'CHECKED_IN'">Checked In</mat-card-title>
-            <mat-card-title *ngSwitchCase="'CHECKED_OUT'">You're Checked Out</mat-card-title>
-            <mat-card-title *ngSwitchCase="'CANCELLED'">Cancelled</mat-card-title>
-        </mat-card-header>
+        <ng-container [ngSwitch]="reservation.state">
+            <mat-card-header *ngSwitchCase="'DRAFT'">
+                <mat-card-title>Confirm Reservation Details</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-header *ngSwitchCase="'CONFIRMED'">
+                <mat-card-title>Reservation Confirmed</mat-card-title>
+                <mat-card-subtitle>See the XL Ambassador staffing the front desk to check-in.</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-header *ngSwitchCase="'CHECKED_IN'">
+                <mat-card-title>You're Checked In!</mat-card-title>
+                <mat-card-subtitle>See the XL Ambassador if you need anything. When you're done, just press the Check
+                    Out button or check out with the XL Ambassador. <br><br> Changing seats? Please check out and check
+                    back in.</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-header *ngSwitchCase="'CHECKED_OUT'">
+                <mat-card-title>Thanks for visiting!</mat-card-title>
+                <mat-card-subtitle>You're all checked out.</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-header *ngSwitchCase="'CANCELLED'">
+                <mat-card-title>Reservation Cancelled</mat-card-title>
+                <mat-card-subtitle></mat-card-subtitle>
+            </mat-card-header>
+        </ng-container>
 
         <!-- Card Content -->
         <mat-card-content>
@@ -32,20 +52,30 @@
             <mat-card-actions align="end" [ngSwitch]="reservation.state">
 
                 <ng-container *ngSwitchCase="'DRAFT'">
-                    <button mat-raised-button type="submit" class="reserve-button"
-                        (click)="cancel(reservation)">Cancel</button>
+                    <button mat-raised-button type="submit" (click)="cancel(reservation)">Cancel</button>
                     &nbsp;
                     <button mat-raised-button type="submit" color="primary" (click)="confirm(reservation)">{{
                         draftConfirmationDeadline$ | async }}</button>
                 </ng-container>
 
-                <ng-container *ngSwitchCase="'CONFIRMED'">Confirmed</ng-container>
-
-                <ng-container *ngSwitchCase="'CHECKED_IN'">
-                    <button mat-raised-button type="submit" class="reserve-button">Check Out</button>
+                <ng-container *ngSwitchCase="'CONFIRMED'">
+                    <button mat-raised-button type="submit" (click)="cancel(reservation)">Cancel</button>
                 </ng-container>
 
-                <ng-container *ngSwitchCase="'CHECKED_OUT' || 'CANCELLED'"></ng-container>
+                <ng-container *ngSwitchCase="'CHECKED_IN'">
+                    <button mat-raised-button type="submit" (click)="checkout(reservation)" color="primary">Check
+                        Out</button>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'CHECKED_OUT'">
+                    <button mat-raised-button type="submit" (click)="router.navigateByUrl('/coworking')"
+                        color="primary">Return to Coworking Home</button>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'CANCELLED'">
+                    <button mat-raised-button type="submit" (click)="router.navigateByUrl('/coworking')"
+                        color="primary">Return to Coworking Home</button>
+                </ng-container>
 
             </mat-card-actions>
 
