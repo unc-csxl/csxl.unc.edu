@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { CoworkingRoutingModule } from './coworking-routing.module';
@@ -14,11 +14,13 @@ import { CoworkingHoursCard } from './widgets/operating-hours-panel/operating-ho
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { ReservationComponent } from './reservation/reservation.component';
 
 
 @NgModule({
   declarations: [
     CoworkingPageComponent,
+    ReservationComponent,
     AmbassadorPageComponent,
     CoworkingDropInCard,
     CoworkingReservationCard,
@@ -33,7 +35,8 @@ import { MatTableModule } from '@angular/material/table';
     MatListModule,
     MatExpansionModule,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    AsyncPipe
   ]
 })
 export class CoworkingModule { }

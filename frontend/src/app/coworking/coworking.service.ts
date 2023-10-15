@@ -27,7 +27,7 @@ export class CoworkingService {
         this.profileSubscription.unsubscribe();
     }
 
-    public pollStatus(): void {
+    pollStatus(): void {
         this.http.get<CoworkingStatusJSON>("/api/coworking/status")
             .pipe(map(parseCoworkingStatusJSON))
             .subscribe(status => this.status.set(status));

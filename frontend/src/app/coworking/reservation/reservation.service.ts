@@ -1,26 +1,28 @@
-import { Injectable } from "@angular/core";
-import { RxReservation } from "./rx-reservation";
-import { Observable, map, tap } from "rxjs";
-import { Reservation, ReservationJSON, parseReservationJSON } from "../coworking.models";
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, map, shareReplay } from "rxjs";
+import { Reservation, ReservationJSON, parseReservationJSON } from "../coworking.models";
+import { RxReservation } from "./rx-reservation";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ReservationService {
 
-    private reservation: RxReservation;
-    public reservation$: Observable<Reservation>;
+    private reservations: Map<number, RxReservation> = new Map();
 
-    constructor(private httpClient: HttpClient) {
-        this.reservation = new RxReservation();
-        this.reservation$ = this.reservation.value$;
-    }
+    constructor(private http: HttpClient) { }
 
     get(id: number): Observable<Reservation> {
-        return this.httpClient.get<ReservationJSON>(`/api/coworking/reservation/${id}`)
-            .pipe(
-                map(parseReservationJSON),
-                tap(reservation => this.reservation.set(reservation))
-            )
+        let reservation = this.reservations.get(id);
+        if (reservation === undefined) {
+            let loader = this.http.get<ReservationJSON>(`/api/coworking/reservation/${id}`)
+                .pipe(map(parseReservationJSON), shareReplay({ windowTime: 1000, refCount: true }));
+            reservation = new RxReservation(loader);
+            this.reservations.set(id, reservation);
+        }
+        reservation.load();
+        return reservation.value$;
     }
 
 }

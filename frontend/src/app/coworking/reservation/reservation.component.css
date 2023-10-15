@@ -1,0 +1,29 @@
+.mat-mdc-card {
+    max-width: 640px;
+}
+
+.mat-mdc-card-header {
+    margin-bottom: 16px;
+}
+
+.mat-mdc-card-actions {
+    margin-top: 16px;
+}
+
+.mat-divider {
+    margin: 1em 0;
+}
+
+h3 {
+    font-size: 18px;
+    margin-bottom: 0px;
+}
+
+h3>label {
+    width: 64px;
+    display: inline-block;
+}
+
+p {
+    margin-left: 64px;
+}

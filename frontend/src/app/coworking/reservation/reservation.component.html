@@ -1,1 +1,44 @@
-Reservation {{ id }}
+<ng-container *ngIf="reservation$ | async as reservation">
+
+    <mat-card>
+        <!-- Card Header -->
+        <mat-card-header class="dropin-header" [ngSwitch]="reservation.state">
+            <mat-card-title *ngSwitchCase="'DRAFT'">Draft</mat-card-title>
+            <mat-card-title *ngSwitchCase="'CONFIRMED'">Confirmed</mat-card-title>
+            <mat-card-title *ngSwitchCase="'CHECKED_IN'">Checked In</mat-card-title>
+            <mat-card-title *ngSwitchCase="'CHECKED_OUT'">You're Checked Out</mat-card-title>
+            <mat-card-title *ngSwitchCase="'CANCELLED'">Cancelled</mat-card-title>
+        </mat-card-header>
+
+        <!-- Card Content -->
+        <mat-card-content>
+
+            <h3><label>When</label> <strong>{{ reservation.start|date:'shortTime' }}</strong> until <strong>{{
+                    reservation.end|date:'shortTime' }}</strong></h3>
+            <p>Check-in between {{ reservation.start|date:'shortTime' }} and {{
+                checkinDeadline(reservation.start)|date:'shortTime' }} to avoid cancellation.
+            </p>
+            <mat-divider />
+
+            <h3><label>What</label> <strong>{{ reservation.seats[0].title }}</strong></h3>
+            <mat-divider />
+
+            <h3><label>Where</label> <strong>The XL in Sitterson 156</strong></h3>
+
+            <mat-card-actions align="end" [ngSwitch]="reservation.state">
+                <ng-container *ngSwitchCase="'DRAFT'">
+                    <button mat-raised-button type="submit" class="reserve-button"
+                        (click)="cancel(reservation)">Cancel</button>
+                </ng-container>
+                <ng-container *ngSwitchCase="'CONFIRMED'">Confirmed</ng-container>
+                <ng-container *ngSwitchCase="'CHECKED_IN'">
+                    <button mat-raised-button type="submit" class="reserve-button">Check Out</button>
+                </ng-container>
+                <ng-container *ngSwitchCase="'CHECKED_OUT' || 'CANCELLED'"></ng-container>
+            </mat-card-actions>
+
+        </mat-card-content>
+    </mat-card>
+
+
+</ng-container>

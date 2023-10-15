@@ -46,7 +46,7 @@ def get_reservation(
 ) -> Reservation:
     try:
         return reservation_svc.get_reservation(subject, id)
-    except ReservationException as e:
+    except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 
