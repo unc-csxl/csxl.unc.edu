@@ -33,7 +33,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
   public static Route: Route = {
     path: 'reservation/:id',
     component: ReservationComponent,
-    runGuardsAndResolvers: "always",
     title: titleResolver,
     canActivate: [isAuthenticated],
     resolve: { profile: profileResolver }
