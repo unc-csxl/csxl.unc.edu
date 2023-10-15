@@ -69,16 +69,17 @@ class ReservationService:
 
         Raises:
             UserPermissionException
-            KeyError
+            ResourceNotFoundException
         """
         reservation: ReservationEntity = self._session.get(ReservationEntity, id)
         if reservation == None:
             raise ResourceNotFoundException(f"No reservation with an ID of {id} found.")
 
-        # The subject sould have read access on reservations for at least one of the users
+        # The subject sould _be_ one of the users or have read access on reservations 
+        # for at least one of the users.
         has_permission = False
         for user in reservation.users:
-            if self._permission_svc.check(subject, "coworking.reservation.read", f"user/{user.id}"):
+            if user.id == subject.id or self._permission_svc.check(subject, "coworking.reservation.read", f"user/{user.id}"):
                 has_permission = True
                 break
         
@@ -388,6 +389,9 @@ class ReservationService:
         if len(request.users) == 1:
             conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
             for conflict in conflicts:
+                if is_walkin and conflict.walkin:
+                    raise ReservationException("Users may not have concurrent walk-in reservations.")
+
                 nonconflicting = bounds.subtract(conflict)
                 if len(nonconflicting) == 1:
                     bounds = nonconflicting[0]

@@ -2,7 +2,8 @@
 
 This API is used to make and manage reservations."""
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationService, ReservationException
 from ...models import User
@@ -32,10 +33,7 @@ def draft_reservation(
     reservation_svc: ReservationService = Depends(),
 ) -> Reservation:
     """Draft a reservation request."""
-    try:
-        return reservation_svc.draft_reservation(subject, reservation_request)
-    except ReservationException as e:
-        raise HTTPException(status_code=422, detail=str(e))
+    return reservation_svc.draft_reservation(subject, reservation_request)
 
 
 @api.get("/reservation/{id}", tags=["Coworking"])
@@ -66,3 +64,10 @@ def cancel_reservation(
     return reservation_svc.change_reservation(
         subject, ReservationPartial(id=id, state=ReservationState.CANCELLED)
     )
+
+def _reservation_exception_handler(request: Request, e: ReservationException):
+    return JSONResponse(status_code=422, content={"message": str(e)})
+
+exception_handlers = [
+    (ReservationException, _reservation_exception_handler)
+]

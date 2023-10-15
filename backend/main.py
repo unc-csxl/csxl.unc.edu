@@ -35,25 +35,42 @@ app = FastAPI(
 )
 
 # Plugging in each of the router APIs
-app.include_router(status.api)
-app.include_router(reservation.api)
-app.include_router(user.api)
-app.include_router(profile.api)
-app.include_router(organizations.api)
-app.include_router(health.api)
-app.include_router(ambassador.api)
-app.include_router(authentication.api)
-app.include_router(admin_users.api)
-app.include_router(admin_roles.api)
+feature_apis = [
+    status,
+    reservation,
+    user,
+    profile,
+    organizations,
+    health,
+    ambassador,
+    authentication,
+    admin_users,
+    admin_roles,
+]
+
+for feature_api in feature_apis:
+    app.include_router(feature_api.api)
 
 # Static file mount used for serving Angular front-end in production, as well as static assets
 app.mount("/", static_files.StaticFileMiddleware(directory="./static"))
 
-# Finally, adding exception handling middleware for commonly encountered API Exception handling
+
+# Add application-wide exception handling middleware for commonly encountered API Exceptions
 @app.exception_handler(UserPermissionException)
 def permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
+
 @app.exception_handler(ResourceNotFoundException)
 def permission_exception_handler(request: Request, e: ResourceNotFoundException):
     return JSONResponse(status_code=404, content={"message": str(e)})
+
+
+# Add feature-specific exception handling middleware
+for feature_api in feature_apis:
+    if hasattr(feature_api, "exception_handlers"):
+        for exception, handler in feature_api.exception_handlers:
+
+            @app.exception_handler(exception)
+            def _handler_wrapper(request: Request, e: exception):
+                return handler(request, e)
