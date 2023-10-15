@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, map } from 'rxjs';
+import { Observable, Subscription, map, mergeMap, tap, timer } from 'rxjs';
 import { Reservation } from '../coworking.models';
 import { AmbassadorService } from './ambassador.service';
 
@@ -11,7 +11,7 @@ import { AmbassadorService } from './ambassador.service';
   templateUrl: './ambassador-home.component.html',
   styleUrls: ['./ambassador-home.component.css']
 })
-export class AmbassadorPageComponent {
+export class AmbassadorPageComponent implements OnInit, OnDestroy {
 
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
@@ -28,11 +28,22 @@ export class AmbassadorPageComponent {
 
   columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
 
+  private refreshSubscription!: Subscription;
+
   constructor(public ambassadorService: AmbassadorService) {
     this.reservations$ = this.ambassadorService.reservations$;
     this.upcomingReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CONFIRMED')));
     this.activeReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CHECKED_IN')));
-    this.ambassadorService.fetchReservations();
+  }
+
+  ngOnInit(): void {
+    this.refreshSubscription = timer(0, 5000).pipe(
+      tap(_ => this.ambassadorService.fetchReservations())
+    ).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.refreshSubscription.unsubscribe();
   }
 
 }
