@@ -67,10 +67,15 @@ def permission_exception_handler(request: Request, e: ResourceNotFoundException)
 
 
 # Add feature-specific exception handling middleware
-for feature_api in feature_apis:
-    if hasattr(feature_api, "exception_handlers"):
-        for exception, handler in feature_api.exception_handlers:
+from .api import coworking
 
-            @app.exception_handler(exception)
-            def _handler_wrapper(request: Request, e: exception):
-                return handler(request, e)
+feature_exception_handlers = [
+    coworking.exception_handlers
+]
+
+for feature_exception_handler in feature_exception_handlers:
+    for exception, handler in feature_exception_handler:
+
+        @app.exception_handler(exception)
+        def _handler_wrapper(request: Request, e: exception):
+            return handler(request, e)

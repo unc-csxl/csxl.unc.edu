@@ -2,10 +2,9 @@
 
 This API is used to make and manage reservations."""
 
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
-from ...services.coworking.reservation import ReservationService, ReservationException
+from ...services.coworking.reservation import ReservationService
 from ...models import User
 from ...models.coworking import (
     Reservation,
@@ -44,6 +43,7 @@ def get_reservation(
 ) -> Reservation:
     return reservation_svc.get_reservation(subject, id)
 
+
 @api.put("/reservation/{id}", tags=["Coworking"])
 def update_reservation(
     reservation: ReservationPartial,
@@ -64,10 +64,3 @@ def cancel_reservation(
     return reservation_svc.change_reservation(
         subject, ReservationPartial(id=id, state=ReservationState.CANCELLED)
     )
-
-def _reservation_exception_handler(request: Request, e: ReservationException):
-    return JSONResponse(status_code=422, content={"message": str(e)})
-
-exception_handlers = [
-    (ReservationException, _reservation_exception_handler)
-]
