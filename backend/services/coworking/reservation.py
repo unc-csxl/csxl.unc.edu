@@ -56,6 +56,31 @@ class ReservationService:
         self._operating_hours_svc = operating_hours_svc
         self._seat_svc = seats_svc
 
+    def get_reservation(self, subject: User, id: int) -> Reservation:
+        """Lookup a reservation by ID.
+
+        Args:
+            subject (User): The user making the request
+            id (int): The ID of the reservation being retrieved
+
+        Returns:
+            Reservation: Reservation with the requested ID.
+
+        Raises:
+            UserPermissionError
+            KeyError
+        """
+        reservation: ReservationEntity = self._session.get(ReservationEntity, id)
+        if reservation == None:
+            raise KeyError(f"No reservation with an ID of {id} found.")
+
+        for user in reservation.users:
+            self._permission_svc.enforce(
+                subject, "coworking.reservation.read", f"user/{user.id}"
+            )
+        print(reservation.to_model())
+        return reservation.to_model()
+
     def get_current_reservations_for_user(
         self, subject: User, focus: User
     ) -> list[Reservation]:
@@ -361,13 +386,17 @@ class ReservationService:
                 if len(nonconflicting) == 1:
                     bounds = nonconflicting[0]
                 else:
-                    raise ReservationException("Users may not have conflicting reservations.")
+                    raise ReservationException(
+                        "Users may not have conflicting reservations."
+                    )
         else:
             # Multiple users all need to not have conflicts
             for user in request.users:
                 conflicts = self._get_active_reservations_for_user(user, bounds)
                 if len(conflicts) > 0:
-                    raise ReservationException("Users may not have conflicting reservations.")
+                    raise ReservationException(
+                        "Users may not have conflicting reservations."
+                    )
 
         # Look at the seats - match bounds of assigned seat's availability
         # TODO: Fetch all seats
@@ -411,7 +440,7 @@ class ReservationService:
         if entity is None:
             raise LookupError(f"Reservation(id={delta.id}) does not exist")
 
-        # Either the current user is party to the reservation or an admin has 
+        # Either the current user is party to the reservation or an admin has
         # permission to manage reservations for all users.
         current = entity.to_model()
         user_ids = set((user.id for user in current.users))
@@ -475,7 +504,11 @@ class ReservationService:
             .filter(
                 ReservationEntity.end > now,
                 ReservationEntity.state.in_(
-                    (ReservationState.CONFIRMED, ReservationState.CHECKED_IN, ReservationState.CHECKED_OUT)
+                    (
+                        ReservationState.CONFIRMED,
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                    )
                 ),
             )
             .options(
@@ -495,16 +528,24 @@ class ReservationService:
             raise LookupError(f"Reservation(id={reservation.id}) does not exist")
 
         # Ensure permissions to manage reservation checkins
-        self._permission_svc.enforce(subject, "coworking.reservation.checkIn", f"user/*")
+        self._permission_svc.enforce(
+            subject, "coworking.reservation.checkIn", f"user/*"
+        )
 
-        # Update state iff ReservationState is current CONFIRMED 
+        # Update state iff ReservationState is current CONFIRMED
         if entity.state == ReservationState.CONFIRMED:
             entity.state = ReservationState.CHECKED_IN
             self._session.commit()
-        elif entity.state in (ReservationState.CANCELLED, ReservationState.CHECKED_OUT, ReservationState.DRAFT):
-            raise ReservationException(f"Cannot check in from current state of {entity.state}")
+        elif entity.state in (
+            ReservationState.CANCELLED,
+            ReservationState.CHECKED_OUT,
+            ReservationState.DRAFT,
+        ):
+            raise ReservationException(
+                f"Cannot check in from current state of {entity.state}"
+            )
         else:
-            ... # Idempotent case of ReservationState.CHECKED_IN
+            ...  # Idempotent case of ReservationState.CHECKED_IN
 
         return entity.to_model()
 
