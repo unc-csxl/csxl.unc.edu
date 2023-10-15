@@ -5,6 +5,11 @@
         </mat-card-header>
         <mat-card-content>
             <table mat-table [dataSource]="reservations">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>ID</th>
+                    <td mat-cell *matCellDef="let reservation">{{
+                        reservation.id }}</td>
+                </ng-container>
                 <ng-container matColumnDef="name">
                     <th mat-header-cell *matHeaderCellDef>Name</th>
                     <td mat-cell *matCellDef="let reservation">{{ reservation.users[0].first_name }} {{
@@ -45,6 +50,11 @@
         </mat-card-header>
         <mat-card-content>
             <table mat-table [dataSource]="reservations">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>ID</th>
+                    <td mat-cell *matCellDef="let reservation">{{
+                        reservation.id }}</td>
+                </ng-container>
                 <ng-container matColumnDef="name">
                     <th mat-header-cell *matHeaderCellDef>Name</th>
                     <td mat-cell *matCellDef="let reservation">{{ reservation.users[0].first_name }} {{

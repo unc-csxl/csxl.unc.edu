@@ -26,7 +26,7 @@ export class AmbassadorPageComponent {
   upcomingReservations$: Observable<Reservation[]>;
   activeReservations$: Observable<Reservation[]>;
 
-  columnsToDisplay = ['name', 'seat', 'start', 'end', 'actions'];
+  columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
 
   constructor(public ambassadorService: AmbassadorService) {
     this.reservations$ = this.ambassadorService.reservations$;
