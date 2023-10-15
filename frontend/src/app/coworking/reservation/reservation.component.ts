@@ -10,7 +10,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Reservation } from '../coworking.models';
 import { ReservationService } from './reservation.service';
 
@@ -43,7 +43,6 @@ export class ReservationComponent {
   constructor(public route: ActivatedRoute, public reservationService: ReservationService) {
     this.id = parseInt(route.snapshot.params['id']);
     this.reservation$ = reservationService.get(this.id);
-    // reservationService.load(this.id).subscribe();
   }
 
   checkinDeadline(reservationStart: Date): Date {

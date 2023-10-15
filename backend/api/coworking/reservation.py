@@ -44,11 +44,7 @@ def get_reservation(
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
 ) -> Reservation:
-    try:
-        return reservation_svc.get_reservation(subject, id)
-    except KeyError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
+    return reservation_svc.get_reservation(subject, id)
 
 @api.put("/reservation/{id}", tags=["Coworking"])
 def update_reservation(

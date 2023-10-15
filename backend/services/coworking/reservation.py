@@ -6,6 +6,7 @@ from random import random
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User, UserIdentity
+from ..exceptions import UserPermissionException, ResourceNotFoundException
 from ...models.coworking import (
     Seat,
     Reservation,
@@ -67,18 +68,23 @@ class ReservationService:
             Reservation: Reservation with the requested ID.
 
         Raises:
-            UserPermissionError
+            UserPermissionException
             KeyError
         """
         reservation: ReservationEntity = self._session.get(ReservationEntity, id)
         if reservation == None:
-            raise KeyError(f"No reservation with an ID of {id} found.")
+            raise ResourceNotFoundException(f"No reservation with an ID of {id} found.")
 
+        # The subject sould have read access on reservations for at least one of the users
+        has_permission = False
         for user in reservation.users:
-            self._permission_svc.enforce(
-                subject, "coworking.reservation.read", f"user/{user.id}"
-            )
-        print(reservation.to_model())
+            if self._permission_svc.check(subject, "coworking.reservation.read", f"user/{user.id}"):
+                has_permission = True
+                break
+        
+        if not has_permission:
+            raise UserPermissionException("coworking.reservation.read", "user/")
+
         return reservation.to_model()
 
     def get_current_reservations_for_user(
@@ -97,7 +103,7 @@ class ReservationService:
             list[Reservation]: Upcoming reservations for the user.
 
         Raises:
-            UserPermissionError"""
+            UserPermissionException"""
         if subject != focus:
             self._permission_svc.enforce(
                 subject,

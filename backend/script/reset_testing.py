@@ -1,7 +1,3 @@
-if __name__ != '__main__':
-    print("This file is meant to be run as the main module only.", file=sys.stderr)
-    exit(1)
-
 # This script resets the SQLAlchemy database to contain the same data that
 # is used when running the pytests.
 
