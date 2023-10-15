@@ -1,5 +1,5 @@
 <div *ngIf="upcomingReservations$ | async as reservations">
-    <mat-card class="content" *ngIf="reservations.length > 0">
+    <mat-card class="content" *ngIf="reservations.length > 0; else noUpcoming">
         <mat-card-header>
             <mat-card-title>Upcoming Reservations</mat-card-title>
         </mat-card-header>
@@ -41,10 +41,21 @@
             </table>
         </mat-card-content>
     </mat-card>
+
+    <ng-template #noUpcoming>
+        <mat-card class="content">
+            <mat-card-header>
+                <mat-card-title>Upcoming Reservations</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                No upcoming reservations.
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
 </div>
 
 <div *ngIf="activeReservations$ | async as reservations">
-    <mat-card class="content" *ngIf="reservations.length > 0">
+    <mat-card class="content" *ngIf="reservations.length > 0; else noActive">
         <mat-card-header>
             <mat-card-title>Active Reservations</mat-card-title>
         </mat-card-header>
@@ -84,4 +95,15 @@
             </table>
         </mat-card-content>
     </mat-card>
+
+    <ng-template #noActive>
+        <mat-card class="content">
+            <mat-card-header>
+                <mat-card-title>Active Reservations</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                It's lonely in here.
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
 </div>
