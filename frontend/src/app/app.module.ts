@@ -8,7 +8,7 @@ import { HttpRequestInterceptor } from './navigation/http-request.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 
 /* UI / Material Dependencies */
-import { NgForOf } from '@angular/common';
+import { DatePipe, NgForOf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatButtonModule } from '@angular/material/button';
@@ -79,7 +79,9 @@ import { RouterModule } from '@angular/router';
     provide: HTTP_INTERCEPTORS,
     useClass: HttpRequestInterceptor,
     multi: true
-  }],
+  },
+  DatePipe
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

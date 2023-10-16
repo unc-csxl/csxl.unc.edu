@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Event } from '../../event.service';
 
 @Component({
@@ -19,6 +19,15 @@ export class EventCard {
 
     @Input() event!: Event
     @Input() disableLink!: Boolean
-    
+    @Input() selected: Boolean = false
+
+    @Output() onClicked = new EventEmitter<Event>()
+
     constructor() { }
+
+    cardClicked() {
+        if (this.disableLink) {
+            this.onClicked.emit(this.event)
+        }
+    }
 }

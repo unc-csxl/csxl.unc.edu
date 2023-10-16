@@ -9,10 +9,17 @@
 
             <div class="events-column">
                 <mat-card class="events-section" appearance="outlined" style="padding: 16px;">
-                    <mat-card-title>October 28th</mat-card-title>
-                    <mat-divider style="padding-bottom: 8px;" />
+
+                    <div *ngFor="let date of eventsPerDay.keys()">
+                        <mat-card-title>{{date}}</mat-card-title>
+                        <mat-divider style="padding-bottom: 8px;" />  
+                        <event-card *ngFor="let event of eventsPerDay.get(date)" [event]="event"
+                        [disableLink]="innerWidth > 900" [selected]="event === selectedEvent"
+                        (onClicked)="onEventCardClicked($event)"
+                        />  
+                    </div>
     
-                    <event-card *ngFor="let event of events" [event]="event" [disableLink]="innerWidth > 900"/>
+
                     <!-- <event-card id="firstcard" eventName="HackNC Hackathon" eventOrganizationName="HackNC"
                         eventTimeText="10:00 AM - All day" eventLocation="Great Hall (Student Union)" />
     
@@ -40,7 +47,7 @@
             </div>
     
                     <div class="details-column">
-                        <event-detail-card [event]="events[0]" />
+                        <event-detail-card [event]="selectedEvent!" *ngIf="selectedEvent"/>
             </div>
         </div>
     </div>

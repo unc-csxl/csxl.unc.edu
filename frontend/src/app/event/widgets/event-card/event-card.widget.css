@@ -8,3 +8,13 @@
     background-color: #525252;
     cursor: pointer;
 }
+
+.selected-card {
+    background-color: #525252;
+    cursor: default;
+}
+
+.selected-card:hover {
+    background-color: #525252;
+    cursor: default;
+}
