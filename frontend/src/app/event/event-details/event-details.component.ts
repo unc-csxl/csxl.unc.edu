@@ -35,6 +35,7 @@ export class EventDetailsComponent {
       youtube: "https://www.youtube.com/channel/UCDRN6TMC27uSDsZosIwUrZg",
       heel_life: "https://heellife.unc.edu/organization/hacknc",
       public: false,
+      shorthand: ""
     }
   }
 }

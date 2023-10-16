@@ -21,7 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 /* UI Widgets */
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
-import { ExperimentalRoutingModule } from './experimental-routing.module';
+import { EventRoutingModule } from './event-routing.module';
 import { EventCard } from './widgets/event-card/event-card.widget';
 import { EventDetailCard } from './widgets/event-detail-card/event-detail-card.widget';
 import { EventDetailsComponent } from './event-details/event-details.component';
@@ -53,7 +53,7 @@ import { EventPageComponent } from './event-page/event-page.component';
     MatTooltipModule,
     RouterModule,
     SharedModule,
-    ExperimentalRoutingModule
+    EventRoutingModule
   ]
 })
-export class ExperimentalModule { }
+export class EventModule { }

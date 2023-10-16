@@ -12,7 +12,7 @@ const routes: Routes = [
   GateComponent.Route,
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organization/organization.module').then(m => m.OrganizationModule) },
-  { path: 'events', title: 'Experimental', loadChildren: () => import('./experimental/experimental.module').then(m => m.ExperimentalModule) },
+  { path: 'events', title: 'Experimental', loadChildren: () => import('./event/event.module').then(m => m.EventModule) },
 
 ];
 
