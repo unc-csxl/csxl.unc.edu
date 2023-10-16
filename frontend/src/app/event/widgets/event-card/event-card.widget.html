@@ -4,7 +4,14 @@
 >
     <div style="display: flex; flex-direction: column; padding: 12px;">
         <div style="display: flex; flex-direction: row;">
-            <div style="display: flex; flex-direction: column; width: 50%;">
+            <p style="font-weight: 500; margin: 0px; width: 75%;">{{event.name}}</p>
+            <p style="margin: 0px; text-align: end; width: 25%;">{{event.time | date:'shortTime'}}</p>
+        </div>
+        <div style="display: flex; flex-direction: row; margin-top: 8px;">
+            <p style="margin: 0px; width: 50%;">{{event.organization.name}}</p>
+            <p style="margin: 0px; text-align: end; width: 50%;">{{event.location}}</p>
+        </div>
+            <!-- <div style="display: flex; flex-direction: column; width: 50%;">
                 <p style="font-weight: 500; margin: 0px;">{{event.name}}</p>
                 <p style="margin: 0px;">{{event.organization.name}}</p>
             </div>
@@ -12,7 +19,7 @@
                 <p style="margin: 0px; text-align: end;">{{event.time | date:'shortTime'}}</p>
                 <p style="margin: 0px; text-align: end;">{{event.location}}</p>
             </div>
-        </div>
-        <p>Event description here.</p>
+        </div> -->
+        <p class="description-text">{{event.description}}</p>
     </div>
 </mat-card>

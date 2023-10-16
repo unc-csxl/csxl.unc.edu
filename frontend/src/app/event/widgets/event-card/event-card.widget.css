@@ -18,3 +18,10 @@
     background-color: #525252;
     cursor: default;
 }
+
+.description-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+}

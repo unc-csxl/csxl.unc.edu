@@ -10,7 +10,7 @@
             <div class="events-column">
                 <mat-card class="events-section" appearance="outlined" style="padding: 16px;">
 
-                    <div *ngFor="let date of eventsPerDay.keys()">
+                    <div *ngFor="let date of eventsPerDay.keys()" style="padding-bottom: 16px;">
                         <mat-card-title>{{date}}</mat-card-title>
                         <mat-divider style="padding-bottom: 8px;" />  
                         <event-card *ngFor="let event of eventsPerDay.get(date)" [event]="event"
