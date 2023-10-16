@@ -2,8 +2,12 @@ import { Component } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventDetailResolver } from '../event.resolver';
 import { Profile } from 'src/app/profile/profile.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { Event } from '../event.service';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['event'].name;
+};
 
 @Component({
   selector: 'app-event-details',
@@ -14,11 +18,11 @@ export class EventDetailsComponent {
 
   /** Route information to be used in App Routing Module */
   public static Route = {
-    path: 'detail',
+    path: ':id',
     title: 'Event Detail - TODO: Make Title Dynamic',
     component: EventDetailsComponent,
-    canActivate: [],
-    resolve: { profile: profileResolver, event: eventDetailResolver }
+    resolve: { profile: profileResolver, event: eventDetailResolver },
+    children: [{ path: '', title: titleResolver, component: EventDetailsComponent }]
   }
 
   /** Store Event */
