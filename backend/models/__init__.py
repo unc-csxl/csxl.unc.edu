@@ -6,6 +6,8 @@ from .user import User, UserDetails, ProfileForm, UnregisteredUser
 from .role import Role
 from .role_details import RoleDetails
 from .organization import Organization
+from .event import Event
+from .event_details import EventDetails
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
