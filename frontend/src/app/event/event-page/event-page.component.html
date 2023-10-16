@@ -12,7 +12,8 @@
                     <mat-card-title>October 28th</mat-card-title>
                     <mat-divider style="padding-bottom: 8px;" />
     
-                    <event-card id="firstcard" eventName="HackNC Hackathon" eventOrganizationName="HackNC"
+                    <event-card *ngFor="let event of events" [event]="event"/>
+                    <!-- <event-card id="firstcard" eventName="HackNC Hackathon" eventOrganizationName="HackNC"
                         eventTimeText="10:00 AM - All day" eventLocation="Great Hall (Student Union)" />
     
                     <event-card eventName=" Introduction to APIs Workshop" eventOrganizationName="CADS"
@@ -34,18 +35,12 @@
                     <event-card eventName="Fall Career Fair" eventOrganizationName="Department of Computer Science"
                         eventTimeText="12:00 PM - 3 hours" eventLocation="Sitterson Lower Lobby" />
                     <event-card eventName="CS+SG Picnic" eventOrganizationName="CS+Social Good"
-                    eventTimeText="7:00 PM - 1 hour" eventLocation="The Quad" />
+                    eventTimeText="7:00 PM - 1 hour" eventLocation="The Quad" /> -->
                 </mat-card>
             </div>
     
                     <div class="details-column">
-                        <event-detail-card [eventName]="'HackNC Hackathon'" [eventOrganization]="sampleOrganization"
-                        [eventStartText]="'Oct. 28th, 10:00 AM'" [eventEndText]="'Oct. 29th, 10:00 AM'"
-                        [eventLocation]="'Woolen Gym'"
-                        [eventDescription]="'HackNC is a weekend for students of all skill levels to broaden their talents. Your challenge is to make an awesome project in just 24 hours. You will have access to hands-on workshops and demos from our sponsors, as well as exciting talks about the awesome things happening right now with computer science and technology - not to mention all of the free food, shirts, stickers, and swag!'"
-                        [requiresPreregistration]="true" />
-    
-    
+                        <event-detail-card [event]="events[0]" />
             </div>
         </div>
     </div>

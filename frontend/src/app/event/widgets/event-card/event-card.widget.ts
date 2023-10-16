@@ -8,6 +8,7 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { Event } from '../../event.service';
 
 @Component({
     selector: 'event-card',
@@ -16,10 +17,7 @@ import { Component, Input } from '@angular/core';
 })
 export class EventCard {
 
-    @Input() eventName!: string
-    @Input() eventTimeText!: string
-    @Input() eventOrganizationName!: string
-    @Input() eventLocation!: string
+    @Input() event!: Event
 
     constructor() { }
 }

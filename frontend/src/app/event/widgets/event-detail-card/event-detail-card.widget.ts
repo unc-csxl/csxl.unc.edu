@@ -9,6 +9,7 @@
 
 import { Component, Input } from '@angular/core';
 import { Organization } from 'src/app/organization/organization.service';
+import { Event } from '../../event.service';
 
 @Component({
     selector: 'event-detail-card',
@@ -17,14 +18,15 @@ import { Organization } from 'src/app/organization/organization.service';
 })
 export class EventDetailCard {
 
-    @Input() eventName!: string
-    @Input() eventOrganization!: Organization
-    @Input() eventStartText!: string
-    @Input() eventEndText!: string
-    @Input() eventLocation!: string
-    @Input() eventDescription!: string
-    @Input() requiresPreregistration!: boolean
-    @Input() seatsRemaining!: number
+    @Input() event!: Event
+    // @Input() eventName!: string
+    // @Input() eventOrganization!: Organization
+    // @Input() eventStartText!: string
+    // @Input() eventEndText!: string
+    // @Input() eventLocation!: string
+    // @Input() eventDescription!: string
+    // @Input() requiresPreregistration!: boolean
+    // @Input() seatsRemaining!: number
 
     constructor() { }
 }

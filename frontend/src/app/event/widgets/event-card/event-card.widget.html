@@ -2,14 +2,14 @@
     <div style="display: flex; flex-direction: column; padding: 12px;">
         <div style="display: flex; flex-direction: row;">
             <div style="display: flex; flex-direction: column; width: 50%;">
-                <p style="font-weight: 500; margin: 0px;">{{eventName}}</p>
-                <p style="margin: 0px;">{{eventOrganizationName}}</p>
+                <p style="font-weight: 500; margin: 0px;">{{event.name}}</p>
+                <p style="margin: 0px;">{{event.organization.name}}</p>
             </div>
             <div style="display: flex; flex-direction: column; width: 50%; justify-content: flex-end;">
-                <p style="margin: 0px; text-align: end;">{{eventTimeText}}</p>
-                <p style="margin: 0px; text-align: end;">{{eventLocation}}</p>
+                <p style="margin: 0px; text-align: end;">{{event.time | date:'shortTime'}}</p>
+                <p style="margin: 0px; text-align: end;">{{event.location}}</p>
             </div>
         </div>
-        <p>Here is a short description about this event. This would have a character limit similar to the short description of an organization.</p>
+        <p>Event description here.</p>
     </div>
 </mat-card>

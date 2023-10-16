@@ -6,7 +6,7 @@
 
         <!-- Title -->
         <div class="event-title">
-            <mat-card-title>{{eventName}}</mat-card-title>
+            <mat-card-title>{{event.name}}</mat-card-title>
         </div>
 
         <!-- Buttons -->
@@ -23,32 +23,32 @@
     <mat-divider id="top-divider" />
 
     <!-- Organization Section -->
-    <div class="organization-section" [routerLink]="'/organizations/' + eventOrganization.slug">
+    <div class="organization-section" [routerLink]="'/organizations/' + event.organization.slug">
         <!-- Organization Icon -->
-        <img mat-card-image src="{{eventOrganization.logo}}" class="logo" />
+        <img mat-card-image src="{{event.organization.logo}}" class="logo" />
         <!-- Organization Name -->
-        <p id="organization-name">{{eventOrganization.slug}}</p>
+        <p id="organization-name">{{event.organization.shorthand}}</p>
     </div>
 
     <mat-divider class="padded-divider" />
 
     <!-- Logistical Information -->
     <div>
-        <p><strong>Start:</strong> {{eventStartText}}</p>
-        <p><strong>End:</strong> {{eventEndText}}</p>
-        <p><strong>Location:</strong> {{eventLocation}}</p>
+        <p><strong>Start:</strong> {{event.time | date:'shortTime'}}</p>
+        <!-- <p><strong>End:</strong> {{eventEndText}}</p> -->
+        <p><strong>Location:</strong> {{event.location}}</p>
     </div>
 
     <mat-divider class="padded-divider" />
 
     <!-- Description -->
-    <p>{{eventDescription}}</p>
+    <p>{{"This is an event description."}}</p>
 
     <mat-divider class="padded-divider" />
 
     <!-- Registration -->
 
-    <div *ngIf="requiresPreregistration">
+    <!-- <div *ngIf="requiresPreregistration">
         <p><i>This event requires pre-registration.</i></p>
         <div class="registration-listing">
             <div class="seat-count-container">
@@ -60,5 +60,5 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> -->
 </mat-card>
