@@ -9,5 +9,5 @@ class EventDetails(Event):
     of the `Event` database in the PostgreSQL database
     """
     
-    organization_slug: str
+    organization_id: int
     organization: Organization | None = None

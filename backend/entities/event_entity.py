@@ -31,7 +31,7 @@ class EventEntity(EntityBase):
     # Whether the event is public or not
     public: Mapped[bool] = mapped_column(Boolean)
     # Organization hosting the event
-    organization_slug: Mapped[str] = mapped_column(ForeignKey("organization.slug"))
+    organization_slug: Mapped[int] = mapped_column(ForeignKey("organization.id"))
     organization: Mapped['OrganizationEntity'] = relationship(back_populates="events")
 
     # TODO: Fields that establish relationships with events table

@@ -54,7 +54,7 @@ class EventService:
         Returns:
             EventDetails: a valid EventDetails model representing the new Event
         """
-        self._permission.enforce(subject, "events.create", f"events")
+        self._permission.enforce(subject, "organization.events.create", f"organization/{event.organization_id}")
 
         # Checks if the role already exists in the table
         if event.id:
@@ -121,7 +121,7 @@ class EventService:
         Returns:
             EventDetails: a valid EventDetails model representing the updated event object
         """
-        self._permission.enforce(subject, "events.update", f"events")
+        self._permission.enforce(subject, "organization.events.create", f"organization/{event.organization_id}")
 
         # Query the event with matching id
         obj = self._session.query(EventEntity).get(event.id)
@@ -150,15 +150,17 @@ class EventService:
         Parameters:
             id: an int representing a unique event ID
         """
-        self._permission.enforce(subject, "events.delete", f"events")
-
+        
         # Find object to delete
-        obj=self._session.query(EventEntity).get(id)
+        event = self._session.query(EventEntity).get(id)
+
+        # Enforce permissions
+        self._permission.enforce(subject, "organization.events.delete", f"organization/{event.organization_id}")
 
         # Ensure object exists
-        if obj:
+        if event:
             # Delete object and commit
-            self._session.delete(obj)
+            self._session.delete(event)
             self._session.commit()
         else:
             # Raise exception
