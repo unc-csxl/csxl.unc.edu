@@ -5,6 +5,7 @@
 .events-grid {
     display: grid;
     grid-template-columns: auto 560px;
+    margin-top: 4px;
     /* grid-template-rows: 0fr 2fr; */
     row-gap: 15px;
     column-gap: 24px;
@@ -35,9 +36,9 @@
 
 .details-column {
     position: fixed;
-    right: 36px;
+    right: 24px;
     bottom: 24px;
-    top: 165px;
+    top: 170px;
     width: 548px;
 }
 
@@ -47,6 +48,15 @@
     }
     .details-column {
         width: 388px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .events-grid {
+        grid-template-columns: auto 300px;
+    }
+    .details-column {
+        width: 288px;
     }
 }
 

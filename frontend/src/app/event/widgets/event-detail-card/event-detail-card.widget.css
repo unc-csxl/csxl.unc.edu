@@ -16,6 +16,11 @@
     width: 100%;
 }
 
+.organization-section:hover {
+    background-color: #525252;
+    cursor: default;
+}
+
 .event-title-container {
     display: flex;
     flex-direction: row;
