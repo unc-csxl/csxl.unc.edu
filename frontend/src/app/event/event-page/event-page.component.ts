@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Organization } from 'src/app/organization/organization.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventResolver } from '../event.resolver';
@@ -28,6 +28,9 @@ export class EventPageComponent {
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
+  /** Stores the width of the window. */
+  public innerWidth: any;
+
   constructor(private route: ActivatedRoute) {
 
     /** Initialize data from resolvers. */
@@ -35,6 +38,15 @@ export class EventPageComponent {
     this.profile = data.profile;
     this.events = data.events;
     console.log(data.events);
+  }
+
+  ngOnInit() {
+      this.innerWidth = window.innerWidth;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(_: UIEvent) {
+    this.innerWidth = window.innerWidth;
   }
 }
 

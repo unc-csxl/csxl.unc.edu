@@ -12,7 +12,7 @@
                     <mat-card-title>October 28th</mat-card-title>
                     <mat-divider style="padding-bottom: 8px;" />
     
-                    <event-card *ngFor="let event of events" [event]="event"/>
+                    <event-card *ngFor="let event of events" [event]="event" [disableLink]="innerWidth > 900"/>
                     <!-- <event-card id="firstcard" eventName="HackNC Hackathon" eventOrganizationName="HackNC"
                         eventTimeText="10:00 AM - All day" eventLocation="Great Hall (Student Union)" />
     

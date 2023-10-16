@@ -18,6 +18,7 @@ import { Event } from '../../event.service';
 export class EventCard {
 
     @Input() event!: Event
-
+    @Input() disableLink!: Boolean
+    
     constructor() { }
 }
