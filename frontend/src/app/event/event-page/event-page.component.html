@@ -1,7 +1,7 @@
 <div>
 
     <div class="parameter-bar">
-        <search-bar class="search-bar" />
+        <search-bar class="search-bar" [searchBarQuery]="searchBarQuery" (searchBarQueryChange)="onSearchBarQueryChange($event)"/>
     </div>
 
     <div class="container">

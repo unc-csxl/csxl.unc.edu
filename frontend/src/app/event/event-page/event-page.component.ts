@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.service';
 import { DatePipe } from '@angular/common';
+import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 
 @Component({
   selector: 'app-event-page',
@@ -23,7 +24,12 @@ export class EventPageComponent {
     resolve: { profile: profileResolver, events: eventResolver }
   }
 
+  /** Store searchBarQuery */
+  public searchBarQuery = "";
+
   /** Store Observable list of Events */
+  public events: Event[];
+
   public eventsPerDay: Map<string, Event[]> = new Map();
 
   /** Store the selected Event */
@@ -35,19 +41,14 @@ export class EventPageComponent {
   /** Stores the width of the window. */
   public innerWidth: any;
 
-  constructor(private route: ActivatedRoute, public datepipe: DatePipe) {
+  constructor(private route: ActivatedRoute, public datePipe: DatePipe, public eventFilterPipe: EventFilterPipe) {
 
     // Initialize data from resolvers
     const data = this.route.snapshot.data as { profile: Profile, events: Event[] };
     this.profile = data.profile;
-    //this.events = data.events;
-    
-    data.events.forEach((event) => {
-      let dateString = this.datepipe.transform(event.time, 'EEEE, MMMM d, y') ?? ""
-      let newEventsList = this.eventsPerDay.get(dateString) ?? []
-      newEventsList.push(event)
-      this.eventsPerDay.set(dateString, newEventsList)
-    })
+    this.events = data.events;
+
+    this.groupEventsByDate(this.events);
 
     // Initialize the initially selected event
     if(data.events.length > 0) {
@@ -63,6 +64,22 @@ export class EventPageComponent {
   @HostListener('window:resize', ['$event'])
   onResize(_: UIEvent) {
     this.innerWidth = window.innerWidth;
+  }
+
+  groupEventsByDate(events: Event[], query: string = "") {
+    let groups: Map<string, Event[]> = new Map();
+    this.eventFilterPipe.transform(events, query).forEach((event) => {
+      let dateString = this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ""
+      let newEventsList = groups.get(dateString) ?? []
+      newEventsList.push(event)
+      groups.set(dateString, newEventsList)
+    })
+    
+    this.eventsPerDay = groups;
+  }
+
+  onSearchBarQueryChange(query: string) {
+      this.groupEventsByDate(this.events, query)
   }
 
   onEventCardClicked(event: Event) {
