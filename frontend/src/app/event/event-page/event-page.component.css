@@ -19,8 +19,9 @@
     justify-content: space-between;
     z-index: 2;
     position: sticky;
-    top: 65px;
-    background-color: #303030; /*fafafa*/
+    top: 64px;
+    background-color: #303030;
+    /*fafafa*/
 }
 
 .search-bar {
@@ -49,6 +50,7 @@
     .events-grid {
         grid-template-columns: auto 400px;
     }
+
     .details-column {
         width: 388px;
     }
@@ -58,6 +60,7 @@
     .events-grid {
         grid-template-columns: auto 300px;
     }
+
     .details-column {
         width: 288px;
     }
@@ -67,6 +70,7 @@
     .events-grid {
         grid-template-columns: auto 0;
     }
+
     .details-column {
         visibility: hidden;
     }
@@ -76,5 +80,5 @@
     .parameter-bar {
         background-color: #fafafa;
     }
-    
+
 }
