@@ -34,6 +34,10 @@
     max-width: 100%;
 }
 
+.events-column {
+    margin-bottom: 24px;
+}
+
 .details-column {
     position: fixed;
     right: 24px;
