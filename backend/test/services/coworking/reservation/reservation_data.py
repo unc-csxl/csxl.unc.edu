@@ -99,7 +99,7 @@ def instantiate_global_models(time: dict[str, datetime]):
     reservation_5 = Reservation(
         id=5,
         start=operating_hours_data.tomorrow.start,
-        end=operating_hours_data.tomorrow.end + ONE_HOUR,
+        end=operating_hours_data.tomorrow.end,
         created_at=time[NOW],
         updated_at=time[NOW],
         walkin=False,
