@@ -6,7 +6,6 @@
     display: grid;
     grid-template-columns: auto 560px;
     margin-top: 4px;
-    /* grid-template-rows: 0fr 2fr; */
     row-gap: 15px;
     column-gap: 24px;
     width: inherit;
@@ -71,4 +70,11 @@
     .details-column {
         visibility: hidden;
     }
+}
+
+@media (prefers-color-scheme: light) {
+    .parameter-bar {
+        background-color: #fafafa;
+    }
+    
 }

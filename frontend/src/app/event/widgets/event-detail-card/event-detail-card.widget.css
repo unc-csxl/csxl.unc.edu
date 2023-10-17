@@ -73,3 +73,9 @@
     flex-direction: column;
     width: 25%;
 }
+
+@media (prefers-color-scheme: light) {
+    .organization-section:hover {
+        background-color: #f5f5f5;
+    }    
+}
