@@ -17,24 +17,6 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.drop_index('coworking__reservation_time_idx', table_name='coworking__reservation')
-    op.drop_table('coworking__reservation')
-
-    op.drop_index('coworking__operating_hours_idx', table_name='coworking__operating_hours')
-    op.drop_index('ix_coworking__operating_hours_end', table_name='coworking__operating_hours')
-    op.drop_index('ix_coworking__operating_hours_start', table_name='coworking__operating_hours')
-    op.drop_table('coworking__operating_hours')
-
-    op.drop_index('ix_coworking__room_capacity', table_name='coworking__room')
-    op.drop_table('coworking__room')
-
-    op.drop_table('coworking__seat')
-
-    op.drop_table('coworking__reservation_seat')
-    op.drop_table('coworking__reservation_user')
-
-
-def downgrade() -> None:
     op.create_table('coworking__reservation_user',
         sa.Column('reservation_id', sa.INTEGER(), autoincrement=False, nullable=False),
         sa.Column('user_id', sa.INTEGER(), autoincrement=False, nullable=False),
@@ -101,3 +83,21 @@ def downgrade() -> None:
         sa.PrimaryKeyConstraint('id', name='coworking__reservation_pkey')
     )
     op.create_index('coworking__reservation_time_idx', 'coworking__reservation', ['start', 'end', 'state'], unique=False)
+
+
+def downgrade() -> None:
+    op.drop_index('coworking__reservation_time_idx', table_name='coworking__reservation')
+    op.drop_table('coworking__reservation')
+
+    op.drop_index('coworking__operating_hours_idx', table_name='coworking__operating_hours')
+    op.drop_index('ix_coworking__operating_hours_end', table_name='coworking__operating_hours')
+    op.drop_index('ix_coworking__operating_hours_start', table_name='coworking__operating_hours')
+    op.drop_table('coworking__operating_hours')
+
+    op.drop_index('ix_coworking__room_capacity', table_name='coworking__room')
+    op.drop_table('coworking__room')
+
+    op.drop_table('coworking__seat')
+
+    op.drop_table('coworking__reservation_seat')
+    op.drop_table('coworking__reservation_user')
