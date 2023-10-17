@@ -10,6 +10,7 @@ Each opens one hour before the module evalues and ends one hour after.
 """
 
 import pytest
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from ....entities.coworking import OperatingHoursEntity
 from ....models.coworking import OperatingHours
@@ -60,3 +61,7 @@ def fake_data_fixture(session: Session, time: dict[str, datetime]):
     insert_fake_data(session, time)
     session.commit()
     yield
+
+
+def delete_all(session):
+    session.execute(delete(OperatingHoursEntity))

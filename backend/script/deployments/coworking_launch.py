@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from ...database import engine
 from ...env import getenv
 from ... import entities
-from ...entities.coworking import SeatEntity
+from ...entities.coworking import SeatEntity, OperatingHoursEntity
 from ...test.services.reset_table_id_seq import reset_table_id_seq
 
 from ...test.services import role_data, user_data, permission_data
@@ -35,6 +35,7 @@ with Session(engine) as session:
     time = time.time_data()
     reservation_data.delete_future_data(session, time)
     seat_data.delete_all(session)
+    operating_hours_data.delete_all(session)
     
     seats: list[SeatDetails] = []
     # Sit Desks w/ Monitor
@@ -84,7 +85,13 @@ with Session(engine) as session:
         session.add(entity)
     reset_table_id_seq(session, SeatEntity, SeatEntity.id, len(seats) + 1)
 
-    # operating_hours_data.insert_fake_data(session, time)
-    # seat_data.insert_fake_data(session)
-    # reservation_data.insert_fake_data(session, time)
+    from datetime import datetime
+    dates_as_strings = ["10/17/2023", "10/18/2023", "10/23/2023", "10/24/2023", "10/25/2023", "10/26/2023", "10/27/2023"]
+    date_list = [datetime.strptime(date, "%m/%d/%Y") for date in dates_as_strings]
+    start_datetimes = [date.replace(hour=10, minute=0, second=0, microsecond=0) for date in date_list]
+    end_datetimes = [date.replace(hour=18, minute=0, second=0, microsecond=0) for date in date_list]
+    for start, end in zip(start_datetimes, end_datetimes):
+        entity = OperatingHoursEntity(start=start, end=end)
+        session.add(entity)
+
     session.commit()
