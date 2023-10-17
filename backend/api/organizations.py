@@ -5,7 +5,7 @@ Organization routes are used to create, retrieve, and update Organizations."""
 from fastapi import APIRouter, Depends, HTTPException
 
 from backend.services.organization import OrganizationNotFoundException
-from backend.services.permission import UserPermissionException
+from backend.services.exceptions import UserPermissionException
 from ..services import OrganizationService
 from ..models.organization import Organization
 from backend.api.authentication import registered_user

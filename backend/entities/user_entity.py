@@ -5,7 +5,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
-from .user_role_entity import user_role_table
+from .user_role_table import user_role_table
 from ..models import User, UserDetails
 
 
@@ -33,9 +33,9 @@ class UserEntity(EntityBase):
         String(32), nullable=False, default='')
     github: Mapped[str] = mapped_column(
         String(32), nullable=False, default='')
-    github_id: Mapped[int] = mapped_column(
+    github_id: Mapped[int | None] = mapped_column(
         Integer, nullable=True)
-    github_avatar: Mapped[str] = mapped_column(
+    github_avatar: Mapped[str | None] = mapped_column(
         String(), nullable=True)
 
     roles: Mapped[list['RoleEntity']] = relationship(
@@ -96,5 +96,5 @@ class UserEntity(EntityBase):
         self.last_name = model.last_name
         self.pronouns = model.pronouns
         self.github = model.github
-        self.github_id = model.github_id
-        self.github_avatar = model.github_avatar
+        self.github_id = model.github_id or None
+        self.github_avatar = model.github_avatar or ""
