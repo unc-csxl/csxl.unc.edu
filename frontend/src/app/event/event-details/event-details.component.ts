@@ -1,3 +1,12 @@
+/**
+ * The Event Detail Page Component shows more details about
+ * any given event.
+ * 
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventDetailResolver } from '../event.resolver';
@@ -5,6 +14,7 @@ import { Profile } from 'src/app/profile/profile.service';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { Event } from '../event.service';
 
+/** Injects the event's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['event'].name;
 };

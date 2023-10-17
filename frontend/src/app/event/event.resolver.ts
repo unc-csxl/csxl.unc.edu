@@ -12,10 +12,12 @@ import { ResolveFn } from "@angular/router";
 import { Event } from "./event.service"
 import { EventService } from "./event.service";
 
+/** This resolver injects the list of events into the events component. */
 export const eventResolver: ResolveFn<Event[] | undefined> = (route, state) => {
     return inject(EventService).getEvents();
 }
 
+/** This resolver injects an event into the events detail component. */
 export const eventDetailResolver: ResolveFn<Event | undefined> = (route, state) => {
     if(route.paramMap.get("id")) {
         return inject(EventService).getEvent(+route.paramMap.get("id")!);

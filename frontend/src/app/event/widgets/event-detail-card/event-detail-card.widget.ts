@@ -20,14 +20,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class EventDetailCard {
 
     @Input() event!: Event
-    // @Input() eventName!: string
-    // @Input() eventOrganization!: Organization
-    // @Input() eventStartText!: string
-    // @Input() eventEndText!: string
-    // @Input() eventLocation!: string
-    // @Input() eventDescription!: string
-    // @Input() requiresPreregistration!: boolean
-    // @Input() seatsRemaining!: number
 
     constructor(protected snackBar: MatSnackBar) { }
 
