@@ -47,7 +47,7 @@ def date_maker(days_in_future: int, hour: int, minutes: int) -> datetime:
 event_one = EventEntity(
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
-    location="Sitterson Hall Lower Lobby",
+    location="Sitterson Hall",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
     organization_id=cads.id

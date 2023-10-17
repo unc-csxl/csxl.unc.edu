@@ -1,4 +1,4 @@
-<mat-card [ngClass]="selected && 'selected-card'" appearance="outlined"
+<mat-card [ngClass]="(selected && disableLink) ? 'selected-card' : ''" appearance="outlined"
     style="margin-top: 12px !important;" [routerLink]="disableLink ? null : '/events/' + event.id"
     (click)="cardClicked()"
 >
@@ -8,7 +8,7 @@
             <p style="margin: 0px; text-align: end; width: 25%;">{{event.time | date:'shortTime'}}</p>
         </div>
         <div style="display: flex; flex-direction: row; margin-top: 8px;">
-            <p style="margin: 0px; width: 50%;">{{event.organization.name}}</p>
+            <p style="margin: 0px; width: 50%;">{{event.organization.shorthand}}</p>
             <p style="margin: 0px; text-align: end; width: 50%;">{{event.location}}</p>
         </div>
             <!-- <div style="display: flex; flex-direction: column; width: 50%;">
