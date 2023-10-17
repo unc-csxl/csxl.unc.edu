@@ -464,6 +464,8 @@ class ReservationService:
         dirty = False
         if delta.state is not None and delta.state != entity.state:
             dirty = dirty or self._change_state(entity, delta.state)
+            if entity.state == ReservationState.CHECKED_OUT:
+                entity.end = datetime.now()
 
         # Handle Requested Seat Changes?
         if delta.seats is not None:
