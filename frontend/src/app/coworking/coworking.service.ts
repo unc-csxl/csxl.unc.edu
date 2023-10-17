@@ -48,16 +48,4 @@ export class CoworkingService {
         return this.http.post<ReservationJSON>("/api/coworking/reservation", reservation).pipe(map(parseReservationJSON));
     }
 
-    // confirmReservation(reservation: Reservation) {
-    //     let reservationPartial = { id: reservation.id, state: "CONFIRMED" };
-    //     this.http.put<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`, reservationPartial)
-    //         .subscribe((updatedReservation) => this.status.updateReservation(parseReservationJSON(updatedReservation)));
-    // }
-
-    // cancelReservation(reservation: Reservation) {
-    //     this.http.delete<ReservationJSON>(`/api/coworking/reservation/${reservation.id}`).subscribe((cancelledReservation => {
-    //         this.status.removeReservation(parseReservationJSON(cancelledReservation))
-    //     }));
-    // }
-
 }

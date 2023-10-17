@@ -13,7 +13,8 @@ import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
 import { CoworkingStatus, OperatingHours, Reservation, SeatAvailability } from '../coworking.models';
-import { Observable, Subscription, map, timer } from 'rxjs';
+import { Observable, Subscription, filter, map, mergeMap, of, timer } from 'rxjs';
+import { ReservationService } from '../reservation/reservation.service';
 
 @Component({
   selector: 'app-coworking-home',
@@ -40,7 +41,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     resolve: { profile: profileResolver }
   };
 
-  constructor(route: ActivatedRoute, public coworkingService: CoworkingService, private router: Router) {
+  constructor(route: ActivatedRoute, public coworkingService: CoworkingService, private router: Router, private reservationService: ReservationService) {
     this.status$ = coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
@@ -78,11 +79,14 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   private initActiveReservation(): Observable<Reservation | undefined> {
-    return this.status$.pipe(map(status => {
-      let reservations = status.my_reservations;
-      let now = new Date();
-      return reservations.find(reservation => reservation.end > now);
-    }));
+    return this.status$.pipe(
+      map(status => {
+        let reservations = status.my_reservations;
+        let now = new Date();
+        return reservations.find(reservation => reservation.start <= now && reservation.end > now);
+      }),
+      mergeMap(reservation => reservation ? this.reservationService.get(reservation.id) : of(undefined))
+    );
   }
 
 }
