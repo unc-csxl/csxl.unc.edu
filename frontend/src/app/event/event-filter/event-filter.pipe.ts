@@ -25,6 +25,9 @@ export class EventFilterPipe implements PipeTransform {
       return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
     })
 
+    // Remove past events
+    events = events.filter((e) => e.time < new Date())
+
     // If a search query is provided, return the events that start with the search query.
     if (searchQuery) {
       return events.filter(events =>
