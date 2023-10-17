@@ -7,16 +7,7 @@
         [openOperatingHours]="openOperatingHours" />
 
       <ng-container *ngIf="activeReservation$ | async as activeReservation; else dropin">
-        <div [ngSwitch]="activeReservation.state">
-          <coworking-reservation-draft *ngSwitchCase="'DRAFT'" [reservation]="activeReservation"
-            (onConfirm)="coworkingService.confirmReservation($event)"
-            (onCancel)="coworkingService.cancelReservation($event)"></coworking-reservation-draft>
-
-          <coworking-reservation-card *ngSwitchCase="'CONFIRMED'" [reservation]="activeReservation"
-            (onCancel)="cancel($event)"></coworking-reservation-card>
-
-          <div *ngSwitchCase="'CHECKED_IN'">checked_in</div>
-        </div>
+        <coworking-reservation-card [reservation]="activeReservation"></coworking-reservation-card>
       </ng-container>
 
       <ng-template #dropin>

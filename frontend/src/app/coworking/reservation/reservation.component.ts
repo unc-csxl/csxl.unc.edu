@@ -6,11 +6,11 @@
  * @license MIT
  */
 
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, Subscription, map, mergeMap, take, tap, timer } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Reservation } from '../coworking.models';
 import { ReservationService } from './reservation.service';
 
@@ -28,7 +28,7 @@ const titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot): Observ
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.css'],
 })
-export class ReservationComponent implements OnInit, OnDestroy {
+export class ReservationComponent {
 
   public static Route: Route = {
     path: 'reservation/:id',
@@ -40,63 +40,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   public id: number;
   public reservation$: Observable<Reservation>;
-  public draftConfirmationDeadline$!: Observable<string>;
-  private timerSubscription!: Subscription;
 
   constructor(public route: ActivatedRoute, public reservationService: ReservationService, public router: Router) {
     this.id = parseInt(route.snapshot.params['id']);
     this.reservation$ = reservationService.get(this.id);
-    this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
-  }
-
-  ngOnInit(): void {
-    this.timerSubscription = timer(0, 10000).pipe(tap(_ => this.reservationService.get(this.id))).subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.timerSubscription.unsubscribe();
-  }
-
-  checkinDeadline(reservationStart: Date): Date {
-    return new Date(reservationStart.getTime() + (10 * 60 * 1000));
-  }
-
-  cancel(reservation: Reservation): void {
-    this.reservationService.cancel(reservation).subscribe();
-  }
-
-  confirm(reservation: Reservation): void {
-    this.reservationService.confirm(reservation).subscribe();
-  }
-
-  checkout(reservation: Reservation): void {
-    this.reservationService.checkout(reservation).subscribe();
-  }
-
-  private initDraftConfirmationDeadline(): Observable<string> {
-
-    const fiveMinutes = 5 /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */;
-
-    const reservationDraftDeadline = (reservation: Reservation) => reservation.created_at.getTime() + fiveMinutes;
-
-    const deadlineString = (deadline: number): string => {
-      const now = (new Date().getTime())
-      const delta = (deadline - now) / 1000 /* milliseconds */;
-      if (delta > 60) {
-        return `Confirm in ${Math.ceil(delta / 60)} minutes`;
-      } else if (delta > 0) {
-        return `Confirm in ${Math.ceil(delta)} seconds`;
-      } else {
-        this.reservation$.pipe(take(1)).subscribe(reservation => this.cancel(reservation));
-        return "Cancelling...";
-      }
-    }
-
-    return timer(0, 1000).pipe(
-      mergeMap(() => this.reservation$),
-      map(reservationDraftDeadline),
-      map(deadlineString)
-    );
   }
 
 }

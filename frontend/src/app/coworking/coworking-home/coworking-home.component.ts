@@ -55,10 +55,6 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  cancel(reservation: Reservation) {
-    this.coworkingService.cancelReservation(reservation);
-  }
-
   ngOnInit(): void {
     this.timerSubscription = timer(0, 10000).subscribe(() => this.coworkingService.pollStatus());
   }

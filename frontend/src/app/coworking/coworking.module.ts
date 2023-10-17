@@ -6,7 +6,6 @@ import { CoworkingPageComponent } from './coworking-home/coworking-home.componen
 import { AmbassadorPageComponent } from './ambassador-home/ambassador-home.component';
 import { MatCardModule } from '@angular/material/card';
 import { CoworkingReservationCard } from './widgets/coworking-reservation-card/coworking-reservation-card';
-import { CoworkingReservationDraft } from './widgets/coworking-reservation-draft/coworking-reservation-draft';
 import { MatDividerModule } from '@angular/material/divider';
 import { CoworkingDropInCard } from './widgets/dropin-availability-card/dropin-availability-card.widget';
 import { MatListModule } from '@angular/material/list';
@@ -24,7 +23,6 @@ import { ReservationComponent } from './reservation/reservation.component';
     AmbassadorPageComponent,
     CoworkingDropInCard,
     CoworkingReservationCard,
-    CoworkingReservationDraft,
     CoworkingHoursCard,
   ],
   imports: [
