@@ -26,7 +26,6 @@ export class EventFilterPipe implements PipeTransform {
     })
 
     // Remove past events
-    events = events.filter((e) => e.time < new Date())
 
     // If a search query is provided, return the events that start with the search query.
     if (searchQuery) {
