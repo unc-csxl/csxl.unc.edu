@@ -34,7 +34,7 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
     # test run.
     global today, future, tomorrow, all
 
-    today = OperatingHours(id=1, start=time[AN_HOUR_AGO], end=time[IN_TWO_HOURS])
+    today = OperatingHours(id=1, start=time[AN_HOUR_AGO], end=time[IN_THREE_HOURS])
 
     future = OperatingHours(
         id=2,

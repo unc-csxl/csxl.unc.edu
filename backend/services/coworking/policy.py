@@ -19,11 +19,11 @@ class PolicyService:
 
     def walkin_window(self, _subject: User) -> timedelta:
         """How far into the future can walkins be reserved?"""
-        return timedelta(minutes=45)
+        return timedelta(minutes=30)
 
     def walkin_initial_duration(self, _subject: User) -> timedelta:
         """When making a walkin, this sets how long the initial reservation is for."""
-        return timedelta(hours=1)
+        return timedelta(hours=2)
 
     def reservation_window(self, _subject: User) -> timedelta:
         """Returns the number of days in advance the user can make reservations."""
