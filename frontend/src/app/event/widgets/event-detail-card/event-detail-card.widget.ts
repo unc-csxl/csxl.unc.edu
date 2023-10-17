@@ -10,6 +10,7 @@
 import { Component, Input } from '@angular/core';
 import { Organization } from 'src/app/organization/organization.service';
 import { Event } from '../../event.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'event-detail-card',
@@ -28,5 +29,10 @@ export class EventDetailCard {
     // @Input() requiresPreregistration!: boolean
     // @Input() seatsRemaining!: number
 
-    constructor() { }
+    constructor(protected snackBar: MatSnackBar) { }
+
+    onShareButtonClick() {
+        navigator.clipboard.writeText("https://csxl.unc.edu/events/" + this.event.id);
+        this.snackBar.open("Event link copied to clipboard.", "", {duration: 3000})
+    }
 }

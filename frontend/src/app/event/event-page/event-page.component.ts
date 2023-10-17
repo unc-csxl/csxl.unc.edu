@@ -7,6 +7,7 @@ import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.service';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-event-page',
@@ -41,7 +42,11 @@ export class EventPageComponent {
   /** Stores the width of the window. */
   public innerWidth: any;
 
-  constructor(private route: ActivatedRoute, public datePipe: DatePipe, public eventFilterPipe: EventFilterPipe) {
+  constructor(
+    private route: ActivatedRoute,
+    public datePipe: DatePipe,
+    public eventFilterPipe: EventFilterPipe  
+  ) {
 
     // Initialize data from resolvers
     const data = this.route.snapshot.data as { profile: Profile, events: Event[] };
