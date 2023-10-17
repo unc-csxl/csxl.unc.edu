@@ -3,14 +3,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /* HTTP and Auth */
+import { RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpRequestInterceptor } from './navigation/http-request.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 
-/* UI / Material Dependencies */
+/* Angular UI Dependencies */
 import { NgForOf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
+
+/* Material UI Dependencies */
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -25,15 +28,16 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
+
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.component';
 import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
-import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -41,10 +45,12 @@ import { RouterModule } from '@angular/router';
     NavigationComponent,
     ErrorDialogComponent,
     HomeComponent,
+    AboutComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
   ],
   imports: [
+    /* Angular */
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -52,6 +58,8 @@ import { RouterModule } from '@angular/router';
     AppRoutingModule,
     LayoutModule,
     ReactiveFormsModule,
+
+    /* Material UI */
     MatButtonModule,
     MatCardModule,
     MatDialogModule,
@@ -82,4 +90,4 @@ import { RouterModule } from '@angular/router';
   }],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
