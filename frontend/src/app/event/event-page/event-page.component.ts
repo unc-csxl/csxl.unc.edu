@@ -39,7 +39,7 @@ export class EventPageComponent {
   public events: Event[];
 
   /** Store a map of days to a list of events for that day */
-  public eventsPerDay: Map<string, Event[]> = new Map();
+  public eventsPerDay: Map<string, Event[]>;
 
   /** Store the selected Event */
   public selectedEvent: Event | null = null;
@@ -54,7 +54,7 @@ export class EventPageComponent {
   constructor(
     private route: ActivatedRoute,
     public datePipe: DatePipe,
-    public eventFilterPipe: EventFilterPipe  
+    public eventFilterPipe: EventFilterPipe
   ) {
 
     // Initialize data from resolvers
@@ -63,10 +63,10 @@ export class EventPageComponent {
     this.events = data.events;
 
     // Group events by their dates
-    this.groupEventsByDate(this.events);
+    this.eventsPerDay = this.groupEventsByDate(this.events);
 
     // Initialize the initially selected event
-    if(data.events.length > 0) {
+    if (data.events.length > 0) {
       this.selectedEvent = data.events[0]
     }
 
@@ -74,8 +74,8 @@ export class EventPageComponent {
 
   /** Runs when the frontend UI loads */
   ngOnInit() {
-      // Keep track of the initial width of the browser window
-      this.innerWidth = window.innerWidth;
+    // Keep track of the initial width of the browser window
+    this.innerWidth = window.innerWidth;
   }
 
   /** Handler that runs when the window resizes */
@@ -90,7 +90,7 @@ export class EventPageComponent {
    * @param events: List of the input events
    * @param query: Search bar query to filter the items
    */
-  groupEventsByDate(events: Event[], query: string = "") {
+  groupEventsByDate(events: Event[], query: string = ""): Map<string, Event[]> {
     // Initialize an empty map
     let groups: Map<string, Event[]> = new Map();
 
@@ -103,16 +103,16 @@ export class EventPageComponent {
       newEventsList.push(event)
       groups.set(dateString, newEventsList)
     })
-    
-    // Update the data
-    this.eventsPerDay = groups;
+
+    // Return the groups
+    return groups;
   }
 
   /** Handler that runs when the search bar query changes.
    * @param query: Search bar query to filter the items
    */
   onSearchBarQueryChange(query: string) {
-      this.groupEventsByDate(this.events, query)
+    this.eventsPerDay = this.groupEventsByDate(this.events, query)
   }
 
   /** Handler that runs when an event card is clicked.

@@ -1,7 +1,8 @@
 <div>
 
     <div class="parameter-bar">
-        <search-bar class="search-bar" [searchBarQuery]="searchBarQuery" (searchBarQueryChange)="onSearchBarQueryChange($event)"/>
+        <search-bar class="search-bar" [searchBarQuery]="searchBarQuery"
+            (searchBarQueryChange)="onSearchBarQueryChange($event)" />
     </div>
 
     <div class="container">
@@ -10,15 +11,16 @@
             <div class="events-column">
                 <mat-card class="events-section" appearance="outlined" style="padding: 16px;">
 
-                    <div *ngFor="let date of eventsPerDay.keys()" style="padding-bottom: 16px;">
-                        <mat-card-title>{{date}}</mat-card-title>
-                        <mat-divider style="padding-bottom: 8px;" />  
-                        <event-card *ngFor="let event of eventsPerDay.get(date)" [event]="event"
-                        [disableLink]="innerWidth > 900" [selected]="event === selectedEvent"
-                        (onClicked)="onEventCardClicked($event)"
-                        />  
+                    <!-- `eventsPerDay` is in the format of a map of date strings to a list of events -->
+                    <!--  Piping this through `keyvalue` means that `eventGroup.key` is the date string -->
+                    <div *ngFor="let eventGroup of eventsPerDay | keyvalue" style="padding-bottom: 16px;">
+                        <mat-card-title>{{eventGroup.key}}</mat-card-title>
+                        <mat-divider style="padding-bottom: 8px;" />
+                        <event-card *ngFor="let event of eventsPerDay.get(eventGroup.key)" [event]="event"
+                            [disableLink]="innerWidth > 900" [selected]="event === selectedEvent"
+                            (onClicked)="onEventCardClicked($event)" />
                     </div>
-    
+
 
                     <!-- <event-card id="firstcard" eventName="HackNC Hackathon" eventOrganizationName="HackNC"
                         eventTimeText="10:00 AM - All day" eventLocation="Great Hall (Student Union)" />
@@ -45,11 +47,11 @@
                     eventTimeText="7:00 PM - 1 hour" eventLocation="The Quad" /> -->
                 </mat-card>
             </div>
-    
-                    <div class="details-column">
-                        <event-detail-card [event]="selectedEvent!" *ngIf="selectedEvent"/>
+
+            <div class="details-column">
+                <event-detail-card [event]="selectedEvent!" *ngIf="selectedEvent" />
             </div>
         </div>
     </div>
-    
+
 </div>
