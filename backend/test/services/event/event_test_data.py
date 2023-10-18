@@ -58,11 +58,11 @@ updated_event = EventEntity(
 # Data Functions
 
 def insert_fake_data(session: Session):
-    """Inserts fake organization data into the test session."""
+    """Inserts fake event data into the test session."""
 
     global events
 
-    # Create entities for test organization data
+    # Create entities for test event data
     entities = []
     for event_entity in events:
         session.add(event_entity)
