@@ -29,7 +29,7 @@ export class EventDetailsComponent {
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: ':id',
-    title: 'Event Detail - TODO: Make Title Dynamic',
+    title: 'Event Details',
     component: EventDetailsComponent,
     resolve: { profile: profileResolver, event: eventDetailResolver },
     children: [{ path: '', title: titleResolver, component: EventDetailsComponent }]
@@ -41,7 +41,7 @@ export class EventDetailsComponent {
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
-    
+
   constructor(private route: ActivatedRoute) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as { profile: Profile, event: Event };
