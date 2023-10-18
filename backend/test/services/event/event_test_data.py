@@ -2,6 +2,7 @@
 
 import pytest
 from sqlalchemy.orm import Session
+from ....models.event_details import NewEvent
 from ....entities.event_entity import EventEntity
 from ..organization.organization_test_data import cads, cssg, appteam
 from .event_demo_data import date_maker
@@ -15,7 +16,7 @@ __license__ = "MIT"
 # Sample Data Objects
 # These sample entities will be used to generate the test data.
 
-event_one = EventEntity(
+event_one = NewEvent(
     id=1,
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
@@ -25,7 +26,7 @@ event_one = EventEntity(
     organization_id=cads.id
 )
 
-event_two = EventEntity(
+event_two = NewEvent(
     name="CS+SG Workshop",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
     location = "SN 014",
@@ -36,7 +37,7 @@ event_two = EventEntity(
 
 events = [event_one, event_two]
 
-to_add = EventEntity(
+to_add = NewEvent(
     name="iOS Workshop",
     time=date_maker(days_in_future=2, hour=20, minutes=0),
     location = "SN011",
@@ -45,7 +46,7 @@ to_add = EventEntity(
     organization_id=appteam.id
 )
 
-updated_event = EventEntity(
+updated_event = NewEvent(
     id=1,
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
@@ -64,7 +65,8 @@ def insert_fake_data(session: Session):
 
     # Create entities for test event data
     entities = []
-    for event_entity in events:
+    for event in events:
+        event_entity = EventEntity.from_new_model(event)
         session.add(event_entity)
         entities.append(event_entity)
 
