@@ -21,11 +21,10 @@ from ..core_data import setup_insert_data_fixture
 from .organization_test_data import (
     organizations,
     to_add,
-    organization_names,
     cads,
     new_cads,
 )
-from ..user_data import root, user, cads_leader
+from ..user_data import root, user
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -86,24 +85,20 @@ def test_create_organization_as_user(organization_svc_integration: OrganizationS
 
 
 # Test `OrganizationService.update()`
-
-
-# def test_update_organization_as_leader(
-#     organization_svc_integration: OrganizationService,
-# ):
-#     """Test that the root user is able to create new organizations.
-#     Note: Test data's website field is updated
-#     """
-#     cads = organization_svc_integration.get_from_id(1)
-#     cads.website = "https://cads.cs.unc.edu/"
-#     updated_organization = organization_svc_integration.update(cads_leader, cads)
-#     assert updated_organization is not None
-#     assert updated_organization.id is not None
-#     assert updated_organization.website == "https://cads.cs.unc.edu/"
+def test_update_organization_as_root(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that the root user is able to update organizations.
+    Note: Test data's website field is updated
+    """
+    updated_organization = organization_svc_integration.update(root, new_cads)
+    assert updated_organization is not None
+    assert updated_organization.id is not None
+    assert updated_organization.website == "https://cads.cs.unc.edu/"
 
 
 def test_update_organization_as_user(organization_svc_integration: OrganizationService):
-    """Test that any user is *unable* to create new organizations."""
+    """Test that any user is *unable* to update new organizations."""
     with pytest.raises(UserPermissionException):
         organization_svc_integration.update(user, new_cads)
 
