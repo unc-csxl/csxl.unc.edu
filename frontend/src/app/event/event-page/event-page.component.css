@@ -1,5 +1,15 @@
 .container {
     padding-left: 24px;
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
 }
 
 .events-grid {
@@ -40,7 +50,7 @@
 
 .details-column {
     position: fixed;
-    right: 36px;
+    right: 24px;
     bottom: 24px;
     top: 170px;
     width: 548px;
