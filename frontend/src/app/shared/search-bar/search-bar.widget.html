@@ -3,8 +3,7 @@
     <mat-label>Search</mat-label>
     <input matInput type="text" [(ngModel)]='searchBarQuery' (ngModelChange)="onTextChanged()">
     <!-- Search/Clear Icon Logic -->
-    <button *ngIf='searchBarQuery; else noSearch' matSuffix mat-icon-button aria-label="Clear"
-        (click)='clearSearch()'>
+    <button *ngIf='searchBarQuery; else noSearch' matSuffix mat-icon-button aria-label="Clear" (click)='clearSearch()'>
         <!-- "Clear" appears if there is a search query. -->
         <mat-icon>close</mat-icon>
     </button>

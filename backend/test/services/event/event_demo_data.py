@@ -3,7 +3,7 @@
 import pytest
 from sqlalchemy.orm import Session
 from ....entities.event_entity import EventEntity
-from ..organization.organization_demo_data import cads, cssg
+from ..organization.organization_demo_data import cads, cssg, hacknc
 
 import datetime
 
@@ -47,10 +47,10 @@ def date_maker(days_in_future: int, hour: int, minutes: int) -> datetime:
 event_one = EventEntity(
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
-    location="Sitterson Hall Lower Lobby",
+    location="Sitterson Hall",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
-    organization_slug=cads.slug
+    organization_id=cads.id
 )
 
 event_two = EventEntity(
@@ -59,10 +59,28 @@ event_two = EventEntity(
     location = "SN 014",
     description="This is a sample description.",
     public=True,
-    organization_slug=cssg.slug
+    organization_id=cssg.id
 )
 
-events = [event_one, event_two]
+event_three = EventEntity(
+    name="HackNC Hackathon",
+    time=date_maker(days_in_future=10, hour=10, minutes=0),
+    location = "Fetzer Gym",
+    description="HackNC is a weekend for students of all skill levels to broaden their talents. Your challenge is to make an awesome project in just 24 hours. You will have access to hands-on tech workshops, sponsor networking, as well as exciting talks about the awesome things happening right now with computer science and technology - not to mention all of the free food, shirts, stickers, and swag! We are the largest hackathon in the southeastern United States.",
+    public=True,
+    organization_id=hacknc.id
+)
+
+event_four = EventEntity(
+    name="Intro to Web Scraping Workshop",
+    time=date_maker(days_in_future=12, hour=19, minutes=0),
+    location = "FB 009",
+    description="If you are interested in web scraping, come out to learn!",
+    public=True,
+    organization_id=cads.id
+)
+
+events = [event_one, event_two, event_three, event_four]
 
 # Data Functions
 

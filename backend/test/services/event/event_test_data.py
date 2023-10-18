@@ -3,7 +3,7 @@
 import pytest
 from sqlalchemy.orm import Session
 from ....entities.event_entity import EventEntity
-from ..organization.organization_demo_data import cads, cssg
+from ..organization.organization_test_data import cads, cssg
 from .event_demo_data import date_maker
 
 from ..reset_table_id_seq import reset_table_id_seq
@@ -21,7 +21,7 @@ event_one = EventEntity(
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
-    organization_slug=cads.slug
+    organization_id=cads.id
 )
 
 event_two = EventEntity(
@@ -30,7 +30,7 @@ event_two = EventEntity(
     location = "SN 014",
     description="This is a sample description.",
     public=True,
-    organization_slug=cssg.slug
+    organization_id=cssg.id
 )
 
 events = [event_one, event_two]
