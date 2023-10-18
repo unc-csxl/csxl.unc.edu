@@ -4,11 +4,8 @@
 import pytest
 from unittest.mock import create_autospec
 
-from backend.services.organization import OrganizationNotFoundException
-from backend.services.permission import UserPermissionException
-
 # Tested Dependencies
-from ....models import Event
+from ....models import Event, EventDetails
 from ....services import EventService
 
 # Injected Service Fixtures
@@ -35,7 +32,7 @@ def test_get_all(event_svc_integration: EventService):
     fetched_events = event_svc_integration.all()
     assert fetched_events is not None
     assert len(fetched_events) == len(events)
-    assert isinstance(fetched_events[0], Event)
+    assert isinstance(fetched_events[0], EventDetails)
 
 
 # # Test `EventService.get_from_id()`
