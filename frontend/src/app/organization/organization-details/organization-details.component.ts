@@ -15,7 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.service';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
-import { organizationDetailResolver } from '/workspace/frontend/src/app/organization/organization.resolver'
+import { organizationDetailResolver } from '../organization.resolver'
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['organization'].name;

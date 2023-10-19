@@ -7,12 +7,14 @@ import { AdminUsersListComponent } from './users/list/admin-users-list.component
 import { AdminOrganizationListComponent } from './organization/list/admin-organization-list.component';
 
 const routes: Routes = [
-  { path: '', component: AdminComponent, children: [
-    AdminUsersListComponent.Route,
-    AdminRolesListComponent.Route,
-    AdminRoleDetailsComponent.Route,
-    AdminOrganizationListComponent.Route,
-  ]},
+  {
+    path: '', component: AdminComponent, children: [
+      AdminUsersListComponent.Route,
+      AdminRolesListComponent.Route,
+      AdminRoleDetailsComponent.Route,
+      AdminOrganizationListComponent.Route,
+    ]
+  },
 ];
 
 @NgModule({

@@ -7,6 +7,7 @@ from ..models.organization import Organization
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService
+from .exceptions import UserPermissionException
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
