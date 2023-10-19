@@ -9,14 +9,13 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
-import { Organization } from '../organization.service';
+import { Organization } from '../organization.model';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationDetailResolver } from '../organization.resolver'
 
+/** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['organization'].name;
 };
@@ -27,6 +26,8 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   styleUrls: ['./organization-details.component.css']
 })
 export class OrganizationDetailsComponent {
+
+  /** Route information to be used in Organization Routing Module */
   public static Route: Route = {
     path: ':slug',
     component: OrganizationDetailsComponent,
@@ -36,15 +37,13 @@ export class OrganizationDetailsComponent {
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
+
+  /** The organization to show */
   public organization: Organization;
 
-  constructor(
-    iconRegistry: MatIconRegistry,
-    sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
-    protected snackBar: MatSnackBar) {
-
-    /** Get currently-logged-in user. */
+  /** Constructs the Organization Detail component */
+  constructor(private route: ActivatedRoute, protected snackBar: MatSnackBar) {
+    /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as { profile: Profile, organization: Organization };
     this.profile = data.profile;
     this.organization = data.organization;

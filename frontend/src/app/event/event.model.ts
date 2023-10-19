@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Organization } from '../organization/organization.service';
+import { Organization } from '../organization/organization.model';
 
 /** Interface for Event Type (used on frontend for event detail) */
 export interface Event {

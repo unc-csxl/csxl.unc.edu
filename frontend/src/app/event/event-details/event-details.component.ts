@@ -26,7 +26,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 })
 export class EventDetailsComponent {
 
-  /** Route information to be used in App Routing Module */
+  /** Route information to be used in Event Routing Module */
   public static Route = {
     path: ':id',
     title: 'Event Details',

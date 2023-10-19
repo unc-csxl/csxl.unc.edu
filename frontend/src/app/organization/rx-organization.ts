@@ -1,5 +1,5 @@
 import { RxObject } from "../rx-object";
-import { Organization } from "./organization.service"
+import { Organization } from "./organization.model"
 
 export class RxOrganization extends RxObject<Organization[]> {
 
