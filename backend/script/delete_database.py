@@ -1,4 +1,5 @@
-"""Create database in blank development environment.
+"""
+Create database in blank development environment.
 
 This script is used in the developer container setup process. Its sole purpose
 is to create a postgres database from database connection environment variables.
@@ -14,7 +15,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-
+# Ensures that the script can only be run in development mode
 if getenv("MODE") != "development":
     print("This script can only be run in development mode.", file=sys.stderr)
     print("Add MODE=development to your .env file in workspace's `backend/` directory")
