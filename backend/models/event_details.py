@@ -1,6 +1,10 @@
 from backend.models.event import Event
 from backend.models.organization import Organization
 
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 class NewEvent(Event):
     """
     Pydantic model to represent an `Organization`, including the ID of

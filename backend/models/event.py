@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 class Event(BaseModel):
     """
     Pydantic model to represent an `Event`.

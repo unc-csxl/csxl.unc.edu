@@ -3,6 +3,9 @@
 from pydantic import BaseModel
 from . import User, Permission, Role
 
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 class RoleDetails(Role):
     """
