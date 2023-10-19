@@ -333,10 +333,20 @@ This entire interaction can be summarized in the graphic below:
 
 [[ IMAGE HERE ]]
 
-## Widgets vs. Components
+## Conclusion - Widgets vs. Components
 
-It is important to diffe
+Congratulations! You have made it to the end of the widgets crash course! While it is optional to use widgets in your final project, they would be **extremely useful** to implement and would be considered a best practice to properly organize and encapsulate your code.
+
+The one thing that is important to take away from these notes is the difference between *widgets* and *components* in Angular. The differences can be summarized below:
+
+|  | Widgets | Components |
+| ----------- | ----------- | ----------- |
+| **Purpose** | Widgets are indiviual UI elements that can be reused. | Components are entire pages in the Angular application, containing many elements and widgets. |
+| **Reusability** | Widgets can be used *numerous times* within the same component and throughout the application. | Components are used **only once** in your application and represent a page. |
+| **Declaration** | Wigets can either be declared in *feature* modules or the *shared* module depending on use case. | Components are usually declared in *feature* modules or the *app* module, but never the *shared* module. |
+| **Routing** | Since widgets are individual elements and not pages, they do not have a route and do not connect to any routing modules. | Since components are pages, they do have routes (URLs) and are connected to their respective routing modules. |
+
 
 ## Further Reading
-
-
+- Official Angular Documentation - [Using `@Input` and `@Output`](https://angular.io/guide/inputs-outputs)
+- Official Angular Docuemntation - [Angular Modules](https://angular.io/guide/architecture-modules)
