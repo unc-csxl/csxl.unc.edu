@@ -12,7 +12,7 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventDetailResolver } from '../event.resolver';
 import { Profile } from 'src/app/profile/profile.service';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
-import { Event } from '../event.service';
+import { Event } from '../event.model';
 
 /** Injects the event's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
