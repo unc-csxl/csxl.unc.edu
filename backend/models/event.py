@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Event(BaseModel):
     """
-    Model to represent `Event` connections between users and organizations
+    Pydantic model to represent an `Event`.
     
     This model is based on the `EventEntity` model, which defines the shape
     of the `Event` database in the PostgreSQL database

@@ -9,7 +9,13 @@ __license__ = "MIT"
 
 
 class UnregisteredUser(BaseModel):
-    """A new user is a user that has not yet been registered."""
+    """
+    Pydantic model to represent an `User` that is newly created.
+    This model is used as the request to create a user in the service.
+
+    This model is based on the `UserEntity` model, which defines the shape
+    of the `User` database in the PostgreSQL database.
+    """
     pid: int
     onyen: str
     first_name: str = ''

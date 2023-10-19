@@ -9,14 +9,23 @@ __license__ = "MIT"
 
 
 class UserIdentity(BaseModel):
-    """Users are identified in the system by their `id` field."""
+    """
+    Pydantic model to represent how `User`s are identified in the system.
 
+    This model is based on the `UserEntity` model, which defines the shape
+    of the `User` database in the PostgreSQL database.
+    """
     id: int | None = None
 
 
 class User(UserIdentity, BaseModel):
-    """A user is a registered user of the application."""
-
+    """
+    Pydantic model to represent a registered `User`.
+    
+    This model is based on the `UserEntity` model, which defines the shape
+    of the `User` database in the PostgreSQL database
+    """
+    
     pid: int = 0
     onyen: str = ""
     first_name: str = ""
@@ -29,12 +38,24 @@ class User(UserIdentity, BaseModel):
 
 
 class NewUser(User, BaseModel):
+    """
+    Pydantic model to represent how `User`s are once created.
+
+    This model is based on the `UserEntity` model, which defines the shape
+    of the `User` database in the PostgreSQL database.
+    """
     id: int | None = None
 
 
 class ProfileForm(BaseModel):
-    """A profile form is a form for updating a user's profile."""
-
+    """
+    Pydantic model to represent fields for a form when updating
+    a user profile on the frontend.
+    
+    This model is based on the `UserEntity` model, which defines the shape
+    of the `User` database in the PostgreSQL database
+    """
+    
     first_name: str
     last_name: str
     email: str

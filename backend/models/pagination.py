@@ -3,8 +3,11 @@
 from typing import Generic, TypeVar
 from pydantic import BaseModel
 
-T = TypeVar("T")
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
+T = TypeVar("T")
 
 class PaginationParams(BaseModel):
     """Parameters passed from the client to paginate results."""

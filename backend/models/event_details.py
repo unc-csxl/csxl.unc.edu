@@ -3,8 +3,14 @@ from backend.models.organization import Organization
 
 class NewEvent(Event):
     """
-    Model to represent a new `Event` request, containing an organization ID
-    to be linked to an organization in the PostgreSQL database
+    Pydantic model to represent an `Organization`, including the ID of
+    its related organization. This model primarily exists for requests
+    to create new events, since only the organization ID would exist and
+    not the organization itself (the organization would not be back-populated
+    until after the entity as been committed to the database).
+
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database.
     """
     
     organization_id: int
@@ -12,7 +18,11 @@ class NewEvent(Event):
     
 class EventDetails(NewEvent):
     """
-    Model to represent `Event` connections between users and organizations
+    Pydantic model to represent an `Event`, including back-populated
+    relationship fields.
+
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database.
     """
     
     organization: Organization | None = None

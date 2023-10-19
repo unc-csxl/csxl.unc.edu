@@ -5,6 +5,12 @@ from . import User, Permission, Role
 
 
 class RoleDetails(Role):
-    """Represent a Role, but also include its permissions and members (users)."""
+    """
+    Pydantic model to represent a `Role`, including back-populated
+    relationship fields.
+
+    This model is based on the `RoleEntity` model, which defines the shape
+    of the `Role` database in the PostgreSQL database.
+    """
     permissions: list[Permission]
     users: list[User]
