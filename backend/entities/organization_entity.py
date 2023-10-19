@@ -1,4 +1,4 @@
-"""Definition of SQLAlchemy table-backed object mapping entity for OrganizationEntity."""
+"""Definition of SQLAlchemy table-backed object mapping entity for Organizations."""
 
 from sqlalchemy import Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -47,6 +47,7 @@ class OrganizationEntity(EntityBase):
     heel_life: Mapped[str] = mapped_column(String)
     # Whether the organization can be joined by anyone or not
     public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    
     # Holds a list of events that the organization hosts
     # NOTE: This field establishes a one-to-many relationship between the organizations and events table.
     events: Mapped[list['EventEntity']] = relationship(back_populates="organization")
