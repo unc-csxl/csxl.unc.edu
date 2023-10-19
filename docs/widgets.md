@@ -1,4 +1,4 @@
-# Angular Widgets
+# Crash Course on Angular Widgets
 
 > Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>
 > *Last Updated: 10/19/2023*
@@ -6,8 +6,6 @@
 ## Introduction
 
 If you have begun to explore the frontend of the CSXL web application, you may have noticed a new frontend convention being used that you probably have not seen before - widgets! Widgets are an extremely useful convention that makes your Angular frontend more *versatile* and *modular*.
-
-### What is a Widget?
 
 In Angular, **widgets are *individual*, *resuable* user interface elements that can be easily integrated into the UI of your Angular components!** Widgets essentially abstract frontend UI elements to simplify Angular compponents, enhance user experience, and make the development process in Angular less painful.
 
@@ -139,10 +137,55 @@ Ultimately, this relationship looks like:
 
 [[ IMAGE HERE ]]
 
-
 ## How Widgets Work
 
+### Creating a Widget
+
+Now that you have gotten an introduction into Angular Widgets and hopefully understand how widgets are declared in modules conceptually, let's get into actually creating widgets.
+
+There is no command in Angular to generate widgets in the same way there is with components (using `ng generate component`). Instead, we have to do this step manually. However, the setup is extremely easy. 
+
+First, it is important to note that, like components, widgets require **three files** to be declared:
+- HTML File: Defines the structure of the widget
+- CSS File - Defines the style of the widget
+- TS File - Defines the functionality of the widget
+
+In either the `/widgets` folder in a module folder (like `/organizations/widgets`) or in the `/shared` folder for the shared module, you want to create a folder to contain all of your widget files. It should have this structure:
+```
+widget-name
+  |- wiget-name.widget.css
+  |- widget-name.widget.html
+  |- widge-name.widget.ts
+```
+
+Then, *open the TS file you created.*
+
+Just like with Angular components, the TS file actually ultimately defines and creates your widget. You can use the template below to quickly create your widget:
+
+**Angular Widget Template For TypeScript**
+
+```ts
+@Component({
+    selector: 'widget-name',
+    templateUrl: './widget-name.widget.html',
+    styleUrls: ['./widget-name.widget.css']
+})
+export class WidgetName {
+
+  /** Inputs and outputs go here */
+
+  /** Constructor */
+  constructor() { }
+}
+```
+
+There are a few things to note with this template. First is the `selector` property passed into the `@Component` decorator. Note that this is what you will use to refer to your widget in HTML! So, in a component's HTML, you would call this widget using `<widget-name />`. 
+
+Second, once you create the template, ***you must declare it in a module!!*** Follow the steps in the previous part to determine whether your widget will be globally or locally used. Then, in the correct Modules file, add it to the list for the `declarations` property in the `@NgModule` decorator.
+
+
 ### Pass Data into Widgets Using Inputs
+
 
 
 ### Outputting Data From Widgets
