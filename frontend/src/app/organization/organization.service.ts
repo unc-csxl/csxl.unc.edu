@@ -12,24 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-
-/** Interface for Organization Type (used on frontend for organization detail) */
-export interface Organization {
-    id: number | null;
-    name: string;
-    logo: string;
-    short_description: string;
-    long_description: string;
-    website: string;
-    email: string;
-    instagram: string;
-    linked_in: string;
-    youtube: string;
-    heel_life: string;
-    public: boolean;
-    slug: string;
-    shorthand: string;
-}
+import { Organization } from "./organization.model";
 
 @Injectable({
     providedIn: 'root'

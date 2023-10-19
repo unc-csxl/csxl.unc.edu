@@ -1,4 +1,5 @@
-"""Verify connectivity to the database from the service layer for health check purposes.
+"""
+Verify connectivity to the database from the service layer for health check purposes.
 
 The production system will regularly check the health of running containers via accessing an API endpoint.
 The API endpoint is backed by this service which executes a simple statement against our backing database.

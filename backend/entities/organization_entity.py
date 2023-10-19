@@ -1,4 +1,4 @@
-"""Definition of SQLAlchemy table-backed object mapping entity for OrganizationEntity."""
+"""Definition of SQLAlchemy table-backed object mapping entity for Organizations."""
 
 from sqlalchemy import Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -14,7 +14,10 @@ __license__ = "MIT"
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
 
+    # Name for the organizations table in the PostgreSQL database
     __tablename__ = "organization"
+
+    # Organization properties (columns in the database table)
 
     # Unique ID for the organization
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -44,17 +47,18 @@ class OrganizationEntity(EntityBase):
     heel_life: Mapped[str] = mapped_column(String)
     # Whether the organization can be joined by anyone or not
     public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    
     # Holds a list of events that the organization hosts
+    # NOTE: This field establishes a one-to-many relationship between the organizations and events table.
     events: Mapped[list['EventEntity']] = relationship(back_populates="organization")
 
     @classmethod
     def from_model(cls, model: Organization) -> Self:
         """
-        Class method that converts a `Organization` object into a `OrganizationEntity`
-
+        Class method that converts an `Organization` model into a `OrganizationEntity`
+        
         Parameters:
             - model (Organization): Model to convert into an entity
-
         Returns:
             OrganizationEntity: Entity created from model
         """
@@ -77,7 +81,7 @@ class OrganizationEntity(EntityBase):
 
     def to_model(self) -> Organization:
         """
-        Converts a `OrganizationEntity` object into a `Organization`
+        Converts a `OrganizationEntity` object into a `Organization` model object
 
         Returns:
             Organization: `Organization` object from the entity
@@ -100,10 +104,11 @@ class OrganizationEntity(EntityBase):
         )
         
     def to_details_model(self) -> OrganizationDetails:
-        """Create a RoleDetails model from a RoleEntity, with permissions and members included.
-
+        """
+        Converts a `OrganizationEntity` object into a `OrganizationDetails` model object
+        
         Returns:
-            RoleDetails: A RoleDetails model for API usage.
+            OrganizationDetails: `OrganizationDetails` object from the entity
         """
         return OrganizationDetails(
             id=self.id,

@@ -1,3 +1,7 @@
+"""
+The Organizations Service allows the API to manipulate organizations data in the database.
+"""
+
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -7,30 +11,16 @@ from ..models.organization import Organization
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService
-from .exceptions import UserPermissionException
+from .exceptions import OrganizationNotFoundException
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-class OrganizationNotFoundException(Exception):
-    """OrganizationNotFoundException is raised when trying to access an organization that does not exist."""
-
-    def __init__(self, id: str):
-        super().__init__(
-            f'No organization found matching slug/id: {id}')
-
 class OrganizationService:
     """Service that performs all of the actions on the `Organization` table"""
 
-    # Current SQLAlchemy Session
-    _session: Session
-
-    def __init__(
-        self,
-        session: Session = Depends(db_session),
-        permission: PermissionService = Depends(),
-    ):
+    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
         """Initializes the `OrganizationService` session, and `PermissionService`"""
         self._session = session
         self._permission = permission
@@ -134,6 +124,7 @@ class OrganizationService:
 
         # Check if result is null
         if obj:
+            
             # Update organization object
             obj.name = organization.name
             obj.shorthand = organization.shorthand
@@ -148,7 +139,10 @@ class OrganizationService:
             obj.youtube = organization.youtube
             obj.heel_life = organization.heel_life
             obj.public = organization.public
+            
+            # Save changes
             self._session.commit()
+            
             # Return updated object
             return obj.to_model()
         else:
@@ -171,14 +165,13 @@ class OrganizationService:
         self._permission.enforce(subject, "organization.create", f"organization")
 
         # Find object to delete
-        obj = self._session.query(OrganizationEntity).filter(
-            OrganizationEntity.slug == slug
-        )[0]
+        obj = self._session.query(OrganizationEntity).filter(OrganizationEntity.slug == slug).one_or_none()
 
         # Ensure object exists
         if obj:
             # Delete object and commit
             self._session.delete(obj)
+            # Save changes
             self._session.commit()
         else:
             # Raise exception
