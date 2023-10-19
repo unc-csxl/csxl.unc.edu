@@ -16,7 +16,7 @@ __license__ = "MIT"
 # Helper functions to create sample dates based on the
 # current day
 
-def date_maker(days_in_future: int, hour: int, minutes: int) -> datetime:
+def date_maker(days_in_future: int, hour: int, minutes: int) -> datetime.datetime:
     """
     Creates a new `datetime` object relative to the current day when the
     data is reset using a reset script.

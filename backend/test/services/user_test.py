@@ -10,7 +10,7 @@ from .core_data import setup_insert_data_fixture
 from .fixtures import user_svc, user_svc_integration, permission_svc_mock
 
 # Data Models for Fake Data Inserted in Setup
-from .user_data import root, ambassador, user, cads_leader
+from .user_data import root, ambassador, user
 from . import user_data
 from .permission_data import ambassador_permission, ambassador_permission_coworking_reservation
 

@@ -23,16 +23,17 @@ event_one = NewEvent(
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
-    organization_id=cads.id
+    organization_id=1
 )
 
 event_two = NewEvent(
+    id=2,
     name="CS+SG Workshop",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
     location = "SN 014",
     description="This is a sample description.",
     public=True,
-    organization_id=cssg.id
+    organization_id=2
 )
 
 events = [event_one, event_two]
@@ -43,7 +44,7 @@ to_add = NewEvent(
     location = "SN011",
     description="This is a sample description.",
     public=True,
-    organization_id=appteam.id
+    organization_id=3
 )
 
 updated_event = NewEvent(
@@ -53,7 +54,7 @@ updated_event = NewEvent(
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
-    organization_id=cads.id
+    organization_id=1
 )
 
 # Data Functions
