@@ -27,13 +27,15 @@ import { EventDetailCard } from './widgets/event-detail-card/event-detail-card.w
 import { EventDetailsComponent } from './event-details/event-details.component';
 import { EventPageComponent } from './event-page/event-page.component';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
+import { EventEditorComponent } from './event-editor/event-editor.component';
 
 @NgModule({
   declarations: [
     EventCard,
     EventDetailCard,
     EventDetailsComponent,
-    EventPageComponent
+    EventPageComponent,
+    EventEditorComponent
   ],
   imports: [
     CommonModule,

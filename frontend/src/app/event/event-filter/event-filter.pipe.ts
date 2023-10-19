@@ -31,7 +31,7 @@ export class EventFilterPipe implements PipeTransform {
     if (searchQuery) {
       return events.filter(events =>
         events.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        events.organization.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        events.organization!.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         events.description.toLowerCase().includes(searchQuery.toLowerCase()));
     } else {
       // Otherwise, return the original list.

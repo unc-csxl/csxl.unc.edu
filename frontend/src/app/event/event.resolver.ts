@@ -19,10 +19,17 @@ export const eventResolver: ResolveFn<Event[] | undefined> = (route, state) => {
 
 /** This resolver injects an event into the events detail component. */
 export const eventDetailResolver: ResolveFn<Event | undefined> = (route, state) => {
-    if(route.paramMap.get("id")) {
+    if(route.paramMap.get("id") != "-1") {
         return inject(EventService).getEvent(+route.paramMap.get("id")!);
     }
     else {
-        return undefined
+        return {id: null,
+                name: '',
+                time: new Date(),
+                location: '',
+                description: '',
+                public: true,
+                organization_id: null,
+                organization: null }
     }
 };

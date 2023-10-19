@@ -20,8 +20,8 @@ export interface Event {
     location: string;
     description: string;
     public: boolean;
-    organization_id: number;
-    organization: Organization;
+    organization_id: number | null;
+    organization: Organization | null;
 }
 
 @Injectable({
@@ -39,10 +39,26 @@ export class EventService {
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request. 
-   * @param id: ID of the organization to retrieve
+   * @param id: ID of the event to retrieve
    * @returns {Observable<Event>}
    */
   getEvent(id: number): Observable<Event> {
     return this.http.get<Event>("/api/events/" + id);
+  }
+
+  /** Returns the new event object from the backend database table using the backend HTTP get request. 
+   * @param event: model of the event to be created
+   * @returns {Observable<Event>}
+   */
+  createEvent(event: Event): Observable<Event> {
+    return this.http.post<Event>("/api/events", event);
+  }
+
+  /** Returns the updated event object from the backend database table using the backend HTTP put request. 
+   * @param event: Event representing the updated event
+   * @returns {Observable<Event>}
+   */
+  updateEvent = (event: Event) => {
+    return this.http.put<Event>("/api/events", event);
   }
 }

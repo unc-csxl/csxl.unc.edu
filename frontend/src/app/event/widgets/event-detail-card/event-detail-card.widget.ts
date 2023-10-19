@@ -8,7 +8,6 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { Organization } from 'src/app/organization/organization.service';
 import { Event } from '../../event.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 

@@ -9,8 +9,6 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.service';
@@ -39,8 +37,6 @@ export class OrganizationDetailsComponent {
   public organization: Organization;
 
   constructor(
-    iconRegistry: MatIconRegistry,
-    sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar) {
 
