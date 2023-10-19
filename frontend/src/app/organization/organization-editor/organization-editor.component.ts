@@ -17,7 +17,7 @@ import { PermissionService } from 'src/app/permission.service';
 import { Organization, OrganizationService } from '../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
 import { permissionGuard } from 'src/app/permission.guard';
-import { organizationDetailResolver } from '/workspace/frontend/src/app/organization/organization.resolver'
+import { organizationDetailResolver } from '../organization.resolver'
 
 @Component({
   selector: 'app-organization-editor',

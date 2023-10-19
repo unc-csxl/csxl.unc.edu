@@ -10,7 +10,7 @@ import pytest
 from sqlalchemy.orm import Session
 from ...models.user import User
 from ...entities.user_entity import UserEntity
-from ...entities.user_role_entity import user_role_table
+from ...entities.user_role_table import user_role_table
 from .reset_table_id_seq import reset_table_id_seq
 from . import role_data
 

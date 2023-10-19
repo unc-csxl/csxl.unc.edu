@@ -5,7 +5,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from backend.services.organization import OrganizationNotFoundException
-from backend.services.permission import UserPermissionException
+from backend.services.exceptions import UserPermissionException
 
 # Tested Dependencies
 from ....models import Organization
