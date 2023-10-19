@@ -11,7 +11,7 @@ In Angular, **widgets are *individual*, *resuable* user interface elements that 
 
 Take the following example:
 
-[[ IMAGE HERE ]]
+![organization page](https://github.com/unc-csxl/csxl.unc.edu/blob/feature/events/docs/images/org-page.png)
 
 Above is the *Organization component* of the CSXL site ([view live here](https://csxl.unc.edu/organizations)). As you can see, the page contains a lot of elements - namely a *search bar* and also individual *organization cards* that display relevant information about CS Department-affiliated student organizations.
 
@@ -96,7 +96,8 @@ Look how much cleaner that is! It is now a lot more clear how our organization c
 
 In summary, the wireframe for our Organization would look as follows:
 
-[[ IMAGE HERE ]]
+![wireframe](https://github.com/unc-csxl/csxl.unc.edu/blob/feature/events/docs/images/wireframe.jpeg)
+
 
 ## Widgets in the Module
 
@@ -135,7 +136,7 @@ The solution to this problem is to have a new `Shared Module` (defined in `share
 
 Ultimately, this relationship looks like:
 
-[[ IMAGE HERE ]]
+![widgets in modules](https://github.com/unc-csxl/csxl.unc.edu/blob/feature/events/docs/images/widget-modules.jpeg)
 
 ## How Widgets Work
 
@@ -328,10 +329,6 @@ This may seem confusing at first, but we just went data from our widget to the c
   <button (click)="buttonPressed()">Join Org</button>
 </mat-card>
 ```
-
-This entire interaction can be summarized in the graphic below:
-
-[[ IMAGE HERE ]]
 
 ## Conclusion - Widgets vs. Components
 
