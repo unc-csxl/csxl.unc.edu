@@ -39,12 +39,12 @@ event_two = Event(
 events = [event_one, event_two]
 
 to_add = Event(
-    name="iOS Workshop",
+    name="CS+SG Mixer",
     time=date_maker(days_in_future=2, hour=20, minutes=0),
     location = "SN011",
     description="This is a sample description.",
     public=True,
-    organization_id=3
+    organization_id=2
 )
 
 updated_event = Event(

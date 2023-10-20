@@ -55,7 +55,7 @@ class EventEntity(EntityBase):
         Returns:
             EventEntity: Entity created from model
         """
-        return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public) #, org_id=model.org_id)
+        return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public, organization_id=model.organization_id)
 
     def to_model(self) -> Event:
         """

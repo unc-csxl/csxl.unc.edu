@@ -95,7 +95,7 @@ class EventService:
             # Raise exception
             raise EventNotFoundException(id);
 
-    def get_events_from_organization(self, slug: str) -> list[EventDetails]:
+    def get_events_from_organization(self, id: int) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with id
 
@@ -107,7 +107,7 @@ class EventService:
         """
 
         # Query the event with matching organization slug
-        events = self._session.query(EventEntity).filter(EventEntity.organization.organization_slug == slug).all()
+        events = self._session.query(EventEntity).filter(EventEntity.organization_id == id).all()
         return [event.to_details_model() for event in events]
 
     def update(self, subject: User, event: Event) -> EventDetails:

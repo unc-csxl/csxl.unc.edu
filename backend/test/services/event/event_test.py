@@ -21,7 +21,6 @@ from ..core_data import setup_insert_data_fixture
 from .event_test_data import (
     events,
     event_one,
-    event_two,
     to_add,
     updated_event
 )
@@ -46,6 +45,7 @@ def test_get_from_id(event_svc_integration: EventService):
     assert isinstance(fetched_event, Event)
     assert fetched_event.id == event_one.id
 
+
 # Test `EventService.create()`
 def test_create_enforces_permission(event_svc_integration: EventService):
     """Test that the service enforces permissions when attempting to create an event."""
@@ -58,7 +58,7 @@ def test_create_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.create(root, to_add)
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "event.create", "event"
+        root, "organization.events.create", f"organization/{to_add.organization_id}"
     )
 
 
@@ -74,6 +74,15 @@ def test_create_event_as_user(event_svc_integration: EventService):
     with pytest.raises(UserPermissionException):
         event_svc_integration.create(user, to_add)
         pytest.fail()  # Fail test if no error was thrown above
+
+
+# Test `EventService.get_events_from_organization()`
+def test_get_from_organization(event_svc_integration: EventService):
+    """Test that list of events can be retrieved based on specified organization."""
+    event_svc_integration.create(root, to_add)
+    fetched_events = event_svc_integration.get_events_from_organization(2)
+    assert fetched_events is not None
+    assert len(fetched_events) == 2
 
 
 # Test `EventService.update()`
@@ -106,7 +115,7 @@ def test_delete_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.delete(root, 1)
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "event.create", "event"
+        root, "organization.events.delete", f"organization/{event_one.organization_id}"
     )
 
 
