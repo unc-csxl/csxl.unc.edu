@@ -9,11 +9,16 @@
           <img class="logo" src="/assets/lil-logo-light.png" alt="Computer Science Experience Labs Logo">
         </picture>
       </a>
-      <a mat-list-item routerLink="/about">About</a>
       <div *ngIf="(profile$ | async) as profile; else unauthenticated">
+        <a mat-list-item routerLink="/coworking">Coworking</a>
         <a mat-list-item routerLink="/organizations">Organizations</a>
+        <a mat-list-item routerLink="/about">About the XL</a>
+        <mat-divider></mat-divider>
         <div *ngIf="ambassadorPermission$ | async">
           <a mat-list-item routerLink="/coworking/ambassador">XL Ambassador</a>
+        </div>
+        <div *ngIf="adminPermission$ | async">
+          <a mat-list-item routerLink="/admin">User Admin</a>
         </div>
         <a mat-list-item routerLink="/profile" *ngIf="profile.first_name !== ''; else new_user">{{ profile.first_name }}
           {{
@@ -21,11 +26,6 @@
         <ng-template #new_user>
           <a mat-list-item routerLink="/profile">Profile</a>
         </ng-template>
-        <div *ngIf="adminPermission$ | async">
-          <mat-divider></mat-divider>
-          <a mat-list-item routerLink="/admin">Admin Area</a>
-          <mat-divider></mat-divider>
-        </div>
         <a mat-list-item (click)="auth.signOut()">Sign out</a>
       </div>
       <ng-template #unauthenticated>
