@@ -48,9 +48,8 @@ class OrganizationEntity(EntityBase):
     # Whether the organization can be joined by anyone or not
     public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     
-    # Holds a list of events that the organization hosts
     # NOTE: This field establishes a one-to-many relationship between the organizations and events table.
-    events: Mapped[list['EventEntity']] = relationship(back_populates="organization")
+    events: Mapped[list['EventEntity']] = relationship(back_populates="organization", cascade="all,delete")
 
     @classmethod
     def from_model(cls, model: Organization) -> Self:

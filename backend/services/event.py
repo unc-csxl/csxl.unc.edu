@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
-from backend.models.event_details import NewEvent, EventDetails
+from backend.models.event_details import EventDetails
 from ..entities import EventEntity
 from .permission import PermissionService
 from .exceptions import EventNotFoundException
@@ -40,7 +40,7 @@ class EventService:
         # Convert entities to details models and return
         return [entity.to_details_model() for entity in entities]
 
-    def create(self, subject: User, event: NewEvent) -> EventDetails:
+    def create(self, subject: User, event: Event) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -61,7 +61,7 @@ class EventService:
             event.id = None
         
         # Otherwise, create new object
-        event_entity = EventEntity.from_details_model(event)
+        event_entity = EventEntity.from_model(event)
 
         # Add new object to table and commit changes
         self._session.add(event_entity)
@@ -93,7 +93,7 @@ class EventService:
             # Raise exception
             raise EventNotFoundException(id);
 
-    def get_events_from_organization(self, slug: str) -> list[EventDetails]:
+    def get_events_from_organization(self, id: int) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with id
 
@@ -105,12 +105,12 @@ class EventService:
         """
 
         # Query the event with matching organization slug
-        events = self._session.query(EventEntity).filter(EventEntity.organization_slug == slug).all()
+        events = self._session.query(EventEntity).filter(EventEntity.organization_id == id).all()
         
         # Convert entities to models and return
         return [event.to_details_model() for event in events]
 
-    def update(self, subject: User, event: EventDetails) -> EventDetails:
+    def update(self, subject: User, event: Event) -> EventDetails:
         """
         Update the event
         If none found, a debug description is displayed.
@@ -145,7 +145,7 @@ class EventService:
             return obj.to_details_model()
         else:
             # Raise exception
-            raise EventNotFoundException(id);
+            raise EventNotFoundException(event.id);
 
     
     def delete(self, subject: User, id: int) -> None:

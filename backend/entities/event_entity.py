@@ -49,14 +49,7 @@ class EventEntity(EntityBase):
         Returns:
             EventEntity: Entity created from model
         """
-        return cls(
-            id=model.id,
-            name=model.name,
-            time=model.time,
-            location=model.location,
-            description=model.description,
-            public=model.public
-        )
+        return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public, organization_id=model.organization_id)
 
     def to_model(self) -> Event:
         """
@@ -65,15 +58,15 @@ class EventEntity(EntityBase):
         Returns:
             Event: `Event` object from the entity
         """
-        return Event(
-            id=self.id, 
-            name=self.name, 
-            time=self.time, 
-            location=self.location, 
-            description=self.description, 
-            public=self.public
+        return Event(id=self.id, 
+           name=self.name, 
+           time=self.time, 
+           location=self.location, 
+           description=self.description, 
+           public=self.public,
+           organization_id=self.organization_id
         )
-    
+
     @classmethod
     def from_details_model(cls, model: EventDetails):
         """
@@ -96,11 +89,10 @@ class EventEntity(EntityBase):
 
         
     def to_details_model(self) -> EventDetails:
-        """
-        Converts a `EventEntity` object into a `EventDetails` model object
-        
+        """Create a EventDetails model from an EventEntity, with permissions and members included.
+
         Returns:
-            Event: `Event` object from the entity
+            EventDetails: An EventDetails model for API usage.
         """
         return EventDetails(
             id=self.id, 

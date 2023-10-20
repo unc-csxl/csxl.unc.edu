@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..services.event import EventNotFoundException, EventService
 from ..services.permission import UserPermissionException
 from ..models.event import Event
-from ..models.event_details import NewEvent, EventDetails
+from ..models.event_details import EventDetails
 from ..api.authentication import registered_user
 from ..models.user import User
 
@@ -47,7 +47,7 @@ def get_events_from_organization(slug: str, event_service: EventService = Depend
     return event_service.get_events_from_organization(slug)
 
 @api.post("", response_model=EventDetails, tags=['Events'])
-def new_event(event: NewEvent, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
+def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
     """
     Create event
 

@@ -1,26 +1,7 @@
 from backend.models.event import Event
 from backend.models.organization import Organization
-
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
-__copyright__ = "Copyright 2023"
-__license__ = "MIT"
-
-class NewEvent(Event):
-    """
-    Pydantic model to represent an `Organization`, including the ID of
-    its related organization. This model primarily exists for requests
-    to create new events, since only the organization ID would exist and
-    not the organization itself (the organization would not be back-populated
-    until after the entity as been committed to the database).
-
-    This model is based on the `EventEntity` model, which defines the shape
-    of the `Event` database in the PostgreSQL database.
-    """
     
-    organization_id: int
-
-    
-class EventDetails(NewEvent):
+class EventDetails(Event):
     """
     Pydantic model to represent an `Event`, including back-populated
     relationship fields.
