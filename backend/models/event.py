@@ -15,3 +15,4 @@ class Event(BaseModel):
     location: str
     description: str
     public: bool
+    organization_id: int

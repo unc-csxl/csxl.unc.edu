@@ -12,7 +12,7 @@ from .permission import PermissionService
 class EventNotFoundException(Exception):
     """EventNotFoundException is raised when trying to access an event that does not exist."""
 
-    def __init__(self, id: str):
+    def __init__(self, id: int | None):
         super().__init__(
             f'No event found with matching ID: {id}')
 
@@ -41,7 +41,7 @@ class EventService:
         # Convert entries to a model and return
         return [entity.to_details_model() for entity in entities]
 
-    def create(self, subject: User, event: EventDetails) -> EventDetails:
+    def create(self, subject: User, event: Event) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -63,7 +63,7 @@ class EventService:
             event.id = None
         
         # Otherwise, create new object
-        event_entity = EventEntity.from_details_model(event)
+        event_entity = EventEntity.from_model(event)
 
         # Add new object to table and commit changes
         self._session.add(event_entity)
@@ -107,10 +107,10 @@ class EventService:
         """
 
         # Query the event with matching organization slug
-        events = self._session.query(EventEntity).filter(EventEntity.organization_slug == slug).all()
+        events = self._session.query(EventEntity).filter(EventEntity.organization.organization_slug == slug).all()
         return [event.to_details_model() for event in events]
 
-    def update(self, subject: User, event: EventDetails) -> EventDetails:
+    def update(self, subject: User, event: Event) -> EventDetails:
         """
         Update the event
         If none found, a debug description is displayed.
@@ -139,7 +139,7 @@ class EventService:
             return obj.to_details_model()
         else:
             # Raise exception
-            raise EventNotFoundException(id);
+            raise EventNotFoundException(event.id);
 
     
     def delete(self, subject: User, id: int) -> None:

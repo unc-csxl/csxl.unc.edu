@@ -91,10 +91,8 @@ def test_update_organization_as_root(
     """Test that the root user is able to update organizations.
     Note: Test data's website field is updated
     """
-    updated_organization = organization_svc_integration.update(root, new_cads)
-    assert updated_organization is not None
-    assert updated_organization.id is not None
-    assert updated_organization.website == "https://cads.cs.unc.edu/"
+    organization_svc_integration.update(root, new_cads)
+    assert organization_svc_integration.get_from_slug("cads").website == "https://cads.cs.unc.edu/"
 
 
 def test_update_organization_as_user(organization_svc_integration: OrganizationService):

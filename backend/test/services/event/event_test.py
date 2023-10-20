@@ -4,6 +4,7 @@
 import pytest
 from unittest.mock import create_autospec
 
+from backend.services.event import EventNotFoundException
 from backend.services.exceptions import UserPermissionException
 
 # Tested Dependencies
@@ -84,12 +85,8 @@ def test_update_event_as_root(
     """Test that the root user is able to create new events.
     Note: Test data's website field is updated
     """
-    cads = event_svc_integration.get_from_id(1)
-    cads.website = "https://cads.cs.unc.edu/"
-    updated_event = event_svc_integration.update(root, cads)
-    assert updated_event is not None
-    assert updated_event.id is not None
-    assert updated_event.website == "https://cads.cs.unc.edu/"
+    event_svc_integration.update(root, updated_event)
+    assert event_svc_integration.get_from_id(1).location == "Fetzer Gym"
 
 
 def test_update_event_as_user(event_svc_integration: EventService):
@@ -116,8 +113,8 @@ def test_delete_enforces_permission(event_svc_integration: EventService):
 def test_delete_event_as_root(event_svc_integration: EventService):
     """Test that the root user is able to delete events."""
     event_svc_integration.delete(root, 1)
-    with pytest.raises(OrganizationNotFoundException):
-        event_svc_integration.get_from_id(event_one.slug)
+    with pytest.raises(EventNotFoundException):
+        event_svc_integration.get_from_id(1)
 
 
 def test_delete_event_as_user(event_svc_integration: EventService):

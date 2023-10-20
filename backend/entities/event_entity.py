@@ -3,7 +3,7 @@
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..models.event_details import EventDetails, NewEvent
+from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event import Event
@@ -69,20 +69,8 @@ class EventEntity(EntityBase):
                      time=self.time, 
                      location=self.location, 
                      description=self.description, 
-                     public=self.public)
-    
-    @classmethod
-    def from_new_model(cls, model: NewEvent):
-        """
-        Create an EventEntity based on the new event model.
-        """
-        return cls(id=model.id, 
-                   name=model.name, 
-                   time=model.time, 
-                   location=model.location, 
-                   description=model.description, 
-                   public=model.public, 
-                   organization_id=model.organization_id)
+                     public=self.public,
+                     organization_id=self.organization_id)
 
     @classmethod
     def from_details_model(cls, model: EventDetails):
@@ -99,10 +87,10 @@ class EventEntity(EntityBase):
 
         
     def to_details_model(self) -> EventDetails:
-        """Create a RoleDetails model from a RoleEntity, with permissions and members included.
+        """Create a EventDetails model from an EventEntity, with permissions and members included.
 
         Returns:
-            RoleDetails: A RoleDetails model for API usage.
+            EventDetails: An EventDetails model for API usage.
         """
         return EventDetails(id=self.id, 
                             name=self.name, 
