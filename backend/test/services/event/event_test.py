@@ -76,7 +76,6 @@ def test_create_event_as_user(event_svc_integration: EventService):
 
 def test_get_events_from_organization(event_svc_integration: EventService):
     """Test that list of events can be retrieved based on specified organization."""
-    event_svc_integration.create(root, to_add)
     fetched_events = event_svc_integration.get_events_from_organization(2)
     assert fetched_events is not None
     assert len(fetched_events) == 2

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ....models.event import Event
 from ....entities.event_entity import EventEntity
 from .event_demo_data import date_maker
+from ..organization.organization_test_data import cads, cssg
 
 from ..reset_table_id_seq import reset_table_id_seq
 
@@ -17,12 +18,12 @@ __license__ = "MIT"
 
 event_one = Event(
     id=1,
-    name="Carolina Data Challenge",
+    name="CS+SG Mixer",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
-    organization_id=1
+    organization_id=cssg.id | 0,
 )
 
 event_two = Event(
@@ -32,18 +33,18 @@ event_two = Event(
     location = "SN 014",
     description="This is a sample description.",
     public=True,
-    organization_id=2
+    organization_id=cssg.id | 0,
 )
 
 events = [event_one, event_two]
 
 to_add = Event(
-    name="CS+SG Mixer",
+    name="Carolina Data Challenge",
     time=date_maker(days_in_future=2, hour=20, minutes=0),
     location = "SN011",
     description="This is a sample description.",
     public=True,
-    organization_id=2
+    organization_id=cads.id | 0
 )
 
 updated_event = Event(
@@ -53,7 +54,7 @@ updated_event = Event(
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
-    organization_id=1
+    organization_id=cssg.id | 0
 )
 
 # Data Functions
