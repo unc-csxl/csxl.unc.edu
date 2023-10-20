@@ -28,7 +28,7 @@ from ..user_data import root, user
 
 # Test Functions
 
-# Test `EventService.all()`
+
 def test_get_all(event_svc_integration: EventService):
     """Test that all events can be retrieved."""
     fetched_events = event_svc_integration.all()
@@ -37,7 +37,6 @@ def test_get_all(event_svc_integration: EventService):
     assert isinstance(fetched_events[0], EventDetails)
 
 
-# Test `EventService.get_from_id()`
 def test_get_from_id(event_svc_integration: EventService):
     """Test that events can be retrieved based on their ID."""
     fetched_event = event_svc_integration.get_from_id(1)
@@ -46,7 +45,6 @@ def test_get_from_id(event_svc_integration: EventService):
     assert fetched_event.id == event_one.id
 
 
-# Test `EventService.create()`
 def test_create_enforces_permission(event_svc_integration: EventService):
     """Test that the service enforces permissions when attempting to create an event."""
 
@@ -76,16 +74,12 @@ def test_create_event_as_user(event_svc_integration: EventService):
         pytest.fail()  # Fail test if no error was thrown above
 
 
-# Test `EventService.get_events_from_organization()`
-def test_get_from_organization(event_svc_integration: EventService):
+def test_get_events_from_organization(event_svc_integration: EventService):
     """Test that list of events can be retrieved based on specified organization."""
     event_svc_integration.create(root, to_add)
     fetched_events = event_svc_integration.get_events_from_organization(2)
     assert fetched_events is not None
     assert len(fetched_events) == 2
-
-
-# Test `EventService.update()`
 
 
 def test_update_event_as_root(
