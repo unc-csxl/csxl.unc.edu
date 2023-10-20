@@ -9,17 +9,10 @@ from sqlalchemy.orm import Session
 from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
-from backend.models.event_details import NewEvent, EventDetails
+from backend.models.event_details import EventDetails
 from ..entities import EventEntity
 from .permission import PermissionService
 from .exceptions import EventNotFoundException
-
-class EventNotFoundException(Exception):
-    """EventNotFoundException is raised when trying to access an event that does not exist."""
-
-    def __init__(self, id: int | None):
-        super().__init__(
-            f'No event found with matching ID: {id}')
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
