@@ -14,6 +14,7 @@
             <button mat-icon-button (click)="onShareButtonClick()">
                 <mat-icon>share</mat-icon>
             </button>
+            <!-- TODO: Implement Calendar File Download Button -->
             <!-- <button mat-icon-button>
                 <mat-icon>calendar_today</mat-icon>
             </button> -->
@@ -35,7 +36,6 @@
     <!-- Logistical Information -->
     <div>
         <p><strong>Starts At:</strong> {{event.time | date:'shortTime'}}</p>
-        <!-- <p><strong>End:</strong> {{eventEndText}}</p> -->
         <p><strong>Location:</strong> {{event.location}}</p>
     </div>
 
@@ -43,22 +43,4 @@
 
     <!-- Description -->
     <p>{{event.description}}</p>
-
-    <!-- <mat-divider class="padded-divider" /> -->
-
-    <!-- Registration -->
-
-    <!-- <div *ngIf="requiresPreregistration">
-        <p><i>This event requires pre-registration.</i></p>
-        <div class="registration-listing">
-            <div class="seat-count-container">
-                <p>10 seats remaining.</p>
-            </div>
-            <div class="register-button-container">
-                <button mat-stroked-button>
-                    Register
-                </button>
-            </div>
-        </div>
-    </div> -->
 </mat-card>

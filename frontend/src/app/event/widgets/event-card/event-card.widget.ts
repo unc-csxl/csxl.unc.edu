@@ -8,7 +8,7 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Event } from '../../event.service';
+import { Event } from '../../event.model';
 
 @Component({
     selector: 'event-card',
@@ -17,14 +17,21 @@ import { Event } from '../../event.service';
 })
 export class EventCard {
 
+    /** The event for the event card to display */
     @Input() event!: Event
+
+    /** Whether to disable the tile link or not */
     @Input() disableLink!: Boolean
+
+    /** Whether or not the current card is selected */
     @Input() selected: Boolean = false
 
+    /** Provides the event to a handler for the on click action */
     @Output() onClicked = new EventEmitter<Event>()
 
     constructor() { }
 
+    /** Handler for when the event card is pressed */
     cardClicked() {
         if (this.disableLink) {
             this.onClicked.emit(this.event)

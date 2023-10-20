@@ -9,6 +9,11 @@ __license__ = "MIT"
 
 
 class Role(BaseModel):
-    """A role is a group of related access controls users can be added to."""
+    """
+    Pydantic model to represent a `Role`.
+
+    This model is based on the `RoleEntity` model, which defines the shape
+    of the `Role` database in the PostgreSQL database.
+    """
     id: int | None = None
     name: str

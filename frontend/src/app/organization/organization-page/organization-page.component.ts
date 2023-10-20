@@ -10,7 +10,7 @@
 
 import { Component } from '@angular/core';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
-import { Organization } from '../organization.service';
+import { Organization } from '../organization.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
@@ -23,7 +23,7 @@ import { organizationResolver } from '../organization.resolver';
 })
 export class OrganizationPageComponent {
 
-  /** Route information to be used in App Routing Module */
+  /** Route information to be used in Organization Routing Module */
   public static Route = {
     path: '',
     title: 'CS Organizations',
@@ -44,12 +44,8 @@ export class OrganizationPageComponent {
   /** Stores the user permission value for current organization. */
   public permValues: Map<number, number> = new Map();
 
-  constructor(
-    private route: ActivatedRoute,
-    protected snackBar: MatSnackBar,
-  ) {
-
-    /** Get currently-logged-in user. */
+  constructor(private route: ActivatedRoute, protected snackBar: MatSnackBar) {
+    /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as { profile: Profile, organizations: Organization[] };
     this.profile = data.profile;
     this.organizations = data.organizations;

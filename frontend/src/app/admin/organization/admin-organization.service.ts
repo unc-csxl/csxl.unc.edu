@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { RxOrganization } from '../../organization/rx-organization';
-import { Organization } from '../../organization/organization.service';
+import { Organization } from '../../organization/organization.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminOrganizationService {

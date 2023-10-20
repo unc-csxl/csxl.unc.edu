@@ -1,3 +1,7 @@
+"""
+The Event Service allows the API to manipulate event data in the database.
+"""
+
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -5,9 +9,10 @@ from sqlalchemy.orm import Session
 from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
-from backend.models.event_details import EventDetails
+from backend.models.event_details import NewEvent, EventDetails
 from ..entities import EventEntity
 from .permission import PermissionService
+from .exceptions import EventNotFoundException
 
 class EventNotFoundException(Exception):
     """EventNotFoundException is raised when trying to access an event that does not exist."""
@@ -16,11 +21,12 @@ class EventNotFoundException(Exception):
         super().__init__(
             f'No event found with matching ID: {id}')
 
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 class EventService:
     """Service that performs all of the actions on the `Event` table"""
-
-    # Current SQLAlchemy Session
-    _session: Session
 
     def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
         """Initializes the `EventService` session"""
@@ -38,14 +44,13 @@ class EventService:
         query = select(EventEntity)
         entities = self._session.scalars(query).all()
 
-        # Convert entries to a model and return
+        # Convert entities to details models and return
         return [entity.to_details_model() for entity in entities]
 
     def create(self, subject: User, event: Event) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
-        If the event's ID already exists in the table, raise an exception.
 
         Parameters:
             subject: a valid User model representing the currently logged in User
@@ -54,12 +59,12 @@ class EventService:
         Returns:
             EventDetails: a valid EventDetails model representing the new Event
         """
+        
+        # Ensure that the user has appropriate permissions to create users
         self._permission.enforce(subject, "organization.events.create", f"organization/{event.organization_id}")
 
         # Checks if the role already exists in the table
         if event.id:
-            # Raise exception
-            # should this be changed?
             event.id = None
         
         # Otherwise, create new object
@@ -108,6 +113,8 @@ class EventService:
 
         # Query the event with matching organization slug
         events = self._session.query(EventEntity).filter(EventEntity.organization_id == id).all()
+        
+        # Convert entities to models and return
         return [event.to_details_model() for event in events]
 
     def update(self, subject: User, event: Event) -> EventDetails:
@@ -121,6 +128,8 @@ class EventService:
         Returns:
             EventDetails: a valid EventDetails model representing the updated event object
         """
+        
+        # Ensure that the user has appropriate permissions to update users
         self._permission.enforce(subject, "organization.events.create", f"organization/{event.organization_id}")
 
         # Query the event with matching id
@@ -128,13 +137,17 @@ class EventService:
 
         # Check if result is null
         if obj:
+            
             # Update event object
             obj.name=event.name
             obj.time=event.time
             obj.description=event.description
             obj.location=event.location
             obj.public=event.public
+            
+            # Save changes
             self._session.commit()
+            
             # Return updated object
             return obj.to_details_model()
         else:
@@ -154,13 +167,16 @@ class EventService:
         # Find object to delete
         event = self._session.query(EventEntity).get(id)
 
-        # Enforce permissions
+        # Ensure that the user has appropriate permissions to delete users
         self._permission.enforce(subject, "organization.events.delete", f"organization/{event.organization_id}")
 
         # Ensure object exists
         if event:
+            
             # Delete object and commit
             self._session.delete(event)
+            
+            # Save changes
             self._session.commit()
         else:
             # Raise exception

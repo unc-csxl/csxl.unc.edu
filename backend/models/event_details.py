@@ -3,7 +3,11 @@ from backend.models.organization import Organization
     
 class EventDetails(Event):
     """
-    Model to represent `Event` connections between users and organizations
+    Pydantic model to represent an `Event`, including back-populated
+    relationship fields.
+
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database.
     """
     
     organization: Organization | None = None

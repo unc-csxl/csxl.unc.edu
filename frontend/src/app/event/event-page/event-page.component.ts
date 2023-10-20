@@ -12,7 +12,7 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventResolver } from '../event.resolver';
 import { ActivatedRoute } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
-import { Event } from '../event.service';
+import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 
@@ -69,7 +69,6 @@ export class EventPageComponent {
     if (data.events.length > 0) {
       this.selectedEvent = data.events[0]
     }
-
   }
 
   /** Runs when the frontend UI loads */
