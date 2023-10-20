@@ -4,7 +4,6 @@ import pytest
 from sqlalchemy.orm import Session
 from ....models.event import Event
 from ....entities.event_entity import EventEntity
-from ..organization.organization_test_data import cads, cssg, appteam
 from .event_demo_data import date_maker
 
 from ..reset_table_id_seq import reset_table_id_seq
