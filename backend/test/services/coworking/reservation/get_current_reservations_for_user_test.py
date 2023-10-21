@@ -1,6 +1,5 @@
 """ReservationService#get_reservaions tests."""
 
-import pytest
 from unittest.mock import create_autospec
 
 from .....models.coworking import (
@@ -71,37 +70,3 @@ def test_get_current_reservations_for_user_permissions(
         "coworking.reservation.read",
         f"user/{user_data.user.id}",
     )
-
-
-def test_get_seat_reservations_none(
-    reservation_svc: ReservationService, time: dict[str, datetime]
-):
-    """Get all reservations for a time range with no reservations."""
-    in_the_past = TimeRange(
-        start=time[THIRTY_MINUTES_AGO] - FIVE_MINUTES,
-        end=time[THIRTY_MINUTES_AGO] - ONE_MINUTE,
-    )
-    reservations = reservation_svc.get_seat_reservations(seat_data.seats, in_the_past)
-    assert len(reservations) == 0
-
-
-def test_get_seat_reservations_active(
-    reservation_svc: ReservationService, time: dict[str, datetime]
-):
-    """Get all reservations that are active (not cancelled or checked out)."""
-    current = TimeRange(start=time[NOW], end=time[IN_THIRTY_MINUTES])
-    reservations = reservation_svc.get_seat_reservations(seat_data.seats, current)
-    assert len(reservations) == len(reservation_data.active_reservations)
-    assert isinstance(reservations[0], Reservation)
-    assert reservations[0].id == reservation_data.reservation_1.id
-
-
-def test_get_seat_reservations_unreserved_seats(
-    reservation_svc: ReservationService, time: dict[str, datetime]
-):
-    """Get reservations for unreserved seats (expecting no matches)."""
-    current = TimeRange(start=time[NOW], end=time[IN_THIRTY_MINUTES])
-    reservations = reservation_svc.get_seat_reservations(
-        seat_data.unreservable_seats, current
-    )
-    assert len(reservations) == 0

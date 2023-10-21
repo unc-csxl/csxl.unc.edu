@@ -3,6 +3,7 @@
 from fastapi import Depends
 from datetime import datetime, timedelta
 from random import random
+from typing import Sequence
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User, UserIdentity
@@ -149,7 +150,7 @@ class ReservationService:
         return [reservation.to_model() for reservation in reservations]
 
     def get_seat_reservations(
-        self, seats: list[Seat], time_range: TimeRange
+        self, seats: Sequence[Seat], time_range: TimeRange
     ) -> list[Reservation]:
         """Returns all reservations for a set of seats in a given time range.
 
