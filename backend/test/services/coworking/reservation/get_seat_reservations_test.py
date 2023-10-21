@@ -1,4 +1,4 @@
-"""ReservationService#get_reservaions tests."""
+"""ReservationService#get_seat_reservations tests."""
 
 from unittest.mock import create_autospec
 

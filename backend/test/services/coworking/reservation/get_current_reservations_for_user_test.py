@@ -1,11 +1,7 @@
-"""ReservationService#get_reservaions tests."""
+"""ReservationService#get_current_reservations_for_user tests."""
 
 from unittest.mock import create_autospec
 
-from .....models.coworking import (
-    Reservation,
-    TimeRange,
-)
 from .....services.coworking import ReservationService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.

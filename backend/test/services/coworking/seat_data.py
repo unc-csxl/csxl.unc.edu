@@ -5,6 +5,8 @@ from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from ....entities.coworking import SeatEntity
 from ....models.coworking.seat_details import SeatDetails
+from ....models.coworking.seat import Seat
+from typing import Sequence
 
 from ..reset_table_id_seq import reset_table_id_seq
 from .room_data import the_xl
@@ -25,7 +27,7 @@ monitor_seat_00 = SeatDetails(
     room=the_xl.to_room(),
 )
 
-monitor_seat_01 = SeatDetails(
+monitor_seat_01: Seat = SeatDetails(
     id=2,
     title="Standing Monitor 01",
     shorthand="M01",
@@ -108,7 +110,7 @@ monitor_seats = [monitor_seat_00, monitor_seat_01, monitor_seat_10, monitor_seat
 # )
 # conference_table_seats = [conference_table_00, conference_table_01]
 
-seats: list[SeatDetails] = monitor_seats  # + common_area_seats + conference_table_seats
+seats: Sequence[Seat] = monitor_seats  # + common_area_seats + conference_table_seats
 
 reservable_seats = [seat for seat in seats if seat.reservable]
 
