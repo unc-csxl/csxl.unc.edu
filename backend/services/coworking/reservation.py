@@ -75,14 +75,16 @@ class ReservationService:
         if reservation == None:
             raise ResourceNotFoundException(f"No reservation with an ID of {id} found.")
 
-        # The subject sould _be_ one of the users or have read access on reservations 
+        # The subject sould _be_ one of the users or have read access on reservations
         # for at least one of the users.
         has_permission = False
         for user in reservation.users:
-            if user.id == subject.id or self._permission_svc.check(subject, "coworking.reservation.read", f"user/{user.id}"):
+            if user.id == subject.id or self._permission_svc.check(
+                subject, "coworking.reservation.read", f"user/{user.id}"
+            ):
                 has_permission = True
                 break
-        
+
         if not has_permission:
             raise UserPermissionException("coworking.reservation.read", "user/")
 
@@ -360,7 +362,7 @@ class ReservationService:
         now = datetime.now()
         start = request.start if request.start >= now else now
 
-        is_walkin = abs(request.start - now) < self._policy_svc.walkin_window(subject)
+        is_walkin = abs(start - now) < self._policy_svc.walkin_window(subject)
 
         # Bound end to policy limits for duration of a reservation
         if is_walkin:
@@ -390,7 +392,9 @@ class ReservationService:
             conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
             for conflict in conflicts:
                 if is_walkin and conflict.walkin:
-                    raise ReservationException("Users may not have concurrent walk-in reservations.")
+                    raise ReservationException(
+                        "Users may not have concurrent walk-in reservations."
+                    )
 
                 nonconflicting = bounds.subtract(conflict)
                 if len(nonconflicting) == 1:
