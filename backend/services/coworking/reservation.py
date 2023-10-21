@@ -71,7 +71,7 @@ class ReservationService:
             UserPermissionException
             ResourceNotFoundException
         """
-        reservation: ReservationEntity = self._session.get(ReservationEntity, id)
+        reservation: ReservationEntity | None = self._session.get(ReservationEntity, id)
         if reservation == None:
             raise ResourceNotFoundException(f"No reservation with an ID of {id} found.")
 
