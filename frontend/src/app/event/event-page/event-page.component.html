@@ -12,12 +12,11 @@
 
                     <!-- `eventsPerDay` is in the format of a map of date strings to a list of events -->
                     <!--  Piping this through `keyvalue` means that `eventGroup.key` is the date string -->
-                    <div *ngFor="let eventGroup of eventsPerDay | keyvalue" style="padding-bottom: 16px;">
-                        <mat-card-title>{{eventGroup.key}}</mat-card-title>
+                    <div *ngFor="let eventGroup of eventsPerDay" style="padding-bottom: 16px;">
+                        <mat-card-title>{{eventGroup[0]}}</mat-card-title>
                         <mat-divider style="padding-bottom: 8px;" />
-                        <event-card *ngFor="let event of eventsPerDay.get(eventGroup.key)" [event]="event"
-                            [disableLink]="innerWidth > 900" [selected]="event === selectedEvent"
-                            (onClicked)="onEventCardClicked($event)" />
+                        <event-card *ngFor="let event of eventGroup[1]" [event]="event" [disableLink]="innerWidth > 900"
+                            [selected]="event === selectedEvent" (onClicked)="onEventCardClicked($event)" />
                     </div>
                 </mat-card>
             </div>

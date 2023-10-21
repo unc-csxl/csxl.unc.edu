@@ -13,7 +13,7 @@ import { eventResolver } from '../event.resolver';
 import { ActivatedRoute } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
-import { DatePipe } from '@angular/common';
+import { DatePipe, KeyValue } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 
 @Component({
@@ -39,7 +39,7 @@ export class EventPageComponent {
   public events: Event[];
 
   /** Store a map of days to a list of events for that day */
-  public eventsPerDay: Map<string, Event[]>;
+  public eventsPerDay: [string, Event[]][];
 
   /** Store the selected Event */
   public selectedEvent: Event | null = null;
@@ -89,23 +89,26 @@ export class EventPageComponent {
    * @param events: List of the input events
    * @param query: Search bar query to filter the items
    */
-  groupEventsByDate(events: Event[], query: string = ""): Map<string, Event[]> {
+  groupEventsByDate(events: Event[], query: string = ""): [string, Event[]][] {
     // Initialize an empty map
     let groups: Map<string, Event[]> = new Map();
 
     // Transform the list of events based on the event filter pipe and query
-    this.eventFilterPipe.transform(events, query).forEach((event) => {
-      // Find the date to group by
-      let dateString = this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ""
-      // Add the event
-      let newEventsList = groups.get(dateString) ?? []
-      newEventsList.push(event)
-      groups.set(dateString, newEventsList)
-    })
+    this.eventFilterPipe.transform(events, query)
+      .forEach((event) => {
+        console.log
+        // Find the date to group by
+        let dateString = this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ""
+        // Add the event
+        let newEventsList = groups.get(dateString) ?? []
+        newEventsList.push(event)
+        groups.set(dateString, newEventsList)
+      })
 
     // Return the groups
-    return groups;
+    return [...groups.entries()]
   }
+
 
   /** Handler that runs when the search bar query changes.
    * @param query: Search bar query to filter the items
