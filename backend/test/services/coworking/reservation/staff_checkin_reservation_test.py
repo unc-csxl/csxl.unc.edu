@@ -114,6 +114,7 @@ def test_staff_checkin_wrong_state_cancelled(
 
 
 def test_staff_checkin_enforces_permissions(reservation_svc: ReservationService):
+    """Checkin requires a permission to take action coworking.reservation.manage on user/*"""
     permission_svc = create_autospec(PermissionService)
     permission_svc.enforce.return_value = None
     reservation_svc._permission_svc = permission_svc
