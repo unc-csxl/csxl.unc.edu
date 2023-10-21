@@ -7,6 +7,7 @@ from .....services import PermissionService, UserPermissionException
 from .....services.coworking import ReservationService
 from .....services.coworking.reservation import ReservationException
 from .....models.coworking import ReservationState
+from .....services.exceptions import ResourceNotFoundException
 
 from .....models.user import UserIdentity
 from .....models.coworking.seat import SeatIdentity
@@ -45,7 +46,7 @@ __license__ = "MIT"
 
 def test_change_reservation_not_found(reservation_svc: ReservationService):
     request_reservation = ReservationPartial(id=999)
-    with pytest.raises(LookupError):
+    with pytest.raises(ResourceNotFoundException):
         reservation_svc.change_reservation(user_data.user, request_reservation)
 
 

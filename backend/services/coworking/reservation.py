@@ -453,7 +453,9 @@ class ReservationService:
         """Users should be able to change reservations without hassle. Different restrictions apply to changes based on state of reservation."""
         entity = self._session.get(ReservationEntity, delta.id)
         if entity is None:
-            raise LookupError(f"Reservation(id={delta.id}) does not exist")
+            raise ResourceNotFoundException(
+                f"Reservation(id={delta.id}) does not exist"
+            )
 
         # Either the current user is party to the reservation or an admin has
         # permission to manage reservations for all users.
@@ -540,10 +542,30 @@ class ReservationService:
     def staff_checkin_reservation(
         self, subject: User, reservation: Reservation
     ) -> Reservation:
-        """Staff members with the correct permissions can check users in to their reservations directly."""
+        """XL Staff members can check users in to their reservations directly.
+
+        Args:
+            subject (User): The user initiating the checkin request.
+            reservation(Reservation): The reservation being checked in.
+
+        Returns:
+            Reservation: The DRAFT reservation.
+
+        Raises:
+            ReservationError: If the requested reservation cannot be satisfied.
+
+        Future work:
+            * Think about errors/validations of drafts that can be edited rather than raising exceptions.
+            * Multi-user reservations
+                * Check for equality between users and available seats
+                * Limit users and seats counts to policy
+            * Clean-up / Refactor Implementation
+        """
         entity = self._session.get(ReservationEntity, reservation.id)
         if entity is None:
-            raise LookupError(f"Reservation(id={reservation.id}) does not exist")
+            raise ResourceNotFoundException(
+                f"Reservation(id={reservation.id}) does not exist"
+            )
 
         # Ensure permissions to manage reservation checkins
         self._permission_svc.enforce(
