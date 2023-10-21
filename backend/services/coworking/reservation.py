@@ -549,17 +549,15 @@ class ReservationService:
             reservation(Reservation): The reservation being checked in.
 
         Returns:
-            Reservation: The DRAFT reservation.
+            Reservation: The updated reservation.
 
         Raises:
-            ReservationError: If the requested reservation cannot be satisfied.
+            ReservationError: If the requested checkin request cannot be satisfied, such as
+            attempting to check-in a reservation that's in the wrong state.
 
-        Future work:
-            * Think about errors/validations of drafts that can be edited rather than raising exceptions.
-            * Multi-user reservations
-                * Check for equality between users and available seats
-                * Limit users and seats counts to policy
-            * Clean-up / Refactor Implementation
+        Future Work:
+            Should staff only be able to check-in reservations whose start time is
+            within the next time interval defined by a policy?
         """
         entity = self._session.get(ReservationEntity, reservation.id)
         if entity is None:
@@ -568,9 +566,7 @@ class ReservationService:
             )
 
         # Ensure permissions to manage reservation checkins
-        self._permission_svc.enforce(
-            subject, "coworking.reservation.checkIn", f"user/*"
-        )
+        self._permission_svc.enforce(subject, "coworking.reservation.manage", f"user/*")
 
         # Update state iff ReservationState is current CONFIRMED
         if entity.state == ReservationState.CONFIRMED:
