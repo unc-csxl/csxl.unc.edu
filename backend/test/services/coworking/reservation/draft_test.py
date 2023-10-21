@@ -221,7 +221,7 @@ def test_draft_reservation_has_conflict_but_ok(
         user_data.root,
         reservation_data.test_request(
             {
-                "start": conflict.start - THIRTY_MINUTES,
+                "start": time[NOW],
                 "end": conflict.start + THIRTY_MINUTES,
                 "users": [UserIdentity(**user_data.root.model_dump())],
             }
