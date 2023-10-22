@@ -32,7 +32,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { EventRoutingModule } from './event-routing.module';
-import { EventCard } from './widgets/event-card/event-card.widget';
 import { EventDetailCard } from './widgets/event-detail-card/event-detail-card.widget';
 import { EventDetailsComponent } from './event-details/event-details.component';
 import { EventPageComponent } from './event-page/event-page.component';
@@ -41,7 +40,6 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
 
 @NgModule({
   declarations: [
-    EventCard,
     EventDetailCard,
     EventDetailsComponent,
     EventPageComponent,

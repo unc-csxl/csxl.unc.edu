@@ -11,14 +11,16 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Event, EventService } from '../event.service';
+import { EventService } from '../event.service';
 import { profileResolver } from '../../profile/profile.resolver';
 import { Profile } from '../../profile/profile.service';
-import { Organization, OrganizationService } from '../../organization/organization.service';
+import { OrganizationService } from '../../organization/organization.service';
 import { Observable } from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
+import { Organization } from 'src/app/organization/organization.model';
+import { Event } from '../event.model';
 
 @Component({
   selector: 'app-event-editor',
@@ -28,8 +30,8 @@ import { organizationDetailResolver } from 'src/app/organization/organization.re
 export class EventEditorComponent {
   public static Route: Route = {
     path: 'organizations/:slug/events/:id/edit',
-    component: EventEditorComponent, 
-    title: 'Event Editor', 
+    component: EventEditorComponent,
+    title: 'Event Editor',
     resolve: { profile: profileResolver, organization: organizationDetailResolver, event: eventDetailResolver }
   };
 
@@ -44,7 +46,7 @@ export class EventEditorComponent {
 
   /** Stores whether the user has admin permission over the current organization. */
   public adminPermission$: Observable<boolean>;
-  
+
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
   time = new FormControl('', [Validators.required]);
@@ -61,14 +63,14 @@ export class EventEditorComponent {
     public: (this.public.value! == "true")
   });
 
-  constructor(private route: ActivatedRoute, 
-              private router: Router, 
-              protected formBuilder: FormBuilder,
-              protected organizationService: OrganizationService, 
-              protected snackBar: MatSnackBar, 
-              private eventService: EventService,
-              private permission: PermissionService) {
-                
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    protected formBuilder: FormBuilder,
+    protected organizationService: OrganizationService,
+    protected snackBar: MatSnackBar,
+    private eventService: EventService,
+    private permission: PermissionService) {
+
     /** Get currently-logged-in user. */
     const data = route.snapshot.data as { profile: Profile, organization: Organization, event: Event };
     this.profile = data.profile;
@@ -100,12 +102,12 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value)
-      if(this.event_id == -1) {
+      if (this.event_id == -1) {
         this.eventService.createEvent(this.event).subscribe(
           {
             next: (event) => this.onSuccess(event),
             error: (err) => this.onError(err)
-          } 
+          }
         );
       }
       else {
@@ -113,7 +115,7 @@ export class EventEditorComponent {
           {
             next: (event) => this.onSuccess(event),
             error: (err) => this.onError(err)
-          } 
+          }
         );
       }
       this.router.navigate(['/organization/', this.organization_slug]);

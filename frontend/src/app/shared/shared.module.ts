@@ -21,11 +21,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
 import { SearchBar } from './search-bar/search-bar.widget';
+import { EventCard } from './event-card/event-card.widget';
+import { RouterModule } from '@angular/router';
+import { EventList } from './event-list/event-list.widget';
 
 @NgModule({
   declarations: [
     SocialMediaIcon,
-    SearchBar
+    SearchBar,
+    EventCard,
+    EventList
   ],
   imports: [
     CommonModule,
@@ -44,10 +49,13 @@ import { SearchBar } from './search-bar/search-bar.widget';
     ReactiveFormsModule,
     MatIconModule,
     MatTooltipModule,
+    RouterModule
   ],
   exports: [
     SocialMediaIcon,
-    SearchBar
+    SearchBar,
+    EventCard,
+    EventList
   ]
 })
 export class SharedModule { }
