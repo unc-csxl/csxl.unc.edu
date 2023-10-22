@@ -60,7 +60,7 @@ export class EventService {
     return this.http.put<Event>("/api/events", event);
   }
 
-  /** Delete the given event object using the backend HTTP delete request. 
+  /** Delete the given event object using the backend HTTP delete request. W
    * @param event: Event representing the updated event
    * @returns void
    */

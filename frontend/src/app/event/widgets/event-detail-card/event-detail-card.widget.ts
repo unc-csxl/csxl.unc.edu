@@ -11,7 +11,8 @@ import { Component, Input } from '@angular/core';
 import { Event } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
-import { Organization } from 'src/app/organization/organization.model';
+import { Observable } from 'rxjs';
+import { PermissionService } from 'src/app/permission.service';
 
 @Component({
     selector: 'event-detail-card',
@@ -23,12 +24,12 @@ export class EventDetailCard {
     /** The event for the event card to display */
     @Input() event!: Event
 
-    @Input() organization: Organization | null = null;
-    
-    @Input() showEventManagementButtons: boolean = false;
-
     /** Constructs the widget */
-    constructor(protected snackBar: MatSnackBar, private eventService: EventService) { }
+    constructor(protected snackBar: MatSnackBar, private eventService: EventService, private permission: PermissionService) { }
+
+    checkPermissions(): Observable<boolean> {
+        return this.permission.check('organization.events.manage', `organization/${this.event.organization_id!}`);
+    }
 
     /** Handler for when the share button is pressed
      *  This function copies the permalink to the event to the user's

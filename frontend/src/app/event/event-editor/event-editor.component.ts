@@ -118,7 +118,7 @@ export class EventEditorComponent {
           }
         );
       }
-      this.router.navigate(['/organization/', this.organization_slug]);
+      this.router.navigate(['/organizations/', this.organization_slug]);
     }
   }
 

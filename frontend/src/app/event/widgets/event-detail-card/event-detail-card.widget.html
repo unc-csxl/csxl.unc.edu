@@ -11,14 +11,12 @@
 
         <!-- Buttons -->
         <div class="event-actions">
-            <div *ngIf="showEventManagementButtons">
-                <button mat-icon-button [routerLink]="['events', 'organizations', event.organization!.slug, 'events', event.id, 'edit']" [relativeTo]="null">
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button [routerLink]="['events']" [relativeTo]="null" (click)="deleteEvent(event)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </div>
+            <button mat-icon-button *ngIf="checkPermissions() | async" [routerLink]="['events', 'organizations', event.organization!.slug, 'events', event.id, 'edit']" [relativeTo]="null">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="checkPermissions() | async" [routerLink]="['events']" [relativeTo]="null" (click)="deleteEvent(event)">
+                <mat-icon>delete</mat-icon>
+            </button>
             <button mat-icon-button (click)="onShareButtonClick()">
                 <mat-icon>share</mat-icon>
             </button>
