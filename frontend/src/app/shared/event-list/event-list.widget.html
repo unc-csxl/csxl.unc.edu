@@ -1,7 +1,10 @@
 <mat-card class="events-section" appearance="outlined" style="padding: 16px; margin: 0px;">
 
     <div *ngIf="showHeader">
-        <mat-card-title>Upcoming Events</mat-card-title>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <mat-card-title>Upcoming Events</mat-card-title>
+            <button mat-icon-button *ngIf="showCreateButton" [routerLink]="['events', 'organizations', organization!.slug, 'events', '-1', 'edit']" [relativeTo]="null"><mat-icon>add</mat-icon></button>
+        </div>
         <mat-divider style="padding-bottom: 8px;" />
     </div>
 

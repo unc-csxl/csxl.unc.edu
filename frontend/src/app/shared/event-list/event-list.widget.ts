@@ -12,6 +12,7 @@
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Event } from '../../event/event.model';
+import { Organization } from 'src/app/organization/organization.model';
 
 @Component({
     selector: 'event-list',
@@ -23,6 +24,9 @@ export class EventList {
     /** The event for the event card to display */
     @Input() eventsPerDay: [string, Event[]][] = [];
 
+    /** The organization associated with the Event List for the Organization Details Page */
+    @Input() organization: Organization | null = null;
+
     /** Store the selected Event */
     @Input() selectedEvent: Event | null = null;
 
@@ -30,6 +34,9 @@ export class EventList {
     @Input() disableLinks: boolean = false;
 
     @Input() showHeader: boolean = false;
+
+    /** Whether or not to disable the event creation button */
+    @Input() showCreateButton: boolean = false;
 
     @Output() onCardClicked: EventEmitter<Event> = new EventEmitter()
 

@@ -16,6 +16,8 @@ import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationDetailResolver } from '../organization.resolver'
 import { EventService } from 'src/app/event/event.service';
 import { Event } from 'src/app/event/event.model';
+import { Observable } from 'rxjs';
+import { PermissionService } from 'src/app/permission.service';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -46,12 +48,15 @@ export class OrganizationDetailsComponent {
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
 
+  public eventCreationPermission$: Observable<boolean>;
+
   /** Constructs the Organization Detail component */
-  constructor(private route: ActivatedRoute, protected snackBar: MatSnackBar, protected eventService: EventService) {
+  constructor(private route: ActivatedRoute, protected snackBar: MatSnackBar, protected eventService: EventService, private permission: PermissionService) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as { profile: Profile, organization: Organization, events: Event[] };
     this.profile = data.profile;
     this.organization = data.organization;
     this.eventsPerDay = eventService.groupEventsByDate(this.organization.events ?? [])
+    this.eventCreationPermission$ = this.permission.check('organization.events.create', `organization/${this.organization!.id}`);    
   }
 }
