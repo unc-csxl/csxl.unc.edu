@@ -50,7 +50,8 @@ export class EventDetailCard {
         let confirmDelete = this.snackBar.open("Are you sure you want to delete this event?", "Delete");
         confirmDelete.onAction().subscribe(() => {
             this.eventService.deleteEvent(event).subscribe(() => {
-                this.snackBar.open("Event Deleted", "", { duration: 2000 })
+            this.snackBar.open("Event Deleted", "", { duration: 2000 })
+            location.reload();
           })
         });
     }

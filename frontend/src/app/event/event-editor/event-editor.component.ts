@@ -40,8 +40,6 @@ export class EventEditorComponent {
   public organization_slug: string;
   public organization: Organization;
 
-  public event_id: number = -1;
-
   public profile: Profile | null = null;
 
   /** Stores whether the user has admin permission over the current organization. */
@@ -102,7 +100,8 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value)
-      if (this.event_id == -1) {
+      if (this.event.id == -1) {
+        console.log("Event Updated");
         this.eventService.createEvent(this.event).subscribe(
           {
             next: (event) => this.onSuccess(event),
@@ -111,6 +110,7 @@ export class EventEditorComponent {
         );
       }
       else {
+        console.log("Event Updated");
         this.eventService.updateEvent(this.event).subscribe(
           {
             next: (event) => this.onSuccess(event),
