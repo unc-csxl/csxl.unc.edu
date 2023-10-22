@@ -534,7 +534,24 @@ class ReservationService:
 
         return True
 
-    def list_active_and_upcoming(self, subject: User) -> Sequence[Reservation]:
+    def list_all_active_and_upcoming(self, subject: User) -> Sequence[Reservation]:
+        """Ambassadors need to see all active and upcoming reservations.
+
+        This method queries all future events. When pre-reservations are added, this method
+        will need redesign to support date/time based pagination.
+
+        Args:
+            subject (User): The user initiating the reservation change request.
+
+        Returns:
+            Sequence[Reservation] - all active and upcoming reservations
+
+        Raises:
+            UserPermissionException when user does not have permission to read reservations
+
+        Future work:
+            Pagination based on timespans in the future.
+        """
         self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
         now = datetime.now()
         reservations = (
