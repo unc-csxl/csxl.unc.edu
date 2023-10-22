@@ -1,7 +1,9 @@
 """Tests for the PermissionService class."""
 
+import pytest
+
 # Tested Dependencies
-from ...models import Permission
+from ...models import Permission, User
 from ...services import PermissionService
 
 # Data Setup and Injected Service Fixtures
@@ -25,6 +27,14 @@ def test_no_permission(permission_svc: PermissionService):
 
 
 def test_grant_role_permission(permission_svc: PermissionService):
+    """Tests that you can grant a permission to a role"""
+    assert permission_svc.check(ambassador, "checkin.delete", "checkin") is False
+    p = Permission(action="checkin.delete", resource="*")
+    permission_svc.grant(root, ambassador, p)
+    assert permission_svc.check(ambassador, "checkin.delete", "checkin")
+
+
+def test_grant_user_permission(permission_svc: PermissionService):
     """Tests that you can grant a permission to a user"""
     assert permission_svc.check(ambassador, "checkin.delete", "checkin") is False
     p = Permission(action="checkin.delete", resource="*")
@@ -32,11 +42,38 @@ def test_grant_role_permission(permission_svc: PermissionService):
     assert permission_svc.check(ambassador, "checkin.delete", "checkin")
 
 
+def test_grant_none_exception(permission_svc: PermissionService):
+    """Tests that a ValueError is raised if attempting to grant to an improper object"""
+    with pytest.raises(ValueError):
+        p = Permission(action="checkin.delete", resource="*")
+        permission_svc.grant(root, None, p)  # type: ignore
+
+
 def test_revoke_role_permission(permission_svc: PermissionService):
     """Tests that you can remove a permission from a user"""
     assert permission_svc.check(ambassador, "checkin.create", "checkin")
     permission_svc.revoke(root, ambassador_permission)
     assert permission_svc.check(ambassador, "checkin.create", "checkin") is False
+
+
+def test_revoke_permission_without_id(permission_svc: PermissionService):
+    """Tests that you can remove a permission from a user"""
+    assert (
+        permission_svc.revoke(
+            root, Permission(id=None, action="checkin.create", resource="checkin")
+        )
+        is False
+    )
+
+
+def test_revoke_nonexistent_permission(permission_svc: PermissionService):
+    """Tests that you can remove a permission from a user"""
+    assert (
+        permission_svc.revoke(
+            root, Permission(id=423, action="checkin.create", resource="checkin")
+        )
+        is False
+    )
 
 
 def test_root_resource_access(permission_svc: PermissionService):
@@ -85,3 +122,8 @@ def test_check_specific_permission(permission_svc: PermissionService):
     assert (
         permission_svc._check_permission(p, "permission.revoke", "checkin.*") is False
     )
+
+
+def test_get_user_roles_permissions(permission_svc: PermissionService):
+    """Test covers an edge case of _get_user_roles_permissions when user does not exist"""
+    assert permission_svc._get_user_roles_permissions(User(id=423)) == []
