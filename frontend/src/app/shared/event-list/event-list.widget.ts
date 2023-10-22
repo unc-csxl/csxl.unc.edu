@@ -38,6 +38,9 @@ export class EventList {
     /** Whether or not to disable the event creation button */
     @Input() showCreateButton: boolean = false;
 
+    /** Whether or not the event list should be full width */
+    @Input() fullWidth: boolean = false;
+
     @Output() onCardClicked: EventEmitter<Event> = new EventEmitter()
 
     /** Constructs the widget */

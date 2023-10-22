@@ -12,7 +12,7 @@
                 <!-- `eventsPerDay` is in the format of a list of tuples, where
                     eventGroup[0] is the date string and eventGroup[1] s a list of events -->
                 <event-list [eventsPerDay]="eventsPerDay" [selectedEvent]="selectedEvent"
-                    [disableLinks]="innerWidth > 900" (onCardClicked)="onEventCardClicked($event)" />
+                    [disableLinks]="innerWidth > 900" (onCardClicked)="onEventCardClicked($event)" [fullWidth]="true" />
             </div>
 
             <div class="details-column">
