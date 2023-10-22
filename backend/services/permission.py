@@ -1,6 +1,9 @@
-"""Permission Service grants, revokes, tests, and enforces permissions for users and roles in the system.
+"""
+Permission Service grants, revokes, tests, and enforces permissions for users and roles in the system.
 
-This Service is more of an internal service that other services take dependency on. It is not directly exposed via the API."""
+This Service is more of an internal service that other services take dependency on. It is not directly
+exposed via the API.
+"""
 
 import re
 from fastapi import Depends
@@ -10,19 +13,11 @@ from sqlalchemy.orm import Session
 from ..database import db_session
 from ..models import User, Permission, Role, RoleDetails
 from ..entities import UserEntity, PermissionEntity, RoleEntity
+from ..services.exceptions import UserPermissionException
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
-
-
-class UserPermissionException(Exception):
-    """UserPermissionException is raised when a user attempts to perform an action they are not authorized to perform."""
-
-    def __init__(self, action: str, resource: str):
-        super().__init__(
-            f'Not authorized to perform `{action}` on `{resource}`')
-
 
 class PermissionService:
     """PermissionService grants, revokes, tests, and enforces permissions for users and roles in the system."""

@@ -8,7 +8,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { Organization } from '../../organization.service';
+import { Organization } from '../../organization.model';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 
 @Component({
@@ -18,10 +18,18 @@ import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 })
 export class OrganizationCard {
 
+    /** The organization to show */
     @Input() organization!: Organization
+    /** The profile of the currently signed in user */
     @Input() profile?: Profile
+    /** @deprecated Stores the permission values for a profile */
     @Input() profilePermissions!: Map<number, number>
 
+    /**
+     * Determines whether or not the tooltip on the card is disabled
+     * @param element: The HTML element
+     * @returns {boolean}
+     */
     isTooltipDisabled(element: HTMLElement): boolean {
         return element.scrollHeight <= element.clientHeight;
     }

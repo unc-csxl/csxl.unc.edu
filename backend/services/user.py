@@ -15,7 +15,6 @@ __authors__ = ['Kris Jordan']
 __copyright__ = 'Copyright 2023'
 __license__ = 'MIT'
 
-
 class UserService:
 
     _session: Session
@@ -33,15 +32,15 @@ class UserService:
             pid: The PID of the user.
 
         Returns:
-            User | None: The user or None if not found.
+            UserDetails | None: The user or None if not found.
         """
         query = select(UserEntity).where(UserEntity.pid == pid)
-        user_entity: UserEntity = self._session.scalar(query)
+        user_entity: UserEntity | None = self._session.scalar(query)
         if user_entity is None:
             return None
         else:
             user = user_entity.to_model()
-            user_fields = user.dict()
+            user_fields = user.model_dump()
             user_fields['permissions'] = self._permission.get_permissions(user)
             user_details = UserDetails(**user_fields)
             return user_details

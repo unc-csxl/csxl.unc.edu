@@ -9,7 +9,7 @@
 
 import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
-import { Event } from "./event.service"
+import { Event } from "./event.model"
 import { EventService } from "./event.service";
 
 /** This resolver injects the list of events into the events component. */

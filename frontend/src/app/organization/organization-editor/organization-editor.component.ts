@@ -14,10 +14,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { PermissionService } from 'src/app/permission.service';
-import { Organization, OrganizationService } from '../organization.service';
+import { Organization } from "../organization.model";
+import { OrganizationService } from '../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
 import { permissionGuard } from 'src/app/permission.guard';
-import { organizationDetailResolver } from '/workspace/frontend/src/app/organization/organization.resolver'
+import { organizationDetailResolver } from '../organization.resolver'
 
 @Component({
   selector: 'app-organization-editor',
@@ -25,6 +26,8 @@ import { organizationDetailResolver } from '/workspace/frontend/src/app/organiza
   styleUrls: ['./organization-editor.component.css']
 })
 export class OrganizationEditorComponent {
+
+  /** Route information to be used in Organization Routing Module */
   public static Route: Route = {
     path: ':slug/edit',
     component: OrganizationEditorComponent,
@@ -70,23 +73,24 @@ export class OrganizationEditorComponent {
     public: false
   });
 
+  /** Retreives an error message if an email is invalid */
   getEmailErrorMessage() {
     return this.email.hasError('email') ? 'Not a valid email' : '';
   }
 
+  /** Constructs the organization editor component */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     protected formBuilder: FormBuilder,
     protected snackBar: MatSnackBar,
     private organizationService: OrganizationService,
-    private permission: PermissionService) {
+    private permission: PermissionService
+  ) {
 
-    /** Get currently-logged-in user and and organization. */
+    /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as { profile: Profile, organization: Organization };
     this.profile = data.profile;
-
-    /** Initialize organization */
     this.organization = data.organization;
 
     /** Set organization form data */
@@ -121,20 +125,16 @@ export class OrganizationEditorComponent {
     if (this.organizationForm.valid) {
       Object.assign(this.organization, this.organizationForm.value)
       if(this.organization_slug == "new") {
-        this.organizationService.createOrganization(this.organization).subscribe(
-          {
+        this.organizationService.createOrganization(this.organization).subscribe({
             next: (organization) => this.onSuccess(organization),
             error: (err) => this.onError(err)
-          }
-        );
+        });
       }
       else {
-        this.organizationService.updateOrganization(this.organization).subscribe(
-          {
+        this.organizationService.updateOrganization(this.organization).subscribe({
             next: (organization) => this.onSuccess(organization),
             error: (err) => this.onError(err)
-          }
-        );
+          });
       }
     }
   }

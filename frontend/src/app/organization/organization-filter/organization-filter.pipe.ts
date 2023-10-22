@@ -7,9 +7,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Organization } from '../organization.service';
+import { Organization } from '../organization.model';
 
 @Pipe({
   name: 'organizationFilter'

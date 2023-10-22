@@ -1,5 +1,4 @@
 <div>
-
     <div class="parameter-bar">
         <search-bar class="search-bar" [searchBarQuery]="searchBarQuery"
             (searchBarQueryChange)="onSearchBarQueryChange($event)" />
@@ -11,14 +10,13 @@
             <div class="events-column">
                 <mat-card class="events-section" appearance="outlined" style="padding: 16px;">
 
-                    <!-- `eventsPerDay` is in the format of a map of date strings to a list of events -->
-                    <!--  Piping this through `keyvalue` means that `eventGroup.key` is the date string -->
-                    <div *ngFor="let eventGroup of eventsPerDay | keyvalue" style="padding-bottom: 16px;">
-                        <mat-card-title>{{eventGroup.key}}</mat-card-title>
+                    <!-- `eventsPerDay` is in the format of a list of tuples, where
+                         eventGroup[0] is the date string and eventGroup[1] s a list of events -->
+                    <div *ngFor="let eventGroup of eventsPerDay" style="padding-bottom: 16px;">
+                        <mat-card-title>{{eventGroup[0]}}</mat-card-title>
                         <mat-divider style="padding-bottom: 8px;" />
-                        <event-card *ngFor="let event of eventsPerDay.get(eventGroup.key)" [event]="event"
-                            [disableLink]="innerWidth > 900" [selected]="event === selectedEvent"
-                            (onClicked)="onEventCardClicked($event)" />
+                        <event-card *ngFor="let event of eventGroup[1]" [event]="event" [disableLink]="innerWidth > 900"
+                            [selected]="event === selectedEvent" (onClicked)="onEventCardClicked($event)" />
                     </div>
                 </mat-card>
             </div>

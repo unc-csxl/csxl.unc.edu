@@ -10,7 +10,7 @@ import pytest
 from sqlalchemy.orm import Session
 from ...models.user import User
 from ...entities.user_entity import UserEntity
-from ...entities.user_role_entity import user_role_table
+from ...entities.user_role_table import user_role_table
 from .reset_table_id_seq import reset_table_id_seq
 from . import role_data
 
@@ -45,16 +45,7 @@ user = User(
     last_name="Student",
 )
 
-cads_leader = User(
-    id=4,
-    pid=555555555,
-    onyen="cadsleader",
-    email="cadsleader@unc.edu",
-    first_name="Larry",
-    last_name="Leader",
-)
-
-users = [root, ambassador, user, cads_leader]
+users = [root, ambassador, user]
 
 roles_users = {
     role_data.root_role.id: [root],
