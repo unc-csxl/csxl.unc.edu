@@ -8,6 +8,7 @@ from ..services.organization import OrganizationNotFoundException
 from ..services.permission import UserPermissionException
 from ..services import OrganizationService
 from ..models.organization import Organization
+from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
 from ..models.user import User
 
@@ -57,8 +58,8 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{slug}", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
-def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> Organization:
+@api.get("/{slug}", responses={404: {"model": None}}, response_model=OrganizationDetails, tags=['Organizations'])
+def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> OrganizationDetails:
     """
     Get organization with matching slug
 

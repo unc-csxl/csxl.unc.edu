@@ -1,8 +1,3 @@
-.mat-mdc-card {
-    margin: 0 !important;
-    max-width: 100%;
-}
-
 /** Profile Card CSS */
 .mdc-list-item--with-two-lines .mdc-list-item__primary-text,
 .mdc-list-item--with-three-lines .mdc-list-item__primary-text {
@@ -32,7 +27,7 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: left;
 }
 
 .organization-name-section {
@@ -40,16 +35,15 @@
     flex-direction: column;
     justify-content: center;
     align-content: center;
-    width: 50%;
     height: 48px;
 }
 
-.organization-icons-section {
+/* .organization-icons-section {
     display: flex;
     flex-direction: row-reverse;
     width: 50%;
     height: 5vh;
-}
+} */
 
 mat-card-footer {
     margin: 0 1rem 1.25rem 1rem;
@@ -167,7 +161,7 @@ a {
 
 /** Make card name and description larger for monitors */
 @media only screen and (min-width: 2000px) {
-    
+
     .organization-description {
         font-size: 1.5rem;
     }
@@ -180,5 +174,5 @@ a {
     .organization-name-section {
         height: 5vh;
     }
-    
+
 }

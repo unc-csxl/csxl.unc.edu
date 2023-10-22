@@ -24,6 +24,7 @@ import { SearchBar } from './search-bar/search-bar.widget';
 import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
 import { EventList } from './event-list/event-list.widget';
+import { EventFilterPipe } from '../event/event-filter/event-filter.pipe';
 
 @NgModule({
   declarations: [

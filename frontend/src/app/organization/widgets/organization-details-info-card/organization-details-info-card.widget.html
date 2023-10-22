@@ -16,7 +16,7 @@
                     <mat-card-title class="user-name">{{organization!.name}}</mat-card-title>
                 </div>
                 <!-- Organization Icons (Laptops/Monitors/Tablets)-->
-                <div class="organization-icons-section" *ngIf="!isHandset">
+                <!-- <div class="organization-icons-section" *ngIf="!isHandset">
                     <div class="link-icons">
 
                         <social-media-icon [fontIcon]='"link"' [href]='organization!.website'
@@ -35,7 +35,7 @@
                             </button>
                         </a> 
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- Organization Description -->
@@ -43,7 +43,7 @@
                 organization.short_description}}</p>
 
             <!-- Organization Icons (Phones)-->
-            <div class="organization-icons-section" *ngIf="isHandset" [ngStyle]="{'flex-direction': 'row'}">
+            <div class="organization-icons-section" [ngStyle]="{'flex-direction': 'row'}">
                 <div class="link-icons">
 
                     <social-media-icon [fontIcon]='"link"' [href]='organization!.website'
@@ -61,9 +61,9 @@
                         <button mat-icon-button color="basic">
                             <mat-icon>edit</mat-icon>
                         </button>
-                    </a> 
+                    </a>
                 </div>
-            </div> 
+            </div>
         </div>
     </mat-card-header>
 </mat-card>

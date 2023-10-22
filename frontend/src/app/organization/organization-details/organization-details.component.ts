@@ -14,6 +14,8 @@ import { profileResolver } from '/workspace/frontend/src/app/profile/profile.res
 import { Organization } from '../organization.model';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationDetailResolver } from '../organization.resolver'
+import { EventService } from 'src/app/event/event.service';
+import { Event } from 'src/app/event/event.model';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -41,11 +43,15 @@ export class OrganizationDetailsComponent {
   /** The organization to show */
   public organization: Organization;
 
+  /** Store a map of days to a list of events for that day */
+  public eventsPerDay: [string, Event[]][];
+
   /** Constructs the Organization Detail component */
-  constructor(private route: ActivatedRoute, protected snackBar: MatSnackBar) {
+  constructor(private route: ActivatedRoute, protected snackBar: MatSnackBar, protected eventService: EventService) {
     /** Initialize data from resolvers. */
-    const data = this.route.snapshot.data as { profile: Profile, organization: Organization };
+    const data = this.route.snapshot.data as { profile: Profile, organization: Organization, events: Event[] };
     this.profile = data.profile;
     this.organization = data.organization;
+    this.eventsPerDay = eventService.groupEventsByDate(this.organization.events ?? [])
   }
 }

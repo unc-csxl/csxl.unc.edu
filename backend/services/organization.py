@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from ..database import db_session
 from ..models.organization import Organization
+from ..models.organization_details import OrganizationDetails
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService
@@ -72,7 +73,7 @@ class OrganizationService:
             # Return added object
             return organization_entity.to_model()
 
-    def get_from_slug(self, slug: str) -> Organization:
+    def get_from_slug(self, slug: str) -> OrganizationDetails:
         """
         Get the organization from a slug
         If none retrieved, a debug description is displayed.
@@ -95,7 +96,7 @@ class OrganizationService:
         # Check if result is null
         if organization:
             # Convert entry to a model and return
-            return organization.to_model()
+            return organization.to_details_model()
         else:
             # Raise exception
             raise OrganizationNotFoundException(slug)

@@ -13,8 +13,9 @@ import { eventResolver } from '../event.resolver';
 import { ActivatedRoute } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
-import { DatePipe, KeyValue } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
+import { EventService } from '../event.service';
 
 @Component({
   selector: 'app-event-page',
@@ -54,7 +55,8 @@ export class EventPageComponent {
   constructor(
     private route: ActivatedRoute,
     public datePipe: DatePipe,
-    public eventFilterPipe: EventFilterPipe
+    public eventFilterPipe: EventFilterPipe,
+    public eventService: EventService
   ) {
 
     // Initialize data from resolvers
@@ -63,7 +65,7 @@ export class EventPageComponent {
     this.events = data.events;
 
     // Group events by their dates
-    this.eventsPerDay = this.groupEventsByDate(this.events);
+    this.eventsPerDay = eventService.groupEventsByDate(this.events);
 
     // Initialize the initially selected event
     if (data.events.length > 0) {
@@ -84,37 +86,11 @@ export class EventPageComponent {
     this.innerWidth = window.innerWidth;
   }
 
-  /** Helper function to group a list of events by date,
-   * filtered based on the input query string.
-   * @param events: List of the input events
-   * @param query: Search bar query to filter the items
-   */
-  groupEventsByDate(events: Event[], query: string = ""): [string, Event[]][] {
-    // Initialize an empty map
-    let groups: Map<string, Event[]> = new Map();
-
-    // Transform the list of events based on the event filter pipe and query
-    this.eventFilterPipe.transform(events, query)
-      .forEach((event) => {
-        console.log
-        // Find the date to group by
-        let dateString = this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ""
-        // Add the event
-        let newEventsList = groups.get(dateString) ?? []
-        newEventsList.push(event)
-        groups.set(dateString, newEventsList)
-      })
-
-    // Return the groups
-    return [...groups.entries()]
-  }
-
-
   /** Handler that runs when the search bar query changes.
    * @param query: Search bar query to filter the items
    */
   onSearchBarQueryChange(query: string) {
-    this.eventsPerDay = this.groupEventsByDate(this.events, query)
+    this.eventsPerDay = this.eventService.groupEventsByDate(this.events, query)
   }
 
   /** Handler that runs when an event card is clicked.

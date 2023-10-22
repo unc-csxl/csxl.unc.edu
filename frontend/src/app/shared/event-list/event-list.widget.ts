@@ -29,6 +29,8 @@ export class EventList {
     /** Whether or not to disable the links on the page */
     @Input() disableLinks: boolean = false;
 
+    @Input() showHeader: boolean = false;
+
     @Output() onCardClicked: EventEmitter<Event> = new EventEmitter()
 
     /** Constructs the widget */
