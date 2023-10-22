@@ -452,7 +452,25 @@ class ReservationService:
     def change_reservation(
         self, subject: User, delta: ReservationPartial
     ) -> Reservation:
-        """Users should be able to change reservations without hassle. Different restrictions apply to changes based on state of reservation."""
+        """Modify an existing reservation.
+
+        Users should be able to change reservations without hassle. Different restrictions apply to changes based on state of reservation.
+
+        Args:
+            subject (User): The user initiating the reservation change request.
+            delta (ReservationPartial): The fields of a reservation with requested changes.
+
+        Returns:
+            Reservation - the updated reservation
+
+        Raises:
+            ResourceNotFoundException when the requested ID is not found
+            UserPermissionException when user does not have permission to modify the reservation
+            NotImplementedError when requested changes are not yet implemented as features
+
+        Future work:
+            Implement the ability to change seats, party, and start/end time within policy restrictions
+        """
         entity = self._session.get(ReservationEntity, delta.id)
         if entity is None:
             raise ResourceNotFoundException(
