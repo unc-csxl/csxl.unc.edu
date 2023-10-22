@@ -93,7 +93,7 @@ export class EventEditorComponent {
     })
 
     /** Set permission value */
-    this.adminPermission$ = this.permission.check('organization.events.create', `organization/${this.organization!.id}`);
+    this.adminPermission$ = this.permission.check('organization.events.manage', `organization/${this.organization!.id}`);
   }
 
   /** Event handler to handle submitting the Create Event Form.

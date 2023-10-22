@@ -54,7 +54,7 @@ class EventService:
         """
         
         # Ensure that the user has appropriate permissions to create users
-        self._permission.enforce(subject, "organization.events.create", f"organization/{event.organization_id}")
+        self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
 
         # Checks if the role already exists in the table
         if event.id:
@@ -123,7 +123,7 @@ class EventService:
         """
         
         # Ensure that the user has appropriate permissions to update users
-        self._permission.enforce(subject, "organization.events.create", f"organization/{event.organization_id}")
+        self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
 
         # Query the event with matching id
         obj = self._session.query(EventEntity).get(event.id)
@@ -161,7 +161,7 @@ class EventService:
         event = self._session.query(EventEntity).get(id)
 
         # Ensure that the user has appropriate permissions to delete users
-        self._permission.enforce(subject, "organization.events.delete", f"organization/{event.organization_id}")
+        self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
 
         # Ensure object exists
         if event:

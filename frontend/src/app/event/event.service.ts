@@ -56,8 +56,16 @@ export class EventService {
    * @param event: Event representing the updated event
    * @returns {Observable<Event>}
    */
-  updateEvent = (event: Event) => {
+  updateEvent(event: Event): Observable<Event> {
     return this.http.put<Event>("/api/events", event);
+  }
+
+  /** Delete the given event object using the backend HTTP delete request. 
+   * @param event: Event representing the updated event
+   * @returns void
+   */
+  deleteEvent(event: Event): void {
+    this.http.delete<void>("/api/events/" + event.id).subscribe();
   }
 
   /** Helper function to group a list of events by date,

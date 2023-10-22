@@ -56,7 +56,7 @@ def test_create_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.create(root, to_add)
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.create", f"organization/{to_add.organization_id}"
+        root, "organization.events.manage", f"organization/{to_add.organization_id}"
     )
 
 
@@ -108,7 +108,7 @@ def test_delete_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.delete(root, 1)
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.delete", f"organization/{event_one.organization_id}"
+        root, "organization.events.manage", f"organization/{event_one.organization_id}"
     )
 
 
