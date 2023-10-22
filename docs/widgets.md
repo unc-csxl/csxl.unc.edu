@@ -227,7 +227,7 @@ We can also expand this and combine it with `*ngFor`, assuming `organizations` i
 
 This is the exact implementation used for the organization page!
 
-### Outputting Data From Widgets
+### Event Binding to Send Data From Widgets to Components
 
 There is a problem here with widgets that you may have already been thinking about. *What about button actions?* For example, say we had a "join organization" button on each `organization-card` widget. *How can we get this button to trigger a function in the parent component?*
 
@@ -239,7 +239,7 @@ Let's recall a normal Angular button. You would define an action like so:
 <button (click)="myAction()">Click me</button>
 ```
 
-**Note that the `( )` syntax denotes an OUTPUT in Angular!**
+**Note that the `( )` syntax denotes an Event Binding in Angular!**
 
 What is actually happening here? In this example, whenever the button is pressed, data is *emitted* out of the button and to the component to handle. When this *emission* occurs, the function passed into `(click)` is run.
 
@@ -282,34 +282,20 @@ Before we do that step, let's look at what this would look like in the component
 
 We can see that we now have access to this `(onJoinButtonPressed)` output! Looks like `<button>`'s `(click)`, right? You would probably want to put the component's `joinOrganization(org: Organization)` in here now, which is the correct idea! But, what would our organization input be?
 
-Again, go back to the widget. Like we said before, *we want to set this up so that when the join button is pressed. this event emitter will emit some data to the component.*
+Again, go back to the widget's HTML. Like we said before, *we want to set this up so that when the join button is pressed. this event emitter will emit some data to the component.*
 
-```ts
-@Component({
-    selector: 'organization-card',
-    templateUrl: './organization-card.widget.html',
-    styleUrls: ['./organization-card.widget.css']
-})
-export class OrganizationCard {
+We can actually connect the button's `(click)` handler to emit this data.
 
-  /** Organization to show */
-  @Input() organization!: Organization
-
-  /** Handler for when the join button is pressed */
-  @Output() onJoinButtonPressed = new EventEmitter<Organization>()
-
-  /** Constructor */
-  constructor() { }
-
-  buttonPressed() {
-    this.onJoinButtonPressed.emit(organization)
-  }
-}
+```html
+<mat-card>
+  <!-- Implmentation not shown -->
+  <button (click)="onJoinButtonPressed.emit(organization)">Join Org</button>
+</mat-card>
 ```
 
-Now, when `buttonPressed()` is called in the widget, the organization clicked on will be *emitted* out to the component!
+Now, the button is pressed, the organization clicked on will be *emitted* out to the component!
 
-In our component, we can now access this emitted variable using `$event`, like so:
+In our main component, we can now access this emitted variable using `$event`, like so:
 
 ```html
 <organization-card
@@ -319,16 +305,7 @@ In our component, we can now access this emitted variable using `$event`, like s
   />
 ```
 
-This is perfect! Now, when `buttonPressed()` in the *widget* is called, it *emits* the organization out of the widget into this variable called `$event`, which is then used as the parameter for `joinOrganization` in the component!
-
-This may seem confusing at first, but we just went data from our widget to the component that contains it. Lastly, we want to hook up the `buttonPressed()` function in the widget to the button in the ***widget's*** HTML.
-
-```html
-<mat-card>
-  <!-- Implmentation not shown -->
-  <button (click)="buttonPressed()">Join Org</button>
-</mat-card>
-```
+This is perfect! Now, when the button in the *widget* is pressed, it *emits* the organization out of the widget into this variable called `$event`, which is then used as the parameter for `joinOrganization` in the component! We just sent data from our widget to the component that contains it.
 
 ## Conclusion - Widgets vs. Components
 
