@@ -80,7 +80,6 @@ export class EventService {
     // Transform the list of events based on the event filter pipe and query
     this.eventFilterPipe.transform(events, query)
       .forEach((event) => {
-        console.log
         // Find the date to group by
         let dateString = this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ""
         // Add the event

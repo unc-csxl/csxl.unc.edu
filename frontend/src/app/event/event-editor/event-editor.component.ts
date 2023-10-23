@@ -100,9 +100,7 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value)
-      console.log(this.event)
       if (this.event.id == null) {
-        console.log("Event Updated");
         this.eventService.createEvent(this.event).subscribe(
           {
             next: (event) => this.onSuccess(event),
@@ -111,7 +109,6 @@ export class EventEditorComponent {
         );
       }
       else {
-        console.log("Event Updated");
         this.eventService.updateEvent(this.event).subscribe(
           {
             next: (event) => this.onSuccess(event),
