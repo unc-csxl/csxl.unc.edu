@@ -5,3 +5,4 @@ node_modules
 deploy_key*
 .env
 .DS_Store
+.coverage

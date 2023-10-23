@@ -2,6 +2,7 @@
 
 This API is used to make and manage reservations."""
 
+from typing import Sequence
 from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationService
@@ -15,15 +16,16 @@ __license__ = "MIT"
 
 api = APIRouter(prefix="/api/coworking/ambassador")
 
+
 @api.get("", tags=["Coworking"])
 def active_and_upcoming_reservations(
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
-) -> list[Reservation]:
+) -> Sequence[Reservation]:
     """List active and upcoming reservations.
-    
+
     This list drives the ambassador's checkin UI."""
-    return reservation_svc.list_active_and_upcoming(subject)
+    return reservation_svc.list_all_active_and_upcoming(subject)
 
 
 @api.put("/checkin", tags=["Coworking"])

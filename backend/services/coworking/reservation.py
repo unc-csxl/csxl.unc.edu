@@ -3,6 +3,7 @@
 from fastapi import Depends
 from datetime import datetime, timedelta
 from random import random
+from typing import Sequence
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User, UserIdentity
@@ -71,18 +72,20 @@ class ReservationService:
             UserPermissionException
             ResourceNotFoundException
         """
-        reservation: ReservationEntity = self._session.get(ReservationEntity, id)
+        reservation: ReservationEntity | None = self._session.get(ReservationEntity, id)
         if reservation == None:
             raise ResourceNotFoundException(f"No reservation with an ID of {id} found.")
 
-        # The subject sould _be_ one of the users or have read access on reservations 
+        # The subject sould _be_ one of the users or have read access on reservations
         # for at least one of the users.
         has_permission = False
         for user in reservation.users:
-            if user.id == subject.id or self._permission_svc.check(subject, "coworking.reservation.read", f"user/{user.id}"):
+            if user.id == subject.id or self._permission_svc.check(
+                subject, "coworking.reservation.read", f"user/{user.id}"
+            ):
                 has_permission = True
                 break
-        
+
         if not has_permission:
             raise UserPermissionException("coworking.reservation.read", "user/")
 
@@ -90,7 +93,7 @@ class ReservationService:
 
     def get_current_reservations_for_user(
         self, subject: User, focus: User
-    ) -> list[Reservation]:
+    ) -> Sequence[Reservation]:
         """Find current and upcoming reservations for a given user.
         The subject must either also be the focus or have permission to view reservations of
         the given user. The permission needed is action "coworking.reservation.read" and
@@ -101,7 +104,7 @@ class ReservationService:
             focus (User): The user whose reservations are being retrieved
 
         Returns:
-            list[Reservation]: Upcoming reservations for the user.
+            Sequence[Reservation]: Upcoming reservations for the user.
 
         Raises:
             UserPermissionException"""
@@ -121,7 +124,7 @@ class ReservationService:
 
     def _get_active_reservations_for_user(
         self, focus: UserIdentity, time_range: TimeRange
-    ) -> list[Reservation]:
+    ) -> Sequence[Reservation]:
         reservations = (
             self._session.query(ReservationEntity)
             .join(ReservationEntity.users)
@@ -147,16 +150,16 @@ class ReservationService:
         return [reservation.to_model() for reservation in reservations]
 
     def get_seat_reservations(
-        self, seats: list[Seat], time_range: TimeRange
-    ) -> list[Reservation]:
+        self, seats: Sequence[Seat], time_range: TimeRange
+    ) -> Sequence[Reservation]:
         """Returns all reservations for a set of seats in a given time range.
 
         Args:
-            seats (list[Seat]): The list of seats to query for reservations.
+            seats (Sequence[Seat]): The list of seats to query for reservations.
             time_range (TimeRange): The date range to check for matching reservations.
 
         Returns:
-            list[Reservation]: All reservations for the seats within the given time_range, including overlaps.
+            Sequence[Reservation]: All reservations for the seats within the given time_range, including overlaps.
         """
         reservations = (
             self._session.query(ReservationEntity)
@@ -182,8 +185,8 @@ class ReservationService:
         return [reservation.to_model() for reservation in reservations]
 
     def _state_transition_reservation_entities_by_time(
-        self, cutoff: datetime, reservations: list[ReservationEntity]
-    ) -> list[ReservationEntity]:
+        self, cutoff: datetime, reservations: Sequence[ReservationEntity]
+    ) -> Sequence[ReservationEntity]:
         """Private, internal helper method for transitioning reservation entities
         based on time. Three transitions are time-based:
 
@@ -196,10 +199,10 @@ class ReservationService:
         Args:
             moment (datetime): The time in which checks of expiration are made against. In
                 production, this is the current time.
-            reservations (list[ReservationEntity]): The list of entities to state transition.
+            reservations (Sequence[ReservationEntity]): The list of entities to state transition.
 
         Returns:
-            list[ReservationEntity] - All ReservationEntities that were not state transitioned.
+            Sequence[ReservationEntity] - All ReservationEntities that were not state transitioned.
         """
         valid: list[ReservationEntity] = []
         dirty = False
@@ -234,8 +237,8 @@ class ReservationService:
         return valid
 
     def seat_availability(
-        self, seats: list[Seat], bounds: TimeRange
-    ) -> list[SeatAvailability]:
+        self, seats: Sequence[Seat], bounds: TimeRange
+    ) -> Sequence[SeatAvailability]:
         """Returns a list of all seat availability for specific seats within a given timerange.
 
         Args:
@@ -243,7 +246,7 @@ class ReservationService:
             seats (list[Seat]): The seats to check the availability of.
 
         Returns:
-            list[SeatAvailability]: All seat availability ordered by nearest and longest available.
+            Sequence[SeatAvailability]: All seat availability ordered by nearest and longest available.
         """
         # No seats are available in the past
         now = datetime.now()
@@ -296,10 +299,12 @@ class ReservationService:
         )
 
         # Remove seats with availability below threshold
-        available_seats = self._prune_seats_below_availability_threshold(
-            list(seat_availability_dict.values()),
-            self._policy_svc.minimum_reservation_duration()
-            - MINUMUM_RESERVATION_EPSILON,
+        available_seats: list[SeatAvailability] = list(
+            self._prune_seats_below_availability_threshold(
+                list(seat_availability_dict.values()),
+                self._policy_svc.minimum_reservation_duration()
+                - MINUMUM_RESERVATION_EPSILON,
+            )
         )
 
         # Sort by nearest available ASC, duration DESC, reservable (False before True), with entropy
@@ -347,7 +352,7 @@ class ReservationService:
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
         if len(request.users) > 1:
-            raise ReservationException("Multi-user reservations not yet supproted.")
+            raise NotImplementedError("Multi-user reservations not yet supproted.")
 
         # Enforce Reservation Draft Permissions
         if subject.id not in [user.id for user in request.users]:
@@ -360,7 +365,7 @@ class ReservationService:
         now = datetime.now()
         start = request.start if request.start >= now else now
 
-        is_walkin = abs(request.start - now) < self._policy_svc.walkin_window(subject)
+        is_walkin = abs(start - now) < self._policy_svc.walkin_window(subject)
 
         # Bound end to policy limits for duration of a reservation
         if is_walkin:
@@ -385,28 +390,31 @@ class ReservationService:
             )
 
         # Check for overlapping reservations for a single user
-        # TODO: Extract these checks out to a helper method and sanity check logic
-        if len(request.users) == 1:
-            conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
-            for conflict in conflicts:
-                if is_walkin and conflict.walkin:
-                    raise ReservationException("Users may not have concurrent walk-in reservations.")
+        # if len(user_entities) == 1:
+        conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
+        for conflict in conflicts:
+            if is_walkin and conflict.walkin:
+                raise ReservationException(
+                    "Users may not have concurrent walk-in reservations."
+                )
 
-                nonconflicting = bounds.subtract(conflict)
-                if len(nonconflicting) == 1:
-                    bounds = nonconflicting[0]
-                else:
-                    raise ReservationException(
-                        "Users may not have conflicting reservations."
-                    )
-        else:
-            # Multiple users all need to not have conflicts
-            for user in request.users:
-                conflicts = self._get_active_reservations_for_user(user, bounds)
-                if len(conflicts) > 0:
-                    raise ReservationException(
-                        "Users may not have conflicting reservations."
-                    )
+            nonconflicting = bounds.subtract(conflict)
+            if len(nonconflicting) == 1:
+                bounds = nonconflicting[0]
+            else:
+                raise ReservationException(
+                    "Users may not have conflicting reservations."
+                )
+        # Dead code because of the NotImplementedError testing for multiple users at the top
+        # else:
+        #     # Draft of expected functionality (needs testing and sanity checking)
+        #     # Multiple users all need to not have conflicts
+        #     for user in request.users:
+        #         conflicts = self._get_active_reservations_for_user(user, bounds)
+        #         if len(conflicts) > 0:
+        #             raise ReservationException(
+        #                 "Users may not have conflicting reservations."
+        #             )
 
         # Look at the seats - match bounds of assigned seat's availability
         # TODO: Fetch all seats
@@ -445,10 +453,30 @@ class ReservationService:
     def change_reservation(
         self, subject: User, delta: ReservationPartial
     ) -> Reservation:
-        """Users should be able to change reservations without hassle. Different restrictions apply to changes based on state of reservation."""
+        """Modify an existing reservation.
+
+        Users should be able to change reservations without hassle. Different restrictions apply to changes based on state of reservation.
+
+        Args:
+            subject (User): The user initiating the reservation change request.
+            delta (ReservationPartial): The fields of a reservation with requested changes.
+
+        Returns:
+            Reservation - the updated reservation
+
+        Raises:
+            ResourceNotFoundException when the requested ID is not found
+            UserPermissionException when user does not have permission to modify the reservation
+            NotImplementedError when requested changes are not yet implemented as features
+
+        Future work:
+            Implement the ability to change seats, party, and start/end time within policy restrictions
+        """
         entity = self._session.get(ReservationEntity, delta.id)
         if entity is None:
-            raise LookupError(f"Reservation(id={delta.id}) does not exist")
+            raise ResourceNotFoundException(
+                f"Reservation(id={delta.id}) does not exist"
+            )
 
         # Either the current user is party to the reservation or an admin has
         # permission to manage reservations for all users.
@@ -507,7 +535,24 @@ class ReservationService:
 
         return True
 
-    def list_active_and_upcoming(self, subject: User) -> list[Reservation]:
+    def list_all_active_and_upcoming(self, subject: User) -> Sequence[Reservation]:
+        """Ambassadors need to see all active and upcoming reservations.
+
+        This method queries all future events. When pre-reservations are added, this method
+        will need redesign to support date/time based pagination.
+
+        Args:
+            subject (User): The user initiating the reservation change request.
+
+        Returns:
+            Sequence[Reservation] - all active and upcoming reservations
+
+        Raises:
+            UserPermissionException when user does not have permission to read reservations
+
+        Future work:
+            Pagination based on timespans in the future.
+        """
         self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
         now = datetime.now()
         reservations = (
@@ -535,15 +580,31 @@ class ReservationService:
     def staff_checkin_reservation(
         self, subject: User, reservation: Reservation
     ) -> Reservation:
-        """Staff members with the correct permissions can check users in to their reservations directly."""
+        """XL Staff members can check users in to their reservations directly.
+
+        Args:
+            subject (User): The user initiating the checkin request.
+            reservation(Reservation): The reservation being checked in.
+
+        Returns:
+            Reservation: The updated reservation.
+
+        Raises:
+            ReservationError: If the requested checkin request cannot be satisfied, such as
+            attempting to check-in a reservation that's in the wrong state.
+
+        Future Work:
+            Should staff only be able to check-in reservations whose start time is
+            within the next time interval defined by a policy?
+        """
         entity = self._session.get(ReservationEntity, reservation.id)
         if entity is None:
-            raise LookupError(f"Reservation(id={reservation.id}) does not exist")
+            raise ResourceNotFoundException(
+                f"Reservation(id={reservation.id}) does not exist"
+            )
 
         # Ensure permissions to manage reservation checkins
-        self._permission_svc.enforce(
-            subject, "coworking.reservation.checkIn", f"user/*"
-        )
+        self._permission_svc.enforce(subject, "coworking.reservation.manage", f"user/*")
 
         # Update state iff ReservationState is current CONFIRMED
         if entity.state == ReservationState.CONFIRMED:
@@ -565,7 +626,7 @@ class ReservationService:
     # Private helper methods
 
     def _operating_hours_to_bounded_availability_list(
-        self, operating_hours: list[OperatingHours], bounds: TimeRange
+        self, operating_hours: Sequence[OperatingHours], bounds: TimeRange
     ) -> AvailabilityList:
         availability = AvailabilityList(
             availability=[
@@ -577,7 +638,7 @@ class ReservationService:
         return availability
 
     def _initialize_seat_availability_dict(
-        self, seats: list[Seat], availability: AvailabilityList
+        self, seats: Sequence[Seat], availability: AvailabilityList
     ) -> dict[int, SeatAvailability]:
         return {
             seat.id: SeatAvailability(
@@ -591,7 +652,7 @@ class ReservationService:
     def _remove_reservations_from_availability(
         self,
         seat_availability_dict: dict[int, SeatAvailability],
-        reservations: list[Reservation],
+        reservations: Sequence[Reservation],
     ):
         for reservation in reservations:
             if len(reservation.seats) > 0:
@@ -600,8 +661,8 @@ class ReservationService:
                         seat_availability_dict[seat.id].subtract(reservation)
 
     def _prune_seats_below_availability_threshold(
-        self, seats: list[SeatAvailability], threshold: timedelta
-    ) -> list[SeatAvailability]:
+        self, seats: Sequence[SeatAvailability], threshold: timedelta
+    ) -> Sequence[SeatAvailability]:
         available_seats: list[SeatAvailability] = []
         for seat in seats:
             seat.filter_time_ranges_below(threshold)

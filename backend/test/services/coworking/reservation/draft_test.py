@@ -209,9 +209,39 @@ def test_draft_reservation_has_reservation_conflict(
         )
 
 
+def test_draft_walkin_reservation_has_walkin_reservation_conflict(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """If conflicting reservation is another walkin, a ReservationException is raised."""
+    reservation = reservation_svc.draft_reservation(
+        user_data.ambassador,
+        reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
+    )
+    assert reservation.walkin
+    with pytest.raises(ReservationException):
+        # Repeat request
+        reservation = reservation_svc.draft_reservation(
+            user_data.ambassador,
+            reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
+        )
+
+def test_draft_reservation_in_middle_of_another(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """If conflicting reservation is in the middle of another reservation the user has a ReservationError is expected."""
+    with pytest.raises(ReservationException):
+        # Conflict request
+        reservation_svc.draft_reservation(
+            user_data.ambassador,
+            reservation_data.test_request({
+                "start": operating_hours_data.today.end - ONE_HOUR + FIVE_MINUTES, 
+                "end": operating_hours_data.today.end - ONE_HOUR + FIVE_MINUTES * 4
+            }),
+        )
+
+
 def test_draft_reservation_has_conflict_but_ok(
-    reservation_svc: ReservationService,
-    time: dict[str, datetime]
+    reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """This test case is for when a user has a reservation in the future (say in 30 minutes) and
     wants to make a drop-in visit right now, leading up to the reservation. Since the initial request
@@ -220,11 +250,13 @@ def test_draft_reservation_has_conflict_but_ok(
     conflict = reservation_data.reservation_4
     reservation = reservation_svc.draft_reservation(
         user_data.root,
-        reservation_data.test_request({
-            "start": conflict.start - THIRTY_MINUTES,
-            "end": conflict.start + THIRTY_MINUTES,
-            "users": [UserIdentity(**user_data.root.model_dump())]
-        })
+        reservation_data.test_request(
+            {
+                "start": time[NOW],
+                "end": conflict.start + THIRTY_MINUTES,
+                "users": [UserIdentity(**user_data.root.model_dump())],
+            }
+        ),
     )
     assert reservation.id is not None
     assert_equal_times(conflict.start, reservation.end)
@@ -252,8 +284,8 @@ def test_draft_reservation_permissions(reservation_svc: ReservationService):
     )
 
 
-def test_draft_reservation_one_user_for_now(reservation_svc: ReservationService):
-    with pytest.raises(ReservationException):
+def test_draft_reservation_multiple_users_not_implemented(reservation_svc: ReservationService):
+    with pytest.raises(NotImplementedError):
         reservation_svc.draft_reservation(
             user_data.ambassador,
             reservation_data.test_request(

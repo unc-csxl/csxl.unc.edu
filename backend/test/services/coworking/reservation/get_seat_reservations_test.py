@@ -1,6 +1,5 @@
-"""ReservationService#get_reservaions tests."""
+"""ReservationService#get_seat_reservations tests."""
 
-import pytest
 from unittest.mock import create_autospec
 
 from .....models.coworking import (
@@ -37,40 +36,6 @@ from . import reservation_data
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
-
-
-def test_get_current_reservations_for_user_as_user(
-    reservation_svc: ReservationService,
-):
-    """Get reservations for each user _as the user themself_."""
-    reservations = reservation_svc.get_current_reservations_for_user(
-        user_data.user, user_data.user
-    )
-    assert len(reservations) == 2
-    assert reservations[0].id == reservation_data.reservation_1.id
-    assert reservations[1].id == reservation_data.reservation_5.id
-
-    reservations = reservation_svc.get_current_reservations_for_user(
-        user_data.ambassador, user_data.ambassador
-    )
-    assert len(reservations) == 1
-
-    reservations = reservation_svc.get_current_reservations_for_user(
-        user_data.root, user_data.root
-    )
-    assert len(reservations) == 1
-
-
-def test_get_current_reservations_for_user_permissions(
-    reservation_svc: ReservationService,
-):
-    reservation_svc._permission_svc = create_autospec(reservation_svc._permission_svc)
-    reservation_svc.get_current_reservations_for_user(user_data.root, user_data.user)
-    reservation_svc._permission_svc.enforce.assert_called_with(
-        user_data.root,
-        "coworking.reservation.read",
-        f"user/{user_data.user.id}",
-    )
 
 
 def test_get_seat_reservations_none(

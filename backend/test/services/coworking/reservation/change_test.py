@@ -7,6 +7,7 @@ from .....services import PermissionService, UserPermissionException
 from .....services.coworking import ReservationService
 from .....services.coworking.reservation import ReservationException
 from .....models.coworking import ReservationState
+from .....services.exceptions import ResourceNotFoundException
 
 from .....models.user import UserIdentity
 from .....models.coworking.seat import SeatIdentity
@@ -45,7 +46,7 @@ __license__ = "MIT"
 
 def test_change_reservation_not_found(reservation_svc: ReservationService):
     request_reservation = ReservationPartial(id=999)
-    with pytest.raises(LookupError):
+    with pytest.raises(ResourceNotFoundException):
         reservation_svc.change_reservation(user_data.user, request_reservation)
 
 
@@ -139,3 +140,59 @@ def test_change_reservation_checkout_confirmed_noop(
         ReservationPartial(id=4, state=ReservationState.CHECKED_OUT),
     )
     assert ReservationState.CONFIRMED == reservation.state
+
+
+def test_change_reservation_change_seats_not_implemented(
+    reservation_svc: ReservationService,
+):
+    """This test is for 100% coverage but should be replaced with actual tests for when
+    changing a reservation and changing its seat has logic implemented."""
+    with pytest.raises(NotImplementedError):
+        reservation_svc.change_reservation(
+            user_data.ambassador,
+            ReservationPartial(id=4, seats=[seat_data.monitor_seat_00]),
+        )
+
+
+def test_change_reservation_change_party_not_implemented(
+    reservation_svc: ReservationService,
+):
+    """This test is for 100% coverage but should be replaced with actual tests for when
+    changing a reservation and changing its party has logic implemented."""
+    with pytest.raises(NotImplementedError):
+        reservation_svc.change_reservation(
+            user_data.ambassador,
+            ReservationPartial(id=4, users=[user_data.root]),
+        )
+
+
+def test_change_reservation_change_start_not_implemented(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """This test is for 100% coverage but should be replaced with actual tests for when
+    changing a reservation start time has logic implemented."""
+    with pytest.raises(NotImplementedError):
+        reservation_svc.change_reservation(
+            user_data.ambassador,
+            ReservationPartial(
+                id=4,
+                start=reservation_data.reservation_4.start + timedelta(seconds=423),
+                end=reservation_data.reservation_4.end,
+            ),
+        )
+
+
+def test_change_reservation_change_end_not_implemented(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """This test is for 100% coverage but should be replaced with actual tests for when
+    changing a reservation end time has logic implemented."""
+    with pytest.raises(NotImplementedError):
+        reservation_svc.change_reservation(
+            user_data.ambassador,
+            ReservationPartial(
+                id=4,
+                start=reservation_data.reservation_4.start,
+                end=reservation_data.reservation_4.end + timedelta(minutes=423),
+            ),
+        )

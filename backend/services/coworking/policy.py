@@ -6,6 +6,10 @@ from datetime import timedelta
 from ...database import db_session
 from ...models import User
 
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 class PolicyService:
     """RoleService is the access layer to the role data model, its members, and permissions.
@@ -37,12 +41,13 @@ class PolicyService:
         """The maximum amount of time a reservation can be made for before extending."""
         return timedelta(hours=2)
 
-    def extend_window(self, _subject: User) -> timedelta:
-        """When no reservation follows a given reservation, within this period preceeding the end of a reservation the user is able to extend their reservation by an hour."""
-        return timedelta(minutes=15 * -1)
+    # Implement and involve in testing once extending a reservation functionality is added.
+    # def extend_window(self, _subject: User) -> timedelta:
+    #     """When no reservation follows a given reservation, within this period preceeding the end of a reservation the user is able to extend their reservation by an hour."""
+    #     return timedelta(minutes=15 * -1)
 
-    def extend_duration(self, _subject: User) -> timedelta:
-        return timedelta(hours=1)
+    # def extend_duration(self, _subject: User) -> timedelta:
+    #     return timedelta(hours=1)
 
     def reservation_draft_timeout(self) -> timedelta:
         return timedelta(minutes=5)
