@@ -10,4 +10,4 @@ class EventDetails(Event):
     of the `Event` database in the PostgreSQL database.
     """
     
-    organization: Organization | None = None
+    organization: Organization

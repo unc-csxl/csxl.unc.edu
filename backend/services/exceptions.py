@@ -16,13 +16,6 @@ class UserPermissionException(Exception):
         super().__init__(
             f'Not authorized to perform `{action}` on `{resource}`')
 
-class EventNotFoundException(Exception):
-    """EventNotFoundException is raised when trying to access an event that does not exist."""
-
-    def __init__(self, id: int | None):
-        super().__init__(
-            f'No event found with matching ID: {id}')
-
 class OrganizationNotFoundException(Exception):
     """OrganizationNotFoundException is raised when trying to access an organization that does not exist."""
 

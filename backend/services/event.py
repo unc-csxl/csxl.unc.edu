@@ -56,7 +56,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to create users
         self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
 
-        # Checks if the role already exists in the table
+        # Checks if the event already exists in the table
         if event.id:
             event.id = None
         
