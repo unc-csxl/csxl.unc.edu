@@ -83,7 +83,7 @@ class EventService:
         """
 
         # Query the event with matching id
-        entity = self._session.query(EventEntity).get(id)
+        entity = self._session.get(EventEntity, id)
 
         # Check if result is null
         if entity is None:
@@ -125,7 +125,7 @@ class EventService:
         self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
 
         # Query the event with matching id
-        event_entity = self._session.query(EventEntity).get(event.id)
+        event_entity = self._session.get(EventEntity, event.id)
 
         # Check if result is null
         if event_entity is None:
