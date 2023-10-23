@@ -37,7 +37,7 @@ export class EventDetailCard {
      */
     onShareButtonClick() {
         // Write the URL to the clipboard
-        navigator.clipboard.writeText("https://csxl.unc.edu/events/" + this.event.id);
+        navigator.clipboard.writeText("https://" + window.location.host + "/events/" + this.event.id);
         // Open a snackbar to alert the user
         this.snackBar.open("Event link copied to clipboard.", "", { duration: 3000 })
     }
