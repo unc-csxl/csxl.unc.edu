@@ -41,6 +41,7 @@ export class EventList {
     /** Whether or not the event list should be full width */
     @Input() fullWidth: boolean = false;
 
+    /** Event binding for the card's on click action */
     @Output() onCardClicked: EventEmitter<Event> = new EventEmitter()
 
     /** Constructs the widget */

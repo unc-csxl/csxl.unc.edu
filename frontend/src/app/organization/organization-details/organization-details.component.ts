@@ -48,6 +48,7 @@ export class OrganizationDetailsComponent {
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
 
+  /** Whether or not the user has permission to update events. */
   public eventCreationPermission$: Observable<boolean>;
 
   /** Constructs the Organization Detail component */
@@ -57,6 +58,6 @@ export class OrganizationDetailsComponent {
     this.profile = data.profile;
     this.organization = data.organization;
     this.eventsPerDay = eventService.groupEventsByDate(this.organization.events ?? [])
-    this.eventCreationPermission$ = this.permission.check('organization.events.manage', `organization/${this.organization!.id}`);    
+    this.eventCreationPermission$ = this.permission.check('organization.events.manage', `organization/${this.organization!.id}`);
   }
 }

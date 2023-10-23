@@ -39,7 +39,7 @@ export class EventDetailCard {
         // Write the URL to the clipboard
         navigator.clipboard.writeText("https://csxl.unc.edu/events/" + this.event.id);
         // Open a snackbar to alert the user
-        this.snackBar.open("Event link copied to clipboard.", "", {duration: 3000})
+        this.snackBar.open("Event link copied to clipboard.", "", { duration: 3000 })
     }
 
     /** Delete the given event object using the Event Service's deleteEvent method
@@ -50,9 +50,9 @@ export class EventDetailCard {
         let confirmDelete = this.snackBar.open("Are you sure you want to delete this event?", "Delete");
         confirmDelete.onAction().subscribe(() => {
             this.eventService.deleteEvent(event).subscribe(() => {
-            this.snackBar.open("Event Deleted", "", { duration: 2000 })
-            location.reload();
-          })
+                this.snackBar.open("Event Deleted", "", { duration: 2000 })
+                location.reload();
+            })
         });
     }
 }
