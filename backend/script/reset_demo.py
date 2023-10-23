@@ -40,7 +40,7 @@ entities.EntityBase.metadata.create_all(engine)
 
 # Initialize the SQLAlchemy session
 with Session(engine) as session:
-    
+
     # Load all demo data
     time = time.time_data()
     role_data.insert_fake_data(session)
@@ -52,6 +52,6 @@ with Session(engine) as session:
     room_data.insert_fake_data(session)
     seat_data.insert_fake_data(session)
     reservation_data.insert_fake_data(session, time)
-    
+
     # Commit changes to the database
     session.commit()

@@ -73,9 +73,9 @@ def get_organization_from_slug(slug: str, organization_service: OrganizationServ
     Raises:
         HTTPException 404 if get_from_slug() raises an Exception
     """
-    
+
     # Try to get organization with matching slug
-    try: 
+    try:
         # Return organization
         return organization_service.get_from_slug(slug)
     except OrganizationNotFoundException as e:
@@ -98,7 +98,7 @@ def update_organization(organization: Organization, subject: User = Depends(regi
     Raises:
         HTTPException 404 if update() raises an Exception
     """
-    try: 
+    try:
         # Return updated organization
         return organization_service.update(subject, organization)
     except (OrganizationNotFoundException, UserPermissionException) as e:

@@ -38,12 +38,12 @@ class UserEntity(EntityBase):
     github_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # GitHub Avatar permalink for the user
     github_avatar: Mapped[str | None] = mapped_column(String(), nullable=True)
-    
+
     # All of the roles for the given user.
     # NOTE: This field establishes a many-to-many relationship between the users and roles table.
     #       and uses the "user_role" table as the join table.
     roles: Mapped[list['RoleEntity']] = relationship(secondary=user_role_table, back_populates='users')
-    
+
     # The permissions for the given user.
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
     permissions: Mapped['PermissionEntity'] = relationship(back_populates='user')

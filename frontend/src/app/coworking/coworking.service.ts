@@ -37,7 +37,7 @@ export class CoworkingService {
         if (this.profile === undefined) { throw new Error("Only allowed for logged in users."); }
 
         let start = seatSelection[0].availability[0].start;
-        let end = new Date(start.getTime() + ONE_HOUR);
+        let end = new Date(start.getTime() + (2 * ONE_HOUR));
         let reservation = {
             users: [this.profile],
             seats: seatSelection.map(seatAvailability => { return { "id": seatAvailability.id } }),

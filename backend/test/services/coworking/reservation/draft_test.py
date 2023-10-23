@@ -213,9 +213,9 @@ def test_draft_reservation_has_conflict_but_ok(
     reservation_svc: ReservationService,
     time: dict[str, datetime]
 ):
-    """This test case is for when a user has a reservation in the future (say in 30 minutes) and 
+    """This test case is for when a user has a reservation in the future (say in 30 minutes) and
     wants to make a drop-in visit right now, leading up to the reservation. Since the initial request
-    is for one-hour, we need to check that the drop-in appointment is truncated to the minute _before_
+    is for one-hour, we need to check that the drop-in appointment is truncated to just _before_
     the next reservation begins."""
     conflict = reservation_data.reservation_4
     reservation = reservation_svc.draft_reservation(

@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from ...database import engine
 from ...env import getenv
 from ... import entities
-from ...entities.coworking import SeatEntity, OperatingHoursEntity
+from ...entities.coworking import SeatEntity, OperatingHoursEntity, RoomEntity
 from ...test.services.reset_table_id_seq import reset_table_id_seq
 
 from ...test.services import role_data, user_data, permission_data
@@ -36,7 +36,7 @@ with Session(engine) as session:
     reservation_data.delete_future_data(session, time)
     seat_data.delete_all(session)
     operating_hours_data.delete_all(session)
-    
+
     seats: list[SeatDetails] = []
     # Sit Desks w/ Monitor
     for i in range(12):
@@ -79,6 +79,8 @@ with Session(engine) as session:
             y=0,
             room=room_data.the_xl.to_room(),
         ))
+
+    session.add(RoomEntity.from_model(room_data.the_xl))
 
     for seat in seats:
         entity = SeatEntity.from_model(seat)

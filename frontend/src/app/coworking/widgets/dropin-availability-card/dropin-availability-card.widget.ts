@@ -20,7 +20,12 @@ class SeatCategory {
     }
 
     push(seat: SeatAvailability) {
-        let now = new Date()
+        const epsilon = 59 /* seconds */ * 1000 /* milliseconds */;
+        /* We use an epsilon of ~1 min to combat the potential for clock drift on
+           devices relative to the server's time. Difficult to reproduce in dev due
+           to server and client sharing the same system clock, but experienced in
+           prod on day 0 with many laptops having slightly drifted system clocks. */
+        const now = new Date(Date.now() + epsilon);
         if (seat.availability[0].start <= now) {
             this.seats_available_now.push(seat);
             if (this.seats_available_now.length === 1) {

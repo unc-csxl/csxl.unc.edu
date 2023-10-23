@@ -26,6 +26,7 @@ IN_THIRTY_MINUTES = "IN_THIRTY_MINUTES"
 TOMORROW = "TOMORROW"
 IN_ONE_HOUR = "IN_ONE_HOUR"
 IN_TWO_HOURS = "IN_TWO_HOURS"
+IN_THREE_HOURS = "IN_THREE_HOURS"
 
 
 @pytest.fixture()
@@ -54,6 +55,7 @@ def time_data() -> dict[str, datetime]:
         TOMORROW: now + ONE_DAY,
         IN_ONE_HOUR: now + ONE_HOUR,
         IN_TWO_HOURS: now + 2 * ONE_HOUR,
+        IN_THREE_HOURS: now + 3 * ONE_HOUR,
     }
 
 

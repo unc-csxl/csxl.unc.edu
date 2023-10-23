@@ -19,11 +19,11 @@ class UserIdentity(BaseModel):
 class User(UserIdentity, BaseModel):
     """
     Pydantic model to represent a registered `User`.
-    
+
     This model is based on the `UserEntity` model, which defines the shape
     of the `User` database in the PostgreSQL database
     """
-    
+
     pid: int = 0
     onyen: str = ""
     first_name: str = ""
@@ -49,11 +49,11 @@ class ProfileForm(BaseModel):
     """
     Pydantic model to represent fields for a form when updating
     a user profile on the frontend.
-    
+
     This model is based on the `UserEntity` model, which defines the shape
     of the `User` database in the PostgreSQL database
     """
-    
+
     first_name: str
     last_name: str
     email: str

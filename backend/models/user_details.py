@@ -23,5 +23,5 @@ class UserDetails(UserPermissions):
 
     This model is based on the `UserEntity` model, which defines the shape
     of the `Event` database in the PostgreSQL database.
-    """ 
+    """
     ...

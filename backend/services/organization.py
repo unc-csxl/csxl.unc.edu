@@ -12,7 +12,10 @@ from ..models.organization_details import OrganizationDetails
 from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService
+
 from .exceptions import OrganizationNotFoundException
+from .exceptions import UserPermissionException
+
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -125,7 +128,7 @@ class OrganizationService:
 
         # Check if result is null
         if obj:
-            
+
             # Update organization object
             obj.name = organization.name
             obj.shorthand = organization.shorthand
@@ -140,10 +143,10 @@ class OrganizationService:
             obj.youtube = organization.youtube
             obj.heel_life = organization.heel_life
             obj.public = organization.public
-            
+
             # Save changes
             self._session.commit()
-            
+
             # Return updated object
             return obj.to_model()
         else:

@@ -195,7 +195,7 @@ class PermissionService:
         Args:
             permission (PermissionEntity): The permission to check.
             action (str): The action in question.
-            resource (str): The resource in question. 
+            resource (str): The resource in question.
 
         Returns:
             bool: True if the user has permission to carry out the action on the resource, False otherwise."""
