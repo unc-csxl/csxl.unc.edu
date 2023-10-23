@@ -4,8 +4,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from backend.services.event import EventNotFoundException
-from backend.services.exceptions import UserPermissionException
+from backend.services.exceptions import UserPermissionException, ResourceNotFoundException
 
 # Tested Dependencies
 from ....models import Event, EventDetails
@@ -115,7 +114,7 @@ def test_delete_enforces_permission(event_svc_integration: EventService):
 def test_delete_event_as_root(event_svc_integration: EventService):
     """Test that the root user is able to delete events."""
     event_svc_integration.delete(root, 1)
-    with pytest.raises(EventNotFoundException):
+    with pytest.raises(ResourceNotFoundException):
         event_svc_integration.get_from_id(1)
 
 

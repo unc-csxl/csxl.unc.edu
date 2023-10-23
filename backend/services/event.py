@@ -12,7 +12,7 @@ from backend.models.event import Event
 from backend.models.event_details import EventDetails
 from ..entities import EventEntity
 from .permission import PermissionService
-from .exceptions import EventNotFoundException
+from .exceptions import ResourceNotFoundException
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -86,12 +86,12 @@ class EventService:
         entity = self._session.query(EventEntity).get(id)
 
         # Check if result is null
-        if entity:
-            # Convert entry to a model and return
-            return entity.to_details_model()
-        else:
-            # Raise exception
-            raise EventNotFoundException(id);
+        if entity is None:
+            raise ResourceNotFoundException(f"No event found with matching ID: {id}")
+
+        # Convert entry to a model and return
+        return entity.to_details_model()
+
 
     def get_events_from_organization(self, id: int) -> list[EventDetails]:
         """
@@ -113,7 +113,6 @@ class EventService:
     def update(self, subject: User, event: Event) -> EventDetails:
         """
         Update the event
-        If none found, a debug description is displayed.
 
         Parameters:
             event: a valid Event model
@@ -126,27 +125,24 @@ class EventService:
         self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
 
         # Query the event with matching id
-        obj = self._session.query(EventEntity).get(event.id)
+        event_entity = self._session.query(EventEntity).get(event.id)
 
         # Check if result is null
-        if obj:
+        if event_entity is None:
+            raise ResourceNotFoundException(f"No event found with matching ID: {id}");
             
-            # Update event object
-            obj.name=event.name
-            obj.time=event.time
-            obj.description=event.description
-            obj.location=event.location
-            obj.public=event.public
-            
-            # Save changes
-            self._session.commit()
-            
-            # Return updated object
-            return obj.to_details_model()
-        else:
-            # Raise exception
-            raise EventNotFoundException(event.id);
-
+        # Update event object
+        event_entity.name=event.name
+        event_entity.time=event.time
+        event_entity.description=event.description
+        event_entity.location=event.location
+        event_entity.public=event.public
+        
+        # Save changes
+        self._session.commit()
+        
+        # Return updated object
+        return event_entity.to_details_model()
     
     def delete(self, subject: User, id: int) -> None:
         """
@@ -164,13 +160,11 @@ class EventService:
         self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
 
         # Ensure object exists
-        if event:
+        if event is None:
+            raise ResourceNotFoundException(f"No event found with matching ID: {id}");
             
-            # Delete object and commit
-            self._session.delete(event)
-            
-            # Save changes
-            self._session.commit()
-        else:
-            # Raise exception
-            raise EventNotFoundException(id);
+        # Delete object and commit
+        self._session.delete(event)
+        
+        # Save changes
+        self._session.commit()

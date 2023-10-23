@@ -4,8 +4,7 @@ Event routes are used to create, retrieve, and update Events."""
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..services.event import EventNotFoundException, EventService
-from ..services.permission import UserPermissionException
+from ..services.event import EventService
 from ..models.event import Event
 from ..models.event_details import EventDetails
 from ..api.authentication import registered_user
@@ -31,7 +30,7 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     return event_service.all()
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=['Events'])
-def get_events_from_organization(slug: str, event_service: EventService = Depends()) -> list[EventDetails]:
+def get_events_from_organization(id: int, event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events from an organization
 
@@ -44,7 +43,7 @@ def get_events_from_organization(slug: str, event_service: EventService = Depend
     """
 
     # Return all events
-    return event_service.get_events_from_organization(slug)
+    return event_service.get_events_from_organization(id)
 
 @api.post("", response_model=EventDetails, tags=['Events'])
 def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
@@ -83,19 +82,8 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
     
     Returns:
         EventDetails: a valid EventDetails model corresponding to the given event id
-    
-    Raises:
-        HTTPException 404 if update() raises an Exception
     """
-    
-    # Try to get event with matching id
-    try: 
-        # Return event
-        return event_service.get_from_id(id)
-    except (EventNotFoundException, UserPermissionException) as e:
-        # Raise 404 exception if search fails
-        # - This would occur if there is no response
-        raise HTTPException(status_code=404, detail=str(e))
+    return event_service.get_from_id(id)
 
 @api.put("", responses={404: {"model": None}}, response_model=EventDetails, tags=['Events'])
 def update_event(event: EventDetails, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:
@@ -113,17 +101,10 @@ def update_event(event: EventDetails, subject: User = Depends(registered_user), 
     Raises:
         HTTPException 404 if update() raises an Exception
     """
-
-    try: 
-        # Return updated event
-        return event_service.update(subject, event)
-    except (EventNotFoundException, UserPermissionException) as e:
-        # Raise 404 exception if search fails
-        # - This would occur if there is no response
-        raise HTTPException(status_code=404, detail=str(e))
+    return event_service.update(subject, event)
 
 @api.delete("/{id}", tags=['Events'])
-def delete_event(id: int, subject: User = Depends(registered_user), event_service = Depends(EventService)):
+def delete_event(id: int, subject: User = Depends(registered_user), event_service: EventService = Depends()):
     """
     Delete event based on id
 
@@ -131,15 +112,5 @@ def delete_event(id: int, subject: User = Depends(registered_user), event_servic
         id: an int representing a unique event ID
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
-    
-    Raises:
-        HTTPException 404 if delete() raises an Exception
     """
-   
-    try:
-        # Try to delete event
-        event_service.delete(subject, id)
-    except (EventNotFoundException, UserPermissionException) as e:
-        # Raise 404 exception if search fails
-        # - This would occur if there is no response or if item to delete does not exist
-        raise HTTPException(status_code=404, detail=str(e))
+    event_service.delete(subject, id)
