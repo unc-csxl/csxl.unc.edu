@@ -352,7 +352,7 @@ class ReservationService:
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
         if len(request.users) > 1:
-            raise ReservationException("Multi-user reservations not yet supproted.")
+            raise NotImplementedError("Multi-user reservations not yet supproted.")
 
         # Enforce Reservation Draft Permissions
         if subject.id not in [user.id for user in request.users]:
@@ -390,32 +390,31 @@ class ReservationService:
             )
 
         # Check for overlapping reservations for a single user
-        # TODO: Extract these checks out to a helper method and sanity check logic
-        if len(user_entities) == 1:
-            conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
-            for conflict in conflicts:
-                if is_walkin and conflict.walkin:
-                    raise ReservationException(
-                        "Users may not have concurrent walk-in reservations."
-                    )
+        # if len(user_entities) == 1:
+        conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
+        for conflict in conflicts:
+            if is_walkin and conflict.walkin:
+                raise ReservationException(
+                    "Users may not have concurrent walk-in reservations."
+                )
 
-                nonconflicting = bounds.subtract(conflict)
-                if len(nonconflicting) == 1:
-                    bounds = nonconflicting[0]
-                else:
-                    raise ReservationException(
-                        "Users may not have conflicting reservations."
-                    )
-        else:
-            raise NotImplementedError("Parties of 2 or more not yet supported")
-            # Draft of expected functionality (needs testing and sanity checking)
-            # Multiple users all need to not have conflicts
-            # for user in request.users:
-            #     conflicts = self._get_active_reservations_for_user(user, bounds)
-            #     if len(conflicts) > 0:
-            #         raise ReservationException(
-            #             "Users may not have conflicting reservations."
-            #         )
+            nonconflicting = bounds.subtract(conflict)
+            if len(nonconflicting) == 1:
+                bounds = nonconflicting[0]
+            else:
+                raise ReservationException(
+                    "Users may not have conflicting reservations."
+                )
+        # Dead code because of the NotImplementedError testing for multiple users at the top
+        # else:
+        #     # Draft of expected functionality (needs testing and sanity checking)
+        #     # Multiple users all need to not have conflicts
+        #     for user in request.users:
+        #         conflicts = self._get_active_reservations_for_user(user, bounds)
+        #         if len(conflicts) > 0:
+        #             raise ReservationException(
+        #                 "Users may not have conflicting reservations."
+        #             )
 
         # Look at the seats - match bounds of assigned seat's availability
         # TODO: Fetch all seats

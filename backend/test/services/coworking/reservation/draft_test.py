@@ -226,6 +226,20 @@ def test_draft_walkin_reservation_has_walkin_reservation_conflict(
             reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
         )
 
+def test_draft_reservation_in_middle_of_another(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """If conflicting reservation is in the middle of another reservation the user has a ReservationError is expected."""
+    with pytest.raises(ReservationException):
+        # Conflict request
+        reservation_svc.draft_reservation(
+            user_data.ambassador,
+            reservation_data.test_request({
+                "start": operating_hours_data.today.end - ONE_HOUR + FIVE_MINUTES, 
+                "end": operating_hours_data.today.end - ONE_HOUR + FIVE_MINUTES * 4
+            }),
+        )
+
 
 def test_draft_reservation_has_conflict_but_ok(
     reservation_svc: ReservationService, time: dict[str, datetime]
@@ -271,8 +285,8 @@ def test_draft_reservation_permissions(reservation_svc: ReservationService):
     )
 
 
-def test_draft_reservation_one_user_for_now(reservation_svc: ReservationService):
-    with pytest.raises(ReservationException):
+def test_draft_reservation_multiple_users_not_implemented(reservation_svc: ReservationService):
+    with pytest.raises(NotImplementedError):
         reservation_svc.draft_reservation(
             user_data.ambassador,
             reservation_data.test_request(
