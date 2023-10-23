@@ -391,7 +391,7 @@ class ReservationService:
 
         # Check for overlapping reservations for a single user
         # TODO: Extract these checks out to a helper method and sanity check logic
-        if len(request.users) == 1:
+        if len(user_entities) == 1:
             conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
             for conflict in conflicts:
                 if is_walkin and conflict.walkin:
@@ -407,13 +407,15 @@ class ReservationService:
                         "Users may not have conflicting reservations."
                     )
         else:
+            raise NotImplementedError("Parties of 2 or more not yet supported")
+            # Draft of expected functionality (needs testing and sanity checking)
             # Multiple users all need to not have conflicts
-            for user in request.users:
-                conflicts = self._get_active_reservations_for_user(user, bounds)
-                if len(conflicts) > 0:
-                    raise ReservationException(
-                        "Users may not have conflicting reservations."
-                    )
+            # for user in request.users:
+            #     conflicts = self._get_active_reservations_for_user(user, bounds)
+            #     if len(conflicts) > 0:
+            #         raise ReservationException(
+            #             "Users may not have conflicting reservations."
+            #         )
 
         # Look at the seats - match bounds of assigned seat's availability
         # TODO: Fetch all seats
