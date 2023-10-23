@@ -36,8 +36,8 @@ Once the Dev Container begins, open a terminal and complete the following:
     2. `npm install`
     3. `popd`
 2. Create database and reset demo data:
-    2. `python3 -m backend.script.create_database`
-    3. `python3 -m backend.script.reset_database`
+    1. `python3 -m backend.script.create_database`
+    2. `python3 -m backend.script.reset_testing`
 3. Start dev server processes using the `honcho` process manager
     1. `honcho start`
         1. Wait until you see "frontend.1 | Compiled successfully" emitted from the Angular dev server.
@@ -50,7 +50,7 @@ Before beginning any feature work, fixes, or other modifications, you should che
 
 ## Adding Authorization Restricted Features
 
-See [docs/auth.md] for more detailed information on authentication and authorization development concerns.
+See [docs/auth.md](docs/auth.md) for more detailed information on authentication and authorization development concerns.
 
 ## Authorize as Alternate Users
 
@@ -59,9 +59,9 @@ Our current mechanism for doing so is a special authorization route that only wo
 
 Change users route pattern: `http://localhost:1560/auth/as/{onyen}/{pid}`
 
-For reference, here are some mock personas that are installed in the `reset_database` script from above:
+For reference, here are some mock personas that are installed in the `reset_testing` script from above:
 
-1. Sol Student: <http://localhost:1560/auth/as/sol/100000000>
-2. Arden Ambassador: <http://localhost:1560/auth/as/arden/100000001>
-3. Merritt Manager: <http://localhost:1560/auth/as/merritt/100000002>
-4. Super User: <http://localhost:1560/auth/as/root/999999999>
+1. Sally Student: <http://localhost:1560/auth/as/sally/111111111>
+2. Larry CADS Leader: <http://localhost:1560/auth/as/larry/555555555>
+3. Amy Ambassador: <http://localhost:1560/auth/as/amy/888888888>
+4. Rhonda Root: <http://localhost:1560/auth/as/rhonda/999999999>
