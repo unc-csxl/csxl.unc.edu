@@ -8,7 +8,7 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Event } from '../../event.model';
+import { Event } from 'src/app/event/event.model';
 
 @Component({
     selector: 'event-card',

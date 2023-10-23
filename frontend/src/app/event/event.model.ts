@@ -17,6 +17,6 @@ export interface Event {
     location: string;
     description: string;
     public: boolean;
-    organization_id: number;
-    organization: Organization;
+    organization_id: number | null;
+    organization: Organization | null;
 }

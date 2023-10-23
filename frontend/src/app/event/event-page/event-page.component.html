@@ -8,17 +8,11 @@
         <div class="events-grid">
 
             <div class="events-column">
-                <mat-card class="events-section" appearance="outlined" style="padding: 16px;">
 
-                    <!-- `eventsPerDay` is in the format of a list of tuples, where
-                         eventGroup[0] is the date string and eventGroup[1] s a list of events -->
-                    <div *ngFor="let eventGroup of eventsPerDay" style="padding-bottom: 16px;">
-                        <mat-card-title>{{eventGroup[0]}}</mat-card-title>
-                        <mat-divider style="padding-bottom: 8px;" />
-                        <event-card *ngFor="let event of eventGroup[1]" [event]="event" [disableLink]="innerWidth > 900"
-                            [selected]="event === selectedEvent" (onClicked)="onEventCardClicked($event)" />
-                    </div>
-                </mat-card>
+                <!-- `eventsPerDay` is in the format of a list of tuples, where
+                    eventGroup[0] is the date string and eventGroup[1] s a list of events -->
+                <event-list [eventsPerDay]="eventsPerDay" [selectedEvent]="selectedEvent"
+                    [disableLinks]="innerWidth > 900" (onCardClicked)="onEventCardClicked($event)" [fullWidth]="true" />
             </div>
 
             <div class="details-column">

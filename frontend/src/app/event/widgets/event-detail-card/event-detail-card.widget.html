@@ -11,6 +11,15 @@
 
         <!-- Buttons -->
         <div class="event-actions">
+            <button mat-icon-button *ngIf="checkPermissions() | async"
+                [routerLink]="['events', 'organizations', event.organization!.slug, 'events', event.id, 'edit']"
+                [relativeTo]="null">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="checkPermissions() | async" [routerLink]="['events']" [relativeTo]="null"
+                (click)="deleteEvent(event)">
+                <mat-icon>delete</mat-icon>
+            </button>
             <button mat-icon-button (click)="onShareButtonClick()">
                 <mat-icon>share</mat-icon>
             </button>
@@ -24,11 +33,11 @@
     <mat-divider id="top-divider" />
 
     <!-- Organization Section -->
-    <div class="organization-section" [routerLink]="'/organizations/' + event.organization.slug">
+    <div class="organization-section" [routerLink]="'/organizations/' + event.organization!.slug">
         <!-- Organization Icon -->
-        <img mat-card-image src="{{event.organization.logo}}" class="logo" />
+        <img mat-card-image src="{{event.organization!.logo}}" class="logo" />
         <!-- Organization Name -->
-        <p id="organization-name">{{event.organization.shorthand}}</p>
+        <p id="organization-name">{{event.organization!.shorthand}}</p>
     </div>
 
     <mat-divider class="padded-divider" />
