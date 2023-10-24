@@ -25,8 +25,6 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     Returns:
         list[Event]: All `Event`s in the `Event` database table
     """
-
-    # Return all events
     return event_service.all()
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=['Events'])
@@ -41,8 +39,6 @@ def get_events_from_organization(id: int, event_service: EventService = Depends(
     Returns:
         list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
     """
-
-    # Return all events
     return event_service.get_events_from_organization(id)
 
 @api.post("", response_model=EventDetails, tags=['Events'])
@@ -57,19 +53,8 @@ def new_event(event: Event, subject: User = Depends(registered_user), event_serv
 
     Returns:
         EventDetails: latest iteration of the created or updated event after changes made
-
-    Raises:
-        HTTPException 404 if create() raises an Exception
     """
-
-    # Try to create event
-    try:
-        # Return created event
-        return event_service.create(subject, event)
-    except Exception as e:
-        # Raise 422 exception if creation fails
-        # - This would occur if the request body is shaped incorrectly
-        raise HTTPException(status_code=422, detail=str(e))
+    return event_service.create(subject, event)
     
 @api.get("/{id}", responses={404: {"model": None}}, response_model=EventDetails, tags=['Events'])
 def get_event_from_id(id: int, event_service: EventService = Depends()) -> EventDetails:
@@ -97,9 +82,6 @@ def update_event(event: EventDetails, subject: User = Depends(registered_user), 
 
     Returns:
         EventDetails: a valid EventDetails model representing the updated Event
-
-    Raises:
-        HTTPException 404 if update() raises an Exception
     """
     return event_service.update(subject, event)
 
