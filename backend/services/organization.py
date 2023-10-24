@@ -124,7 +124,7 @@ class OrganizationService:
         self._permission.enforce(subject, "organization.create", f"organization")
 
         # Query the organization with matching id
-        obj = self._session.query(OrganizationEntity).get(organization.id)
+        obj = self._session.get(OrganizationEntity, organization.id)
 
         # Check if result is null
         if obj:

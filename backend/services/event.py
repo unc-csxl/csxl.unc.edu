@@ -154,7 +154,7 @@ class EventService:
         """
         
         # Find object to delete
-        event = self._session.query(EventEntity).get(id)
+        event = self._session.get(EventEntity, id)
 
         # Ensure that the user has appropriate permissions to delete users
         self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
