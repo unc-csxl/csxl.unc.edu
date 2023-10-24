@@ -158,21 +158,3 @@ a {
         width: 100%;
     }
 }
-
-/** Make card name and description larger for monitors */
-@media only screen and (min-width: 2000px) {
-
-    .organization-description {
-        font-size: 1.5rem;
-    }
-
-    .user-name {
-        font-size: 2rem;
-        line-height: 2.5rem;
-    }
-
-    .organization-name-section {
-        height: 5vh;
-    }
-
-}
