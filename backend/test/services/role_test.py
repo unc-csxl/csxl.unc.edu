@@ -1,7 +1,7 @@
 """Tests for the RoleService class."""
 
 # Tested Dependencies
-from ...models import Permission
+from ...models import Permission, Role
 from ...services import RoleService, PermissionService
 
 # Data Setup and Injected Service Fixtures
@@ -30,6 +30,21 @@ def test_list_enforces_permission(
 ):
     roles = role_svc.list(root)
     permission_svc_mock.enforce.assert_called_once_with(root, "role.list", "role/")
+
+
+def test_create(role_svc: RoleService):
+    role = role_svc.create(root, "Club XL")
+    assert role.id is not None
+    assert role.id > 0
+    persisted = role_svc.details(root, role.id)
+    assert role.name == persisted.name
+
+
+def test_create_enforces_permission(
+    role_svc: RoleService, permission_svc_mock: PermissionService
+):
+    role = role_svc.create(root, "Test")
+    permission_svc_mock.enforce.assert_called_once_with(root, "role.create", "role/")
 
 
 def test_details(role_svc: RoleService):
