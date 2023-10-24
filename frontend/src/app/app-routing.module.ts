@@ -19,6 +19,8 @@ const routes: Routes = [
   { path: 'coworking', title: 'Cowork in the XL', loadChildren: () => import('./coworking/coworking.module').then(m => m.CoworkingModule) },
   { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organization/organization.module').then(m => m.OrganizationModule) },
+  { path: 'events', title: 'Experimental', loadChildren: () => import('./event/event.module').then(m => m.EventModule) },
+
 ];
 
 @NgModule({

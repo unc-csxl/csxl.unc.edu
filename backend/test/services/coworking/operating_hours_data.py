@@ -2,7 +2,7 @@
 
 Three days worth of operating hours are setup:
 
-1. today 
+1. today
 2. future (two days in the future)
 3. tomorrow
 

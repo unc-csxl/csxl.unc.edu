@@ -7,7 +7,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Organization } from '../organization.service';
+import { Organization } from '../organization.model';
 
 @Pipe({
   name: 'organizationFilter'

@@ -47,7 +47,7 @@ cssg = Organization(
     public=False,
 )
 
-appteam = OrganizationEntity(
+appteam = Organization(
     id=3,
     name="App Team Carolina",
     shorthand="App Team",
@@ -67,7 +67,7 @@ appteam = OrganizationEntity(
 organizations = [cads, cssg, appteam]
 organization_names = [cads.name, cssg.name, appteam.name]
 
-to_add = OrganizationEntity(
+to_add = Organization(
     name="Android Development Club",
     shorthand="Android Club",
     slug="android-club",
@@ -83,7 +83,7 @@ to_add = OrganizationEntity(
     public=True,
 )
 
-new_cads = OrganizationEntity(
+new_cads = Organization(
     id=1,
     name="Carolina Analytics & Data Science Club",
     shorthand="CADS",

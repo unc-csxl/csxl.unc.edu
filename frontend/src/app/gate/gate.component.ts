@@ -17,11 +17,11 @@ import { isAuthenticated } from './gate.guard';
 @Component({ template: '' })
 export class GateComponent {
 
-    public static Route = { 
-        path: 'gate', 
+    public static Route = {
+        path: 'gate',
         component: GateComponent,
         canActivate: [isAuthenticated],
-        resolve: { profile: profileResolver } 
+        resolve: { profile: profileResolver }
     }
 
     constructor(private route: ActivatedRoute, private router: Router) {
@@ -38,7 +38,6 @@ export class GateComponent {
             if (queryParams.continue_to) {
                 let pathParts = queryParams.continue_to.split('/').filter(s => s != '');
                 if (pathParts.length > 0) {
-                    console.log(pathParts);
                     this.router.navigate(pathParts);
                     return;
                 }

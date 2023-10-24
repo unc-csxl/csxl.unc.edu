@@ -6,7 +6,7 @@ __license__ = "MIT"
 
 class Organization(BaseModel):
     """
-    Model to represent an `Organization` object in a relationship.
+    Pydantic model to represent an `Organization`.
 
     This model is based on the `OrganizationEntity` model, which defines the shape
     of the `Organization` database in the PostgreSQL database.

@@ -1,7 +1,7 @@
 /**
  * The Organization Detail Component displays more information and options regarding
  * UNC CS organizations.
- * 
+ *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
  * @copyright 2023
  * @license MIT
@@ -9,14 +9,17 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Route } from '@angular/router';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
-import { Organization } from '../organization.service';
+import { Organization } from '../organization.model';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationDetailResolver } from '../organization.resolver'
+import { EventService } from 'src/app/event/event.service';
+import { Event } from 'src/app/event/event.model';
+import { Observable } from 'rxjs';
+import { PermissionService } from 'src/app/permission.service';
 
+/** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['organization'].name;
 };
@@ -27,6 +30,8 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   styleUrls: ['./organization-details.component.css']
 })
 export class OrganizationDetailsComponent {
+
+  /** Route information to be used in Organization Routing Module */
   public static Route: Route = {
     path: ':slug',
     component: OrganizationDetailsComponent,
@@ -36,17 +41,23 @@ export class OrganizationDetailsComponent {
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
+
+  /** The organization to show */
   public organization: Organization;
 
-  constructor(
-    iconRegistry: MatIconRegistry,
-    sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
-    protected snackBar: MatSnackBar) {
+  /** Store a map of days to a list of events for that day */
+  public eventsPerDay: [string, Event[]][];
 
-    /** Get currently-logged-in user. */
-    const data = this.route.snapshot.data as { profile: Profile, organization: Organization };
+  /** Whether or not the user has permission to update events. */
+  public eventCreationPermission$: Observable<boolean>;
+
+  /** Constructs the Organization Detail component */
+  constructor(private route: ActivatedRoute, protected snackBar: MatSnackBar, protected eventService: EventService, private permission: PermissionService) {
+    /** Initialize data from resolvers. */
+    const data = this.route.snapshot.data as { profile: Profile, organization: Organization, events: Event[] };
     this.profile = data.profile;
     this.organization = data.organization;
+    this.eventsPerDay = eventService.groupEventsByDate(this.organization.events ?? [])
+    this.eventCreationPermission$ = this.permission.check('organization.events.manage', `organization/${this.organization!.id}`);
   }
 }

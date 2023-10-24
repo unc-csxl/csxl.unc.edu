@@ -1,4 +1,6 @@
-"""Role Service is primarily for the administration of roles and their members and permissions."""
+"""
+Role Service is primarily for the administration of roles and their members and permissions.
+"""
 
 from fastapi import Depends
 from sqlalchemy import select
@@ -7,7 +9,6 @@ from ..database import db_session
 from ..models import User, Role, RoleDetails, Permission
 from ..entities import RoleEntity, PermissionEntity, UserEntity
 from .permission import PermissionService
-
 
 class RoleService:
     """RoleService is the access layer to the role data model, its members, and permissions."""
@@ -74,8 +75,7 @@ class RoleService:
 
         Returns:
             RoleDetails: The details of the role."""
-        self._permission.enforce(
-            subject, 'role.grant_permission', f'role/{id}')
+        self._permission.enforce(subject, 'role.grant_permission', f'role/{id}')
         role = self.details(subject, id)
         self._permission.grant(subject, role, permission)
         return self.details(subject, id)
@@ -90,8 +90,7 @@ class RoleService:
 
         Returns:
             bool: True if the permission was revoked."""
-        self._permission.enforce(
-            subject, 'role.revoke_permission', f'role/{id}')
+        self._permission.enforce(subject, 'role.revoke_permission', f'role/{id}')
         role = self._session.get(RoleEntity, id)
         permission = self._session.get(PermissionEntity, permissionId)
         assert role is permission.role

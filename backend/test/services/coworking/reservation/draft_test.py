@@ -213,7 +213,6 @@ def test_draft_walkin_reservation_has_walkin_reservation_conflict(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """If conflicting reservation is another walkin, a ReservationException is raised."""
-    """Request a reservation that starts in the past. Its start should be now, instead."""
     reservation = reservation_svc.draft_reservation(
         user_data.ambassador,
         reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),

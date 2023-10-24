@@ -9,14 +9,19 @@
 
 import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
-import { Organization, OrganizationService } from "./organization.service"
+import { Organization } from "./organization.model";
+import { OrganizationService } from "./organization.service"
+import { EventService } from "../event/event.service";
+import { Event } from "../event/event.model";
 
+/** This resolver injects the list of organizations into the organization component. */
 export const organizationResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
     return inject(OrganizationService).getOrganizations();
 };
 
+/** This resolver injects an organization into the organization detail component. */
 export const organizationDetailResolver: ResolveFn<Organization | undefined> = (route, state) => {
-    if(route.paramMap.get('slug')! != "new") {
+    if (route.paramMap.get('slug')! != "new") {
         return inject(OrganizationService).getOrganization(route.paramMap.get('slug')!);
     }
     else {
@@ -34,7 +39,8 @@ export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
             linked_in: "",
             youtube: "",
             heel_life: "",
-            public: false
-          };
+            public: false,
+            events: null
+        };
     }
 };

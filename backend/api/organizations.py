@@ -4,12 +4,13 @@ Organization routes are used to create, retrieve, and update Organizations."""
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from backend.services.organization import OrganizationNotFoundException
-from backend.services.exceptions import UserPermissionException
+from ..services.organization import OrganizationNotFoundException
+from ..services.permission import UserPermissionException
 from ..services import OrganizationService
 from ..models.organization import Organization
-from backend.api.authentication import registered_user
-from backend.models.user import User
+from ..models.organization_details import OrganizationDetails
+from ..api.authentication import registered_user
+from ..models.user import User
 
 __authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
 __copyright__ = 'Copyright 2023'
@@ -44,7 +45,7 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         organization_service: a valid OrganizationService
 
     Returns:
-        OrganizationDetail: Created organization
+        Organization: Created organization
 
     Raises:
         HTTPException 422 if create() raises an Exception
@@ -57,8 +58,8 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{slug}", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
-def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> Organization:
+@api.get("/{slug}", responses={404: {"model": None}}, response_model=OrganizationDetails, tags=['Organizations'])
+def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> OrganizationDetails:
     """
     Get organization with matching slug
 
@@ -67,14 +68,14 @@ def get_organization_from_slug(slug: str, organization_service: OrganizationServ
         organization_service: a valid OrganizationService
 
     Returns:
-        OrganizationDetail: OrganizationDetail with matching slug
+        Organization: Organization with matching slug
 
     Raises:
         HTTPException 404 if get_from_slug() raises an Exception
     """
-    
+
     # Try to get organization with matching slug
-    try: 
+    try:
         # Return organization
         return organization_service.get_from_slug(slug)
     except OrganizationNotFoundException as e:
@@ -87,16 +88,17 @@ def update_organization(organization: Organization, subject: User = Depends(regi
     Update organization
 
     Parameters:
-        organization: a valid OrganizationDetail model
+        organization: a valid Organization model
         subject: a valid User model representing the currently logged in User
         organization_service: a valid OrganizationService
 
     Returns:
-        OrganizationDetail: Updated organization
+        Organization: Updated organization
 
-    Raises HTTPException 404 if update() raises an Exception
+    Raises:
+        HTTPException 404 if update() raises an Exception
     """
-    try: 
+    try:
         # Return updated organization
         return organization_service.update(subject, organization)
     except (OrganizationNotFoundException, UserPermissionException) as e:

@@ -162,7 +162,7 @@ def test_change_reservation_change_party_not_implemented(
     with pytest.raises(NotImplementedError):
         reservation_svc.change_reservation(
             user_data.ambassador,
-            ReservationPartial(id=4, users=[user_data.cads_leader]),
+            ReservationPartial(id=4, users=[user_data.root]),
         )
 
 

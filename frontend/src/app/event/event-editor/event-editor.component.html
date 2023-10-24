@@ -1,0 +1,31 @@
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="adminPermission$ | async">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title *ngIf="event.id == null">Create Event</mat-card-title>
+            <mat-card-title *ngIf="event.id != null">Update Event</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Event Name</mat-label>
+                <input matInput placeholder="New Event" formControlName="name" name="name" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill" color="accent">
+                <input matInput type="datetime-local" formControlName="time" name="time" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Location</mat-label>
+                <input matInput placeholder="The Pit" formControlName="location" name="location" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill" color="accent">
+                <mat-label>Description</mat-label>
+                <input matInput placeholder="Event description here." formControlName="description" name="description">
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button type="submit" [disabled]="eventForm.invalid">SAVE</button>
+        </mat-card-actions>
+    </mat-card>
+</form>
+
+<!-- Message for Non-Authenicated Users -->
+<p *ngIf="!(adminPermission$ | async)">You do not have permission to view this page</p>

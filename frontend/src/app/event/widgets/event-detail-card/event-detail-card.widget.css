@@ -1,0 +1,80 @@
+.event-detail-card {
+    padding: 4px 16px;
+    margin: 0;
+    height: 100%;
+}
+
+#top-divider {
+    margin: 0;
+}
+
+.organization-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0px;
+    width: 100%;
+}
+
+.organization-section:hover {
+    background-color: #525252;
+    cursor: pointer;
+}
+
+.event-title-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    margin: 0px;
+}
+
+.event-title {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-actions {
+    width: 25%;
+    display: flex;
+}
+
+.logo {
+    height: auto;
+    max-width: 2rem;
+    max-height: 2rem;
+    border-radius: 2rem;
+}
+
+#organization-name {
+    margin-left: 1rem;
+}
+
+.paddded-divier {
+    padding-bottom: 8px;
+}
+
+.registration-listing {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.seat-count-container {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+}
+
+.register-button-container {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+}
+
+@media (prefers-color-scheme: light) {
+    .organization-section:hover {
+        background-color: #f5f5f5;
+    }
+}

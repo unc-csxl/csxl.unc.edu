@@ -36,7 +36,7 @@ with Session(engine) as session:
     reservation_data.delete_future_data(session, time)
     seat_data.delete_all(session)
     operating_hours_data.delete_all(session)
-    
+
     seats: list[SeatDetails] = []
     # Sit Desks w/ Monitor
     for i in range(12):

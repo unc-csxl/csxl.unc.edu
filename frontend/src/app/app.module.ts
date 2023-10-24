@@ -8,8 +8,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpRequestInterceptor } from './navigation/http-request.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 
-/* Angular UI Dependencies */
-import { NgForOf } from '@angular/common';
+/* UI / Material Dependencies */
+import { DatePipe, NgForOf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
 
@@ -38,6 +38,7 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
+import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,10 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
     provide: HTTP_INTERCEPTORS,
     useClass: HttpRequestInterceptor,
     multi: true
-  }],
+  },
+    DatePipe,
+    EventFilterPipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,55 @@
+<!-- Event Detail Card -->
+<mat-card class="event-detail-card" appearance="outlined">
+
+    <!-- Title Section -->
+    <div class="event-title-container">
+
+        <!-- Title -->
+        <div class="event-title">
+            <mat-card-title>{{event.name}}</mat-card-title>
+        </div>
+
+        <!-- Buttons -->
+        <div class="event-actions">
+            <button mat-icon-button *ngIf="checkPermissions() | async"
+                [routerLink]="['events', 'organizations', event.organization!.slug, 'events', event.id, 'edit']"
+                [relativeTo]="null">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="checkPermissions() | async" [routerLink]="['events']" [relativeTo]="null"
+                (click)="deleteEvent(event)">
+                <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onShareButtonClick()">
+                <mat-icon>share</mat-icon>
+            </button>
+            <!-- TODO: Implement Calendar File Download Button -->
+            <!-- <button mat-icon-button>
+                <mat-icon>calendar_today</mat-icon>
+            </button> -->
+        </div>
+    </div>
+
+    <mat-divider id="top-divider" />
+
+    <!-- Organization Section -->
+    <div class="organization-section" [routerLink]="'/organizations/' + event.organization!.slug">
+        <!-- Organization Icon -->
+        <img mat-card-image src="{{event.organization!.logo}}" class="logo" />
+        <!-- Organization Name -->
+        <p id="organization-name">{{event.organization!.shorthand}}</p>
+    </div>
+
+    <mat-divider class="padded-divider" />
+
+    <!-- Logistical Information -->
+    <div>
+        <p><strong>Starts At:</strong> {{event.time | date:'shortTime'}}</p>
+        <p><strong>Location:</strong> {{event.location}}</p>
+    </div>
+
+    <mat-divider class="padded-divider" />
+
+    <!-- Description -->
+    <p>{{event.description}}</p>
+</mat-card>

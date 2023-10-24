@@ -1,4 +1,6 @@
-"""GitHub user authentication service."""
+"""
+GitHub user authentication service.
+"""
 
 import requests
 import uuid
