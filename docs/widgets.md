@@ -101,13 +101,13 @@ In summary, the wireframe for our Organization would look as follows:
 
 ## Widgets in the Module
 
-Before we take a look at how these widgets are created, we need to first become aware of how these widgets are actually loaded and located within the Angular App Module. To be able to understand this fully, we need to go over a quick review of Angular Modules.
+Before we take a look at how these widgets are created, we need to first become aware of how these widgets are actually loaded and where they are located within the Angular App Module. To be able to understand this fully, we need to go over a quick review of Angular Modules.
 
 **Angular Modules *define the application's structure* and help to manage dependencies in an Angular application.** The module organizes and encapsulate components, services, and other code related to a specific feature or functionality.
 
 Throughout all of your projects in COMP 423 so far, your project has only included the singular `App Module` located in `app.module.ts` in the root directory of your project. The App Module then contains all of your *components*, *services*, *models*, and other code. 
 
-**However, this is not necessarily the best approach.** Consider what actually happens when you load your application on the browser. The application loads the entire module all all of its declarations. This is not optimal on large projects, such as the CSXL web application (and of course larger projects than this). Having all of your code and all of your features in one module means longer load times and more resources to download for your users.
+**However, this is not necessarily the best approach.** Consider what actually happens when you load your application on the browser. The application loads the entire module and all of its declarations. This is not optimal on large projects, such as the CSXL web application (and of course larger projects than this). Having all of your code and all of your features in one module means longer load times and more resources to download for your users.
 
 Instead, **it is better to encapsulate your features into separate modules**. For example, the CSXL Web Application has the `Organization Module` (defined in `organization.module.ts`) and the `Event Module` (`event.module.ts`) to encapsulate their respective features into standalone bundles. When the user navigates to the Organization page, only the `Organization Module` and what is necessary for that to run will be loaded. The app still has the `App Module` to ultimately ensapculate the application.
 
@@ -130,7 +130,7 @@ So, which modules should we declare these widgets in?
 
 It may be much more obvious for the `<organization-card>` widget! We said this widget will only be used for the organization pages, therefore it can be stored in the `Organization Module`.
 
-But, what about the other two components? Well, you would likely immediately think of the global `App Module` as a good place to put it. However, the problem with this solution is that if declare this widget in the App Module, *in order for components in other modules to access widgets in App Module, the module has to import App Module.* This actually completely defeats the purpose of having separate modules, because now you are ultimately importing the App Module and loading everything regardless.
+But, what about the other two components? Well, you would likely immediately think of the global `App Module` as a good place to put it. However, the problem with this solution. *In order for components in other modules to access widgets in the App Module, the module has to import the App Module.* This actually completely defeats the purpose of having separate modules, because now you are ultimately importing the App Module and loading everything inside anyway.
 
 The solution to this problem is to have a new `Shared Module` (defined in `shared.module.ts`) that **just contains Angular widgets** and other Angular Material components. Then, modules that use global widgets just have to import the Shared Module and will then have access to the widgets ***without*** importing everything in App Module.
 
@@ -142,7 +142,7 @@ Ultimately, this relationship looks like:
 
 ### Creating a Widget
 
-Now that you have gotten an introduction into Angular Widgets and hopefully understand how widgets are declared in modules conceptually, let's get into actually creating widgets.
+Now that you have been introduced into Angular Widgets and hopefully understand how widgets are declared in modules conceptually, let's get into actually creating widgets.
 
 There is no command in Angular to generate widgets in the same way there is with components (using `ng generate component`). Instead, we have to do this step manually. However, the setup is extremely easy. 
 
@@ -225,11 +225,11 @@ We can also expand this and combine it with `*ngFor`, assuming `organizations` i
 <organization-card [organization]="organization" *ngFor="let organization of organizations" />
 ```
 
-This is the exact implementation used for the organization page!
+This is the exact implementation used for the organization page! See for yourself in the `organization-page.component.html` file.
 
 ### Event Binding to Send Data From Widgets to Components
 
-There is a problem here with widgets that you may have already been thinking about. *What about button actions?* For example, say we had a "join organization" button on each `organization-card` widget. *How can we get this button to trigger a function in the parent component?*
+There is a problem here with widgets that you may have already been thinking ahead about. *What about button actions?* For example, say we had a "join organization" button on each `organization-card` widget. *How can we get this button to trigger a function in the parent component?*
 
 For this, we can use the `@Output` decorator! While slightly more complicated than inputs, outputs for widgets are extremely powerful and useful to connect widgets to their parent components.
 
