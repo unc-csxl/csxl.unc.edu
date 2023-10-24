@@ -37,6 +37,21 @@ class RoleService:
         role_entities = self._session.execute(stmt).scalars()
         return [role_entity.to_model() for role_entity in role_entities]
 
+    def create(self, subject: User, name: str) -> Role:
+        """Create a new role in the system.
+        
+        Args:
+            subject (User): The user making the request.
+            name (str): The name of the new role.
+            
+        Returns:
+            Role: the newly created role with an ID"""
+        self._permission.enforce(subject, 'role.create', 'role/')
+        role_entity = RoleEntity(name=name)
+        self._session.add(role_entity)
+        self._session.commit()
+        return role_entity.to_model()
+
     def details(self, subject: User, id: int) -> RoleDetails:
         """Get details about a specific role in the system for administrators.
 

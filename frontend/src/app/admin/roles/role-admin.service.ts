@@ -13,6 +13,10 @@ export class RoleAdminService {
         return this.http.get<Role[]>("/api/admin/roles");
     }
 
+    create(name: string): Observable<Role> {
+        return this.http.post<Role>(`/api/admin/roles`, { name });
+    }
+
     details(id: number) {
         return this.http.get<RoleDetails>(`/api/admin/roles/${id}`);
     }

@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Role } from 'src/app/role';
-import { AdminRoleDetailsComponent } from '../details/admin-role-details.component';
 import { RoleAdminService } from '../role-admin.service';
+import { NavigationService } from 'src/app/navigation/navigation.service';
 
 @Component({
     selector: 'app-admin-roles-list',
@@ -25,6 +25,8 @@ export class AdminRolesListComponent {
     }
 
     constructor(
+        private roleService: RoleAdminService,
+        private navService: NavigationService,
         private router: Router,
         route: ActivatedRoute,
     ) {
@@ -34,6 +36,16 @@ export class AdminRolesListComponent {
 
     onClick(role: Role) {
         this.router.navigate(['admin', 'roles', role.id]);
+    }
+
+    onClickAddRole() {
+        let name = window.prompt("What is the name of the role?");
+        if (name) {
+            this.roleService.create(name).subscribe({
+                next: (role) => this.router.navigate(['admin', 'roles', role.id]),
+                error: (err) => this.navService.error(err)
+            });
+        }
     }
 
 }

@@ -29,6 +29,15 @@ def list_roles(
         raise HTTPException(status_code=403, detail=str(e))
 
 
+@api.post("", tags=["(Admin) Roles"])
+def create_role(
+    role: Role,
+    subject: User = Depends(registered_user),
+    role_service: RoleService = Depends(),
+) -> Role:
+    return role_service.create(subject, role.name)
+
+
 @api.get("/{id}", tags=["(Admin) Roles"])
 def role_details(
     id: int,
