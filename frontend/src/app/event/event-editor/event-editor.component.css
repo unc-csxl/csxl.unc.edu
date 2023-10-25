@@ -12,3 +12,7 @@
   margin-left: 8px;
   margin-bottom: 8px;
 }
+
+mat-card-content {
+  margin-top: 8px;
+}
