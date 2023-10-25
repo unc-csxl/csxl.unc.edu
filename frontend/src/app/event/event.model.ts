@@ -21,6 +21,11 @@ export interface Event {
     organization: Organization | null;
 }
 
+/** Interface for the Event JSON Response model
+ *  Note: The API returns object data, such as `Date`s, as strings. So,
+ *  this interface models the data directly received from the API. It is
+ *  the job of the `parseEventJson` function to convert it to the `Event` type
+ */
 export interface EventJson {
     id: number | null;
     name: string;
@@ -32,6 +37,11 @@ export interface EventJson {
     organization: Organization | null;
 }
 
-export const parseEventJson = (eventJson: EventJson[]): Event[] => {
-    return eventJson.map((json) => Object.assign({}, json, { time: new Date(json.time) }));
-};
+/** Function that converts an EventJSON response model to an Event model.
+ *  This function is needed because the API response will return certain
+ *  objects (such as `Date`s) as strings. We need to convert this to
+ *  TypeScript objects ourselves.
+ */
+export const parseEventJson = (eventJson: EventJson): Event => {
+    return Object.assign({}, eventJson, { time: new Date(eventJson.time) })
+}

@@ -20,9 +20,9 @@ export class EventFilterPipe implements PipeTransform {
    * @returns {Observable<Event[]>}
    */
   transform(events: Event[], searchQuery: String): Event[] {
-    // Sort the events list alphabetically by name
+    // Sort the events list by date
     events = events.sort((a: Event, b: Event) => {
-      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      return a.time.getTime() - b.time.getTime()
     })
 
     // Remove past events

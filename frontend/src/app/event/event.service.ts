@@ -25,7 +25,7 @@ export class EventService {
    * @returns {Observable<Event[]>}
    */
   getEvents(): Observable<Event[]> {
-    return this.http.get<EventJson[]>("/api/events").pipe(map(parseEventJson));
+    return this.http.get<EventJson[]>("/api/events").pipe(map(eventJsons => eventJsons.map(parseEventJson)));
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request. 
@@ -33,7 +33,7 @@ export class EventService {
    * @returns {Observable<Event>}
    */
   getEvent(id: number): Observable<Event> {
-    return this.http.get<Event>("/api/events/" + id);
+    return this.http.get<EventJson>("/api/events/" + id).pipe(map(eventJson => parseEventJson(eventJson)));
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request. 
@@ -41,7 +41,7 @@ export class EventService {
   * @returns {Observable<Event[]>}
   */
   getEventsByOrganization(id: number): Observable<Event[]> {
-    return this.http.get<Event[]>("/api/events/organization/" + id);
+    return this.http.get<EventJson[]>("/api/events/organization/" + id).pipe(map(eventJsons => eventJsons.map(parseEventJson)));
   }
 
   /** Returns the new event object from the backend database table using the backend HTTP get request. 
@@ -74,6 +74,7 @@ export class EventService {
  * @param query: Search bar query to filter the items
  */
   groupEventsByDate(events: Event[], query: string = ""): [string, Event[]][] {
+
     // Initialize an empty map
     let groups: Map<string, Event[]> = new Map();
 
