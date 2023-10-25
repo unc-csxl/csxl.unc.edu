@@ -28,7 +28,7 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     return event_service.all()
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=['Events'])
-def get_events_from_organization(id: int, event_service: EventService = Depends()) -> list[EventDetails]:
+def get_events_from_organization(slug: str, event_service: EventService = Depends()) -> list[EventDetails]:
     """
     Get all events from an organization
 
@@ -39,7 +39,7 @@ def get_events_from_organization(id: int, event_service: EventService = Depends(
     Returns:
         list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
     """
-    return event_service.get_events_from_organization(id)
+    return event_service.get_events_from_organization(slug)
 
 @api.post("", response_model=EventDetails, tags=['Events'])
 def new_event(event: Event, subject: User = Depends(registered_user), event_service: EventService = Depends()) -> EventDetails:

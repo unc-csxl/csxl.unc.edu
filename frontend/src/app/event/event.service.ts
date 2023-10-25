@@ -44,12 +44,12 @@ export class EventService {
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request.
-   * @param id: ID of the organization to retrieve
+   * @param slug: Slug of the organization to retrieve
    * @returns {Observable<Event[]>}
    */
-  getEventsByOrganization(id: number): Observable<Event[]> {
+  getEventsByOrganization(slug: string): Observable<Event[]> {
     return this.http
-      .get<EventJson[]>('/api/events/organization/' + id)
+      .get<EventJson[]>('/api/events/organization/' + slug)
       .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
   }
 
