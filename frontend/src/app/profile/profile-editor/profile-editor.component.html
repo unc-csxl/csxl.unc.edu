@@ -15,20 +15,20 @@
       </mat-card-header>
     </ng-template>
     <mat-card-content>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>First Name</mat-label>
         <input matInput placeholder="Jane" formControlName="first_name" name="first_name" required />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Last Name</mat-label>
         <input matInput placeholder="Doe" formControlName="last_name" name="last_name" required />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>UNC Email</mat-label>
         <input matInput type="email" placeholder="jane.doe@unc.edu" formControlName="email" name="email" required />
         <mat-error *ngIf="profileForm.value.email">Must provide a valid UNC email address.</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Pronouns</mat-label>
         <input matInput placeholder="she / her / hers" formControlName="pronouns" name="pronouns" required />
       </mat-form-field>

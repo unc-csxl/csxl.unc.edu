@@ -5,18 +5,18 @@
       <mat-card-title *ngIf="event.id !== null">Update Event</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-form-field appearance="fill" color="accent">
+      <mat-form-field appearance="outline" color="accent">
         <mat-label>Event Name</mat-label>
         <input matInput placeholder="New Event" formControlName="name" name="name" required />
       </mat-form-field>
-      <mat-form-field appearance="fill" color="accent">
+      <mat-form-field appearance="outline" color="accent">
         <input matInput type="datetime-local" formControlName="time" name="time" required />
       </mat-form-field>
-      <mat-form-field appearance="fill" color="accent">
+      <mat-form-field appearance="outline" color="accent">
         <mat-label>Location</mat-label>
         <input matInput placeholder="The Pit" formControlName="location" name="location" required />
       </mat-form-field>
-      <mat-form-field appearance="fill" color="accent">
+      <mat-form-field appearance="outline" color="accent">
         <mat-label>Description</mat-label>
         <input matInput placeholder="Event description here." formControlName="description" name="description" />
       </mat-form-field>

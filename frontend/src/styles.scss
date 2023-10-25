@@ -3,9 +3,15 @@
 
 /* Global CSS Styles */
 
-html, body { height: 100%; }
+html,
+body {
+    height: 100%;
+}
 
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .mat-mdc-card {
     max-width: 640px;
@@ -13,8 +19,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .mdc-notched-outline__notch {
-    border-left: 1px solid rgba(0,0,0,0);
-    border-right: none !important; 
+    border-left: 1px solid rgba(0, 0, 0, 0);
+    border-right: none !important;
 }
 
 .mdc-card__actions {
@@ -26,13 +32,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     filter: invert(1);
 }
 
-.mat-icon, .mat-icon svg {
+.mat-icon,
+.mat-icon svg {
     color: white;
     fill: white;
 }
 
 @media (prefers-color-scheme: light) {
-    .mat-icon, .mat-icon svg {
+
+    .mat-icon,
+    .mat-icon svg {
         color: black;
         fill: black;
     }
@@ -41,23 +50,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 /* Global Material Website Themes */
 
 // Definition of DARK Theme - Follows Material's Dark Color Palette
-$dark-theme: mat.define-dark-theme((
- color: (
-   primary: mat.define-palette(mat.$pink-palette, 700, 500, 900),
-   accent: mat.define-palette(mat.$blue-grey-palette, A200, A100, A400),
- ),
-  // Only need to include `typography` and `density` in the default dark theme.
-  typography: mat.define-typography-config(),
-  density: 0,
-));
+$dark-theme: mat.define-dark-theme((color: (primary: mat.define-palette(mat.$pink-palette, 700, 500, 900),
+                accent: mat.define-palette(mat.$blue-grey-palette, A200, A100, A400),
+            ),
+            // Only need to include `typography` and `density` in the default dark theme.
+            typography: mat.define-typography-config(),
+            density: 0,
+        ));
 
 // Definition of LIGHT Theme - Follows Material's Light Color Palette
-$light-theme: mat.define-light-theme((
- color: (
-   primary: mat.define-palette(mat.$indigo-palette),
-   accent: mat.define-palette(mat.$pink-palette),
- ),
-));
+$light-theme: mat.define-light-theme((color: (primary: mat.define-palette(mat.$indigo-palette),
+                accent: mat.define-palette(mat.$pink-palette),
+            ),
+        ));
 
 // Apply the dark theme by default
 @include mat.all-component-themes($dark-theme);
