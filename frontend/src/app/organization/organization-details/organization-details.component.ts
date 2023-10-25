@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
-import { organizationDetailResolver } from '../organization.resolver'
+import { organizationDetailResolver, organizationEventsResolver } from '../organization.resolver'
 import { EventService } from 'src/app/event/event.service';
 import { Event } from 'src/app/event/event.model';
 import { Observable } from 'rxjs';
@@ -35,7 +35,7 @@ export class OrganizationDetailsComponent {
   public static Route: Route = {
     path: ':slug',
     component: OrganizationDetailsComponent,
-    resolve: { profile: profileResolver, organization: organizationDetailResolver },
+    resolve: { profile: profileResolver, organization: organizationDetailResolver, events: organizationEventsResolver },
     children: [{ path: '', title: titleResolver, component: OrganizationDetailsComponent }]
   };
 
@@ -57,7 +57,7 @@ export class OrganizationDetailsComponent {
     const data = this.route.snapshot.data as { profile: Profile, organization: Organization, events: Event[] };
     this.profile = data.profile;
     this.organization = data.organization;
-    this.eventsPerDay = eventService.groupEventsByDate(this.organization.events ?? [])
+    this.eventsPerDay = eventService.groupEventsByDate(data.events ?? [])
     this.eventCreationPermission$ = this.permission.check('organization.events.manage', `organization/${this.organization!.id}`);
   }
 }

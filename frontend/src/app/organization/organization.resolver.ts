@@ -44,3 +44,8 @@ export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
         };
     }
 };
+
+/** This resolver injects the events for a given organization into the organization component. */
+export const organizationEventsResolver: ResolveFn<Event[] | undefined> = (route, state) => {
+    return inject(EventService).getEventsByOrganization(route.paramMap.get('slug')!);
+}

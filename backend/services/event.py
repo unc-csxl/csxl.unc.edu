@@ -10,7 +10,7 @@ from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
 from backend.models.event_details import EventDetails
-from ..entities import EventEntity
+from ..entities import EventEntity, OrganizationEntity
 from .permission import PermissionService
 from .exceptions import ResourceNotFoundException
 
@@ -93,9 +93,9 @@ class EventService:
         return entity.to_details_model()
 
 
-    def get_events_from_organization(self, id: int) -> list[EventDetails]:
+    def get_events_from_organization(self, slug: str) -> list[EventDetails]:
         """
-        Get all the events hosted by an organization with id
+        Get all the events hosted by an organization with slug
 
         Parameters:
             slug: a valid str representing a unique Organization slug
@@ -104,8 +104,15 @@ class EventService:
             list[EventDetail]: a list of valid EventDetails models
         """
 
+        # Query the organization with the matching slug
+        organization = self._session.query(OrganizationEntity).filter(OrganizationEntity.slug == slug).one_or_none()
+
+        # Ensure that the organization exists
+        if organization is None:
+            return []
+        
         # Query the event with matching organization slug
-        events = self._session.query(EventEntity).filter(EventEntity.organization_id == id).all()
+        events = self._session.query(EventEntity).filter(EventEntity.organization_id == organization.id).all()
         
         # Convert entities to models and return
         return [event.to_details_model() for event in events]
