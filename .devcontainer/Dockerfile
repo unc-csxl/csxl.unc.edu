@@ -64,6 +64,8 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 # Set code to default git commit editor
 RUN git config --system core.editor "code --wait"
+# Set Safe Directory
+RUN git config --system safe.directory '/workspace'
 
 # Make frontend node_modules
 RUN mkdir -p /workspace/frontend/node_modules && chown $USERNAME /workspace/frontend/node_modules
@@ -84,6 +86,7 @@ RUN curl https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.
 COPY backend/requirements.txt /workspace/backend/requirements.txt
 WORKDIR /workspace/backend
 RUN python3 -m pip install -r requirements.txt
+
 
 # Expose server ports
 EXPOSE 1560 1561 1562
