@@ -5,6 +5,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class UserPermissions(User):
     """
     Pydantic model to represent a `User`, including the permissions
@@ -13,6 +14,7 @@ class UserPermissions(User):
     This model is based on the `UserEntity` model, which defines the shape
     of the `Event` database in the PostgreSQL database.
     """
+
     permissions: list["Permission"] = []
 
 
@@ -24,4 +26,5 @@ class UserDetails(UserPermissions):
     This model is based on the `UserEntity` model, which defines the shape
     of the `Event` database in the PostgreSQL database.
     """
+
     ...

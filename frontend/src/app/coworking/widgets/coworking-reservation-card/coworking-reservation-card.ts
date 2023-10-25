@@ -5,65 +5,64 @@ import { Router } from '@angular/router';
 import { ReservationService } from '../../reservation/reservation.service';
 
 @Component({
-    selector: 'coworking-reservation-card',
-    templateUrl: './coworking-reservation-card.html',
-    styleUrls: ['./coworking-reservation-card.css']
+  selector: 'coworking-reservation-card',
+  templateUrl: './coworking-reservation-card.html',
+  styleUrls: ['./coworking-reservation-card.css']
 })
 export class CoworkingReservationCard implements OnInit {
+  @Input() reservation!: Reservation;
 
-    @Input() reservation!: Reservation;
+  public draftConfirmationDeadline$!: Observable<string>;
 
-    @Output() onCancel = new EventEmitter<Reservation>();
+  constructor(
+    public router: Router,
+    public reservationService: ReservationService
+  ) {}
 
-    public draftConfirmationDeadline$!: Observable<string>;
+  ngOnInit(): void {
+    this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
+  }
 
-    constructor(public router: Router, public reservationService: ReservationService) {
+  checkinDeadline(reservationStart: Date): Date {
+    return new Date(reservationStart.getTime() + 10 * 60 * 1000);
+  }
 
-    }
+  cancel() {
+    this.reservationService.cancel(this.reservation).subscribe();
+  }
 
-    ngOnInit(): void {
-        this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
-    }
+  confirm() {
+    this.reservationService.confirm(this.reservation).subscribe();
+  }
 
-    checkinDeadline(reservationStart: Date): Date {
-        return new Date(reservationStart.getTime() + (10 * 60 * 1000));
-    }
+  checkout() {
+    this.reservationService.checkout(this.reservation).subscribe();
+  }
 
-    cancel() {
-        this.reservationService.cancel(this.reservation).subscribe();
-    }
+  private initDraftConfirmationDeadline(): Observable<string> {
+    const fiveMinutes =
+      5 /* minutes */ * 60 /* seconds */ * 1000; /* milliseconds */
 
-    confirm() {
-        this.reservationService.confirm(this.reservation).subscribe();
-    }
+    const reservationDraftDeadline = (reservation: Reservation) =>
+      reservation.created_at.getTime() + fiveMinutes;
 
-    checkout() {
-        this.reservationService.checkout(this.reservation).subscribe();
-    }
+    const deadlineString = (deadline: number): string => {
+      const now = new Date().getTime();
+      const delta = (deadline - now) / 1000; /* milliseconds */
+      if (delta > 60) {
+        return `Confirm in ${Math.ceil(delta / 60)} minutes`;
+      } else if (delta > 0) {
+        return `Confirm in ${Math.ceil(delta)} seconds`;
+      } else {
+        this.cancel();
+        return 'Cancelling...';
+      }
+    };
 
-    private initDraftConfirmationDeadline(): Observable<string> {
-        const fiveMinutes = 5 /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */;
-
-        const reservationDraftDeadline = (reservation: Reservation) => reservation.created_at.getTime() + fiveMinutes;
-
-        const deadlineString = (deadline: number): string => {
-            const now = (new Date().getTime())
-            const delta = (deadline - now) / 1000 /* milliseconds */;
-            if (delta > 60) {
-                return `Confirm in ${Math.ceil(delta / 60)} minutes`;
-            } else if (delta > 0) {
-                return `Confirm in ${Math.ceil(delta)} seconds`;
-            } else {
-                this.cancel();
-                return "Cancelling...";
-            }
-        }
-
-        return timer(0, 1000).pipe(
-            map(() => this.reservation),
-            map(reservationDraftDeadline),
-            map(deadlineString)
-        );
-    }
-
+    return timer(0, 1000).pipe(
+      map(() => this.reservation),
+      map(reservationDraftDeadline),
+      map(deadlineString)
+    );
+  }
 }

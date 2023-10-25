@@ -15,7 +15,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { ReservationComponent } from './reservation/reservation.component';
 
-
 @NgModule({
   declarations: [
     CoworkingPageComponent,
@@ -23,7 +22,7 @@ import { ReservationComponent } from './reservation/reservation.component';
     AmbassadorPageComponent,
     CoworkingDropInCard,
     CoworkingReservationCard,
-    CoworkingHoursCard,
+    CoworkingHoursCard
   ],
   imports: [
     CommonModule,
@@ -37,4 +36,4 @@ import { ReservationComponent } from './reservation/reservation.component';
     AsyncPipe
   ]
 })
-export class CoworkingModule { }
+export class CoworkingModule {}

@@ -28,7 +28,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
-
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -48,7 +47,7 @@ import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
     HomeComponent,
     AboutComponent,
     GateComponent,
-    ProfileEditorComponent,
+    ProfileEditorComponent
   ],
   imports: [
     /* Angular */
@@ -79,19 +78,20 @@ import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
-          return localStorage.getItem("bearerToken")
+          return localStorage.getItem('bearerToken');
         }
       }
-    }),
+    })
   ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: HttpRequestInterceptor,
-    multi: true
-  },
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptor,
+      multi: true
+    },
     DatePipe,
     EventFilterPipe
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -18,10 +18,15 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class EventService:
     """Service that performs all of the actions on the `Event` table"""
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
+    ):
         """Initializes the `EventService` session"""
         self._session = session
         self._permission = permission
@@ -52,14 +57,18 @@ class EventService:
         Returns:
             EventDetails: a valid EventDetails model representing the new Event
         """
-        
+
         # Ensure that the user has appropriate permissions to create users
-        self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
+        self._permission.enforce(
+            subject,
+            "organization.events.manage",
+            f"organization/{event.organization_id}",
+        )
 
         # Checks if the event already exists in the table
         if event.id:
             event.id = None
-        
+
         # Otherwise, create new object
         event_entity = EventEntity.from_model(event)
 
@@ -92,7 +101,6 @@ class EventService:
         # Convert entry to a model and return
         return entity.to_details_model()
 
-
     def get_events_from_organization(self, slug: str) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with slug
@@ -105,15 +113,23 @@ class EventService:
         """
 
         # Query the organization with the matching slug
-        organization = self._session.query(OrganizationEntity).filter(OrganizationEntity.slug == slug).one_or_none()
+        organization = (
+            self._session.query(OrganizationEntity)
+            .filter(OrganizationEntity.slug == slug)
+            .one_or_none()
+        )
 
         # Ensure that the organization exists
         if organization is None:
             return []
-        
+
         # Query the event with matching organization slug
-        events = self._session.query(EventEntity).filter(EventEntity.organization_id == organization.id).all()
-        
+        events = (
+            self._session.query(EventEntity)
+            .filter(EventEntity.organization_id == organization.id)
+            .all()
+        )
+
         # Convert entities to models and return
         return [event.to_details_model() for event in events]
 
@@ -127,30 +143,34 @@ class EventService:
         Returns:
             EventDetails: a valid EventDetails model representing the updated event object
         """
-        
+
         # Ensure that the user has appropriate permissions to update users
-        self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
+        self._permission.enforce(
+            subject,
+            "organization.events.manage",
+            f"organization/{event.organization_id}",
+        )
 
         # Query the event with matching id
         event_entity = self._session.get(EventEntity, event.id)
 
         # Check if result is null
         if event_entity is None:
-            raise ResourceNotFoundException(f"No event found with matching ID: {id}");
-            
+            raise ResourceNotFoundException(f"No event found with matching ID: {id}")
+
         # Update event object
-        event_entity.name=event.name
-        event_entity.time=event.time
-        event_entity.description=event.description
-        event_entity.location=event.location
-        event_entity.public=event.public
-        
+        event_entity.name = event.name
+        event_entity.time = event.time
+        event_entity.description = event.description
+        event_entity.location = event.location
+        event_entity.public = event.public
+
         # Save changes
         self._session.commit()
-        
+
         # Return updated object
         return event_entity.to_details_model()
-    
+
     def delete(self, subject: User, id: int) -> None:
         """
         Delete the event based on the provided ID.
@@ -159,19 +179,23 @@ class EventService:
         Parameters:
             id: an int representing a unique event ID
         """
-        
+
         # Find object to delete
         event = self._session.get(EventEntity, id)
 
         # Ensure that the user has appropriate permissions to delete users
-        self._permission.enforce(subject, "organization.events.manage", f"organization/{event.organization_id}")
+        self._permission.enforce(
+            subject,
+            "organization.events.manage",
+            f"organization/{event.organization_id}",
+        )
 
         # Ensure object exists
         if event is None:
-            raise ResourceNotFoundException(f"No event found with matching ID: {id}");
-            
+            raise ResourceNotFoundException(f"No event found with matching ID: {id}")
+
         # Delete object and commit
         self._session.delete(event)
-        
+
         # Save changes
         self._session.commit()

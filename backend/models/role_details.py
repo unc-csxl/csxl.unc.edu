@@ -7,6 +7,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class RoleDetails(Role):
     """
     Pydantic model to represent a `Role`, including back-populated
@@ -15,5 +16,6 @@ class RoleDetails(Role):
     This model is based on the `RoleEntity` model, which defines the shape
     of the `Role` database in the PostgreSQL database.
     """
+
     permissions: list[Permission]
     users: list[User]

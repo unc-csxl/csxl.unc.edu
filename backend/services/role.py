@@ -10,10 +10,15 @@ from ..models import User, Role, RoleDetails, Permission
 from ..entities import RoleEntity, PermissionEntity, UserEntity
 from .permission import PermissionService
 
+
 class RoleService:
     """RoleService is the access layer to the role data model, its members, and permissions."""
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
+    ):
         """Initialize a new RoleService instance.
 
         Both arguments are optional and will be typically be injected.
@@ -33,21 +38,21 @@ class RoleService:
 
         Returns:
             list[Role]: A list of all roles in the system."""
-        self._permission.enforce(subject, 'role.list', 'role/')
+        self._permission.enforce(subject, "role.list", "role/")
         stmt = select(RoleEntity).order_by(RoleEntity.name)
         role_entities = self._session.execute(stmt).scalars()
         return [role_entity.to_model() for role_entity in role_entities]
 
     def create(self, subject: User, name: str) -> Role:
         """Create a new role in the system.
-        
+
         Args:
             subject (User): The user making the request.
             name (str): The name of the new role.
-            
+
         Returns:
             Role: the newly created role with an ID"""
-        self._permission.enforce(subject, 'role.create', 'role/')
+        self._permission.enforce(subject, "role.create", "role/")
         role_entity = RoleEntity(name=name)
         self._session.add(role_entity)
         self._session.commit()
@@ -62,11 +67,13 @@ class RoleService:
 
         Returns:
             RoleDetails: The details of the role."""
-        self._permission.enforce(subject, 'role.details', f'role/{id}')
+        self._permission.enforce(subject, "role.details", f"role/{id}")
         role = self._session.get(RoleEntity, id)
         return role.to_details_model()
 
-    def grant_permission(self, subject: User, id: int, permission: Permission) -> RoleDetails:
+    def grant_permission(
+        self, subject: User, id: int, permission: Permission
+    ) -> RoleDetails:
         """Grant a permission to a role.
 
         Args:
@@ -75,7 +82,7 @@ class RoleService:
 
         Returns:
             RoleDetails: The details of the role."""
-        self._permission.enforce(subject, 'role.grant_permission', f'role/{id}')
+        self._permission.enforce(subject, "role.grant_permission", f"role/{id}")
         role = self.details(subject, id)
         self._permission.grant(subject, role, permission)
         return self.details(subject, id)
@@ -90,7 +97,7 @@ class RoleService:
 
         Returns:
             bool: True if the permission was revoked."""
-        self._permission.enforce(subject, 'role.revoke_permission', f'role/{id}')
+        self._permission.enforce(subject, "role.revoke_permission", f"role/{id}")
         role = self._session.get(RoleEntity, id)
         permission = self._session.get(PermissionEntity, permissionId)
         assert role is permission.role
@@ -107,7 +114,7 @@ class RoleService:
 
         Returns:
             RoleDetails: The details of the role."""
-        self._permission.enforce(subject, 'role.add_member', f'role/{id}')
+        self._permission.enforce(subject, "role.add_member", f"role/{id}")
         role = self._session.get(RoleEntity, id)
         user = self._session.get(UserEntity, member.id)
         if user:
@@ -125,7 +132,7 @@ class RoleService:
 
         Returns:
             bool: True if the user is a member of the role."""
-        self._permission.enforce(subject, 'role.details', f'role/{id}')
+        self._permission.enforce(subject, "role.details", f"role/{id}")
         role = self._session.get(RoleEntity, id)
         user = self._session.get(UserEntity, userId)
         return user in role.users
@@ -140,7 +147,7 @@ class RoleService:
 
         Returns:
             bool: True if the user was removed from the role."""
-        self._permission.enforce(subject, 'role.remove_member', f'role/{id}')
+        self._permission.enforce(subject, "role.remove_member", f"role/{id}")
         role = self._session.get(RoleEntity, id)
         user = self._session.get(UserEntity, userId)
         role.users.remove(user)

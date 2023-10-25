@@ -1,7 +1,7 @@
 /**
  * The Organization Editor Component allows organization managers to edit information
  * about their organization which is publically displayed on the organizations page.
- * 
+ *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
  * @copyright 2023
  * @license MIT
@@ -14,11 +14,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { PermissionService } from 'src/app/permission.service';
-import { Organization } from "../organization.model";
+import { Organization } from '../organization.model';
 import { OrganizationService } from '../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
 import { permissionGuard } from 'src/app/permission.guard';
-import { organizationDetailResolver } from '../organization.resolver'
+import { organizationDetailResolver } from '../organization.resolver';
 
 @Component({
   selector: 'app-organization-editor',
@@ -26,14 +26,16 @@ import { organizationDetailResolver } from '../organization.resolver'
   styleUrls: ['./organization-editor.component.css']
 })
 export class OrganizationEditorComponent {
-
   /** Route information to be used in Organization Routing Module */
   public static Route: Route = {
     path: ':slug/edit',
     component: OrganizationEditorComponent,
     title: 'Organization Editor',
     canActivate: [permissionGuard('admin.view', 'admin/')],
-    resolve: { profile: profileResolver, organization: organizationDetailResolver },
+    resolve: {
+      profile: profileResolver,
+      organization: organizationDetailResolver
+    }
   };
 
   /** Store the organization.  */
@@ -50,10 +52,16 @@ export class OrganizationEditorComponent {
 
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
-  slug = new FormControl('', [Validators.required, Validators.pattern('^(?!new$)[a-z0-9-]+$')]);
+  slug = new FormControl('', [
+    Validators.required,
+    Validators.pattern('^(?!new$)[a-z0-9-]+$')
+  ]);
   logo = new FormControl('', [Validators.required]);
   email = new FormControl('', [Validators.email]);
-  shortDescription = new FormControl('', [Validators.required, Validators.maxLength(150)]);
+  shortDescription = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(150)
+  ]);
   longDescription = new FormControl('', [Validators.maxLength(2000)]);
 
   /** Organization Editor Form */
@@ -64,12 +72,12 @@ export class OrganizationEditorComponent {
     short_description: this.shortDescription,
     long_description: this.longDescription,
     email: this.email,
-    shorthand: "",
-    website: "",
-    instagram: "",
-    linked_in: "",
-    youtube: "",
-    heel_life: "",
+    shorthand: '',
+    website: '',
+    instagram: '',
+    linked_in: '',
+    youtube: '',
+    heel_life: '',
     public: false
   });
 
@@ -87,9 +95,11 @@ export class OrganizationEditorComponent {
     private organizationService: OrganizationService,
     private permission: PermissionService
   ) {
-
     /** Initialize data from resolvers. */
-    const data = this.route.snapshot.data as { profile: Profile, organization: Organization };
+    const data = this.route.snapshot.data as {
+      profile: Profile;
+      organization: Organization;
+    };
     this.profile = data.profile;
     this.organization = data.organization;
 
@@ -108,14 +118,14 @@ export class OrganizationEditorComponent {
       youtube: this.organization.youtube,
       heel_life: this.organization.heel_life,
       public: this.organization.public
-    })
+    });
 
     /** Get id from the url */
     let organization_slug = this.route.snapshot.params['slug'];
     this.organization_slug = organization_slug;
 
     /** Set permission value */
-    this.adminPermission$ = this.permission.check('admin.view', 'admin/');    
+    this.adminPermission$ = this.permission.check('admin.view', 'admin/');
   }
 
   /** Event handler to handle submitting the Update Organization Form.
@@ -123,15 +133,18 @@ export class OrganizationEditorComponent {
    */
   onSubmit(): void {
     if (this.organizationForm.valid) {
-      Object.assign(this.organization, this.organizationForm.value)
-      if(this.organization_slug == "new") {
-        this.organizationService.createOrganization(this.organization).subscribe({
+      Object.assign(this.organization, this.organizationForm.value);
+      if (this.organization_slug == 'new') {
+        this.organizationService
+          .createOrganization(this.organization)
+          .subscribe({
             next: (organization) => this.onSuccess(organization),
             error: (err) => this.onError(err)
-        });
-      }
-      else {
-        this.organizationService.updateOrganization(this.organization).subscribe({
+          });
+      } else {
+        this.organizationService
+          .updateOrganization(this.organization)
+          .subscribe({
             next: (organization) => this.onSuccess(organization),
             error: (err) => this.onError(err)
           });
@@ -146,9 +159,9 @@ export class OrganizationEditorComponent {
   generateSlug(): void {
     const name = this.organizationForm.controls['name'].value;
     const slug = this.organizationForm.controls['slug'].value;
-    if(name && !slug) {
-      var generatedSlug = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, "-");
-      this.organizationForm.setControl("slug", new FormControl(generatedSlug));
+    if (name && !slug) {
+      var generatedSlug = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-');
+      this.organizationForm.setControl('slug', new FormControl(generatedSlug));
     }
   }
 
@@ -157,14 +170,16 @@ export class OrganizationEditorComponent {
    */
   private onSuccess(organization: Organization): void {
     this.router.navigate(['/organizations/', organization.slug]);
-    this.snackBar.open("Organization Created", "", { duration: 2000 })
+    this.snackBar.open('Organization Created', '', { duration: 2000 });
   }
 
   /** Opens a snackbar when there is an error updating an organization.
    * @returns {void}
    */
   private onError(err: any): void {
-    console.error("Error: Organization Not Created");
-    this.snackBar.open("Error: Organization Not Created", "", { duration: 2000 })
+    console.error('Error: Organization Not Created');
+    this.snackBar.open('Error: Organization Not Created', '', {
+      duration: 2000
+    });
   }
 }

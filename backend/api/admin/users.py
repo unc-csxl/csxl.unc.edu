@@ -10,7 +10,10 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-openapi_tags = {"name": "(Admin) Users", "description": "User administration end points."}
+openapi_tags = {
+    "name": "(Admin) Users",
+    "description": "User administration end points.",
+}
 
 api = APIRouter(prefix="/api/admin/users")
 
@@ -22,12 +25,13 @@ def list_users(
     page: int = 0,
     page_size: int = 10,
     order_by: str = "first_name",
-    filter: str = ""
+    filter: str = "",
 ) -> Paginated[User]:
     """List users via standard backend pagination query parameters."""
     try:
         pagination_params = PaginationParams(
-            page=page, page_size=page_size, order_by=order_by, filter=filter)
+            page=page, page_size=page_size, order_by=order_by, filter=filter
+        )
         return user_service.list(subject, pagination_params)
     except UserPermissionException as e:
         raise HTTPException(status_code=403, detail=str(e))

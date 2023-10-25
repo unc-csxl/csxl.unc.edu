@@ -1,7 +1,7 @@
 /**
  * The Event Editor Component allows users to edit information
  * about events which are publically displayed on the Events page.
- * 
+ *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
  * @copyright 2023
  * @license MIT
@@ -32,7 +32,11 @@ export class EventEditorComponent {
     path: 'organizations/:slug/events/:id/edit',
     component: EventEditorComponent,
     title: 'Event Editor',
-    resolve: { profile: profileResolver, organization: organizationDetailResolver, event: eventDetailResolver }
+    resolve: {
+      profile: profileResolver,
+      organization: organizationDetailResolver,
+      event: eventDetailResolver
+    }
   };
 
   /** Store the event to be edited or created */
@@ -49,7 +53,10 @@ export class EventEditorComponent {
   name = new FormControl('', [Validators.required]);
   time = new FormControl('', [Validators.required]);
   location = new FormControl('', [Validators.required]);
-  description = new FormControl('', [Validators.required, Validators.maxLength(2000)]);
+  description = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(2000)
+  ]);
   public = new FormControl('', [Validators.required]);
 
   /** Create a form group */
@@ -58,19 +65,24 @@ export class EventEditorComponent {
     time: new Date(this.time.value!),
     location: this.location,
     description: this.description,
-    public: (this.public.value! == "true")
+    public: this.public.value! == 'true'
   });
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private router: Router,
     protected formBuilder: FormBuilder,
     protected organizationService: OrganizationService,
     protected snackBar: MatSnackBar,
     private eventService: EventService,
-    private permission: PermissionService) {
-
+    private permission: PermissionService
+  ) {
     /** Get currently-logged-in user. */
-    const data = route.snapshot.data as { profile: Profile, organization: Organization, event: Event };
+    const data = route.snapshot.data as {
+      profile: Profile;
+      organization: Organization;
+      event: Event;
+    };
     this.profile = data.profile;
 
     /** Initialize event */
@@ -88,51 +100,49 @@ export class EventEditorComponent {
       location: this.event.location,
       description: this.event.description,
       public: this.event.public
-    })
+    });
 
     /** Set permission value */
-    this.adminPermission$ = this.permission.check('organization.events.manage', `organization/${this.organization!.id}`);
+    this.adminPermission$ = this.permission.check(
+      'organization.events.manage',
+      `organization/${this.organization!.id}`
+    );
   }
 
   /** Event handler to handle submitting the Create Event Form.
    * @returns {void}
-  */
+   */
   onSubmit = () => {
     if (this.eventForm.valid) {
-      Object.assign(this.event, this.eventForm.value)
+      Object.assign(this.event, this.eventForm.value);
       if (this.event.id == null) {
-        this.eventService.createEvent(this.event).subscribe(
-          {
-            next: (event) => this.onSuccess(event),
-            error: (err) => this.onError(err)
-          }
-        );
-      }
-      else {
-        this.eventService.updateEvent(this.event).subscribe(
-          {
-            next: (event) => this.onSuccess(event),
-            error: (err) => this.onError(err)
-          }
-        );
+        this.eventService.createEvent(this.event).subscribe({
+          next: (event) => this.onSuccess(event),
+          error: (err) => this.onError(err)
+        });
+      } else {
+        this.eventService.updateEvent(this.event).subscribe({
+          next: (event) => this.onSuccess(event),
+          error: (err) => this.onError(err)
+        });
       }
       this.router.navigate(['/organizations/', this.organization_slug]);
     }
-  }
+  };
 
   /** Opens a confirmation snackbar when an event is successfully created.
    * @returns {void}
-  */
+   */
   private onSuccess(event: Event): void {
     this.router.navigate(['/events/', event.id]);
-    this.snackBar.open("Event Edited", "", { duration: 2000 })
+    this.snackBar.open('Event Edited', '', { duration: 2000 });
   }
 
   /** Opens a confirmation snackbar when there is an error creating an event.
    * @returns {void}
-  */
+   */
   private onError(err: any): void {
-    console.error("Error: Event Not Created");
-    this.snackBar.open("Error: Event Not Created", "", { duration: 2000 })
+    console.error('Error: Event Not Created');
+    this.snackBar.open('Error: Event Not Created', '', { duration: 2000 });
   }
 }

@@ -11,7 +11,8 @@ config = context.config
 
 # Use our project's environment variables for the connection string:
 from backend import database
-config.set_main_option('sqlalchemy.url', database._engine_str())
+
+config.set_main_option("sqlalchemy.url", database._engine_str())
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -23,6 +24,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from backend.entities import EntityBase
+
 target_metadata = EntityBase.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -69,9 +71,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

@@ -1,47 +1,49 @@
 <mat-card>
-    <!-- Coworking Card Header -->
-    <mat-card-header class="dropin-header">
-        <!--  class="user-name" -->
-        <mat-card-title>Drop-in to The XL (SN156)</mat-card-title>
-    </mat-card-header>
+  <!-- Coworking Card Header -->
+  <mat-card-header class="dropin-header">
+    <!--  class="user-name" -->
+    <mat-card-title>Drop-in to The XL (SN156)</mat-card-title>
+  </mat-card-header>
 
-    <!-- Coworking Information -->
-    <mat-card-content>
-        <p>The following seats are available for drop-ins. Reserve here and check-in within 10 minutes.</p>
-        <!-- Coworking Dropdowns -->
-        <!-- TODO: Refactor these list items to widgets? -->
-        <mat-action-list>
-            <ng-container *ngFor="let category of categories">
-                <ng-container *ngIf="category.reservable_now; else reservable_soon">
-                    <mat-list-item (click)="reserve(category)">
-                        <h3 matListItemTitle>{{ category.title }}</h3>
-                        <div matListItemIcon>{{ category.seats_available_now.length }}</div>
-                        <p matListItemLine>{{ category.availabilityString() }}</p>
-                        <h3 matListItemMeta>&rsaquo;</h3>
-                    </mat-list-item>
-                </ng-container>
+  <!-- Coworking Information -->
+  <mat-card-content>
+    <p>
+      The following seats are available for drop-ins. Reserve here and check-in
+      within 10 minutes.
+    </p>
+    <!-- Coworking Dropdowns -->
+    <!-- TODO: Refactor these list items to widgets? -->
+    <mat-action-list>
+      <ng-container *ngFor="let category of categories">
+        <ng-container *ngIf="category.reservable_now; else reservable_soon">
+          <mat-list-item (click)="reserve(category)">
+            <h3 matListItemTitle>{{ category.title }}</h3>
+            <div matListItemIcon>{{ category.seats_available_now.length }}</div>
+            <p matListItemLine>{{ category.availabilityString() }}</p>
+            <h3 matListItemMeta>&rsaquo;</h3>
+          </mat-list-item>
+        </ng-container>
 
-                <ng-template #reservable_soon>
-                    <ng-container *ngIf="category.reservable_soon; else not_reservable">
-                        <mat-list-item (click)="reserve(category)">
-                            <h3 matListItemTitle>{{ category.title }}</h3>
-                            <div matListItemIcon class="upcoming">1</div>
-                            <p matListItemLine>{{ category.availabilityString() }}</p>
-                            <h3 matListItemMeta>&rsaquo;</h3>
-                        </mat-list-item>
-                    </ng-container>
-                </ng-template>
+        <ng-template #reservable_soon>
+          <ng-container *ngIf="category.reservable_soon; else not_reservable">
+            <mat-list-item (click)="reserve(category)">
+              <h3 matListItemTitle>{{ category.title }}</h3>
+              <div matListItemIcon class="upcoming">1</div>
+              <p matListItemLine>{{ category.availabilityString() }}</p>
+              <h3 matListItemMeta>&rsaquo;</h3>
+            </mat-list-item>
+          </ng-container>
+        </ng-template>
 
-                <ng-template #not_reservable>
-                    <mat-list-item disabled="disabled">
-                        <h3 matListItemTitle>{{ category.title }}</h3>
-                        <div matListItemIcon class="unavailable">0</div>
-                        <p matListItemLine>None available</p>
-                        <h3 matListItemMeta>&rsaquo;</h3>
-                    </mat-list-item>
-                </ng-template>
-            </ng-container>
-        </mat-action-list>
-
-    </mat-card-content>
+        <ng-template #not_reservable>
+          <mat-list-item disabled="disabled">
+            <h3 matListItemTitle>{{ category.title }}</h3>
+            <div matListItemIcon class="unavailable">0</div>
+            <p matListItemLine>None available</p>
+            <h3 matListItemMeta>&rsaquo;</h3>
+          </mat-list-item>
+        </ng-template>
+      </ng-container>
+    </mat-action-list>
+  </mat-card-content>
 </mat-card>

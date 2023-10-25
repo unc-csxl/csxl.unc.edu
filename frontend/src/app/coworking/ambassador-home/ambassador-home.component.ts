@@ -12,7 +12,6 @@ import { AmbassadorService } from './ambassador.service';
   styleUrls: ['./ambassador-home.component.css']
 })
 export class AmbassadorPageComponent implements OnInit, OnDestroy {
-
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
     path: 'ambassador',
@@ -32,18 +31,23 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
 
   constructor(public ambassadorService: AmbassadorService) {
     this.reservations$ = this.ambassadorService.reservations$;
-    this.upcomingReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CONFIRMED')));
-    this.activeReservations$ = this.reservations$.pipe(map(reservations => reservations.filter(r => r.state === 'CHECKED_IN')));
+    this.upcomingReservations$ = this.reservations$.pipe(
+      map((reservations) => reservations.filter((r) => r.state === 'CONFIRMED'))
+    );
+    this.activeReservations$ = this.reservations$.pipe(
+      map((reservations) =>
+        reservations.filter((r) => r.state === 'CHECKED_IN')
+      )
+    );
   }
 
   ngOnInit(): void {
-    this.refreshSubscription = timer(0, 5000).pipe(
-      tap(_ => this.ambassadorService.fetchReservations())
-    ).subscribe();
+    this.refreshSubscription = timer(0, 5000)
+      .pipe(tap((_) => this.ambassadorService.fetchReservations()))
+      .subscribe();
   }
 
   ngOnDestroy(): void {
     this.refreshSubscription.unsubscribe();
   }
-
 }

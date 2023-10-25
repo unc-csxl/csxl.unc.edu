@@ -1,16 +1,25 @@
 <!-- Event Card -->
-<mat-card [ngClass]="(selected && disableLink) ? 'selected-card' : ''" appearance="outlined"
-    style="margin-top: 12px !important;" [routerLink]="disableLink ? null : '/events/' + event.id"
-    (click)="cardClicked()">
-    <!-- Inner Columns -->
-    <div style="display: flex; flex-direction: column; padding: 12px;">
-        <div style="display: flex; flex-direction: row;">
-            <p style="font-weight: 500; margin: 0px; width: 75%;">{{event.name}}</p>
-            <p style="margin: 0px; text-align: end; width: 25%;">{{event.time | date:'shortTime'}}</p>
-        </div>
-        <div style="display: flex; flex-direction: row; margin-top: 8px;">
-            <p style="margin: 0px; width: 50%;">{{event.organization?.shorthand ?? ""}}</p>
-            <p style="margin: 0px; text-align: end; width: 50%;">{{event.location}}</p>
-        </div>
+<mat-card
+  [ngClass]="selected && disableLink ? 'selected-card' : ''"
+  appearance="outlined"
+  style="margin-top: 12px !important"
+  [routerLink]="disableLink ? null : '/events/' + event.id"
+  (click)="cardClicked()">
+  <!-- Inner Columns -->
+  <div style="display: flex; flex-direction: column; padding: 12px">
+    <div style="display: flex; flex-direction: row">
+      <p style="font-weight: 500; margin: 0px; width: 75%">{{ event.name }}</p>
+      <p style="margin: 0px; text-align: end; width: 25%">
+        {{ event.time | date: 'shortTime' }}
+      </p>
     </div>
+    <div style="display: flex; flex-direction: row; margin-top: 8px">
+      <p style="margin: 0px; width: 50%">
+        {{ event.organization?.shorthand ?? '' }}
+      </p>
+      <p style="margin: 0px; text-align: end; width: 50%">
+        {{ event.location }}
+      </p>
+    </div>
+  </div>
 </mat-card>

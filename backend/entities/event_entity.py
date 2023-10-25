@@ -12,6 +12,7 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
 
@@ -32,62 +33,69 @@ class EventEntity(EntityBase):
     description: Mapped[str] = mapped_column(String)
     # Whether the event is public or not
     public: Mapped[bool] = mapped_column(Boolean)
-    
+
     # Organization hosting the event
     # NOTE: This defines a one-to-many relationship between the organization and events tables.
     organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
-    organization: Mapped['OrganizationEntity'] = relationship(back_populates="events")
-
+    organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 
     @classmethod
     def from_model(cls, model: Event) -> Self:
         """
         Class method that converts an `Event` model into a `EventEntity`
-        
+
         Parameters:
             - model (Event): Model to convert into an entity
         Returns:
             EventEntity: Entity created from model
         """
-        return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public, organization_id=model.organization_id)
+        return cls(
+            id=model.id,
+            name=model.name,
+            time=model.time,
+            location=model.location,
+            description=model.description,
+            public=model.public,
+            organization_id=model.organization_id,
+        )
 
     def to_model(self) -> Event:
         """
         Converts a `EventEntity` object into a `Event` model object
-        
+
         Returns:
             Event: `Event` object from the entity
         """
-        return Event(id=self.id, 
-           name=self.name, 
-           time=self.time, 
-           location=self.location, 
-           description=self.description, 
-           public=self.public,
-           organization_id=self.organization_id
+        return Event(
+            id=self.id,
+            name=self.name,
+            time=self.time,
+            location=self.location,
+            description=self.description,
+            public=self.public,
+            organization_id=self.organization_id,
         )
 
     @classmethod
     def from_details_model(cls, model: EventDetails):
         """
         Class method that converts an `EventDetails` model into a `EventEntity`
-        
+
         Parameters:
             - model (EventDetails): Model to convert into an entity
         Returns:
             EventEntity: Entity created from model
         """
         return cls(
-            id=model.id, 
-            name=model.name, 
-            time=model.time, 
-            location=model.location, 
-            description=model.description, 
-            public=model.public, 
-            organization_id=model.organization_id
+            id=model.id,
+            name=model.name,
+            time=model.time,
+            location=model.location,
+            description=model.description,
+            public=model.public,
+            organization_id=model.organization_id,
         )
 
-        
     def to_details_model(self) -> EventDetails:
         """Create a EventDetails model from an EventEntity, with permissions and members included.
 
@@ -95,12 +103,12 @@ class EventEntity(EntityBase):
             EventDetails: An EventDetails model for API usage.
         """
         return EventDetails(
-            id=self.id, 
-            name=self.name, 
-            time=self.time, 
-            location=self.location, 
-            description=self.description, 
+            id=self.id,
+            name=self.name,
+            time=self.time,
+            location=self.location,
+            description=self.description,
             public=self.public,
             organization_id=self.organization_id,
-            organization=self.organization.to_model()
+            organization=self.organization.to_model(),
         )

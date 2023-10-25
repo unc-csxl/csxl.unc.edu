@@ -10,7 +10,7 @@
       ],
       "parserOptions": {
         "project": [
-          "frontend/tsconfig.json"
+          "/workspace/frontend/tsconfig.json"
         ],
         "createDefaultProgram": true
       },

@@ -6,6 +6,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class UserIdentity(BaseModel):
     """
     Pydantic model to represent how `User`s are identified in the system.
@@ -13,6 +14,7 @@ class UserIdentity(BaseModel):
     This model is based on the `UserEntity` model, which defines the shape
     of the `User` database in the PostgreSQL database.
     """
+
     id: int | None = None
 
 
@@ -42,6 +44,7 @@ class NewUser(User, BaseModel):
     This model is based on the `UserEntity` model, which defines the shape
     of the `User` database in the PostgreSQL database.
     """
+
     id: int | None = None
 
 

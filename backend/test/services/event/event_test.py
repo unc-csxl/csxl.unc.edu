@@ -4,7 +4,10 @@
 import pytest
 from unittest.mock import create_autospec
 
-from backend.services.exceptions import UserPermissionException, ResourceNotFoundException
+from backend.services.exceptions import (
+    UserPermissionException,
+    ResourceNotFoundException,
+)
 
 # Tested Dependencies
 from ....models import Event, EventDetails
@@ -17,12 +20,7 @@ from ..fixtures import event_svc_integration
 from ..core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
-from .event_test_data import (
-    events,
-    event_one,
-    to_add,
-    updated_event
-)
+from .event_test_data import events, event_one, to_add, updated_event
 from ..user_data import root, user
 
 # Test Functions

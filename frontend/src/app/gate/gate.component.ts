@@ -2,7 +2,7 @@
  * Redirect the user to the correct place upon authentication. If the user is authenticated, but has
  * not registered, we take them to the registration page. Otherwise, we attempt to take them to the
  * URL they were accessing when required to authenticated. Otherwise, we redirect them home.
- * 
+ *
  * @author Kris Jordan
  * @copyright 2023
  * @license MIT
@@ -16,36 +16,41 @@ import { isAuthenticated } from './gate.guard';
 
 @Component({ template: '' })
 export class GateComponent {
+  public static Route = {
+    path: 'gate',
+    component: GateComponent,
+    canActivate: [isAuthenticated],
+    resolve: { profile: profileResolver }
+  };
 
-    public static Route = {
-        path: 'gate',
-        component: GateComponent,
-        canActivate: [isAuthenticated],
-        resolve: { profile: profileResolver }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    const profile = route.snapshot.data['profile'] as Profile | undefined;
+
+    if (profile === undefined) {
+      this.router.navigate(['']);
+      return;
     }
 
-    constructor(private route: ActivatedRoute, private router: Router) {
-        const profile = route.snapshot.data['profile'] as Profile | undefined;
+    let queryParams = this.route.snapshot.queryParams as {
+      continue_to?: string;
+    };
 
-        if (profile === undefined) {
-            this.router.navigate(['']);
-            return;
+    if (profile && profile.registered) {
+      if (queryParams.continue_to) {
+        let pathParts = queryParams.continue_to
+          .split('/')
+          .filter((s) => s != '');
+        if (pathParts.length > 0) {
+          this.router.navigate(pathParts);
+          return;
         }
-
-        let queryParams = this.route.snapshot.queryParams as { continue_to?: string };
-
-        if (profile && profile.registered) {
-            if (queryParams.continue_to) {
-                let pathParts = queryParams.continue_to.split('/').filter(s => s != '');
-                if (pathParts.length > 0) {
-                    this.router.navigate(pathParts);
-                    return;
-                }
-            }
-            this.router.navigate(['']);
-        } else {
-            this.router.navigate(['profile'], { queryParams });
-        }
+      }
+      this.router.navigate(['']);
+    } else {
+      this.router.navigate(['profile'], { queryParams });
     }
-
+  }
 }

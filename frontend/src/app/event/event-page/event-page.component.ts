@@ -1,13 +1,13 @@
 /**
- * The Event Page Component serves as a hub for students to browse all of the 
+ * The Event Page Component serves as a hub for students to browse all of the
  * events hosted by CS Organizations at UNC.
- * 
+ *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
  * @copyright 2023
  * @license MIT
  */
 
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventResolver } from '../event.resolver';
 import { ActivatedRoute } from '@angular/router';
@@ -22,8 +22,7 @@ import { EventService } from '../event.service';
   templateUrl: './event-page.component.html',
   styleUrls: ['./event-page.component.css']
 })
-export class EventPageComponent {
-
+export class EventPageComponent implements OnInit {
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: '',
@@ -31,10 +30,10 @@ export class EventPageComponent {
     component: EventPageComponent,
     canActivate: [],
     resolve: { profile: profileResolver, events: eventResolver }
-  }
+  };
 
   /** Store the content of the search bar */
-  public searchBarQuery = "";
+  public searchBarQuery = '';
 
   /** Store list of Events */
   public events: Event[];
@@ -58,9 +57,11 @@ export class EventPageComponent {
     public eventFilterPipe: EventFilterPipe,
     public eventService: EventService
   ) {
-
     // Initialize data from resolvers
-    const data = this.route.snapshot.data as { profile: Profile, events: Event[] };
+    const data = this.route.snapshot.data as {
+      profile: Profile;
+      events: Event[];
+    };
     this.profile = data.profile;
     this.events = data.events;
 
@@ -69,7 +70,7 @@ export class EventPageComponent {
 
     // Initialize the initially selected event
     if (data.events.length > 0) {
-      this.selectedEvent = data.events[0]
+      this.selectedEvent = data.events[0];
     }
   }
 
@@ -90,7 +91,7 @@ export class EventPageComponent {
    * @param query: Search bar query to filter the items
    */
   onSearchBarQueryChange(query: string) {
-    this.eventsPerDay = this.eventService.groupEventsByDate(this.events, query)
+    this.eventsPerDay = this.eventService.groupEventsByDate(this.events, query);
   }
 
   /** Handler that runs when an event card is clicked.
@@ -98,6 +99,6 @@ export class EventPageComponent {
    * @param event: Event pressed
    */
   onEventCardClicked(event: Event) {
-    this.selectedEvent = event
+    this.selectedEvent = event;
   }
 }

@@ -12,7 +12,10 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-openapi_tags = {"name": "(Admin) Roles", "description": "Roles are used to grant permissions to users."}
+openapi_tags = {
+    "name": "(Admin) Roles",
+    "description": "Roles are used to grant permissions to users.",
+}
 
 api = APIRouter(prefix="/api/admin/roles")
 
@@ -51,12 +54,12 @@ def role_details(
         raise HTTPException(status_code=403, detail=str(e))
 
 
-@api.post('/{id}/permission', tags=["(Admin) Roles"])
+@api.post("/{id}/permission", tags=["(Admin) Roles"])
 def grant_permission_to_role(
     id: int,
     permission: Permission,
     subject: User = Depends(registered_user),
-    role_service: RoleService = Depends()
+    role_service: RoleService = Depends(),
 ) -> RoleDetails:
     """Grant a permission to a role."""
     try:
@@ -70,7 +73,7 @@ def revoke_permission_from_role(
     id: int,
     permissionId: int,
     subject: User = Depends(registered_user),
-    role_service: RoleService = Depends()
+    role_service: RoleService = Depends(),
 ) -> bool:
     """Revoke a permission from a role."""
     try:
@@ -79,12 +82,12 @@ def revoke_permission_from_role(
         raise HTTPException(status_code=403, detail=str(e))
 
 
-@api.post('/{id}/member', tags=["(Admin) Roles"])
+@api.post("/{id}/member", tags=["(Admin) Roles"])
 def add_member_to_role(
     id: int,
     member: User,
     subject: User = Depends(registered_user),
-    role_service: RoleService = Depends()
+    role_service: RoleService = Depends(),
 ) -> RoleDetails:
     """Add a member to a role."""
     try:
@@ -98,7 +101,7 @@ def remove_member_from_role(
     id: int,
     userId: int,
     subject: User = Depends(registered_user),
-    role_service: RoleService = Depends()
+    role_service: RoleService = Depends(),
 ) -> bool:
     """Remove a member from a role."""
     try:

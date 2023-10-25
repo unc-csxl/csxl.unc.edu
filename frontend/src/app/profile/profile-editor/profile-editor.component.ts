@@ -12,12 +12,11 @@ import { Profile, ProfileService } from '../profile.service';
   styleUrls: ['./profile-editor.component.css']
 })
 export class ProfileEditorComponent implements OnInit {
-
   public static Route: Route = {
     path: 'profile',
-    component: ProfileEditorComponent, 
-    title: 'Profile', 
-    canActivate: [isAuthenticated], 
+    component: ProfileEditorComponent,
+    title: 'Profile',
+    canActivate: [isAuthenticated],
     resolve: { profile: profileResolver }
   };
 
@@ -30,11 +29,22 @@ export class ProfileEditorComponent implements OnInit {
     pronouns: ''
   });
 
-  constructor(route: ActivatedRoute, protected formBuilder: FormBuilder, protected profileService: ProfileService, protected snackBar: MatSnackBar) {
+  constructor(
+    route: ActivatedRoute,
+    protected formBuilder: FormBuilder,
+    protected profileService: ProfileService,
+    protected snackBar: MatSnackBar
+  ) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
     form.get('lastname')?.addValidators(Validators.required);
-    form.get('email')?.addValidators([Validators.required, Validators.email, Validators.pattern(/unc\.edu$/)]);
+    form
+      .get('email')
+      ?.addValidators([
+        Validators.required,
+        Validators.email,
+        Validators.pattern(/unc\.edu$/)
+      ]);
     form.get('pronouns')?.addValidators(Validators.required);
 
     const data = route.snapshot.data as { profile: Profile };
@@ -54,22 +64,20 @@ export class ProfileEditorComponent implements OnInit {
 
   onSubmit(): void {
     if (this.profileForm.valid) {
-      Object.assign(this.profile, this.profileForm.value)
-      this.profileService.put(this.profile).subscribe(
-        {
-          next: (user) => this.onSuccess(user),
-          error: (err) => this.onError(err)
-        } 
-      );
+      Object.assign(this.profile, this.profileForm.value);
+      this.profileService.put(this.profile).subscribe({
+        next: (user) => this.onSuccess(user),
+        error: (err) => this.onError(err)
+      });
     }
   }
 
   private onSuccess(profile: Profile) {
-    this.snackBar.open("Profile Saved", "", { duration: 2000 })
+    this.snackBar.open('Profile Saved', '', { duration: 2000 });
   }
 
   private onError(err: any) {
-    console.error("How to handle this?");
+    console.error('How to handle this?');
   }
 
   linkWithGitHub(): void {
@@ -80,8 +88,7 @@ export class ProfileEditorComponent implements OnInit {
 
   unlinkGitHub() {
     this.profileService.unlinkGitHub().subscribe({
-      next: () => this.profile.github = '',
+      next: () => (this.profile.github = '')
     });
   }
-
 }
