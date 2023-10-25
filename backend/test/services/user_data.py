@@ -25,6 +25,7 @@ root = User(
     email="root@unc.edu",
     first_name="Rhonda",
     last_name="Root",
+    pronouns="She / Her / Hers",
 )
 
 ambassador = User(
@@ -34,6 +35,7 @@ ambassador = User(
     email="amam@unc.edu",
     first_name="Amy",
     last_name="Ambassador",
+    pronouns="They / Them / Theirs",
 )
 
 user = User(
@@ -43,6 +45,7 @@ user = User(
     email="user@unc.edu",
     first_name="Sally",
     last_name="Student",
+    pronouns="She / They",
 )
 
 users = [root, ambassador, user]
