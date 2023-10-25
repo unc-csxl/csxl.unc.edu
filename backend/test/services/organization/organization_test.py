@@ -53,7 +53,9 @@ def test_get_from_slug(organization_svc_integration: OrganizationService):
     assert isinstance(fetched_organization, Organization)
     assert fetched_organization.slug == cads.slug
 
+
 # Test `OrganizationService.create()`
+
 
 def test_create_enforces_permission(organization_svc_integration: OrganizationService):
     """Test that the service enforces permissions when attempting to create an organization."""
@@ -92,7 +94,10 @@ def test_update_organization_as_root(
     Note: Test data's website field is updated
     """
     organization_svc_integration.update(root, new_cads)
-    assert organization_svc_integration.get_from_slug("cads").website == "https://cads.cs.unc.edu/"
+    assert (
+        organization_svc_integration.get_from_slug("cads").website
+        == "https://cads.cs.unc.edu/"
+    )
 
 
 def test_update_organization_as_user(organization_svc_integration: OrganizationService):

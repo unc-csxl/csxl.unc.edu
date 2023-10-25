@@ -155,7 +155,10 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
         session, ReservationEntity, ReservationEntity.id, len(reservations) + 1
     )
 
+
 def delete_future_data(session: Session, time: dict[str, datetime]):
-    reservations = session.scalars(select(ReservationEntity).where(ReservationEntity.end >= time[NOW])).all()
+    reservations = session.scalars(
+        select(ReservationEntity).where(ReservationEntity.end >= time[NOW])
+    ).all()
     for reservation in reservations:
         session.delete(reservation)

@@ -12,15 +12,21 @@ from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
 from ..models.user import User
 
-__authors__ = ['Ajay Gandecha', 'Jade Keegan', 'Brianna Ta', 'Audrey Toney']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 api = APIRouter(prefix="/api/organizations")
-openapi_tags = { "name": "Organizations", "description": "Create, update, delete, and retrieve CS Organizations."}
+openapi_tags = {
+    "name": "Organizations",
+    "description": "Create, update, delete, and retrieve CS Organizations.",
+}
 
-@api.get("", response_model=list[Organization], tags=['Organizations'])
-def get_organizations(organization_service: OrganizationService = Depends()) -> list[Organization]:
+
+@api.get("", response_model=list[Organization], tags=["Organizations"])
+def get_organizations(
+    organization_service: OrganizationService = Depends(),
+) -> list[Organization]:
     """
     Get all organizations
 
@@ -34,8 +40,13 @@ def get_organizations(organization_service: OrganizationService = Depends()) -> 
     # Return all organizations
     return organization_service.all()
 
-@api.post("", response_model=Organization, tags=['Organizations'])
-def new_organization(organization: Organization, subject: User = Depends(registered_user), organization_service: OrganizationService = Depends()) -> Organization:
+
+@api.post("", response_model=Organization, tags=["Organizations"])
+def new_organization(
+    organization: Organization,
+    subject: User = Depends(registered_user),
+    organization_service: OrganizationService = Depends(),
+) -> Organization:
     """
     Create organization
 
@@ -58,8 +69,16 @@ def new_organization(organization: Organization, subject: User = Depends(registe
         # Raise 422 exception if creation fails (request body is shaped incorrectly / not authorized)
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.get("/{slug}", responses={404: {"model": None}}, response_model=OrganizationDetails, tags=['Organizations'])
-def get_organization_from_slug(slug: str, organization_service: OrganizationService = Depends()) -> OrganizationDetails:
+
+@api.get(
+    "/{slug}",
+    responses={404: {"model": None}},
+    response_model=OrganizationDetails,
+    tags=["Organizations"],
+)
+def get_organization_from_slug(
+    slug: str, organization_service: OrganizationService = Depends()
+) -> OrganizationDetails:
     """
     Get organization with matching slug
 
@@ -82,8 +101,18 @@ def get_organization_from_slug(slug: str, organization_service: OrganizationServ
         # Raise 404 exception if search fails (no response)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.put("", responses={404: {"model": None}}, response_model=Organization, tags=['Organizations'])
-def update_organization(organization: Organization, subject: User = Depends(registered_user), organization_service: OrganizationService = Depends()) -> Organization:
+
+@api.put(
+    "",
+    responses={404: {"model": None}},
+    response_model=Organization,
+    tags=["Organizations"],
+)
+def update_organization(
+    organization: Organization,
+    subject: User = Depends(registered_user),
+    organization_service: OrganizationService = Depends(),
+) -> Organization:
     """
     Update organization
 
@@ -105,8 +134,13 @@ def update_organization(organization: Organization, subject: User = Depends(regi
         # Raise 404 exception if update fails (organization does not exist / not authorized)
         raise HTTPException(status_code=404, detail=str(e))
 
-@api.delete("/{slug}", response_model=None, tags=['Organizations'])
-def delete_organization(slug: str, subject: User = Depends(registered_user), organization_service = Depends(OrganizationService)):
+
+@api.delete("/{slug}", response_model=None, tags=["Organizations"])
+def delete_organization(
+    slug: str,
+    subject: User = Depends(registered_user),
+    organization_service=Depends(OrganizationService),
+):
     """
     Delete organization based on slug
 

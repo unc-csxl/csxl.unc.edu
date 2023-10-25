@@ -17,6 +17,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 def reset_database():
     engine = create_engine(_engine_str(""))
     with engine.connect() as connection:

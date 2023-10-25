@@ -21,10 +21,15 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class OrganizationService:
     """Service that performs all of the actions on the `Organization` table"""
 
-    def __init__(self, session: Session = Depends(db_session), permission: PermissionService = Depends()):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
+    ):
         """Initializes the `OrganizationService` session, and `PermissionService`"""
         self._session = session
         self._permission = permission
@@ -92,9 +97,11 @@ class OrganizationService:
         """
 
         # Query the organization with matching slug
-        organization = self._session.query(OrganizationEntity).filter(
-            OrganizationEntity.slug == slug
-        ).one_or_none();
+        organization = (
+            self._session.query(OrganizationEntity)
+            .filter(OrganizationEntity.slug == slug)
+            .one_or_none()
+        )
 
         # Check if result is null
         if organization:
@@ -128,7 +135,6 @@ class OrganizationService:
 
         # Check if result is null
         if obj:
-
             # Update organization object
             obj.name = organization.name
             obj.shorthand = organization.shorthand
@@ -169,7 +175,11 @@ class OrganizationService:
         self._permission.enforce(subject, "organization.create", f"organization")
 
         # Find object to delete
-        obj = self._session.query(OrganizationEntity).filter(OrganizationEntity.slug == slug).one_or_none()
+        obj = (
+            self._session.query(OrganizationEntity)
+            .filter(OrganizationEntity.slug == slug)
+            .one_or_none()
+        )
 
         # Ensure object exists
         if obj:

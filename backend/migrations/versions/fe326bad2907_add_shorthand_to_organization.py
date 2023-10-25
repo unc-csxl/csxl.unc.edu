@@ -11,18 +11,18 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
-revision = 'fe326bad2907'
-down_revision = 'f7ad0c30eb78'
+revision = "fe326bad2907"
+down_revision = "f7ad0c30eb78"
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column('organization', sa.Column('shorthand', sa.String()))
+    op.add_column("organization", sa.Column("shorthand", sa.String()))
     # Default the shorthand of an org to name. Can be edited in admin later.
     op.execute(text("UPDATE organization SET shorthand = name"))
-    op.alter_column('organization', 'shorthand', nullable=False)
+    op.alter_column("organization", "shorthand", nullable=False)
 
 
 def downgrade() -> None:
-    op.drop_column('organization', 'shorthand')
+    op.drop_column("organization", "shorthand")

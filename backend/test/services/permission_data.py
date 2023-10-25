@@ -15,8 +15,14 @@ __license__ = "MIT"
 
 root_role_permission = Permission(id=1, action="*", resource="*")
 ambassador_permission = Permission(id=2, action="checkin.create", resource="checkin")
-ambassador_permission_coworking_reservation = Permission(id=3, action="coworking.reservation.*", resource="*")
-permissions = [root_role_permission, ambassador_permission, ambassador_permission_coworking_reservation]
+ambassador_permission_coworking_reservation = Permission(
+    id=3, action="coworking.reservation.*", resource="*"
+)
+permissions = [
+    root_role_permission,
+    ambassador_permission,
+    ambassador_permission_coworking_reservation,
+]
 
 
 def insert_fake_data(session: Session):

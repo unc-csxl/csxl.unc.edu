@@ -11,6 +11,7 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
 
@@ -47,15 +48,17 @@ class OrganizationEntity(EntityBase):
     heel_life: Mapped[str] = mapped_column(String)
     # Whether the organization can be joined by anyone or not
     public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    
+
     # NOTE: This field establishes a one-to-many relationship between the organizations and events table.
-    events: Mapped[list['EventEntity']] = relationship(back_populates="organization", cascade="all,delete")
+    events: Mapped[list["EventEntity"]] = relationship(
+        back_populates="organization", cascade="all,delete"
+    )
 
     @classmethod
     def from_model(cls, model: Organization) -> Self:
         """
         Class method that converts an `Organization` model into a `OrganizationEntity`
-        
+
         Parameters:
             - model (Organization): Model to convert into an entity
         Returns:
@@ -99,13 +102,13 @@ class OrganizationEntity(EntityBase):
             linked_in=self.linked_in,
             youtube=self.youtube,
             heel_life=self.heel_life,
-            public=self.public
+            public=self.public,
         )
-        
+
     def to_details_model(self) -> OrganizationDetails:
         """
         Converts a `OrganizationEntity` object into a `OrganizationDetails` model object
-        
+
         Returns:
             OrganizationDetails: `OrganizationDetails` object from the entity
         """
@@ -124,5 +127,5 @@ class OrganizationEntity(EntityBase):
             youtube=self.youtube,
             heel_life=self.heel_life,
             public=self.public,
-            events=[event.to_model() for event in self.events]
+            events=[event.to_model() for event in self.events],
         )

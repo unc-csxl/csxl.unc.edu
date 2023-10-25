@@ -4,6 +4,7 @@ __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class Organization(BaseModel):
     """
     Pydantic model to represent an `Organization`.

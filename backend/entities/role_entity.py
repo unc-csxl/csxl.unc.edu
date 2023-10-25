@@ -26,11 +26,13 @@ class RoleEntity(EntityBase):
     # All of the users with the given role.
     # NOTE: This field establishes a many-to-many relationship between the roles and users table.
     #       and uses the "user_role" table as the join table.
-    users: Mapped[list['UserEntity']] = relationship(secondary=user_role_table, back_populates='roles')
-    
+    users: Mapped[list["UserEntity"]] = relationship(
+        secondary=user_role_table, back_populates="roles"
+    )
+
     # All of the permissions with the given role.
     # NOTE: This field establishes a one-to-many relationship between the permissions and roles table.
-    permissions: Mapped[list['PermissionEntity']] = relationship(back_populates='role')
+    permissions: Mapped[list["PermissionEntity"]] = relationship(back_populates="role")
 
     @classmethod
     def from_model(cls, model: Role) -> Self:
@@ -43,10 +45,7 @@ class RoleEntity(EntityBase):
         Returns:
             Self: The entity (not yet persisted).
         """
-        return cls(
-            id=model.id,
-            name=model.name
-        )
+        return cls(id=model.id, name=model.name)
 
     def to_model(self) -> Role:
         """
@@ -55,10 +54,7 @@ class RoleEntity(EntityBase):
         Returns:
             Role: A Role model for API usage.
         """
-        return Role(
-            id=self.id,
-            name=self.name
-        )
+        return Role(id=self.id, name=self.name)
 
     def to_details_model(self) -> RoleDetails:
         """
@@ -70,7 +66,6 @@ class RoleEntity(EntityBase):
         return RoleDetails(
             id=self.id,
             name=self.name,
-            permissions=[permission.to_model()
-                         for permission in self.permissions],
-            users=[user.to_model() for user in self.users]
+            permissions=[permission.to_model() for permission in self.permissions],
+            users=[user.to_model() for user in self.users],
         )

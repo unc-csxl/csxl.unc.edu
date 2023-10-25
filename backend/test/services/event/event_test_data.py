@@ -30,7 +30,7 @@ event_two = Event(
     id=2,
     name="CS+SG Workshop",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
-    location = "SN 014",
+    location="SN 014",
     description="This is a sample description.",
     public=True,
     organization_id=cssg.id | 0,
@@ -41,10 +41,10 @@ events = [event_one, event_two]
 to_add = Event(
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=2, hour=20, minutes=0),
-    location = "SN011",
+    location="SN011",
     description="This is a sample description.",
     public=True,
-    organization_id=cads.id | 0
+    organization_id=cads.id | 0,
 )
 
 updated_event = Event(
@@ -54,10 +54,11 @@ updated_event = Event(
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
-    organization_id=cssg.id | 0
+    organization_id=cssg.id | 0,
 )
 
 # Data Functions
+
 
 def insert_fake_data(session: Session):
     """Inserts fake event data into the test session."""
@@ -72,9 +73,7 @@ def insert_fake_data(session: Session):
         entities.append(event_entity)
 
     # Reset table IDs to prevent ID conflicts
-    reset_table_id_seq(
-        session, EventEntity, EventEntity.id, len(events) + 1
-    )
+    reset_table_id_seq(session, EventEntity, EventEntity.id, len(events) + 1)
 
     # Commit all changes
     session.commit()

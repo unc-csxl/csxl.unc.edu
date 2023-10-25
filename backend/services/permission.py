@@ -19,6 +19,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 class PermissionService:
     """PermissionService grants, revokes, tests, and enforces permissions for users and roles in the system."""
 
@@ -44,7 +45,9 @@ class PermissionService:
         permissions = user_permissions + roles_permissions
         return [permission.to_model() for permission in permissions]
 
-    def grant(self, grantor: User, grantee: User | Role | RoleDetails, permission: Permission) -> bool:
+    def grant(
+        self, grantor: User, grantee: User | Role | RoleDetails, permission: Permission
+    ) -> bool:
         """Grant a permission to a user or role.
 
         To grant a permission, two things must be true:
@@ -64,7 +67,7 @@ class PermissionService:
             ValueError: If the grantee is not a User or Role.
             UserPermissionException: If the grantor does not have permission to grant the permission.
         """
-        self.enforce(grantor, 'permission.grant', permission.action)
+        self.enforce(grantor, "permission.grant", permission.action)
         self.enforce(grantor, permission.action, permission.resource)
 
         # Grant Permission
@@ -76,7 +79,7 @@ class PermissionService:
             role_entity = self._session.get(RoleEntity, grantee.id)
             permission_entity.role = role_entity
         else:
-            raise ValueError('grantee must be User or Role')
+            raise ValueError("grantee must be User or Role")
 
         self._session.add(permission_entity)
         self._session.commit()
@@ -93,7 +96,8 @@ class PermissionService:
             bool: True if the permission was revoked, False otherwise.
 
         Raises:
-            UserPermissionException: If the revoker does not have permission to revoke the permission."""
+            UserPermissionException: If the revoker does not have permission to revoke the permission.
+        """
         if permission.id is None:
             return False
 
@@ -101,10 +105,8 @@ class PermissionService:
         if permission_entity is None:
             return False
 
-        self.enforce(revoker, 'permission.revoke',
-                     f'permission/{permission_entity.id}')
-        self.enforce(revoker, permission_entity.action,
-                     permission_entity.resource)
+        self.enforce(revoker, "permission.revoke", f"permission/{permission_entity.id}")
+        self.enforce(revoker, permission_entity.action, permission_entity.resource)
 
         self._session.delete(permission_entity)
         self._session.commit()
@@ -122,7 +124,8 @@ class PermissionService:
             None
 
         Raises:
-            UserPermissionException: If the subject does not have permission to carry out the action on the resource."""
+            UserPermissionException: If the subject does not have permission to carry out the action on the resource.
+        """
         if self.check(subject, action, resource) is False:
             raise UserPermissionException(action, resource)
 
@@ -133,7 +136,8 @@ class PermissionService:
             subject (User): The user to check permissions for.
 
         Returns:
-            bool: True if the user has permission to carry out the action on the resource, False otherwise."""
+            bool: True if the user has permission to carry out the action on the resource, False otherwise.
+        """
         # Check user permissions
         user_perms = self._get_user_permissions(subject)
         if self._has_permission(user_perms, action, resource):
@@ -152,7 +156,8 @@ class PermissionService:
         Returns:
             list[PermissionEntity]: The permissions for the user."""
         user_query = select(PermissionEntity).where(
-            PermissionEntity.user_id == subject.id)
+            PermissionEntity.user_id == subject.id
+        )
         user_perms = [p for p in self._session.execute(user_query).scalars()]
         return user_perms
 
@@ -171,10 +176,13 @@ class PermissionService:
         if len(role_ids) == 0:
             return []
         role_query = select(PermissionEntity).where(
-            PermissionEntity.role_id.in_(role_ids))
+            PermissionEntity.role_id.in_(role_ids)
+        )
         return [p for p in self._session.execute(role_query).scalars()]
 
-    def _has_permission(self, permissions: list[PermissionEntity], action: str, resource: str) -> bool:
+    def _has_permission(
+        self, permissions: list[PermissionEntity], action: str, resource: str
+    ) -> bool:
         """Check if a user has permission to carry out an action on a resource in a list of permissions.
 
         Args:
@@ -183,13 +191,16 @@ class PermissionService:
             resource (str): The resource in question.
 
         Returns:
-            bool: True if the user has permission to carry out the action on the resource, False otherwise."""
+            bool: True if the user has permission to carry out the action on the resource, False otherwise.
+        """
         for permission in permissions:
             if self._check_permission(permission, action, resource):
                 return True
         return False
 
-    def _check_permission(self, permission: PermissionEntity, action: str, resource: str) -> bool:
+    def _check_permission(
+        self, permission: PermissionEntity, action: str, resource: str
+    ) -> bool:
         """Check if a user has permission to carry out an action on a resource.
 
         Args:
@@ -198,7 +209,8 @@ class PermissionService:
             resource (str): The resource in question.
 
         Returns:
-            bool: True if the user has permission to carry out the action on the resource, False otherwise."""
+            bool: True if the user has permission to carry out the action on the resource, False otherwise.
+        """
         action_re = self._expand_pattern(permission.action)
         if action_re.fullmatch(action) is not None:
             resource_re = self._expand_pattern(permission.resource)
@@ -217,5 +229,5 @@ class PermissionService:
 
         Returns:
             re.Pattern: The compiled regular expression."""
-        search = pattern.replace('*', '.*')
-        return re.compile(f'^{search}$')
+        search = pattern.replace("*", ".*")
+        return re.compile(f"^{search}$")

@@ -4,7 +4,15 @@
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from .api import events, health, organizations, static_files, profile, authentication, user
+from .api import (
+    events,
+    health,
+    organizations,
+    static_files,
+    profile,
+    authentication,
+    user,
+)
 from .api.coworking import status, reservation, ambassador
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
@@ -72,9 +80,7 @@ def permission_exception_handler(request: Request, e: ResourceNotFoundException)
 # Add feature-specific exception handling middleware
 from .api import coworking
 
-feature_exception_handlers = [
-    coworking.exception_handlers
-]
+feature_exception_handlers = [coworking.exception_handlers]
 
 for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:

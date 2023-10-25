@@ -16,9 +16,10 @@ class UnregisteredUser(BaseModel):
     This model is based on the `UserEntity` model, which defines the shape
     of the `User` database in the PostgreSQL database.
     """
+
     pid: int
     onyen: str
-    first_name: str = ''
-    last_name: str = ''
-    email: str = ''
-    pronouns: str = ''
+    first_name: str = ""
+    last_name: str = ""
+    email: str = ""
+    pronouns: str = ""

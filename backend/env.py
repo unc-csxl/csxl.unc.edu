@@ -22,4 +22,4 @@ def getenv(variable: str) -> str:
     if value is not None:
         return value
     else:
-        raise NameError(f'Error: {variable} Environment Variable not Defined')
+        raise NameError(f"Error: {variable} Environment Variable not Defined")

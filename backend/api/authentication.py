@@ -71,111 +71,121 @@ from ..services import UserService, GitHubService
 from ..models import User
 
 
-__authors__ = ['Kris Jordan']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 api = APIRouter()
 
-HOST = getenv('HOST')
-AUTH_SERVER_HOST = 'csxl.unc.edu'
-_JWT_SECRET = getenv('JWT_SECRET')
-_JST_ALGORITHM = 'HS256'
+HOST = getenv("HOST")
+AUTH_SERVER_HOST = "csxl.unc.edu"
+_JWT_SECRET = getenv("JWT_SECRET")
+_JST_ALGORITHM = "HS256"
 
 
 def registered_user(
     user_service: UserService = Depends(),
-    token: HTTPAuthorizationCredentials | None = Depends(HTTPBearer())
+    token: HTTPAuthorizationCredentials | None = Depends(HTTPBearer()),
 ) -> User:
     """Returns the authenticated user or raises a 401 HTTPException if the user is not authenticated."""
     if token:
         try:
             auth_info = jwt.decode(
-                token.credentials, _JWT_SECRET, algorithms=[_JST_ALGORITHM])
-            user = user_service.get(auth_info['pid'])
+                token.credentials, _JWT_SECRET, algorithms=[_JST_ALGORITHM]
+            )
+            user = user_service.get(auth_info["pid"])
             if user:
                 return user
         except:
             ...
-    raise HTTPException(status_code=401, detail='Unauthorized')
+    raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 def authenticated_pid(
-    token: HTTPAuthorizationCredentials | None = Depends(HTTPBearer())
+    token: HTTPAuthorizationCredentials | None = Depends(HTTPBearer()),
 ) -> tuple[int, str]:
     """Returns the authenticated user's PID and Onyen or raises a 401 HTTPException if the user is not authenticated."""
     if token:
         try:
             auth_info = jwt.decode(
-                token.credentials, _JWT_SECRET, algorithms=[_JST_ALGORITHM])
-            return int(auth_info['pid']), auth_info['uid']
+                token.credentials, _JWT_SECRET, algorithms=[_JST_ALGORITHM]
+            )
+            return int(auth_info["pid"]), auth_info["uid"]
         except jwt.exceptions.InvalidSignatureError:
             ...
-    raise HTTPException(status_code=401, detail='Unauthorized')
+    raise HTTPException(status_code=401, detail="Unauthorized")
 
 
-@api.get('/verify', include_in_schema=False)
-def auth_verify(token: str, continue_to: str = '/'):
+@api.get("/verify", include_in_schema=False)
+def auth_verify(token: str, continue_to: str = "/"):
     """Verify the legitimacy of a token for delegated authentication purposes.
 
     This endpoint is used to facilitate SSO authentication in development and staging environments.
     For usage, see the helper function _verify_delegated_auth_token below.
 
     The staging environment will ultimately dispatch to the production environment's verify
-    route, here, in order to verify the token (and then reissue using its own signing)."""
-    return jwt.decode(token, _JWT_SECRET, algorithms=[_JST_ALGORITHM], options={'verify_signature': True})
+    route, here, in order to verify the token (and then reissue using its own signing).
+    """
+    return jwt.decode(
+        token,
+        _JWT_SECRET,
+        algorithms=[_JST_ALGORITHM],
+        options={"verify_signature": True},
+    )
 
-@api.get('/auth', include_in_schema=False)
+
+@api.get("/auth", include_in_schema=False)
 def bearer_token_bootstrap(
     uid: str | None = Header(None),
     pid: int | None = Header(None),
-    continue_to: str = '/',
+    continue_to: str = "/",
     origin: str | None = None,
     token: str | None = None,
-    development_authentication: bool = False
+    development_authentication: bool = False,
 ):
     if HOST == AUTH_SERVER_HOST or development_authentication:
         # Production App Request
         if uid is not None and pid is not None:
             return _handle_auth_in_production(uid, pid, continue_to, origin)
         else:
-            raise HTTPException(
-                status_code=401, detail='You are not authenticated.')
+            raise HTTPException(status_code=401, detail="You are not authenticated.")
     else:
         # Development / Delegated Staging Auth Request
         if not token:
             return _delegate_to_auth_server(continue_to)
         else:
             return _verify_delegated_auth_token(continue_to, token)
-    
 
-@api.get('/auth/as/{uid}/{pid}', include_in_schema=False)
+
+@api.get("/auth/as/{uid}/{pid}", include_in_schema=False)
 def bearer_token_impersonate(
     request: Request,
     uid: str | None,
     pid: int | None,
-    continue_to: str = '/',
+    continue_to: str = "/",
     origin: str | None = None,
     token: str | None = None,
 ):
     """Authenticate as another user in development mode only using this special route."""
-    if getenv('MODE') == 'development':
+    if getenv("MODE") == "development":
         return bearer_token_bootstrap(uid, pid, continue_to, origin, token, True)
     else:
-        onyen = request.headers['uid']
+        onyen = request.headers["uid"]
         raise HTTPException(
-            status_code=400, detail=f'Tsk, tsk. That is a naughty request {onyen}.')
+            status_code=400, detail=f"Tsk, tsk. That is a naughty request {onyen}."
+        )
 
 
-
-@api.get('/oauth/github_oauth_login_url', include_in_schema=False)
-def github_oauth_login_url(subject: User = Depends(registered_user), github_service: GitHubService = Depends()) -> str:
+@api.get("/oauth/github_oauth_login_url", include_in_schema=False)
+def github_oauth_login_url(
+    subject: User = Depends(registered_user), github_service: GitHubService = Depends()
+) -> str:
     """Return the GitHub OAuth login URL with the appropriate callback URL."""
     redirect_uri = _github_oauth_redirect_uri()
     return github_service.get_oauth_login_url(redirect_uri)
 
 
-@api.get('/oauth/github', include_in_schema=False)
+@api.get("/oauth/github", include_in_schema=False)
 def github_oauth(code: str):
     """Upon return from GitHub with a code, this route produces bootstrapping HTML for linking the user's GitHub account.
 
@@ -186,19 +196,24 @@ def github_oauth(code: str):
     return _link_github_html(code)
 
 
-@api.post('/oauth/github', include_in_schema=False)
-def github_link(code: str, subject: User = Depends(registered_user), github_service: GitHubService = Depends()):
+@api.post("/oauth/github", include_in_schema=False)
+def github_link(
+    code: str,
+    subject: User = Depends(registered_user),
+    github_service: GitHubService = Depends(),
+):
     """Link the user's GitHub account with their CSXL account."""
     redirect_uri = _github_oauth_redirect_uri()
     if github_service.link_with_user(subject, code, redirect_uri):
         return "Successfully linked GitHub account."
     else:
-        raise HTTPException(
-            status_code=400, detail="Failed to link GitHub account.")
+        raise HTTPException(status_code=400, detail="Failed to link GitHub account.")
 
 
-@api.delete('/oauth/github', include_in_schema=False)
-def github_unlink(subject: User = Depends(registered_user), github_service: GitHubService = Depends()):
+@api.delete("/oauth/github", include_in_schema=False)
+def github_unlink(
+    subject: User = Depends(registered_user), github_service: GitHubService = Depends()
+):
     """Unlink user's GitHub account with their CSXL account."""
     github_service.remove_association(subject)
     return "Successfully unlinked GitHub account."
@@ -206,30 +221,28 @@ def github_unlink(subject: User = Depends(registered_user), github_service: GitH
 
 def _delegate_to_auth_server(continue_to: str):
     return RedirectResponse(
-        f'https://{AUTH_SERVER_HOST}/auth?origin={HOST}&continue_to={continue_to}'
+        f"https://{AUTH_SERVER_HOST}/auth?origin={HOST}&continue_to={continue_to}"
     )
 
 
 def _verify_delegated_auth_token(continue_to: str, token: str):
-    params = {'token': token}
-    response = requests.get(
-        f'https://{AUTH_SERVER_HOST}/verify', params=params)
+    params = {"token": token}
+    response = requests.get(f"https://{AUTH_SERVER_HOST}/verify", params=params)
     if response.status_code == requests.codes.ok:
         # Generate a token for development app based on verified information
         body = response.json()
-        uid = body['uid']
-        pid = body['pid']
+        uid = body["uid"]
+        pid = body["pid"]
         new_token = _generate_token(uid, pid)
         return _set_client_token(new_token, continue_to)
     else:
-        raise HTTPException(
-            status_code=401, detail='You are not authenticated.')
+        raise HTTPException(status_code=401, detail="You are not authenticated.")
 
 
 def _handle_auth_in_production(
     uid: str | None = Header(None),
     pid: int | None = Header(None),
-    continue_to: str = '/',
+    continue_to: str = "/",
     origin: str | None = None,
 ):
     token = _generate_token(uid, pid)
@@ -238,19 +251,21 @@ def _handle_auth_in_production(
         return _set_client_token(token, continue_to)
     else:
         # Development Authentication Request (origin is app in development)
-        if origin.startswith('localhost'):
-            target = 'http://localhost:1560/auth'  # TODO: Make this port an env variable
+        if origin.startswith("localhost"):
+            target = (
+                "http://localhost:1560/auth"  # TODO: Make this port an env variable
+            )
         else:
-            target = f'https://{origin}/auth'
+            target = f"https://{origin}/auth"
         return RedirectResponse(
-            f'{target}?token={token}&continue_to={continue_to}',
-            headers={'Cache-Control': 'no-cache'},
+            f"{target}?token={token}&continue_to={continue_to}",
+            headers={"Cache-Control": "no-cache"},
         )
 
 
 def _generate_token(uid: any, pid: any):
     token = jwt.encode(
-        {'uid': uid, 'pid': pid, 'exp': datetime.now() + timedelta(days=90)},
+        {"uid": uid, "pid": pid, "exp": datetime.now() + timedelta(days=90)},
         _JWT_SECRET,
         algorithm=_JST_ALGORITHM,
     )
@@ -258,16 +273,16 @@ def _generate_token(uid: any, pid: any):
 
 
 def _github_oauth_redirect_uri():
-    if HOST.startswith('localhost'):
-        redirect_protocol = 'http'
+    if HOST.startswith("localhost"):
+        redirect_protocol = "http"
     else:
-        redirect_protocol = 'https'
+        redirect_protocol = "https"
 
-    return f'{redirect_protocol}://{HOST}/oauth/github'
+    return f"{redirect_protocol}://{HOST}/oauth/github"
 
 
 def _set_client_token(token: str, continue_to: str):
-    data = f'''
+    data = f"""
     <html>
         <head>
             <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
@@ -291,17 +306,17 @@ def _set_client_token(token: str, continue_to: str):
             </script>
         </body>
     </html>
-    '''
+    """
     return Response(
         content=data,
-        media_type='text/html',
-        headers={'Cache-Control': 'no-cache'},
+        media_type="text/html",
+        headers={"Cache-Control": "no-cache"},
     )
 
 
 def _link_github_html(code: str):
     current_time = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
-    data = f'''
+    data = f"""
     <html>
         <head>
             <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
@@ -337,17 +352,17 @@ def _link_github_html(code: str):
             </script>
         </body>
     </html>
-    '''
+    """
     return Response(
         content=data,
-        media_type='text/html',
-        headers={'Cache-Control': 'no-cache'},
+        media_type="text/html",
+        headers={"Cache-Control": "no-cache"},
     )
 
 
 def _set_client_token(token: str, continue_to: str):
     current_time = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
-    data = f'''
+    data = f"""
     <html>
         <head>
             <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
@@ -371,9 +386,9 @@ def _set_client_token(token: str, continue_to: str):
             </script>
         </body>
     </html>
-    '''
+    """
     return Response(
         content=data,
-        media_type='text/html',
-        headers={'Cache-Control': 'no-cache'},
+        media_type="text/html",
+        headers={"Cache-Control": "no-cache"},
     )

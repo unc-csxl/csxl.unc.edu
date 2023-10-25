@@ -8,15 +8,16 @@ from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
 
-__authors__ = ['Kris Jordan']
-__copyright__ = 'Copyright 2023'
-__license__ = 'MIT'
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
+
 
 class UserEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `User` table"""
 
     # Name for the user table in the PostgreSQL database
-    __tablename__ = 'user'
+    __tablename__ = "user"
 
     # Unique ID for the user entry
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -25,15 +26,17 @@ class UserEntity(EntityBase):
     # ONYEN of the user
     onyen: Mapped[str] = mapped_column(String(32), unique=True, index=True)
     # Email of the user
-    email: Mapped[str] = mapped_column(String(32), unique=True, index=True, nullable=False, default='')
+    email: Mapped[str] = mapped_column(
+        String(32), unique=True, index=True, nullable=False, default=""
+    )
     # First name of the user
-    first_name: Mapped[str] = mapped_column(String(64), nullable=False, default='')
+    first_name: Mapped[str] = mapped_column(String(64), nullable=False, default="")
     # Last name of the user
-    last_name: Mapped[str] = mapped_column(String(64), nullable=False, default='')
+    last_name: Mapped[str] = mapped_column(String(64), nullable=False, default="")
     # Pronouns of the user
-    pronouns: Mapped[str] = mapped_column(String(32), nullable=False, default='')
+    pronouns: Mapped[str] = mapped_column(String(32), nullable=False, default="")
     # GitHub username of the user
-    github: Mapped[str] = mapped_column(String(32), nullable=False, default='')
+    github: Mapped[str] = mapped_column(String(32), nullable=False, default="")
     # GitHub ID of the user
     github_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # GitHub Avatar permalink for the user
@@ -42,11 +45,13 @@ class UserEntity(EntityBase):
     # All of the roles for the given user.
     # NOTE: This field establishes a many-to-many relationship between the users and roles table.
     #       and uses the "user_role" table as the join table.
-    roles: Mapped[list['RoleEntity']] = relationship(secondary=user_role_table, back_populates='users')
+    roles: Mapped[list["RoleEntity"]] = relationship(
+        secondary=user_role_table, back_populates="users"
+    )
 
     # The permissions for the given user.
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
-    permissions: Mapped['PermissionEntity'] = relationship(back_populates='user')
+    permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
 
     @classmethod
     def from_model(cls, model: User) -> Self:

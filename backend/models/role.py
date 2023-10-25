@@ -15,5 +15,6 @@ class Role(BaseModel):
     This model is based on the `RoleEntity` model, which defines the shape
     of the `Role` database in the PostgreSQL database.
     """
+
     id: int | None = None
     name: str

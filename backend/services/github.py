@@ -26,7 +26,8 @@ class GitHubService:
         Both arguments are optional and will be typically be injected.
 
         Args:
-            user_svc (UserService): The UserService contains the logic for User management."""
+            user_svc (UserService): The UserService contains the logic for User management.
+        """
         self._user_svc = user_svc
 
     def link_with_user(self, subject: User, oauth_code: str, redirect_uri: str) -> bool:
@@ -70,19 +71,23 @@ class GitHubService:
 
         Returns:
             str: The GitHub OAuth2 link for a user."""
-        client_id = getenv('GITHUB_CLIENT_ID')
+        client_id = getenv("GITHUB_CLIENT_ID")
         random_string = uuid.uuid4().hex  # Random String to prevent CSRF
-        uri = f'https://github.com/login/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&state={random_string}'
+        uri = f"https://github.com/login/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&state={random_string}"
         return uri
 
     def _get_github_oauth_token(self, oauth_code: str, redirect_uri: str) -> str:
-        result = requests.post('https://github.com/login/oauth/access_token', data={
-            'client_id': getenv('GITHUB_CLIENT_ID'),
-            'client_secret': getenv('GITHUB_CLIENT_SECRET'),
-            'code': oauth_code,
-            'redirect_uri': redirect_uri,
-        }, headers={'Accept': 'application/json'})
+        result = requests.post(
+            "https://github.com/login/oauth/access_token",
+            data={
+                "client_id": getenv("GITHUB_CLIENT_ID"),
+                "client_secret": getenv("GITHUB_CLIENT_SECRET"),
+                "code": oauth_code,
+                "redirect_uri": redirect_uri,
+            },
+            headers={"Accept": "application/json"},
+        )
 
         json = result.json()
-        token = json['access_token']
+        token = json["access_token"]
         return token
