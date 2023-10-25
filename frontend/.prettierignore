@@ -1,0 +1,7 @@
+.vscode
+__pycache__
+node_modules
+.angular
+deploy_key*
+.env
+.DS_Store
