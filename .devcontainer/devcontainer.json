@@ -16,7 +16,9 @@
                 "ms-python.black-formatter",
                 "GitHub.vscode-pull-request-github",
                 "angular.ng-template",
-                "matthewpi.caddyfile-support"
+                "matthewpi.caddyfile-support",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
             ],
             "settings": {
                 "python.analysis.extraPaths": [
