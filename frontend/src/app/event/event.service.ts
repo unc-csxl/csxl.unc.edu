@@ -9,8 +9,8 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Event } from './event.model';
+import { Observable, map } from 'rxjs';
+import { Event, EventJson, parseEventJson } from './event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
 
@@ -25,7 +25,7 @@ export class EventService {
    * @returns {Observable<Event[]>}
    */
   getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>("/api/events");
+    return this.http.get<EventJson[]>("/api/events").pipe(map(parseEventJson));
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request. 
@@ -78,7 +78,8 @@ export class EventService {
     let groups: Map<string, Event[]> = new Map();
 
     // Transform the list of events based on the event filter pipe and query
-    this.eventFilterPipe.transform(events, query)
+    this.eventFilterPipe
+      .transform(events, query)
       .forEach((event) => {
         // Find the date to group by
         let dateString = this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ""

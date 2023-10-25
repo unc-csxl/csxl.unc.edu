@@ -20,3 +20,18 @@ export interface Event {
     organization_id: number | null;
     organization: Organization | null;
 }
+
+export interface EventJson {
+    id: number | null;
+    name: string;
+    time: string;
+    location: string;
+    description: string;
+    public: boolean;
+    organization_id: number | null;
+    organization: Organization | null;
+}
+
+export const parseEventJson = (eventJson: EventJson[]): Event[] => {
+    return eventJson.map((json) => Object.assign({}, json, { time: new Date(json.time) }));
+};
