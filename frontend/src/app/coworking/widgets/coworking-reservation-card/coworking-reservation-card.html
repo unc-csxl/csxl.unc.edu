@@ -61,35 +61,35 @@
 
     <mat-card-actions align="end" [ngSwitch]="reservation.state">
       <ng-container *ngSwitchCase="'DRAFT'">
-        <button mat-raised-button type="submit" (click)="cancel()">
+        <button mat-stroked-button type="submit" (click)="cancel()">
           Cancel
         </button>
         &nbsp;
-        <button mat-raised-button type="submit" color="primary" (click)="confirm()">
+        <button mat-stroked-button type="submit" color="primary" (click)="confirm()">
           {{ draftConfirmationDeadline$ | async }}
         </button>
       </ng-container>
 
       <ng-container *ngSwitchCase="'CONFIRMED'">
-        <button mat-raised-button type="submit" (click)="cancel()">
+        <button mat-stroked-button type="submit" (click)="cancel()">
           Cancel
         </button>
       </ng-container>
 
       <ng-container *ngSwitchCase="'CHECKED_IN'">
-        <button mat-raised-button type="submit" (click)="checkout()" color="primary">
+        <button mat-stroked-button type="submit" (click)="checkout()" color="primary">
           Check Out
         </button>
       </ng-container>
 
       <ng-container *ngSwitchCase="'CHECKED_OUT'">
-        <button mat-raised-button type="submit" (click)="router.navigateByUrl('/coworking')" color="primary">
+        <button mat-stroked-button type="submit" (click)="router.navigateByUrl('/coworking')" color="primary">
           Return to Coworking Home
         </button>
       </ng-container>
 
       <ng-container *ngSwitchCase="'CANCELLED'">
-        <button mat-raised-button type="submit" (click)="router.navigateByUrl('/coworking')" color="primary">
+        <button mat-stroked-button type="submit" (click)="router.navigateByUrl('/coworking')" color="primary">
           Return to Coworking Home
         </button>
       </ng-container>

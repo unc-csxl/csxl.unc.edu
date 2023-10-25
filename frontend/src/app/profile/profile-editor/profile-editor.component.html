@@ -34,7 +34,7 @@
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button type="submit" [disabled]="profileForm.invalid">
+      <button mat-stroked-button type="submit" [disabled]="profileForm.invalid">
         SAVE
       </button>
     </mat-card-actions>
@@ -51,7 +51,7 @@
           }}</a></mat-card-title>
     </mat-card-header>
     <mat-card-actions>
-      <button mat-raised-button (click)="unlinkGitHub()">Unlink GitHub</button>
+      <button mat-stroked-button (click)="unlinkGitHub()">Unlink GitHub</button>
     </mat-card-actions>
   </div>
   <ng-template #associate_github>
@@ -59,7 +59,7 @@
       <mat-card-title>Link Your GitHub Account</mat-card-title>
     </mat-card-header>
     <mat-card-actions>
-      <button mat-raised-button (click)="linkWithGitHub()">
+      <button mat-stroked-button (click)="linkWithGitHub()">
         Link with GitHub
       </button>
     </mat-card-actions>
