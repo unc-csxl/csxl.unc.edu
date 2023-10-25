@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <!-- Card Header -->
   <ng-container [ngSwitch]="reservation.state">
     <mat-card-header *ngSwitchCase="'DRAFT'">
@@ -6,23 +6,17 @@
     </mat-card-header>
 
     <mat-card-header *ngSwitchCase="'CONFIRMED'">
-      <mat-card-title
-        >Reservation #{{ reservation.id }} Confirmed</mat-card-title
-      >
-      <mat-card-subtitle
-        >See the XL Ambassador staffing the front desk to
-        check-in.</mat-card-subtitle
-      >
+      <mat-card-title>Reservation #{{ reservation.id }} Confirmed</mat-card-title>
+      <mat-card-subtitle>See the XL Ambassador staffing the front desk to
+        check-in.</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-header *ngSwitchCase="'CHECKED_IN'">
       <mat-card-title>You're Checked In!</mat-card-title>
-      <mat-card-subtitle
-        >See the XL Ambassador if you need anything. When you're done, just
+      <mat-card-subtitle>See the XL Ambassador if you need anything. When you're done, just
         press the Check Out button or check out with the XL Ambassador.
         <br /><br />
-        Changing seats? Please check out and check back in.</mat-card-subtitle
-      >
+        Changing seats? Please check out and check back in.</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-header *ngSwitchCase="'CHECKED_OUT'">
@@ -40,10 +34,8 @@
   <mat-card-content>
     <h3>
       <label>Who</label>
-      <strong
-        >{{ reservation.users[0].first_name }}
-        {{ reservation.users[0].last_name }}</strong
-      >
+      <strong>{{ reservation.users[0].first_name }}
+        {{ reservation.users[0].last_name }}</strong>
     </h3>
     <mat-divider />
 
@@ -73,11 +65,7 @@
           Cancel
         </button>
         &nbsp;
-        <button
-          mat-raised-button
-          type="submit"
-          color="primary"
-          (click)="confirm()">
+        <button mat-raised-button type="submit" color="primary" (click)="confirm()">
           {{ draftConfirmationDeadline$ | async }}
         </button>
       </ng-container>
@@ -89,31 +77,19 @@
       </ng-container>
 
       <ng-container *ngSwitchCase="'CHECKED_IN'">
-        <button
-          mat-raised-button
-          type="submit"
-          (click)="checkout()"
-          color="primary">
+        <button mat-raised-button type="submit" (click)="checkout()" color="primary">
           Check Out
         </button>
       </ng-container>
 
       <ng-container *ngSwitchCase="'CHECKED_OUT'">
-        <button
-          mat-raised-button
-          type="submit"
-          (click)="router.navigateByUrl('/coworking')"
-          color="primary">
+        <button mat-raised-button type="submit" (click)="router.navigateByUrl('/coworking')" color="primary">
           Return to Coworking Home
         </button>
       </ng-container>
 
       <ng-container *ngSwitchCase="'CANCELLED'">
-        <button
-          mat-raised-button
-          type="submit"
-          (click)="router.navigateByUrl('/coworking')"
-          color="primary">
+        <button mat-raised-button type="submit" (click)="router.navigateByUrl('/coworking')" color="primary">
           Return to Coworking Home
         </button>
       </ng-container>
