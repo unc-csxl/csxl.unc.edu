@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subscription, map, tap } from 'rxjs';
 import {
   CoworkingStatus,
@@ -19,7 +19,7 @@ const ONE_HOUR = 60 * 60 * 1000;
 @Injectable({
   providedIn: 'root'
 })
-export class CoworkingService {
+export class CoworkingService implements OnDestroy {
   private status: RxCoworkingStatus = new RxCoworkingStatus();
   public status$: Observable<CoworkingStatus> = this.status.value$;
 

@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventResolver } from '../event.resolver';
 import { ActivatedRoute } from '@angular/router';
@@ -22,7 +22,7 @@ import { EventService } from '../event.service';
   templateUrl: './event-page.component.html',
   styleUrls: ['./event-page.component.css']
 })
-export class EventPageComponent {
+export class EventPageComponent implements OnInit {
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: '',

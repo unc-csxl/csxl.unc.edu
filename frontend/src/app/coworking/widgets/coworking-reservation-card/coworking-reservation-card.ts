@@ -12,8 +12,6 @@ import { ReservationService } from '../../reservation/reservation.service';
 export class CoworkingReservationCard implements OnInit {
   @Input() reservation!: Reservation;
 
-  @Output() onCancel = new EventEmitter<Reservation>();
-
   public draftConfirmationDeadline$!: Observable<string>;
 
   constructor(

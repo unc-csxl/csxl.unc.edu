@@ -76,7 +76,7 @@ const COLLAB_AREA = 2;
 })
 export class CoworkingDropInCard implements OnChanges {
   @Input() seat_availability!: SeatAvailability[];
-  @Output() onSeatsSelected = new EventEmitter<SeatAvailability[]>();
+  @Output() seatsSelected = new EventEmitter<SeatAvailability[]>();
 
   public categories: SeatCategory[];
 
@@ -101,7 +101,7 @@ export class CoworkingDropInCard implements OnChanges {
   }
 
   reserve(category: SeatCategory): void {
-    this.onSeatsSelected.emit([
+    this.seatsSelected.emit([
       ...category.seats_available_now,
       ...category.seats_available_soon
     ]);

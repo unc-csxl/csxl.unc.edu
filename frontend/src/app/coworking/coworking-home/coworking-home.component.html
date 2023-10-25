@@ -16,7 +16,7 @@
         <div class="dropin-card-container">
           <coworking-dropin-availability-card
             [seat_availability]="status.seat_availability"
-            (onSeatsSelected)="reserve($event)" />
+            (seatsSelected)="reserve($event)" />
         </div>
       </ng-template>
     </ng-container>

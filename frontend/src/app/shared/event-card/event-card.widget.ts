@@ -26,14 +26,14 @@ export class EventCard {
   @Input() selected: Boolean = false;
 
   /** Provides the event to a handler for the on click action */
-  @Output() onClicked = new EventEmitter<Event>();
+  @Output() clicked = new EventEmitter<Event>();
 
   constructor() {}
 
   /** Handler for when the event card is pressed */
   cardClicked() {
     if (this.disableLink) {
-      this.onClicked.emit(this.event);
+      this.clicked.emit(this.event);
     }
   }
 }

@@ -7,7 +7,7 @@ import { Profile, ProfileService } from '../profile/profile.service';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent {
   public profile$: Observable<Profile | undefined>;
 
   public links = [
@@ -19,6 +19,4 @@ export class AdminComponent implements OnInit {
   constructor(public profileService: ProfileService) {
     this.profile$ = profileService.profile$;
   }
-
-  ngOnInit(): void {}
 }

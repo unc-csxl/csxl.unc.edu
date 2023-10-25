@@ -32,7 +32,7 @@
     <mat-divider style="padding-bottom: 8px" />
   </div>
 
-  <p *ngIf="eventsPerDay.length == 0">No upcoming events!</p>
+  <p *ngIf="eventsPerDay.length === 0">No upcoming events!</p>
 
   <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] s a list of events -->
@@ -44,6 +44,6 @@
       [event]="event"
       [disableLink]="disableLinks"
       [selected]="event === selectedEvent"
-      (onClicked)="onCardClicked.emit($event)" />
+      (clicked)="cardClicked.emit(event)" />
   </div>
 </mat-card>
