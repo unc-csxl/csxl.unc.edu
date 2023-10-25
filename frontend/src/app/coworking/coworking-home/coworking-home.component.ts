@@ -1,7 +1,7 @@
 /**
  * The Coworking Component serves as the hub for students to create reservations
  * for tables, rooms, and equipment from the CSXL.
- * 
+ *
  * @author Kris Jordan, Ajay Gandecha
  * @copyright 2023
  * @license MIT
@@ -12,8 +12,21 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
-import { CoworkingStatus, OperatingHours, Reservation, SeatAvailability } from '../coworking.models';
-import { Observable, Subscription, filter, map, mergeMap, of, timer } from 'rxjs';
+import {
+  CoworkingStatus,
+  OperatingHours,
+  Reservation,
+  SeatAvailability
+} from '../coworking.models';
+import {
+  Observable,
+  Subscription,
+  filter,
+  map,
+  mergeMap,
+  of,
+  timer
+} from 'rxjs';
 import { ReservationService } from '../reservation/reservation.service';
 
 @Component({
@@ -22,7 +35,6 @@ import { ReservationService } from '../reservation/reservation.service';
   styleUrls: ['./coworking-home.component.css']
 })
 export class CoworkingPageComponent implements OnInit, OnDestroy {
-
   public status$: Observable<CoworkingStatus>;
 
   public openOperatingHours$: Observable<OperatingHours | undefined>;
@@ -41,7 +53,12 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     resolve: { profile: profileResolver }
   };
 
-  constructor(route: ActivatedRoute, public coworkingService: CoworkingService, private router: Router, private reservationService: ReservationService) {
+  constructor(
+    route: ActivatedRoute,
+    public coworkingService: CoworkingService,
+    private router: Router,
+    private reservationService: ReservationService
+  ) {
     this.status$ = coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
@@ -57,7 +74,9 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.timerSubscription = timer(0, 10000).subscribe(() => this.coworkingService.pollStatus());
+    this.timerSubscription = timer(0, 10000).subscribe(() =>
+      this.coworkingService.pollStatus()
+    );
   }
 
   ngOnDestroy(): void {
@@ -65,28 +84,37 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   private initNextOperatingHours(): Observable<OperatingHours | undefined> {
-    return this.status$.pipe(map(status => {
-      let now = new Date();
-      return status.operating_hours.find(hours => hours.start <= now);
-    }));
+    return this.status$.pipe(
+      map((status) => {
+        let now = new Date();
+        return status.operating_hours.find((hours) => hours.start <= now);
+      })
+    );
   }
 
   private initIsOpen(): Observable<boolean> {
-    return this.openOperatingHours$.pipe(map(hours => {
-      let now = new Date();
-      return hours !== undefined && hours.start <= now && hours.end > now;
-    }));
+    return this.openOperatingHours$.pipe(
+      map((hours) => {
+        let now = new Date();
+        return hours !== undefined && hours.start <= now && hours.end > now;
+      })
+    );
   }
 
   private initActiveReservation(): Observable<Reservation | undefined> {
     return this.status$.pipe(
-      map(status => {
+      map((status) => {
         let reservations = status.my_reservations;
         let now = new Date();
-        return reservations.find(reservation => reservation.start <= now && reservation.end > now);
+        return reservations.find(
+          (reservation) => reservation.start <= now && reservation.end > now
+        );
       }),
-      mergeMap(reservation => reservation ? this.reservationService.get(reservation.id) : of(undefined))
+      mergeMap((reservation) =>
+        reservation
+          ? this.reservationService.get(reservation.id)
+          : of(undefined)
+      )
     );
   }
-
 }

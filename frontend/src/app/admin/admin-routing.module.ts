@@ -8,17 +8,19 @@ import { AdminOrganizationListComponent } from './organization/list/admin-organi
 
 const routes: Routes = [
   {
-    path: '', component: AdminComponent, children: [
+    path: '',
+    component: AdminComponent,
+    children: [
       AdminUsersListComponent.Route,
       AdminRolesListComponent.Route,
       AdminRoleDetailsComponent.Route,
-      AdminOrganizationListComponent.Route,
+      AdminOrganizationListComponent.Route
     ]
-  },
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AdminRoutingModule { }
+export class AdminRoutingModule {}

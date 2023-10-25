@@ -8,13 +8,12 @@ import { Profile, ProfileService } from '../profile/profile.service';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-
   public profile$: Observable<Profile | undefined>;
 
   public links = [
     { label: 'Users', path: '/admin/users' },
     { label: 'Roles', path: '/admin/roles' },
-    { label: 'Organizations', path: '/admin/organizations' },
+    { label: 'Organizations', path: '/admin/organizations' }
   ];
 
   constructor(public profileService: ProfileService) {
@@ -22,5 +21,4 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit(): void {}
-
 }

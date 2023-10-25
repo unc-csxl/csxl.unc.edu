@@ -7,11 +7,11 @@ import { ReservationComponent } from './reservation/reservation.component';
 const routes: Routes = [
   CoworkingPageComponent.Route,
   ReservationComponent.Route,
-  AmbassadorPageComponent.Route,
+  AmbassadorPageComponent.Route
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CoworkingRoutingModule { }
+export class CoworkingRoutingModule {}

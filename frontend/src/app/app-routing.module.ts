@@ -8,7 +8,6 @@ import { CoworkingPageComponent } from './coworking/coworking-home/coworking-hom
 import { AmbassadorPageComponent } from './coworking/ambassador-home/ambassador-home.component';
 import { AboutComponent } from './about/about.component';
 
-
 const routes: Routes = [
   HomeComponent.Route,
   AboutComponent.Route,
@@ -16,19 +15,42 @@ const routes: Routes = [
   GateComponent.Route,
   CoworkingPageComponent.Route,
   AmbassadorPageComponent.Route,
-  { path: 'coworking', title: 'Cowork in the XL', loadChildren: () => import('./coworking/coworking.module').then(m => m.CoworkingModule) },
-  { path: 'admin', title: 'Admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
-  { path: 'organizations', title: 'CS Organizations', loadChildren: () => import('./organization/organization.module').then(m => m.OrganizationModule) },
-  { path: 'events', title: 'Experimental', loadChildren: () => import('./event/event.module').then(m => m.EventModule) },
-
+  {
+    path: 'coworking',
+    title: 'Cowork in the XL',
+    loadChildren: () =>
+      import('./coworking/coworking.module').then((m) => m.CoworkingModule)
+  },
+  {
+    path: 'admin',
+    title: 'Admin',
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule)
+  },
+  {
+    path: 'organizations',
+    title: 'CS Organizations',
+    loadChildren: () =>
+      import('./organization/organization.module').then(
+        (m) => m.OrganizationModule
+      )
+  },
+  {
+    path: 'events',
+    title: 'Experimental',
+    loadChildren: () =>
+      import('./event/event.module').then((m) => m.EventModule)
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    scrollPositionRestoration: 'enabled',
-    anchorScrolling: 'enabled'
-  })],
+  imports: [
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled'
+    })
+  ],
   exports: [RouterModule],
   providers: [AppTitleStrategy.Provider]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -1,44 +1,65 @@
 <mat-card class="card">
+  <!-- Card Header Row (Logo, Name, Members) -->
+  <mat-card-header class="header">
+    <!-- Container for Logo and Name to allow for left alignment -->
+    <div class="left-container">
+      <!-- Organization Logo -->
+      <img mat-card-image src="{{ organization.logo }}" class="logo" />
+      <!-- Organization Name -->
+      <mat-card-title
+        class="name"
+        [matTooltip]="organization.name"
+        matTooltipPosition="above"
+        [matTooltipDisabled]="organization.name.length < 25">
+        {{
+          organization.name.length < 25
+            ? organization.name
+            : organization.shorthand
+        }}
+      </mat-card-title>
+    </div>
+  </mat-card-header>
 
-    <!-- Card Header Row (Logo, Name, Members) -->
-    <mat-card-header class="header">
+  <!-- Organization Description -->
+  <mat-card-content class="description">
+    <p
+      [matTooltip]="organization.short_description"
+      [matTooltipDisabled]="isTooltipDisabled(organizationDescription)"
+      #organizationDescription>
+      {{ organization.short_description }}
+    </p>
+  </mat-card-content>
 
-        <!-- Container for Logo and Name to allow for left alignment -->
-        <div class="left-container">
-            <!-- Organization Logo -->
-            <img mat-card-image src={{organization.logo}} class="logo">
-            <!-- Organization Name -->
-            <mat-card-title class="name" [matTooltip]='organization.name' matTooltipPosition="above"
-                [matTooltipDisabled]="organization.name.length < 25">
-                {{organization.name.length < 25 ? organization.name : organization.shorthand}} </mat-card-title>
-        </div>
-
-    </mat-card-header>
-
-    <!-- Organization Description -->
-    <mat-card-content class="description">
-        <p [matTooltip]='organization.short_description'
-            [matTooltipDisabled]="isTooltipDisabled(organizationDescription)" #organizationDescription>
-            {{organization.short_description}}
-        </p>
-    </mat-card-content>
-
-    <!-- Organization Links & Details -->
-    <mat-card-actions class="links">
-        <!-- Icon only appears if the organization actually has a corresponding link -->
-        <div class="link-icons">
-            <social-media-icon [fontIcon]='"link"' [href]='organization.website' *ngIf='organization.website != ""' />
-            <social-media-icon [fontIcon]='"mail"' [href]='"mailto:" + organization.email'
-                *ngIf='organization.email != ""' />
-            <social-media-icon [svgIcon]='"instagram"' [href]='organization.instagram'
-                *ngIf='organization.instagram != ""' />
-            <social-media-icon [svgIcon]='"linkedin"' [href]='organization.linked_in'
-                *ngIf='organization.linked_in != ""' />
-            <social-media-icon [svgIcon]='"youtube"' [href]='organization.youtube' *ngIf='organization.youtube != ""' />
-        </div>
-        <!-- Link to Individual Organization Page -->
-        <a class="details-link" [routerLink]="['/organizations', organization.slug]">
-            <button mat-stroked-button>DETAILS</button>
-        </a>
-    </mat-card-actions>
+  <!-- Organization Links & Details -->
+  <mat-card-actions class="links">
+    <!-- Icon only appears if the organization actually has a corresponding link -->
+    <div class="link-icons">
+      <social-media-icon
+        [fontIcon]="'link'"
+        [href]="organization.website"
+        *ngIf="organization.website !== ''" />
+      <social-media-icon
+        [fontIcon]="'mail'"
+        [href]="'mailto:' + organization.email"
+        *ngIf="organization.email !== ''" />
+      <social-media-icon
+        [svgIcon]="'instagram'"
+        [href]="organization.instagram"
+        *ngIf="organization.instagram !== ''" />
+      <social-media-icon
+        [svgIcon]="'linkedin'"
+        [href]="organization.linked_in"
+        *ngIf="organization.linked_in !== ''" />
+      <social-media-icon
+        [svgIcon]="'youtube'"
+        [href]="organization.youtube"
+        *ngIf="organization.youtube !== ''" />
+    </div>
+    <!-- Link to Individual Organization Page -->
+    <a
+      class="details-link"
+      [routerLink]="['/organizations', organization.slug]">
+      <button mat-stroked-button>DETAILS</button>
+    </a>
+  </mat-card-actions>
 </mat-card>

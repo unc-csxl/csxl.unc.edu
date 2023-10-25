@@ -17,7 +17,6 @@ import { PermissionService } from '../permission.service';
   styleUrls: ['./navigation.component.css']
 })
 export class NavigationComponent implements OnInit, OnDestroy {
-
   private errorDialogSubscription!: Subscription;
 
   public isHandset: boolean = false;
@@ -38,9 +37,15 @@ export class NavigationComponent implements OnInit, OnDestroy {
     protected errorDialog: MatDialog
   ) {
     this.profile$ = this.profileService.profile$;
-    this.checkinPermission$ = this.permission.check('checkin.create', 'checkin/');
+    this.checkinPermission$ = this.permission.check(
+      'checkin.create',
+      'checkin/'
+    );
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
-    this.ambassadorPermission$ = this.permission.check('coworking.reservation.*', '*');
+    this.ambassadorPermission$ = this.permission.check(
+      'coworking.reservation.*',
+      '*'
+    );
   }
 
   ngOnInit(): void {
@@ -60,20 +65,17 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   private initErrorDialog() {
-    return this.navigationService.error$.subscribe(
-      (message) => {
-        if (message !== null) {
-          this.errorDialog.open(ErrorDialogComponent, { data: { message } });
-        }
+    return this.navigationService.error$.subscribe((message) => {
+      if (message !== null) {
+        this.errorDialog.open(ErrorDialogComponent, { data: { message } });
       }
-    );
+    });
   }
 
   private initResponsiveMenu() {
     return this.breakpointObserver
       .observe(Breakpoints.HandsetPortrait)
-      .pipe(map(result => result.matches))
-      .subscribe(isHandset => this.isHandset = isHandset);
+      .pipe(map((result) => result.matches))
+      .subscribe((isHandset) => (this.isHandset = isHandset));
   }
-
 }

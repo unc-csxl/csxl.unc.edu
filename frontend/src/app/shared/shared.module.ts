@@ -27,12 +27,7 @@ import { EventList } from './event-list/event-list.widget';
 import { EventFilterPipe } from '../event/event-filter/event-filter.pipe';
 
 @NgModule({
-  declarations: [
-    SocialMediaIcon,
-    SearchBar,
-    EventCard,
-    EventList
-  ],
+  declarations: [SocialMediaIcon, SearchBar, EventCard, EventList],
   imports: [
     CommonModule,
     MatTabsModule,
@@ -52,11 +47,6 @@ import { EventFilterPipe } from '../event/event-filter/event-filter.pipe';
     MatTooltipModule,
     RouterModule
   ],
-  exports: [
-    SocialMediaIcon,
-    SearchBar,
-    EventCard,
-    EventList
-  ]
+  exports: [SocialMediaIcon, SearchBar, EventCard, EventList]
 })
-export class SharedModule { }
+export class SharedModule {}

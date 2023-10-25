@@ -9,17 +9,22 @@ const REPLAY_LAST = 1;
   providedIn: 'root'
 })
 export class AuthenticationService {
+  private isAuthenticated: ReplaySubject<boolean> = new ReplaySubject(
+    REPLAY_LAST
+  );
+  public isAuthenticated$: Observable<boolean> =
+    this.isAuthenticated.asObservable();
 
-  private isAuthenticated: ReplaySubject<boolean> = new ReplaySubject(REPLAY_LAST);
-  public isAuthenticated$: Observable<boolean> = this.isAuthenticated.asObservable();
-
-  constructor(private jwt: JwtHelperService, private router: Router) {
+  constructor(
+    private jwt: JwtHelperService,
+    private router: Router
+  ) {
     this.authenticate();
   }
 
   public signOut(): void {
-    localStorage.removeItem("bearerToken");
-    this.router.navigate([""]);
+    localStorage.removeItem('bearerToken');
+    this.router.navigate(['']);
     this.isAuthenticated.next(false);
   }
 
@@ -41,8 +46,7 @@ export class AuthenticationService {
         } else {
           this.isAuthenticated.next(true);
         }
-      })
+      });
     }
   }
-
 }

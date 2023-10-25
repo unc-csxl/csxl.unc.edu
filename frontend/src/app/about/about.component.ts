@@ -8,5 +8,5 @@ export class AboutComponent {
   public static Route = {
     path: 'about',
     component: AboutComponent
-  }
+  };
 }

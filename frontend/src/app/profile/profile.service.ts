@@ -29,12 +29,17 @@ export interface Profile {
   providedIn: 'root'
 })
 export class ProfileService {
-
   private profile: Subject<Profile | undefined> = new ReplaySubject(1);
-  public profile$: Observable<Profile | undefined> = this.profile.asObservable();
+  public profile$: Observable<Profile | undefined> =
+    this.profile.asObservable();
 
-  constructor(protected http: HttpClient, protected auth: AuthenticationService) {
-    this.auth.isAuthenticated$.subscribe((isAuthenticated) => this.refreshProfile(isAuthenticated));
+  constructor(
+    protected http: HttpClient,
+    protected auth: AuthenticationService
+  ) {
+    this.auth.isAuthenticated$.subscribe((isAuthenticated) =>
+      this.refreshProfile(isAuthenticated)
+    );
   }
 
   private refreshProfile(isAuthenticated: boolean) {
@@ -49,7 +54,9 @@ export class ProfileService {
   }
 
   put(profile: Profile) {
-    return this.http.put<Profile>("/api/profile", profile).pipe(tap(profile => this.profile.next(profile)));
+    return this.http
+      .put<Profile>('/api/profile', profile)
+      .pipe(tap((profile) => this.profile.next(profile)));
   }
 
   search(query: string) {
@@ -58,11 +65,10 @@ export class ProfileService {
   }
 
   getGitHubOAuthLoginURL(): Observable<string> {
-    return this.http.get<string>("/oauth/github_oauth_login_url");
+    return this.http.get<string>('/oauth/github_oauth_login_url');
   }
 
   unlinkGitHub() {
-    return this.http.delete("/oauth/github");
+    return this.http.delete('/oauth/github');
   }
-
 }

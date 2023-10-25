@@ -6,8 +6,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class NavigationService {
-
-  private title: BehaviorSubject<string> = new BehaviorSubject("");
+  private title: BehaviorSubject<string> = new BehaviorSubject('');
   public title$ = this.title.asObservable();
 
   private loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -16,10 +15,12 @@ export class NavigationService {
   private sending: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public sending$ = this.sending.asObservable();
 
-  private _error: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  private _error: BehaviorSubject<string | null> = new BehaviorSubject<
+    string | null
+  >(null);
   public error$ = this._error.asObservable();
 
-  constructor() { }
+  constructor() {}
 
   setTitle(title: string) {
     this._deferToNextChangeDetectionCycle(() => this.title.next(title));
@@ -34,7 +35,11 @@ export class NavigationService {
   }
 
   error(e: HttpErrorResponse) {
-    this._deferToNextChangeDetectionCycle(() => this._error.next(`Response: ${e.status} ${e.statusText}\nEndpoint: ${e.url}`));
+    this._deferToNextChangeDetectionCycle(() =>
+      this._error.next(
+        `Response: ${e.status} ${e.statusText}\nEndpoint: ${e.url}`
+      )
+    );
   }
 
   /**
@@ -42,14 +47,13 @@ export class NavigationService {
    * being outside the general lifecycle of change detection in angular components, the following
    * workaround method is used to defer updating navigation state until the next tick and, therefore,
    * next change detection cycle.
-   * 
+   *
    * Additional investigation may help determine a better means for achieving this, but for now
    * it avoids the previously commonly seen error of front-end state being changed outside CD cycle.
-   *  
+   *
    * @param operation the logic moved to next tick.
    */
   private _deferToNextChangeDetectionCycle(operation: () => void) {
     setTimeout(operation, 0);
   }
-
 }

@@ -27,7 +27,7 @@ import { AdminOrganizationListComponent } from './organization/list/admin-organi
     AdminUsersListComponent,
     AdminRolesListComponent,
     AdminRoleDetailsComponent,
-    AdminOrganizationListComponent,
+    AdminOrganizationListComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +43,7 @@ import { AdminOrganizationListComponent } from './organization/list/admin-organi
     MatListModule,
     MatAutocompleteModule,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ]
 })
-export class AdminModule { }
+export class AdminModule {}

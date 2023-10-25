@@ -6,35 +6,41 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class RoleAdminService {
+  constructor(protected http: HttpClient) {}
 
-    constructor(protected http: HttpClient) { }
+  list() {
+    return this.http.get<Role[]>('/api/admin/roles');
+  }
 
-    list() {
-        return this.http.get<Role[]>("/api/admin/roles");
-    }
+  create(name: string): Observable<Role> {
+    return this.http.post<Role>(`/api/admin/roles`, { name });
+  }
 
-    create(name: string): Observable<Role> {
-        return this.http.post<Role>(`/api/admin/roles`, { name });
-    }
+  details(id: number) {
+    return this.http.get<RoleDetails>(`/api/admin/roles/${id}`);
+  }
 
-    details(id: number) {
-        return this.http.get<RoleDetails>(`/api/admin/roles/${id}`);
-    }
+  grant(roleId: number, permission: Permission): Observable<RoleDetails> {
+    return this.http.post<RoleDetails>(
+      `/api/admin/roles/${roleId}/permission`,
+      permission
+    );
+  }
 
-    grant(roleId: number, permission: Permission): Observable<RoleDetails> {
-        return this.http.post<RoleDetails>(`/api/admin/roles/${roleId}/permission`, permission);
-    }
+  revoke(roleId: number, permissionId: number) {
+    return this.http.delete(
+      `/api/admin/roles/${roleId}/permission/${permissionId}`
+    );
+  }
 
-    revoke(roleId: number, permissionId: number) {
-        return this.http.delete(`/api/admin/roles/${roleId}/permission/${permissionId}`);
-    }
+  add(roleId: number, user: Profile) {
+    return this.http.post<RoleDetails>(
+      `/api/admin/roles/${roleId}/member`,
+      user
+    );
+  }
 
-    add(roleId: number, user: Profile) {
-        return this.http.post<RoleDetails>(`/api/admin/roles/${roleId}/member`, user);
-    }
-
-    remove(roleId: number, userId: number) {
-        return this.http.delete(`/api/admin/roles/${roleId}/member/${userId}`);
-    }
-
+  remove(roleId: number, userId: number) {
+    return this.http.delete(`/api/admin/roles/${roleId}/member/${userId}`);
+  }
 }

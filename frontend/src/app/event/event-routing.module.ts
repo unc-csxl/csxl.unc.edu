@@ -1,7 +1,7 @@
 /**
  * The Event Routing Module holds all of the routes that are children
  * to the path /events/...
- * 
+ *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
  * @copyright 2023
  * @license MIT
@@ -14,13 +14,13 @@ import { EventPageComponent } from './event-page/event-page.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 
 const routes: Routes = [
-    EventPageComponent.Route,
-    EventDetailsComponent.Route,
-    EventEditorComponent.Route
+  EventPageComponent.Route,
+  EventDetailsComponent.Route,
+  EventEditorComponent.Route
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class EventRoutingModule { }
+export class EventRoutingModule {}

@@ -1,24 +1,27 @@
 <div>
-    <div class="parameter-bar">
-        <search-bar class="search-bar" [searchBarQuery]="searchBarQuery"
-            (searchBarQueryChange)="onSearchBarQueryChange($event)" />
-    </div>
+  <div class="parameter-bar">
+    <search-bar
+      class="search-bar"
+      [searchBarQuery]="searchBarQuery"
+      (searchBarQueryChange)="onSearchBarQueryChange($event)" />
+  </div>
 
-    <div class="container">
-        <div class="events-grid">
-
-            <div class="events-column">
-
-                <!-- `eventsPerDay` is in the format of a list of tuples, where
+  <div class="container">
+    <div class="events-grid">
+      <div class="events-column">
+        <!-- `eventsPerDay` is in the format of a list of tuples, where
                     eventGroup[0] is the date string and eventGroup[1] s a list of events -->
-                <event-list [eventsPerDay]="eventsPerDay" [selectedEvent]="selectedEvent"
-                    [disableLinks]="innerWidth > 900" (onCardClicked)="onEventCardClicked($event)" [fullWidth]="true" />
-            </div>
+        <event-list
+          [eventsPerDay]="eventsPerDay"
+          [selectedEvent]="selectedEvent"
+          [disableLinks]="innerWidth > 900"
+          (onCardClicked)="onEventCardClicked($event)"
+          [fullWidth]="true" />
+      </div>
 
-            <div class="details-column">
-                <event-detail-card [event]="selectedEvent!" *ngIf="selectedEvent" />
-            </div>
-        </div>
+      <div class="details-column">
+        <event-detail-card [event]="selectedEvent!" *ngIf="selectedEvent" />
+      </div>
     </div>
-
+  </div>
 </div>

@@ -14,18 +14,18 @@ export class HomeComponent {
     path: '',
     component: HomeComponent,
     resolve: { profile: profileResolver }
-  }
+  };
 
   constructor(route: ActivatedRoute, router: Router) {
     let profile: Profile | undefined = route.snapshot.data['profile'];
     if (profile) {
       if (profile.id) {
-        router.navigateByUrl("/coworking");
+        router.navigateByUrl('/coworking');
       } else {
-        router.navigateByUrl("/profile");
+        router.navigateByUrl('/profile');
       }
     } else {
-      router.navigateByUrl("/about");
+      router.navigateByUrl('/about');
     }
   }
 }

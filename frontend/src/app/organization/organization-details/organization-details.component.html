@@ -9,9 +9,17 @@
 </div> -->
 
 <div>
-    <organization-details-info-card [organization]='organization' [profile]='profile' />
+  <organization-details-info-card
+    [organization]="organization"
+    [profile]="profile" />
 
-    <div class="event-listing-container">
-        <event-list [eventsPerDay]="eventsPerDay" [organization]='organization' [selectedEvent]="null" [disableLinks]="false" [showHeader]="true" [showCreateButton]="(eventCreationPermission$ | async)!" />
-    </div>
+  <div class="event-listing-container">
+    <event-list
+      [eventsPerDay]="eventsPerDay"
+      [organization]="organization"
+      [selectedEvent]="null"
+      [disableLinks]="false"
+      [showHeader]="true"
+      [showCreateButton]="(eventCreationPermission$ | async)!" />
+  </div>
 </div>

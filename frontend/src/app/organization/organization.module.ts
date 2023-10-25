@@ -1,9 +1,9 @@
 /**
- * The Organization Module couples all features of the Organization feature 
+ * The Organization Module couples all features of the Organization feature
  * into a single unit that can be loaded at once. This decreases load time
  * for the overall application and decouples this feature from other features
  * in the application.
- * 
+ *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
  * @copyright 2023
  * @license MIT
@@ -78,4 +78,4 @@ import { EventFilterPipe } from '../event/event-filter/event-filter.pipe';
     SharedModule
   ]
 })
-export class OrganizationModule { }
+export class OrganizationModule {}

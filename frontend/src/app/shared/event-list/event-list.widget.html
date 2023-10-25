@@ -1,24 +1,49 @@
-<mat-card class="events-section" appearance="outlined"
-    [style]="fullWidth ? 'margin: 0 !important;max-width: 100%; padding: 16px; ' : 'padding: 16px; margin: 0px;'">
-
-    <div *ngIf="showHeader">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <mat-card-title>Upcoming Events</mat-card-title>
-            <button mat-icon-button *ngIf="showCreateButton"
-                [routerLink]="['events', 'organizations', organization!.slug, 'events', 'new', 'edit']"
-                [relativeTo]="null"><mat-icon>add</mat-icon></button>
-        </div>
-        <mat-divider style="padding-bottom: 8px;" />
+<mat-card
+  class="events-section"
+  appearance="outlined"
+  [style]="
+    fullWidth
+      ? 'margin: 0 !important;max-width: 100%; padding: 16px; '
+      : 'padding: 16px; margin: 0px;'
+  ">
+  <div *ngIf="showHeader">
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      ">
+      <mat-card-title>Upcoming Events</mat-card-title>
+      <button
+        mat-icon-button
+        *ngIf="showCreateButton"
+        [routerLink]="[
+          'events',
+          'organizations',
+          organization!.slug,
+          'events',
+          'new',
+          'edit'
+        ]"
+        [relativeTo]="null">
+        <mat-icon>add</mat-icon>
+      </button>
     </div>
+    <mat-divider style="padding-bottom: 8px" />
+  </div>
 
-    <p *ngIf="eventsPerDay.length == 0">No upcoming events!</p>
+  <p *ngIf="eventsPerDay.length == 0">No upcoming events!</p>
 
-    <!-- `eventsPerDay` is in the format of a list of tuples, where
+  <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] s a list of events -->
-    <div *ngFor="let eventGroup of eventsPerDay" style="padding-bottom: 16px;">
-        <mat-card-title>{{eventGroup[0]}}</mat-card-title>
-        <mat-divider style="padding-bottom: 8px;" />
-        <event-card *ngFor="let event of eventGroup[1]" [event]="event" [disableLink]="disableLinks"
-            [selected]="event === selectedEvent" (onClicked)="onCardClicked.emit($event)" />
-    </div>
+  <div *ngFor="let eventGroup of eventsPerDay" style="padding-bottom: 16px">
+    <mat-card-title>{{ eventGroup[0] }}</mat-card-title>
+    <mat-divider style="padding-bottom: 8px" />
+    <event-card
+      *ngFor="let event of eventGroup[1]"
+      [event]="event"
+      [disableLink]="disableLinks"
+      [selected]="event === selectedEvent"
+      (onClicked)="onCardClicked.emit($event)" />
+  </div>
 </mat-card>
