@@ -260,7 +260,7 @@ export class OrganizationCard {
   @Input() organization!: Organization
 
   /** Handler for when the join button is pressed */
-  @Output() onJoinButtonPressed = new EventEmitter<Organization>()
+  @Output() joinButtonPressed = new EventEmitter<Organization>()
 
   /** Constructor */
   constructor() { }
@@ -274,12 +274,12 @@ Before we do that step, let's look at what this would look like in the component
 ```html
 <organization-card
   [organization]="organization"
-  (onJoinButtonPressed)="/* SOMETHING HERE */"
+  (joinButtonPressed)="/* SOMETHING HERE */"
   *ngFor="let organization of organizations"
   />
 ```
 
-We can see that we now have access to this `(onJoinButtonPressed)` output! Looks like `<button>`'s `(click)`, right? You would probably want to put the component's `joinOrganization(org: Organization)` in here now, which is the correct idea! But, what would our organization input be?
+We can see that we now have access to this `(joinButtonPressed)` output! Looks like `<button>`'s `(click)`, right? You would probably want to put the component's `joinOrganization(org: Organization)` in here now, which is the correct idea! But, what would our organization input be?
 
 Again, go back to the widget's HTML. Like we said before, *we want to set this up so that when the join button is pressed. this event emitter will emit some data to the component.*
 
@@ -288,7 +288,7 @@ We can actually connect the button's `(click)` handler to emit this data.
 ```html
 <mat-card>
   <!-- Implmentation not shown -->
-  <button (click)="onJoinButtonPressed.emit(organization)">Join Org</button>
+  <button (click)="joinButtonPressed.emit(organization)">Join Org</button>
 </mat-card>
 ```
 
@@ -299,7 +299,7 @@ In our main component, we can now access this emitted variable using `$event`, l
 ```html
 <organization-card
   [organization]="organization"
-  (onJoinButtonPressed)="joinOrganiation($event)"
+  (joinButtonPressed)="joinOrganiation($event)"
   *ngFor="let organization of organizations"
   />
 ```
