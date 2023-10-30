@@ -18,7 +18,8 @@
                 "angular.ng-template",
                 "matthewpi.caddyfile-support",
                 "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode"
+                "esbenp.prettier-vscode",
+                "ckolkman.vscode-postgres"
             ],
             "settings": {
                 "editor.formatOnSave": true,

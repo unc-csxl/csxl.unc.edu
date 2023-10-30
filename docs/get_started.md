@@ -55,6 +55,8 @@ Once the Dev Container begins, open a terminal and complete the following:
 
 You will notice the users and roles in your system are different than the production system. This is because the `reset_demo` script creates a set of mock users and roles for development purposes. Production data, with all registered users, contains protected information and is not directly replicable in a development environment. As new features are developed, additional demo and testing data can be added to the `reset_demo` and `reset_testing` scripts, respectively.
 
+For more information on database concerns, please refer to the [Database Documentation](docs/database.md).
+
 ## Develop in Branches
 
 Before beginning any feature work, fixes, or other modifications, you should checkout a branch to keep the history separate from the `main` line history until it is ready deploying into production. For students in COMP423, your final project `main` branch is called `stage`. As your projects are deployed separately from production, this is typically referred to as a "Staging" deployment / environment.
@@ -69,6 +71,5 @@ Change users route pattern: `http://localhost:1560/auth/as/{onyen}/{pid}`
 For reference, here are some mock personas that are installed in the `reset_testing` script from above:
 
 1. Sally Student: <http://localhost:1560/auth/as/sally/111111111>
-2. Larry CADS Leader: <http://localhost:1560/auth/as/larry/555555555>
-3. Amy Ambassador: <http://localhost:1560/auth/as/amy/888888888>
-4. Rhonda Root: <http://localhost:1560/auth/as/rhonda/999999999>
+2. Amy Ambassador: <http://localhost:1560/auth/as/amy/888888888>
+3. Rhonda Root: <http://localhost:1560/auth/as/rhonda/999999999>
