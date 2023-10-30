@@ -10,10 +10,11 @@ Common team workflow scenarios include:
 * Beginning work on a subtask of an Issue Branch
 * Pushing your branch to GitHub
 * Collaborating on a branch on GitHub
-* Creating a Pull Request and Code Review
-* Catching your Issue Branch up-to-date with `stage` for Merging
-* Continuing work after creating a Pull Request
-* Switching Issues/Tasks to Make Requested Changes / Improvements
+* Creating a Pull Request (PR) and Code Review (CR)
+* Continuing work after on PR after creation / CR changes requested
+* Catching a PR branch up with its base branch before merging
+* Merging a PR via Squash and Merge
+* Switching Issues/Tasks to Work on the "Next Thing"
 * Switching Issues/Tasks to Review a Teammate's Code
 * Catching your team's `stage` branch up with [csxl.unc.edu](https://csxl.unc.edu) production's `main` branch
 
@@ -21,7 +22,7 @@ Each of these scenarios is discussed step-by-step below.
 
 ### Beginning Work on a New Issue Branch
 
-When using GitHub Issues to organize your team's tasks and work, you can and should link relevant `git` branches in development to the Issue. This will cause pushes to the branch to be added to the issue's history to create a single, coherent narrative around updates to the branch.The names of your branches should, ideally, contain the issue's number. There are two strategies for getting started on a new Issue branch:
+When using GitHub Project Board and Issues to organize your team's tasks and work, you can and should link relevant `git` branches in development to the Issue. This will cause pushes to the branch to be added to the issue's history to create a single, coherent narrative around updates to the branch. Additionally, when the time comes to merge this branch via a pull request, the merge of the pull request will automatically close the issue and transition it to the merged/done column of your Project Board. The names of your branches should, ideally, contain the issue's number. There are two strategies for getting started on a new Issue branch:
 
 #### Creating the Branch via GitHub's UI
 
@@ -86,4 +87,57 @@ There are three scenarios in which you will encounter Pull Requests and Code Rev
 
 The process is largely the same, however it is important to be careful to properly establish the branch that the Pull Request will be merged into (the "base ref").
 
-After successfully pushing to a branch on GitHub, you will see a link to create a pull request for the branch. Alternatively, if you go to GitHub's Pull Requests tab and select "New Pull Request", the first selection is the base and the second is the branch you are creating the PR for.
+After successfully pushing to a branch on GitHub, you will see a link to create a pull request for the branch printed in the terminal output. 
+
+Alternatively, if you go to GitHub's Pull Requests tab and select "New Pull Request", the first selection is the base and the second is the branch you are creating the PR for. **This is where to be careful!** If you are working on a subtask of an Issue Branch, the `base` should be the Issue Branch. However, if you believe the current branch is ready to be merged back into `stage`, select `stage` here (it _should_ be the default selection due to how your team configured the repository). Then, for the **compare** branch, select the branch you are creating the Pull Request for. Below, you should see an overview of how many commits, file changes, and so on, differentiate the base branch from the comparison branch. Assuming this looks correct, press the Green "Create Pull Request" button.
+
+Name your Pull Request more meaningfully than just the default branch name. Additionally, make an effortful attempt to write a description of what is going on in this PR at a high-level, in English. If there is anything important to point out to a Code Reviewer, you can do so here.
+
+Add your Code Reviewer(s) in the right-hand column to request a Code Review.
+
+Create the Pull Request!
+
+### Continuing work after on PR after creation / changes requested
+
+Creating a Pull Request does not prohibit you from making additional commits and pushes to the PR branch, in fact this is common and required when a Code Review (CR) requests changes before giving approval to merge.
+
+To continue work on a branch with an open PR, just switch to the branch in your development environment and follow the steps of "Collaborating on a Branch" above. Namely: give the branch a pull with rebase in the event that one of your partners made some progress. From this point, you can make additional progress, commits, and push to the branch of the PR. These changes will show up in the PR history.
+
+If changes to your PR were requested by a Code Reviewer, after you've fixed them it's best to ask for a final review pass for sign-off from the Code Reviewer.
+
+### Merging a PR via Squash and Merge
+
+Once a PR has an approving CR and is ready to be merged, you should see a green check in the PR interface and a comment that "This branch has no conflicts with the base branch" so that merging can be performed automatically. If you see a message about a merge conflict preventing automatic merging, see the next section below.
+
+**Important**: to maintain a clean, linear `git` history we recommend selecting the merge strategy of "Squash and merge". This strategy will enable GitHub to combine all of the commits of this branch into a single commit that gets merged back into the base branch. Click the down arrow on the green button if you do not see "Squash and merge" and select it.
+
+### Catching a PR branch up with its base branch before merging
+
+When a PR targets a base branch to be merged into that has progressed since the original branch was established, and merging cannot be performed automatically, it is requisite to "catch up" the branch of the PR. There are many ways of doing this, but our recommended strategy is tied to the convention of ultimately merging by squashing into a single commit. With this strategy, our recommendation for catching up a branch is to simply create a merge commit on your Issue/PR branch by pulling from the base branch and resolving any conflicts. Remember, your base branch may either be `stage` or, if you are working on a subtask branch, the issue branch your subtask targets.
+
+1. Confirm you are currently working on the PR/Issue branch in your DevContainer
+2. Pull the latest changes on your PR/Issue branch (see Collaborating on a Branch Above)
+3. Fetch latest changes on the base branch: `get fetch origin base-branch-name`
+4. Merge the base branch with your issue branch: `git merge base-branch-name`
+5. Resolve any merge conflicts and follow `git` instructions (read `git status`) to navigate
+6. Push resulting merge commit to your PR/Issue branch: `git push origin issue-branch-name`
+
+After completing these steps, you should be able to "Squash and Merge" your PR.
+
+### Switching Issues/Tasks to Work on the "Next Thing"
+
+When working in a highly collaborative `git` environment, it is common to jump around between working branches. Getting comfortable with this will be a huge productivity boon!
+
+Before changing branches, you need to be considerate of any uncommitted changes. To avoid loss of work, `git` will generally prevent you from doing anything that may overwrite changes, however if you are working on new files that are not staged, you may not receive a warning because they do not risk being overwritten. There is a risk in creating a mess of your work or accidentally committing files you meant for one branch to another, unrelated, branch. Therefore, as a general rule of thumb, **always check your current branch status before switching branches with `git status`.**
+
+Once you have confirmed everything you are working on is committed appropriately, it is generally wise to go ahead and push your branch. This makes it possible to collaborate, if it comes up, it also serves as a backup of your work in the event your computer malfunctioned or you wanted to resume your own work from another machine.
+
+(Advanced `git` note: the `git stash` command can be useful in very quick context switches, but because we are making use of a highly granular git branching strategy, the benefits of `stash` are somewhat outweighed by the benefits of granular git branches for collaboration.)
+
+Finally, fetch latest changes and switch to the branch you are looking for:
+
+`git fetch origin && git switch [branch-name]`
+
+### Switching Issues/Tasks to Review a Teammate's Code
+
+### Catching your team's `stage` branch up with [csxl.unc.edu](https://csxl.unc.edu) production's `main` branch
