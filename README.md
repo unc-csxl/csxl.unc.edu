@@ -6,6 +6,7 @@ The Experience Labs' (XL) mission is to accelerate technical experience and buil
 
 ## Developer Docs
 
+* [Branch, Pull Request, and Code Review Practices](docs/branches.md)
 * [Database Concerns](docs/database.md)
 * [Authentication, Authorization, and Permissions](docs/auth.md)
 * [Testing Tools](docs/testing.md)
