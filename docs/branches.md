@@ -74,6 +74,8 @@ When collaborating on a shared branch, we recommend pulling with rebasing such t
     * Or, use the git command: `git branch --show-current`
 2. Pull any progress on the branch your collaborator(s) may have pushed:
     * `get pull origin --rebase [branch-name]`
+3. Reset your development database with fresh data:
+    * `python3 -m backend.script.reset_demo` (if this fails, see the [database documentation](docs/database.md))
 
 As per the above section, when you reach progress points large and small, you are encouraged to push to collaborative branches so that you and your partners on the branch do not diverge to significantly.
 
@@ -134,10 +136,27 @@ Once you have confirmed everything you are working on is committed appropriately
 
 (Advanced `git` note: the `git stash` command can be useful in very quick context switches, but because we are making use of a highly granular git branching strategy, the benefits of `stash` are somewhat outweighed by the benefits of granular git branches for collaboration.)
 
-Finally, fetch latest changes and switch to the branch you are looking for:
+Finally, fetch latest changes and switch to the branch you are looking to work on and reset the database:
 
-`git fetch origin && git switch [branch-name]`
+1. `git fetch origin && git switch [branch-name]`
+2. `python3 -m backend.script.reset_demo`
 
-### Switching Issues/Tasks to Review a Teammate's Code
+If you're looking to take on a new Issue or Subtask, you'll switch to `main` or the issue branch, respectively, and create a new branch as discussed in the beginning work sections above.
 
 ### Catching your team's `stage` branch up with [csxl.unc.edu](https://csxl.unc.edu) production's `main` branch
+
+While you are working on your projects, improvements, features, and functionality continue to happen on the `main` branch of the CSXL.unc.edu web site! Your repository is connected to the upstream, production repository via a `git remote` named `upstream`. Ultimately, for your work to be mergable into the production's `main` branch, you'll need to catch your `stage` branch up with production periodically. This is not a hard requirement, but it is a good practice, and we are being mindful not to make significant changes for the duration of the semester in the areas which you all are working on, so conflicts should be minimal.
+
+The most straightforward process for catching your team's `stage` branch up with production's `main` branch is conceptually the same as the section "Catching a PR branch up with its base branch before merging", however you'll need to do this from the `upstream` remote repository, <https://github.com/unc-csxl/csxl.unc.edu> rather than your team's repository:
+
+~~~
+git switch stage
+git pull origin stage
+git switch --create merge/upstream/main
+git fetch upstream
+git merge upstream/main
+# Resolve any conflicts and create merge commit
+git push origin merge/upstream/main
+~~~
+
+At this point, create a PR for a team member to approve to merge in upstream changes and catch your stage branch up.
