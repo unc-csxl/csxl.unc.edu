@@ -272,7 +272,7 @@ export class OrganizationCard {
 }
 ```
 
-There is a decent amount to unpack here - first, the use of `EventEmitter`. You can see that it takes a generic type of `Organization` in a similar way that `Observables` do. ***We want to set this up so that when the join button is pressed. this event emitter will emit some data to the component.***
+There is a decent amount to unpack here - first, the use of `EventEmitter`. You can see that it takes a generic type of `Organization` in a similar way that `Observables` do. ***We want to set this up so that when the join button is pressed, this event emitter will emit some data to the component.***
 
 Before we do that step, let's look at what this would look like in the component's HTML now:
 
@@ -285,7 +285,17 @@ Before we do that step, let's look at what this would look like in the component
   />
 ```
 
-We can see that we now have access to this `(joinButtonPressed)` output! Looks like `<button>`'s `(click)`, right? You would probably want to put the component's `joinOrganization(org: Organization)` in here now, which is the correct idea! But, what would our organization input be?
+We can see that we now have access to this `(joinButtonPressed)` output! Looks like `<button>`'s `(click)`, right? You would probably want to put the component's `joinOrganization(org: Organization)` in here now, which is the correct idea!
+
+```html
+<organization-card
+  [organization]="organization"
+  (joinButtonPressed)="joinOrganization(org: /* What goes here??? */)"
+  *ngFor="let organization of organizations"
+  />
+```
+
+But, what would our organization input be?
 
 Again, go back to the widget's HTML. Like we said before, *we want to set this up so that when the join button is pressed. this event emitter will emit some data to the component.*
 
