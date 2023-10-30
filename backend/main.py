@@ -37,7 +37,6 @@ app = FastAPI(
         organizations.openapi_tags,
         events.openapi_tags,
         reservation.openapi_tags,
-        reservation.openapi_tags,
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
@@ -63,7 +62,7 @@ for feature_api in feature_apis:
     app.include_router(feature_api.api)
 
 # Static file mount used for serving Angular front-end in production, as well as static assets
-app.mount("/", static_files.StaticFileMiddleware(directory="./static"))
+app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
 
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
@@ -73,7 +72,9 @@ def permission_exception_handler(request: Request, e: UserPermissionException):
 
 
 @app.exception_handler(ResourceNotFoundException)
-def permission_exception_handler(request: Request, e: ResourceNotFoundException):
+def resource_not_found_exception_handler(
+    request: Request, e: ResourceNotFoundException
+):
     return JSONResponse(status_code=404, content={"message": str(e)})
 
 
