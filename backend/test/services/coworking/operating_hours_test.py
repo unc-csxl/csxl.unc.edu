@@ -6,7 +6,7 @@ from ....services.coworking import OperatingHoursService
 from ....models.coworking import OperatingHours, TimeRange
 from ....services.coworking.exceptions import OperatingHoursCannotOverlapException
 from ....services import PermissionService
-from ....services.exceptions import UserPermissionException
+from ....services.exceptions import ResourceNotFoundException
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, operating_hours_svc
@@ -92,4 +92,27 @@ def test_create_enforces_permission(
         user_data.user,
         "coworking.operating_hours.create",
         "coworking/operating_hours",
+    )
+
+
+def test_delete(operating_hours_svc: OperatingHoursService):
+    """Delete an Operating Hours entity expected case."""
+    future = operating_hours_svc.get_by_id(operating_hours_data.future.id)  # type: ignore
+    assert future.id is not None
+    operating_hours_svc.delete(user_data.root, future)
+    with pytest.raises(ResourceNotFoundException):
+        future = operating_hours_svc.get_by_id(operating_hours_data.future.id)  # type: ignore
+
+
+def test_delete_permissions(operating_hours_svc: OperatingHoursService):
+    """Delete an Operating Hours entity expected case."""
+    permission_svc = create_autospec(PermissionService)
+    operating_hours_svc._permission_svc = permission_svc
+
+    assert operating_hours_data.future.id is not None
+    operating_hours_svc.delete(user_data.root, operating_hours_data.future)
+    permission_svc.enforce.assert_called_with(
+        user_data.root,
+        "coworking.operating_hours.delete",
+        f"coworking/operating_hours/{operating_hours_data.future.id}",
     )

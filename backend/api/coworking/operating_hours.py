@@ -46,8 +46,12 @@ def new_operating_hours(
     return operating_hours_svc.create(subject, time_range)
 
 
-# @api.delete(":id", tags=["Coworking"])
-# def delete_operating_hours(
-#     id: int,
-
-# )
+@api.delete("/{id}", tags=["Coworking"])
+def delete_operating_hours(
+    id: int,
+    subject: User = Depends(registered_user),
+    operating_hours_svc: OperatingHoursService = Depends(),
+):
+    """Delete operating hours for the XL."""
+    operating_hours = operating_hours_svc.get_by_id(id)
+    return operating_hours_svc.delete(subject, operating_hours)
