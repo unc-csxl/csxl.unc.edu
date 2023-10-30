@@ -25,9 +25,9 @@ def permission_svc(session: Session):
 
 
 @pytest.fixture()
-def operating_hours_svc(session: Session):
+def operating_hours_svc(session: Session, permission_svc: PermissionService):
     """OperatingHoursService fixture."""
-    return OperatingHoursService(session)
+    return OperatingHoursService(session, permission_svc)
 
 
 @pytest.fixture()

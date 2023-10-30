@@ -31,3 +31,23 @@ def get_operating_hours(
     """List operating hours over a given span of dates."""
     time_range = TimeRange(start=start, end=end)
     return operating_hours_svc.schedule(time_range)
+
+
+@api.post("", response_model=OperatingHours, tags=["Coworking"])
+def new_operating_hours(
+    operating_hours_range: TimeRange,
+    subject: User = Depends(registered_user),
+    operating_hours_svc: OperatingHoursService = Depends(),
+):
+    """Create new opening hours for the XL."""
+    time_range = TimeRange(
+        start=operating_hours_range.start, end=operating_hours_range.end
+    )
+    return operating_hours_svc.create(subject, time_range)
+
+
+# @api.delete(":id", tags=["Coworking"])
+# def delete_operating_hours(
+#     id: int,
+
+# )
