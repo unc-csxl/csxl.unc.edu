@@ -340,4 +340,5 @@ The one thing that is important to take away from these notes is the difference 
 
 ## Further Reading
 - Official Angular Documentation - [Using `@Input` and `@Output`](https://angular.io/guide/inputs-outputs)
-- Official Angular Docuemntation - [Angular Modules](https://angular.io/guide/architecture-modules)
+- Official Angular Documentation - [Event Bindings](https://angular.io/guide/event-binding)
+- Official Angular Documentation - [Angular Modules](https://angular.io/guide/architecture-modules)
