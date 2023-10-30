@@ -113,6 +113,16 @@ Once a PR has an approving CR and is ready to be merged, you should see a green 
 
 **Important**: to maintain a clean, linear `git` history we recommend selecting the merge strategy of "Squash and merge". This strategy will enable GitHub to combine all of the commits of this branch into a single commit that gets merged back into the base branch. Click the down arrow on the green button if you do not see "Squash and merge" and select it.
 
+After merging in the PR, best practice is to go ahead and delete the branch. If this PR was for an Issue Branch and you linked it to an Issue on your project board, as described above, not only will the Issue automatically be closed, but the card on your Project Board will be moved to **Done**.
+
+Finally, back in your local dev container, if you were working in this branch you can go ahead and switch back to the base branch, pull, and delete your local branch with the work that was merged in:
+
+~~~
+git switch [base-branch]
+git pull origin [base-branch]
+git branch -d [merged-in-branch-name]
+~~~
+
 ### Catching a PR branch up with its base branch before merging
 
 When a PR targets a base branch to be merged into that has progressed since the original branch was established, and merging cannot be performed automatically, it is requisite to "catch up" the branch of the PR. There are many ways of doing this, but our recommended strategy is tied to the convention of ultimately merging by squashing into a single commit. With this strategy, our recommendation for catching up a branch is to simply create a merge commit on your Issue/PR branch by pulling from the base branch and resolving any conflicts. Remember, your base branch may either be `stage` or, if you are working on a subtask branch, the issue branch your subtask targets.
