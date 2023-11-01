@@ -93,11 +93,21 @@ After successfully pushing to a branch on GitHub, you will see a link to create 
 
 Alternatively, if you go to GitHub's Pull Requests tab and select "New Pull Request", the first selection is the base and the second is the branch you are creating the PR for. **This is where to be careful!** If you are working on a subtask of an Issue Branch, the `base` should be the Issue Branch. However, if you believe the current branch is ready to be merged back into `stage`, select `stage` here (it _should_ be the default selection due to how your team configured the repository). Then, for the **compare** branch, select the branch you are creating the Pull Request for. Below, you should see an overview of how many commits, file changes, and so on, differentiate the base branch from the comparison branch. Assuming this looks correct, press the Green "Create Pull Request" button.
 
-Name your Pull Request more meaningfully than just the default branch name. Additionally, make an effortful attempt to write a description of what is going on in this PR at a high-level, in English. If there is anything important to point out to a Code Reviewer, you can do so here.
+Name your Pull Request more meaningfully than just the default branch name. Additionally, make an effortful attempt to write a solid description of what is going on in this PR at a high-level, in English. It is important that your PR highlights all of the changes made so that your code reviewer is able to understand the motivation behind the PR. Below is a good format for items to include in your PR.
 
-Add your Code Reviewer(s) in the right-hand column to request a Code Review.
+**Pull Request Template**:
+> - Short description of the pull request and what it accomplishes.
+> - Major Changes Section: Include a list of major changes and provide important points for your Code Reviewer if necessary.
+> - Testing Section: It is useful to verify that you have tested your feature and that it works. Explain what you did to test your feature to your Code Reviewer.
+> - Future Considerations Section: Your PR will often either leave some features / fixes to be worked on later, or create the need for new features / fixes. Include these in this section.
+*In addition, if there is anything important to point out to a Code Reviewer, you can do so here.*
+
+[Here is an example of a PR from the CSXL Site that follows this template](https://github.com/unc-csxl/csxl.unc.edu/pull/107). 
+
+Add your Code Reviewer(s) in the right-hand column to request a Code Review. Also, assign the members who contributed code to the PR.
 
 Create the Pull Request!
+
 
 ### Continuing work after on PR after creation / changes requested
 
