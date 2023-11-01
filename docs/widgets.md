@@ -301,7 +301,7 @@ Again, go back to the widget's HTML. Like we said before, *we want to set this u
 
 We can actually connect the button's `(click)` handler to emit this data.
 
-**organization-card.widget.ts**
+**organization-card.widget.html**
 ```html
 <mat-card>
   <!-- Implmentation not shown -->
