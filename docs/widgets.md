@@ -181,7 +181,7 @@ export class WidgetName {
 
 There are a few things to note with this template. First is the `selector` property passed into the `@Component` decorator. Note that this is what you will use to refer to your widget in HTML! So, in a component's HTML, you would call this widget using `<widget-name />`. 
 
-Second, once you create the template, ***you must declare it in a module!!*** Follow the steps in the previous part to determine whether your widget will be globally or locally used. Then, in the correct Modules file, add it to the list for the `declarations` property in the `@NgModule` decorator.
+Second, once you create the template, ***you must declare it in a module!!*** Follow the steps in the previous part to determine whether your widget will be globally or locally used. Then, in the correct Modules file, add the name of the class created (in this case, `WidgetName`) to the list for the `declarations` property in the `@NgModule` decorator.
 
 
 ### Pass Data into Widgets Using Inputs
