@@ -1,6 +1,6 @@
 # Feature Permissions
 
-> Written by Jade Keegan for the CSXL Web Application.<br> > _Last Updated: 11/3/2023_
+> Written by Jade Keegan for the CSXL Web Application.<br> _Last Updated: 11/6/2023_
 
 ## Introduction
 
