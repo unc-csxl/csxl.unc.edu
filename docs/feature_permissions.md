@@ -1,4 +1,4 @@
-# Feature Permissions
+# Administrative Permissions of CSXL Services
 
 > Written by Jade Keegan for the CSXL Web Application.<br> _Last Updated: 11/6/2023_
 
@@ -45,7 +45,9 @@ _\*Note that we use "\*" as a wild card character to encompass all of the action
 
 | Action                           | Resource                                       | Permission |
 | -------------------------------- | ---------------------------------------------- | ---------- |
-| coworking.operating_hours.create | coworking/operating_hours                      |            |
-| coworking.operating_hours.delete | coworking/operating_hours/{operating_hours.id} |            |
-| coworking.reservation.read       | user/{user.id}                                 |            |
-| coworking.reservation.manage     | user/{user.id}                                 |            |
+| coworking.operating_hours.create | coworking/operating_hours                      | Add new operating hours to the XL |
+| coworking.operating_hours.delete | coworking/operating_hours/{operating_hours.id} | Delete operating hours from the XL  |
+| coworking.reservation.read       | user/{user.id}                                 | Read the reservations of a specific user |
+| coworking.reservation.manage     | user/{user.id}                                 | Manage (create/update/delete) the reservations of a specific user |
+
+The administrative permissions of coworking are under development as this feature is being worked on by many groups in COMP590 this Fall. As these features land, more permissions will likely need to be added to this list.
