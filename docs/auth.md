@@ -17,7 +17,7 @@ This document is for CSXL Developers who need authentication and authorization i
 
 ## Authentication
 
-Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) Shibboleth service. This allows username, password, and UNC affinity to be handled by UNC ITS and our application takes a dependency upon it. For more information on SSO, see ITS' [official documentation](https://its.unc.edu/2017/07/24/shibboleth/). For the implementation details on *how* authentication works in this application, see [backend/api/authentication.py](backend/api/authentication.py).
+Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) Shibboleth service. This allows username, password, and UNC affinity to be handled by UNC ITS and our application takes a dependency upon it. For more information on SSO, see ITS' [official documentation](https://its.unc.edu/2017/07/24/shibboleth/). For the implementation details on *how* authentication works in this application, see [backend/api/authentication.py](../backend/api/authentication.py).
 
 Authentication is verifying *who* the "subject" accessing a system is. The term "subject" is chosen intentionally in the security lexicon. A subject may be a person, but alternatively an automated program accessing a system on behalf of a person, group, or organization. The CSXL application is, for now, foremost a user-facing application that serves the people of the computer science department at UNC. Thus, a "subject" is a person and user of the CSXL application for our concerns.
 
@@ -33,7 +33,7 @@ When a feature of the website, via one or more of its models, is related to one 
 
 The logic for enforcing feature-specific concerns should be specified in the feature's backend service layer methods. Developers are encouraged to factor out this logic into reusable helper functions; it is likely many service methods will rely upon the same logic.
 
-All backend service layer methods with authorization concerns should accept a `subject: User` as their first parameter. This represents the user attempting to carry out the action and whose authorization needs verification. If your backend service layer method determines the subject does not have permission to carry out the operation, raise a [`backend.services.permission.UserPermissionException`](backend/services/permission.py). Example usage of this exception:
+All backend service layer methods with authorization concerns should accept a `subject: User` as their first parameter. This represents the user attempting to carry out the action and whose authorization needs verification. If your backend service layer method determines the subject does not have permission to carry out the operation, raise a [`backend.services.permission.UserPermissionException`](../backend/services/permission.py). Example usage of this exception:
 
 ```python
 raise UserPermissionException('workshops.update', f'workshops/{workshop.id}`)
@@ -59,7 +59,7 @@ To see how administrative permissions are managed in the app, in the development
 
 ### Backend Routes Requiring a Registered User
 
-Thanks to FastAPI's dependency injection system and the `registered_user` helper function in [backend/api/authentication.py], adding authentication to a route is as easy as adding a parameter. For example, [backend/api/roles.py]'s `list_roles` function is defined as:
+Thanks to FastAPI's dependency injection system and the `registered_user` helper function in [../backend/api/authentication.py], adding authentication to a route is as easy as adding a parameter. For example, [../backend/api/roles.py]'s `list_roles` function is defined as:
 
 ```python
 @api.get("", tags=["Roles"])
@@ -89,7 +89,7 @@ In the OpenAPI user interface found at `/docs`, look for the Green Authorize but
 
 Backend service methods are _the most important place_ to correctly verify authorization. Failing to properly verify authorization here means users will be able to take actions they should not have permission to.
 
-As an example, consider _updating a user's profile details_. The "feature" is a user's profile. The feature-specific rule is _a user can update their own profile_. This verification is implemented in [backend/services/user.py](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/backend/services/user.py#L145). Notice the negation of the rule is specified in the `if` such that if the rule is `True` (the user is the subject), execution carries on into the method. However, if the feature-specific rule does not hold, we then call the [`PermissionService`](backend/services/permission.py)'s `enforce` method, giving it the `subject` user, action string (`user.update`), and resource (`user/{id}`). This method handles the logic for checking whether `subject` has administrative access to carry out this action on the resource. If the `subject` does, this procedure returns nothing. If they do not, it raises a `UserPermissionException` for you. This demonstrates an idiomatic way of verifying the `subject` is authorized.
+As an example, consider _updating a user's profile details_. The "feature" is a user's profile. The feature-specific rule is _a user can update their own profile_. This verification is implemented in [backend/services/user.py](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/backend/services/user.py#L145). Notice the negation of the rule is specified in the `if` such that if the rule is `True` (the user is the subject), execution carries on into the method. However, if the feature-specific rule does not hold, we then call the [`PermissionService`](../backend/services/permission.py)'s `enforce` method, giving it the `subject` user, action string (`user.update`), and resource (`user/{id}`). This method handles the logic for checking whether `subject` has administrative access to carry out this action on the resource. If the `subject` does, this procedure returns nothing. If they do not, it raises a `UserPermissionException` for you. This demonstrates an idiomatic way of verifying the `subject` is authorized.
 
 If your feature-specific rules are more involved than a simple equality check, you should refactor these rules out into a method of its own with a well chosen name. This will help keep your service's methods easier to read and reason through. Additionally, it makes it easier to write unit tests specifically targetting your feature-specific rule logic.
 
@@ -105,9 +105,11 @@ As an example of this, consider [`NavigationComponent`](frontend/src/app/navigat
 
 ### Frontend Features Requiring Authorization
 
-For feature-specific rule authorization, the alpha version of the CSXL web app that COMP590 Spring 2023 is starting from does not yet have an idiomatic example in the frontend. As a feature developer, you will need to come up with a solution of how your frontend UI will handle feature-specific authorization concerns.
+For feature-specific rule authorization, the beta version of the CSXL web app that COMP590 Fall 2023 is starting from does not yet have an idiomatic example in the frontend. As a feature developer, you will need to come up with a solution of how your frontend UI will handle feature-specific authorization concerns.
 
-For administrative permission rule authorization, the [PermissionService](frontend/src/app/permission.service.ts) provides helper methods for verifying administrative permissions. For an idiomatic example use case for administrative permission checking, see [`NavigationComponent`](frontend/src/app/navigation)'s `adminPermission$` `Observable<boolean>`:
+For administrative permission rule authorization, the [PermissionService](../frontend/src/app/permission.service.ts) provides helper methods for verifying administrative permissions. For an idiomatic example use case for administrative permission checking, see [`NavigationComponent`](../frontend/src/app/navigation)'s `adminPermission$` `Observable<boolean>`:
 
 1. [The permission is initialized in the constructor via `PermissionService`'s `check` method.](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/frontend/src/app/navigation/navigation.component.ts#L41)
 2. [The permission is checked in the HTML template using an async pipe.](https://github.com/unc-csxl/csxl.unc.edu/blob/main/frontend/src/app/navigation/navigation.component.html#L13)
+
+For a list of existing administrative permissions, please see the [Administrative Permissions of CSXL Services](./admin_permissions.md) documentation.
