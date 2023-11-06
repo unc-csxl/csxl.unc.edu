@@ -8,7 +8,7 @@ This document specifies the permissions to be added for the various actions with
 
 Each permission consists of an _action_ and a _resource_, both of which are strings. The action consists of the name of the corresponding feature service followed by an action such as create/view/update/delete (such as `organizations.create`). The resource specifies the path of the API route being operated on.
 
-For more comprehensive information about how permissions work within the backend code, please refer to the document titled [auth.md](./auth.md).
+For more comprehensive information about how permissions work within the backend and frontend code, please refer to the document titled [auth.md](./auth.md).
 
 ## Organizations
 

@@ -112,4 +112,4 @@ For administrative permission rule authorization, the [PermissionService](../fro
 1. [The permission is initialized in the constructor via `PermissionService`'s `check` method.](https://github.com/unc-csxl/csxl.unc.edu/blob/e349bd727f5525a07dc85ed602916470b285e24f/frontend/src/app/navigation/navigation.component.ts#L41)
 2. [The permission is checked in the HTML template using an async pipe.](https://github.com/unc-csxl/csxl.unc.edu/blob/main/frontend/src/app/navigation/navigation.component.html#L13)
 
-For a list of existing administrative permissions, please see the [Administrative Permissions of CSXL Services](./feature_permissions.md) documentation.
+For a list of existing administrative permissions, please see the [Administrative Permissions of CSXL Services](./admin_permissions.md) documentation.
