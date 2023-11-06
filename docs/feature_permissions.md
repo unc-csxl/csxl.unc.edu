@@ -43,4 +43,9 @@ _\*Note that we use "\*" as a wild card character to encompass all of the action
 
 ## Coworking
 
-[TBA]
+| Action                           | Resource                                       | Permission |
+| -------------------------------- | ---------------------------------------------- | ---------- |
+| coworking.operating_hours.create | coworking/operating_hours                      |            |
+| coworking.operating_hours.delete | coworking/operating_hours/{operating_hours.id} |            |
+| coworking.reservation.read       | user/{user.id}                                 |            |
+| coworking.reservation.manage     | user/{user.id}                                 |            |
