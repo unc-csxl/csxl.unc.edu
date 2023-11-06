@@ -41,4 +41,6 @@ These permissions require the `organization_id` in the resource string in order 
 For example, to add all of these event management permissions to leaders of HackNC (which has an organization ID of 29), first find/create a role with the name _Org: HackNC_. On the role details page, input `organization.events.*` as the action for a new permission and `organization/29` as the resource and click **Grant**. Now, any user added to the _Org:HackNC_ role will have the ability to manage HackNC's events!
 _\*Note that we use "\*" as a wild card character to encompass all of the actions (create/delete/update) since the leader of an organization should have full management permissions for the organization's events._
 
-##
+## Coworking
+
+[TBA]
