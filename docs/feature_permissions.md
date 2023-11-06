@@ -24,7 +24,7 @@ The `organization.create` and `organization.delete` permissions may be added to 
 
 The `organization.update` permission should be added under a role for a particular organization with some `organization_id` corresponding to that organization. Roles for organizations are specified as follows: "Org: [*Organization Name/Slug*]".The resource must include the `organization_id` to ensure that only members of the organization have the ability to update it.
 
-As an example, to add the `organization.update` permission to leaders of HackNC (which has an organization ID of 29), first find/create a role with the name _Org: HackNC_. On the role details page, input `organization.update` as the action for a new permission and `organization/29` as the resource and click **Grant**. Now, any user added to the _Org:HackNC_ role will have the ability to update HackNC's organization information!
+As an example, to add the `organization.update` permission to leaders of HackNC (which has an organization ID of 29), first find/create a role with the name _Org: HackNC_. On the role details page, input `organization.update` as the action for a new permission and `organization/29` as the resource and click **Grant**. Now, any user added to the _Org: HackNC_ role will have the ability to update HackNC's organization information!
 
 ## Events
 
@@ -36,10 +36,10 @@ As an example, to add the `organization.update` permission to leaders of HackNC 
 
 The table above defines permissions for the Events feature of the application.
 
-These permissions require the `organization_id` in the resource string in order to ensure that a user may only alter events for the organization(s) they have permissions for. Similar to the `organization.update` permission, these permissions should be added under the Role for a specific Organization, and the `organization_id` in the resource string should correspond to that organization.
+These permissions require the resource string to include `organization_id` to ensure that users may only alter events for the organization(s) they have permissions for. Further, similar to the `organization.update` permission, these event permissions should be added under the Role for a specific Organization, and the `organization_id` in the resource string should correspond to that organization.
 
-For example, to add all of these event management permissions to leaders of HackNC (which has an organization ID of 29), first find/create a role with the name _Org: HackNC_. On the role details page, input `organization.events.*` as the action for a new permission and `organization/29` as the resource and click **Grant**. Now, any user added to the _Org:HackNC_ role will have the ability to manage HackNC's events!
-_\*Note that we use "\*" as a wild card character to encompass all of the actions (create/delete/update) since the leader of an organization should have full management permissions for the organization's events._
+For example, to add all of these event management permissions to leaders of HackNC (which has an organization ID of 29), first find/create a role with the name _Org: HackNC_. On the role details page, input `organization.events.*` as the action for a new permission and `organization/29` as the resource and click **Grant**. Now, any user added to the _Org: HackNC_ role will have the ability to manage HackNC's events!
+_\*Note that we use "\*" as a wild card character to encompass all of the actions (create/delete/update) since the leader of an organization should have full management permissions for the organization's events. This is equivalent to individually granting each permission to the Role._
 
 ## Coworking
 
