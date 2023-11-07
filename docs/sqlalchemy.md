@@ -1,6 +1,6 @@
 # SQLAlchemy Tutorial
 
-> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br> > _Last Updated: 11/6/2023_
+> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>_Last Updated: 11/6/2023_
 
 ## Preface
 
@@ -62,3 +62,49 @@ Of course, this is super cool! However, there is a problem. It is quite hard to 
 **Enter SQLAlchemy!**
 
 **SQLAlchemy** is the primary SQL toolkit that we will use to interact with our PostGreSQL database. This tutorial will get you familiarized with SQLAlchemy and how it is used in the CSXL Application.
+
+## Introduction to SQLAlchemy - Core and ORM
+
+## SQLAlchemy Entities
+
+### What are Entities?
+
+### Entities vs. Pydantic Models
+
+## Connecting to the Database
+
+### Creating the Session
+
+## CRUD Operations
+
+### Transactions
+
+### Read Data
+
+### Write Data
+
+### Delete Data
+
+## Database Relationships
+
+### One-to-One Relationship
+
+### One-to-Many Relationship
+
+### Many-to-Many Relationship
+
+### Modeling Relationships in the Entity
+
+## Modelling Your Data
+
+### Designing Database Tables
+
+### Relationships
+
+### Join Tables
+
+### Resolving Model Circularity
+
+## Further Reading
+
+< database.md >
