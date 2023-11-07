@@ -548,7 +548,74 @@ def get_by_id(self, id: int) -> Organization:
 
 ### Write Data
 
+Writing data to our database is pretty simple! To do this, we can use the `session.add()` function.
+
+However, again - it is **_super important_** to rememebr which types we are working with! Our API will be calling this create function using a _Pydantic model_ request, and we must add an _entity_ to our database. So, we must convert an input model to an entity before we add it!
+
+Say that in our service, we create a `.create()` function that takes in a new organization (Pydantic model) as a parameter:
+
+```py
+def create(self, organization: Organization) -> Organization:
+    entity = OrganizationEntity.from_model(organization)
+```
+
+As you can see, we can use the `.from_model()` static method on the entity class to convert the model to the entity!
+
+From there, we can add it to our transaction:
+
+```py
+def create(self, organization: Organization) -> Organization:
+    entity = OrganizationEntity.from_model(organization)
+    self._session.add(entity)
+```
+
+Two notes here! One is that SQLAlchemy is smart enough to know which table to add to since the entity corresponds to the right table. Second, we call `.add()`, _but not data is added yet!_ Why?
+
+Remember what we talked about earlier with transactions! Since `.add()` mutates the state of the database, the `.add()` action is appended to the current transaction.
+
+Think of this like _staging_ in Git! We are essentially adding all of the changes we want to be ready to be committed at once.
+
+Just like Git, once we have created and completed our transaction, we execute it by calling `.commit()`.
+
+Our final function would look like:
+
+```py
+def create(self, organization: Organization) -> Organization:
+    entity = OrganizationEntity.from_model(organization)
+    self._session.add(entity)
+    self._session.commit() # Database is updated now.
+    return entity.to_model()
+```
+
+Of course, if there is an error in the `.commit()` step, our transaction follows the _all-or-nothing_ principle that we discussed earlier.
+
+You may also notice the `return` statement at the bottom! We return the object that we created (in model form) to ensure that it has been created correctly. There are also some instances where if we did not populate certain fields, the returned value would have those fields populated. This may be due to the `default=` rules defined earlier in the entity.
+
 ### Delete Data
+
+Deleting data from our database is also extremely easy! Just like how the session as the `.add()` function, the session also has `.delete()`. The `.delete()` function takes in the object / row that should be deleted from the database.
+
+Let's recall the function that we used to _get_ an organization by an ID:
+
+```py
+def get_by_id(self, id: int) -> Organization:
+    """Fetch an organization from the database based on its ID"""
+    entity = self._session.get(OrganizationEntity, id)
+    return entity.to_model()
+```
+
+What if I wanted to modify this to delete an object by ID? Well, we only need to add two lines:
+
+```py
+def delete_by_id(self, id: int):
+    """Delete an organization by ID"""
+    entity = self._session.get(OrganizationEntity, id)
+    self._session.delete(entity)
+    self._session.commit() # Database is updated now.
+
+```
+
+This deletion follows the same _all-or-nothing_ principle as our `.create()` function did.
 
 ## Database Relationships
 
