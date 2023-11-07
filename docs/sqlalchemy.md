@@ -872,6 +872,22 @@ However, this convention is not so easily applied to _many-to-many relationships
 
 As mentioned in the last two previous sections, modeling _many-to-many relationships_ offers its own challenges.
 
+Modeling one-to-one or one-to-many relationships is easy, because in one table, we can store the primary key of the an entry in the other table to establish the relationship. However, how do we store _many_ primary keys in both tables? We are unable to use lists as data types in our PostgreSQL fields (as in it is bad practice). So, how can we match up numerous entries of two different tables together?
+
+**Enter the join table.**
+
+A **join table** is an intermediate table between the two tables in a many-to-many relationship whose sole purpose is to model the connection between both tables. Let's use _organization membership_ as an example.
+
+Say that we want to establish a many-to-many relationship between the `organization` and `user` tables. We can connect these two tables in a many-to-many relationship by creating a central _join table_ - let's call it our `membership` table. Look at the following diagram below:
+
+![Join table example diagram]()
+
+All join tables are required to have three fields - one primary key to identify each membership, and then two fields for the primary key of each item that we are relating - in this case, this would be `org_id` and `user_pid`.
+
+As you can see, each listing bundles together the ID of the organization and the PID of the user together to establish a relationship between two items. Since this join table can have many rows and values can repeat in each column, we can therefore have many users related to a single organization, and many organizations related to a single user - hence a _many-to-many relationship!_
+
+Creating a join table in SQLAlchemy is pretty simple. First, we need to repeat the same step that we did for creating any table in our database - creating an entity! This entity will model our join table. Let's create an example for the `membership` table:
+
 ### Resolving Model Circularity
 
 ## Further Reading
