@@ -69,6 +69,119 @@ Of course, this is super cool! However, there is a problem. It is quite hard to 
 
 ### What are Entities?
 
+As you know, our PostGreSQL database represents data in a _tabular format_ - meaning tables! As mentioned in the beginning, tables have columns (fields of data) and rows represent each entry in our data.
+
+However, we need a way to actually _represent_ this database structure in Python. We can then use this structure to:
+
+- Represent the expected shape of what our tables should look like, so if we were to _create database tables_ in our database, we can use the structure in Python as our cide.
+- Represent data being read from the database as an object of this structure.
+
+We call these structures **_SQLAlchemy Entities_**.
+
+Entities fit into our overall stack flowchart like so:
+
+![Stack flowchart zoomed in on the entities]()
+
+### Creating Entities
+
+The SQLAlchemy ORM contains the basic building blocks for us to create entities, and these tools are made available in the `DeclarativeBase` class of the ORM. We can import it like so:
+
+```py
+from sqlalchemy.orm import DeclarativeBase
+```
+
+From here, we can create one class that can act as a superclass for all of our models. This class will also inherit from `DeclarativeBase` to have access to all of the necessary features that will make it an entity. We can declare this like so:
+
+```py
+class EntityBase(DeclarativeBase):
+    pass
+```
+
+Notice that this class is essentially empty! It just inherits everything from `DeclativeBase`.
+
+**_From here,_** we can create SQLAlchemy entities!
+
+Remember, entities represent tables in our database. Let's say that I wanted to create an entity to represent the `organization` table of my PostGreSQL database.
+
+First, recall that we said that we created `EntityBase` to serve as the _superclass_ of all of our entities. So, let's create an entity for our organization table that inherits from `EntityBase`.
+
+```py
+class OrganizationEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Organization` table"""
+
+    # Name for the organizations table in the PostgreSQL database
+    __tablename__ = "organization"
+```
+
+First, notice that it is important to include the field `__tablename__`, spelled exactly in this way. This maps the entity (`OrganizationEntity`) to a table named `organization` in the PostGreSQL database.
+
+Now from here, we can add our fields - what will be _columns_ in our database.
+
+Let's think about the columns that we may want in our `organization` table. Below are a few examples.
+
+| PK? | Column Name | Data Type | Description                                                                                         |
+| --- | ----------- | --------- | --------------------------------------------------------------------------------------------------- |
+| \*  | id          | `int`     | Unique identifier (primary key) for each organization.                                              |
+|     | name        | `str`     | Name of the organization.                                                                           |
+|     | slug        | `str`     | Lowercased abbreviation of the organization to be used in URLs.                                     |
+|     | description | `str`     | Description of the organization.                                                                    |
+|     | public      | `bool`    | Whether or not anyone can join the organization (in the case that there is an application process). |
+
+_Note: PK denotes "primary key"._
+
+It is important to note that, when we create entities, we are **mapping** Python fields to a SQL relational database column. To establish this mapping, we use the following syntax from SQLAlchemy to define fields in our entity:
+
+```py
+field_name: Mapped[<python_type>] = mapped_column(<SQLDataType>)
+```
+
+In this example, `mapped_column()` is a function from the SQLAlchemy ORM that establishes this column.
+
+The Python type is the data type of what data we want to represent in Python. This could be common types as written in the table above, such as `int`, `str`, and `bool`.
+
+However, SQL relational databases have their own corresponding types. SQLAlchemy includes these types and makes them importable. For example:
+
+- `str` maps to `String`
+- `int` maps to `Integer`
+- `bool` maps to `Boolean`
+
+So, using the code above and including new import statements, let's create our entity based on the data above!
+
+```py
+# Import our mapped SQL types from SQLAlchemy
+from sqlalchemy import Integer, String, Boolean
+# Import mapping capabilities from the SQLAlchemy ORM
+from sqlalchemy.orm import Mapped, mapped_column
+# Import the EntityBase that we are extending
+from .entity_base import EntityBase
+
+class OrganizationEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Organization` table"""
+
+    # Name for the organizations table in the PostgreSQL database
+    __tablename__ = "organization"
+
+    # Fields
+
+    # Unique ID for the organization
+    # NOTE: Notice the `primary_key=True` to denote that this is a primary key.
+    # NOTE: Also notice the `autoincrement=True`. This allows our IDs to be automatically populated in increasing order as we add more organizations to our table.
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    # Name of the organization
+    # NOTE: Notice `nullable=False`. This indicates that this column cannot be blank - there must be a value here. If none is provided, it defaults to "" because of `default=""`.
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    # Description of the organization
+    description: Mapped[str] = mapped_column(String)
+
+    # Whether the organization can be joined by anyone or not
+    public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+
+```
+
+There you have it, we have now created an entity! This entity provides the structure for the `organization` table and also serves as a data type for data that we directly retrieve from the table.
+
 ### Entities vs. Pydantic Models
 
 ## Connecting to the Database
