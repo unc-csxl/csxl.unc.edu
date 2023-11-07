@@ -2,7 +2,7 @@
 
 > Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>_Last Updated: 11/6/2023_
 
-# Preface
+## Preface
 
 Throughout this course so far, you have been learning about each layer of the tech stack. You started in the frontend, with _Angular components_ - what the users see on each page. You then moved downwards to the _Angular services_, which help to fetch and update data for your application. You then began to explore the backend layer, using _FastAPI_ to expose data across HTTP to your frontend services. Lastly, you made it to the _backend service_ layer, which your APIs called to in order to manipulate data. These layers can be represented using this flowchart:
 
@@ -63,11 +63,11 @@ Of course, this is super cool! However, there is a problem. It is quite hard to 
 
 **SQLAlchemy** is the primary SQL toolkit that we will use to interact with our PostgreSQL database. This tutorial will get you familiarized with SQLAlchemy and how it is used in the CSXL Application.
 
-# Introduction to SQLAlchemy - Core and ORM
+## Introduction to SQLAlchemy - Core and ORM
 
-# SQLAlchemy Entities
+## SQLAlchemy Entities
 
-## What are Entities?
+### What are Entities?
 
 As you know, our PostgreSQL database represents data in a _tabular format_ - meaning tables! As mentioned in the beginning, tables have columns (fields of data) and rows represent each entry in our data.
 
@@ -82,7 +82,7 @@ Entities fit into our overall stack flowchart like so:
 
 ![Stack flowchart zoomed in on the entities]()
 
-## Creating Entities
+### Creating Entities
 
 The SQLAlchemy ORM contains the basic building blocks for us to create entities, and these tools are made available in the `DeclarativeBase` class of the ORM. We can import it like so:
 
@@ -182,7 +182,7 @@ class OrganizationEntity(EntityBase):
 
 There you have it, we have now created an entity! This entity provides the structure for the `organization` table and also serves as a data type for data that we directly retrieve from the table.
 
-## Entities vs. Pydantic Models
+### Entities vs. Pydantic Models
 
 If you examined the tech stack diagram closely, or referred to previous exercises in class, you are probably getting a bit confused and thinking,
 
@@ -288,7 +288,7 @@ The first file shows the _real_ SQLAlchemy entity for organizations used in the 
 
 The second file is the service, which as we talked about before, should be converting between models and entities! We can see that the service does this perfectly and utilizes the `to_model()` and `from_model()` as defined in the entity.
 
-# Connecting to the Database
+## Connecting to the Database
 
 Now that you know a bit about SQLAlchemy and representing database table structures in SQLAlchemy Entities, let's learn how to actually connect to the database.
 
@@ -298,7 +298,7 @@ We need to expose the **_session_** as an object that can be **_injected_** into
 
 This idea is similar to how we inject frontend services into Angular components to use their functionality.
 
-## Creating the Session
+### Creating the Session
 
 The code to handle the creation of the session is handled in `backend/database.py`, but let's take a look at what is going on in this code:
 
@@ -354,36 +354,36 @@ The syntax `Depends()` in the initializer for the service allows us to use depen
 
 We will use this session in the next section.
 
-# CRUD Operations
+## CRUD Operations
 
-## Transactions
+### Transactions
 
-## Read Data
+### Read Data
 
-## Write Data
+### Write Data
 
-## Delete Data
+### Delete Data
 
-# Database Relationships
+## Database Relationships
 
-## One-to-One Relationship
+### One-to-One Relationship
 
-## One-to-Many Relationship
+### One-to-Many Relationship
 
-## Many-to-Many Relationship
+### Many-to-Many Relationship
 
-## Modeling Relationships in the Entity
+### Modeling Relationships in the Entity
 
-# Modelling Your Data
+## Modelling Your Data
 
-## Designing Database Tables
+### Designing Database Tables
 
-## Relationships
+### Relationships
 
-## Join Tables
+### Join Tables
 
-## Resolving Model Circularity
+### Resolving Model Circularity
 
-# Further Reading
+## Further Reading
 
 < database.md >
