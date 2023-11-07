@@ -724,9 +724,9 @@ Let's recall the current structures of these tables:
 **`event` Table**
 
 | PK? | Column Name | Data Type | Description                                     |
-| --- | ----------- | --------- | ----------------------------------------------- | --- |
+| --- | ----------- | --------- | ----------------------------------------------- |
 | \*  | id          | `int`     | Unique identifier (primary key) for each event. |
-|     | name        | `str`     | Name of the event.                              |     |
+|     | name        | `str`     | Name of the event.                              | 
 |     | description | `str`     | Description of the event.                       |
 
 How might we add a **_host organization_** to the events table?
