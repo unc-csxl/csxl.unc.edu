@@ -1,13 +1,9 @@
-.header {
-    padding: 0 16px;
-}
-
 .hours-title {
     font-size: 20px;
     font-weight: 500;
     margin: 0;
     letter-spacing: 0.25px;
-    line-height: 32px;
+    line-height: 24px;
     text-decoration-color: rgba(0, 0, 0, 0.87);
     text-decoration-line: none;
     text-decoration-style: solid;
@@ -33,4 +29,28 @@
 
 .mat-expansion-panel {
     max-width: 640px;
+}
+
+h3 {
+    text-align: center;
+    font-size: 1.4em;
+}
+
+table {
+    margin: 0 auto;    
+    font-size: 1.2em;
+    border-collapse: collapse;
+}
+
+tr:nth-child(even) {
+    background: rgba(1, 1, 1, 0.1);
+}
+
+td {
+    padding: 8px;
+    margin: 0;
+}
+
+td.open, td.close {
+    text-align: center;
 }

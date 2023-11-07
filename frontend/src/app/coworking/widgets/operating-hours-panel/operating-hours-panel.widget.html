@@ -1,20 +1,47 @@
-<mat-expansion-panel [expanded]="openOperatingHours === undefined" appearance="outlined">
+<mat-expansion-panel
+  [expanded]="openOperatingHours === undefined"
+  appearance="outlined">
   <mat-expansion-panel-header class="header">
-    <mat-panel-title class="hours-title open" *ngIf="openOperatingHours; else closed"><span class="badge">Open</span>
+    <mat-panel-title
+      class="hours-title open"
+      *ngIf="openOperatingHours; else closed"
+      ><span class="badge">Open</span>
       until
-      {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</mat-panel-title>
+      {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</mat-panel-title
+    >
     <ng-template #closed>
-      <mat-panel-title class="hours-title closed"><span class="badge">Closed</span></mat-panel-title>
+      <mat-panel-title class="hours-title closed"
+        ><span class="badge">Closed</span></mat-panel-title
+      >
     </ng-template>
   </mat-expansion-panel-header>
   <div>
-    <h3>Upcoming Hours</h3>
-    <ul>
-      <li *ngFor="let hours of operatingHours">
-        {{ hours.start | date: 'EEEE M/d' }}
-        from {{ hours.start | date: 'h:mma' | lowercase }} to
-        {{ hours.end | date: 'h:mma' | lowercase }}
-      </li>
-    </ul>
+    <h3>
+      Hours of Operation
+      <button mat-icon-button *ngIf="createHoursPermission">
+        <mat-icon fontIcon="add"></mat-icon>
+      </button>
+    </h3>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>Open</th>
+          <th>Close</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let hours of operatingHours">
+          <td>{{ hours.start | date: 'EEEE' }}</td>
+          <td>{{ hours.start | date: 'M/d' }}</td>
+          <td class="open">{{ hours.start | date: 'h:mma' | lowercase }}</td>
+          <td class="close">{{ hours.end | date: 'h:mma' | lowercase }}</td>
+          <td *ngIf="deleteHoursPermission">
+            <button mat-button><mat-icon fontIcon="remove"></mat-icon></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </mat-expansion-panel>

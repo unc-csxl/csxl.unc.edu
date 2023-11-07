@@ -13,6 +13,7 @@ import { CoworkingHoursCard } from './widgets/operating-hours-panel/operating-ho
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 import { ReservationComponent } from './reservation/reservation.component';
 
 @NgModule({
@@ -33,7 +34,8 @@ import { ReservationComponent } from './reservation/reservation.component';
     MatExpansionModule,
     MatButtonModule,
     MatTableModule,
-    AsyncPipe
+    AsyncPipe,
+    MatIconModule
   ]
 })
 export class CoworkingModule {}
