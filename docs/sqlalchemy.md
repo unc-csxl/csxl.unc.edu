@@ -619,19 +619,87 @@ This deletion follows the same _all-or-nothing_ principle as our `.create()` fun
 
 ## Database Relationships
 
+It is important to remember that data in your application does not exist in isolation. Many pieces of data are _related_ to each other!
+
+Let's take the following example. Say that every UNC Computer Science organization, modeled by `Organization`, has one President that is unique to it (and for the sake of argument, assume that a person can only be President of one club at a time). Imagine that we were to model this President using `User`. Say that a user **Larry** is the president of a club called the **FORTRAN Development Club**.
+
+Imagine how we may begin to represent this in our database tables. We are now looking to utilize the most powerful feature of _relational databases_ like PostgreSQL - support for relationships between tables.
+
+First, let's examine the three different types of relationships:
+
 ### One-to-One Relationship
+
+A **one-to-one relationship** is simply that one entry in one table can be related to at most one entry in another table - and the entry in the other table can only be related to one entry in the original table.
+
+The example above with **Larry** and the **FORTRAN Development Club** is a textbook example of a one-to-one relationship. FORTRAN Development Club has only one President, Larry - and Larry is the President of only one club, the FORTAN Development Club. _There can only be one President for a club, and one user can only be the President of at most one club._
+
+We can model this using the diagram below:
+
+![One-to-one relationship diagram]()
+
+Using the `Organization` and `User` example above, we may expect the models to have the following fields:
+
+`Organization`
+
+- ...
+- `president: User`: The President of the club
+
+`User`
+
+- ...
+- `president_for: Organization?`: The club the user is President of
 
 ### One-to-Many Relationship
 
+In contrast, a **one-to-many relationship** is slightly different. In this type of relationship, an item in one table may be related to many items in the other table, but items in the other table can only be related to one element in the original table.
+
+Take the following example. Imagine we have an entity called `Event` that stored information about events hosted by CS organizations. In this example, an `Organization` (like CS+SG, for example) can host many organizations - even as many as one a week - however, each event _only has one hosting organization_.
+
+We can model this using the diagram below:
+
+![One-to-many relationship diagram]()
+
+Using the `Organization` and `Event` example above, we may expect the models to have the following fields:
+
+`Organization`
+
+- ...
+- `events: list[Event]`: All of the events hosted by the organization
+
+`Event`
+
+- ...
+- `organization: Organization`: Organization hosting this event
+
+As you can see, unlike the _one-to-one relationship_, one of these fields would be a **_list_**! This is because an `Organization` can be related to _many_ `Event`s, but an `Event` can only be related to one `Organization`.
+
 ### Many-to-Many Relationship
 
+The last type of relationship that we have is a **many-to-many** relationship. In this type of relationship, an item in one table may be related to many items in the other table, and items in the other table can be related to many items in the original table!
+
+Take the following example. Imagine we are trying to represent organization membership (i.e., what organizations that students are a part of). In this example, an organization has many members. However, users also can be part of many organization at the same time.
+
+We can model this using the diagram below:
+
+![One-to-many relationship diagram]()
+
+Using the `Organization` and `User` example above, we may expect the models to have the following fields:
+
+`Organization`
+
+- ...
+- `members: list[User]`: All of the organization's members
+
+`User`
+
+- ...
+- `organizations: list[Organization]`: All the organizations the user is a part of.
+
+As you can see, in this example, both fields are lists!
+
+Many-to-many relationships pose a unique challenge with database table design, which we will discuss further in the next section.
+
 ### Modeling Relationships in the Entity
-
-## Modeling Your Data
-
-### Designing Database Tables
-
-### Relationships
 
 ### Join Tables
 
