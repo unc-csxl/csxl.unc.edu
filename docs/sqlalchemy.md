@@ -701,7 +701,176 @@ Many-to-many relationships pose a unique challenge with database table design, w
 
 ### Modeling Relationships in the Entity
 
+Now that you understand database relationships at a high level, how do we actually add these relationships to our tables?
+
+There are different methods for how we model these relationships based on the relationship type, however the base premise is still the same.
+
+Recall the role of the _primary key_ field in a database table. The primary key serves as the **unique identifier** for each row. For example, the `id` fields of `Organization` and `Event` may be their tables' respective primary keys. The `pid` field may be the primary key of the `User` table.
+
+With this knowledge about primary keys, how might we establish a relationship between the `organization` and `event` tables?
+
+Let's recall the current structures of these tables:
+
+**`organization` Table**
+
+| PK? | Column Name | Data Type | Description                                                                                         |
+| --- | ----------- | --------- | --------------------------------------------------------------------------------------------------- |
+| \*  | id          | `int`     | Unique identifier (primary key) for each organization.                                              |
+|     | name        | `str`     | Name of the organization.                                                                           |
+|     | slug        | `str`     | Lowercased abbreviation of the organization to be used in URLs.                                     |
+|     | description | `str`     | Description of the organization.                                                                    |
+|     | public      | `bool`    | Whether or not anyone can join the organization (in the case that there is an application process). |
+
+**`event` Table**
+
+| PK? | Column Name | Data Type | Description                                     |
+| --- | ----------- | --------- | ----------------------------------------------- | --- |
+| \*  | id          | `int`     | Unique identifier (primary key) for each event. |
+|     | name        | `str`     | Name of the event.                              |     |
+|     | description | `str`     | Description of the event.                       |
+
+How might we add a **_host organization_** to the events table?
+
+Well, in our table schema, we can add a column for this! But, what would the value in this row be?
+
+Remember, we said that primary keys uniquely identify items in a table! So, what if we added the _organization ID_ of the host organization to our `event` table? The result would look like this:
+
+| PK? | Column Name     | Data Type | Description                                     |
+| --- | --------------- | --------- | ----------------------------------------------- |
+| \*  | id              | `int`     | Unique identifier (primary key) for each event. |
+|     | name            | `str`     | Name of the event.                              |
+|     | description     | `str`     | Description of the event.                       |
+|     | organization_id | `int`     | ID of the hosting organization.                 |
+
+We can then say that `organization_id` is a **_relationship field_** and directly points to the _primary key_ of the `organization` table.
+
+How might we show this in our entity?
+
+Let's look at our sample event entity:
+
+```py
+class EventEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Event` table"""
+
+    __tablename__ = "event"
+
+    # Fields
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    description: Mapped[str] = mapped_column(String)
+```
+
+Adding a _relationship field_ to our entity is a a bit different than adding any normal field.
+
+```py
+organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
+```
+
+Above would be the correct way to declare the relationship field. Notice that instead of passing in a SQLAlchemy data type, we pass in a `ForeignKey()` object, and in its constructor, we pass in the field that this relates to.
+
+In this case, since we want the event's `organization_id` field to relate to the organization's `id` field, we pass in `"organization.id"`, using the format `"tablename.field"`.
+
+This is great! Now, we have established a relationship.
+
+However, there is one problem with this convention. Say that we query data from the `Event` table. The result of this data would be `EventEntity` objects. What if I wanted to access the name of the event's hosting organization? Well, we could try:
+
+```py
+my_event.organization_id # uh oh
+```
+
+Notice that only the ID field is accessible! Now, in order to access my organization, I need to run an entirely new transaction:
+
+```py
+org_name = organization_service.get(my_event.organization_id)
+```
+
+This is not good or efficient! What if we can add a new property to our entity that would _store_ the related organization?
+
+We actually can!
+
+Take a look at the following completed entity implementation below:
+
+```py
+class EventEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Event` table"""
+
+    __tablename__ = "event"
+
+    # Fields
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    description: Mapped[str] = mapped_column(String)
+
+    # Relationships
+    organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
+
+    # NEW
+    organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
+```
+
+You can see that this new field is of type `OrganizationEntity`! You may be wondering why it is in quotes in this example. Unfortunately, this is a quirk with the current version of SQLAlchemy and Python. Just note that this is roughly equivalent to how you would expect `Mapped[OrganizationEntity]` to function.
+
+Since this field is not actually a column of this database, instead of setting this equal to a `mapped_column`, we can set it equal to a `relationship()` object.
+
+You may also be wondering what `back_populates="events"` means?
+
+Remember, a relationship is a two-way street. Just like how we added this `organization` field, we can add a similar field to our `OrganizationEntity` so that we can store all of the events that it hosts! This would be done like so:
+
+```py
+class OrganizationEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Organization` table"""
+
+    # Name for the organizations table in the PostgreSQL database
+    __tablename__ = "organization"
+
+    # Fields
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    description: Mapped[str] = mapped_column(String)
+
+    public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+
+    # Relationships
+
+    # NEW
+    events: Mapped[list["EventEntity"]] = relationship(
+            back_populates="organization", cascade="all,delete"
+    )
+```
+
+Notice that `events` now stores the _list_ (because this is a one-to-many relationship) of all events that the organization hosts!
+
+With this in mind, we can re-examine `back_populates`. We set this parameter _equal to the name of the relationship field in the other entity_. So:
+
+- In `EventEntity`, we used `back_populates="events"`, because `events` was the field in the `OrganizationEntity.`
+- In `OrganizationEntity`, we used `back_populates="organization"` because `organization` was the field in the `EventEntity`.
+
+> NOTE: Also notice the `cascade="all,delete"` directive in the `OrganizationEntity`. This directs SQL to **_delete all related events_** when the organization is also deleted.
+>
+> This makes sense, because say we delete the _App Team_ organization, we also want to delete all relevant events (because all events must have a host organization, and deleting the host organization leaves orphaned events).
+
+We can use these relationship fields to easily establish _one-to-one_ and _one-to-many_ relationships between our entities, as well as making our lives easier to access related elements!
+
+To close out of the example from above, I would now be able to easily acess the name of hosting organization of an event, like so:
+
+```py
+org_name = my_event.organization.name
+```
+
+However, this convention is not so easily applied to _many-to-many relationships_.
+
 ### Join Tables
+
+As mentioned in the last two previous sections, modeling _many-to-many relationships_ offers its own challenges.
 
 ### Resolving Model Circularity
 
