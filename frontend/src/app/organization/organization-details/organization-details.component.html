@@ -8,7 +8,7 @@
 </div>
 </div> -->
 
-<div>
+<div *ngIf="organization != undefined">
   <organization-details-info-card
     [organization]="organization"
     [profile]="profile" />
