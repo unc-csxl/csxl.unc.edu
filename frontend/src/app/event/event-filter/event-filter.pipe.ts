@@ -24,6 +24,11 @@ export class EventFilterPipe implements PipeTransform {
       return a.time.getTime() - b.time.getTime();
     });
 
+    // Filter out past dates
+    events = events.filter((e: Event) => {
+      return e.time.getTime() > new Date().getTime()
+    })
+    
     // If a search query is provided, return the events that start with the search query.
     if (searchQuery) {
       return events.filter(
