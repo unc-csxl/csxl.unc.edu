@@ -8,6 +8,8 @@
 </div>
 </div> -->
 
+<organization-not-found-card *ngIf="organization == undefined"/>
+
 <div *ngIf="organization != undefined">
   <organization-details-info-card
     [organization]="organization"
