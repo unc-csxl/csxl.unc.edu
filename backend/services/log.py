@@ -27,7 +27,7 @@ class LogService:
 
     def all(self) -> list[LogDetails]:
         """
-        Retrieves all organizations from the table
+        Retrieves all logs from the table
 
         Returns:
             list[Log]: List of all `Log`s
@@ -41,7 +41,7 @@ class LogService:
 
     def create(self, subject: User | None, log_message: str) -> LogDetails | None:
         """
-        Creates a organization based on the input object and adds it to the table.
+        Creates a log based on the input object and adds it to the table.
 
         Parameters:
             subject: a valid User model representing the currently logged in User

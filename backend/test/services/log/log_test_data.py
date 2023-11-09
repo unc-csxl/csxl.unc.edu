@@ -23,7 +23,7 @@ logs = [log_one, log_two]
 
 
 def insert_fake_data(session: Session):
-    """Inserts fake organization data into the test session."""
+    """Inserts fake log data into the test session."""
 
     global organizations
 
