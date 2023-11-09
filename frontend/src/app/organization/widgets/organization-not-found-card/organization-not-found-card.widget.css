@@ -1,0 +1,14 @@
+
+
+.links {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    padding-right: 14px;
+}
+
+mat-card-actions {
+    padding: 0;
+}
