@@ -22,6 +22,7 @@ from ..test.services.organization import organization_test_data
 from ..test.services.event import event_test_data
 from ..test.services.coworking import room_data, seat_data, operating_hours_data, time
 from ..test.services.coworking.reservation import reservation_data
+from ..test.services.log import log_test_data
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -50,6 +51,6 @@ with Session(engine) as session:
     room_data.insert_fake_data(session)
     seat_data.insert_fake_data(session)
     reservation_data.insert_fake_data(session, time)
-
+    log_test_data.insert_fake_data(session)
     # Commit changes to the database
     session.commit()

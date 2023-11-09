@@ -3,6 +3,8 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
+from typing import Self
+from ..models.log import Log, LogDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -27,3 +29,29 @@ class LogEntity(EntityBase):
     # NOTE: This defines a one-to-many relationship between the user and log tables.
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["UserEntity"] = relationship(back_populates="logs")
+
+    @classmethod
+    def from_model(cls, model: Log) -> Self:
+        """
+        Class method that converts a `Log` model into a `LogEntity`
+
+        Parameters:
+            - model (Log): Model to convert into an entity
+        Returns:
+            LogEntity: Entity created from model
+        """
+        return cls(id=model.id, description=model.description, user_id=model.user_id)
+
+    def to_detail_model(self) -> LogDetails:
+        """
+        Converts a `LogEntity` object into a `Log` model object
+
+        Returns:
+            Log: `Log` object from the entity
+        """
+        return LogDetails(
+            id=self.id,
+            description=self.description,
+            user_id=self.user_id,
+            user=self.user,
+        )

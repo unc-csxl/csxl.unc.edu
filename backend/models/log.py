@@ -17,4 +17,15 @@ class Log(BaseModel):
     id: int | None = None
     description: str
     user_id: int
+
+
+class LogDetails(Log):
+    """
+    Pydantic model to represent a `log`, including back-populated
+    relationship fields.
+
+    This model is based on the `LogEntity` model, which defines the shape
+    of the `Log` database in the PostgreSQL database.
+    """
+
     user: User
