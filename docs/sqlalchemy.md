@@ -726,7 +726,7 @@ Let's recall the current structures of these tables:
 | PK? | Column Name | Data Type | Description                                     |
 | --- | ----------- | --------- | ----------------------------------------------- |
 | \*  | id          | `int`     | Unique identifier (primary key) for each event. |
-|     | name        | `str`     | Name of the event.                              | 
+|     | name        | `str`     | Name of the event.                              |
 |     | description | `str`     | Description of the event.                       |
 
 How might we add a **_host organization_** to the events table?
@@ -886,7 +886,22 @@ All join tables are required to have three fields - one primary key to identify 
 
 As you can see, each listing bundles together the ID of the organization and the PID of the user together to establish a relationship between two items. Since this join table can have many rows and values can repeat in each column, we can therefore have many users related to a single organization, and many organizations related to a single user - hence a _many-to-many relationship!_
 
-Creating a join table in SQLAlchemy is pretty simple. First, we need to repeat the same step that we did for creating any table in our database - creating an entity! This entity will model our join table. Let's create an example for the `membership` table:
+Creating a join table in SQLAlchemy is pretty simple. Let's do this in a new file in the `/entity` backend directory. We can use the following convention in Python to do so:
+
+```py
+# Define the membership table to be used as a join table to persist
+# a many-to-many relationship between the organization and user table.
+membership_table = Table(
+    "membership",
+    EntityBase.metadata,
+    Column("org_id", ForeignKey("organization.id"), primary_key=True),
+    Column("user_pid", ForeignKey("user.pid"), primary_key=True),
+)
+```
+
+You can see that the code to create join tables is a bit different than we had before with creating entities. The join table is a means to an end, and we will not be directly querying data from this membership table.
+
+Now that we have created our intermediate
 
 ### Resolving Model Circularity
 
