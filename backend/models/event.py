@@ -17,6 +17,7 @@ class Event(BaseModel):
     id: int | None = None
     name: str
     time: datetime
+    endTime: datetime
     location: str
     description: str
     public: bool
