@@ -10,6 +10,7 @@ from ...services import (
     OrganizationService,
     EventService,
 )
+from ...services.log import LogService
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -54,3 +55,9 @@ def organization_svc_integration(session: Session):
 def event_svc_integration(session: Session):
     """This fixture is used to test the EventService class with a real PermissionService."""
     return EventService(session, PermissionService(session))
+
+
+@pytest.fixture()
+def log_svc_integration(session: Session):
+    """This fixture is used to test the LogClass class."""
+    return LogService(session)

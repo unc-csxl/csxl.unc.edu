@@ -53,5 +53,5 @@ class LogEntity(EntityBase):
             id=self.id,
             description=self.description,
             user_id=self.user_id,
-            user=self.user,
+            user=self.user.to_model(),
         )

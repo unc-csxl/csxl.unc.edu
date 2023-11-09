@@ -7,7 +7,7 @@ from typing import Self
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
-from .log_entity import LogEntity
+from ..entities.log_entity import LogEntity
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

@@ -6,6 +6,8 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from backend.services.exceptions import ResourceNotFoundException
+
 from ..database import db_session
 from ..models.log import Log, LogDetails
 from ..entities.log_entity import LogEntity
@@ -37,7 +39,7 @@ class LogService:
         # Convert entries to a model and return
         return [entity.to_detail_model() for entity in entities]
 
-    def create(self, subject: User, log_message: str) -> LogDetails | None:
+    def create(self, subject: User | None, log_message: str) -> LogDetails | None:
         """
         Creates a organization based on the input object and adds it to the table.
 
@@ -51,8 +53,10 @@ class LogService:
 
         # First, ensure that a valid user exists
         # (unauthenticated users cannot add to log)
+        # NOTE: This has been added a safeguard but should never run
+        # because permission errors would occur before this runs.
         if not subject or not subject.id:
-            return None
+            raise ResourceNotFoundException("User not found.")
 
         # Create log
         log = Log(description=log_message, user_id=subject.id)
