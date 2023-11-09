@@ -161,6 +161,7 @@ class EventService:
         # Update event object
         event_entity.name = event.name
         event_entity.time = event.time
+        event_entity.endTime = event.endTime
         event_entity.description = event.description
         event_entity.location = event.location
         event_entity.public = event.public
