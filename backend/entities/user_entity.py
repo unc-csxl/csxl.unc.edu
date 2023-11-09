@@ -7,6 +7,7 @@ from typing import Self
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
+from .log_entity import LogEntity
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -52,6 +53,11 @@ class UserEntity(EntityBase):
     # The permissions for the given user.
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
+
+    # NOTE: This field establishes a one-to-many relationship between the users and logs table.
+    logs: Mapped[list["LogEntity"]] = relationship(
+        back_populates="user", cascade="all,delete"
+    )
 
     @classmethod
     def from_model(cls, model: User) -> Self:
