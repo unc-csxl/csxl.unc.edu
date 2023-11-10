@@ -69,12 +69,40 @@ export class EventService {
     return this.http.put<Event>('/api/events', event);
   }
 
-  /** Delete the given event object using the backend HTTP delete request. W
+  /** Delete the given event object using the backend HTTP delete request.
    * @param event: Event representing the updated event
    * @returns void
    */
   deleteEvent(event: Event): Observable<Event> {
     return this.http.delete<Event>('/api/events/' + event.id);
+  }
+
+  /** Add a certain number of days to a date
+   * @param date: Date object
+   * @param days: Number of days to be added
+   * @returns {Date}
+   */
+  addDays(date: Date, days: number) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+  /** Creates an array of all the days between startDate and endDate inclusive
+   * @param startDate: Date object representing the start of the range
+   * @param endDate: Date object representing the end of the range
+   * @returns {Array<Event>}
+   */
+  getDates(startDate: Date, endDate: Date) {
+    var dateArray = new Array();
+    var currentDate = startDate;
+    while (currentDate <= endDate) {
+      dateArray.push(
+        this.datePipe.transform(currentDate, 'EEEE, MMMM d, y') ?? ''
+      );
+      currentDate = this.addDays(currentDate, 1);
+    }
+    return dateArray;
   }
 
   /** Helper function to group a list of events by date,
@@ -88,15 +116,25 @@ export class EventService {
 
     // Transform the list of events based on the event filter pipe and query
     this.eventFilterPipe.transform(events, query).forEach((event) => {
-      // Find the date to group by
-      // TODO: Set multiday flag to true (show multiday or no time in the card)
-      // TODO: array of dateStrings instead
-      let dateString =
-        this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? '';
-      // Add the event
-      let newEventsList = groups.get(dateString) ?? [];
-      newEventsList.push(event);
-      groups.set(dateString, newEventsList);
+      // Set multi_day flag to true if event spans multiple days
+      if (event.time.toDateString() !== event.end_time.toDateString()) {
+        event.multi_day = true;
+      }
+      // Find the date(s) to group by
+      let dateStrings;
+      if (event.multi_day) {
+        dateStrings = this.getDates(event.time, event.end_time);
+      } else {
+        dateStrings = [
+          this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ''
+        ];
+      }
+      // Add the event to the appropriate date groups
+      for (let i = 0; i < dateStrings.length; i++) {
+        let newEventsList = groups.get(dateStrings[i]) ?? [];
+        newEventsList.push(event);
+        groups.set(dateStrings[i], newEventsList);
+      }
     });
 
     // Return the groups

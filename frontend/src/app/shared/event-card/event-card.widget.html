@@ -9,9 +9,14 @@
   <div style="display: flex; flex-direction: column; padding: 12px">
     <div style="display: flex; flex-direction: row">
       <p style="font-weight: 500; margin: 0px; width: 75%">{{ event.name }}</p>
-      <p style="margin: 0px; text-align: end; width: 25%">
+      <p
+        style="margin: 0px; text-align: end; width: 25%"
+        *ngIf="!event.multi_day; else multiDay">
         {{ event.time | date: 'shortTime' }}
       </p>
+      <ng-template #multiDay>
+        <p style="margin: 0px; text-align: end; width: 25%">All Day</p>
+      </ng-template>
     </div>
     <div style="display: flex; flex-direction: row; margin-top: 8px">
       <p style="margin: 0px; width: 50%">
