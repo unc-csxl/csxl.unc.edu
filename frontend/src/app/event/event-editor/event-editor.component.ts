@@ -54,6 +54,7 @@ export class EventEditorComponent {
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
   time = new FormControl('', [Validators.required]);
+  endTime = new FormControl('', [Validators.required]);
   location = new FormControl('', [Validators.required]);
   description = new FormControl('', [
     Validators.required,
@@ -64,7 +65,8 @@ export class EventEditorComponent {
   /** Create a form group */
   public eventForm = this.formBuilder.group({
     name: this.name,
-    time: this.datePipe.transform(new Date(), "yyyy-MM-ddTHH:mm"),
+    time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+    endTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
     location: this.location,
     description: this.description,
     public: this.public.value! == 'true'
@@ -80,7 +82,6 @@ export class EventEditorComponent {
     private permission: PermissionService,
     private datePipe: DatePipe
   ) {
-
     // Get currently-logged-in user
     const data = route.snapshot.data as {
       profile: Profile;
@@ -96,12 +97,13 @@ export class EventEditorComponent {
 
     // Get ids from the url
     let organization_slug = this.route.snapshot.params['slug'];
-    this.organization_slug = organization_slug;    
+    this.organization_slug = organization_slug;
 
     // Set values for form group
     this.eventForm.setValue({
       name: this.event.name,
-      time: this.datePipe.transform(this.event.time, "yyyy-MM-ddTHH:mm"),
+      time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
+      endTime: this.datePipe.transform(this.event.endTime, 'yyyy-MM-ddTHH:mm'),
       location: this.event.location,
       description: this.event.description,
       public: this.event.public

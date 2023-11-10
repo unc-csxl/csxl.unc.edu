@@ -89,6 +89,8 @@ export class EventService {
     // Transform the list of events based on the event filter pipe and query
     this.eventFilterPipe.transform(events, query).forEach((event) => {
       // Find the date to group by
+      // TODO: Set multiday flag to true (show multiday or no time in the card)
+      // TODO: array of dateStrings instead
       let dateString =
         this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? '';
       // Add the event
