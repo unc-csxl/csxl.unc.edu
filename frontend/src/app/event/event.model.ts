@@ -14,12 +14,13 @@ export interface Event {
   id: number | null;
   name: string;
   time: Date;
-  endTime: Date;
+  end_time: Date;
   location: string;
   description: string;
   public: boolean;
   organization_id: number | null;
   organization: Organization | null;
+  multi_day: boolean;
 }
 
 /** Interface for the Event JSON Response model
@@ -31,7 +32,7 @@ export interface EventJson {
   id: number | null;
   name: string;
   time: string;
-  endTime: string;
+  end_time: string;
   location: string;
   description: string;
   public: boolean;
@@ -45,5 +46,9 @@ export interface EventJson {
  *  TypeScript objects ourselves.
  */
 export const parseEventJson = (eventJson: EventJson): Event => {
-  return Object.assign({}, eventJson, { time: new Date(eventJson.time), endTime : new Date(eventJson.endTime) });
+  return Object.assign({}, eventJson, {
+    time: new Date(eventJson.time),
+    end_time: new Date(eventJson.end_time),
+    multi_day: false
+  });
 };

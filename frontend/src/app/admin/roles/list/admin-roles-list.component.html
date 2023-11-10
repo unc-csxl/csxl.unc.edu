@@ -3,7 +3,10 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         Role
-        <button mat-stroked-button style="float: right" (click)="onClickAddRole()">
+        <button
+          mat-stroked-button
+          style="float: right"
+          (click)="onClickAddRole()">
           Create New Role
         </button>
       </th>
@@ -11,6 +14,9 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onClick(row)"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="onClick(row)"></tr>
   </table>
 </div>

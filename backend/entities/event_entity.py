@@ -28,7 +28,7 @@ class EventEntity(EntityBase):
     # Time of the event
     time: Mapped[datetime] = mapped_column(DateTime)
     # End time of the event
-    endTime: Mapped[datetime] = mapped_column(DateTime)
+    end_time: Mapped[datetime] = mapped_column(DateTime)
     # Location of the event
     location: Mapped[str] = mapped_column(String)
     # Description of the event
@@ -55,7 +55,7 @@ class EventEntity(EntityBase):
             id=model.id,
             name=model.name,
             time=model.time,
-            endTime=model.endTime,
+            end_time=model.end_time,
             location=model.location,
             description=model.description,
             public=model.public,
@@ -73,7 +73,7 @@ class EventEntity(EntityBase):
             id=self.id,
             name=self.name,
             time=self.time,
-            endTime=self.endTime,
+            end_time=self.end_time,
             location=self.location,
             description=self.description,
             public=self.public,
@@ -94,7 +94,7 @@ class EventEntity(EntityBase):
             id=model.id,
             name=model.name,
             time=model.time,
-            endTime=model.endTime,
+            end_time=model.end_time,
             location=model.location,
             description=model.description,
             public=model.public,
@@ -111,7 +111,7 @@ class EventEntity(EntityBase):
             id=self.id,
             name=self.name,
             time=self.time,
-            endTime=self.endTime,
+            end_time=self.end_time,
             location=self.location,
             description=self.description,
             public=self.public,

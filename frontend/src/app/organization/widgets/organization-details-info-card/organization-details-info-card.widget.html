@@ -1,4 +1,7 @@
-<mat-card class="organization-card" *ngIf="organization !== undefined" appearance="outlined">
+<mat-card
+  class="organization-card"
+  *ngIf="organization !== undefined"
+  appearance="outlined">
   <!-- Organization Card Header (Image, Name, Description) -->
   <mat-card-header class="organization-header">
     <div class="left-header-info" *ngIf="!isTablet && !isHandset">
@@ -9,7 +12,12 @@
       <!-- Organization Name, Logo, and Social Media -->
       <div class="organization-top-header-group">
         <!-- Organization Logo (Tablets/Phones) -->
-        <img mat-card-image src="{{ organization!.logo }}" class="logo" *ngIf="isTablet || isHandset" [ngStyle]="{
+        <img
+          mat-card-image
+          src="{{ organization!.logo }}"
+          class="logo"
+          *ngIf="isTablet || isHandset"
+          [ngStyle]="{
             width: '32px',
             height: '32px',
             'margin-right': '16px'
@@ -18,33 +26,48 @@
         <div class="organization-name-section">
           <mat-card-title class="user-name">{{
             organization!.name
-            }}</mat-card-title>
+          }}</mat-card-title>
         </div>
       </div>
 
       <!-- Organization Description -->
       <p class="organization-description">
         {{
-        organization!.long_description
-        ? organization.long_description
-        : organization.short_description
+          organization!.long_description
+            ? organization.long_description
+            : organization.short_description
         }}
       </p>
 
       <!-- Organization Icons (Phones)-->
-      <div class="organization-icons-section" [ngStyle]="{ 'flex-direction': 'row' }">
+      <div
+        class="organization-icons-section"
+        [ngStyle]="{ 'flex-direction': 'row' }">
         <div class="link-icons">
-          <social-media-icon [fontIcon]="'link'" [href]="organization!.website" *ngIf="organization!.website !== ''" />
-          <social-media-icon [fontIcon]="'mail'" [href]="'mailto:' + organization!.email"
+          <social-media-icon
+            [fontIcon]="'link'"
+            [href]="organization!.website"
+            *ngIf="organization!.website !== ''" />
+          <social-media-icon
+            [fontIcon]="'mail'"
+            [href]="'mailto:' + organization!.email"
             *ngIf="organization!.email !== ''" />
-          <social-media-icon [svgIcon]="'instagram'" [href]="organization!.instagram"
+          <social-media-icon
+            [svgIcon]="'instagram'"
+            [href]="organization!.instagram"
             *ngIf="organization!.instagram !== ''" />
-          <social-media-icon [svgIcon]="'linkedin'" [href]="organization!.linked_in"
+          <social-media-icon
+            [svgIcon]="'linkedin'"
+            [href]="organization!.linked_in"
             *ngIf="organization!.linked_in !== ''" />
-          <social-media-icon [svgIcon]="'youtube'" [href]="organization!.youtube"
+          <social-media-icon
+            [svgIcon]="'youtube'"
+            [href]="organization!.youtube"
             *ngIf="organization!.youtube !== ''" />
           <!-- Link to Organization Editor -->
-          <a [routerLink]="['/organizations', organization!.slug, 'edit']" *ngIf="adminPermission$ | async">
+          <a
+            [routerLink]="['/organizations', organization!.slug, 'edit']"
+            *ngIf="adminPermission$ | async">
             <button mat-icon-button color="basic">
               <mat-icon>edit</mat-icon>
             </button>

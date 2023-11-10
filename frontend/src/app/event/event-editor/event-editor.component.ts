@@ -54,7 +54,7 @@ export class EventEditorComponent {
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
   time = new FormControl('', [Validators.required]);
-  endTime = new FormControl('', [Validators.required]);
+  end_time = new FormControl('', [Validators.required]);
   location = new FormControl('', [Validators.required]);
   description = new FormControl('', [
     Validators.required,
@@ -66,7 +66,7 @@ export class EventEditorComponent {
   public eventForm = this.formBuilder.group({
     name: this.name,
     time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
-    endTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+    end_time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
     location: this.location,
     description: this.description,
     public: this.public.value! == 'true'
@@ -99,11 +99,16 @@ export class EventEditorComponent {
     let organization_slug = this.route.snapshot.params['slug'];
     this.organization_slug = organization_slug;
 
+    console.log(this.event.end_time);
+
     // Set values for form group
     this.eventForm.setValue({
       name: this.event.name,
       time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
-      endTime: this.datePipe.transform(this.event.endTime, 'yyyy-MM-ddTHH:mm'),
+      end_time: this.datePipe.transform(
+        this.event.end_time,
+        'yyyy-MM-ddTHH:mm'
+      ),
       location: this.event.location,
       description: this.event.description,
       public: this.event.public

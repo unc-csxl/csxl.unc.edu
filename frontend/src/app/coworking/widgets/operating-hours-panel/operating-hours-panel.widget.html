@@ -1,10 +1,18 @@
-<mat-expansion-panel [expanded]="openOperatingHours === undefined" appearance="outlined">
+<mat-expansion-panel
+  [expanded]="openOperatingHours === undefined"
+  appearance="outlined">
   <mat-expansion-panel-header class="header">
-    <mat-panel-title class="hours-title open" *ngIf="openOperatingHours; else closed"><span class="badge">Open</span>
+    <mat-panel-title
+      class="hours-title open"
+      *ngIf="openOperatingHours; else closed"
+      ><span class="badge">Open</span>
       until
-      {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</mat-panel-title>
+      {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</mat-panel-title
+    >
     <ng-template #closed>
-      <mat-panel-title class="hours-title closed"><span class="badge">Closed</span></mat-panel-title>
+      <mat-panel-title class="hours-title closed"
+        ><span class="badge">Closed</span></mat-panel-title
+      >
     </ng-template>
   </mat-expansion-panel-header>
   <div>
