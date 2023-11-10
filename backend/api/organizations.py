@@ -139,7 +139,7 @@ def update_organization(
 def delete_organization(
     slug: str,
     subject: User = Depends(registered_user),
-    organization_service=Depends(OrganizationService),
+    organization_service: OrganizationService = Depends(),
 ):
     """
     Delete organization based on slug
