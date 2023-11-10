@@ -4,8 +4,6 @@ import { AppTitleStrategy } from './app-title.strategy';
 import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
-import { CoworkingPageComponent } from './coworking/coworking-home/coworking-home.component';
-import { AmbassadorPageComponent } from './coworking/ambassador-home/ambassador-home.component';
 import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
@@ -13,8 +11,6 @@ const routes: Routes = [
   AboutComponent.Route,
   ProfileEditorComponent.Route,
   GateComponent.Route,
-  CoworkingPageComponent.Route,
-  AmbassadorPageComponent.Route,
   {
     path: 'coworking',
     title: 'Cowork in the XL',

@@ -1,0 +1,23 @@
+<mat-card class="card" appearance="outlined">
+    <!-- Card Header -->
+    <mat-card-header class="header">
+        <mat-card-title class="name">
+            Organization Not Found
+        </mat-card-title>
+    </mat-card-header>
+  
+    <!-- Description -->
+    <mat-card-content class="description">
+      <p>
+        No organization was found with this slug. Make sure that the URL was entered correctly, or click below to view all organizations.
+      </p>
+    </mat-card-content>
+  
+    <!-- Organization Links & Details -->
+    <mat-card-actions class="links">
+      <!-- Link to Organization Page -->
+      <a class="details-link" [routerLink]="['/organizations']">
+        <button mat-stroked-button>Back to Organizations</button>
+      </a>
+    </mat-card-actions>
+  </mat-card>

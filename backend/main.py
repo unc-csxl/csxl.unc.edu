@@ -4,6 +4,7 @@
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.gzip import GZipMiddleware
 from .api import (
     events,
     health,
@@ -42,6 +43,9 @@ app = FastAPI(
         admin_roles.openapi_tags,
     ],
 )
+
+# Use GZip middleware for compressing HTML responses over the network
+app.add_middleware(GZipMiddleware)
 
 # Plugging in each of the router APIs
 feature_apis = [
