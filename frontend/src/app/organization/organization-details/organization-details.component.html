@@ -8,7 +8,8 @@
 </div>
 </div> -->
 
-<organization-not-found-card *ngIf="organization == undefined; else eventDetails"/>
+<organization-not-found-card
+  *ngIf="organization === undefined; else eventDetails" />
 
 <ng-template #eventDetails>
   <organization-details-info-card

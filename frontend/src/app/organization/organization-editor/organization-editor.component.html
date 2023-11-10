@@ -1,7 +1,10 @@
 <!-- HTML Structure of Profile Page -->
 
 <!-- Update Organization Form -->
-<form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" *ngIf="adminPermission$ | async">
+<form
+  [formGroup]="organizationForm"
+  (ngSubmit)="onSubmit()"
+  *ngIf="adminPermission$ | async">
   <!-- Update Organization Card -->
   <mat-card>
     <mat-card-header>
@@ -11,15 +14,28 @@
       <!-- Organization Name Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Organization Name</mat-label>
-        <input matInput placeholder="" (change)="generateSlug()" formControlName="name" name="name" required />
+        <input
+          matInput
+          placeholder=""
+          (change)="generateSlug()"
+          formControlName="name"
+          name="name"
+          required />
       </mat-form-field>
       <!-- Shorthand Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Shorthand</mat-label>
-        <input matInput placeholder="" formControlName="shorthand" name="shorthand" required />
+        <input
+          matInput
+          placeholder=""
+          formControlName="shorthand"
+          name="shorthand"
+          required />
       </mat-form-field>
       <!-- Slug Field -->
-      <mat-form-field hintLabel="Must contain only lowercase letters, numbers, or dashes" appearance="outline"
+      <mat-form-field
+        hintLabel="Must contain only lowercase letters, numbers, or dashes"
+        appearance="outline"
         color="accent">
         <mat-label>Slug</mat-label>
         <input matInput placeholder="" formControlName="slug" name="slug" />
@@ -30,21 +46,37 @@
         <input matInput placeholder="" formControlName="logo" name="logo" />
       </mat-form-field>
       <!-- Short Description Field -->
-      <mat-form-field hintLabel="Max 150 characters" appearance="outline" color="accent">
+      <mat-form-field
+        hintLabel="Max 150 characters"
+        appearance="outline"
+        color="accent">
         <mat-label>Short Description</mat-label>
-        <input matInput placeholder="Enter short description here." formControlName="short_description"
+        <input
+          matInput
+          placeholder="Enter short description here."
+          formControlName="short_description"
           name="short_description" />
       </mat-form-field>
       <!-- Long Description Field -->
-      <mat-form-field hintLabel="Max 2000 characters" appearance="outline" color="accent">
+      <mat-form-field
+        hintLabel="Max 2000 characters"
+        appearance="outline"
+        color="accent">
         <mat-label>Long Description</mat-label>
-        <input matInput placeholder="Enter long description here." formControlName="long_description"
+        <input
+          matInput
+          placeholder="Enter long description here."
+          formControlName="long_description"
           name="long_description" />
       </mat-form-field>
       <!-- Website Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Website</mat-label>
-        <input matInput placeholder="" formControlName="website" name="website" />
+        <input
+          matInput
+          placeholder=""
+          formControlName="website"
+          name="website" />
       </mat-form-field>
       <!-- Email Field -->
       <mat-form-field appearance="outline" color="accent">
@@ -52,32 +84,51 @@
         <input matInput placeholder="" formControlName="email" name="email" />
         <mat-error *ngIf="email.invalid">{{
           getEmailErrorMessage()
-          }}</mat-error>
+        }}</mat-error>
       </mat-form-field>
       <!-- Instagram Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Instagram</mat-label>
-        <input matInput placeholder="" formControlName="instagram" name="instagram" />
+        <input
+          matInput
+          placeholder=""
+          formControlName="instagram"
+          name="instagram" />
       </mat-form-field>
       <!-- LinkedIn Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>LinkedIn</mat-label>
-        <input matInput placeholder="" formControlName="linked_in" name="linked_in" />
+        <input
+          matInput
+          placeholder=""
+          formControlName="linked_in"
+          name="linked_in" />
       </mat-form-field>
       <!-- YouTube Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>YouTube</mat-label>
-        <input matInput placeholder="" formControlName="youtube" name="youtube" />
+        <input
+          matInput
+          placeholder=""
+          formControlName="youtube"
+          name="youtube" />
       </mat-form-field>
       <!-- HeelLife Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>HeelLife</mat-label>
-        <input matInput placeholder="" formControlName="heel_life" name="heel_life" />
+        <input
+          matInput
+          placeholder=""
+          formControlName="heel_life"
+          name="heel_life" />
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
       <!-- Submit Button -->
-      <button mat-stroked-button type="submit" [disabled]="organizationForm.invalid">
+      <button
+        mat-stroked-button
+        type="submit"
+        [disabled]="organizationForm.invalid">
         SAVE
       </button>
     </mat-card-actions>

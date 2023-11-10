@@ -24,8 +24,10 @@ export const organizationResolver: ResolveFn<Organization[] | undefined> = (
 };
 
 /** This resolver injects an organization into the organization detail component. */
-export const organizationDetailResolver: ResolveFn<Organization | undefined> = (route, state) => {
-
+export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
+  route,
+  state
+) => {
   // If the organization is new, return a blank one
   if (route.paramMap.get('slug')! == 'new') {
     return {
@@ -44,17 +46,19 @@ export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
       heel_life: '',
       public: false,
       events: null
-    }
+    };
   }
 
   // Otherwise, return the organization.
   // If there is an error, return undefined
-  return inject(OrganizationService).getOrganization(route.paramMap.get('slug')!)
-      .pipe(catchError((error) => {
-        console.log(error)
-        return of(undefined)
-      }))
-
+  return inject(OrganizationService)
+    .getOrganization(route.paramMap.get('slug')!)
+    .pipe(
+      catchError((error) => {
+        console.log(error);
+        return of(undefined);
+      })
+    );
 };
 
 /** This resolver injects the events for a given organization into the organization component. */

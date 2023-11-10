@@ -43,7 +43,10 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private permission: PermissionService
   ) {
-    this.adminPermission$ = this.permission.check('admin.view', 'admin/');
+    this.adminPermission$ = this.permission.check(
+      'organization.update',
+      `organization/${this.organization!.slug}`
+    );
   }
 
   /** Runs whenever the view is rendered initally on the screen */
