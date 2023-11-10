@@ -36,7 +36,7 @@ const canActivateEditor: CanActivateFn = (
   if (slug === 'new') {
     return inject(PermissionService).check(
       'organization.create',
-      'organization/'
+      'organization'
     );
   } else {
     return inject(PermissionService).check(
