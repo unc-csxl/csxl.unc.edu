@@ -35,17 +35,16 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
   public isTablet: boolean = false;
   private isTabletSubscription!: Subscription;
 
-  /** Stores whether the user has admin permission over the current organization. */
-  public adminPermission$: Observable<boolean>;
-
   /** Constructs the organization detail info card widget */
   constructor(
     private breakpointObserver: BreakpointObserver,
     private permission: PermissionService
-  ) {
-    this.adminPermission$ = this.permission.check(
+  ) {}
+
+  checkPermissions(): Observable<boolean> {
+    return this.permission.check(
       'organization.update',
-      `organization/${this.organization!.slug}`
+      `organization/${this.organization?.slug}`
     );
   }
 

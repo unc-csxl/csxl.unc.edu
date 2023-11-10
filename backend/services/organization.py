@@ -127,7 +127,7 @@ class OrganizationService:
 
         # Check if user has admin permissions
         self._permission.enforce(
-            subject, "organization.update", f"organization/{organization.id}"
+            subject, "organization.update", f"organization/{organization.slug}"
         )
 
         # Query the organization with matching id

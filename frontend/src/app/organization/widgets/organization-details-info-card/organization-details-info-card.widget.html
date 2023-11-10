@@ -24,17 +24,21 @@
           }" />
         <!-- Organization Name -->
         <div class="organization-name-section">
-          <mat-card-title class="user-name"
-            >{{ organization!.name }}</mat-card-title
-          >
+          <mat-card-title class="user-name">
+            {{ organization!.name }}
+          </mat-card-title>
         </div>
       </div>
 
       <!-- Organization Description -->
-      <p class="organization-description">
-        {{ organization!.long_description ? organization.long_description :
-        organization.short_description }}
+      <p
+        class="organization-description"
+        *ngIf="organization!.long_description; else short_description">
+        {{ organization!.long_description }}
       </p>
+      <ng-template #short_description>
+        {{ organization!.short_description }}
+      </ng-template>
 
       <!-- Organization Icons (Phones)-->
       <div
@@ -64,7 +68,7 @@
           <!-- Link to Organization Editor -->
           <a
             [routerLink]="['/organizations', organization!.slug, 'edit']"
-            *ngIf="adminPermission$ | async">
+            *ngIf="checkPermissions() | async">
             <button mat-icon-button color="basic">
               <mat-icon>edit</mat-icon>
             </button>

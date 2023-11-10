@@ -1,14 +1,16 @@
 <!-- HTML Structure of Profile Page -->
 
 <!-- Update Organization Form -->
-<form
-  [formGroup]="organizationForm"
-  (ngSubmit)="onSubmit()"
-  *ngIf="adminPermission$ | async">
+<form [formGroup]="organizationForm" (ngSubmit)="onSubmit()">
   <!-- Update Organization Card -->
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Create Organization</mat-card-title>
+      <mat-card-title *ngIf="this.organization_slug === 'new'; else update">
+        Create Organization
+      </mat-card-title>
+      <ng-template #update>
+        <mat-card-title> Update Organization </mat-card-title>
+      </ng-template>
     </mat-card-header>
     <mat-card-content>
       <!-- Organization Name Field -->
@@ -82,9 +84,9 @@
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Email</mat-label>
         <input matInput placeholder="" formControlName="email" name="email" />
-        <mat-error *ngIf="email.invalid">{{
-          getEmailErrorMessage()
-        }}</mat-error>
+        <mat-error *ngIf="email.invalid">
+          {{ getEmailErrorMessage() }}
+        </mat-error>
       </mat-form-field>
       <!-- Instagram Field -->
       <mat-form-field appearance="outline" color="accent">

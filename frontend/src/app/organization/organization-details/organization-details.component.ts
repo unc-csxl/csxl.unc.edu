@@ -85,7 +85,7 @@ export class OrganizationDetailsComponent {
     this.organization = data.organization;
     this.eventsPerDay = eventService.groupEventsByDate(data.events ?? []);
     this.eventCreationPermission$ = this.permission.check(
-      'organization.events.manage',
+      'organization.events.*',
       `organization/${this.organization?.id ?? -1}`
     );
   }
