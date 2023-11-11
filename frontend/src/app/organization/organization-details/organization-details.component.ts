@@ -29,7 +29,7 @@ import { PermissionService } from 'src/app/permission.service';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
-  return route.parent!.data['organization']?.name ?? "Organization Not Found";
+  return route.parent!.data['organization']?.name ?? 'Organization Not Found';
 };
 
 @Component({

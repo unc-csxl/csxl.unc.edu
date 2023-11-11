@@ -23,16 +23,12 @@ export class EventDetailCard {
   /** The event for the event card to display */
   @Input() event!: Event;
 
-  //sameDay = true;
-
   /** Constructs the widget */
   constructor(
     protected snackBar: MatSnackBar,
     private eventService: EventService,
     private permission: PermissionService
-  ) {
-    //this.sameDay = this.event.time.toDateString() === this.event.endTime.toDateString();
-  }
+  ) {}
 
   checkPermissions(): Observable<boolean> {
     return this.permission.check(

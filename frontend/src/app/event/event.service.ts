@@ -130,11 +130,11 @@ export class EventService {
         ];
       }
       // Add the event to the appropriate date groups
-      for (let i = 0; i < dateStrings.length; i++) {
-        let newEventsList = groups.get(dateStrings[i]) ?? [];
+      dateStrings.forEach((dateString) => {
+        let newEventsList = groups.get(dateString) ?? [];
         newEventsList.push(event);
-        groups.set(dateStrings[i], newEventsList);
-      }
+        groups.set(dateString, newEventsList);
+      });
     });
 
     // Return the groups
