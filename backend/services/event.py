@@ -241,7 +241,7 @@ class EventService:
 
         Parameters:
             subject: User performing the unregister action
-            id: an int representing a unique event ID
+            id: an int representing a unique registration ID
         """
 
         # Find object to delete
