@@ -3,10 +3,12 @@
 import pytest
 from sqlalchemy.orm import Session
 from ....models.event import Event
+from ....models.event_registration import EventRegistration, NewEventRegistration
 from ....entities.event_entity import EventEntity
+from ....entities.event_registration_entity import EventRegistrationEntity
 from .event_demo_data import date_maker
 from ..organization.organization_test_data import cads, cssg
-
+from ..user_data import root, ambassador, user
 from ..reset_table_id_seq import reset_table_id_seq
 
 __authors__ = ["Ajay Gandecha"]
@@ -57,6 +59,10 @@ updated_event = Event(
     organization_id=cssg.id | 0,
 )
 
+registration = NewEventRegistration(
+    id=1, event_id=event_one.id | 0, user_id=ambassador.id | 0
+)
+
 # Data Functions
 
 
@@ -71,7 +77,8 @@ def insert_fake_data(session: Session):
         event_entity = EventEntity.from_model(event)
         session.add(event_entity)
         entities.append(event_entity)
-
+    registration_entity = EventRegistrationEntity.from_new_model(registration)
+    session.add(registration_entity)
     # Reset table IDs to prevent ID conflicts
     reset_table_id_seq(session, EventEntity, EventEntity.id, len(events) + 1)
 

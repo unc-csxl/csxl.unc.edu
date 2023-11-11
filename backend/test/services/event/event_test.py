@@ -20,8 +20,8 @@ from ..fixtures import event_svc_integration
 from ..core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
-from .event_test_data import events, event_one, to_add, updated_event
-from ..user_data import root, user
+from .event_test_data import events, event_one, to_add, updated_event, registration
+from ..user_data import root, ambassador, user
 
 # Test Functions
 
@@ -128,3 +128,36 @@ def test_register_for_event_as_user(event_svc_integration: EventService):
     assert created_registration is not None
     assert created_registration.user_id is not None
     assert created_registration.event_id is not None
+
+
+def test_delete_registration_for_event_as_registerer(
+    event_svc_integration: EventService,
+):
+    """Test that a user is able to register for an event."""
+    event_svc_integration.unregister(ambassador, registration.id | 0)
+
+
+def test_delete_registration_for_event_as_wrong_user(
+    event_svc_integration: EventService,
+):
+    """Test that any user is *unable* to delete a registration that is not for them."""
+    with pytest.raises(UserPermissionException):
+        event_svc_integration.unregister(user, registration.id | 0)
+
+
+def test_delete_registration_for_event_as_root(
+    event_svc_integration: EventService,
+):
+    """Test that root is able to delete any registrations."""
+    # Setup to test permission enforcement on the PermissionService.
+    event_svc_integration._permission = create_autospec(
+        event_svc_integration._permission
+    )
+
+    # Ensure delete occurs
+    event_svc_integration.unregister(root, registration.id | 0)
+
+    # Ensure that the correct permission check is run
+    event_svc_integration._permission.enforce.assert_called_with(
+        root, "organization.events.manage", f"organization/{event_one.organization_id}"
+    )

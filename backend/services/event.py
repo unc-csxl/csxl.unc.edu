@@ -221,7 +221,9 @@ class EventService:
             )
 
         # Create event registration to bind the subject and event
-        event_registration = NewEventRegistration(event_id=event.id, user_id=subject.id)
+        event_registration = NewEventRegistration(
+            id=None, event_id=event.id, user_id=subject.id
+        )
         event_registration_entity = EventRegistrationEntity.from_new_model(
             event_registration
         )
@@ -263,7 +265,7 @@ class EventService:
         # If no permission, check to ensure that the user is attempting to delete
         # their own registration
         except UserPermissionException as e:
-            if subject.id == event_registration.user_id:
+            if subject.id != event_registration.user_id:
                 raise e
         # If no errors are raised above, then we continue.
         else:
