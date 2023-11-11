@@ -10,7 +10,7 @@ from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
 from backend.models.event_details import EventDetails
-from backend.models.event_registration import EventRegistration
+from backend.models.event_registration import EventRegistration, NewEventRegistration
 from ..entities import EventEntity, OrganizationEntity, EventRegistrationEntity
 from .permission import PermissionService
 from .exceptions import ResourceNotFoundException, UserPermissionException
@@ -221,10 +221,8 @@ class EventService:
             )
 
         # Create event registration to bind the subject and event
-        event_registration = EventRegistration(
-            event_id=event.id, user_id=subject.id, event=None, user=None
-        )
-        event_registration_entity = EventRegistrationEntity.from_model(
+        event_registration = NewEventRegistration(event_id=event.id, user_id=subject.id)
+        event_registration_entity = EventRegistrationEntity.from_new_model(
             event_registration
         )
 

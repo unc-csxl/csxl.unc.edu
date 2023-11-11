@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
-from ..models.event_registration import EventRegistration
+from ..models.event_registration import EventRegistration, NewEventRegistration
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
@@ -45,7 +45,7 @@ class EventRegistrationEntity(EntityBase):
         Class method that converts an `EventRegistration` model into a `EventRegistrationEntity`
 
         Parameters:
-            - model (Event): Model to convert into an entity
+            - model (EventRegistration): Model to convert into an entity
         Returns:
             EventRegistrationEntity: Entity created from model
         """
@@ -55,6 +55,18 @@ class EventRegistrationEntity(EntityBase):
             event=model.event,
             user=model.user,
         )
+
+    @classmethod
+    def from_new_model(cls, model: NewEventRegistration) -> Self:
+        """
+        Class method that converts an `NewEventRegistration` model into a `EventRegistrationEntity`
+
+        Parameters:
+            - model (NewEventRegistration): Model to convert into an entity
+        Returns:
+            EventRegistrationEntity: Entity created from model
+        """
+        return cls(event_id=model.event_id, user_id=model.user_id)
 
     def to_model(self) -> EventRegistration:
         """

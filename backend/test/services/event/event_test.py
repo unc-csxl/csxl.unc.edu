@@ -120,3 +120,11 @@ def test_delete_event_as_user(event_svc_integration: EventService):
     """Test that any user is *unable* to delete events."""
     with pytest.raises(UserPermissionException):
         event_svc_integration.delete(user, 1)
+
+
+def test_register_for_event_as_user(event_svc_integration: EventService):
+    """Test that a user is able to register for an event."""
+    created_registration = event_svc_integration.register(user, event_one)
+    assert created_registration is not None
+    assert created_registration.user_id is not None
+    assert created_registration.event_id is not None
