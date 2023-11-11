@@ -42,7 +42,7 @@ class EventEntity(EntityBase):
     # Registrations for the event
     # NOTE: This is part of a many-to-many relationship between events and users, via the event registration table.
     registrations: Mapped[list["EventRegistrationEntity"]] = relationship(
-        back_populates="event"
+        back_populates="event", cascade="all,delete"
     )
 
     @classmethod
