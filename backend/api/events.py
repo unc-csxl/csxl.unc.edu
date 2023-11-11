@@ -126,3 +126,37 @@ def delete_event(
         event_service: a valid EventService
     """
     event_service.delete(subject, id)
+
+
+@api.post("/register/{event_id}", tags=["Events"])
+def register_for_event(
+    event_id: int,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+):
+    """
+    Register a user event based on the event ID
+
+    Parameters:
+        id: an int representing a unique event ID
+        subject: a valid User model representing the currently logged in User
+        event_service: a valid EventService
+    """
+    event_service.register(subject, event_id)
+
+
+@api.delete("/register/{event_id}", tags=["Events"])
+def unregister_for_event(
+    event_id: int,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+):
+    """
+    Unregister a user event based on the event ID
+
+    Parameters:
+        id: an int representing a unique event ID
+        subject: a valid User model representing the currently logged in User
+        event_service: a valid EventService
+    """
+    event_service.unregister(subject, event_id)

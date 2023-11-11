@@ -201,7 +201,7 @@ class EventService:
         # Save changes
         self._session.commit()
 
-    def register(self, subject: User, event: Event) -> EventRegistration:
+    def register(self, subject: User, event_id: int) -> EventRegistration:
         """
         Register a user for an event.
 
@@ -215,14 +215,14 @@ class EventService:
             raise ResourceNotFoundException(
                 f"Missing valid user to register for an event."
             )
-        if event.id is None:
+        if event_id is None:
             raise ResourceNotFoundException(
                 f"Missing valid event to register for an event."
             )
 
         # Create event registration to bind the subject and event
         event_registration = NewEventRegistration(
-            id=None, event_id=event.id, user_id=subject.id
+            id=None, event_id=event_id, user_id=subject.id
         )
         event_registration_entity = EventRegistrationEntity.from_new_model(
             event_registration
