@@ -20,6 +20,7 @@ from .permission_entity import PermissionEntity
 from .user_role_table import user_role_table
 from .organization_entity import OrganizationEntity
 from .event_entity import EventEntity
+from .event_registration_entity import EventRegistrationEntity
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
