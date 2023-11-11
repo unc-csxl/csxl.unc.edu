@@ -10,9 +10,10 @@ from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
 from backend.models.event_details import EventDetails
-from ..entities import EventEntity, OrganizationEntity
+from backend.models.event_registration import EventRegistration
+from ..entities import EventEntity, OrganizationEntity, EventRegistrationEntity
 from .permission import PermissionService
-from .exceptions import ResourceNotFoundException
+from .exceptions import ResourceNotFoundException, UserPermissionException
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -199,3 +200,77 @@ class EventService:
 
         # Save changes
         self._session.commit()
+
+    def register(self, subject: User, event: Event) -> EventRegistration:
+        """
+        Register a user for an event.
+
+        Parameters:
+            subject: User to register
+            event: Event to register for
+        """
+
+        # Ensure that the subject and events exist
+        if subject.id is None:
+            raise ResourceNotFoundException(
+                f"Missing valid user to register for an event."
+            )
+        if event.id is None:
+            raise ResourceNotFoundException(
+                f"Missing valid event to register for an event."
+            )
+
+        # Create event registration to bind the subject and event
+        event_registration = EventRegistration(
+            event_id=event.id, user_id=subject.id, event=None, user=None
+        )
+        event_registration_entity = EventRegistrationEntity.from_model(
+            event_registration
+        )
+
+        # Add new object to table and commit changes
+        self._session.add(event_registration_entity)
+        self._session.commit()
+
+        # Return added object
+        return event_registration_entity.to_model()
+
+    def unregister(self, subject: User, id: int) -> None:
+        """
+        Delete an event registration based on the provided ID.
+
+        Parameters:
+            subject: User performing the unregister action
+            id: an int representing a unique event ID
+        """
+
+        # Find object to delete
+        event_registration = self._session.get(EventRegistrationEntity, id)
+
+        # Ensure object exists
+        if event_registration is None:
+            raise ResourceNotFoundException(f"No event found with matching ID: {id}")
+
+        # Ensure that the user has appropriate permissions to delete users
+        # NOTE: This is either if the user as event management permissions,
+        # or if the user is deleting their own registration.
+
+        # First, check for the permission.
+        try:
+            self._permission.enforce(
+                subject,
+                "organization.events.manage",
+                f"organization/{event_registration.event.organization_id}",
+            )
+        # If no permission, check to ensure that the user is attempting to delete
+        # their own registration
+        except UserPermissionException as e:
+            if subject.id == event_registration.user_id:
+                raise e
+        # If no errors are raised above, then we continue.
+        else:
+            # Delete object and commit
+            self._session.delete(event_registration)
+
+            # Save changes
+            self._session.commit()

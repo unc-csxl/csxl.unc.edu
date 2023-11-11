@@ -17,5 +17,5 @@ class EventRegistration(BaseModel):
 
     event_id: int
     user_id: int
-    event: Event
-    user: User
+    event: Event | None
+    user: User | None
