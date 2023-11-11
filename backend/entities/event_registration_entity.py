@@ -37,7 +37,7 @@ class EventRegistrationEntity(EntityBase):
     # NOTE: Since this is ultimately a join table for a many-to-many relationship,
     # the `user_id` is marked as a primary key.
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
-    user: Mapped["UserEntity"] = relationship(back_populates="registrations")
+    user: Mapped["UserEntity"] = relationship(back_populates="event_registrations")
 
     @classmethod
     def from_model(cls, model: EventRegistration) -> Self:
