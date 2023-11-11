@@ -39,6 +39,12 @@ class EventEntity(EntityBase):
     organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 
+    # Registrations for the event
+    # NOTE: This is part of a many-to-many relationship between events and users, via the event registration table.
+    registrations: Mapped[list["EventRegistrationEntity"]] = relationship(
+        back_populates="event"
+    )
+
     @classmethod
     def from_model(cls, model: Event) -> Self:
         """
@@ -111,4 +117,7 @@ class EventEntity(EntityBase):
             public=self.public,
             organization_id=self.organization_id,
             organization=self.organization.to_model(),
+            registrations=[
+                registration.to_model() for registration in self.registrations
+            ],
         )

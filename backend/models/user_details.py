@@ -28,3 +28,4 @@ class UserDetails(UserPermissions):
     """
 
     ...
+    event_registrations = list[EventRegistration]
