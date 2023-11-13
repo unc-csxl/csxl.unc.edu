@@ -50,7 +50,7 @@ class UserService:
             user_details = UserDetails(**user_fields)
             return user_details
 
-    def get_by_id(self, id: int) -> User | None:
+    def get_by_id(self, id: int) -> User:
         """Get a User by their id.
 
         Args:

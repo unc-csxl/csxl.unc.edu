@@ -5,13 +5,20 @@ Event routes are used to create, retrieve, and update Events."""
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..services.event import EventService
+from ..services.user import UserService
 from ..models.event import Event
 from ..models.event_details import EventDetails
 from ..models.event_registration import EventRegistration
 from ..api.authentication import registered_user
 from ..models.user import User
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__authors__ = [
+    "Ajay Gandecha",
+    "Jade Keegan",
+    "Brianna Ta",
+    "Audrey Toney",
+    "Kris Jordan",
+]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -135,6 +142,7 @@ def register_for_event(
     user_id: int = -1,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
+    user_service: UserService = Depends(),
 ) -> EventRegistration:
     """
     Register a user event based on the event ID.
@@ -150,8 +158,12 @@ def register_for_event(
         event_service: a valid EventService
     """
     if user_id == -1 and subject.id is not None:
-        user_id = subject.id
-    return event_service.register(subject, user_id, event_id)
+        user = subject
+    else:
+        user = user_service.get_by_id(user_id)
+
+    event = event_service.get_by_id(event_id)
+    return event_service.register(subject, user, event)
 
 
 @api.delete("/register/{event_id}", tags=["Events"])

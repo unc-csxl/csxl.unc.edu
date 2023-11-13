@@ -124,10 +124,10 @@ def test_delete_event_as_user(event_svc_integration: EventService):
 
 def test_register_for_event_as_user(event_svc_integration: EventService):
     """Test that a user is able to register for an event."""
-    created_registration = event_svc_integration.register(user, user.id, event_one.id)  # type: ignore
+    created_registration = event_svc_integration.register(user, user, event_one)  # type: ignore
     assert created_registration is not None
-    assert created_registration.user_id is not None
-    assert created_registration.event_id is not None
+    assert created_registration.user_id == user.id
+    assert created_registration.event_id == event_one.id
 
 
 def test_delete_registration_for_event_as_registerer(

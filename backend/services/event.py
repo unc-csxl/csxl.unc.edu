@@ -21,7 +21,13 @@ from .permission import PermissionService
 from .exceptions import ResourceNotFoundException, UserPermissionException
 from . import UserService
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__authors__ = [
+    "Ajay Gandecha",
+    "Jade Keegan",
+    "Brianna Ta",
+    "Audrey Toney",
+    "Kris Jordan",
+]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -98,6 +104,9 @@ class EventService:
 
         Returns:
             Event: Object with corresponding ID
+
+        Raises:
+            ResourceNotFoundException when event ID cannot be looked up
         """
 
         # Query the event with matching id
@@ -209,35 +218,32 @@ class EventService:
         # Save changes
         self._session.commit()
 
-    def register(self, subject: User, user_id: int, event_id: int) -> EventRegistration:
+    def register(
+        self, subject: User, user: User, event: EventDetails
+    ) -> EventRegistration:
         """
         Register a user for an event.
 
         Args:
             subject: User making the registration request
-            user_id: ID of the user registering for an event
-            event_id: ID of the event being registered for
+            user: The user being registered for the event
+            event: The EventDetails being registered for
+
+        Returns:
+            EventRegistration
         """
 
         # Ensure that the subject and events exist
-        user_entity = self._session.get(UserEntity, user_id)
-        if user_entity is None:
-            raise ResourceNotFoundException(f"Unknown User ID: {user_id}")
-
-        event_entity = self._session.get(EventEntity, event_id)
-        if event_entity is None:
-            raise ResourceNotFoundException(f"Unknown Event ID: {event_id}")
-
-        if subject.id != user_id:
+        if subject.id != user.id:
             self._permission.enforce(
                 subject,
                 "organization.events.manage",
-                f"organization/{event_entity.organization_id}",
+                f"organization/{event.organization.id}",
             )
 
         # Add new object to table and commit changes
         event_registration_entity = EventRegistrationEntity(
-            user=user_entity, event=event_entity
+            user_id=user.id, event_id=event.id
         )
         self._session.add(event_registration_entity)
         self._session.commit()
