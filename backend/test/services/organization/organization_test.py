@@ -4,8 +4,10 @@
 import pytest
 from unittest.mock import create_autospec
 
-from backend.services.organization import OrganizationNotFoundException
-from backend.services.exceptions import UserPermissionException
+from backend.services.exceptions import (
+    UserPermissionException,
+    ResourceNotFoundException,
+)
 
 # Tested Dependencies
 from ....models import Organization
@@ -117,14 +119,14 @@ def test_delete_enforces_permission(organization_svc_integration: OrganizationSe
     # Test permissions with root user (admin permission)
     organization_svc_integration.delete(root, cads.slug)
     organization_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.create", "organization"
+        root, "organization.delete", "organization"
     )
 
 
 def test_delete_organization_as_root(organization_svc_integration: OrganizationService):
     """Test that the root user is able to delete organizations."""
     organization_svc_integration.delete(root, cads.slug)
-    with pytest.raises(OrganizationNotFoundException):
+    with pytest.raises(ResourceNotFoundException):
         organization_svc_integration.get_from_slug(cads.slug)
 
 

@@ -7,19 +7,44 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  Route,
+  Router,
+  RouterStateSnapshot
+} from '@angular/router';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { Organization } from '../organization.model';
 import { OrganizationService } from '../organization.service';
 import { Profile } from 'src/app/profile/profile.service';
-import { permissionGuard } from 'src/app/permission.guard';
 import { organizationDetailResolver } from '../organization.resolver';
 
+const canActivateEditor: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  /** Determine if page is viewable by user based on permissions */
+
+  let slug: string = route.params['slug'];
+
+  if (slug === 'new') {
+    return inject(PermissionService).check(
+      'organization.create',
+      'organization'
+    );
+  } else {
+    return inject(PermissionService).check(
+      'organization.update',
+      `organization/${slug}`
+    );
+  }
+};
 @Component({
   selector: 'app-organization-editor',
   templateUrl: './organization-editor.component.html',
@@ -31,7 +56,7 @@ export class OrganizationEditorComponent {
     path: ':slug/edit',
     component: OrganizationEditorComponent,
     title: 'Organization Editor',
-    canActivate: [permissionGuard('admin.view', 'admin/')],
+    canActivate: [canActivateEditor],
     resolve: {
       profile: profileResolver,
       organization: organizationDetailResolver
@@ -43,9 +68,6 @@ export class OrganizationEditorComponent {
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile | null = null;
-
-  /** Stores whether the user has admin permission over the current organization. */
-  public adminPermission$: Observable<boolean>;
 
   /** Store the organization id. */
   organization_slug: string = 'new';
@@ -92,8 +114,7 @@ export class OrganizationEditorComponent {
     private router: Router,
     protected formBuilder: FormBuilder,
     protected snackBar: MatSnackBar,
-    private organizationService: OrganizationService,
-    private permission: PermissionService
+    private organizationService: OrganizationService
   ) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
@@ -123,9 +144,6 @@ export class OrganizationEditorComponent {
     /** Get id from the url */
     let organization_slug = this.route.snapshot.params['slug'];
     this.organization_slug = organization_slug;
-
-    /** Set permission value */
-    this.adminPermission$ = this.permission.check('admin.view', 'admin/');
   }
 
   /** Event handler to handle submitting the Update Organization Form.
@@ -170,15 +188,25 @@ export class OrganizationEditorComponent {
    */
   private onSuccess(organization: Organization): void {
     this.router.navigate(['/organizations/', organization.slug]);
-    this.snackBar.open('Organization Created', '', { duration: 2000 });
+
+    let message: string =
+      this.organization_slug === 'new'
+        ? 'Organization Created'
+        : 'Organization Updated';
+
+    this.snackBar.open(message, '', { duration: 2000 });
   }
 
   /** Opens a snackbar when there is an error updating an organization.
    * @returns {void}
    */
   private onError(err: any): void {
-    console.error('Error: Organization Not Created');
-    this.snackBar.open('Error: Organization Not Created', '', {
+    let message: string =
+      this.organization_slug === 'new'
+        ? 'Error: Organization Not Created'
+        : 'Error: Organization Not Updated';
+
+    this.snackBar.open(message, '', {
       duration: 2000
     });
   }

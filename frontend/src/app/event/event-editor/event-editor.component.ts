@@ -99,8 +99,6 @@ export class EventEditorComponent {
     let organization_slug = this.route.snapshot.params['slug'];
     this.organization_slug = organization_slug;
 
-    console.log(this.event.end_time);
-
     // Set values for form group
     this.eventForm.setValue({
       name: this.event.name,
