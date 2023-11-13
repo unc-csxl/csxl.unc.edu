@@ -214,13 +214,26 @@ class EventService:
         Register a user for an event.
 
         Args:
-            subject: User to register
-            event: Event to register for
+            subject: User making the registration request
+            user_id: ID of the user registering for an event
+            event_id: ID of the event being registered for
         """
 
         # Ensure that the subject and events exist
         user_entity = self._session.get(UserEntity, user_id)
+        if user_entity is None:
+            raise ResourceNotFoundException(f"Unknown User ID: {user_id}")
+
         event_entity = self._session.get(EventEntity, event_id)
+        if event_entity is None:
+            raise ResourceNotFoundException(f"Unknown Event ID: {event_id}")
+
+        if subject.id != user_id:
+            self._permission.enforce(
+                subject,
+                "organization.events.manage",
+                f"organization/{event_entity.organization_id}",
+            )
 
         # Add new object to table and commit changes
         event_registration_entity = EventRegistrationEntity(
