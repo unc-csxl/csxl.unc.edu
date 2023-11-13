@@ -1,9 +1,12 @@
 """Tests for the UserService class."""
 
+import pytest
+
 # Tested Dependencies
 from ...models.user import User, NewUser
 from ...models.pagination import PaginationParams
 from ...services import UserService, PermissionService
+from ...services.exceptions import ResourceNotFoundException
 
 # Data Setup and Injected Service Fixtures
 from .core_data import setup_insert_data_fixture
@@ -39,6 +42,20 @@ def test_get(user_svc_integration: UserService):
 def test_get_nonexistent(user_svc_integration: UserService):
     """Test that a nonexistent PID returns None."""
     assert user_svc_integration.get(423) is None
+
+
+def test_get_by_id(user_svc_integration: UserService):
+    """Test that a user can be retrieved by their ID"""
+    user = user_svc_integration.get_by_id(ambassador.id)  # type: ignore
+    assert user is not None
+    assert user.id == ambassador.id
+    assert user.pid == ambassador.pid
+
+
+def test_get_by_id_nonexistent(user_svc_integration: UserService):
+    """Test that a user id that does not exist returns None"""
+    with pytest.raises(ResourceNotFoundException):
+        user_svc_integration.get_by_id(423)
 
 
 def test_search_by_first_name(user_svc: UserService):
