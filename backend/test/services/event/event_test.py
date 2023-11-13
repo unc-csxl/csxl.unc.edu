@@ -14,7 +14,7 @@ from ....models import Event, EventDetails
 from ....services import EventService
 
 # Injected Service Fixtures
-from ..fixtures import event_svc_integration
+from ..fixtures import user_svc_integration, event_svc_integration
 
 # Explicitly import Data Fixture to load entities in database
 from ..core_data import setup_insert_data_fixture
@@ -34,9 +34,9 @@ def test_get_all(event_svc_integration: EventService):
     assert isinstance(fetched_events[0], EventDetails)
 
 
-def test_get_from_id(event_svc_integration: EventService):
+def test_get_by_id(event_svc_integration: EventService):
     """Test that events can be retrieved based on their ID."""
-    fetched_event = event_svc_integration.get_from_id(1)
+    fetched_event = event_svc_integration.get_by_id(1)
     assert fetched_event is not None
     assert isinstance(fetched_event, Event)
     assert fetched_event.id == event_one.id
@@ -85,7 +85,7 @@ def test_update_event_as_root(
     Note: Test data's website field is updated
     """
     event_svc_integration.update(root, updated_event)
-    assert event_svc_integration.get_from_id(1).location == "Fetzer Gym"
+    assert event_svc_integration.get_by_id(1).location == "Fetzer Gym"
 
 
 def test_update_event_as_user(event_svc_integration: EventService):
@@ -113,7 +113,7 @@ def test_delete_event_as_root(event_svc_integration: EventService):
     """Test that the root user is able to delete events."""
     event_svc_integration.delete(root, 1)
     with pytest.raises(ResourceNotFoundException):
-        event_svc_integration.get_from_id(1)
+        event_svc_integration.get_by_id(1)
 
 
 def test_delete_event_as_user(event_svc_integration: EventService):
@@ -124,7 +124,7 @@ def test_delete_event_as_user(event_svc_integration: EventService):
 
 def test_register_for_event_as_user(event_svc_integration: EventService):
     """Test that a user is able to register for an event."""
-    created_registration = event_svc_integration.register(user, event_one.id | 0)
+    created_registration = event_svc_integration.register(user, user.id, event_one.id)  # type: ignore
     assert created_registration is not None
     assert created_registration.user_id is not None
     assert created_registration.event_id is not None

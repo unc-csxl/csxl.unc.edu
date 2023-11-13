@@ -57,7 +57,10 @@ class UserService:
             id: The ID of the user.
 
         Returns:
-            User | None
+            User
+
+        Raises:
+            ResourceNotFoundException if the User ID is not found
         """
         user_entity = self._session.get(UserEntity, id)
         if user_entity is None:

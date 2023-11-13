@@ -51,6 +51,6 @@ def organization_svc_integration(session: Session):
 
 
 @pytest.fixture()
-def event_svc_integration(session: Session):
+def event_svc_integration(session: Session, user_svc_integration: UserService):
     """This fixture is used to test the EventService class with a real PermissionService."""
-    return EventService(session, PermissionService(session))
+    return EventService(session, PermissionService(session), user_svc_integration)

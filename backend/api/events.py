@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..services.event import EventService
 from ..models.event import Event
 from ..models.event_details import EventDetails
+from ..models.event_registration import EventRegistration
 from ..api.authentication import registered_user
 from ..models.user import User
 
@@ -86,7 +87,7 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
     Returns:
         EventDetails: a valid EventDetails model corresponding to the given event id
     """
-    return event_service.get_from_id(id)
+    return event_service.get_by_id(id)
 
 
 @api.put(
@@ -131,18 +132,26 @@ def delete_event(
 @api.post("/register/{event_id}", tags=["Events"])
 def register_for_event(
     event_id: int,
+    user_id: int = -1,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
-):
+) -> EventRegistration:
     """
-    Register a user event based on the event ID
+    Register a user event based on the event ID.
 
-    Parameters:
-        id: an int representing a unique event ID
+    If the user_id parameter is not passed to the post method, we will use the
+    logged in user's ID as the user_id. Another user's ID is expected when a
+    user is being registered by an administrator.
+
+    Args:
+        event_id: an int representing a unique event ID
+        user_id: (optional) an int representing the user being registered for an event
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
     """
-    event_service.register(subject, event_id)
+    if user_id == -1 and subject.id is not None:
+        user_id = subject.id
+    return event_service.register(subject, user_id, event_id)
 
 
 @api.delete("/register/{event_id}", tags=["Events"])

@@ -11,9 +11,15 @@ from ..database import db_session
 from backend.models.event import Event
 from backend.models.event_details import EventDetails
 from backend.models.event_registration import EventRegistration, NewEventRegistration
-from ..entities import EventEntity, OrganizationEntity, EventRegistrationEntity
+from ..entities import (
+    EventEntity,
+    OrganizationEntity,
+    EventRegistrationEntity,
+    UserEntity,
+)
 from .permission import PermissionService
 from .exceptions import ResourceNotFoundException, UserPermissionException
+from . import UserService
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -27,10 +33,12 @@ class EventService:
         self,
         session: Session = Depends(db_session),
         permission: PermissionService = Depends(),
+        user_svc: UserService = Depends(),
     ):
         """Initializes the `EventService` session"""
         self._session = session
         self._permission = permission
+        self._user_svc = user_svc
 
     def all(self) -> list[EventDetails]:
         """
@@ -51,7 +59,7 @@ class EventService:
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
 
-        Parameters:
+        Args:
             subject: a valid User model representing the currently logged in User
             event: a valid Event model representing the event to be added
 
@@ -80,12 +88,12 @@ class EventService:
         # Return added object
         return event_entity.to_details_model()
 
-    def get_from_id(self, id: int) -> EventDetails:
+    def get_by_id(self, id: int) -> EventDetails:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
 
-        Parameters:
+        Args:
             id: a valid int representing a unique event ID
 
         Returns:
@@ -106,7 +114,7 @@ class EventService:
         """
         Get all the events hosted by an organization with slug
 
-        Parameters:
+        Args:
             slug: a valid str representing a unique Organization slug
 
         Returns:
@@ -138,7 +146,7 @@ class EventService:
         """
         Update the event
 
-        Parameters:
+        Args:
             event: a valid Event model
 
         Returns:
@@ -177,7 +185,7 @@ class EventService:
         Delete the event based on the provided ID.
         If no item exists to delete, a debug description is displayed.
 
-        Parameters:
+        Args:
             id: an int representing a unique event ID
         """
 
@@ -201,34 +209,23 @@ class EventService:
         # Save changes
         self._session.commit()
 
-    def register(self, subject: User, event_id: int) -> EventRegistration:
+    def register(self, subject: User, user_id: int, event_id: int) -> EventRegistration:
         """
         Register a user for an event.
 
-        Parameters:
+        Args:
             subject: User to register
             event: Event to register for
         """
 
         # Ensure that the subject and events exist
-        if subject.id is None:
-            raise ResourceNotFoundException(
-                f"Missing valid user to register for an event."
-            )
-        if event_id is None:
-            raise ResourceNotFoundException(
-                f"Missing valid event to register for an event."
-            )
-
-        # Create event registration to bind the subject and event
-        event_registration = NewEventRegistration(
-            id=None, event_id=event_id, user_id=subject.id
-        )
-        event_registration_entity = EventRegistrationEntity.from_new_model(
-            event_registration
-        )
+        user_entity = self._session.get(UserEntity, user_id)
+        event_entity = self._session.get(EventEntity, event_id)
 
         # Add new object to table and commit changes
+        event_registration_entity = EventRegistrationEntity(
+            user=user_entity, event=event_entity
+        )
         self._session.add(event_registration_entity)
         self._session.commit()
 
@@ -239,9 +236,16 @@ class EventService:
         """
         Delete an event registration based on the provided ID.
 
-        Parameters:
+        Args:
             subject: User performing the unregister action
             id: an int representing a unique registration ID
+
+        Returns:
+            None in a successful invocation
+
+        Raises:
+            ResourceNotFoundException when the registration ID is not found
+            UserPermissionException when the user is not authorized to delete registration
         """
 
         # Find object to delete
@@ -251,26 +255,18 @@ class EventService:
         if event_registration is None:
             raise ResourceNotFoundException(f"No event found with matching ID: {id}")
 
-        # Ensure that the user has appropriate permissions to delete users
-        # NOTE: This is either if the user as event management permissions,
-        # or if the user is deleting their own registration.
-
-        # First, check for the permission.
-        try:
+        # Ensure that the user has appropriate permissions to delete an event registration
+        # Feature-specific authorization: User is unregistering themself
+        # Administrative Permission: organization.events.manage : organization/{id}
+        if subject.id != event_registration.user_id:
             self._permission.enforce(
                 subject,
                 "organization.events.manage",
                 f"organization/{event_registration.event.organization_id}",
             )
-        # If no permission, check to ensure that the user is attempting to delete
-        # their own registration
-        except UserPermissionException as e:
-            if subject.id != event_registration.user_id:
-                raise e
-        # If no errors are raised above, then we continue.
-        else:
-            # Delete object and commit
-            self._session.delete(event_registration)
 
-            # Save changes
-            self._session.commit()
+        # Delete object and commit
+        self._session.delete(event_registration)
+
+        # Save changes
+        self._session.commit()
