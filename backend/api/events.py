@@ -3,6 +3,7 @@
 Event routes are used to create, retrieve, and update Events."""
 
 from fastapi import APIRouter, Depends, HTTPException
+from datetime import datetime, timedelta
 
 from ..services.event import EventService
 from ..services.user import UserService
@@ -10,6 +11,7 @@ from ..services.exceptions import ResourceNotFoundException
 from ..models.event import Event
 from ..models.event_details import EventDetails
 from ..models.event_registration import EventRegistration
+from ..models.coworking.time_range import TimeRange
 from ..api.authentication import registered_user
 from ..models.user import User
 
@@ -76,6 +78,29 @@ def new_event(
         EventDetails: latest iteration of the created or updated event after changes made
     """
     return event_service.create(subject, event)
+
+
+@api.get("/registrations", tags=["Events"])
+def get_registrations_of_user(
+    user_id: int = -1,
+    subject: User = Depends(registered_user),
+    start: datetime | None = None,
+    end: datetime | None = None,
+    event_svc: EventService = Depends(),
+    user_svc: UserService = Depends(),
+):
+    print("HERE")
+    user: User
+    if user_id == -1:
+        user = subject
+    else:
+        user = user_svc.get_by_id(user_id)
+
+    start = datetime.now() if start is None else start
+    end = datetime.now() + timedelta(days=365) if end is None else end
+    time_range = TimeRange(start=start, end=end)
+
+    return event_svc.get_registrations_of_user(subject, user, time_range)
 
 
 @api.get(

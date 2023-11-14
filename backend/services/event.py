@@ -342,7 +342,7 @@ class EventService:
             of another user and does not have 'user.event_registrations' permission.
         """
         # Feature-specific authorization: User is getting their own registrations
-        # Administrative Permission: user.events : user/{user_id}
+        # Administrative Permission: user.event_registrations : user/{user_id}
         if subject.id != user.id:
             self._permission.enforce(
                 subject,
