@@ -136,7 +136,7 @@ def delete_event(
     event_service.delete(subject, id)
 
 
-@api.post("/register/{event_id}", tags=["Events"])
+@api.post("/{event_id}/register", tags=["Events"])
 def register_for_event(
     event_id: int,
     user_id: int = -1,
@@ -166,18 +166,28 @@ def register_for_event(
     return event_service.register(subject, user, event)
 
 
-@api.delete("/register/{event_id}", tags=["Events"])
+@api.delete("/{event_id}/registration", tags=["Events"])
 def unregister_for_event(
     event_id: int,
+    user_id: int = -1,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
+    user_service: UserService = Depends(),
 ):
     """
     Unregister a user event based on the event ID
 
     Args:
-        id: an int representing a unique event ID
+        event_id: an int representing a unique event ID
+        user_id: the int of the user whose registration is being deleted (optional)
         subject: a valid User model representing the currently logged in User
-        event_service: a valid EventService
+        event_service: EventService
+        user_service: UserService
     """
-    event_service.unregister(subject, event_id)
+    if user_id == -1 and subject.id is not None:
+        user = subject
+    else:
+        user = user_service.get_by_id(user_id)
+
+    event: EventDetails = event_service.get_by_id(event_id)
+    event_service.unregister(subject, user, event)

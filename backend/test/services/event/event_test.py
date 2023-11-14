@@ -144,32 +144,60 @@ def test_register_for_event_enforces_permission(event_svc_integration: EventServ
     )
 
 
-def test_delete_registration_for_event_as_registerer(
+def test_get_registration(event_svc_integration: EventService):
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_registration = event_svc_integration.get_registration(
+        ambassador, ambassador, event_details
+    )
+    assert event_registration is not None
+    assert event_registration.id is registration.id
+
+
+def test_get_registration_that_does_not_exist(event_svc_integration: EventService):
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_registration = event_svc_integration.get_registration(
+        user, user, event_details
+    )
+    assert event_registration is None
+
+
+def test_unregister_for_event_as_registerer(
     event_svc_integration: EventService,
 ):
-    """Test that a user is able to register for an event."""
-    event_svc_integration.unregister(ambassador, registration.id | 0)
+    """Test that a user is able to unregister for an event."""
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    assert (
+        event_svc_integration.get_registration(ambassador, ambassador, event_details)
+        is not None
+    )
+    event_svc_integration.unregister(ambassador, ambassador, event_details)
+    assert (
+        event_svc_integration.get_registration(ambassador, ambassador, event_details)
+        is None
+    )
 
 
 def test_delete_registration_for_event_as_wrong_user(
     event_svc_integration: EventService,
 ):
     """Test that any user is *unable* to delete a registration that is not for them."""
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
     with pytest.raises(UserPermissionException):
-        event_svc_integration.unregister(user, registration.id | 0)
+        event_svc_integration.unregister(user, ambassador, event_details)
 
 
 def test_delete_registration_for_event_as_root(
     event_svc_integration: EventService,
 ):
     """Test that root is able to delete any registrations."""
-    # Setup to test permission enforcement on the PermissionService.
+    # Setup mock to test permission enforcement on the PermissionService.
     event_svc_integration._permission = create_autospec(
         event_svc_integration._permission
     )
 
     # Ensure delete occurs
-    event_svc_integration.unregister(root, registration.id | 0)
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_svc_integration.unregister(root, ambassador, event_details)
 
     # Ensure that the correct permission check is run
     event_svc_integration._permission.enforce.assert_called_with(
