@@ -5,12 +5,10 @@ from backend.models.event_registration import EventRegistration
 
 class EventDetails(Event):
     """
-    Pydantic model to represent an `Event`, including back-populated
-    relationship fields.
+    Pydantic model to represent an `Event`.
 
     This model is based on the `EventEntity` model, which defines the shape
     of the `Event` database in the PostgreSQL database.
     """
 
     organization: Organization
-    registrations: list[EventRegistration]

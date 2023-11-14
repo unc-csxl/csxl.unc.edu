@@ -82,26 +82,6 @@ class EventEntity(EntityBase):
             organization_id=self.organization_id,
         )
 
-    @classmethod
-    def from_details_model(cls, model: EventDetails):
-        """
-        Class method that converts an `EventDetails` model into a `EventEntity`
-
-        Parameters:
-            - model (EventDetails): Model to convert into an entity
-        Returns:
-            EventEntity: Entity created from model
-        """
-        return cls(
-            id=model.id,
-            name=model.name,
-            time=model.time,
-            location=model.location,
-            description=model.description,
-            public=model.public,
-            organization_id=model.organization_id,
-        )
-
     def to_details_model(self) -> EventDetails:
         """Create a EventDetails model from an EventEntity, with permissions and members included.
 
@@ -117,7 +97,4 @@ class EventEntity(EntityBase):
             public=self.public,
             organization_id=self.organization_id,
             organization=self.organization.to_model(),
-            registrations=[
-                registration.to_model() for registration in self.registrations
-            ],
         )
