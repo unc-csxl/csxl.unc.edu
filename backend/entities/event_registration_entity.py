@@ -38,7 +38,7 @@ class EventRegistrationEntity(EntityBase):
     # User for the current event registration
     # NOTE: This is ultimately a join table for a many-to-many relationship
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped["UserEntity"] = relationship(back_populates="event_registrations")
+    user: Mapped["UserEntity"] = relationship()
 
     @classmethod
     def from_model(cls, model: EventRegistration) -> Self:

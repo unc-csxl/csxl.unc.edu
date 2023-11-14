@@ -53,12 +53,6 @@ class UserEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
 
-    # Event registrations for the user
-    # NOTE: This is part of a many-to-many relationship between events and users, via the event registration table.
-    event_registrations: Mapped[list["EventRegistrationEntity"]] = relationship(
-        back_populates="user"
-    )
-
     @classmethod
     def from_model(cls, model: User) -> Self:
         """
