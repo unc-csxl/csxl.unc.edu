@@ -218,45 +218,6 @@ class EventService:
         # Save changes
         self._session.commit()
 
-    def register(
-        self, subject: User, attendee: User, event: EventDetails
-    ) -> EventRegistration:
-        """
-        Register a user for an event.
-
-        Args:
-            subject: User making the registration request
-            attendee: The user being registered for the event
-            event: The EventDetails being registered for
-
-        Returns:
-            EventRegistration
-
-        Raises:
-            UserPermissionException if subject does not have permission to register user
-        """
-
-        # Enforce feature-specific authorization of a user being permitted
-        # to register for an event for themselves. Otherwise, an administrator
-        # can register on behalf of another user with organization events management
-        # permission.
-        if subject.id != attendee.id:
-            self._permission.enforce(
-                subject,
-                "organization.events.manage",
-                f"organization/{event.organization.id}",
-            )
-
-        # Add new object to table and commit changes
-        event_registration_entity = EventRegistrationEntity(
-            user_id=attendee.id, event_id=event.id
-        )
-        self._session.add(event_registration_entity)
-        self._session.commit()
-
-        # Return registration
-        return event_registration_entity.to_model()
-
     def get_registration(
         self, subject: User, attendee: User, event: EventDetails
     ) -> EventRegistration | None:
@@ -270,6 +231,9 @@ class EventService:
 
         Returns:
             EventRegistration or None if no registration found
+
+        Raises:
+            UserPermissionException if subject does not have permission
         """
         # Feature-specific authorization: User is unregistering themself
         # Administrative Permission: organization.events.manage : organization/{id}
@@ -294,6 +258,39 @@ class EventService:
         else:
             return None
 
+    def register(
+        self, subject: User, attendee: User, event: EventDetails
+    ) -> EventRegistration:
+        """
+        Register a user for an event.
+
+        Args:
+            subject: User making the registration request
+            attendee: The user being registered for the event
+            event: The EventDetails being registered for
+
+        Returns:
+            EventRegistration
+
+        Raises:
+            UserPermissionException if subject does not have permission to register user
+        """
+        # Enable idemopotency in returning existing registration, if one exists.
+        # Permission to manage / read registration is enforced in EventService#get_registration
+        existing_registration = self.get_registration(subject, attendee, event)
+        if existing_registration:
+            return existing_registration
+
+        # Add new object to table and commit changes
+        event_registration_entity = EventRegistrationEntity(
+            user_id=attendee.id, event_id=event.id
+        )
+        self._session.add(event_registration_entity)
+        self._session.commit()
+
+        # Return registration
+        return event_registration_entity.to_model()
+
     def unregister(self, subject: User, attendee: User, event: EventDetails) -> None:
         """
         Delete a user's event registration.
@@ -309,7 +306,8 @@ class EventService:
         Raises:
             UserPermissionException when the user is not authorized to manage the registration.
         """
-        # Find object to delete
+        # Find registration to delete
+        # Permissions for reading/managing registration are enfoced in #get_registration
         event_registration = self.get_registration(subject, attendee, event)
 
         # Ensure object exists

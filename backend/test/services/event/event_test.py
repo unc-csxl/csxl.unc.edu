@@ -131,6 +131,16 @@ def test_register_for_event_as_user(event_svc_integration: EventService):
     assert created_registration.event_id == event_one.id
 
 
+def test_register_for_event_as_user_twice(event_svc_integration: EventService):
+    """Test that a user's second registration for an event is idempotent."""
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    created_registration_1 = event_svc_integration.register(user, user, event_details)  # type: ignore
+    assert created_registration_1 is not None
+    created_registration_2 = event_svc_integration.register(user, user, event_details)  # type: ignore
+    assert created_registration_2 is not None
+    assert created_registration_1.id == created_registration_2.id
+
+
 def test_register_for_event_enforces_permission(event_svc_integration: EventService):
     event_svc_integration._permission = create_autospec(
         event_svc_integration._permission
