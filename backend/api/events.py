@@ -5,12 +5,21 @@ Event routes are used to create, retrieve, and update Events."""
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..services.event import EventService
+from ..services.user import UserService
+from ..services.exceptions import ResourceNotFoundException
 from ..models.event import Event
 from ..models.event_details import EventDetails
+from ..models.event_registration import EventRegistration
 from ..api.authentication import registered_user
 from ..models.user import User
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__authors__ = [
+    "Ajay Gandecha",
+    "Jade Keegan",
+    "Brianna Ta",
+    "Audrey Toney",
+    "Kris Jordan",
+]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -39,7 +48,7 @@ def get_events_from_organization(
     """
     Get all events from an organization
 
-    Parameters:
+    Args:
         slug: a valid str representing a unique Organization
         event_service: a valid EventService
 
@@ -58,7 +67,7 @@ def new_event(
     """
     Create event
 
-    Parameters:
+    Args:
         event: a valid Event model
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
@@ -79,14 +88,14 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
     """
     Get event with matching id
 
-    Parameters:
+    Args:
         id: an int representing a unique Event ID
         event_service: a valid EventService
 
     Returns:
         EventDetails: a valid EventDetails model corresponding to the given event id
     """
-    return event_service.get_from_id(id)
+    return event_service.get_by_id(id)
 
 
 @api.put(
@@ -100,7 +109,7 @@ def update_event(
     """
     Update event
 
-    Parameters:
+    Args:
         event: a valid Event model
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
@@ -120,7 +129,7 @@ def delete_event(
     """
     Delete event based on id
 
-    Parameters:
+    Args:
         id: an int representing a unique event ID
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
@@ -128,35 +137,83 @@ def delete_event(
     event_service.delete(subject, id)
 
 
-@api.post("/register/{event_id}", tags=["Events"])
+@api.post("/{event_id}/registration", tags=["Events"])
 def register_for_event(
     event_id: int,
+    user_id: int = -1,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
-):
+    user_service: UserService = Depends(),
+) -> EventRegistration:
     """
-    Register a user event based on the event ID
+    Register a user event based on the event ID.
 
-    Parameters:
-        id: an int representing a unique event ID
+    If the user_id parameter is not passed to the post method, we will use the
+    logged in user's ID as the user_id. Another user's ID is expected when a
+    user is being registered by an administrator.
+
+    Args:
+        event_id: an int representing a unique event ID
+        user_id: (optional) an int representing the user being registered for an event
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
+
+    Returns:
+        EventRegistration details
     """
-    event_service.register(subject, event_id)
+    if user_id == -1 and subject.id is not None:
+        user = subject
+    else:
+        user = user_service.get_by_id(user_id)
+
+    event: EventDetails = event_service.get_by_id(event_id)
+    return event_service.register(subject, user, event)
 
 
-@api.delete("/register/{event_id}", tags=["Events"])
-def unregister_for_event(
+@api.get("/{event_id}/registration", tags=["Events"])
+def get_registration_status(
     event_id: int,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
+) -> EventRegistration:
+    """
+    Check the registration status of a user for an event, raise ResourceNotFound if unregistered.
+
+    Args:
+        event_id: the int identifier of an Event
+        subject: the logged in user making the request
+        event_service: the backing service
+    """
+    event: EventDetails = event_service.get_by_id(event_id)
+    event_registration = event_service.get_registration(subject, subject, event)
+    if event_registration is None:
+        raise ResourceNotFoundException("You are not registered for this event")
+    else:
+        return event_registration
+
+
+@api.delete("/{event_id}/registration", tags=["Events"])
+def unregister_for_event(
+    event_id: int,
+    user_id: int = -1,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+    user_service: UserService = Depends(),
 ):
     """
     Unregister a user event based on the event ID
 
-    Parameters:
-        id: an int representing a unique event ID
+    Args:
+        event_id: an int representing a unique event ID
+        user_id: the int of the user whose registration is being deleted (optional)
         subject: a valid User model representing the currently logged in User
-        event_service: a valid EventService
+        event_service: EventService
+        user_service: UserService
     """
-    event_service.unregister(subject, event_id)
+    if user_id == -1 and subject.id is not None:
+        user = subject
+    else:
+        user = user_service.get_by_id(user_id)
+
+    event: EventDetails = event_service.get_by_id(event_id)
+    event_service.unregister(subject, user, event)
