@@ -2,6 +2,8 @@
 The Event Service allows the API to manipulate event data in the database.
 """
 
+from typing import Sequence
+
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -11,6 +13,7 @@ from ..database import db_session
 from backend.models.event import Event
 from backend.models.event_details import EventDetails
 from backend.models.event_registration import EventRegistration, NewEventRegistration
+from backend.models.coworking.time_range import TimeRange
 from ..entities import (
     EventEntity,
     OrganizationEntity,
@@ -319,3 +322,40 @@ class EventService:
             self._session.get(EventRegistrationEntity, event_registration.id)
         )
         self._session.commit()
+
+    def get_registrations_of_user(
+        self, subject: User, user: User, time_range: TimeRange
+    ) -> Sequence[EventRegistration]:
+        """
+        Get a user's registrations to events falling within a given time range.
+
+        Args:
+            subject: The User making the request.
+            user: The User whose registrations are being requested.
+            time_range: The period over which to search for event registrations.
+
+        Returns:
+            Sequence[EventRegistration] event registrations
+
+        Raises:
+            UserPermissionException when the user is requesting the registrations
+            of another user and does not have 'user.event_registrations' permission.
+        """
+        # Feature-specific authorization: User is getting their own registrations
+        # Administrative Permission: user.events : user/{user_id}
+        if subject.id != user.id:
+            self._permission.enforce(
+                subject,
+                "user.event_registrations",
+                f"user/{user.id}",
+            )
+
+        registration_entities = (
+            self._session.query(EventRegistrationEntity)
+            .where(EventRegistrationEntity.user_id == user.id)
+            .join(EventEntity, EventRegistrationEntity.event_id == EventEntity.id)
+            .where(EventEntity.time >= time_range.start)
+            .where(EventEntity.time < time_range.end)
+        ).all()
+
+        return [entity.to_model() for entity in registration_entities]
