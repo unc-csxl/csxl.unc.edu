@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ..services.event import EventService
 from ..services.user import UserService
+from ..services.exceptions import ResourceNotFoundException
 from ..models.event import Event
 from ..models.event_details import EventDetails
 from ..models.event_registration import EventRegistration
@@ -136,7 +137,7 @@ def delete_event(
     event_service.delete(subject, id)
 
 
-@api.post("/{event_id}/register", tags=["Events"])
+@api.post("/{event_id}/registration", tags=["Events"])
 def register_for_event(
     event_id: int,
     user_id: int = -1,
@@ -156,6 +157,9 @@ def register_for_event(
         user_id: (optional) an int representing the user being registered for an event
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
+
+    Returns:
+        EventRegistration details
     """
     if user_id == -1 and subject.id is not None:
         user = subject
@@ -164,6 +168,28 @@ def register_for_event(
 
     event: EventDetails = event_service.get_by_id(event_id)
     return event_service.register(subject, user, event)
+
+
+@api.get("/{event_id}/registration", tags=["Events"])
+def get_registration_status(
+    event_id: int,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+) -> EventRegistration:
+    """
+    Check the registration status of a user for an event, raise ResourceNotFound if unregistered.
+
+    Args:
+        event_id: the int identifier of an Event
+        subject: the logged in user making the request
+        event_service: the backing service
+    """
+    event: EventDetails = event_service.get_by_id(event_id)
+    event_registration = event_service.get_registration(subject, subject, event)
+    if event_registration is None:
+        raise ResourceNotFoundException("You are not registered for this event")
+    else:
+        return event_registration
 
 
 @api.delete("/{event_id}/registration", tags=["Events"])
