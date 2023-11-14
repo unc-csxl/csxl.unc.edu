@@ -9,6 +9,10 @@ from backend.services.exceptions import (
     ResourceNotFoundException,
 )
 
+# Time helpers
+from ....models.coworking.time_range import TimeRange
+from ..coworking.time import *
+
 # Tested Dependencies
 from ....models import Event, EventDetails
 from ....services import EventService
@@ -212,4 +216,68 @@ def test_delete_registration_for_event_as_root(
     # Ensure that the correct permission check is run
     event_svc_integration._permission.enforce.assert_called_with(
         root, "organization.events.manage", f"organization/{event_one.organization_id}"
+    )
+
+
+def test_get_registrations_of_user(
+    event_svc_integration: EventService, time: dict[str, datetime]
+):
+    """Test that a user with a registration is able to query for it."""
+    time_range = TimeRange(start=event_one.time - ONE_DAY, end=event_one.time + ONE_DAY)
+    registrations = event_svc_integration.get_registrations_of_user(
+        ambassador, ambassador, time_range
+    )
+    assert len(registrations) == 1
+
+
+def test_get_registrations_of_user_outside_time_range(
+    event_svc_integration: EventService, time: dict[str, datetime]
+):
+    """Test that a user with a registration is able to query for it."""
+    # Test range after event
+    time_range = TimeRange(
+        start=event_one.time + ONE_DAY, end=event_one.time + 2 * ONE_DAY
+    )
+    registrations = event_svc_integration.get_registrations_of_user(
+        ambassador, ambassador, time_range
+    )
+    assert len(registrations) == 0
+
+    # Test range before event
+    time_range = TimeRange(
+        start=event_one.time - ONE_DAY * 2, end=event_one.time - ONE_DAY
+    )
+    registrations = event_svc_integration.get_registrations_of_user(
+        ambassador, ambassador, time_range
+    )
+    assert len(registrations) == 0
+
+
+def test_get_registrations_of_user_without_reservations(
+    event_svc_integration: EventService, time: dict[str, datetime]
+):
+    """Test that a user without any registrations is able to query for it."""
+    time_range = TimeRange(start=event_one.time - ONE_DAY, end=event_one.time + ONE_DAY)
+    registrations = event_svc_integration.get_registrations_of_user(
+        user, user, time_range
+    )
+    assert len(registrations) == 0
+
+
+def test_get_registrations_of_user_admin_authorization(
+    event_svc_integration: EventService,
+):
+    """Test that administrative permissions are enforced."""
+    # Setup mock to test permission enforcement on the PermissionService.
+    event_svc_integration._permission = create_autospec(
+        event_svc_integration._permission
+    )
+
+    # Ensure delete occurs
+    time_range = TimeRange(start=event_one.time - ONE_DAY, end=event_one.time + ONE_DAY)
+    event_svc_integration.get_registrations_of_user(root, ambassador, time_range)
+
+    # Ensure that the correct permission check is run
+    event_svc_integration._permission.enforce.assert_called_with(
+        root, "user.event_registrations", f"user/{ambassador.id}"
     )
