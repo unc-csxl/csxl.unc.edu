@@ -124,10 +124,24 @@ def test_delete_event_as_user(event_svc_integration: EventService):
 
 def test_register_for_event_as_user(event_svc_integration: EventService):
     """Test that a user is able to register for an event."""
-    created_registration = event_svc_integration.register(user, user, event_one)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    created_registration = event_svc_integration.register(user, user, event_details)  # type: ignore
     assert created_registration is not None
     assert created_registration.user_id == user.id
     assert created_registration.event_id == event_one.id
+
+
+def test_register_for_event_enforces_permission(event_svc_integration: EventService):
+    event_svc_integration._permission = create_autospec(
+        event_svc_integration._permission
+    )
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_svc_integration.register(root, user, event_details)  # type: ignore
+    event_svc_integration._permission.enforce.assert_called_with(
+        root,
+        "organization.events.manage",
+        f"organization/{event_details.organization.id}",
+    )
 
 
 def test_delete_registration_for_event_as_registerer(

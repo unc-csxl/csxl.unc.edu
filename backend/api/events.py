@@ -47,7 +47,7 @@ def get_events_from_organization(
     """
     Get all events from an organization
 
-    Parameters:
+    Args:
         slug: a valid str representing a unique Organization
         event_service: a valid EventService
 
@@ -66,7 +66,7 @@ def new_event(
     """
     Create event
 
-    Parameters:
+    Args:
         event: a valid Event model
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
@@ -87,7 +87,7 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
     """
     Get event with matching id
 
-    Parameters:
+    Args:
         id: an int representing a unique Event ID
         event_service: a valid EventService
 
@@ -108,7 +108,7 @@ def update_event(
     """
     Update event
 
-    Parameters:
+    Args:
         event: a valid Event model
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
@@ -128,7 +128,7 @@ def delete_event(
     """
     Delete event based on id
 
-    Parameters:
+    Args:
         id: an int representing a unique event ID
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
@@ -175,7 +175,7 @@ def unregister_for_event(
     """
     Unregister a user event based on the event ID
 
-    Parameters:
+    Args:
         id: an int representing a unique event ID
         subject: a valid User model representing the currently logged in User
         event_service: a valid EventService

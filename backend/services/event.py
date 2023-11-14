@@ -231,6 +231,9 @@ class EventService:
 
         Returns:
             EventRegistration
+
+        Raises:
+            UserPermissionException if subject does not have permission to register user
         """
 
         # Enforce feature-specific authorization of a user being permitted
