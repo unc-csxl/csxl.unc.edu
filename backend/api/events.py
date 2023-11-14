@@ -162,7 +162,7 @@ def register_for_event(
     else:
         user = user_service.get_by_id(user_id)
 
-    event = event_service.get_by_id(event_id)
+    event: EventDetails = event_service.get_by_id(event_id)
     return event_service.register(subject, user, event)
 
 

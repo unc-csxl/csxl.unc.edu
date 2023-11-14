@@ -233,7 +233,10 @@ class EventService:
             EventRegistration
         """
 
-        # Ensure that the subject and events exist
+        # Enforce feature-specific authorization of a user being permitted
+        # to register for an event for themselves. Otherwise, an administrator
+        # can register on behalf of another user with organization events management
+        # permission.
         if subject.id != user.id:
             self._permission.enforce(
                 subject,
@@ -248,7 +251,7 @@ class EventService:
         self._session.add(event_registration_entity)
         self._session.commit()
 
-        # Return added object
+        # Return registration
         return event_registration_entity.to_model()
 
     def unregister(self, subject: User, id: int) -> None:
