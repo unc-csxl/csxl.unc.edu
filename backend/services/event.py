@@ -261,6 +261,23 @@ class EventService:
         else:
             return None
 
+    def get_registrations(
+        self, subject: User, event: EventDetails
+    ) -> list[EventRegistration]:
+        self._permission.enforce(
+            subject,
+            "organization.events.manage",
+            f"organization/{event.organization.id}",
+        )
+
+        event_registration_entities = (
+            self._session.query(EventRegistrationEntity)
+            .where(EventRegistrationEntity.event_id == event.id)
+            .all()
+        )
+
+        return [entity.to_model() for entity in event_registration_entities]
+
     def register(
         self, subject: User, attendee: User, event: EventDetails
     ) -> EventRegistration:
@@ -319,7 +336,10 @@ class EventService:
 
         # Delete object and commit
         self._session.delete(
-            self._session.get(EventRegistrationEntity, event_registration.id)
+            self._session.get(
+                EventRegistrationEntity,
+                (event_registration.event.id, event_registration.user.id),
+            )
         )
         self._session.commit()
 

@@ -60,7 +60,7 @@ updated_event = Event(
 )
 
 registration = NewEventRegistration(
-    id=1, event_id=event_one.id | 0, user_id=ambassador.id | 0
+    event_id=event_one.id | 0, user_id=ambassador.id | 0
 )
 
 # Data Functions

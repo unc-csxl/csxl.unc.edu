@@ -142,7 +142,6 @@ def test_register_for_event_as_user_twice(event_svc_integration: EventService):
     assert created_registration_1 is not None
     created_registration_2 = event_svc_integration.register(user, user, event_details)  # type: ignore
     assert created_registration_2 is not None
-    assert created_registration_1.id == created_registration_2.id
 
 
 def test_register_for_event_enforces_permission(event_svc_integration: EventService):
@@ -164,7 +163,6 @@ def test_get_registration(event_svc_integration: EventService):
         ambassador, ambassador, event_details
     )
     assert event_registration is not None
-    assert event_registration.id is registration.id
 
 
 def test_get_registration_that_does_not_exist(event_svc_integration: EventService):

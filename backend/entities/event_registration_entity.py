@@ -27,18 +27,17 @@ class EventRegistrationEntity(EntityBase):
     # Name for the events table in the PostgreSQL database
     __tablename__ = "event_registration"
 
-    # Unique ID for the event registration
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-
     # Event for the current event registration
     # NOTE: This is ultimately a join table for a many-to-many relationship
-    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), primary_key=True)
     event: Mapped["EventEntity"] = relationship(back_populates="registrations")
 
     # User for the current event registration
     # NOTE: This is ultimately a join table for a many-to-many relationship
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
     user: Mapped["UserEntity"] = relationship()
+
+    organizer: Mapped[bool] = mapped_column(Boolean, default=False)
 
     @classmethod
     def from_model(cls, model: EventRegistration) -> Self:
@@ -51,7 +50,6 @@ class EventRegistrationEntity(EntityBase):
             EventRegistrationEntity: Entity created from model
         """
         return cls(
-            id=model.id,
             event_id=model.event_id,
             user_id=model.user_id,
             event=model.event,
@@ -78,7 +76,6 @@ class EventRegistrationEntity(EntityBase):
             EventRegistration: `EventRegistration` object from the entity
         """
         return EventRegistration(
-            id=self.id,
             event_id=self.event_id,
             user_id=self.user_id,
             event=self.event.to_model(),

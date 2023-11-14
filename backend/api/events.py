@@ -234,6 +234,26 @@ def get_registration_status(
         return event_registration
 
 
+@api.get("/{event_id}/registrations", tags=["Events"])
+def get_event_registrations_status(
+    event_id: int,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+) -> Sequence[EventRegistration]:
+    """
+    Get the registrations of an event.
+
+    Args:
+        event_id: the int identifier of an Event
+        subject: the logged in user making the request
+        event_service: the backing service
+
+    Returns:
+        Sequence[EventRegistration]
+    """
+    return event_service.get_registrations(subject, event_service.get_by_id(event_id))
+
+
 @api.delete("/{event_id}/registration", tags=["Events"])
 def unregister_for_event(
     event_id: int,
