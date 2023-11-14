@@ -1,12 +1,100 @@
 # Database Relationships
 
-It is important to remember that data in your application does not exist in isolation. Many pieces of data are _related_ to each other!
+It is important to remember that data in your application does not exist in isolation. Data in one table of your database may need to point to other data in other tables.
 
-Let's take the following example. Say that every UNC Computer Science organization, modeled by `Organization`, has one President that is unique to it (and for the sake of argument, assume that a person can only be President of one club at a time). Imagine that we were to model this President using `User`. Say that a user **Larry** is the president of a club called the **FORTRAN Development Club**.
+Let's take the following example. Say that every UNC Computer Science organization is stored in a SQL table defined by the `OrganizationEntity`. Assume that you have just received a ticket asking you to keep track of each organization's President in your database. This data will eventually be used to display the name of organizations' Presidents on each organization detail page.
 
-Imagine how we may begin to represent this in our database tables. We are now looking to utilize the most powerful feature of _relational databases_ like PostgreSQL - support for relationships between tables.
+You have been told that, for the purposes of this ticket, you are to assume that each Organization has a single President unique to it, and that a user can be a President of at most one club. 
 
-First, let's examine the three different types of relationships:
+Given this information, you assume that you need to work with two of your tables in the PostgreSQL database - the `organization` and `user` tables. You also know that these tables are defined by the `OrganizationEntity` and `UserEntity` entities respectively. These two entities are separate, so how would be make this connection? We are now looking to utilize the most powerful feature of _relational databases_ like PostgreSQL - support for _relationships_ between tables.
+
+***Database relationships*** define the connections between tables in a database and allow for tables to reference other tables. In this case, we want organizations found in the `organizations` table to be able to *refer to / point to* users in the `user` table - specifically, the user that is its President.
+
+## Types of Database Relationships
+
+There are three main types of database relationships: *one-to-one*, *one-to-many*, and *many-to-many* relationships.
+
+| Relationship | Description | Example                                                                                           |
+| -----------  | --------- | --------------------------------------------------------------------------------------------------- |
+| One to One   | Each item in one table points to at most one item in another table, and vice-versa. | We can represent organizations and their Presidents using a one-to-one relationship. Each organization has only one President, and each user can be the President of at most one club. |
+| One to Many  | Each item in one table points to many items in another table, but items in the other table can point to at most one item in the original table.     | We can represent organizations and events they host using a one-to-many relationship. Each organization can host numerous events, but each event is hosted primarily by one organization. |
+| Many to Many | Each item in one table can point to many items in another table, and vice-versa.    | We can event event registrations as a many-to-many relationship. Each event can have many registered users, and users can also register for many events at once. |
+
+As you can see based on the descriptions of the different types of relationships, our User and President example is best realized using a one-to-one relationship. It is extremely important to carefully think through the feature you are trying to add and which type of relationship you will need to successfully model your data. Depending on the relationship you want to establish, you will need to modify your SQLAlchemy entities differently.
+
+Below, I am going to discuss each example in the "Example" column in the table and how you would need to modify your entities to include all three types of relationships.
+
+## Implementing a One-to-One Relationship
+
+### Background
+
+The example from the beginning, where we are attempting to relate the `organization` and `user` tables together to store the President of each organization, is a textbook example of a one-to-one relationship.
+
+Below is a good representation of some of the important fields of `organization` and `user` tables, defined in the `OrganizationEntity` and `UserEntity` classes respectively:
+
+----
+**`OrganizationEntity` Fields (columns in the `organization` table)**
+
+| PK? | Column Name | Data Type | Description                                                                                         |
+| --- | ----------- | --------- | --------------------------------------------------------------------------------------------------- |
+| `*`  | id          | `int`     | Unique identifier (primary key) for each organization.                                              |
+|     | name        | `str`     | Name of the organization.                                                                           |
+|     | ...         | *various*     | *Many more specific organization fields are hidden here.*                                       |
+
+----
+**`UserEntity` Fields (columns in the `user` table)**
+
+| PK? | Column Name | Data Type | Description                                                                                         |
+| --- | ----------- | --------- | --------------------------------------------------------------------------------------------------- |
+| `*` | pid          | `int`     | Unique identifier (primary key) for each user, assigned by the university.                         |
+|     | name        | `str`     | Name of the user.                                                                           |
+|     | ...         | *various*     | *Many more specific user fields are hidden here.*                                       |
+----
+
+> **IMPORTANT!** Recall the role of the *primary key*. Primary keys serve as the *unique identifier* for an item / record / row in your SQL table. Each key is unique, and you can easily refer to rows by this unique identifier. In the table above, the `*` denotes that a field serves as the table's primary key column.
+
+Now that you have refreshed your memory on primary keys, let's get introduced to the *foreign key*.
+
+### Foreign Keys
+
+A ***foreign key*** in a database is a field that refers to the primary key *of another table*, allowing you to reference records in a different table based on their unique ID. Foreign keys enable us to establish a link between two tables based on the values in these fields.
+
+For example, let's say that we wanted to add a field in our `organization` table that holds the *PID of the organization's President*. This would essentially link the `organization` and `user` tables and allow us to easily find the President of an organization by looking up this stored PID in the `user` table. We can add to the `OrganizationEntity` like so:
+
+**`OrganizationEntity` Fields (columns in the `organization` table)**
+
+| Key? | Column Name | Data Type | Description                                                                                         |
+| --- | ----------- | --------- | --------------------------------------------------------------------------------------------------- |
+| `*`  | id          | `int`     | Unique identifier (primary key) for each organization.                                              |
+|     | name        | `str`     | Name of the organization.                                                                           |
+|     | ...         | *various*     | *Many more specific organization fields are hidden here.*                                       |
+| `<-` | president_pid  | *int*     | The PID of this organization's President.                                       |
+
+> **NOTE:** Like how we used `*` to denote a **primary key** in a table, we will use `<-` to denote a **foreign key**.
+
+Foreign keys are the **building block** for database relationships and tell SQL that a relationship exists between two tables.
+
+How would we add this field to our `OrganizationEntity`?
+
+### Modifying the Entity
+
+We would imagine what our entity looks like before we attempt to add and relationships:
+
+---
+**In `entities/organization_entity.py`**
+
+```py
+class OrganizationEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Organization` table"""
+
+    # Name for the organizations table in the PostgreSQL database
+    __tablename__ = "organization"
+
+    # Fields
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+```
+---
 
 ## One-to-One Relationship
 
