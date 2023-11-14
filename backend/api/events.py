@@ -4,6 +4,7 @@ Event routes are used to create, retrieve, and update Events."""
 
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, timedelta
+from typing import Sequence
 
 from ..services.event import EventService
 from ..services.user import UserService
@@ -82,14 +83,30 @@ def new_event(
 
 @api.get("/registrations", tags=["Events"])
 def get_registrations_of_user(
-    user_id: int = -1,
     subject: User = Depends(registered_user),
+    user_id: int = -1,
     start: datetime | None = None,
     end: datetime | None = None,
     event_svc: EventService = Depends(),
     user_svc: UserService = Depends(),
-):
-    print("HERE")
+) -> Sequence[EventRegistration]:
+    """
+    Get a user's event registrations.
+
+    Args:
+        subject (User) the registered User making the request
+        user_id (int) optional parameter for reading another user's registrations
+        start (datetime) optional parameter for specifying start time range of search. Defaults to now.
+        end (datetime) optional parameter for specifying end time range of search. Defaults to a year from now.
+        event_svc (EventService)
+        user_svc (UserService)
+
+    Returns:
+        Sequence[EventRegistration]
+
+    Raises:
+        UserPermissionException if subject is requesting another user's event registrations but does not have permission.
+    """
     user: User
     if user_id == -1:
         user = subject
