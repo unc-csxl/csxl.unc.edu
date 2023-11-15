@@ -300,15 +300,15 @@ class EventRegistrationEntity(EntityBase):
     
     # Two foreign key fields, as shown in the table above, to connect the
     # event and user tables together.
-    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
-    user_pid: Mapped[int] = mapped_column(ForeignKey("user.pid"))
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), primary_key=True)
+    user_pid: Mapped[int] = mapped_column(ForeignKey("user.pid"), primary_key=True)
 
     # TODO: Relationship Fields
 
 ```
 ---
 
-You can see that this entity has *two foreign key fields* one to the `event` table and one to the `user` table! Now, these tables are connected. The only thing left to do is to add the relationship fields.
+You can see that this entity has *two foreign key fields* one to the `event` table and one to the `user` table! Now, these tables are connected. The only thing left to do is to add the relationship fields. We also make these our primary key fields too, since these two fields together uniquely identify each registration.
 
 In this case, we could see the creation of the following relationship fields:
 
