@@ -396,4 +396,195 @@ registered_users = event_entity.users
 
 This is the ideal way that most many-to-many relationships are constructed, and the convention you should use in your final projects!
 
-## Resolving Model Circularity
+## Updating the Models
+
+### Background
+
+Great! Now that you have updated your entities to support relationships, we must now update our models to reflect our changes.
+
+Let's use the *one-to-many* organization to events relationship we completed in a previous section. Recall the finalized entities:
+
+---
+**In `entities/event-entity.py`**
+```py
+class EventEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Event` table"""
+
+    # Name for the events table in the PostgreSQL database
+    __tablename__ = "event"
+
+    # Fields
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+    # Establishes a one-to-one relationship between the event and user tables.
+    organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
+
+    # Relationship Fields
+    
+    # Stores the hosting organization, populated automatically by SQLAlchemy
+    # using the foreign key column we defined above.
+    organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
+```
+---
+**In `entities/organization-entity.py`**
+```py
+class OrganizationEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Organization` table"""
+
+    # Name for the organizations table in the PostgreSQL database
+    __tablename__ = "organization"
+
+    # Fields
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    # Relationship Fields
+    
+    # Stores the events this org hosts, populated automatically by SQLAlchemy
+    # using the foreign key column we defined above.
+    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization")
+```
+---
+
+We should then be able to update our models:
+
+---
+**In `models/event.py`**
+```py
+from pydantic import BaseModel
+from .organization import Organization
+
+class Event(BaseModel):
+    """
+    Pydantic model to represent an `Event`.
+
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database
+    """
+
+    id: int | None = None
+    name: str
+    organization_id: int
+    organization: Organization
+```
+---
+**In `models/organization.py`**
+```py
+from pydantic import BaseModel
+from .event import Event
+
+class Organization(BaseModel):
+    """
+    Pydantic model to represent an `Organization`.
+
+    This model is based on the `OrganizationEntity` model, which defines the shape
+    of the `Organization` database in the PostgreSQL database.
+    """
+
+    id: int | None = None
+    name: str
+    events: list[Event]
+```
+---
+
+Yay 🥳! That was easy, let's run out proj--
+
+```
+ImportError: cannot import name 'Event' from partially initialized module 'backend.models.event' (most likely due to a circular import)
+```
+
+NOOOoooo...
+
+Receiving this error is heartbreaking, however it is quite a common problem - especially based on the way we have set up our models.
+
+Understanding why this error occurs relies on having an understanding of *how* Python interprets code files. Every time Python reaches an import statement, it *reads through that file to its entirety*. So, given our model files, this is the result:
+
+
+Uh oh.. We ran into an infinite loop. Very sad.
+
+### Resolving Model Circularity
+
+We can come up with a clever way to solve this problem - *separating our fields from our entity relationship fields into a separate model*. In this project, we call these **Detail models**.
+
+Look at the following setup:
+
+---
+**In `models/event.py`**
+```py
+from pydantic import BaseModel
+
+class Event(BaseModel):
+    """
+    Pydantic model to represent an `Event`.
+
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database
+    """
+
+    id: int | None = None
+    name: str
+    organization_id: int
+```
+---
+**In `models/event_details.py`**
+```py
+from .organization import Organization
+
+class EventDetails(Event):
+    """
+    Pydantic model to represent an `Event`, including back-populated
+    relationship fields.
+
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database.
+    """
+    organization: Organization
+```
+---
+**In `models/organization.py`**
+```py
+from pydantic import BaseModel
+
+class Organization(BaseModel):
+    """
+    Pydantic model to represent an `Organization`.
+
+    This model is based on the `OrganizationEntity` model, which defines the shape
+    of the `Organization` database in the PostgreSQL database.
+    """
+
+    id: int | None = None
+    name: str
+```
+---
+**In `models/organization_details.py`**
+```py
+from .event import Event
+
+class OrganizationDetails(Organization):
+    """
+    Pydantic model to represent an `Organization`, including back-populated
+    relationship fields.
+
+    This model is based on the `OrganizationEntity` model, which defines the shape
+    of the `Organization` database in the PostgreSQL database.
+    """
+
+    events: list[Event]
+```
+---
+
+Notice that all of our detail fields ***inherit their other properties*** from the main non-detail model! This means that detail models are essentially extensions that contain the relationship fields.
+
+Now, let's look at how Python follows this code:
+
+As you can see, there is no longer circularity! There is a clear linear path from start to end.
+
+Of course, adding details models does add a bit of complexity to your code, as you have to deal with two different models for the same data. However, this is the best way to prevent major migraine-inducing circularity issues throughout your codebase.
+
+## Conclusion
+
+I hope that this reading helps you gain an understanding of modeling relationships between your database tables for your final projects! Here are some further readings that may be of help:
+
+- [Official SQLAlchemy Documentation on Relationships](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#declarative-vs-imperative-forms)
+
