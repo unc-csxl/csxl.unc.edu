@@ -24,7 +24,7 @@ from ..fixtures import user_svc_integration, event_svc_integration
 from ..core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
-from .event_test_data import events, event_one, to_add, updated_event, registration
+from .event_test_data import events, event_one, to_add, updated_event, registrations
 from ..user_data import root, ambassador, user
 
 # Test Functions
@@ -188,6 +188,41 @@ def test_is_user_an_organizer_non_attendee(event_svc_integration: EventService):
     assert not event_svc_integration.is_user_an_organizer(root, event_details)
 
 
+def test_get_registrations_of_event_as_organizer(event_svc_integration: EventService):
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_registrations = event_svc_integration.get_registrations_of_event(
+        user, event_details
+    )
+    assert len(event_registrations) == len(registrations)
+
+
+def test_get_registrations_of_event_non_organizer(event_svc_integration: EventService):
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    with pytest.raises(UserPermissionException):
+        event_svc_integration.get_registrations_of_event(ambassador, event_details)
+
+
+def test_get_registrations_enforces_admin_auth(
+    event_svc_integration: EventService,
+):
+    """Test that root is able to delete any registrations."""
+    # Setup mock to test permission enforcement on the PermissionService.
+    event_svc_integration._permission = create_autospec(
+        event_svc_integration._permission
+    )
+
+    # Ensure delete occurs
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_svc_integration.get_registrations_of_event(ambassador, event_details)
+
+    # Ensure that the correct permission check is run
+    event_svc_integration._permission.enforce.assert_called_with(
+        ambassador,
+        "organization.events.manage",
+        f"organization/{event_one.organization_id}",
+    )
+
+
 def test_unregister_for_event_as_registerer(
     event_svc_integration: EventService,
 ):
@@ -204,7 +239,20 @@ def test_unregister_for_event_as_registerer(
     )
 
 
-def test_delete_registration_for_event_as_wrong_user(
+def test_unregister_for_event_as_registerer_is_idempotent(
+    event_svc_integration: EventService,
+):
+    """Test that a user is able to unregister for an event."""
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_svc_integration.unregister(ambassador, ambassador, event_details)
+    event_svc_integration.unregister(ambassador, ambassador, event_details)
+    assert (
+        event_svc_integration.get_registration(ambassador, ambassador, event_details)
+        is None
+    )
+
+
+def test_unregister_for_event_as_wrong_user(
     event_svc_integration: EventService,
 ):
     """Test that any user is *unable* to delete a registration that is not for them."""
@@ -213,7 +261,7 @@ def test_delete_registration_for_event_as_wrong_user(
         event_svc_integration.unregister(user, ambassador, event_details)
 
 
-def test_delete_registration_for_event_as_root(
+def test_unregister_for_event_enforces_admin_auth(
     event_svc_integration: EventService,
 ):
     """Test that root is able to delete any registrations."""

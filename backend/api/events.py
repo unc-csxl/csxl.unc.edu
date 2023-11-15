@@ -251,7 +251,9 @@ def get_event_registrations_status(
     Returns:
         Sequence[EventRegistration]
     """
-    return event_service.get_registrations(subject, event_service.get_by_id(event_id))
+    return event_service.get_registrations_of_event(
+        subject, event_service.get_by_id(event_id)
+    )
 
 
 @api.delete("/{event_id}/registration", tags=["Events"])

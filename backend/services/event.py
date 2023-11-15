@@ -275,9 +275,26 @@ class EventService:
         registration = self.get_registration(user, user, event)
         return registration.is_organizer if registration else False
 
-    def get_registrations(
+    def get_registrations_of_event(
         self, subject: User, event: EventDetails
     ) -> list[EventRegistration]:
+        """
+        List the registrations of an event.
+
+        This API endpoint currently requires the subject to be registered as the
+        organizer of an event or have administrative permission of action
+        "organization.events.manage" for "organization/{organization id}".
+
+        Args:
+            subject: The authenticated user making the request.
+            event: The event whose registrations are being queried.
+
+        Returns:
+            list[EventRegistration]
+
+        Raises:
+            UserPermissionException if user is not an event organizer or admin.
+        """
         if not self.is_user_an_organizer(subject, event):
             self._permission.enforce(
                 subject,
