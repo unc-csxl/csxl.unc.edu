@@ -78,7 +78,7 @@ How would we add this field to our `OrganizationEntity`?
 
 ### Modifying the Entity
 
-We would imagine what our entity looks like before we attempt to add and relationships:
+We would imagine what our entity looks like before we attempt to add any relationships:
 
 ---
 **In `entities/organization_entity.py`**
@@ -96,27 +96,97 @@ class OrganizationEntity(EntityBase):
 ```
 ---
 
-## One-to-One Relationship
+So far, we have used the `mapped_column()` object to define fields in our table. How do we generate columns that contain *foreign keys?*
 
-A **one-to-one relationship** is simply that one entry in one table can be related to at most one entry in another table - and the entry in the other table can only be related to one entry in the original table.
+We can pass a `ForeignKey()` object into our column! Look at the following field to store the President's PID:
 
-The example above with **Larry** and the **FORTRAN Development Club** is a textbook example of a one-to-one relationship. FORTRAN Development Club has only one President, Larry - and Larry is the President of only one club, the FORTAN Development Club. _There can only be one President for a club, and one user can only be the President of at most one club._
+```py
+# Establishes a one-to-one relationship between the organization and user tables.
+president_pid: Mapped[int] = mapped_column(ForeignKey("user.pid"))
+```
 
-We can model this using the diagram below:
+The parameter for the `ForeignKey()` object follows the format `table.field`. So in this case, since this column is a foreign key for the `pid` column of the `user` table, we pass `"user.pid"` as the parameter.
 
-![One-to-one relationship diagram]()
+This is all we need to establish a relationship!
 
-Using the `Organization` and `User` example above, we may expect the models to have the following fields:
+However, this is not all. How would be actually *access* the President `UserEntity` object for a given organization? Would we need to make another read in the database?
 
-`Organization`
+No! SQLAlchemy can actually take care of this in something called **relationship fields**. These are fields in the Entity that *DO NOT EXIST IN THE TABLE AS COLUMNS*, however its values are automatically populated by SQLAlchemy when reading data. This allows our entities to be populated with data from relationships.
 
-- ...
-- `president: User`: The President of the club
+We can use the `relationship()` object to define relationship fields! Take the example below for storing the user data of an organization's President:
 
-`User`
+```py
+# Relationship Fields
 
-- ...
-- `president_for: Organization?`: The club the user is President of
+# Stores the user data of the President, populated automatically by SQLAlchemy
+# using the foreign key column we defined above.
+president: Mapped["UserEntity"] = relationship(back_populates="president_for")
+```
+
+SQLAlchemy is smart enough to know to populate `president` with the `UserEntity` object with the *same PID* as the the value stored in the `president_pid` field.
+
+We can also implement a relationship field in the `UserEntity` as well! We can do this to store which organization a user is president for. This can be done with the following:
+
+```py
+# Relationship Fields
+
+# Stores the user data of the Organization this user is President for, populated
+# automatically by SQLAlchemy using the foreign key column we defined above.
+president_for: Mapped["OrganizationEntity"] = relationship(back_populates="president")
+```
+
+You may also notice the `back_populates="president_for"` and `back_populates="president"` as the respective parameters for both `relationship` objects. This is extremely important! Since there is a relationship between the `president` and `president_for` fields, the `back_populates` field *points to the relationship field in the other table*. This aids SQLAlchemy in filling in the correct values for these fields.
+
+In total, here are both completed entities:
+
+---
+**In `entities/organization_entity.py`**
+
+```py
+class OrganizationEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Organization` table"""
+
+    # Name for the organizations table in the PostgreSQL database
+    __tablename__ = "organization"
+
+    # Fields
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+    # Establishes a one-to-one relationship between the organization and user tables.
+    president_pid: Mapped[int] = mapped_column(ForeignKey("user.pid"))
+
+    # Relationship Fields
+    
+    # Stores the user data of the President, populated automatically by SQLAlchemy
+    # using the foreign key column we defined above.
+    president: Mapped["UserEntity"] = relationship(back_populates="president_for")
+```
+---
+**In `entities/user_entity.py`**
+
+```py
+class UserEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `User` table"""
+
+    # Name for the users table in the PostgreSQL database
+    __tablename__ = "user"
+
+    # Fields
+    pid: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    # Relationship Fields
+    
+    # Stores the user data of the Organization this user is President for, populated
+    # automatically by SQLAlchemy using the foreign key column we defined above.
+    president_for: Mapped["OrganizationEntity"] = relationship(back_populates="president")
+```
+---
+
+We can model the final relationship we established in the following diagram:
+
+![One-to-One Diagram]()
+
 
 ## One-to-Many Relationship
 
