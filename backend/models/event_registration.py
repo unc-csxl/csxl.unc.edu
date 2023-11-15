@@ -17,9 +17,9 @@ class NewEventRegistration(BaseModel):
     This model is needed for the creation of new registrations in the event service
     """
 
-    id: int | None = None
     event_id: int
     user_id: int
+    is_organizer: bool = False
 
 
 class EventRegistration(NewEventRegistration):
@@ -32,3 +32,4 @@ class EventRegistration(NewEventRegistration):
 
     event: Event | None
     user: User | None
+    is_organizer: bool = False

@@ -261,6 +261,55 @@ class EventService:
         else:
             return None
 
+    def is_user_an_organizer(self, user: User, event: EventDetails) -> bool:
+        """
+        Test whether a user is an organizer of an event.
+
+        Args:
+            user: The user to check on event organizer status of.
+            event: The event in question.
+
+        Returns:
+            bool True if user is an organizer, False otherwise.
+        """
+        registration = self.get_registration(user, user, event)
+        return registration.is_organizer if registration else False
+
+    def get_registrations_of_event(
+        self, subject: User, event: EventDetails
+    ) -> list[EventRegistration]:
+        """
+        List the registrations of an event.
+
+        This API endpoint currently requires the subject to be registered as the
+        organizer of an event or have administrative permission of action
+        "organization.events.manage" for "organization/{organization id}".
+
+        Args:
+            subject: The authenticated user making the request.
+            event: The event whose registrations are being queried.
+
+        Returns:
+            list[EventRegistration]
+
+        Raises:
+            UserPermissionException if user is not an event organizer or admin.
+        """
+        if not self.is_user_an_organizer(subject, event):
+            self._permission.enforce(
+                subject,
+                "organization.events.manage",
+                f"organization/{event.organization.id}",
+            )
+
+        event_registration_entities = (
+            self._session.query(EventRegistrationEntity)
+            .where(EventRegistrationEntity.event_id == event.id)
+            .all()
+        )
+
+        return [entity.to_model() for entity in event_registration_entities]
+
     def register(
         self, subject: User, attendee: User, event: EventDetails
     ) -> EventRegistration:
@@ -319,7 +368,10 @@ class EventService:
 
         # Delete object and commit
         self._session.delete(
-            self._session.get(EventRegistrationEntity, event_registration.id)
+            self._session.get(
+                EventRegistrationEntity,
+                (event_registration.event.id, event_registration.user.id),
+            )
         )
         self._session.commit()
 
