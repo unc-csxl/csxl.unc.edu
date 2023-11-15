@@ -184,33 +184,73 @@ class UserEntity(EntityBase):
 ---
 
 We can model the final relationship we established in the following diagram:
-
+ 
 ![One-to-One Diagram]()
 
+This is extremely powerful! Take the original ticket from the introduction.  The ticket asked you to keep track of each organization's President in your database, eventually to be used to display the name of organizations' Presidents on each organization detail page. Now, with our new arrangement, we can easily access this data with `organization_entity.president.name`.
 
-## One-to-Many Relationship
+## Implementing a One-to-Many Relationship
 
-In contrast, a **one-to-many relationship** is slightly different. In this type of relationship, an item in one table may be related to many items in the other table, but items in the other table can only be related to one element in the original table.
+### Background
 
-Take the following example. Imagine we have an entity called `Event` that stored information about events hosted by CS organizations. In this example, an `Organization` (like CS+SG, for example) can host many organizations - even as many as one a week - however, each event _only has one hosting organization_.
+Setting up a one-to-many relationship in our entities is nearly identical to setting up one-to-one relationships with one change. Instead of one of our relationship fields holding just one value, we want it to store a list of values.
+
+Let's take the following example. In the CSXL database, we have the `organization` table which stores information on organizations, and the `event` table that stores the events hosted in the CS community. We want to establish a relationship in our database such that we can relate events to the organizations that host them. We can easily determine that this relationship will be a *one-to-many* relationship because each organization can host numerous events, but each event is hosted primarily by one organization.
+
+### Modifying the Entity
+
+We can model this relationship in our entities like so:
+
+---
+**In `entities/event_entity.py`**
+```py
+class EventEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Event` table"""
+
+    # Name for the events table in the PostgreSQL database
+    __tablename__ = "event"
+
+    # Fields
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+    # Establishes a one-to-one relationship between the event and user tables.
+    organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
+
+    # Relationship Fields
+    
+    # Stores the hosting organization, populated automatically by SQLAlchemy
+    # using the foreign key column we defined above.
+    organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
+```
+---
+**In `entities/organization_entity.py`**
+```py
+class OrganizationEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `Organization` table"""
+
+    # Name for the organizations table in the PostgreSQL database
+    __tablename__ = "organization"
+
+    # Fields
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    # Relationship Fields
+    
+    # Stores the events this org hosts, populated automatically by SQLAlchemy
+    # using the foreign key column we defined above.
+    events: Mapped[list["EventEntity"]] = relationship(back_populates="organization")
+```
+---
+
+Notice that the *only difference* is that the `OrganizationEntity` stores a ***LIST*** of `EventEntity` objects because there are numerous events for one organization!
+
+*In a one-to-many relationship, **we put the foreign key in the entity on the "many" side of the one-to-many relationship. Since there are many entities for one organization, we put the ID on the many side.*** We cannot put a foreign key column in `OrganizationEntity` because we would then need to store a list of IDs, which we cannot to in PostgreSQL.
 
 We can model this using the diagram below:
 
 ![One-to-many relationship diagram]()
 
-Using the `Organization` and `Event` example above, we may expect the models to have the following fields:
-
-`Organization`
-
-- ...
-- `events: list[Event]`: All of the events hosted by the organization
-
-`Event`
-
-- ...
-- `organization: Organization`: Organization hosting this event
-
-As you can see, unlike the _one-to-one relationship_, one of these fields would be a **_list_**! This is because an `Organization` can be related to _many_ `Event`s, but an `Event` can only be related to one `Organization`.
 
 ## Many-to-Many Relationship
 
