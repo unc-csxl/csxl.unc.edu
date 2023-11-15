@@ -1,5 +1,8 @@
 # Database Relationships
 
+> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>
+> *Last Updated: 11/14/2023*
+
 It is important to remember that data in your application does not exist in isolation. Data in one table of your database may need to point to other data in other tables.
 
 Let's take the following example. Say that every UNC Computer Science organization is stored in a SQL table defined by the `OrganizationEntity`. Assume that you have just received a ticket asking you to keep track of each organization's President in your database. This data will eventually be used to display the name of organizations' Presidents on each organization detail page.
@@ -185,7 +188,7 @@ class UserEntity(EntityBase):
 
 We can model the final relationship we established in the following diagram:
  
-![One-to-One Diagram]()
+![One-to-One Diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/one-to-one.png)
 
 This is extremely powerful! Take the original ticket from the introduction.  The ticket asked you to keep track of each organization's President in your database, eventually to be used to display the name of organizations' Presidents on each organization detail page. Now, with our new arrangement, we can easily access this data with `organization_entity.president.name`.
 
@@ -249,7 +252,7 @@ Notice that the *only difference* is that the `OrganizationEntity` stores a ***L
 
 We can model this using the diagram below:
 
-![One-to-many relationship diagram]()
+![One-to-many relationship diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/one-to-many.png)
 
 ## Implementing a Many-to-Many Relationship
 
@@ -269,7 +272,7 @@ An **association table** is a table that matches together the IDs from two diffe
 
 Take a look at the diagram below:
 
-![Association table diagram]()
+![Association table diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/association.png)
 
 In the diagram above, you can see that the association table matches together items from the *left* table and items from the *right* table. Ultimately, this establishes a many-to-many relationship because, for example, `LeftEntity(id=1)` maps to two items in the `right` table, one of which being `RightEntity(id=2)`; meanwhile, `RightEntity(id=2)` maps to two items in the `left` table, one of which being `LeftEntity(id=1)`.
 
@@ -338,7 +341,7 @@ class UserEntity(EntityBase):
 
 This is great! We now have indirectly connected all of the events and users together via lists of `EventRegistrationEntity` objects. Let's take a look at this relationship in a simplified diagram:
 
-![many-to-many-one]()
+![many-to-many-one](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/many_one.png)
 
 As you can see in the diagram, we have set up a many-to-many relationship by essentially setting up two one-to-many relationships between the `event` and `user` tables with the `event-registration` table. This adequately connects our data. For example, if you wanted to access all of the registered users for an event, you could run the following pseudocode:
 
@@ -387,7 +390,7 @@ class UserEntity(EntityBase):
 
 We add two new fields: `users` in the `EventEntity` which stores a list of registered users, and `events` in `UserEntity` which stores a list of events the user is registered for. Notice the use of `secondary="event-registration"`! This parameter takes in the *name of an association table*, and SQLAlchemy does the rest - intelligently populating both lists (matching the fields together with their `back_populates` being set to each other). We can take a look at the new diagram:
 
-![many-to-many-two]()
+![many-to-many-two](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/many_two.png)
 
 Now, if you wanted to see the registered users for an event, it is easier than ever:
 ```py
@@ -499,6 +502,7 @@ Receiving this error is heartbreaking, however it is quite a common problem - es
 
 Understanding why this error occurs relies on having an understanding of *how* Python interprets code files. Every time Python reaches an import statement, it *reads through that file to its entirety*. So, given our model files, this is the result:
 
+![circularity](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/circularity.png)
 
 Uh oh.. We ran into an infinite loop. Very sad.
 
@@ -577,6 +581,8 @@ class OrganizationDetails(Organization):
 Notice that all of our detail fields ***inherit their other properties*** from the main non-detail model! This means that detail models are essentially extensions that contain the relationship fields.
 
 Now, let's look at how Python follows this code:
+
+![no circularity](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/no_circularity.png)
 
 As you can see, there is no longer circularity! There is a clear linear path from start to end.
 
