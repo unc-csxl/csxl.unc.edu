@@ -251,10 +251,34 @@ We can model this using the diagram below:
 
 ![One-to-many relationship diagram]()
 
+## Implementing a Many-to-Many Relationship
 
-## Many-to-Many Relationship
+### Background
 
-The last type of relationship that we have is a **many-to-many** relationship. In this type of relationship, an item in one table may be related to many items in the other table, and items in the other table can be related to many items in the original table!
+The last type of relationship that we can establish is the many-to-many relationship. This type of relationship is more involved to set up than the other two types of relationships. 
+
+The main reason has to do with the fact that, in the previous types of relationships, we create a *foreign key* field in one of the entities that maps directly to a record in a different table! Also recall that we put this foreign key field in the entity on the "many" side of the one-to-one or one-to-many relationship, since then we only need to refer to one other item. This is important because in PostgreSQL, we cannot store a list of foreign keys as a field - only a single item.
+
+The problem is, in a many-to-many relationship, *both sides* refer to many items - meaning that there is no adequate place to put the foreign key field. Because of this, we cannot directly establish a many-to-many relationship between two entities on their own.
+
+Instead, we need a method by which we can *match together* the IDs from the left table and the IDs from the right table. We can do this by creating an **association table**.
+
+### Association Tables
+
+An **association table** is a table that matches together the IDs from two different tables, serving as a bridge to connect items from one table to items in another. Each record in an *association table* is defines an explicit relationship between two records.
+
+Take a look at the diagram below:
+
+![Association table diagram]()
+
+In the diagram above, you can see that the association table matches together items from the *left* table and items from the *right* table. Ultimately, this establishes a many-to-many relationship because, for example, `LeftEntity(id=1)` maps to two items in the `right` table, one of which being `RightEntity(id=2)`; meanwhile, `RightEntity(id=2)` maps to two items in the `left` table, one of which being `LeftEntity(id=1)`.
+
+Also notice that the ***association table** is where our foreign key columns are now placed!** So, we establish a relationship between the tables in our PostgreSQL database.
+
+Remember that entities define tables in our database. So, in order to actually create an association table though, **we must add another entity**.
+
+### Creating the Association Table Entity
+
 
 
 ## Resolving Model Circularity
