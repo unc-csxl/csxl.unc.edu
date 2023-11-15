@@ -188,7 +188,7 @@ class UserEntity(EntityBase):
 
 We can model the final relationship we established in the following diagram:
  
-![One-to-One Diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/one-to-one.png)
+![One-to-One Diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/relationships/docs/images/sqlalchemy/one-to-one.png)
 
 This is extremely powerful! Take the original ticket from the introduction.  The ticket asked you to keep track of each organization's President in your database, eventually to be used to display the name of organizations' Presidents on each organization detail page. Now, with our new arrangement, we can easily access this data with `organization_entity.president.name`.
 
@@ -252,7 +252,7 @@ Notice that the *only difference* is that the `OrganizationEntity` stores a ***L
 
 We can model this using the diagram below:
 
-![One-to-many relationship diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/one-to-many.png)
+![One-to-many relationship diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/relationships/docs/images/sqlalchemy/one-to-many.png)
 
 ## Implementing a Many-to-Many Relationship
 
