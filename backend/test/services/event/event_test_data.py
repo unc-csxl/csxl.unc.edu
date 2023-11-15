@@ -60,8 +60,14 @@ updated_event = Event(
 )
 
 registration = NewEventRegistration(
-    event_id=event_one.id | 0, user_id=ambassador.id | 0
+    event_id=event_one.id | 0, user_id=ambassador.id | 0, is_organizer=False
 )
+
+organizer_registration = NewEventRegistration(
+    event_id=event_one.id | 0, user_id=user.id | 0, is_organizer=True
+)
+
+registrations = [registration, organizer_registration]
 
 # Data Functions
 
@@ -77,8 +83,11 @@ def insert_fake_data(session: Session):
         event_entity = EventEntity.from_model(event)
         session.add(event_entity)
         entities.append(event_entity)
-    registration_entity = EventRegistrationEntity.from_new_model(registration)
-    session.add(registration_entity)
+
+    for registration in registrations:
+        registration_entity = EventRegistrationEntity.from_new_model(registration)
+        session.add(registration_entity)
+
     # Reset table IDs to prevent ID conflicts
     reset_table_id_seq(session, EventEntity, EventEntity.id, len(events) + 1)
 

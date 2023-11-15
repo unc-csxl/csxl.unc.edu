@@ -37,7 +37,7 @@ class EventRegistrationEntity(EntityBase):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
     user: Mapped["UserEntity"] = relationship()
 
-    organizer: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_organizer: Mapped[bool] = mapped_column(Boolean, default=False)
 
     @classmethod
     def from_model(cls, model: EventRegistration) -> Self:
@@ -54,6 +54,7 @@ class EventRegistrationEntity(EntityBase):
             user_id=model.user_id,
             event=model.event,
             user=model.user,
+            is_organizer=model.is_organizer,
         )
 
     @classmethod
@@ -66,7 +67,11 @@ class EventRegistrationEntity(EntityBase):
         Returns:
             EventRegistrationEntity: Entity created from model
         """
-        return cls(event_id=model.event_id, user_id=model.user_id)
+        return cls(
+            event_id=model.event_id,
+            user_id=model.user_id,
+            is_organizer=model.is_organizer,
+        )
 
     def to_model(self) -> EventRegistration:
         """
@@ -78,6 +83,7 @@ class EventRegistrationEntity(EntityBase):
         return EventRegistration(
             event_id=self.event_id,
             user_id=self.user_id,
+            is_organizer=self.is_organizer,
             event=self.event.to_model(),
             user=self.user.to_model(),
         )

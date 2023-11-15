@@ -168,9 +168,24 @@ def test_get_registration(event_svc_integration: EventService):
 def test_get_registration_that_does_not_exist(event_svc_integration: EventService):
     event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
     event_registration = event_svc_integration.get_registration(
-        user, user, event_details
+        root, root, event_details
     )
     assert event_registration is None
+
+
+def test_is_user_an_organizer_organizer(event_svc_integration: EventService):
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    assert event_svc_integration.is_user_an_organizer(user, event_details)
+
+
+def test_is_user_an_organizer_attendee(event_svc_integration: EventService):
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    assert not event_svc_integration.is_user_an_organizer(ambassador, event_details)
+
+
+def test_is_user_an_organizer_non_attendee(event_svc_integration: EventService):
+    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    assert not event_svc_integration.is_user_an_organizer(root, event_details)
 
 
 def test_unregister_for_event_as_registerer(
@@ -257,7 +272,7 @@ def test_get_registrations_of_user_without_reservations(
     """Test that a user without any registrations is able to query for it."""
     time_range = TimeRange(start=event_one.time - ONE_DAY, end=event_one.time + ONE_DAY)
     registrations = event_svc_integration.get_registrations_of_user(
-        user, user, time_range
+        root, root, time_range
     )
     assert len(registrations) == 0
 

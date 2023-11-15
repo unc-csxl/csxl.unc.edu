@@ -261,16 +261,29 @@ class EventService:
         else:
             return None
 
+    def is_user_an_organizer(self, user: User, event: EventDetails) -> bool:
+        """
+        Test whether a user is an organizer of an event.
+
+        Args:
+            user: The user to check on event organizer status of.
+            event: The event in question.
+
+        Returns:
+            bool True if user is an organizer, False otherwise.
+        """
+        registration = self.get_registration(user, user, event)
+        return registration.is_organizer if registration else False
+
     def get_registrations(
         self, subject: User, event: EventDetails
     ) -> list[EventRegistration]:
-        # TODO: Check to see if subject is registered as organizer
-
-        self._permission.enforce(
-            subject,
-            "organization.events.manage",
-            f"organization/{event.organization.id}",
-        )
+        if not self.is_user_an_organizer(subject, event):
+            self._permission.enforce(
+                subject,
+                "organization.events.manage",
+                f"organization/{event.organization.id}",
+            )
 
         event_registration_entities = (
             self._session.query(EventRegistrationEntity)

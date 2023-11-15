@@ -19,6 +19,7 @@ class NewEventRegistration(BaseModel):
 
     event_id: int
     user_id: int
+    is_organizer: bool = False
 
 
 class EventRegistration(NewEventRegistration):
@@ -31,3 +32,4 @@ class EventRegistration(NewEventRegistration):
 
     event: Event | None
     user: User | None
+    is_organizer: bool = False
