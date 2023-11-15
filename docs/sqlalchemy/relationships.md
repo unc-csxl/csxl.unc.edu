@@ -23,7 +23,7 @@ There are three main types of database relationships: *one-to-one*, *one-to-many
 | One to Many  | Each item in one table points to many items in another table, but items in the other table can point to at most one item in the original table.     | We can represent organizations and events they host using a one-to-many relationship. Each organization can host numerous events, but each event is hosted primarily by one organization. |
 | Many to Many | Each item in one table can point to many items in another table, and vice-versa.    | We can event event registrations as a many-to-many relationship. Each event can have many registered users, and users can also register for many events at once. |
 
-As you can see based on the descriptions of the different types of relationships, our User and President example is best realized using a one-to-one relationship. It is extremely important to carefully think through the feature you are trying to add and which type of relationship you will need to successfully model your data. Depending on the relationship you want to establish, you will need to modify your SQLAlchemy entities differently.
+As you can see based on the descriptions of the different types of relationships, our Organization and President example is best realized using a one-to-one relationship. It is extremely important to carefully think through the feature you are trying to add and which type of relationship you will need to successfully model your data. Depending on the relationship you want to establish, you will need to modify your SQLAlchemy entities differently.
 
 Below, I am going to discuss each example in the "Example" column in the table and how you would need to modify your entities to include all three types of relationships.
 
