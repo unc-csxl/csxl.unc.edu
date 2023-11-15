@@ -1,5 +1,8 @@
 # Database Relationships
 
+> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>
+> *Last Updated: 11/14/2023*
+
 It is important to remember that data in your application does not exist in isolation. Data in one table of your database may need to point to other data in other tables.
 
 Let's take the following example. Say that every UNC Computer Science organization is stored in a SQL table defined by the `OrganizationEntity`. Assume that you have just received a ticket asking you to keep track of each organization's President in your database. This data will eventually be used to display the name of organizations' Presidents on each organization detail page.
