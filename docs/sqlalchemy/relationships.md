@@ -341,7 +341,7 @@ class UserEntity(EntityBase):
 
 This is great! We now have indirectly connected all of the events and users together via lists of `EventRegistrationEntity` objects. Let's take a look at this relationship in a simplified diagram:
 
-![many-to-many-one](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/many_one.png)
+![many-to-many-one](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/relationships/docs/images/sqlalchemy/many_one.png)
 
 As you can see in the diagram, we have set up a many-to-many relationship by essentially setting up two one-to-many relationships between the `event` and `user` tables with the `event-registration` table. This adequately connects our data. For example, if you wanted to access all of the registered users for an event, you could run the following pseudocode:
 
@@ -390,7 +390,7 @@ class UserEntity(EntityBase):
 
 We add two new fields: `users` in the `EventEntity` which stores a list of registered users, and `events` in `UserEntity` which stores a list of events the user is registered for. Notice the use of `secondary="event-registration"`! This parameter takes in the *name of an association table*, and SQLAlchemy does the rest - intelligently populating both lists (matching the fields together with their `back_populates` being set to each other). We can take a look at the new diagram:
 
-![many-to-many-two](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/many_two.png)
+![many-to-many-two](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/relationships/docs/images/sqlalchemy/many_two.png)
 
 Now, if you wanted to see the registered users for an event, it is easier than ever:
 ```py
