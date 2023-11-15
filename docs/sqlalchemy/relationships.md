@@ -490,7 +490,7 @@ class Organization(BaseModel):
 ```
 ---
 
-Yay 🥳! That was easy, let's run out proj--
+Yay 🥳! That was easy, let's run our proj--
 
 ```
 ImportError: cannot import name 'Event' from partially initialized module 'backend.models.event' (most likely due to a circular import)
