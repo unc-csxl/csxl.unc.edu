@@ -8,7 +8,7 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 # Load envirnment variables from .env file upon module start.
-dotenv.load_dotenv(verbose=True)
+dotenv.load_dotenv(f"{os.path.dirname(__file__)}/.env", verbose=True)
 
 
 def getenv(variable: str) -> str:
