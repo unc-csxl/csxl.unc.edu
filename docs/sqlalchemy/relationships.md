@@ -84,7 +84,7 @@ How would we add this field to our `OrganizationEntity`?
 We would imagine what our entity looks like before we attempt to add any relationships:
 
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 
 ```py
 class OrganizationEntity(EntityBase):
@@ -143,7 +143,7 @@ You may also notice the `back_populates="president_for"` and `back_populates="pr
 In total, here are both completed entities:
 
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 
 ```py
 class OrganizationEntity(EntityBase):
@@ -165,7 +165,7 @@ class OrganizationEntity(EntityBase):
     president: Mapped["UserEntity"] = relationship(back_populates="president_for")
 ```
 ---
-**In `entities/user-entity.py`**
+**In `entities/user_entity.py`**
 
 ```py
 class UserEntity(EntityBase):
@@ -205,7 +205,7 @@ Let's take the following example. In the CSXL database, we have the `organizatio
 We can model this relationship in our entities like so:
 
 ---
-**In `entities/event-entity.py`**
+**In `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
@@ -226,7 +226,7 @@ class EventEntity(EntityBase):
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 ```
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 ```py
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
@@ -287,7 +287,7 @@ For the sake of example, say we are trying to implement the *event registration 
 So, in order to establish a many-to-many relationship between these two tables, we must create a new *association table*. Let's call this `event-registrations` and the entity `EventRegistrationEntity`. We can create this entity below:
 
 ---
-**New File `entities/event-registration-entity.py`**
+**New File `entities/event_registration_entity.py`**
 ```py
 class EventRegistrationEntity(EntityBase):
     """Serves as the association table between the event and user table."""
@@ -313,7 +313,7 @@ You can see that this entity has *two foreign key fields* one to the `event` tab
 In this case, we could see the creation of the following relationship fields:
 
 ---
-**In File `entities/event-registration-entity.py`**
+**In File `entities/event_registration_entity.py`**
 ```py
 class EventRegistrationEntity(EntityBase):
     ...
@@ -321,14 +321,14 @@ class EventRegistrationEntity(EntityBase):
     event: Mapped["EventEntity"] = relationship(back_populates="registrations")
     user: Mapped["UserEntity"] = relationship(back_populates="registrations")
 ```
-**In File `entities/event-entity.py`**
+**In File `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     ...
     # Relationship Fields
     registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="event", cascade="all,delete")
 ```
-**In File `entities/user-entity.py`**
+**In File `entities/user_entity.py`**
 ```py
 class UserEntity(EntityBase):
     ...
@@ -362,7 +362,7 @@ We actually can also do this using relationship fields!
 Look at the following code:
 
 ---
-**In File `entities/event-registration-entity.py`**
+**In File `entities/event_registration_entity.py`**
 ```py
 class EventRegistrationEntity(EntityBase):
     ...
@@ -370,7 +370,7 @@ class EventRegistrationEntity(EntityBase):
     event: Mapped["EventEntity"] = relationship(back_populates="registrations")
     user: Mapped["UserEntity"] = relationship(back_populates="registrations")
 ```
-**In File `entities/event-entity.py`**
+**In File `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     ...
@@ -378,7 +378,7 @@ class EventEntity(EntityBase):
     registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="event", cascade="all,delete")
     users: Mapped[list["UserEntity"]] = relationship(secondary="event-registration", back_populates="events")
 ```
-**In File `entities/user-entity.py`**
+**In File `entities/user_entity.py`**
 ```py
 class UserEntity(EntityBase):
     ...
@@ -408,7 +408,7 @@ Great! Now that you have updated your entities to support relationships, we must
 Let's use the *one-to-many* organization to events relationship we completed in a previous section. Recall the finalized entities:
 
 ---
-**In `entities/event-entity.py`**
+**In `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
@@ -429,7 +429,7 @@ class EventEntity(EntityBase):
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 ```
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 ```py
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
