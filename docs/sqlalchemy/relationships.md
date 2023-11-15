@@ -81,7 +81,7 @@ How would we add this field to our `OrganizationEntity`?
 We would imagine what our entity looks like before we attempt to add any relationships:
 
 ---
-**In `entities/organization_entity.py`**
+**In `entities/organization-entity.py`**
 
 ```py
 class OrganizationEntity(EntityBase):
@@ -140,7 +140,7 @@ You may also notice the `back_populates="president_for"` and `back_populates="pr
 In total, here are both completed entities:
 
 ---
-**In `entities/organization_entity.py`**
+**In `entities/organization-entity.py`**
 
 ```py
 class OrganizationEntity(EntityBase):
@@ -162,7 +162,7 @@ class OrganizationEntity(EntityBase):
     president: Mapped["UserEntity"] = relationship(back_populates="president_for")
 ```
 ---
-**In `entities/user_entity.py`**
+**In `entities/user-entity.py`**
 
 ```py
 class UserEntity(EntityBase):
@@ -202,7 +202,7 @@ Let's take the following example. In the CSXL database, we have the `organizatio
 We can model this relationship in our entities like so:
 
 ---
-**In `entities/event_entity.py`**
+**In `entities/event-entity.py`**
 ```py
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
@@ -223,7 +223,7 @@ class EventEntity(EntityBase):
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 ```
 ---
-**In `entities/organization_entity.py`**
+**In `entities/organization-entity.py`**
 ```py
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
@@ -279,6 +279,121 @@ Remember that entities define tables in our database. So, in order to actually c
 
 ### Creating the Association Table Entity
 
+For the sake of example, say we are trying to implement the *event registration feature*, which will establish a many-to-many relationship between the `event` table and the `user` table. We know this is a many-to-many relationship because each event can have many registered users, and users can also register for many events at once. 
 
+So, in order to establish a many-to-many relationship between these two tables, we must create a new *association table*. Let's call this `event-registrations` and the entity `EventRegistrationEntity`. We can create this entity below:
+
+---
+**New File `entities/event-registration-entity.py`**
+```py
+class EventRegistrationEntity(EntityBase):
+    """Serves as the association table between the event and user table."""
+
+    # Name for the event registrations table in the PostgreSQL database
+    __tablename__ = "event-registration"
+
+    # Fields
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    
+    # Two foreign key fields, as shown in the table above, to connect the
+    # event and user tables together.
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
+    user_pid: Mapped[int] = mapped_column(ForeignKey("user.pid"))
+
+    # TODO: Relationship Fields
+
+```
+---
+
+You can see that this entity has *two foreign key fields* one to the `event` table and one to the `user` table! Now, these tables are connected. The only thing left to do is to add the relationship fields.
+
+In this case, we could see the creation of the following relationship fields:
+
+---
+**In File `entities/event-registration-entity.py`**
+```py
+class EventRegistrationEntity(EntityBase):
+    ...
+    # Relationship Fields
+    event: Mapped["EventEntity"] = relationship(back_populates="registrations")
+    user: Mapped["UserEntity"] = relationship(back_populates="registrations")
+```
+**In File `entities/event-entity.py`**
+```py
+class EventEntity(EntityBase):
+    ...
+    # Relationship Fields
+    registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="event", cascade="all,delete")
+```
+**In File `entities/user-entity.py`**
+```py
+class UserEntity(EntityBase):
+    ...
+    # Relationship Fields
+    registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="user", cascade="all,delete")
+```
+---
+
+> **NOTE:** Notice the addition of `cascase="all,delete"! This means that when you delete an event or a user, all of the associated registrations to it are also deleted. This prevents fractured relationships when entities are deleted. If you are testing your code and deleting an entity in a many-to-many relationship is not working, double-check that you have a `cascade` rule set up!
+
+This is great! We now have indirectly connected all of the events and users together via lists of `EventRegistrationEntity` objects. Let's take a look at this relationship in a simplified diagram:
+
+![many-to-many-one]()
+
+As you can see in the diagram, we have set up a many-to-many relationship by essentially setting up two one-to-many relationships between the `event` and `user` tables with the `event-registration` table. This adequately connects our data. For example, if you wanted to access all of the registered users for an event, you could run the following pseudocode:
+
+```py
+# Traditional list and loop
+registered_users = []
+for registration in event_entity.registrations:
+    registered_users.append(registration.user)
+
+# Or, more concisely in Python:
+registered_users = [registration.user for registration in event_entity.registrations]
+```
+
+This is great, however this is not a *full* many-to-many relationship. Wouldn't it be great to store a list of `UserEntity` objects in the `EventEntity` and a list of `EventEntity` objects in the `UserEntity` directly?
+
+We actually can also do this using relationship fields! 
+
+Look at the following code:
+
+---
+**In File `entities/event-registration-entity.py`**
+```py
+class EventRegistrationEntity(EntityBase):
+    ...
+    # Relationship Fields
+    event: Mapped["EventEntity"] = relationship(back_populates="registrations")
+    user: Mapped["UserEntity"] = relationship(back_populates="registrations")
+```
+**In File `entities/event-entity.py`**
+```py
+class EventEntity(EntityBase):
+    ...
+    # Relationship Fields
+    registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="event", cascade="all,delete")
+    users: Mapped[list["UserEntity"]] = relationship(secondary="event-registration", back_populates="events")
+```
+**In File `entities/user-entity.py`**
+```py
+class UserEntity(EntityBase):
+    ...
+    # Relationship Fields
+    registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="event", cascade="all,delete")
+    events: Mapped[list["EventEntity"]] = relationship(secondary="event-registration", back_populates="users")
+```
+---
+
+We add two new fields: `users` in the `EventEntity` which stores a list of registered users, and `events` in `UserEntity` which stores a list of events the user is registered for. Notice the use of `secondary="event-registration"`! This parameter takes in the *name of an association table*, and SQLAlchemy does the rest - intelligently populating both lists (matching the fields together with their `back_populates` being set to each other). We can take a look at the new diagram:
+
+![many-to-many-two]()
+
+Now, if you wanted to see the registered users for an event, it is easier than ever:
+```py
+registered_users = event_entity.users
+```
+
+This is the ideal way that most many-to-many relationships are constructed, and the convention you should use in your final projects!
 
 ## Resolving Model Circularity
