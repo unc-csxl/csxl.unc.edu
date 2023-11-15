@@ -213,7 +213,7 @@ def register_for_event(
 
 
 @api.get("/{event_id}/registration", tags=["Events"])
-def get_registration_status(
+def get_event_registration_of_user(
     event_id: int,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
@@ -235,7 +235,7 @@ def get_registration_status(
 
 
 @api.get("/{event_id}/registrations", tags=["Events"])
-def get_event_registrations_status(
+def get_event_registrations(
     event_id: int,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
