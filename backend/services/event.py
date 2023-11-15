@@ -264,6 +264,8 @@ class EventService:
     def get_registrations(
         self, subject: User, event: EventDetails
     ) -> list[EventRegistration]:
+        # TODO: Check to see if subject is registered as organizer
+
         self._permission.enforce(
             subject,
             "organization.events.manage",
