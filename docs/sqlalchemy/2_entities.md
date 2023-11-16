@@ -9,14 +9,14 @@ As you know, our PostgreSQL database represents data in a _tabular format_ - mea
 
 However, we need a way to actually _represent_ this database structure in Python. We can then use this structure to:
 
-- Represent the expected shape of what our tables should look like, so if we were to _create database tables_ in our database, we can use the structure in Python as our cide.
+- Represent the expected shape of what our tables should look like, so if we were to _create database tables_ in our database, we can use the structure in Python as our guide.
 - Represent data being read from the database as an object of this structure.
 
 We call these structures **_SQLAlchemy Entities_**.
 
 Entities fit into our overall stack flowchart like so:
 
-![Stack flowchart zoomed in on the entities]()
+![Stack flowchart zoomed in on the entities](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/entities.png)
 
 ## Creating Entities
 
