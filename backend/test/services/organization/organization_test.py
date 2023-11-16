@@ -11,6 +11,7 @@ from backend.services.exceptions import (
 
 # Tested Dependencies
 from ....models import Organization
+from ....models.organization_details import OrganizationDetails
 from ....services import OrganizationService
 
 # Injected Service Fixtures
@@ -20,12 +21,7 @@ from ..fixtures import organization_svc_integration
 from ..core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
-from .organization_test_data import (
-    organizations,
-    to_add,
-    cads,
-    new_cads,
-)
+from .organization_test_data import organizations, to_add, cads, new_cads, cssg
 from ..user_data import root, user
 
 __authors__ = ["Ajay Gandecha"]
@@ -54,6 +50,14 @@ def test_get_from_slug(organization_svc_integration: OrganizationService):
     assert fetched_organization is not None
     assert isinstance(fetched_organization, Organization)
     assert fetched_organization.slug == cads.slug
+
+
+def test_get_organization_events(organization_svc_integration: OrganizationService):
+    """Test that the organization events properly back populate."""
+    fetched_organization = organization_svc_integration.get_from_slug(cssg.slug)
+    assert fetched_organization is not None
+    assert isinstance(fetched_organization, OrganizationDetails)
+    assert len(fetched_organization.events) == 2
 
 
 # Test `OrganizationService.create()`
