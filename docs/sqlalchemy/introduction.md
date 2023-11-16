@@ -1,6 +1,7 @@
 # SQLAlchemy Tutorial
 
-> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br> > _Last Updated: 11/14/2023_
+> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.
+> _Last Updated: 11/16/2023_
 
 ## Preface
 
