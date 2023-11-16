@@ -1,0 +1,266 @@
+# CRUD Operations
+
+> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>_Last Updated: 11/6/2023_
+
+## Preface
+
+Now that we have access to the **_database session_** in our entity, how can we use it to perform CRUD operations?
+
+CRUD operations are:
+
+- **C**reate - Add new rows to the table
+- **R**ead - Retrieve existing rows from the table
+- **U**pdate - Modify existing rows on the table
+- **D**elete - Remove rows from the table
+
+You may remember this term from when you learned about APIs and HTTP request types. Here are how the request types match up to CRUD:
+
+- **C**reate - `POST`
+- **R**ead - `GET`
+- **U**pdate - `PUT`
+- **D**elete - `DELETE`
+
+So, you may expect then, that `POST` APIs should call a function in the service that should perform a _create_ operation in our database. The `GET` API should call a function in the service that should perform a _read_ operation in our database, and so on.
+
+## Transactions
+
+In order for us to perform CRUD operations on our database, we must understand how these operations are performed. SQLAlchemy performs these operations using something called **_transactions_**. The purpose of a transaction is to denote an all-or-nothing collection of changes to a database. All-or-nothing refers to the fact that either _all_ of the requested changes should happen to the database. If something happens that would cause any change to fail, then _none_ of the changes are performed. This is incredibly vital for the integrity of the database. It ensures that the database is always in a consistent state even if errors occur, such as if a database modification fails, connection is dropped, in the middle of a transaction.
+
+Consider the example used in class - transferring money between two bank accounts. Say that Kris Jordan bought his coworker, KMP, lunch. KMP wants to pay Kris Jordan back for $10. The following operations would be performed:
+
+- `-$10` is removed from KMP's bank account
+- `+$10` is added to Kris Jordan's bank account
+
+In an ideal world, this transaction would occur and no issues would arise. But, what happened if, for example, there was a power outage in the middle of this transaction? One of four results could occur:
+
+- KMP loses $10 and Kris Jordan gains $10, all is well.
+- KMP loses $10 and Kris Jordan gains $0, meaning $10 disappeared!
+- KMP loses $0 and Kris Jordan gains $10, meaning $10 spontaneouly appeared!
+- Nothing happens.
+
+For accounting purposes, the 2nd and 3rd scenarios are super bad. So instead, imagine that the two steps above (`-$10` and `+$10`) are \*bundled into one transaction.
+
+Then, if the internet shuts off, the only two results could occur:
+
+- KMP loses $10 and Kris Jordan gains $10, all is well.
+- Nothing happens.
+
+This eliminates the two worst outcomes! Either both statements are committed at the same time and the transaction succeeds, or neither is and the transaction gets "rolled back". When a rollback occurs, it's as if every statement earlier in the transaction is cancelled and never happened.
+
+## Read Data
+
+To read data from our database, we need to create a **query!**
+
+A query is a request for data. Say that I want to read _all of the data_ from the organization table.
+
+We can create a query to select the entire table using the `select` function of SQLAlchemy. Since we want to select the Organiztion table, and we know `OrganizationEntity` represents the organization table, we can pass that in, like so:
+
+```py
+from sqlalchemy import select
+
+query = select(OrganizationEntity)
+```
+
+Now that we have this query (this request for data), we now need to act on this request! We can use the session to find all the rows (denotes as `scalars` here because they are one-dimensional units of data) that match this query:
+
+```
+self._session.scalars(query).all()
+```
+
+We then want to use `.all()` to ensure that we capture _all_ of the rows / scalars that match this query! So in this case, this will return all of the rows in the `organization` table.
+
+What is the data type of this? Well, remember that SQLAlchemy entity objects represent data from the database. So, this result will be a list of entitites!
+
+```py
+query = select(OrganizationEntity)
+entities = self._session.scalars(query).all()
+```
+
+Just like that, we have retrieved all the organization data from our database! We may put this in a service function called `OrganizationService.all()` that returns all of the organizations in our database. This would look like:
+
+```py
+class OrganizationService:
+
+    def all(self) -> list[Organization]:
+        query = select(OrganizationEntity)
+        entities = self._session.scalars(query).all()
+
+        return entities # uh-oh!
+```
+
+But, there is a problem here! Refer back to the full stack diagram. Remember that the service should be returning _Pydantic models_, **NOT entities!**
+
+So, we would need to run a conversion:
+
+```py
+class OrganizationService:
+
+    def __init__(self, session: Session = Depends(db_session)):
+        self._session = session
+
+    def all(self) -> list[Organization]:
+        query = select(OrganizationEntity)
+        entities = self._session.scalars(query).all()
+
+        models = []
+        for entity in entities:
+            models.append(entity.to_model())
+
+        return models
+```
+
+This looks good! This converts all of our entities to models.
+
+But wait! There is actually a cool Python syntax trick to simplify this.
+
+We can write this for loop:
+
+```py
+models = []
+for entity in entities:
+    models.append(entity.to_model())
+```
+
+as:
+
+```py
+models = [entity.to_model() for entity in entities]
+```
+
+This makes our code a lot more concise! The one line declaration can be summarized as follows:
+
+```
+final_list = [<what goes in .append()> for item in list]
+```
+
+So, our final `.all()` would look like:
+
+```py
+class OrganizationService:
+
+    def __init__(self, session: Session = Depends(db_session)):
+        self._session = session
+
+    def all(self) -> list[Organization]:
+        """Fetch all organizations from the database"""
+        query = select(OrganizationEntity)
+        entities = self._session.scalars(query).all()
+        return [entity.to_model() for entity in entities]
+```
+
+Just like how we got _all_ of the data in our table, we can also get data from our table that matches a condition.
+
+For example, what if I wanted to get only the public organizations from my database.
+
+In this case, we need to use the query builder! Since we are doing more than just selecting the entire table, we need to use the `session.query()` function.
+
+```py
+entities = self._session.query(OrganizationEntity)
+    .filter(OrganizationEntity.public == true)
+    .all()
+```
+
+We pass in `OrganizationEntity` into `.query()` like we did with `select()`, but now we need to add a filter! This will append the filter condition to our query. We can filter our data for just when `OrganizationEntity.public == true`. Then, when we call `.all()`, the transaction runs and we get the data with the filter applied.
+
+Our function might look something like:
+
+```py
+def all_public(self) -> list[Organization]:
+    """Fetch all public organizations from the database"""
+    entities = self._session.query(OrganizationEntity)
+        .filter(OrganizationEntity.public == true)
+        .all()
+    return [entity.to_model() for entity in entities]
+```
+
+Lastly, we may want to query just _one_ element based on its _primary key_. SQLAlchemy includes a nifty helper function, `.get(__)`, for this purpose!
+
+Recall that our `organization` example uses the `id` field as its primary key. What if we wanted to get an organization by its ID?
+
+We can use:
+
+```py
+entity = self._session.get(OrganizationEntity, id)
+```
+
+Here, we just pass in the table / entity and then pass in the ID! Also notice that the result is just a single entity and not a list! `.get()` assumes you want at most one value to return.
+
+So, we could create the function:
+
+```py
+def get_by_id(self, id: int) -> Organization:
+    """Fetch an organization from the database based on its ID"""
+    entity = self._session.get(OrganizationEntity, id)
+    return entity.to_model()
+```
+
+## Write Data
+
+Writing data to our database is pretty simple! To do this, we can use the `session.add()` function.
+
+However, again - it is **_super important_** to rememebr which types we are working with! Our API will be calling this create function using a _Pydantic model_ request, and we must add an _entity_ to our database. So, we must convert an input model to an entity before we add it!
+
+Say that in our service, we create a `.create()` function that takes in a new organization (Pydantic model) as a parameter:
+
+```py
+def create(self, organization: Organization) -> Organization:
+    entity = OrganizationEntity.from_model(organization)
+```
+
+As you can see, we can use the `.from_model()` static method on the entity class to convert the model to the entity!
+
+From there, we can add it to our transaction:
+
+```py
+def create(self, organization: Organization) -> Organization:
+    entity = OrganizationEntity.from_model(organization)
+    self._session.add(entity)
+```
+
+Two notes here! One is that SQLAlchemy is smart enough to know which table to add to since the entity corresponds to the right table. Second, we call `.add()`, _but not data is added yet!_ Why?
+
+Remember what we talked about earlier with transactions! Since `.add()` mutates the state of the database, the `.add()` action is appended to the current transaction.
+
+Think of this like _staging_ in Git! We are essentially adding all of the changes we want to be ready to be committed at once.
+
+Just like Git, once we have created and completed our transaction, we execute it by calling `.commit()`.
+
+Our final function would look like:
+
+```py
+def create(self, organization: Organization) -> Organization:
+    entity = OrganizationEntity.from_model(organization)
+    self._session.add(entity)
+    self._session.commit() # Database is updated now.
+    return entity.to_model()
+```
+
+Of course, if there is an error in the `.commit()` step, our transaction follows the _all-or-nothing_ principle that we discussed earlier.
+
+You may also notice the `return` statement at the bottom! We return the object that we created (in model form) to ensure that it has been created correctly. There are also some instances where if we did not populate certain fields, the returned value would have those fields populated. This may be due to the `default=` rules defined earlier in the entity.
+
+## Delete Data
+
+Deleting data from our database is also extremely easy! Just like how the session as the `.add()` function, the session also has `.delete()`. The `.delete()` function takes in the object / row that should be deleted from the database.
+
+Let's recall the function that we used to _get_ an organization by an ID:
+
+```py
+def get_by_id(self, id: int) -> Organization:
+    """Fetch an organization from the database based on its ID"""
+    entity = self._session.get(OrganizationEntity, id)
+    return entity.to_model()
+```
+
+What if I wanted to modify this to delete an object by ID? Well, we only need to add two lines:
+
+```py
+def delete_by_id(self, id: int):
+    """Delete an organization by ID"""
+    entity = self._session.get(OrganizationEntity, id)
+    self._session.delete(entity)
+    self._session.commit() # Database is updated now.
+
+```
+
+This deletion follows the same _all-or-nothing_ principle as our `.create()` function did.
