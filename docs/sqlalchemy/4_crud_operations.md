@@ -264,3 +264,15 @@ def delete_by_id(self, id: int):
 ```
 
 This deletion follows the same _all-or-nothing_ principle as our `.create()` function did.
+
+## Supplemental: Advanced Querying Techniques
+
+In the _Read Data_ section above, you learned about various methods for writing simple queries to retrieve data from your database. This supplemental section will add more advanced querying techniques to your toolkit to write more thoughtful and powerful queries.
+
+### `AND` and `OR` Queries
+
+### Querying Based on Database Relationships
+
+### Querying Paginated Data
+
+_Coming soon._
