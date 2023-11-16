@@ -69,9 +69,7 @@ Take a look at how the SQLAlchemy session sits in with our stack diagram:
 
 Now, the database is connected to the rest of the application!
 
-This series of tutorials is dedicated to helping you become familiarized with SQLAlchem
-
-This tutorial will get you familiarized with SQLAlchemy and how it is used in the CSXL Application.
+This series of tutorials is dedicated to helping you become familiarized with SQLAlchemy and how it is used in the CSXL Application.
 
 ## Table of Contents
 
