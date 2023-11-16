@@ -1,7 +1,9 @@
 # Database Relationships
 
 > Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>
-> *Last Updated: 11/14/2023*
+> *Last Updated: 11/16/2023*
+
+## Preface
 
 It is important to remember that data in your application does not exist in isolation. Data in one table of your database may need to point to other data in other tables.
 
