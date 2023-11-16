@@ -112,7 +112,7 @@ The parameter for the `ForeignKey()` object follows the format `table.field`. So
 
 This is all we need to establish a relationship!
 
-However, this is not all. How would be actually *access* the President `UserEntity` object for a given organization? Would we need to make another read in the database?
+However, this is not all. How would we actually *access* the President `UserEntity` object for a given organization? Would we need to make another read in the database?
 
 No! SQLAlchemy can actually take care of this in something called **relationship fields**. These are fields in the Entity that *DO NOT EXIST IN THE TABLE AS COLUMNS*, however its values are automatically populated by SQLAlchemy when reading data. This allows our entities to be populated with data from relationships.
 
