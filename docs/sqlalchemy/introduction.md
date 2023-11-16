@@ -61,4 +61,18 @@ Of course, this is super cool! However, there is a problem. It is quite hard to 
 
 **Enter SQLAlchemy!**
 
-**SQLAlchemy** is the primary SQL toolkit that we will use to interact with our PostgreSQL database. This tutorial will get you familiarized with SQLAlchemy and how it is used in the CSXL Application.
+**SQLAlchemy** is the primary SQL toolkit that we will use to interact with our PostgreSQL database. An active SQLAlchemy _session_ serves as the bridge between the existing Python backend services and the data in your PostgreSQL database, allowing you to perform **CRUD operations** _(create, read, update, delete)_.
+
+Take a look at how the SQLAlchemy session sits in with our stack diagram:
+
+![Same flowchart as before but with SQLAlchemy](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/tech-stack-with-alchemy.png)
+
+Now, the database is connected to the rest of the application!
+
+This series of tutorials is dedicated to helping you become familiarized with SQLAlchem
+
+This tutorial will get you familiarized with SQLAlchemy and how it is used in the CSXL Application.
+
+## Table of Contents
+
+_Coming soon!_
