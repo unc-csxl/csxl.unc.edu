@@ -6,7 +6,7 @@
 
 Throughout this course so far, you have been learning about each layer of the tech stack. You started in the frontend, with _Angular components_ - what the users see on each page. You then moved downwards to the _Angular services_, which help to fetch and update data for your application. You then began to explore the backend layer, using _FastAPI_ to expose data across HTTP to your frontend services. Lastly, you made it to the _backend service_ layer, which your APIs called to in order to manipulate data. These layers can be represented using this flowchart:
 
-![Flowchart 1 showing everything except the ORM session and PostGres](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/stack-no-db.png)
+![Flowchart 1 showing everything except the ORM session and PostGres](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/tech-stack-no-db.png)
 
 All of the layers you have been exposed to so far have enabled you to create extremely powerful web applications. However, there is one problem.
 
