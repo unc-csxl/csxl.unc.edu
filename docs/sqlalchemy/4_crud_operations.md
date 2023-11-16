@@ -156,11 +156,11 @@ In this case, we need to use the query builder! Since we are doing more than jus
 
 ```py
 entities = self._session.query(OrganizationEntity)
-    .filter(OrganizationEntity.public == true)
+    .where(OrganizationEntity.public == true)
     .all()
 ```
 
-We pass in `OrganizationEntity` into `.query()` like we did with `select()`, but now we need to add a filter! This will append the filter condition to our query. We can filter our data for just when `OrganizationEntity.public == true`. Then, when we call `.all()`, the transaction runs and we get the data with the filter applied.
+We pass in `OrganizationEntity` into `.query()` like we did with `select()`, but now we need to add a filter! We add filters using the `.where()` method. This will append the filter condition to our query. We can filter our data for just when `OrganizationEntity.public == true`. Then, when we call `.all()`, the transaction runs and we get the data with the filter applied.
 
 Our function might look something like:
 
@@ -168,7 +168,7 @@ Our function might look something like:
 def all_public(self) -> list[Organization]:
     """Fetch all public organizations from the database"""
     entities = self._session.query(OrganizationEntity)
-        .filter(OrganizationEntity.public == true)
+        .where(OrganizationEntity.public == true)
         .all()
     return [entity.to_model() for entity in entities]
 ```
@@ -260,7 +260,6 @@ def delete_by_id(self, id: int):
     entity = self._session.get(OrganizationEntity, id)
     self._session.delete(entity)
     self._session.commit() # Database is updated now.
-
 ```
 
 This deletion follows the same _all-or-nothing_ principle as our `.create()` function did.
@@ -269,7 +268,67 @@ This deletion follows the same _all-or-nothing_ principle as our `.create()` fun
 
 In the _Read Data_ section above, you learned about various methods for writing simple queries to retrieve data from your database. This supplemental section will add more advanced querying techniques to your toolkit to write more thoughtful and powerful queries.
 
-### `AND` and `OR` Queries
+### Boolean Logic (`AND` and `OR`) in Queries
+
+We can implement boolean logic into our queries - specifically, the `AND` and `OR` operations. This allows us to create more complex queries and can help support numerous functions within your project.
+
+#### Creating an `AND` Query
+
+There are two methods by which we can create an AND query. By default, adding multiple `.where()` calls to a single query automatically pairs together as an `AND` call. For example, take the following code snippet:
+
+```py
+entities = self._session.query(OrganizationEntity)
+    .where(OrganizationEntity.public == true)
+    .where("Carolina" in OrganizationEntity.name)
+    .all()
+```
+
+This will return all of the organizations that are *public* ***AND*** *have "Carolina" in their name!*
+
+We can also create the *same query* using the logic below:
+
+```py
+entities = self._session.query(OrganizationEntity)
+    .where(OrganizationEntity.public == true, "Carolina" in OrganizationEntity.name)
+    .all()
+```
+
+The `.where()` method can actually take in multiple conditions, and the conditions that it accepts are all joined together using the boolean operator `AND`. So, this will *also* return all of the organizations that are *public* ***AND*** *have "Carolina" in their name!*
+
+#### Creating an `OR` Query
+
+Creating an `OR` query requires a little bit more, specifically, knowledge of Python's `|` operator. This operator will allow us to join two query conditionals together and apply the `OR` rule to it. For example,
+
+```py
+entities = self._session.query(OrganizationEntity)
+    .where((OrganizationEntity.public == true) | ("Carolina" in OrganizationEntity.name))
+    .all()
+```
+
+> **NOTE:** Both conditions are *surrounded by parenthesis*. You *MUST* do this when using the `|` operator or else unexpected results may occur!
+
+This will return all of the organizations that are *public* ***OR*** *have "Carolina" in their name!*
+
+There is also another shorthand method that allows you to build `OR` queries where you are trying to query based on alternative values for the same field. For example, take the following snippet:
+
+```py
+entities = self._session.query(OrganizationEntity)
+    .where((OrganizationEntity.name == "CS+Social Good") | (OrganizationEntity.name == "AR+VR Club"))
+    .all()
+```
+
+We can simplify this to:
+
+```py
+entities = self._session.query(OrganizationEntity)
+    .where(UserEntity.name.in_(["CS+Social Good", "AR+VR Club"]))
+    .all()
+```
+
+The `.in_()` method allows us to match a field based on alternative options! So, this code will return organizations with either the name `"CS+Social Good"` or `"AR+VR Club"`. 
+
+> **NOTE:** The method has an underscore (`_`) in its name. This is because `in` is a reserved keyword in Python and therefore cannot be used anywhere else (such as method names). In fact, we used this keyword just a few examples ago in the conditional `("Carolina" in OrganizationEntity.name)`.
+
 
 ### Querying Based on Database Relationships
 
