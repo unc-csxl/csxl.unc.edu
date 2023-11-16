@@ -216,7 +216,7 @@ class EventEntity(EntityBase):
     # Fields
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String, nullable=False, default="")
-    # Establishes a one-to-one relationship between the event and user tables.
+    # Establishes a one-to-one relationship between the event and organization tables.
     organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
 
     # Relationship Fields
