@@ -26,7 +26,7 @@ There are many different kinds of databases that we can use, however in COMP 423
 
 We can add this database component to our tech stack flowchart:
 
-![Same flowchart as before but with PostgreSQL Database]()
+![Same flowchart as before but with PostgreSQL Database](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/tech-stack-db.png)
 
 Relational databases store data in _tables_. Each table has rows and columns, where each column represents a field of data and has a distinct data type. Rows represent an entry of data. Each row often as a primary key, or unique identifier or value that is used to easily identify it. For example, this may be a sample table for users within the CSXL application:
 
