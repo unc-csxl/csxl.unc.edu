@@ -1,5 +1,8 @@
 # SQLAlchemy Entities
 
+> Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.
+> _Last Updated: 11/16/2023_
+
 ## What are Entities?
 
 As you know, our PostgreSQL database represents data in a _tabular format_ - meaning tables! As mentioned in the beginning, tables have columns (fields of data) and rows represent each entry in our data.
