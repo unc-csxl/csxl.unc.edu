@@ -7,7 +7,7 @@
 
 Throughout this course so far, you have been learning about each layer of the tech stack. You started in the frontend, with _Angular components_ - what the users see on each page. You then moved downwards to the _Angular services_, which help to fetch and update data for your application. You then began to explore the backend layer, using _FastAPI_ to expose data across HTTP to your frontend services. Lastly, you made it to the _backend service_ layer, which your APIs called to in order to manipulate data. These layers can be represented using this flowchart:
 
-![Flowchart 1 showing everything except the ORM session and PostGres](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/tech-stack-no-db.png)
+![Flowchart 1 showing everything except the ORM session and PostGres](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/tech-stack-no-db.png)
 
 All of the layers you have been exposed to so far have enabled you to create extremely powerful web applications. However, there is one problem.
 
@@ -27,7 +27,7 @@ There are many different kinds of databases that we can use, however in COMP 423
 
 We can add this database component to our tech stack flowchart:
 
-![Same flowchart as before but with PostgreSQL Database](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/tech-stack-db.png)
+![Same flowchart as before but with PostgreSQL Database](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/tech-stack-db.png)
 
 Relational databases store data in _tables_. Each table has rows and columns, where each column represents a field of data and has a distinct data type. Rows represent an entry of data. Each row often as a primary key, or unique identifier or value that is used to easily identify it. For example, this may be a sample table for users within the CSXL application:
 
@@ -66,7 +66,7 @@ Of course, this is super cool! However, there are a few problems. It is quite ha
 
 Take a look at how the SQLAlchemy session sits in with our stack diagram:
 
-![Same flowchart as before but with SQLAlchemy](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/tech-stack-with-alchemy.png)
+![Same flowchart as before but with SQLAlchemy](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/tech-stack-with-alchemy.png)
 
 Now, the database is connected to the rest of the application!
 
@@ -88,22 +88,22 @@ This series of tutorials is dedicated to helping you become familiarized with SQ
 
 ## Table of Contents
 
-[**Chapter 1: SQLAlchemy Core and ORM**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/1_sqlalchemy_core_and_orm.md)
+[**Chapter 1: SQLAlchemy Core and ORM**](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/sqlalchemy/1_sqlalchemy_core_and_orm.md)
 
 This chapter introduces the SQLAlchemy Core and ORM and breifly explains the function of each in the context of the database and overall backend.
 
-[**Chapter 2: SQLAlchemy Entities**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/2_entities.md)
+[**Chapter 2: SQLAlchemy Entities**](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/sqlalchemy/2_entities.md)
 
 This chapter introduces SQLAlchemy Entities to model database tables in Python, how to set them up, and how they differ from the Pydantic models you are already using in your backend.
 
-[**Chapter 3: Connecting to the Database**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/3_connecting_to_database.md)
+[**Chapter 3: Connecting to the Database**](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/sqlalchemy/3_connecting_to_database.md)
 
 This chapter introduces how you programmatically create the SQLAlchemy session to interact with your database, show how this is managed, and describe how the session is injected into backend services.
 
-[**Chapter 4: CRUD Operations**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/4_crud_operations.md)
+[**Chapter 4: CRUD Operations**](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/sqlalchemy/4_crud_operations.md)
 
 This chapter discusses how you can use SQLAlchemy to interact with your database, including how to run common operations such as creating, reading, updating, and deleting data. This chapter also includes supplemental resources for more complex SQLAlchemy queries.
 
-[**Chapter 5: Database Relationships**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/5_relationships.md)
+[**Chapter 5: Database Relationships**](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/sqlalchemy/5_relationships.md)
 
 This chapter introduces the concept of database relationships. It introduces the motivation behind database relationships, discuss the different types, how to implement them using SQLAlchemy, and mentions common problems or pitfalls that you may face when adding relationships to your project.
