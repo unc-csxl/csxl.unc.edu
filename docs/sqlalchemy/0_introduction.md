@@ -60,8 +60,6 @@ SELECT * FROM user WHERE pid=999999999
 
 Of course, this is super cool! However, there are a few problems. It is quite hard to write and execute pure SQL queries in Python. Plus, there is a lot of things behind the scenes to manage here. We need a tool that allows us to connect to our SQL database from Python so that we can manage the data in our database.
 
-abstract some of the accidental differences away.
-
 **Enter SQLAlchemy!**
 
 **SQLAlchemy** is the primary SQL toolkit that we will use to interact with our PostgreSQL database. An active SQLAlchemy _session_ serves as the bridge between the existing Python backend services and the data in your PostgreSQL database, allowing you to perform **CRUD operations** _(create, read, update, delete)_.
