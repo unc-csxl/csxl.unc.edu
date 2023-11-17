@@ -26,7 +26,7 @@ The SQLAlchemy ORM contains the basic building blocks for us to create entities,
 from sqlalchemy.orm import DeclarativeBase
 ```
 
-From here, we can create one class that can act as a superclass for all of our models. This class will also inherit from `DeclarativeBase` to have access to all of the necessary features that will make it an entity. We can declare this like so:
+From here, we can create one class that can act as a superclass for all of our entities. This class will also inherit from `DeclarativeBase` to have access to all of the necessary features that will make it an entity. We can declare this like so:
 
 ```py
 class EntityBase(DeclarativeBase):
