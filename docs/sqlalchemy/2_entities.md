@@ -16,7 +16,7 @@ We call these structures **_SQLAlchemy Entities_**.
 
 Entities fit into our overall stack flowchart like so:
 
-![Stack flowchart zoomed in on the entities](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/entities_only.png)
+![Stack flowchart zoomed in on the entities](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/entities_only.png)
 
 ## Creating Entities
 
@@ -138,7 +138,7 @@ This difference is actually quite notable! There are cases where what data the A
 
 Let's take a look at the interactions again using the flowchart:
 
-![Compare Pydantic models from the SQLAlchemy entities](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/entities.png)
+![Compare Pydantic models from the SQLAlchemy entities](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/entities.png)
 
 FastAPI only works with Pydantic models, and the SQLAlchemy session only works with Entities. Because of this, we will need to **convert\*** SQLAlchemy entitites to Pydantic models and vice-versa. As you can see in the flowchart, the service sits in the middle of FastAPI and the session. Therefore, **_it is the job of the service to make these conversions!_**
 
