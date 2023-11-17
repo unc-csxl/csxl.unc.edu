@@ -142,7 +142,9 @@ Let's take a look at the interactions again using the flowchart:
 
 FastAPI only works with Pydantic models, and the SQLAlchemy session only works with Entities. Because of this, we will need to **convert\*** SQLAlchemy entitites to Pydantic models and vice-versa. As you can see in the flowchart, the service sits in the middle of FastAPI and the session. Therefore, **_it is the job of the service to make these conversions!_**
 
-In order for the service to make these conversions, there must be helper functions that it can call. We can define these helper functions in the SQLAlchemy entities.
+In order for the service to make these conversions, we can define handy helper functions. We have a convention for these conversion functions shown below! While the implementation is not too complicated here, there are cases where you may need to add more complex logic in these functions.
+
+We can define these helper functions in the SQLAlchemy entities.
 
 First, we need a method to convert entities to models. We can call this `.to_model()`, and here is a sample declaration:
 
