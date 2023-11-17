@@ -8,7 +8,10 @@
 </div>
 </div> -->
 
-<div>
+<organization-not-found-card
+  *ngIf="organization === undefined; else eventDetails" />
+
+<ng-template #eventDetails>
   <organization-details-info-card
     [organization]="organization"
     [profile]="profile" />
@@ -22,4 +25,4 @@
       [showHeader]="true"
       [showCreateButton]="(eventCreationPermission$ | async)!" />
   </div>
-</div>
+</ng-template>

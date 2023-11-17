@@ -32,7 +32,7 @@ export class EventDetailCard {
 
   checkPermissions(): Observable<boolean> {
     return this.permission.check(
-      'organization.events.manage',
+      'organization.events.*',
       `organization/${this.event.organization_id!}`
     );
   }

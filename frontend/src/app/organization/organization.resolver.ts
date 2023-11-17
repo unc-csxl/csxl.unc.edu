@@ -13,6 +13,7 @@ import { Organization } from './organization.model';
 import { OrganizationService } from './organization.service';
 import { EventService } from '../event/event.service';
 import { Event } from '../event/event.model';
+import { catchError, map, of } from 'rxjs';
 
 /** This resolver injects the list of organizations into the organization component. */
 export const organizationResolver: ResolveFn<Organization[] | undefined> = (
@@ -27,11 +28,8 @@ export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
   route,
   state
 ) => {
-  if (route.paramMap.get('slug')! != 'new') {
-    return inject(OrganizationService).getOrganization(
-      route.paramMap.get('slug')!
-    );
-  } else {
+  // If the organization is new, return a blank one
+  if (route.paramMap.get('slug')! == 'new') {
     return {
       id: null,
       name: '',
@@ -50,6 +48,17 @@ export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
       events: null
     };
   }
+
+  // Otherwise, return the organization.
+  // If there is an error, return undefined
+  return inject(OrganizationService)
+    .getOrganization(route.paramMap.get('slug')!)
+    .pipe(
+      catchError((error) => {
+        console.log(error);
+        return of(undefined);
+      })
+    );
 };
 
 /** This resolver injects the events for a given organization into the organization component. */

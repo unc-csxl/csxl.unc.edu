@@ -21,6 +21,8 @@ import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
 import { Organization } from 'src/app/organization/organization.model';
 import { Event } from '../event.model';
+import { DatePipe } from '@angular/common';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-event-editor',
@@ -62,7 +64,7 @@ export class EventEditorComponent {
   /** Create a form group */
   public eventForm = this.formBuilder.group({
     name: this.name,
-    time: new Date(this.time.value!),
+    time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
     location: this.location,
     description: this.description,
     public: this.public.value! == 'true'
@@ -75,9 +77,10 @@ export class EventEditorComponent {
     protected organizationService: OrganizationService,
     protected snackBar: MatSnackBar,
     private eventService: EventService,
-    private permission: PermissionService
+    private permission: PermissionService,
+    private datePipe: DatePipe
   ) {
-    /** Get currently-logged-in user. */
+    // Get currently-logged-in user
     const data = route.snapshot.data as {
       profile: Profile;
       organization: Organization;
@@ -85,24 +88,25 @@ export class EventEditorComponent {
     };
     this.profile = data.profile;
 
-    /** Initialize event */
+    // Initialize event
     this.organization = data.organization;
     this.event = data.event;
     this.event.organization_id = this.organization.id;
 
-    /** Get ids from the url */
+    // Get ids from the url
     let organization_slug = this.route.snapshot.params['slug'];
     this.organization_slug = organization_slug;
 
+    // Set values for form group
     this.eventForm.setValue({
       name: this.event.name,
-      time: this.event.time,
+      time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
       location: this.event.location,
       description: this.event.description,
       public: this.event.public
     });
 
-    /** Set permission value */
+    // Set permission value
     this.adminPermission$ = this.permission.check(
       'organization.events.manage',
       `organization/${this.organization!.id}`

@@ -1,9 +1,7 @@
 # Database Relationships
 
 > Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>
-> *Last Updated: 11/16/2023*
-
-## Preface
+> *Last Updated: 11/14/2023*
 
 It is important to remember that data in your application does not exist in isolation. Data in one table of your database may need to point to other data in other tables.
 
@@ -25,7 +23,7 @@ There are three main types of database relationships: *one-to-one*, *one-to-many
 | One to Many  | Each item in one table points to many items in another table, but items in the other table can point to at most one item in the original table.     | We can represent organizations and events they host using a one-to-many relationship. Each organization can host numerous events, but each event is hosted primarily by one organization. |
 | Many to Many | Each item in one table can point to many items in another table, and vice-versa.    | We can event event registrations as a many-to-many relationship. Each event can have many registered users, and users can also register for many events at once. |
 
-As you can see based on the descriptions of the different types of relationships, our User and President example is best realized using a one-to-one relationship. It is extremely important to carefully think through the feature you are trying to add and which type of relationship you will need to successfully model your data. Depending on the relationship you want to establish, you will need to modify your SQLAlchemy entities differently.
+As you can see based on the descriptions of the different types of relationships, our Organization and President example is best realized using a one-to-one relationship. It is extremely important to carefully think through the feature you are trying to add and which type of relationship you will need to successfully model your data. Depending on the relationship you want to establish, you will need to modify your SQLAlchemy entities differently.
 
 Below, I am going to discuss each example in the "Example" column in the table and how you would need to modify your entities to include all three types of relationships.
 
@@ -86,7 +84,7 @@ How would we add this field to our `OrganizationEntity`?
 We would imagine what our entity looks like before we attempt to add any relationships:
 
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 
 ```py
 class OrganizationEntity(EntityBase):
@@ -114,7 +112,7 @@ The parameter for the `ForeignKey()` object follows the format `table.field`. So
 
 This is all we need to establish a relationship!
 
-However, this is not all. How would be actually *access* the President `UserEntity` object for a given organization? Would we need to make another read in the database?
+However, this is not all. How would we actually *access* the President `UserEntity` object for a given organization? Would we need to make another read in the database?
 
 No! SQLAlchemy can actually take care of this in something called **relationship fields**. These are fields in the Entity that *DO NOT EXIST IN THE TABLE AS COLUMNS*, however its values are automatically populated by SQLAlchemy when reading data. This allows our entities to be populated with data from relationships.
 
@@ -145,7 +143,7 @@ You may also notice the `back_populates="president_for"` and `back_populates="pr
 In total, here are both completed entities:
 
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 
 ```py
 class OrganizationEntity(EntityBase):
@@ -167,7 +165,7 @@ class OrganizationEntity(EntityBase):
     president: Mapped["UserEntity"] = relationship(back_populates="president_for")
 ```
 ---
-**In `entities/user-entity.py`**
+**In `entities/user_entity.py`**
 
 ```py
 class UserEntity(EntityBase):
@@ -190,7 +188,7 @@ class UserEntity(EntityBase):
 
 We can model the final relationship we established in the following diagram:
  
-![One-to-One Diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/one-to-one.png)
+![One-to-One Diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/one-to-one.png)
 
 This is extremely powerful! Take the original ticket from the introduction.  The ticket asked you to keep track of each organization's President in your database, eventually to be used to display the name of organizations' Presidents on each organization detail page. Now, with our new arrangement, we can easily access this data with `organization_entity.president.name`.
 
@@ -207,7 +205,7 @@ Let's take the following example. In the CSXL database, we have the `organizatio
 We can model this relationship in our entities like so:
 
 ---
-**In `entities/event-entity.py`**
+**In `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
@@ -218,7 +216,7 @@ class EventEntity(EntityBase):
     # Fields
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String, nullable=False, default="")
-    # Establishes a one-to-one relationship between the event and user tables.
+    # Establishes a one-to-one relationship between the event and organization tables.
     organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
 
     # Relationship Fields
@@ -228,7 +226,7 @@ class EventEntity(EntityBase):
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 ```
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 ```py
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
@@ -254,7 +252,7 @@ Notice that the *only difference* is that the `OrganizationEntity` stores a ***L
 
 We can model this using the diagram below:
 
-![One-to-many relationship diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/one-to-many.png)
+![One-to-many relationship diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/one-to-many.png)
 
 ## Implementing a Many-to-Many Relationship
 
@@ -274,7 +272,7 @@ An **association table** is a table that matches together the IDs from two diffe
 
 Take a look at the diagram below:
 
-![Association table diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/association.png)
+![Association table diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/association.png)
 
 In the diagram above, you can see that the association table matches together items from the *left* table and items from the *right* table. Ultimately, this establishes a many-to-many relationship because, for example, `LeftEntity(id=1)` maps to two items in the `right` table, one of which being `RightEntity(id=2)`; meanwhile, `RightEntity(id=2)` maps to two items in the `left` table, one of which being `LeftEntity(id=1)`.
 
@@ -289,7 +287,7 @@ For the sake of example, say we are trying to implement the *event registration 
 So, in order to establish a many-to-many relationship between these two tables, we must create a new *association table*. Let's call this `event-registrations` and the entity `EventRegistrationEntity`. We can create this entity below:
 
 ---
-**New File `entities/event-registration-entity.py`**
+**New File `entities/event_registration_entity.py`**
 ```py
 class EventRegistrationEntity(EntityBase):
     """Serves as the association table between the event and user table."""
@@ -302,20 +300,20 @@ class EventRegistrationEntity(EntityBase):
     
     # Two foreign key fields, as shown in the table above, to connect the
     # event and user tables together.
-    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"))
-    user_pid: Mapped[int] = mapped_column(ForeignKey("user.pid"))
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id"), primary_key=True)
+    user_pid: Mapped[int] = mapped_column(ForeignKey("user.pid"), primary_key=True)
 
     # TODO: Relationship Fields
 
 ```
 ---
 
-You can see that this entity has *two foreign key fields* one to the `event` table and one to the `user` table! Now, these tables are connected. The only thing left to do is to add the relationship fields.
+You can see that this entity has *two foreign key fields* one to the `event` table and one to the `user` table! Now, these tables are connected. The only thing left to do is to add the relationship fields. We also make these our primary key fields too, since these two fields together uniquely identify each registration.
 
 In this case, we could see the creation of the following relationship fields:
 
 ---
-**In File `entities/event-registration-entity.py`**
+**In File `entities/event_registration_entity.py`**
 ```py
 class EventRegistrationEntity(EntityBase):
     ...
@@ -323,14 +321,14 @@ class EventRegistrationEntity(EntityBase):
     event: Mapped["EventEntity"] = relationship(back_populates="registrations")
     user: Mapped["UserEntity"] = relationship(back_populates="registrations")
 ```
-**In File `entities/event-entity.py`**
+**In File `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     ...
     # Relationship Fields
     registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="event", cascade="all,delete")
 ```
-**In File `entities/user-entity.py`**
+**In File `entities/user_entity.py`**
 ```py
 class UserEntity(EntityBase):
     ...
@@ -343,7 +341,7 @@ class UserEntity(EntityBase):
 
 This is great! We now have indirectly connected all of the events and users together via lists of `EventRegistrationEntity` objects. Let's take a look at this relationship in a simplified diagram:
 
-![many-to-many-one](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/many_one.png)
+![many-to-many-one](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/many_one.png)
 
 As you can see in the diagram, we have set up a many-to-many relationship by essentially setting up two one-to-many relationships between the `event` and `user` tables with the `event-registration` table. This adequately connects our data. For example, if you wanted to access all of the registered users for an event, you could run the following pseudocode:
 
@@ -364,7 +362,7 @@ We actually can also do this using relationship fields!
 Look at the following code:
 
 ---
-**In File `entities/event-registration-entity.py`**
+**In File `entities/event_registration_entity.py`**
 ```py
 class EventRegistrationEntity(EntityBase):
     ...
@@ -372,7 +370,7 @@ class EventRegistrationEntity(EntityBase):
     event: Mapped["EventEntity"] = relationship(back_populates="registrations")
     user: Mapped["UserEntity"] = relationship(back_populates="registrations")
 ```
-**In File `entities/event-entity.py`**
+**In File `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     ...
@@ -380,7 +378,7 @@ class EventEntity(EntityBase):
     registrations: Mapped[list["EventRegistrationEntity"]] = relationship(back_populates="event", cascade="all,delete")
     users: Mapped[list["UserEntity"]] = relationship(secondary="event-registration", back_populates="events")
 ```
-**In File `entities/user-entity.py`**
+**In File `entities/user_entity.py`**
 ```py
 class UserEntity(EntityBase):
     ...
@@ -392,7 +390,7 @@ class UserEntity(EntityBase):
 
 We add two new fields: `users` in the `EventEntity` which stores a list of registered users, and `events` in `UserEntity` which stores a list of events the user is registered for. Notice the use of `secondary="event-registration"`! This parameter takes in the *name of an association table*, and SQLAlchemy does the rest - intelligently populating both lists (matching the fields together with their `back_populates` being set to each other). We can take a look at the new diagram:
 
-![many-to-many-two](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/many_two.png)
+![many-to-many-two](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/many_two.png)
 
 Now, if you wanted to see the registered users for an event, it is easier than ever:
 ```py
@@ -410,7 +408,7 @@ Great! Now that you have updated your entities to support relationships, we must
 Let's use the *one-to-many* organization to events relationship we completed in a previous section. Recall the finalized entities:
 
 ---
-**In `entities/event-entity.py`**
+**In `entities/event_entity.py`**
 ```py
 class EventEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Event` table"""
@@ -431,7 +429,7 @@ class EventEntity(EntityBase):
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="events")
 ```
 ---
-**In `entities/organization-entity.py`**
+**In `entities/organization_entity.py`**
 ```py
 class OrganizationEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Organization` table"""
@@ -492,7 +490,7 @@ class Organization(BaseModel):
 ```
 ---
 
-Yay 🥳! That was easy, let's run out proj--
+Yay 🥳! That was easy, let's run our proj--
 
 ```
 ImportError: cannot import name 'Event' from partially initialized module 'backend.models.event' (most likely due to a circular import)
@@ -504,7 +502,7 @@ Receiving this error is heartbreaking, however it is quite a common problem - es
 
 Understanding why this error occurs relies on having an understanding of *how* Python interprets code files. Every time Python reaches an import statement, it *reads through that file to its entirety*. So, given our model files, this is the result:
 
-![circularity](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/circularity.png)
+![circularity](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/circularity.png)
 
 Uh oh.. We ran into an infinite loop. Very sad.
 
@@ -584,7 +582,7 @@ Notice that all of our detail fields ***inherit their other properties*** from t
 
 Now, let's look at how Python follows this code:
 
-![no circularity](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/sqlalchemy/docs/images/sqlalchemy/no_circularity.png)
+![no circularity](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/sqlalchemy/no_circularity.png)
 
 As you can see, there is no longer circularity! There is a clear linear path from start to end.
 
