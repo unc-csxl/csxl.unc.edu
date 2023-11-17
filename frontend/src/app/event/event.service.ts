@@ -13,6 +13,7 @@ import { Observable, map } from 'rxjs';
 import { Event, EventJson, parseEventJson } from './event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
+import { EventPaginationParams, PaginatedEvent } from 'src/app/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -99,5 +100,26 @@ export class EventService {
 
     // Return the groups
     return [...groups.entries()];
+  }
+
+  list(params: EventPaginationParams) {
+    let paramStrings = {
+      page: params.page.toString(),
+      page_size: params.page_size.toString(),
+      order_by: params.order_by,
+      range_start: params.range_start,
+      range_end: params.range_end
+    };
+    let query = new URLSearchParams(paramStrings);
+    return this.http
+      .get<PaginatedEvent<EventJson>>(
+        '/api/events/paginate?' + query.toString()
+      )
+      .pipe(
+        map((paginated) => ({
+          ...paginated,
+          items: paginated.items.map(parseEventJson)
+        }))
+      );
   }
 }

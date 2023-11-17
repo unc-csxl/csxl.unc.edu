@@ -10,7 +10,7 @@ from backend.services.exceptions import (
 )
 
 # Tested Dependencies
-from ....models import Event, EventDetails
+from ....models import Event, EventDetails, EventPaginationParams
 from ....services import EventService
 
 # Injected Service Fixtures
@@ -22,6 +22,8 @@ from ..core_data import setup_insert_data_fixture
 # Data Models for Fake Data Inserted in Setup
 from .event_test_data import events, event_one, to_add, updated_event
 from ..user_data import root, user
+
+from .event_demo_data import date_maker
 
 # Test Functions
 
@@ -40,6 +42,23 @@ def test_get_from_id(event_svc_integration: EventService):
     assert fetched_event is not None
     assert isinstance(fetched_event, Event)
     assert fetched_event.id == event_one.id
+
+
+def test_list(event_svc_integration: EventService):
+    """Test that a paginated list of events can be produced."""
+    pagination_params = EventPaginationParams(
+        page=0,
+        page_size=2,
+        order_by="id",
+        range_start=date_maker(days_in_future=1, hour=10, minutes=0).strftime(
+            "%d/%m/%Y, %H:%M:%S"
+        ),
+        range_end=date_maker(days_in_future=2, hour=10, minutes=0).strftime(
+            "%d/%m/%Y, %H:%M:%S"
+        ),
+    )
+    fetched_events = event_svc_integration.list(pagination_params)
+    assert len(fetched_events.items) == 1
 
 
 def test_create_enforces_permission(event_svc_integration: EventService):

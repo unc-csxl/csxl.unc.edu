@@ -5,8 +5,7 @@ Event routes are used to create, retrieve, and update Events."""
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..services.event import EventService
-from ..models.event import Event
-from ..models.event_details import EventDetails
+from ..models import Event, EventDetails, Paginated, EventPaginationParams
 from ..api.authentication import registered_user
 from ..models.user import User
 
@@ -67,6 +66,27 @@ def new_event(
         EventDetails: latest iteration of the created or updated event after changes made
     """
     return event_service.create(subject, event)
+
+
+@api.get("/paginate", tags=["Events"])
+def list_events(
+    event_service: EventService = Depends(),
+    page: int = 0,
+    page_size: int = 10,
+    order_by: str = "time",
+    range_start: str = "",
+    range_end: str = "",
+) -> Paginated[EventDetails]:
+    """List events in time range via standard backend pagination query parameters."""
+
+    pagination_params = EventPaginationParams(
+        page=page,
+        page_size=page_size,
+        order_by=order_by,
+        range_start=range_start,
+        range_end=range_end,
+    )
+    return event_service.list(pagination_params)
 
 
 @api.get(

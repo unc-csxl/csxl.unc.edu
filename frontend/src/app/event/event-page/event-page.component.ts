@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventResolver } from '../event.resolver';
 import { ActivatedRoute } from '@angular/router';
@@ -17,19 +17,42 @@ import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 import { EventService } from '../event.service';
 
+import { PaginatedEvent } from 'src/app/pagination';
+import { PageEvent } from '@angular/material/paginator';
+
+const now = new Date();
+const rangeEndDate = new Date(
+  new Date().setFullYear(new Date().getFullYear() + 100)
+);
+
 @Component({
   selector: 'app-event-page',
   templateUrl: './event-page.component.html',
   styleUrls: ['./event-page.component.css']
 })
 export class EventPageComponent implements OnInit {
+  public page: PaginatedEvent<Event>;
+
+  private static EventPaginationParams = {
+    page: 0,
+    page_size: 15,
+    order_by: 'time',
+    range_start: now.toLocaleString('en-GB'),
+    range_end: rangeEndDate.toLocaleString('en-GB')
+  };
+
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: '',
     title: 'Events',
     component: EventPageComponent,
     canActivate: [],
-    resolve: { profile: profileResolver, events: eventResolver }
+    resolve: {
+      profile: profileResolver,
+      events: eventResolver,
+      page: () =>
+        inject(EventService).list(EventPageComponent.EventPaginationParams)
+    }
   };
 
   /** Store the content of the search bar */
@@ -61,16 +84,18 @@ export class EventPageComponent implements OnInit {
     const data = this.route.snapshot.data as {
       profile: Profile;
       events: Event[];
+      page: PaginatedEvent<Event>;
     };
     this.profile = data.profile;
     this.events = data.events;
+    this.page = data.page;
 
     // Group events by their dates
-    this.eventsPerDay = eventService.groupEventsByDate(this.events);
+    this.eventsPerDay = eventService.groupEventsByDate(this.page.items);
 
     // Initialize the initially selected event
     if (data.events.length > 0) {
-      this.selectedEvent = eventFilterPipe.transform(data.events, "")[0];
+      this.selectedEvent = eventFilterPipe.transform(data.events, '')[0];
     }
   }
 
@@ -100,5 +125,19 @@ export class EventPageComponent implements OnInit {
    */
   onEventCardClicked(event: Event) {
     this.selectedEvent = event;
+  }
+
+  handlePageEvent(e: PageEvent) {
+    let paginationParams = this.page.params;
+    paginationParams.page = e.pageIndex;
+    paginationParams.page_size = e.pageSize;
+    paginationParams.range_start = now.toLocaleString('en-GB');
+    paginationParams.range_end = rangeEndDate.toLocaleString('en-GB');
+    this.eventService
+      .list(paginationParams)
+      .subscribe(
+        (page) =>
+          (this.eventsPerDay = this.eventService.groupEventsByDate(page.items))
+      );
   }
 }

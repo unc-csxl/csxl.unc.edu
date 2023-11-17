@@ -17,6 +17,11 @@
           [disableLinks]="innerWidth > 900"
           (cardClicked)="onEventCardClicked($event)"
           [fullWidth]="true" />
+        <mat-paginator
+          [length]="page.length"
+          [pageSize]="page.params.page_size"
+          [pageIndex]="page.params.page"
+          (page)="handlePageEvent($event)"></mat-paginator>
       </div>
 
       <div class="details-column">
