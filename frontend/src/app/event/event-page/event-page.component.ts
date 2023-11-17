@@ -20,8 +20,8 @@ import { EventService } from '../event.service';
 import { PaginatedEvent } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
 
-const now = new Date();
-const rangeEndDate = new Date(
+let rangeStartDate = new Date();
+let rangeEndDate = new Date(
   new Date().setFullYear(new Date().getFullYear() + 100)
 );
 
@@ -36,8 +36,8 @@ export class EventPageComponent implements OnInit {
   private static EventPaginationParams = {
     page: 0,
     page_size: 15,
-    order_by: 'time',
-    range_start: now.toLocaleString('en-GB'),
+    order_by: '',
+    range_start: rangeStartDate.toLocaleString('en-GB'),
     range_end: rangeEndDate.toLocaleString('en-GB')
   };
 
@@ -131,13 +131,28 @@ export class EventPageComponent implements OnInit {
     let paginationParams = this.page.params;
     paginationParams.page = e.pageIndex;
     paginationParams.page_size = e.pageSize;
-    paginationParams.range_start = now.toLocaleString('en-GB');
+    paginationParams.range_start = rangeStartDate.toLocaleString('en-GB');
     paginationParams.range_end = rangeEndDate.toLocaleString('en-GB');
-    this.eventService
-      .list(paginationParams)
-      .subscribe(
-        (page) =>
-          (this.eventsPerDay = this.eventService.groupEventsByDate(page.items))
-      );
+    this.eventService.list(paginationParams).subscribe((page) => {
+      this.page = page;
+      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+    });
+  }
+
+  showPastEvents() {
+    rangeStartDate = new Date(
+      new Date().setFullYear(new Date().getFullYear() - 100)
+    );
+    rangeEndDate = new Date();
+    let paginationParams = this.page.params;
+    paginationParams.page = 0;
+    paginationParams.page_size = 15;
+    paginationParams.order_by = 'time';
+    paginationParams.range_start = rangeStartDate.toLocaleString('en-GB');
+    paginationParams.range_end = rangeEndDate.toLocaleString('en-GB');
+    this.eventService.list(paginationParams).subscribe((page) => {
+      this.page = page;
+      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+    });
   }
 }

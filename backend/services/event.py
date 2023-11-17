@@ -148,7 +148,8 @@ class EventService:
             range_start = pagination_params.range_start
             range_end = pagination_params.range_end
             criteria = and_(
-                EventEntity.time >= datetime.strptime(range_start, "%d/%m/%Y, %H:%M:%S"),
+                EventEntity.time
+                >= datetime.strptime(range_start, "%d/%m/%Y, %H:%M:%S"),
                 EventEntity.time <= datetime.strptime(range_end, "%d/%m/%Y, %H:%M:%S"),
             )
             statement = statement.where(criteria)

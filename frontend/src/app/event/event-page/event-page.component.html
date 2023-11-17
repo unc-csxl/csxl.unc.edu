@@ -4,6 +4,9 @@
       class="search-bar"
       [searchBarQuery]="searchBarQuery"
       (searchBarQueryChange)="onSearchBarQueryChange($event)" />
+    <button mat-stroked-button style="float: right" (click)="showPastEvents()">
+      Show Past Events
+    </button>
   </div>
 
   <div class="container">
