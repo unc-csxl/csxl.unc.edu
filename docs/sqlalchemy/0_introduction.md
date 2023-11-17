@@ -74,4 +74,22 @@ This series of tutorials is dedicated to helping you become familiarized with SQ
 
 ## Table of Contents
 
-_Coming soon!_
+[**Chapter 1: SQLAlchemy Core and ORM**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/1_sqlalchemy_core_and_orm.md)
+
+_This chapter is coming soon!_
+
+[**Chapter 2: SQLAlchemy Entities**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/2_entities.md)
+
+This chapter introduces SQLAlchemy Entities to model database tables in Python, how to set them up, and how they differ from the Pydantic models you are already using in your backend.
+
+[**Chapter 3: Connecting to the Database**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/3_connecting_to_database.md)
+
+This chapter introduces how you programmatically create the SQLAlchemy session to interact with your database, show how this is managed, and describe how the session is injected into backend services.
+
+[**Chapter 4: CRUD Operations**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/4_crud_operations.md)
+
+This chapter discusses how you can use SQLAlchemy to interact with your database, including how to run common operations such as creating, reading, updating, and deleting data. This chapter also includes supplemental resources for more complex SQLAlchemy queries.
+
+[**Chapter 5: Database Relationships**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/5_relationships.md)
+
+This chapter introduces the concept of database relationships. It introduces the motivation behind database relationships, discuss the different types, how to implement them using SQLAlchemy, and mentions common problems or pitfalls that you may face when adding relationships to your project.
