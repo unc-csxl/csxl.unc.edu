@@ -76,7 +76,7 @@ This series of tutorials is dedicated to helping you become familiarized with SQ
 
 [**Chapter 1: SQLAlchemy Core and ORM**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/1_sqlalchemy_core_and_orm.md)
 
-_This chapter is coming soon!_
+This chapter introduces the SQLAlchemy Core and ORM and breifly explains the function of each in the context of the database and overall backend.
 
 [**Chapter 2: SQLAlchemy Entities**](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/2_entities.md)
 
