@@ -38,7 +38,7 @@ In an ideal world, this transaction would occur and no issues would arise. But, 
 - KMP loses $0 and Kris Jordan gains $10, meaning $10 spontaneouly appeared!
 - Nothing happens.
 
-For accounting purposes, the 2nd and 3rd scenarios are super bad. So instead, imagine that the two steps above (`-$10` and `+$10`) are \*bundled into one transaction.
+For accounting purposes, the 2nd and 3rd scenarios are super bad. So instead, imagine that the two steps above (`-$10` and `+$10`) are *bundled into one transaction*.
 
 Then, if the internet shuts off, the only two results could occur:
 
