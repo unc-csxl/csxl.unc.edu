@@ -331,7 +331,7 @@ The `.in_()` method allows us to match a field based on alternative options! So,
 
 ### Querying Based on Database Relationships
 
-> **NOTE:** In Part 5 of this SQLAlchemy tutorials, you learn about database relationships. If you have not reviewed Part 5 yet, check that out first!
+> **NOTE:** You will learn about database relationships in [Chapter 5](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/sqlalchemy/5_relationships.md) of this SQLAlchemy tutorial. If you have not reviewed Chapter 5 yet, check that out first!
 
 Once your database tables grow in complexity, it is extremely likely that you will be trying to query data with relationships to other data - therefore, it is important to become familiar with how to query based on these relationships using SQLAlchemy.
 
