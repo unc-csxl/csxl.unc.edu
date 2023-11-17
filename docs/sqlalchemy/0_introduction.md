@@ -58,7 +58,9 @@ Note the `*` here means that I am selecting all the columns from the `user` tabl
 SELECT * FROM user WHERE pid=999999999
 ```
 
-Of course, this is super cool! However, there is a problem. It is quite hard to write and execute pure SQL queries in Python. Plus, there is a lot of things behind the scenes to manage here. We need a tool that allows us to connect to our SQL database from Python so that we can manage the data in our database.
+Of course, this is super cool! However, there are a few problems. It is quite hard to write and execute pure SQL queries in Python. Plus, there is a lot of things behind the scenes to manage here. We need a tool that allows us to connect to our SQL database from Python so that we can manage the data in our database.
+
+abstract some of the accidental differences away.
 
 **Enter SQLAlchemy!**
 
@@ -69,6 +71,20 @@ Take a look at how the SQLAlchemy session sits in with our stack diagram:
 ![Same flowchart as before but with SQLAlchemy](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/querying/docs/images/sqlalchemy/tech-stack-with-alchemy.png)
 
 Now, the database is connected to the rest of the application!
+
+## Motivations
+
+There are many reasons why you would want to use SQLAlchemy rather than just writing and running SQL queries manually.
+
+- First, SQL queries would just be written as strings in Python. Manually building up these strings with concatenation is _messy and error-prone_. SQLAlchemy allows us to interact with our database by handling this SQL query creation for us, and we just have to call certain methods to perform the actions we want.
+
+- In addition, when it comes to actually _running_ string SQL queries on the database is difficult and would require us to write a lot of extra service code anyway.
+
+- There are also _security risks_ with allowing pure SQL strings to be used on the database. Malicious SQL queries would easily be run on the database, causing major issues. SQLAlchemy mitigates these attacks and handles which data should be acessible or not.
+
+- As you will learn in future chapters, SQLAlchemy also handles the conversion between SQL data and Python objects, allowing you to easily with with data you retrieve from the database and write data from Python.
+
+- Different types of SQL databases (Postgres, MySQL, SQLite, etc) all are slightly different - either in features, data types they support, and so on. SQLAlchemy takes care of this for us so that we can just interact with our database like we would expect.
 
 This series of tutorials is dedicated to helping you become familiarized with SQLAlchemy and how it is used in the CSXL Application.
 
