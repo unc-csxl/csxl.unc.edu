@@ -329,8 +329,50 @@ The `.in_()` method allows us to match a field based on alternative options! So,
 
 > **NOTE:** The method has an underscore (`_`) in its name. This is because `in` is a reserved keyword in Python and therefore cannot be used anywhere else (such as method names). In fact, we used this keyword just a few examples ago in the conditional `("Carolina" in OrganizationEntity.name)`.
 
-
 ### Querying Based on Database Relationships
+
+> **NOTE:** In Part 5 of this SQLAlchemy tutorials, you learn about database relationships. If you have not reviewed Part 5 yet, check that out first!
+
+Once your database tables grow in complexity, it is extremely likely that you will be trying to query data with relationships to other data - therefore, it is important to become familiar with how to query based on these relationships using SQLAlchemy.
+
+#### Querying in a One-to-One or One-to-Many Relationship
+
+Let's take the `organization` table that we have been examining throughout the previous parts. In the actual CSXL application, the `organization` table has a one-to-many relationship to the `event` table - because an organization can host many events, yet events can only be hosted by one organization.
+
+What if we wanted to write a query to retreive all of the events for a specific organization?
+
+```py
+entities = self._session.query(EventEntity)
+    .join(OrganizationEntity)
+    .where(OrganizationEntity.shorthand == "CADS")
+    .all()
+```
+
+First, we use query the `EventEntity` objects, because this is the format of the data that we are expecting. The next step here is to use the `.join()` method. The join method connects the `event` table, what we are querying on, to another table that is related to the `event` table. In this case, since the `event` table is related to the `organization` table, we can use `OrganizationEntity` inside of our `.join()` method.
+
+*Now, we can filter our events based on the properties of the organizations they are related to!*
+
+So, the code snippet above will *return all of the events whose related organization's slug is "CADS"*. Ultimately, this snippet returns all of the events hosted by CADS.
+
+#### Querying in a Many-to-Many Relationship
+
+What if we wanted to query based on a many-to-many relationship?
+
+Let's take the `event` table and the `user` table. Events can have multiple registered users, and users can be registered for multiple events - therefore, this is a many-to-many relationship. To recap from Part 5 of the SQLAlchemy docs, we have to establish an *association table* to properly define a many-to-many relationship. In this example, we have the `EventRegistrationEntity` serving as the association table entity for the `EventEntity` and the `UserEntity`.
+
+What if we wanted to write a query to retrieve all of the events registered by a single user?
+
+```py
+entities = self._session.query(EventEntity)
+    .join(EventRegistrationEntity) # NEW
+    .join(UserEntity)
+    .where(UserEntity.id == "7308888888")
+    .all()
+```
+
+Notice that again, we the entity that we put into our `query()` method was the `EventEntity` because this is the type of data that we are expecting. The only real difference here is that we have *one extra `.join()` method call*. Since the `event` and `user` tables are related through the `event_registration` table, in order to ultimately join the `event` table to the `user` table, we have to go through the *association table* (`event_registration`) first! Once we join with the association table, we can then join to the final table. From there, we can now apply a filter on the `user` table.
+
+So, the code snippet above will *return all of the events whose attended by a user with the id `7308888888`.
 
 ### Querying Paginated Data
 
