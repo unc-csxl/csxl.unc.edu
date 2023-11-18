@@ -279,7 +279,7 @@ What happens if there are errors when we attempt to load our data using Resolver
 
 ```ts
 this.organizations$.subscribe({
-  next: (event) => {
+  next: (organization) => {
     // Do something on success here.
   },
   error: (err) => {
