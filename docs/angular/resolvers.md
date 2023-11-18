@@ -208,8 +208,8 @@ export class OrganizationPageComponent {
     }
   };
 
-  /** Store unwrapped list of Organizations */
-  public organizations: Organization[] = [];
+  /** Store list of Organizations */
+  public organizations: Organization[];
 
   /** Initializer for the component */
   constructor(private route: ActivatedRoute) {
