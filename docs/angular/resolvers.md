@@ -274,4 +274,48 @@ That is all that is needed! You can then pass this resolver back into a componen
 
 ## Error Handling with Resolvers
 
+What happens if there are errors when we attempt to load our data using Resolvers? If you recall, if we were to use the traditional method of *subcscribing* to an `Observable`, we could include error handling using the following:
+
+```ts
+this.organizations$.subscribe({
+  next: (event) => {
+    // Do something on success here.
+  },
+  error: (err) => {
+    // Handle and errors here.
+  }
+});
+```
+
+How would we handle errors using our Resolvers if we are never explicitly subscribing to an `Observable` in code?
+
+We can use RxJS's `catchError()` function to handle errors in our Resolver!
+
+First, we need to use the `.pipe()` function to *pass the injected `Observable`* into the `catchError()` function. Look at the example below:
+
+**In `organization.resolver.ts`**
+
+```ts
+/** This resolver injects an organization into the organization detail component. */
+export const organizationDetailResolver: ResolveFn<Organization | undefined> = (route, state) => {
+  let slug = route.paramMap.get('slug')!
+  return inject(OrganizationService).getOrganization(slug)
+    .pipe(
+      catchError(err) => {
+        // Handle error here!
+        // Let's log the error, and then instead of crashing the program, we can just
+        // return `undefined` for our `Organization` output.
+        console.log(err);
+        return of(undefined);
+      }
+    )
+};
+```
+
+With this convention, we can handle any errors that occur when we attempt to retrieve the organization! Notice the usage of RxJS's `of()` operator in the return type.
+
+In RxJS, the **`of()`** operator is a function that *creates an Observable* from a value! Since the return type of this Resolver is to return an `Observable<Organization | undefined>` directly, we cannot just return `undefined`! We need to return an *Observable* holding the value `undefined`. So, we return `of(undefined)`.
+
+You can add a lot more nuance to your error handling here depending on the specific use cases you have in your final project.
+
 ## Conclusion
