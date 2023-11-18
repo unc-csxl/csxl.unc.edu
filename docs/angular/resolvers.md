@@ -86,7 +86,7 @@ Resolvers take in two arguments:
 
 Resolvers return some data of type `T` back to the frontend, either in format of `Observable`, `Promise`, or just the data type `T` itself!
 
-So, we can define a basic resolver using the convention below:
+So, we can define a basic Resolver using the convention below:
 
 ```ts
 export const resolver: ResolveFn<T> = (route, state) => {
@@ -96,7 +96,7 @@ export const resolver: ResolveFn<T> = (route, state) => {
 
 > **NOTE:** Notice the keyword `export`! This keyword enables other files, such as our component files, to be able to access this constant.
 
-Of course, `T` is a generic type. So, if we wanted to create a resolver to get all organization data, we could create a resolver with the following structure:
+Of course, `T` is a generic type. So, if we wanted to create a Resolver to get all organization data, we could create a resolver with the following structure:
 
 ```ts
 /** This resolver injects the list of organizations into the organization component. */
@@ -116,7 +116,7 @@ export const organizationResolver: ResolveFn<Organization[] | undefined> = (rout
 };
 ```
 
-Notice the use of `inject()`! We are _injecting_ the `OrganizationService` into the resolver so that we can run its methods. From there, we return `.getOrganizations()`.
+Notice the use of `inject()`! We are _injecting_ the `OrganizationService` into the Resolver so that we can run its methods. From there, we return `.getOrganizations()`.
 
 That is all that is needed to set up a basic Angular Resolver!
 
@@ -149,7 +149,7 @@ export class OrganizationPageComponent {
 }
 ```
 
-Resolvers help us *load data into our components **before** construction*. So, to actually pass in a resolver, we can modify the organization page's `Route`! The route contains all of the information needed to the *router* to load a component. Since we want to load the data of a resolver *before* the component loads, we want to add these resolver functions to the `Route` static property so that the router can run these first.
+Resolvers help us *load data into our components **before** construction*. So, to actually pass in a resolver, we can modify the organization page's `Route`! The route contains all of the information needed to the *router* to load a component. Since we want to load the data of a Resolver *before* the component loads, we want to add these resolver functions to the `Route` static property so that the router can run these first.
 
 We can add the `resolve` field to the `Route` object like so:
 
@@ -183,7 +183,7 @@ So, in the component's *constructor*, let's load our pre-loaded data.
 }
 ```
 
-First, we use `route.snapshot.data` to retrieve the data object exposed by our route based on the data we retrieved from the resolver! Then, we want to *cast* this data (using the `as` operator) to an object *matching the exact shape as what we provided in `resolve` in the `Route` field above!) So, we need to cast this to an object with a field named `organization` that takes in the data type we are expecting from our resolver - a list of organizations!
+First, we use `route.snapshot.data` to retrieve the data object exposed by our route based on the data we retrieved from the Resolver! Then, we want to *cast* this data (using the `as` operator) to an object *matching the exact shape as what we provided in `resolve` in the `Route` field above!) So, we need to cast this to an object with a field named `organization` that takes in the data type we are expecting from our Resolver - a list of organizations!
 
 From there, now the `data` constant is saved to an oject with a single field named `organization`, and this field has been **successfully populated** with the results of `OrganizationService.getOrganizations()` - *no observables or subscriptions needed!*
 
@@ -271,7 +271,7 @@ export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
 };
 ```
 
-That is all that is needed! You can then pass this resolver back into a component's static `Route` property and access the data as we did before.
+That is all that is needed! You can then pass this Resolver back into a component's static `Route` property and access the data as we did before.
 
 ## Error Handling with Resolvers
 
