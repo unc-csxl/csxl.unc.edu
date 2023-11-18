@@ -202,7 +202,7 @@ export class OrganizationPageComponent {
   public static Route = {
     path: '',
     title: 'CS Organizations',
-    component: OrganizationPageComponent
+    component: OrganizationPageComponent,
     resolve: {
       organization: organizationResolver // NEW
     }
