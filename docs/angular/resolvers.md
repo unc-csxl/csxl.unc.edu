@@ -99,7 +99,7 @@ Of course, `T` is a generic type. So, if we wanted to create a resolver to get a
 
 ```ts
 /** This resolver injects the list of organizations into the organization component. */
-export const orgResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
+export const organizationResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
   // Do something here!
 };
 ```
@@ -110,7 +110,7 @@ From here, we can **call our service function** to return the data we are expect
 
 ```ts
 /** This resolver injects the list of organizations into the organization component. */
-export const orgResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
+export const organizationResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
   return inject(OrganizationService).getOrganizations();
 };
 ```
