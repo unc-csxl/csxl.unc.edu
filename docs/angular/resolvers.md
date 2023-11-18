@@ -26,7 +26,12 @@ Let's take a look at the following code snippet from our component:
   styleUrls: ["./organization-page.component.css"],
 })
 export class OrganizationPageComponent {
-  // Route object and other fields hidden.
+  /** Route information to be used in the Routing Module */
+  public static Route = {
+    path: '',
+    title: 'CS Organizations',
+    component: OrganizationPageComponent
+  };
 
   /** Store Observable list of Organizations */
   public organizations$: Observable<Organization[]>;
@@ -115,6 +120,112 @@ Notice the use of `inject()`! We are _injecting_ the `OrganizationService` into 
 That is all that is needed to set up a basic Angular Resolver!
 
 ## Using Resolver Data in Components
+
+Now that you have created a Resolver, it is time to actually use it inside of an Angular Component!
+
+Recall the structure of of our component:
+
+```ts
+@Component({
+  selector: "organization-page",
+  templateUrl: "./organization-page.component.html",
+  styleUrls: ["./organization-page.component.css"],
+})
+export class OrganizationPageComponent {
+
+  /** Route information to be used in the Routing Module */
+  public static Route = {
+    path: '',
+    title: 'CS Organizations',
+    component: OrganizationPageComponent
+  };
+
+  /** Store unwrapped list of Organizations */
+  public organizations: Organization[] = [];
+
+  /** Initializer for the component */
+  constructor(private route: ActivatedRoute) {}
+}
+```
+
+Resolvers help us *load data into our components **before** construction*. So, to actually pass in a resolver, we can modify the organization page's `Route`! The route contains all of the information needed to the *router* to load a component. Since we want to load the data of a resolver *before* the component loads, we want to add these resolver functions to the `Route` static property so that the router can run these first.
+
+We can add the `resolve` field to the `Route` object like so:
+
+```ts
+/** Route information to be used in the Routing Module */
+public static Route = {
+  path: '',
+  title: 'CS Organizations',
+  component: OrganizationPageComponent
+  resolve: {
+    organization: organizationResolver // NEW
+  }
+};
+```
+
+We are passing in an *object shape* into the `resolve` parameter, where we assign a field name `organization` to the `organizationResolver`! Now, when the page loads, an object with the same shape will be available from the route with the data we want assigned to its `organization` field! Specifically, this object will be accessible using `route.snapshot.data` in the constructor, where `route` is the injected `ActivatedRoute`.
+
+So, in the component's *constructor*, let's load our pre-loaded data.
+
+```ts
+  /** Initializer for the component */
+  constructor(private route: ActivatedRoute) {
+
+    // STEP 1: Load the data passed from the resolver to the route.
+    const data = route.snapshot.data as {
+      organization: Organization[];
+    }
+
+    // STEP 2: Access our data!
+    this.organizations = data.organization;
+}
+```
+
+First, we use `route.snapshot.data` to retrieve the data object exposed by our route based on the data we retrieved from the resolver! Then, we want to *cast* this data (using the `as` operator) to an object *matching the exact shape as what we provided in `resolve` in the `Route` field above!) So, we need to cast this to an object with a field named `organization` that takes in the data type we are expecting from our resolver - a list of organizations!
+
+From there, now the `data` constant is saved to an oject with a single field named `organization`, and this field has been **successfully populated** with the results of `OrganizationService.getOrganizations()` - *no observables or subscriptions needed!*
+
+So lastly, in order to access our data, we can simply call `data.organization` and save it to a field of the Component!
+
+Let's take a look at the final code:
+
+```ts
+@Component({
+  selector: "organization-page",
+  templateUrl: "./organization-page.component.html",
+  styleUrls: ["./organization-page.component.css"],
+})
+export class OrganizationPageComponent {
+
+  /** Route information to be used in the Routing Module */
+  public static Route = {
+    path: '',
+    title: 'CS Organizations',
+    component: OrganizationPageComponent
+    resolve: {
+      organization: organizationResolver // NEW
+    }
+  };
+
+  /** Store unwrapped list of Organizations */
+  public organizations: Organization[] = [];
+
+  /** Initializer for the component */
+  constructor(private route: ActivatedRoute) {
+
+    // STEP 1: Load the data passed from the resolver to the route.
+    const data = route.snapshot.data as {
+      organization: Organization[];
+    }
+
+    // STEP 2: Access our data!
+    this.organizations = data.organization;
+}
+}
+```
+
+That is essentially all you need to set up Resolvers and connect Resolvers to Angular Components in your code!
 
 ## Access Route Parameters in the Resolver
 
