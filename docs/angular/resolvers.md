@@ -61,6 +61,68 @@ In this lesson, you will learn how to create your own Angular Resolvers and add 
 
 ## Creating Resolvers
 
+By convention standards, Angular Resolvers exist in their own TypeScript files with the name `feature.resolver.ts` - often bundled together in the same folder of the feature you are working on. For example, all of the resolvers for the "organizations" feature are in the `organizations/` directory and in the file `organization.resolver.ts`.
+
+Once in your file, you can begin to add Resolvers! Resolvers defined by the `ResolveFn` class. The `ResolveFn` object is defined in Angular as the following:
+
+```ts
+export declare type ResolveFn<T> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => Observable<T> | Promise<T> | T;
+```
+
+> **NOTE:** You can actually find this declaration as well! Simply right click on `ResolveFn` in your project and select "Go to Definition".
+
+As you can see, resolvers are simply _functions_ with the following properties.
+
+Resolvers take in two arguments:
+
+- `route`: The active route that the component is currently loaded at (i.e., the URL and related information).
+- `state`: Object that contains various pieces of information related to the route and navigation. For most purposes in the CSXL application, this parameter remains unused.
+
+Resolvers return some data of type `T` back to the frontend, either in format of `Observable`, `Promise`, or just the data type `T` itself!
+
+So, we can define a basic resolver using the convention below:
+
+```ts
+export const resolver: ResolveFn<T> = (route, state) => {
+  // Return something here of type Observable<T>, Promise<T>, or T
+};
+```
+
+> **NOTE:** Notice the keyword `export`! This keyword enables other files, such as our component files, to be able to access this constant.
+
+Of course, `T` is a generic type. So, if we wanted to create a resolver to get all organization data, we could create a resolver with the following structure:
+
+```ts
+/** This resolver injects the list of organizations into the organization component. */
+export const orgResolver: ResolveFn<Organization[] | undefined> = (
+  route,
+  state
+) => {
+  // Do something here!
+};
+```
+
+Notice that we use `Organization[] | undefined` as our generic type `T` in case no data is loaded.
+
+From here, we can **call our service function** to return the data we are expecting! We can do this using the following:
+
+```ts
+/** This resolver injects the list of organizations into the organization component. */
+export const orgResolver: ResolveFn<Organization[] | undefined> = (
+  route,
+  state
+) => {
+  return inject(OrganizationService).getOrganizations();
+};
+```
+
+Notice the use of `inject()`! We are _injecting_ the `OrganizationService` into the resolver so that we can run its methods. From there, we return `.getOrganizations()`.
+
+That is all that is needed to set up a basic Angular Resolver!
+
 ## Using Resolver Data in Components
 
 ## Access Route Parameters in the Resolver
