@@ -229,6 +229,49 @@ That is essentially all you need to set up Resolvers and connect Resolvers to An
 
 ## Access Route Parameters in the Resolver
 
+The setup above is great for querying all data! However, what if you wanted to query *specific* data? For example, the `OrganizationService` has a `.getOrganization(slug: string)` function that takes in a specific slug to find an organization matching that slug. This call would be used on the *organization detail page* [link here](https://csxl.unc.edu/organizations/cads) to display information about one specific organization.
+
+Look at the *route*, or URL, of this sample organization detail page for CADS: `https://csxl.unc.edu/organizations/cads`. As you can see, the route contains the *slug* for the organization! 
+
+Recall that the *Resolver* takes in a **`route`** parameter! This parameter allows us to have access to the current route that the user is navigating to.
+
+Before, in our *components*, we could access parameters in our routes, such as slugs, using the following:
+
+**The constructor of a Component File:**
+```ts
+constructor(private route: ActivatedRoute, private organizationService: OrganizationsService) {
+  let slug = route.paramMap.get('slug')!
+  this.organization$ = organizationService.getOrganization(slug);
+}
+```
+
+We could do this when `route` was injected into our component. Well, we have access to our *route* in our Resolver too!
+
+Recall the final setup for the `organizationResolver` we defined earlier:
+
+**In `organization.resolver.ts`**
+
+```ts
+/** This resolver injects the list of organizations into the organization component. */
+export const organizationResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
+  return inject(OrganizationService).getOrganizations();
+};
+```
+
+We can use the *route* parameter in the same way as we would in the component! So, let's create a new resolver called *organizationDetailResolver* that loads the data for just one organization:
+
+**In `organization.resolver.ts`**
+
+```ts
+/** This resolver injects an organization into the organization detail component. */
+export const organizationDetailResolver: ResolveFn<Organization | undefined> = (route, state) => {
+  let slug = route.paramMap.get('slug')!
+  return inject(OrganizationService).getOrganization(slug);
+};
+```
+
+That is all that is needed! You can then pass this resolver back into a component's static `Route` property and access the data as we did before.
+
 ## Error Handling with Resolvers
 
 ## Conclusion
