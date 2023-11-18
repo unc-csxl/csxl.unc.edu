@@ -278,7 +278,7 @@ That is all that is needed! You can then pass this Resolver back into a componen
 What happens if there are errors when we attempt to load our data using Resolvers? If you recall, if we were to use the traditional method of *subcscribing* to an `Observable`, we could include error handling using the following:
 
 ```ts
-this.organizations$.subscribe({
+this.organization$.subscribe({
   next: (organization) => {
     // Do something on success here.
   },
