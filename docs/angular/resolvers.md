@@ -66,10 +66,7 @@ By convention standards, Angular Resolvers exist in their own TypeScript files w
 Once in your file, you can begin to add Resolvers! Resolvers defined by the `ResolveFn` class. The `ResolveFn` object is defined in Angular as the following:
 
 ```ts
-export declare type ResolveFn<T> = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-) => Observable<T> | Promise<T> | T;
+export declare type ResolveFn<T> = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => Observable<T> | Promise<T> | T;
 ```
 
 > **NOTE:** You can actually find this declaration as well! Simply right click on `ResolveFn` in your project and select "Go to Definition".
@@ -97,10 +94,7 @@ Of course, `T` is a generic type. So, if we wanted to create a resolver to get a
 
 ```ts
 /** This resolver injects the list of organizations into the organization component. */
-export const orgResolver: ResolveFn<Organization[] | undefined> = (
-  route,
-  state
-) => {
+export const orgResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
   // Do something here!
 };
 ```
@@ -111,10 +105,7 @@ From here, we can **call our service function** to return the data we are expect
 
 ```ts
 /** This resolver injects the list of organizations into the organization component. */
-export const orgResolver: ResolveFn<Organization[] | undefined> = (
-  route,
-  state
-) => {
+export const orgResolver: ResolveFn<Organization[] | undefined> = (route, state) => {
   return inject(OrganizationService).getOrganizations();
 };
 ```
