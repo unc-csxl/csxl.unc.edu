@@ -229,7 +229,7 @@ That is essentially all you need to set up Resolvers and connect Resolvers to An
 
 ## Access Route Parameters in the Resolver
 
-The setup above is great for querying all data! However, what if you wanted to query *specific* data? For example, the `OrganizationService` has a `.getOrganization(slug: string)` function that takes in a specific slug to find an organization matching that slug. This call would be used on the *organization detail page* [link here](https://csxl.unc.edu/organizations/cads) to display information about one specific organization.
+The setup above is great for querying all data! However, what if you wanted to query *specific* data? For example, the `OrganizationService` has a `.getOrganization(slug: string)` function that takes in a specific slug to find an organization matching that slug. This call would be used on the *organization detail page* \([link here](https://csxl.unc.edu/organizations/cads)\) to display information about one specific organization.
 
 Look at the *route*, or URL, of this sample organization detail page for CADS: `https://csxl.unc.edu/organizations/cads`. As you can see, the route contains the *slug* for the organization! 
 
