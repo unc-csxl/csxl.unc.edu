@@ -5,6 +5,8 @@
 
 ## Preface
 
+Throughout COMP 423 so far, you have learned about subscribing to `Observable`s to load the data results from your API calls. Your Angular Service functions are responsible to calling the APIs you expose in your backend - and these service functions return `Observable` objects. Then, your Components can *subscribe* to these `Observable`s to access the actual data they hold.
+
 Imagine that we are trying to load the list of all CSXL organizations into the `OrganizationPageComponent`. To do this, we would first need to call on on the `OrganizationService` Angular service class - specifically the `.getOrganizations()` method.
 
 Recall that your service functions return _observables_. If we examine the method signature of the `OrganizationService.getOrganizations()` method, it looks like the following:
