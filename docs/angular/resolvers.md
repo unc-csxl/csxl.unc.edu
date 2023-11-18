@@ -258,7 +258,7 @@ export const organizationResolver: ResolveFn<Organization[] | undefined> = (rout
 };
 ```
 
-We can use the *route* parameter in the same way as we would in the component! So, let's create a new resolver called *organizationDetailResolver* that loads the data for just one organization:
+We can use the *route* parameter in the same way as we would in the component! So, let's create a new resolver called `organizationDetailResolver` that loads the data for just one organization:
 
 **In `organization.resolver.ts`**
 
