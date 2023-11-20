@@ -6,7 +6,7 @@
 
 In the final project, you been creating and implementing rather complex logic in your Python services and APIs to fetch, modify, and delete data in your database! Of course, these operations can often in exceptions that must be ultimately sent over back to your frontend in the form of an HTTP response code.
 
-
+When working on exercises and your final project, you have been implementing this logic throughout. Let's take a look at a relevant example. Below, you will see the backend service function and the API for **retrieving organizations** from
 
 ---
 
