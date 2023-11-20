@@ -4,7 +4,9 @@
 
 ## Preface
 
-Previously in your project,
+In the final project, you been creating and implementing rather complex logic in your Python services and APIs to fetch, modify, and delete data in your database! Of course, these operations can often in exceptions that must be ultimately sent over back to your frontend in the form of an HTTP response code.
+
+
 
 ---
 
@@ -82,4 +84,9 @@ In addition, what if we want to handle many different errors? For example, imagi
 
 If we want to handle different types of errors, how we throw and handle exceptions becomes a bit more complicated. We would need to throw custom `Exception`s in the services and then include more complex logic in your API's `try`/`except` blocks.
 
-In the CSXL Application, we define the **middleware**
+So, *there is a better way* for us to handle errors in your backend code. For this, we are going to make use of **middleware**. 
+
+In the CSXL Application, we define the **middleware** as functions that run during the transfer of data across the HTTP abstraction barrier between the backend and the frontend. We can utilize the middleware to simplify how we handle exceptions and throw HTTP responses to the backend.
+
+## Using the Middleware to Handle Exceptions
+
