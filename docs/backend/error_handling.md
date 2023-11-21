@@ -217,4 +217,6 @@ Now, our *middleware* handles throwing this exception as a 404 response!
 
 ## Conclusion
 
-As mentioned nearlier in the reading, using middleware exception handlers paired with custom `Exception` classes is extremely useful and helps to significantly reduce redundancy in error handling across all of the various API functions in your application. 
+As mentioned nearlier in the reading, using middleware exception handlers paired with custom `Exception` classes is extremely useful and helps to significantly reduce redundancy in error handling across all of the various API functions in your application. In addition, this convention is scalable and extendable. As you scale your application and add more custom `Exception` classes, the way exceptions are handled also remains consistent across the application and all API routes.
+
+There are still certain cases where you may need custom error handling by throwing `HTTPException`s in your API functions. However, for most cases, it is better to try and use the middleware to handle exceptions. You are encouraged to look at some of the various HTTP response codes to determine some of the potential custom `Exception` classes you need to make, as well as some of the existing exceptions in `backend/services/exceptions.py` and how they are handled!
