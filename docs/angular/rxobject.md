@@ -131,4 +131,233 @@ Now that you have reviewed the basics of RxJS and its classes, we can now begin 
 
 ## Introduction to the `RxObject` Class
 
-The `RxObject` class nun
+The motivation of the `RxObject` class is to allow for the updating of data within observables such that your Angular Components can dynamically update with the new data. The `RxObject` class is not part of RxJS; rather, it is custom to the CSXL Web Application and serves as a helper that bundles together RxJS functionality in a concise and simple way. The class already exists in the CSXL repository at `frontend/src/app/rx-object.ts`. However in this section, we are going to rebuild this class from scratch so that you gain a fundamental understanding of how it works.
+
+First, we know that `RxObject` must be flexible enough to handle various types of data, in the same way that `Observable` and `ReplaySubject` do. To enable this functionality, we will specify that `RxObject` takes a *generic type* `T`. We can do this in the class's header:
+
+```ts
+export abstract class RxObject<T> {
+  // Implementation here
+}
+```
+
+> **NOTE:** We use the keyword `export` on this class so that other TypeScript classes in our file can access this.
+
+Notice that we also make this class **`abstract`**. The core motivation behind in the `RxObject<T>` class is that we *do not instantiate it directly*. Instead, we want to have *subclasses* ***extend*** this base class for related usecases. For example, if we wanted to dynamically store data for organizations, we may want to create a subclass `RxOrganizationsList` that *extends* `RxObject<Organization[]>`. We will utilize this in the future, but for now, we are just working on the conceptual `abstract` class.
+
+From here, we know we need to successfully implement the Observer design pattern. We know that the Angular Components are going to be the *observers*, which means the only thing missing here is the *subject*. We want our `RxObject<T>` class to contain our subject.
+
+You can recall that, after examining the various options for our RxJS subject object, we decided that `ReplaySubject<T>` is the best for our use case. This is because the `ReplaySubject<T>` re-emits the latest value that is has to *new subscribers*. We will use a `ReplaySubject<T>` object to serve as the main *subject* to satisfy the requirements of the Observer design pattern.
+
+So, we need to add a `ReplaySubject<T>` to our `RxObject<T>` class. We want our `RxObject<T>` class to *abstract* away this functionality from the Components that use it, so we can make our `ReplaySubject<T>` a **private** field. We do not want to directly expose this subject to Components - rather, the subject will be used internally within the `RxObject<T>` object to manage the data stream. Let's add it to the class:
+
+```ts
+export abstract class RxObject<T> {
+
+  /**
+  * The Subject provides a "multicast" mechanism for publishing changes to observers.
+  * We choose a ReplaySubject with a value of 1 such that every new observer is guaranteed
+  * to receive the latest value immediately upon observation, once an initial value has
+  * been set.
+  */
+  private subject: Subject<T> = new ReplaySubject(1);
+
+}
+```
+
+As you can see, we *initialize* our `subject` field using a new `ReplaySubject` with a buffer size of `1` so that it stores just the most up-to-date value.
+
+So, if this field is private, then how do we want our Components to interact with our object? We want the Components to interact with the object by *subscribing to a simple `Observable<T>`*. The motivation behind this is so that `subject` manages the data stream and ensures that everything is working correctly behind the scenes, and that our Components do not need to worry about this concern and can work with the more general `Observable` type everywhere else. In addition, it enables the use of the `| async` pipe in HTML. Since we want our Components to access this field, we can make it public. Let's add the observable, made from our `subject`, into our object:
+
+```ts
+export abstract class RxObject<T> {
+
+  /**
+  * The Subject provides a "multicast" mechanism for publishing changes to observers.
+  * We choose a ReplaySubject with a value of 1 such that every new observer is guaranteed
+  * to receive the latest value immediately upon observation, once an initial value has
+  * been set.
+  */
+  private subject: Subject<T> = new ReplaySubject(1);
+
+  /**
+  * This exposed Observable is what all Components and Services dependent on the RxObject
+  * are expected to subscribe to for updates and changes of state to the object.
+  */
+  public value$: Observable<T> = this.subject.asObservable();
+
+}
+```
+
+As you are likely already aware, it is convention to put a `$` after the names of `Observable`s in RxJS / TypeScript so that it is easy to differentiate what is a `Observable<T>` and the actual data itself of type `T`.
+
+Lastly, for internal purposes, we also simply want to include a field that simply contains the value (of type `T`) that is the *latest value* of our subject! We make this *protected* so that only `RxObject<T>` and its subclasses can access it, but not other files (like Components). We want other files to use the public `value$` observable and subscribe to that. We can add this final field below:
+
+
+```ts
+export abstract class RxObject<T> {
+
+  /**
+  * The last/most recent value of the RxObject.
+  */
+  protected value!: T;
+
+  /**
+  * The Subject provides a "multicast" mechanism for publishing changes to observers.
+  * We choose a ReplaySubject with a value of 1 such that every new observer is guaranteed
+  * to receive the latest value immediately upon observation, once an initial value has
+  * been set.
+  */
+  private subject: Subject<T> = new ReplaySubject(1);
+
+  /**
+  * This exposed Observable is what all Components and Services dependent on the RxObject
+  * are expected to subscribe to for updates and changes of state to the object.
+  */
+  public value$: Observable<T> = this.subject.asObservable();
+
+}
+```
+
+Those are all of the fields of `RxObject`! Now, we simply need a method to actually ***update the data*** within our object! Let's call this method `set()` and have it take in a parameter of type `T`, which will be the new value. This method should perform two steps:
+1. Update the internal `value` field.
+2. Notify all *observers* of a change in our internal value.
+
+Let's add this method to our `RxObject<T>` implementation:
+
+```ts
+  /**
+  * Replace the last value of the RxObject with a new value and notify observers.
+  *
+  * @param value The new value of the RxObject.
+  */
+  set(value: T): void {
+    this.value = value;
+    this.notify();  // NOTE: NOT IMPLEMENTED YET
+  }
+```
+
+As you can see, the `set()` method above completes both steps! We can abstract the internal *notify* logic into a protected method called `notify()`. How would be implement this method?
+
+Recall how we notify the observers of a `ReplaySubject<T>` object. We use the `.next()` method! In this case, we simply want to pass in our newly updated `value` field into `.next()`.
+
+Here is our **final implementation** of the `RxObject<T>` class:
+
+```ts
+export abstract class RxObject<T> {
+
+  /**
+  * The last/most recent value of the RxObject.
+  */
+  protected value!: T;
+
+  /**
+  * The Subject provides a "multicast" mechanism for publishing changes to observers.
+  * We choose a ReplaySubject with a value of 1 such that every new observer is guaranteed
+  * to receive the latest value immediately upon observation, once an initial value has
+  * been set.
+  */
+  private subject: Subject<T> = new ReplaySubject(1);
+
+  /**
+  * This exposed Observable is what all Components and Services dependent on the RxObject
+  * are expected to subscribe to for updates and changes of state to the object.
+  */
+  public value$: Observable<T> = this.subject.asObservable();
+
+  /**
+  * Replace the last value of the RxObject with a new value and notify observers.
+  *
+  * @param value The new value of the RxObject.
+  */
+  set(value: T): void {
+    this.value = value;
+    this.notify();
+  }
+
+  /**
+  * Subclasses are expected to make mutable changes to `this.value` and then call `this.notify()`
+  * in order to broadcast changes to all dependent subscribers of this RxObject.
+  */
+  protected notify() {
+    this.subject.next(this.value);
+  }
+}
+```
+
+This exact implementation is what is used currently in the CSXL application! 
+
+Now that we have implemented `RxObject<T>`, it is time to *extend* the abstract class so that we can use it within our application for our specific use cases. Next, we will explore two different uses of this object.
+
+## Update Data Using `RxObject`
+
+If you have explored the Coworking feature of the CSXL Application, you likely know that the data on the Coworking page *updates every 5 seconds*. Say that `pollStatus()` is a function that exists *within the `CoworkingService`* that runs every 5 seconds to update the current status of the CSXL and coworking data. Let's take a look here:
+
+**In `coworking.service.ts`:**
+
+```ts
+@Injectable({
+  providedIn: 'root'
+})
+export class CoworkingService {
+
+  // OTHER FUNCTIONALITY HIDDEN
+
+  /** This method is called every 5 seconds to update the coworking data. */
+  pollStatus(): void {
+    this.http.get<CoworkingStatus>('/api/coworking/status').subscribe((status) => {
+      console.log("FETCHED STATUS! Now what?");
+    });
+  }
+}
+```
+
+How would we go about storing our data so that we can access this data in our component? Let's use `RxObject`!
+
+First, as you remember, `RxObject` is an *abstract class* - therefore, it cannot be instantiated directly. We need to create a *subclass* for `RxObject` that pertains to our specific feature and the data we are trying to store. In this case, we are trying to store an object of type `CoworkingStatus`. So, let's define a new class - `RxCoworkingStatus` - that extends `RxObject`! We can define this using the code below in a new file.
+
+**In `rx-coworking-status.ts`**
+
+```ts
+export class RxCoworkingStatus extends RxObject<CoworkingStatus> {}
+```
+
+Notice that this is a one-liner! We do not need to override or overload any methods. Notice also though that the *generic type* goes away - this is because we extend `RxObject<CoworkingStatus>`, which fills in this generic type!
+
+Now, ***in our service***, we can create two new fields - one to store our `RxCoworkingObject` which allows us to dynamically update our data, and then one public observable for our components to use that is automatically updated with new data! The fields are shown below:
+
+```ts
+private status: RxCoworkingStatus = new RxCoworkingStatus();
+public status$: Observable<CoworkingStatus> = this.status.value$;
+```
+
+Notice that `status`, which is our `RxCoworkingStatus` object, is private - this is because we want to abstract all of this functionality and keep it from our Components. Instead, the only thing accessible to the components should be the *observable* that is automatically updating with new data, `status$`! Notice that this observable is simply the public `.value$` observable from our `status` object that we defined in the previous part.
+
+Finishing this functionality is easy! All we need to do now is call the `.set()` method on our `RxCoworkingStatus` object (remember, this was *inherited* from `RxObject` because `RxCoworkingStatus` extends `RxObject`). We can do this in `pollStatus()`, which is supposed to update our data! Look at the following final construction:
+
+**In `coworking.service.ts`:**
+
+```ts
+@Injectable({
+  providedIn: 'root'
+})
+export class CoworkingService {
+
+  private status: RxCoworkingStatus = new RxCoworkingStatus();
+  public status$: Observable<CoworkingStatus> = this.status.value$;
+
+  // OTHER FUNCTIONALITY HIDDEN
+
+  /** This method is called every 5 seconds to update the coworking data. */
+  pollStatus(): void {
+    this.http.get<CoworkingStatus>('/api/coworking/status').subscribe((newStatus) => {
+      // Update the `RxCoworkingStatus` object, which automatically notifies
+      // the observers through `status$`.
+      this.status.set(newStatus);
+    });
+  }
+}
+```
+
+This is all we need! Now in any Component that needs to access this status, we can simply **subscribe to the `status$`** observable from the `CoworkingService` in a Component or use its data in our HTML using the `| async` pipe! The data on the page will automatically update every five seconds.
+
