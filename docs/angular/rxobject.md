@@ -113,6 +113,22 @@ subject.next("COMP 423 rocks!!");
 
 The `.next()` method is how we update data within our subject!
 
+It is also important to note that we can *convert subjects back to observers*. For example, given the same subject we created before, we can create a typical `Observable<T>` object out of it using the following:
+
+```ts
+let subject: Subject<string> = new ReplaySubject(1);
+let value$: Observable<string> = subject.asObservable();
+
+// Access latest data from the subject
+value$.subscribe((stringValue) => {
+  console.log(stringValue);
+})
+```
+
+As you can see, the code above creates an `Observable` from the `ReplaySubject` which we can subscribe to!
+
+Now that you have reviewed the basics of RxJS and its classes, we can now begin to bundle these classes together to create `RxObject` - a unified way for us to dynamically update our data.
+
 ## Introduction to the `RxObject` Class
 
 The `RxObject` class nun
