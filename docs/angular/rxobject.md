@@ -1,4 +1,4 @@
-# Using `RxObject`
+# Using `RxObject` to Handle Dynamically Updating Data
 
 > Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>_Last Updated: 11/21/2023_
 
@@ -405,3 +405,11 @@ Then, we can **use these functions in our `OrganizationService** *in addition* t
 It may be helpful for you to define such helper functions in certain subclasses for `RxObject` where appropriate for your given use case or task.
 
 ## Conclusion
+
+The `RxObject` class is an extremely helpful tool to simplify how you manage and deal with updating data in your frontend and have dynamically updating Components. To see its uses, I highly recommend checking out the implementations of `RxObject`, `RxCoworkingStatus`, and `RxOrganization` in the CSXL repository!
+
+Using this convention may not be necessary in all cases - especially for ones where you only load data *once*. In that case, it may be useful to check out Angular Resolvers.  Angular resolvers allow you to pre-load data into your component so you do not need to deal with subscriptions at all! Learn more about that [here](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/angular/resolvers.md).
+
+Here are some extra resources to explore if you want to learn more about Angular Resolvers:
+- [RxJS `Observable` Documentation](https://rxjs.dev/api/index/class/Observable)
+- [RxJS `ReplaySubject` Documentation](https://rxjs.dev/api/index/class/ReplaySubject)
