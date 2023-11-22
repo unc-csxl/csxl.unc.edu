@@ -33,3 +33,7 @@ class EventRegistration(NewEventRegistration):
     event: Event | None
     user: User | None
     is_organizer: bool = False
+
+
+class EventRegistrationStatus(BaseModel):
+    registration_count: int

@@ -342,3 +342,12 @@ def test_get_registrations_of_user_admin_authorization(
     event_svc_integration._permission.enforce.assert_called_with(
         root, "user.event_registrations", f"user/{ambassador.id}"
     )
+
+
+def get_event_registration_status(
+    event_svc_integration: EventService,
+):
+    """Tests that the service can successfully count events for an oarganization."""
+    if event_one.id:
+        status = event_svc_integration.get_event_registration_status(event_one.id)
+        assert status.registration_count == 1

@@ -5,14 +5,18 @@ The Event Service allows the API to manipulate event data in the database.
 from typing import Sequence
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event
 from backend.models.event_details import EventDetails
-from backend.models.event_registration import EventRegistration, NewEventRegistration
+from backend.models.event_registration import (
+    EventRegistration,
+    EventRegistrationStatus,
+    NewEventRegistration,
+)
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
     EventEntity,
@@ -411,3 +415,19 @@ class EventService:
         ).all()
 
         return [entity.to_model() for entity in registration_entities]
+
+    def get_event_registration_status(self, event_id: int) -> EventRegistrationStatus:
+        """
+        Retrieves the number of registrations for a given event.
+        """
+        count = (
+            self._session.query(EventRegistrationEntity)
+            .where(
+                EventRegistrationEntity.event_id == event_id,
+                EventRegistrationEntity.is_organizer == False,
+            )
+            .count()
+        )
+
+        status = EventRegistrationStatus(registration_count=count)
+        return status
