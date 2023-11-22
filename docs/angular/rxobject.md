@@ -401,7 +401,7 @@ Notice that all of these helper methods follow the same general steps as `.set()
 1. Update the internal `value` field.
 2. Notify all *observers* of a change in our internal value.
 
-Then, we can **use these functions in our `OrganizationService** *in addition* to just `.set()`!
+Then, we can **use these functions in our `OrganizationService`** *in addition* to just `.set()`!
 
 It may be helpful for you to define such helper functions in certain subclasses for `RxObject` where appropriate for your given use case or task.
 
