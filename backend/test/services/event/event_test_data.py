@@ -25,6 +25,8 @@ event_one = Event(
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cssg.id | 0,
 )
 
@@ -35,6 +37,8 @@ event_two = Event(
     location="SN 014",
     description="This is a sample description.",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cssg.id | 0,
 )
 
@@ -46,6 +50,8 @@ to_add = Event(
     location="SN011",
     description="This is a sample description.",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cads.id | 0,
 )
 
@@ -56,6 +62,8 @@ updated_event = Event(
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cssg.id | 0,
 )
 

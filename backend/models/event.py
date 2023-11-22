@@ -20,4 +20,6 @@ class Event(BaseModel):
     location: str
     description: str
     public: bool
+    registration_limit: int
+    can_register: bool
     organization_id: int
