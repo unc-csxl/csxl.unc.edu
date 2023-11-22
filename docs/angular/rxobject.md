@@ -361,3 +361,47 @@ export class CoworkingService {
 
 This is all we need! Now in any Component that needs to access this status, we can simply **subscribe to the `status$`** observable from the `CoworkingService` in a Component or use its data in our HTML using the `| async` pipe! The data on the page will automatically update every five seconds.
 
+## Update List Data Using `RxObject`
+
+The example above was an `RxObject` storing a single object as a value. What if we wanted to store a *list* of values instead? If you recall from the example used in the beginning, what if we wanted to store and dynamically update a list of organizations?
+
+Like how we created `RxCoworkingStatus`, we can also create an `RxObject` subclass to handle this. Let's call it `RxOrganizationList`.
+
+```ts
+export class RxOrganization extends RxObject<Organization[]> {}
+```
+
+This is technically all you need to do! The functionality works the same. However, in this case, it may be  helpful to add some special *helper methods* to this subclass to handle appending, updating, and deleting items from our list. Here is an example of some helper functions:
+
+```ts
+export class RxOrganization extends RxObject<Organization[]> {
+  pushOrganization(organization: Organization): void {
+    this.value.push(organization);
+    this.notify();
+  }
+
+  updateOrganization(organization: Organization): void {
+    this.value = this.value.map((o) => {
+      return o.id !== organization.id ? o : organization;
+    });
+    this.notify();
+  }
+
+  removeOrganization(organizationToRemove: Organization): void {
+    this.value = this.value.filter(
+      (organization) => organizationToRemove.slug !== organization.slug
+    );
+    this.notify();
+  }
+}
+```
+
+Notice that all of these helper methods follow the same general steps as `.set()` in `RxObject`, which are:
+1. Update the internal `value` field.
+2. Notify all *observers* of a change in our internal value.
+
+Then, we can **use these functions in our `OrganizationService** *in addition* to just `.set()`!
+
+It may be helpful for you to define such helper functions in certain subclasses for `RxObject` where appropriate for your given use case or task.
+
+## Conclusion
