@@ -323,7 +323,7 @@ You can add a lot more nuance to your error handling here depending on the speci
 
 Angular Resolvers are a great tool to be aware of and to utilize in your project. They simplify loading data to your Components, guaranteeing that data is pre-populated before the Component's construction without the complicated nature of manually managing subscriptions! It is also especially useful if you need to load data from multiple API calls at once as well. I encourage you to take a look at the [`organization-detail.component.ts`](https://github.com/unc-csxl/csxl.unc.edu/blob/main/frontend/src/app/organization/organization-details/organization-details.component.ts) file! This component loads data from *three different resolvers* at once. 
 
-You want to be cautious about using Resolvers for *everything*, though. In situations where your page needs to dynamically update, for example, using Resolvers is not the best idea (because Resolvers load your data *once*). Instead, using a convention such as the CSXL's custom `RxObject` class may be a better idea (docs page on this coming soon). 
+You want to be cautious about using Resolvers for *everything*, though. In situations where your page needs to dynamically update, for example, using Resolvers is not the best idea (because Resolvers load your data *once*). Instead, using a convention such as the CSXL's custom `RxObject` class may be a better idea. Learn more about that [here](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/angular/resolvers.md).
 
 Here are some extra resources to explore if you want to learn more about Angular Resolvers:
 - [Angular Documentation for `ResolveFn`](https://angular.io/api/router/ResolveFn)
