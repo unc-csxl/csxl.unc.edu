@@ -369,13 +369,13 @@ The example above was an `RxObject` storing a single object as a value. What if 
 Like how we created `RxCoworkingStatus`, we can also create an `RxObject` subclass to handle this. Let's call it `RxOrganizationList`.
 
 ```ts
-export class RxOrganization extends RxObject<Organization[]> {}
+export class RxOrganizationList extends RxObject<Organization[]> {}
 ```
 
 This is technically all you need to do! The functionality works the same. However, in this case, it may be  helpful to add some special *helper methods* to this subclass to handle appending, updating, and deleting items from our list. Here is an example of some helper functions:
 
 ```ts
-export class RxOrganization extends RxObject<Organization[]> {
+export class RxOrganizationList extends RxObject<Organization[]> {
   pushOrganization(organization: Organization): void {
     this.value.push(organization);
     this.notify();
