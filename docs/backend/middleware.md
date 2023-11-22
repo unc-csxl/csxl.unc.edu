@@ -72,7 +72,7 @@ Recall that the service function _raises an `Exception`_. This exception is then
 
 We can show this error handling with the diagram below:
 
-![Traditional Error Handling Diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/middleware/docs/images/backend/no_middleware.jpeg)
+![Traditional Error Handling Diagram](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/backend/no_middleware.jpeg)
 
 However, this is not necessarily the best way to handle errors. First, this method is **not that concise** and a bit _redundant_. Imagine we have 5 different `GET` APIs. Throughout all these APIs, we need to re-implement this logic to catch exceptions and throw them as a `404` HTTP exception.
 
@@ -175,7 +175,7 @@ As you can see, now we are using our custom exception.
 
 Now in the API, ***we no longer need the `try` / `except` block***! This is because we will let the middleware functions deal with this error. Now, instead of the APIs handling errors from the service directly, we will let the errors bubble up one more layer. The middleware will then take care of this for us! The new error handling flow is shown below:
 
-![New Error Handling](https://github.com/unc-csxl/csxl.unc.edu/blob/docs/middleware/docs/images/backend/middleware.jpeg)
+![New Error Handling](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/backend/middleware.jpeg)
 
 So, we can easily simplify our API to remove our manual error handling.
 
