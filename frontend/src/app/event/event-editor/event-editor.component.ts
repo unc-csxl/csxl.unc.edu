@@ -120,10 +120,13 @@ export class EventEditorComponent {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
       if (this.event.id == null) {
-        this.eventService.createEvent(this.event).subscribe({
-          next: (event) => this.onSuccess(event),
-          error: (err) => this.onError(err)
-        });
+        // Correct Code
+        // this.eventService.createEvent(this.event).subscribe({
+        //   next: (event) => this.onSuccess(event),
+        //   error: (err) => this.onError(err)
+        // });
+        // EXAMPLE: Incorrect Code (Demo)
+        this.eventService.createEvent(this.event);
       } else {
         this.eventService.updateEvent(this.event).subscribe({
           next: (event) => this.onSuccess(event),
