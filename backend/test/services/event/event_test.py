@@ -90,7 +90,7 @@ def test_get_events_from_organization(event_svc_integration: EventService):
     """Test that list of events can be retrieved based on specified organization."""
     fetched_events = event_svc_integration.get_events_from_organization("cssg")
     assert fetched_events is not None
-    assert len(fetched_events) == 2
+    assert len(fetched_events) == 3
 
 
 def test_update_event_as_root(
