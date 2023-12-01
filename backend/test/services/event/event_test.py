@@ -5,6 +5,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from backend.services.exceptions import (
+    EventRegistrationException,
     UserPermissionException,
     ResourceNotFoundException,
 )
@@ -24,7 +25,14 @@ from ..fixtures import user_svc_integration, event_svc_integration
 from ..core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
-from .event_test_data import events, event_one, to_add, updated_event, registrations
+from .event_test_data import (
+    events,
+    event_one,
+    to_add,
+    updated_event,
+    registrations,
+    event_three,
+)
 from ..user_data import root, ambassador, user
 
 # Test Functions
@@ -344,10 +352,20 @@ def test_get_registrations_of_user_admin_authorization(
     )
 
 
-def get_event_registration_status(
+def test_get_event_registration_status(
     event_svc_integration: EventService,
 ):
-    """Tests that the service can successfully count events for an oarganization."""
+    """Tests that the service can successfully count events for an organization."""
     if event_one.id:
         status = event_svc_integration.get_event_registration_status(event_one.id)
         assert status.registration_count == 1
+
+
+def test_register_to_full_event(
+    event_svc_integration: EventService,
+):
+    """Tests that a user cannot register for an event that is full."""
+    event_details = event_svc_integration.get_by_id(event_three.id)  # type: ignore
+
+    with pytest.raises(EventRegistrationException):
+        event_svc_integration.register(user, user, event_details)

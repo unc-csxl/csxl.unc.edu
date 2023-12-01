@@ -42,7 +42,19 @@ event_two = Event(
     organization_id=cssg.id | 0,
 )
 
-events = [event_one, event_two]
+event_three = Event(
+    id=3,
+    name="Super Exclusive Meeting",
+    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    location="SN 014",
+    description="This is a sample description.",
+    public=True,
+    registration_limit=1,
+    can_register=True,
+    organization_id=cssg.id | 0,
+)
+
+events = [event_one, event_two, event_three]
 
 to_add = DraftEvent(
     name="Carolina Data Challenge",
@@ -75,7 +87,10 @@ organizer_registration = NewEventRegistration(
     event_id=event_one.id | 0, user_id=user.id | 0, is_organizer=True
 )
 
-registrations = [registration, organizer_registration]
+registration_for_event_three = NewEventRegistration(
+    event_id=event_three.id | 0, user_id=ambassador.id | 0, is_organizer=False
+)
+registrations = [registration, organizer_registration, registration_for_event_three]
 
 # Data Functions
 
