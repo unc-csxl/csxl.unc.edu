@@ -204,7 +204,7 @@ def test_get_registrations_of_event_as_organizer(event_svc_integration: EventSer
     event_registrations = event_svc_integration.get_registrations_of_event(
         user, event_details
     )
-    assert len(event_registrations) == len(registrations)
+    assert len(event_registrations) == 2
 
 
 def test_get_registrations_of_event_non_organizer(event_svc_integration: EventService):
