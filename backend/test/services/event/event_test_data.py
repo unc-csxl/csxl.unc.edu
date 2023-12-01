@@ -2,7 +2,7 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from ....models.event import Event
+from ....models.event import DraftEvent, Event
 from ....models.event_registration import EventRegistration, NewEventRegistration
 from ....entities.event_entity import EventEntity
 from ....entities.event_registration_entity import EventRegistrationEntity
@@ -44,7 +44,7 @@ event_two = Event(
 
 events = [event_one, event_two]
 
-to_add = Event(
+to_add = DraftEvent(
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN011",

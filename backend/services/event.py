@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from backend.models.user import User
 from ..database import db_session
-from backend.models.event import Event
+from backend.models.event import Event, DraftEvent
 from backend.models.event_details import EventDetails
 from backend.models.event_registration import (
     EventRegistration,
@@ -25,7 +25,11 @@ from ..entities import (
     UserEntity,
 )
 from .permission import PermissionService
-from .exceptions import ResourceNotFoundException, UserPermissionException
+from .exceptions import (
+    ResourceNotFoundException,
+    UserPermissionException,
+    EventRegistrationException,
+)
 from . import UserService
 
 __authors__ = [
@@ -67,7 +71,7 @@ class EventService:
         # Convert entities to details models and return
         return [entity.to_details_model() for entity in entities]
 
-    def create(self, subject: User, event: Event) -> EventDetails:
+    def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -87,12 +91,8 @@ class EventService:
             f"organization/{event.organization_id}",
         )
 
-        # Checks if the event already exists in the table
-        if event.id:
-            event.id = None
-
         # Otherwise, create new object
-        event_entity = EventEntity.from_model(event)
+        event_entity = EventEntity.from_draft_model(event)
 
         # Add new object to table and commit changes
         self._session.add(event_entity)
@@ -331,6 +331,17 @@ class EventService:
         Raises:
             UserPermissionException if subject does not have permission to register user
         """
+
+        # Get the registration status.
+        # NOTE: It is preferred to use the service function rather than the list of
+        # registrations passed in from `event` in the case that registrations are added
+        # between when `event` was fetched and this function runs.
+        event_status = self.get_event_registration_status(event.id)
+
+        # Raise exception if event is full.
+        if event_status.registration_count >= event.registration_limit:
+            raise EventRegistrationException(event.id)
+
         # Enable idemopotency in returning existing registration, if one exists.
         # Permission to manage / read registration is enforced in EventService#get_registration
         existing_registration = self.get_registration(subject, attendee, event)

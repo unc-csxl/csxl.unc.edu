@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
-from ..models.event import Event
+from ..models.event import DraftEvent, Event
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
@@ -48,6 +48,27 @@ class EventEntity(EntityBase):
     registrations: Mapped[list["EventRegistrationEntity"]] = relationship(
         back_populates="event", cascade="all,delete"
     )
+
+    @classmethod
+    def from_draft_model(cls, model: DraftEvent) -> Self:
+        """
+        Class method that converts an `DraftEvent` model into a `EventEntity`
+
+        Parameters:
+            - model (DraftEvent): Model to convert into an entity
+        Returns:
+            EventEntity: Entity created from model
+        """
+        return cls(
+            name=model.name,
+            time=model.time,
+            location=model.location,
+            description=model.description,
+            public=model.public,
+            registration_limit=model.registration_limit,
+            can_register=model.can_register,
+            organization_id=model.organization_id,
+        )
 
     @classmethod
     def from_model(cls, model: Event) -> Self:
@@ -107,4 +128,5 @@ class EventEntity(EntityBase):
             can_register=self.can_register,
             organization_id=self.organization_id,
             organization=self.organization.to_model(),
+            reservations=[reservation.to_model() for reservation in self.registrations],
         )
