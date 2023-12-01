@@ -5,8 +5,10 @@
     </mat-card-header>
     <ng-template #registration>
       <mat-card-header>
-        <mat-card-title>Welcome to CSXL! Please verify and complete your profile
-          below.</mat-card-title>
+        <mat-card-title
+          >Welcome to CSXL! Please verify and complete your profile
+          below.</mat-card-title
+        >
         <mat-card-subtitle>
           Once your profile is setup you will be able to take advantage of CSXL
           initiatives such as enrolling in workshops, reserving a desk during
@@ -17,20 +19,43 @@
     <mat-card-content>
       <mat-form-field appearance="outline">
         <mat-label>First Name</mat-label>
-        <input matInput placeholder="Jane" formControlName="first_name" name="first_name" required />
+        <input
+          matInput
+          placeholder="Jane"
+          formControlName="first_name"
+          name="first_name"
+          required />
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Last Name</mat-label>
-        <input matInput placeholder="Doe" formControlName="last_name" name="last_name" required />
+        <input
+          matInput
+          placeholder="Doe"
+          formControlName="last_name"
+          name="last_name"
+          required />
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>UNC Email</mat-label>
-        <input matInput type="email" placeholder="jane.doe@unc.edu" formControlName="email" name="email" required />
-        <mat-error *ngIf="profileForm.value.email">Must provide a valid UNC email address.</mat-error>
+        <input
+          matInput
+          type="email"
+          placeholder="jane.doe@unc.edu"
+          formControlName="email"
+          name="email"
+          required />
+        <mat-error *ngIf="profileForm.value.email"
+          >Must provide a valid UNC email address.</mat-error
+        >
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Pronouns</mat-label>
-        <input matInput placeholder="she / her / hers" formControlName="pronouns" name="pronouns" required />
+        <input
+          matInput
+          placeholder="she / her / hers"
+          formControlName="pronouns"
+          name="pronouns"
+          required />
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
@@ -45,10 +70,12 @@
   <div *ngIf="profile.github !== ''; else associate_github">
     <mat-card-header>
       <img mat-card-avatar [src]="profile.github_avatar" />
-      <mat-card-title>GitHub /
-        <a href="https://github.com/{{ profile.github }}" target="_blank">{{
-          profile.github
-          }}</a></mat-card-title>
+      <mat-card-title
+        >GitHub /
+        <a href="https://github.com/{{ profile.github }}" target="_blank">
+          {{ profile.github }}
+        </a></mat-card-title
+      >
     </mat-card-header>
     <mat-card-actions>
       <button mat-stroked-button (click)="unlinkGitHub()">Unlink GitHub</button>
