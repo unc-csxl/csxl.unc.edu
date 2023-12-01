@@ -74,6 +74,8 @@ def list_events(
     page: int = 0,
     page_size: int = 10,
     order_by: str = "time",
+    ascending: str = "true",
+    filter: str = "",
     range_start: str = "",
     range_end: str = "",
 ) -> Paginated[EventDetails]:
@@ -83,6 +85,8 @@ def list_events(
         page=page,
         page_size=page_size,
         order_by=order_by,
+        ascending=ascending,
+        filter=filter,
         range_start=range_start,
         range_end=range_end,
     )

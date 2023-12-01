@@ -20,10 +20,8 @@ import { EventService } from '../event.service';
 import { PaginatedEvent } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
 
-let rangeStartDate = new Date();
-let rangeEndDate = new Date(
-  new Date().setFullYear(new Date().getFullYear() + 100)
-);
+// let rangeStartDate = new Date();
+// let rangeEndDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
 
 @Component({
   selector: 'app-event-page',
@@ -32,13 +30,19 @@ let rangeEndDate = new Date(
 })
 export class EventPageComponent implements OnInit {
   public page: PaginatedEvent<Event>;
-
+  public rangeStartDate = new Date();
+  public rangeEndDate = new Date(
+    new Date().setMonth(new Date().getMonth() + 1)
+  );
   private static EventPaginationParams = {
-    page: 0,
-    page_size: 15,
-    order_by: '',
-    range_start: rangeStartDate.toLocaleString('en-GB'),
-    range_end: rangeEndDate.toLocaleString('en-GB')
+    page_size: 25,
+    order_by: 'time',
+    ascending: 'true',
+    filter: '',
+    range_start: new Date().toLocaleString('en-GB'),
+    range_end: new Date(
+      new Date().setMonth(new Date().getMonth() + 1)
+    ).toLocaleString('en-GB')
   };
 
   /** Route information to be used in App Routing Module */
@@ -58,9 +62,6 @@ export class EventPageComponent implements OnInit {
   /** Store the content of the search bar */
   public searchBarQuery = '';
 
-  /** Store list of Events */
-  public events: Event[];
-
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
 
@@ -73,6 +74,8 @@ export class EventPageComponent implements OnInit {
   /** Stores the width of the window. */
   public innerWidth: any;
 
+  public query: string = '';
+
   /** Constructor for the events page. */
   constructor(
     private route: ActivatedRoute,
@@ -83,19 +86,17 @@ export class EventPageComponent implements OnInit {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
       profile: Profile;
-      events: Event[];
       page: PaginatedEvent<Event>;
     };
     this.profile = data.profile;
-    this.events = data.events;
     this.page = data.page;
 
     // Group events by their dates
     this.eventsPerDay = eventService.groupEventsByDate(this.page.items);
 
     // Initialize the initially selected event
-    if (data.events.length > 0) {
-      this.selectedEvent = eventFilterPipe.transform(data.events, '')[0];
+    if (data.page.items.length > 0) {
+      this.selectedEvent = eventFilterPipe.transform(data.page.items, '')[0];
     }
   }
 
@@ -116,7 +117,35 @@ export class EventPageComponent implements OnInit {
    * @param query: Search bar query to filter the items
    */
   onSearchBarQueryChange(query: string) {
-    this.eventsPerDay = this.eventService.groupEventsByDate(this.events, query);
+    this.query = query;
+    if (query == '') {
+      let paginationParams = this.page.params;
+      paginationParams.range_start =
+        this.rangeStartDate.toLocaleString('en-GB');
+      paginationParams.range_end = this.rangeEndDate.toLocaleString('en-GB');
+      paginationParams.range_end = new Date(
+        new Date().setFullYear(new Date().getFullYear() + 100)
+      ).toLocaleString('en-GB');
+      this.eventService.list(paginationParams).subscribe((page) => {
+        this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+        paginationParams.filter = '';
+      });
+    }
+  }
+
+  search() {
+    let paginationParams = this.page.params;
+    paginationParams.range_start = new Date(
+      new Date().setFullYear(new Date().getFullYear() - 100)
+    ).toLocaleString('en-GB');
+    paginationParams.range_end = new Date(
+      new Date().setFullYear(new Date().getFullYear() + 100)
+    ).toLocaleString('en-GB');
+    paginationParams.filter = this.query;
+    this.eventService.list(paginationParams).subscribe((page) => {
+      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+      paginationParams.filter = '';
+    });
   }
 
   /** Handler that runs when an event card is clicked.
@@ -127,31 +156,33 @@ export class EventPageComponent implements OnInit {
     this.selectedEvent = event;
   }
 
-  handlePageEvent(e: PageEvent) {
+  showNextEvents() {
+    this.rangeStartDate = new Date(
+      this.rangeStartDate.setMonth(this.rangeStartDate.getMonth() + 1)
+    );
+    this.rangeEndDate = new Date(
+      this.rangeEndDate.setMonth(this.rangeEndDate.getMonth() + 1)
+    );
     let paginationParams = this.page.params;
-    paginationParams.page = e.pageIndex;
-    paginationParams.page_size = e.pageSize;
-    paginationParams.range_start = rangeStartDate.toLocaleString('en-GB');
-    paginationParams.range_end = rangeEndDate.toLocaleString('en-GB');
+    paginationParams.range_start = this.rangeStartDate.toLocaleString('en-GB');
+    paginationParams.range_end = this.rangeEndDate.toLocaleString('en-GB');
     this.eventService.list(paginationParams).subscribe((page) => {
-      this.page = page;
       this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
     });
   }
 
-  showPastEvents() {
-    rangeStartDate = new Date(
-      new Date().setFullYear(new Date().getFullYear() - 100)
+  showPreviousEvents() {
+    this.rangeStartDate = new Date(
+      this.rangeStartDate.setMonth(this.rangeStartDate.getMonth() - 1)
     );
-    rangeEndDate = new Date();
+    this.rangeEndDate = new Date(
+      this.rangeEndDate.setMonth(this.rangeEndDate.getMonth() - 1)
+    );
     let paginationParams = this.page.params;
-    paginationParams.page = 0;
-    paginationParams.page_size = 15;
-    paginationParams.order_by = 'time';
-    paginationParams.range_start = rangeStartDate.toLocaleString('en-GB');
-    paginationParams.range_end = rangeEndDate.toLocaleString('en-GB');
+    paginationParams.ascending = 'false';
+    paginationParams.range_start = this.rangeStartDate.toLocaleString('en-GB');
+    paginationParams.range_end = this.rangeEndDate.toLocaleString('en-GB');
     this.eventService.list(paginationParams).subscribe((page) => {
-      this.page = page;
       this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
     });
   }

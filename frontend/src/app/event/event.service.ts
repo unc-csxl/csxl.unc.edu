@@ -104,9 +104,10 @@ export class EventService {
 
   list(params: EventPaginationParams) {
     let paramStrings = {
-      page: params.page.toString(),
       page_size: params.page_size.toString(),
       order_by: params.order_by,
+      ascending: params.ascending,
+      filter: params.filter,
       range_start: params.range_start,
       range_end: params.range_end
     };

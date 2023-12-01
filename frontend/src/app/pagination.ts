@@ -6,9 +6,10 @@ export interface PaginationParams {
 }
 
 export interface EventPaginationParams {
-  page: number;
   page_size: number;
   order_by: string;
+  ascending: string;
+  filter: string;
   range_start: string;
   range_end: string;
 }

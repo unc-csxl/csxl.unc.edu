@@ -3,7 +3,7 @@ The Event Service allows the API to manipulate event data in the database.
 """
 
 from fastapi import Depends
-from sqlalchemy import select, and_, func
+from sqlalchemy import select, and_, func, or_, exists
 from sqlalchemy.orm import Session
 
 from ..models import User, Event, EventDetails, Paginated, EventPaginationParams
@@ -155,13 +155,36 @@ class EventService:
             statement = statement.where(criteria)
             length_statement = length_statement.where(criteria)
 
+        if pagination_params.filter != "":
+            query = pagination_params.filter
+
+            criteria = or_(
+                EventEntity.name.ilike(f"%{query}%"),
+                EventEntity.description.ilike(f"%{query}%"),
+                exists().where(
+                    OrganizationEntity.id == EventEntity.organization_id,
+                    OrganizationEntity.name.ilike(f"%{query}%"),
+                ),
+                exists().where(
+                    OrganizationEntity.id == EventEntity.organization_id,
+                    OrganizationEntity.slug.ilike(f"%{query}%"),
+                ),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
+
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
 
         if pagination_params.order_by != "":
-            statement = statement.order_by(
-                getattr(EventEntity, pagination_params.order_by).desc()
-            )
+            if pagination_params.ascending == "false":
+                statement = statement.order_by(
+                    getattr(EventEntity, pagination_params.order_by).desc()
+                )
+            else:
+                statement = statement.order_by(
+                    getattr(EventEntity, pagination_params.order_by)
+                )
 
         statement = statement.offset(offset).limit(limit)
 

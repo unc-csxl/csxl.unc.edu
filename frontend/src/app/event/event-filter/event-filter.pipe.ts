@@ -19,11 +19,6 @@ export class EventFilterPipe implements PipeTransform {
    * @returns {Observable<Event[]>}
    */
   transform(events: Event[], searchQuery: String): Event[] {
-    // Sort the events list by date
-    events = events.sort((a: Event, b: Event) => {
-      return a.time.getTime() - b.time.getTime();
-    });
-
     // If a search query is provided, return the events that start with the search query.
     if (searchQuery) {
       return events.filter(

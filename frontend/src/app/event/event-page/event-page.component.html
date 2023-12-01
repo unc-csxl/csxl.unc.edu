@@ -3,10 +3,8 @@
     <search-bar
       class="search-bar"
       [searchBarQuery]="searchBarQuery"
-      (searchBarQueryChange)="onSearchBarQueryChange($event)" />
-    <button mat-stroked-button style="float: right" (click)="showPastEvents()">
-      Show Past Events
-    </button>
+      (searchBarQueryChange)="onSearchBarQueryChange($event)"
+      (keyup.enter)="search()" />
   </div>
 
   <div class="container">
@@ -14,17 +12,22 @@
       <div class="events-column">
         <!-- `eventsPerDay` is in the format of a list of tuples, where
                     eventGroup[0] is the date string and eventGroup[1] s a list of events -->
+        <div class="date-range">
+          <button mat-stroked-button (click)="showPreviousEvents()">
+            Previous Month
+          </button>
+          {{ rangeStartDate | date: 'shortDate' }} -
+          {{ rangeEndDate | date: 'shortDate' }}
+          <button mat-stroked-button (click)="showNextEvents()">
+            Next Month
+          </button>
+        </div>
         <event-list
           [eventsPerDay]="eventsPerDay"
           [selectedEvent]="selectedEvent"
           [disableLinks]="innerWidth > 900"
           (cardClicked)="onEventCardClicked($event)"
           [fullWidth]="true" />
-        <mat-paginator
-          [length]="page.length"
-          [pageSize]="page.params.page_size"
-          [pageIndex]="page.params.page"
-          (page)="handlePageEvent($event)"></mat-paginator>
       </div>
 
       <div class="details-column">

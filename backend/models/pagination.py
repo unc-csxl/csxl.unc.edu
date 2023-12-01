@@ -25,6 +25,8 @@ class EventPaginationParams(BaseModel):
     page: int = 0
     page_size: int = 10
     order_by: str = ""
+    ascending: str = "true"
+    filter: str = ""
     range_start: str = ""
     range_end: str = ""
 
