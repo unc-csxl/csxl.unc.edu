@@ -98,7 +98,15 @@ class EventService:
         self._session.add(event_entity)
         self._session.commit()
 
+        # Retrieve the detail model of the event created
+        event_details = event_entity.to_details_model()
+
+        # Set the user as the organizer of the event
+        self.set_event_organizer(subject=subject, event=event_details)
+
         # Return added object
+        # NOTE: Must re-convert the entity to a model again so that the registration
+        # for the event organizer is automatically populated
         return event_entity.to_details_model()
 
     def get_by_id(self, id: int) -> EventDetails:
@@ -314,6 +322,38 @@ class EventService:
 
         return [entity.to_model() for entity in event_registration_entities]
 
+    def set_event_organizer(
+        self, subject: User, event: EventDetails
+    ) -> EventRegistration:
+        """
+        Set the organizer of an event.
+
+        Args:
+            subject: User making the registration request
+            event: The EventDetails being registered for
+
+        Returns:
+            EventRegistration
+
+        """
+
+        # Re-ensure that the user has the correct permissions to run this command
+        self._permission.enforce(
+            subject,
+            "organization.events.manage",
+            f"organization/{event.organization_id}",
+        )
+
+        # Add new object to table and commit changes
+        event_registration_entity = EventRegistrationEntity(
+            user_id=subject.id, event_id=event.id, is_organizer=True
+        )
+        self._session.add(event_registration_entity)
+        self._session.commit()
+
+        # Return registration
+        return event_registration_entity.to_model()
+
     def register(
         self, subject: User, attendee: User, event: EventDetails
     ) -> EventRegistration:
@@ -330,6 +370,7 @@ class EventService:
 
         Raises:
             UserPermissionException if subject does not have permission to register user
+            EventRegistrationException if the event is full
         """
 
         # Get the registration status.

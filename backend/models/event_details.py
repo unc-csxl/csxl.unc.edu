@@ -12,4 +12,4 @@ class EventDetails(Event):
     """
 
     organization: Organization
-    reservations: list[EventRegistration]
+    registrations: list[EventRegistration]

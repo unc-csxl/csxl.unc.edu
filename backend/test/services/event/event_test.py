@@ -74,6 +74,9 @@ def test_create_event_as_root(event_svc_integration: EventService):
     created_event = event_svc_integration.create(root, to_add)
     assert created_event is not None
     assert created_event.id is not None
+    assert len(created_event.registrations) == 1
+    assert created_event.registrations[0].is_organizer == True
+    assert created_event.registrations[0].user_id == root.id
 
 
 def test_create_event_as_user(event_svc_integration: EventService):

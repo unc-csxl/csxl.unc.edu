@@ -128,5 +128,7 @@ class EventEntity(EntityBase):
             can_register=self.can_register,
             organization_id=self.organization_id,
             organization=self.organization.to_model(),
-            reservations=[reservation.to_model() for reservation in self.registrations],
+            registrations=[
+                reservation.to_model() for reservation in self.registrations
+            ],
         )
