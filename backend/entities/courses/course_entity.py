@@ -13,7 +13,7 @@ class CourseEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Course` table"""
 
     # Name for the course table in the PostgreSQL database
-    __tablename__ = "course"
+    __tablename__ = "courses__course"
 
     # Course properties (columns in the database table)
 
@@ -27,6 +27,6 @@ class CourseEntity(EntityBase):
     title: Mapped[str] = mapped_column(String, default="")
 
     # NOTE: This field establishes a one-to-many relationship between the course and section tables.
-    events: Mapped[list["SectionEntity"]] = relationship(
+    sections: Mapped[list["SectionEntity"]] = relationship(
         back_populates="course", cascade="all,delete"
     )

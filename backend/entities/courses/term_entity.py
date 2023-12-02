@@ -14,7 +14,7 @@ class TermEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Term` table"""
 
     # Name for the term table in the PostgreSQL database
-    __tablename__ = "term"
+    __tablename__ = "courses__term"
 
     # Term properties (columns in the database table)
 

@@ -55,12 +55,16 @@ class UserEntity(EntityBase):
 
     # NOTE: This field establishes a many-to-many relationship between the user and course section tables.
     course_sections: Mapped[list["SectionEntity"]] = relationship(
-        secondary="user_section", back_populates="students"
+        secondary="courses__user_section",
+        back_populates="students",
+        cascade="all, delete",
     )
 
     # NOTE: This field establishes a many-to-many relationship between the user and course section tables.
     instructor_for: Mapped[list["SectionEntity"]] = relationship(
-        secondary="user_section", back_populates="instructors"
+        secondary="courses__instructor_section",
+        back_populates="instructors",
+        cascade="all, delete",
     )
 
     @classmethod
