@@ -27,3 +27,8 @@ class TermEntity(EntityBase):
     start_date: Mapped[datetime] = mapped_column(DateTime)
     # Ending date for the term
     end_date: Mapped[datetime] = mapped_column(DateTime)
+
+    # NOTE: This field establishes a one-to-many relationship between the term and section tables.
+    course_sections: Mapped[list["SectionEntity"]] = relationship(
+        back_populates="term", cascade="all,delete"
+    )

@@ -26,3 +26,8 @@ class CourseEntity(EntityBase):
     code: Mapped[str] = mapped_column(String, default="")
     # Title or name for the course
     title: Mapped[str] = mapped_column(String, default="")
+
+    # NOTE: This field establishes a one-to-many relationship between the course and section tables.
+    events: Mapped[list["SectionEntity"]] = relationship(
+        back_populates="course", cascade="all,delete"
+    )
