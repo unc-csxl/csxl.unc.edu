@@ -1,9 +1,8 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course."""
 
-from sqlalchemy import Integer, String, Boolean
+from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
-from typing import Self
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

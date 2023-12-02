@@ -3,7 +3,6 @@
 from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
-from typing import Self
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]

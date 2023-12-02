@@ -3,7 +3,6 @@
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
-from typing import Self
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
@@ -37,3 +36,13 @@ class SectionEntnity(EntityBase):
     # NOTE: This defines a one-to-many relationship between the term and sections tables.
     term_id: Mapped[int] = mapped_column(ForeignKey("term.id"))
     term: Mapped["TermEntity"] = relationship(back_populates="course_sections")
+
+    # NOTE: This field establishes a many-to-many relationship between the user and section tables for students.
+    students: Mapped[list["UserEntity"]] = relationship(
+        secondary="user_section", back_populates="course_sections"
+    )
+
+    # NOTE: This field establishes a many-to-many relationship between the user and section tables for instructors.
+    instructors: Mapped[list["UserEntity"]] = relationship(
+        secondary="instructor_section", back_populates="course_sections"
+    )
