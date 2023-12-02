@@ -16,6 +16,7 @@ RUN apt-get update \
         debian-archive-keyring \
 	    git \
         gnupg \
+        locales \
         postgresql-client \
         software-properties-common \
         sudo \
@@ -85,6 +86,8 @@ RUN curl https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.
     && echo 'source <(ng completion script)' >>~/.zshrc \
     && echo 'export PATH=$PATH:$HOME/.local/bin' >>~/.zshrc
 
+# Set Locale for Functional Autocompletion in zsh
+RUN sudo locale-gen en_US.UTF-8
 
 # Install Database Dependencies
 COPY backend/requirements.txt /workspace/backend/requirements.txt
