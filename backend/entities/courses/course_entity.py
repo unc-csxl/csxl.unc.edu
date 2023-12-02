@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from typing import Self
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
+__authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
