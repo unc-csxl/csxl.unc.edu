@@ -8,11 +8,12 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { Event } from '../../event.model';
+import { Event, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
+import { Profile } from 'src/app/models.module';
 
 @Component({
   selector: 'event-detail-card',
@@ -22,6 +23,7 @@ import { PermissionService } from 'src/app/permission.service';
 export class EventDetailCard {
   /** The event for the event card to display */
   @Input() event!: Event;
+  @Input() profile!: Profile;
 
   /** Constructs the widget */
   constructor(
@@ -32,9 +34,19 @@ export class EventDetailCard {
 
   checkPermissions(): Observable<boolean> {
     return this.permission.check(
-      'organization.events.manage',
+      'organization.events.*',
       `organization/${this.event.organization_id!}`
     );
+  }
+
+  /** Check if a user is registered for the given event */
+  checkRegistrationStatus() {
+    let isRegistered: boolean = false;
+    this.eventService.getIsRegistered(this.event.id!).subscribe((result) => {
+      isRegistered = result;
+    });
+
+    return isRegistered;
   }
 
   /** Handler for when the share button is pressed
@@ -51,7 +63,6 @@ export class EventDetailCard {
       duration: 3000
     });
   }
-
   /** Delete the given event object using the Event Service's deleteEvent method
    * @param event: Event representing the updated event
    * @returns void
@@ -66,6 +77,57 @@ export class EventDetailCard {
         this.snackBar.open('Event Deleted', '', { duration: 2000 });
         location.reload();
       });
+    });
+  }
+
+  /** Registers a user for the given event
+   * @param event_id: number representing the id of the Event to register the User for
+   */
+  registerForEvent(event_id: number) {
+    let confirmRegistration = this.snackBar.open(
+      'Are you sure you want to register for this event?',
+      'Register'
+    );
+    confirmRegistration.onAction().subscribe(() => {
+      this.eventService.registerForEvent(event_id).subscribe({
+        next: (event_registration) => this.onSuccess(event_registration),
+        error: (err) => this.onError(err)
+      });
+    });
+  }
+
+  /** Registers a user for the given event
+   * @param event_id: number representing the id of the Event to register the User for
+   */
+  unregisterForEvent(event_registration_id: number) {
+    let confirmUnregistration = this.snackBar.open(
+      'Are you sure you want to unregister for this event?',
+      'Unregister'
+    );
+    confirmUnregistration.onAction().subscribe(() => {
+      this.eventService
+        .unregisterForEvent(event_registration_id)
+        .subscribe(() => {
+          this.snackBar.open('Successfully Unregistered!', '', {
+            duration: 2000
+          });
+        });
+    });
+  }
+
+  /** Opens a confirmation snackbar when an event is successfully created.
+   * @returns {void}
+   */
+  private onSuccess(event_registration: EventRegistration): void {
+    this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
+  }
+
+  /** Opens a confirmation snackbar when there is an error creating an event.
+   * @returns {void}
+   */
+  private onError(err: any): void {
+    this.snackBar.open('Error: Event Not Registered For', '', {
+      duration: 2000
     });
   }
 }

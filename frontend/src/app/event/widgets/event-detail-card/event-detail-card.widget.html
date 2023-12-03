@@ -64,5 +64,20 @@
   <mat-divider class="padded-divider" />
 
   <!-- Description -->
-  <p>{{ event.description }}</p>
+  <div class="event-description">
+    <p>{{ event.description }}</p>
+
+    <!-- Register Button -->
+    <button
+      mat-stroked-button
+      (click)="unregisterForEvent(event.id!)"
+      *ngIf="checkRegistrationStatus(); else register">
+      Unregister
+    </button>
+    <ng-template #register>
+      <button mat-stroked-button (click)="registerForEvent(event.id!)">
+        Register
+      </button>
+    </ng-template>
+  </div>
 </mat-card>

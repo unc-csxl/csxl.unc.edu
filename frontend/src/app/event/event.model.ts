@@ -7,6 +7,7 @@
  * @license MIT
  */
 
+import { Profile } from '../models.module';
 import { Organization } from '../organization/organization.model';
 
 /** Interface for Event Type (used on frontend for event detail) */
@@ -45,3 +46,11 @@ export interface EventJson {
 export const parseEventJson = (eventJson: EventJson): Event => {
   return Object.assign({}, eventJson, { time: new Date(eventJson.time) });
 };
+
+export interface EventRegistration {
+  id: number | null;
+  event_id: number;
+  user_id: number;
+  event: Event | null;
+  user: Profile | null;
+}

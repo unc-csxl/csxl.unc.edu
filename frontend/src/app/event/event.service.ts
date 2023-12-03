@@ -9,20 +9,34 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { Event, EventJson, parseEventJson } from './event.model';
+import { Observable, Subscription, catchError, map, of } from 'rxjs';
+import {
+  Event,
+  EventJson,
+  EventRegistration,
+  parseEventJson
+} from './event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
+import { Profile, ProfileService } from '../profile/profile.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
+  private profile: Profile | undefined;
+  private profileSubscription!: Subscription;
+
   constructor(
     protected http: HttpClient,
+    protected profileSvc: ProfileService,
     public datePipe: DatePipe,
     public eventFilterPipe: EventFilterPipe
-  ) {}
+  ) {
+    this.profileSubscription = this.profileSvc.profile$.subscribe(
+      (profile) => (this.profile = profile)
+    );
+  }
 
   /** Returns all event entries from the backend database table using the backend HTTP get request.
    * @returns {Observable<Event[]>}
@@ -99,5 +113,64 @@ export class EventService {
 
     // Return the groups
     return [...groups.entries()];
+  }
+
+  // Event Registration Methods
+  /** Return an event registration if the user is registered for an event using the backend HTTP get request.
+   * @param event_id: number representing the Event ID
+   * @returns Observable<EventRegistration>
+   */
+  getEventRegistration(event_id: number): Observable<EventRegistration> {
+    return this.http.get<EventRegistration>(
+      `/api/events/${event_id}/registration`
+    );
+  }
+
+  /** Return whether or not a user is registered for an event
+   * @param event_id: number representing the Event ID
+   * @returns Observable<EventRegistration>
+   */
+  getIsRegistered(event_id: number): Observable<boolean> {
+    return this.getEventRegistration(event_id).pipe(
+      map((response) => {
+        if (response) {
+          console.log(response);
+          return true;
+        } else {
+          return false;
+        }
+      }),
+      catchError((err) => of(false))
+    );
+  }
+
+  /** Create a new registration for an event using the backend HTTP create request.
+   * @param event_id: number representing the Event ID
+   * @returns Observable<EventRegistration>
+   */
+  registerForEvent(event_id: number): Observable<EventRegistration> {
+    if (this.profile === undefined) {
+      throw new Error('Only allowed for logged in users.');
+    }
+
+    return this.http.post<EventRegistration>(
+      `/api/events/${event_id}/registration`,
+      {}
+    );
+  }
+
+  /** Delete an existing registration for an event using the backend HTTP delete request.
+   * @param event_registration_id: number representing the Event Registration ID
+   * @returns void
+   */
+  unregisterForEvent(event_id: number) {
+    if (this.profile === undefined) {
+      throw new Error('Only allowed for logged in users.');
+    }
+
+    // TO-DO: Check if User is Registered for Event
+    return this.http.delete<EventRegistration>(
+      `/api/events/${event_id}/registration`
+    );
   }
 }

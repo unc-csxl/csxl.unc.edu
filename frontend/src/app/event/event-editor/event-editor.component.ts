@@ -22,7 +22,6 @@ import { organizationDetailResolver } from 'src/app/organization/organization.re
 import { Organization } from 'src/app/organization/organization.model';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
-import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-event-editor',
@@ -64,7 +63,7 @@ export class EventEditorComponent {
   /** Create a form group */
   public eventForm = this.formBuilder.group({
     name: this.name,
-    time: this.datePipe.transform(new Date(), "yyyy-MM-ddTHH:mm"),
+    time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
     location: this.location,
     description: this.description,
     public: this.public.value! == 'true'
@@ -80,7 +79,6 @@ export class EventEditorComponent {
     private permission: PermissionService,
     private datePipe: DatePipe
   ) {
-
     // Get currently-logged-in user
     const data = route.snapshot.data as {
       profile: Profile;
@@ -96,12 +94,12 @@ export class EventEditorComponent {
 
     // Get ids from the url
     let organization_slug = this.route.snapshot.params['slug'];
-    this.organization_slug = organization_slug;    
+    this.organization_slug = organization_slug;
 
     // Set values for form group
     this.eventForm.setValue({
       name: this.event.name,
-      time: this.datePipe.transform(this.event.time, "yyyy-MM-ddTHH:mm"),
+      time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
       location: this.event.location,
       description: this.event.description,
       public: this.event.public
@@ -109,7 +107,7 @@ export class EventEditorComponent {
 
     // Set permission value
     this.adminPermission$ = this.permission.check(
-      'organization.events.manage',
+      'organization.events.*',
       `organization/${this.organization!.id}`
     );
   }
@@ -147,7 +145,6 @@ export class EventEditorComponent {
    * @returns {void}
    */
   private onError(err: any): void {
-    console.error('Error: Event Not Created');
     this.snackBar.open('Error: Event Not Created', '', { duration: 2000 });
   }
 }
