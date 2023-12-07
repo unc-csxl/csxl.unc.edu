@@ -21,6 +21,7 @@ export class ProfileEditorComponent implements OnInit {
   };
 
   public profile: Profile;
+  public token = new String();
 
   public profileForm = this.formBuilder.group({
     first_name: '',
@@ -60,6 +61,15 @@ export class ProfileEditorComponent implements OnInit {
       email: profile.email,
       pronouns: profile.pronouns
     });
+  }
+
+  displayToken(): void {
+    this.token = String(localStorage.getItem('bearerToken'));
+  }
+
+  copyToken(): void {
+    navigator.clipboard.writeText(String(localStorage.getItem('bearerToken')));
+    this.snackBar.open('Token Copied', '', { duration: 2000 });
   }
 
   onSubmit(): void {
