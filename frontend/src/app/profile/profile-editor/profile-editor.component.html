@@ -72,7 +72,10 @@
       <img mat-card-avatar [src]="profile.github_avatar" />
       <mat-card-title
         >GitHub /
-        <a href="https://github.com/{{ profile.github }}" target="_blank">
+        <a
+          class="github_link"
+          href="https://github.com/{{ profile.github }}"
+          target="_blank">
           {{ profile.github }}
         </a></mat-card-title
       >
@@ -95,8 +98,12 @@
 
 <mat-card *ngIf="profile.id" appearance="outlined">
   <mat-card-actions class="token">
-    <button mat-stroked-button type="submit" (click)="displayToken()">
-      Display Bearer Token
+    <button
+      class="display"
+      mat-stroked-button
+      type="submit"
+      (click)="displayToken()">
+      {{ showToken ? 'Hide Bearer Token' : 'Display Bearer Token' }}
     </button>
     <button
       class="cancel-button"
@@ -108,6 +115,7 @@
   </mat-card-actions>
   <div *ngIf="showToken">
     <mat-card-content class="token" *ngIf="token">
-      <code>{{ token }}</code></mat-card-content>
+      <code>{{ token }}</code></mat-card-content
+    >
   </div>
 </mat-card>
