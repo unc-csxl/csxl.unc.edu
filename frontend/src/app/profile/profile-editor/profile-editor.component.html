@@ -93,24 +93,36 @@
   </ng-template>
 </mat-card>
 
-<html>
-  <mat-card appearance="outlined">
-    <mat-card-actions class="token">
-      <button mat-stroked-button type="submit" (click)="displayToken()">
-        Display Bearer Token
-      </button>
+<mat-card *ngIf="profile.id" appearance="outlined">
+  <mat-card-actions class="token">
+    <button
+      *ngIf="showToken; else display"
+      class="display"
+      mat-stroked-button
+      type="submit"
+      (click)="displayToken()">
+      Hide Bearer Token
+    </button>
+    <ng-template #display>
       <button
-        class="cancel-button"
+        class="display"
         mat-stroked-button
         type="submit"
-        (click)="copyToken()">
-        Copy
+        (click)="displayToken()">
+        Display Bearer Token
       </button>
-    </mat-card-actions>
-    <div *ngIf="token">
-      <mat-card-content class="token" *ngIf="token">
-        {{ token }}</mat-card-content
-      >
-    </div>
-  </mat-card>
-</html>
+    </ng-template>
+    <button
+      class="cancel-button"
+      mat-stroked-button
+      type="submit"
+      (click)="copyToken()">
+      Copy
+    </button>
+  </mat-card-actions>
+  <div *ngIf="showToken">
+    <mat-card-content class="token" *ngIf="token">
+      <code>{{ token }}</code></mat-card-content
+    >
+  </div>
+</mat-card>

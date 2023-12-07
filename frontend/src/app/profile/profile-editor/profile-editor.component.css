@@ -23,6 +23,10 @@ mat-card-content {
   margin-top: 8px;
 }
 
+.display {
+  width: 35%;
+}
+
 .token {
   word-wrap: break-word;
 }
