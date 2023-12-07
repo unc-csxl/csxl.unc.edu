@@ -23,6 +23,12 @@ mat-card-content {
   margin-top: 8px;
 }
 
+@media (prefers-color-scheme: light) {
+  .github_link {
+    color: black;
+  }
+}
+
 .display {
   width: 35%;
 }
