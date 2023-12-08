@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from .section import Section
+from .term import Term
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
