@@ -4,6 +4,8 @@ from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from datetime import datetime
+from ...models.courses import Section
+from ...models.courses import SectionDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -36,3 +38,53 @@ class SectionEntity(EntityBase):
     # Meeting pattern of the course
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
+
+    @classmethod
+    def from_model(cls, model: Section) -> Self:
+        """
+        Class method that converts a `Section` model into a `SectionEntity`
+
+        Parameters:
+            - model (Section): Model to convert into an entity
+        Returns:
+            SectionEntity: Entity created from model
+        """
+        return cls(
+            id=model.id,
+            course_id=model.course_id,
+            number=model.number,
+            term_id=model.term_id,
+            meeting_pattern=model.meeting_pattern,
+        )
+
+    def to_model(self) -> Section:
+        """
+        Converts a `SectionEntity` object into a `Section` model object
+
+        Returns:
+            Section: `Section` object from the entity
+        """
+        return Section(
+            id=self.id,
+            course_id=self.course_id,
+            number=self.number,
+            term_id=self.term_id,
+            meeting_pattern=self.meeting_pattern,
+        )
+
+    def to_details_model(self) -> SectionDetails:
+        """
+        Converts a `SectionEntity` object into a `SectionDetails` model object
+
+        Returns:
+            SectionDetails: `SectionDetails` object from the entity
+        """
+        return SectionDetails(
+            id=self.id,
+            course_id=self.course_id,
+            course=self.course.to_model(),
+            number=self.number,
+            term_id=self.term_id,
+            term=self.term.to_model(),
+            meeting_pattern=self.meeting_pattern,
+        )

@@ -3,6 +3,8 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
+from ...models.courses import Course
+from ...models.courses import CourseDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -34,3 +36,52 @@ class CourseEntity(EntityBase):
     sections: Mapped[list["SectionEntity"]] = relationship(
         back_populates="course", cascade="all,delete"
     )
+
+    @classmethod
+    def from_model(cls, model: Course) -> Self:
+        """
+        Class method that converts a `Course` model into a `CourseEntity`
+
+        Parameters:
+            - model (Course): Model to convert into an entity
+        Returns:
+            CourseEntity: Entity created from model
+        """
+        return cls(
+            id=model.id,
+            subject_code=model.subject_code,
+            number=model.number,
+            title=model.title,
+            description=model.description,
+        )
+
+    def to_model(self) -> Course:
+        """
+        Converts a `CourseEntity` object into a `Course` model object
+
+        Returns:
+            Course: `Course` object from the entity
+        """
+        return Course(
+            id=self.id,
+            subject_code=self.subject_code,
+            number=self.number,
+            title=self.title,
+            description=self.description,
+        )
+
+    def to_details_model(self) -> CourseDetails:
+        """
+        Converts a `CourseEntity` object into a `CourseDetails` model object
+
+        Returns:
+            CourseDetails: `CourseDetails` object from the entity
+        """
+        return CourseDetails(
+            id=self.id,
+            subject_code=self.subject_code,
+            number=self.number,
+            title=self.title,
+            description=self.description,
+            sections=[section.to_model() for section in self.sections],
+        )

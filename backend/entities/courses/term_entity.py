@@ -4,6 +4,8 @@ from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from datetime import datetime
+from ...models.courses.term import Term
+from ...models.courses.term_details import TermDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -52,6 +54,21 @@ class TermEntity(EntityBase):
         Converts a `TermEntity` object into a `Term` model object
 
         Returns:
-            Organization: `Term` object from the entity
+            Term: `Term` object from the entity
         """
         return Term(id=self.id, name=self.name, start=self.start, end=self.end)
+
+    def to_details_model(self) -> TermDetails:
+        """
+        Converts a `TermEntity` object into a `TermDetails` model object
+
+        Returns:
+            TermDetails: `TermDetails` object from the entity
+        """
+        return TermDetails(
+            id=self.id,
+            name=self.name,
+            start=self.start,
+            end=self.end,
+            course_sections=[section.to_model() for section in self.course_sections],
+        )
