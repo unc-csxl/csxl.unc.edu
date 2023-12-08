@@ -36,7 +36,3 @@ class SectionEntity(EntityBase):
     # Meeting pattern of the course
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
-
-    members: Mapped[list["UserEntity"]] = relationship(
-        secondary="courses__user_section", back_populates="course_sections"
-    )
