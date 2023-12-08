@@ -60,13 +60,6 @@ class UserEntity(EntityBase):
         cascade="all, delete",
     )
 
-    # NOTE: This field establishes a many-to-many relationship between the user and course section tables.
-    instructor_for: Mapped[list["SectionEntity"]] = relationship(
-        secondary="courses__instructor_section",
-        back_populates="instructors",
-        cascade="all, delete",
-    )
-
     @classmethod
     def from_model(cls, model: User) -> Self:
         """

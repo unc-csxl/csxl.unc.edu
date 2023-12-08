@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for the user - section association table."""
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 
@@ -33,3 +33,10 @@ class UserSectionEntity(EntityBase):
     section_id: Mapped[int] = mapped_column(
         ForeignKey("courses__section.id"), primary_key=True
     )
+
+    # Type of relationship
+    # 0 = Student
+    # 1 = Undergraduate Teaching Assistant
+    # 2 = Graduate Teaching Assistant
+    # 3 = Main Instructor
+    member_type: Mapped[int] = mapped_column(Integer)
