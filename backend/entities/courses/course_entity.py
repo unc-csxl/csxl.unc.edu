@@ -18,11 +18,13 @@ class CourseEntity(EntityBase):
     # Course properties (columns in the database table)
 
     # Unique ID for the course
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    # Suject for the course (for example, the subject of COMP 110 would be COMP)
-    subject: Mapped[str] = mapped_column(String, default="")
-    # Code for the course (for example, the code of COMP 110 would be 110)
-    code: Mapped[str] = mapped_column(String, default="")
+    # Course IDs are serialized in the following format: <SUBJECT><NUM><H?>
+    # Examples: COMP110, COMP283H
+    id: Mapped[str] = mapped_column(String(9), primary_key=True)
+    # Subject for the course (for example, the subject of COMP 110 would be COMP)
+    subject_code: Mapped[str] = mapped_column(String, default="")
+    # Number for the course (for example, the code of COMP 110 would be 110)
+    number: Mapped[str] = mapped_column(String, default="")
     # Title or name for the course
     title: Mapped[str] = mapped_column(String, default="")
     # Course description for the course

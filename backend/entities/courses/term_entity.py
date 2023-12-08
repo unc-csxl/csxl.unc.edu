@@ -19,13 +19,16 @@ class TermEntity(EntityBase):
     # Term properties (columns in the database table)
 
     # Unique ID for the term
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    # Format: <S|F|M|SuI|SuII<##>
+    # For example, F23
+    shorthand: Mapped[str] = mapped_column(String(6), primary_key=True)
+
     # Name of the term (for example, "Fall 2023")
     name: Mapped[str] = mapped_column(String, default="")
     # Starting date for the term
-    start_date: Mapped[datetime] = mapped_column(DateTime)
+    start: Mapped[datetime] = mapped_column(DateTime)
     # Ending date for the term
-    end_date: Mapped[datetime] = mapped_column(DateTime)
+    end: Mapped[datetime] = mapped_column(DateTime)
 
     # NOTE: This field establishes a one-to-many relationship between the term and section tables.
     course_sections: Mapped[list["SectionEntity"]] = relationship(

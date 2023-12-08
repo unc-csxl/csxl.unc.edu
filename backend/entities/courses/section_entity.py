@@ -20,20 +20,23 @@ class SectionEntity(EntityBase):
 
     # Unique ID for the section
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    # Code of the section (for example, COMP 100-003's code would be "003")
-    code: Mapped[str] = mapped_column(String, default="")
-
     # Course the section is for
     # NOTE: This defines a one-to-many relationship between the course and sections tables.
-    course_id: Mapped[int] = mapped_column(ForeignKey("courses__course.id"))
+    course_id: Mapped[str] = mapped_column(ForeignKey("courses__course.id"))
     course: Mapped["CourseEntity"] = relationship(back_populates="sections")
+
+    # Number of the section (for example, COMP 100-003's code would be "003")
+    number: Mapped[str] = mapped_column(String, default="")
 
     # Term the section is in
     # NOTE: This defines a one-to-many relationship between the term and sections tables.
-    term_id: Mapped[int] = mapped_column(ForeignKey("courses__term.id"))
+    term_shorthand: Mapped[int] = mapped_column(ForeignKey("courses__term.shorthand"))
     term: Mapped["TermEntity"] = relationship(back_populates="course_sections")
 
-    # NOTE: This field establishes a many-to-many relationship between the user and section tables for students.
-    students: Mapped[list["UserEntity"]] = relationship(
+    # Meeting pattern of the course
+    # For example, MWF 4:40PM - 5:30PM.
+    meeting_pattern: Mapped[str] = mapped_column(String, default="")
+
+    members: Mapped[list["UserEntity"]] = relationship(
         secondary="courses__user_section", back_populates="course_sections"
     )
