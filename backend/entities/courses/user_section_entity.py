@@ -1,12 +1,21 @@
 """Definition of SQLAlchemy table-backed object mapping entity for the user - section association table."""
 
+from enum import Enum
 from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
+
+
+class CourseSectionMembershipType(Enum):
+    STUDENT = 0
+    UTA = 1
+    GTA = 2
+    INSTRUCTOR = 3
 
 
 class UserSectionEntity(EntityBase):
@@ -35,8 +44,6 @@ class UserSectionEntity(EntityBase):
     )
 
     # Type of relationship
-    # 0 = Student
-    # 1 = Undergraduate Teaching Assistant
-    # 2 = Graduate Teaching Assistant
-    # 3 = Main Instructor
-    member_type: Mapped[int] = mapped_column(Integer)
+    member_type: Mapped[CourseSectionMembershipType] = mapped_column(
+        SQLAlchemyEnum(CourseSectionMembershipType)
+    )
