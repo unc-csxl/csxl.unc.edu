@@ -34,3 +34,24 @@ class TermEntity(EntityBase):
     course_sections: Mapped[list["SectionEntity"]] = relationship(
         back_populates="term", cascade="all,delete"
     )
+
+    @classmethod
+    def from_model(cls, model: Term) -> Self:
+        """
+        Class method that converts a `Term` model into a `TermEntity`
+
+        Parameters:
+            - model (Term): Model to convert into an entity
+        Returns:
+            TermEntity: Entity created from model
+        """
+        return cls(id=model.id, name=model.name, start=model.start, end=model.end)
+
+    def to_model(self) -> Term:
+        """
+        Converts a `TermEntity` object into a `Term` model object
+
+        Returns:
+            Organization: `Term` object from the entity
+        """
+        return Term(id=self.id, name=self.name, start=self.start, end=self.end)
