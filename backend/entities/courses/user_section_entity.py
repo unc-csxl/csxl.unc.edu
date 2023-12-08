@@ -11,7 +11,7 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-class CourseSectionMembershipType(Enum):
+class RosterRole(Enum):
     STUDENT = 0
     UTA = 1
     GTA = 2
@@ -44,6 +44,4 @@ class UserSectionEntity(EntityBase):
     )
 
     # Type of relationship
-    member_type: Mapped[CourseSectionMembershipType] = mapped_column(
-        SQLAlchemyEnum(CourseSectionMembershipType)
-    )
+    member_type: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
