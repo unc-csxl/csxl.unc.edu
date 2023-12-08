@@ -21,7 +21,7 @@ class TermEntity(EntityBase):
     # Unique ID for the term
     # Format: <S|F|M|SuI|SuII<##>
     # For example, F23
-    shorthand: Mapped[str] = mapped_column(String(6), primary_key=True)
+    id: Mapped[str] = mapped_column(String(6), primary_key=True)
 
     # Name of the term (for example, "Fall 2023")
     name: Mapped[str] = mapped_column(String, default="")

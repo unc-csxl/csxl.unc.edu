@@ -30,7 +30,7 @@ class SectionEntity(EntityBase):
 
     # Term the section is in
     # NOTE: This defines a one-to-many relationship between the term and sections tables.
-    term_shorthand: Mapped[int] = mapped_column(ForeignKey("courses__term.shorthand"))
+    term_shorthand: Mapped[int] = mapped_column(ForeignKey("courses__term.id"))
     term: Mapped["TermEntity"] = relationship(back_populates="course_sections")
 
     # Meeting pattern of the course
