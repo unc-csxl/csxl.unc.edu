@@ -3,8 +3,8 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
-from ...models.courses import Course
-from ...models.courses import CourseDetails
+from ...models.courses.course import Course
+from ...models.courses.course_details import CourseDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
