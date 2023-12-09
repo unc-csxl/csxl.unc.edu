@@ -4,8 +4,8 @@ from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from datetime import datetime
-from ...models.courses import Section
-from ...models.courses import SectionDetails
+from ...models.courses.section import Section
+from ...models.courses.section_details import SectionDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -32,7 +32,7 @@ class SectionEntity(EntityBase):
 
     # Term the section is in
     # NOTE: This defines a one-to-many relationship between the term and sections tables.
-    term_id: Mapped[int] = mapped_column(ForeignKey("courses__term.id"))
+    term_id: Mapped[str] = mapped_column(ForeignKey("courses__term.id"))
     term: Mapped["TermEntity"] = relationship(back_populates="course_sections")
 
     # Meeting pattern of the course
