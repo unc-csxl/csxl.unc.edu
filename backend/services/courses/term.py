@@ -56,16 +56,18 @@ class TermService:
             list[TermDetails]: List of all `TermDetails`
         """
         # Select all entries in `Organization` table
-        query = select(TermEntity)
+        query = select(TermEntity).order_by(TermEntity.start)
 
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return
         return [entity.to_details_model() for entity in entities]
 
-    def get_from_id(self, id: str) -> TermDetails:
+    def get_by_id(self, id: str) -> TermDetails:
         """Gets the term from the table for an id.
 
+        Args:
+            id: ID of the term to retrieve.
         Returns:
             TermDetails: Term based on the id.
         """
@@ -83,7 +85,7 @@ class TermService:
     def create(self, subject: User, term: Term) -> Term:
         """Creates a new term.
 
-        Parameters:
+        Args:
             subject: a valid User model representing the currently logged in User
             term (Term): Term to add to table
 
@@ -107,7 +109,7 @@ class TermService:
     def update(self, subject: User, term: Term) -> Term:
         """Updates a term.
 
-        Parameters:
+        Args:
             subject: a valid User model representing the currently logged in User
             term (Term): Term to update
 
@@ -139,7 +141,7 @@ class TermService:
     def delete(self, subject: User, term: Term) -> None:
         """Deletes a term.
 
-        Parameters:
+        Args:
             subject: a valid User model representing the currently logged in User
             term (Term): Term to delete
         """
