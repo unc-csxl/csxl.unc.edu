@@ -94,7 +94,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "course.admin", f"term")
+        self._permission.enforce(subject, "courses.term.create", f"term/")
 
         # Create new object
         term_entity = TermEntity.from_model(term)
@@ -118,7 +118,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "course.admin", f"term")
+        self._permission.enforce(subject, "courses.term.update", f"term/{term.id}")
 
         # Find the entity to update
         term_entity = self._session.get(TermEntity, id)
@@ -147,7 +147,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "course.admin", f"term")
+        self._permission.enforce(subject, "courses.term.delete", f"term/{term.id}")
 
         # Find the entity to delete
         term_entity = self._session.get(TermEntity, id)
