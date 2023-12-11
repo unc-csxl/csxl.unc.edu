@@ -14,6 +14,7 @@ from ...entities.courses.term_entity import TermEntity
 from ..permission import PermissionService
 
 from ...services.exceptions import ResourceNotFoundException
+from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -31,23 +32,6 @@ class TermService:
         """Initializes the database session."""
         self._session = session
         self._permission = permission
-
-    def current(self) -> TermDetails:
-        """Gets the current term from the table.
-
-        Returns:
-            TermDetails: Currently active term.
-        """
-        # Select all entries in the `Term` table and sort by end date
-        query = select(TermEntity).order_by(TermEntity.end.desc())
-        entity = self._session.scalars(query).one_or_none()
-
-        # Raise an error if no entity was found.
-        if entity is None:
-            raise ResourceNotFoundException(f"There is no currently active term.")
-
-        # Return the model
-        return entity.to_details_model()
 
     def all(self) -> list[TermDetails]:
         """Retrieves all terms from the table
@@ -82,7 +66,30 @@ class TermService:
         # Return the model
         return entity.to_details_model()
 
-    def create(self, subject: User, term: Term) -> Term:
+    def get_by_date(self, date: datetime) -> TermDetails:
+        """Gets the active term for a given date, if it exists.
+
+        Args:
+            date: Date to query the active term for.
+        Returns:
+            TermDetails: Term based on the provided date.
+        """
+        # Select all entries in the `Term` table that contains this date.
+        query = select(TermEntity).where(
+            TermEntity.start < datetime, datetime < TermEntity.end
+        )
+        entity = self._session.scalars(query).one_or_none()
+
+        # Rause an error if no entity was found.
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"No active term found for the provided date: {date}."
+            )
+
+        # Return the model
+        return entity.to_details_model()
+
+    def create(self, subject: User, term: Term) -> TermDetails:
         """Creates a new term.
 
         Args:
@@ -90,7 +97,7 @@ class TermService:
             term (Term): Term to add to table
 
         Returns:
-            Term: Object added to table
+            TermDetails: Object added to table
         """
 
         # Check if user has admin permissions
@@ -104,9 +111,9 @@ class TermService:
         self._session.commit()
 
         # Return added object
-        return term_entity.to_model()
+        return term_entity.to_details_model()
 
-    def update(self, subject: User, term: Term) -> Term:
+    def update(self, subject: User, term: Term) -> TermDetails:
         """Updates a term.
 
         Args:
@@ -114,7 +121,7 @@ class TermService:
             term (Term): Term to update
 
         Returns:
-            Term: Object updated in the table
+            TermDetails: Object updated in the table
         """
 
         # Check if user has admin permissions
@@ -136,7 +143,7 @@ class TermService:
         self._session.commit()
 
         # Return edited object
-        return term_entity.to_model()
+        return term_entity.to_details_model()
 
     def delete(self, subject: User, term: Term) -> None:
         """Deletes a term.
