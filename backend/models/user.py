@@ -48,7 +48,21 @@ class NewUser(User, BaseModel):
     id: int | None = None
 
 
-class ProfileForm(BaseModel):
+class SectionStaffUser(BaseModel):
+    """
+    Pydantic model to represent the information about a user who is a
+    staff of a section of a course.
+
+    This model is based on the `UserEntity` model, which defines the shape
+    of the `User` database in the PostgreSQL database
+    """
+
+    first_name: str
+    last_name: str
+    pronouns: str
+
+
+class ProfileForm(SectionStaffUser):
     """
     Pydantic model to represent fields for a form when updating
     a user profile on the frontend.
@@ -57,7 +71,4 @@ class ProfileForm(BaseModel):
     of the `User` database in the PostgreSQL database
     """
 
-    first_name: str
-    last_name: str
     email: str
-    pronouns: str

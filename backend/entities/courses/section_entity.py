@@ -2,6 +2,8 @@
 
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from backend.models.courses.section_staff import SectionStaff
 from ..entity_base import EntityBase
 from datetime import datetime
 from ...models.courses.section import Section
@@ -72,7 +74,7 @@ class SectionEntity(EntityBase):
             meeting_pattern=self.meeting_pattern,
         )
 
-    def to_details_model(self) -> SectionDetails:
+    def to_details_model(self, staff_list: list[SectionStaff] = []) -> SectionDetails:
         """
         Converts a `SectionEntity` object into a `SectionDetails` model object
 
@@ -87,4 +89,5 @@ class SectionEntity(EntityBase):
             term_id=self.term_id,
             term=self.term.to_model(),
             meeting_pattern=self.meeting_pattern,
+            staff=staff_list,
         )

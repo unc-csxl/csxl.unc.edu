@@ -131,11 +131,13 @@ class CourseService:
         )
 
         # Find the entity to update
-        course_entity = self._session.get(CourseEntity, id)
+        course_entity = self._session.get(CourseEntity, course.id)
 
         # Raise an error if no entity was found
         if course_entity is None:
-            raise ResourceNotFoundException(f"Course with id: {id} does not exist.")
+            raise ResourceNotFoundException(
+                f"Course with id: {course.id} does not exist."
+            )
 
         # Update the entity
         course_entity.subject_code = course.subject_code
@@ -163,11 +165,13 @@ class CourseService:
         )
 
         # Find the entity to delete
-        course_entity = self._session.get(CourseEntity, id)
+        course_entity = self._session.get(CourseEntity, course.id)
 
         # Raise an error if no entity was found
         if course_entity is None:
-            raise ResourceNotFoundException(f"Course with id: {id} does not exist.")
+            raise ResourceNotFoundException(
+                f"Course with id: {course.id} does not exist."
+            )
 
         # Delete and commit changes
         self._session.delete(course_entity)

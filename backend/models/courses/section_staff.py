@@ -12,5 +12,5 @@ class SectionStaff(BaseModel):
     Pydantic model to represent staff members of course sections.
     """
 
-    user: User
+    user_id: int
     role: RosterRole

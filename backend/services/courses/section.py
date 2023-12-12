@@ -5,6 +5,10 @@ The Section Service allows the API to manipulate sections data in the database.
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from backend.entities.courses.user_section_entity import UserSectionEntity
+from backend.entities.user_entity import UserEntity
+
+from backend.models.courses.section_staff import SectionStaff
 
 from ...database import db_session
 from ...models.courses.section import Section
@@ -175,11 +179,13 @@ class SectionService:
         )
 
         # Find the entity to update
-        section_entity = self._session.get(SectionEntity, id)
+        section_entity = self._session.get(SectionEntity, section.id)
 
         # Raise an error if no entity was found
         if section_entity is None:
-            raise ResourceNotFoundException(f"Section with id: {id} does not exist.")
+            raise ResourceNotFoundException(
+                f"Section with id: {section.id} does not exist."
+            )
 
         # Update the entity
         section_entity.course_id = section.course_id
@@ -207,11 +213,13 @@ class SectionService:
         )
 
         # Find the entity to delete
-        section_entity = self._session.get(SectionEntity, id)
+        section_entity = self._session.get(SectionEntity, section.id)
 
         # Raise an error if no entity was found
         if section_entity is None:
-            raise ResourceNotFoundException(f"Section with id: {id} does not exist.")
+            raise ResourceNotFoundException(
+                f"Section with id: {section.id} does not exist."
+            )
 
         # Delete and commit changes
         self._session.delete(section_entity)
