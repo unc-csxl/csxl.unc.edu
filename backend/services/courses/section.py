@@ -82,7 +82,7 @@ class SectionService:
         # Return the model
         return [entity.to_details_model() for entity in entities]
 
-    def get_by_id(self, id: str) -> SectionDetails:
+    def get_by_id(self, id: int) -> SectionDetails:
         """Gets the section from the table for an id.
 
         Args:
