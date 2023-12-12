@@ -27,11 +27,11 @@ class CourseService:
     def __init__(
         self,
         session: Session = Depends(db_session),
-        permission: PermissionService = Depends(),
+        permission_svc: PermissionService = Depends(),
     ):
         """Initializes the database session."""
         self._session = session
-        self._permission = permission
+        self._permission_svc = permission_svc
 
     def all(self) -> list[CourseDetails]:
         """Retrieves all courses from the table
@@ -102,7 +102,7 @@ class CourseService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "courses.course.create", f"course/")
+        self._permission_svc.enforce(subject, "courses.course.create", f"course/")
 
         # Create new object
         course_entity = CourseEntity.from_model(course)
@@ -126,7 +126,7 @@ class CourseService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(
+        self._permission_svc.enforce(
             subject, "courses.course.update", f"course/{course.id}"
         )
 
@@ -160,7 +160,7 @@ class CourseService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(
+        self._permission_svc.enforce(
             subject, "courses.course.delete", f"course/{course.id}"
         )
 

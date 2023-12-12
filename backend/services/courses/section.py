@@ -28,11 +28,11 @@ class SectionService:
     def __init__(
         self,
         session: Session = Depends(db_session),
-        permission: PermissionService = Depends(),
+        permission_svc: PermissionService = Depends(),
     ):
         """Initializes the database session."""
         self._session = session
-        self._permission = permission
+        self._permission_svc = permission_svc
 
     def all(self) -> list[SectionDetails]:
         """Retrieves all sections from the table
@@ -146,7 +146,7 @@ class SectionService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "courses.section.create", f"section/")
+        self._permission_svc.enforce(subject, "courses.section.create", f"section/")
 
         # Create new object
         section_entity = SectionEntity.from_model(section)
@@ -170,7 +170,7 @@ class SectionService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(
+        self._permission_svc.enforce(
             subject, "courses.section.update", f"section/{section.id}"
         )
 
@@ -204,7 +204,7 @@ class SectionService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(
+        self._permission_svc.enforce(
             subject, "courses.section.delete", f"section/{section.id}"
         )
 

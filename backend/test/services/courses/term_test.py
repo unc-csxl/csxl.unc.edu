@@ -4,7 +4,7 @@ from ....services.courses import TermService
 from ....models.courses import TermDetails
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
-from .fixtures import term_svc
+from .fixtures import permission_svc, term_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from .term_data import fake_data_fixture as insert_term_fake_data

@@ -27,11 +27,11 @@ class TermService:
     def __init__(
         self,
         session: Session = Depends(db_session),
-        permission: PermissionService = Depends(),
+        permission_svc: PermissionService = Depends(),
     ):
         """Initializes the database session."""
         self._session = session
-        self._permission = permission
+        self._permission_svc = permission_svc
 
     def all(self) -> list[TermDetails]:
         """Retrieves all terms from the table
@@ -101,7 +101,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "courses.term.create", f"term/")
+        self._permission_svc.enforce(subject, "courses.term.create", f"term/")
 
         # Create new object
         term_entity = TermEntity.from_model(term)
@@ -125,7 +125,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "courses.term.update", f"term/{term.id}")
+        self._permission_svc.enforce(subject, "courses.term.update", f"term/{term.id}")
 
         # Find the entity to update
         term_entity = self._session.get(TermEntity, id)
@@ -154,7 +154,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "courses.term.delete", f"term/{term.id}")
+        self._permission_svc.enforce(subject, "courses.term.delete", f"term/{term.id}")
 
         # Find the entity to delete
         term_entity = self._session.get(TermEntity, id)
