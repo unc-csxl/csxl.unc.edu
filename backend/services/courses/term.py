@@ -75,9 +75,7 @@ class TermService:
             TermDetails: Term based on the provided date.
         """
         # Select all entries in the `Term` table that contains this date.
-        query = select(TermEntity).where(
-            TermEntity.start < datetime, datetime < TermEntity.end
-        )
+        query = select(TermEntity).where(TermEntity.start < date, date < TermEntity.end)
         entity = self._session.scalars(query).one_or_none()
 
         # Rause an error if no entity was found.
@@ -128,11 +126,11 @@ class TermService:
         self._permission_svc.enforce(subject, "courses.term.update", f"term/{term.id}")
 
         # Find the entity to update
-        term_entity = self._session.get(TermEntity, id)
+        term_entity = self._session.get(TermEntity, term.id)
 
         # Raise an error if no entity was found
         if term_entity is None:
-            raise ResourceNotFoundException(f"Term with id: {id} does not exist.")
+            raise ResourceNotFoundException(f"Term with id: {term.id} does not exist.")
 
         # Update the entity
         term_entity.name = term.name
@@ -157,11 +155,11 @@ class TermService:
         self._permission_svc.enforce(subject, "courses.term.delete", f"term/{term.id}")
 
         # Find the entity to delete
-        term_entity = self._session.get(TermEntity, id)
+        term_entity = self._session.get(TermEntity, term.id)
 
         # Raise an error if no entity was found
         if term_entity is None:
-            raise ResourceNotFoundException(f"Term with id: {id} does not exist.")
+            raise ResourceNotFoundException(f"Term with id: {term.id} does not exist.")
 
         # Delete and commit changes
         self._session.delete(term_entity)
