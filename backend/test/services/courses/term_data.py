@@ -7,7 +7,7 @@ from ....models.courses import Term
 from ..reset_table_id_seq import reset_table_id_seq
 from datetime import datetime
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 

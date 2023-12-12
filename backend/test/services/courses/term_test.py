@@ -130,5 +130,5 @@ def test_delete_as_root_not_found(term_svc: TermService):
 
 def test_delete_as_user(term_svc: TermService):
     with pytest.raises(UserPermissionException):
-        term = term_svc.create(user_data.user, term_data.f_23)
+        term = term_svc.delete(user_data.user, term_data.f_23)
         pytest.fail()
