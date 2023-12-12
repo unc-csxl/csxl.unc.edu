@@ -39,7 +39,7 @@ class TermService:
         Returns:
             list[TermDetails]: List of all `TermDetails`
         """
-        # Select all entries in `Organization` table
+        # Select all entries in `Term` table
         query = select(TermEntity).order_by(TermEntity.start)
 
         entities = self._session.scalars(query).all()
