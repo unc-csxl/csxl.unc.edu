@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from ...models.user import User
-from ...entities.courses.user_section_entity import RosterRole
+
+# from backend.entities.courses.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -13,4 +13,4 @@ class SectionStaff(BaseModel):
     """
 
     user_id: int
-    role: RosterRole
+    # role: RosterRole

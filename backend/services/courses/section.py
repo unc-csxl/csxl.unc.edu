@@ -5,17 +5,13 @@ The Section Service allows the API to manipulate sections data in the database.
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.entities.courses.user_section_entity import UserSectionEntity
-from backend.entities.user_entity import UserEntity
-
-from backend.models.courses.section_staff import SectionStaff
 
 from ...database import db_session
-from ...models.courses.section import Section
-from ...models.courses.section_details import SectionDetails
+from ...models.courses import Section
+from ...models.courses import SectionDetails
 from ...models.user import User
-from ...entities.courses.section_entity import SectionEntity
-from ...entities.courses.course_entity import CourseEntity
+from ...entities.courses import SectionEntity
+from ...entities.courses import CourseEntity
 from ..permission import PermissionService
 
 from ...services.exceptions import ResourceNotFoundException

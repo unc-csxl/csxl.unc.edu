@@ -1,21 +1,17 @@
 """Definition of SQLAlchemy table-backed object mapping entity for the user - section association table."""
 
+from typing import Self
 from enum import Enum
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from backend.entities.courses.roster_role import RosterRole
 from ..entity_base import EntityBase
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
-
-
-class RosterRole(Enum):
-    STUDENT = 0
-    UTA = 1
-    GTA = 2
-    INSTRUCTOR = 3
 
 
 class UserSectionEntity(EntityBase):

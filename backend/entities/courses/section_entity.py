@@ -1,13 +1,13 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course Sections."""
 
+from typing import Self
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.models.courses.section_staff import SectionStaff
 from ..entity_base import EntityBase
 from datetime import datetime
-from ...models.courses.section import Section
-from ...models.courses.section_details import SectionDetails
+from ...models.courses import Section
+from ...models.courses import SectionDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -74,7 +74,7 @@ class SectionEntity(EntityBase):
             meeting_pattern=self.meeting_pattern,
         )
 
-    def to_details_model(self, staff_list: list[SectionStaff] = []) -> SectionDetails:
+    def to_details_model(self) -> SectionDetails:
         """
         Converts a `SectionEntity` object into a `SectionDetails` model object
 
@@ -89,5 +89,5 @@ class SectionEntity(EntityBase):
             term_id=self.term_id,
             term=self.term.to_model(),
             meeting_pattern=self.meeting_pattern,
-            staff=staff_list,
+            staff=[],
         )

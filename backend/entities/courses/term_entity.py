@@ -1,5 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Terms."""
 
+from typing import Self
 from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
