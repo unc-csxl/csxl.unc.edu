@@ -20,7 +20,7 @@ from .term_data import fake_data_fixture as insert_term_fake_data
 from . import term_data
 from .. import user_data
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
