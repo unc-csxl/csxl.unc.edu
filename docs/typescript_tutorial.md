@@ -40,6 +40,86 @@ Second, notice that `string` is a *value* type in TypeScript. This is important 
 
 ### Variable and Constant Declarations
 
+Now that you know a bit about the basic data types in TypeScript, let's take a look at how to define **variables**.
+
+Let's compare a number declaration in Java and Typescript, then compare more generally.
+
+**Java**
+```java
+int myNumber = 88;
+```
+```java
+type name = value;
+```
+
+**TypeScript**
+```ts
+let myNumber: number = 88;
+```
+```ts
+let name: type = value;
+```
+
+As you can see, there are a few differences. First, in Java, we specify the data type *first*. In TypeScript, we provide a **type annotation *after*** the name of the variable. We also provide the `let` keyword before variable name.
+
+You can also notice the difference in types. In Java, we use the `int` primitive type. In TypeScript, we use `number` instead. Lastly, you can note that both Java and TypeScript use semicolons at the end of their lines.
+
+What if we wanted to make these values *constants* instead of variables (so that we cannot change their value later)?
+
+**Java**
+```java
+final int myNumber = 88;
+```
+```java
+final type name = value;
+```
+
+**TypeScript**
+```ts
+const myNumber: number = 88;
+```
+```ts
+const name: type = value;
+```
+
+As you can see, in Java, we use the `final` keyword to turn a variable into a constant. The keyword is appended to the front. In TypeScript however, we just use the `const` keyword ***instead of*** the `let` keyword!
+
+### Arrays
+
+The way that arrays work in Java and TypeScript are a bit different, and so is the syntax to create them.
+
+In Java, you probably remember that the length of an array cannot be changed once it is set, and that using `ArrayList<>` or any other subtype of `List` (imported from `java.utils.*`) provides this functionality!
+
+TypeScript arrays **are more similar to the Java `List` than to the Java array**. Creating arrays in TypeScript is also very similar to creating lists in Python. To declare an array in TypeScript, we can simply add `[]` to the end of a variable's *type annotation*, and use brackets to add initial values. Compare the following:
+
+**Python**
+```py
+# Initialize
+names = ["Felipe", "Sarah", "Ajay"]
+# Access a value
+felipe = names[0]
+```
+
+**Java**
+```java
+# Initialize
+List<String> names = new ArrayList<>();
+names.add("Felipe");
+names.add("Sarah");
+names.add("Ajay");
+# Access a value
+String felipe = names.get(0);
+```
+
+**TypeScript**
+```ts
+# Initialize
+let names: string[] = ["Felipe, "Sarah", "Ajay"]
+#Access a value
+let felipe: string = names[0];
+```
+
+Just like in Python lists and traditional Java arrays (but unlike Java's `List`), we can select values of TypeScript arrays using the `[]` syntax.
 
 ### Conditionals
 
@@ -53,7 +133,10 @@ Second, notice that `string` is a *value* type in TypeScript. This is important 
 ### Arrow Functions
 
 
-### Class Construction
+### Class and Interface Construction
 
+### Extra TypeScript Features
+ - Enums
+ - Type aliases
 
 ## Exercises
