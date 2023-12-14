@@ -44,6 +44,10 @@ Now that you know a bit about the basic data types in TypeScript, let's take a l
 
 Let's compare a number declaration in Java and Typescript, then compare more generally.
 
+| **Java** | **TypeScript** |
+| -------- | -------------- |
+| https://github.com/ajaygandecha/comp423-resources/blob/0eee9ee5942a6e7faf0f6ed3892009b8e83f223e/docs-examples/typescript-tutorial/typescript-tutorial-java.java#L4-L8 | https://github.com/ajaygandecha/comp423-resources/blob/0eee9ee5942a6e7faf0f6ed3892009b8e83f223e/docs-examples/typescript-tutorial/typescript-tutorial-ts.ts#L4-L8 |
+
 **Java**
 ```java
 int myNumber = 88;
@@ -134,6 +138,7 @@ let felipe: string = names[0];
 Just like in Python lists and traditional Java arrays (but unlike Java's `List`), we can select values of TypeScript arrays using the `[]` syntax.
 
 ### Conditionals
+
 
 
 ### Loops
