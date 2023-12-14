@@ -44,25 +44,33 @@ Now that you know a bit about the basic data types in TypeScript, let's take a l
 
 Let's compare a number declaration in Java and Typescript, then compare more generally.
 
-| **Java** | **TypeScript** |
-| -------- | -------------- |
-| https://github.com/ajaygandecha/comp423-resources/blob/0eee9ee5942a6e7faf0f6ed3892009b8e83f223e/docs-examples/typescript-tutorial/typescript-tutorial-java.java#L4-L8 | https://github.com/ajaygandecha/comp423-resources/blob/0eee9ee5942a6e7faf0f6ed3892009b8e83f223e/docs-examples/typescript-tutorial/typescript-tutorial-ts.ts#L4-L8 |
-
-**Java**
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
 ```java
+// Declaring a Number
 int myNumber = 88;
-```
-```java
+
+// General Formula
 type name = value;
 ```
 
-**TypeScript**
+</td>
+ <td>
+  
 ```ts
+// Declaring a Number
 let myNumber: number = 88;
-```
-```ts
+
+// General Formula
 let name: type = value;
 ```
+
+</td>
+</tr>
+</table>
 
 As you can see, there are a few differences. First, in Java, we specify the data type *first*. In TypeScript, we provide a **type annotation *after*** the name of the variable. We also provide the `let` keyword before variable name.
 
