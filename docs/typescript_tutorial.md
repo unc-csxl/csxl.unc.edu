@@ -78,13 +78,36 @@ You can also notice the difference in types. In Java, we use the `int` primitive
 
 What if we wanted to make these values *constants* instead of variables (so that we cannot change their value later)?
 
-**Java**
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
 ```java
+// Declaring a Constant
 final int myNumber = 88;
-```
-```java
+
+// General Formula
 final type name = value;
 ```
+
+</td>
+ <td>
+  
+```ts
+// Declaring a Constant
+const myNumber: number = 88;
+
+// General Formula
+const name: type = value;
+```
+
+</td>
+</tr>
+</table>
+
+**Java**
+
 
 **TypeScript**
 ```ts
@@ -104,10 +127,14 @@ In Java, you probably remember that the length of an array cannot be changed onc
 
 TypeScript arrays **are more similar to the Java `List` than to the Java array**. Creating arrays in TypeScript is also very similar to creating lists in Python. To declare an array in TypeScript, we can simply add `[]` to the end of a variable's *type annotation*, and use brackets to add initial values. Compare the following:
 
-**Python**
+<table>
+<tr><th width="213">Python</th><th width="213">Java</th><th width="213">TypeScript</th></tr>
+<tr>
+<td>
+ 
 ```py
 # Initialize
-names = ["Felipe", "Sarah", "Ajay"]
+names = ["Felipe", "Sarah"]
 # Add values
 names.append("Jordan")
 # Replace a value
@@ -116,13 +143,15 @@ names[3] = "Kris"
 felipe = names[0]
 ```
 
-**Java**
-```java
+</td>
+ <td>
+
+  ```java
 // Initialize
-List<String> names = new ArrayList<>();
+List<String> names =
+    new ArrayList<>();
 names.add("Felipe");
 names.add("Sarah");
-names.add("Ajay");
 // Add values
 names.add("Jordan");
 // Replace a value
@@ -131,10 +160,12 @@ names.set("Kris", 3);
 String felipe = names.get(0);
 ```
 
-**TypeScript**
+</td>
+<td>
+
 ```ts
 // Initialize
-let names: string[] = ["Felipe, "Sarah", "Ajay"]
+let names: string[] = ["Felipe, "Sarah"]
 // Add values
 names.push("Jordan");
 // Replace a value
@@ -142,6 +173,10 @@ names[4] = "Kris";
 // Access a value 
 let felipe: string = names[0];
 ```
+ 
+</td>
+</tr>
+</table>
 
 Just like in Python lists and traditional Java arrays (but unlike Java's `List`), we can select values of TypeScript arrays using the `[]` syntax.
 
