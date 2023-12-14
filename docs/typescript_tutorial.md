@@ -127,10 +127,9 @@ names = ["Felipe", "Sarah"]
 # Add values
 names.append("Jordan")
 # Replace a value
-names[3] = "Kris"
+names[2] = "Kris"
 # Access a value
 felipe = names[0]
-
 
 
 
@@ -142,14 +141,13 @@ felipe = names[0]
 
   ```java
 // Initialize
-List<String> names =
-    new ArrayList<>();
+List<String> names = new ArrayList<>();
 names.add("Felipe");
 names.add("Sarah");
 // Add values
 names.add("Jordan");
 // Replace a value
-names.set("Kris", 3);
+names.set("Kris", 2);
 // Access a value
 String felipe = names.get(0);
 ```
@@ -163,10 +161,9 @@ let names: string[] = ["Felipe, "Sarah"]
 // Add values
 names.push("Jordan");
 // Replace a value
-names[4] = "Kris";
+names[3] = "Kris";
 // Access a value 
 let felipe: string = names[0];
-
 
 
 
