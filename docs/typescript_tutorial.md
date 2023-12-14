@@ -130,6 +130,11 @@ names.append("Jordan")
 names[3] = "Kris"
 # Access a value
 felipe = names[0]
+
+
+
+
+
 ```
 
 </td>
@@ -161,6 +166,11 @@ names.push("Jordan");
 names[4] = "Kris";
 // Access a value 
 let felipe: string = names[0];
+
+
+
+
+
 ```
  
 </td>
@@ -342,6 +352,14 @@ In the case that a function returns nothing, note that in Java, we specify the r
 void doSomething() {
  // Implementation Not Shown
 }
+
+
+
+
+
+
+
+
 ```
 
 </td>
