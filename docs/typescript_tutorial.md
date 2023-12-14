@@ -106,17 +106,6 @@ const name: type = value;
 </tr>
 </table>
 
-**Java**
-
-
-**TypeScript**
-```ts
-const myNumber: number = 88;
-```
-```ts
-const name: type = value;
-```
-
 As you can see, in Java, we use the `final` keyword to turn a variable into a constant. The keyword is appended to the front. In TypeScript however, we just use the `const` keyword ***instead of*** the `let` keyword!
 
 ### Arrays
@@ -182,7 +171,44 @@ Just like in Python lists and traditional Java arrays (but unlike Java's `List`)
 
 ### Conditionals
 
+Java and TypeScript have similar syntax for creating *conditional statements* and *if-statements*. 
 
+TypeScript uses the same **boolean operators** that Java does. This means that `&&` represents *AND*, `||` represents *OR*, and `!` represents *NOT*. TypeScript and Java both use the lowercased `true` and `false` for boolean values.
+
+If-statements have the ***same syntax and usage*** as they do in Java!
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+if (conditionA || conditionB) {
+ // Some code here!
+}
+else {
+ // Some code here.
+}
+```
+
+</td>
+ <td>
+  
+```java
+if (conditionA || conditionB) {
+ // Some code here!
+}
+else {
+ // Some code here.
+}
+```
+
+</td>
+</tr>
+</table>
+
+> [!NOTE]
+> Both Java and TypeScript require the use of parenthesis `( )` around the conditional statements in if-statements.
 
 ### Loops
 
@@ -198,5 +224,6 @@ Just like in Python lists and traditional Java arrays (but unlike Java's `List`)
 ### Extra TypeScript Features
  - Enums
  - Type aliases
+ - Ternary operator
 
 ## Exercises
