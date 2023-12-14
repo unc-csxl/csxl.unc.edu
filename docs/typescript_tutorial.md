@@ -46,7 +46,9 @@ Let's compare a number declaration in Java and Typescript, then compare more gen
 
 | **Java** | **TypeScript** |
 | -------- | -------------- |
-| https://github.com/ajaygandecha/comp423-resources/blob/0eee9ee5942a6e7faf0f6ed3892009b8e83f223e/docs-examples/typescript-tutorial/typescript-tutorial-java.java#L4-L8 | https://github.com/ajaygandecha/comp423-resources/blob/0eee9ee5942a6e7faf0f6ed3892009b8e83f223e/docs-examples/typescript-tutorial/typescript-tutorial-ts.ts#L4-L8 |
+| https://github.com/unc-csxl/csxl.unc.edu/blob/7df18c16eeb117b6cba23f78267b7b6e374e971c/docs/assets/code/docs-examples/typescript-tutorial/typescript-tutorial-java.java#L4-L8 | https://github.com/unc-csxl/csxl.unc.edu/blob/7df18c16eeb117b6cba23f78267b7b6e374e971c/docs/assets/code/docs-examples/typescript-tutorial/typescript-tutorial-ts.ts#L4-L8 |
+
+
 
 **Java**
 ```java
