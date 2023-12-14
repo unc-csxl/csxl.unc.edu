@@ -96,26 +96,38 @@ TypeScript arrays **are more similar to the Java `List` than to the Java array**
 ```py
 # Initialize
 names = ["Felipe", "Sarah", "Ajay"]
+# Add values
+names.append("Jordan")
+# Replace a value
+names[3] = "Kris"
 # Access a value
 felipe = names[0]
 ```
 
 **Java**
 ```java
-# Initialize
+// Initialize
 List<String> names = new ArrayList<>();
 names.add("Felipe");
 names.add("Sarah");
 names.add("Ajay");
-# Access a value
+// Add values
+names.add("Jordan");
+// Replace a value
+names.set("Kris", 3);
+// Access a value
 String felipe = names.get(0);
 ```
 
 **TypeScript**
 ```ts
-# Initialize
+// Initialize
 let names: string[] = ["Felipe, "Sarah", "Ajay"]
-#Access a value
+// Add values
+names.push("Jordan");
+// Replace a value
+names[4] = "Kris";
+// Access a value 
 let felipe: string = names[0];
 ```
 
