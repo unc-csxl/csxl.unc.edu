@@ -1,4 +1,4 @@
-# TypeScript For the 301 Java Developer
+# TypeScript For the COMP 301 Java Developer
 
 > Written by Ajay Gandecha for the CSXL Web Application and for COMP 423: Foundations of Software Engineering.<br>
 > *Last Updated: 12/14/2023*
@@ -813,5 +813,14 @@ console.log(csxlOpeningHour);
 Ternary operators are *extremely useful* and are used numerous times throughout the CSXL application. I highly recommend checking out the codebase and searching for `?` / `:` to see more relevant examples!
 
 ## Conclusion
+
+Congratulations! 🎉 TypeScript is an extremely powerful and useful language, and we you will have the chance to work with TypeScript code this entire semester. If you are having trouble remembering TypeScript syntax, feel free to return to this document at any time. In addition, for practice, we highly recommend you go to the official [TypeScript playground](https://www.typescriptlang.org) or open a new [Repl.it](https://replit.com) ! The TypeScript playground, as well as opening a `.ts` TypeScript file in [Visual Studio Code](https://code.visualstudio.com) and playing around with it, are some of the best ways to get more familiar and accustomed to using the language. As you have seen throughout your computer science careers so far, sometimes the best way to learn is to dive right in!
+
+In addition, below are some additional resources that you may find useful as your work through learning TypeScript.
+
+## Extra Resources
+
+* [Official TypeScript Cheat Sheets](https://www.typescriptlang.org/cheatsheets)
+* [Official Docs - TypeScript for the Java Programmer](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-oop.html)
 
 
