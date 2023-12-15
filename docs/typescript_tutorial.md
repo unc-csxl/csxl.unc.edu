@@ -425,7 +425,7 @@ These caveats are important to note because traditional functions and arrow func
 
 ### Class and Interface Construction
 
-**Classes** define data types and are the foundation of object-oriented programming. It will be critical for you to be comfortable working within TypeScript classes throughout your time in COMP 423! While there are many syntax differences between classes in Java and TypeScript, the *core idea* and motivation for using them remains the same. Below is an example of a full class in both Java and TypeScript - and from there, we will go through each section.
+**Classes** define data types and are the foundation of object-oriented programming. It will be critical for you to be comfortable working within TypeScript classes throughout your time in COMP 423! While there are many syntax differences between classes in Java and TypeScript, the *core idea* and motivation for using them remains the same. Below is an example of a full class in both Java and TypeScript. I recommend that you read this in its entirely and try to compare line by line! From there, we will go through each section.
 
 <table>
 <tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
@@ -444,14 +444,14 @@ public class Student {
  */
 
  /** Represents the name of the student */
- public name: String;
+ public String name;
  /** Represents the year of the student*/
- public year: Int;
+ public int year;
  /** Represents the address of the student */
- private address: String;
+ private String address;
 
  /* Constructor */
- public Student(name: String, year: Int, adr: String) {
+ public Student(String name, int year, String adr) {
   this.name = name;
   this.year = year;
   this.address = adr;
@@ -467,7 +467,7 @@ public class Student {
  }
 
  /** Converts a year number to a description. */
- public static String yearToString(year: Int) {
+ public static String yearToString(int year) {
   if(year == 1) {
    return "Freshman";
   }
@@ -490,12 +490,57 @@ public class Student {
  <td>
   
 ```ts
-// This is a single-line comment.
+/** Represents a UNC Student. */
+public class Student {
 
-/*
-This is an example of a
-multi-line comment!
-*/
+ /* Fields
+ * NOTE: In COMP 301, you learned about using the
+ * `private` keyword on fields to control access
+ * via getter and setter methods. For this example,
+ * I am making some fields public and others private.
+ */
+
+ /** Represents the name of the student */
+ public name: string;
+ /** Represents the year of the student*/
+ public year: number;
+ /** Represents the address of the student */
+ private address: string;
+
+ /* Constructor */
+ constructor(name: string, year: int, adr: string) {
+  this.name = name;
+  this.year = year;
+  this.address = adr;
+
+  this.welcome();
+ }
+
+ /* Methods */
+
+ /** Prints a welcome message to the console. */
+ public welcome() {
+  console.log("Hello, " + this.name + "!");
+ }
+
+ /** Converts a year number to a description. */
+ public static yearToString(year: number): string {
+  if(year == 1) {
+   return "Freshman";
+  }
+  else if(year == 2) {
+   return "Sophomore";
+  }
+  else if(year == 3) {
+   return "Junior";
+  }
+  else if(year == 4) {
+   return "Senior";
+  }
+
+  return "Oops...";
+ }
+}
 ```
 
 </td>
