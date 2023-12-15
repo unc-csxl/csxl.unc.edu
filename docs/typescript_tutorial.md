@@ -814,6 +814,134 @@ console.log(csxlOpeningHour);
 
 Ternary operators are *extremely useful* and are used numerous times throughout the CSXL application. I highly recommend checking out the codebase and searching for `?` / `:` to see more relevant examples!
 
+#### Generic Types
+
+**Generic types** are a powerful convention in Java that allows you to pass types *as a parameter* into objects. This makes objects support multiple data types.
+
+For example, take a `LinkedList` implementation in Java. Linked lists are data structures that can store *many different types of values*. For example, look at the following in *Java*:
+
+<table>
+<tr><th width="520">Java</th></tr>
+<tr>
+<td>
+
+```java
+// Create a linked list that stores strings.
+LinkedList<String> myStringList = new LinkedList<>();
+// Create a linked list that stores students.
+LinkedList<Student> myRoster = new LinkedList<>(); 
+```
+
+</td>
+</tr>
+</table>
+
+The above Java syntax likely looks vaguely familiar! Here, we are creating two linked lists - one of `String` objects and the other of `Student` objects. We pass the data type of the object we want to store into the `< >` part of the type annotation.
+
+**TypeScript also supports generic types!** This is a feature that will be used a lot throughout this course. First, let's compare the syntax for creating the hypothetical lists shown above:
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+// Create a linked list that stores strings.
+LinkedList<String> myStringList = new LinkedList<>();
+// Create a linked list that stores students.
+LinkedList<Student> myRoster = new LinkedList<>(); 
+```
+
+</td>
+ <td>
+  
+```ts
+// Create a linked list that stores strings.
+let yStringList: LinkedList<String> = new LinkedList<>();
+// Create a linked list that stores students.
+let myRoster: LinkedList<Student> = new LinkedList<>(); 
+```
+
+</td>
+</tr>
+</table>
+
+As you can see, the only thing different between both code snippets are how we declare the variable! The usage of `< >` remains the same.
+
+Now, how would we actually *implement* the `LinkedList<T>` class? Let's compare two rudimentary implmentations in both Java and TypeScript:
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+/** Represents a linked list node. */
+public class LinkedList<T> {
+
+ /** Value for the node. */
+ private T value;
+ /** Next node, if it exists. */
+ private LinkedList<T> next;
+
+ /** Constructor */
+ public LinkedList(T value) {
+  this.value = value;
+ }
+
+ /** Returns the value of the node. */
+ public T getValue() {
+  return this.value;
+ }
+
+/* Modifies the value of the node. */
+ public void setValue(T value) {
+  this.value = value;
+ }
+
+ /* Other methods not shown */
+}
+```
+
+</td>
+ <td>
+  
+```ts
+/** Represents a linked list node. */
+public class LinkedList<T> {
+
+ /** Value for the node. */
+ private value: T;
+ /** Next node, if it exists. */
+ private next: LinkedList<T>;
+
+ /** Constructor */
+ constructor(value: T) {
+  this.value = value;
+ }
+
+ /** Returns the value of the node. */
+ public getValue(): T {
+  return this.value;
+ }
+
+/* Modifies the value of the node. */
+ public setValue(value: T) {
+  this.value = value;
+ }
+
+ /* Other methods not shown */
+}
+```
+
+</td>
+</tr>
+</table>
+
+In the header of the class, we put `<T>`, which specifies that we are adding a *type parameter*! Whenever this is then provided, like in `LinkedList<String>` or `LinkedList<Student>`, the `T` used throughout the class is then replaced by the type that is provided! So in the `LinkedList<String>` example, the field `value` becomes of type `String`. In the `LinkedList<Student>` example, the field `value` becomes of type `Student`.
+
+If this concept is unfamiliar, we highly recommend to practice using generic types in classes, as well as experimenting on your own! Generic types are an invaluable tool to make code extendable to multiple use-cases, and is used in many of the packages we are going to use throughout the course.
+
 ## Conclusion
 
 Congratulations! 🎉 TypeScript is an extremely powerful and useful language, and we you will have the chance to work with TypeScript code this entire semester. If you are having trouble remembering TypeScript syntax, feel free to return to this document at any time. In addition, for practice, we highly recommend you go to the official [TypeScript playground](https://www.typescriptlang.org) or open a new [Repl.it](https://replit.com) ! The TypeScript playground, as well as opening a `.ts` TypeScript file in [Visual Studio Code](https://code.visualstudio.com) and playing around with it, are some of the best ways to get more familiar and accustomed to using the language. As you have seen throughout your computer science careers so far, sometimes the best way to learn is to dive right in!
