@@ -48,7 +48,7 @@ Second, notice that `string` is a *value* type in TypeScript. This is important 
 
 Now that you know a bit about the basic data types in TypeScript, let's take a look at how to define **variables**.
 
-Let's compare a number declaration in Java and Typescript, then compare more generally.
+Let's compare a number declaration in Java and TypeScript, then compare more generally.
 
 <table>
 <tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
