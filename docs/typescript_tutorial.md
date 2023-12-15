@@ -425,6 +425,83 @@ These caveats are important to note because traditional functions and arrow func
 
 ### Class and Interface Construction
 
+**Classes** define data types and are the foundation of object-oriented programming. It will be critical for you to be comfortable working within TypeScript classes throughout your time in COMP 423! While there are many syntax differences between classes in Java and TypeScript, the *core idea* and motivation for using them remains the same. Below is an example of a full class in both Java and TypeScript - and from there, we will go through each section.
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+/** Represents a UNC Student. */
+public class Student {
+
+ /* Fields
+ * NOTE: In COMP 301, you learned about using the
+ * `private` keyword on fields to control access
+ * via getter and setter methods. For this example,
+ * I am making some fields public and others private.
+ */
+
+ /** Represents the name of the student */
+ public name: String;
+ /** Represents the year of the student*/
+ public year: Int;
+ /** Represents the address of the student */
+ private address: String;
+
+ /* Constructor */
+ public Student(name: String, year: Int, adr: String) {
+  this.name = name;
+  this.year = year;
+  this.address = adr;
+
+  this.welcome();
+ }
+
+ /* Methods */
+
+ /** Prints a welcome message to the console. */
+ public void welcome() {
+  System.out.println("Hello, " + this.name + "!");
+ }
+
+ /** Converts a year number to a description. */
+ public static String yearToString(year: Int) {
+  if(year == 1) {
+   return "Freshman";
+  }
+  else if(year == 2) {
+   return "Sophomore";
+  }
+  else if(year == 3) {
+   return "Junior";
+  }
+  else if(year == 4) {
+   return "Senior";
+  }
+
+  return "Oops...";
+ }
+}
+```
+
+</td>
+ <td>
+  
+```ts
+// This is a single-line comment.
+
+/*
+This is an example of a
+multi-line comment!
+*/
+```
+
+</td>
+</tr>
+</table>
+
 ### Extra TypeScript Features
 
 #### Comments
