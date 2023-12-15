@@ -590,9 +590,9 @@ Student noah = new Student("Noah", 3, "Columbia St");
  <td>
   
 ```ts
-Student noah = new Student("Noah", 3, "Columbia St");
+noah: Student = new Student("Noah", 3, "Columbia St");
 // OR:
-Student noah = {
+noah: Student = {
  name: "Noah",
  year: 3,
  adr: "209 S Columbia St"
