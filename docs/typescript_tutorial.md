@@ -715,7 +715,7 @@ System.out.println(taName);
  <td>
   
 ```ts
-let taName = "Jean";
+let taName: string = "Jean";
 console.log(taName);
 // Console:
 // >> Jean
@@ -870,7 +870,7 @@ LinkedList<Student> myRoster = new LinkedList<>();
   
 ```ts
 // Create a linked list that stores strings.
-let yStringList: LinkedList<String> = new LinkedList<>();
+let yStringList: LinkedList<string> = new LinkedList<>();
 // Create a linked list that stores students.
 let myRoster: LinkedList<Student> = new LinkedList<>(); 
 ```
@@ -951,7 +951,7 @@ public class LinkedList<T> {
 </tr>
 </table>
 
-In the header of the class, we put `<T>`, which specifies that we are adding a *type parameter*! Whenever this is then provided, like in `LinkedList<String>` or `LinkedList<Student>`, the `T` used throughout the class is then replaced by the type that is provided! So in the `LinkedList<String>` example, the field `value` becomes of type `String`. In the `LinkedList<Student>` example, the field `value` becomes of type `Student`.
+In the header of the class, we put `<T>`, which specifies that we are adding a *type parameter*! Whenever this is then provided, like in `LinkedList<string>` or `LinkedList<Student>`, the `T` used throughout the class is then replaced by the type that is provided! So in the `LinkedList<string>` example, the field `value` becomes of type `string`. In the `LinkedList<Student>` example, the field `value` becomes of type `Student`.
 
 If this concept is unfamiliar, we highly recommend to practice using generic types in classes, as well as experimenting on your own! Generic types are an invaluable tool to make code extendable to multiple use-cases, and is used in many of the packages we are going to use throughout the course.
 
