@@ -11,7 +11,7 @@ This course aims to teach you the *foundations of full-stack software engineerin
 
 Since this course is focused on developing full-stack *web* applications, you need to gain familiarity with the programming languages and tools needed to build high quality web apps. **JavaScript** is the *leading programming language that powers the web* and web applications. According to the **[2023 StackOverflow Developer Survey](https://survey.stackoverflow.co/2023/#technology-most-popular-technologies)**, developers ranked JavaScript as their most commonly-used programming language - an ***eleven-year long streak** and counting!*
 
-In this course, we will use **TypeScript** to build out the frontend of our web applications. TypeScript is a *subset* of JavaScript - it adds on static typing with optional type annotations to JavaScript, meaning that writing code and keeping data types consistent is significantly easier. Because of its type safety features, it is designed for the development of large applications - it even transpiles to JavaScript!
+In this course, we will use **TypeScript** to build out the frontend of our web applications. TypeScript is a *superset* of JavaScript - it adds on static typing with optional type annotations to JavaScript, meaning that writing code and keeping data types consistent is significantly easier. Because of its type safety features, it is designed for the development of large applications - it even transpiles to JavaScript!
 
 TypeScript shares some similarities to Java - both are compiled languages, both support object-oriented programming. However, there are many key differences (including their purpose, how they are compiled, etc). You will learn more about these features throughout the course. 
 
@@ -745,7 +745,7 @@ Let's look at the `Direction` enum applied in a TypeScript function:
  
 ```ts
 function directionToText(direction: Direction): string {
- if(direction == Direction.Up || Direction.Down) {
+ if(direction == Direction.Up || direction == Direction.Down) {
   return "Let's go vertically!"
  }
  else if (direction == Direction.Left || direction == Direction.Right) {
