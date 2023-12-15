@@ -129,13 +129,13 @@ TypeScript arrays **are more similar to the Java `List` than to the Java array**
  
 ```py
 # Initialize
-names = ["Felipe", "Sarah"]
+names = ["Aziz", "Andrew"]
 # Add values
 names.append("Jordan")
 # Replace a value
 names[2] = "Kris"
 # Access a value
-felipe = names[0]
+aziz = names[0]
 
 
 
@@ -148,14 +148,14 @@ felipe = names[0]
   ```java
 // Initialize
 List<String> names = new ArrayList<>();
-names.add("Felipe");
-names.add("Sarah");
+names.add("Aziz");
+names.add("Andrew");
 // Add values
 names.add("Jordan");
 // Replace a value
 names.set("Kris", 2);
 // Access a value
-String felipe = names.get(0);
+String aziz = names.get(0);
 ```
 
 </td>
@@ -163,13 +163,13 @@ String felipe = names.get(0);
 
 ```ts
 // Initialize
-let names: string[] = ["Felipe, "Sarah"]
+let names: string[] = ["Aziz, "Andrew"]
 // Add values
 names.push("Jordan");
 // Replace a value
 names[3] = "Kris";
 // Access a value 
-let felipe: string = names[0];
+let aziz: string = names[0];
 
 
 
