@@ -9,7 +9,6 @@
 
 ### TypeScript vs Java
 
-*Nominal vs structural* 
 
 ## Syntax
 
@@ -542,6 +541,88 @@ public class Student {
  }
 }
 ```
+
+</td>
+</tr>
+</table>
+
+As you can see, there are a few similarities between classes in Java and TypeScript! First, we can look at *access modifiers*. The `public`, `private`, and `protected` keywords are the ***same*** in both Java and TypeScript.
+
+Notice that the fields are the same conventions as well! Note however that the `let` keyword is ***not used*** when defining fields - it is only needed when defining regular variables.
+
+The constructor also differs a bit. In TypeScript, the `constructor` keyword replaces `public ClassName` from Java! The type annotations in the parameters also follow the normal conventions of TypeScript functions.
+
+Lastly, like fields, *methods* in TypeScript also do ***not*** use their respective keyword (`function`) to be defined. Instead, we can just provide an access modifier.
+
+We use the `static` keyword to denote class methods the same way in both Java and TypeScript. Learn more about class fields and methods [here](https://www.tutorialsteacher.com/typescript/typescript-static).
+
+Within a function, we also have access to the `this` keyword that references the current object.
+
+Now, how do we ***instantiate*** objects?
+
+We actually use the same syntax as in Java:
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+Student noah = new Student("Noah", 3, "Columbia St");
+```
+
+</td>
+ <td>
+  
+```ts
+Student noah = new Student("Noah", 3, "Columbia St");
+// OR:
+Student noah = {
+ name: "Noah",
+ year: 3,
+ adr: "209 S Columbia St"
+}
+```
+
+</td>
+</tr>
+</table>
+
+However, you probably the second option supplied in the TypeScript column. In this example, we use JSON (JavaScript object notation) to *create an object of data* that contains the *same properties* that a `Student` objct should have. Suprisingly enough, this is ***also a valid way to instantiate the `Student` object!***
+
+The reason ultimately because TypeScript is a ***structural language***. This means that TypeScript views object as equivalent types *if they share the same structure*, NOT just the same name!
+
+On the otherhand, Java is a ***nominal language***, which means it views objects as equivalent types if they share the same name ONLY (or if there is an inheritence relationship).
+
+This distinction is pretty cool, and it allows us to do some interesting things with TypeScript. We will explore this more throughout COMP 423.
+
+We can also define interfaces in TypeScript like we do in Java. Take a look at the following:
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+public interface Person {
+ String name;
+}
+
+public class Student implements Person { /* ... */ }
+```
+
+</td>
+ <td>
+  
+```ts
+public interface Person {
+ name: String;
+}
+
+public class Student implements Person { /* ... */ }
+```
+
+As you can see, the keywords remain the same between both languages with `interface` and `implements`! The only difference between the two languages are with variable creation and type annotation conventions.
 
 </td>
 </tr>
