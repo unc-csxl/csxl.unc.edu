@@ -134,6 +134,9 @@ names = ["Aziz", "Andrew"]
 names.append("Jordan")
 # Replace a value
 names[2] = "Kris"
+# Remove a value
+names.remove("Kris") # Removes by value
+names.remove(1) # Removes by index
 # Access a value
 aziz = names[0]
 
@@ -154,6 +157,9 @@ names.add("Andrew");
 names.add("Jordan");
 // Replace a value
 names.set("Kris", 2);
+// Remove a value
+names.remove("Kris"); // Removes by value
+names.remove(1); // Removes by index
 // Access a value
 String aziz = names.get(0);
 ```
@@ -168,6 +174,9 @@ let names: string[] = ["Aziz, "Andrew"]
 names.push("Jordan");
 // Replace a value
 names[3] = "Kris";
+// Remove a value
+names.splice(names.indexOf("Kris"), 1); // Removes by value
+names.splice(1, 1); // Removes by index
 // Access a value 
 let aziz: string = names[0];
 
@@ -181,6 +190,10 @@ let aziz: string = names[0];
 </table>
 
 Just like in Python lists and traditional Java arrays (but unlike Java's `List`), we can select values of TypeScript arrays using the `[]` syntax.
+
+As shown in the code above, TypeScript does not have a built-in *delete* function - but, it does have `.splice(i, n)`, which removes `n` number of elements *starting at index `i`*. So, we can combine this with `.indexOf()` to delete our value.
+
+TypeScript also has a `.pop()` function in TypeScript that removes the *last* item of an array. 
 
 ### Conditionals
 
