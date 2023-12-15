@@ -5,10 +5,17 @@
 
 ## Preface
 
-### Uses of TypeScript
+**Welcome to COMP 423!** 🥳 During your career at UNC, you likely started out in COMP 110 learning the *Python* programming language. In COMP 210, you transitioned to Java and learned how to organize your code using classes and common data structures. In COMP 301, you built off of this idea and learned more about useful language features to help you gain a foundational toolbox to approach software engineering problems.
 
-### TypeScript vs Java
+This course aims to teach you the *foundations of full-stack software engineering*. Full-stack development involves the development of a *frontend*, or an application (web, mobile, etc) that a user interacts with, as well as a *backend* running on a server that helps to support your frontend and provide data to it. 
 
+Since this course is focused on developing full-stack *web* applications, you need to gain familiarity with the programming languages and tools needed to build high quality web apps. **JavaScript** is the *leading programming language that powers the web* and web applications. According to the **[2023 StackOverflow Developer Survey](https://survey.stackoverflow.co/2023/#technology-most-popular-technologies)**, developers ranked JavaScript as their most commonly-used programming language - an ***eleven-year long streak** and counting!*
+
+In this course, we will use **TypeScript** to build out the frontend of our web applications. TypeScript is a *subset* of JavaScript - it adds on static typing with optional type annotations to JavaScript, meaning that writing code and keeping data types consistent is significantly easier. Because of its type safety features, it is designed for the development of large applications - it even transpiles to JavaScript!
+
+TypeScript shares some similarities to Java - both are compiled languages, both support object-oriented programming. However, there are many key differences (including their purpose, how they are compiled, etc). You will learn more about these features throughout the course. 
+
+This document is designed to help you become familiar with the syntax and features of TypeScript from the context of the Java experience you all have had in COMP 301. It compares the syntax between Java and TypeScript in various situations and should serve as a guide going into the first few weeks of the semester.
 
 ## Syntax
 
