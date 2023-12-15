@@ -569,6 +569,14 @@ We actually use the same syntax as in Java:
  
 ```java
 Student noah = new Student("Noah", 3, "Columbia St");
+
+
+
+
+
+
+
+
 ```
 
 </td>
@@ -622,11 +630,12 @@ public interface Person {
 public class Student implements Person { /* ... */ }
 ```
 
-As you can see, the keywords remain the same between both languages with `interface` and `implements`! The only difference between the two languages are with variable creation and type annotation conventions.
-
 </td>
 </tr>
 </table>
+
+As you can see, the keywords remain the same between both languages with `interface` and `implements`! The only difference between the two languages are with variable creation and type annotation conventions.
+
 
 ### Extra TypeScript Features
 
