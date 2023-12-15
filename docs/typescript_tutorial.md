@@ -576,14 +576,6 @@ We actually use the same syntax as in Java:
  
 ```java
 Student noah = new Student("Noah", 3, "Columbia St");
-
-
-
-
-
-
-
-
 ```
 
 </td>
@@ -591,25 +583,11 @@ Student noah = new Student("Noah", 3, "Columbia St");
   
 ```ts
 noah: Student = new Student("Noah", 3, "Columbia St");
-// OR:
-noah: Student = {
- name: "Noah",
- year: 3,
- adr: "209 S Columbia St"
-}
 ```
 
 </td>
 </tr>
 </table>
-
-However, you probably the second option supplied in the TypeScript column. In this example, we use JSON (JavaScript object notation) to *create an object of data* that contains the *same properties* that a `Student` objct should have. Suprisingly enough, this is ***also a valid way to instantiate the `Student` object!***
-
-The reason ultimately because TypeScript is a ***structural language***. This means that TypeScript views object as equivalent types *if they share the same structure*, NOT just the same name!
-
-On the otherhand, Java is a ***nominal language***, which means it views objects as equivalent types if they share the same name ONLY (or if there is an inheritence relationship).
-
-This distinction is pretty cool, and it allows us to do some interesting things with TypeScript. We will explore this more throughout COMP 423.
 
 We can also define interfaces in TypeScript like we do in Java. Take a look at the following:
 
@@ -643,6 +621,30 @@ public class Student implements Person { /* ... */ }
 
 As you can see, the keywords remain the same between both languages with `interface` and `implements`! The only difference between the two languages are with variable creation and type annotation conventions.
 
+There is also another interesting feature of TypeScript worth mentioning here.
+
+TypeScript is a ***structural language***. This means that TypeScript views object as equivalent types *if they share the same structure*, NOT just the same name! On the otherhand, Java is a ***nominal language***, which means it views objects as equivalent types if they share the same name ONLY (or if there is an inheritence relationship).
+
+So, we can *technically* directly create a value of type `Person` in TypeScript! This is not something you can directly do in Java without creating a subclass. The syntax would look like so:
+
+<table>
+<tr><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```ts
+person: Person = {
+ name: "Charles"
+}
+```
+
+</td>
+</tr>
+</table>
+
+In this example, we use JSON (JavaScript object notation) to *create an object of data* that contains the *same properties* that a `Person` objct should have. Suprisingly enough, due to TypeScript being a structural language, this ***is a valid way to instantiate a `Person` object!***
+
+This distinction is pretty cool, and it allows us to do some interesting things with TypeScript. We will explore this more throughout COMP 423.
 
 ### Extra TypeScript Features
 
