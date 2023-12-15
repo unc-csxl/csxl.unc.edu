@@ -412,7 +412,7 @@ In fact, this is exactly what we are doing. We are saving a *function* to a vari
 
 We can then call our function in the same way we would normally, like so:
 ```ts
-greet("Kris");
+greet("Jade");
 ```
 
 While this seems like just a syntactic change, the implications of this are ***massive*** and opens the door to an entire new world of programming called **functional programming**, as we can pass around functions as values. This is something that we will be covering *extensively* throughout this course, however it is super important to become familiar with the arrow function syntax now so it is less suprising later!
@@ -426,10 +426,173 @@ These caveats are important to note because traditional functions and arrow func
 ### Class and Interface Construction
 
 ### Extra TypeScript Features
- - Comments
- - Printing
- - Enums
- - Type aliases
- - Ternary operator
 
-## Exercises
+#### Comments
+
+The examples throughout this document have already used many comments, however we create comments in Java and TypeScript in the exact same way! This is shown below:
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+// This is a single-line comment.
+
+/*
+This is an example of a
+multi-line comment!
+*/
+```
+
+</td>
+ <td>
+  
+```ts
+// This is a single-line comment.
+
+/*
+This is an example of a
+multi-line comment!
+*/
+```
+
+</td>
+</tr>
+</table>
+
+#### Printing Values
+
+In Java and TypeScript, we have statements to print out values! In TypeScript, values are printed to the *console*. We use the following convention to print values:
+
+<table>
+<tr><th width="520">Java</th><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```java
+String taName = "Jean";
+System.out.println(taName);
+// Output:
+// >> Jean
+```
+
+</td>
+ <td>
+  
+```ts
+let taName = "Jean";
+console.log(taName);
+// Console:
+// >> Jean
+```
+
+</td>
+</tr>
+</table>
+
+As you can see, we use `console.log()` to print out values to the console in TypeScript.
+
+#### Enums
+
+Enums (enumerators) are an extremely useful language feature in many programming languages! Enums allow you to define custom, related values or states. Think of enums as implementing a multiple-choice question, where there are many options! Let's a look at an example:
+
+<table>
+<tr><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```ts
+enum Direction {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+```
+
+</td>
+</tr>
+</table>
+
+Let's look at the `Direction` enum applied in a TypeScript function:
+
+<table>
+<tr><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+ 
+```ts
+function directionToText(direction: Direction): string {
+ if(direction == Direction.Up || Direction.Down) {
+  return "Let's go vertically!"
+ }
+ else if (direction == Direction.Left || direction == Direction.Right) {
+  return "Let's go horizontally!"
+ }
+}
+```
+
+</td>
+</tr>
+</table>
+
+Enumerations will be extremely useful in your final projects to model data.
+
+#### Type Aliases
+
+There is a nifty feature in TypeScript called the **type alias**, which essentially allows you to create another label why which you can refer to a type. This can be useful to make types more concise, or to make it more readable for your feature. Look at the following example:
+
+<table>
+<tr><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+
+```ts
+type Rating = number;
+ 
+let csxlRating: Rating = 10;
+```
+
+</td>
+</tr>
+</table>
+
+Using the `type` keyword, we give `number` an alias as `Rating`. Now, we can use `number` and `Rating` interchangeably. Next, we create a variable called `csxlRating` of type `Rating` (which is really just type `number`), and then assign a number to it.
+
+#### Ternary Operator
+
+The last super useful feature of TypeScript I wanted to feature here is the **ternary operator**. The ternary operator allows you to *conditionally assign a value to a variable!* This means that if a condition is true, I can assign one value - and if false, I can assign the other.
+
+The ternary operator uses the following syntax:
+`condition ? value if true : value if false`
+
+Let's look at an example relating to the CSXL site:
+
+<table>
+<tr><th width="520">TypeScript</th></tr>
+<tr>
+<td>
+
+```ts
+// Stores the hour which the CSXL opens.
+// For sake of example, say the CSXL opens at 10am on weekdays and 12pm on weekends:
+let csxlOpeningHour: number = isWeekday ? 10 : 12;
+
+console.log(csxlOpeningHour);
+
+// Output IF isWeekday = true:
+// >> 10
+// Output IF isWeekday = false:
+// >> 12
+```
+
+</td>
+</tr>
+</table>
+
+Ternary operators are *extremely useful* and are used numerous times throughout the CSXL application. I highly recommend checking out the codebase and searching for `?` / `:` to see more relevant examples!
+
+## Conclusion
+
+
