@@ -382,7 +382,7 @@ function doSomething(): void {
 TypeScript also has a tremendously useful feature called **arrow functions**. Arrow functions are a more compact and concise method of defining traditional functions. Let's take a look at a function from above as a *traditional function* and one as an *arrow function*.
 
 <table>
-<tr><th width="520">Traditional Function</th><th width="520">Arrow Function</th></tr>
+<tr><th width="520">TypeScript - Traditional Function</th><th width="520">TypeScript - Arrow Function</th></tr>
 <tr>
 <td>
  
