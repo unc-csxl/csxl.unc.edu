@@ -5,7 +5,9 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ...models.courses import RosterRole
+from ...models.roster_role import RosterRole
+from ...models.user_details import SectionStaffUser
+
 from ..entity_base import EntityBase
 
 __authors__ = ["Ajay Gandecha"]
@@ -31,12 +33,29 @@ class UserSectionEntity(EntityBase):
     # User for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
+    user: Mapped["UserEntity"] = relationship(back_populates="sections")
 
     # Section for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
     section_id: Mapped[int] = mapped_column(
         ForeignKey("courses__section.id"), primary_key=True
     )
+    section: Mapped["SectionEntity"] = relationship(back_populates="members")
 
     # Type of relationship
     member_type: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
+
+    def to_flat_model(self) -> SectionStaffUser:
+        """
+        Converts a `SectionEntity` object into a `SectionStaffUser` model object
+
+        Returns:
+            SectionStaffUser: `SectionStaffUser` object from the entity
+        """
+        return SectionStaffUser(
+            id=self.user.id,
+            first_name=self.user.first_name,
+            last_name=self.user.last_name,
+            pronouns=self.user.pronouns,
+            member_type=self.member_type,
+        )

@@ -42,7 +42,6 @@ class SectionService:
         """
         # Select all entries in `Section` table
         query = select(SectionEntity)
-
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return

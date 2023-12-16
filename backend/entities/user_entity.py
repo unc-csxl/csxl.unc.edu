@@ -5,7 +5,8 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 
-from backend.models.user import SectionStaffUser
+from backend.entities.courses.user_section_entity import UserSectionEntity
+from backend.models.user_details import SectionStaffUser
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
@@ -55,6 +56,9 @@ class UserEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
 
+    # Section relations that the user is a part of.
+    sections: Mapped[list["UserSectionEntity"]] = relationship(back_populates="user")
+
     @classmethod
     def from_model(cls, model: User) -> Self:
         """
@@ -97,17 +101,6 @@ class UserEntity(EntityBase):
             github_id=self.github_id,
             github_avatar=self.github_avatar,
             pronouns=self.pronouns,
-        )
-
-    def to_staff_model(self) -> SectionStaffUser:
-        """
-        Create a SectionStaffUser model from a UserEntity.
-
-        Returns:
-            SectionStaffUser: A User model used by course section data.
-        """
-        return SectionStaffUser(
-            first_name=self.first_name, last_name=self.last_name, pronouns=self.pronouns
         )
 
     def update(self, model: User) -> None:

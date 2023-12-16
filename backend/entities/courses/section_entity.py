@@ -8,6 +8,8 @@ from ..entity_base import EntityBase
 from datetime import datetime
 from ...models.courses import Section
 from ...models.courses import SectionDetails
+from ...models.user_details import SectionStaffUser
+from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -41,13 +43,8 @@ class SectionEntity(EntityBase):
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
 
-    staff: Mapped["UserEntity"] = relationship(
-        "UserEntity",
-        secondary="join(UserSectionEntity, UserEntity, UserSectionEntity.user_id == UserEntity.id)",
-        primaryjoin="SectionEntity.id == UserSectionEntity.section_id",
-        secondaryjoin="UserSectionEntity.user_id == UserEntity.id",
-        viewonly=True,
-    )
+    # Members of the course
+    members: Mapped[list["UserSectionEntity"]] = relationship(back_populates="section")
 
     @classmethod
     def from_model(cls, model: Section) -> Self:
@@ -97,5 +94,9 @@ class SectionEntity(EntityBase):
             term_id=self.term_id,
             term=self.term.to_model(),
             meeting_pattern=self.meeting_pattern,
-            staff=[],
+            staff=[
+                members.to_flat_model()
+                for members in self.members
+                if members.member_type != RosterRole.STUDENT
+            ],
         )

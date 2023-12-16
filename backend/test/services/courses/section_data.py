@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from ....entities.courses import SectionEntity
 from ....entities.courses import UserSectionEntity
 from ....models.courses import Section
-from ....models.courses import RosterRole
+from ....models.roster_role import RosterRole
 
 from ..reset_table_id_seq import reset_table_id_seq
 from datetime import datetime

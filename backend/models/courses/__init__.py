@@ -4,7 +4,6 @@ from .course import Course
 from .course_details import CourseDetails
 from .section import Section
 from .section_details import SectionDetails
-from .roster_role import RosterRole
 
 __all__ = [
     "Term",
