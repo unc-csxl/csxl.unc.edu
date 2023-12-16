@@ -3,15 +3,21 @@
 import pytest
 from sqlalchemy.orm import Session
 from ....entities.courses import SectionEntity
+from ....entities.courses import UserSectionEntity
 from ....models.courses import Section
+from ....models.courses import RosterRole
+
 from ..reset_table_id_seq import reset_table_id_seq
 from datetime import datetime
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from .term_data import fake_data_fixture as insert_term_fake_data
 from .course_data import fake_data_fixture as insert_course_fake_data
+from ..role_data import fake_data_fixture as insert_role_fake_data
+from ..user_data import fake_data_fixture as insert_user_fake_data
 
 from . import course_data, term_data
+from .. import user_data, role_data, permission_data
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -57,6 +63,12 @@ new_section = Section(
     meeting_pattern="MW 1:30PM - 2:45PM",
 )
 
+ta = UserSectionEntity(
+    user_id=user_data.ambassador.id,
+    section_id=comp_101_001.id,
+    member_type=RosterRole.INSTRUCTOR,
+)
+
 sections = [comp_101_001, comp_101_002, comp_301_001]
 comp_110_sections = [comp_101_001, comp_101_002]
 
@@ -66,10 +78,14 @@ def insert_fake_data(session: Session):
         entity = SectionEntity.from_model(section)
         session.add(entity)
 
+    session.add(ta)
+
 
 @pytest.fixture(autouse=True)
 def fake_data_fixture(session: Session):
     term_data.insert_fake_data(session)
     course_data.insert_fake_data(session)
+    role_data.insert_fake_data(session)
+    user_data.insert_fake_data(session)
     insert_fake_data(session)
     session.commit()

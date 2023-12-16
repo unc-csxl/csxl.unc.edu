@@ -41,6 +41,14 @@ class SectionEntity(EntityBase):
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
 
+    staff: Mapped["UserSectionEntity"] = relationship(
+        "UserEntity",
+        secondary="join(UserSectionEntity, UserEntity, UserSectionEntity.user_id == UserEntity.id)",
+        primaryjoin="SectionEntity.id == UserSectionEntity.section_id",
+        secondaryjoin="UserSectionEntity.user_id == UserEntity.id",
+        viewonly=True,
+    )
+
     @classmethod
     def from_model(cls, model: Section) -> Self:
         """
