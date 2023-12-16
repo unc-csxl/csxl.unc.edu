@@ -31,7 +31,7 @@ class UserDetails(UserPermissions):
     ...
 
 
-class SectionStaffUser(UserIdentity):
+class SectionMember(UserIdentity):
     """
     Pydantic model to represent the information about a user who is a
     staff of a section of a course.

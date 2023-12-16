@@ -6,7 +6,7 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...models.roster_role import RosterRole
-from ...models.user_details import SectionStaffUser
+from ...models.user_details import SectionMember
 
 from ..entity_base import EntityBase
 
@@ -45,14 +45,14 @@ class UserSectionEntity(EntityBase):
     # Type of relationship
     member_type: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
 
-    def to_flat_model(self) -> SectionStaffUser:
+    def to_flat_model(self) -> SectionMember:
         """
-        Converts a `SectionEntity` object into a `SectionStaffUser` model object
+        Converts a `SectionEntity` object into a `SectionMember` model object
 
         Returns:
-            SectionStaffUser: `SectionStaffUser` object from the entity
+            SectionMember: `SectionMember` object from the entity
         """
-        return SectionStaffUser(
+        return SectionMember(
             id=self.user.id,
             first_name=self.user.first_name,
             last_name=self.user.last_name,

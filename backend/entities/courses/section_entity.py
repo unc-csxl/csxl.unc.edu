@@ -8,7 +8,7 @@ from ..entity_base import EntityBase
 from datetime import datetime
 from ...models.courses import Section
 from ...models.courses import SectionDetails
-from ...models.user_details import SectionStaffUser
+from ...models.user_details import SectionMember
 from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
