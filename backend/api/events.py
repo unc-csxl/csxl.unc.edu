@@ -33,7 +33,7 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
 
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=["Events"])
-def get_events_from_organization(
+def get_events_by_organization(
     slug: str, event_service: EventService = Depends()
 ) -> list[EventDetails]:
     """
@@ -46,7 +46,7 @@ def get_events_from_organization(
     Returns:
         list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
     """
-    return event_service.get_events_from_organization(slug)
+    return event_service.get_events_by_organization(slug)
 
 
 @api.post("", response_model=EventDetails, tags=["Events"])
@@ -75,7 +75,7 @@ def new_event(
     response_model=EventDetails,
     tags=["Events"],
 )
-def get_event_from_id(id: int, event_service: EventService = Depends()) -> EventDetails:
+def get_event_by_id(id: int, event_service: EventService = Depends()) -> EventDetails:
     """
     Get event with matching id
 
@@ -86,7 +86,7 @@ def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event
     Returns:
         EventDetails: a valid EventDetails model corresponding to the given event id
     """
-    return event_service.get_from_id(id)
+    return event_service.get_by_id(id)
 
 
 @api.put(
