@@ -79,7 +79,7 @@ class OrganizationService:
         # Return added object
         return organization_entity.to_model()
 
-    def get_from_slug(self, slug: str) -> OrganizationDetails:
+    def get_by_slug(self, slug: str) -> OrganizationDetails:
         """
         Get the organization from a slug
         If none retrieved, a debug description is displayed.

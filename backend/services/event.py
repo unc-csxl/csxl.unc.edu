@@ -79,7 +79,7 @@ class EventService:
         # Return added object
         return event_entity.to_details_model()
 
-    def get_from_id(self, id: int) -> EventDetails:
+    def get_by_id(self, id: int) -> EventDetails:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
@@ -101,7 +101,7 @@ class EventService:
         # Convert entry to a model and return
         return entity.to_details_model()
 
-    def get_events_from_organization(self, slug: str) -> list[EventDetails]:
+    def get_events_by_organization(self, slug: str) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with slug
 
