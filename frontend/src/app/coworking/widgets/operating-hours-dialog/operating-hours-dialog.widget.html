@@ -1,0 +1,10 @@
+<div class="dialog">
+  <h3>Upcoming Hours</h3>
+  <ul>
+    <li *ngFor="let hours of operatingHours">
+      {{ hours.start | date: 'EEEE M/d' }}
+      from {{ hours.start | date: 'h:mma' | lowercase }} to
+      {{ hours.end | date: 'h:mma' | lowercase }}
+    </li>
+  </ul>
+</div>
