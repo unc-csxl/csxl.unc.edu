@@ -113,20 +113,10 @@ class EventService:
         """
 
         # Query the organization with the matching slug
-        organization = (
-            self._session.query(OrganizationEntity)
-            .filter(OrganizationEntity.slug == slug)
-            .one_or_none()
-        )
-
-        # Ensure that the organization exists
-        if organization is None:
-            return []
-
-        # Query the event with matching organization slug
         events = (
             self._session.query(EventEntity)
-            .filter(EventEntity.organization_id == organization.id)
+            .join(OrganizationEntity)
+            .where(OrganizationEntity.slug == slug)
             .all()
         )
 
