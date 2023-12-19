@@ -9,7 +9,16 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscription, catchError, map, of } from 'rxjs';
+import {
+  Observable,
+  ReplaySubject,
+  Subject,
+  Subscription,
+  catchError,
+  map,
+  of,
+  tap
+} from 'rxjs';
 import {
   Event,
   EventJson,
@@ -26,6 +35,9 @@ import { Profile, ProfileService } from '../profile/profile.service';
 export class EventService {
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
+
+  public subject: Subject<boolean> = new ReplaySubject(1);
+  public isRegistered$: Observable<boolean> = this.subject.asObservable();
 
   constructor(
     protected http: HttpClient,
@@ -126,6 +138,16 @@ export class EventService {
     );
   }
 
+  /** Return a boolean representing whether the user is registered for an event or not using the backend HTTP get request.
+   * @param event_id: number representing the Event ID
+   * @returns Observable<boolean>
+   */
+  getIsUserRegistered(event_id: number): Observable<boolean> {
+    return this.http
+      .get<boolean>(`/api/events/${event_id}/registration/status`)
+      .pipe(tap((status) => this.subject.next(status)));
+  }
+
   /** Return all event registrations an event using the backend HTTP get request.
    * @param event_id: number representing the Event ID
    * @returns Observable<EventRegistration[]>
@@ -140,7 +162,7 @@ export class EventService {
    * @param event_id: number representing the Event ID
    * @returns Observable<number>
    */
-  getEventRegistrationStatus(event_id: number): Observable<number> {
+  getEventRegistrationCount(event_id: number): Observable<number> {
     return this.http.get<number>(`/api/events/${event_id}/registration/count`);
   }
 
@@ -153,10 +175,13 @@ export class EventService {
       throw new Error('Only allowed for logged in users.');
     }
 
-    return this.http.post<EventRegistration>(
-      `/api/events/${event_id}/registration`,
-      {}
-    );
+    return this.http
+      .post<EventRegistration>(`/api/events/${event_id}/registration`, {})
+      .pipe(
+        tap(() => {
+          this.subject.next(true);
+        })
+      );
   }
 
   /** Delete an existing registration for an event using the backend HTTP delete request.
@@ -168,9 +193,12 @@ export class EventService {
       throw new Error('Only allowed for logged in users.');
     }
 
-    // TO-DO: Check if User is Registered for Event
-    return this.http.delete<EventRegistration>(
-      `/api/events/${event_id}/registration`
-    );
+    return this.http
+      .delete<EventRegistration>(`/api/events/${event_id}/registration`)
+      .pipe(
+        tap(() => {
+          this.subject.next(true);
+        })
+      );
   }
 }

@@ -420,7 +420,9 @@ class EventService:
 
         # Ensure object exists
         if event_registration is None:
-            return None
+            raise ResourceNotFoundException(
+                f"No event registration found with matching event ID: {id}"
+            )
 
         # Delete object and commit
         self._session.delete(

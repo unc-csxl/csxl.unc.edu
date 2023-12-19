@@ -234,6 +234,28 @@ def get_event_registration_of_user(
         return event_registration
 
 
+@api.get("/{event_id}/registration/status", tags=["Events"])
+def get_is_user_registered_for_event(
+    event_id: int,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+) -> bool:
+    """
+    Check the registration status of a user for an event
+
+    Args:
+        event_id: the int identifier of an Event
+        subject: the logged in user making the request
+        event_service: the backing service
+    """
+    event: EventDetails = event_service.get_by_id(event_id)
+    event_registration = event_service.get_registration(subject, subject, event)
+    if event_registration is None:
+        return False
+    else:
+        return True
+
+
 @api.get("/{event_id}/registrations", tags=["Events"])
 def get_event_registrations(
     event_id: int,

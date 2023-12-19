@@ -16,6 +16,7 @@ import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 import { EventService } from '../event.service';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-event-page',
@@ -100,5 +101,6 @@ export class EventPageComponent implements OnInit {
    */
   onEventCardClicked(event: Event) {
     this.selectedEvent = event;
+    this.eventService.getIsUserRegistered(event.id!).subscribe();
   }
 }

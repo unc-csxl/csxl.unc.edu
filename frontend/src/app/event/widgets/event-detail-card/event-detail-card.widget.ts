@@ -7,11 +7,11 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Event, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, ReplaySubject, Subject, catchError, map, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { Profile } from 'src/app/models.module';
 
@@ -20,7 +20,7 @@ import { Profile } from 'src/app/models.module';
   templateUrl: './event-detail-card.widget.html',
   styleUrls: ['./event-detail-card.widget.css']
 })
-export class EventDetailCard {
+export class EventDetailCard implements OnInit {
   /** The event for the event card to display */
   @Input() event!: Event;
   @Input() profile!: Profile;
@@ -28,9 +28,13 @@ export class EventDetailCard {
   /** Constructs the widget */
   constructor(
     protected snackBar: MatSnackBar,
-    private eventService: EventService,
+    protected eventService: EventService,
     private permission: PermissionService
   ) {}
+
+  ngOnInit(): void {
+    this.eventService.getIsUserRegistered(this.event.id!).subscribe();
+  }
 
   checkPermissions(): Observable<boolean> {
     return this.permission.check(
@@ -71,26 +75,6 @@ export class EventDetailCard {
     });
   }
 
-  /** Check if a user is registered for the given event */
-  checkRegistrationStatus() {}
-
-  /** Return whether or not a user is registered for an event
-   * @param event_id: number representing the Event ID
-   * @returns Observable<boolean>
-   */
-  getIsRegistered(event_id: number): Observable<boolean> {
-    return this.eventService.getEventRegistrationOfUser(event_id).pipe(
-      map((response) => {
-        if (response) {
-          return true;
-        } else {
-          return false;
-        }
-      }),
-      catchError((err) => of(false))
-    );
-  }
-
   /** Registers a user for the given event
    * @param event_id: number representing the id of the Event to register the User for
    */
@@ -119,6 +103,7 @@ export class EventDetailCard {
       this.eventService
         .unregisterForEvent(event_registration_id)
         .subscribe(() => {
+          this.eventService.subject.next(false);
           this.snackBar.open('Successfully Unregistered!', '', {
             duration: 2000
           });
@@ -130,6 +115,7 @@ export class EventDetailCard {
    * @returns {void}
    */
   private onSuccess(event_registration: EventRegistration): void {
+    this.eventService.subject.next(true);
     this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
   }
 

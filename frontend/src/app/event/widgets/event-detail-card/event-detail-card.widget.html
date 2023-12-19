@@ -71,7 +71,7 @@
     <button
       mat-stroked-button
       (click)="unregisterForEvent(event.id!)"
-      *ngIf="checkRegistrationStatus(); else register">
+      *ngIf="this.eventService.isRegistered$ | async; else register">
       Unregister
     </button>
     <ng-template #register>
