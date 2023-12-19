@@ -39,16 +39,6 @@ export class EventDetailCard {
     );
   }
 
-  /** Check if a user is registered for the given event */
-  checkRegistrationStatus() {
-    let isRegistered: boolean = false;
-    this.eventService.getIsRegistered(this.event.id!).subscribe((result) => {
-      isRegistered = result;
-    });
-
-    return isRegistered;
-  }
-
   /** Handler for when the share button is pressed
    *  This function copies the permalink to the event to the user's
    *  clipboard.
@@ -63,6 +53,7 @@ export class EventDetailCard {
       duration: 3000
     });
   }
+
   /** Delete the given event object using the Event Service's deleteEvent method
    * @param event: Event representing the updated event
    * @returns void
@@ -78,6 +69,26 @@ export class EventDetailCard {
         location.reload();
       });
     });
+  }
+
+  /** Check if a user is registered for the given event */
+  checkRegistrationStatus() {}
+
+  /** Return whether or not a user is registered for an event
+   * @param event_id: number representing the Event ID
+   * @returns Observable<boolean>
+   */
+  getIsRegistered(event_id: number): Observable<boolean> {
+    return this.eventService.getEventRegistrationOfUser(event_id).pipe(
+      map((response) => {
+        if (response) {
+          return true;
+        } else {
+          return false;
+        }
+      }),
+      catchError((err) => of(false))
+    );
   }
 
   /** Registers a user for the given event

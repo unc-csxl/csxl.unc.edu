@@ -120,28 +120,28 @@ export class EventService {
    * @param event_id: number representing the Event ID
    * @returns Observable<EventRegistration>
    */
-  getEventRegistration(event_id: number): Observable<EventRegistration> {
+  getEventRegistrationOfUser(event_id: number): Observable<EventRegistration> {
     return this.http.get<EventRegistration>(
       `/api/events/${event_id}/registration`
     );
   }
 
-  /** Return whether or not a user is registered for an event
+  /** Return all event registrations an event using the backend HTTP get request.
    * @param event_id: number representing the Event ID
-   * @returns Observable<EventRegistration>
+   * @returns Observable<EventRegistration[]>
    */
-  getIsRegistered(event_id: number): Observable<boolean> {
-    return this.getEventRegistration(event_id).pipe(
-      map((response) => {
-        if (response) {
-          console.log(response);
-          return true;
-        } else {
-          return false;
-        }
-      }),
-      catchError((err) => of(false))
+  getEventRegistrations(event_id: number): Observable<EventRegistration[]> {
+    return this.http.get<EventRegistration[]>(
+      `/api/events/${event_id}/registrations`
     );
+  }
+
+  /** Return number of event registrations for an event
+   * @param event_id: number representing the Event ID
+   * @returns Observable<number>
+   */
+  getEventRegistrationStatus(event_id: number): Observable<number> {
+    return this.http.get<number>(`/api/events/${event_id}/registration/count`);
   }
 
   /** Create a new registration for an event using the backend HTTP create request.
