@@ -5,6 +5,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from backend.services.exceptions import (
+    EventRegistrationException,
     UserPermissionException,
     ResourceNotFoundException,
 )
@@ -24,7 +25,14 @@ from ..fixtures import user_svc_integration, event_svc_integration
 from ..core_data import setup_insert_data_fixture
 
 # Data Models for Fake Data Inserted in Setup
-from .event_test_data import events, event_one, to_add, updated_event, registrations
+from .event_test_data import (
+    events,
+    event_one,
+    to_add,
+    updated_event,
+    registrations,
+    event_three,
+)
 from ..user_data import root, ambassador, user
 
 # Test Functions
@@ -66,6 +74,9 @@ def test_create_event_as_root(event_svc_integration: EventService):
     created_event = event_svc_integration.create(root, to_add)
     assert created_event is not None
     assert created_event.id is not None
+    assert len(created_event.registrations) == 1
+    assert created_event.registrations[0].is_organizer == True
+    assert created_event.registrations[0].user_id == root.id
 
 
 def test_create_event_as_user(event_svc_integration: EventService):
@@ -79,7 +90,7 @@ def test_get_events_by_organization(event_svc_integration: EventService):
     """Test that list of events can be retrieved based on specified organization."""
     fetched_events = event_svc_integration.get_events_by_organization("cssg")
     assert fetched_events is not None
-    assert len(fetched_events) == 2
+    assert len(fetched_events) == 3
 
 
 def test_update_event_as_root(
@@ -193,7 +204,7 @@ def test_get_registrations_of_event_as_organizer(event_svc_integration: EventSer
     event_registrations = event_svc_integration.get_registrations_of_event(
         user, event_details
     )
-    assert len(event_registrations) == len(registrations)
+    assert len(event_registrations) == 2
 
 
 def test_get_registrations_of_event_non_organizer(event_svc_integration: EventService):
@@ -342,3 +353,22 @@ def test_get_registrations_of_user_admin_authorization(
     event_svc_integration._permission.enforce.assert_called_with(
         root, "user.event_registrations", f"user/{ambassador.id}"
     )
+
+
+def test_get_event_registration_status(
+    event_svc_integration: EventService,
+):
+    """Tests that the service can successfully count events for an organization."""
+    if event_one.id:
+        status = event_svc_integration.get_event_registration_status(event_one.id)
+        assert status.registration_count == 1
+
+
+def test_register_to_full_event(
+    event_svc_integration: EventService,
+):
+    """Tests that a user cannot register for an event that is full."""
+    event_details = event_svc_integration.get_by_id(event_three.id)  # type: ignore
+
+    with pytest.raises(EventRegistrationException):
+        event_svc_integration.register(user, user, event_details)

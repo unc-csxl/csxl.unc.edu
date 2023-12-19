@@ -5,14 +5,18 @@ The Event Service allows the API to manipulate event data in the database.
 from typing import Sequence
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from backend.models.user import User
 from ..database import db_session
-from backend.models.event import Event
+from backend.models.event import Event, DraftEvent
 from backend.models.event_details import EventDetails
-from backend.models.event_registration import EventRegistration, NewEventRegistration
+from backend.models.event_registration import (
+    EventRegistration,
+    EventRegistrationStatus,
+    NewEventRegistration,
+)
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
     EventEntity,
@@ -21,7 +25,11 @@ from ..entities import (
     UserEntity,
 )
 from .permission import PermissionService
-from .exceptions import ResourceNotFoundException, UserPermissionException
+from .exceptions import (
+    ResourceNotFoundException,
+    UserPermissionException,
+    EventRegistrationException,
+)
 from . import UserService
 
 __authors__ = [
@@ -63,7 +71,7 @@ class EventService:
         # Convert entities to details models and return
         return [entity.to_details_model() for entity in entities]
 
-    def create(self, subject: User, event: Event) -> EventDetails:
+    def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -83,18 +91,22 @@ class EventService:
             f"organization/{event.organization_id}",
         )
 
-        # Checks if the event already exists in the table
-        if event.id:
-            event.id = None
-
         # Otherwise, create new object
-        event_entity = EventEntity.from_model(event)
+        event_entity = EventEntity.from_draft_model(event)
 
         # Add new object to table and commit changes
         self._session.add(event_entity)
         self._session.commit()
 
+        # Retrieve the detail model of the event created
+        event_details = event_entity.to_details_model()
+
+        # Set the user as the organizer of the event
+        self.set_event_organizer(subject=subject, event=event_details)
+
         # Return added object
+        # NOTE: Must re-convert the entity to a model again so that the registration
+        # for the event organizer is automatically populated
         return event_entity.to_details_model()
 
     def get_by_id(self, id: int) -> EventDetails:
@@ -300,6 +312,38 @@ class EventService:
 
         return [entity.to_model() for entity in event_registration_entities]
 
+    def set_event_organizer(
+        self, subject: User, event: EventDetails
+    ) -> EventRegistration:
+        """
+        Set the organizer of an event.
+
+        Args:
+            subject: User making the registration request
+            event: The EventDetails being registered for
+
+        Returns:
+            EventRegistration
+
+        """
+
+        # Re-ensure that the user has the correct permissions to run this command
+        self._permission.enforce(
+            subject,
+            "organization.events.manage",
+            f"organization/{event.organization_id}",
+        )
+
+        # Add new object to table and commit changes
+        event_registration_entity = EventRegistrationEntity(
+            user_id=subject.id, event_id=event.id, is_organizer=True
+        )
+        self._session.add(event_registration_entity)
+        self._session.commit()
+
+        # Return registration
+        return event_registration_entity.to_model()
+
     def register(
         self, subject: User, attendee: User, event: EventDetails
     ) -> EventRegistration:
@@ -316,7 +360,19 @@ class EventService:
 
         Raises:
             UserPermissionException if subject does not have permission to register user
+            EventRegistrationException if the event is full
         """
+
+        # Get the registration status.
+        # NOTE: It is preferred to use the service function rather than the list of
+        # registrations passed in from `event` in the case that registrations are added
+        # between when `event` was fetched and this function runs.
+        event_status = self.get_event_registration_status(event.id)
+
+        # Raise exception if event is full.
+        if event_status.registration_count >= event.registration_limit:
+            raise EventRegistrationException(event.id)
+
         # Enable idemopotency in returning existing registration, if one exists.
         # Permission to manage / read registration is enforced in EventService#get_registration
         existing_registration = self.get_registration(subject, attendee, event)
@@ -401,3 +457,19 @@ class EventService:
         ).all()
 
         return [entity.to_model() for entity in registration_entities]
+
+    def get_event_registration_status(self, event_id: int) -> EventRegistrationStatus:
+        """
+        Retrieves the number of registrations for a given event.
+        """
+        count = (
+            self._session.query(EventRegistrationEntity)
+            .where(
+                EventRegistrationEntity.event_id == event_id,
+                EventRegistrationEntity.is_organizer == False,
+            )
+            .count()
+        )
+
+        status = EventRegistrationStatus(registration_count=count)
+        return status

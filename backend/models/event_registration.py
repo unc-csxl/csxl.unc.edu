@@ -30,6 +30,10 @@ class EventRegistration(NewEventRegistration):
     defines the shape of the `EventRegistration` table in the PostgreSQL database
     """
 
-    event: Event | None
-    user: User | None
+    event: Event
+    user: User
     is_organizer: bool = False
+
+
+class EventRegistrationStatus(BaseModel):
+    registration_count: int

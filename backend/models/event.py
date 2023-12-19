@@ -6,7 +6,25 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-class Event(BaseModel):
+class DraftEvent(BaseModel):
+    """
+    Pydantic model to represent an `Event` that has not been created yet.
+
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database
+    """
+
+    name: str
+    time: datetime
+    location: str
+    description: str
+    public: bool
+    registration_limit: int
+    can_register: bool
+    organization_id: int
+
+
+class Event(DraftEvent):
     """
     Pydantic model to represent an `Event`.
 
@@ -14,10 +32,4 @@ class Event(BaseModel):
     of the `Event` database in the PostgreSQL database
     """
 
-    id: int | None = None
-    name: str
-    time: datetime
-    location: str
-    description: str
-    public: bool
-    organization_id: int
+    id: int

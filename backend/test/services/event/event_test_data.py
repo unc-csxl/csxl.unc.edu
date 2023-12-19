@@ -2,7 +2,7 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from ....models.event import Event
+from ....models.event import DraftEvent, Event
 from ....models.event_registration import EventRegistration, NewEventRegistration
 from ....entities.event_entity import EventEntity
 from ....entities.event_registration_entity import EventRegistrationEntity
@@ -25,6 +25,8 @@ event_one = Event(
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cssg.id | 0,
 )
 
@@ -35,17 +37,33 @@ event_two = Event(
     location="SN 014",
     description="This is a sample description.",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cssg.id | 0,
 )
 
-events = [event_one, event_two]
+event_three = Event(
+    id=3,
+    name="Super Exclusive Meeting",
+    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    location="SN 014",
+    description="This is a sample description.",
+    public=True,
+    registration_limit=1,
+    can_register=True,
+    organization_id=cssg.id | 0,
+)
 
-to_add = Event(
+events = [event_one, event_two, event_three]
+
+to_add = DraftEvent(
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN011",
     description="This is a sample description.",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cads.id | 0,
 )
 
@@ -56,6 +74,8 @@ updated_event = Event(
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
+    registration_limit=50,
+    can_register=True,
     organization_id=cssg.id | 0,
 )
 
@@ -67,7 +87,10 @@ organizer_registration = NewEventRegistration(
     event_id=event_one.id | 0, user_id=user.id | 0, is_organizer=True
 )
 
-registrations = [registration, organizer_registration]
+registration_for_event_three = NewEventRegistration(
+    event_id=event_three.id | 0, user_id=ambassador.id | 0, is_organizer=False
+)
+registrations = [registration, organizer_registration, registration_for_event_three]
 
 # Data Functions
 

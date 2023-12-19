@@ -11,7 +11,7 @@ from ..services.user import UserService
 from ..services.exceptions import ResourceNotFoundException
 from ..models.event import Event
 from ..models.event_details import EventDetails
-from ..models.event_registration import EventRegistration
+from ..models.event_registration import EventRegistration, EventRegistrationStatus
 from ..models.coworking.time_range import TimeRange
 from ..api.authentication import registered_user
 from ..models.user import User
@@ -281,3 +281,25 @@ def unregister_for_event(
 
     event: EventDetails = event_service.get_by_id(event_id)
     event_service.unregister(subject, user, event)
+
+
+@api.get(
+    "/{event_id}/registration/count",
+    responses={404: {"model": None}},
+    response_model=EventRegistrationStatus,
+    tags=["Events"],
+)
+def get_event_registration_status(
+    event_id: int, event_service: EventService = Depends()
+) -> EventRegistrationStatus:
+    """
+    Get the number of event registrations for a given ID
+
+    Args:
+        id: an int representing a unique Event ID
+        event_service: a valid EventService
+
+    Returns:
+        EventDetails: a valid EventDetails model corresponding to the given event id
+    """
+    return event_service.get_event_registration_status(event_id)
