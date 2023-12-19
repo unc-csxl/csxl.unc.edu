@@ -1,0 +1,10 @@
+
+.dialog {
+    padding: 24px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .dialog {
+        color: white;
+    }
+}

@@ -75,9 +75,9 @@ def test_create_event_as_user(event_svc_integration: EventService):
         pytest.fail()  # Fail test if no error was thrown above
 
 
-def test_get_events_from_organization(event_svc_integration: EventService):
+def test_get_events_by_organization(event_svc_integration: EventService):
     """Test that list of events can be retrieved based on specified organization."""
-    fetched_events = event_svc_integration.get_events_from_organization("cssg")
+    fetched_events = event_svc_integration.get_events_by_organization("cssg")
     assert fetched_events is not None
     assert len(fetched_events) == 2
 

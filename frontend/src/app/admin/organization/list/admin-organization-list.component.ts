@@ -31,7 +31,7 @@ export class AdminOrganizationListComponent {
     path: 'organizations',
     component: AdminOrganizationListComponent,
     title: 'Organization Administration',
-    canActivate: [permissionGuard('organization.list', 'organization/')]
+    canActivate: [permissionGuard('organization.list', 'organization')]
   };
 
   constructor(

@@ -13,8 +13,7 @@ from ..entities.organization_entity import OrganizationEntity
 from ..models import User
 from .permission import PermissionService
 
-from .exceptions import OrganizationNotFoundException
-from .exceptions import UserPermissionException
+from .exceptions import ResourceNotFoundException
 
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
@@ -70,18 +69,17 @@ class OrganizationService:
             # Set id to None so database can handle setting the id
             organization.id = None
 
-        else:
-            # Otherwise, create new object
-            organization_entity = OrganizationEntity.from_model(organization)
+        # Otherwise, create new object
+        organization_entity = OrganizationEntity.from_model(organization)
 
-            # Add new object to table and commit changes
-            self._session.add(organization_entity)
-            self._session.commit()
+        # Add new object to table and commit changes
+        self._session.add(organization_entity)
+        self._session.commit()
 
-            # Return added object
-            return organization_entity.to_model()
+        # Return added object
+        return organization_entity.to_model()
 
-    def get_from_slug(self, slug: str) -> OrganizationDetails:
+    def get_by_slug(self, slug: str) -> OrganizationDetails:
         """
         Get the organization from a slug
         If none retrieved, a debug description is displayed.
@@ -93,7 +91,7 @@ class OrganizationService:
             Organization: Object with corresponding slug
 
         Raises:
-            OrganizationNotFoundException if no organization is found with the corresponding slug
+            ResourceNotFoundException if no organization is found with the corresponding slug
         """
 
         # Query the organization with matching slug
@@ -104,12 +102,12 @@ class OrganizationService:
         )
 
         # Check if result is null
-        if organization:
-            # Convert entry to a model and return
-            return organization.to_details_model()
-        else:
-            # Raise exception
-            raise OrganizationNotFoundException(slug)
+        if organization is None:
+            raise ResourceNotFoundException(
+                f"No organization found with matching slug: {slug}"
+            )
+
+        return organization.to_details_model()
 
     def update(self, subject: User, organization: Organization) -> Organization:
         """
@@ -124,40 +122,43 @@ class OrganizationService:
             Organization: Updated organization object
 
         Raises:
-            OrganizationNotFoundException: If no organization is found with the corresponding ID
+            ResourceNotFoundException: If no organization is found with the corresponding ID
         """
 
         # Check if user has admin permissions
-        self._permission.enforce(subject, "organization.create", f"organization")
+        self._permission.enforce(
+            subject, "organization.update", f"organization/{organization.slug}"
+        )
 
         # Query the organization with matching id
         obj = self._session.get(OrganizationEntity, organization.id)
 
         # Check if result is null
-        if obj:
-            # Update organization object
-            obj.name = organization.name
-            obj.shorthand = organization.shorthand
-            obj.slug = organization.slug
-            obj.logo = organization.logo
-            obj.short_description = organization.short_description
-            obj.long_description = organization.long_description
-            obj.website = organization.website
-            obj.email = organization.email
-            obj.instagram = organization.instagram
-            obj.linked_in = organization.linked_in
-            obj.youtube = organization.youtube
-            obj.heel_life = organization.heel_life
-            obj.public = organization.public
+        if obj is None:
+            raise ResourceNotFoundException(
+                f"No organization found with matching ID: {organization.id}"
+            )
 
-            # Save changes
-            self._session.commit()
+        # Update organization object
+        obj.name = organization.name
+        obj.shorthand = organization.shorthand
+        obj.slug = organization.slug
+        obj.logo = organization.logo
+        obj.short_description = organization.short_description
+        obj.long_description = organization.long_description
+        obj.website = organization.website
+        obj.email = organization.email
+        obj.instagram = organization.instagram
+        obj.linked_in = organization.linked_in
+        obj.youtube = organization.youtube
+        obj.heel_life = organization.heel_life
+        obj.public = organization.public
 
-            # Return updated object
-            return obj.to_model()
-        else:
-            # Raise exception
-            raise OrganizationNotFoundException(organization.id)
+        # Save changes
+        self._session.commit()
+
+        # Return updated object
+        return obj.to_model()
 
     def delete(self, subject: User, slug: str) -> None:
         """
@@ -169,10 +170,10 @@ class OrganizationService:
             slug: a string representing a unique organization slug
 
         Raises:
-            OrganizationNotFoundException: If no organization is found with the corresponding slug
+            ResourceNotFoundException: If no organization is found with the corresponding slug
         """
         # Check if user has admin permissions
-        self._permission.enforce(subject, "organization.create", f"organization")
+        self._permission.enforce(subject, "organization.delete", f"organization")
 
         # Find object to delete
         obj = (
@@ -182,11 +183,12 @@ class OrganizationService:
         )
 
         # Ensure object exists
-        if obj:
-            # Delete object and commit
-            self._session.delete(obj)
-            # Save changes
-            self._session.commit()
-        else:
-            # Raise exception
-            raise OrganizationNotFoundException(slug)
+        if obj is None:
+            raise ResourceNotFoundException(
+                f"No organization found with matching slug: {slug}"
+            )
+
+        # Delete object and commit
+        self._session.delete(obj)
+        # Save changes
+        self._session.commit()

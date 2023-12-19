@@ -4,8 +4,10 @@
 import pytest
 from unittest.mock import create_autospec
 
-from backend.services.organization import OrganizationNotFoundException
-from backend.services.exceptions import UserPermissionException
+from backend.services.exceptions import (
+    UserPermissionException,
+    ResourceNotFoundException,
+)
 
 # Tested Dependencies
 from ....models import Organization
@@ -43,12 +45,12 @@ def test_get_all(organization_svc_integration: OrganizationService):
     assert isinstance(fetched_organizations[0], Organization)
 
 
-# Test `OrganizationService.get_from_id()`
+# Test `OrganizationService.get_by_id()`
 
 
-def test_get_from_slug(organization_svc_integration: OrganizationService):
+def test_get_by_slug(organization_svc_integration: OrganizationService):
     """Test that organizations can be retrieved based on their ID."""
-    fetched_organization = organization_svc_integration.get_from_slug(cads.slug)
+    fetched_organization = organization_svc_integration.get_by_slug(cads.slug)
     assert fetched_organization is not None
     assert isinstance(fetched_organization, Organization)
     assert fetched_organization.slug == cads.slug
@@ -95,7 +97,7 @@ def test_update_organization_as_root(
     """
     organization_svc_integration.update(root, new_cads)
     assert (
-        organization_svc_integration.get_from_slug("cads").website
+        organization_svc_integration.get_by_slug("cads").website
         == "https://cads.cs.unc.edu/"
     )
 
@@ -117,15 +119,15 @@ def test_delete_enforces_permission(organization_svc_integration: OrganizationSe
     # Test permissions with root user (admin permission)
     organization_svc_integration.delete(root, cads.slug)
     organization_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.create", "organization"
+        root, "organization.delete", "organization"
     )
 
 
 def test_delete_organization_as_root(organization_svc_integration: OrganizationService):
     """Test that the root user is able to delete organizations."""
     organization_svc_integration.delete(root, cads.slug)
-    with pytest.raises(OrganizationNotFoundException):
-        organization_svc_integration.get_from_slug(cads.slug)
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.get_by_slug(cads.slug)
 
 
 def test_delete_organization_as_user(organization_svc_integration: OrganizationService):
