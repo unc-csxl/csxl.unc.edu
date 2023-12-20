@@ -6,7 +6,7 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...models.roster_role import RosterRole
-from ...models.user_details import SectionMember
+from ...models.courses.section_member import SectionMember
 
 from ..entity_base import EntityBase
 

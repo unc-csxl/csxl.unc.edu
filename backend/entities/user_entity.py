@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 
 from backend.entities.courses.user_section_entity import UserSectionEntity
-from backend.models.user_details import SectionMember
+from backend.models.courses.section_member import SectionMember
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User

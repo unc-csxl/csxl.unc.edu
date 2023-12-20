@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from .course import Course
 from .term import Term
 from .section import Section
-from ..user_details import SectionMember
+from .section_member import SectionMember
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
