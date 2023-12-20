@@ -23,11 +23,13 @@ import {
   Event,
   EventJson,
   EventRegistration,
+  UserRegistrationStatus,
   parseEventJson
 } from './event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
 import { Profile, ProfileService } from '../profile/profile.service';
+import { RxEventRegistrationStatuses } from './rx-event-registration-statuses';
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +38,10 @@ export class EventService {
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
 
-  public subject: Subject<boolean> = new ReplaySubject(1);
-  public isRegistered$: Observable<boolean> = this.subject.asObservable();
+  private userRegistrationStatuses: RxEventRegistrationStatuses =
+    new RxEventRegistrationStatuses();
+  public userRegistrationStatuses$: Observable<UserRegistrationStatus[]> =
+    this.userRegistrationStatuses.value$;
 
   constructor(
     protected http: HttpClient,
@@ -48,6 +52,10 @@ export class EventService {
     this.profileSubscription = this.profileSvc.profile$.subscribe(
       (profile) => (this.profile = profile)
     );
+
+    this.getUserReservationStatuses().subscribe((statuses) => {
+      this.userRegistrationStatuses.set(statuses);
+    });
   }
 
   /** Returns all event entries from the backend database table using the backend HTTP get request.
@@ -138,16 +146,6 @@ export class EventService {
     );
   }
 
-  /** Return a boolean representing whether the user is registered for an event or not using the backend HTTP get request.
-   * @param event_id: number representing the Event ID
-   * @returns Observable<boolean>
-   */
-  getIsUserRegistered(event_id: number): Observable<boolean> {
-    return this.http
-      .get<boolean>(`/api/events/${event_id}/registration/status`)
-      .pipe(tap((status) => this.subject.next(status)));
-  }
-
   /** Return all event registrations an event using the backend HTTP get request.
    * @param event_id: number representing the Event ID
    * @returns Observable<EventRegistration[]>
@@ -166,6 +164,12 @@ export class EventService {
     return this.http.get<number>(`/api/events/${event_id}/registration/count`);
   }
 
+  getUserReservationStatuses(): Observable<UserRegistrationStatus[]> {
+    return this.http.get<UserRegistrationStatus[]>(
+      `/api/events/registrations/user`
+    );
+  }
+
   /** Create a new registration for an event using the backend HTTP create request.
    * @param event_id: number representing the Event ID
    * @returns Observable<EventRegistration>
@@ -179,7 +183,7 @@ export class EventService {
       .post<EventRegistration>(`/api/events/${event_id}/registration`, {})
       .pipe(
         tap(() => {
-          this.subject.next(true);
+          this.userRegistrationStatuses.register(event_id);
         })
       );
   }
@@ -197,7 +201,7 @@ export class EventService {
       .delete<EventRegistration>(`/api/events/${event_id}/registration`)
       .pipe(
         tap(() => {
-          this.subject.next(true);
+          this.userRegistrationStatuses.unregister(event_id);
         })
       );
   }

@@ -101,6 +101,6 @@ export class EventPageComponent implements OnInit {
    */
   onEventCardClicked(event: Event) {
     this.selectedEvent = event;
-    this.eventService.getIsUserRegistered(event.id!).subscribe();
+    //this.eventService.getIsUserRegistered(event.id!).subscribe();
   }
 }
