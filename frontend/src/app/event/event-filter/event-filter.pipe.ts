@@ -7,7 +7,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Event } from '../event.model';
+import { Event, UserRegistrationStatus } from '../event.model';
 
 @Pipe({
   name: 'eventFilter'
@@ -43,5 +43,20 @@ export class EventFilterPipe implements PipeTransform {
       // Otherwise, return the original list.
       return events;
     }
+  }
+}
+
+@Pipe({
+  name: 'eventUserRegistrationStatusPipe'
+})
+export class EventUserRegistrationStatusPipe implements PipeTransform {
+  transform(statuses: UserRegistrationStatus[], event_id: number): boolean {
+    let filteredStatuses = statuses.filter((status) => {
+      return status.event_id == event_id;
+    });
+
+    return filteredStatuses.length > 0
+      ? filteredStatuses[0].is_registered
+      : false;
   }
 }

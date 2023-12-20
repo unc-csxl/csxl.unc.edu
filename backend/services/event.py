@@ -16,6 +16,7 @@ from backend.models.event_registration import (
     EventRegistration,
     EventRegistrationStatus,
     NewEventRegistration,
+    UserRegistrationStatus,
 )
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
@@ -485,3 +486,25 @@ class EventService:
 
         status = EventRegistrationStatus(registration_count=count)
         return status
+
+    def get_event_registration_statuses(
+        self, subject: User
+    ) -> list[UserRegistrationStatus]:
+        """
+        Retrieves the number of registrations for a given event.
+        """
+        event_entities = self._session.query(EventEntity)
+        registrations_for_user = self._session.query(EventRegistrationEntity).where(
+            EventRegistrationEntity.user_id == subject.id
+        )
+
+        events_registered_for = set(
+            [registration.event_id for registration in registrations_for_user]
+        )
+
+        return [
+            UserRegistrationStatus(
+                event_id=event.id, is_registered=event.id in events_registered_for
+            )
+            for event in event_entities
+        ]

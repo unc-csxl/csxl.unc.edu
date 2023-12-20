@@ -54,3 +54,8 @@ export interface EventRegistration {
   event: Event | null;
   user: Profile | null;
 }
+
+export interface UserRegistrationStatus {
+  event_id: number;
+  is_registered: boolean;
+}
