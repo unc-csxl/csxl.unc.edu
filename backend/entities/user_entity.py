@@ -5,7 +5,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 
-from backend.entities.courses.user_section_entity import UserSectionEntity
+from backend.entities.courses.section_member_entity import SectionMemberEntity
 from backend.models.courses.section_member import SectionMember
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
@@ -57,7 +57,7 @@ class UserEntity(EntityBase):
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
 
     # Section relations that the user is a part of.
-    sections: Mapped[list["UserSectionEntity"]] = relationship(back_populates="user")
+    sections: Mapped[list["SectionMemberEntity"]] = relationship(back_populates="user")
 
     @classmethod
     def from_model(cls, model: User) -> Self:

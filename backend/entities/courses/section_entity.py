@@ -44,7 +44,9 @@ class SectionEntity(EntityBase):
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
 
     # Members of the course
-    members: Mapped[list["UserSectionEntity"]] = relationship(back_populates="section")
+    members: Mapped[list["SectionMemberEntity"]] = relationship(
+        back_populates="section"
+    )
 
     @classmethod
     def from_model(cls, model: Section) -> Self:

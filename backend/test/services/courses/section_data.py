@@ -3,7 +3,7 @@
 import pytest
 from sqlalchemy.orm import Session
 from ....entities.courses import SectionEntity
-from ....entities.courses import UserSectionEntity
+from ....entities.courses import SectionMemberEntity
 from ....models.courses import Section
 from ....models.roster_role import RosterRole
 
@@ -63,7 +63,7 @@ new_section = Section(
     meeting_pattern="MW 1:30PM - 2:45PM",
 )
 
-ta = UserSectionEntity(
+ta = SectionMemberEntity(
     user_id=user_data.ambassador.id,
     section_id=comp_101_001.id,
     member_type=RosterRole.INSTRUCTOR,

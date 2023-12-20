@@ -15,7 +15,7 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-class UserSectionEntity(EntityBase):
+class SectionMemberEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `UserSection` table
 
     This table is the association / join table to establish the many-to-many relationship
