@@ -2,7 +2,7 @@
  * The Event Detail Card widget abstracts the implementation of the
  * detail event card from the whole event page.
  *
- * @author Ajay Gandecha
+ * @author Ajay Gandecha, Jade Keegan
  * @copyright 2023
  * @license MIT
  */
@@ -11,7 +11,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Event, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
-import { Observable, ReplaySubject, Subject, catchError, map, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { Profile } from 'src/app/models.module';
 
