@@ -20,7 +20,7 @@ import { Profile } from 'src/app/models.module';
   templateUrl: './event-detail-card.widget.html',
   styleUrls: ['./event-detail-card.widget.css']
 })
-export class EventDetailCard implements OnInit {
+export class EventDetailCard {
   /** The event for the event card to display */
   @Input() event!: Event;
   @Input() profile!: Profile;
@@ -31,10 +31,6 @@ export class EventDetailCard implements OnInit {
     protected eventService: EventService,
     private permission: PermissionService
   ) {}
-
-  ngOnInit(): void {
-    this.eventService.getIsUserRegistered(this.event.id!).subscribe();
-  }
 
   checkPermissions(): Observable<boolean> {
     return this.permission.check(
@@ -103,7 +99,7 @@ export class EventDetailCard implements OnInit {
       this.eventService
         .unregisterForEvent(event_registration_id)
         .subscribe(() => {
-          this.eventService.subject.next(false);
+          //this.eventService.subject.next(false);
           this.snackBar.open('Successfully Unregistered!', '', {
             duration: 2000
           });
@@ -115,7 +111,7 @@ export class EventDetailCard implements OnInit {
    * @returns {void}
    */
   private onSuccess(event_registration: EventRegistration): void {
-    this.eventService.subject.next(true);
+    //this.eventService.subject.next(true);
     this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
   }
 
