@@ -1,11 +1,15 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course Sections."""
 
+from typing import Self
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from ..entity_base import EntityBase
 from datetime import datetime
 from ...models.courses import Section
 from ...models.courses import SectionDetails
+from ...models.courses.section_member import SectionMember
+from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -32,12 +36,17 @@ class SectionEntity(EntityBase):
 
     # Term the section is in
     # NOTE: This defines a one-to-many relationship between the term and sections tables.
-    term_id: Mapped[int] = mapped_column(ForeignKey("courses__term.id"))
+    term_id: Mapped[str] = mapped_column(ForeignKey("courses__term.id"))
     term: Mapped["TermEntity"] = relationship(back_populates="course_sections")
 
     # Meeting pattern of the course
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
+
+    # Members of the course
+    members: Mapped[list["SectionMemberEntity"]] = relationship(
+        back_populates="section"
+    )
 
     @classmethod
     def from_model(cls, model: Section) -> Self:
@@ -87,4 +96,9 @@ class SectionEntity(EntityBase):
             term_id=self.term_id,
             term=self.term.to_model(),
             meeting_pattern=self.meeting_pattern,
+            staff=[
+                members.to_flat_model()
+                for members in self.members
+                if members.member_role != RosterRole.STUDENT
+            ],
         )
