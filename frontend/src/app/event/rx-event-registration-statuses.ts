@@ -1,3 +1,13 @@
+/**
+ * The RxEventRegistrationStatuses object is used to ensure
+ * proper updating and retrieval of information regarding user
+ * event registrations.
+ *
+ * @author Ajay Gandecha
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { RxObject } from '../rx-object';
 import { UserRegistrationStatus } from './event.model';
 

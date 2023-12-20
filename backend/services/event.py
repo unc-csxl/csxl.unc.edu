@@ -474,6 +474,12 @@ class EventService:
     def get_event_registration_status(self, event_id: int) -> EventRegistrationStatus:
         """
         Retrieves the number of registrations for a given event.
+
+        Args:
+            event_id: a valid int representing the
+
+        Returns:
+            status: a valid EventRegistrationStatus representing the number of registrations for an event
         """
         count = (
             self._session.query(EventRegistrationEntity)
@@ -488,15 +494,27 @@ class EventService:
         return status
 
     def get_event_registration_statuses(
-        self, subject: User
+        self, subject: User, time_range: TimeRange
     ) -> list[UserRegistrationStatus]:
         """
-        Retrieves the number of registrations for a given event.
+        Get the registration status for all events a user is registered for in the time range
+
+        Args:
+            subject: The User making the request.
+            time_range: The period over which to search for event registrations.
+
+        Returns:
+            list[UserRegistrationStatus]: list of valid UserRegistrationStatus models representing whether or not a user is registered for each event
         """
         event_entities = self._session.query(EventEntity)
-        registrations_for_user = self._session.query(EventRegistrationEntity).where(
-            EventRegistrationEntity.user_id == subject.id
-        )
+
+        registrations_for_user = (
+            self._session.query(EventRegistrationEntity)
+            .where(EventRegistrationEntity.user_id == subject.id)
+            .join(EventEntity, EventRegistrationEntity.event_id == EventEntity.id)
+            .where(EventEntity.time >= time_range.start)
+            .where(EventEntity.time < time_range.end)
+        ).all()
 
         events_registered_for = set(
             [registration.event_id for registration in registrations_for_user]

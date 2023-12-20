@@ -308,9 +308,23 @@ def get_event_registration_status(
 @api.get("/registrations/user", tags=["Events"])
 def get_event_registration_statuses(
     subject: User = Depends(registered_user),
+    start: datetime | None = None,
+    end: datetime | None = None,
     event_service: EventService = Depends(),
 ):
     """
-    Gets the statuses of event user registrations
+    Get the statuses of event user registrations
+
+    Args:
+        start (datetime): optional parameter for specifying start time range of search. Defaults to now.
+        end (datetime): optional parameter for specifying end time range of search. Defaults to a year from now.
+
+    Returns:
+        List[EventStatus]: a list of valid EventStatus models
     """
-    return event_service.get_event_registration_statuses(subject)
+
+    start = datetime.now() if start is None else start
+    end = datetime.now() + timedelta(days=365) if end is None else end
+    time_range = TimeRange(start=start, end=end)
+
+    return event_service.get_event_registration_statuses(subject, time_range)

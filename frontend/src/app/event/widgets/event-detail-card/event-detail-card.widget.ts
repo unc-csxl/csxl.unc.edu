@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Event, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
