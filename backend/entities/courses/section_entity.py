@@ -99,6 +99,6 @@ class SectionEntity(EntityBase):
             staff=[
                 members.to_flat_model()
                 for members in self.members
-                if members.member_type != RosterRole.STUDENT
+                if members.member_role != RosterRole.STUDENT
             ],
         )

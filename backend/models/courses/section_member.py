@@ -20,4 +20,4 @@ class SectionMember(BaseModel):
     first_name: str
     last_name: str
     pronouns: str
-    member_type: RosterRole
+    member_role: RosterRole

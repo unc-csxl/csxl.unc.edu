@@ -43,7 +43,7 @@ class SectionMemberEntity(EntityBase):
     user: Mapped["UserEntity"] = relationship(back_populates="sections")
 
     # Type of relationship
-    member_type: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
+    member_role: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
 
     def to_flat_model(self) -> SectionMember:
         """
@@ -57,5 +57,5 @@ class SectionMemberEntity(EntityBase):
             first_name=self.user.first_name,
             last_name=self.user.last_name,
             pronouns=self.user.pronouns,
-            member_type=self.member_type,
+            member_role=self.member_role,
         )

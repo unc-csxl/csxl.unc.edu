@@ -66,7 +66,7 @@ new_section = Section(
 ta = SectionMemberEntity(
     user_id=user_data.ambassador.id,
     section_id=comp_101_001.id,
-    member_type=RosterRole.INSTRUCTOR,
+    member_role=RosterRole.INSTRUCTOR,
 )
 
 sections = [comp_101_001, comp_101_002, comp_301_001]
