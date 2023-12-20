@@ -30,17 +30,17 @@ class SectionMemberEntity(EntityBase):
 
     # User Section properties (columns in the database table)
 
-    # User for the current relation
-    # NOTE: This is ultimately a join table for a many-to-many relationship
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
-    user: Mapped["UserEntity"] = relationship(back_populates="sections")
-
     # Section for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
     section_id: Mapped[int] = mapped_column(
         ForeignKey("courses__section.id"), primary_key=True
     )
     section: Mapped["SectionEntity"] = relationship(back_populates="members")
+
+    # User for the current relation
+    # NOTE: This is ultimately a join table for a many-to-many relationship
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
+    user: Mapped["UserEntity"] = relationship(back_populates="sections")
 
     # Type of relationship
     member_type: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
