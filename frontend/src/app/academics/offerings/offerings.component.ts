@@ -16,6 +16,7 @@ import {
   transition,
   trigger
 } from '@angular/animations';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-offerings',
@@ -46,7 +47,7 @@ export class OfferingsComponent {
   public courses: Course[];
   public terms: Term[];
 
-  public displayTerm: Term;
+  public displayTerm: FormControl<Term> = new FormControl();
 
   public displayedColumns: string[] = [
     'code',
@@ -69,8 +70,12 @@ export class OfferingsComponent {
     };
     this.courses = data.courses;
     this.terms = data.terms;
-    this.displayTerm = this.terms[1];
+    this.displayTerm.setValue(this.terms[1]);
   }
+
+  // selectTerm(event: Event) {
+  //   this.displayTerm = (event.target as HTMLSelectElement).value;
+  // }
 
   courseFromId(id: string): Course | null {
     let coursesFilter = this.courses.filter((c) => c.id === id);

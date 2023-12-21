@@ -1,12 +1,24 @@
 <mat-card class="content" appearance="outlined">
   <mat-card-header>
-    <mat-card-title>All COMP Courses</mat-card-title>
+    <div style="display: flex; flex-direction: row; width: 100%">
+      <mat-card-title
+        >{{ displayTerm.value.name }} COMP Course Offerings</mat-card-title
+      >
+      <mat-form-field style="margin-left: auto">
+        <mat-label>Select Term</mat-label>
+        <mat-select [formControl]="displayTerm">
+          <mat-option *ngFor="let term of terms" [value]="term">{{
+            term.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </mat-card-header>
   <mat-card-content>
     <mat-card-content>
       <table
         mat-table
-        [dataSource]="displayTerm.course_sections ?? []"
+        [dataSource]="displayTerm.value.course_sections ?? []"
         multiTemplateDataRows>
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Code</th>

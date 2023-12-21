@@ -11,6 +11,9 @@ import { AcademicsRoutingModule } from './academics-routing.module';
 import { CoursesHomeComponent } from './courses-home/courses-home.component';
 import { MatIconModule } from '@angular/material/icon';
 import { OfferingsComponent } from './offerings/offerings.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [CoursesHomeComponent, OfferingsComponent],
@@ -24,6 +27,9 @@ import { OfferingsComponent } from './offerings/offerings.component';
     MatButtonModule,
     MatTableModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    ReactiveFormsModule,
     AsyncPipe
   ]
 })
