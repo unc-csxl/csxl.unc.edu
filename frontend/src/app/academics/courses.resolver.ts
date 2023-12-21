@@ -10,12 +10,17 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { CourseService } from './courses.service';
-import { Course } from './courses.models';
+import { Course, Term } from './courses.models';
 
-/** This resolver injects the list of courses into the organization component. */
+/** This resolver injects the list of courses into the catalog component. */
 export const courseResolver: ResolveFn<Course[] | undefined> = (
   route,
   state
 ) => {
   return inject(CourseService).getCourses();
+};
+
+/** This resolver injects the list of terms into the offerings component. */
+export const termResolver: ResolveFn<Term[] | undefined> = (route, state) => {
+  return inject(CourseService).getTerms();
 };

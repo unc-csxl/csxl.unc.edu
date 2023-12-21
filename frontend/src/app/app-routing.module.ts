@@ -18,7 +18,7 @@ const routes: Routes = [
       import('./coworking/coworking.module').then((m) => m.CoworkingModule)
   },
   {
-    path: 'courses',
+    path: 'academics',
     title: 'Course Catalog',
     loadChildren: () =>
       import('./academics/academics.module').then((m) => m.AcademicsModule)
