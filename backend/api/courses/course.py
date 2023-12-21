@@ -7,7 +7,6 @@ from ..authentication import registered_user
 from ...services.courses import CourseService
 from ...models import User
 from ...models.courses import Course, CourseDetails
-from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

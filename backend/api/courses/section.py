@@ -7,7 +7,6 @@ from ..authentication import registered_user
 from ...services.courses import SectionService
 from ...models import User
 from ...models.courses import Section, SectionDetails
-from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -72,7 +71,7 @@ def get_section_by_subject(
     response_model=SectionDetails,
     tags=["Courses"],
 )
-def get_course_by_subject_code(
+def get_section_by_subject_code(
     subject_code: str,
     course_number: str,
     section_number: str,
