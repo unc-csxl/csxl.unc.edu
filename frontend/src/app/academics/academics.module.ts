@@ -7,13 +7,15 @@ import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { CoursesRoutingModule } from './courses-routing.module';
+import { AcademicsRoutingModule } from './academics-routing.module';
 import { CoursesHomeComponent } from './courses-home/courses-home.component';
+import { MatIconModule } from '@angular/material/icon';
+import { OfferingsComponent } from './offerings/offerings.component';
 
 @NgModule({
-  declarations: [CoursesHomeComponent],
+  declarations: [CoursesHomeComponent, OfferingsComponent],
   imports: [
-    CoursesRoutingModule,
+    AcademicsRoutingModule,
     CommonModule,
     MatCardModule,
     MatDividerModule,
@@ -21,7 +23,8 @@ import { CoursesHomeComponent } from './courses-home/courses-home.component';
     MatExpansionModule,
     MatButtonModule,
     MatTableModule,
+    MatIconModule,
     AsyncPipe
   ]
 })
-export class CoursesModule {}
+export class AcademicsModule {}

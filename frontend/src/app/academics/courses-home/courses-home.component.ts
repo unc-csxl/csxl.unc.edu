@@ -3,11 +3,28 @@ import { courseResolver } from '../courses.resolver';
 import { Course } from '../courses.models';
 import { ActivatedRoute } from '@angular/router';
 import { CourseService } from '../courses.service';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from '@angular/animations';
 
 @Component({
   selector: 'app-courses-home',
   templateUrl: './courses-home.component.html',
-  styleUrls: ['./courses-home.component.css']
+  styleUrls: ['./courses-home.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      )
+    ])
+  ]
 })
 export class CoursesHomeComponent {
   /** Route information to be used in Course Routing Module */
@@ -21,6 +38,10 @@ export class CoursesHomeComponent {
 
   /** Store Observable list of Courses */
   public courses: Course[];
+
+  public displayedColumns: string[] = ['code', 'title'];
+  public columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
+  public expandedElement: Course | null = null;
 
   /** Constructor for the course catalog page. */
   constructor(
