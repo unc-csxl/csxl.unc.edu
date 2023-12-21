@@ -2,16 +2,14 @@
 
 This API is used to access term data."""
 
-from typing import Sequence
 from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.courses import TermService
 from ...models import User
 from ...models.courses import Term, TermDetails
-from ...models.coworking import Reservation, ReservationPartial
 from datetime import datetime
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -57,7 +55,7 @@ def new_term(
     term: Term,
     subject: User = Depends(registered_user),
     term_service: TermService = Depends(),
-):
+) -> TermDetails:
     """
     Adds a new term to the database
 
@@ -72,7 +70,7 @@ def update_term(
     term: Term,
     subject: User = Depends(registered_user),
     term_service: TermService = Depends(),
-):
+) -> TermDetails:
     """
     Updates a term to the database
 
@@ -89,9 +87,6 @@ def delete_term(
     term_service: TermService = Depends(),
 ):
     """
-    Updates a term to the database
-
-    Returns:
-        TermDetails: Term updated
+    Deletes a term to the database
     """
     return term_service.delete(subject, term)
