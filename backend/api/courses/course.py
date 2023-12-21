@@ -91,6 +91,6 @@ def delete_course(
     course_service: CourseService = Depends(),
 ):
     """
-    Deletes a course to the database
+    Deletes a course from the database
     """
     return course_service.delete(subject, course)

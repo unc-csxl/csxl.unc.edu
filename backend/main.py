@@ -15,7 +15,7 @@ from .api import (
     user,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
-from .api.courses import term, course
+from .api.courses import term, course, section
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 from .services.exceptions import UserPermissionException, ResourceNotFoundException
@@ -64,6 +64,7 @@ feature_apis = [
     admin_roles,
     term,
     course,
+    section,
 ]
 
 for feature_api in feature_apis:

@@ -87,6 +87,6 @@ def delete_term(
     term_service: TermService = Depends(),
 ):
     """
-    Deletes a term to the database
+    Deletes a term from the database
     """
     return term_service.delete(subject, term)
