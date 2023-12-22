@@ -22,5 +22,5 @@ class Section(BaseModel):
     term_id: str
     meeting_pattern: str
     staff: list[SectionMember] = []
-    lecture_room: Room | None
-    office_hour_rooms: list[Room]
+    lecture_room: Room | None = None
+    office_hour_rooms: list[Room] = []
