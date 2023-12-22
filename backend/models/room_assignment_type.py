@@ -1,4 +1,4 @@
-"""Enum definition for types of room assignments for sections roster."""
+"""Enum definition for types of room assignments for room section assignments."""
 
 from enum import Enum
 
