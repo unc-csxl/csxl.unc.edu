@@ -5,8 +5,9 @@ The Event Service allows the API to manipulate event data in the database.
 from typing import Sequence
 
 from fastapi import Depends
-from sqlalchemy import select, func
+from sqlalchemy import select
 from sqlalchemy.orm import Session
+from backend.models.organization_details import OrganizationDetails
 
 from backend.models.user import User
 from ..database import db_session
@@ -15,20 +16,16 @@ from backend.models.event_details import EventDetails
 from backend.models.event_registration import (
     EventRegistration,
     EventRegistrationStatus,
-    NewEventRegistration,
     UserRegistrationStatus,
 )
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
     EventEntity,
-    OrganizationEntity,
     EventRegistrationEntity,
-    UserEntity,
 )
 from .permission import PermissionService
 from .exceptions import (
     ResourceNotFoundException,
-    UserPermissionException,
     EventRegistrationException,
 )
 from . import UserService
@@ -135,7 +132,9 @@ class EventService:
         # Convert entry to a model and return
         return entity.to_details_model()
 
-    def get_events_from_organization(self, slug: str) -> list[EventDetails]:
+    def get_events_by_organization(
+        self, organization: OrganizationDetails
+    ) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with slug
 
@@ -145,18 +144,6 @@ class EventService:
         Returns:
             list[EventDetail]: a list of valid EventDetails models
         """
-
-        # Query the organization with the matching slug
-        organization = (
-            self._session.query(OrganizationEntity)
-            .filter(OrganizationEntity.slug == slug)
-            .one_or_none()
-        )
-
-        # Ensure that the organization exists
-        if organization is None:
-            return []
-
         # Query the event with matching organization slug
         events = (
             self._session.query(EventEntity)
