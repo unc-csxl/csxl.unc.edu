@@ -37,7 +37,7 @@ export class SectionOfferingsComponent {
   /** Route information to be used in Course Routing Module */
   public static Route = {
     path: 'offerings',
-    title: 'Course Offerings',
+    title: 'Section Offerings',
     component: SectionOfferingsComponent,
     canActivate: [],
     resolve: { terms: termResolver, courses: courseResolver }
