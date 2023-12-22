@@ -1,5 +1,4 @@
 import { TimeRange } from '../coworking/coworking.models';
-
 /** Defines a Course */
 export interface Course {
   id: string;
@@ -20,6 +19,8 @@ export interface Section {
   course: Course | null;
   term: Term | null;
   staff: SectionMember[] | null;
+  lecture_room: Room | null;
+  office_hour_rooms: Room[];
 }
 
 /** Defines a Term */
@@ -36,6 +37,12 @@ export interface SectionMember {
   last_name: string;
   pronouns: string;
   member_role: RosterRole;
+}
+
+/** Defines a Room */
+export interface Room {
+  id: string;
+  nickname: string;
 }
 
 /** Defines a Roster Role */
