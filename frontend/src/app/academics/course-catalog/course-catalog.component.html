@@ -49,7 +49,11 @@
             [@detailExpand]="
               element === expandedElement ? 'expanded' : 'collapsed'
             ">
-            <p>{{ element.description }}</p>
+            <div>
+              <p><strong>Credit Hours:</strong> {{ element.credit_hours }}</p>
+              <p><strong>Description:</strong></p>
+              <p>{{ element.description }}</p>
+            </div>
           </div>
         </td>
       </ng-container>

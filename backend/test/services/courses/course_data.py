@@ -17,6 +17,7 @@ comp_110 = Course(
     number="110",
     title="Introduction to Programming and Data Science",
     description="Introduces students to programming and data science from a computational perspective. With an emphasis on modern applications in society, students gain experience with problem decomposition, algorithms for data analysis, abstraction design, and ethics in computing. No prior programming experience expected. Foundational concepts include data types, sequences, boolean logic, control flow, functions/methods, recursion, classes/objects, input/output, data organization, transformations, and visualizations.",
+    credit_hours=3,
 )
 
 comp_210 = Course(
@@ -25,6 +26,7 @@ comp_210 = Course(
     number="210",
     title="Data Structures and Analysis",
     description="This course will teach you how to organize the data used in computer programs so that manipulation of that data can be done efficiently on large problems and large data instances. Rather than learning to use the data structures found in the libraries of programming languages, you will be learning how those libraries are constructed, and why the items that are included in them are there (and why some are excluded).",
+    credit_hours=3,
 )
 
 comp_301 = Course(
@@ -33,6 +35,7 @@ comp_301 = Course(
     number="301",
     title="Foundations of Programming",
     description="Students will learn how to reason about how their code is structured, identify whether a given structure is effective in a given context, and look at ways of organizing units of code that support larger programs. In a nutshell, the primary goal of the course is to equip students with tools and techniques that will help them not only in later courses in the major but also in their careers afterwards.",
+    credit_hours=3,
 )
 
 edited_comp_110 = Course(
@@ -41,6 +44,7 @@ edited_comp_110 = Course(
     number="110",
     title="Introduction to Programming",
     description="Introduces students to programming and data science from a computational perspective. With an emphasis on modern applications in society, students gain experience with problem decomposition, algorithms for data analysis, abstraction design, and ethics in computing. No prior programming experience expected. Foundational concepts include data types, sequences, boolean logic, control flow, functions/methods, recursion, classes/objects, input/output, data organization, transformations, and visualizations.",
+    credit_hours=3,
 )
 
 new_course = Course(
@@ -49,6 +53,7 @@ new_course = Course(
     number="423",
     title="Foundations of Software Engineering",
     description="Best course in the department : )",
+    credit_hours=3,
 )
 
 courses = [comp_110, comp_210, comp_301]

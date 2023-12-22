@@ -32,6 +32,8 @@ class CourseEntity(EntityBase):
     title: Mapped[str] = mapped_column(String, default="")
     # Course description for the course
     description: Mapped[str] = mapped_column(String, default="")
+    # Credit hours for a course (-1 = variable / not set)
+    credit_hours: Mapped[int] = mapped_column(Integer, default=-1)
 
     # NOTE: This field establishes a one-to-many relationship between the course and section tables.
     sections: Mapped[list["SectionEntity"]] = relationship(
@@ -54,6 +56,7 @@ class CourseEntity(EntityBase):
             number=model.number,
             title=model.title,
             description=model.description,
+            credit_hours=model.credit_hours,
         )
 
     def to_model(self) -> Course:
@@ -69,6 +72,7 @@ class CourseEntity(EntityBase):
             number=self.number,
             title=self.title,
             description=self.description,
+            credit_hours=self.credit_hours,
         )
 
     def to_details_model(self) -> CourseDetails:
@@ -84,5 +88,6 @@ class CourseEntity(EntityBase):
             number=self.number,
             title=self.title,
             description=self.description,
+            credit_hours=self.credit_hours,
             sections=[section.to_model() for section in self.sections],
         )

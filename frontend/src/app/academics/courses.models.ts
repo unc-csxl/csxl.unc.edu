@@ -6,6 +6,7 @@ export interface Course {
   number: string;
   title: string;
   description: string;
+  credit_hours: number;
   sections: Section[] | null;
 }
 

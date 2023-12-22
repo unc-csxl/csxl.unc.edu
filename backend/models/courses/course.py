@@ -19,3 +19,4 @@ class Course(BaseModel):
     number: str
     title: str
     description: str
+    credit_hours: int
