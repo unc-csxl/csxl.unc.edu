@@ -6,15 +6,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, timedelta
 from typing import Sequence
 
-from ..services.event import EventService
-from ..services.user import UserService
-from ..services.exceptions import ResourceNotFoundException
-from ..models.event import Event
-from ..models.event_details import EventDetails
-from ..models.event_registration import EventRegistration, EventRegistrationStatus
-from ..models.coworking.time_range import TimeRange
-from ..api.authentication import registered_user
-from ..models.user import User
+from backend.services.organization import OrganizationService
+
+from ...services.event import EventService
+from ...services.user import UserService
+from ...services.exceptions import ResourceNotFoundException
+from ...models.event import Event
+from ...models.event_details import EventDetails
+from ...models.event_registration import EventRegistration, EventRegistrationStatus
+from ...models.coworking.time_range import TimeRange
+from ...api.authentication import registered_user
+from ...models.user import User
 
 __authors__ = [
     "Ajay Gandecha",
@@ -46,7 +48,9 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=["Events"])
 def get_events_from_organization(
-    slug: str, event_service: EventService = Depends()
+    slug: str,
+    event_service: EventService = Depends(),
+    organization_service: OrganizationService = Depends(),
 ) -> list[EventDetails]:
     """
     Get all events from an organization
@@ -58,7 +62,8 @@ def get_events_from_organization(
     Returns:
         list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
     """
-    return event_service.get_events_from_organization(slug)
+    organization = organization_service.get_by_slug(slug)
+    return event_service.get_events_by_organization(organization)
 
 
 @api.post("", response_model=EventDetails, tags=["Events"])

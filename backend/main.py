@@ -5,8 +5,12 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
+
+from backend.services.coworking.reservation import ReservationException
+
+from .api.events import events
+
 from .api import (
-    events,
     health,
     organizations,
     static_files,
@@ -87,21 +91,17 @@ def resource_not_found_exception_handler(
     return JSONResponse(status_code=404, content={"message": str(e)})
 
 
-@app.exception_handler(EventRegistrationException)
-def event_registration_exception_handler(
-    request: Request, e: EventRegistrationException
-):
-    return JSONResponse(status_code=403, content={"message": str(e)})
-
-
 # Add feature-specific exception handling middleware
 from .api import coworking
+from .api import events
 
-feature_exception_handlers = [coworking.exception_handlers]
+feature_exception_handlers = [coworking.exception_handlers, events.exception_handlers]
 
 for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:
 
         @app.exception_handler(exception)
-        def _handler_wrapper(request: Request, e: exception):
+        def _handler_wrapper(
+            request: Request, e: ReservationException | EventRegistrationException
+        ):
             return handler(request, e)
