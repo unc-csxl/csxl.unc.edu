@@ -36,11 +36,14 @@ export class CoursesHomeComponent {
     resolve: { courses: courseResolver }
   };
 
-  /** Store Observable list of Courses */
+  /** Store list of Courses */
   public courses: Course[];
 
+  /** Store the columns to display in the table */
   public displayedColumns: string[] = ['code', 'title'];
+  /** Store the columns to display when extended */
   public columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
+  /** Store the element where the dropdown is currently active */
   public expandedElement: Course | null = null;
 
   /** Constructor for the course catalog page. */
@@ -54,7 +57,5 @@ export class CoursesHomeComponent {
     };
 
     this.courses = data.courses;
-
-    console.log(this.courses);
   }
 }

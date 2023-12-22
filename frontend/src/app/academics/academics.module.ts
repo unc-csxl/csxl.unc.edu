@@ -10,7 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { AcademicsRoutingModule } from './academics-routing.module';
 import { CoursesHomeComponent } from './course-catalog/course-catalog.component';
 import { MatIconModule } from '@angular/material/icon';
-import { OfferingsComponent } from './offerings/offerings.component';
+import { SectionOfferingsComponent } from './section-offerings/section-offerings.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -19,7 +19,7 @@ import { AcademicsHomeComponent } from './academics-home/academics-home.componen
 @NgModule({
   declarations: [
     CoursesHomeComponent,
-    OfferingsComponent,
+    SectionOfferingsComponent,
     AcademicsHomeComponent
   ],
   imports: [
