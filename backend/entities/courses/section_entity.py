@@ -45,8 +45,8 @@ class SectionEntity(EntityBase):
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
 
-    # Term the section is in
-    # NOTE: This defines a one-to-many relationship between the term and sections tables.
+    # Room the section is in
+    # NOTE: This defines a one-to-many relationship between the room and sections tables.
     rooms: Mapped[list["SectionRoomEntity"]] = relationship(back_populates="section")
 
     # Members of the course
