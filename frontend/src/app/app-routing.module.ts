@@ -19,7 +19,7 @@ const routes: Routes = [
   },
   {
     path: 'academics',
-    title: 'Course Catalog',
+    title: 'Academics',
     loadChildren: () =>
       import('./academics/academics.module').then((m) => m.AcademicsModule)
   },
