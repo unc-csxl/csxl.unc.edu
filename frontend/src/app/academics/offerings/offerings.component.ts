@@ -53,7 +53,8 @@ export class OfferingsComponent {
     'code',
     'title',
     'instructor',
-    'meetingpattern'
+    'meetingpattern',
+    'room'
   ];
   public columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   public expandedElement: Section | null = null;
