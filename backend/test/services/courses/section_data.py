@@ -45,6 +45,8 @@ comp_101_001 = Section(
     number="001",
     term_id=term_data.f_23.id,
     meeting_pattern="TTh 12:00PM - 1:15PM",
+    office_hour_rooms=[],
+    lecture_room=None,
 )
 
 comp_101_002 = Section(
@@ -53,6 +55,8 @@ comp_101_002 = Section(
     number="002",
     term_id=term_data.f_23.id,
     meeting_pattern="TTh 1:30PM - 2:45PM",
+    office_hour_rooms=[],
+    lecture_room=None,
 )
 
 comp_301_001 = Section(
@@ -61,6 +65,8 @@ comp_301_001 = Section(
     number="001",
     term_id=term_data.f_23.id,
     meeting_pattern="TTh 8:00AM - 9:15AM",
+    office_hour_rooms=[],
+    lecture_room=None,
 )
 
 edited_comp_110 = Section(
@@ -69,6 +75,8 @@ edited_comp_110 = Section(
     number="002",
     term_id=term_data.f_23.id,
     meeting_pattern="MW 1:30PM - 2:45PM",
+    office_hour_rooms=[],
+    lecture_room=None,
 )
 
 new_section = Section(
@@ -77,6 +85,8 @@ new_section = Section(
     number="003",
     term_id=term_data.f_23.id,
     meeting_pattern="MW 1:30PM - 2:45PM",
+    office_hour_rooms=[],
+    lecture_room=None,
 )
 
 ta = SectionMemberEntity(

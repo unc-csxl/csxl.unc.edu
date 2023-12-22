@@ -28,7 +28,7 @@ class SectionRoomEntity(EntityBase):
     """
 
     # Name for the section room table in the PostgreSQL database
-    __tablename__ = "courses__user_room"
+    __tablename__ = "courses__section_room"
 
     # Properties (columns in the database table)
 
