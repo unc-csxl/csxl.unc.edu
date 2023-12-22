@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from .section_member import SectionMember
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -19,3 +20,4 @@ class Section(BaseModel):
     number: str
     term_id: str
     meeting_pattern: str
+    staff: list[SectionMember] = []

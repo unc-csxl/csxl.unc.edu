@@ -79,6 +79,11 @@ class SectionEntity(EntityBase):
             number=self.number,
             term_id=self.term_id,
             meeting_pattern=self.meeting_pattern,
+            staff=[
+                members.to_flat_model()
+                for members in self.members
+                if members.member_role != RosterRole.STUDENT
+            ],
         )
 
     def to_details_model(self) -> SectionDetails:

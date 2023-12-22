@@ -13,8 +13,8 @@ import {
 
 @Component({
   selector: 'app-courses-home',
-  templateUrl: './courses-home.component.html',
-  styleUrls: ['./courses-home.component.css'],
+  templateUrl: './course-catalog.component.html',
+  styleUrls: ['./course-catalog.component.css'],
   animations: [
     trigger('detailExpand', [
       state('collapsed,void', style({ height: '0px', minHeight: '0' })),
@@ -29,7 +29,7 @@ import {
 export class CoursesHomeComponent {
   /** Route information to be used in Course Routing Module */
   public static Route = {
-    path: '',
+    path: 'catalog',
     title: 'Course Catalog',
     component: CoursesHomeComponent,
     canActivate: [],

@@ -20,4 +20,3 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
-    staff: list[SectionMember] = []
