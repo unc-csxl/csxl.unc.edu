@@ -2,7 +2,9 @@
 
 import pytest
 from sqlalchemy.orm import Session
+from backend.entities.courses.section_room_entity import SectionRoomEntity
 from backend.entities.room_entity import RoomEntity
+from backend.models.room_assignment_type import RoomAssignmentType
 
 from ....models.room import Room
 from ....models.room_details import RoomDetails
@@ -43,7 +45,6 @@ comp_101_001 = Section(
     number="001",
     term_id=term_data.f_23.id,
     meeting_pattern="TTh 12:00PM - 1:15PM",
-    room_id=virtual_room.id,
 )
 
 comp_101_002 = Section(
@@ -52,7 +53,6 @@ comp_101_002 = Section(
     number="002",
     term_id=term_data.f_23.id,
     meeting_pattern="TTh 1:30PM - 2:45PM",
-    room_id=virtual_room.id,
 )
 
 comp_301_001 = Section(
@@ -61,7 +61,6 @@ comp_301_001 = Section(
     number="001",
     term_id=term_data.f_23.id,
     meeting_pattern="TTh 8:00AM - 9:15AM",
-    room_id=virtual_room.id,
 )
 
 edited_comp_110 = Section(
@@ -70,7 +69,6 @@ edited_comp_110 = Section(
     number="002",
     term_id=term_data.f_23.id,
     meeting_pattern="MW 1:30PM - 2:45PM",
-    room_id=virtual_room.id,
 )
 
 new_section = Section(
@@ -79,7 +77,6 @@ new_section = Section(
     number="003",
     term_id=term_data.f_23.id,
     meeting_pattern="MW 1:30PM - 2:45PM",
-    room_id=virtual_room.id,
 )
 
 ta = SectionMemberEntity(
@@ -88,7 +85,29 @@ ta = SectionMemberEntity(
     member_role=RosterRole.INSTRUCTOR,
 )
 
+room_assignment_110_001 = SectionRoomEntity(
+    section_id=comp_101_001.id,
+    room_id=virtual_room.id,
+    assignment_type=RoomAssignmentType.LECTURE_ROOM,
+)
+
+room_assignment_110_002 = SectionRoomEntity(
+    section_id=comp_101_002.id,
+    room_id=virtual_room.id,
+    assignment_type=RoomAssignmentType.LECTURE_ROOM,
+)
+room_assignment_301_001 = SectionRoomEntity(
+    section_id=comp_301_001.id,
+    room_id=virtual_room.id,
+    assignment_type=RoomAssignmentType.LECTURE_ROOM,
+)
+
 sections = [comp_101_001, comp_101_002, comp_301_001]
+assignments = [
+    room_assignment_110_001,
+    room_assignment_110_002,
+    room_assignment_301_001,
+]
 comp_110_sections = [comp_101_001, comp_101_002]
 
 
@@ -101,6 +120,9 @@ def insert_fake_data(session: Session):
         session.add(entity)
 
     session.add(ta)
+
+    for assignment in assignments:
+        session.add(assignment)
 
 
 @pytest.fixture(autouse=True)

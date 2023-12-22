@@ -22,4 +22,5 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
-    room: Room
+    lecture_room: Room | None
+    office_hour_rooms: list[Room]

@@ -4,6 +4,8 @@ from typing import Self
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from backend.models.room_assignment_type import RoomAssignmentType
+
 from ..entity_base import EntityBase
 from datetime import datetime
 from ...models.courses import Section
@@ -45,8 +47,7 @@ class SectionEntity(EntityBase):
 
     # Term the section is in
     # NOTE: This defines a one-to-many relationship between the term and sections tables.
-    room_id: Mapped[str] = mapped_column(ForeignKey("room.id"))
-    room: Mapped["RoomEntity"] = relationship(back_populates="course_sections")
+    rooms: Mapped[list["SectionRoomEntity"]] = relationship(back_populates="section")
 
     # Members of the course
     members: Mapped[list["SectionMemberEntity"]] = relationship(
@@ -69,7 +70,6 @@ class SectionEntity(EntityBase):
             number=model.number,
             term_id=model.term_id,
             meeting_pattern=model.meeting_pattern,
-            room_id=model.room_id,
         )
 
     def to_model(self) -> Section:
@@ -85,7 +85,6 @@ class SectionEntity(EntityBase):
             number=self.number,
             term_id=self.term_id,
             meeting_pattern=self.meeting_pattern,
-            room_id=self.room_id,
             staff=[
                 members.to_flat_model()
                 for members in self.members
@@ -100,6 +99,22 @@ class SectionEntity(EntityBase):
         Returns:
             SectionDetails: `SectionDetails` object from the entity
         """
+        lecture_rooms = [
+            room.room.to_model()
+            for room in self.rooms
+            if room.assignment_type == RoomAssignmentType.LECTURE_ROOM
+        ]
+        office_hour_rooms = [
+            room.room.to_model()
+            for room in self.rooms
+            if room.assignment_type == RoomAssignmentType.OFFICE_HOURS
+        ]
+        staff = [
+            members.to_flat_model()
+            for members in self.members
+            if members.member_role != RosterRole.STUDENT
+        ]
+
         return SectionDetails(
             id=self.id,
             course_id=self.course_id,
@@ -108,11 +123,7 @@ class SectionEntity(EntityBase):
             term_id=self.term_id,
             term=self.term.to_model(),
             meeting_pattern=self.meeting_pattern,
-            room_id=self.room_id,
-            room=self.room.to_model(),
-            staff=[
-                members.to_flat_model()
-                for members in self.members
-                if members.member_role != RosterRole.STUDENT
-            ],
+            lecture_room=(lecture_rooms[0] if len(lecture_rooms) > 0 else None),
+            office_hour_rooms=office_hour_rooms,
+            staff=staff,
         )

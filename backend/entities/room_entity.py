@@ -31,7 +31,7 @@ class RoomEntity(EntityBase):
         "SeatEntity", back_populates="room"
     )
 
-    course_sections: Mapped[list["SectionEntity"]] = relationship(  # type: ignore
+    course_sections: Mapped[list["SectionRoomEntity"]] = relationship(  # type: ignore
         back_populates="room"
     )
 
