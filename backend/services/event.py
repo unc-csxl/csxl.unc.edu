@@ -403,14 +403,12 @@ class EventService:
             UserPermissionException when the user is not authorized to manage the registration.
         """
         # Find registration to delete
-        # Permissions for reading/managing registration are enfoced in #get_registration
+        # Permissions for reading/managing registration are enforced in #get_registration
         event_registration = self.get_registration(subject, attendee, event)
 
         # Ensure object exists
         if event_registration is None:
-            raise ResourceNotFoundException(
-                f"No event registration found with matching event ID: {id}"
-            )
+            return
 
         # Delete object and commit
         self._session.delete(
