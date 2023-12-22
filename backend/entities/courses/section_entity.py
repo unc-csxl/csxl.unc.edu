@@ -43,6 +43,11 @@ class SectionEntity(EntityBase):
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
 
+    # Term the section is in
+    # NOTE: This defines a one-to-many relationship between the term and sections tables.
+    room_id: Mapped[str] = mapped_column(ForeignKey("room.id"))
+    room: Mapped["RoomEntity"] = relationship(back_populates="course_sections")
+
     # Members of the course
     members: Mapped[list["SectionMemberEntity"]] = relationship(
         back_populates="section"
@@ -64,6 +69,7 @@ class SectionEntity(EntityBase):
             number=model.number,
             term_id=model.term_id,
             meeting_pattern=model.meeting_pattern,
+            room_id=model.room_id,
         )
 
     def to_model(self) -> Section:
@@ -79,6 +85,7 @@ class SectionEntity(EntityBase):
             number=self.number,
             term_id=self.term_id,
             meeting_pattern=self.meeting_pattern,
+            room_id=self.room_id,
             staff=[
                 members.to_flat_model()
                 for members in self.members
@@ -101,6 +108,8 @@ class SectionEntity(EntityBase):
             term_id=self.term_id,
             term=self.term.to_model(),
             meeting_pattern=self.meeting_pattern,
+            room_id=self.room_id,
+            room=self.room.to_model(),
             staff=[
                 members.to_flat_model()
                 for members in self.members

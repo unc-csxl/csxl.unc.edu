@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+
+from ..room import Room
 from .course import Course
 from .term import Term
 from .section import Section
@@ -20,3 +22,4 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
+    room: Room

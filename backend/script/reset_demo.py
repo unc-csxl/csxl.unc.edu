@@ -21,7 +21,7 @@ from ..test.services import role_data, user_data, permission_data
 from ..test.services.organization import organization_demo_data
 from ..test.services.event import event_demo_data
 
-from ..test.services.coworking import room_data, seat_data, operating_hours_data, time
+from ..test.services.coworking import seat_data, room_data, operating_hours_data, time
 from ..test.services.coworking.reservation import reservation_data
 from ..test.services.courses import course_data, term_data, section_data
 
@@ -49,8 +49,8 @@ with Session(engine) as session:
     organization_demo_data.insert_fake_data(session)
     event_demo_data.insert_fake_data(session)
     operating_hours_data.insert_fake_data(session, time)
-    room_data.insert_fake_data(session)
     seat_data.insert_fake_data(session)
+    room_data.insert_fake_data(session)
     reservation_data.insert_fake_data(session, time)
     course_data.insert_fake_data(session)
     term_data.insert_fake_data(session)

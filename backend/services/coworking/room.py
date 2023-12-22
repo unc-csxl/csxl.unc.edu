@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from ...database import db_session
 from ...models.coworking import RoomDetails
-from ...entities.coworking import RoomEntity
+from ...entities import RoomEntity
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

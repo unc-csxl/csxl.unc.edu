@@ -20,4 +20,5 @@ class Section(BaseModel):
     number: str
     term_id: str
     meeting_pattern: str
+    room_id: str
     staff: list[SectionMember] = []
