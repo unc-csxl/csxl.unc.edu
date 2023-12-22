@@ -1,0 +1,14 @@
+
+.list-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-divider {
+    padding-bottom: 8px;
+}
+
+.list-event-group {
+    padding-bottom: 8px;
+}

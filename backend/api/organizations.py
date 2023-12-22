@@ -69,7 +69,7 @@ def new_organization(
     response_model=OrganizationDetails,
     tags=["Organizations"],
 )
-def get_organization_from_slug(
+def get_organization_by_slug(
     slug: str, organization_service: OrganizationService = Depends()
 ) -> OrganizationDetails:
     """
@@ -83,10 +83,10 @@ def get_organization_from_slug(
         Organization: Organization with matching slug
 
     Raises:
-        HTTPException 404 if get_from_slug() raises an Exception
+        HTTPException 404 if get_by_slug() raises an Exception
     """
 
-    return organization_service.get_from_slug(slug)
+    return organization_service.get_by_slug(slug)
 
 
 @api.put(

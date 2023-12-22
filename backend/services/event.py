@@ -78,7 +78,7 @@ class EventService:
         # Return added object
         return event_entity.to_details_model()
 
-    def get_from_id(self, id: int) -> EventDetails:
+    def get_by_id(self, id: int) -> EventDetails:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
@@ -100,7 +100,7 @@ class EventService:
         # Convert entry to a model and return
         return entity.to_details_model()
 
-    def get_events_from_organization(self, slug: str) -> list[EventDetails]:
+    def get_events_by_organization(self, slug: str) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with slug
 
@@ -112,20 +112,10 @@ class EventService:
         """
 
         # Query the organization with the matching slug
-        organization = (
-            self._session.query(OrganizationEntity)
-            .filter(OrganizationEntity.slug == slug)
-            .one_or_none()
-        )
-
-        # Ensure that the organization exists
-        if organization is None:
-            return []
-
-        # Query the event with matching organization slug
         events = (
             self._session.query(EventEntity)
-            .filter(EventEntity.organization_id == organization.id)
+            .join(OrganizationEntity)
+            .where(OrganizationEntity.slug == slug)
             .all()
         )
 

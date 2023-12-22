@@ -14,6 +14,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { ReservationComponent } from './reservation/reservation.component';
+import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating-hours-dialog.widget';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ReservationComponent } from './reservation/reservation.component';
     AmbassadorPageComponent,
     CoworkingDropInCard,
     CoworkingReservationCard,
-    CoworkingHoursCard
+    CoworkingHoursCard,
+    OperatingHoursDialog
   ],
   imports: [
     CommonModule,
