@@ -26,12 +26,8 @@ class OrganizationNotFoundException(Exception):
         super().__init__(f"No organization found matching slug/id: {id}")
 
 
-# class EventRegistrationException(Exception):
-#     """EventRegistrationException is raised when a user attempts to register and cannot (i.e., when the event is full)."""
-
-
-#     def __init__(self, event_id: int):
-#         super().__init__(f"Unable to register user for the event with id: {event_id}")
 class EventRegistrationException(Exception):
-    def __init__(self, message: str):
-        super().__init__(message)
+    """EventRegistrationException is raised when a user attempts to register and cannot (i.e., when the event is full)."""
+
+    def __init__(self, event_id: int):
+        super().__init__(f"Unable to register user for the event with id: {event_id}")
