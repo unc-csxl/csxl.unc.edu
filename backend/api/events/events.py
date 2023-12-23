@@ -310,6 +310,25 @@ def get_event_registration_status(
     return event_service.get_event_registration_status(event_id)
 
 
+@api.get("/{id}/registration/status", tags=["Events"])
+def get_event_from_id_with_registration_status(
+    id: int,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+):
+    """
+    Get events in the database with the logged in user's registration status
+
+    Args:
+        start (datetime): optional parameter for specifying start time range of search. Defaults to now.
+        end (datetime): optional parameter for specifying end time range of search. Defaults to a year from now.
+
+    Returns:
+        List[UserEvent]: a list of valid UserEvent models
+    """
+    return event_service.get_by_id_with_registration_status(subject, id)
+
+
 @api.get("/registration/status", tags=["Events"])
 def get_events_with_registration_status(
     subject: User = Depends(registered_user),

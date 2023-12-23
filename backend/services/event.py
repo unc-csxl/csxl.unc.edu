@@ -532,6 +532,24 @@ class EventService:
         status = EventRegistrationStatus(registration_count=count)
         return status
 
+    def get_by_id_with_registration_status(self, subject: User, id: int) -> UserEvent:
+        """
+        Get event by id with the logged in user's registration status
+
+        Args:
+            subject: The User making the request.
+            id: an int representing the
+
+        Returns:
+            list[UserEvent]: list of valid UserRegistrationStatus models representing whether or not a user is registered for each event
+        """
+        event = self.get_by_id(id)
+        registration = self.get_registration(subject, subject, event)
+
+        is_registered = registration is not None
+
+        return self.event_to_user_event(event, is_registered)
+
     def get_events_with_registration_status(
         self, subject: User, time_range: TimeRange
     ) -> list[UserEvent]:
@@ -543,7 +561,7 @@ class EventService:
             time_range: The period over which to search for event registrations.
 
         Returns:
-            list[UserEvent]: list of valid UserRegistrationStatus models representing whether or not a user is registered for each event
+            list[UserEvent]: list of valid UserEvent models representing whether or not a user is registered for each event
         """
         events = self.get_events_in_time_range(time_range)
 
