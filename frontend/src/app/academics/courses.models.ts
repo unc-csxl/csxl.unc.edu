@@ -1,4 +1,5 @@
-import { TimeRange } from '../coworking/coworking.models';
+import { TimeRange } from '../time-range';
+
 /** Defines a Course */
 export interface Course {
   id: string;
