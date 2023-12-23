@@ -14,6 +14,10 @@ __license__ = "MIT"
 
 
 api = APIRouter(prefix="/api/academics/course")
+openapi_tags = {
+    "name": "Academics",
+    "description": "Academic and course information are managed via these endpoints.",
+}
 
 
 @api.get("", response_model=list[CourseDetails], tags=["Academics"])
