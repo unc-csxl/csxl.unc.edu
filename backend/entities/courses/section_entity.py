@@ -4,7 +4,7 @@ from typing import Self
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.models.room_assignment_type import RoomAssignmentType
+from ...models.room_assignment_type import RoomAssignmentType
 
 from ..entity_base import EntityBase
 from datetime import datetime
