@@ -301,7 +301,7 @@ def get_event_registration_status(
     Get the number of event registrations for a given ID
 
     Args:
-        id: an int representing a unique Event ID
+        event_id: an int representing a unique Event ID
         event_service: a valid EventService
 
     Returns:
@@ -320,8 +320,8 @@ def get_event_from_id_with_registration_status(
     Get events in the database with the logged in user's registration status
 
     Args:
-        start (datetime): optional parameter for specifying start time range of search. Defaults to now.
-        end (datetime): optional parameter for specifying end time range of search. Defaults to a year from now.
+        id: a valid int representing an event
+        subject: a valid User model representing the currently logged in User
 
     Returns:
         List[UserEvent]: a list of valid UserEvent models
@@ -340,6 +340,7 @@ def get_events_with_registration_status(
     Get events in the database with the logged in user's registration status
 
     Args:
+        subject: a valid User model representing the currently logged in User
         start (datetime): optional parameter for specifying start time range of search. Defaults to now.
         end (datetime): optional parameter for specifying end time range of search. Defaults to a year from now.
 
@@ -366,14 +367,15 @@ def get_events_from_organization_with_registration_status(
     organization_service: OrganizationService = Depends(),
 ) -> list[EventDetails]:
     """
-    Get all events from an organization
+    Get all events from an organization with registration status of current user
 
     Args:
         slug: a valid str representing a unique Organization
+        subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
 
     Returns:
-        list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
+        list[UserEvent]: All `UserEvent`s in the `Event` database table from a specific organization
     """
     organization = organization_service.get_by_slug(slug)
 
