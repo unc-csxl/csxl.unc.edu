@@ -1,14 +1,5 @@
 import { Profile } from '../models.module';
-
-export interface TimeRangeJSON {
-  start: string;
-  end: string;
-}
-
-export interface TimeRange {
-  start: Date;
-  end: Date;
-}
+import { TimeRangeJSON, TimeRange } from '../time-range';
 
 export interface OperatingHoursJSON extends TimeRangeJSON {
   id: number;

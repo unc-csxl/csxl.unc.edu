@@ -2,7 +2,7 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from ....entities.coworking import RoomEntity
+from ....entities import RoomEntity
 from ....models.coworking import RoomDetails
 from ..reset_table_id_seq import reset_table_id_seq
 

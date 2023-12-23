@@ -27,7 +27,7 @@ print("The following globals are initialized:\n")
 
 from backend.entities import *
 from backend.entities.coworking import *
-from backend.entities.courses import *
+from backend.entities.academics import *
 
 print(" - all entities in backend/entities/__init__.py")
 print(" - all entities in backend/entities/coworking/__init__.py")

@@ -5,8 +5,8 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 
-from backend.entities.courses.section_member_entity import SectionMemberEntity
-from backend.models.courses.section_member import SectionMember
+from backend.entities.academics.section_member_entity import SectionMemberEntity
+from backend.models.academics.section_member import SectionMember
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
