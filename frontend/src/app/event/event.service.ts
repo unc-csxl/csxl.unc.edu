@@ -9,27 +9,16 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {
-  Observable,
-  ReplaySubject,
-  Subject,
-  Subscription,
-  catchError,
-  map,
-  of,
-  tap
-} from 'rxjs';
+import { Observable, Subscription, map, tap } from 'rxjs';
 import {
   Event,
   EventJson,
   EventRegistration,
-  UserRegistrationStatus,
   parseEventJson
 } from './event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
 import { Profile, ProfileService } from '../profile/profile.service';
-import { RxEventRegistrationStatuses } from './rx-event-registration-statuses';
 
 @Injectable({
   providedIn: 'root'
@@ -37,11 +26,6 @@ import { RxEventRegistrationStatuses } from './rx-event-registration-statuses';
 export class EventService {
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
-
-  private userRegistrationStatuses: RxEventRegistrationStatuses =
-    new RxEventRegistrationStatuses();
-  public userRegistrationStatuses$: Observable<UserRegistrationStatus[]> =
-    this.userRegistrationStatuses.value$;
 
   constructor(
     protected http: HttpClient,
@@ -52,10 +36,6 @@ export class EventService {
     this.profileSubscription = this.profileSvc.profile$.subscribe(
       (profile) => (this.profile = profile)
     );
-
-    this.getUserReservationStatuses().subscribe((statuses) => {
-      this.userRegistrationStatuses.set(statuses);
-    });
   }
 
   /** Returns all event entries from the backend database table using the backend HTTP get request.
@@ -63,7 +43,7 @@ export class EventService {
    */
   getEvents(): Observable<Event[]> {
     return this.http
-      .get<EventJson[]>('/api/events')
+      .get<EventJson[]>('/api/events/registration/status')
       .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
   }
 
@@ -73,7 +53,7 @@ export class EventService {
    */
   getEvent(id: number): Observable<Event> {
     return this.http
-      .get<EventJson>('/api/events/' + id)
+      .get<EventJson>('/api/events/' + id + '/registration/status')
       .pipe(map((eventJson) => parseEventJson(eventJson)));
   }
 
@@ -83,7 +63,9 @@ export class EventService {
    */
   getEventsByOrganization(slug: string): Observable<Event[]> {
     return this.http
-      .get<EventJson[]>('/api/events/organization/' + slug)
+      .get<EventJson[]>(
+        '/api/events/organization/' + slug + '/registration/status'
+      )
       .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
   }
 
@@ -164,12 +146,6 @@ export class EventService {
     return this.http.get<number>(`/api/events/${event_id}/registration/count`);
   }
 
-  getUserReservationStatuses(): Observable<UserRegistrationStatus[]> {
-    return this.http.get<UserRegistrationStatus[]>(
-      `/api/events/registrations/user`
-    );
-  }
-
   /** Create a new registration for an event using the backend HTTP create request.
    * @param event_id: number representing the Event ID
    * @returns Observable<EventRegistration>
@@ -179,13 +155,10 @@ export class EventService {
       throw new Error('Only allowed for logged in users.');
     }
 
-    return this.http
-      .post<EventRegistration>(`/api/events/${event_id}/registration`, {})
-      .pipe(
-        tap(() => {
-          this.userRegistrationStatuses.register(event_id);
-        })
-      );
+    return this.http.post<EventRegistration>(
+      `/api/events/${event_id}/registration`,
+      {}
+    );
   }
 
   /** Delete an existing registration for an event using the backend HTTP delete request.
@@ -197,12 +170,8 @@ export class EventService {
       throw new Error('Only allowed for logged in users.');
     }
 
-    return this.http
-      .delete<EventRegistration>(`/api/events/${event_id}/registration`)
-      .pipe(
-        tap(() => {
-          this.userRegistrationStatuses.unregister(event_id);
-        })
-      );
+    return this.http.delete<EventRegistration>(
+      `/api/events/${event_id}/registration`
+    );
   }
 }

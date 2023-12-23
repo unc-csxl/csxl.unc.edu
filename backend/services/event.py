@@ -108,20 +108,6 @@ class EventService:
 
         return [registration.event for registration in event_registrations]
 
-    def event_to_user_event(self, event: Event, is_registered: bool) -> UserEvent:
-        return UserEvent(
-            name=event.name,
-            time=event.time,
-            location=event.location,
-            description=event.description,
-            public=event.public,
-            registration_limit=event.registration_limit,
-            can_register=event.can_register,
-            organization_id=event.organization_id,
-            id=event.id,
-            is_registered=is_registered,
-        )
-
     def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
@@ -532,6 +518,23 @@ class EventService:
 
         status = EventRegistrationStatus(registration_count=count)
         return status
+
+    def event_to_user_event(
+        self, event: EventDetails, is_registered: bool
+    ) -> UserEvent:
+        return UserEvent(
+            name=event.name,
+            time=event.time,
+            location=event.location,
+            description=event.description,
+            public=event.public,
+            registration_limit=event.registration_limit,
+            can_register=event.can_register,
+            organization_id=event.organization_id,
+            id=event.id,
+            is_registered=is_registered,
+            organization=event.organization,
+        )
 
     def get_by_id_with_registration_status(self, subject: User, id: int) -> UserEvent:
         """

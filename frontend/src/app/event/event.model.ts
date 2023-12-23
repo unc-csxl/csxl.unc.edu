@@ -20,6 +20,7 @@ export interface Event {
   public: boolean;
   organization_id: number | null;
   organization: Organization | null;
+  is_registered: boolean;
 }
 
 /** Interface for the Event JSON Response model
@@ -36,6 +37,7 @@ export interface EventJson {
   public: boolean;
   organization_id: number | null;
   organization: Organization | null;
+  is_registered: boolean;
 }
 
 /** Function that converts an EventJSON response model to an Event model.
@@ -53,9 +55,4 @@ export interface EventRegistration {
   user_id: number;
   event: Event | null;
   user: Profile | null;
-}
-
-export interface UserRegistrationStatus {
-  event_id: number;
-  is_registered: boolean;
 }
