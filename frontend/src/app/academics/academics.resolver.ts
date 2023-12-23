@@ -1,5 +1,5 @@
 /**
- * The Courses Resolver allows courses data to be injected into the routes
+ * The Academics Resolver allows courses data to be injected into the routes
  * of components.
  *
  * @author Ajay Gandecha
@@ -9,8 +9,8 @@
 
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { CourseService } from './courses.service';
-import { Course, Term } from './courses.models';
+import { CourseService } from './academics.service';
+import { Course, Term } from './academics.models';
 
 /** This resolver injects the list of courses into the catalog component. */
 export const courseResolver: ResolveFn<Course[] | undefined> = (

@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
 from ....services import PermissionService
-from ....services.courses import TermService, CourseService, SectionService
+from ....services.academics import TermService, CourseService, SectionService
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

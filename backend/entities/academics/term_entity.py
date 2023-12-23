@@ -5,8 +5,8 @@ from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from datetime import datetime
-from ...models.courses.term import Term
-from ...models.courses.term_details import TermDetails
+from ...models.academics.term import Term
+from ...models.academics.term_details import TermDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -17,7 +17,7 @@ class TermEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Term` table"""
 
     # Name for the term table in the PostgreSQL database
-    __tablename__ = "courses__term"
+    __tablename__ = "academics__term"
 
     # Term properties (columns in the database table)
 

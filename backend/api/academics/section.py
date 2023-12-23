@@ -4,19 +4,19 @@ This API is used to access course data."""
 
 from fastapi import APIRouter, Depends
 from ..authentication import registered_user
-from ...services.courses import SectionService
+from ...services.academics import SectionService
 from ...models import User
-from ...models.courses import Section, SectionDetails
+from ...models.academics import Section, SectionDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-api = APIRouter(prefix="/api/courses/section")
+api = APIRouter(prefix="/api/academics/section")
 
 
-@api.get("", response_model=list[SectionDetails], tags=["Courses"])
+@api.get("", response_model=list[SectionDetails], tags=["Academics"])
 def get_sections(section_service: SectionService = Depends()) -> list[SectionDetails]:
     """
     Get all sections
@@ -27,7 +27,7 @@ def get_sections(section_service: SectionService = Depends()) -> list[SectionDet
     return section_service.all()
 
 
-@api.get("/{id}", response_model=SectionDetails, tags=["Courses"])
+@api.get("/{id}", response_model=SectionDetails, tags=["Academics"])
 def get_section_by_id(
     id: int, section_service: SectionService = Depends()
 ) -> SectionDetails:
@@ -40,7 +40,7 @@ def get_section_by_id(
     return section_service.get_by_id(id)
 
 
-@api.get("/term/{term_id}", response_model=list[SectionDetails], tags=["Courses"])
+@api.get("/term/{term_id}", response_model=list[SectionDetails], tags=["Academics"])
 def get_section_by_term_id(
     term_id: str, section_service: SectionService = Depends()
 ) -> list[SectionDetails]:
@@ -53,7 +53,7 @@ def get_section_by_term_id(
     return section_service.get_by_term(term_id)
 
 
-@api.get("/subject/{subject}", response_model=list[SectionDetails], tags=["Courses"])
+@api.get("/subject/{subject}", response_model=list[SectionDetails], tags=["Academics"])
 def get_section_by_subject(
     subject: str, section_service: SectionService = Depends()
 ) -> list[SectionDetails]:
@@ -69,7 +69,7 @@ def get_section_by_subject(
 @api.get(
     "/{subject_code}/{course_number}/{section_number}",
     response_model=SectionDetails,
-    tags=["Courses"],
+    tags=["Academics"],
 )
 def get_section_by_subject_code(
     subject_code: str,
@@ -86,7 +86,7 @@ def get_section_by_subject_code(
     return section_service.get(subject_code, course_number, section_number)
 
 
-@api.post("", response_model=SectionDetails, tags=["Courses"])
+@api.post("", response_model=SectionDetails, tags=["Academics"])
 def new_section(
     section: Section,
     subject: User = Depends(registered_user),
@@ -101,7 +101,7 @@ def new_section(
     return section_service.create(subject, section)
 
 
-@api.put("", response_model=SectionDetails, tags=["Courses"])
+@api.put("", response_model=SectionDetails, tags=["Academics"])
 def update_section(
     section: Section,
     subject: User = Depends(registered_user),
@@ -116,7 +116,7 @@ def update_section(
     return section_service.update(subject, section)
 
 
-@api.delete("", response_model=None, tags=["Courses"])
+@api.delete("", response_model=None, tags=["Academics"])
 def delete_section(
     section: Section,
     subject: User = Depends(registered_user),

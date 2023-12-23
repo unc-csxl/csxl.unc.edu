@@ -4,8 +4,8 @@ from typing import Self
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
-from ...models.courses import Course
-from ...models.courses import CourseDetails
+from ...models.academics import Course
+from ...models.academics import CourseDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -16,7 +16,7 @@ class CourseEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Course` table"""
 
     # Name for the course table in the PostgreSQL database
-    __tablename__ = "courses__course"
+    __tablename__ = "academics__course"
 
     # Course properties (columns in the database table)
 

@@ -4,19 +4,19 @@ This API is used to access course data."""
 
 from fastapi import APIRouter, Depends
 from ..authentication import registered_user
-from ...services.courses import CourseService
+from ...services.academics import CourseService
 from ...models import User
-from ...models.courses import Course, CourseDetails
+from ...models.academics import Course, CourseDetails
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-api = APIRouter(prefix="/api/courses/course")
+api = APIRouter(prefix="/api/academics/course")
 
 
-@api.get("", response_model=list[CourseDetails], tags=["Courses"])
+@api.get("", response_model=list[CourseDetails], tags=["Academics"])
 def get_courses(course_service: CourseService = Depends()) -> list[CourseDetails]:
     """
     Get all courses
@@ -27,7 +27,7 @@ def get_courses(course_service: CourseService = Depends()) -> list[CourseDetails
     return course_service.all()
 
 
-@api.get("/{id}", response_model=CourseDetails, tags=["Courses"])
+@api.get("/{id}", response_model=CourseDetails, tags=["Academics"])
 def get_course_by_id(
     id: str, course_service: CourseService = Depends()
 ) -> CourseDetails:
@@ -40,7 +40,7 @@ def get_course_by_id(
     return course_service.get_by_id(id)
 
 
-@api.get("/{subject_code}/{number}", response_model=CourseDetails, tags=["Courses"])
+@api.get("/{subject_code}/{number}", response_model=CourseDetails, tags=["Academics"])
 def get_course_by_subject_code(
     subject_code: str, number: str, course_service: CourseService = Depends()
 ) -> CourseDetails:
@@ -53,7 +53,7 @@ def get_course_by_subject_code(
     return course_service.get(subject_code, number)
 
 
-@api.post("", response_model=CourseDetails, tags=["Courses"])
+@api.post("", response_model=CourseDetails, tags=["Academics"])
 def new_course(
     course: Course,
     subject: User = Depends(registered_user),
@@ -68,7 +68,7 @@ def new_course(
     return course_service.create(subject, course)
 
 
-@api.put("", response_model=CourseDetails, tags=["Courses"])
+@api.put("", response_model=CourseDetails, tags=["Academics"])
 def update_course(
     course: Course,
     subject: User = Depends(registered_user),
@@ -83,7 +83,7 @@ def update_course(
     return course_service.update(subject, course)
 
 
-@api.delete("", response_model=None, tags=["Courses"])
+@api.delete("", response_model=None, tags=["Academics"])
 def delete_course(
     course: Course,
     subject: User = Depends(registered_user),

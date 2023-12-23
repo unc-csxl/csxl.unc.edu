@@ -23,7 +23,7 @@ from ..test.services.event import event_demo_data
 
 from ..test.services.coworking import seat_data, room_data, operating_hours_data, time
 from ..test.services.coworking.reservation import reservation_data
-from ..test.services.courses import course_data, term_data, section_data
+from ..test.services.academics import course_data, term_data, section_data
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

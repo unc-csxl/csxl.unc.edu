@@ -2,8 +2,8 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from ....entities.courses import TermEntity
-from ....models.courses import Term
+from ....entities.academics import TermEntity
+from ....models.academics import Term
 from ..reset_table_id_seq import reset_table_id_seq
 from datetime import datetime
 

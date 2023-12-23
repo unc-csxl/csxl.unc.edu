@@ -8,9 +8,9 @@ from ...models.room_assignment_type import RoomAssignmentType
 
 from ..entity_base import EntityBase
 from datetime import datetime
-from ...models.courses import Section
-from ...models.courses import SectionDetails
-from ...models.courses.section_member import SectionMember
+from ...models.academics import Section
+from ...models.academics import SectionDetails
+from ...models.academics.section_member import SectionMember
 from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
@@ -22,7 +22,7 @@ class SectionEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `Section` table"""
 
     # Name for the course section table in the PostgreSQL database
-    __tablename__ = "courses__section"
+    __tablename__ = "academics__section"
 
     # Section properties (columns in the database table)
 
@@ -30,7 +30,7 @@ class SectionEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Course the section is for
     # NOTE: This defines a one-to-many relationship between the course and sections tables.
-    course_id: Mapped[str] = mapped_column(ForeignKey("courses__course.id"))
+    course_id: Mapped[str] = mapped_column(ForeignKey("academics__course.id"))
     course: Mapped["CourseEntity"] = relationship(back_populates="sections")
 
     # Number of the section (for example, COMP 100-003's code would be "003")
@@ -38,7 +38,7 @@ class SectionEntity(EntityBase):
 
     # Term the section is in
     # NOTE: This defines a one-to-many relationship between the term and sections tables.
-    term_id: Mapped[str] = mapped_column(ForeignKey("courses__term.id"))
+    term_id: Mapped[str] = mapped_column(ForeignKey("academics__term.id"))
     term: Mapped["TermEntity"] = relationship(back_populates="course_sections")
 
     # Meeting pattern of the course

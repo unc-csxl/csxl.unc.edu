@@ -2,15 +2,15 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from backend.entities.courses.section_room_entity import SectionRoomEntity
+from backend.entities.academics.section_room_entity import SectionRoomEntity
 from backend.entities.room_entity import RoomEntity
 from backend.models.room_assignment_type import RoomAssignmentType
 
 from ....models.room import Room
 from ....models.room_details import RoomDetails
-from ....entities.courses import SectionEntity
-from ....entities.courses import SectionMemberEntity
-from ....models.courses import Section
+from ....entities.academics import SectionEntity
+from ....entities.academics import SectionMemberEntity
+from ....models.academics import Section
 from ....models.roster_role import RosterRole
 
 from ..reset_table_id_seq import reset_table_id_seq

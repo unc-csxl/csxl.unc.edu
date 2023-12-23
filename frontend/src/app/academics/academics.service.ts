@@ -1,5 +1,5 @@
 /**
- * The Courses Service abstracts HTTP requests to the backend
+ * The Academics Service abstracts HTTP requests to the backend
  * from the components.
  *
  * @author Ajay Gandecha
@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { Course, Term } from './courses.models';
+import { Course, Term } from './academics.models';
 
 @Injectable({
   providedIn: 'root'
@@ -28,13 +28,13 @@ export class CourseService {
    * @returns {Observable<Term[]>}
    */
   getTerms(): Observable<Term[]> {
-    return this.http.get<Term[]>('/api/courses/term');
+    return this.http.get<Term[]>('/api/academics/term');
   }
 
   /** Returns all course entries from the backend database.
    * @returns {Observable<Course[]>}
    */
   getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>('/api/courses/course');
+    return this.http.get<Course[]>('/api/academics/course');
   }
 }

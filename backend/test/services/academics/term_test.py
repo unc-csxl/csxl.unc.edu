@@ -7,8 +7,8 @@ from backend.services.exceptions import (
     UserPermissionException,
 )
 from backend.services.permission import PermissionService
-from ....services.courses import TermService
-from ....models.courses import TermDetails
+from ....services.academics import TermService
+from ....models.academics import TermDetails
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, term_svc

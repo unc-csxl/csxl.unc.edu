@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { courseResolver, termResolver } from '../courses.resolver';
+import { courseResolver, termResolver } from '../academics.resolver';
 import {
   Course,
   RosterRole,
   Section,
   SectionMember,
   Term
-} from '../courses.models';
+} from '../academics.models';
 import { ActivatedRoute } from '@angular/router';
-import { CourseService } from '../courses.service';
+import { CourseService } from '../academics.service';
 import {
   animate,
   state,

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.models.room_assignment_type import RoomAssignmentType
 
 from ...models.roster_role import RosterRole
-from ...models.courses.section_member import SectionMember
+from ...models.academics.section_member import SectionMember
 
 from ..entity_base import EntityBase
 
@@ -28,14 +28,14 @@ class SectionRoomEntity(EntityBase):
     """
 
     # Name for the section room table in the PostgreSQL database
-    __tablename__ = "courses__section_room"
+    __tablename__ = "academics__section_room"
 
     # Properties (columns in the database table)
 
     # Section for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
     section_id: Mapped[int] = mapped_column(
-        ForeignKey("courses__section.id"), primary_key=True
+        ForeignKey("academics__section.id"), primary_key=True
     )
     section: Mapped["SectionEntity"] = relationship(back_populates="rooms")
 

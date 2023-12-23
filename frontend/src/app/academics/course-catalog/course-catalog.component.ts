@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { courseResolver } from '../courses.resolver';
-import { Course } from '../courses.models';
+import { courseResolver } from '../academics.resolver';
+import { Course } from '../academics.models';
 import { ActivatedRoute } from '@angular/router';
-import { CourseService } from '../courses.service';
+import { CourseService } from '../academics.service';
 import {
   animate,
   state,

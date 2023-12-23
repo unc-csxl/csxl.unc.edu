@@ -6,7 +6,7 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...models.roster_role import RosterRole
-from ...models.courses.section_member import SectionMember
+from ...models.academics.section_member import SectionMember
 
 from ..entity_base import EntityBase
 
@@ -26,14 +26,14 @@ class SectionMemberEntity(EntityBase):
     """
 
     # Name for the user section table in the PostgreSQL database
-    __tablename__ = "courses__user_section"
+    __tablename__ = "academics__user_section"
 
     # User Section properties (columns in the database table)
 
     # Section for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
     section_id: Mapped[int] = mapped_column(
-        ForeignKey("courses__section.id"), primary_key=True
+        ForeignKey("academics__section.id"), primary_key=True
     )
     section: Mapped["SectionEntity"] = relationship(back_populates="members")
 

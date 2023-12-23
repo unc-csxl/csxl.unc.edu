@@ -7,10 +7,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ...database import db_session
-from ...models.courses import Course
-from ...models.courses import CourseDetails
+from ...models.academics import Course
+from ...models.academics import CourseDetails
 from ...models.user import User
-from ...entities.courses import CourseEntity
+from ...entities.academics import CourseEntity
 from ..permission import PermissionService
 
 from ...services.exceptions import ResourceNotFoundException
