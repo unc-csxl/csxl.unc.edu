@@ -11,7 +11,7 @@ from backend.models.organization_details import OrganizationDetails
 
 from backend.models.user import User
 from ..database import db_session
-from backend.models.event import Event, DraftEvent
+from backend.models.event import Event, DraftEvent, UserEvent
 from backend.models.event_details import EventDetails
 from backend.models.event_registration import (
     EventRegistration,
@@ -68,6 +68,94 @@ class EventService:
 
         # Convert entities to details models and return
         return [entity.to_details_model() for entity in entities]
+
+    def get_events_in_time_range(self, time_range: TimeRange) -> list[EventDetails]:
+        """
+        Get events in the time range
+
+        Args:
+            subject: The User making the request.
+            time_range: The period over which to search for events.
+
+        Returns:
+            list[EventDetails]: list of valid EventDetails models representing the events
+        """
+        event_entities = (
+            self._session.query(EventEntity)
+            .where(EventEntity.time >= time_range.start)
+            .where(EventEntity.time < time_range.end)
+        )
+
+        return [entity.to_details_model() for entity in event_entities]
+
+    def get_registered_events_of_user(
+        self, subject: User, time_range: TimeRange
+    ) -> list[Event]:
+        """
+        Get registered events for a user in the given time range
+
+        Args:
+            subject: The User making the request.
+            time_range: The period over which to search for events.
+
+        Returns:
+            list[Event]: list of valid Event models representing the events.
+        """
+        event_registrations = self.get_registrations_of_user(
+            subject, subject, time_range
+        )
+
+        return [registration.event for registration in event_registrations]
+
+    def get_events_with_registration_status(
+        self, subject: User, time_range: TimeRange
+    ) -> list[UserEvent]:
+        """
+        Get events in the time range with the logged in user's registration status
+
+        Args:
+            subject: The User making the request.
+            time_range: The period over which to search for event registrations.
+
+        Returns:
+            list[UserEvent]: list of valid UserRegistrationStatus models representing whether or not a user is registered for each event
+        """
+        events = self.get_events_in_time_range(time_range)
+
+        registered_events = self.get_registered_events_of_user(subject, time_range)
+
+        events_with_status = []
+        for event in events:
+            if event in registered_events:
+                event_with_status = UserEvent(
+                    name=event.name,
+                    time=event.time,
+                    location=event.location,
+                    description=event.description,
+                    public=event.public,
+                    registration_limit=event.registration_limit,
+                    can_register=event.can_register,
+                    organization_id=event.organization_id,
+                    id=event.id,
+                    is_registered=True,
+                )
+                events_with_status.append(event_with_status)
+            else:
+                event_with_status = UserEvent(
+                    name=event.name,
+                    time=event.time,
+                    location=event.location,
+                    description=event.description,
+                    public=event.public,
+                    registration_limit=event.registration_limit,
+                    can_register=event.can_register,
+                    organization_id=event.organization_id,
+                    id=event.id,
+                    is_registered=False,
+                )
+                events_with_status.append(event_with_status)
+
+        return events_with_status
 
     def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """
@@ -220,6 +308,8 @@ class EventService:
 
         # Save changes
         self._session.commit()
+
+    """Event Registration Service Methods"""
 
     def get_registration(
         self, subject: User, attendee: User, event: EventDetails
@@ -477,37 +567,3 @@ class EventService:
 
         status = EventRegistrationStatus(registration_count=count)
         return status
-
-    def get_event_registration_statuses(
-        self, subject: User, time_range: TimeRange
-    ) -> list[UserRegistrationStatus]:
-        """
-        Get the registration status for all events a user is registered for in the time range
-
-        Args:
-            subject: The User making the request.
-            time_range: The period over which to search for event registrations.
-
-        Returns:
-            list[UserRegistrationStatus]: list of valid UserRegistrationStatus models representing whether or not a user is registered for each event
-        """
-        event_entities = self._session.query(EventEntity)
-
-        registrations_for_user = (
-            self._session.query(EventRegistrationEntity)
-            .where(EventRegistrationEntity.user_id == subject.id)
-            .join(EventEntity, EventRegistrationEntity.event_id == EventEntity.id)
-            .where(EventEntity.time >= time_range.start)
-            .where(EventEntity.time < time_range.end)
-        ).all()
-
-        events_registered_for = set(
-            [registration.event_id for registration in registrations_for_user]
-        )
-
-        return [
-            UserRegistrationStatus(
-                event_id=event.id, is_registered=event.id in events_registered_for
-            )
-            for event in event_entities
-        ]

@@ -33,3 +33,14 @@ class Event(DraftEvent):
     """
 
     id: int
+
+
+class UserEvent(Event):
+    """
+    Pydantic model to represent a `UserEvent`.
+
+    This model contains an extra "is registered" field denoting whether the
+    currently logged in user is registered for an event or not.
+    """
+
+    is_registered: bool = False
