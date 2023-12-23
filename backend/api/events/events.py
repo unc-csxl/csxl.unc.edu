@@ -46,6 +46,25 @@ def get_events(event_service: EventService = Depends()) -> list[EventDetails]:
     return event_service.all()
 
 
+@api.get("/range", response_model=list[EventDetails], tags=["Events"])
+def get_events_in_time_range(
+    start: datetime | None = None,
+    end: datetime | None = None,
+    event_service: EventService = Depends(),
+) -> list[EventDetails]:
+    """
+    Get all events in the time range
+
+    Returns:
+        list[Event]: All `Event`s in the `Event` database table
+    """
+    start = datetime.now() if start is None else start
+    end = datetime.now() + timedelta(days=365) if end is None else end
+    time_range = TimeRange(start=start, end=end)
+
+    return event_service.get_events_in_time_range(time_range)
+
+
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=["Events"])
 def get_events_from_organization(
     slug: str,
@@ -347,7 +366,6 @@ def get_events_with_registration_status(
     Returns:
         List[UserEvent]: a list of valid UserEvent models
     """
-
     start = datetime.now() if start is None else start
     end = datetime.now() + timedelta(days=365) if end is None else end
     time_range = TimeRange(start=start, end=end)

@@ -42,9 +42,16 @@ export class EventService {
    * @returns {Observable<Event[]>}
    */
   getEvents(): Observable<Event[]> {
-    return this.http
-      .get<EventJson[]>('/api/events/registration/status')
-      .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    if (this.profile) {
+      return this.http
+        .get<EventJson[]>('/api/events/registration/status')
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    } else {
+      // if a user isn't logged in, return the normal endpoint without registration statuses
+      return this.http
+        .get<EventJson[]>('/api/events')
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    }
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request.
@@ -52,9 +59,15 @@ export class EventService {
    * @returns {Observable<Event>}
    */
   getEvent(id: number): Observable<Event> {
-    return this.http
-      .get<EventJson>('/api/events/' + id + '/registration/status')
-      .pipe(map((eventJson) => parseEventJson(eventJson)));
+    if (this.profile) {
+      return this.http
+        .get<EventJson>('/api/events/' + id + '/registration/status')
+        .pipe(map((eventJson) => parseEventJson(eventJson)));
+    } else {
+      return this.http
+        .get<EventJson>('/api/events/' + id)
+        .pipe(map((eventJson) => parseEventJson(eventJson)));
+    }
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request.
@@ -62,11 +75,17 @@ export class EventService {
    * @returns {Observable<Event[]>}
    */
   getEventsByOrganization(slug: string): Observable<Event[]> {
-    return this.http
-      .get<EventJson[]>(
-        '/api/events/organization/' + slug + '/registration/status'
-      )
-      .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    if (this.profile) {
+      return this.http
+        .get<EventJson[]>(
+          '/api/events/organization/' + slug + '/registration/status'
+        )
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    } else {
+      return this.http
+        .get<EventJson[]>('/api/events/organization/' + slug)
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    }
   }
 
   /** Returns the new event object from the backend database table using the backend HTTP get request.
