@@ -89,25 +89,6 @@ class EventService:
 
         return [entity.to_details_model() for entity in event_entities]
 
-    def get_registered_events_of_user(
-        self, subject: User, time_range: TimeRange
-    ) -> list[Event]:
-        """
-        Get registered events for a user in the given time range
-
-        Args:
-            subject: The User making the request.
-            time_range: The period over which to search for events.
-
-        Returns:
-            list[Event]: list of valid Event models representing the events.
-        """
-        event_registrations = self.get_registrations_of_user(
-            subject, subject, time_range
-        )
-
-        return [registration.event for registration in event_registrations]
-
     def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """
         Creates a event based on the input object and adds it to the table.
@@ -536,6 +517,44 @@ class EventService:
             organization=event.organization,
         )
 
+    def get_registered_events_of_user(
+        self, subject: User, time_range: TimeRange
+    ) -> list[Event]:
+        """
+        Get registered events for a user in the given time range
+
+        Args:
+            subject: The User making the request.
+            time_range: The period over which to search for events.
+
+        Returns:
+            list[Event]: list of valid Event models representing the events.
+        """
+        event_registrations = self.get_registrations_of_user(
+            subject, subject, time_range
+        )
+
+        return [registration.event for registration in event_registrations]
+
+    def get_registered_event_ids_of_user(
+        self, subject: User, time_range: TimeRange
+    ) -> list[int]:
+        """
+        Get registered events for a user in the given time range
+
+        Args:
+            subject: The User making the request.
+            time_range: The period over which to search for events.
+
+        Returns:
+            list[Event]: list of valid Event models representing the events.
+        """
+        event_registrations = self.get_registrations_of_user(
+            subject, subject, time_range
+        )
+
+        return [registration.event.id for registration in event_registrations]
+
     def get_by_id_with_registration_status(self, subject: User, id: int) -> UserEvent:
         """
         Get event by id with the logged in user's registration status
@@ -569,11 +588,13 @@ class EventService:
         """
         events = self.get_events_in_time_range(time_range)
 
-        registered_events = self.get_registered_events_of_user(subject, time_range)
+        registered_event_ids = self.get_registered_event_ids_of_user(
+            subject, time_range
+        )
 
         events_with_status = []
         for event in events:
-            is_registered = event in registered_events
+            is_registered = event.id in registered_event_ids
             user_event = self.event_to_user_event(event, is_registered)
             events_with_status.append(user_event)
 
