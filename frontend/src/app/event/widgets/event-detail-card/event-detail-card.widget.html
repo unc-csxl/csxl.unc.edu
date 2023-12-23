@@ -68,16 +68,18 @@
     <p>{{ event.description }}</p>
 
     <!-- Register Button -->
-    <button
-      mat-stroked-button
-      (click)="unregisterForEvent(event.id!)"
-      *ngIf="event.is_registered; else register">
-      Unregister
-    </button>
-    <ng-template #register>
-      <button mat-stroked-button (click)="registerForEvent(event.id!)">
-        Register
+    <div class="registration-button" *ngIf="profile">
+      <button
+        mat-stroked-button
+        (click)="unregisterForEvent(event.id!)"
+        *ngIf="event.is_registered; else register">
+        Unregister
       </button>
-    </ng-template>
+      <ng-template #register>
+        <button mat-stroked-button (click)="registerForEvent(event.id!)">
+          Register
+        </button>
+      </ng-template>
+    </div>
   </div>
 </mat-card>

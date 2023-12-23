@@ -30,7 +30,9 @@ export class EventDetailCard {
     protected snackBar: MatSnackBar,
     protected eventService: EventService,
     private permission: PermissionService
-  ) {}
+  ) {
+    console.log(this.profile);
+  }
 
   checkPermissions(): Observable<boolean> {
     return this.permission.check(
