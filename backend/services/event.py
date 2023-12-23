@@ -2,6 +2,7 @@
 The Event Service allows the API to manipulate event data in the database.
 """
 
+from datetime import datetime, timedelta
 from typing import Sequence
 
 from fastapi import Depends
@@ -573,4 +574,34 @@ class EventService:
             user_event = self.event_to_user_event(event, is_registered)
             events_with_status.append(user_event)
 
+        return events_with_status
+
+    def get_events_by_organization_with_registration_status(
+        self, subject: User, organization: OrganizationDetails
+    ) -> list[EventDetails]:
+        """
+        Get all the events hosted by an organization with slug
+
+        Args:
+            slug: a valid str representing a unique Organization slug
+
+        Returns:
+            list[EventDetail]: a list of valid EventDetails models
+        """
+        # Query the event with matching organization slug
+        events = self.get_events_by_organization(organization)
+
+        start = datetime.now()
+        end = datetime.now() + timedelta(days=365)
+        time_range = TimeRange(start=start, end=end)
+
+        registered_events = self.get_registered_events_of_user(subject, time_range)
+
+        events_with_status = []
+        for event in events:
+            is_registered = event in registered_events
+            user_event = self.event_to_user_event(event, is_registered)
+            events_with_status.append(user_event)
+
+        # Convert entities to models and return
         return events_with_status

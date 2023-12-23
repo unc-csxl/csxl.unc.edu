@@ -11,7 +11,7 @@ from backend.services.organization import OrganizationService
 from ...services.event import EventService
 from ...services.user import UserService
 from ...services.exceptions import ResourceNotFoundException
-from ...models.event import Event
+from ...models.event import Event, UserEvent
 from ...models.event_details import EventDetails
 from ...models.event_registration import EventRegistration, EventRegistrationStatus
 from ...models.coworking.time_range import TimeRange
@@ -352,3 +352,31 @@ def get_events_with_registration_status(
     time_range = TimeRange(start=start, end=end)
 
     return event_service.get_events_with_registration_status(subject, time_range)
+
+
+@api.get(
+    "/organization/{slug}/registration/status",
+    response_model=list[UserEvent],
+    tags=["Events"],
+)
+def get_events_from_organization_with_registration_status(
+    slug: str,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+    organization_service: OrganizationService = Depends(),
+) -> list[EventDetails]:
+    """
+    Get all events from an organization
+
+    Args:
+        slug: a valid str representing a unique Organization
+        event_service: a valid EventService
+
+    Returns:
+        list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
+    """
+    organization = organization_service.get_by_slug(slug)
+
+    return event_service.get_events_by_organization_with_registration_status(
+        subject, organization
+    )
