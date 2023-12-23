@@ -310,7 +310,7 @@ def get_event_registration_status(
     return event_service.get_event_registration_status(event_id)
 
 
-@api.get("/registrations/user", tags=["Events"])
+@api.get("/registration/status", tags=["Events"])
 def get_events_with_registration_status(
     subject: User = Depends(registered_user),
     start: datetime | None = None,
