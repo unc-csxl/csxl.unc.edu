@@ -153,7 +153,6 @@ export class EventPageComponent implements OnInit, OnDestroy {
         tap(() => (prevUrl = this.router.url))
       )
       .subscribe((_) => {
-        const today = new Date();
         this.page.params.ascending = (
           this.startDate.getTime() > today.setHours(0, 0, 0, 0)
         ).toString();
@@ -187,10 +186,6 @@ export class EventPageComponent implements OnInit, OnDestroy {
       console.log('hi');
       paginationParams.range_start = this.startDate.toLocaleString('en-GB');
       paginationParams.range_end = this.endDate.toLocaleString('en-GB');
-      this.eventService.list(paginationParams).subscribe((page) => {
-        this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
-        paginationParams.filter = '';
-      });
     } else {
       paginationParams.range_start = new Date(
         new Date().setFullYear(new Date().getFullYear() - 100)
@@ -199,11 +194,11 @@ export class EventPageComponent implements OnInit, OnDestroy {
         new Date().setFullYear(new Date().getFullYear() + 100)
       ).toLocaleString('en-GB');
       paginationParams.filter = this.query;
-      this.eventService.list(paginationParams).subscribe((page) => {
-        this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
-        paginationParams.filter = '';
-      });
     }
+    this.eventService.list(paginationParams).subscribe((page) => {
+      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+      paginationParams.filter = '';
+    });
   }
 
   /** Handler that runs when an event card is clicked.
