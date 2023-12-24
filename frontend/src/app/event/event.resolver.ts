@@ -11,6 +11,26 @@ import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { Event } from './event.model';
 import { EventService } from './event.service';
+import { Paginated } from '../pagination';
+import { Profile } from '../models.module';
+
+export const paginatedRegisteredUsersResolver: ResolveFn<
+  Paginated<Profile> | undefined
+> = (route, state) => {
+  let event_id = +route.paramMap.get('id')!;
+
+  let PaginationParams = {
+    page: 0,
+    page_size: 10,
+    order_by: 'first_name',
+    filter: ''
+  };
+
+  return inject(EventService).getRegisteredUsersForEvent(
+    event_id,
+    PaginationParams
+  );
+};
 
 /** This resolver injects the list of events into the events component. */
 export const eventResolver: ResolveFn<Event[] | undefined> = (route, state) => {

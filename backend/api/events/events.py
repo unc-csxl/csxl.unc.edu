@@ -5,12 +5,13 @@ Event routes are used to create, retrieve, and update Events."""
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, timedelta
 from typing import Sequence
+from backend.models.pagination import Paginated, PaginationParams
 
 from backend.services.organization import OrganizationService
 
 from ...services.event import EventService
 from ...services.user import UserService
-from ...services.exceptions import ResourceNotFoundException
+from ...services.exceptions import ResourceNotFoundException, UserPermissionException
 from ...models.event import Event
 from ...models.event_details import EventDetails, UserEvent
 from ...models.event_registration import EventRegistration, EventRegistrationStatus
@@ -378,3 +379,25 @@ def get_events_from_organization_with_registration_status(
     return event_service.get_events_by_organization_with_registration_status(
         subject, organization
     )
+
+
+@api.get("/{event_id}/registrations/users", tags=["Events"])
+def get_registered_users_of_event(
+    event_id: int,
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+    page: int = 0,
+    page_size: int = 10,
+    order_by: str = "first_name",
+    filter: str = "",
+) -> Paginated[User]:
+    """List users via standard backend pagination query parameters."""
+    try:
+        pagination_params = PaginationParams(
+            page=page, page_size=page_size, order_by=order_by, filter=filter
+        )
+        return event_service.get_registered_users_of_event(
+            subject, event_id, pagination_params
+        )
+    except UserPermissionException as e:
+        raise HTTPException(status_code=403, detail=str(e))

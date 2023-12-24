@@ -37,13 +37,16 @@ import { EventDetailsComponent } from './event-details/event-details.component';
 import { EventPageComponent } from './event-page/event-page.component';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
 import { EventEditorComponent } from './event-editor/event-editor.component';
+import { EventUsersList } from './widgets/event-users-list/event-users-list.widget';
 
 @NgModule({
   declarations: [
     EventDetailCard,
     EventDetailsComponent,
     EventPageComponent,
-    EventEditorComponent
+    EventEditorComponent,
+
+    EventUsersList
   ],
   imports: [
     CommonModule,

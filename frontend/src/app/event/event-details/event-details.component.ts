@@ -7,9 +7,12 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { eventDetailResolver } from '../event.resolver';
+import {
+  eventDetailResolver,
+  paginatedRegisteredUsersResolver
+} from '../event.resolver';
 import { Profile } from 'src/app/profile/profile.service';
 import {
   ActivatedRoute,
@@ -17,6 +20,9 @@ import {
   ResolveFn
 } from '@angular/router';
 import { Event } from '../event.model';
+import { Paginated } from 'src/app/pagination';
+import { Observable } from 'rxjs';
+import { PermissionService } from 'src/app/permission.service';
 
 /** Injects the event's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -34,7 +40,10 @@ export class EventDetailsComponent {
     path: ':id',
     title: 'Event Details',
     component: EventDetailsComponent,
-    resolve: { profile: profileResolver, event: eventDetailResolver },
+    resolve: {
+      profile: profileResolver,
+      event: eventDetailResolver
+    },
     children: [
       { path: '', title: titleResolver, component: EventDetailsComponent }
     ]
@@ -45,11 +54,23 @@ export class EventDetailsComponent {
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
+  public adminPermission$: Observable<boolean>;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    private permission: PermissionService
+  ) {
     /** Initialize data from resolvers. */
-    const data = this.route.snapshot.data as { profile: Profile; event: Event };
+    const data = this.route.snapshot.data as {
+      profile: Profile;
+      event: Event;
+    };
     this.profile = data.profile;
     this.event = data.event;
+
+    this.adminPermission$ = this.permission.check(
+      'organization.events.*',
+      `organization/${this.event.organization!.id}`
+    );
   }
 }

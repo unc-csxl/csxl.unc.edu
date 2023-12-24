@@ -19,6 +19,7 @@ import {
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
 import { Profile, ProfileService } from '../profile/profile.service';
+import { Paginated, PaginationParams } from '../pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,22 @@ export class EventService {
   ) {
     this.profileSubscription = this.profileSvc.profile$.subscribe(
       (profile) => (this.profile = profile)
+    );
+  }
+
+  /** Returns paginated user entries from the backend database table using the backend HTTP get request.
+   * @returns {Observable<Paginated<Profile>>}
+   */
+  getRegisteredUsersForEvent(event_id: number, params: PaginationParams) {
+    let paramStrings = {
+      page: params.page.toString(),
+      page_size: params.page_size.toString(),
+      order_by: params.order_by,
+      filter: params.filter
+    };
+    let query = new URLSearchParams(paramStrings);
+    return this.http.get<Paginated<Profile>>(
+      `/api/events/${event_id}/registrations/users?` + query.toString()
     );
   }
 

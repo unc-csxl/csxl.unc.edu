@@ -6,9 +6,11 @@ from datetime import datetime, timedelta
 from typing import Sequence
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import func, select, or_
 from sqlalchemy.orm import Session
+from backend.entities.user_entity import UserEntity
 from backend.models.organization_details import OrganizationDetails
+from backend.models.pagination import Paginated, PaginationParams
 
 from backend.models.user import User
 from ..database import db_session
@@ -103,7 +105,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to create users
         self._permission.enforce(
             subject,
-            "organization.events.manage",
+            "organization.events.*",
             f"organization/{event.organization_id}",
         )
 
@@ -186,7 +188,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to update users
         self._permission.enforce(
             subject,
-            "organization.events.manage",
+            "organization.events.*",
             f"organization/{event.organization_id}",
         )
 
@@ -225,7 +227,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to delete users
         self._permission.enforce(
             subject,
-            "organization.events.manage",
+            "organization.events.*",
             f"organization/{event.organization_id}",
         )
 
@@ -263,7 +265,7 @@ class EventService:
         if subject.id != attendee.id:
             self._permission.enforce(
                 subject,
-                "organization.events.manage",
+                "organization.events.*",
                 f"organization/{event.organization.id}",
             )
 
@@ -318,7 +320,7 @@ class EventService:
         if not self.is_user_an_organizer(subject, event):
             self._permission.enforce(
                 subject,
-                "organization.events.manage",
+                "organization.events.*",
                 f"organization/{event.organization.id}",
             )
 
@@ -348,7 +350,7 @@ class EventService:
         # Re-ensure that the user has the correct permissions to run this command
         self._permission.enforce(
             subject,
-            "organization.events.manage",
+            "organization.events.*",
             f"organization/{event.organization_id}",
         )
 
@@ -628,3 +630,61 @@ class EventService:
 
         # Convert entities to models and return
         return events_with_status
+
+    def get_registered_users_of_event(
+        self, subject: User, event_id: int, pagination_params: PaginationParams
+    ) -> Paginated[User]:
+        """
+        Get registered users of event.
+
+        Args:
+            subject: The user performing the action.
+            pagination_params: The pagination parameters.
+
+        Returns:
+            Paginated[User]: The paginated list of users.
+
+        Raises:
+            PermissionException: If the subject does not have the required permission.
+        """
+        event_entity = self._session.get(EventEntity, event_id)
+        event = event_entity.to_details_model()
+
+        # Ensure that the user has appropriate permissions to view event information
+        self._permission.enforce(
+            subject,
+            "organization.events.*",
+            f"organization/{event.organization_id}",
+        )
+
+        statement = select(EventRegistrationEntity)
+        length_statement = select(func.count()).select_from(EventRegistrationEntity)
+        if pagination_params.filter != "":
+            query = pagination_params.filter
+            criteria = or_(
+                EventRegistrationEntity.event_id == event_id,
+                EventRegistrationEntity.user.first_name.ilike(f"%{query}%"),
+                EventRegistrationEntity.user.last_name.ilike(f"%{query}%"),
+                EventRegistrationEntity.user.onyen.ilike(f"%{query}%"),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
+
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+
+        # if pagination_params.order_by != "":
+        #     statement = statement.order_by(
+        #         getattr(UserEntity, pagination_params.order_by)
+        #     )
+
+        statement = statement.offset(offset).limit(limit)
+
+        length = self._session.execute(length_statement).scalar()
+        entities = self._session.execute(statement).scalars()
+
+        return Paginated(
+            items=[entity.to_model().user for entity in entities],
+            length=length,
+            params=pagination_params,
+        )

@@ -1,5 +1,10 @@
 <div class="container">
   <div class="grid">
-    <event-detail-card [event]="event" [profile]="this.profile" />
+    <div class="event-information">
+      <event-detail-card [event]="event" [profile]="this.profile" />
+      <event-users-list
+        *ngIf="this.adminPermission$ | async"
+        [event]="event"></event-users-list>
+    </div>
   </div>
 </div>
