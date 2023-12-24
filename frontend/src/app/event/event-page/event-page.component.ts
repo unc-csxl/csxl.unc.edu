@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
 import { EventService } from '../event.service';
 
 import { PaginatedEvent } from 'src/app/pagination';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-event-page',
@@ -67,6 +68,8 @@ export class EventPageComponent implements OnInit {
 
   public query: string = '';
 
+  public searchUpdate = new Subject<string>();
+
   /** Constructor for the events page. */
   constructor(
     private route: ActivatedRoute,
@@ -89,6 +92,12 @@ export class EventPageComponent implements OnInit {
     if (data.page.items.length > 0) {
       this.selectedEvent = this.page.items[0];
     }
+
+    this.searchUpdate
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((query) => {
+        this.onSearchBarQueryChange(query);
+      });
   }
 
   /** Runs when the frontend UI loads */
@@ -134,9 +143,19 @@ export class EventPageComponent implements OnInit {
       let paginationParams = this.page.params;
       paginationParams.range_start = this.startDate.toLocaleString('en-GB');
       paginationParams.range_end = this.endDate.toLocaleString('en-GB');
+      this.eventService.list(paginationParams).subscribe((page) => {
+        this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+        paginationParams.filter = '';
+      });
+    } else {
+      let paginationParams = this.page.params;
+      paginationParams.range_start = new Date(
+        new Date().setFullYear(new Date().getFullYear() - 100)
+      ).toLocaleString('en-GB');
       paginationParams.range_end = new Date(
         new Date().setFullYear(new Date().getFullYear() + 100)
       ).toLocaleString('en-GB');
+      paginationParams.filter = this.query;
       this.eventService.list(paginationParams).subscribe((page) => {
         this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
         paginationParams.filter = '';
