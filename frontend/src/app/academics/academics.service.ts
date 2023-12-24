@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { Course, Term } from './academics.models';
+import { Course, Section, Term } from './academics.models';
 
 @Injectable({
   providedIn: 'root'
@@ -100,5 +100,37 @@ export class AcademicsService {
    */
   deleteCourse(course: Course): Observable<Course> {
     return this.http.delete<Course>(`/api/academics/course/${course.id}`);
+  }
+
+  /** Returns all section entries by a term.
+   * @param term Term to get sections by
+   * @returns {Observable<Section[]>}
+   */
+  getSectionsByTerm(term: Term): Observable<Section[]> {
+    return this.http.get<Section[]>(`/api/academics/section/term/${term.id}`);
+  }
+
+  /** Creates a new section.
+   * @param section: Section to create
+   * @returns {Observable<Section>}
+   */
+  createSection(section: Section): Observable<Section> {
+    return this.http.post<Section>('/api/academics/section', section);
+  }
+
+  /** Update a section.
+   * @param section: Section to update
+   * @returns {Observable<Section>}
+   */
+  updateSection(section: Section): Observable<Section> {
+    return this.http.put<Section>('/api/academics/section', section);
+  }
+
+  /** Delete a section.
+   * @param section: Section to delete
+   * @returns {Observable<Section>}
+   */
+  deleteSection(section: Section): Observable<Section> {
+    return this.http.delete<Section>(`/api/academics/section/${section.id}`);
   }
 }

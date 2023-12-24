@@ -16,7 +16,7 @@ export class AdminTermComponent {
     path: 'term',
     component: AdminTermComponent,
     title: 'Term Administration',
-    canActivate: [permissionGuard('academics.course', '*')]
+    canActivate: [permissionGuard('academics.term', '*')]
   };
 
   /** Terms List */
