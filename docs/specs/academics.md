@@ -93,4 +93,18 @@ The academics feature ultimately adds _5_ new database tables and _25_ new API r
 
 ### Entity Design
 
+The Academics Feature adds five new database tables and entities. They are as follows:
+
+| Table Name                | Entity              | Description                                                |
+| ------------------------- | ------------------- | ---------------------------------------------------------- |
+| `academics__term`         | `TermEntity`        | Stores terms / semesters.                                  |
+| `academics__courses`      | `CourseEntity`      | Stores courses.                                            |
+| `academics__sections`     | `SectionEntity`     | Stores section offerings for a given course.               |
+| `academics__section_user` | `SectionUserEntity` | Stores instructors, TAs, and students of a course section. |
+| `academics__section_room` | `SectionRoomEntity` | Stores lecture and office hours rooms of a course section. |
+
+The fields and relationships between these entities are shown below:
+
 ![Entity Design](../images/specs/academics/backend-entity.png)
+
+As you can see, the two association tables defined by `SectionUserEntity` and `SectionRoomEntity` relate to (and therefore add relationship fields to) the existing `user` and `room` tables.
