@@ -10,7 +10,7 @@ All visitors to the CSXL page are able to view a _COMP Course Catalog_ to see al
 
 ## Frontend Features
 
-The admin features add _12_ new Angular components, all at the `/academics` route.
+The frontend features add _12_ new Angular components, all at the `/academics` route.
 
 ### User Features
 
@@ -86,3 +86,11 @@ In total, the following components have been added:
 | **Course Editor**        | `/academics/course/edit/:id`  | Form to show when courses are to be created and edited.  |
 | **Section Editor**       | `/academics/section/edit/:id` | Form to show when sections are to be created and edited. |
 | **Room Editor**          | `/academics/room/edit/:id`    | Form to show when room are to be created and edited.     |
+
+## Backend Design and Implementation
+
+The academics feature ultimately adds _5_ new database tables and _25_ new API routes.
+
+### Entity Design
+
+![Entity Design](../images/specs/academics/backend-entity.png)
