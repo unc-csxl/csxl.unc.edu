@@ -144,6 +144,7 @@ class CourseService:
         course_entity.number = course.number
         course_entity.title = course.title
         course_entity.description = course.description
+        course_entity.credit_hours = course.credit_hours
 
         # Commit changes
         self._session.commit()

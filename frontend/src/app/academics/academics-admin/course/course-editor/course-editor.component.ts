@@ -62,19 +62,19 @@ export class CourseEditorComponent {
   courseId: string = 'new';
 
   /** Add validators to the form */
-  subjectCode = new FormControl('', [Validators.required]);
+  subject_code = new FormControl('', [Validators.required]);
   number = new FormControl('', [Validators.required]);
   title = new FormControl('', [Validators.required]);
   description = new FormControl('', [Validators.required]);
-  creditHours = new FormControl(-1, [Validators.required]);
+  credit_hours = new FormControl(3, [Validators.required]);
 
   /** Course Editor Form */
   public courseForm = this.formBuilder.group({
-    subjectCode: this.subjectCode,
+    subject_code: this.subject_code,
     number: this.number,
     title: this.title,
     description: this.description,
-    creditHours: this.creditHours
+    credit_hours: this.credit_hours
   });
 
   /** Constructs the course editor component */
@@ -95,11 +95,11 @@ export class CourseEditorComponent {
 
     /** Set course form data */
     this.courseForm.setValue({
-      subjectCode: this.course.subject_code,
+      subject_code: this.course.subject_code,
       number: this.course.number,
       title: this.course.title,
       description: this.course.description,
-      creditHours: this.course.credit_hours
+      credit_hours: this.course.credit_hours
     });
 
     /** Get id from the url */
