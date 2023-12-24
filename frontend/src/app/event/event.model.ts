@@ -18,8 +18,11 @@ export interface Event {
   location: string;
   description: string;
   public: boolean;
+  registration_limit: number;
+  can_register: boolean;
   organization_id: number | null;
   organization: Organization | null;
+  registration_count: number;
   is_registered: boolean;
 }
 
@@ -35,8 +38,11 @@ export interface EventJson {
   location: string;
   description: string;
   public: boolean;
+  registration_limit: number;
+  can_register: boolean;
   organization_id: number | null;
   organization: Organization | null;
+  registration_count: number;
   is_registered: boolean;
 }
 

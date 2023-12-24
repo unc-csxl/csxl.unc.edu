@@ -66,20 +66,30 @@
   <!-- Description -->
   <div class="event-description">
     <p>{{ event.description }}</p>
+  </div>
 
-    <!-- Register Button -->
-    <div class="registration-button" *ngIf="profile">
+  <mat-divider class="padded-divider" />
+
+  <!-- Register Button -->
+  <div class="registration-information" *ngIf="profile && event.can_register">
+    <p>
+      <strong>Seats Remaining:</strong>
+      {{ event.registration_limit - event.registration_count }} / {{
+      event.registration_limit }}
+    </p>
+    <button
+      mat-stroked-button
+      (click)="unregisterForEvent(event.id!)"
+      *ngIf="event.is_registered; else register">
+      Unregister
+    </button>
+    <ng-template #register>
       <button
         mat-stroked-button
-        (click)="unregisterForEvent(event.id!)"
-        *ngIf="event.is_registered; else register">
-        Unregister
+        [disabled]="event.registration_count === event.registration_limit"
+        (click)="registerForEvent(event.id!)">
+        Register
       </button>
-      <ng-template #register>
-        <button mat-stroked-button (click)="registerForEvent(event.id!)">
-          Register
-        </button>
-      </ng-template>
-    </div>
+    </ng-template>
   </div>
 </mat-card>

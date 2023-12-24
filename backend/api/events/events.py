@@ -11,8 +11,8 @@ from backend.services.organization import OrganizationService
 from ...services.event import EventService
 from ...services.user import UserService
 from ...services.exceptions import ResourceNotFoundException
-from ...models.event import Event, UserEvent
-from ...models.event_details import EventDetails
+from ...models.event import Event
+from ...models.event_details import EventDetails, UserEvent
 from ...models.event_registration import EventRegistration, EventRegistrationStatus
 from ...models.coworking.time_range import TimeRange
 from ...api.authentication import registered_user
@@ -307,28 +307,6 @@ def unregister_for_event(
     event_service.unregister(subject, user, event)
 
 
-@api.get(
-    "/{event_id}/registration/count",
-    responses={404: {"model": None}},
-    response_model=EventRegistrationStatus,
-    tags=["Events"],
-)
-def get_event_registration_status(
-    event_id: int, event_service: EventService = Depends()
-) -> EventRegistrationStatus:
-    """
-    Get the number of event registrations for a given ID
-
-    Args:
-        event_id: an int representing a unique Event ID
-        event_service: a valid EventService
-
-    Returns:
-        EventDetails: a valid EventDetails model corresponding to the given event id
-    """
-    return event_service.get_event_registration_status(event_id)
-
-
 @api.get("/{id}/registration/status", tags=["Events"])
 def get_event_from_id_with_registration_status(
     id: int,
@@ -383,7 +361,7 @@ def get_events_from_organization_with_registration_status(
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
     organization_service: OrganizationService = Depends(),
-) -> list[EventDetails]:
+) -> list[UserEvent]:
     """
     Get all events from an organization with registration status of current user
 

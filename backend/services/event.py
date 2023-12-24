@@ -12,12 +12,10 @@ from backend.models.organization_details import OrganizationDetails
 
 from backend.models.user import User
 from ..database import db_session
-from backend.models.event import Event, DraftEvent, UserEvent
-from backend.models.event_details import EventDetails
+from backend.models.event import Event, DraftEvent
+from backend.models.event_details import EventDetails, UserEvent
 from backend.models.event_registration import (
     EventRegistration,
-    EventRegistrationStatus,
-    UserRegistrationStatus,
 )
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
@@ -387,10 +385,10 @@ class EventService:
         # NOTE: It is preferred to use the service function rather than the list of
         # registrations passed in from `event` in the case that registrations are added
         # between when `event` was fetched and this function runs.
-        event_status = self.get_event_registration_status(event.id)
+        registration_count = self.get_event_registration_count(event.id)
 
         # Raise exception if event is full.
-        if event_status.registration_count >= event.registration_limit:
+        if registration_count >= event.registration_limit:
             raise EventRegistrationException(event.id)
 
         # Enable idemopotency in returning existing registration, if one exists.
@@ -478,7 +476,7 @@ class EventService:
 
         return [entity.to_model() for entity in registration_entities]
 
-    def get_event_registration_status(self, event_id: int) -> EventRegistrationStatus:
+    def get_event_registration_count(self, event_id: int) -> int:
         """
         Retrieves the number of registrations for a given event.
 
@@ -486,7 +484,7 @@ class EventService:
             event_id: a valid int representing the
 
         Returns:
-            status: a valid EventRegistrationStatus representing the number of registrations for an event
+            count: an int representing the number of registrations for an event
         """
         count = (
             self._session.query(EventRegistrationEntity)
@@ -497,8 +495,7 @@ class EventService:
             .count()
         )
 
-        status = EventRegistrationStatus(registration_count=count)
-        return status
+        return count
 
     def event_to_user_event(
         self, event: EventDetails, is_registered: bool
@@ -513,8 +510,10 @@ class EventService:
             can_register=event.can_register,
             organization_id=event.organization_id,
             id=event.id,
+            registration_count=self.get_event_registration_count(event.id),
             is_registered=is_registered,
             organization=event.organization,
+            registrations=event.registrations,
         )
 
     def get_registered_events_of_user(
@@ -602,7 +601,7 @@ class EventService:
 
     def get_events_by_organization_with_registration_status(
         self, subject: User, organization: OrganizationDetails
-    ) -> list[EventDetails]:
+    ) -> list[UserEvent]:
         """
         Get all the events hosted by an organization with slug
 
@@ -610,7 +609,7 @@ class EventService:
             slug: a valid str representing a unique Organization slug
 
         Returns:
-            list[EventDetail]: a list of valid EventDetails models
+            list[UserEvent]: a list of valid EventDetails models
         """
         # Query the event with matching organization slug
         events = self.get_events_by_organization(organization)

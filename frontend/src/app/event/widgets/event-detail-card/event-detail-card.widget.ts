@@ -30,9 +30,7 @@ export class EventDetailCard {
     protected snackBar: MatSnackBar,
     protected eventService: EventService,
     private permission: PermissionService
-  ) {
-    console.log(this.profile);
-  }
+  ) {}
 
   checkPermissions(): Observable<boolean> {
     return this.permission.check(
@@ -104,6 +102,7 @@ export class EventDetailCard {
         .unregisterForEvent(event_registration_id)
         .subscribe(() => {
           this.event.is_registered = false;
+          this.event.registration_count -= 1;
           this.snackBar.open('Successfully Unregistered!', '', {
             duration: 2000
           });
@@ -116,6 +115,7 @@ export class EventDetailCard {
    */
   private onSuccess(event_registration: EventRegistration): void {
     this.event.is_registered = true;
+    this.event.registration_count += 1;
     this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
   }
 
