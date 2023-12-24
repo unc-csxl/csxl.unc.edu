@@ -163,6 +163,9 @@ export class SectionEditorComponent {
       this.section.term_id = this.term.value!.id;
       this.section.course_id = this.course.value!.id;
 
+      console.log(this.room.value);
+      this.section.lecture_room = this.room.value!;
+
       if (this.sectionIdString == 'new') {
         this.academicsService.createSection(this.section).subscribe({
           next: (section) => this.onSuccess(section),

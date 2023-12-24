@@ -9,9 +9,11 @@ from sqlalchemy.orm import Session
 from ...database import db_session
 from ...models.academics import Section
 from ...models.academics import SectionDetails
-from ...models.user import User
+from ...models import User, Room
+from ...models.room_assignment_type import RoomAssignmentType
 from ...entities.academics import SectionEntity
 from ...entities.academics import CourseEntity
+from ...entities.academics import SectionRoomEntity
 from ..permission import PermissionService
 
 from ...services.exceptions import ResourceNotFoundException
@@ -152,6 +154,7 @@ class SectionService:
 
         # Add new object to table and commit changes
         self._session.add(section_entity)
+
         self._session.commit()
 
         # Return added object
@@ -191,6 +194,24 @@ class SectionService:
         # Commit changes
         self._session.commit()
 
+        query = select(SectionRoomEntity).where(
+            SectionRoomEntity.section_id == section.id,
+            SectionRoomEntity.assignment_type == RoomAssignmentType.LECTURE_ROOM,
+        )
+        section_room_entity = self._session.scalars(query).one_or_none()
+
+        if section_room_entity is not None:
+            section_room_entity.room_id = section.lecture_room.id
+            # Commit changes
+            self._session.commit()
+        else:
+            section_room_entity = SectionRoomEntity(
+                section_id=section.id,
+                room_id=section.lecture_room.id,
+                assignment_type=RoomAssignmentType.LECTURE_ROOM,
+            )
+            self._session.add(section_room_entity)
+
         # Return edited object
         return section_entity.to_details_model()
 
@@ -217,3 +238,22 @@ class SectionService:
         # Delete and commit changes
         self._session.delete(section_entity)
         self._session.commit()
+
+    def add_lecture_room_to_section(
+        self, subject: User, section: Section, lecture_room: Room | None
+    ):
+        if lecture_room is not None:
+            # Check if user has admin permissions
+            self._permission_svc.enforce(
+                subject, "academics.section.create", f"section/"
+            )
+
+            # Then, attempt to create room relation
+            section_room_entity = SectionRoomEntity(
+                section_id=section.id,
+                room_id=lecture_room.id,
+                assignment_type=RoomAssignmentType.LECTURE_ROOM,
+            )
+            self._session.add(section_room_entity)
+        else:
+            raise ResourceNotFoundException(f"Lecture does not exist.")

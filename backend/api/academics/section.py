@@ -98,7 +98,15 @@ def new_section(
     Returns:
         SectionDetails: Section created
     """
-    return section_service.create(subject, section)
+    created_section = section_service.create(subject, section)
+    section_service.add_lecture_room_to_section(
+        subject, created_section, section.lecture_room
+    )
+
+    if created_section.id:
+        return section_service.get_by_id(created_section.id)
+    else:
+        return created_section
 
 
 @api.put("", response_model=SectionDetails, tags=["Academics"])
