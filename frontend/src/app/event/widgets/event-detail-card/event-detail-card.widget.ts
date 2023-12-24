@@ -63,7 +63,8 @@ export class EventDetailCard {
   deleteEvent(event: Event): void {
     let confirmDelete = this.snackBar.open(
       'Are you sure you want to delete this event?',
-      'Delete'
+      'Delete',
+      { duration: 15000 }
     );
     confirmDelete.onAction().subscribe(() => {
       this.eventService.deleteEvent(event).subscribe(() => {
@@ -95,7 +96,8 @@ export class EventDetailCard {
   unregisterForEvent(event_registration_id: number) {
     let confirmUnregistration = this.snackBar.open(
       'Are you sure you want to unregister for this event?',
-      'Unregister'
+      'Unregister',
+      { duration: 15000 }
     );
     confirmUnregistration.onAction().subscribe(() => {
       this.eventService
