@@ -59,8 +59,8 @@ export class AcademicsService {
    * @param course: Term to update
    * @returns {Observable<Term>}
    */
-  deleteTerm(term: Term) {
-    this.http.delete<Term>(`/api/academics/term/${term.id}`);
+  deleteTerm(term: Term): Observable<Term> {
+    return this.http.delete<Term>(`/api/academics/term/${term.id}`);
   }
 
   /** Returns all course entries from the backend database.

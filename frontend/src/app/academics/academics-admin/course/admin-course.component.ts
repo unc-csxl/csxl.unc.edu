@@ -57,7 +57,7 @@ export class AdminCourseComponent {
     );
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteCourse(course).subscribe(() => {
-        this.snackBar.open('This organization has been deleted.', '', {
+        this.snackBar.open('This course has been deleted.', '', {
           duration: 2000
         });
       });
