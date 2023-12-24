@@ -15,12 +15,21 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AcademicsHomeComponent } from './academics-home/academics-home.component';
+import { AcademicsAdminComponent } from './academics-admin/academics-admin.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AdminSectionComponent } from './academics-admin/section/admin-section.component';
+import { AdminCourseComponent } from './academics-admin/course/admin-course.component';
+import { AdminTermComponent } from './academics-admin/term/admin-term.component';
 
 @NgModule({
   declarations: [
     CoursesHomeComponent,
     SectionOfferingsComponent,
-    AcademicsHomeComponent
+    AcademicsHomeComponent,
+    AcademicsAdminComponent,
+    AdminSectionComponent,
+    AdminCourseComponent,
+    AdminTermComponent
   ],
   imports: [
     AcademicsRoutingModule,
@@ -35,6 +44,7 @@ import { AcademicsHomeComponent } from './academics-home/academics-home.componen
     MatFormFieldModule,
     MatSelectModule,
     ReactiveFormsModule,
+    MatTabsModule,
     AsyncPipe
   ]
 })

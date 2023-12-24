@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { courseResolver } from '../academics.resolver';
 import { Course } from '../academics.models';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +10,7 @@ import {
   transition,
   trigger
 } from '@angular/animations';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-courses-home',
@@ -26,7 +27,7 @@ import {
     ])
   ]
 })
-export class CoursesHomeComponent {
+export class CoursesHomeComponent implements OnInit {
   /** Route information to be used in Course Routing Module */
   public static Route = {
     path: 'catalog',
@@ -49,7 +50,8 @@ export class CoursesHomeComponent {
   /** Constructor for the course catalog page. */
   constructor(
     private route: ActivatedRoute,
-    public coursesService: CourseService
+    public coursesService: CourseService,
+    private gearService: NagivationAdminGearService
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -57,5 +59,9 @@ export class CoursesHomeComponent {
     };
 
     this.courses = data.courses;
+  }
+
+  ngOnInit() {
+    this.gearService.showAdminGear('academics.*', '*', '', 'academics/admin/');
   }
 }

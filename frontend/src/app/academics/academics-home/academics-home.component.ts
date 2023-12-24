@@ -20,6 +20,6 @@ export class AcademicsHomeComponent implements OnInit {
   constructor(private gearService: NagivationAdminGearService) {}
 
   ngOnInit() {
-    this.gearService.showAdminGear('academics.*', '*', '', 'admin/');
+    this.gearService.showAdminGear('academics.*', '*', '', 'academics/admin/');
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { courseResolver, termResolver } from '../academics.resolver';
 import {
   Course,
@@ -17,6 +17,7 @@ import {
   trigger
 } from '@angular/animations';
 import { FormControl } from '@angular/forms';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-offerings',
@@ -33,7 +34,7 @@ import { FormControl } from '@angular/forms';
     ])
   ]
 })
-export class SectionOfferingsComponent {
+export class SectionOfferingsComponent implements OnInit {
   /** Route information to be used in Course Routing Module */
   public static Route = {
     path: 'offerings',
@@ -67,7 +68,8 @@ export class SectionOfferingsComponent {
   /** Constructor for the course catalog page. */
   constructor(
     private route: ActivatedRoute,
-    public coursesService: CourseService
+    public coursesService: CourseService,
+    private gearService: NagivationAdminGearService
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -79,6 +81,10 @@ export class SectionOfferingsComponent {
 
     // Set initial display term
     this.displayTerm.setValue(this.terms[1]);
+  }
+
+  ngOnInit() {
+    this.gearService.showAdminGear('academics.*', '*', '', 'academics/admin/');
   }
 
   /** Helper function that returns the course object from the list with the given ID.
