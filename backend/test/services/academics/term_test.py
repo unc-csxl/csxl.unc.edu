@@ -109,7 +109,7 @@ def test_delete_as_root(term_svc: TermService):
     permission_svc = create_autospec(PermissionService)
     term_svc._permission_svc = permission_svc
 
-    term_svc.delete(user_data.root, term_data.f_23)
+    term_svc.delete(user_data.root, term_data.f_23.id)
 
     permission_svc.enforce.assert_called_with(
         user_data.root, "academics.term.delete", f"term/{term_data.f_23.id}"
@@ -124,11 +124,11 @@ def test_delete_as_root_not_found(term_svc: TermService):
     term_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        term = term_svc.delete(user_data.root, term_data.new_term)
+        term = term_svc.delete(user_data.root, term_data.new_term.id)
         pytest.fail()
 
 
 def test_delete_as_user(term_svc: TermService):
     with pytest.raises(UserPermissionException):
-        term = term_svc.delete(user_data.user, term_data.f_23)
+        term = term_svc.delete(user_data.user, term_data.f_23.id)
         pytest.fail()

@@ -109,7 +109,7 @@ def test_delete_as_root(course_svc: CourseService):
     permission_svc = create_autospec(PermissionService)
     course_svc._permission_svc = permission_svc
 
-    course_svc.delete(user_data.root, course_data.comp_110)
+    course_svc.delete(user_data.root, course_data.comp_110.id)
 
     permission_svc.enforce.assert_called_with(
         user_data.root, "academics.course.delete", f"course/{course_data.comp_110.id}"
@@ -124,11 +124,11 @@ def test_delete_as_root_not_found(course_svc: CourseService):
     course_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        course = course_svc.delete(user_data.root, course_data.new_course)
+        course = course_svc.delete(user_data.root, course_data.new_course.id)
         pytest.fail()
 
 
 def test_delete_as_user(course_svc: CourseService):
     with pytest.raises(UserPermissionException):
-        course = course_svc.delete(user_data.user, course_data.comp_110)
+        course = course_svc.delete(user_data.user, course_data.comp_110.id)
         pytest.fail()

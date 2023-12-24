@@ -87,13 +87,13 @@ def update_course(
     return course_service.update(subject, course)
 
 
-@api.delete("", response_model=None, tags=["Academics"])
+@api.delete("{course_id}", response_model=None, tags=["Academics"])
 def delete_course(
-    course: Course,
+    course_id: str,
     subject: User = Depends(registered_user),
     course_service: CourseService = Depends(),
 ):
     """
     Deletes a course from the database
     """
-    return course_service.delete(subject, course)
+    return course_service.delete(subject, course_id)

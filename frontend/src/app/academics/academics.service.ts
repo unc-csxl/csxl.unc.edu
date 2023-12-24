@@ -31,6 +31,22 @@ export class AcademicsService {
     return this.http.get<Term[]>('/api/academics/term');
   }
 
+  /** Update a term.
+   * @param term: Term to update
+   * @returns {Observable<Term>}
+   */
+  updateTerm(term: Term): Observable<Term> {
+    return this.http.put<Term>('/api/academics/term', term);
+  }
+
+  /** Delete a term.
+   * @param course: Term to update
+   * @returns {Observable<Term>}
+   */
+  deleteTerm(term: Term) {
+    this.http.delete<Term>(`/api/academics/term/${term.id}`);
+  }
+
   /** Returns all course entries from the backend database.
    * @returns {Observable<Course[]>}
    */
@@ -54,7 +70,7 @@ export class AcademicsService {
     return this.http.post<Course>('/api/academics/course', course);
   }
 
-  /** Update a new course.
+  /** Update a course.
    * @param course: Course to update
    * @returns {Observable<Course>}
    */
@@ -62,8 +78,8 @@ export class AcademicsService {
     return this.http.put<Course>('/api/academics/course', course);
   }
 
-  /** Update a new course.
-   * @param course: Course to update
+  /** Delete a course.
+   * @param course: Course to delete
    * @returns {Observable<Course>}
    */
   deleteCourse(course: Course) {

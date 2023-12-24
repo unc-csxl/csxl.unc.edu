@@ -136,7 +136,7 @@ def test_delete_as_root(section_svc: SectionService):
     permission_svc = create_autospec(PermissionService)
     section_svc._permission_svc = permission_svc
 
-    section_svc.delete(user_data.root, section_data.comp_101_001)
+    section_svc.delete(user_data.root, section_data.comp_101_001.id)
 
     permission_svc.enforce.assert_called_with(
         user_data.root,
@@ -153,11 +153,11 @@ def test_delete_as_root_not_found(section_svc: SectionService):
     section_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        section = section_svc.delete(user_data.root, section_data.new_section)
+        section = section_svc.delete(user_data.root, section_data.new_section.id)
         pytest.fail()
 
 
 def test_delete_as_user(section_svc: SectionService):
     with pytest.raises(UserPermissionException):
-        section = section_svc.delete(user_data.user, section_data.comp_101_001)
+        section = section_svc.delete(user_data.user, section_data.comp_101_001.id)
         pytest.fail()

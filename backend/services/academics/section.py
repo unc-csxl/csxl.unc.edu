@@ -194,27 +194,25 @@ class SectionService:
         # Return edited object
         return section_entity.to_details_model()
 
-    def delete(self, subject: User, section: Section) -> None:
+    def delete(self, subject: User, id: int) -> None:
         """Deletes a section.
 
         Args:
             subject: a valid User model representing the currently logged in User
-            section: Section to delete
+            id: ID of section to delete
         """
 
         # Check if user has admin permissions
         self._permission_svc.enforce(
-            subject, "academics.section.delete", f"section/{section.id}"
+            subject, "academics.section.delete", f"section/{id}"
         )
 
         # Find the entity to delete
-        section_entity = self._session.get(SectionEntity, section.id)
+        section_entity = self._session.get(SectionEntity, id)
 
         # Raise an error if no entity was found
         if section_entity is None:
-            raise ResourceNotFoundException(
-                f"Section with id: {section.id} does not exist."
-            )
+            raise ResourceNotFoundException(f"Section with id: {id} does not exist.")
 
         # Delete and commit changes
         self._session.delete(section_entity)

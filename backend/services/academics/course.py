@@ -157,7 +157,7 @@ class CourseService:
 
         Args:
             subject: a valid User model representing the currently logged in User
-            course: Course to delete
+            id: ID of course to delete
         """
 
         # Check if user has admin permissions
