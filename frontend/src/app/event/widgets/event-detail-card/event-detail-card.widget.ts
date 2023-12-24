@@ -83,7 +83,10 @@ export class EventDetailCard {
     );
     confirmRegistration.onAction().subscribe(() => {
       this.eventService.registerForEvent(event_id).subscribe({
-        next: (event_registration) => this.onSuccess(event_registration),
+        next: (event_registration) => {
+          this.event.is_registered = true;
+          this.onSuccess(event_registration);
+        },
         error: (err) => this.onError(err)
       });
     });
@@ -101,6 +104,7 @@ export class EventDetailCard {
       this.eventService
         .unregisterForEvent(event_registration_id)
         .subscribe(() => {
+          this.event.is_registered = false;
           this.snackBar.open('Successfully Unregistered!', '', {
             duration: 2000
           });
