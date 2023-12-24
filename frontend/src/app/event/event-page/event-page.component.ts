@@ -9,18 +9,13 @@
 
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { eventResolver } from '../event.resolver';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { EventService } from '../event.service';
 
 import { PaginatedEvent } from 'src/app/pagination';
-import { PageEvent } from '@angular/material/paginator';
-
-// let rangeStartDate = new Date();
-// let rangeEndDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
 
 @Component({
   selector: 'app-event-page',
@@ -29,10 +24,8 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class EventPageComponent implements OnInit {
   public page: PaginatedEvent<Event>;
-  public rangeStartDate = new Date();
-  public rangeEndDate = new Date(
-    new Date().setMonth(new Date().getMonth() + 1)
-  );
+  public startDate = new Date();
+  public endDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
   private static EventPaginationParams = {
     page_size: 25,
     order_by: 'time',
@@ -52,7 +45,6 @@ export class EventPageComponent implements OnInit {
     canActivate: [],
     resolve: {
       profile: profileResolver,
-      events: eventResolver,
       page: () =>
         inject(EventService).list(EventPageComponent.EventPaginationParams)
     }
@@ -78,6 +70,7 @@ export class EventPageComponent implements OnInit {
   /** Constructor for the events page. */
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     public datePipe: DatePipe,
     public eventService: EventService
   ) {
@@ -102,6 +95,27 @@ export class EventPageComponent implements OnInit {
   ngOnInit() {
     // Keep track of the initial width of the browser window
     this.innerWidth = window.innerWidth;
+
+    // Watch current route's query params
+    this.route.queryParams.subscribe((params: Params): void => {
+      this.startDate = params['start_date']
+        ? new Date(Date.parse(params['start_date']))
+        : new Date();
+      this.endDate = params['end_date']
+        ? new Date(Date.parse(params['end_date']))
+        : new Date(new Date().setMonth(new Date().getMonth() + 1));
+    });
+
+    const today = new Date();
+    if (this.startDate.getTime() < today.setHours(0, 0, 0, 0)) {
+      this.page.params.ascending = 'false';
+    }
+    let paginationParams = this.page.params;
+    paginationParams.range_start = this.startDate.toLocaleString('en-GB');
+    paginationParams.range_end = this.endDate.toLocaleString('en-GB');
+    this.eventService.list(paginationParams).subscribe((page) => {
+      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+    });
   }
 
   /** Handler that runs when the window resizes */
@@ -118,9 +132,8 @@ export class EventPageComponent implements OnInit {
     this.query = query;
     if (query == '') {
       let paginationParams = this.page.params;
-      paginationParams.range_start =
-        this.rangeStartDate.toLocaleString('en-GB');
-      paginationParams.range_end = this.rangeEndDate.toLocaleString('en-GB');
+      paginationParams.range_start = this.startDate.toLocaleString('en-GB');
+      paginationParams.range_end = this.endDate.toLocaleString('en-GB');
       paginationParams.range_end = new Date(
         new Date().setFullYear(new Date().getFullYear() + 100)
       ).toLocaleString('en-GB');
@@ -154,34 +167,29 @@ export class EventPageComponent implements OnInit {
     this.selectedEvent = event;
   }
 
-  showNextEvents() {
-    this.rangeStartDate = new Date(
-      this.rangeStartDate.setMonth(this.rangeStartDate.getMonth() + 1)
-    );
-    this.rangeEndDate = new Date(
-      this.rangeEndDate.setMonth(this.rangeEndDate.getMonth() + 1)
-    );
+  showEvents(isPrevious: boolean) {
     let paginationParams = this.page.params;
-    paginationParams.range_start = this.rangeStartDate.toLocaleString('en-GB');
-    paginationParams.range_end = this.rangeEndDate.toLocaleString('en-GB');
+    this.startDate = isPrevious
+      ? new Date(this.startDate.setMonth(this.startDate.getMonth() - 1))
+      : new Date(this.startDate.setMonth(this.startDate.getMonth() + 1));
+    this.endDate = isPrevious
+      ? new Date(this.endDate.setMonth(this.endDate.getMonth() - 1))
+      : new Date(this.endDate.setMonth(this.endDate.getMonth() + 1));
+    if (isPrevious === true) {
+      this.page.params.ascending = 'false';
+    }
+    paginationParams.range_start = this.startDate.toLocaleString('en-GB');
+    paginationParams.range_end = this.endDate.toLocaleString('en-GB');
     this.eventService.list(paginationParams).subscribe((page) => {
       this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
     });
-  }
-
-  showPreviousEvents() {
-    this.rangeStartDate = new Date(
-      this.rangeStartDate.setMonth(this.rangeStartDate.getMonth() - 1)
-    );
-    this.rangeEndDate = new Date(
-      this.rangeEndDate.setMonth(this.rangeEndDate.getMonth() - 1)
-    );
-    let paginationParams = this.page.params;
-    paginationParams.ascending = 'false';
-    paginationParams.range_start = this.rangeStartDate.toLocaleString('en-GB');
-    paginationParams.range_end = this.rangeEndDate.toLocaleString('en-GB');
-    this.eventService.list(paginationParams).subscribe((page) => {
-      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        start_date: this.startDate.toISOString(),
+        end_date: this.endDate.toISOString()
+      },
+      queryParamsHandling: 'merge'
     });
   }
 }

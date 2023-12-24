@@ -13,12 +13,12 @@
         <!-- `eventsPerDay` is in the format of a list of tuples, where
                     eventGroup[0] is the date string and eventGroup[1] s a list of events -->
         <div class="date-range">
-          <button mat-stroked-button (click)="showPreviousEvents()">
+          <button mat-stroked-button (click)="showEvents(true)">
             Previous Month
           </button>
-          {{ rangeStartDate | date: 'shortDate' }} -
-          {{ rangeEndDate | date: 'shortDate' }}
-          <button mat-stroked-button (click)="showNextEvents()">
+          {{ startDate | date: 'shortDate' }} -
+          {{ endDate | date: 'shortDate' }}
+          <button mat-stroked-button (click)="showEvents(false)">
             Next Month
           </button>
         </div>
