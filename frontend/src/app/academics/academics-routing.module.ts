@@ -9,6 +9,7 @@ import { AdminCourseComponent } from './academics-admin/course/admin-course.comp
 import { AdminSectionComponent } from './academics-admin/section/admin-section.component';
 import { CourseEditorComponent } from './academics-admin/course/course-editor/course-editor.component';
 import { TermEditorComponent } from './academics-admin/term/term-editor/term-editor.component';
+import { SectionEditorComponent } from './academics-admin/section/section-editor/section-editor.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,8 @@ const routes: Routes = [
   CoursesHomeComponent.Route,
   SectionOfferingsComponent.Route,
   CourseEditorComponent.Route,
-  TermEditorComponent.Route
+  TermEditorComponent.Route,
+  SectionEditorComponent.Route
 ];
 
 @NgModule({

@@ -124,6 +124,8 @@ def insert_fake_data(session: Session):
     for assignment in assignments:
         session.add(assignment)
 
+    reset_table_id_seq(session, SectionEntity, SectionEntity.id, len(sections) + 1)
+
 
 @pytest.fixture(autouse=True)
 def fake_data_fixture(session: Session):

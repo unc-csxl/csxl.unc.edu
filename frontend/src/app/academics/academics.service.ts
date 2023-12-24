@@ -110,6 +110,14 @@ export class AcademicsService {
     return this.http.get<Section[]>(`/api/academics/section/term/${term.id}`);
   }
 
+  /** Returns one section from the backend database.
+   * @param id ID of the section to look up
+   * @returns {Observable<Section>}
+   */
+  getSection(id: number): Observable<Section> {
+    return this.http.get<Section>(`/api/academics/section/${id}`);
+  }
+
   /** Creates a new section.
    * @param section: Section to create
    * @returns {Observable<Section>}

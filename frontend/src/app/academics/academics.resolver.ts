@@ -10,7 +10,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { AcademicsService } from './academics.service';
-import { Course, Term } from './academics.models';
+import { Course, Section, Term } from './academics.models';
 import { catchError, of } from 'rxjs';
 
 /** This resolver injects the list of courses into the catalog component. */
@@ -70,6 +70,39 @@ export const termResolver: ResolveFn<Term | undefined> = (route, state) => {
   // If there is an error, return undefined
   return inject(AcademicsService)
     .getTerm(route.paramMap.get('id')!)
+    .pipe(
+      catchError((error) => {
+        console.log(error);
+        return of(undefined);
+      })
+    );
+};
+
+/** This resolver injects a section into the catalog component. */
+export const sectionResolver: ResolveFn<Section | undefined> = (
+  route,
+  state
+) => {
+  // If the term is new, return a blank one
+  if (route.paramMap.get('id')! == 'new') {
+    return {
+      id: null,
+      course_id: '',
+      number: '',
+      term_id: '',
+      meeting_pattern: '',
+      course: null,
+      term: null,
+      staff: [],
+      lecture_room: null,
+      office_hour_rooms: []
+    };
+  }
+
+  // Otherwise, return the term.
+  // If there is an error, return undefined
+  return inject(AcademicsService)
+    .getSection(+route.paramMap.get('id')!)
     .pipe(
       catchError((error) => {
         console.log(error);

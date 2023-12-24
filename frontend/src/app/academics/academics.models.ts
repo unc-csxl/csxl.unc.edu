@@ -13,7 +13,7 @@ export interface Course {
 
 /** Defines a Course Section */
 export interface Section {
-  id: number;
+  id: number | null;
   course_id: string;
   number: string;
   term_id: string;
@@ -22,7 +22,7 @@ export interface Section {
   term: Term | null;
   staff: SectionMember[] | null;
   lecture_room: Room | null;
-  office_hour_rooms: Room[];
+  office_hour_rooms: Room[] | null;
 }
 
 /** Defines a Term */

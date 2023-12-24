@@ -69,7 +69,7 @@ export class AdminSectionComponent {
    */
   updateSection(section: Section): void {
     // Navigate to the section editor
-    this.router.navigate(['academics', 'term', 'edit', section.id]);
+    this.router.navigate(['academics', 'section', 'edit', section.id]);
   }
 
   /** Delete a section object from the backend database table using the backend HTTP delete request.
@@ -88,7 +88,7 @@ export class AdminSectionComponent {
           termToUpdate.course_sections?.filter((s) => s.id !== section.id) ??
           [];
         this.terms.updateTerm(termToUpdate);
-        this.snackBar.open('This term has been deleted.', '', {
+        this.snackBar.open('This Section has been deleted.', '', {
           duration: 2000
         });
       });

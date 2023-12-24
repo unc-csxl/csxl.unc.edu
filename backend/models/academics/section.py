@@ -16,7 +16,7 @@ class Section(BaseModel):
     of the `Section` database in the PostgreSQL database
     """
 
-    id: int
+    id: int | None = None
     course_id: str
     number: str
     term_id: str
