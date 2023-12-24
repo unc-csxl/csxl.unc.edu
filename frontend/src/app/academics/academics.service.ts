@@ -59,8 +59,8 @@ export class AcademicsService {
    * @param course: Term to update
    * @returns {Observable<Term>}
    */
-  deleteTerm(term: Term): Observable<Term> {
-    return this.http.delete<Term>(`/api/academics/term/${term.id}`);
+  deleteTerm(term: Term) {
+    return this.http.delete(`/api/academics/term/${term.id}`);
   }
 
   /** Returns all course entries from the backend database.
@@ -98,8 +98,8 @@ export class AcademicsService {
    * @param course: Course to delete
    * @returns {Observable<Course>}
    */
-  deleteCourse(course: Course): Observable<Course> {
-    return this.http.delete<Course>(`/api/academics/course/${course.id}`);
+  deleteCourse(course: Course) {
+    return this.http.delete(`/api/academics/course/${course.id}`);
   }
 
   /** Returns all section entries by a term.
@@ -138,8 +138,8 @@ export class AcademicsService {
    * @param section: Section to delete
    * @returns {Observable<Section>}
    */
-  deleteSection(section: Section): Observable<Section> {
-    return this.http.delete<Section>(`/api/academics/section/${section.id}`);
+  deleteSection(section: Section) {
+    return this.http.delete(`/api/academics/section/${section.id}`);
   }
 
   /** Returns all room entries from the backend database.
@@ -177,7 +177,7 @@ export class AcademicsService {
    * @param room: room to delete
    * @returns {Observable<Room>}
    */
-  deleteRoom(room: Room): Observable<Room> {
-    return this.http.delete<Room>(`/api/academics/section/${room.id}`);
+  deleteRoom(room: Room) {
+    return this.http.delete(`/api/academics/room/${room.id}`);
   }
 }

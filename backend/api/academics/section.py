@@ -124,7 +124,7 @@ def update_section(
     return section_service.update(subject, section)
 
 
-@api.delete("{section_id}", response_model=None, tags=["Academics"])
+@api.delete("/{section_id}", response_model=None, tags=["Academics"])
 def delete_section(
     section_id: int,
     subject: User = Depends(registered_user),

@@ -80,7 +80,7 @@ def update_term(
     return term_service.update(subject, term)
 
 
-@api.delete("{term_id}", response_model=None, tags=["Academics"])
+@api.delete("/{term_id}", response_model=None, tags=["Academics"])
 def delete_term(
     term_id: str,
     subject: User = Depends(registered_user),
