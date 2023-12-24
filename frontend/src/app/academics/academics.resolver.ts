@@ -2,7 +2,7 @@
  * The Academics Resolver allows courses data to be injected into the routes
  * of components.
  *
- * @author Ajay Gandecha
+ * @author Ajay Gandecha <agandecha@unc.edu>
  * @copyright 2023
  * @license MIT
  */

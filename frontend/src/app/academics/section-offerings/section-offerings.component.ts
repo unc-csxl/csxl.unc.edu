@@ -1,3 +1,12 @@
+/**
+ * The Section Offerings page enables users to view all current offerings of
+ * the COMP courses.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { coursesResolver, termsResolver } from '../academics.resolver';
 import {

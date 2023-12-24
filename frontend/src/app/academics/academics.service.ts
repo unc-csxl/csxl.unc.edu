@@ -2,7 +2,7 @@
  * The Academics Service abstracts HTTP requests to the backend
  * from the components.
  *
- * @author Ajay Gandecha
+ * @author Ajay Gandecha <agandecha@unc.edu>
  * @copyright 2023
  * @license MIT
  */

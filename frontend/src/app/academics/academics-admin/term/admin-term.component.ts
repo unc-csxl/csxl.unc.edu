@@ -1,3 +1,12 @@
+/**
+ * The Term Admin page enables the administrator to add, edit,
+ * and delete terms.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';

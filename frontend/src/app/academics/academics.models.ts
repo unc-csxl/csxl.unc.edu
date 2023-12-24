@@ -1,3 +1,12 @@
+/**
+ * These helper modules define the structure of data that is accessible
+ * at the `/api/academics` endpoints.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Seat } from '../coworking/coworking.models';
 import { TimeRange } from '../time-range';
 

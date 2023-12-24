@@ -1,3 +1,12 @@
+/**
+ * The Rooms Admin page enables the administrator to add, edit,
+ * and delete rooms.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';

@@ -1,3 +1,12 @@
+/**
+ * The Courses Admin page enables the administrator to add, edit,
+ * and delete courses.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';

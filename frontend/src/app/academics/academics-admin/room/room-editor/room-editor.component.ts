@@ -1,3 +1,12 @@
+/**
+ * The Room editor page enables the administrator to add and edit
+ * rooms.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, inject } from '@angular/core';
 import {
   ActivatedRoute,

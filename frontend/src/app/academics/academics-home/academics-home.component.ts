@@ -1,3 +1,12 @@
+/**
+ * The Academics homepage serves as the hub for all academic features
+ * for students in the CSXL community.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
