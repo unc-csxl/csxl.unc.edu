@@ -30,7 +30,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   constructor(
     public auth: AuthenticationService,
     public router: Router,
-    private permission: PermissionService,
+    protected permission: PermissionService,
     private profileService: ProfileService,
     private breakpointObserver: BreakpointObserver,
     protected navigationService: NavigationTitleService,

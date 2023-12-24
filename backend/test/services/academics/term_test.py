@@ -65,7 +65,7 @@ def test_create_as_root(term_svc: TermService):
     term = term_svc.create(user_data.root, term_data.new_term)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.term.create", "term/"
+        user_data.root, "academics.term.create", "term/"
     )
     assert isinstance(term, TermDetails)
     assert term.id == term_data.new_term.id
@@ -84,7 +84,7 @@ def test_update_as_root(term_svc: TermService):
     term = term_svc.update(user_data.root, term_data.edited_f_23)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.term.update", f"term/{term.id}"
+        user_data.root, "academics.term.update", f"term/{term.id}"
     )
     assert isinstance(term, TermDetails)
     assert term.id == term_data.edited_f_23.id
@@ -112,7 +112,7 @@ def test_delete_as_root(term_svc: TermService):
     term_svc.delete(user_data.root, term_data.f_23)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.term.delete", f"term/{term_data.f_23.id}"
+        user_data.root, "academics.term.delete", f"term/{term_data.f_23.id}"
     )
 
     terms = term_svc.all()

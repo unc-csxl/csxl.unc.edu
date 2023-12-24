@@ -145,7 +145,7 @@ class SectionService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.section.create", f"section/")
+        self._permission_svc.enforce(subject, "academics.section.create", f"section/")
 
         # Create new object
         section_entity = SectionEntity.from_model(section)
@@ -170,7 +170,7 @@ class SectionService:
 
         # Check if user has admin permissions
         self._permission_svc.enforce(
-            subject, "courses.section.update", f"section/{section.id}"
+            subject, "academics.section.update", f"section/{section.id}"
         )
 
         # Find the entity to update
@@ -204,7 +204,7 @@ class SectionService:
 
         # Check if user has admin permissions
         self._permission_svc.enforce(
-            subject, "courses.section.delete", f"section/{section.id}"
+            subject, "academics.section.delete", f"section/{section.id}"
         )
 
         # Find the entity to delete

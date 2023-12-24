@@ -92,7 +92,7 @@ def test_create_as_root(section_svc: SectionService):
     section = section_svc.create(user_data.root, section_data.new_section)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.section.create", "section/"
+        user_data.root, "academics.section.create", "section/"
     )
     assert isinstance(section, SectionDetails)
     assert section.id == section_data.new_section.id
@@ -111,7 +111,7 @@ def test_update_as_root(section_svc: SectionService):
     section = section_svc.update(user_data.root, section_data.edited_comp_110)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.section.update", f"section/{section.id}"
+        user_data.root, "academics.section.update", f"section/{section.id}"
     )
     assert isinstance(section, SectionDetails)
     assert section.id == section_data.edited_comp_110.id
@@ -140,7 +140,7 @@ def test_delete_as_root(section_svc: SectionService):
 
     permission_svc.enforce.assert_called_with(
         user_data.root,
-        "courses.section.delete",
+        "academics.section.delete",
         f"section/{section_data.comp_101_001.id}",
     )
 

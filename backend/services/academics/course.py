@@ -102,7 +102,7 @@ class CourseService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.course.create", f"course/")
+        self._permission_svc.enforce(subject, "academics.course.create", f"course/")
 
         # Create new object
         course_entity = CourseEntity.from_model(course)
@@ -127,7 +127,7 @@ class CourseService:
 
         # Check if user has admin permissions
         self._permission_svc.enforce(
-            subject, "courses.course.update", f"course/{course.id}"
+            subject, "academics.course.update", f"course/{course.id}"
         )
 
         # Find the entity to update
@@ -161,7 +161,7 @@ class CourseService:
 
         # Check if user has admin permissions
         self._permission_svc.enforce(
-            subject, "courses.course.delete", f"course/{course.id}"
+            subject, "academics.course.delete", f"course/{course.id}"
         )
 
         # Find the entity to delete

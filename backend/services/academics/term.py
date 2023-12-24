@@ -99,7 +99,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.term.create", f"term/")
+        self._permission_svc.enforce(subject, "academics.term.create", f"term/")
 
         # Create new object
         term_entity = TermEntity.from_model(term)
@@ -123,7 +123,9 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.term.update", f"term/{term.id}")
+        self._permission_svc.enforce(
+            subject, "academics.term.update", f"term/{term.id}"
+        )
 
         # Find the entity to update
         term_entity = self._session.get(TermEntity, term.id)
@@ -152,7 +154,9 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.term.delete", f"term/{term.id}")
+        self._permission_svc.enforce(
+            subject, "academics.term.delete", f"term/{term.id}"
+        )
 
         # Find the entity to delete
         term_entity = self._session.get(TermEntity, term.id)

@@ -65,7 +65,7 @@ def test_create_as_root(course_svc: CourseService):
     course = course_svc.create(user_data.root, course_data.new_course)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.course.create", "course/"
+        user_data.root, "academics.course.create", "course/"
     )
     assert isinstance(course, CourseDetails)
     assert course.id == course_data.new_course.id
@@ -84,7 +84,7 @@ def test_update_as_root(course_svc: CourseService):
     course = course_svc.update(user_data.root, course_data.edited_comp_110)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.course.update", f"course/{course.id}"
+        user_data.root, "academics.course.update", f"course/{course.id}"
     )
     assert isinstance(course, CourseDetails)
     assert course.id == course_data.edited_comp_110.id
@@ -112,7 +112,7 @@ def test_delete_as_root(course_svc: CourseService):
     course_svc.delete(user_data.root, course_data.comp_110)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.course.delete", f"course/{course_data.comp_110.id}"
+        user_data.root, "academics.course.delete", f"course/{course_data.comp_110.id}"
     )
 
     courses = course_svc.all()
