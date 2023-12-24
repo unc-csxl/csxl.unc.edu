@@ -11,6 +11,7 @@ import { CourseEditorComponent } from './academics-admin/course/course-editor/co
 import { TermEditorComponent } from './academics-admin/term/term-editor/term-editor.component';
 import { SectionEditorComponent } from './academics-admin/section/section-editor/section-editor.component';
 import { AdminRoomComponent } from './academics-admin/room/admin-room.component';
+import { RoomEditorComponent } from './academics-admin/room/room-editor/room-editor.component';
 
 const routes: Routes = [
   {
@@ -28,7 +29,8 @@ const routes: Routes = [
   SectionOfferingsComponent.Route,
   CourseEditorComponent.Route,
   TermEditorComponent.Route,
-  SectionEditorComponent.Route
+  SectionEditorComponent.Route,
+  RoomEditorComponent.Route
 ];
 
 @NgModule({

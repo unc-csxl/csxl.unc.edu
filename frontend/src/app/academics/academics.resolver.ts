@@ -10,7 +10,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { AcademicsService } from './academics.service';
-import { Course, Room, Section, Term } from './academics.models';
+import { Course, Room, Section, SectionMember, Term } from './academics.models';
 import { catchError, of } from 'rxjs';
 
 /** This resolver injects the list of courses into the catalog component. */
@@ -99,7 +99,7 @@ export const sectionResolver: ResolveFn<Section | undefined> = (
     };
   }
 
-  // Otherwise, return the term.
+  // Otherwise, return the section.
   // If there is an error, return undefined
   return inject(AcademicsService)
     .getSection(+route.paramMap.get('id')!)
@@ -114,4 +114,31 @@ export const sectionResolver: ResolveFn<Section | undefined> = (
 /** This resolver injects the list of rooms into the offerings component. */
 export const roomsResolver: ResolveFn<Room[] | undefined> = (route, state) => {
   return inject(AcademicsService).getRooms();
+};
+
+/** This resolver injects a room into the catalog component. */
+export const roomResolver: ResolveFn<Room | undefined> = (route, state) => {
+  // If the term is new, return a blank one
+  if (route.paramMap.get('id')! == 'new') {
+    return {
+      id: '',
+      nickname: '',
+      building: '',
+      room: '',
+      capacity: 100,
+      reservable: false,
+      seats: []
+    };
+  }
+
+  // Otherwise, return the room.
+  // If there is an error, return undefined
+  return inject(AcademicsService)
+    .getRoom(route.paramMap.get('id')!)
+    .pipe(
+      catchError((error) => {
+        console.log(error);
+        return of(undefined);
+      })
+    );
 };

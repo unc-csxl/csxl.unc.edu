@@ -25,6 +25,8 @@ import { MatInputModule } from '@angular/material/input';
 import { TermEditorComponent } from './academics-admin/term/term-editor/term-editor.component';
 import { SectionEditorComponent } from './academics-admin/section/section-editor/section-editor.component';
 import { AdminRoomComponent } from './academics-admin/room/admin-room.component';
+import { RoomEditorComponent } from './academics-admin/room/room-editor/room-editor.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { AdminRoomComponent } from './academics-admin/room/admin-room.component'
     CourseEditorComponent,
     TermEditorComponent,
     SectionEditorComponent,
-    AdminRoomComponent
+    AdminRoomComponent,
+    RoomEditorComponent
   ],
   imports: [
     AcademicsRoutingModule,
@@ -55,6 +58,7 @@ import { AdminRoomComponent } from './academics-admin/room/admin-room.component'
     ReactiveFormsModule,
     MatTabsModule,
     MatInputModule,
+    MatCheckboxModule,
     AsyncPipe
   ]
 })
