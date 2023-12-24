@@ -40,9 +40,7 @@ class RoomService:
             list[RoomDetails]: List of all `RoomDetails`
         """
         # Select all entries in `Room` table
-        query = select(RoomEntity)
-
-        entities = self._session.scalars(query).all()
+        entities = self._session.query(RoomEntity).order_by(RoomEntity.capacity).all()
 
         # Convert entries to a model and return
         return [entity.to_details_model() for entity in entities]
