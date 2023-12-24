@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { Course, Section, Term } from './academics.models';
+import { Course, Room, Section, Term } from './academics.models';
 
 @Injectable({
   providedIn: 'root'
@@ -140,5 +140,44 @@ export class AcademicsService {
    */
   deleteSection(section: Section): Observable<Section> {
     return this.http.delete<Section>(`/api/academics/section/${section.id}`);
+  }
+
+  /** Returns all room entries from the backend database.
+   * @returns {Observable<Room[]>}
+   */
+  getRooms(): Observable<Room[]> {
+    return this.http.get<Room[]>('/api/room');
+  }
+
+  /** Returns one soom from the backend database.
+   * @param id ID of the room to look up
+   * @returns {Observable<Room>}
+   */
+  getRoom(id: string): Observable<Room> {
+    return this.http.get<Room>(`/api/room/${id}`);
+  }
+
+  /** Creates a new room.
+   * @param room: room to create
+   * @returns {Observable<Room>}
+   */
+  createRoom(room: Room): Observable<Room> {
+    return this.http.post<Room>('/api/room', room);
+  }
+
+  /** Update a room.
+   * @param room: room to update
+   * @returns {Observable<Room>}
+   */
+  updateRoom(room: Room): Observable<Room> {
+    return this.http.put<Room>('/api/room', room);
+  }
+
+  /** Delete a room.
+   * @param room: room to delete
+   * @returns {Observable<Room>}
+   */
+  deleteRoom(room: Room): Observable<Room> {
+    return this.http.delete<Room>(`/api/academics/section/${room.id}`);
   }
 }

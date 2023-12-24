@@ -14,7 +14,8 @@ export class AcademicsAdminComponent {
   public links = [
     { label: 'Terms', path: '/academics/admin/term' },
     { label: 'Courses', path: '/academics/admin/course' },
-    { label: 'Sections', path: '/academics/admin/section' }
+    { label: 'Sections', path: '/academics/admin/section' },
+    { label: 'Rooms', path: '/academics/admin/room' }
   ];
 
   constructor(public profileService: ProfileService) {

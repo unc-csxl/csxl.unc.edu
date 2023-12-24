@@ -1,3 +1,4 @@
+import { Seat } from '../coworking/coworking.models';
 import { TimeRange } from '../time-range';
 
 /** Defines a Course */
@@ -45,6 +46,11 @@ export interface SectionMember {
 export interface Room {
   id: string;
   nickname: string;
+  building: string | null;
+  room: string | null;
+  capacity: number | null;
+  reservable: boolean | null;
+  seats: Seat[] | null;
 }
 
 /** Defines a Roster Role */

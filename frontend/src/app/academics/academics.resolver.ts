@@ -10,7 +10,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { AcademicsService } from './academics.service';
-import { Course, Section, Term } from './academics.models';
+import { Course, Room, Section, Term } from './academics.models';
 import { catchError, of } from 'rxjs';
 
 /** This resolver injects the list of courses into the catalog component. */
@@ -109,4 +109,9 @@ export const sectionResolver: ResolveFn<Section | undefined> = (
         return of(undefined);
       })
     );
+};
+
+/** This resolver injects the list of rooms into the offerings component. */
+export const roomsResolver: ResolveFn<Room[] | undefined> = (route, state) => {
+  return inject(AcademicsService).getRooms();
 };

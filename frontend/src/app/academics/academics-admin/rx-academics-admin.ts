@@ -1,5 +1,5 @@
 import { RxObject } from 'src/app/rx-object';
-import { Course, Section, Term } from '../academics.models';
+import { Course, Room, Section, Term } from '../academics.models';
 
 export class RxTermList extends RxObject<Term[]> {
   pushTerm(term: Term): void {
@@ -56,6 +56,25 @@ export class RxSectionList extends RxObject<Section[]> {
     this.value = this.value.filter(
       (section) => sectionToRemove.id !== section.id
     );
+    this.notify();
+  }
+}
+
+export class RxRoomList extends RxObject<Room[]> {
+  pushRoom(room: Room): void {
+    this.value.push(room);
+    this.notify();
+  }
+
+  updateRoom(room: Room): void {
+    this.value = this.value.map((o) => {
+      return o.id !== room.id ? o : room;
+    });
+    this.notify();
+  }
+
+  removeRoom(roomToRemove: Room): void {
+    this.value = this.value.filter((room) => roomToRemove.id !== room.id);
     this.notify();
   }
 }

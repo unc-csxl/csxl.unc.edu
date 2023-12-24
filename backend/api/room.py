@@ -14,7 +14,7 @@ __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-api = APIRouter(prefix="/api/rooms")
+api = APIRouter(prefix="/api/room")
 openapi_tags = {
     "name": "Rooms",
     "description": "Create, update, delete, and retrieve rooms.",
