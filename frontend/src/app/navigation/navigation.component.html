@@ -72,8 +72,12 @@
           id="gear-icon"
           type="button"
           mat-icon-button
-          [routerLink]="(permission.adminSettingsData$ | async)!.url"
-          *ngIf="(permission.adminSettingsData$ | async) !== null">
+          [routerLink]="
+            (navigationAdminGearService.adminSettingsData$ | async)!.url
+          "
+          *ngIf="
+            (navigationAdminGearService.adminSettingsData$ | async) !== null
+          ">
           <mat-icon aria-label="Admin icon">settings</mat-icon>
         </button>
       </div>
