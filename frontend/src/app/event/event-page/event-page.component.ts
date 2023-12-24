@@ -182,6 +182,7 @@ export class EventPageComponent implements OnInit, OnDestroy {
   onSearchBarQueryChange(query: string) {
     this.query = query;
     let paginationParams = this.page.params;
+    paginationParams.ascending = 'true';
     if (query == '') {
       console.log('hi');
       paginationParams.range_start = this.startDate.toLocaleString('en-GB');
