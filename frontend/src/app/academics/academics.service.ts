@@ -98,7 +98,7 @@ export class AcademicsService {
    * @param course: Course to delete
    * @returns {Observable<Course>}
    */
-  deleteCourse(course: Course) {
-    this.http.delete<Course>(`/api/academics/course/${course.id}`);
+  deleteCourse(course: Course): Observable<Course> {
+    return this.http.delete<Course>(`/api/academics/course/${course.id}`);
   }
 }
