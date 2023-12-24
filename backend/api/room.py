@@ -34,8 +34,6 @@ def get_rooms(
     Returns:
         list[RoomDetails]: All rooms in the `Room` database table
     """
-
-    # Return all organizations
     return room_service.all()
 
 
