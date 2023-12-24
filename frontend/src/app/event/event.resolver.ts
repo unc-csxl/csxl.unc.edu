@@ -28,8 +28,8 @@ export const eventDetailResolver: ResolveFn<Event | undefined> = (
     return {
       id: null,
       name: '',
-      time: new Date(),
-      end_time: new Date(),
+      start: new Date(),
+      end: new Date(),
       location: '',
       description: '',
       public: true,

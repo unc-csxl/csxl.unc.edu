@@ -53,8 +53,8 @@ export class EventEditorComponent {
 
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
-  time = new FormControl('', [Validators.required]);
-  end_time = new FormControl('', [Validators.required]);
+  start = new FormControl('', [Validators.required]);
+  end = new FormControl('', [Validators.required]);
   location = new FormControl('', [Validators.required]);
   description = new FormControl('', [
     Validators.required,
@@ -65,8 +65,8 @@ export class EventEditorComponent {
   /** Create a form group */
   public eventForm = this.formBuilder.group({
     name: this.name,
-    time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
-    end_time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+    start: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+    end: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
     location: this.location,
     description: this.description,
     public: this.public.value! == 'true'
@@ -102,11 +102,8 @@ export class EventEditorComponent {
     // Set values for form group
     this.eventForm.setValue({
       name: this.event.name,
-      time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
-      end_time: this.datePipe.transform(
-        this.event.end_time,
-        'yyyy-MM-ddTHH:mm'
-      ),
+      start: this.datePipe.transform(this.event.start, 'yyyy-MM-ddTHH:mm'),
+      end: this.datePipe.transform(this.event.end, 'yyyy-MM-ddTHH:mm'),
       location: this.event.location,
       description: this.event.description,
       public: this.event.public
@@ -125,7 +122,7 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
-      if (this.event.id == null) {
+      if (this.event.id == null && this.event.end > this.event.start) {
         this.eventService.createEvent(this.event).subscribe({
           next: (event) => this.onSuccess(event),
           error: (err) => this.onError(err)

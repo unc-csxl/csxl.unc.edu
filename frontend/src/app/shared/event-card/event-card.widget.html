@@ -12,7 +12,7 @@
       <p
         style="margin: 0px; text-align: end; width: 25%"
         *ngIf="!event.multi_day; else multiDay">
-        {{ event.time | date: 'shortTime' }}
+        {{ event.start | date: 'shortTime' }}
       </p>
       <ng-template #multiDay>
         <p style="margin: 0px; text-align: end; width: 25%">All Day</p>

@@ -25,10 +25,10 @@ class EventEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Name of the event
     name: Mapped[str] = mapped_column(String)
-    # Time of the event
-    time: Mapped[datetime] = mapped_column(DateTime)
+    # Start time of the event
+    start: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # End time of the event
-    end_time: Mapped[datetime] = mapped_column(DateTime)
+    end: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # Location of the event
     location: Mapped[str] = mapped_column(String)
     # Description of the event
@@ -54,8 +54,8 @@ class EventEntity(EntityBase):
         return cls(
             id=model.id,
             name=model.name,
-            time=model.time,
-            end_time=model.end_time,
+            start=model.start,
+            end=model.end,
             location=model.location,
             description=model.description,
             public=model.public,
@@ -72,8 +72,8 @@ class EventEntity(EntityBase):
         return Event(
             id=self.id,
             name=self.name,
-            time=self.time,
-            end_time=self.end_time,
+            start=self.start,
+            end=self.end,
             location=self.location,
             description=self.description,
             public=self.public,
@@ -93,8 +93,8 @@ class EventEntity(EntityBase):
         return cls(
             id=model.id,
             name=model.name,
-            time=model.time,
-            end_time=model.end_time,
+            start=model.start,
+            end=model.end,
             location=model.location,
             description=model.description,
             public=model.public,
@@ -110,8 +110,8 @@ class EventEntity(EntityBase):
         return EventDetails(
             id=self.id,
             name=self.name,
-            time=self.time,
-            end_time=self.end_time,
+            start=self.start,
+            end=self.end,
             location=self.location,
             description=self.description,
             public=self.public,

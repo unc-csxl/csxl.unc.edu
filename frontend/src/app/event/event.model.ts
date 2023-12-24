@@ -13,8 +13,8 @@ import { Organization } from '../organization/organization.model';
 export interface Event {
   id: number | null;
   name: string;
-  time: Date;
-  end_time: Date;
+  start: Date;
+  end: Date;
   location: string;
   description: string;
   public: boolean;
@@ -31,8 +31,8 @@ export interface Event {
 export interface EventJson {
   id: number | null;
   name: string;
-  time: string;
-  end_time: string;
+  start: string;
+  end: string;
   location: string;
   description: string;
   public: boolean;
@@ -47,8 +47,8 @@ export interface EventJson {
  */
 export const parseEventJson = (eventJson: EventJson): Event => {
   return Object.assign({}, eventJson, {
-    time: new Date(eventJson.time),
-    end_time: new Date(eventJson.end_time),
+    start: new Date(eventJson.start),
+    end: new Date(eventJson.end),
     multi_day: false
   });
 };

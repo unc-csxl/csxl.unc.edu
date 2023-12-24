@@ -19,8 +19,8 @@ __license__ = "MIT"
 event_one = Event(
     id=1,
     name="CS+SG Mixer",
-    time=date_maker(days_in_future=1, hour=10, minutes=0),
-    end_time=date_maker(days_in_future=1, hour=11, minutes=0),
+    start=date_maker(days_in_future=1, hour=10, minutes=0),
+    end=date_maker(days_in_future=1, hour=11, minutes=0),
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
@@ -30,8 +30,8 @@ event_one = Event(
 event_two = Event(
     id=2,
     name="CS+SG Workshop",
-    time=date_maker(days_in_future=2, hour=19, minutes=0),
-    end_time=date_maker(days_in_future=2, hour=20, minutes=0),
+    start=date_maker(days_in_future=2, hour=19, minutes=0),
+    end=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN 014",
     description="This is a sample description.",
     public=True,
@@ -42,8 +42,8 @@ events = [event_one, event_two]
 
 to_add = Event(
     name="Carolina Data Challenge",
-    time=date_maker(days_in_future=2, hour=20, minutes=0),
-    end_time=date_maker(days_in_future=2, hour=21, minutes=0),
+    start=date_maker(days_in_future=2, hour=20, minutes=0),
+    end=date_maker(days_in_future=2, hour=21, minutes=0),
     location="SN011",
     description="This is a sample description.",
     public=True,
@@ -53,8 +53,8 @@ to_add = Event(
 updated_event = Event(
     id=1,
     name="Carolina Data Challenge",
-    time=date_maker(days_in_future=1, hour=10, minutes=0),
-    end_time=date_maker(days_in_future=1, hour=11, minutes=0),
+    start=date_maker(days_in_future=1, hour=10, minutes=0),
+    end=date_maker(days_in_future=1, hour=11, minutes=0),
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,

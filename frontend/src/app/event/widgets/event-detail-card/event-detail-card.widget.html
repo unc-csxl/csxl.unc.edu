@@ -59,18 +59,18 @@
   <div>
     <p
       *ngIf="
-        event.time.toDateString() === event.end_time.toDateString();
+        event.start.toDateString() === event.end.toDateString();
         else sameDay
       ">
-      <strong>{{ event.time | date: 'E, MMM d' }}</strong> at
-      {{ event.time | date: 'h:mm a' }} to {{ event.end_time | date: 'h:mm a' }}
+      <strong>{{ event.start | date: 'E, MMM d' }}</strong> at
+      {{ event.start | date: 'h:mm a' }} to {{ event.end | date: 'h:mm a' }}
     </p>
     <ng-template #sameDay>
       <p>
-        <strong>{{ event.time | date: 'E, MMM d' }}</strong> at
-        {{ event.time | date: 'h:mm a' }} to
-        <strong>{{ event.end_time | date: 'E, MMM d' }}</strong> at
-        {{ event.end_time | date: 'h:mm a' }}
+        <strong>{{ event.start | date: 'E, MMM d' }}</strong> at
+        {{ event.start | date: 'h:mm a' }} to
+        <strong>{{ event.end | date: 'E, MMM d' }}</strong> at
+        {{ event.end | date: 'h:mm a' }}
       </p>
     </ng-template>
     <p><strong>Location:</strong> {{ event.location }}</p>

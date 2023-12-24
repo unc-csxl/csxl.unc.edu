@@ -22,18 +22,29 @@
           matInput
           type="datetime-local"
           placeholder="Start Time"
-          formControlName="time"
-          name="time"
+          formControlName="start"
+          name="start"
           required />
       </mat-form-field>
       <mat-form-field appearance="outline" color="accent">
         <input
           matInput
           type="datetime-local"
-          placeholder="Start Time"
-          formControlName="time"
-          name="time"
+          placeholder="End Time"
+          formControlName="end"
+          name="end"
           required />
+        @if (this.eventForm.value.end && this.eventForm.value.start &&
+        this.eventForm.value.end <= this.eventForm.value.start) {
+        <mat-error
+          *ngIf="
+            eventForm.value.end &&
+            eventForm.value.start &&
+            eventForm.value.end <= eventForm.value.start
+          ">
+          End time must be after start time
+        </mat-error>
+        }
       </mat-form-field>
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Location</mat-label>

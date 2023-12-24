@@ -117,16 +117,16 @@ export class EventService {
     // Transform the list of events based on the event filter pipe and query
     this.eventFilterPipe.transform(events, query).forEach((event) => {
       // Set multi_day flag to true if event spans multiple days
-      if (event.time.toDateString() !== event.end_time.toDateString()) {
+      if (event.start.toDateString() !== event.end.toDateString()) {
         event.multi_day = true;
       }
       // Find the date(s) to group by
       let dateStrings;
       if (event.multi_day) {
-        dateStrings = this.getDates(event.time, event.end_time);
+        dateStrings = this.getDates(event.start, event.end);
       } else {
         dateStrings = [
-          this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? ''
+          this.datePipe.transform(event.start, 'EEEE, MMMM d, y') ?? ''
         ];
       }
       // Add the event to the appropriate date groups
