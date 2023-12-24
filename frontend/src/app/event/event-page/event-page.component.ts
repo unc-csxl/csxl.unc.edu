@@ -14,7 +14,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
-import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 import { EventService } from '../event.service';
 
 import { PaginatedEvent } from 'src/app/pagination';
@@ -80,7 +79,6 @@ export class EventPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public datePipe: DatePipe,
-    public eventFilterPipe: EventFilterPipe,
     public eventService: EventService
   ) {
     // Initialize data from resolvers
@@ -96,7 +94,7 @@ export class EventPageComponent implements OnInit {
 
     // Initialize the initially selected event
     if (data.page.items.length > 0) {
-      this.selectedEvent = eventFilterPipe.transform(data.page.items, '')[0];
+      this.selectedEvent = this.page.items[0];
     }
   }
 

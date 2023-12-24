@@ -12,7 +12,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Event, EventJson, parseEventJson } from './event.model';
 import { DatePipe } from '@angular/common';
-import { EventFilterPipe } from './event-filter/event-filter.pipe';
 import { EventPaginationParams, PaginatedEvent } from 'src/app/pagination';
 
 @Injectable({
@@ -21,8 +20,7 @@ import { EventPaginationParams, PaginatedEvent } from 'src/app/pagination';
 export class EventService {
   constructor(
     protected http: HttpClient,
-    public datePipe: DatePipe,
-    public eventFilterPipe: EventFilterPipe
+    public datePipe: DatePipe
   ) {}
 
   /** Returns all event entries from the backend database table using the backend HTTP get request.
@@ -88,7 +86,7 @@ export class EventService {
     let groups: Map<string, Event[]> = new Map();
 
     // Transform the list of events based on the event filter pipe and query
-    this.eventFilterPipe.transform(events, query).forEach((event) => {
+    events.forEach((event) => {
       // Find the date to group by
       let dateString =
         this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? '';

@@ -35,7 +35,6 @@ import { EventRoutingModule } from './event-routing.module';
 import { EventDetailCard } from './widgets/event-detail-card/event-detail-card.widget';
 import { EventDetailsComponent } from './event-details/event-details.component';
 import { EventPageComponent } from './event-page/event-page.component';
-import { EventFilterPipe } from './event-filter/event-filter.pipe';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 
 @NgModule({
@@ -65,7 +64,6 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
     RouterModule,
     SharedModule,
     EventRoutingModule
-  ],
-  providers: [EventFilterPipe]
+  ]
 })
 export class EventModule {}
