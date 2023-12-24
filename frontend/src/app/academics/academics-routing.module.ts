@@ -7,6 +7,7 @@ import { AcademicsAdminComponent } from './academics-admin/academics-admin.compo
 import { AdminTermComponent } from './academics-admin/term/admin-term.component';
 import { AdminCourseComponent } from './academics-admin/course/admin-course.component';
 import { AdminSectionComponent } from './academics-admin/section/admin-section.component';
+import { CourseEditorComponent } from './academics-admin/course/course-editor/course-editor.component';
 
 const routes: Routes = [
   {
@@ -20,7 +21,8 @@ const routes: Routes = [
   },
   AcademicsHomeComponent.Route,
   CoursesHomeComponent.Route,
-  SectionOfferingsComponent.Route
+  SectionOfferingsComponent.Route,
+  CourseEditorComponent.Route
 ];
 
 @NgModule({

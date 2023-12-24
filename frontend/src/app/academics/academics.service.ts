@@ -17,7 +17,7 @@ import { Course, Term } from './academics.models';
 @Injectable({
   providedIn: 'root'
 })
-export class CourseService {
+export class AcademicsService {
   constructor(
     protected http: HttpClient,
     protected auth: AuthenticationService,
@@ -36,5 +36,37 @@ export class CourseService {
    */
   getCourses(): Observable<Course[]> {
     return this.http.get<Course[]>('/api/academics/course');
+  }
+
+  /** Returns one course from the backend database.
+   * @param id ID of the course to look up
+   * @returns {Observable<Course>}
+   */
+  getCourse(id: string): Observable<Course> {
+    return this.http.get<Course>(`/api/academics/course/${id}`);
+  }
+
+  /** Creates a new course.
+   * @param course: Course to create
+   * @returns {Observable<Course>}
+   */
+  createCourse(course: Course): Observable<Course> {
+    return this.http.post<Course>('/api/academics/course', course);
+  }
+
+  /** Update a new course.
+   * @param course: Course to update
+   * @returns {Observable<Course>}
+   */
+  updateCourse(course: Course): Observable<Course> {
+    return this.http.put<Course>('/api/academics/course', course);
+  }
+
+  /** Update a new course.
+   * @param course: Course to update
+   * @returns {Observable<Course>}
+   */
+  deleteCourse(course: Course) {
+    this.http.delete<Course>(`/api/academics/course/${course.id}`);
   }
 }

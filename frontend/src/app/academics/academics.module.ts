@@ -20,6 +20,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { AdminSectionComponent } from './academics-admin/section/admin-section.component';
 import { AdminCourseComponent } from './academics-admin/course/admin-course.component';
 import { AdminTermComponent } from './academics-admin/term/admin-term.component';
+import { CourseEditorComponent } from './academics-admin/course/course-editor/course-editor.component';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { AdminTermComponent } from './academics-admin/term/admin-term.component'
     AcademicsAdminComponent,
     AdminSectionComponent,
     AdminCourseComponent,
-    AdminTermComponent
+    AdminTermComponent,
+    CourseEditorComponent
   ],
   imports: [
     AcademicsRoutingModule,
@@ -45,6 +48,7 @@ import { AdminTermComponent } from './academics-admin/term/admin-term.component'
     MatSelectModule,
     ReactiveFormsModule,
     MatTabsModule,
+    MatInputModule,
     AsyncPipe
   ]
 })

@@ -151,7 +151,7 @@ class CourseService:
         # Return edited object
         return course_entity.to_details_model()
 
-    def delete(self, subject: User, course: Course) -> None:
+    def delete(self, subject: User, id: str) -> None:
         """Deletes a course.
 
         Args:
@@ -160,18 +160,14 @@ class CourseService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(
-            subject, "academics.course.delete", f"course/{course.id}"
-        )
+        self._permission_svc.enforce(subject, "academics.course.delete", f"course/{id}")
 
         # Find the entity to delete
-        course_entity = self._session.get(CourseEntity, course.id)
+        course_entity = self._session.get(CourseEntity, id)
 
         # Raise an error if no entity was found
         if course_entity is None:
-            raise ResourceNotFoundException(
-                f"Course with id: {course.id} does not exist."
-            )
+            raise ResourceNotFoundException(f"Course with id: {id} does not exist.")
 
         # Delete and commit changes
         self._session.delete(course_entity)

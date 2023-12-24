@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { courseResolver } from '../academics.resolver';
+import { coursesResolver } from '../academics.resolver';
 import { Course } from '../academics.models';
 import { ActivatedRoute } from '@angular/router';
-import { CourseService } from '../academics.service';
+import { AcademicsService } from '../academics.service';
 import {
   animate,
   state,
@@ -34,7 +34,7 @@ export class CoursesHomeComponent implements OnInit {
     title: 'Course Catalog',
     component: CoursesHomeComponent,
     canActivate: [],
-    resolve: { courses: courseResolver }
+    resolve: { courses: coursesResolver }
   };
 
   /** Store list of Courses */
@@ -50,7 +50,7 @@ export class CoursesHomeComponent implements OnInit {
   /** Constructor for the course catalog page. */
   constructor(
     private route: ActivatedRoute,
-    public coursesService: CourseService,
+    public academicsService: AcademicsService,
     private gearService: NagivationAdminGearService
   ) {
     // Initialize data from resolvers
