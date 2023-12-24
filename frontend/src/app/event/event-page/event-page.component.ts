@@ -41,7 +41,6 @@ export class EventPageComponent implements OnInit, OnDestroy {
   public startDate = new Date();
   public endDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
   private static EventPaginationParams = {
-    page_size: 25,
     order_by: 'time',
     ascending: 'true',
     filter: '',

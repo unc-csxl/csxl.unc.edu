@@ -22,7 +22,9 @@ class PaginationParams(BaseModel):
 class EventPaginationParams(PaginationParams):
     """Parameters passed from the client to paginate event results."""
 
+    order_by: str = ""
     ascending: str = "true"
+    filter: str = ""
     range_start: str = ""
     range_end: str = ""
 

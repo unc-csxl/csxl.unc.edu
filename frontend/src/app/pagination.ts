@@ -6,7 +6,6 @@ export interface PaginationParams {
 }
 
 export interface EventPaginationParams {
-  page_size: number;
   order_by: string;
   ascending: string;
   filter: string;

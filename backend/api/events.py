@@ -71,8 +71,6 @@ def new_event(
 @api.get("/paginate", tags=["Events"])
 def list_events(
     event_service: EventService = Depends(),
-    page: int = 0,
-    page_size: int = 10,
     order_by: str = "time",
     ascending: str = "true",
     filter: str = "",
@@ -82,8 +80,6 @@ def list_events(
     """List events in time range via standard backend pagination query parameters."""
 
     pagination_params = EventPaginationParams(
-        page=page,
-        page_size=page_size,
         order_by=order_by,
         ascending=ascending,
         filter=filter,

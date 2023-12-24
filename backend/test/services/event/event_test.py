@@ -47,8 +47,6 @@ def test_get_by_id(event_svc_integration: EventService):
 def test_list(event_svc_integration: EventService):
     """Test that a paginated list of events can be produced."""
     pagination_params = EventPaginationParams(
-        page=0,
-        page_size=2,
         order_by="id",
         range_start=date_maker(days_in_future=1, hour=10, minutes=0).strftime(
             "%d/%m/%Y, %H:%M:%S"
