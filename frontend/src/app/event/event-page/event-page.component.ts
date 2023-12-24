@@ -7,23 +7,36 @@
  * @license MIT
  */
 
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  inject,
+  OnDestroy
+} from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, ActivationEnd, Params, Router } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { EventService } from '../event.service';
 
 import { PaginatedEvent } from 'src/app/pagination';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import {
+  Subject,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  tap
+} from 'rxjs';
 
 @Component({
   selector: 'app-event-page',
   templateUrl: './event-page.component.html',
   styleUrls: ['./event-page.component.css']
 })
-export class EventPageComponent implements OnInit {
+export class EventPageComponent implements OnInit, OnDestroy {
   public page: PaginatedEvent<Event>;
   public startDate = new Date();
   public endDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
@@ -69,6 +82,8 @@ export class EventPageComponent implements OnInit {
   public query: string = '';
 
   public searchUpdate = new Subject<string>();
+
+  private routeSubscription!: Subscription;
 
   /** Constructor for the events page. */
   constructor(
@@ -119,12 +134,33 @@ export class EventPageComponent implements OnInit {
     if (this.startDate.getTime() < today.setHours(0, 0, 0, 0)) {
       this.page.params.ascending = 'false';
     }
+
     let paginationParams = this.page.params;
     paginationParams.range_start = this.startDate.toLocaleString('en-GB');
     paginationParams.range_end = this.endDate.toLocaleString('en-GB');
     this.eventService.list(paginationParams).subscribe((page) => {
       this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
     });
+
+    let prevUrl = '';
+    this.routeSubscription = this.router.events
+      .pipe(
+        filter((e) => e instanceof ActivationEnd),
+        distinctUntilChanged(() => this.router.url === prevUrl),
+        tap(() => (prevUrl = this.router.url))
+      )
+      .subscribe((_) => {
+        let paginationParams = this.page.params;
+        paginationParams.range_start = this.startDate.toLocaleString('en-GB');
+        paginationParams.range_end = this.endDate.toLocaleString('en-GB');
+        this.eventService.list(paginationParams).subscribe((page) => {
+          this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+        });
+      });
+  }
+
+  ngOnDestroy() {
+    this.routeSubscription.unsubscribe();
   }
 
   /** Handler that runs when the window resizes */
@@ -139,8 +175,8 @@ export class EventPageComponent implements OnInit {
    */
   onSearchBarQueryChange(query: string) {
     this.query = query;
+    let paginationParams = this.page.params;
     if (query == '') {
-      let paginationParams = this.page.params;
       paginationParams.range_start = this.startDate.toLocaleString('en-GB');
       paginationParams.range_end = this.endDate.toLocaleString('en-GB');
       this.eventService.list(paginationParams).subscribe((page) => {
@@ -148,7 +184,6 @@ export class EventPageComponent implements OnInit {
         paginationParams.filter = '';
       });
     } else {
-      let paginationParams = this.page.params;
       paginationParams.range_start = new Date(
         new Date().setFullYear(new Date().getFullYear() - 100)
       ).toLocaleString('en-GB');
@@ -163,21 +198,6 @@ export class EventPageComponent implements OnInit {
     }
   }
 
-  search() {
-    let paginationParams = this.page.params;
-    paginationParams.range_start = new Date(
-      new Date().setFullYear(new Date().getFullYear() - 100)
-    ).toLocaleString('en-GB');
-    paginationParams.range_end = new Date(
-      new Date().setFullYear(new Date().getFullYear() + 100)
-    ).toLocaleString('en-GB');
-    paginationParams.filter = this.query;
-    this.eventService.list(paginationParams).subscribe((page) => {
-      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
-      paginationParams.filter = '';
-    });
-  }
-
   /** Handler that runs when an event card is clicked.
    * This function selects the event to display on the sidebar.
    * @param event: Event pressed
@@ -187,7 +207,7 @@ export class EventPageComponent implements OnInit {
   }
 
   showEvents(isPrevious: boolean) {
-    let paginationParams = this.page.params;
+    //let paginationParams = this.page.params;
     this.startDate = isPrevious
       ? new Date(this.startDate.setMonth(this.startDate.getMonth() - 1))
       : new Date(this.startDate.setMonth(this.startDate.getMonth() + 1));
@@ -197,11 +217,6 @@ export class EventPageComponent implements OnInit {
     if (isPrevious === true) {
       this.page.params.ascending = 'false';
     }
-    paginationParams.range_start = this.startDate.toLocaleString('en-GB');
-    paginationParams.range_end = this.endDate.toLocaleString('en-GB');
-    this.eventService.list(paginationParams).subscribe((page) => {
-      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
-    });
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {

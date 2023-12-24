@@ -19,14 +19,10 @@ class PaginationParams(BaseModel):
     filter: str = ""
 
 
-class EventPaginationParams(BaseModel):
+class EventPaginationParams(PaginationParams):
     """Parameters passed from the client to paginate event results."""
 
-    page: int = 0
-    page_size: int = 10
-    order_by: str = ""
     ascending: str = "true"
-    filter: str = ""
     range_start: str = ""
     range_end: str = ""
 
