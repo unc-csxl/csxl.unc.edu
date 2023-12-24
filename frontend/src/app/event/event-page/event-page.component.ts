@@ -108,7 +108,11 @@ export class EventPageComponent implements OnInit, OnDestroy {
     }
 
     this.searchUpdate
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(
+        filter((search: string) => search.length > 2 || search.length == 0),
+        debounceTime(500),
+        distinctUntilChanged()
+      )
       .subscribe((query) => {
         this.onSearchBarQueryChange(query);
       });
@@ -149,6 +153,10 @@ export class EventPageComponent implements OnInit, OnDestroy {
         tap(() => (prevUrl = this.router.url))
       )
       .subscribe((_) => {
+        const today = new Date();
+        this.page.params.ascending = (
+          this.startDate.getTime() > today.setHours(0, 0, 0, 0)
+        ).toString();
         let paginationParams = this.page.params;
         paginationParams.range_start = this.startDate.toLocaleString('en-GB');
         paginationParams.range_end = this.endDate.toLocaleString('en-GB');
@@ -176,6 +184,7 @@ export class EventPageComponent implements OnInit, OnDestroy {
     this.query = query;
     let paginationParams = this.page.params;
     if (query == '') {
+      console.log('hi');
       paginationParams.range_start = this.startDate.toLocaleString('en-GB');
       paginationParams.range_end = this.endDate.toLocaleString('en-GB');
       this.eventService.list(paginationParams).subscribe((page) => {
