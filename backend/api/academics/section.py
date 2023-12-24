@@ -116,13 +116,13 @@ def update_section(
     return section_service.update(subject, section)
 
 
-@api.delete("", response_model=None, tags=["Academics"])
+@api.delete("{section_id}", response_model=None, tags=["Academics"])
 def delete_section(
-    section: Section,
+    section_id: int,
     subject: User = Depends(registered_user),
     section_service: SectionService = Depends(),
 ):
     """
     Deletes a section from the database
     """
-    return section_service.delete(subject, section)
+    return section_service.delete(subject, section_id)

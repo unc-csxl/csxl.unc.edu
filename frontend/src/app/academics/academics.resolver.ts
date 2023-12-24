@@ -52,3 +52,28 @@ export const courseResolver: ResolveFn<Course | undefined> = (route, state) => {
 export const termsResolver: ResolveFn<Term[] | undefined> = (route, state) => {
   return inject(AcademicsService).getTerms();
 };
+
+/** This resolver injects a term into the catalog component. */
+export const termResolver: ResolveFn<Term | undefined> = (route, state) => {
+  // If the term is new, return a blank one
+  if (route.paramMap.get('id')! == 'new') {
+    return {
+      id: '',
+      name: '',
+      start: new Date(),
+      end: new Date(),
+      course_sections: null
+    };
+  }
+
+  // Otherwise, return the term.
+  // If there is an error, return undefined
+  return inject(AcademicsService)
+    .getTerm(route.paramMap.get('id')!)
+    .pipe(
+      catchError((error) => {
+        console.log(error);
+        return of(undefined);
+      })
+    );
+};

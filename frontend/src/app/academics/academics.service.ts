@@ -31,6 +31,22 @@ export class AcademicsService {
     return this.http.get<Term[]>('/api/academics/term');
   }
 
+  /** Returns one term from the backend database.
+   * @param id ID of the course to look up
+   * @returns {Observable<Term>}
+   */
+  getTerm(id: string): Observable<Term> {
+    return this.http.get<Term>(`/api/academics/term/${id}`);
+  }
+
+  /** Creates a new term.
+   * @param term: Term to create
+   * @returns {Observable<Term>}
+   */
+  createTerm(term: Term): Observable<Term> {
+    return this.http.post<Term>('/api/academics/term', term);
+  }
+
   /** Update a term.
    * @param term: Term to update
    * @returns {Observable<Term>}
