@@ -7,12 +7,7 @@
       : 'padding: 16px; margin: 0px;'
   ">
   <div *ngIf="showHeader">
-    <div
-      style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      ">
+    <div class="list-content">
       <mat-card-title>Upcoming Events</mat-card-title>
       <button
         mat-icon-button
@@ -29,7 +24,7 @@
         <mat-icon>add</mat-icon>
       </button>
     </div>
-    <mat-divider style="padding-bottom: 8px" />
+    <mat-divider class="list-divider" />
   </div>
 
   <p *ngIf="eventsPerDay.length === 0">No upcoming events!</p>
@@ -38,7 +33,7 @@
          eventGroup[0] is the date string and eventGroup[1] s a list of events -->
   <div *ngFor="let eventGroup of eventsPerDay" style="padding-bottom: 16px">
     <mat-card-title>{{ eventGroup[0] }}</mat-card-title>
-    <mat-divider style="padding-bottom: 8px" />
+    <mat-divider class="list-event-group" />
     <event-card
       *ngFor="let event of eventGroup[1]"
       [event]="event"

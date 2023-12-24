@@ -1,5 +1,5 @@
 .header {
-    padding: 0 16px;
+    padding: 16px;
 }
 
 .hours-title {
@@ -31,6 +31,20 @@
     background: #612d23;
 }
 
-.mat-expansion-panel {
+.mat-mdc-card {
     max-width: 640px;
+    margin: 0;
+}
+
+:host /deep/ .mat-mdc-card-header-text {
+    width: 100% !important;
+}
+.header-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+#hours-button {
+    margin-left: auto;
 }

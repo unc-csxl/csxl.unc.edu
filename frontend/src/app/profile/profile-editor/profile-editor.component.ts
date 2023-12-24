@@ -21,6 +21,8 @@ export class ProfileEditorComponent implements OnInit {
   };
 
   public profile: Profile;
+  public token: string;
+  public showToken: boolean = false;
 
   public profileForm = this.formBuilder.group({
     first_name: '',
@@ -49,6 +51,8 @@ export class ProfileEditorComponent implements OnInit {
 
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
+
+    this.token = `${localStorage.getItem('bearerToken')}`;
   }
 
   ngOnInit(): void {
@@ -60,6 +64,15 @@ export class ProfileEditorComponent implements OnInit {
       email: profile.email,
       pronouns: profile.pronouns
     });
+  }
+
+  displayToken(): void {
+    this.showToken = !this.showToken;
+  }
+
+  copyToken(): void {
+    navigator.clipboard.writeText(this.token);
+    this.snackBar.open('Token Copied', '', { duration: 2000 });
   }
 
   onSubmit(): void {

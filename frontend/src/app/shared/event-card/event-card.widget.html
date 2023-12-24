@@ -2,27 +2,22 @@
 <mat-card
   [ngClass]="selected && disableLink ? 'selected-card' : ''"
   appearance="outlined"
-  style="margin-top: 12px !important"
+  class="event-card"
   [routerLink]="disableLink ? null : '/events/' + event.id"
   (click)="cardClicked()">
   <!-- Inner Columns -->
-  <div style="display: flex; flex-direction: column; padding: 12px">
-    <div style="display: flex; flex-direction: row">
-      <p style="font-weight: 500; margin: 0px; width: 75%">{{ event.name }}</p>
-      <p
-        style="margin: 0px; text-align: end; width: 25%"
-        *ngIf="!event.multi_day; else multiDay">
+  <div class="inner-column">
+    <div class="header-section">
+      <p class="event-name">{{ event.name }}</p>
+      <p class="event-date">
         {{ event.time | date: 'shortTime' }}
       </p>
-      <ng-template #multiDay>
-        <p style="margin: 0px; text-align: end; width: 25%">All Day</p>
-      </ng-template>
     </div>
-    <div style="display: flex; flex-direction: row; margin-top: 8px">
-      <p style="margin: 0px; width: 50%">
+    <div class="content-section">
+      <p class="event-shorthand">
         {{ event.organization?.shorthand ?? '' }}
       </p>
-      <p style="margin: 0px; text-align: end; width: 50%">
+      <p class="event-location">
         {{ event.location }}
       </p>
     </div>

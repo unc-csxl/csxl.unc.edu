@@ -34,9 +34,9 @@ def test_get_all(event_svc_integration: EventService):
     assert isinstance(fetched_events[0], EventDetails)
 
 
-def test_get_from_id(event_svc_integration: EventService):
+def test_get_by_id(event_svc_integration: EventService):
     """Test that events can be retrieved based on their ID."""
-    fetched_event = event_svc_integration.get_from_id(1)
+    fetched_event = event_svc_integration.get_by_id(1)
     assert fetched_event is not None
     assert isinstance(fetched_event, Event)
     assert fetched_event.id == event_one.id
@@ -71,9 +71,9 @@ def test_create_event_as_user(event_svc_integration: EventService):
         pytest.fail()  # Fail test if no error was thrown above
 
 
-def test_get_events_from_organization(event_svc_integration: EventService):
+def test_get_events_by_organization(event_svc_integration: EventService):
     """Test that list of events can be retrieved based on specified organization."""
-    fetched_events = event_svc_integration.get_events_from_organization("cssg")
+    fetched_events = event_svc_integration.get_events_by_organization("cssg")
     assert fetched_events is not None
     assert len(fetched_events) == 2
 
@@ -85,7 +85,7 @@ def test_update_event_as_root(
     Note: Test data's website field is updated
     """
     event_svc_integration.update(root, updated_event)
-    assert event_svc_integration.get_from_id(1).location == "Fetzer Gym"
+    assert event_svc_integration.get_by_id(1).location == "Fetzer Gym"
 
 
 def test_update_event_as_user(event_svc_integration: EventService):
@@ -113,7 +113,7 @@ def test_delete_event_as_root(event_svc_integration: EventService):
     """Test that the root user is able to delete events."""
     event_svc_integration.delete(root, 1)
     with pytest.raises(ResourceNotFoundException):
-        event_svc_integration.get_from_id(1)
+        event_svc_integration.get_by_id(1)
 
 
 def test_delete_event_as_user(event_svc_integration: EventService):

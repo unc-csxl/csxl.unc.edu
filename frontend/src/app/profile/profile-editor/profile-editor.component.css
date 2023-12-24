@@ -1,24 +1,38 @@
 .mat-mdc-card {
-    margin: 1em;
-    max-width: 640px;
+  margin: 1em;
+  max-width: 640px;
 }
 
 .mat-mdc-form-field {
-    width: stretch;
-    /* margin-left: 1em; */
+  width: stretch;
+  /* margin-left: 1em; */
 }
 
 .mat-mdc-card-actions .mdc-button {
-    margin-left: 8px;
-    margin-bottom: 8px;
+  margin-left: 8px;
+  margin-bottom: 8px;
 }
 
 .mat-mdc-card-title a,
 .mat-mdc-card-title a:hover,
 .mat-mdc-card-title a:visited {
-    color: #fff;
+  color: #fff;
 }
 
 mat-card-content {
-    margin-top: 8px;
+  margin-top: 8px;
+}
+
+@media (prefers-color-scheme: light) {
+  #github_link {
+    color: black;
+  }
+}
+
+.display {
+  width: 35%;
+}
+
+.token {
+  word-wrap: break-word;
 }
