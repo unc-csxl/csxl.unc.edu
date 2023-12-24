@@ -24,8 +24,6 @@ The home page for the new Academics feature is available on the side navigation 
 
 In the future, this page will be heavily extended to add personalized academics features for users of the CSXL web app. For now, this page will remain static and exist merely for informational and navigational purposes.
 
-This page is powered by new
-
 #### Course Catalog
 
 ![Course catalog](../images/specs/academics/course-catalog.png)
@@ -52,7 +50,7 @@ In order to support admin features for term, course, and section data, many comp
 
 The Academics feature adds a gear icon to the top right of the Navigation toolbar exposing the admin page to users with the correct permissions. This gear icon links to the admin page.
 
-To implement this, a new frontend service called the NagivationAdminGearService manages when to show the gear. Upon redirect, the navigation component clears gear data, and on initialization, components use the NagivationAdminGearService.showAdminGear(permissionAction: string, permissionResource: string, tooltip: string, targetUrl: string) to conditionally show the gear on the navigation bar if the permissions are met.
+To implement this, a new frontend service called the `NagivationAdminGearService` manages when to show the gear. Upon redirect, the navigation component clears gear data, and on initialization, components use the `NagivationAdminGearService.showAdminGear(permissionAction: string, permissionResource: string, tooltip: string, targetUrl: string)` to conditionally show the gear on the navigation bar if the permissions are met.
 
 This feature can easily be added throughout the CSXL application. For now, the functionality is only used in the academics admin features.
 
@@ -65,6 +63,8 @@ Once the admin clicks on the gear icon shown previously, they are redirected to 
 All of the pages look similar - they display a table with current data and enable creating, editing, and deleting items. All four pages implement their own versions of `RxObject` to ensure that the view updates automatically when data is removed from the table.
 
 #### Academics Admin Editor Pages
+
+![Academics Editor](../images/specs/academics/editor.png)
 
 Upon creation or modification of a new item, the admin user is redirected to an editor for the respective data. If editing an item, the editor page is automatically preopopulated to include previous data.
 
