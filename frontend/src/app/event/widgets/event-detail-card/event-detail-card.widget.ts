@@ -7,13 +7,18 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Event, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
 import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { Profile } from 'src/app/models.module';
+
+export interface EventRegistrationEvent {
+  subject: Profile;
+  event: Event;
+}
 
 @Component({
   selector: 'event-detail-card',
@@ -24,6 +29,9 @@ export class EventDetailCard {
   /** The event for the event card to display */
   @Input() event!: Event;
   @Input() profile!: Profile;
+
+  @Output() register = new EventEmitter<EventRegistrationEvent>();
+  @Output() unregister = new EventEmitter<EventRegistrationEvent>();
 
   /** Constructs the widget */
   constructor(
@@ -82,10 +90,7 @@ export class EventDetailCard {
       'Register'
     );
     confirmRegistration.onAction().subscribe(() => {
-      this.eventService.registerForEvent(event_id).subscribe({
-        next: (event_registration) => this.onSuccess(event_registration),
-        error: (err) => this.onError(err)
-      });
+      this.register.emit({ subject: this.profile, event: this.event });
     });
   }
 
@@ -98,29 +103,7 @@ export class EventDetailCard {
       'Unregister'
     );
     confirmUnregistration.onAction().subscribe(() => {
-      this.eventService
-        .unregisterForEvent(event_registration_id)
-        .subscribe(() => {
-          this.snackBar.open('Successfully Unregistered!', '', {
-            duration: 2000
-          });
-        });
-    });
-  }
-
-  /** Opens a confirmation snackbar when an event is successfully created.
-   * @returns {void}
-   */
-  private onSuccess(event_registration: EventRegistration): void {
-    this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
-  }
-
-  /** Opens a confirmation snackbar when there is an error creating an event.
-   * @returns {void}
-   */
-  private onError(err: any): void {
-    this.snackBar.open('Error: Event Not Registered For', '', {
-      duration: 2000
+      this.unregister.emit({ subject: this.profile, event: this.event });
     });
   }
 }

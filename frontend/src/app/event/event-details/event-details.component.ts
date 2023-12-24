@@ -17,6 +17,9 @@ import {
   ResolveFn
 } from '@angular/router';
 import { Event } from '../event.model';
+import { EventRegistrationEvent } from '../widgets/event-detail-card/event-detail-card.widget';
+import { EventService } from '../event.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /** Injects the event's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -46,10 +49,44 @@ export class EventDetailsComponent {
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    private eventService: EventService,
+    protected snackBar: MatSnackBar
+  ) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as { profile: Profile; event: Event };
     this.profile = data.profile;
     this.event = data.event;
+  }
+
+  register(event: EventRegistrationEvent) {
+    this.eventService.registerForEvent(event.event.id!).subscribe({
+      next: (event_registration) => {
+        this.event.is_registered = true;
+        this.snackBar.open('Successfully registered for event', '', {
+          duration: 1000
+        });
+      },
+      error: (err) => this.onError(err)
+    });
+  }
+
+  unregister(event: EventRegistrationEvent) {
+    this.eventService.unregisterForEvent(event.event.id!).subscribe(() => {
+      this.event.is_registered = false;
+      this.snackBar.open('Successfully Unregistered!', '', {
+        duration: 2000
+      });
+    });
+  }
+
+  /** Opens a confirmation snackbar when there is an error creating an event.
+   * @returns {void}
+   */
+  private onError(err: any): void {
+    this.snackBar.open('Error: Event Not Registered For', '', {
+      duration: 2000
+    });
   }
 }
