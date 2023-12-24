@@ -41,3 +41,48 @@ In the future, when more courses outside of just COMP courses are added here, th
 The section offerings page serves as the main hub for students to view offerings of COMP courses by semester / term. The page exists at the `/academics/offerings` route. The section page shows this data in a table. Users can click on courses to see a dropdown to learn more about a course. There is also a dropdown in the top right that allows users to view course offerings based on all of the semesters / terms saved in the database.
 
 In the future, when more courses outside of just COMP courses are added here, this page will include another dropdown in the top right that allows users to switch the course subject they look for courses on.
+
+### Admin Features
+
+In order to support admin features for term, course, and section data, many components were added. In addition, the existing `NavigationComponent` was modified to enable better navigation to admin pages.
+
+#### Gear Icon to Access Admin Features
+
+![Admin Gear](../images/specs/academics/admin-gear.png)
+
+The Academics feature adds a gear icon to the top right of the Navigation toolbar exposing the admin page to users with the correct permissions. This gear icon links to the admin page.
+
+To implement this, a new frontend service called the NagivationAdminGearService manages when to show the gear. Upon redirect, the navigation component clears gear data, and on initialization, components use the NagivationAdminGearService.showAdminGear(permissionAction: string, permissionResource: string, tooltip: string, targetUrl: string) to conditionally show the gear on the navigation bar if the permissions are met.
+
+This feature can easily be added throughout the CSXL application. For now, the functionality is only used in the academics admin features.
+
+#### Academics Admin Tabbed Page
+
+![Academics Admin Tabs](../images/specs/academics/term-admin.png)
+
+Once the admin clicks on the gear icon shown previously, they are redirected to the Acadmics Admin page. This page contains four subcomponents accessible by tags - admin pages to modify _terms_, _courses_, _sections_, and _rooms_ in the backend database.
+
+All of the pages look similar - they display a table with current data and enable creating, editing, and deleting items. All four pages implement their own versions of `RxObject` to ensure that the view updates automatically when data is removed from the table.
+
+#### Academics Admin Editor Pages
+
+Upon creation or modification of a new item, the admin user is redirected to an editor for the respective data. If editing an item, the editor page is automatically preopopulated to include previous data.
+
+### Conclusion
+
+In total, the following components have been added:
+
+| Name                     | Route                         | Description                                              |
+| ------------------------ | ----------------------------- | -------------------------------------------------------- |
+| **Academics Home**       | `/academics`                  | Main home page for the academics feature.                |
+| **Course Catalog**       | `/academics/catalog`          | Displays all COMP courses and their details.             |
+| **Section Offerings**    | `/academics/offerings`        | Displays offerings for COMP courses by term.             |
+| **Academics Admin Home** | `/academics/admin`            | Exposes the academics admin features.                    |
+| **Term Admin**           | `/academics/admin/term`       | Shows all term data and exposes CRUD functionality.      |
+| **Course Admin**         | `/academics/admin/course`     | Shows all course data and exposes CRUD functionality.    |
+| **Section Admin**        | `/academics/admin/section`    | Shows all section data and exposes CRUD functionality.   |
+| **Room Admin**           | `/academics/admin/room`       | Shows all room data and exposes CRUD functionality.      |
+| **Term Editor**          | `/academics/term/edit/:id`    | Form to show when terms are to be created and edited.    |
+| **Course Editor**        | `/academics/course/edit/:id`  | Form to show when courses are to be created and edited.  |
+| **Section Editor**       | `/academics/section/edit/:id` | Form to show when sections are to be created and edited. |
+| **Room Editor**          | `/academics/room/edit/:id`    | Form to show when room are to be created and edited.     |
