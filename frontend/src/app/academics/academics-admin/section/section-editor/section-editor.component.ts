@@ -12,11 +12,17 @@ import { PermissionService } from 'src/app/permission.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import {
   coursesResolver,
+  roomsResolver,
   sectionResolver,
   termResolver,
   termsResolver
 } from 'src/app/academics/academics.resolver';
-import { Course, Section, Term } from 'src/app/academics/academics.models';
+import {
+  Course,
+  Room,
+  Section,
+  Term
+} from 'src/app/academics/academics.models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Profile } from 'src/app/models.module';
@@ -58,7 +64,8 @@ export class SectionEditorComponent {
       profile: profileResolver,
       section: sectionResolver,
       terms: termsResolver,
-      courses: coursesResolver
+      courses: coursesResolver,
+      rooms: roomsResolver
     }
   };
 
@@ -74,6 +81,9 @@ export class SectionEditorComponent {
   /** Store a list of courses. */
   public courses: Course[];
 
+  /** Store a list of rooms. */
+  public rooms: Room[];
+
   /** Store the section id. */
   sectionIdString: string = 'new';
 
@@ -86,6 +96,9 @@ export class SectionEditorComponent {
   ]);
   number = new FormControl('', [Validators.required]);
   meeting_pattern = new FormControl('', [Validators.required]);
+  public room: FormControl<Room | null> = new FormControl(null, [
+    Validators.required
+  ]);
 
   /** Section Editor Form */
   public sectionForm = this.formBuilder.group({
@@ -108,12 +121,14 @@ export class SectionEditorComponent {
       section: Section;
       terms: Term[];
       courses: Course[];
+      rooms: Room[];
     };
 
     this.profile = data.profile;
     this.section = data.section;
     this.terms = data.terms;
     this.courses = data.courses;
+    this.rooms = data.rooms;
 
     /** Get id from the url */
     this.sectionIdString = this.route.snapshot.params['id'];
@@ -123,14 +138,17 @@ export class SectionEditorComponent {
       number: this.section.number,
       meeting_pattern: this.section.meeting_pattern
     });
-    /** Select the term and course, if it exists. */
+    /** Select the term, course, and room, if it exists. */
     let termFilter = this.terms.filter((t) => t.id == this.section.term_id);
     let courseFilter = this.courses.filter(
       (c) => c.id == this.section.course_id
     );
-
+    let roomFilter = this.rooms.filter(
+      (c) => c.id == this.section.lecture_room?.id
+    );
     this.term.setValue(termFilter.length > 0 ? termFilter[0] : null);
     this.course.setValue(courseFilter.length > 0 ? courseFilter[0] : null);
+    this.room.setValue(roomFilter.length > 0 ? roomFilter[0] : null);
   }
 
   /** Event handler to handle submitting the Update Section Form.
