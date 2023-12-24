@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from '../../academics.service';
 import { FormControl } from '@angular/forms';
 import { coursesResolver, termsResolver } from '../../academics.resolver';
+import { RxTermList } from '../rx-academics-admin';
 
 @Component({
   selector: 'app-admin-section',
@@ -26,7 +27,8 @@ export class AdminSectionComponent {
   public sections$: Observable<Section[]>;
 
   /** Store list of Terms  */
-  public terms: Term[];
+  public terms: RxTermList = new RxTermList();
+  public terms$: Observable<Term[]> = this.terms.value$;
 
   /** Store list of Courses  */
   public courses: Course[];
@@ -47,10 +49,11 @@ export class AdminSectionComponent {
       terms: Term[];
       courses: Course[];
     };
-    this.terms = data.terms;
+
+    this.terms.set(data.terms);
     this.courses = data.courses;
 
-    this.displayTerm.setValue(this.terms[1]);
+    this.displayTerm.setValue(data.terms[1]);
 
     this.sections$ = academicsService.getSectionsByTerm(this.displayTerm.value);
   }
@@ -80,6 +83,11 @@ export class AdminSectionComponent {
     );
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteSection(section).subscribe(() => {
+        let termToUpdate = this.displayTerm.value;
+        termToUpdate.course_sections =
+          termToUpdate.course_sections?.filter((s) => s.id !== section.id) ??
+          [];
+        this.terms.updateTerm(termToUpdate);
         this.snackBar.open('This term has been deleted.', '', {
           duration: 2000
         });

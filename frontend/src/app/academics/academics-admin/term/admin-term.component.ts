@@ -5,6 +5,7 @@ import { Term } from '../../academics.models';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from '../../academics.service';
+import { RxTermList } from '../rx-academics-admin';
 
 @Component({
   selector: 'app-admin-term',
@@ -20,7 +21,8 @@ export class AdminTermComponent {
   };
 
   /** Terms List */
-  public terms$: Observable<Term[]>;
+  public terms: RxTermList = new RxTermList();
+  public terms$: Observable<Term[]> = this.terms.value$;
 
   public displayedColumns: string[] = ['name'];
 
@@ -29,7 +31,9 @@ export class AdminTermComponent {
     private snackBar: MatSnackBar,
     private academicsService: AcademicsService
   ) {
-    this.terms$ = academicsService.getTerms();
+    academicsService.getTerms().subscribe((terms) => {
+      this.terms.set(terms);
+    });
   }
 
   /** Event handler to open the Term Editor to create a new term */
@@ -57,6 +61,7 @@ export class AdminTermComponent {
     );
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteTerm(term).subscribe(() => {
+        this.terms.removeTerm(term);
         this.snackBar.open('This term has been deleted.', '', {
           duration: 2000
         });

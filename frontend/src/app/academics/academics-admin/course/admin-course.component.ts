@@ -5,6 +5,7 @@ import { Course } from '../../academics.models';
 import { Route, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from '../../academics.service';
+import { RxCourseList } from '../rx-academics-admin';
 
 @Component({
   selector: 'app-admin-course',
@@ -20,7 +21,8 @@ export class AdminCourseComponent {
   };
 
   /** Courses List */
-  public courses$: Observable<Course[]>;
+  public courses: RxCourseList = new RxCourseList();
+  public courses$: Observable<Course[]> = this.courses.value$;
 
   public displayedColumns: string[] = ['name'];
 
@@ -29,7 +31,9 @@ export class AdminCourseComponent {
     private snackBar: MatSnackBar,
     private academicsService: AcademicsService
   ) {
-    this.courses$ = academicsService.getCourses();
+    academicsService
+      .getCourses()
+      .subscribe((courses) => this.courses.set(courses));
   }
 
   /** Event handler to open the Course Editor to create a new course */
@@ -57,6 +61,7 @@ export class AdminCourseComponent {
     );
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteCourse(course).subscribe(() => {
+        this.courses.removeCourse(course);
         this.snackBar.open('This course has been deleted.', '', {
           duration: 2000
         });
