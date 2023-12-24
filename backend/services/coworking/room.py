@@ -3,7 +3,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from ...database import db_session
-from ...models.coworking import RoomDetails
+from ...models import RoomDetails
 from ...entities import RoomEntity
 
 __authors__ = ["Kris Jordan"]

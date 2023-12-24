@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.coworking import SeatEntity
 from .entity_base import EntityBase
-from ..models.coworking import Room, RoomDetails
+from ..models import Room, RoomDetails
 from typing import Self
 
 __authors__ = ["Kris Jordan"]

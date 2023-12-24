@@ -1,6 +1,3 @@
-from ..room import Room
-from ..room_details import RoomDetails
-
 from .seat import Seat
 from .seat_details import SeatDetails
 
