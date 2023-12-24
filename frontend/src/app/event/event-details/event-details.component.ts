@@ -9,10 +9,7 @@
 
 import { Component, inject } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import {
-  eventDetailResolver,
-  paginatedRegisteredUsersResolver
-} from '../event.resolver';
+import { eventDetailResolver } from '../event.resolver';
 import { Profile } from 'src/app/profile/profile.service';
 import {
   ActivatedRoute,
@@ -20,7 +17,6 @@ import {
   ResolveFn
 } from '@angular/router';
 import { Event } from '../event.model';
-import { Paginated } from 'src/app/pagination';
 import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 

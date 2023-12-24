@@ -635,10 +635,11 @@ class EventService:
         self, subject: User, event_id: int, pagination_params: PaginationParams
     ) -> Paginated[User]:
         """
-        Get registered users of event.
+        Get registered users of event in a paginated list.
 
         Args:
             subject: The user performing the action.
+            event_id: a valid int representing a unique Event
             pagination_params: The pagination parameters.
 
         Returns:
@@ -673,10 +674,11 @@ class EventService:
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
 
-        # if pagination_params.order_by != "":
-        #     statement = statement.order_by(
-        #         getattr(UserEntity, pagination_params.order_by)
-        #     )
+        # Currently cannot order by User attributes since we are querying the EventRegistrationEntity.
+        # One option might be adding a hybrid property field to the EventRegistrationEntity to hold
+        # the user first name so it may be used in ordering.
+        if pagination_params.order_by != "":
+            ...
 
         statement = statement.offset(offset).limit(limit)
 

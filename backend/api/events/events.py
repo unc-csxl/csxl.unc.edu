@@ -391,7 +391,17 @@ def get_registered_users_of_event(
     order_by: str = "first_name",
     filter: str = "",
 ) -> Paginated[User]:
-    """List users via standard backend pagination query parameters."""
+    """
+        List registered users for an event via standard backend pagination query parameters.
+
+    Args:
+        event_id: an int representing a unique Event
+        subject: a valid User model representing the currently logged in User
+        event_service: a valid EventService
+
+    Returns:
+        Paginated[User]: All `User`s registered for an event in Paginated form
+    """
     try:
         pagination_params = PaginationParams(
             page=page, page_size=page_size, order_by=order_by, filter=filter

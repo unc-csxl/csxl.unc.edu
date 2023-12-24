@@ -1,5 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+/**
+ * The Event Users List widget displays the registered users
+ * for an event in a paginated.
+ *
+ * @author Jade Keegan
+ * @copyright 2023
+ * @license MIT
+ */
 
+import { Component, Input, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Paginated } from 'src/app/pagination';
 import { Profile } from 'src/app/models.module';
