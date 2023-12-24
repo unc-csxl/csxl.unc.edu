@@ -103,6 +103,7 @@ export class EventDetailCard {
       this.eventService
         .unregisterForEvent(event_registration_id)
         .subscribe(() => {
+          this.event.is_registered = false;
           this.snackBar.open('Successfully Unregistered!', '', {
             duration: 2000
           });
@@ -114,6 +115,7 @@ export class EventDetailCard {
    * @returns {void}
    */
   private onSuccess(event_registration: EventRegistration): void {
+    this.event.is_registered = true;
     this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
   }
 
