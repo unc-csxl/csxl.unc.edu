@@ -24,6 +24,7 @@ import { CourseEditorComponent } from './academics-admin/course/course-editor/co
 import { MatInputModule } from '@angular/material/input';
 import { TermEditorComponent } from './academics-admin/term/term-editor/term-editor.component';
 import { SectionEditorComponent } from './academics-admin/section/section-editor/section-editor.component';
+import { AdminRoomComponent } from './academics-admin/room/admin-room.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { SectionEditorComponent } from './academics-admin/section/section-editor
     AdminTermComponent,
     CourseEditorComponent,
     TermEditorComponent,
-    SectionEditorComponent
+    SectionEditorComponent,
+    AdminRoomComponent
   ],
   imports: [
     AcademicsRoutingModule,

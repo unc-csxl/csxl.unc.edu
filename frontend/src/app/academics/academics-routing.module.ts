@@ -10,6 +10,7 @@ import { AdminSectionComponent } from './academics-admin/section/admin-section.c
 import { CourseEditorComponent } from './academics-admin/course/course-editor/course-editor.component';
 import { TermEditorComponent } from './academics-admin/term/term-editor/term-editor.component';
 import { SectionEditorComponent } from './academics-admin/section/section-editor/section-editor.component';
+import { AdminRoomComponent } from './academics-admin/room/admin-room.component';
 
 const routes: Routes = [
   {
@@ -18,7 +19,8 @@ const routes: Routes = [
     children: [
       AdminTermComponent.Route,
       AdminCourseComponent.Route,
-      AdminSectionComponent.Route
+      AdminSectionComponent.Route,
+      AdminRoomComponent.Route
     ]
   },
   AcademicsHomeComponent.Route,
