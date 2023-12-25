@@ -104,7 +104,7 @@ def update_room(
 
 
 @api.delete("/{id}", response_model=None, tags=["Rooms"])
-def delete_organization(
+def delete_room(
     id: str,
     subject: User = Depends(registered_user),
     room_service: RoomService = Depends(),
