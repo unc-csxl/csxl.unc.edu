@@ -611,7 +611,7 @@ class EventService:
             slug: a valid str representing a unique Organization slug
 
         Returns:
-            list[UserEvent]: a list of valid EventDetails models
+            list[UserEvent]: a list of valid UserEvent models
         """
         # Query the event with matching organization slug
         events = self.get_events_by_organization(organization)
@@ -620,11 +620,11 @@ class EventService:
         end = datetime.now() + timedelta(days=365)
         time_range = TimeRange(start=start, end=end)
 
-        registered_events = self.get_registered_events_of_user(subject, time_range)
+        registered_events = self.get_registered_event_ids_of_user(subject, time_range)
 
         events_with_status = []
         for event in events:
-            is_registered = event in registered_events
+            is_registered = event.id in registered_events
             user_event = self.event_to_user_event(event, is_registered)
             events_with_status.append(user_event)
 
@@ -658,18 +658,20 @@ class EventService:
             f"organization/{event.organization_id}",
         )
 
-        statement = select(EventRegistrationEntity)
-        length_statement = select(func.count()).select_from(EventRegistrationEntity)
-        if pagination_params.filter != "":
-            query = pagination_params.filter
-            criteria = or_(
+        statement = select(EventRegistrationEntity).where(
+            EventRegistrationEntity.event_id == event_id,
+        )
+        length_statement = (
+            select(func.count())
+            .select_from(EventRegistrationEntity)
+            .where(
                 EventRegistrationEntity.event_id == event_id,
-                EventRegistrationEntity.user.first_name.ilike(f"%{query}%"),
-                EventRegistrationEntity.user.last_name.ilike(f"%{query}%"),
-                EventRegistrationEntity.user.onyen.ilike(f"%{query}%"),
             )
-            statement = statement.where(criteria)
-            length_statement = length_statement.where(criteria)
+        )
+
+        # Currently cannot filter by User attributes since we are querying the EventRegistrationEntity.
+        if pagination_params.filter != "":
+            ...
 
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
