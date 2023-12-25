@@ -118,10 +118,11 @@ def new_section(
     # unwrap it in an if-statement. If for some reason ID does not exist, we can
     # default to returning the `created_section` entity created earlier. Otherwise, we
     # will return the entity that has the `lecture_room` field populated correctly.
-    if created_section.id:
-        return section_service.get_by_id(created_section.id)
-    else:
-        return created_section
+    return (
+        section_service.get_by_id(created_section.id)
+        if created_section.id
+        else created_section
+    )
 
 
 @api.put("", response_model=SectionDetails, tags=["Academics"])
