@@ -108,3 +108,42 @@ The fields and relationships between these entities are shown below:
 ![Entity Design](../images/specs/academics/backend-entity.png)
 
 As you can see, the two association tables defined by `SectionUserEntity` and `SectionRoomEntity` relate to (and therefore add relationship fields to) the existing `user` and `room` tables.
+
+### Pydantic Model Implementation
+
+The Pydantic models for terms and courses are nearly one-to-one with their entity counterparts. However, sections utilize a more custom model structure, as shown below:
+
+<table>
+<tr><th width="520">`Section` and `SectionDetail` Models</th></tr>
+<tr>
+<td>
+ 
+```py
+# Both models are slightly simplified for better
+# comprehensibility here.
+class Section(BaseModel):
+    id: int | None
+    course_id: str
+    number: str
+    term_id: str
+    meeting_pattern: str
+    staff: list[SectionMember]
+    lecture_room: Room | None
+    office_hour_rooms: list[Room]
+
+class SectionDetails(Section):
+course: Course
+term: Term
+
+```
+
+</td>
+</tr>
+</table>
+
+As you can see, the room relation is split up into `lecture_room` and `office_hour_rooms` respectively. This helps to simplify frontend logic and prevent numerous filtering calls having to be made. The data is automatically updated in the API.
+
+The user relation is also stripped down to just `staff`, which contains only *instructors* and *TAs* and excludes students. This is done for security purposes. The public GET API should not expose entire student rosters.
+
+###
+```
