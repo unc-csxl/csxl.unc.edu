@@ -178,3 +178,6 @@ All of these API routes call on **backend service functions** to perform these o
 | `"room.update"` | `"room/{id}"` | Gives the user permission to update a room in the database. |
 | `"room.delete"` | `"room/{id}"` | Gives the user permission to delete a room in the database. |
 
+### Testing
+
+The Academics feature adds full, thorough testing to every new service function added in the course, section, term, and room services. All tests pass, and all services created or modified have 100% test coverage.
