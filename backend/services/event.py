@@ -196,6 +196,7 @@ class EventService:
         event_entity = self._session.get(EventEntity, event.id)
 
         # Check if result is null
+        # ADD UNIT TEST COVERAGE
         if event_entity is None:
             raise ResourceNotFoundException(f"No event found with matching ID: {id}")
 
@@ -232,6 +233,7 @@ class EventService:
         )
 
         # Ensure object exists
+        # ADD TEST COVERAGE
         if event is None:
             raise ResourceNotFoundException(f"No event found with matching ID: {id}")
 
@@ -400,13 +402,16 @@ class EventService:
             return existing_registration
 
         # Add new object to table and commit changes
+        # ADD TEST COVERAGE
         event_registration_entity = EventRegistrationEntity(
             user_id=attendee.id, event_id=event.id
         )
+        # ADD TEST COVERAGE (both lines)
         self._session.add(event_registration_entity)
         self._session.commit()
 
         # Return registration
+        # ADD TEST COVERAGE
         return event_registration_entity.to_model()
 
     def unregister(self, subject: User, attendee: User, event: EventDetails) -> None:
@@ -670,6 +675,7 @@ class EventService:
         )
 
         # Currently cannot filter by User attributes since we are querying the EventRegistrationEntity.
+        # ADD TEST COVERAGE
         if pagination_params.filter != "":
             ...
 
