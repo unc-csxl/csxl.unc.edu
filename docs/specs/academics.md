@@ -151,3 +151,30 @@ The Academics feature adds 25 new API routes to handle CRUD operations on terms,
 
 Here is a summary of the APIs added:
 
+### Room APIs:
+
+![Room APIs](../images/specs/academics/room-api.png)
+
+### Academics APIs:
+
+![Academics APIs](../images/specs/academics/academics-api.png)
+
+### Permission Summary
+
+All of these API routes call on **backend service functions** to perform these operations. These backend services are protected by permissions. Here is a summary of the permissions that this feature added:
+
+| Action | Resource | Description |
+| ---- | ---- | -------- |
+| `"academics.term.create"` | `"term"` | Gives the user permission to create terms in the database. |
+| `"academics.term.update"` | `"term/{id}"` | Gives the user permission to update a term in the database. |
+| `"academics.term.delete"` | `"term/{id}"` | Gives the user permission to delete a term in the database. |
+| `"academics.course.create"` | `"course"` | Gives the user permission to create courses in the database. |
+| `"academics.course.update"` | `"course/{id}"` | Gives the user permission to update a course in the database. |
+| `"academics.course.delete"` | `"course/{id}"` | Gives the user permission to delete a course in the database. |
+| `"academics.section.create"` | `"section"` | Gives the user permission to create sections in the database. |
+| `"academics.section.update"` | `"section/{id}"` | Gives the user permission to update a section in the database. |
+| `"academics.section.delete"` | `"section/{id}"` | Gives the user permission to delete a section in the database. |
+| `"room.create"` | `"room"` | Gives the user permission to create rooms in the database. |
+| `"room.update"` | `"room/{id}"` | Gives the user permission to update a room in the database. |
+| `"room.delete"` | `"room/{id}"` | Gives the user permission to delete a room in the database. |
+
