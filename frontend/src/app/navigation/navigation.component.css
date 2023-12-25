@@ -37,3 +37,19 @@
 .mat-mdc-progress-bar {
     position: fixed;
 }
+
+.mat-toolbar {
+    width: 100%;
+}
+
+.toolbar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#gear-icon {
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}

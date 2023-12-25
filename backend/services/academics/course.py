@@ -102,7 +102,7 @@ class CourseService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.course.create", f"course/")
+        self._permission_svc.enforce(subject, "academics.course.create", f"course/")
 
         # Create new object
         course_entity = CourseEntity.from_model(course)
@@ -127,7 +127,7 @@ class CourseService:
 
         # Check if user has admin permissions
         self._permission_svc.enforce(
-            subject, "courses.course.update", f"course/{course.id}"
+            subject, "academics.course.update", f"course/{course.id}"
         )
 
         # Find the entity to update
@@ -144,6 +144,7 @@ class CourseService:
         course_entity.number = course.number
         course_entity.title = course.title
         course_entity.description = course.description
+        course_entity.credit_hours = course.credit_hours
 
         # Commit changes
         self._session.commit()
@@ -151,27 +152,23 @@ class CourseService:
         # Return edited object
         return course_entity.to_details_model()
 
-    def delete(self, subject: User, course: Course) -> None:
+    def delete(self, subject: User, id: str) -> None:
         """Deletes a course.
 
         Args:
             subject: a valid User model representing the currently logged in User
-            course: Course to delete
+            id: ID of course to delete
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(
-            subject, "courses.course.delete", f"course/{course.id}"
-        )
+        self._permission_svc.enforce(subject, "academics.course.delete", f"course/{id}")
 
         # Find the entity to delete
-        course_entity = self._session.get(CourseEntity, course.id)
+        course_entity = self._session.get(CourseEntity, id)
 
         # Raise an error if no entity was found
         if course_entity is None:
-            raise ResourceNotFoundException(
-                f"Course with id: {course.id} does not exist."
-            )
+            raise ResourceNotFoundException(f"Course with id: {id} does not exist.")
 
         # Delete and commit changes
         self._session.delete(course_entity)

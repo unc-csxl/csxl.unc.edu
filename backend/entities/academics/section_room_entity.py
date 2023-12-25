@@ -41,7 +41,7 @@ class SectionRoomEntity(EntityBase):
 
     # Room for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
-    room_id: Mapped[int] = mapped_column(ForeignKey("room.id"), primary_key=True)
+    room_id: Mapped[str] = mapped_column(ForeignKey("room.id"), primary_key=True)
     room: Mapped["RoomEntity"] = relationship(back_populates="course_sections")
 
     # Type of relationship

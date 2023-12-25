@@ -99,7 +99,7 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.term.create", f"term/")
+        self._permission_svc.enforce(subject, "academics.term.create", f"term/")
 
         # Create new object
         term_entity = TermEntity.from_model(term)
@@ -123,7 +123,9 @@ class TermService:
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.term.update", f"term/{term.id}")
+        self._permission_svc.enforce(
+            subject, "academics.term.update", f"term/{term.id}"
+        )
 
         # Find the entity to update
         term_entity = self._session.get(TermEntity, term.id)
@@ -143,23 +145,23 @@ class TermService:
         # Return edited object
         return term_entity.to_details_model()
 
-    def delete(self, subject: User, term: Term) -> None:
+    def delete(self, subject: User, id: str) -> None:
         """Deletes a term.
 
         Args:
             subject: a valid User model representing the currently logged in User
-            term (Term): Term to delete
+            id (str): ID for term to delete
         """
 
         # Check if user has admin permissions
-        self._permission_svc.enforce(subject, "courses.term.delete", f"term/{term.id}")
+        self._permission_svc.enforce(subject, "academics.term.delete", f"term/{id}")
 
         # Find the entity to delete
-        term_entity = self._session.get(TermEntity, term.id)
+        term_entity = self._session.get(TermEntity, id)
 
         # Raise an error if no entity was found
         if term_entity is None:
-            raise ResourceNotFoundException(f"Term with id: {term.id} does not exist.")
+            raise ResourceNotFoundException(f"Term with id: {id} does not exist.")
 
         # Delete and commit changes
         self._session.delete(term_entity)

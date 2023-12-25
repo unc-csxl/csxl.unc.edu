@@ -7,7 +7,7 @@ from ....models.coworking import SeatDetails
 from .fixtures import seat_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
-from .room_data import fake_data_fixture as insert_room_fake_data
+from ..room_data import fake_data_fixture as insert_room_fake_data
 from .seat_data import fake_data_fixture as insert_seat_fake_data
 
 # Import the fake model data in a namespace for test assertions

@@ -1,3 +1,13 @@
+/**
+ * These helper modules define the structure of data that is accessible
+ * at the `/api/academics` endpoints.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
+import { Seat } from '../coworking/coworking.models';
 import { TimeRange } from '../time-range';
 
 /** Defines a Course */
@@ -13,7 +23,7 @@ export interface Course {
 
 /** Defines a Course Section */
 export interface Section {
-  id: number;
+  id: number | null;
   course_id: string;
   number: string;
   term_id: string;
@@ -22,7 +32,7 @@ export interface Section {
   term: Term | null;
   staff: SectionMember[] | null;
   lecture_room: Room | null;
-  office_hour_rooms: Room[];
+  office_hour_rooms: Room[] | null;
 }
 
 /** Defines a Term */
@@ -45,6 +55,11 @@ export interface SectionMember {
 export interface Room {
   id: string;
   nickname: string;
+  building: string | null;
+  room: string | null;
+  capacity: number | null;
+  reservable: boolean | null;
+  seats: Seat[] | null;
 }
 
 /** Defines a Roster Role */

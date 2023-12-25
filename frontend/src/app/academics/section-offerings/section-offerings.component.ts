@@ -1,5 +1,14 @@
-import { Component } from '@angular/core';
-import { courseResolver, termResolver } from '../academics.resolver';
+/**
+ * The Section Offerings page enables users to view all current offerings of
+ * the COMP courses.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
+import { Component, OnInit } from '@angular/core';
+import { coursesResolver, termsResolver } from '../academics.resolver';
 import {
   Course,
   RosterRole,
@@ -8,7 +17,7 @@ import {
   Term
 } from '../academics.models';
 import { ActivatedRoute } from '@angular/router';
-import { CourseService } from '../academics.service';
+import { AcademicsService } from '../academics.service';
 import {
   animate,
   state,
@@ -17,6 +26,7 @@ import {
   trigger
 } from '@angular/animations';
 import { FormControl } from '@angular/forms';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-offerings',
@@ -33,14 +43,14 @@ import { FormControl } from '@angular/forms';
     ])
   ]
 })
-export class SectionOfferingsComponent {
+export class SectionOfferingsComponent implements OnInit {
   /** Route information to be used in Course Routing Module */
   public static Route = {
     path: 'offerings',
     title: 'Section Offerings',
     component: SectionOfferingsComponent,
     canActivate: [],
-    resolve: { terms: termResolver, courses: courseResolver }
+    resolve: { terms: termsResolver, courses: coursesResolver }
   };
 
   /** Store list of Courses */
@@ -67,7 +77,8 @@ export class SectionOfferingsComponent {
   /** Constructor for the course catalog page. */
   constructor(
     private route: ActivatedRoute,
-    public coursesService: CourseService
+    public coursesService: AcademicsService,
+    private gearService: NagivationAdminGearService
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -79,6 +90,10 @@ export class SectionOfferingsComponent {
 
     // Set initial display term
     this.displayTerm.setValue(this.terms[1]);
+  }
+
+  ngOnInit() {
+    this.gearService.showAdminGear('academics.*', '*', '', 'academics/admin/');
   }
 
   /** Helper function that returns the course object from the list with the given ID.

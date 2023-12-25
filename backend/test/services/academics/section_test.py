@@ -92,7 +92,7 @@ def test_create_as_root(section_svc: SectionService):
     section = section_svc.create(user_data.root, section_data.new_section)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.section.create", "section/"
+        user_data.root, "academics.section.create", "section/"
     )
     assert isinstance(section, SectionDetails)
     assert section.id == section_data.new_section.id
@@ -111,7 +111,7 @@ def test_update_as_root(section_svc: SectionService):
     section = section_svc.update(user_data.root, section_data.edited_comp_110)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "courses.section.update", f"section/{section.id}"
+        user_data.root, "academics.section.update", f"section/{section.id}"
     )
     assert isinstance(section, SectionDetails)
     assert section.id == section_data.edited_comp_110.id
@@ -136,11 +136,11 @@ def test_delete_as_root(section_svc: SectionService):
     permission_svc = create_autospec(PermissionService)
     section_svc._permission_svc = permission_svc
 
-    section_svc.delete(user_data.root, section_data.comp_101_001)
+    section_svc.delete(user_data.root, section_data.comp_101_001.id)
 
     permission_svc.enforce.assert_called_with(
         user_data.root,
-        "courses.section.delete",
+        "academics.section.delete",
         f"section/{section_data.comp_101_001.id}",
     )
 
@@ -153,11 +153,11 @@ def test_delete_as_root_not_found(section_svc: SectionService):
     section_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        section = section_svc.delete(user_data.root, section_data.new_section)
+        section = section_svc.delete(user_data.root, section_data.new_section.id)
         pytest.fail()
 
 
 def test_delete_as_user(section_svc: SectionService):
     with pytest.raises(UserPermissionException):
-        section = section_svc.delete(user_data.user, section_data.comp_101_001)
+        section = section_svc.delete(user_data.user, section_data.comp_101_001.id)
         pytest.fail()
