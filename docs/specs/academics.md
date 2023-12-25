@@ -181,3 +181,9 @@ All of these API routes call on **backend service functions** to perform these o
 ### Testing
 
 The Academics feature adds full, thorough testing to every new service function added in the course, section, term, and room services. All tests pass, and all services created or modified have 100% test coverage.
+
+## Future Considerations
+* If we begin to add more course types to the page, I would love to switch the input select for course subject codes to use the material chip components.
+* We can now implement the gear icon for other admin features and refactor the folder structure - notably, for organizations.
+* We may want a separate `Academics` page specifically for unauthenticated users.
+* We can consider creating detail pages for courses and terms. At the moment though, it does not seem necessary.
