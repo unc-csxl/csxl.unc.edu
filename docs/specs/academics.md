@@ -145,5 +145,9 @@ As you can see, the room relation is split up into `lecture_room` and `office_ho
 
 The user relation is also stripped down to just `staff`, which contains only *instructors* and *TAs* and excludes students. This is done for security purposes. The public GET API should not expose entire student rosters.
 
-###
-```
+### API Implementation
+
+The Academics feature adds 25 new API routes to handle CRUD operations on terms, courses, sections, and room data.
+
+Here is a summary of the APIs added:
+
