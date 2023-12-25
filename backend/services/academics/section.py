@@ -157,8 +157,29 @@ class SectionService:
 
         self._session.commit()
 
-        # Return added object
-        return section_entity.to_details_model()
+        # Find added object
+        added_section = section_entity.to_details_model()
+
+        # Now, attempt to add the lecture room
+        if section.lecture_room is not None:
+            # Check if user has admin permissions
+            self._permission_svc.enforce(
+                subject, "academics.section.create", f"section/"
+            )
+
+            # Then, attempt to create room relation
+            section_room_entity = SectionRoomEntity(
+                section_id=added_section.id,
+                room_id=section.lecture_room.id,
+                assignment_type=RoomAssignmentType.LECTURE_ROOM,
+            )
+            self._session.add(section_room_entity)
+            self._session.commit()
+        else:
+            raise ResourceNotFoundException(f"Lecture does not exist.")
+
+        # Now, refresh the data and return.
+        return self._session.get(SectionEntity, added_section.id).to_details_model()
 
     def update(self, subject: User, section: Section) -> SectionDetails:
         """Updates a section.

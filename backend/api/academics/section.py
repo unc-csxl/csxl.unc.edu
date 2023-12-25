@@ -98,31 +98,7 @@ def new_section(
     Returns:
         SectionDetails: Section created
     """
-    created_section = section_service.create(subject, section)
-
-    # This function is needed to ensure that the lecture room passed into the
-    # API from the SectionModel is properly added into the database when converted
-    # to entities. This stems from the fact that our `SectionModel` splits up `rooms`
-    # into two properties -- `lecture_room` and `office_hour_rooms`. So, when we try
-    # and POST a section model, we cannot post directly into the section entity.
-    #
-    # The solution relies on section being created *first* (so that its ID field is
-    # populated), then connecting it to a room in the `academics__section_room`
-    # table via `section_service.add_lecture_room_to_section()`.
-    section_service.add_lecture_room_to_section(
-        subject, created_section, section.lecture_room
-    )
-
-    # Then, we want to re-get the section now that the correct lecture room relation
-    # has been added to the database. Since ID is possibly a null value, we need to
-    # unwrap it in an if-statement. If for some reason ID does not exist, we can
-    # default to returning the `created_section` entity created earlier. Otherwise, we
-    # will return the entity that has the `lecture_room` field populated correctly.
-    return (
-        section_service.get_by_id(created_section.id)
-        if created_section.id
-        else created_section
-    )
+    return section_service.create(subject, section)
 
 
 @api.put("", response_model=SectionDetails, tags=["Academics"])
