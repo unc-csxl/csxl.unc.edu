@@ -12,7 +12,10 @@
     </mat-card-header>
     <mat-card-content>
       <!-- Term ID Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field
+        appearance="outline"
+        color="accent"
+        *ngIf="termId === 'new'">
         <mat-label>Term ID</mat-label>
         <input
           matInput
