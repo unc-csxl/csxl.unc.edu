@@ -184,16 +184,15 @@ export class EventPageComponent implements OnInit, OnDestroy {
     let paginationParams = this.page.params;
     paginationParams.ascending = 'true';
     if (query == '') {
-      console.log('hi');
-      paginationParams.range_start = this.startDate.toLocaleString('en-GB');
-      paginationParams.range_end = this.endDate.toLocaleString('en-GB');
+      paginationParams.range_start = this.startDate.toLocaleString('en-US');
+      paginationParams.range_end = this.endDate.toLocaleString('en-US');
     } else {
       paginationParams.range_start = new Date(
         new Date().setFullYear(new Date().getFullYear() - 100)
-      ).toLocaleString('en-GB');
+      ).toLocaleString('en-US');
       paginationParams.range_end = new Date(
         new Date().setFullYear(new Date().getFullYear() + 100)
-      ).toLocaleString('en-GB');
+      ).toLocaleString('en-US');
       paginationParams.filter = this.query;
     }
     this.eventService.list(paginationParams).subscribe((page) => {
