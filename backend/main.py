@@ -101,7 +101,5 @@ for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:
 
         @app.exception_handler(exception)
-        def _handler_wrapper(
-            request: Request, e: ReservationException | EventRegistrationException
-        ):
+        def _handler_wrapper(request: Request, e: Exception):
             return handler(request, e)
