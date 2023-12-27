@@ -93,7 +93,12 @@ export class SectionOfferingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.gearService.showAdminGear('academics.*', '*', '', 'academics/admin/');
+    this.gearService.showAdminGear(
+      'academics.*',
+      '*',
+      '',
+      'academics/admin/section'
+    );
   }
 
   /** Helper function that returns the course object from the list with the given ID.

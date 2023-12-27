@@ -144,7 +144,7 @@ export class RoomEditorComponent {
    * @returns {void}
    */
   private onSuccess(room: Room): void {
-    this.router.navigate(['/academics/admin/']);
+    this.router.navigate(['/academics/admin/room']);
 
     let message: string =
       this.roomId === 'new' ? 'Room Created' : 'Room Updated';

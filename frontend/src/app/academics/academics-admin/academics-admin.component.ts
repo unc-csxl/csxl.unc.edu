@@ -21,10 +21,10 @@ export class AcademicsAdminComponent {
   public profile$: Observable<Profile | undefined>;
 
   public links = [
-    { label: 'Terms', path: '/academics/admin/term' },
-    { label: 'Courses', path: '/academics/admin/course' },
     { label: 'Sections', path: '/academics/admin/section' },
-    { label: 'Rooms', path: '/academics/admin/room' }
+    { label: 'Courses', path: '/academics/admin/course' },
+    { label: 'Rooms', path: '/academics/admin/room' },
+    { label: 'Terms', path: '/academics/admin/term' }
   ];
 
   constructor(public profileService: ProfileService) {

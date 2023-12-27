@@ -142,7 +142,7 @@ export class CourseEditorComponent {
    * @returns {void}
    */
   private onSuccess(course: Course): void {
-    this.router.navigate(['/academics/admin/']);
+    this.router.navigate(['/academics/admin/course']);
 
     let message: string =
       this.courseId === 'new' ? 'Course Created' : 'Course Updated';

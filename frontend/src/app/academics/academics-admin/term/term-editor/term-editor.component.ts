@@ -140,7 +140,7 @@ export class TermEditorComponent {
    * @returns {void}
    */
   private onSuccess(term: Term): void {
-    this.router.navigate(['/academics/admin/']);
+    this.router.navigate(['/academics/admin/term']);
 
     let message: string =
       this.termId === 'new' ? 'Term Created' : 'Term Updated';

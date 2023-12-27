@@ -70,6 +70,11 @@ export class CoursesHomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.gearService.showAdminGear('academics.*', '*', '', 'academics/admin/');
+    this.gearService.showAdminGear(
+      'academics.*',
+      '*',
+      '',
+      'academics/admin/course'
+    );
   }
 }

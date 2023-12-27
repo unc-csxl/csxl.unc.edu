@@ -259,22 +259,3 @@ class SectionService:
         # Delete and commit changes
         self._session.delete(section_entity)
         self._session.commit()
-
-    def add_lecture_room_to_section(
-        self, subject: User, section: Section, lecture_room: Room | None
-    ):
-        if lecture_room is not None:
-            # Check if user has admin permissions
-            self._permission_svc.enforce(
-                subject, "academics.section.create", f"section/"
-            )
-
-            # Then, attempt to create room relation
-            section_room_entity = SectionRoomEntity(
-                section_id=section.id,
-                room_id=lecture_room.id,
-                assignment_type=RoomAssignmentType.LECTURE_ROOM,
-            )
-            self._session.add(section_room_entity)
-        else:
-            raise ResourceNotFoundException(f"Lecture does not exist.")

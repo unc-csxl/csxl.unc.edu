@@ -103,11 +103,7 @@ class SectionEntity(EntityBase):
             meeting_pattern=self.meeting_pattern,
             lecture_room=(lecture_rooms[0] if len(lecture_rooms) > 0 else None),
             office_hour_rooms=office_hour_rooms,
-            staff=[
-                members.to_flat_model()
-                for members in self.members
-                if members.member_role != RosterRole.STUDENT
-            ],
+            staff=staff,
         )
 
     def to_details_model(self) -> SectionDetails:
@@ -117,21 +113,8 @@ class SectionEntity(EntityBase):
         Returns:
             SectionDetails: `SectionDetails` object from the entity
         """
-        lecture_rooms = [
-            room.room.to_model()
-            for room in self.rooms
-            if room.assignment_type == RoomAssignmentType.LECTURE_ROOM
-        ]
-        office_hour_rooms = [
-            room.room.to_model()
-            for room in self.rooms
-            if room.assignment_type == RoomAssignmentType.OFFICE_HOURS
-        ]
-        staff = [
-            members.to_flat_model()
-            for members in self.members
-            if members.member_role != RosterRole.STUDENT
-        ]
+
+        section = self.to_model()
 
         return SectionDetails(
             id=self.id,
@@ -141,7 +124,7 @@ class SectionEntity(EntityBase):
             term_id=self.term_id,
             term=self.term.to_model(),
             meeting_pattern=self.meeting_pattern,
-            lecture_room=(lecture_rooms[0] if len(lecture_rooms) > 0 else None),
-            office_hour_rooms=office_hour_rooms,
-            staff=staff,
+            lecture_room=section.lecture_room,
+            office_hour_rooms=section.office_hour_rooms,
+            staff=section.staff,
         )
