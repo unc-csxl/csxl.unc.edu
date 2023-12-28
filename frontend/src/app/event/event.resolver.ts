@@ -37,7 +37,8 @@ export const eventDetailResolver: ResolveFn<Event | undefined> = (
       organization_id: null,
       organization: null,
       registration_count: 0,
-      is_registered: false
+      is_registered: false,
+      is_organizer: false
     };
   }
 };

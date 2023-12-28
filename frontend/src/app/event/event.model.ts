@@ -24,6 +24,7 @@ export interface Event {
   organization: Organization | null;
   registration_count: number;
   is_registered: boolean;
+  is_organizer: boolean;
 }
 
 /** Interface for the Event JSON Response model
@@ -44,6 +45,7 @@ export interface EventJson {
   organization: Organization | null;
   registration_count: number;
   is_registered: boolean;
+  is_organizer: boolean;
 }
 
 /** Function that converts an EventJSON response model to an Event model.

@@ -105,7 +105,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to create users
         self._permission.enforce(
             subject,
-            "organization.events.*",
+            "organization.events.create",
             f"organization/{event.organization_id}",
         )
 
@@ -188,7 +188,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to update users
         self._permission.enforce(
             subject,
-            "organization.events.*",
+            "organization.events.update",
             f"organization/{event.organization_id}",
         )
 
@@ -230,7 +230,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to delete users
         self._permission.enforce(
             subject,
-            "organization.events.*",
+            "organization.events.delete",
             f"organization/{event.organization_id}",
         )
 
