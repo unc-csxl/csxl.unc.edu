@@ -435,8 +435,8 @@ class EventService:
         # Permissions for reading/managing registration are enforced in #get_registration
         event_registration = self.get_registration(subject, attendee, event)
 
-        # Ensure object exists
-        if event_registration is None:
+        # Ensure object exists and user is not organizer of event
+        if event_registration is None or event_registration.is_organizer:
             return
 
         # Delete object and commit
