@@ -60,6 +60,9 @@ def test_get_by_subject_not_found(section_svc: SectionService):
 
 
 def test_get_by_id(section_svc: SectionService):
+    if section_data.comp_101_001.id is None:
+        raise ResourceNotFoundException("Invalid ID for section.")
+
     section = section_svc.get_by_id(section_data.comp_101_001.id)
 
     assert isinstance(section, SectionDetails)
@@ -133,6 +136,9 @@ def test_update_as_user(section_svc: SectionService):
 
 
 def test_delete_as_root(section_svc: SectionService):
+    if section_data.comp_101_001.id is None:
+        raise ResourceNotFoundException("Invalid ID for section.")
+
     permission_svc = create_autospec(PermissionService)
     section_svc._permission_svc = permission_svc
 
@@ -153,11 +159,17 @@ def test_delete_as_root_not_found(section_svc: SectionService):
     section_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
+        if section_data.new_section.id is None:
+            raise ResourceNotFoundException("Invalid ID for section.")
+
         section = section_svc.delete(user_data.root, section_data.new_section.id)
         pytest.fail()
 
 
 def test_delete_as_user(section_svc: SectionService):
+    if section_data.comp_101_001.id is None:
+        raise ResourceNotFoundException("Invalid ID for section.")
+
     with pytest.raises(UserPermissionException):
         section = section_svc.delete(user_data.user, section_data.comp_101_001.id)
         pytest.fail()

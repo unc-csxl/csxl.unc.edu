@@ -175,8 +175,6 @@ class SectionService:
             )
             self._session.add(section_room_entity)
             self._session.commit()
-        else:
-            raise ResourceNotFoundException(f"Lecture does not exist.")
 
         # Now, refresh the data and return.
         return self._session.get(SectionEntity, added_section.id).to_details_model()
@@ -212,26 +210,25 @@ class SectionService:
         section_entity.term_id = section.term_id
         section_entity.meeting_pattern = section.meeting_pattern
 
-        # Commit changes
-        self._session.commit()
-
         query = select(SectionRoomEntity).where(
             SectionRoomEntity.section_id == section.id,
             SectionRoomEntity.assignment_type == RoomAssignmentType.LECTURE_ROOM,
         )
         section_room_entity = self._session.scalars(query).one_or_none()
 
-        if section_room_entity is not None:
-            section_room_entity.room_id = section.lecture_room.id
-            # Commit changes
-            self._session.commit()
-        else:
-            section_room_entity = SectionRoomEntity(
-                section_id=section.id,
-                room_id=section.lecture_room.id,
-                assignment_type=RoomAssignmentType.LECTURE_ROOM,
-            )
-            self._session.add(section_room_entity)
+        if section.lecture_room is not None:
+            if section_room_entity is not None:
+                section_room_entity.room_id = section.lecture_room.id
+            else:
+                section_room_entity = SectionRoomEntity(
+                    section_id=section.id,
+                    room_id=section.lecture_room.id,
+                    assignment_type=RoomAssignmentType.LECTURE_ROOM,
+                )
+                self._session.add(section_room_entity)
+
+        # Commit changes
+        self._session.commit()
 
         # Return edited object
         return section_entity.to_details_model()
