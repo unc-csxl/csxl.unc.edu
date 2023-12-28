@@ -9,17 +9,11 @@
         </div>
       </th>
       <td mat-cell *matCellDef="let element">
-        <div class="row">
+        <div class="row" (click)="updateRoom(element)">
           <p>
             {{ element.nickname }}
           </p>
           <div clas="modify-buttons">
-            <button
-              mat-stroked-button
-              (click)="updateRoom(element)"
-              id="edit-button">
-              Edit
-            </button>
             <button mat-stroked-button (click)="deleteRoom(element)">
               Delete
             </button>
