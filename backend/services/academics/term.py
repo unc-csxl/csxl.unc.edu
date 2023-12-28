@@ -75,8 +75,12 @@ class TermService:
             TermDetails: Term based on the provided date.
         """
         # Select all entries in the `Term` table that contains this date.
-        query = select(TermEntity).where(TermEntity.start < date, date < TermEntity.end)
-        entity = self._session.scalars(query).one_or_none()
+        # This query either selects the most current term, or the upcoming term if there
+        # is no currently active term
+        query = (
+            select(TermEntity).where(date < TermEntity.end).order_by(TermEntity.start)
+        )
+        entity = self._session.scalars(query).first()
 
         # Rause an error if no entity was found.
         if entity is None:
