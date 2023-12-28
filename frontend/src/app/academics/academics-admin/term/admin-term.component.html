@@ -9,8 +9,8 @@
         </div>
       </th>
       <td mat-cell *matCellDef="let element">
-        <div class="row" (click)="updateTerm(element)">
-          <p>
+        <div class="row">
+          <p (click)="updateTerm(element)">
             {{ element.name }}
           </p>
           <div clas="modify-buttons">
