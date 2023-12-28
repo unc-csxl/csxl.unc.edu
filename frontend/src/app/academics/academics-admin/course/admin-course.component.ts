@@ -69,11 +69,22 @@ export class AdminCourseComponent {
       'Delete'
     );
     confirmDelete.onAction().subscribe(() => {
-      this.academicsService.deleteCourse(course).subscribe(() => {
-        this.courses.removeCourse(course);
-        this.snackBar.open('This course has been deleted.', '', {
-          duration: 2000
-        });
+      this.academicsService.deleteCourse(course).subscribe({
+        next: () => {
+          this.courses.removeCourse(course);
+          this.snackBar.open('This course has been deleted.', '', {
+            duration: 2000
+          });
+        },
+        error: () => {
+          this.snackBar.open(
+            'Delete failed. Make sure to remove all sections for this course first.',
+            '',
+            {
+              duration: 2000
+            }
+          );
+        }
       });
     });
   }

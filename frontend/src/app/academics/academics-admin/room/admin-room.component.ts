@@ -69,11 +69,22 @@ export class AdminRoomComponent {
       'Delete'
     );
     confirmDelete.onAction().subscribe(() => {
-      this.academicsService.deleteRoom(room).subscribe(() => {
-        this.rooms.removeRoom(room);
-        this.snackBar.open('This room has been deleted.', '', {
-          duration: 2000
-        });
+      this.academicsService.deleteRoom(room).subscribe({
+        next: () => {
+          this.rooms.removeRoom(room);
+          this.snackBar.open('This room has been deleted.', '', {
+            duration: 2000
+          });
+        },
+        error: () => {
+          this.snackBar.open(
+            'Delete failed because this room is being used elsewhere.',
+            '',
+            {
+              duration: 2000
+            }
+          );
+        }
       });
     });
   }
