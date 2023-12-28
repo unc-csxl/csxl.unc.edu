@@ -185,15 +185,19 @@ class EventService:
             EventDetails: a valid EventDetails model representing the updated event object
         """
 
-        # Ensure that the user has appropriate permissions to update users
-        self._permission.enforce(
-            subject,
-            "organization.events.*",
-            f"organization/{event.organization_id}",
-        )
-
         # Query the event with matching id
         event_entity = self._session.get(EventEntity, event.id)
+
+        # Check if user is organizer
+        event = event_entity.to_details_model()
+
+        # Ensure that the user has appropriate permissions to update event information
+        if not self.is_user_an_organizer(subject, event):
+            self._permission.enforce(
+                subject,
+                "organization.events.*",
+                f"organization/{event.organization_id}",
+            )
 
         # Check if result is null
         # ADD UNIT TEST COVERAGE
@@ -671,11 +675,12 @@ class EventService:
         event = event_entity.to_details_model()
 
         # Ensure that the user has appropriate permissions to view event information
-        self._permission.enforce(
-            subject,
-            "organization.events.*",
-            f"organization/{event.organization_id}",
-        )
+        if not self.is_user_an_organizer(subject, event):
+            self._permission.enforce(
+                subject,
+                "organization.events.*",
+                f"organization/{event.organization_id}",
+            )
 
         statement = select(EventRegistrationEntity).where(
             EventRegistrationEntity.event_id == event_id,
