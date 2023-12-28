@@ -206,6 +206,8 @@ class EventService:
         event_entity.description = event.description
         event_entity.location = event.location
         event_entity.public = event.public
+        event_entity.can_register = event.can_register
+        event_entity.registration_limit = event.registration_limit
 
         # Save changes
         self._session.commit()

@@ -61,4 +61,5 @@ export interface EventRegistration {
   user_id: number;
   event: Event | null;
   user: Profile | null;
+  is_organizer: boolean | null;
 }

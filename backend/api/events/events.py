@@ -12,7 +12,7 @@ from backend.services.organization import OrganizationService
 from ...services.event import EventService
 from ...services.user import UserService
 from ...services.exceptions import ResourceNotFoundException, UserPermissionException
-from ...models.event import Event
+from ...models.event import DraftEvent, Event
 from ...models.event_details import EventDetails, UserEvent
 from ...models.event_registration import EventRegistration, EventRegistrationStatus
 from ...models.coworking.time_range import TimeRange
@@ -88,7 +88,7 @@ def get_events_from_organization(
 
 @api.post("", response_model=EventDetails, tags=["Events"])
 def new_event(
-    event: Event,
+    event: DraftEvent,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
 ) -> EventDetails:

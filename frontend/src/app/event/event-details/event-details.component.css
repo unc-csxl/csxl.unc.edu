@@ -13,3 +13,7 @@
   flex-direction: row;
   column-gap: 15px;
 }
+
+.details-column {
+  width: 548px;
+}

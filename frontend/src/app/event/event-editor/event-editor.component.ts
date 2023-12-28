@@ -59,6 +59,10 @@ export class EventEditorComponent {
     Validators.maxLength(2000)
   ]);
   public = new FormControl('', [Validators.required]);
+  registration_limit = new FormControl(0, [
+    Validators.required,
+    Validators.min(0)
+  ]);
 
   /** Create a form group */
   public eventForm = this.formBuilder.group({
@@ -66,7 +70,9 @@ export class EventEditorComponent {
     time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
     location: this.location,
     description: this.description,
-    public: this.public.value! == 'true'
+    public: this.public.value! == 'true',
+    registration_limit: this.registration_limit,
+    can_register: this.registration_limit.value! > 0
   });
 
   constructor(
@@ -102,8 +108,15 @@ export class EventEditorComponent {
       time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
       location: this.event.location,
       description: this.event.description,
-      public: this.event.public
+      public: this.event.public,
+      registration_limit: this.event.registration_limit,
+      can_register: this.event.can_register
     });
+
+    // Add validator for registration_limit
+    this.registration_limit.addValidators(
+      Validators.min(this.event.registration_count)
+    );
 
     // Set permission value
     this.adminPermission$ = this.permission.check(
@@ -118,6 +131,7 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
+      this.event.can_register = this.event.registration_limit > 0;
       if (this.event.id == null) {
         this.eventService.createEvent(this.event).subscribe({
           next: (event) => this.onSuccess(event),
