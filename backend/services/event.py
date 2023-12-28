@@ -507,7 +507,7 @@ class EventService:
         return count
 
     def event_to_user_event(
-        self, event: EventDetails, is_registered: bool
+        self, event: EventDetails, is_registered: bool, is_organizer: bool
     ) -> UserEvent:
         return UserEvent(
             name=event.name,
@@ -521,6 +521,7 @@ class EventService:
             id=event.id,
             registration_count=self.get_event_registration_count(event.id),
             is_registered=is_registered,
+            is_organizer=is_organizer,
             organization=event.organization,
             registrations=event.registrations,
         )
@@ -546,9 +547,9 @@ class EventService:
 
     def get_registered_event_ids_of_user(
         self, subject: User, time_range: TimeRange
-    ) -> list[int]:
+    ) -> tuple[list[int], list[int]]:
         """
-        Get registered events for a user in the given time range
+        Get registered events and is_organizer events for a user in the given time range
 
         Args:
             subject: The User making the request.
@@ -561,7 +562,11 @@ class EventService:
             subject, subject, time_range
         )
 
-        return [registration.event.id for registration in event_registrations]
+        return [registration.event.id for registration in event_registrations], [
+            registration.event.id
+            for registration in event_registrations
+            if registration.is_organizer
+        ]
 
     def get_by_id_with_registration_status(self, subject: User, id: int) -> UserEvent:
         """
@@ -578,8 +583,9 @@ class EventService:
         registration = self.get_registration(subject, subject, event)
 
         is_registered = registration is not None
+        is_organizer = is_registered and registration.is_organizer
 
-        return self.event_to_user_event(event, is_registered)
+        return self.event_to_user_event(event, is_registered, is_organizer)
 
     def get_events_with_registration_status(
         self, subject: User, time_range: TimeRange
@@ -596,14 +602,16 @@ class EventService:
         """
         events = self.get_events_in_time_range(time_range)
 
-        registered_event_ids = self.get_registered_event_ids_of_user(
-            subject, time_range
-        )
+        (
+            registered_event_ids,
+            organizer_event_ids,
+        ) = self.get_registered_event_ids_of_user(subject, time_range)
 
         events_with_status = []
         for event in events:
             is_registered = event.id in registered_event_ids
-            user_event = self.event_to_user_event(event, is_registered)
+            is_organizer = event.id in organizer_event_ids
+            user_event = self.event_to_user_event(event, is_registered, is_organizer)
             events_with_status.append(user_event)
 
         return events_with_status
@@ -627,12 +635,16 @@ class EventService:
         end = datetime.now() + timedelta(days=365)
         time_range = TimeRange(start=start, end=end)
 
-        registered_events = self.get_registered_event_ids_of_user(subject, time_range)
+        (
+            registered_event_ids,
+            organizer_event_ids,
+        ) = self.get_registered_event_ids_of_user(subject, time_range)
 
         events_with_status = []
         for event in events:
-            is_registered = event.id in registered_events
-            user_event = self.event_to_user_event(event, is_registered)
+            is_registered = event.id in registered_event_ids
+            is_organizer = event.id in organizer_event_ids
+            user_event = self.event_to_user_event(event, is_registered, is_organizer)
             events_with_status.append(user_event)
 
         # Convert entities to models and return

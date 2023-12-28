@@ -25,3 +25,4 @@ class UserEvent(EventDetails):
 
     registration_count: int = 0
     is_registered: bool = False
+    is_organizer: bool = False
