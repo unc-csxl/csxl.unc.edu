@@ -38,6 +38,7 @@
 .event-actions {
   width: 25%;
   display: flex;
+  justify-content: flex-end;
 }
 
 .logo {
