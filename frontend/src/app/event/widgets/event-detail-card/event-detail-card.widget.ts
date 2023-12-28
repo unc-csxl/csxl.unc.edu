@@ -14,6 +14,7 @@ import { EventService } from '../../event.service';
 import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { Profile } from 'src/app/models.module';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'event-detail-card',
@@ -29,7 +30,8 @@ export class EventDetailCard {
   constructor(
     protected snackBar: MatSnackBar,
     protected eventService: EventService,
-    private permission: PermissionService
+    private permission: PermissionService,
+    private router: Router
   ) {}
 
   checkPermissions(): Observable<boolean> {
@@ -67,7 +69,7 @@ export class EventDetailCard {
     confirmDelete.onAction().subscribe(() => {
       this.eventService.deleteEvent(event).subscribe(() => {
         this.snackBar.open('Event Deleted', '', { duration: 2000 });
-        location.reload();
+        this.router.navigateByUrl('/events');
       });
     });
   }

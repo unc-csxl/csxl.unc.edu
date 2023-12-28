@@ -26,8 +26,6 @@
       <button
         mat-icon-button
         *ngIf="checkPermissions() | async"
-        [routerLink]="['events']"
-        [relativeTo]="null"
         (click)="deleteEvent(event)">
         <mat-icon>delete</mat-icon>
       </button>
