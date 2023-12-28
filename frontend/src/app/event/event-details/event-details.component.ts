@@ -17,7 +17,7 @@ import {
   ResolveFn
 } from '@angular/router';
 import { Event } from '../event.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 
 /** Injects the event's name to adjust the title. */
@@ -64,9 +64,11 @@ export class EventDetailsComponent {
     this.profile = data.profile;
     this.event = data.event;
 
-    this.adminPermission$ = this.permission.check(
-      'organization.events.*',
-      `organization/${this.event.organization!.id}`
-    );
+    // Admin Permission if has the actual permission or is event organizer
+    this.adminPermission$ =
+      this.permission.check(
+        'organization.events.*',
+        `organization/${this.event.organization!.id}`
+      ) || of(this.event.is_organizer);
   }
 }

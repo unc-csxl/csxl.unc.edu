@@ -15,7 +15,7 @@ import { EventService } from '../event.service';
 import { profileResolver } from '../../profile/profile.resolver';
 import { Profile } from '../../profile/profile.service';
 import { OrganizationService } from '../../organization/organization.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
@@ -119,10 +119,11 @@ export class EventEditorComponent {
     );
 
     // Set permission value
-    this.adminPermission$ = this.permission.check(
-      'organization.events.*',
-      `organization/${this.organization!.id}`
-    );
+    this.adminPermission$ =
+      this.permission.check(
+        'organization.events.update',
+        `organization/${this.organization!.id}`
+      ) || of(this.event.is_organizer);
   }
 
   /** Event handler to handle submitting the Create Event Form.
