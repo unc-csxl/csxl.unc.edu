@@ -16,7 +16,7 @@
   grid-template-columns: auto 560px;
   margin-top: 4px;
   row-gap: 15px;
-  column-gap: 15px;
+  column-gap: 24px;
   width: inherit;
 }
 
