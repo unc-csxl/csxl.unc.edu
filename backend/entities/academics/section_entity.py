@@ -54,6 +54,13 @@ class SectionEntity(EntityBase):
         back_populates="section"
     )
 
+    # Relationship subset of members queries for non-students
+    staff: Mapped[list["SectionMemberEntity"]] = relationship(
+        back_populates="section",
+        viewonly=True,
+        primaryjoin="and_(SectionEntity.id==SectionMemberEntity.section_id, SectionMemberEntity.member_role!='STUDENT')",
+    )
+
     @classmethod
     def from_model(cls, model: Section) -> Self:
         """
@@ -89,11 +96,7 @@ class SectionEntity(EntityBase):
             for room in self.rooms
             if room.assignment_type == RoomAssignmentType.OFFICE_HOURS
         ]
-        staff = [
-            members.to_flat_model()
-            for members in self.members
-            if members.member_role != RosterRole.STUDENT
-        ]
+        staff = [members.to_flat_model() for members in self.staff]
 
         return Section(
             id=self.id,
