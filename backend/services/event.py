@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from typing import Sequence
 
 from fastapi import Depends
-from sqlalchemy import func, select, or_
+from sqlalchemy import exists, func, select, or_
 from sqlalchemy.orm import Session
 from backend.entities.user_entity import UserEntity
 from backend.models.organization_details import OrganizationDetails
@@ -688,18 +688,29 @@ class EventService:
             )
         )
 
-        # Currently cannot filter by User attributes since we are querying the EventRegistrationEntity.
         if pagination_params.filter != "":
-            ...
+            query = pagination_params.filter
+            criteria = or_(
+                exists().where(
+                    EventRegistrationEntity.user_id == UserEntity.id,
+                    or_(
+                        UserEntity.first_name.ilike(f"%{query}%"),
+                        UserEntity.last_name.ilike(f"%{query}%"),
+                        UserEntity.onyen.ilike(f"%{query}%"),
+                    ),
+                ),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
 
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
 
-        # Currently cannot order by User attributes since we are querying the EventRegistrationEntity.
-        # One option might be adding a hybrid property field to the EventRegistrationEntity to hold
-        # the user first name so it may be used in ordering.
         if pagination_params.order_by != "":
-            ...
+            statement = statement.join(
+                UserEntity, EventRegistrationEntity.user_id == UserEntity.id
+            )
+            statement = statement.order_by(pagination_params.order_by)
 
         statement = statement.offset(offset).limit(limit)
 
