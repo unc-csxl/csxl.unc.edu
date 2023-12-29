@@ -197,7 +197,8 @@ class EventService:
             raise ResourceNotFoundException(f"No event found with matching ID: {id}")
 
         # Ensure that the user has appropriate permissions to update event information
-        if not event.is_organizer:
+        event_details = event_entity.to_details_model(subject)
+        if not event_details.is_organizer:
             self._permission.enforce(
                 subject,
                 "organization.events.update",

@@ -3,8 +3,8 @@
 # PyTest
 import pytest
 from unittest.mock import create_autospec
-from backend.models.event_details import UserEvent
 from backend.models.pagination import PaginationParams
+from backend.models.registration_type import RegistrationType
 
 from backend.services.exceptions import (
     EventRegistrationException,
@@ -49,13 +49,36 @@ from ..user_data import root, ambassador, user
 
 def test_get_all(event_svc_integration: EventService):
     """Test that all events can be retrieved."""
+    fetched_events = event_svc_integration.all(ambassador)
+
+    assert fetched_events is not None
+    assert len(fetched_events) == len(events)
+    assert isinstance(fetched_events[0], EventDetails)
+
+    assert fetched_events[0].is_attendee == True
+    assert fetched_events[1].is_attendee == False
+    assert fetched_events[2].is_attendee == True
+
+
+def test_get_all_unauthenticated(event_svc_integration: EventService):
+    """Test that all events can be retrieved."""
     fetched_events = event_svc_integration.all()
+
     assert fetched_events is not None
     assert len(fetched_events) == len(events)
     assert isinstance(fetched_events[0], EventDetails)
 
 
 def test_get_by_id(event_svc_integration: EventService):
+    """Test that events can be retrieved based on their ID."""
+    fetched_event = event_svc_integration.get_by_id(1, ambassador)
+    assert fetched_event is not None
+    assert isinstance(fetched_event, Event)
+    assert fetched_event.id == event_one.id
+    assert fetched_event.is_attendee == True
+
+
+def test_get_by_id_unauthenticated(event_svc_integration: EventService):
     """Test that events can be retrieved based on their ID."""
     fetched_event = event_svc_integration.get_by_id(1)
     assert fetched_event is not None
@@ -73,7 +96,7 @@ def test_create_enforces_permission(event_svc_integration: EventService):
 
     # Test permissions with root user (admin permission)
     event_svc_integration.create(root, to_add)
-    event_svc_integration._permission.enforce.assert_called_with(
+    event_svc_integration._permission.enforce.assert_any_call(
         root, "organization.events.create", f"organization/{to_add.organization_id}"
     )
 
@@ -83,9 +106,13 @@ def test_create_event_as_root(event_svc_integration: EventService):
     created_event = event_svc_integration.create(root, to_add)
     assert created_event is not None
     assert created_event.id is not None
-    assert len(created_event.registrations) == 1
-    assert created_event.registrations[0].is_organizer == True
-    assert created_event.registrations[0].user_id == root.id
+
+    assert len(created_event.organizers) == 1
+    assert created_event.organizers[0].id == root.id
+    assert created_event.is_organizer == True
+
+    assert len(created_event.attendees) == 0
+    assert created_event.is_attendee == False
 
 
 def test_create_event_as_user(event_svc_integration: EventService):
@@ -96,6 +123,22 @@ def test_create_event_as_user(event_svc_integration: EventService):
 
 
 def test_get_events_by_organization(
+    event_svc_integration: EventService,
+    organization_svc_integration: OrganizationService,
+):
+    """Test that list of events can be retrieved based on specified organization."""
+    organization = organization_svc_integration.get_by_slug("cssg")
+    fetched_events = event_svc_integration.get_events_by_organization(
+        organization, ambassador
+    )
+    assert fetched_events is not None
+    assert len(fetched_events) == 3
+    assert fetched_events[0].is_attendee == True
+    assert fetched_events[1].is_attendee == False
+    assert fetched_events[2].is_attendee == True
+
+
+def test_get_events_by_organization_unauthenticated(
     event_svc_integration: EventService,
     organization_svc_integration: OrganizationService,
 ):
@@ -172,17 +215,15 @@ def test_delete_on_invalid_event(event_svc_integration: EventService):
 
 def test_register_for_event_as_user(event_svc_integration: EventService):
     """Test that a user is able to register for an event."""
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, root)  # type: ignore
     created_registration = event_svc_integration.register(root, root, event_details)  # type: ignore
     assert created_registration is not None
-    assert created_registration.user_id == root.id
-    assert created_registration.event_id == event_one.id
-    assert created_registration.is_organizer == False
+    assert created_registration.registration_type == RegistrationType.ATTENDEE
 
 
 def test_register_for_event_as_user_twice(event_svc_integration: EventService):
     """Test that a user's second registration for an event is idempotent."""
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, root)  # type: ignore
     created_registration_1 = event_svc_integration.register(user, user, event_details)  # type: ignore
     assert created_registration_1 is not None
     created_registration_2 = event_svc_integration.register(user, user, event_details)  # type: ignore
@@ -194,7 +235,7 @@ def test_register_for_event_enforces_permission(event_svc_integration: EventServ
     event_svc_integration._permission = create_autospec(
         event_svc_integration._permission
     )
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, root)  # type: ignore
     event_svc_integration.register(root, user, event_details)  # type: ignore
     event_svc_integration._permission.enforce.assert_any_call(
         root,
@@ -202,8 +243,9 @@ def test_register_for_event_enforces_permission(event_svc_integration: EventServ
         f"organization/{event_details.organization.id}",
     )
 
+
 def test_get_registration(event_svc_integration: EventService):
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, ambassador)  # type: ignore
     event_registration = event_svc_integration.get_registration(
         ambassador, ambassador, event_details
     )
@@ -211,30 +253,15 @@ def test_get_registration(event_svc_integration: EventService):
 
 
 def test_get_registration_that_does_not_exist(event_svc_integration: EventService):
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, root)  # type: ignore
     event_registration = event_svc_integration.get_registration(
         root, root, event_details
     )
     assert event_registration is None
 
 
-def test_is_user_an_organizer_organizer(event_svc_integration: EventService):
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
-    assert event_svc_integration.is_user_an_organizer(user, event_details)
-
-
-def test_is_user_an_organizer_attendee(event_svc_integration: EventService):
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
-    assert not event_svc_integration.is_user_an_organizer(ambassador, event_details)
-
-
-def test_is_user_an_organizer_non_attendee(event_svc_integration: EventService):
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
-    assert not event_svc_integration.is_user_an_organizer(root, event_details)
-
-
 def test_get_registrations_of_event_as_organizer(event_svc_integration: EventService):
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, user)  # type: ignore
     event_registrations = event_svc_integration.get_registrations_of_event(
         user, event_details
     )
@@ -242,7 +269,7 @@ def test_get_registrations_of_event_as_organizer(event_svc_integration: EventSer
 
 
 def test_get_registrations_of_event_non_organizer(event_svc_integration: EventService):
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, ambassador)  # type: ignore
     with pytest.raises(UserPermissionException):
         event_svc_integration.get_registrations_of_event(ambassador, event_details)
 
@@ -257,13 +284,13 @@ def test_get_registrations_enforces_admin_auth(
     )
 
     # Ensure delete occurs
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, ambassador)  # type: ignore
     event_svc_integration.get_registrations_of_event(ambassador, event_details)
 
     # Ensure that the correct permission check is run
     event_svc_integration._permission.enforce.assert_called_with(
         ambassador,
-        "organization.events.*",
+        "organization.events.manage_registrations",
         f"organization/{event_one.organization_id}",
     )
 
@@ -316,12 +343,14 @@ def test_unregister_for_event_enforces_admin_auth(
     )
 
     # Ensure delete occurs
-    event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
+    event_details = event_svc_integration.get_by_id(event_one.id, root)  # type: ignore
     event_svc_integration.unregister(root, ambassador, event_details)
 
     # Ensure that the correct permission check is run
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.*", f"organization/{event_one.organization_id}"
+        root,
+        "organization.events.manage_registrations",
+        f"organization/{event_one.organization_id}",
     )
 
 
@@ -389,17 +418,6 @@ def test_get_registrations_of_user_admin_authorization(
     )
 
 
-def test_get_event_registration_count(
-    event_svc_integration: EventService,
-):
-    """Tests that the service can successfully count events for an organization."""
-    if event_one.id:
-        registration_count = event_svc_integration.get_event_registration_count(
-            event_one.id
-        )
-        assert registration_count == 1
-
-
 def test_register_to_full_event(
     event_svc_integration: EventService,
 ):
@@ -408,187 +426,6 @@ def test_register_to_full_event(
 
     with pytest.raises(EventRegistrationException):
         event_svc_integration.register(user, user, event_details)
-
-
-def test_event_to_user_event(event_svc_integration: EventService):
-    """Tests that converting an EventDetails object to a UserEvent object returns the correct information."""
-    event_details = event_svc_integration.get_by_id(event_three.id)
-
-    is_registered = True
-    is_organizer = False
-    user_event = event_svc_integration.event_to_user_event(
-        event_details, is_registered, is_organizer
-    )
-
-    # Ensure new object is a UserEvent
-    assert isinstance(user_event, UserEvent) == True
-
-    # Ensure extra fields contain correct value
-    assert user_event.is_registered == is_registered
-    assert user_event.is_organizer == is_organizer
-    assert user_event.registration_count == 1
-
-
-def test_get_registered_events_of_user(event_svc_integration: EventService):
-    """Tests that retrieving the events a user is registered for."""
-    time_range = TimeRange(
-        start=event_one.time - ONE_DAY, end=event_one.time + 3 * ONE_DAY
-    )
-
-    registered_events = event_svc_integration.get_registered_events_of_user(
-        ambassador, time_range
-    )
-
-    assert len(registered_events) == 2
-    assert registered_events[0] == event_one
-    assert registered_events[1] == event_three
-
-
-def test_get_registered_events_of_user_out_of_range(
-    event_svc_integration: EventService,
-):
-    """Tests that querying for registered events outside of the time range returns an empty list."""
-    time_range = TimeRange(
-        start=event_one.time + 3 * ONE_DAY, end=event_one.time + 4 * ONE_DAY
-    )
-
-    registered_events = event_svc_integration.get_registered_events_of_user(
-        ambassador, time_range
-    )
-
-    assert len(registered_events) == 0
-
-
-def test_get_registered_event_ids_of_user(event_svc_integration: EventService):
-    """Tests retrieving the events a user is registered for."""
-    time_range = TimeRange(
-        start=event_one.time - ONE_DAY, end=event_one.time + 3 * ONE_DAY
-    )
-    (
-        registered_event_ids,
-        organizer_event_ids,
-    ) = event_svc_integration.get_registered_event_ids_of_user(ambassador, time_range)
-
-    assert len(registered_event_ids) == 2
-    assert registered_event_ids[0] == 1
-    assert registered_event_ids[1] == 3
-    assert len(organizer_event_ids) == 0
-
-
-def test_get_registered_event_ids_of_user_out_of_range(
-    event_svc_integration: EventService,
-):
-    """Tests that querying for registered events outside of the time range returns an empty list."""
-    # Test before events
-    time_range = TimeRange(
-        start=event_one.time - 2 * ONE_DAY, end=event_one.time - 1 * ONE_DAY
-    )
-
-    (
-        registered_event_ids,
-        organizer_event_ids,
-    ) = event_svc_integration.get_registered_event_ids_of_user(ambassador, time_range)
-
-    assert len(registered_event_ids) == 0
-    assert len(organizer_event_ids) == 0
-
-    # Test after events
-    time_range = TimeRange(
-        start=event_one.time + 3 * ONE_DAY, end=event_one.time + 4 * ONE_DAY
-    )
-
-    (
-        registered_event_ids,
-        organizer_event_ids,
-    ) = event_svc_integration.get_registered_event_ids_of_user(ambassador, time_range)
-
-    assert len(registered_event_ids) == 0
-    assert len(organizer_event_ids) == 0
-
-
-def test_get_by_id_with_registration_status(event_svc_integration: EventService):
-    """Tests retrieving an event with the logged in user's registration status."""
-    # Test when is_registered is True
-    user_event = event_svc_integration.get_by_id_with_registration_status(
-        ambassador, event_one.id
-    )
-
-    assert isinstance(user_event, UserEvent) == True
-    assert user_event.is_registered == True
-
-    # Test when is_registered is False
-    user_event = event_svc_integration.get_by_id_with_registration_status(
-        ambassador, event_two.id
-    )
-
-    assert isinstance(user_event, UserEvent) == True
-    assert user_event.is_registered == False
-
-
-def test_get_events_with_registration_status(event_svc_integration: EventService):
-    """Tests retrieving events with the logged in user's registration status."""
-    time_range = TimeRange(
-        start=event_one.time - ONE_DAY, end=event_one.time + 3 * ONE_DAY
-    )
-    events = event_svc_integration.get_events_with_registration_status(
-        ambassador, time_range
-    )
-
-    assert len(events) == 3
-
-    assert isinstance(events[0], UserEvent)
-    assert isinstance(events[1], UserEvent)
-    assert isinstance(events[2], UserEvent)
-
-    assert events[0].is_registered == True
-    assert events[1].is_registered == False
-    assert events[2].is_registered == True
-
-
-def test_get_events_with_registration_status_out_of_range(
-    event_svc_integration: EventService,
-):
-    """Tests retrieving events out of time range with the logged in user's registration status."""
-    # Test before events
-    time_range = TimeRange(
-        start=event_one.time - 2 * ONE_DAY, end=event_one.time - 1 * ONE_DAY
-    )
-    events = event_svc_integration.get_events_with_registration_status(
-        ambassador, time_range
-    )
-
-    assert len(events) == 0
-
-    # Test after events
-    time_range = TimeRange(
-        start=event_one.time + 3 * ONE_DAY, end=event_one.time + 4 * ONE_DAY
-    )
-    events = event_svc_integration.get_events_with_registration_status(
-        ambassador, time_range
-    )
-
-    assert len(events) == 0
-
-
-def test_get_events_by_organization_with_registration_status(
-    event_svc_integration: EventService,
-    organization_svc_integration: OrganizationService,
-):
-    """Tests querying for events for an organization with the registration status of the user"""
-    organization = organization_svc_integration.get_by_slug("cssg")
-    events = event_svc_integration.get_events_by_organization_with_registration_status(
-        ambassador, organization
-    )
-
-    assert len(events) == 3
-
-    assert isinstance(events[0], UserEvent) == True
-    assert isinstance(events[1], UserEvent) == True
-    assert isinstance(events[2], UserEvent) == True
-
-    assert events[0].is_registered == True
-    assert events[1].is_registered == False
-    assert events[2].is_registered == True
 
 
 def test_get_registered_users_of_event(event_svc_integration: EventService):
@@ -622,8 +459,25 @@ def test_organizer_get_registered_users_of_event(event_svc_integration: EventSer
     assert page.items[1].id == user.id
 
 
+def test_organizer_get_registered_users_of_event_filtered(
+    event_svc_integration: EventService,
+):
+    """Tests that organizers for an event can retrieve registered users"""
+    # Setup to test permission enforcement on the PermissionService.
+    pagination_params = PaginationParams(
+        page=0, page_size=10, order_by="first_name", filter="Amy"
+    )
+    page = event_svc_integration.get_registered_users_of_event(
+        user, event_one.id, pagination_params
+    )
+
+    assert len(page.items) == 1
+    assert page.length == 1
+    assert page.items[0].id == ambassador.id
+
+
 def test_get_registered_users_of_event_permissions(event_svc_integration: EventService):
-    """Tests that the service method for retrieving reigstered users of an event enforces permissions"""
+    """Tests that the service method for retrieving registered users of an event enforces permissions"""
     # Setup to test permission enforcement on the PermissionService.
     event_svc_integration._permission = create_autospec(
         event_svc_integration._permission
@@ -637,7 +491,9 @@ def test_get_registered_users_of_event_permissions(event_svc_integration: EventS
         root, event_one.id, pagination_params
     )
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.view", f"organization/{event_one.organization_id}"
+        root,
+        "organization.events.manage_registrations",
+        f"organization/{event_one.organization_id}",
     )
 
 
@@ -658,5 +514,7 @@ def test_get_registered_users_of_event_without_permissions(
         user, event_two.id, pagination_params
     )
     event_svc_integration._permission.enforce.assert_called_with(
-        user, "organization.events.view", f"organization/{event_one.organization_id}"
+        user,
+        "organization.events.manage_registrations",
+        f"organization/{event_one.organization_id}",
     )

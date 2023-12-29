@@ -284,7 +284,7 @@ def register_for_event(
     else:
         user = user_service.get_by_id(user_id)
 
-    event: EventDetails = event_service.get_by_id(event_id)
+    event: EventDetails = event_service.get_by_id(event_id, subject)
     return event_service.register(subject, user, event)
 
 
@@ -302,7 +302,7 @@ def get_event_registration_of_user(
         subject: the logged in user making the request
         event_service: the backing service
     """
-    event: EventDetails = event_service.get_by_id(event_id)
+    event: EventDetails = event_service.get_by_id(event_id, subject)
     event_registration = event_service.get_registration(subject, subject, event)
     if event_registration is None:
         raise ResourceNotFoundException("You are not registered for this event")
@@ -328,7 +328,7 @@ def get_event_registrations(
         Sequence[EventRegistration]
     """
     return event_service.get_registrations_of_event(
-        subject, event_service.get_by_id(event_id)
+        subject, event_service.get_by_id(event_id, subject)
     )
 
 
@@ -355,7 +355,7 @@ def unregister_for_event(
     else:
         user = user_service.get_by_id(user_id)
 
-    event: EventDetails = event_service.get_by_id(event_id)
+    event: EventDetails = event_service.get_by_id(event_id, subject)
     event_service.unregister(subject, user, event)
 
 
