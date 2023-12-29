@@ -2,18 +2,23 @@
   padding: 24px;
 }
 
-.grid {
+.events-grid {
   display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 4px;
   row-gap: 15px;
   column-gap: 24px;
+  width: inherit;
 }
 
-.event-information {
-  display: flex;
-  flex-direction: row;
-  column-gap: 15px;
+@media only screen and (max-width: 1100px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.details-column {
-  width: 548px;
+@media only screen and (max-width: 1100px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
 }
