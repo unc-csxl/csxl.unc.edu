@@ -61,12 +61,12 @@ export class EventService {
   getEvents(): Observable<Event[]> {
     if (this.profile) {
       return this.http
-        .get<EventJson[]>('/api/events/registration/status')
+        .get<EventJson[]>('/api/events')
         .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
     } else {
       // if a user isn't logged in, return the normal endpoint without registration statuses
       return this.http
-        .get<EventJson[]>('/api/events')
+        .get<EventJson[]>('/api/events/unauthenticated')
         .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
     }
   }
@@ -78,11 +78,11 @@ export class EventService {
   getEvent(id: number): Observable<Event> {
     if (this.profile) {
       return this.http
-        .get<EventJson>('/api/events/' + id + '/registration/status')
+        .get<EventJson>('/api/events/' + id)
         .pipe(map((eventJson) => parseEventJson(eventJson)));
     } else {
       return this.http
-        .get<EventJson>('/api/events/' + id)
+        .get<EventJson>('/api/events/' + id + '/unauthenticated')
         .pipe(map((eventJson) => parseEventJson(eventJson)));
     }
   }
@@ -94,13 +94,13 @@ export class EventService {
   getEventsByOrganization(slug: string): Observable<Event[]> {
     if (this.profile) {
       return this.http
-        .get<EventJson[]>(
-          '/api/events/organization/' + slug + '/registration/status'
-        )
+        .get<EventJson[]>('/api/events/organization/' + slug)
         .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
     } else {
       return this.http
-        .get<EventJson[]>('/api/events/organization/' + slug)
+        .get<EventJson[]>(
+          '/api/events/organization/' + slug + '/unauthenticated'
+        )
         .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
     }
   }

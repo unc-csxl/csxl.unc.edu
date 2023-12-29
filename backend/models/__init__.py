@@ -14,7 +14,6 @@ from .event_details import EventDetails
 from .event_registration import (
     EventRegistration,
     NewEventRegistration,
-    EventRegistrationStatus,
 )
 from .registration_type import RegistrationType
 

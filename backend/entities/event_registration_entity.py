@@ -1,14 +1,12 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Event Registrations."""
 
-from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..models import RegistrationType, EventMember
-from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event_registration import EventRegistration, NewEventRegistration
-from datetime import datetime
 from sqlalchemy import Enum as SQLAlchemyEnum
 
 __authors__ = ["Ajay Gandecha"]
@@ -77,6 +75,22 @@ class EventRegistrationEntity(EntityBase):
             event_id=model.event_id,
             user_id=model.user_id,
             registration_type=model.registration_type,
+        )
+
+    def to__model(self) -> EventRegistration:
+        """
+        Converts an `EventRegistrationEntity` into an `EventRegistration` model object
+        to store registration information.
+
+        Returns:
+            EventRegistration: `EventRegistration` object from the entity
+        """
+        return EventRegistration(
+            event_id=self.event_id,
+            event=self.event,
+            user_id=self.user_id,
+            user=self.user,
+            registration_type=self.registration_type,
         )
 
     def to_flat_model(self) -> EventMember:

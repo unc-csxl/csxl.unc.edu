@@ -7,10 +7,12 @@ from typing import Sequence
 
 from fastapi import Depends
 from sqlalchemy import exists, func, select, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 from backend.entities.user_entity import UserEntity
+from backend.models.event_member import EventMember
 from backend.models.organization_details import OrganizationDetails
 from backend.models.pagination import Paginated, PaginationParams
+from backend.models.registration_type import RegistrationType
 
 from backend.models.user import User
 from ..database import db_session
@@ -56,7 +58,10 @@ class EventService:
         self._permission = permission
         self._user_svc = user_svc
 
-    def all(self) -> list[EventDetails]:
+    def all(
+        self,
+        subject: User | None = None,
+    ) -> list[EventDetails]:
         """
         Retrieves all events from the table
 
@@ -68,9 +73,11 @@ class EventService:
         entities = self._session.scalars(query).all()
 
         # Convert entities to details models and return
-        return [entity.to_details_model() for entity in entities]
+        return [entity.to_details_model(subject) for entity in entities]
 
-    def get_events_in_time_range(self, time_range: TimeRange) -> list[EventDetails]:
+    def get_events_in_time_range(
+        self, time_range: TimeRange, subject: User | None = None
+    ) -> list[EventDetails]:
         """
         Get events in the time range
 
@@ -87,7 +94,7 @@ class EventService:
             .where(EventEntity.time < time_range.end)
         )
 
-        return [entity.to_details_model() for entity in event_entities]
+        return [entity.to_details_model(subject) for entity in event_entities]
 
     def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """
@@ -125,9 +132,9 @@ class EventService:
         # Return added object
         # NOTE: Must re-convert the entity to a model again so that the registration
         # for the event organizer is automatically populated
-        return event_entity.to_details_model()
+        return event_entity.to_details_model(subject)
 
-    def get_by_id(self, id: int) -> EventDetails:
+    def get_by_id(self, id: int, subject: User | None = None) -> EventDetails:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
@@ -150,10 +157,10 @@ class EventService:
             raise ResourceNotFoundException(f"No event found with matching ID: {id}")
 
         # Convert entry to a model and return
-        return entity.to_details_model()
+        return entity.to_details_model(subject)
 
     def get_events_by_organization(
-        self, organization: OrganizationDetails
+        self, organization: OrganizationDetails, subject: User | None = None
     ) -> list[EventDetails]:
         """
         Get all the events hosted by an organization with slug
@@ -172,7 +179,7 @@ class EventService:
         )
 
         # Convert entities to models and return
-        return [event.to_details_model() for event in events]
+        return [event.to_details_model(subject) for event in events]
 
     def update(self, subject: User, event: Event) -> EventDetails:
         """
@@ -192,11 +199,8 @@ class EventService:
         if event_entity is None:
             raise ResourceNotFoundException(f"No event found with matching ID: {id}")
 
-        # Check if user is organizer
-        event_details = event_entity.to_details_model()
-
         # Ensure that the user has appropriate permissions to update event information
-        if not self.is_user_an_organizer(subject, event_details):
+        if not event.is_organizer:
             self._permission.enforce(
                 subject,
                 "organization.events.update",
@@ -216,7 +220,7 @@ class EventService:
         self._session.commit()
 
         # Return updated object
-        return event_entity.to_details_model()
+        return event_entity.to_details_model(subject)
 
     def delete(self, subject: User, id: int) -> None:
         """
@@ -251,7 +255,7 @@ class EventService:
 
     def get_registration(
         self, subject: User, attendee: User, event: EventDetails
-    ) -> EventRegistration | None:
+    ) -> EventMember | None:
         """
         Get a registration of an attendee for an Event.
 
@@ -270,7 +274,7 @@ class EventService:
         if subject.id != attendee.id:
             self._permission.enforce(
                 subject,
-                "organization.events.view",
+                "organization.events.manage_registrations",
                 f"organization/{event.organization.id}",
             )
 
@@ -284,27 +288,13 @@ class EventService:
 
         # Return EventRegistration model or None
         if event_registration_entity is not None:
-            return event_registration_entity.to_model()
+            return event_registration_entity.to_flat_model()
         else:
             return None
 
-    def is_user_an_organizer(self, user: User, event: EventDetails) -> bool:
-        """
-        Test whether a user is an organizer of an event.
-
-        Args:
-            user: The user to check on event organizer status of.
-            event: The event in question.
-
-        Returns:
-            bool True if user is an organizer, False otherwise.
-        """
-        registration = self.get_registration(user, user, event)
-        return registration.is_organizer if registration else False
-
     def get_registrations_of_event(
         self, subject: User, event: EventDetails
-    ) -> list[EventRegistration]:
+    ) -> list[EventMember]:
         """
         List the registrations of an event.
 
@@ -317,15 +307,15 @@ class EventService:
             event: The event whose registrations are being queried.
 
         Returns:
-            list[EventRegistration]
+            list[EventMember]
 
         Raises:
             UserPermissionException if user is not an event organizer or admin.
         """
-        if not self.is_user_an_organizer(subject, event):
+        if not event.is_organizer:
             self._permission.enforce(
                 subject,
-                "organization.events.view",
+                "organization.events.manage_registrations",
                 f"organization/{event.organization.id}",
             )
 
@@ -335,11 +325,9 @@ class EventService:
             .all()
         )
 
-        return [entity.to_model() for entity in event_registration_entities]
+        return [entity.to_flat_model() for entity in event_registration_entities]
 
-    def set_event_organizer(
-        self, subject: User, event: EventDetails
-    ) -> EventRegistration:
+    def set_event_organizer(self, subject: User, event: EventDetails) -> EventMember:
         """
         Set the organizer of an event.
 
@@ -348,7 +336,7 @@ class EventService:
             event: The EventDetails being registered for
 
         Returns:
-            EventRegistration
+            EventMember
 
         """
 
@@ -361,17 +349,19 @@ class EventService:
 
         # Add new object to table and commit changes
         event_registration_entity = EventRegistrationEntity(
-            user_id=subject.id, event_id=event.id, is_organizer=True
+            user_id=subject.id,
+            event_id=event.id,
+            registration_type=RegistrationType.ORGANIZER,
         )
         self._session.add(event_registration_entity)
         self._session.commit()
 
         # Return registration
-        return event_registration_entity.to_model()
+        return event_registration_entity.to_flat_model()
 
     def register(
         self, subject: User, attendee: User, event: EventDetails
-    ) -> EventRegistration:
+    ) -> EventMember:
         """
         Register a user for an event.
 
@@ -387,7 +377,7 @@ class EventService:
             UserPermissionException if subject does not have permission to register user
             EventRegistrationException if the event is full
         """
-        if subject.id != attendee.id:
+        if subject.id != attendee.id and not event.is_organizer:
             self._permission.enforce(
                 subject,
                 "organization.events.manage_registrations",
@@ -398,10 +388,9 @@ class EventService:
         # NOTE: It is preferred to use the service function rather than the list of
         # registrations passed in from `event` in the case that registrations are added
         # between when `event` was fetched and this function runs.
-        registration_count = self.get_event_registration_count(event.id)
 
         # Raise exception if event is full.
-        if registration_count >= event.registration_limit:
+        if event.registration_count >= event.registration_limit:
             raise EventRegistrationException(event.id)
 
         # Enable idemopotency in returning existing registration, if one exists.
@@ -412,13 +401,15 @@ class EventService:
 
         # Add new object to table and commit changes
         event_registration_entity = EventRegistrationEntity(
-            user_id=attendee.id, event_id=event.id
+            user_id=attendee.id,
+            event_id=event.id,
+            registration_type=RegistrationType.ATTENDEE,
         )
         self._session.add(event_registration_entity)
         self._session.commit()
 
         # Return registration
-        return event_registration_entity.to_model()
+        return event_registration_entity.to_flat_model()
 
     def unregister(self, subject: User, attendee: User, event: EventDetails) -> None:
         """
@@ -435,26 +426,30 @@ class EventService:
         Raises:
             UserPermissionException when the user is not authorized to manage the registration.
         """
+
         # Find registration to delete
         # Permissions for reading/managing registration are enforced in #get_registration
         event_registration = self.get_registration(subject, attendee, event)
 
         # Ensure object exists and user is not organizer of event
-        if event_registration is None or event_registration.is_organizer:
+        if (
+            event_registration is None
+            or event_registration.registration_type == RegistrationType.ORGANIZER
+        ):
             return
 
         # Delete object and commit
         self._session.delete(
             self._session.get(
                 EventRegistrationEntity,
-                (event_registration.event.id, event_registration.user.id),
+                (event.id, attendee.id),
             )
         )
         self._session.commit()
 
     def get_registrations_of_user(
         self, subject: User, user: User, time_range: TimeRange
-    ) -> Sequence[EventRegistration]:
+    ) -> Sequence[EventMember]:
         """
         Get a user's registrations to events falling within a given time range.
 
@@ -464,7 +459,7 @@ class EventService:
             time_range: The period over which to search for event registrations.
 
         Returns:
-            Sequence[EventRegistration] event registrations
+            Sequence[EventMember] event registrations
 
         Raises:
             UserPermissionException when the user is requesting the registrations
@@ -487,172 +482,7 @@ class EventService:
             .where(EventEntity.time < time_range.end)
         ).all()
 
-        return [entity.to_model() for entity in registration_entities]
-
-    def get_event_registration_count(self, event_id: int) -> int:
-        """
-        Retrieves the number of registrations for a given event.
-
-        Args:
-            event_id: a valid int representing the
-
-        Returns:
-            count: an int representing the number of registrations for an event
-        """
-        count = (
-            self._session.query(EventRegistrationEntity)
-            .where(
-                EventRegistrationEntity.event_id == event_id,
-                EventRegistrationEntity.is_organizer == False,
-            )
-            .count()
-        )
-
-        return count
-
-    def event_to_user_event(
-        self, event: EventDetails, is_registered: bool, is_organizer: bool
-    ) -> UserEvent:
-        return UserEvent(
-            name=event.name,
-            time=event.time,
-            location=event.location,
-            description=event.description,
-            public=event.public,
-            registration_limit=event.registration_limit,
-            can_register=event.can_register,
-            organization_id=event.organization_id,
-            id=event.id,
-            registration_count=self.get_event_registration_count(event.id),
-            is_registered=is_registered,
-            is_organizer=is_organizer,
-            organization=event.organization,
-            registrations=event.registrations,
-        )
-
-    def get_registered_events_of_user(
-        self, subject: User, time_range: TimeRange
-    ) -> list[Event]:
-        """
-        Get registered events for a user in the given time range
-
-        Args:
-            subject: The User making the request.
-            time_range: The period over which to search for events.
-
-        Returns:
-            list[Event]: list of valid Event models representing the events.
-        """
-        event_registrations = self.get_registrations_of_user(
-            subject, subject, time_range
-        )
-
-        return [registration.event for registration in event_registrations]
-
-    def get_registered_event_ids_of_user(
-        self, subject: User, time_range: TimeRange
-    ) -> tuple[list[int], list[int]]:
-        """
-        Get registered events and is_organizer events for a user in the given time range
-
-        Args:
-            subject: The User making the request.
-            time_range: The period over which to search for events.
-
-        Returns:
-            list[Event]: list of valid Event models representing the events.
-        """
-        event_registrations = self.get_registrations_of_user(
-            subject, subject, time_range
-        )
-
-        return [registration.event.id for registration in event_registrations], [
-            registration.event.id
-            for registration in event_registrations
-            if registration.is_organizer
-        ]
-
-    def get_by_id_with_registration_status(self, subject: User, id: int) -> UserEvent:
-        """
-        Get event by id with the logged in user's registration status
-
-        Args:
-            subject: The User making the request.
-            id: an int representing the
-
-        Returns:
-            list[UserEvent]: list of valid UserRegistrationStatus models representing whether or not a user is registered for each event
-        """
-        event = self.get_by_id(id)
-        registration = self.get_registration(subject, subject, event)
-
-        is_registered = registration is not None
-        is_organizer = is_registered and registration.is_organizer
-
-        return self.event_to_user_event(event, is_registered, is_organizer)
-
-    def get_events_with_registration_status(
-        self, subject: User, time_range: TimeRange
-    ) -> list[UserEvent]:
-        """
-        Get events in the time range with the logged in user's registration status
-
-        Args:
-            subject: The User making the request.
-            time_range: The period over which to search for event registrations.
-
-        Returns:
-            list[UserEvent]: list of valid UserEvent models representing whether or not a user is registered for each event
-        """
-        events = self.get_events_in_time_range(time_range)
-
-        (
-            registered_event_ids,
-            organizer_event_ids,
-        ) = self.get_registered_event_ids_of_user(subject, time_range)
-
-        events_with_status = []
-        for event in events:
-            is_registered = event.id in registered_event_ids
-            is_organizer = event.id in organizer_event_ids
-            user_event = self.event_to_user_event(event, is_registered, is_organizer)
-            events_with_status.append(user_event)
-
-        return events_with_status
-
-    def get_events_by_organization_with_registration_status(
-        self, subject: User, organization: OrganizationDetails
-    ) -> list[UserEvent]:
-        """
-        Get all the events hosted by an organization with slug
-
-        Args:
-            slug: a valid str representing a unique Organization slug
-
-        Returns:
-            list[UserEvent]: a list of valid UserEvent models
-        """
-        # Query the event with matching organization slug
-        events = self.get_events_by_organization(organization)
-
-        start = datetime.now()
-        end = datetime.now() + timedelta(days=365)
-        time_range = TimeRange(start=start, end=end)
-
-        (
-            registered_event_ids,
-            organizer_event_ids,
-        ) = self.get_registered_event_ids_of_user(subject, time_range)
-
-        events_with_status = []
-        for event in events:
-            is_registered = event.id in registered_event_ids
-            is_organizer = event.id in organizer_event_ids
-            user_event = self.event_to_user_event(event, is_registered, is_organizer)
-            events_with_status.append(user_event)
-
-        # Convert entities to models and return
-        return events_with_status
+        return [entity.to_flat_model() for entity in registration_entities]
 
     def get_registered_users_of_event(
         self, subject: User, event_id: int, pagination_params: PaginationParams
@@ -672,55 +502,52 @@ class EventService:
             PermissionException: If the subject does not have the required permission.
         """
         event_entity = self._session.get(EventEntity, event_id)
-        event = event_entity.to_details_model()
+        event = event_entity.to_details_model(subject)
 
         # Ensure that the user has appropriate permissions to view event information
-        if not self.is_user_an_organizer(subject, event):
+        if not event.is_organizer:
             self._permission.enforce(
                 subject,
-                "organization.events.view",
+                "organization.events.manage_registrations",
                 f"organization/{event.organization_id}",
             )
 
-        statement = select(EventRegistrationEntity).where(
-            EventRegistrationEntity.event_id == event_id,
+        EventRegistrationAlias = aliased(EventRegistrationEntity)
+
+        statement = (
+            select(UserEntity)
+            .join(
+                EventRegistrationAlias, EventRegistrationAlias.user_id == UserEntity.id
+            )
+            .where(EventRegistrationAlias.event_id == event_id)
         )
         length_statement = (
             select(func.count())
-            .select_from(EventRegistrationEntity)
-            .where(
-                EventRegistrationEntity.event_id == event_id,
+            .select_from(UserEntity)
+            .join(
+                EventRegistrationAlias, EventRegistrationAlias.user_id == UserEntity.id
             )
+            .where(EventRegistrationAlias.event_id == event_id)
         )
 
         if pagination_params.filter != "":
-            # query = pagination_params.filter
-            # criteria = or_(
-            #     exists().where(
-            #         UserEntity.id == EventRegistrationEntity.user_id,
-            #         UserEntity.first_name.ilike(f"%{query}%"),
-            #     ),
-            #     exists().where(
-            #         UserEntity.id == EventRegistrationEntity.user_id,
-            #         UserEntity.last_name.ilike(f"%{query}%"),
-            #     ),
-            #     exists().where(
-            #         UserEntity.id == EventRegistrationEntity.user_id,
-            #         UserEntity.onyen.ilike(f"%{query}%"),
-            #     ),
-            # )
-            # statement = statement.where(criteria)
-            # length_statement = length_statement.where(criteria)
-            raise NotImplementedError("Registered user filtering not yet supported.")
+            query = pagination_params.filter
+            criteria = or_(
+                UserEntity.first_name.ilike(f"%{query}%"),
+                UserEntity.last_name.ilike(f"%{query}%"),
+                UserEntity.onyen.ilike(f"%{query}%"),
+            )
+
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
 
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
 
         if pagination_params.order_by != "":
-            statement = statement.join(
-                UserEntity, EventRegistrationEntity.user_id == UserEntity.id
+            statement = statement.order_by(
+                getattr(UserEntity, pagination_params.order_by)
             )
-            statement = statement.order_by(pagination_params.order_by)
 
         statement = statement.offset(offset).limit(limit)
 
@@ -728,7 +555,7 @@ class EventService:
         entities = self._session.execute(statement).scalars()
 
         return Paginated(
-            items=[entity.to_model().user for entity in entities],
+            items=[entity.to_model() for entity in entities],
             length=length,
             params=pagination_params,
         )

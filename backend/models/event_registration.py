@@ -33,12 +33,3 @@ class EventRegistration(NewEventRegistration):
 
     event: Event
     user: User
-
-
-class EventRegistrationStatus(BaseModel):
-    registration_count: int
-
-
-class UserRegistrationStatus(BaseModel):
-    event_id: int
-    is_registered: bool

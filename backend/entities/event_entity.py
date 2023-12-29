@@ -6,7 +6,6 @@ from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event import DraftEvent, Event
-from ..models.event_member import EventMember
 from ..models.registration_type import RegistrationType
 from ..models.user import User
 
@@ -136,20 +135,21 @@ class EventEntity(EntityBase):
             registration_limit=self.registration_limit,
             can_register=self.can_register,
             organization_id=self.organization_id,
+            registration_count=len(attendees),
             is_attendee=is_attendee,
             attendees=attendees,
             is_organizer=is_organizer,
             organizers=organizers,
         )
 
-    def to_details_model(self) -> EventDetails:
+    def to_details_model(self, subject: User | None = None) -> EventDetails:
         """Create a EventDetails model from an EventEntity, with permissions and members included.
 
         Returns:
             EventDetails: An EventDetails model for API usage.
         """
 
-        event = self.to_model()
+        event = self.to_model(subject)
 
         return EventDetails(
             id=self.id,
