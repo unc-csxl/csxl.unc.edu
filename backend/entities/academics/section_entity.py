@@ -96,7 +96,6 @@ class SectionEntity(EntityBase):
             for room in self.rooms
             if room.assignment_type == RoomAssignmentType.OFFICE_HOURS
         ]
-        staff = [members.to_flat_model() for members in self.staff]
 
         return Section(
             id=self.id,
@@ -106,7 +105,7 @@ class SectionEntity(EntityBase):
             meeting_pattern=self.meeting_pattern,
             lecture_room=(lecture_rooms[0] if len(lecture_rooms) > 0 else None),
             office_hour_rooms=office_hour_rooms,
-            staff=staff,
+            staff=[members.to_flat_model() for members in self.staff],
         )
 
     def to_details_model(self) -> SectionDetails:
