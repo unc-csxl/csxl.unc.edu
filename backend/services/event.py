@@ -15,7 +15,7 @@ from backend.models.pagination import Paginated, PaginationParams
 from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event, DraftEvent
-from backend.models.event_details import EventDetails, UserEvent
+from backend.models.event_details import EventDetails
 from backend.models.event_registration import (
     EventRegistration,
 )

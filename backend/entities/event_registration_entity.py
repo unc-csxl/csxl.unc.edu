@@ -2,11 +2,14 @@
 
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from ..models import RegistrationType, EventMember
 from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event_registration import EventRegistration, NewEventRegistration
 from datetime import datetime
+from sqlalchemy import Enum as SQLAlchemyEnum
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -37,7 +40,10 @@ class EventRegistrationEntity(EntityBase):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
     user: Mapped["UserEntity"] = relationship()
 
-    is_organizer: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Type of relationship
+    registration_type: Mapped[RegistrationType] = mapped_column(
+        SQLAlchemyEnum(RegistrationType)
+    )
 
     @classmethod
     def from_model(cls, model: EventRegistration) -> Self:
@@ -54,7 +60,7 @@ class EventRegistrationEntity(EntityBase):
             user_id=model.user_id,
             event=model.event,
             user=model.user,
-            is_organizer=model.is_organizer,
+            registration_type=model.registration_type,
         )
 
     @classmethod
@@ -70,20 +76,15 @@ class EventRegistrationEntity(EntityBase):
         return cls(
             event_id=model.event_id,
             user_id=model.user_id,
-            is_organizer=model.is_organizer,
+            registration_type=model.registration_type,
         )
 
-    def to_model(self) -> EventRegistration:
+    def to_flat_model(self) -> EventMember:
         """
-        Converts a `EventRegistrationEntity` object into a `EventRegistration` model object
+        Converts an `EventRegistrationEntity` into an `EventMember` model object
+        to store user ID.
 
         Returns:
-            EventRegistration: `EventRegistration` object from the entity
+            EventMember: `EventMember` object from the entity
         """
-        return EventRegistration(
-            event_id=self.event_id,
-            user_id=self.user_id,
-            is_organizer=self.is_organizer,
-            event=self.event.to_model(),
-            user=self.user.to_model(),
-        )
+        return EventMember(id=self.user_id, registration_type=self.registration_type)

@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.orm import Session
 from ....models.event import DraftEvent, Event
 from ....models.event_registration import EventRegistration, NewEventRegistration
+from ....models.registration_type import RegistrationType
 from ....entities.event_entity import EventEntity
 from ....entities.event_registration_entity import EventRegistrationEntity
 from .event_demo_data import date_maker
@@ -104,15 +105,21 @@ updated_event_two = Event(
 )
 
 registration = NewEventRegistration(
-    event_id=event_one.id | 0, user_id=ambassador.id | 0, is_organizer=False
+    event_id=event_one.id | 0,
+    user_id=ambassador.id | 0,
+    registration_type=RegistrationType.ATTENDEE,
 )
 
 organizer_registration = NewEventRegistration(
-    event_id=event_one.id | 0, user_id=user.id | 0, is_organizer=True
+    event_id=event_one.id | 0,
+    user_id=user.id | 0,
+    registration_type=RegistrationType.ORGANIZER,
 )
 
 registration_for_event_three = NewEventRegistration(
-    event_id=event_three.id | 0, user_id=ambassador.id | 0, is_organizer=False
+    event_id=event_three.id | 0,
+    user_id=ambassador.id | 0,
+    registration_type=RegistrationType.ATTENDEE,
 )
 registrations = [registration, organizer_registration, registration_for_event_three]
 

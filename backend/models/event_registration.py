@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from .event import Event
 from .user import User
+from .registration_type import RegistrationType
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -19,7 +20,7 @@ class NewEventRegistration(BaseModel):
 
     event_id: int
     user_id: int
-    is_organizer: bool = False
+    registration_type: RegistrationType
 
 
 class EventRegistration(NewEventRegistration):
@@ -32,7 +33,6 @@ class EventRegistration(NewEventRegistration):
 
     event: Event
     user: User
-    is_organizer: bool = False
 
 
 class EventRegistrationStatus(BaseModel):

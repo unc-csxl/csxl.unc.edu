@@ -1,6 +1,5 @@
 from .permission import Permission
 from .user import User
-from .event_registration import EventRegistration
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

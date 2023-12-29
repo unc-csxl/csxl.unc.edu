@@ -12,17 +12,3 @@ class EventDetails(Event):
     """
 
     organization: Organization
-    registrations: list[EventRegistration]
-
-
-class UserEvent(EventDetails):
-    """
-    Pydantic model to represent a `UserEvent`.
-
-    This model contains an extra "is registered" field denoting whether the
-    currently logged in user is registered for an event or not.
-    """
-
-    registration_count: int = 0
-    is_registered: bool = False
-    is_organizer: bool = False

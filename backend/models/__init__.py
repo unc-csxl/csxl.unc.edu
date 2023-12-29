@@ -9,12 +9,14 @@ from .role import Role
 from .role_details import RoleDetails
 from .organization import Organization
 from .event import Event
+from .event_member import EventMember
 from .event_details import EventDetails
 from .event_registration import (
     EventRegistration,
     NewEventRegistration,
     EventRegistrationStatus,
 )
+from .registration_type import RegistrationType
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

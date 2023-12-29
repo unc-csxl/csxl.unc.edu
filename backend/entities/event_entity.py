@@ -6,6 +6,10 @@ from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event import DraftEvent, Event
+from ..models.event_member import EventMember
+from ..models.registration_type import RegistrationType
+from ..models.user import User
+
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
@@ -92,13 +96,36 @@ class EventEntity(EntityBase):
             organization_id=model.organization_id,
         )
 
-    def to_model(self) -> Event:
+    def to_model(self, subject: User | None = None) -> Event:
         """
         Converts a `EventEntity` object into a `Event` model object
 
         Returns:
             Event: `Event` object from the entity
         """
+        attendees = [
+            registration.to_flat_model()
+            for registration in self.registrations
+            if registration.registration_type == RegistrationType.ATTENDEE
+        ]
+        is_attendee = (
+            len([attendee for attendee in attendees if attendee.id == subject.id]) > 0
+            if subject is not None
+            else False
+        )
+
+        organizers = [
+            registration.to_flat_model()
+            for registration in self.registrations
+            if registration.registration_type == RegistrationType.ORGANIZER
+        ]
+        is_organizer = (
+            len([organizer for organizer in organizers if organizer.id == subject.id])
+            > 0
+            if subject is not None
+            else False
+        )
+
         return Event(
             id=self.id,
             name=self.name,
@@ -109,6 +136,10 @@ class EventEntity(EntityBase):
             registration_limit=self.registration_limit,
             can_register=self.can_register,
             organization_id=self.organization_id,
+            is_attendee=is_attendee,
+            attendees=attendees,
+            is_organizer=is_organizer,
+            organizers=organizers,
         )
 
     def to_details_model(self) -> EventDetails:
@@ -117,6 +148,9 @@ class EventEntity(EntityBase):
         Returns:
             EventDetails: An EventDetails model for API usage.
         """
+
+        event = self.to_model()
+
         return EventDetails(
             id=self.id,
             name=self.name,
@@ -128,7 +162,8 @@ class EventEntity(EntityBase):
             can_register=self.can_register,
             organization_id=self.organization_id,
             organization=self.organization.to_model(),
-            registrations=[
-                reservation.to_model() for reservation in self.registrations
-            ],
+            is_attendee=event.is_attendee,
+            attendees=event.attendees,
+            is_organizer=event.is_organizer,
+            organizers=event.organizers,
         )
