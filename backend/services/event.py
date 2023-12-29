@@ -2,11 +2,10 @@
 The Event Service allows the API to manipulate event data in the database.
 """
 
-from datetime import datetime, timedelta
 from typing import Sequence
 
 from fastapi import Depends
-from sqlalchemy import exists, func, select, or_
+from sqlalchemy import func, select, or_
 from sqlalchemy.orm import Session, aliased
 from backend.entities.user_entity import UserEntity
 from backend.models.event_member import EventMember
@@ -18,9 +17,6 @@ from backend.models.user import User
 from ..database import db_session
 from backend.models.event import Event, DraftEvent
 from backend.models.event_details import EventDetails
-from backend.models.event_registration import (
-    EventRegistration,
-)
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
     EventEntity,
@@ -69,11 +65,12 @@ class EventService:
             list[EventDetails]: List of all `EventDetails`
         """
         # Select all entries in `Event` table
-        query = select(EventEntity)
-        entities = self._session.scalars(query).all()
+        event_entities = (self._session.query(EventEntity)).all()
 
         # Convert entities to details models and return
-        return [entity.to_details_model(subject) for entity in entities]
+        return [
+            event_entity.to_details_model(subject) for event_entity in event_entities
+        ]
 
     def get_events_in_time_range(
         self, time_range: TimeRange, subject: User | None = None

@@ -124,7 +124,11 @@ def get_events_unauthenticated(
     Returns:
         list[Event]: All `Event`s in the `Event` database table
     """
-    return event_service.all()
+    # For some reason this API route always returns "Not authenticated" regardless of the service method in it,
+    # even for the Root user. It isn't actually used since I opted for the time range version, but still unsure
+    # why it's not working.
+    raise NotImplementedError
+    # return event_service.all()
 
 
 @api.get("/range/unauthenticated", response_model=list[EventDetails], tags=["Events"])
