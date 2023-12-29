@@ -67,12 +67,36 @@ to_add = DraftEvent(
     organization_id=cads.id | 0,
 )
 
-updated_event = Event(
+invalid_event = Event(
+    id=4,
+    name="Frontend Debugging Workshop",
+    time=date_maker(days_in_future=1, hour=10, minutes=0),
+    location="SN156",
+    description="This is a sample description.",
+    public=True,
+    registration_limit=50,
+    can_register=True,
+    organization_id=cssg.id | 0,
+)
+
+updated_event_one = Event(
     id=1,
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
+    public=True,
+    registration_limit=50,
+    can_register=True,
+    organization_id=cssg.id | 0,
+)
+
+updated_event_two = Event(
+    id=2,
+    name="CS+SG Workshop",
+    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    location="SN 014",
+    description="Come join us for a new workshop!",
     public=True,
     registration_limit=50,
     can_register=True,
