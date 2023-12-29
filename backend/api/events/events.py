@@ -43,8 +43,12 @@ def get_events(
     """
     Get all events
 
+    Args:
+        subject: a valid User model representing the currently logged in User
+        event_service: a valid EventService
+
     Returns:
-        list[Event]: All `Event`s in the `Event` database table
+        list[EventDetails]: All `EventDetails`s in the `Event` database table
     """
     return event_service.all(subject)
 
@@ -59,8 +63,14 @@ def get_events_in_time_range(
     """
     Get all events in the time range
 
+    Args:
+        subject: a valid User model representing the currently logged in User
+        start (optional): a datetime object representing the start time of the range.
+        end (optional): a datetime object representing the start time of the range.
+        event_service: a valid EventService
+
     Returns:
-        list[Event]: All `Event`s in the `Event` database table
+        list[EventDetails]: All `EventDetails`s in the `Event` database table
     """
     start = datetime.now() if start is None else start
     end = datetime.now() + timedelta(days=365) if end is None else end
@@ -70,7 +80,7 @@ def get_events_in_time_range(
 
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=["Events"])
-def get_events_from_organization(
+def get_events_by_organization(
     slug: str,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
@@ -81,7 +91,9 @@ def get_events_from_organization(
 
     Args:
         slug: a valid str representing a unique Organization
+        subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
+        orgnaization_service: a valid OrganizationService
 
     Returns:
         list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
@@ -106,6 +118,7 @@ def get_event_by_id(
 
     Args:
         id: an int representing a unique Event ID
+        subject: a valid User model representing the currently logged in User
         event_service: a valid EventService
 
     Returns:
@@ -119,10 +132,13 @@ def get_events_unauthenticated(
     event_service: EventService = Depends(),
 ) -> list[EventDetails]:
     """
-    Get all events
+    Get all events for unauthenticated users
+
+    Args:
+        event_service: a valid EventService
 
     Returns:
-        list[Event]: All `Event`s in the `Event` database table
+        list[EventDetails]: All `EventDetails`s in the `Event` database table
     """
     # For some reason this API route always returns "Not authenticated" regardless of the service method in it,
     # even for the Root user. It isn't actually used since I opted for the time range version, but still unsure
@@ -138,10 +154,15 @@ def get_events_in_time_range_unauthenticated(
     event_service: EventService = Depends(),
 ) -> list[EventDetails]:
     """
-    Get all events in the time range
+    Get all events in the time range for unauthenticated users
+
+    Args:
+        start (optional): a datetime object representing the start time of the range.
+        end (optional): a datetime object representing the start time of the range.
+        event_service: a valid EventService
 
     Returns:
-        list[Event]: All `Event`s in the `Event` database table
+        list[EventDetails]: All `EventDetails`s in the `Event` database table
     """
     start = datetime.now() if start is None else start
     end = datetime.now() + timedelta(days=365) if end is None else end
@@ -155,17 +176,18 @@ def get_events_in_time_range_unauthenticated(
     response_model=list[EventDetails],
     tags=["Events"],
 )
-def get_events_from_organization_unauthenticated(
+def get_events_by_organization_unauthenticated(
     slug: str,
     event_service: EventService = Depends(),
     organization_service: OrganizationService = Depends(),
 ) -> list[EventDetails]:
     """
-    Get all events from an organization
+    Get all events from an organization for unauthenticated users
 
     Args:
         slug: a valid str representing a unique Organization
         event_service: a valid EventService
+        organization_service: a valid OrganizationService
 
     Returns:
         list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
@@ -184,7 +206,7 @@ def get_event_by_id_unauthenticated(
     id: int, event_service: EventService = Depends()
 ) -> EventDetails:
     """
-    Get event with matching id
+    Get event with matching id for unauthenticated users
 
     Args:
         id: an int representing a unique Event ID

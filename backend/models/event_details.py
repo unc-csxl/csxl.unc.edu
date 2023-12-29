@@ -1,5 +1,4 @@
 from backend.models.event import Event
-from backend.models.event_registration import EventRegistration
 from backend.models.organization import Organization
 
 

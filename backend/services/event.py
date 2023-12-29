@@ -61,6 +61,9 @@ class EventService:
         """
         Retrieves all events from the table
 
+        Args:
+            subject: The User making the request.
+
         Returns:
             list[EventDetails]: List of all `EventDetails`
         """
@@ -138,9 +141,10 @@ class EventService:
 
         Args:
             id: a valid int representing a unique event ID
+            subject: The User making the request.
 
         Returns:
-            Event: Object with corresponding ID
+            EventDetails: a valid EventDetails model representing the event corresponding to the ID
 
         Raises:
             ResourceNotFoundException when event ID cannot be looked up
@@ -164,6 +168,7 @@ class EventService:
 
         Args:
             slug: a valid str representing a unique Organization slug
+            subject: The User making the request.
 
         Returns:
             list[EventDetail]: a list of valid EventDetails models
@@ -263,7 +268,7 @@ class EventService:
             event: EventDetails of the event seeking registration for
 
         Returns:
-            EventRegistration or None if no registration found
+            EventMember or None if no registration found
 
         Raises:
             UserPermissionException if subject does not have permission
@@ -369,7 +374,7 @@ class EventService:
             event: The EventDetails being registered for
 
         Returns:
-            EventRegistration
+            EventMember
 
         Raises:
             UserPermissionException if subject does not have permission to register user
@@ -510,8 +515,14 @@ class EventService:
                 f"organization/{event.organization_id}",
             )
 
+        # Create an alias for the EventRegistrationEntity to be used in join
         EventRegistrationAlias = aliased(EventRegistrationEntity)
 
+        # Statement below corresponds to the following SQL Query (when executed)
+        # Returns all UserEntity objects for EventRegistrations that match the event_id
+        # SELECT UserEntity.*
+        # FROM UserEntity JOIN EventRegistrationEntity ON EventRegistrationEntity.user_id == UserEntity.id
+        # WHERE EventRegistrationEntity.event_id = :event_id
         statement = (
             select(UserEntity)
             .join(
@@ -519,6 +530,8 @@ class EventService:
             )
             .where(EventRegistrationAlias.event_id == event_id)
         )
+
+        # Statement to determine number of rows in query result
         length_statement = (
             select(func.count())
             .select_from(UserEntity)
@@ -528,6 +541,7 @@ class EventService:
             .where(EventRegistrationAlias.event_id == event_id)
         )
 
+        # Filter results by query
         if pagination_params.filter != "":
             query = pagination_params.filter
             criteria = or_(
@@ -539,19 +553,24 @@ class EventService:
             statement = statement.where(criteria)
             length_statement = length_statement.where(criteria)
 
+        # Calculate where to begin retrieving rows and how many to retrieve
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
 
+        # Order results by order by attribute
         if pagination_params.order_by != "":
             statement = statement.order_by(
                 getattr(UserEntity, pagination_params.order_by)
             )
 
+        # Retrieve limited items
         statement = statement.offset(offset).limit(limit)
 
+        # Execute statement and retrieve entities
         length = self._session.execute(length_statement).scalar()
         entities = self._session.execute(statement).scalars()
 
+        # Convert `UserEntity`s to model and return page
         return Paginated(
             items=[entity.to_model() for entity in entities],
             length=length,
