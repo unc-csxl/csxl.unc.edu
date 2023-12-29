@@ -61,12 +61,12 @@ export class EventService {
   getEvents(): Observable<Event[]> {
     if (this.profile) {
       return this.http
-        .get<EventJson[]>('/api/events')
+        .get<EventJson[]>('/api/events/range')
         .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
     } else {
       // if a user isn't logged in, return the normal endpoint without registration statuses
       return this.http
-        .get<EventJson[]>('/api/events/unauthenticated')
+        .get<EventJson[]>('/api/events/range/unauthenticated')
         .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
     }
   }

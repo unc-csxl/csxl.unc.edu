@@ -35,7 +35,7 @@ class Event(DraftEvent):
     """
 
     id: int
-    registration_count: int = 0
+    registration_count: int
     is_attendee: bool = False
     attendees: list[EventMember] = []
     is_organizer: bool = False

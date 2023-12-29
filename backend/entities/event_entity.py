@@ -159,6 +159,7 @@ class EventEntity(EntityBase):
             description=self.description,
             public=self.public,
             registration_limit=self.registration_limit,
+            registration_count=event.registration_count,
             can_register=self.can_register,
             organization_id=self.organization_id,
             organization=self.organization.to_model(),

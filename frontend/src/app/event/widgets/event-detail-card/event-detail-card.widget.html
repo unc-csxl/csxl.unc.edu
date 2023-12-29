@@ -79,7 +79,7 @@
       mat-stroked-button
       [disabled]="event.is_organizer"
       (click)="unregisterForEvent(event.id!)"
-      *ngIf="event.is_registered; else register">
+      *ngIf="event.is_attendee; else register">
       Unregister
     </button>
     <ng-template #register>

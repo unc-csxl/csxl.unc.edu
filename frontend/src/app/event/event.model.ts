@@ -23,7 +23,7 @@ export interface Event {
   organization_id: number | null;
   organization: Organization | null;
   registration_count: number;
-  is_registered: boolean;
+  is_attendee: boolean;
   is_organizer: boolean;
 }
 
@@ -44,7 +44,7 @@ export interface EventJson {
   organization_id: number | null;
   organization: Organization | null;
   registration_count: number;
-  is_registered: boolean;
+  is_attendee: boolean;
   is_organizer: boolean;
 }
 
