@@ -74,7 +74,7 @@ def test_create_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.create(root, to_add)
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.*", f"organization/{to_add.organization_id}"
+        root, "organization.events.create", f"organization/{to_add.organization_id}"
     )
 
 
@@ -147,7 +147,7 @@ def test_delete_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.delete(root, 1)
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.*", f"organization/{event_one.organization_id}"
+        root, "organization.events.delete", f"organization/{event_one.organization_id}"
     )
 
 
@@ -196,12 +196,11 @@ def test_register_for_event_enforces_permission(event_svc_integration: EventServ
     )
     event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
     event_svc_integration.register(root, user, event_details)  # type: ignore
-    event_svc_integration._permission.enforce.assert_called_with(
+    event_svc_integration._permission.enforce.assert_any_call(
         root,
-        "organization.events.*",
+        "organization.events.manage_registrations",
         f"organization/{event_details.organization.id}",
     )
-
 
 def test_get_registration(event_svc_integration: EventService):
     event_details = event_svc_integration.get_by_id(event_one.id)  # type: ignore
@@ -638,7 +637,7 @@ def test_get_registered_users_of_event_permissions(event_svc_integration: EventS
         root, event_one.id, pagination_params
     )
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.*", f"organization/{event_one.organization_id}"
+        root, "organization.events.view", f"organization/{event_one.organization_id}"
     )
 
 
@@ -659,5 +658,5 @@ def test_get_registered_users_of_event_without_permissions(
         user, event_two.id, pagination_params
     )
     event_svc_integration._permission.enforce.assert_called_with(
-        user, "organization.events.*", f"organization/{event_one.organization_id}"
+        user, "organization.events.view", f"organization/{event_one.organization_id}"
     )

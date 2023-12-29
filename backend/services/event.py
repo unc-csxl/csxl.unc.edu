@@ -105,7 +105,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to create users
         self._permission.enforce(
             subject,
-            "organization.events.*",
+            "organization.events.create",
             f"organization/{event.organization_id}",
         )
 
@@ -199,7 +199,7 @@ class EventService:
         if not self.is_user_an_organizer(subject, event_details):
             self._permission.enforce(
                 subject,
-                "organization.events.*",
+                "organization.events.update",
                 f"organization/{event.organization_id}",
             )
 
@@ -237,7 +237,7 @@ class EventService:
         # Ensure that the user has appropriate permissions to delete users
         self._permission.enforce(
             subject,
-            "organization.events.*",
+            "organization.events.delete",
             f"organization/{event.organization_id}",
         )
 
@@ -266,12 +266,11 @@ class EventService:
         Raises:
             UserPermissionException if subject does not have permission
         """
-        # Feature-specific authorization: User is unregistering themself
-        # Administrative Permission: organization.events.manage : organization/{id}
+        # Administrative Permission: organization.events.view : organization/{id}
         if subject.id != attendee.id:
             self._permission.enforce(
                 subject,
-                "organization.events.*",
+                "organization.events.view",
                 f"organization/{event.organization.id}",
             )
 
@@ -311,7 +310,7 @@ class EventService:
 
         This API endpoint currently requires the subject to be registered as the
         organizer of an event or have administrative permission of action
-        "organization.events.manage" for "organization/{organization id}".
+        "organization.events.view" for "organization/{organization id}".
 
         Args:
             subject: The authenticated user making the request.
@@ -326,7 +325,7 @@ class EventService:
         if not self.is_user_an_organizer(subject, event):
             self._permission.enforce(
                 subject,
-                "organization.events.*",
+                "organization.events.view",
                 f"organization/{event.organization.id}",
             )
 
@@ -356,7 +355,7 @@ class EventService:
         # Re-ensure that the user has the correct permissions to run this command
         self._permission.enforce(
             subject,
-            "organization.events.*",
+            "organization.events.manage_registrations",
             f"organization/{event.organization_id}",
         )
 
@@ -388,6 +387,12 @@ class EventService:
             UserPermissionException if subject does not have permission to register user
             EventRegistrationException if the event is full
         """
+        if subject.id != attendee.id:
+            self._permission.enforce(
+                subject,
+                "organization.events.manage_registrations",
+                f"organization/{event.organization.id}",
+            )
 
         # Get the registration status.
         # NOTE: It is preferred to use the service function rather than the list of
@@ -673,7 +678,7 @@ class EventService:
         if not self.is_user_an_organizer(subject, event):
             self._permission.enforce(
                 subject,
-                "organization.events.*",
+                "organization.events.view",
                 f"organization/{event.organization_id}",
             )
 
