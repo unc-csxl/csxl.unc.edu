@@ -4,7 +4,9 @@
   <div class="event-title-container">
     <!-- Title -->
     <div class="event-title">
-      <mat-card-title>{{ event.name }}</mat-card-title>
+      <mat-card-title [routerLink]="[event.id]">
+        {{ event.name }}
+      </mat-card-title>
     </div>
 
     <!-- Buttons -->

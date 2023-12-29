@@ -35,6 +35,10 @@
   flex-direction: column;
 }
 
+.event-title:hover {
+  cursor: pointer;
+}
+
 .event-actions {
   width: 25%;
   display: flex;
