@@ -689,19 +689,24 @@ class EventService:
         )
 
         if pagination_params.filter != "":
-            query = pagination_params.filter
-            criteria = or_(
-                exists().where(
-                    EventRegistrationEntity.user_id == UserEntity.id,
-                    or_(
-                        UserEntity.first_name.ilike(f"%{query}%"),
-                        UserEntity.last_name.ilike(f"%{query}%"),
-                        UserEntity.onyen.ilike(f"%{query}%"),
-                    ),
-                ),
-            )
-            statement = statement.where(criteria)
-            length_statement = length_statement.where(criteria)
+            # query = pagination_params.filter
+            # criteria = or_(
+            #     exists().where(
+            #         UserEntity.id == EventRegistrationEntity.user_id,
+            #         UserEntity.first_name.ilike(f"%{query}%"),
+            #     ),
+            #     exists().where(
+            #         UserEntity.id == EventRegistrationEntity.user_id,
+            #         UserEntity.last_name.ilike(f"%{query}%"),
+            #     ),
+            #     exists().where(
+            #         UserEntity.id == EventRegistrationEntity.user_id,
+            #         UserEntity.onyen.ilike(f"%{query}%"),
+            #     ),
+            # )
+            # statement = statement.where(criteria)
+            # length_statement = length_statement.where(criteria)
+            raise NotImplementedError("Registered user filtering not yet supported.")
 
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size

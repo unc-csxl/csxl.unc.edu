@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Event, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
@@ -21,10 +21,11 @@ import { Router } from '@angular/router';
   templateUrl: './event-detail-card.widget.html',
   styleUrls: ['./event-detail-card.widget.css']
 })
-export class EventDetailCard {
+export class EventDetailCard implements OnInit {
   /** The event for the event card to display */
   @Input() event!: Event;
   @Input() profile!: Profile;
+  adminPermission$!: Observable<boolean>;
 
   /** Constructs the widget */
   constructor(
@@ -34,8 +35,8 @@ export class EventDetailCard {
     private router: Router
   ) {}
 
-  checkPermissions(): Observable<boolean> {
-    return this.permission.check(
+  ngOnInit() {
+    this.adminPermission$ = this.permission.check(
       'organization.events.*',
       `organization/${this.event.organization_id!}`
     );
