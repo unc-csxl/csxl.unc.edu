@@ -33,18 +33,11 @@
           placeholder="End Time"
           formControlName="end"
           name="end"
+          min="start"
           required />
-        @if (this.eventForm.value.end && this.eventForm.value.start &&
-        this.eventForm.value.end <= this.eventForm.value.start) {
-        <mat-error
-          *ngIf="
-            eventForm.value.end &&
-            eventForm.value.start &&
-            eventForm.value.end <= eventForm.value.start
-          ">
+        <mat-error *ngIf="end.valid">
           End time must be after start time
         </mat-error>
-        }
       </mat-form-field>
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Location</mat-label>

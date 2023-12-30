@@ -22,7 +22,7 @@ import { organizationDetailResolver } from 'src/app/organization/organization.re
 import { Organization } from 'src/app/organization/organization.model';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
-import { DateAdapter } from '@angular/material/core';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 @Component({
   selector: 'app-event-editor',
@@ -51,10 +51,27 @@ export class EventEditorComponent {
   /** Stores whether the user has admin permission over the current organization. */
   public adminPermission$: Observable<boolean>;
 
+  /** Custom validator that checks whether end time is after start time. */
+  endTimeAfterStart = (startCtrl: FormControl) => {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      const start = startCtrl.value;
+
+      if (!value || !start) {
+        return null;
+      }
+
+      return !(value < start) ? { endAfterStart: true } : null;
+    };
+  };
+
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
   start = new FormControl('', [Validators.required]);
-  end = new FormControl('', [Validators.required]);
+  end = new FormControl('', [
+    Validators.required,
+    this.endTimeAfterStart(this.start)
+  ]);
   location = new FormControl('', [Validators.required]);
   description = new FormControl('', [
     Validators.required,
@@ -122,7 +139,8 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
-      if (this.event.id == null && this.event.end > this.event.start) {
+      console.log(this.event);
+      if (this.event.id == null) {
         this.eventService.createEvent(this.event).subscribe({
           next: (event) => this.onSuccess(event),
           error: (err) => this.onError(err)
