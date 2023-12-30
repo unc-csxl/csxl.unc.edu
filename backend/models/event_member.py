@@ -16,5 +16,5 @@ class EventMember(BaseModel):
     of the `User` database in the PostgreSQL database
     """
 
-    id: int | None = None
+    id: int
     registration_type: RegistrationType

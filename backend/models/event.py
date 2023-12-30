@@ -24,6 +24,7 @@ class DraftEvent(BaseModel):
     registration_limit: int
     can_register: bool
     organization_id: int
+    organizers: list[EventMember] = []
 
 
 class Event(DraftEvent):
@@ -39,4 +40,3 @@ class Event(DraftEvent):
     is_attendee: bool = False
     attendees: list[EventMember] = []
     is_organizer: bool = False
-    organizers: list[EventMember] = []
