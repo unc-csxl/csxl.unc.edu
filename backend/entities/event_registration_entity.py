@@ -3,6 +3,8 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from backend.models.event_member import EventOrganizer
+
 from ..models import RegistrationType, EventMember
 from .entity_base import EntityBase
 from typing import Self
@@ -102,3 +104,20 @@ class EventRegistrationEntity(EntityBase):
             EventMember: `EventMember` object from the entity
         """
         return EventMember(id=self.user_id, registration_type=self.registration_type)
+
+    def to_flat_organizer_model(self) -> EventMember:
+        """
+        Converts an `EventRegistrationEntity` into an `EventMember` model object
+        to store user ID.
+
+        Returns:
+            EventMember: `EventMember` object from the entity
+        """
+        return EventOrganizer(
+            id=self.user_id,
+            first_name=self.user.first_name,
+            last_name=self.user.last_name,
+            pronouns=self.user.pronouns,
+            email=self.user.email,
+            registration_type=self.registration_type,
+        )

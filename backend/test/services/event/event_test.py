@@ -38,7 +38,9 @@ from .event_test_data import (
     event_two,
     to_add,
     updated_event_one,
+    updated_event_one_organizers,
     updated_event_two,
+    updated_event_three,
     invalid_event,
     event_three,
 )
@@ -138,6 +140,22 @@ def test_get_events_by_organization(
     assert fetched_events[2].is_attendee == True
 
 
+def test_get_events_by_organization_organizer(
+    event_svc_integration: EventService,
+    organization_svc_integration: OrganizationService,
+):
+    """Test that list of events can be retrieved based on specified organization."""
+    organization = organization_svc_integration.get_by_slug("cssg")
+    fetched_events = event_svc_integration.get_events_by_organization(
+        organization, user
+    )
+    assert fetched_events is not None
+    assert len(fetched_events) == 3
+    assert fetched_events[0].is_organizer == True
+    assert fetched_events[1].is_organizer == False
+    assert fetched_events[2].is_organizer == False
+
+
 def test_get_events_by_organization_unauthenticated(
     event_svc_integration: EventService,
     organization_svc_integration: OrganizationService,
@@ -158,6 +176,27 @@ def test_update_event_as_root(
     event_svc_integration.update(root, updated_event_one)
     assert event_svc_integration.get_by_id(1).name == "Carolina Data Challenge"
     assert event_svc_integration.get_by_id(1).location == "Fetzer Gym"
+
+
+def test_update_event_organizers_as_root(
+    event_svc_integration: EventService,
+):
+    """Test that the root user is able to update new events.
+    Note: Test data's name and location field is updated
+    """
+    event_svc_integration.update(root, updated_event_three)
+    updated_organizers = event_svc_integration.get_by_id(3).organizers
+    assert updated_organizers[0].id == ambassador.id
+    assert updated_organizers[1].id == user.id
+
+
+def test_update_event_organizers_as_user(
+    event_svc_integration: EventService,
+):
+    """Test that the regular user as organizer cannot updated organizers for event"""
+    event_svc_integration.update(user, updated_event_one_organizers)
+    updated_organizers = event_svc_integration.get_by_id(1).organizers
+    assert len(updated_organizers) == 1
 
 
 def test_update_event_as_organizer(event_svc_integration: EventService):

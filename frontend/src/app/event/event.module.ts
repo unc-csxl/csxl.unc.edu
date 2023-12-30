@@ -27,6 +27,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 
 /* UI Widgets */
 import { RouterModule } from '@angular/router';
@@ -53,6 +54,7 @@ import { EventUsersList } from './widgets/event-users-list/event-users-list.widg
     MatTabsModule,
     MatTableModule,
     MatCardModule,
+    MatChipsModule,
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,

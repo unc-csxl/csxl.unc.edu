@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-from .event_member import EventMember
+from .event_member import EventMember, EventOrganizer
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -24,7 +24,7 @@ class DraftEvent(BaseModel):
     registration_limit: int
     can_register: bool
     organization_id: int
-    organizers: list[EventMember] = []
+    organizers: list[EventOrganizer] = []
 
 
 class Event(DraftEvent):

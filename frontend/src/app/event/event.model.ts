@@ -25,6 +25,7 @@ export interface Event {
   registration_count: number;
   is_attendee: boolean;
   is_organizer: boolean;
+  organizers: EventOrganizer[];
 }
 
 /** Interface for the Event JSON Response model
@@ -46,6 +47,7 @@ export interface EventJson {
   registration_count: number;
   is_attendee: boolean;
   is_organizer: boolean;
+  organizers: EventOrganizer[];
 }
 
 /** Function that converts an EventJSON response model to an Event model.
@@ -57,6 +59,11 @@ export const parseEventJson = (eventJson: EventJson): Event => {
   return Object.assign({}, eventJson, { time: new Date(eventJson.time) });
 };
 
+export enum RegistrationType {
+  ATTENDEE,
+  ORGANIZER
+}
+
 export interface EventRegistration {
   id: number | null;
   event_id: number;
@@ -64,4 +71,16 @@ export interface EventRegistration {
   event: Event | null;
   user: Profile | null;
   is_organizer: boolean | null;
+}
+
+export interface EventMember {
+  id: number;
+  registration_type: RegistrationType;
+}
+
+export interface EventOrganizer extends EventMember {
+  first_name: string;
+  last_name: string;
+  pronouns: string;
+  email: string;
 }

@@ -13,7 +13,7 @@
     <div class="event-actions">
       <button
         mat-icon-button
-        *ngIf="this.adminPermission$ | async"
+        *ngIf="(this.adminPermission$ | async) || this.event.is_organizer"
         [routerLink]="[
           'events',
           'organizations',

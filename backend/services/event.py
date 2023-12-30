@@ -128,9 +128,10 @@ class EventService:
 
         # Set the user as the organizer of the event
         for organizer in event.organizers:
-            self.set_event_organizer(
-                subject=subject, user_id=organizer.id, event=event_details
-            )
+            if organizer.id != None:
+                self.set_event_organizer(
+                    subject=subject, user_id=organizer.id, event=event_details
+                )
 
         # Return added object
         # NOTE: Must re-convert the entity to a model again so that the registration
@@ -206,12 +207,15 @@ class EventService:
 
         # Ensure that the user has appropriate permissions to update event information
         event_details = event_entity.to_details_model(subject)
+
+        is_admin = False
         if not event_details.is_organizer:
             self._permission.enforce(
                 subject,
                 "organization.events.update",
                 f"organization/{event.organization_id}",
             )
+            is_admin = True
 
         # Update event object
         event_entity.name = event.name
@@ -222,37 +226,40 @@ class EventService:
         event_entity.can_register = event.can_register
         event_entity.registration_limit = event.registration_limit
 
-        # Get all current organizers not in new organizers
-        to_remove = [
-            organizer
-            for organizer in event_details.organizers
-            if organizer not in event.organizers
-        ]
-        # Get new organizers not in current organizers
-        to_add = [
-            organizer
-            for organizer in event.organizers
-            if organizer not in event_details.organizers
-        ]
+        # Manage organizer registration if admin
+        if is_admin:
+            # Get all current organizers not in new organizers
+            to_remove = [
+                organizer
+                for organizer in event_details.organizers
+                if organizer not in event.organizers
+            ]
+            # Get new organizers not in current organizers
+            to_add = [
+                organizer
+                for organizer in event.organizers
+                if organizer not in event_details.organizers
+            ]
 
-        # Remove organizers not in new organizers
-        for organizer in to_remove:
-            event_registration_entity = self._session.get(
-                EventRegistrationEntity, (event.id, organizer.id)
-            )
-            self._session.delete(event_registration_entity)
+            # Remove organizers not in new organizers
+            for organizer in to_remove:
+                event_registration_entity = self._session.get(
+                    EventRegistrationEntity, (event.id, organizer.id)
+                )
+                self._session.delete(event_registration_entity)
 
-        # Add organizers not in current organizers
-        for organizer in to_add:
-            event_registration_entity = self._session.get(
-                EventRegistrationEntity, (event.id, organizer.id)
-            )
+            # Add organizers not in current organizers
+            for organizer in to_add:
+                event_registration_entity = self._session.get(
+                    EventRegistrationEntity, (event.id, organizer.id)
+                )
 
-            if event_registration_entity is None:
-                self.set_event_organizer(subject, organizer.id, event_details)
-                continue
+                if event_registration_entity is None:
+                    if organizer.id != None:
+                        self.set_event_organizer(subject, organizer.id, event_details)
+                        continue
 
-            event_registration_entity.registration_type = RegistrationType.ORGANIZER
+                event_registration_entity.registration_type = RegistrationType.ORGANIZER
 
         # Save changes
         self._session.commit()
@@ -397,7 +404,7 @@ class EventService:
         self._session.commit()
 
         # Return registration
-        return event_registration_entity.to_flat_model()
+        return event_registration_entity.to_flat_organizer_model()
 
     def register(
         self, subject: User, attendee: User, event: EventDetails

@@ -3,7 +3,7 @@
     <event-detail-card [event]="event" [profile]="this.profile" />
 
     <event-users-list
-      *ngIf="this.adminPermission$ | async"
+      *ngIf="(this.adminPermission$ | async) || this.event.is_organizer"
       [event]="event"></event-users-list>
   </div>
 </div>

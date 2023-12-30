@@ -2,6 +2,8 @@
 
 import pytest
 from sqlalchemy.orm import Session
+
+from backend.models.event_member import EventMember, EventOrganizer
 from ....models.event import DraftEvent, Event
 from ....models.event_registration import EventRegistration, NewEventRegistration
 from ....models.registration_type import RegistrationType
@@ -66,6 +68,16 @@ to_add = DraftEvent(
     registration_limit=50,
     can_register=True,
     organization_id=cads.id | 0,
+    organizers=[
+        EventOrganizer(
+            id=root.id,
+            first_name=root.first_name,
+            last_name=root.last_name,
+            pronouns=root.pronouns,
+            email=root.email,
+            registration_type=RegistrationType.ORGANIZER,
+        )
+    ],
 )
 
 invalid_event = Event(
@@ -92,6 +104,36 @@ updated_event_one = Event(
     organization_id=cssg.id | 0,
 )
 
+updated_event_one_organizers = Event(
+    id=1,
+    name="Carolina Data Challenge",
+    time=date_maker(days_in_future=1, hour=10, minutes=0),
+    location="Fetzer Gym",
+    description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
+    public=True,
+    registration_limit=50,
+    can_register=True,
+    organization_id=cssg.id | 0,
+    organizers=[
+        EventOrganizer(
+            id=user.id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            pronouns=user.pronouns,
+            email=user.email,
+            registration_type=RegistrationType.ORGANIZER,
+        ),
+        EventOrganizer(
+            id=ambassador.id,
+            first_name=ambassador.first_name,
+            last_name=ambassador.last_name,
+            pronouns=ambassador.pronouns,
+            email=ambassador.email,
+            registration_type=RegistrationType.ORGANIZER,
+        ),
+    ],
+)
+
 updated_event_two = Event(
     id=2,
     name="CS+SG Workshop",
@@ -103,6 +145,37 @@ updated_event_two = Event(
     can_register=True,
     organization_id=cssg.id | 0,
 )
+
+updated_event_three = Event(
+    id=3,
+    name="Super Exclusive Meeting",
+    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    location="SN 014",
+    description="This is a sample description.",
+    public=True,
+    registration_limit=1,
+    can_register=True,
+    organization_id=cssg.id | 0,
+    organizers=[
+        EventOrganizer(
+            id=user.id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            pronouns=user.pronouns,
+            email=user.email,
+            registration_type=RegistrationType.ORGANIZER,
+        ),
+        EventOrganizer(
+            id=ambassador.id,
+            first_name=ambassador.first_name,
+            last_name=ambassador.last_name,
+            pronouns=ambassador.pronouns,
+            email=ambassador.email,
+            registration_type=RegistrationType.ORGANIZER,
+        ),
+    ],
+)
+
 
 registration = NewEventRegistration(
     event_id=event_one.id | 0,

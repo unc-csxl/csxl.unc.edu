@@ -16,5 +16,20 @@ class EventMember(BaseModel):
     of the `User` database in the PostgreSQL database
     """
 
-    id: int
+    id: int | None
     registration_type: RegistrationType
+
+
+class EventOrganizer(EventMember):
+    """
+    Pydantic model to represent the information about a user who is
+    registered for an event.
+
+    This model is based on the `UserEntity` model, which defines the shape
+    of the `User` database in the PostgreSQL database
+    """
+
+    first_name: str
+    last_name: str
+    pronouns: str
+    email: str

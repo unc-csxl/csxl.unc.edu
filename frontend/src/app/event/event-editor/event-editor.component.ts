@@ -7,21 +7,36 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../event.service';
 import { profileResolver } from '../../profile/profile.resolver';
-import { Profile } from '../../profile/profile.service';
+import { Profile, ProfileService } from '../../profile/profile.service';
 import { OrganizationService } from '../../organization/organization.service';
-import { Observable, of } from 'rxjs';
+import {
+  Observable,
+  ReplaySubject,
+  debounceTime,
+  filter,
+  map,
+  mergeMap,
+  of,
+  startWith
+} from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
 import { Organization } from 'src/app/organization/organization.model';
-import { Event } from '../event.model';
+import {
+  Event,
+  EventMember,
+  EventOrganizer,
+  RegistrationType
+} from '../event.model';
 import { DatePipe } from '@angular/common';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-event-editor',
@@ -50,6 +65,9 @@ export class EventEditorComponent {
   /** Stores whether the user has admin permission over the current organization. */
   public adminPermission$: Observable<boolean>;
 
+  /** Store organizers */
+  public organizers: EventOrganizer[] = [];
+
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
   time = new FormControl('', [Validators.required]);
@@ -63,6 +81,12 @@ export class EventEditorComponent {
     Validators.required,
     Validators.min(0)
   ]);
+  userLookup = new FormControl();
+
+  @ViewChild('organizersInput') organizersInput!: ElementRef<HTMLInputElement>;
+  private filteredUsers: ReplaySubject<Profile[]> = new ReplaySubject();
+  public filteredUsers$: Observable<Profile[]> =
+    this.filteredUsers.asObservable();
 
   /** Create a form group */
   public eventForm = this.formBuilder.group({
@@ -72,7 +96,8 @@ export class EventEditorComponent {
     description: this.description,
     public: this.public.value! == 'true',
     registration_limit: this.registration_limit,
-    can_register: this.registration_limit.value! > 0
+    can_register: this.registration_limit.value! > 0,
+    userLookup: ''
   });
 
   constructor(
@@ -83,7 +108,8 @@ export class EventEditorComponent {
     protected snackBar: MatSnackBar,
     private eventService: EventService,
     private permission: PermissionService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private profileService: ProfileService
   ) {
     // Get currently-logged-in user
     const data = route.snapshot.data as {
@@ -110,7 +136,8 @@ export class EventEditorComponent {
       description: this.event.description,
       public: this.event.public,
       registration_limit: this.event.registration_limit,
-      can_register: this.event.can_register
+      can_register: this.event.can_register,
+      userLookup: ''
     });
 
     // Add validator for registration_limit
@@ -119,12 +146,58 @@ export class EventEditorComponent {
     );
 
     // Set permission value
-    this.adminPermission$ =
-      this.permission.check(
-        'organization.events.update',
-        `organization/${this.organization!.id}`
-      ) || of(this.event.is_organizer);
+    this.adminPermission$ = this.permission.check(
+      'organization.events.update',
+      `organization/${this.organization!.id}`
+    );
+
+    // Configure the filtered users list based on the form
+    this.filteredUsers$ = this.userLookup.valueChanges.pipe(
+      startWith(''),
+      filter((search: string) => search.length > 2),
+      debounceTime(100),
+      mergeMap((search) => this.profileService.search(search))
+    );
+
+    // Set the organizers
+    // If no organizers already, set current user as organizer
+    if (this.event.organizers.length === 0) {
+      this.organizers.push({
+        id: this.profile.id!,
+        first_name: this.profile.first_name!,
+        last_name: this.profile.last_name!,
+        pronouns: this.profile.pronouns!,
+        email: this.profile.email!,
+        registration_type: RegistrationType.ORGANIZER
+      });
+    } else {
+      // Set organizers to current organizers
+      this.organizers = this.event.organizers;
+    }
   }
+
+  /** Handler for selecting an option in the who chip grid. */
+  public onOptionSelected = (event: MatAutocompleteSelectedEvent) => {
+    let user = event.option.value as Profile;
+    if (this.organizers.filter((e) => e.id === user.id).length == 0) {
+      this.organizers.push({
+        id: user.id!,
+        first_name: user.first_name!,
+        last_name: user.last_name!,
+        pronouns: user.pronouns!,
+        email: user.email!,
+        registration_type: RegistrationType.ORGANIZER
+      });
+    }
+    this.organizersInput.nativeElement.value = '';
+    this.userLookup.setValue('');
+  };
+
+  /** Handler for selecting an option in the who chip grid. */
+  public onOptionDeselected = (person: EventOrganizer) => {
+    this.organizers.splice(this.organizers.indexOf(person));
+    this.userLookup.setValue('');
+  };
 
   /** Event handler to handle submitting the Create Event Form.
    * @returns {void}
@@ -132,6 +205,7 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
+      this.event.organizers = this.organizers;
       this.event.can_register = this.event.registration_limit > 0;
       if (this.event.id == null) {
         this.eventService.createEvent(this.event).subscribe({
