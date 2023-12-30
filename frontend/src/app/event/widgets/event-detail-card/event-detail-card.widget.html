@@ -68,10 +68,9 @@
     <p>{{ event.description }}</p>
   </div>
 
-  <mat-divider class="padded-divider" />
-
   <!-- Register Button -->
   <div class="registration-information" *ngIf="profile && event.can_register">
+    <mat-divider class="padded-divider" />
     <p>
       <strong>Seats Remaining:</strong>
       {{ event.registration_limit - event.registration_count }} / {{
