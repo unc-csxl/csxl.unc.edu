@@ -3,6 +3,7 @@
 import pytest
 from sqlalchemy.orm import Session
 from backend.entities.academics.section_room_entity import SectionRoomEntity
+from backend.entities.academics.course_entity import CourseEntity
 from backend.entities.room_entity import RoomEntity
 from backend.models.room_assignment_type import RoomAssignmentType
 
@@ -85,21 +86,21 @@ ta = SectionMemberEntity(
     member_role=RosterRole.INSTRUCTOR,
 )
 
-room_assignment_110_001 = SectionRoomEntity(
-    section_id=comp_101_001.id,
-    room_id=virtual_room.id,
-    assignment_type=RoomAssignmentType.LECTURE_ROOM,
+room_assignment_110_001 = (
+    comp_101_001.id,
+    virtual_room.id,
+    RoomAssignmentType.LECTURE_ROOM,
 )
 
-room_assignment_110_002 = SectionRoomEntity(
-    section_id=comp_101_002.id,
-    room_id=virtual_room.id,
-    assignment_type=RoomAssignmentType.LECTURE_ROOM,
+room_assignment_110_002 = (
+    comp_101_002.id,
+    virtual_room.id,
+    RoomAssignmentType.LECTURE_ROOM,
 )
-room_assignment_301_001 = SectionRoomEntity(
-    section_id=comp_301_001.id,
-    room_id=virtual_room.id,
-    assignment_type=RoomAssignmentType.LECTURE_ROOM,
+room_assignment_301_001 = (
+    comp_301_001.id,
+    virtual_room.id,
+    RoomAssignmentType.LECTURE_ROOM,
 )
 
 sections = [comp_101_001, comp_101_002, comp_301_001]
@@ -122,16 +123,18 @@ def insert_fake_data(session: Session):
     session.add(ta)
 
     for assignment in assignments:
-        session.add(assignment)
+        section_id, room_id, assignment_type = assignment
+        entity = SectionRoomEntity(
+            section=session.get(SectionEntity, section_id),
+            room=session.get(RoomEntity, room_id),
+            assignment_type=assignment_type,
+        )
+        session.add(entity)
 
     reset_table_id_seq(session, SectionEntity, SectionEntity.id, len(sections) + 1)
 
 
 @pytest.fixture(autouse=True)
 def fake_data_fixture(session: Session):
-    term_data.insert_fake_data(session)
-    course_data.insert_fake_data(session)
-    role_data.insert_fake_data(session)
-    user_data.insert_fake_data(session)
     insert_fake_data(session)
     session.commit()
