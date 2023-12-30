@@ -49,9 +49,28 @@ class SectionEntity(EntityBase):
     # NOTE: This defines a one-to-many relationship between the room and sections tables.
     rooms: Mapped[list["SectionRoomEntity"]] = relationship(back_populates="section")
 
+    lecture_rooms: Mapped[list["SectionRoomEntity"]] = relationship(
+        back_populates="section",
+        viewonly=True,
+        primaryjoin="and_(SectionEntity.id==SectionRoomEntity.section_id, SectionRoomEntity.assignment_type=='LECTURE_ROOM')",
+    )
+
+    office_hour_rooms: Mapped[list["SectionRoomEntity"]] = relationship(
+        back_populates="section",
+        viewonly=True,
+        primaryjoin="and_(SectionEntity.id==SectionRoomEntity.section_id, SectionRoomEntity.assignment_type=='OFFICE_HOURS')",
+    )
+
     # Members of the course
     members: Mapped[list["SectionMemberEntity"]] = relationship(
         back_populates="section"
+    )
+
+    # Relationship subset of members queries for non-students
+    staff: Mapped[list["SectionMemberEntity"]] = relationship(
+        back_populates="section",
+        viewonly=True,
+        primaryjoin="and_(SectionEntity.id==SectionMemberEntity.section_id, SectionMemberEntity.member_role!='STUDENT')",
     )
 
     @classmethod
@@ -79,21 +98,6 @@ class SectionEntity(EntityBase):
         Returns:
             Section: `Section` object from the entity
         """
-        lecture_rooms = [
-            room.room.to_model()
-            for room in self.rooms
-            if room.assignment_type == RoomAssignmentType.LECTURE_ROOM
-        ]
-        office_hour_rooms = [
-            room.room.to_model()
-            for room in self.rooms
-            if room.assignment_type == RoomAssignmentType.OFFICE_HOURS
-        ]
-        staff = [
-            members.to_flat_model()
-            for members in self.members
-            if members.member_role != RosterRole.STUDENT
-        ]
 
         return Section(
             id=self.id,
@@ -101,9 +105,13 @@ class SectionEntity(EntityBase):
             number=self.number,
             term_id=self.term_id,
             meeting_pattern=self.meeting_pattern,
-            lecture_room=(lecture_rooms[0] if len(lecture_rooms) > 0 else None),
-            office_hour_rooms=office_hour_rooms,
-            staff=staff,
+            lecture_room=(
+                self.lecture_rooms[0].room.to_model()
+                if len(self.lecture_rooms) > 0
+                else None
+            ),
+            office_hour_rooms=[room.to_model() for room in self.office_hour_rooms],
+            staff=[members.to_flat_model() for members in self.staff],
         )
 
     def to_details_model(self) -> SectionDetails:

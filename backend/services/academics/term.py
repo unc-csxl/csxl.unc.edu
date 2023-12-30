@@ -56,7 +56,7 @@ class TermService:
             TermDetails: Term based on the id.
         """
         # Select all entries in the `Term` table and sort by end date
-        query = select(TermEntity).filter(TermEntity.id == id)
+        query = select(TermEntity).filter(TermEntity.id == id).limit(1)
         entity = self._session.scalars(query).one_or_none()
 
         # Raise an error if no entity was found.

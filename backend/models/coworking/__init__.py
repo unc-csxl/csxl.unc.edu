@@ -19,8 +19,6 @@ from .availability import SeatAvailability, RoomAvailability
 from .status import Status
 
 __all__ = [
-    "Room",
-    "RoomDetails",
     "Seat",
     "SeatDetails",
     "TimeRange",
