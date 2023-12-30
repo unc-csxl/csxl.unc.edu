@@ -47,7 +47,9 @@ class SectionEntity(EntityBase):
 
     # Room the section is in
     # NOTE: This defines a one-to-many relationship between the room and sections tables.
-    rooms: Mapped[list["SectionRoomEntity"]] = relationship(back_populates="section")
+    rooms: Mapped[list["SectionRoomEntity"]] = relationship(
+        back_populates="section", cascade="delete"
+    )
 
     lecture_rooms: Mapped[list["SectionRoomEntity"]] = relationship(
         back_populates="section",
@@ -63,7 +65,7 @@ class SectionEntity(EntityBase):
 
     # Members of the course
     members: Mapped[list["SectionMemberEntity"]] = relationship(
-        back_populates="section"
+        back_populates="section",
     )
 
     # Relationship subset of members queries for non-students
