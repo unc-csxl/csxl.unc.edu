@@ -95,7 +95,9 @@ export const sectionResolver: ResolveFn<Section | undefined> = (
       term: null,
       staff: [],
       lecture_room: null,
-      office_hour_rooms: []
+      office_hour_rooms: [],
+      override_title: '',
+      override_description: ''
     };
   }
 

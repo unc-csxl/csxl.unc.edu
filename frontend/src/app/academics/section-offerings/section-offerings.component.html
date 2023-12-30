@@ -31,7 +31,11 @@
         <ng-container matColumnDef="title">
           <th mat-header-cell *matHeaderCellDef>Title</th>
           <td mat-cell *matCellDef="let element">
-            {{ courseFromId(element.course_id)?.title }}
+            {{
+              element.override_title !== ''
+                ? element.override_title
+                : courseFromId(element.course_id)?.title
+            }}
           </td>
         </ng-container>
         <ng-container matColumnDef="instructor">
@@ -87,7 +91,13 @@
               [@detailExpand]="
                 element === expandedElement ? 'expanded' : 'collapsed'
               ">
-              <p>{{ courseFromId(element.course_id)?.description }}</p>
+              <p>
+                {{
+                  element.override_description !== ''
+                    ? element.override_description
+                    : courseFromId(element.course_id)?.description
+                }}
+              </p>
             </div>
           </td>
         </ng-container>

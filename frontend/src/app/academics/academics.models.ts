@@ -33,6 +33,8 @@ export interface Section {
   staff: SectionMember[] | null;
   lecture_room: Room | null;
   office_hour_rooms: Room[] | null;
+  override_title: string;
+  override_description: string;
 }
 
 /** Defines a Term */
@@ -64,8 +66,8 @@ export interface Room {
 
 /** Defines a Roster Role */
 export enum RosterRole {
-  STUDENT = "Student",
-  UTA = "Undergraduate Teaching Assistant",
-  GTA = "Graduate Teaching Assistant",
-  INSTRUCTOR = "Instructor"
+  STUDENT = 0,
+  UTA = 1,
+  GTA = 2,
+  INSTRUCTOR = 3
 }

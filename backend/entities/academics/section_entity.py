@@ -45,6 +45,10 @@ class SectionEntity(EntityBase):
     # For example, MWF 4:40PM - 5:30PM.
     meeting_pattern: Mapped[str] = mapped_column(String, default="")
 
+    # Override fields for specific sections, such as COMP 590: Special Topics
+    override_title: Mapped[str] = mapped_column(String, default="")
+    override_description: Mapped[str] = mapped_column(String, default="")
+
     # Room the section is in
     # NOTE: This defines a one-to-many relationship between the room and sections tables.
     rooms: Mapped[list["SectionRoomEntity"]] = relationship(
@@ -91,6 +95,8 @@ class SectionEntity(EntityBase):
             number=model.number,
             term_id=model.term_id,
             meeting_pattern=model.meeting_pattern,
+            override_title=model.override_title,
+            override_description=model.override_description,
         )
 
     def to_model(self) -> Section:
@@ -114,6 +120,8 @@ class SectionEntity(EntityBase):
             ),
             office_hour_rooms=[room.to_model() for room in self.office_hour_rooms],
             staff=[members.to_flat_model() for members in self.staff],
+            override_title=self.override_title,
+            override_description=self.override_description,
         )
 
     def to_details_model(self) -> SectionDetails:
@@ -137,4 +145,6 @@ class SectionEntity(EntityBase):
             lecture_room=section.lecture_room,
             office_hour_rooms=section.office_hour_rooms,
             staff=section.staff,
+            override_title=self.override_title,
+            override_description=self.override_description,
         )
