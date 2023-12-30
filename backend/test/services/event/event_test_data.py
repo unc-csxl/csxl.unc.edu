@@ -102,6 +102,16 @@ updated_event_one = Event(
     registration_limit=50,
     can_register=True,
     organization_id=cssg.id | 0,
+    organizers=[
+        EventOrganizer(
+            id=user.id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            pronouns=user.pronouns,
+            email=user.email,
+            registration_type=RegistrationType.ORGANIZER,
+        ),
+    ],
 )
 
 updated_event_one_organizers = Event(
@@ -171,6 +181,36 @@ updated_event_three = Event(
             last_name=ambassador.last_name,
             pronouns=ambassador.pronouns,
             email=ambassador.email,
+            registration_type=RegistrationType.ORGANIZER,
+        ),
+        EventOrganizer(
+            id=root.id,
+            first_name=root.first_name,
+            last_name=root.last_name,
+            pronouns=root.pronouns,
+            email=root.email,
+            registration_type=RegistrationType.ORGANIZER,
+        ),
+    ],
+)
+
+updated_event_three_remove_organizers = Event(
+    id=3,
+    name="Super Exclusive Meeting",
+    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    location="SN 014",
+    description="This is a sample description.",
+    public=True,
+    registration_limit=1,
+    can_register=True,
+    organization_id=cssg.id | 0,
+    organizers=[
+        EventOrganizer(
+            id=user.id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            pronouns=user.pronouns,
+            email=user.email,
             registration_type=RegistrationType.ORGANIZER,
         ),
     ],

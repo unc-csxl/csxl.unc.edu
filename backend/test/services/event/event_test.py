@@ -41,6 +41,7 @@ from .event_test_data import (
     updated_event_one_organizers,
     updated_event_two,
     updated_event_three,
+    updated_event_three_remove_organizers,
     invalid_event,
     event_three,
 )
@@ -188,15 +189,27 @@ def test_update_event_organizers_as_root(
     updated_organizers = event_svc_integration.get_by_id(3).organizers
     assert updated_organizers[0].id == ambassador.id
     assert updated_organizers[1].id == user.id
+    assert updated_organizers[2].id == root.id
+
+    event_svc_integration.update(root, updated_event_three_remove_organizers)
+    updated_organizers = event_svc_integration.get_by_id(3).organizers
+    assert len(updated_organizers) == 1
+    assert updated_organizers[0].id == user.id
+
+    event_svc_integration.update(root, updated_event_three)
+    updated_organizers = event_svc_integration.get_by_id(3).organizers
+    assert updated_organizers[0].id == user.id
+    assert updated_organizers[1].id == ambassador.id
 
 
 def test_update_event_organizers_as_user(
     event_svc_integration: EventService,
 ):
-    """Test that the regular user as organizer cannot updated organizers for event"""
-    event_svc_integration.update(user, updated_event_one_organizers)
-    updated_organizers = event_svc_integration.get_by_id(1).organizers
-    assert len(updated_organizers) == 1
+    """Test that the organizer user cannot update organizers.
+    Note: Test data's name and location field is updated
+    """
+    with pytest.raises(UserPermissionException):
+        event_svc_integration.update(user, updated_event_three)
 
 
 def test_update_event_as_organizer(event_svc_integration: EventService):

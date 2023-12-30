@@ -20,21 +20,14 @@ import {
   ReplaySubject,
   debounceTime,
   filter,
-  map,
   mergeMap,
-  of,
   startWith
 } from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
 import { Organization } from 'src/app/organization/organization.model';
-import {
-  Event,
-  EventMember,
-  EventOrganizer,
-  RegistrationType
-} from '../event.model';
+import { Event, EventOrganizer, RegistrationType } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
@@ -151,6 +144,12 @@ export class EventEditorComponent {
       `organization/${this.organization!.id}`
     );
 
+    this.adminPermission$.subscribe((perm) => {
+      if (!perm) {
+        this.userLookup.disable();
+      }
+    });
+
     // Configure the filtered users list based on the form
     this.filteredUsers$ = this.userLookup.valueChanges.pipe(
       startWith(''),
@@ -161,15 +160,16 @@ export class EventEditorComponent {
 
     // Set the organizers
     // If no organizers already, set current user as organizer
-    if (this.event.organizers.length === 0) {
-      this.organizers.push({
+    if (this.event.id == null) {
+      let organizer = {
         id: this.profile.id!,
         first_name: this.profile.first_name!,
         last_name: this.profile.last_name!,
         pronouns: this.profile.pronouns!,
         email: this.profile.email!,
         registration_type: RegistrationType.ORGANIZER
-      });
+      };
+      this.organizers.push(organizer);
     } else {
       // Set organizers to current organizers
       this.organizers = this.event.organizers;
@@ -180,14 +180,15 @@ export class EventEditorComponent {
   public onOptionSelected = (event: MatAutocompleteSelectedEvent) => {
     let user = event.option.value as Profile;
     if (this.organizers.filter((e) => e.id === user.id).length == 0) {
-      this.organizers.push({
+      let organizer: EventOrganizer = {
         id: user.id!,
         first_name: user.first_name!,
         last_name: user.last_name!,
         pronouns: user.pronouns!,
         email: user.email!,
         registration_type: RegistrationType.ORGANIZER
-      });
+      };
+      this.organizers.push(organizer);
     }
     this.organizersInput.nativeElement.value = '';
     this.userLookup.setValue('');
@@ -205,8 +206,11 @@ export class EventEditorComponent {
   onSubmit = () => {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
+
+      // Set fields not explicitly in form
       this.event.organizers = this.organizers;
       this.event.can_register = this.event.registration_limit > 0;
+
       if (this.event.id == null) {
         this.eventService.createEvent(this.event).subscribe({
           next: (event) => this.onSuccess(event),
@@ -227,7 +231,11 @@ export class EventEditorComponent {
    */
   private onSuccess(event: Event): void {
     this.router.navigate(['/events/', event.id]);
-    this.snackBar.open('Event Edited', '', { duration: 2000 });
+    if (this.event.id == null) {
+      this.snackBar.open('Event Created', '', { duration: 2000 });
+    } else {
+      this.snackBar.open('Event Edited', '', { duration: 2000 });
+    }
   }
 
   /** Opens a confirmation snackbar when there is an error creating an event.
