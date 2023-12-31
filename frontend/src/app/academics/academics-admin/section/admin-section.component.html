@@ -1,5 +1,7 @@
 <!-- HTML Structure of Admin Terms List -->
-<div class="content" *ngIf="displayTerm.value.course_sections">
+<div
+  class="content"
+  *ngIf="displayTerm.value && displayTerm.value.course_sections; else noTerm">
   <table mat-table [dataSource]="displayTerm.value.course_sections">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
@@ -42,3 +44,10 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 </div>
+<ng-template #noTerm>
+  <mat-card>
+    <mat-card-content>
+      <p>Please make a term first!</p>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

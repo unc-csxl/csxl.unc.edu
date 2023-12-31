@@ -58,7 +58,13 @@ export const currentTermResolver: ResolveFn<Term | undefined> = (
   route,
   state
 ) => {
-  return inject(AcademicsService).getCurrentTerm();
+  return inject(AcademicsService)
+    .getCurrentTerm()
+    .pipe(
+      catchError((error) => {
+        return of(undefined);
+      })
+    );
 };
 
 /** This resolver injects a term into the catalog component. */

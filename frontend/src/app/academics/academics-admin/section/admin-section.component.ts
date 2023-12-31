@@ -64,20 +64,21 @@ export class AdminSectionComponent {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
       terms: Term[];
-      currentTerm: Term;
+      currentTerm: Term | undefined;
       courses: Course[];
     };
 
     this.terms.set(data.terms);
     this.courses = data.courses;
 
-    let index = data.terms.findIndex((t) => {
-      t.id == data.currentTerm.id;
-    });
-
-    this.displayTerm.setValue(data.currentTerm);
-
-    this.sections$ = academicsService.getSectionsByTerm(this.displayTerm.value);
+    if (data.currentTerm) {
+      this.displayTerm.setValue(data.currentTerm);
+      this.sections$ = academicsService.getSectionsByTerm(
+        this.displayTerm.value
+      );
+    } else {
+      this.sections$ = new Observable<Section[]>();
+    }
   }
 
   /** Event handler to open the Section Editor to create a new term */
