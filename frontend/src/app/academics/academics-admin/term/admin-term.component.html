@@ -1,0 +1,28 @@
+<!-- HTML Structure of Admin Terms List -->
+<div class="content" *ngIf="terms$ | async as terms">
+  <table mat-table [dataSource]="terms">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">
+          Terms
+          <button mat-stroked-button (click)="createTerm()">Create</button>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <p (click)="updateTerm(element)">
+            {{ element.name }}
+          </p>
+          <div clas="modify-buttons">
+            <button mat-stroked-button (click)="deleteTerm(element)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

@@ -2,8 +2,10 @@
 
 from sqlalchemy import Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from ..entity_base import EntityBase
-from ...models.coworking import Room, RoomDetails
+
+from backend.entities.coworking import SeatEntity
+from .entity_base import EntityBase
+from ..models import Room, RoomDetails
 from typing import Self
 
 __authors__ = ["Kris Jordan"]
@@ -14,7 +16,7 @@ __license__ = "MIT"
 class RoomEntity(EntityBase):
     """Entity for Rooms under XL management."""
 
-    __tablename__ = "coworking__room"
+    __tablename__ = "room"
 
     # Room Model Fields
     id: Mapped[str] = mapped_column(String, primary_key=True)
@@ -27,6 +29,10 @@ class RoomEntity(EntityBase):
 
     seats: Mapped[list["SeatEntity"]] = relationship(  # type: ignore
         "SeatEntity", back_populates="room"
+    )
+
+    course_sections: Mapped[list["SectionRoomEntity"]] = relationship(  # type: ignore
+        back_populates="room"
     )
 
     def to_model(self) -> Room:

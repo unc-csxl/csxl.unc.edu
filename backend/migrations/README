@@ -1,1 +1,27 @@
-Generic single-database configuration.
+Migrations are only needed for production deployment. For local development,
+the database is created and dropped with the `reset_demo` script.
+
+To create a migration:
+
+1. Switch to main branch and pull latest from main.
+2. Run delete database script
+3. Run create database script (with `main`'s understanding of the schema)
+4. Run the reset demo or test script to create tables
+5. Stamp alembic at the latest revision: `alembic stamp head`
+6. Switch to the branch you want to migrate
+7. Run `alembic revision --autogenerate -m "migration message"`
+8. Edit the contents of the generated migration to match the desired migration
+    Common issues:
+        1. Renamed tables shouldn't be created and dropped as new tables
+        2. Enums need to be explicitly dropped (see 3b3cd for an example)
+
+Test the migration:
+
+8. Run `alembic upgrade head` to run the migration (all tables should be created)
+9. Try using the app to validate functionality
+10. Run `alembic downgrade head-1` to undo the migration and test rollback
+11. Repeat 8 and 9 to confirm rollback and upgrade work as expected
+
+On production deploy:
+
+12. Run `alembic upgrade head` to run the migration on a pod in production

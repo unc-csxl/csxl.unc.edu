@@ -2,7 +2,7 @@ from enum import Enum
 from pydantic import BaseModel
 from datetime import datetime
 from ...models.user import User, UserIdentity
-from .room import Room
+from ..room import Room
 from .seat import Seat, SeatIdentity
 from .time_range import TimeRange
 

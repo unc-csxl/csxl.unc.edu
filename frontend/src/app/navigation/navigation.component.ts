@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { NavigationService as NavigationTitleService } from './navigation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthenticationService } from '../authentication.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
 import { Profile, ProfileService } from '../profile/profile.service';
 import { PermissionService } from '../permission.service';
+import { NagivationAdminGearService } from './navigation-admin-gear.service';
 
 @Component({
   selector: 'app-navigation',
@@ -30,10 +31,11 @@ export class NavigationComponent implements OnInit, OnDestroy {
   constructor(
     public auth: AuthenticationService,
     public router: Router,
-    private permission: PermissionService,
+    protected permission: PermissionService,
     private profileService: ProfileService,
     private breakpointObserver: BreakpointObserver,
     protected navigationService: NavigationTitleService,
+    protected navigationAdminGearService: NagivationAdminGearService,
     protected errorDialog: MatDialog
   ) {
     this.profile$ = this.profileService.profile$;
@@ -46,6 +48,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
       'coworking.reservation.*',
       '*'
     );
+
+    // Reset the admin settings navigation every time the route changes
+    router.events
+      .pipe(filter((e) => e instanceof RouterEvent))
+      .subscribe((_) => {
+        navigationAdminGearService.resetAdminSettingsNavigation();
+      });
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 from .permission import Permission
-from .user import User
+from .user import User, UserIdentity
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

@@ -5,7 +5,6 @@ from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from ..entity_base import EntityBase
 from ...models.coworking import Reservation, ReservationState
-from .room_entity import RoomEntity
 from .seat_entity import SeatEntity
 from ..user_entity import UserEntity
 from .reservation_user_table import reservation_user_table
@@ -29,9 +28,7 @@ class ReservationEntity(EntityBase):
     end: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     state: Mapped[ReservationState] = mapped_column(String, nullable=False)
     walkin: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    room_id: Mapped[str] = mapped_column(
-        String, ForeignKey("coworking__room.id"), nullable=True
-    )
+    room_id: Mapped[str] = mapped_column(String, ForeignKey("room.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now, nullable=False
     )
@@ -42,7 +39,7 @@ class ReservationEntity(EntityBase):
     # Relationships
     users: Mapped[list[UserEntity]] = relationship(secondary=reservation_user_table)
     seats: Mapped[list[SeatEntity]] = relationship(secondary=reservation_seat_table)
-    room: Mapped[RoomEntity] = relationship("RoomEntity")
+    room: Mapped["RoomEntity"] = relationship("RoomEntity")
 
     def to_model(self) -> Reservation:
         """Converts the entity to a model.

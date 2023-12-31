@@ -4,7 +4,7 @@ Importantly, it includes a room's seats, if seats are reservable as in the XL co
 """
 
 from .room import Room
-from .seat import Seat
+from .coworking.seat import Seat
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

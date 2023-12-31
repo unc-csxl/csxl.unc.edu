@@ -11,6 +11,8 @@ from .organization import Organization
 from .event import Event
 from .event_member import EventMember
 from .event_details import EventDetails
+from .room import Room
+from .room_details import RoomDetails
 from .event_registration import (
     EventRegistration,
     NewEventRegistration,
