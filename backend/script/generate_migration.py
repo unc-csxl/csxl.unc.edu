@@ -59,11 +59,11 @@ def main() -> None:
         print("❌ Failed to switch to main branch.")
         sys.exit(1)
 
-    # if pull_remote_branch(remote_name, "main"):
-    #     print(f"✅ Pulled latest changes from {remote_name}/main")
-    # else:
-    #     print(f"❌ Failed to pull latest changes from {remote_name}/main.")
-    #     sys.exit(1)
+    if pull_remote_branch(remote_name, "main"):
+        print(f"✅ Pulled latest changes from {remote_name}/main")
+    else:
+        print(f"❌ Failed to pull latest changes from {remote_name}/main.")
+        sys.exit(1)
 
     if run_backend_script("reset_testing"):
         print("✅ Reset database to production schema")
