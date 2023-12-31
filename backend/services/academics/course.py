@@ -40,7 +40,7 @@ class CourseService:
             list[CourseDetails]: List of all `CourseDetails`
         """
         # Select all entries in `Course` table
-        query = select(CourseEntity)
+        query = select(CourseEntity).order_by(CourseEntity.id)
 
         entities = self._session.scalars(query).all()
 

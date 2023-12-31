@@ -43,7 +43,9 @@ class SectionService:
             list[SectionDetails]: List of all `SectionDetails`
         """
         # Select all entries in `Section` table
-        query = select(SectionEntity)
+        query = select(SectionEntity).order_by(
+            SectionEntity.course_id, SectionEntity.number
+        )
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return
@@ -58,7 +60,11 @@ class SectionService:
             list[SectionDetails]: List of all `SectionDetails`
         """
         # Select all entries in the `Section` tabl
-        query = select(SectionEntity).where(SectionEntity.term_id == term_id)
+        query = (
+            select(SectionEntity)
+            .where(SectionEntity.term_id == term_id)
+            .order_by(SectionEntity.course_id, SectionEntity.number)
+        )
         entities = self._session.scalars(query).all()
 
         # Return the model
