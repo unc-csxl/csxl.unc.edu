@@ -23,12 +23,7 @@ export class EventUsersList implements OnInit {
   @Input() event!: Event;
   page!: Paginated<Profile>;
 
-  public displayedColumns: string[] = [
-    'first_name',
-    'last_name',
-    'pronouns',
-    'email'
-  ];
+  public displayedColumns: string[] = ['name', 'pronouns', 'email'];
 
   private static PaginationParams = {
     page: 0,

@@ -569,7 +569,7 @@ class EventService:
             .join(
                 EventRegistrationAlias, EventRegistrationAlias.user_id == UserEntity.id
             )
-            .where(EventRegistrationAlias.event_id == event_id)
+            .where(EventRegistrationAlias.event_id == event_id, EventRegistrationAlias.registration_type == RegistrationType.ATTENDEE)
         )
 
         # Statement to determine number of rows in query result
@@ -579,7 +579,7 @@ class EventService:
             .join(
                 EventRegistrationAlias, EventRegistrationAlias.user_id == UserEntity.id
             )
-            .where(EventRegistrationAlias.event_id == event_id)
+            .where(EventRegistrationAlias.event_id == event_id, EventRegistrationAlias.registration_type == RegistrationType.ATTENDEE)
         )
 
         # Filter results by query

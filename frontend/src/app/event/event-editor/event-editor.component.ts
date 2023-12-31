@@ -163,11 +163,12 @@ export class EventEditorComponent {
     if (this.event.id == null) {
       let organizer = {
         id: this.profile.id!,
+        registration_type: RegistrationType.ORGANIZER,
         first_name: this.profile.first_name!,
         last_name: this.profile.last_name!,
         pronouns: this.profile.pronouns!,
         email: this.profile.email!,
-        registration_type: RegistrationType.ORGANIZER
+        github_avatar: this.profile.github_avatar
       };
       this.organizers.push(organizer);
     } else {
@@ -182,11 +183,12 @@ export class EventEditorComponent {
     if (this.organizers.filter((e) => e.id === user.id).length == 0) {
       let organizer: EventOrganizer = {
         id: user.id!,
+        registration_type: RegistrationType.ORGANIZER,
         first_name: user.first_name!,
         last_name: user.last_name!,
         pronouns: user.pronouns!,
         email: user.email!,
-        registration_type: RegistrationType.ORGANIZER
+        github_avatar: user.github_avatar
       };
       this.organizers.push(organizer);
     }
@@ -196,7 +198,7 @@ export class EventEditorComponent {
 
   /** Handler for selecting an option in the who chip grid. */
   public onOptionDeselected = (person: EventOrganizer) => {
-    this.organizers.splice(this.organizers.indexOf(person));
+    this.organizers.splice(this.organizers.indexOf(person), 1);
     this.userLookup.setValue('');
   };
 

@@ -33,3 +33,4 @@ class EventOrganizer(EventMember):
     last_name: str
     pronouns: str
     email: str
+    github_avatar: str | None = None

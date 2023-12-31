@@ -115,9 +115,10 @@ class EventRegistrationEntity(EntityBase):
         """
         return EventOrganizer(
             id=self.user_id,
+            registration_type=self.registration_type,
             first_name=self.user.first_name,
             last_name=self.user.last_name,
             pronouns=self.user.pronouns,
             email=self.user.email,
-            registration_type=self.registration_type,
+            github_avatar=self.user.github_avatar
         )
