@@ -172,7 +172,6 @@ export class SectionEditorComponent {
       this.section.term_id = this.term.value!.id;
       this.section.course_id = this.course.value!.id;
 
-      console.log(this.room.value);
       this.section.lecture_room = this.room.value!;
 
       if (this.sectionIdString == 'new') {
@@ -193,7 +192,7 @@ export class SectionEditorComponent {
    * @returns {void}
    */
   private onSuccess(section: Section): void {
-    this.router.navigate(['/academics/admin/']);
+    this.router.navigate(['/academics/admin/section']);
 
     let message: string =
       this.sectionIdString === 'new' ? 'Section Created' : 'Section Updated';
