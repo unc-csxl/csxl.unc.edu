@@ -209,6 +209,8 @@ class SectionService:
         section_entity.number = section.number
         section_entity.term_id = section.term_id
         section_entity.meeting_pattern = section.meeting_pattern
+        section_entity.override_title = section.override_title
+        section_entity.override_description = section.override_description
 
         query = select(SectionRoomEntity).where(
             SectionRoomEntity.section_id == section.id,

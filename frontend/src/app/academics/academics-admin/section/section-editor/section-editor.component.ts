@@ -36,6 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Profile } from 'src/app/models.module';
 import { DatePipe } from '@angular/common';
+import { ReplaySubject } from 'rxjs';
 
 const canActivateEditor: CanActivateFn = (
   route: ActivatedRouteSnapshot,
@@ -105,14 +106,24 @@ export class SectionEditorComponent {
   ]);
   number = new FormControl('', [Validators.required]);
   meeting_pattern = new FormControl('', [Validators.required]);
+  override_title = new FormControl('');
+  override_description = new FormControl('');
+
   public room: FormControl<Room | null> = new FormControl(null, [
     Validators.required
   ]);
 
+  public override = new FormControl(false, [Validators.required]);
+
+  isOverriding: ReplaySubject<boolean> = new ReplaySubject(1);
+  isOverriding$ = this.isOverriding.asObservable();
+
   /** Section Editor Form */
   public sectionForm = this.formBuilder.group({
     number: this.number,
-    meeting_pattern: this.meeting_pattern
+    meeting_pattern: this.meeting_pattern,
+    override_title: this.override_title,
+    override_description: this.override_description
   });
 
   /** Constructs the term editor component */
@@ -145,8 +156,29 @@ export class SectionEditorComponent {
     /** Set section form data */
     this.sectionForm.setValue({
       number: this.section.number,
-      meeting_pattern: this.section.meeting_pattern
+      meeting_pattern: this.section.meeting_pattern,
+      override_title: this.section.override_title,
+      override_description: this.section.override_description
     });
+
+    /** Set the value of the override flag to on if data exists. */
+    if (
+      this.section.override_title !== '' ||
+      this.section.override_description !== ''
+    ) {
+      this.override.setValue(true);
+      this.isOverriding.next(true);
+    }
+
+    /** Update the isOverriding replay subject when the checkmark is changed. */
+    this.override.valueChanges.subscribe((val) => {
+      this.isOverriding.next(val ?? false);
+      if (!val) {
+        this.override_title.setValue('');
+        this.override_description.setValue('');
+      }
+    });
+
     /** Select the term, course, and room, if it exists. */
     let termFilter = this.terms.filter((t) => t.id == this.section.term_id);
     let courseFilter = this.courses.filter(
@@ -173,6 +205,10 @@ export class SectionEditorComponent {
       this.section.course_id = this.course.value!.id;
 
       this.section.lecture_room = this.room.value!;
+
+      this.section.override_title = this.sectionForm.value.override_title ?? '';
+      this.section.override_description =
+        this.sectionForm.value.override_description ?? '';
 
       if (this.sectionIdString == 'new') {
         this.academicsService.createSection(this.section).subscribe({

@@ -22,7 +22,12 @@
           <p (click)="updateSection(element)">
             {{ courseFromId(element.course_id)?.subject_code }}
             {{ courseFromId(element.course_id)?.number }} -
-            {{ element.number }}: {{ courseFromId(element.course_id)?.title }}
+            {{ element.number }}:
+            {{
+              element.override_title !== ''
+                ? element.override_title
+                : courseFromId(element.course_id)?.title
+            }}
           </p>
           <div clas="modify-buttons">
             <button mat-stroked-button (click)="deleteSection(element)">

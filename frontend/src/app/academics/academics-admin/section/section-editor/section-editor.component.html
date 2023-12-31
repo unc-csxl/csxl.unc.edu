@@ -59,6 +59,36 @@
           >
         </mat-select>
       </mat-form-field>
+
+      <!-- Override Title and Description -->
+      <p class="checkbox">
+        <mat-checkbox [formControl]="override"
+          >Override Course Name and Description?</mat-checkbox
+        >
+      </p>
+      <mat-form-field
+        appearance="outline"
+        color="accent"
+        *ngIf="isOverriding$ | async">
+        <mat-label>Override Title</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="override_title"
+          name="override_title" />
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        color="accent"
+        *ngIf="isOverriding$ | async">
+        <mat-label>Override Description</mat-label>
+        <textarea
+          matInput
+          placeholder=""
+          formControlName="override_description"
+          name="override_description"></textarea>
+      </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button routerLink="/academics/admin/section">
