@@ -11,6 +11,7 @@ Usage: python3 -m script.reset_testing
 """
 
 import sys
+import subprocess
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from ..database import engine
@@ -32,6 +33,10 @@ if getenv("MODE") != "development":
     print("This script can only be run in development mode.", file=sys.stderr)
     print("Add MODE=development to your .env file in workspace's `backend/` directory")
     exit(1)
+
+# Run Delete and Create Database Scripts
+subprocess.run(["python3", "-m", "backend.script.delete_database"])
+subprocess.run(["python3", "-m", "backend.script.create_database"])
 
 # Reset Tables
 entities.EntityBase.metadata.drop_all(engine)
