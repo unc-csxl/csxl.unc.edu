@@ -222,7 +222,6 @@ class EventService:
         event_entity.description = event.description
         event_entity.location = event.location
         event_entity.public = event.public
-        event_entity.can_register = event.can_register
         event_entity.registration_limit = event.registration_limit
 
         # If attempting to edit organizers, enforce registration management permissions
@@ -569,7 +568,10 @@ class EventService:
             .join(
                 EventRegistrationAlias, EventRegistrationAlias.user_id == UserEntity.id
             )
-            .where(EventRegistrationAlias.event_id == event_id, EventRegistrationAlias.registration_type == RegistrationType.ATTENDEE)
+            .where(
+                EventRegistrationAlias.event_id == event_id,
+                EventRegistrationAlias.registration_type == RegistrationType.ATTENDEE,
+            )
         )
 
         # Statement to determine number of rows in query result
@@ -579,7 +581,10 @@ class EventService:
             .join(
                 EventRegistrationAlias, EventRegistrationAlias.user_id == UserEntity.id
             )
-            .where(EventRegistrationAlias.event_id == event_id, EventRegistrationAlias.registration_type == RegistrationType.ATTENDEE)
+            .where(
+                EventRegistrationAlias.event_id == event_id,
+                EventRegistrationAlias.registration_type == RegistrationType.ATTENDEE,
+            )
         )
 
         # Filter results by query

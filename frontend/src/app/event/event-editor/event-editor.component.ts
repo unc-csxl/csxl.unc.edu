@@ -89,7 +89,6 @@ export class EventEditorComponent {
     description: this.description,
     public: this.public.value! == 'true',
     registration_limit: this.registration_limit,
-    can_register: this.registration_limit.value! > 0,
     userLookup: ''
   });
 
@@ -129,7 +128,6 @@ export class EventEditorComponent {
       description: this.event.description,
       public: this.event.public,
       registration_limit: this.event.registration_limit,
-      can_register: this.event.can_register,
       userLookup: ''
     });
 
@@ -211,7 +209,6 @@ export class EventEditorComponent {
 
       // Set fields not explicitly in form
       this.event.organizers = this.organizers;
-      this.event.can_register = this.event.registration_limit > 0;
 
       if (this.event.id == null) {
         this.eventService.createEvent(this.event).subscribe({

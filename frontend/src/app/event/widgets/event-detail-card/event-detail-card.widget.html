@@ -96,7 +96,9 @@
   </div>
 
   <!-- Register Button -->
-  <div class="registration-information" *ngIf="profile && event.can_register">
+  <div
+    class="registration-information"
+    *ngIf="profile && event.registration_limit > 0">
     <mat-divider class="padded-divider" />
     <p>
       <strong>Seats Remaining:</strong>

@@ -33,7 +33,6 @@ export const eventDetailResolver: ResolveFn<Event | undefined> = (
       description: '',
       public: true,
       registration_limit: 0,
-      can_register: false,
       organization_id: null,
       organization: null,
       registration_count: 0,

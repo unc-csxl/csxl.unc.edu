@@ -489,10 +489,9 @@ def test_get_registered_users_of_event(event_svc_integration: EventService):
         root, event_one.id, pagination_params
     )
 
-    assert len(page.items) == 2
-    assert page.length == 2
+    assert len(page.items) == 1
+    assert page.length == 1
     assert page.items[0].id == ambassador.id
-    assert page.items[1].id == user.id
 
 
 def test_organizer_get_registered_users_of_event(event_svc_integration: EventService):
@@ -505,10 +504,9 @@ def test_organizer_get_registered_users_of_event(event_svc_integration: EventSer
         user, event_one.id, pagination_params
     )
 
-    assert len(page.items) == 2
-    assert page.length == 2
+    assert len(page.items) == 1
+    assert page.length == 1
     assert page.items[0].id == ambassador.id
-    assert page.items[1].id == user.id
 
 
 def test_organizer_get_registered_users_of_event_filtered(

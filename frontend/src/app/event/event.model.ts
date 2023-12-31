@@ -19,7 +19,6 @@ export interface Event {
   description: string;
   public: boolean;
   registration_limit: number;
-  can_register: boolean;
   organization_id: number | null;
   organization: Organization | null;
   registration_count: number;
@@ -41,7 +40,6 @@ export interface EventJson {
   description: string;
   public: boolean;
   registration_limit: number;
-  can_register: boolean;
   organization_id: number | null;
   organization: Organization | null;
   registration_count: number;
