@@ -7,6 +7,7 @@
  * @license MIT
  */
 
+import { Profile } from '../models.module';
 import { Organization } from '../organization/organization.model';
 
 /** Interface for Event Type (used on frontend for event detail) */
@@ -17,8 +18,14 @@ export interface Event {
   location: string;
   description: string;
   public: boolean;
+  registration_limit: number;
+  can_register: boolean;
   organization_id: number | null;
   organization: Organization | null;
+  registration_count: number;
+  is_attendee: boolean;
+  is_organizer: boolean;
+  organizers: EventOrganizer[];
 }
 
 /** Interface for the Event JSON Response model
@@ -33,8 +40,14 @@ export interface EventJson {
   location: string;
   description: string;
   public: boolean;
+  registration_limit: number;
+  can_register: boolean;
   organization_id: number | null;
   organization: Organization | null;
+  registration_count: number;
+  is_attendee: boolean;
+  is_organizer: boolean;
+  organizers: EventOrganizer[];
 }
 
 /** Function that converts an EventJSON response model to an Event model.
@@ -45,3 +58,29 @@ export interface EventJson {
 export const parseEventJson = (eventJson: EventJson): Event => {
   return Object.assign({}, eventJson, { time: new Date(eventJson.time) });
 };
+
+export enum RegistrationType {
+  ATTENDEE,
+  ORGANIZER
+}
+
+export interface EventRegistration {
+  id: number | null;
+  event_id: number;
+  user_id: number;
+  event: Event | null;
+  user: Profile | null;
+  is_organizer: boolean | null;
+}
+
+export interface EventMember {
+  id: number;
+  registration_type: RegistrationType;
+}
+
+export interface EventOrganizer extends EventMember {
+  first_name: string;
+  last_name: string;
+  pronouns: string;
+  email: string;
+}

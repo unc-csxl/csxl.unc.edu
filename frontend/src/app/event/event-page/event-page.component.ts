@@ -70,7 +70,7 @@ export class EventPageComponent implements OnInit {
 
     // Initialize the initially selected event
     if (data.events.length > 0) {
-      this.selectedEvent = eventFilterPipe.transform(data.events, "")[0];
+      this.selectedEvent = eventFilterPipe.transform(data.events, '')[0];
     }
   }
 

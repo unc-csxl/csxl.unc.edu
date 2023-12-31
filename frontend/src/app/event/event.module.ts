@@ -27,6 +27,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 
 /* UI Widgets */
 import { RouterModule } from '@angular/router';
@@ -37,19 +38,23 @@ import { EventDetailsComponent } from './event-details/event-details.component';
 import { EventPageComponent } from './event-page/event-page.component';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
 import { EventEditorComponent } from './event-editor/event-editor.component';
+import { EventUsersList } from './widgets/event-users-list/event-users-list.widget';
 
 @NgModule({
   declarations: [
     EventDetailCard,
     EventDetailsComponent,
     EventPageComponent,
-    EventEditorComponent
+    EventEditorComponent,
+
+    EventUsersList
   ],
   imports: [
     CommonModule,
     MatTabsModule,
     MatTableModule,
     MatCardModule,
+    MatChipsModule,
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,

@@ -32,8 +32,14 @@ export const eventDetailResolver: ResolveFn<Event | undefined> = (
       location: '',
       description: '',
       public: true,
+      registration_limit: 0,
+      can_register: false,
       organization_id: null,
-      organization: null
+      organization: null,
+      registration_count: 0,
+      is_attendee: false,
+      is_organizer: false,
+      organizers: []
     };
   }
 };

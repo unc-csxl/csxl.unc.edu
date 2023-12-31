@@ -20,7 +20,10 @@
       </div>
 
       <div class="details-column">
-        <event-detail-card [event]="selectedEvent!" *ngIf="selectedEvent" />
+        <event-detail-card
+          [event]="selectedEvent!"
+          [profile]="this.profile"
+          *ngIf="selectedEvent" />
       </div>
     </div>
   </div>

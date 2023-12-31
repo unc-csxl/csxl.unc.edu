@@ -1,3 +1,12 @@
+/**
+ * The RxOrganization object is used to ensure proper updating and
+ * retrieval of the list of all organizations in the database.
+ *
+ * @author Jade Keegan
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { RxObject } from '../rx-object';
 import { Organization } from './organization.model';
 

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from ..database import db_session
 from ..models import User, UserDetails, Paginated, PaginationParams
 from ..entities import UserEntity
+from .exceptions import ResourceNotFoundException
 from .permission import PermissionService
 
 __authors__ = ["Kris Jordan"]
@@ -48,6 +49,24 @@ class UserService:
             user_fields["permissions"] = self._permission.get_permissions(user)
             user_details = UserDetails(**user_fields)
             return user_details
+
+    def get_by_id(self, id: int) -> User:
+        """Get a User by their id.
+
+        Args:
+            id: The ID of the user.
+
+        Returns:
+            User
+
+        Raises:
+            ResourceNotFoundException if the User ID is not found
+        """
+        user_entity = self._session.get(UserEntity, id)
+        if user_entity is None:
+            raise ResourceNotFoundException(f"User with {id} not found")
+
+        return user_entity.to_model()
 
     def search(self, _subject: User, query: str) -> list[User]:
         """Search for users by their name, onyen, email.

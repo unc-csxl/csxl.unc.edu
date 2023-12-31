@@ -4,14 +4,16 @@
   <div class="event-title-container">
     <!-- Title -->
     <div class="event-title">
-      <mat-card-title>{{ event.name }}</mat-card-title>
+      <mat-card-title [routerLink]="[event.id]">
+        {{ event.name }}
+      </mat-card-title>
     </div>
 
     <!-- Buttons -->
     <div class="event-actions">
       <button
         mat-icon-button
-        *ngIf="checkPermissions() | async"
+        *ngIf="(this.adminPermission$ | async) || this.event.is_organizer"
         [routerLink]="[
           'events',
           'organizations',
@@ -25,9 +27,7 @@
       </button>
       <button
         mat-icon-button
-        *ngIf="checkPermissions() | async"
-        [routerLink]="['events']"
-        [relativeTo]="null"
+        *ngIf="this.adminPermission$ | async"
         (click)="deleteEvent(event)">
         <mat-icon>delete</mat-icon>
       </button>
@@ -64,5 +64,32 @@
   <mat-divider class="padded-divider" />
 
   <!-- Description -->
-  <p>{{ event.description }}</p>
+  <div class="event-description">
+    <p>{{ event.description }}</p>
+  </div>
+
+  <!-- Register Button -->
+  <div class="registration-information" *ngIf="profile && event.can_register">
+    <mat-divider class="padded-divider" />
+    <p>
+      <strong>Seats Remaining:</strong>
+      {{ event.registration_limit - event.registration_count }} / {{
+      event.registration_limit }}
+    </p>
+    <button
+      mat-stroked-button
+      [disabled]="event.is_organizer"
+      (click)="unregisterForEvent(event.id!)"
+      *ngIf="event.is_attendee || event.is_organizer; else register">
+      Unregister
+    </button>
+    <ng-template #register>
+      <button
+        mat-stroked-button
+        [disabled]="event.registration_count === event.registration_limit"
+        (click)="registerForEvent(event.id!)">
+        Register
+      </button>
+    </ng-template>
+  </div>
 </mat-card>

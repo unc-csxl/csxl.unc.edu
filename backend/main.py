@@ -5,8 +5,12 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
+
+from backend.services.coworking.reservation import ReservationException
+
+from .api.events import events
+
 from .api import (
-    events,
     health,
     organizations,
     static_files,
@@ -19,7 +23,11 @@ from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import term, course, section
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
-from .services.exceptions import UserPermissionException, ResourceNotFoundException
+from .services.exceptions import (
+    EventRegistrationException,
+    UserPermissionException,
+    ResourceNotFoundException,
+)
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -93,12 +101,13 @@ def resource_not_found_exception_handler(
 
 # Add feature-specific exception handling middleware
 from .api import coworking
+from .api import events
 
-feature_exception_handlers = [coworking.exception_handlers]
+feature_exception_handlers = [coworking.exception_handlers, events.exception_handlers]
 
 for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:
 
         @app.exception_handler(exception)
-        def _handler_wrapper(request: Request, e: exception):
+        def _handler_wrapper(request: Request, e: Exception):
             return handler(request, e)

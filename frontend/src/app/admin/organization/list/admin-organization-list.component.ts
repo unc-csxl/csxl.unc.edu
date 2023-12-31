@@ -56,7 +56,8 @@ export class AdminOrganizationListComponent {
   deleteOrganization(organization: Organization): void {
     let confirmDelete = this.snackBar.open(
       'Are you sure you want to delete this organization?',
-      'Delete'
+      'Delete',
+      { duration: 15000 }
     );
     confirmDelete.onAction().subscribe(() => {
       this.adminOrganizationService

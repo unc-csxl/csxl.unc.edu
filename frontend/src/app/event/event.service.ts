@@ -9,28 +9,66 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { Event, EventJson, parseEventJson } from './event.model';
+import { Observable, Subscription, map, tap } from 'rxjs';
+import {
+  Event,
+  EventJson,
+  EventRegistration,
+  parseEventJson
+} from './event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from './event-filter/event-filter.pipe';
+import { Profile, ProfileService } from '../profile/profile.service';
+import { Paginated, PaginationParams } from '../pagination';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
+  private profile: Profile | undefined;
+  private profileSubscription!: Subscription;
+
   constructor(
     protected http: HttpClient,
+    protected profileSvc: ProfileService,
     public datePipe: DatePipe,
     public eventFilterPipe: EventFilterPipe
-  ) {}
+  ) {
+    this.profileSubscription = this.profileSvc.profile$.subscribe(
+      (profile) => (this.profile = profile)
+    );
+  }
+
+  /** Returns paginated user entries from the backend database table using the backend HTTP get request.
+   * @returns {Observable<Paginated<Profile>>}
+   */
+  getRegisteredUsersForEvent(event_id: number, params: PaginationParams) {
+    let paramStrings = {
+      page: params.page.toString(),
+      page_size: params.page_size.toString(),
+      order_by: params.order_by,
+      filter: params.filter
+    };
+    let query = new URLSearchParams(paramStrings);
+    return this.http.get<Paginated<Profile>>(
+      `/api/events/${event_id}/registrations/users?` + query.toString()
+    );
+  }
 
   /** Returns all event entries from the backend database table using the backend HTTP get request.
    * @returns {Observable<Event[]>}
    */
   getEvents(): Observable<Event[]> {
-    return this.http
-      .get<EventJson[]>('/api/events')
-      .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    if (this.profile) {
+      return this.http
+        .get<EventJson[]>('/api/events/range')
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    } else {
+      // if a user isn't logged in, return the normal endpoint without registration statuses
+      return this.http
+        .get<EventJson[]>('/api/events/range/unauthenticated')
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    }
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request.
@@ -38,9 +76,15 @@ export class EventService {
    * @returns {Observable<Event>}
    */
   getEvent(id: number): Observable<Event> {
-    return this.http
-      .get<EventJson>('/api/events/' + id)
-      .pipe(map((eventJson) => parseEventJson(eventJson)));
+    if (this.profile) {
+      return this.http
+        .get<EventJson>('/api/events/' + id)
+        .pipe(map((eventJson) => parseEventJson(eventJson)));
+    } else {
+      return this.http
+        .get<EventJson>('/api/events/' + id + '/unauthenticated')
+        .pipe(map((eventJson) => parseEventJson(eventJson)));
+    }
   }
 
   /** Returns the event object from the backend database table using the backend HTTP get request.
@@ -48,9 +92,17 @@ export class EventService {
    * @returns {Observable<Event[]>}
    */
   getEventsByOrganization(slug: string): Observable<Event[]> {
-    return this.http
-      .get<EventJson[]>('/api/events/organization/' + slug)
-      .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    if (this.profile) {
+      return this.http
+        .get<EventJson[]>('/api/events/organization/' + slug)
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    } else {
+      return this.http
+        .get<EventJson[]>(
+          '/api/events/organization/' + slug + '/unauthenticated'
+        )
+        .pipe(map((eventJsons) => eventJsons.map(parseEventJson)));
+    }
   }
 
   /** Returns the new event object from the backend database table using the backend HTTP get request.
@@ -99,5 +151,63 @@ export class EventService {
 
     // Return the groups
     return [...groups.entries()];
+  }
+
+  // Event Registration Methods
+  /** Return an event registration if the user is registered for an event using the backend HTTP get request.
+   * @param event_id: number representing the Event ID
+   * @returns Observable<EventRegistration>
+   */
+  getEventRegistrationOfUser(event_id: number): Observable<EventRegistration> {
+    return this.http.get<EventRegistration>(
+      `/api/events/${event_id}/registration`
+    );
+  }
+
+  /** Return all event registrations an event using the backend HTTP get request.
+   * @param event_id: number representing the Event ID
+   * @returns Observable<EventRegistration[]>
+   */
+  getEventRegistrations(event_id: number): Observable<EventRegistration[]> {
+    return this.http.get<EventRegistration[]>(
+      `/api/events/${event_id}/registrations`
+    );
+  }
+
+  /** Return number of event registrations for an event
+   * @param event_id: number representing the Event ID
+   * @returns Observable<number>
+   */
+  getEventRegistrationCount(event_id: number): Observable<number> {
+    return this.http.get<number>(`/api/events/${event_id}/registration/count`);
+  }
+
+  /** Create a new registration for an event using the backend HTTP create request.
+   * @param event_id: number representing the Event ID
+   * @returns Observable<EventRegistration>
+   */
+  registerForEvent(event_id: number): Observable<EventRegistration> {
+    if (this.profile === undefined) {
+      throw new Error('Only allowed for logged in users.');
+    }
+
+    return this.http.post<EventRegistration>(
+      `/api/events/${event_id}/registration`,
+      {}
+    );
+  }
+
+  /** Delete an existing registration for an event using the backend HTTP delete request.
+   * @param event_registration_id: number representing the Event Registration ID
+   * @returns void
+   */
+  unregisterForEvent(event_id: number) {
+    if (this.profile === undefined) {
+      throw new Error('Only allowed for logged in users.');
+    }
+
+    return this.http.delete<EventRegistration>(
+      `/api/events/${event_id}/registration`
+    );
   }
 }
