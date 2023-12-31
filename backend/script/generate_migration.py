@@ -1,6 +1,21 @@
+"""
+This script generates a migration from `main` to a `remote` feature `branch`.
+You do not need to make use of this script for development/staging purposes,
+because we always reset the database to a common starting point during dev.
+
+This script is only needed when generating a migration for production to the
+csxl.unc.edu primary deployment database.
+
+Usage: python3 -m backend.script.generate_migration [remote] [branch]
+"""
+
 import subprocess
 import sys
 import argparse
+
+__authors__ = ["Kris Jordan"]
+__copyright__ = "Copyright 2023"
+__license__ = "MIT"
 
 
 def main() -> None:
