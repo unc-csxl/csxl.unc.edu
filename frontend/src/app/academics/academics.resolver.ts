@@ -53,6 +53,14 @@ export const termsResolver: ResolveFn<Term[] | undefined> = (route, state) => {
   return inject(AcademicsService).getTerms();
 };
 
+/** This resolver injects the current term into the admin component. */
+export const currentTermResolver: ResolveFn<Term | undefined> = (
+  route,
+  state
+) => {
+  return inject(AcademicsService).getCurrentTerm();
+};
+
 /** This resolver injects a term into the catalog component. */
 export const termResolver: ResolveFn<Term | undefined> = (route, state) => {
   // If the term is new, return a blank one

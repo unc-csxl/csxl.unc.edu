@@ -15,7 +15,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from '../../academics.service';
 import { FormControl } from '@angular/forms';
-import { coursesResolver, termsResolver } from '../../academics.resolver';
+import {
+  coursesResolver,
+  currentTermResolver,
+  termsResolver
+} from '../../academics.resolver';
 import { RxTermList } from '../rx-academics-admin';
 
 @Component({
@@ -29,7 +33,11 @@ export class AdminSectionComponent {
     component: AdminSectionComponent,
     title: 'Section Administration',
     canActivate: [permissionGuard('academics.section', '*')],
-    resolve: { terms: termsResolver, courses: coursesResolver }
+    resolve: {
+      terms: termsResolver,
+      currentTerm: currentTermResolver,
+      courses: coursesResolver
+    }
   };
 
   /** Store list of sections */
@@ -56,13 +64,18 @@ export class AdminSectionComponent {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
       terms: Term[];
+      currentTerm: Term;
       courses: Course[];
     };
 
     this.terms.set(data.terms);
     this.courses = data.courses;
 
-    this.displayTerm.setValue(data.terms[1]);
+    let index = data.terms.findIndex((t) => {
+      t.id == data.currentTerm.id;
+    });
+
+    this.displayTerm.setValue(data.currentTerm);
 
     this.sections$ = academicsService.getSectionsByTerm(this.displayTerm.value);
   }

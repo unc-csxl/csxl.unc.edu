@@ -8,7 +8,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { coursesResolver, termsResolver } from '../academics.resolver';
+import {
+  coursesResolver,
+  currentTermResolver,
+  termsResolver
+} from '../academics.resolver';
 import {
   Course,
   RosterRole,
@@ -50,7 +54,11 @@ export class SectionOfferingsComponent implements OnInit {
     title: 'Section Offerings',
     component: SectionOfferingsComponent,
     canActivate: [],
-    resolve: { terms: termsResolver, courses: coursesResolver }
+    resolve: {
+      terms: termsResolver,
+      courses: coursesResolver,
+      currentTerm: currentTermResolver
+    }
   };
 
   /** Store list of Courses */
@@ -84,12 +92,13 @@ export class SectionOfferingsComponent implements OnInit {
     const data = this.route.snapshot.data as {
       courses: Course[];
       terms: Term[];
+      currentTerm: Term;
     };
     this.courses = data.courses;
     this.terms = data.terms;
 
     // Set initial display term
-    this.displayTerm.setValue(this.terms[1]);
+    this.displayTerm.setValue(data.currentTerm);
   }
 
   ngOnInit() {

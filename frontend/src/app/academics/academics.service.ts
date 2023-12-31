@@ -31,6 +31,13 @@ export class AcademicsService {
     return this.http.get<Term[]>('/api/academics/term');
   }
 
+  /** Returns the current term from the backend database.
+   * @returns {Observable<Term>}
+   */
+  getCurrentTerm(): Observable<Term> {
+    return this.http.get<Term>('/api/academics/term/current');
+  }
+
   /** Returns one term from the backend database.
    * @param id ID of the course to look up
    * @returns {Observable<Term>}
