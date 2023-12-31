@@ -121,10 +121,11 @@ export class CourseEditorComponent {
   onSubmit(): void {
     if (this.courseForm.valid) {
       Object.assign(this.course, this.courseForm.value);
-      this.course.id =
-        this.course.subject_code.toLowerCase() + this.course.number;
 
       if (this.courseId == 'new') {
+        this.course.id =
+          this.course.subject_code.toLowerCase() + this.course.number;
+
         this.academicsService.createCourse(this.course).subscribe({
           next: (course) => this.onSuccess(course),
           error: (err) => this.onError(err)
