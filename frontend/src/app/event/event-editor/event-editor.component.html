@@ -79,11 +79,15 @@
             *ngFor="let organizer of organizers"
             (removed)="onOptionDeselected(organizer)">
             <img
-              *ngIf="profile!.github_avatar"
+              *ngIf="organizer.github_avatar"
               matChipAvatar
-              [src]="profile!.github_avatar" />
+              [src]="organizer.github_avatar" />
             {{ organizer.first_name + ' ' + organizer.last_name }}
-            <button matChipRemove *ngIf="organizer.id !== organizer.id">
+            <button
+              matChipRemove
+              [attr.aria-label]="
+                'remove ' + organizer.first_name + ' ' + organizer.last_name
+              ">
               <mat-icon>cancel</mat-icon>
             </button>
           </mat-chip-row>

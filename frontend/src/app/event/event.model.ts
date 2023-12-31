@@ -83,4 +83,5 @@ export interface EventOrganizer extends EventMember {
   last_name: string;
   pronouns: string;
   email: string;
+  github_avatar: string | null;
 }

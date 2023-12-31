@@ -8,7 +8,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Event, EventRegistration } from '../../event.model';
+import { Event, EventOrganizer, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
 import { Observable, of } from 'rxjs';
