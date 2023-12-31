@@ -73,7 +73,7 @@ export class SectionOfferingsComponent implements OnInit {
   public displayedColumns: string[] = [
     'code',
     'title',
-    'instructor',
+    //'instructor',
     'meetingpattern',
     'room'
   ];
