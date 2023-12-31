@@ -4,6 +4,9 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
+
+from backend.entities.academics.section_member_entity import SectionMemberEntity
+from backend.models.academics.section_member import SectionMember
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
@@ -52,6 +55,9 @@ class UserEntity(EntityBase):
     # The permissions for the given user.
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
+
+    # Section relations that the user is a part of.
+    sections: Mapped[list["SectionMemberEntity"]] = relationship(back_populates="user")
 
     @classmethod
     def from_model(cls, model: User) -> Self:

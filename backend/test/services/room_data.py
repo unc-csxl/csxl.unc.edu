@@ -2,9 +2,9 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from ....entities.coworking import RoomEntity
-from ....models.coworking import RoomDetails
-from ..reset_table_id_seq import reset_table_id_seq
+from ...entities import RoomEntity
+from ...models import RoomDetails
+from .reset_table_id_seq import reset_table_id_seq
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -58,6 +58,26 @@ pair_a = RoomDetails(
     nickname="Pair A",
     capacity=2,
     reservable=True,
+    seats=[],
+)
+
+new_room = RoomDetails(
+    id="FB009",
+    building="Fred Brooks",
+    room="009",
+    nickname="Large Room",
+    capacity=100,
+    reservable=False,
+    seats=[],
+)
+
+edited_xl = RoomDetails(
+    id="SN156",
+    building="Sitterson",
+    room="156",
+    nickname="The CSXL",
+    capacity=100,
+    reservable=False,
     seats=[],
 )
 

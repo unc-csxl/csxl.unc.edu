@@ -1,0 +1,67 @@
+<!-- Update Term Form -->
+<form [formGroup]="termForm" (ngSubmit)="onSubmit()">
+  <!-- Update Term Card -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title *ngIf="this.termId === 'new'; else update">
+        Create Term
+      </mat-card-title>
+      <ng-template #update>
+        <mat-card-title> Update Term </mat-card-title>
+      </ng-template>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Term ID Field -->
+      <mat-form-field
+        appearance="outline"
+        color="accent"
+        *ngIf="termId === 'new'">
+        <mat-label>Term ID</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="id"
+          name="id"
+          required />
+      </mat-form-field>
+      <!-- Term Name Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Term Name</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="name"
+          name="name"
+          required />
+      </mat-form-field>
+      <!-- Term Start Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="Start Date"
+          formControlName="start"
+          name="start"
+          required />
+      </mat-form-field>
+      <!-- Term End Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="End Date"
+          formControlName="end"
+          name="end"
+          required />
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-stroked-button routerLink="/academics/admin/term">
+        CANCEL
+      </button>
+      <button mat-stroked-button type="submit" [disabled]="termForm.invalid">
+        SAVE
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

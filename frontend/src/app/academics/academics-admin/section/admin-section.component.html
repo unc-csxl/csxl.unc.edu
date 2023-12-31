@@ -1,0 +1,53 @@
+<!-- HTML Structure of Admin Terms List -->
+<div
+  class="content"
+  *ngIf="displayTerm.value && displayTerm.value.course_sections; else noTerm">
+  <table mat-table [dataSource]="displayTerm.value.course_sections">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">
+          Sections
+          <mat-form-field style="margin-left: auto">
+            <mat-label>Select Term</mat-label>
+            <mat-select [formControl]="displayTerm">
+              <mat-option *ngFor="let term of terms$ | async" [value]="term">{{
+                term.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-stroked-button (click)="createSection()">Create</button>
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <p (click)="updateSection(element)">
+            {{ courseFromId(element.course_id)?.subject_code }}
+            {{ courseFromId(element.course_id)?.number }} -
+            {{ element.number }}:
+            {{
+              element.override_title !== ''
+                ? element.override_title
+                : courseFromId(element.course_id)?.title
+            }}
+          </p>
+          <div clas="modify-buttons">
+            <button mat-stroked-button (click)="deleteSection(element)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
+<ng-template #noTerm>
+  <mat-card>
+    <mat-card-content>
+      <p>Please make a term first!</p>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

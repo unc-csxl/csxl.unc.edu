@@ -1,6 +1,3 @@
-from .room import Room
-from .room_details import RoomDetails
-
 from .seat import Seat
 from .seat_details import SeatDetails
 
@@ -22,8 +19,6 @@ from .availability import SeatAvailability, RoomAvailability
 from .status import Status
 
 __all__ = [
-    "Room",
-    "RoomDetails",
     "Seat",
     "SeatDetails",
     "TimeRange",

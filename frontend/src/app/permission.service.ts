@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, ReplaySubject } from 'rxjs';
 import { Profile, ProfileService, Permission } from './profile/profile.service';
+import { AdminSettingsNavigationData } from './navigation/navigation.service';
 
 @Injectable({
   providedIn: 'root'

@@ -27,7 +27,7 @@ class SeatEntity(EntityBase):
     x: Mapped[int] = mapped_column(Integer)
     y: Mapped[int] = mapped_column(Integer)
     # SeatDetails Model Fields Follow
-    room_id: Mapped[str] = mapped_column(String, ForeignKey("coworking__room.id"))
+    room_id: Mapped[str] = mapped_column(String, ForeignKey("room.id"))
 
     room: Mapped["RoomEntity"] = relationship("RoomEntity", back_populates="seats")  # type: ignore
 

@@ -1,0 +1,82 @@
+<!-- Update Room Form -->
+<form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+  <!-- Update Room Card -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title *ngIf="this.roomId === 'new'; else update">
+        Create Room
+      </mat-card-title>
+      <ng-template #update>
+        <mat-card-title> Update Room </mat-card-title>
+      </ng-template>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Room ID Field -->
+      <mat-form-field
+        appearance="outline"
+        color="accent"
+        *ngIf="roomId === 'new'">
+        <mat-label>Room ID</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="id"
+          name="id"
+          required />
+      </mat-form-field>
+      <!-- Room Nickname Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Room Nickname</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="nickname"
+          name="nickname"
+          required />
+      </mat-form-field>
+      <!-- Room Building Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Room Building</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="building"
+          name="building"
+          required />
+      </mat-form-field>
+      <!-- Room Room Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Room Number</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="room"
+          name="room"
+          required />
+      </mat-form-field>
+      <!-- Room Capacity Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Room Capacity</mat-label>
+        <input
+          type="number"
+          matInput
+          placeholder=""
+          formControlName="capacity"
+          name="capacity"
+          required />
+      </mat-form-field>
+      <!-- Room Reservable Field -->
+      <p class="checkbox">
+        <mat-checkbox formControlName="reservable">Reservable?</mat-checkbox>
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-stroked-button routerLink="/academics/admin/room">
+        CANCEL
+      </button>
+      <button mat-stroked-button type="submit" [disabled]="roomForm.invalid">
+        SAVE
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

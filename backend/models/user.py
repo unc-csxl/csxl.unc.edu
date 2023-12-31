@@ -59,5 +59,5 @@ class ProfileForm(BaseModel):
 
     first_name: str
     last_name: str
-    email: str
     pronouns: str
+    email: str

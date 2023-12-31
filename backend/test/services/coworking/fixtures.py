@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from ....services import PermissionService
 from ....services.coworking import (
     OperatingHoursService,
-    RoomService,
     SeatService,
     ReservationService,
     PolicyService,
@@ -28,12 +27,6 @@ def permission_svc(session: Session):
 def operating_hours_svc(session: Session, permission_svc: PermissionService):
     """OperatingHoursService fixture."""
     return OperatingHoursService(session, permission_svc)
-
-
-@pytest.fixture()
-def room_svc(session: Session):
-    """RoomService fixture."""
-    return RoomService(session)
 
 
 @pytest.fixture()

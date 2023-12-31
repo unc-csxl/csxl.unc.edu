@@ -9,7 +9,7 @@ from ....models.coworking.seat import Seat
 from typing import Sequence
 
 from ..reset_table_id_seq import reset_table_id_seq
-from .room_data import the_xl
+from ..room_data import the_xl
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

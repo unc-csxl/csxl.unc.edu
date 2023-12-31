@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel, validator
 
-from .room import Room
+from ..room import Room
 from .seat import Seat
 from .time_range import TimeRange
 from .availability_list import AvailabilityList

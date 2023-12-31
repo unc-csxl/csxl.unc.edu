@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { PermissionService } from '../permission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -56,4 +57,9 @@ export class NavigationService {
   private _deferToNextChangeDetectionCycle(operation: () => void) {
     setTimeout(operation, 0);
   }
+}
+
+export interface AdminSettingsNavigationData {
+  tooltip: string;
+  url: string;
 }
