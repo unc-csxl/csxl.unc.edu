@@ -46,6 +46,8 @@ def upgrade() -> None:
         sa.Column("number", sa.String(), nullable=False),
         sa.Column("term_id", sa.String(length=6), nullable=False),
         sa.Column("meeting_pattern", sa.String(), nullable=False),
+        sa.Column("override_title", sa.String(), nullable=False),
+        sa.Column("override_description", sa.String(), nullable=False),
         sa.ForeignKeyConstraint(
             ["course_id"],
             ["academics__course.id"],
