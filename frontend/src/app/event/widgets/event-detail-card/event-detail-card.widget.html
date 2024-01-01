@@ -72,27 +72,31 @@
   <div
     class="organizers-information"
     *ngIf="profile && event.organizers.length > 0">
-    <p
+    <ng-container
       class="organizers-text"
       *ngIf="event.organizers.length > 1; else singleOrganizer">
       If you have any questions or concerns about this event, please contact one
       of the organizers below:
-    </p>
+    </ng-container>
     <ng-template #singleOrganizer>
       If you have any questions or concerns about this event, please contact the
       organizer:
     </ng-template>
     <br />
 
-    <mat-chip class="organizer-chip" *ngFor="let organizer of event.organizers">
-      <a class="organizer-email-link" href="mailto:{{ organizer.email }}">
+    <div class="organizer-chips">
+      <mat-chip
+        class="organizer-chip"
+        *ngFor="let organizer of event.organizers">
         <img
           *ngIf="organizer.github_avatar"
           matChipAvatar
           [src]="organizer.github_avatar" />
-        {{ organizer.first_name + ' ' + organizer.last_name }}
-      </a>
-    </mat-chip>
+        <a class="organizer-email-link" href="mailto:{{ organizer.email }}">
+          {{ organizer.first_name + ' ' + organizer.last_name }}
+        </a>
+      </mat-chip>
+    </div>
   </div>
 
   <!-- Register Button -->

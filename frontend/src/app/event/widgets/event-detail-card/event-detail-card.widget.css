@@ -2,6 +2,25 @@
   padding: 4px 16px;
   margin: 0;
   height: 100%;
+  /* If content overflows card, add a scroll bar! */
+  overflow-y: auto;
+}
+
+/* Scroll Bar Styling */
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 #top-divider {
@@ -75,16 +94,19 @@
   margin: 0;
 }
 
-.organizer-chip-list {
-  display: flex;
-  flex-direction: row;
+.organizer-chips {
+  margin-bottom: 16px;
 }
 
 .organizer-chip {
-  margin: 8px 8px 16px 0px;
+  margin: 8px 8px 0px 0px;
 }
 
 .organizer-email-link {
   text-decoration: none;
   color: white;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
 }
