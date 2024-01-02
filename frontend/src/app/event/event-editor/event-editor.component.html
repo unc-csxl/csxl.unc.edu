@@ -69,7 +69,7 @@
       </mat-form-field>
 
       <!-- User Selection / Organizers Form Control -->
-      <mat-form-field appearance="outline" color="accent">
+      <!-- <mat-form-field appearance="outline" color="accent">
         <mat-label>Organizers</mat-label>
         <mat-chip-grid
           #chipGrid
@@ -110,7 +110,11 @@
             </mat-option>
           </mat-autocomplete>
         </mat-chip-grid>
-      </mat-form-field>
+      </mat-form-field> -->
+      <user-lookup
+        [profile]="this.profile"
+        [users]="this.organizers"
+        [adminPermission]="this.adminPermission$ | async"></user-lookup>
     </mat-card-content>
 
     <!-- Save Button -->
