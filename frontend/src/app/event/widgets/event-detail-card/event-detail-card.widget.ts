@@ -8,10 +8,10 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Event, EventOrganizer, EventRegistration } from '../../event.model';
+import { Event, EventRegistration } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { Profile } from 'src/app/models.module';
 import { Router } from '@angular/router';

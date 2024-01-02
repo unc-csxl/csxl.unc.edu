@@ -3,9 +3,11 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.models.event_member import EventOrganizer
+from backend.entities.event_entity import EventEntity
+from backend.entities.user_entity import UserEntity
 
-from ..models import RegistrationType, EventMember
+from ..models import RegistrationType
+from ..models.public_user import PublicUser
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event_registration import EventRegistration, NewEventRegistration
@@ -58,8 +60,8 @@ class EventRegistrationEntity(EntityBase):
         return cls(
             event_id=model.event_id,
             user_id=model.user_id,
-            event=model.event,
-            user=model.user,
+            event=EventEntity.from_model(model.event),
+            user=UserEntity.from_model(model.user),
             registration_type=model.registration_type,
         )
 
@@ -79,7 +81,7 @@ class EventRegistrationEntity(EntityBase):
             registration_type=model.registration_type,
         )
 
-    def to__model(self) -> EventRegistration:
+    def to_model(self) -> EventRegistration:
         """
         Converts an `EventRegistrationEntity` into an `EventRegistration` model object
         to store registration information.
@@ -89,36 +91,25 @@ class EventRegistrationEntity(EntityBase):
         """
         return EventRegistration(
             event_id=self.event_id,
-            event=self.event,
+            event=self.event.to_model(),
             user_id=self.user_id,
-            user=self.user,
+            user=self.user.to_model(),
             registration_type=self.registration_type,
         )
 
-    def to_flat_model(self) -> EventMember:
+    def to_flat_model(self) -> PublicUser:
         """
-        Converts an `EventRegistrationEntity` into an `EventMember` model object
-        to store user ID.
+        Converts an `EventRegistrationEntity` into an `PublicUser` model object
+        to store public user information.
 
         Returns:
-            EventMember: `EventMember` object from the entity
+            PublicUser: `PublicUser` object from the entity
         """
-        return EventMember(id=self.user_id, registration_type=self.registration_type)
-
-    def to_flat_organizer_model(self) -> EventMember:
-        """
-        Converts an `EventRegistrationEntity` into an `EventMember` model object
-        to store user ID.
-
-        Returns:
-            EventMember: `EventMember` object from the entity
-        """
-        return EventOrganizer(
+        return PublicUser(
             id=self.user_id,
-            registration_type=self.registration_type,
             first_name=self.user.first_name,
             last_name=self.user.last_name,
             pronouns=self.user.pronouns,
             email=self.user.email,
-            github_avatar=self.user.github_avatar
+            github_avatar=self.user.github_avatar,
         )

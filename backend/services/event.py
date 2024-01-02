@@ -8,7 +8,8 @@ from fastapi import Depends
 from sqlalchemy import func, select, or_
 from sqlalchemy.orm import Session, aliased
 from backend.entities.user_entity import UserEntity
-from backend.models.event_member import EventMember
+from backend.models.event_registration import EventRegistration
+from ..models.public_user import PublicUser
 from backend.models.organization_details import OrganizationDetails
 from backend.models.pagination import Paginated, PaginationParams
 from backend.models.registration_type import RegistrationType
@@ -296,7 +297,7 @@ class EventService:
 
     def get_registration(
         self, subject: User, attendee: User, event: EventDetails
-    ) -> EventMember | None:
+    ) -> EventRegistration | None:
         """
         Get a registration of an attendee for an Event.
 
@@ -306,7 +307,7 @@ class EventService:
             event: EventDetails of the event seeking registration for
 
         Returns:
-            EventMember or None if no registration found
+            PublicUser or None if no registration found
 
         Raises:
             UserPermissionException if subject does not have permission
@@ -329,13 +330,13 @@ class EventService:
 
         # Return EventRegistration model or None
         if event_registration_entity is not None:
-            return event_registration_entity.to_flat_model()
+            return event_registration_entity.to_model()
         else:
             return None
 
     def get_registrations_of_event(
         self, subject: User, event: EventDetails
-    ) -> list[EventMember]:
+    ) -> list[PublicUser]:
         """
         List the registrations of an event.
 
@@ -348,7 +349,7 @@ class EventService:
             event: The event whose registrations are being queried.
 
         Returns:
-            list[EventMember]
+            list[PublicUser]
 
         Raises:
             UserPermissionException if user is not an event organizer or admin.
@@ -370,7 +371,7 @@ class EventService:
 
     def set_event_organizer(
         self, subject: User, user_id: int, event: EventDetails
-    ) -> EventMember:
+    ) -> PublicUser:
         """
         Set the organizer of an event.
 
@@ -379,7 +380,7 @@ class EventService:
             event: The EventDetails being registered for
 
         Returns:
-            EventMember
+            PublicUser
 
         """
 
@@ -400,11 +401,11 @@ class EventService:
         self._session.commit()
 
         # Return registration
-        return event_registration_entity.to_flat_organizer_model()
+        return event_registration_entity.to_flat_model()
 
     def register(
         self, subject: User, attendee: User, event: EventDetails
-    ) -> EventMember:
+    ) -> PublicUser:
         """
         Register a user for an event.
 
@@ -414,7 +415,7 @@ class EventService:
             event: The EventDetails being registered for
 
         Returns:
-            EventMember
+            PublicUser
 
         Raises:
             UserPermissionException if subject does not have permission to register user
@@ -440,7 +441,9 @@ class EventService:
         # Permission to manage / read registration is enforced in EventService#get_registration
         existing_registration = self.get_registration(subject, attendee, event)
         if existing_registration:
-            return existing_registration
+            return EventRegistrationEntity.from_model(
+                existing_registration
+            ).to_flat_model()
 
         # Add new object to table and commit changes
         event_registration_entity = EventRegistrationEntity(
@@ -492,7 +495,7 @@ class EventService:
 
     def get_registrations_of_user(
         self, subject: User, user: User, time_range: TimeRange
-    ) -> Sequence[EventMember]:
+    ) -> Sequence[PublicUser]:
         """
         Get a user's registrations to events falling within a given time range.
 
@@ -502,7 +505,7 @@ class EventService:
             time_range: The period over which to search for event registrations.
 
         Returns:
-            Sequence[EventMember] event registrations
+            Sequence[PublicUser] event registrations
 
         Raises:
             UserPermissionException when the user is requesting the registrations

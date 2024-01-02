@@ -9,7 +9,7 @@ from .role import Role
 from .role_details import RoleDetails
 from .organization import Organization
 from .event import Event
-from .event_member import EventMember
+from .public_user import PublicUser
 from .event_details import EventDetails
 from .room import Room
 from .room_details import RoomDetails

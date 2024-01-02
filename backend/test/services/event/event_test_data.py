@@ -3,9 +3,9 @@
 import pytest
 from sqlalchemy.orm import Session
 
-from backend.models.event_member import EventMember, EventOrganizer
+from ....models.public_user import PublicUser
 from ....models.event import DraftEvent, Event
-from ....models.event_registration import EventRegistration, NewEventRegistration
+from ....models.event_registration import NewEventRegistration
 from ....models.registration_type import RegistrationType
 from ....entities.event_entity import EventEntity
 from ....entities.event_registration_entity import EventRegistrationEntity
@@ -65,13 +65,12 @@ to_add = DraftEvent(
     registration_limit=50,
     organization_id=cads.id | 0,
     organizers=[
-        EventOrganizer(
+        PublicUser(
             id=root.id,
             first_name=root.first_name,
             last_name=root.last_name,
             pronouns=root.pronouns,
             email=root.email,
-            registration_type=RegistrationType.ORGANIZER,
         )
     ],
 )
@@ -97,13 +96,12 @@ updated_event_one = Event(
     registration_limit=50,
     organization_id=cssg.id | 0,
     organizers=[
-        EventOrganizer(
+        PublicUser(
             id=user.id,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
-            registration_type=RegistrationType.ORGANIZER,
         ),
     ],
 )
@@ -118,21 +116,19 @@ updated_event_one_organizers = Event(
     registration_limit=50,
     organization_id=cssg.id | 0,
     organizers=[
-        EventOrganizer(
+        PublicUser(
             id=user.id,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
-            registration_type=RegistrationType.ORGANIZER,
         ),
-        EventOrganizer(
+        PublicUser(
             id=ambassador.id,
             first_name=ambassador.first_name,
             last_name=ambassador.last_name,
             pronouns=ambassador.pronouns,
             email=ambassador.email,
-            registration_type=RegistrationType.ORGANIZER,
         ),
     ],
 )
@@ -158,29 +154,26 @@ updated_event_three = Event(
     registration_limit=1,
     organization_id=cssg.id | 0,
     organizers=[
-        EventOrganizer(
+        PublicUser(
             id=user.id,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
-            registration_type=RegistrationType.ORGANIZER,
         ),
-        EventOrganizer(
+        PublicUser(
             id=ambassador.id,
             first_name=ambassador.first_name,
             last_name=ambassador.last_name,
             pronouns=ambassador.pronouns,
             email=ambassador.email,
-            registration_type=RegistrationType.ORGANIZER,
         ),
-        EventOrganizer(
+        PublicUser(
             id=root.id,
             first_name=root.first_name,
             last_name=root.last_name,
             pronouns=root.pronouns,
             email=root.email,
-            registration_type=RegistrationType.ORGANIZER,
         ),
     ],
 )
@@ -195,13 +188,12 @@ updated_event_three_remove_organizers = Event(
     registration_limit=1,
     organization_id=cssg.id | 0,
     organizers=[
-        EventOrganizer(
+        PublicUser(
             id=user.id,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
-            registration_type=RegistrationType.ORGANIZER,
         ),
     ],
 )

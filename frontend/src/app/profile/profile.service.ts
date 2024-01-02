@@ -25,6 +25,15 @@ export interface Profile {
   permissions: Permission[];
 }
 
+export interface PublicProfile {
+  id: number;
+  first_name: string;
+  last_name: string;
+  pronouns: string;
+  email: string;
+  github_avatar: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })

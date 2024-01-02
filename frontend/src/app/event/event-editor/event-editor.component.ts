@@ -13,14 +13,14 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../event.service';
 import { profileResolver } from '../../profile/profile.resolver';
-import { Profile } from '../../profile/profile.service';
+import { Profile, PublicProfile } from '../../profile/profile.service';
 import { OrganizationService } from '../../organization/organization.service';
 import { Observable } from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
 import { Organization } from 'src/app/organization/organization.model';
-import { Event, EventOrganizer, RegistrationType } from '../event.model';
+import { Event, RegistrationType } from '../event.model';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -51,7 +51,7 @@ export class EventEditorComponent {
   public adminPermission$: Observable<boolean>;
 
   /** Store organizers */
-  public organizers: EventOrganizer[] = [];
+  public organizers: PublicProfile[] = [];
 
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
@@ -130,9 +130,8 @@ export class EventEditorComponent {
     // Set the organizers
     // If no organizers already, set current user as organizer
     if (this.event.id == null) {
-      let organizer = {
+      let organizer: PublicProfile = {
         id: this.profile.id!,
-        registration_type: RegistrationType.ORGANIZER,
         first_name: this.profile.first_name!,
         last_name: this.profile.last_name!,
         pronouns: this.profile.pronouns!,

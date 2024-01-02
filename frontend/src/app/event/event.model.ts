@@ -9,6 +9,7 @@
 
 import { Profile } from '../models.module';
 import { Organization } from '../organization/organization.model';
+import { PublicProfile } from '../profile/profile.service';
 
 /** Interface for Event Type (used on frontend for event detail) */
 export interface Event {
@@ -24,7 +25,7 @@ export interface Event {
   registration_count: number;
   is_attendee: boolean;
   is_organizer: boolean;
-  organizers: EventOrganizer[];
+  organizers: PublicProfile[];
 }
 
 /** Interface for the Event JSON Response model
@@ -45,7 +46,7 @@ export interface EventJson {
   registration_count: number;
   is_attendee: boolean;
   is_organizer: boolean;
-  organizers: EventOrganizer[];
+  organizers: PublicProfile[];
 }
 
 /** Function that converts an EventJSON response model to an Event model.
@@ -69,17 +70,4 @@ export interface EventRegistration {
   event: Event | null;
   user: Profile | null;
   is_organizer: boolean | null;
-}
-
-export interface EventMember {
-  id: number;
-  registration_type: RegistrationType;
-}
-
-export interface EventOrganizer extends EventMember {
-  first_name: string;
-  last_name: string;
-  pronouns: string;
-  email: string;
-  github_avatar: string | null;
 }

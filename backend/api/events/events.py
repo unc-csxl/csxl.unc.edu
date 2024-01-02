@@ -5,7 +5,7 @@ Event routes are used to create, retrieve, and update Events."""
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, timedelta
 from typing import Sequence
-from backend.models.event_member import EventMember
+from backend.models.public_user import PublicUser
 from backend.models.pagination import Paginated, PaginationParams
 
 from backend.services.organization import OrganizationService
@@ -284,7 +284,7 @@ def register_for_event(
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
     user_service: UserService = Depends(),
-) -> EventMember:
+) -> PublicUser:
     """
     Register a user event based on the event ID.
 
@@ -315,7 +315,7 @@ def get_event_registration_of_user(
     event_id: int,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
-) -> EventMember:
+) -> PublicUser:
     """
     Check the registration status of a user for an event, raise ResourceNotFound if unregistered.
 
@@ -337,7 +337,7 @@ def get_event_registrations(
     event_id: int,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
-) -> Sequence[EventMember]:
+) -> Sequence[PublicUser]:
     """
     Get the registrations of an event.
 

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-from .event_member import EventMember, EventOrganizer
+from .public_user import PublicUser
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -23,7 +23,7 @@ class DraftEvent(BaseModel):
     public: bool
     registration_limit: int
     organization_id: int
-    organizers: list[EventOrganizer] = []
+    organizers: list[PublicUser] = []
 
 
 class Event(DraftEvent):
@@ -37,5 +37,5 @@ class Event(DraftEvent):
     id: int
     registration_count: int = 0
     is_attendee: bool = False
-    attendees: list[EventMember] = []
+    attendees: list[PublicUser] = []
     is_organizer: bool = False

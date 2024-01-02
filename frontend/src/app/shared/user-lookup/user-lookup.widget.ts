@@ -18,9 +18,9 @@ import {
   mergeMap,
   startWith
 } from 'rxjs';
-import { EventOrganizer, RegistrationType } from 'src/app/event/event.model';
+import { RegistrationType } from 'src/app/event/event.model';
 import { Profile } from 'src/app/models.module';
-import { ProfileService } from 'src/app/profile/profile.service';
+import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
   selector: 'user-lookup',
@@ -29,7 +29,7 @@ import { ProfileService } from 'src/app/profile/profile.service';
 })
 export class UserLookup implements OnInit {
   @Input() profile!: Profile | null;
-  @Input() users!: EventOrganizer[];
+  @Input() users!: PublicProfile[];
   @Input() adminPermission!: boolean | null;
 
   userLookup = new FormControl();
@@ -59,9 +59,8 @@ export class UserLookup implements OnInit {
   public onUserAdded(event: MatAutocompleteSelectedEvent) {
     let user = event.option.value as Profile;
     if (this.users.filter((e) => e.id === user.id).length == 0) {
-      let organizer: EventOrganizer = {
+      let organizer: PublicProfile = {
         id: user.id!,
-        registration_type: RegistrationType.ORGANIZER,
         first_name: user.first_name!,
         last_name: user.last_name!,
         pronouns: user.pronouns!,
@@ -76,7 +75,7 @@ export class UserLookup implements OnInit {
   }
 
   /** Handler for selecting an option in the who chip grid. */
-  public onUserRemoved(person: EventOrganizer) {
+  public onUserRemoved(person: PublicProfile) {
     this.users.splice(this.users.indexOf(person), 1);
     this.userLookup.setValue('');
   }
