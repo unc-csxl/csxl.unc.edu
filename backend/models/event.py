@@ -37,5 +37,4 @@ class Event(DraftEvent):
     id: int
     registration_count: int = 0
     is_attendee: bool = False
-    attendees: list[PublicUser] = []
     is_organizer: bool = False

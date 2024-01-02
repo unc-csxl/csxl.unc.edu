@@ -134,7 +134,6 @@ class EventEntity(EntityBase):
             organization_id=self.organization_id,
             registration_count=len(attendees),
             is_attendee=is_attendee,
-            attendees=attendees,
             is_organizer=is_organizer,
             organizers=organizers,
         )
@@ -160,7 +159,6 @@ class EventEntity(EntityBase):
             organization_id=self.organization_id,
             organization=self.organization.to_model(),
             is_attendee=event.is_attendee,
-            attendees=event.attendees,
             is_organizer=event.is_organizer,
             organizers=event.organizers,
         )

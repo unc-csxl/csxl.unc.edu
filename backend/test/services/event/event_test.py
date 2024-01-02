@@ -113,7 +113,6 @@ def test_create_event_as_root(event_svc_integration: EventService):
     assert created_event.organizers[0].id == root.id
     assert created_event.is_organizer == True
 
-    assert len(created_event.attendees) == 0
     assert created_event.is_attendee == False
 
 
