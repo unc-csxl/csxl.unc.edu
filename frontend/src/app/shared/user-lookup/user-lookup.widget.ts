@@ -18,7 +18,6 @@ import {
   mergeMap,
   startWith
 } from 'rxjs';
-import { RegistrationType } from 'src/app/event/event.model';
 import { Profile } from 'src/app/models.module';
 import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
 

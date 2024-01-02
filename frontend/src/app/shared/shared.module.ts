@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
@@ -25,10 +26,18 @@ import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
 import { EventList } from './event-list/event-list.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
-import { MatChipsModule } from '@angular/material/chips';
+
+import { UserChipList } from './user-chip-list/user-chip-list.widget';
 
 @NgModule({
-  declarations: [SocialMediaIcon, SearchBar, EventCard, EventList, UserLookup],
+  declarations: [
+    SocialMediaIcon,
+    SearchBar,
+    EventCard,
+    EventList,
+    UserLookup,
+    UserChipList
+  ],
   imports: [
     CommonModule,
     MatTabsModule,
@@ -49,6 +58,13 @@ import { MatChipsModule } from '@angular/material/chips';
     MatTooltipModule,
     RouterModule
   ],
-  exports: [SocialMediaIcon, SearchBar, EventCard, EventList, UserLookup]
+  exports: [
+    SocialMediaIcon,
+    SearchBar,
+    EventCard,
+    EventList,
+    UserLookup,
+    UserChipList
+  ]
 })
 export class SharedModule {}
