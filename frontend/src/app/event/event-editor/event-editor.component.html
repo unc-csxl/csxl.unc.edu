@@ -69,48 +69,10 @@
       </mat-form-field>
 
       <!-- User Selection / Organizers Form Control -->
-      <mat-form-field appearance="outline" color="accent">
-        <mat-label>Organizers</mat-label>
-        <mat-chip-grid
-          #chipGrid
-          aria-label="Choose people"
-          [disabled]="(this.adminPermission$ | async) === false">
-          <mat-chip-row
-            *ngFor="let organizer of organizers"
-            (removed)="onOptionDeselected(organizer)">
-            <img
-              *ngIf="organizer.github_avatar"
-              matChipAvatar
-              [src]="organizer.github_avatar" />
-            {{ organizer.first_name + ' ' + organizer.last_name }}
-            <button
-              matChipRemove
-              [attr.aria-label]="
-                'remove ' + organizer.first_name + ' ' + organizer.last_name
-              ">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
-          <input
-            #organizersInput
-            type="text"
-            placeholder="Add more people..."
-            aria-label="More people"
-            [matChipInputFor]="chipGrid"
-            matInput
-            [matAutocomplete]="auto"
-            [formControl]="userLookup" />
-          <mat-autocomplete
-            #auto="matAutocomplete"
-            (optionSelected)="onOptionSelected($event)">
-            <mat-option
-              *ngFor="let option of filteredUsers$ | async"
-              [value]="option">
-              {{ option.first_name }} {{ option.last_name }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-chip-grid>
-      </mat-form-field>
+      <user-lookup
+        [profile]="this.profile"
+        [users]="this.organizers"
+        [adminPermission]="this.adminPermission$ | async"></user-lookup>
     </mat-card-content>
 
     <!-- Save Button -->

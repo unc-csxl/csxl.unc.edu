@@ -4,7 +4,6 @@
 import pytest
 from unittest.mock import create_autospec
 from backend.models.pagination import PaginationParams
-from backend.models.registration_type import RegistrationType
 
 from backend.services.exceptions import (
     EventRegistrationException,
@@ -114,7 +113,6 @@ def test_create_event_as_root(event_svc_integration: EventService):
     assert created_event.organizers[0].id == root.id
     assert created_event.is_organizer == True
 
-    assert len(created_event.attendees) == 0
     assert created_event.is_attendee == False
 
 
@@ -270,7 +268,6 @@ def test_register_for_event_as_user(event_svc_integration: EventService):
     event_details = event_svc_integration.get_by_id(event_one.id, root)  # type: ignore
     created_registration = event_svc_integration.register(root, root, event_details)  # type: ignore
     assert created_registration is not None
-    assert created_registration.registration_type == RegistrationType.ATTENDEE
 
 
 def test_register_for_event_as_user_twice(event_svc_integration: EventService):

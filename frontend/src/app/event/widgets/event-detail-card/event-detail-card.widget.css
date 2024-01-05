@@ -93,20 +93,3 @@
 .organizers-text {
   margin: 0;
 }
-
-.organizer-chips {
-  margin-bottom: 16px;
-}
-
-.organizer-chip {
-  margin: 8px 8px 0px 0px;
-}
-
-.organizer-email-link {
-  text-decoration: none;
-  color: white;
-  display: flex;
-  justify-content: flex-start;
-  margin: 0;
-  padding: 0;
-}

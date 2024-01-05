@@ -7,29 +7,21 @@
  * @license MIT
  */
 
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../event.service';
 import { profileResolver } from '../../profile/profile.resolver';
-import { Profile, ProfileService } from '../../profile/profile.service';
+import { Profile, PublicProfile } from '../../profile/profile.service';
 import { OrganizationService } from '../../organization/organization.service';
-import {
-  Observable,
-  ReplaySubject,
-  debounceTime,
-  filter,
-  mergeMap,
-  startWith
-} from 'rxjs';
+import { Observable } from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
 import { Organization } from 'src/app/organization/organization.model';
-import { Event, EventOrganizer, RegistrationType } from '../event.model';
+import { Event, RegistrationType } from '../event.model';
 import { DatePipe } from '@angular/common';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-event-editor',
@@ -59,7 +51,7 @@ export class EventEditorComponent {
   public adminPermission$: Observable<boolean>;
 
   /** Store organizers */
-  public organizers: EventOrganizer[] = [];
+  public organizers: PublicProfile[] = [];
 
   /** Add validators to the form */
   name = new FormControl('', [Validators.required]);
@@ -74,12 +66,6 @@ export class EventEditorComponent {
     Validators.required,
     Validators.min(0)
   ]);
-  userLookup = new FormControl();
-
-  @ViewChild('organizersInput') organizersInput!: ElementRef<HTMLInputElement>;
-  private filteredUsers: ReplaySubject<Profile[]> = new ReplaySubject();
-  public filteredUsers$: Observable<Profile[]> =
-    this.filteredUsers.asObservable();
 
   /** Create a form group */
   public eventForm = this.formBuilder.group({
@@ -100,8 +86,7 @@ export class EventEditorComponent {
     protected snackBar: MatSnackBar,
     private eventService: EventService,
     private permission: PermissionService,
-    private datePipe: DatePipe,
-    private profileService: ProfileService
+    private datePipe: DatePipe
   ) {
     // Get currently-logged-in user
     const data = route.snapshot.data as {
@@ -142,26 +127,11 @@ export class EventEditorComponent {
       `organization/${this.organization!.id}`
     );
 
-    this.adminPermission$.subscribe((perm) => {
-      if (!perm) {
-        this.userLookup.disable();
-      }
-    });
-
-    // Configure the filtered users list based on the form
-    this.filteredUsers$ = this.userLookup.valueChanges.pipe(
-      startWith(''),
-      filter((search: string) => search.length > 2),
-      debounceTime(100),
-      mergeMap((search) => this.profileService.search(search))
-    );
-
     // Set the organizers
     // If no organizers already, set current user as organizer
     if (this.event.id == null) {
-      let organizer = {
+      let organizer: PublicProfile = {
         id: this.profile.id!,
-        registration_type: RegistrationType.ORGANIZER,
         first_name: this.profile.first_name!,
         last_name: this.profile.last_name!,
         pronouns: this.profile.pronouns!,
@@ -175,35 +145,10 @@ export class EventEditorComponent {
     }
   }
 
-  /** Handler for selecting an option in the who chip grid. */
-  public onOptionSelected = (event: MatAutocompleteSelectedEvent) => {
-    let user = event.option.value as Profile;
-    if (this.organizers.filter((e) => e.id === user.id).length == 0) {
-      let organizer: EventOrganizer = {
-        id: user.id!,
-        registration_type: RegistrationType.ORGANIZER,
-        first_name: user.first_name!,
-        last_name: user.last_name!,
-        pronouns: user.pronouns!,
-        email: user.email!,
-        github_avatar: user.github_avatar
-      };
-      this.organizers.push(organizer);
-    }
-    this.organizersInput.nativeElement.value = '';
-    this.userLookup.setValue('');
-  };
-
-  /** Handler for selecting an option in the who chip grid. */
-  public onOptionDeselected = (person: EventOrganizer) => {
-    this.organizers.splice(this.organizers.indexOf(person), 1);
-    this.userLookup.setValue('');
-  };
-
   /** Event handler to handle submitting the Create Event Form.
    * @returns {void}
    */
-  onSubmit = () => {
+  onSubmit() {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
 
@@ -223,7 +168,7 @@ export class EventEditorComponent {
       }
       this.router.navigate(['/organizations/', this.organization_slug]);
     }
-  };
+  }
 
   /** Opens a confirmation snackbar when an event is successfully created.
    * @returns {void}

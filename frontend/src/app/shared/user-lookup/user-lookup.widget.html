@@ -1,0 +1,38 @@
+<mat-form-field class="form-field" appearance="outline" color="accent">
+  <mat-label>Organizers</mat-label>
+  <mat-chip-grid
+    #chipGrid
+    aria-label="Choose people"
+    [disabled]="!this.adminPermission">
+    <mat-chip-row *ngFor="let user of users" (removed)="onUserRemoved(user)">
+      <img
+        *ngIf="user.github_avatar"
+        matChipAvatar
+        [src]="user.github_avatar" />
+      {{ user.first_name + ' ' + user.last_name }}
+      <button
+        matChipRemove
+        [attr.aria-label]="'remove ' + user.first_name + ' ' + user.last_name">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+    <input
+      #usersInput
+      type="text"
+      placeholder="Add more people..."
+      aria-label="More people"
+      [matChipInputFor]="chipGrid"
+      matInput
+      [matAutocomplete]="auto"
+      [formControl]="userLookup" />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="onUserAdded($event)">
+      <mat-option
+        *ngFor="let option of filteredUsers$ | async"
+        [value]="option">
+        {{ option.first_name }} {{ option.last_name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-chip-grid>
+</mat-form-field>

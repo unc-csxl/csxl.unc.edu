@@ -84,19 +84,9 @@
     </ng-template>
     <br />
 
-    <div class="organizer-chips">
-      <mat-chip
-        class="organizer-chip"
-        *ngFor="let organizer of event.organizers">
-        <img
-          *ngIf="organizer.github_avatar"
-          matChipAvatar
-          [src]="organizer.github_avatar" />
-        <a class="organizer-email-link" href="mailto:{{ organizer.email }}">
-          {{ organizer.first_name + ' ' + organizer.last_name }}
-        </a>
-      </mat-chip>
-    </div>
+    <user-chip-list
+      [users]="event.organizers"
+      [enableMailTo]="true"></user-chip-list>
   </div>
 
   <!-- Register Button -->
