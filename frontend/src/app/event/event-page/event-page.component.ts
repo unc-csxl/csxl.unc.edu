@@ -16,6 +16,7 @@ import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 import { EventService } from '../event.service';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-event-page',
@@ -55,7 +56,8 @@ export class EventPageComponent implements OnInit {
     private route: ActivatedRoute,
     public datePipe: DatePipe,
     public eventFilterPipe: EventFilterPipe,
-    public eventService: EventService
+    public eventService: EventService,
+    private gearService: NagivationAdminGearService
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -78,6 +80,7 @@ export class EventPageComponent implements OnInit {
   ngOnInit() {
     // Keep track of the initial width of the browser window
     this.innerWidth = window.innerWidth;
+    this.gearService.showAdminGear('events.*', '*', '', 'admin/organizations');
   }
 
   /** Handler that runs when the window resizes */
