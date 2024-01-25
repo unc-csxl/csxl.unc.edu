@@ -75,8 +75,12 @@
         [adminPermission]="this.adminPermission$ | async"></user-lookup>
     </mat-card-content>
 
-    <!-- Save Button -->
+    <!-- Cancel and Save Buttons -->
     <mat-card-actions>
+      <button mat-stroked-button type="button" (click)="onCancel()">
+        CANCEL
+      </button>
+
       <button mat-stroked-button type="submit" [disabled]="eventForm.invalid">
         SAVE
       </button>
