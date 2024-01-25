@@ -1,0 +1,10 @@
+
+.community-agreement-dialog {
+    /* Add any other styles for your dialog container here */
+  
+    max-height: 70vh; /* Set a maximum height for the dialog to trigger overflow */
+    overflow-y: auto; /* Enable vertical scroll if content overflows */
+
+  }
+  
+  

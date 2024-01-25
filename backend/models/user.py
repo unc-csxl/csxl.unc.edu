@@ -35,6 +35,7 @@ class User(UserIdentity, BaseModel):
     github: str = ""
     github_id: int | None = None
     github_avatar: str | None = None
+    has_agreed: bool = False
 
 
 class NewUser(User, BaseModel):
