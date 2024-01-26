@@ -63,7 +63,8 @@ export class AdminRoomComponent {
    * @param room: room to delete
    * @returns void
    */
-  deleteRoom(room: Room): void {
+  deleteRoom(room: Room, event: Event): void {
+    event.stopPropagation();
     let confirmDelete = this.snackBar.open(
       'Are you sure you want to delete this room?',
       'Delete'
