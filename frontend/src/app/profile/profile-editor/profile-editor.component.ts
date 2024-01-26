@@ -5,8 +5,6 @@ import { ActivatedRoute, Route } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
 import { Profile, ProfileService } from '../profile.service';
-import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-editor',
@@ -37,8 +35,7 @@ export class ProfileEditorComponent implements OnInit {
     route: ActivatedRoute,
     protected formBuilder: FormBuilder,
     protected profileService: ProfileService,
-    protected snackBar: MatSnackBar,
-    protected dialog: MatDialog
+    protected snackBar: MatSnackBar
   ) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
@@ -106,22 +103,6 @@ export class ProfileEditorComponent implements OnInit {
   unlinkGitHub() {
     this.profileService.unlinkGitHub().subscribe({
       next: () => (this.profile.github = '')
-    });
-  }
-
-  openAgreementDialog(): void {
-    const dialogRef = this.dialog.open(CommunityAgreement, {
-      width: '1000px'
-      // height: '1000px'
-    });
-    this.profileService.profile$.subscribe((profile) => {
-      if (profile) {
-        console.log('profile when opening up view agreement box:', profile);
-      }
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('Dialog closed with result:', result);
-      // Send updated profile to backend after user agrees
     });
   }
 }
