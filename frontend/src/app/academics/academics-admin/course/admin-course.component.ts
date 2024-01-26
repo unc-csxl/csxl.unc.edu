@@ -63,7 +63,8 @@ export class AdminCourseComponent {
    * @param course: course to delete
    * @returns void
    */
-  deleteCourse(course: Course): void {
+  deleteCourse(course: Course, event: Event): void {
+    event.stopPropagation();
     let confirmDelete = this.snackBar.open(
       'Are you sure you want to delete this course?',
       'Delete'
