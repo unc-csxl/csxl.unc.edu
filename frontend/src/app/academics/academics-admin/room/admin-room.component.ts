@@ -61,6 +61,7 @@ export class AdminRoomComponent {
 
   /** Delete a room object from the backend database table using the backend HTTP delete request.
    * @param room: room to delete
+   * @param event: event to stop propagation
    * @returns void
    */
   deleteRoom(room: Room, event: Event): void {
