@@ -5,6 +5,8 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+      environment:
+        - OS # Defined on Windows but not on other platforms
     volumes:
       - ..:/workspace
       - csxl.unc.edu-node_modules:/workspace/frontend/node_modules
