@@ -61,6 +61,7 @@ export class AdminCourseComponent {
 
   /** Delete a course object from the backend database table using the backend HTTP delete request.
    * @param course: course to delete
+   * @param event: event to stop propogation
    * @returns void
    */
   deleteCourse(course: Course, event: Event): void {
