@@ -10,7 +10,7 @@ services:
       - csxl.unc.edu-node_modules:/workspace/frontend/node_modules
     command: /bin/sh -c "while sleep 1000; do :; done"
     environment:
-      - OS # Defined on Windows but not on other platforms
+      - WINDIR # Defined on Windows but not on other platforms
   db:
     image: postgres:15.2
     restart: unless-stopped

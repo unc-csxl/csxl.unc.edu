@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "start:dynamic": "ng serve ${OS:+--poll 2000}"
+    "start:dynamic": "ng serve ${WINDIR:+--poll 2000}"
   },
   "private": true,
   "dependencies": {
