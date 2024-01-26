@@ -170,6 +170,9 @@ export class EventEditorComponent {
     }
   }
 
+  /** Takes user back to events page without changing any event info.
+   * @returns {void}
+   */
   onCancel(): void {
     this.router.navigate([`events/`]);
   }
