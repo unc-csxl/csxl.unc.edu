@@ -81,6 +81,7 @@ export class ProfileEditorComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
+      this.profile.has_agreed = false;
       this.profileService.put(this.profile).subscribe({
         next: (user) => this.onSuccess(user),
         error: (err) => this.onError(err)
@@ -113,7 +114,11 @@ export class ProfileEditorComponent implements OnInit {
       width: '1000px'
       // height: '1000px'
     });
-
+    this.profileService.profile$.subscribe((profile) => {
+      if (profile) {
+        console.log('profile when opening up view agreement box:', profile);
+      }
+    });
     dialogRef.afterClosed().subscribe((result) => {
       console.log('Dialog closed with result:', result);
       // Send updated profile to backend after user agrees
