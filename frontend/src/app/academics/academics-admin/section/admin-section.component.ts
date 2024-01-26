@@ -97,9 +97,11 @@ export class AdminSectionComponent {
 
   /** Delete a section object from the backend database table using the backend HTTP delete request.
    * @param section: section to delete
+   * @param event: event to stop progagation
    * @returns void
    */
-  deleteSection(section: Section): void {
+  deleteSection(section: Section, event: Event): void {
+    event.stopPropagation();
     let confirmDelete = this.snackBar.open(
       'Are you sure you want to delete this section?',
       'Delete'
