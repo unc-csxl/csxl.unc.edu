@@ -170,6 +170,13 @@ export class EventEditorComponent {
     }
   }
 
+  /** Takes user back to events page without changing any event info.
+   * @returns {void}
+   */
+  onCancel(): void {
+    this.router.navigate([`events/`]);
+  }
+
   /** Opens a confirmation snackbar when an event is successfully created.
    * @returns {void}
    */

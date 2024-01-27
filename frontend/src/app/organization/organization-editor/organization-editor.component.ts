@@ -2,7 +2,7 @@
  * The Organization Editor Component allows organization managers to edit information
  * about their organization which is publically displayed on the organizations page.
  *
- * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney, Yuvraj Jain
  * @copyright 2023
  * @license MIT
  */
@@ -168,6 +168,14 @@ export class OrganizationEditorComponent {
           });
       }
     }
+  }
+
+  /** Event handler to handle cancelling the editor and going back to
+   * the previous organization page.
+   * @returns {void}
+   */
+  onCancel(): void {
+    this.router.navigate([`organizations/${this.organization_slug}`]);
   }
 
   /** Event handler to handle the first change in the organization name field
