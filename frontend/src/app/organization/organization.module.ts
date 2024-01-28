@@ -32,6 +32,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { OrganizationPageComponent } from './organization-page/organization-page.component';
 import { OrganizationRoutingModule } from './organization-routing.module';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
+import { OrganizationListAdminComponent } from './organization-admin/list/organization-list-admin.component';
 
 import { OrganizationFilterPipe } from './organization-filter/organization-filter.pipe';
 
@@ -48,6 +49,7 @@ import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/
     OrganizationPageComponent,
     OrganizationDetailsComponent,
     OrganizationEditorComponent,
+    OrganizationListAdminComponent,
 
     // Pipes
     OrganizationFilterPipe,

@@ -63,7 +63,7 @@ export class OrganizationPageComponent implements OnInit {
       'organizations.*',
       '*',
       '',
-      'admin/organizations'
+      'organizations/list/admin'
     );
   }
 }
