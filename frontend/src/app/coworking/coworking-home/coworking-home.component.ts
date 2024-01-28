@@ -127,15 +127,12 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   private hasAgreed() {
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
-        console.log('profile when accessing home page:', profile);
         if (profile.has_agreed === false) {
           const dialogRef = this.dialog.open(CommunityAgreement, {
             width: '1000px',
             autoFocus: false
           });
-          dialogRef.afterClosed().subscribe((result) => {
-            console.log('Dialog closed with result:', result);
-          });
+          dialogRef.afterClosed().subscribe();
         }
       }
     });

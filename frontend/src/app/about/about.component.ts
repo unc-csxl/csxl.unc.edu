@@ -23,16 +23,7 @@ export class AboutComponent {
       width: '1000px',
       autoFocus: false
     });
-    this.profileService.profile$.subscribe((profile) => {
-      if (profile) {
-        console.log(
-          'profile when opening up view agreement box in about page:',
-          profile
-        );
-      }
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('Dialog closed with result:', result);
-    });
+    this.profileService.profile$.subscribe();
+    dialogRef.afterClosed().subscribe();
   }
 }

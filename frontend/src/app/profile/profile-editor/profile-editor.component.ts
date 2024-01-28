@@ -81,15 +81,12 @@ export class ProfileEditorComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
-      console.log(this.profile.has_agreed);
       if (this.profile.has_agreed === undefined) {
         const dialogRef = this.dialog.open(CommunityAgreement, {
           width: '1000px',
           autoFocus: false
         });
-        dialogRef.afterClosed().subscribe((result) => {
-          console.log('Dialog closed with result:', result);
-        });
+        dialogRef.afterClosed().subscribe();
       }
       this.profileService.put(this.profile).subscribe({
         next: (user) => this.onSuccess(user),

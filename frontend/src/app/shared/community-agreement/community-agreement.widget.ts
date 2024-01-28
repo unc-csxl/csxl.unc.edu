@@ -11,7 +11,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import { Profile, ProfileService } from 'src/app/profile/profile.service';
+import { ProfileService } from 'src/app/profile/profile.service';
 
 @Component({
   selector: 'community-agreement',
@@ -52,14 +52,7 @@ export class CommunityAgreement implements OnInit {
       if (profile) {
         profile.has_agreed = true;
         const url = '/api/profile';
-        this.http.put(url, profile).subscribe(
-          (updatedProfile) => {
-            console.log('Terms accepted successfully:', updatedProfile);
-          },
-          (error) => {
-            console.error('Error accepting terms:', error);
-          }
-        );
+        this.http.put(url, profile).subscribe();
       }
     });
     this.dialogRef.close();
