@@ -62,4 +62,4 @@ class ProfileForm(BaseModel):
     last_name: str
     pronouns: str
     email: str
-    has_agreed: bool
+    has_agreed: bool = False

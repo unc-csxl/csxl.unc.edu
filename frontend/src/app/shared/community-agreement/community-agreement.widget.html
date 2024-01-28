@@ -184,13 +184,12 @@
       </h3>
     </mat-card-content>
     <mat-card-actions class="actions">
-      <button mat-button (click)="onCloseClick()">Close</button>
       <button
         mat-button
         color="primary"
-        *ngIf="!has_user_agreed"
-        (click)="onAcceptClick()">
-        Accept
+        style="background-color: rgb(61, 129, 184); color: white"
+        (click)="onButtonClick()">
+        {{ has_user_agreed ? 'Close' : 'Accept' }}
       </button>
     </mat-card-actions>
   </mat-card-content></mat-card

@@ -35,6 +35,13 @@ export class CommunityAgreement implements OnInit {
       }
     });
   }
+  onButtonClick() {
+    if (this.has_user_agreed) {
+      this.onCloseClick();
+    } else {
+      this.onAcceptClick();
+    }
+  }
 
   onCloseClick(): void {
     this.dialogRef.close();

@@ -5,6 +5,8 @@ import { ActivatedRoute, Route } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
 import { Profile, ProfileService } from '../profile.service';
+import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-editor',
@@ -35,7 +37,8 @@ export class ProfileEditorComponent implements OnInit {
     route: ActivatedRoute,
     protected formBuilder: FormBuilder,
     protected profileService: ProfileService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected dialog: MatDialog
   ) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
@@ -78,8 +81,16 @@ export class ProfileEditorComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
-      //POP UP COMMUNITY AGREEMENT
-      this.profile.has_agreed = false;
+      console.log(this.profile.has_agreed);
+      if (this.profile.has_agreed === undefined) {
+        const dialogRef = this.dialog.open(CommunityAgreement, {
+          width: '1000px',
+          autoFocus: false
+        });
+        dialogRef.afterClosed().subscribe((result) => {
+          console.log('Dialog closed with result:', result);
+        });
+      }
       this.profileService.put(this.profile).subscribe({
         next: (user) => this.onSuccess(user),
         error: (err) => this.onError(err)

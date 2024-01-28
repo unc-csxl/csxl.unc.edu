@@ -25,7 +25,10 @@ export class AboutComponent {
     });
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
-        console.log('profile when opening up view agreement box:', profile);
+        console.log(
+          'profile when opening up view agreement box in about page:',
+          profile
+        );
       }
     });
     dialogRef.afterClosed().subscribe((result) => {
