@@ -9,4 +9,8 @@ export class AboutComponent {
     path: 'about',
     component: AboutComponent
   };
+
+  onSlackInviteClick(): void {
+    window.alert('Test');
+  }
 }
