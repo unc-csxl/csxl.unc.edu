@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommunityAgreement } from '../shared/community-agreement/community-agreement.widget';
-import { Profile, ProfileService } from '../profile/profile.service';
+import { ProfileService } from '../profile/profile.service';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -20,8 +20,8 @@ export class AboutComponent {
 
   openAgreementDialog(): void {
     const dialogRef = this.dialog.open(CommunityAgreement, {
-      width: '1000px'
-      // height: '1000px'
+      width: '1000px',
+      autoFocus: false
     });
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
@@ -30,7 +30,6 @@ export class AboutComponent {
     });
     dialogRef.afterClosed().subscribe((result) => {
       console.log('Dialog closed with result:', result);
-      // Send updated profile to backend after user agrees
     });
   }
 }

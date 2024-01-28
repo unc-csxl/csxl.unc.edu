@@ -78,6 +78,7 @@ export class ProfileEditorComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
+      //POP UP COMMUNITY AGREEMENT
       this.profile.has_agreed = false;
       this.profileService.put(this.profile).subscribe({
         next: (user) => this.onSuccess(user),
