@@ -61,9 +61,11 @@ export class AdminCourseComponent {
 
   /** Delete a course object from the backend database table using the backend HTTP delete request.
    * @param course: course to delete
+   * @param event: event to stop propagation
    * @returns void
    */
-  deleteCourse(course: Course): void {
+  deleteCourse(course: Course, event: Event): void {
+    event.stopPropagation();
     let confirmDelete = this.snackBar.open(
       'Are you sure you want to delete this course?',
       'Delete'
