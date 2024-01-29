@@ -57,7 +57,9 @@ class EventService:
         self._permission = permission
         self._user_svc = user_svc
 
-    def list(self, pagination_params: EventPaginationParams) -> Paginated[EventDetails]:
+    def get_paginated_events(
+        self, subject: User, pagination_params: EventPaginationParams
+    ) -> Paginated[EventDetails]:
         """List Events.
 
         Parameters:
@@ -117,7 +119,7 @@ class EventService:
         entities = self._session.execute(statement).scalars()
 
         return Paginated(
-            items=[entity.to_details_model() for entity in entities],
+            items=[entity.to_details_model(subject) for entity in entities],
             length=length,
             params=pagination_params,
         )

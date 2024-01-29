@@ -38,6 +38,7 @@ openapi_tags = {
 
 @api.get("/paginate", tags=["Events"])
 def list_events(
+    subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
     order_by: str = "time",
     ascending: str = "true",
@@ -54,7 +55,7 @@ def list_events(
         range_start=range_start,
         range_end=range_end,
     )
-    return event_service.list(pagination_params)
+    return event_service.get_paginated_events(subject, pagination_params)
 
 
 @api.get("", response_model=list[EventDetails], tags=["Events"])
