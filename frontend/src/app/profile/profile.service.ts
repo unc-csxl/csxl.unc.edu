@@ -23,7 +23,7 @@ export interface Profile {
   registered: boolean;
   role: number;
   permissions: Permission[];
-  has_agreed: boolean;
+  accepted_community_agreement: boolean;
 }
 
 export interface PublicProfile {

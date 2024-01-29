@@ -82,7 +82,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.timerSubscription = timer(0, 10000).subscribe(() =>
       this.coworkingService.pollStatus()
     );
-    this.hasAgreed();
+    this.hasAcceptedAgreement();
   }
 
   ngOnDestroy(): void {
@@ -124,10 +124,10 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  private hasAgreed() {
+  private hasAcceptedAgreement() {
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
-        if (profile.has_agreed === false) {
+        if (profile.accepted_community_agreement === false) {
           const dialogRef = this.dialog.open(CommunityAgreement, {
             width: '1000px',
             autoFocus: false

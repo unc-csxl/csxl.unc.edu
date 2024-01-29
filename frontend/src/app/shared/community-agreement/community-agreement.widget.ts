@@ -31,7 +31,7 @@ export class CommunityAgreement implements OnInit {
   ngOnInit(): void {
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
-        this.has_user_agreed = profile?.has_agreed;
+        this.has_user_agreed = profile?.accepted_community_agreement;
       }
     });
   }
@@ -50,7 +50,7 @@ export class CommunityAgreement implements OnInit {
   onAcceptClick() {
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
-        profile.has_agreed = true;
+        profile.accepted_community_agreement = true;
         const url = '/api/profile';
         this.http.put(url, profile).subscribe();
       }

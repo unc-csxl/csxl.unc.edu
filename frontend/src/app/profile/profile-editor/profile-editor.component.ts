@@ -81,7 +81,7 @@ export class ProfileEditorComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
-      if (this.profile.has_agreed === undefined) {
+      if (this.profile.accepted_community_agreement === undefined) {
         const dialogRef = this.dialog.open(CommunityAgreement, {
           width: '1000px',
           autoFocus: false
