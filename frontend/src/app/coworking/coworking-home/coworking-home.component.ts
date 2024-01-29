@@ -28,7 +28,7 @@ import {
   timer
 } from 'rxjs';
 import { ReservationService } from '../reservation/reservation.service';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-coworking-home',
   templateUrl: './coworking-home.component.html',
@@ -57,7 +57,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     route: ActivatedRoute,
     public coworkingService: CoworkingService,
     private router: Router,
-    private reservationService: ReservationService
+    private reservationService: ReservationService,
+    protected snackBar: MatSnackBar
   ) {
     this.status$ = coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
@@ -67,6 +68,12 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   reserve(seatSelection: SeatAvailability[]) {
     this.coworkingService.draftReservation(seatSelection).subscribe({
+      error: (error) =>
+        this.snackBar.open(
+          'Error. There may be a reservation in the next 2 hours. Please cancel that if you want to drop-in.',
+          '',
+          { duration: 8000 }
+        ),
       next: (reservation) => {
         this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
       }
@@ -74,6 +81,10 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.status$ = this.coworkingService.status$;
+    this.openOperatingHours$ = this.initNextOperatingHours();
+    this.isOpen$ = this.initIsOpen();
+    this.activeReservation$ = this.initActiveReservation();
     this.timerSubscription = timer(0, 10000).subscribe(() =>
       this.coworkingService.pollStatus()
     );
@@ -116,5 +127,16 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
           : of(undefined)
       )
     );
+  }
+
+  navigateToNewReservation() {
+    this.router.navigateByUrl('/coworking/new-reservation');
+  }
+
+  /**
+   * Function that is when coworking card triggers a need to refresh the active reservation
+   */
+  setActiveReservation() {
+    this.activeReservation$ = this.initActiveReservation();
   }
 }

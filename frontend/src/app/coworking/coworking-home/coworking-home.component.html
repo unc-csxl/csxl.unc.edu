@@ -9,6 +9,8 @@
       <ng-container
         *ngIf="activeReservation$ | async as activeReservation; else dropin">
         <coworking-reservation-card
+          (updateActiveReservation)="setActiveReservation()"
+          (reloadCoworkingHome)="ngOnInit()"
           [reservation]="activeReservation"></coworking-reservation-card>
       </ng-container>
 
@@ -26,4 +28,18 @@
         [operatingHours]="status.operating_hours" />
     </ng-template>
   </ng-container>
+
+  <mat-card appearance="outlined">
+    <mat-action-list>
+      <ng-container>
+        <mat-list-item (click)="navigateToNewReservation()">
+          <h3 matListItemTitle>{{ ' Room Reservations' }}</h3>
+          <p matListItemLine>
+            {{ 'Click here to manage your room reservations!' }}
+          </p>
+          <h3 matListItemMeta>&rsaquo;</h3>
+        </mat-list-item>
+      </ng-container>
+    </mat-action-list>
+  </mat-card>
 </div>

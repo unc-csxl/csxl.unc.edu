@@ -2,7 +2,7 @@ from enum import Enum
 from pydantic import BaseModel
 from datetime import datetime
 from ...models.user import User, UserIdentity
-from ..room import Room
+from ..room import Room, RoomPartial
 from .seat import Seat, SeatIdentity
 from .time_range import TimeRange
 
@@ -22,6 +22,7 @@ class ReservationIdentity(BaseModel):
 class ReservationRequest(TimeRange):
     users: list[UserIdentity] = []
     seats: list[SeatIdentity] = []
+    room: RoomPartial | None = None
 
 
 class Reservation(ReservationIdentity, TimeRange):

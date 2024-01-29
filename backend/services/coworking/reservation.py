@@ -5,6 +5,10 @@ from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
 from sqlalchemy.orm import Session, joinedload
+from backend.entities.room_entity import RoomEntity
+
+from backend.models.room import Room
+from backend.test.services import room_data
 from ...database import db_session
 from ...models.user import User, UserIdentity
 from ..exceptions import UserPermissionException, ResourceNotFoundException
@@ -92,7 +96,7 @@ class ReservationService:
         return reservation.to_model()
 
     def get_current_reservations_for_user(
-        self, subject: User, focus: User
+        self, subject: User, focus: User, state: ReservationState | None = None
     ) -> Sequence[Reservation]:
         """Find current and upcoming reservations for a given user.
         The subject must either also be the focus or have permission to view reservations of
@@ -114,12 +118,18 @@ class ReservationService:
                 "coworking.reservation.read",
                 f"user/{focus.id}",
             )
-        #
+
         now = datetime.now()
         time_range = TimeRange(
             start=now - timedelta(days=1),
             end=now + self._policy_svc.reservation_window(focus),
         )
+
+        if state:
+            return self._get_active_reservations_for_user_by_state(
+                focus, time_range, state
+            )
+
         return self._get_active_reservations_for_user(focus, time_range)
 
     def _get_active_reservations_for_user(
@@ -145,6 +155,173 @@ class ReservationService:
 
         reservations = self._state_transition_reservation_entities_by_time(
             datetime.now(), reservations
+        )
+
+        return [reservation.to_model() for reservation in reservations]
+
+    def _get_active_reservations_for_user_by_state(
+        self,
+        focus: UserIdentity,
+        time_range: TimeRange,
+        state: ReservationState,
+    ) -> Sequence[Reservation]:
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start < time_range.end,
+                ReservationEntity.end > time_range.start,
+                ReservationEntity.state == state,
+                UserEntity.id == focus.id,
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start)
+            .all()
+        )
+
+        reservations = self._state_transition_reservation_entities_by_time(
+            datetime.now(), reservations
+        )
+
+        return [reservation.to_model() for reservation in reservations]
+
+    def get_map_reserved_times_by_date(
+        self, date: datetime, subject: User
+    ) -> dict[str, list[int]]:
+        """
+        Generates a map of room reservations for a given date.
+
+        This function returns a dictionary where each key is a room ID and the value
+        is a list of time slot statuses for that room. The statuses are represented as integers:
+        0 (Available - Green), 1 (Reserved - Red), 2 (Selected - Orange, managed by frontend),
+        3 (Unavailable - Grayed out), and 4 (Subject's Reservation - Red).
+
+        Args:
+            date (datetime): The date for which to query reservations.
+            subject (User): The user for whom the reservation statuses are being checked.
+
+        Returns:
+            dict[str, list[int]]: A dictionary mapping each room ID to a list of reservation statuses.
+        """
+        reserved_date_map: dict[str, list[int]] = {}
+        reservations = self._query_confirmed_reservations_by_date(date)
+        rooms = room_data.rooms
+        current_time = datetime.now()
+        current_time_idx = self._idx_calculation(current_time) + 1
+
+        for room in rooms:
+            time_slots_for_room = [0] * 16
+
+            # - Making slots up till current time gray
+            if date.date() == current_time.date():
+                for i in range(0, current_time_idx):
+                    time_slots_for_room[i] = 3
+
+            for reservation in reservations:
+                reservation_id = reservation.room.id if reservation.room else "SN156"
+                if reservation_id == room.id:
+                    start_idx = self._idx_calculation(reservation.start)
+                    end_idx = self._idx_calculation(reservation.end)
+
+                    if start_idx < 0 or end_idx > 15:
+                        continue
+
+                    # Gray out previous time slots for today only
+                    if date.date() == current_time.date():
+                        if end_idx < current_time_idx:
+                            continue
+                        start_idx = max(current_time_idx, start_idx)
+
+                    for idx in range(start_idx, end_idx):
+                        if reservation.users[0].id == subject.id:
+                            time_slots_for_room[idx] = 4  # Reserved by subject
+                        else:
+                            if time_slots_for_room[idx] != 4:
+                                time_slots_for_room[idx] = 1  # Reserved by someone else
+            reserved_date_map[room.id] = time_slots_for_room
+
+        self._transform_date_map_for_unavailable(reserved_date_map)
+        del reserved_date_map["SN156"]
+        return reserved_date_map
+
+    def _idx_calculation(self, time: datetime) -> int:
+        """
+        Calculates the index of a time slot based on a given time.
+
+        This function converts a datetime object into an index representing a specific
+        time slot in the reservation system. Each hour is divided into two slots.
+
+        Args:
+            time (datetime): The time to convert into an index.
+
+        Returns:
+            int: The index of the time slot corresponding to the given time.
+        """
+        return 2 * (time.hour - 10) + (time.minute // 30)
+
+    def _transform_date_map_for_unavailable(
+        self, reserved_date_map: dict[str, list[int]]
+    ) -> None:
+        """
+        Modifies the reserved date map to mark certain slots as unavailable.
+
+        This function updates the reserved date map so that if a slot is reserved by the subject
+        (indicated by a 4), then any available slots (indicated by 0) in the same column across
+        all rooms are marked as unavailable (changed to 3).
+
+        Args:
+            reserved_date_map (dict[str, list[int]]): The map of room reservations to be transformed.
+
+        Returns:
+            None: This function modifies the reserved_date_map in place.
+        """
+        # Identify the columns where 4 appears
+        columns_with_4 = set()
+        for key, values in reserved_date_map.items():
+            for i, value in enumerate(values):
+                if value == 4:
+                    columns_with_4.add(i)
+
+        # Transform the dictionary as per the rules
+        for key, values in reserved_date_map.items():
+            for i in columns_with_4:
+                if values[i] == 0:
+                    values[i] = 3
+
+    def _query_confirmed_reservations_by_date(
+        self, date: datetime
+    ) -> Sequence[Reservation]:
+        """
+        Queries and returns confirmed and checked in reservations for a given date.
+
+        This function fetches all confirmed and checked in reservations from the database for a specified date.
+        It includes reservations that have any overlap with the 24-hour period starting from the
+        beginning of the given date.
+
+        Args:
+            date (datetime): The date for which to query confirmed reservations.
+
+        Returns:
+            Sequence[Reservation]: A sequence of Reservation model objects representing the confirmed reservations.
+        """
+        start = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)  # TODO Join rooms if this is an issue.
+            .filter(
+                ReservationEntity.start < start + timedelta(hours=24),
+                ReservationEntity.end > start,
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
+                ),
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start)
+            .all()
         )
 
         return [reservation.to_model() for reservation in reservations]
@@ -418,23 +595,32 @@ class ReservationService:
 
         # Look at the seats - match bounds of assigned seat's availability
         # TODO: Fetch all seats
-        seats: list[Seat] = SeatEntity.get_models_from_identities(
-            self._session, request.seats
-        )
-        seat_availability = self.seat_availability(seats, bounds)
+        if request.room is None:
+            seats: list[Seat] = SeatEntity.get_models_from_identities(
+                self._session, request.seats
+            )
+            seat_availability = self.seat_availability(seats, bounds)
 
-        if not is_walkin:
-            seat_availability = [seat for seat in seat_availability if seat.reservable]
+            if not is_walkin:
+                seat_availability = [
+                    seat for seat in seat_availability if seat.reservable
+                ]
 
-        if len(seat_availability) == 0:
-            raise ReservationException("The requested seat(s) are no longer available.")
+            if len(seat_availability) == 0:
+                raise ReservationException(
+                    "The requested seat(s) are no longer available."
+                )
 
-        # TODO (limit to # of users on request if multiple users)
-        # Here we constrain the reservation start/end to that of the best available seat requested.
-        # This matters as walk-in availability becomes scarce (may start in the near future even though request
-        # start is for right now), alternatively may end early due to reserved seat on backend.
-        seat_entities = [self._session.get(SeatEntity, seat_availability[0].id)]
-        bounds = seat_availability[0].availability[0]
+            # TODO (limit to # of users on request if multiple users)
+            # Here we constrain the reservation start/end to that of the best available seat requested.
+            # This matters as walk-in availability becomes scarce (may start in the near future even though request
+            # start is for right now), alternatively may end early due to reserved seat on backend.
+            seat_entities = [self._session.get(SeatEntity, seat_availability[0].id)]
+            bounds = seat_availability[0].availability[0]
+        else:
+            seat_entities = []
+
+        room_id = request.room.id if request.room else None
 
         draft = ReservationEntity(
             state=ReservationState.DRAFT,
@@ -442,7 +628,7 @@ class ReservationService:
             end=bounds.end,
             users=user_entities,
             walkin=is_walkin,
-            room_id=None,
+            room_id=room_id,
             seats=seat_entities,
         )
 
@@ -518,6 +704,7 @@ class ReservationService:
 
         transition = (entity.state, delta)
         valid_transition = False
+
         match transition:
             case (RS.DRAFT, RS.CONFIRMED):
                 valid_transition = True
@@ -528,12 +715,17 @@ class ReservationService:
             case (RS.CHECKED_IN, RS.CHECKED_OUT):
                 valid_transition = True
             case _:
-                return False
+                valid_transition = False
+
+        if entity.room:
+            match transition:
+                case (RS.CONFIRMED, RS.CHECKED_IN):
+                    valid_transition = True
 
         if valid_transition:
             entity.state = delta
 
-        return True
+        return valid_transition
 
     def list_all_active_and_upcoming(self, subject: User) -> Sequence[Reservation]:
         """Ambassadors need to see all active and upcoming reservations.
