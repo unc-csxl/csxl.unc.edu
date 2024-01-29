@@ -5,6 +5,20 @@
     text-align: center;
 }
 
+.logo-icon-item {
+    height: 36px;
+    width: 36px;
+    min-width: 38px;
+    padding: 0;
+}
+
+.logo-icon {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+  }
+
 .logo {
     margin: 0;
     height: 32px;
