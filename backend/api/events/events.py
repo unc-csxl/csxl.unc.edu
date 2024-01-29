@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, timedelta
 from typing import Sequence
 from backend.models.public_user import PublicUser
-from backend.models.pagination import Paginated, PaginationParams
+from backend.models.pagination import EventPaginationParams, Paginated, PaginationParams
 
 from backend.services.organization import OrganizationService
 
@@ -34,6 +34,27 @@ openapi_tags = {
     "name": "Events",
     "description": "Create, update, delete, and retrieve CS Events.",
 }
+
+
+@api.get("/paginate", tags=["Events"])
+def list_events(
+    event_service: EventService = Depends(),
+    order_by: str = "time",
+    ascending: str = "true",
+    filter: str = "",
+    range_start: str = "",
+    range_end: str = "",
+) -> Paginated[EventDetails]:
+    """List events in time range via standard backend pagination query parameters."""
+
+    pagination_params = EventPaginationParams(
+        order_by=order_by,
+        ascending=ascending,
+        filter=filter,
+        range_start=range_start,
+        range_end=range_end,
+    )
+    return event_service.list(pagination_params)
 
 
 @api.get("", response_model=list[EventDetails], tags=["Events"])
