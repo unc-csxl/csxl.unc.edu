@@ -12,6 +12,11 @@
     padding: 0;
 }
 
+.button-container-spacer {
+    min-width: 12px;
+    padding: 0;
+}
+
 .logo-icon {
     display: block;
     margin-left: auto;
@@ -22,6 +27,12 @@
 .logo {
     margin: 0;
     height: 32px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sidenav-container {

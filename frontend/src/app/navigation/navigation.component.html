@@ -54,7 +54,7 @@
         <a mat-list-item routerLink="/about">About the XL</a>
         <a mat-list-item href="/auth?continue_to={{ router.url }}">Sign in</a>
       </ng-template>
-      <div mat-list-item>
+      <div mat-list-item class="button-container">
         <button
           mat-stroked-button
           class="logo-icon-item"
@@ -67,6 +67,7 @@
               alt="Slack Logo" />
           </picture>
         </button>
+        <div class="button-container-spacer"></div>
         <button
           mat-stroked-button
           class="logo-icon-item"
