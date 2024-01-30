@@ -28,7 +28,7 @@ export class OrganizationListAdminComponent {
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
-    path: 'list/admin',
+    path: 'admin',
     component: OrganizationListAdminComponent,
     title: 'Organization Administration',
     canActivate: [permissionGuard('organization.list', 'organization')]
