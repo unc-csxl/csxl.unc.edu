@@ -130,6 +130,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
         if (profile.accepted_community_agreement === false) {
           const dialogRef = this.dialog.open(CommunityAgreement, {
             width: '1000px',
+            disableClose: true,
             autoFocus: false
           });
           dialogRef.afterClosed().subscribe();

@@ -84,6 +84,7 @@ export class ProfileEditorComponent implements OnInit {
       if (this.profile.accepted_community_agreement === undefined) {
         const dialogRef = this.dialog.open(CommunityAgreement, {
           width: '1000px',
+          disableClose: true,
           autoFocus: false
         });
         dialogRef.afterClosed().subscribe();
