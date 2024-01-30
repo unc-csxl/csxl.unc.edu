@@ -1,11 +1,11 @@
-.community-agreement-dialog {
+.content-container {
   max-width: 100%;
   max-height: 90vh; 
   overflow: auto; 
   scroll-behavior: auto; 
 }
 @media (prefers-color-scheme: dark) {
-  .community-agreement-dialog {
+  .content-container {
     color: white;
   }
 }
