@@ -15,10 +15,10 @@ import { OrganizationEditorComponent } from './organization-editor/organization-
 import { OrganizationListAdminComponent } from './organization-admin/list/organization-list-admin.component';
 
 const routes: Routes = [
+  OrganizationListAdminComponent.Route,
   OrganizationPageComponent.Route,
   OrganizationDetailsComponent.Route,
-  OrganizationEditorComponent.Route,
-  OrganizationListAdminComponent.Route
+  OrganizationEditorComponent.Route
 ];
 
 @NgModule({
