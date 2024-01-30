@@ -59,11 +59,27 @@ export class OrganizationPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.gearService.showAdminGear(
-      'organizations.*',
-      '*',
-      '',
-      'organizations/list/admin'
-    );
+    let user_permissions = this.profile.permissions;
+    if (user_permissions[0].resource !== '*') {
+      let organization_index = user_permissions.findIndex((element) =>
+        element.resource.includes('organization')
+      );
+      let organization_permissions =
+        user_permissions[organization_index].resource;
+      console.log(organization_permissions);
+      this.gearService.showAdminGear(
+        'organizations.*',
+        organization_permissions,
+        '',
+        'organizations/admin'
+      );
+    } else {
+      this.gearService.showAdminGear(
+        'organizations.*',
+        '*',
+        '',
+        'organizations/admin'
+      );
+    }
   }
 }
