@@ -4,6 +4,21 @@
   overflow: auto; 
   scroll-behavior: auto; 
 }
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 @media (prefers-color-scheme: dark) {
   .content-container {
     color: white;
