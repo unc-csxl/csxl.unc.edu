@@ -360,7 +360,8 @@ class ReservationService:
                 self._permission_svc.enforce(
                     subject, "coworking.reservation.manage", f"user/{user.id}"
                 )
-
+        if subject.accepted_community_agreement == False:
+            raise ReservationException("User has not accepted community agreement.")
         # Bound start
         now = datetime.now()
         start = request.start if request.start >= now else now

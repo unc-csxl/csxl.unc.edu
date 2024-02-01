@@ -45,6 +45,8 @@ __license__ = "MIT"
 def test_draft_reservation_open_seats(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     """Request with an open seat."""
     reservation = reservation_svc.draft_reservation(
         user_data.ambassador, reservation_data.test_request()
@@ -64,6 +66,8 @@ def test_draft_reservation_open_seats(
 def test_draft_reservation_in_past(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     """Request a reservation that starts in the past. Its start should be now, instead."""
     reservation = reservation_svc.draft_reservation(
         user_data.ambassador,
@@ -74,6 +78,8 @@ def test_draft_reservation_in_past(
 
 def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationService):
     """Walkin time limit should be bounded by PolicyService#walkin_initial_duration"""
+    user_data.user.accepted_community_agreement = True
+    assert user_data.user.accepted_community_agreement == True
     reservation = reservation_svc.draft_reservation(
         user_data.user,
         reservation_data.test_request(
@@ -96,6 +102,8 @@ def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationServi
 
 def test_draft_reservation_some_taken_seats(reservation_svc: ReservationService):
     """Request with list of some taken, some open seats."""
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     reservation = reservation_svc.draft_reservation(
         user_data.ambassador,
         reservation_data.test_request(
@@ -116,6 +124,8 @@ def test_draft_reservation_some_taken_seats(reservation_svc: ReservationService)
 def test_draft_reservation_seat_availability_truncated(
     reservation_svc: ReservationService,
 ):
+    user_data.user.accepted_community_agreement = True
+    assert user_data.user.accepted_community_agreement == True
     """When walkin requested and seat is reserved later on."""
     reservation = reservation_svc.draft_reservation(
         user_data.user,
@@ -142,6 +152,8 @@ def test_draft_reservation_future(reservation_svc: ReservationService):
     )
     start = operating_hours_data.future.start
     end = operating_hours_data.future.start + future_reservation_limit
+    user_data.user.accepted_community_agreement = True
+    assert user_data.user.accepted_community_agreement == True
     reservation = reservation_svc.draft_reservation(
         user_data.user,
         reservation_data.test_request(
@@ -162,6 +174,8 @@ def test_draft_reservation_future(reservation_svc: ReservationService):
 
 def test_draft_reservation_future_unreservable(reservation_svc: ReservationService):
     """When a reservation is not a walk-in, only unreservable seats are available."""
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     with pytest.raises(ReservationException):
         start = operating_hours_data.tomorrow.start
         end = operating_hours_data.tomorrow.start + ONE_HOUR
@@ -182,6 +196,8 @@ def test_draft_reservation_future_unreservable(reservation_svc: ReservationServi
 
 def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService):
     """Request with all closed seats errors."""
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     with pytest.raises(ReservationException):
         reservation = reservation_svc.draft_reservation(
             user_data.ambassador,
@@ -200,6 +216,8 @@ def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService)
 def test_draft_reservation_has_reservation_conflict(
     reservation_svc: ReservationService,
 ):
+    user_data.user.accepted_community_agreement = True
+    assert user_data.user.accepted_community_agreement == True
     with pytest.raises(ReservationException):
         reservation = reservation_svc.draft_reservation(
             user_data.user,
@@ -213,6 +231,8 @@ def test_draft_walkin_reservation_has_walkin_reservation_conflict(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """If conflicting reservation is another walkin, a ReservationException is raised."""
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     reservation = reservation_svc.draft_reservation(
         user_data.ambassador,
         reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
@@ -230,6 +250,8 @@ def test_draft_reservation_in_middle_of_another(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """If conflicting reservation is in the middle of another reservation the user has a ReservationError is expected."""
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     with pytest.raises(ReservationException):
         # Conflict request
         reservation_svc.draft_reservation(
@@ -250,6 +272,8 @@ def test_draft_reservation_has_conflict_but_ok(
     wants to make a drop-in visit right now, leading up to the reservation. Since the initial request
     is for one-hour, we need to check that the drop-in appointment is truncated to just _before_
     the next reservation begins."""
+    user_data.root.accepted_community_agreement = True
+    assert user_data.root.accepted_community_agreement == True
     conflict = reservation_data.reservation_4
     reservation = reservation_svc.draft_reservation(
         user_data.root,
@@ -276,6 +300,8 @@ def test_draft_reservation_permissions(reservation_svc: ReservationService):
     permission_svc = create_autospec(PermissionService)
     permission_svc.enforce.return_value = None
     reservation_svc._permission_svc = permission_svc
+    user_data.root.accepted_community_agreement = True
+    assert user_data.root.accepted_community_agreement == True
     reservation = reservation_svc.draft_reservation(
         user_data.root, reservation_data.test_request()
     )
@@ -290,6 +316,8 @@ def test_draft_reservation_permissions(reservation_svc: ReservationService):
 def test_draft_reservation_multiple_users_not_implemented(
     reservation_svc: ReservationService,
 ):
+    user_data.ambassador.accepted_community_agreement = True
+    assert user_data.ambassador.accepted_community_agreement == True
     with pytest.raises(NotImplementedError):
         reservation_svc.draft_reservation(
             user_data.ambassador,
@@ -300,5 +328,21 @@ def test_draft_reservation_multiple_users_not_implemented(
                         UserIdentity(**user_data.ambassador.model_dump()),
                     ]
                 }
+            ),
+        )
+
+
+def test_draft_reservation_user_did_not_accepted_agreement(
+    reservation_svc: ReservationService,
+):
+    """This test ensures that a user cannot make a reservation if they did not accept community agreement"""
+    user_data.user.accepted_community_agreement = False
+    assert user_data.user.accepted_community_agreement == False
+
+    with pytest.raises(ReservationException):
+        reservation = reservation_svc.draft_reservation(
+            user_data.user,
+            reservation_data.test_request(
+                {"users": [UserIdentity(**user_data.user.model_dump())]}
             ),
         )
