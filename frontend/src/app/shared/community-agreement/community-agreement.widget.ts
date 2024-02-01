@@ -1,7 +1,7 @@
 /**
  * The Community Agreement Widget showcases the agreement that existing and new users
- * will have to sign. It is currently used on the coworking home page and the profile
- * page. It also checks whether or not users have accepted.
+ * will have to sign. It is currently used on the coworking home page and the 'About the
+ * XL' page. It also checks whether or not users have accepted.
  *
  * @author Matt Vu
  * @copyright 2023
