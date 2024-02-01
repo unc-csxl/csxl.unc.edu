@@ -234,3 +234,33 @@ def test_update_user_enforces_permission(
     permission_svc_mock.enforce.assert_called_with(
         root, "user.update", f"user/{user.id}"
     )
+
+
+def test_new_user_enforces_agreement(user_svc: UserService):
+    """Test that makes sure newly registered users have not accepted the agreement"""
+    new_user = NewUser(pid=123456789, onyen="new_user", email="new_user@unc.edu")
+    user_svc.create(root, new_user)
+    assert new_user.accepted_community_agreement == False
+
+
+def test_current_user_enforces_agreement(user_svc: UserService):
+    """Tests that currently registered users have not accepted automatically"""
+    current_user = user_svc.get(user.pid)
+    assert current_user.accepted_community_agreement == False
+
+
+def test_update_profile_community_agreement(user_svc: UserService):
+    """Tests that users who update their profile will not have to reaccept agreement"""
+    current_user = user_svc.get(user.pid)
+    assert current_user is not None
+    current_user.first_name = "Sam"
+    current_user.last_name = "Samuel"
+    updated_user = user_svc.update(root, current_user)
+    assert updated_user is not None
+    assert updated_user.id == current_user.id
+    assert updated_user.first_name == "Sam"
+    assert updated_user.last_name == "Samuel"
+    assert (
+        updated_user.accepted_community_agreement
+        == current_user.accepted_community_agreement
+    )
