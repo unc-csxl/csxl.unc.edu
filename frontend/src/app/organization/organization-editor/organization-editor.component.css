@@ -1,30 +1,48 @@
-/* Update Organization Card */
 mat-card {
-  margin: 1em;
-  max-width: 640px;
+  margin: 2em;
 }
 
-/* Organization Name Field */
-mat-form-field,
-mat-card-actions {
-  margin: 8px;
+mat-card-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+mat-card-title {
   flex: 1;
+  text-align: center;
 }
 
-/* Card Content Flex Container */
 mat-card-content {
   display: flex;
   flex-wrap: wrap;
-  margin: -8px;
+  gap: 16px;
+  justify-content: space-between;
 }
 
-/* Form Fields Flex Items */
 mat-form-field {
-  flex-basis: calc(50% - 16px); /* Two columns with 8px margin on each side */
+  flex: 0 0 calc(50% - 16px);
+  box-sizing: border-box;
 }
 
-/* Submit Button */
-mat-card-actions {
+.button-container {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: -8px;
+}
+
+.save-button,
+.events-button {
+  flex: 0 0 calc(33.33% - 8px);
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.save-button {
+  margin-left: calc(8.34%);
+}
+
+.events-button {
+  margin-right: calc(8.34%);
 }

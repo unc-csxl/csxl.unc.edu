@@ -36,7 +36,7 @@
       </mat-form-field>
       <!-- Slug Field -->
       <mat-form-field
-        hintLabel="Must contain only lowercase letters, numbers, or dashes"
+        hintLabel="Lowercase letters, numbers, or dashes"
         appearance="outline"
         color="accent">
         <mat-label>Slug</mat-label>
@@ -125,13 +125,23 @@
           name="heel_life" />
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions>
-      <!-- Submit Button -->
+    <mat-card-actions class="button-container">
+      <!-- Submit Button with 'save' class -->
       <button
         mat-stroked-button
         type="submit"
-        [disabled]="organizationForm.invalid">
+        [disabled]="organizationForm.invalid"
+        class="save-button">
         SAVE
+      </button>
+
+      <!-- Submit Button with 'events' class -->
+      <button
+        mat-stroked-button
+        type="submit"
+        [disabled]="organizationForm.invalid"
+        class="events-button">
+        EVENTS
       </button>
     </mat-card-actions>
   </mat-card>
