@@ -1,17 +1,30 @@
-.mat-mdc-card {
+/* Update Organization Card */
+mat-card {
   margin: 1em;
   max-width: 640px;
 }
 
-.mat-mdc-form-field {
-  width: stretch;
+/* Organization Name Field */
+mat-form-field,
+mat-card-actions {
+  margin: 8px;
+  flex: 1;
 }
 
-.mat-mdc-card-actions .mdc-button {
-  margin-left: 8px;
-  margin-bottom: 8px;
-}
-
+/* Card Content Flex Container */
 mat-card-content {
-  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -8px;
+}
+
+/* Form Fields Flex Items */
+mat-form-field {
+  flex-basis: calc(50% - 16px); /* Two columns with 8px margin on each side */
+}
+
+/* Submit Button */
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
 }
