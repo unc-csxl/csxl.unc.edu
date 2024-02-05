@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SlackInviteBox } from './widgets/slack-invite-box/slack-invite-box.widget';
+import { SlackInviteBox } from '../shared/slack-invite-box/slack-invite-box.widget';
 
 @Component({
   selector: 'app-about',

@@ -5,15 +5,12 @@
     text-align: center;
 }
 
-.logo-icon-item {
+.bottom-button {
     height: 36px;
     width: 36px;
     min-width: 38px;
-    padding: 0;
-}
-
-.button-container-spacer {
-    min-width: 12px;
+    margin-right: 3px;
+    margin-left: 3px;
     padding: 0;
 }
 
@@ -29,10 +26,9 @@
     height: 32px;
 }
 
-.button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.bottom-button-container {
+    width: 100%;
+    margin: 6px;
 }
 
 .sidenav-container {

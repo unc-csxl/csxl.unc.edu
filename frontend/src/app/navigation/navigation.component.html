@@ -47,6 +47,37 @@
           <a mat-list-item routerLink="/profile">Profile</a>
         </ng-template>
         <a mat-list-item (click)="auth.signOut()">Sign out</a>
+        <div mat-list-item class="bottom-button-container">
+          <button
+            mat-stroked-button
+            class="bottom-button"
+            (click)="onSlackInviteClick()"
+            type="button">
+            <picture>
+              <img
+                class="logo-icon"
+                src="/assets/slack-logo.png"
+                alt="Slack Logo" />
+            </picture>
+          </button>
+          <button
+            mat-stroked-button
+            class="bottom-button"
+            onclick="window.open('https://github.com/unc-csxl/csxl.unc.edu','_blank')"
+            type="button">
+            <picture>
+              <source
+                class="logo-icon"
+                srcset="/assets/github-logo-dark.png"
+                media="(prefers-color-scheme: dark)"
+                alt="GitHub Logo" />
+              <img
+                class="logo-icon"
+                src="/assets/github-logo-light.png"
+                alt="GitHub Logo" />
+            </picture>
+          </button>
+        </div>
       </div>
       <ng-template #unauthenticated>
         <a mat-list-item routerLink="/organizations">Organizations</a>
@@ -54,38 +85,6 @@
         <a mat-list-item routerLink="/about">About the XL</a>
         <a mat-list-item href="/auth?continue_to={{ router.url }}">Sign in</a>
       </ng-template>
-      <div mat-list-item class="button-container">
-        <button
-          mat-stroked-button
-          class="logo-icon-item"
-          onclick="window.open('https://join.slack.com/t/csxl/shared_invite/zt-1mvfaiqme-fXXw9cKjaXOfhXVBfgXVCA','_blank')"
-          type="button">
-          <picture>
-            <img
-              class="logo-icon"
-              src="/assets/slack-logo.png"
-              alt="Slack Logo" />
-          </picture>
-        </button>
-        <div class="button-container-spacer"></div>
-        <button
-          mat-stroked-button
-          class="logo-icon-item"
-          onclick="window.open('https://github.com/unc-csxl/csxl.unc.edu','_blank')"
-          type="button">
-          <picture>
-            <source
-              class="logo-icon"
-              srcset="/assets/github-logo-dark.png"
-              media="(prefers-color-scheme: dark)"
-              alt="GitHub Logo" />
-            <img
-              class="logo-icon"
-              src="/assets/github-logo-light.png"
-              alt="GitHub Logo" />
-          </picture>
-        </button>
-      </div>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
