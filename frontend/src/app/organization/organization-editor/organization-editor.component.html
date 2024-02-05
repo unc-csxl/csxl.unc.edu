@@ -53,23 +53,29 @@
         appearance="outline"
         color="accent">
         <mat-label>Short Description</mat-label>
-        <input
+        <textarea
           matInput
           placeholder="Enter short description here."
           formControlName="short_description"
-          name="short_description" />
+          name="short_description"></textarea>
       </mat-form-field>
       <!-- Long Description Field -->
       <mat-form-field
+        class="long-description"
         hintLabel="Max 2000 characters"
         appearance="outline"
         color="accent">
         <mat-label>Long Description</mat-label>
-        <input
+        <textarea
           matInput
           placeholder="Enter long description here."
           formControlName="long_description"
-          name="long_description" />
+          name="long_description"></textarea>
+        <!-- <input
+          matInput
+          placeholder="Enter long description here."
+          formControlName="long_description"
+          name="long_description" /> -->
       </mat-form-field>
       <!-- Website Field -->
       <mat-form-field appearance="outline" color="accent">
@@ -136,13 +142,13 @@
       </button>
 
       <!-- Submit Button with 'events' class -->
-      <button
+      <!-- <button
         mat-stroked-button
         type="submit"
         [disabled]="organizationForm.invalid"
         class="events-button">
         EVENTS??
-      </button>
+      </button> -->
     </mat-card-actions>
   </mat-card>
 </form>
