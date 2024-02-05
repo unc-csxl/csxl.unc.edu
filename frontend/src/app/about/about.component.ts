@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { SlackInviteBox } from '../shared/slack-invite-box/slack-invite-box.widget';
 
 @Component({
   selector: 'app-about',
@@ -11,14 +9,4 @@ export class AboutComponent {
     path: 'about',
     component: AboutComponent
   };
-
-  constructor(protected dialog: MatDialog) {}
-
-  onSlackInviteClick(): void {
-    const dialogRef = this.dialog.open(SlackInviteBox, {
-      width: '1000px',
-      autoFocus: false
-    });
-    dialogRef.afterClosed().subscribe();
-  }
 }
