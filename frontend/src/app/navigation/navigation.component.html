@@ -58,7 +58,10 @@
           <a mat-list-item href="/auth?continue_to={{ router.url }}">Sign in</a>
         </ng-template>
       </mat-nav-list>
-      <div mat-list-item class="bottom-button-container">
+      <div
+        mat-list-item
+        class="bottom-button-container"
+        *ngIf="profile$ | async as profile">
         <button
           mat-stroked-button
           class="bottom-button"
