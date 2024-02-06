@@ -9,3 +9,13 @@
       color: white;
     }
   }
+
+.slack-button {
+  margin-left: auto;
+}
+
+.slack-button-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
