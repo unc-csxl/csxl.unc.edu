@@ -36,8 +36,10 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
+import { ApplicationComponent } from './ta-application/ta-application.componenet';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
+import { UTANoticeComponent } from './ta-application/uta-notice/uta-notice.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
     HomeComponent,
     AboutComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
+    ApplicationComponent,
+    UTANoticeComponent
   ],
   imports: [
     /* Angular */
