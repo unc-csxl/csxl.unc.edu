@@ -1,6 +1,5 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Users."""
 
-
 from sqlalchemy import Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
@@ -11,8 +10,8 @@ from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan", "Matt Vu"]
+__copyright__ = "Copyright 2023 - 2024"
 __license__ = "MIT"
 
 
@@ -45,7 +44,9 @@ class UserEntity(EntityBase):
     # GitHub Avatar permalink for the user
     github_avatar: Mapped[str | None] = mapped_column(String(), nullable=True)
     # Checks whether or not the user has accepted community agreement
-    accepted_community_agreement: Mapped[bool] = mapped_column(Boolean, default=False)
+    accepted_community_agreement: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False
+    )
 
     # All of the roles for the given user.
     # NOTE: This field establishes a many-to-many relationship between the users and roles table.

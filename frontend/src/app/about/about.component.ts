@@ -20,8 +20,7 @@ export class AboutComponent {
 
   openAgreementDialog(): void {
     const dialogRef = this.dialog.open(CommunityAgreement, {
-      width: '1000px',
-      autoFocus: false
+      autoFocus: 'dialog'
     });
     this.profileService.profile$.subscribe();
     dialogRef.afterClosed().subscribe();

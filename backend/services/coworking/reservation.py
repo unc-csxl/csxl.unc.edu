@@ -26,8 +26,8 @@ from .policy import PolicyService
 from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan", "Matt Vu"]
+__copyright__ = "Copyright 2023 - 2024"
 __license__ = "MIT"
 
 
@@ -360,8 +360,10 @@ class ReservationService:
                 self._permission_svc.enforce(
                     subject, "coworking.reservation.manage", f"user/{user.id}"
                 )
-        if subject.accepted_community_agreement == False:
+
+        if not subject.accepted_community_agreement:
             raise ReservationException("User has not accepted community agreement.")
+
         # Bound start
         now = datetime.now()
         start = request.start if request.start >= now else now
