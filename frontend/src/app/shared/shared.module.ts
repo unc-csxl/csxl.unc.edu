@@ -26,7 +26,6 @@ import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
 import { EventList } from './event-list/event-list.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
-import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 
@@ -37,8 +36,7 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     EventCard,
     EventList,
     UserLookup,
-    UserChipList,
-    SlackInviteBox
+    UserChipList
   ],
   imports: [
     CommonModule,

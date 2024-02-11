@@ -33,9 +33,9 @@
           <a mat-list-item routerLink="/about">About the XL</a>
           <mat-divider></mat-divider>
           <div *ngIf="ambassadorPermission$ | async">
-            <a mat-list-item routerLink="/coworking/ambassador"
-              >XL Ambassador</a
-            >
+            <a mat-list-item routerLink="/coworking/ambassador">
+              XL Ambassador
+            </a>
           </div>
           <div *ngIf="adminPermission$ | async">
             <a mat-list-item routerLink="/admin/users">User Admin</a>
