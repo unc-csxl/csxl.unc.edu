@@ -27,6 +27,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatStepperModule } from '@angular/material/stepper';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -36,10 +37,8 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
-import { ApplicationComponent } from './ta-application/ta-application.componenet';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
-import { UTANoticeComponent } from './ta-application/uta-notice/uta-notice.component';
 
 @NgModule({
   declarations: [
@@ -49,9 +48,7 @@ import { UTANoticeComponent } from './ta-application/uta-notice/uta-notice.compo
     HomeComponent,
     AboutComponent,
     GateComponent,
-    ProfileEditorComponent,
-    ApplicationComponent,
-    UTANoticeComponent
+    ProfileEditorComponent
   ],
   imports: [
     /* Angular */
@@ -75,6 +72,7 @@ import { UTANoticeComponent } from './ta-application/uta-notice/uta-notice.compo
     MatSidenavModule,
     MatSliderModule,
     MatSnackBarModule,
+    MatStepperModule,
     MatTabsModule,
     MatToolbarModule,
     FormsModule,

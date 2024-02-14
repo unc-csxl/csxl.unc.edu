@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UTANoticeComponent } from './uta-notice/uta-notice.component';
+import { UTANoticeComponent } from '../uta-notice/uta-notice.component';
 
 @Component({
-  selector: 'app-ta-application',
-  templateUrl: './ta-application.component.html'
+  selector: 'application-home',
+  templateUrl: './application-home.component.html'
 })
 export class ApplicationComponent {
   public static Route = {
-    path: 'ta-application',
+    path: '',
     component: ApplicationComponent
   };
 
