@@ -28,6 +28,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatStepperModule } from '@angular/material/stepper';
 
 /* UI Widgets */
 import { RouterModule } from '@angular/router';
@@ -35,14 +36,13 @@ import { SharedModule } from '../shared/shared.module';
 import { ApplicationComponent } from './application-home/application-home.component';
 import { UndergradApplicationComponent } from './uta-application/uta-application.component';
 import { UTANoticeComponent } from './uta-notice/uta-notice.component';
-import { MatStepperModule } from '@angular/material/stepper';
 import { ApplicationsRoutingModule } from './ta-application-routing.module';
 
 @NgModule({
   declarations: [
     ApplicationComponent,
-    UTANoticeComponent
-    // UndergradApplicationComponent
+    UTANoticeComponent,
+    UndergradApplicationComponent
   ],
   imports: [
     CommonModule,

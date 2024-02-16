@@ -33,7 +33,10 @@
         semester. If you believe you are on track to complete a course this Fall
         with a B+ you are welcomed to apply for it.
       </p>
-      <button mat-stroked-button type="button">Apply!</button>
+      <!-- Link to UTA Application Page -->
+      <a [routerLink]="['/ta-application/uta-application']">
+        <button mat-stroked-button [mat-dialog-close]="">Apply</button>
+      </a>
     </div>
     <ng-template #unauthenticated>
       <p>To join the CSXL Slack, please sign in.</p>

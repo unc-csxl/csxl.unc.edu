@@ -11,11 +11,8 @@
         [matTooltip]="organization.name"
         matTooltipPosition="above"
         [matTooltipDisabled]="organization.name.length < 25">
-        {{
-          organization.name.length < 25
-            ? organization.name
-            : organization.shorthand
-        }}
+        {{ organization.name.length < 25 ? organization.name :
+        organization.shorthand }}
       </mat-card-title>
     </div>
   </mat-card-header>

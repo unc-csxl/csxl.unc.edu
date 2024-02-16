@@ -1,34 +1,117 @@
 <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Fill out your name</ng-template>
+      <ng-template matStepLabel>Introductory Video</ng-template>
       <mat-form-field>
-        <mat-label>Name</mat-label>
+        <mat-label>Video Link</mat-label>
         <input
           matInput
-          placeholder="Last name, First name"
+          placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           formControlName="firstCtrl"
           required />
       </mat-form-field>
       <div>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-stroked-button matStepperNext>Next</button>
       </div>
     </form>
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>Fill out your address</ng-template>
+      <ng-template matStepLabel>Experience</ng-template>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>Experience</mat-label>
+          <mat-select formControlName="secondCtrl">
+            <mat-option
+              *ngFor="let exp of experienceList"
+              [value]="exp.value"
+              required
+              >{{ exp.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>Service Experience</mat-label>
+          <textarea
+            matInput
+            formControlName="secondCtrl"
+            placeholder="Cashier, Waiter, ..."
+            name="service_experience"
+            required></textarea>
+        </mat-form-field>
+      </div>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>Additional Experience</mat-label>
+          <textarea
+            matInput
+            placeholder="Developer, Business Owner, ..."
+            formControlName="secondCtrl"
+            name="additional_experience"
+            required></textarea>
+          <!-- <input
+            matInput
+            formControlName="secondCtrl"
+            placeholder="Developer, Business Owner, ..."
+            required /> -->
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-stroked-button matStepperPrevious>Back</button>
+        <button mat-stroked-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="thirdFormGroup">
+    <form [formGroup]="thirdFormGroup">
+      <ng-template matStepLabel>Academics and Extracurriculars</ng-template>
       <mat-form-field>
         <mat-label>Address</mat-label>
         <input
           matInput
-          formControlName="secondCtrl"
+          formControlName="thirdCtrl"
           placeholder="Ex. 1 Main St, New York, NY"
           required />
       </mat-form-field>
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-stroked-button matStepperPrevious>Back</button>
+        <button mat-stroked-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="fourthFormGroup">
+    <form [formGroup]="fourthFormGroup">
+      <ng-template matStepLabel>GPA and Transcript</ng-template>
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input
+          matInput
+          formControlName="fourthCtrl"
+          placeholder="Ex. 1 Main St, New York, NY"
+          required />
+      </mat-form-field>
+      <div>
+        <button mat-stroked-button matStepperPrevious>Back</button>
+        <button mat-stroked-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="fifthFormGroup">
+    <form [formGroup]="fifthFormGroup">
+      <ng-template matStepLabel>Course Selection</ng-template>
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input
+          matInput
+          formControlName="fifthCtrl"
+          placeholder="Ex. 1 Main St, New York, NY"
+          required />
+      </mat-form-field>
+      <div>
+        <button mat-stroked-button matStepperPrevious>Back</button>
+        <button mat-stroked-button matStepperNext>Next</button>
       </div>
     </form>
   </mat-step>
@@ -36,8 +119,8 @@
     <ng-template matStepLabel>Done</ng-template>
     <p>You are now done.</p>
     <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
+      <button mat-stroked-button matStepperPrevious>Back</button>
+      <button mat-stroked-button (click)="stepper.reset()">Reset</button>
     </div>
   </mat-step>
 </mat-stepper>

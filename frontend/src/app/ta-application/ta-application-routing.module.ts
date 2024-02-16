@@ -11,12 +11,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ApplicationComponent } from './application-home/application-home.component';
 import { UndergradApplicationComponent } from './uta-application/uta-application.component';
-import { UTANoticeComponent } from './uta-notice/uta-notice.component';
 
 const routes: Routes = [
-  ApplicationComponent.Route
-  //   UTANoticeComponent.Route,
-  //   UndergradApplicationComponent.Route
+  ApplicationComponent.Route,
+  UndergradApplicationComponent.Route
 ];
 
 @NgModule({
