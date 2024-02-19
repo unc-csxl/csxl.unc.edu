@@ -63,7 +63,7 @@ export class RoomReservationWidgetComponent {
       this.reservationTableService.setMinDate().toDateString()
     );
     this.subscription = this.reservationTableService.selectedDate$.subscribe(
-      (selectedDate) => {
+      (selectedDate: string) => {
         this.selectedDate = selectedDate;
         this.getReservationsByDate(new Date(selectedDate));
       }
@@ -75,7 +75,7 @@ export class RoomReservationWidgetComponent {
       (result) => {
         this.reservationsMap = result;
       },
-      (error) => {
+      (error: Error) => {
         // Handle the error here
         this.snackBar.open(
           'Error fetching reservations',
