@@ -52,6 +52,12 @@ class UserEntity(EntityBase):
         secondary=user_role_table, back_populates="users"
     )
 
+    # NOTE: This field establishes a one-to-many relationship between the user and application table.
+    # NOTE: Do not implement yet.
+    # applications: Mapped[list["ApplicationEntity"]] = relationship(
+    #     back_populates="application", cascade="all,delete"
+    # )
+
     # The permissions for the given user.
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
