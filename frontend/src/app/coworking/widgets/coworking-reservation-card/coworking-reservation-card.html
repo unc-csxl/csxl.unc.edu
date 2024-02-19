@@ -33,12 +33,14 @@
     <!-- Card Content -->
 
     <mat-card-content>
-        <h3>
-            <label>Who</label>
-            <strong>{{ reservation.users[0].first_name }}
-                {{ reservation.users[0].last_name }}</strong>
-        </h3>
-        <mat-divider />
+        <ng-component *ngIf="!reservation.room">
+            <h3>
+                <label>Who</label>
+                <strong>{{ reservation.users[0].first_name }}
+                    {{ reservation.users[0].last_name }}</strong>
+            </h3>
+            <mat-divider />
+        </ng-component>
 
         <h3>
             <label>When</label>
@@ -55,34 +57,22 @@
             {{ checkinDeadline(reservation.start) | date: 'shortTime' }} to avoid
             cancellation.
         </p>
+        
         <mat-divider></mat-divider>
         <!-- check to see if this is a room reservation -->
-        <ng-container *ngIf="reservation.seats.length > 0" >
+        <!-- Define the condition and specify the else template -->
+        <ng-container *ngIf="reservation.seats.length > 0">
             <h3>
                 <label>What</label> <strong>{{ reservation.seats[0].title }}</strong>
             </h3>
             <mat-divider></mat-divider>
         </ng-container>
 
-        <ng-container *ngIf="reservation.seats.length === 0">
-            <h3>
-                <label>What</label> <strong>{{ 'Room Reservation' }}</strong>
-            </h3>
-            <mat-divider></mat-divider>
-        </ng-container>
-        
         <!-- if not a room reservation then for XL Colab -->
-        <ng-container *ngIf="!reservation.room">
-            <h3>
-                <label>Where</label> <strong>The XL Colab in Sitterson 156</strong>
-            </h3>
-        </ng-container>
-
-        <ng-container *ngIf="reservation.room">
-            <h3>
-                <label>Where</label> <strong>{{ reservation.room.id }}</strong>
-            </h3>
-        </ng-container>
+        <h3>
+            <label>Where</label> 
+            <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
+        </h3>
 
         <mat-card-actions align="end" [ngSwitch]="reservation.state">
             <ng-container *ngSwitchCase="'DRAFT'">
