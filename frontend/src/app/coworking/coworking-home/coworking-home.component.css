@@ -58,6 +58,9 @@
     .dropin-card-container {
         order: 1;
     }
+    .upcoming-card-container {
+        order: 2;
+    }
 }
 
 .navigation-card {
