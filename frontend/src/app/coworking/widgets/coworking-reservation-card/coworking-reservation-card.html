@@ -34,13 +34,6 @@
 
     <mat-card-content>
         <div #Details>
-            <h3 *ngIf="!reservation.room">
-                <label>Who</label>
-                <strong>{{ reservation.users[0].first_name }}
-                    {{ reservation.users[0].last_name }}</strong>
-            </h3>
-            <mat-divider />
-
             <h3>
                 <label>When</label>
                 <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
@@ -67,7 +60,7 @@
                 <mat-divider></mat-divider>
             </ng-container>
 
-            <!-- if not a room reservation then for XL Colab -->
+            <!-- if not a room reservation then  XL Colab -->
             <h3>
                 <label>Where</label> 
                 <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
