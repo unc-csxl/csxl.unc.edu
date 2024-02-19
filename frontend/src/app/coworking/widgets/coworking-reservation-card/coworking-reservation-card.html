@@ -33,86 +33,88 @@
     <!-- Card Content -->
 
     <mat-card-content>
-        <ng-component *ngIf="!reservation.room">
-            <h3>
+        <div #Details>
+            <h3 *ngIf="!reservation.room">
                 <label>Who</label>
                 <strong>{{ reservation.users[0].first_name }}
                     {{ reservation.users[0].last_name }}</strong>
             </h3>
             <mat-divider />
-        </ng-component>
 
-        <h3>
-            <label>When</label>
-            <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
-            <strong>{{ reservation.end | date: 'shortTime' }}</strong>
-            <strong>{{ ', ' }}</strong>
-            <strong class="date">{{
-                reservation.start | date: 'dd MMM yyyy'
-                }}</strong>
-        </h3>
-
-        <p *ngIf="reservation.state === 'CONFIRMED'">
-            Check-in between {{ reservation.start | date: 'shortTime' }} and
-            {{ checkinDeadline(reservation.start) | date: 'shortTime' }} to avoid
-            cancellation.
-        </p>
-        
-        <mat-divider></mat-divider>
-        <!-- check to see if this is a room reservation -->
-        <!-- Define the condition and specify the else template -->
-        <ng-container *ngIf="reservation.seats.length > 0">
             <h3>
-                <label>What</label> <strong>{{ reservation.seats[0].title }}</strong>
+                <label>When</label>
+                <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
+                <strong>{{ reservation.end | date: 'shortTime' }}</strong>
+                <strong>{{ ', ' }}</strong>
+                <strong class="date">{{
+                    reservation.start | date: 'dd MMM yyyy'
+                    }}</strong>
             </h3>
+
+            <p *ngIf="reservation.state === 'CONFIRMED'">
+                Check-in between {{ reservation.start | date: 'shortTime' }} and
+                {{ checkinDeadline(reservation.start) | date: 'shortTime' }} to avoid
+                cancellation.
+            </p>
+            
             <mat-divider></mat-divider>
-        </ng-container>
-
-        <!-- if not a room reservation then for XL Colab -->
-        <h3>
-            <label>Where</label> 
-            <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
-        </h3>
-
-        <mat-card-actions align="end" [ngSwitch]="reservation.state">
-            <ng-container *ngSwitchCase="'DRAFT'">
-                <button mat-stroked-button type="submit" (click)="cancel()">
-                    Cancel
-                </button>
-                &nbsp;
-                <button mat-stroked-button type="submit" color="primary" class="action-button" (click)="confirm()">
-                    {{ draftConfirmationDeadline$ | async }}
-                </button>
+            <!-- check to see if this is a room reservation -->
+            <!-- Define the condition and specify the else template -->
+            <ng-container *ngIf="reservation.seats.length > 0">
+                <h3>
+                    <label>What</label> <strong>{{ reservation.seats[0].title }}</strong>
+                </h3>
+                <mat-divider></mat-divider>
             </ng-container>
 
-            <ng-container *ngSwitchCase="'CONFIRMED'">
-                <button mat-stroked-button type="submit" (click)="cancel()">
-                    Cancel
-                </button>
-                &nbsp;
-                <button *ngIf="checkCheckinAllowed()" mat-stroked-button type="submit" color="primary"
-                    (click)="checkin()">
-                    Check In
-                </button>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'CHECKED_IN'">
-                <button mat-stroked-button type="submit" (click)="checkout()" color="primary">
-                    Check Out
-                </button>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'CHECKED_OUT'">
-                <button mat-stroked-button type="submit" (click)="refreshCoworkingHome()" color="primary">
-                    Return to Coworking Home
-                </button>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'CANCELLED'">
-                <button mat-stroked-button type="submit" (click)="refreshCoworkingHome()" color="primary">
-                    Return to Coworking Home
-                </button>
-            </ng-container>
-        </mat-card-actions>
+            <!-- if not a room reservation then for XL Colab -->
+            <h3>
+                <label>Where</label> 
+                <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
+            </h3>
+        </div>
+        <mat-divider></mat-divider>
+        <div #Actions>
+            <mat-card-actions align="end" [ngSwitch]="reservation.state">
+                <ng-container *ngSwitchCase="'DRAFT'">
+                    <button mat-stroked-button type="submit" (click)="cancel()">
+                        Cancel
+                    </button>
+                    &nbsp;
+                    <button mat-stroked-button type="submit" color="primary" class="action-button" (click)="confirm()">
+                        {{ draftConfirmationDeadline$ | async }}
+                    </button>
+                </ng-container>
+    
+                <ng-container *ngSwitchCase="'CONFIRMED'">
+                    <button mat-stroked-button type="submit" (click)="cancel()">
+                        Cancel
+                    </button>
+                    &nbsp;
+                    <button *ngIf="checkCheckinAllowed()" mat-stroked-button type="submit" color="primary"
+                        (click)="checkin()">
+                        Check In
+                    </button>
+                </ng-container>
+    
+                <ng-container *ngSwitchCase="'CHECKED_IN'">
+                    <button mat-stroked-button type="submit" (click)="checkout()" color="primary">
+                        Check Out
+                    </button>
+                </ng-container>
+    
+                <ng-container *ngSwitchCase="'CHECKED_OUT'">
+                    <button mat-stroked-button type="submit" (click)="refreshCoworkingHome()" color="primary">
+                        Return to Coworking Home
+                    </button>
+                </ng-container>
+    
+                <ng-container *ngSwitchCase="'CANCELLED'">
+                    <button mat-stroked-button type="submit" (click)="refreshCoworkingHome()" color="primary">
+                        Return to Coworking Home
+                    </button>
+                </ng-container>
+            </mat-card-actions>
+        </div>
     </mat-card-content>
 </mat-card>
