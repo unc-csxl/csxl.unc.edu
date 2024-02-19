@@ -80,7 +80,7 @@ export class EventPageComponent implements OnInit {
   ngOnInit() {
     // Keep track of the initial width of the browser window
     this.innerWidth = window.innerWidth;
-    // this.gearService.showAdminGear('events.*', '*', '', 'admin/organizations');
+    this.gearService.showAdminGear('organization.*', `event`, '', `event`);
   }
 
   /** Handler that runs when the window resizes */

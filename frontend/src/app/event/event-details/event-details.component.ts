@@ -73,7 +73,6 @@ export class EventDetailsComponent {
     );
   }
 
-  // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   ngOnInit() {
     this.gearService.showAdminGear(
       'events.*',

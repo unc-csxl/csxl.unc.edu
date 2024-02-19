@@ -57,7 +57,7 @@ export class OrganizationService {
   }
 
   /** Returns the new role object from the backend database table using the backend HTTP post request.
-   * @param role: RoleSummary representing the new role
+   * @param role: Role representing the new role
    * @returns {Observable<Role>}
    */
   createRole(role: Role): Observable<Role> {
