@@ -4,13 +4,13 @@
  * XL' page. It also checks whether or not users have accepted.
  *
  * @author Matt Vu
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { HttpClient } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProfileService } from 'src/app/profile/profile.service';
 
 @Component({
@@ -20,26 +20,42 @@ import { ProfileService } from 'src/app/profile/profile.service';
 })
 export class CommunityAgreement implements OnInit {
   public has_user_agreed: boolean = false;
+  public agreementSectionsAccepted: boolean[];
 
   constructor(
     public dialogRef: MatDialogRef<CommunityAgreement>,
     public profileService: ProfileService,
-    private http: HttpClient,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public snackBar: MatSnackBar
+  ) {
+    this.agreementSectionsAccepted = new Array(12).fill(false);
+  }
 
   ngOnInit(): void {
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
         this.has_user_agreed = profile?.accepted_community_agreement;
+        console.log('profile when opening dialog', profile);
       }
     });
   }
+
   onButtonClick() {
     if (this.has_user_agreed) {
       this.onCloseClick();
     } else {
-      this.onAcceptClick();
+      if (this.allSectionsAccepted()) {
+        this.onAcceptClick();
+        this.snackBar.open('Successfully Accepted Community Agreement', '', {
+          duration: 2000
+        });
+      } else {
+        this.snackBar.open(
+          'Please Accept All Terms in the Community Agreement',
+          '',
+          { duration: 2000 }
+        );
+      }
     }
   }
 
@@ -51,10 +67,19 @@ export class CommunityAgreement implements OnInit {
     this.profileService.profile$.subscribe((profile) => {
       if (profile) {
         profile.accepted_community_agreement = true;
-        const url = '/api/profile';
-        this.http.put(url, profile).subscribe();
+        this.profileService.put(profile).subscribe((newprofile) => {
+          console.log('updatedProfile after accepting:', newprofile);
+        });
       }
     });
     this.dialogRef.close();
+  }
+
+  updateSectionAcceptance(index: number, isAccepted: boolean): void {
+    this.agreementSectionsAccepted[index] = isAccepted;
+  }
+
+  allSectionsAccepted(): boolean {
+    return this.agreementSectionsAccepted.every((value) => value);
   }
 }

@@ -1,8 +1,11 @@
 <mat-card-content class="content-container">
-  <p *ngIf="!has_user_agreed" style="margin-left: 15px; margin-top: 10px">
-    ***Please read and accept the community agreement below to continue to CSXL
-    web page.***
-  </p>
+  <mat-card-header>
+    <mat-card-title *ngIf="!has_user_agreed">
+      Please read and accept the community agreement below to continue to the
+      CSXL web page.
+    </mat-card-title>
+  </mat-card-header>
+
   <mat-card-header>
     <h1>
       Undergraduate Computer Science Experience Labs (XL) Community Standards
@@ -46,6 +49,12 @@
       communication should not demean others. Consider what you are saying and
       how it would feel if it were said to you or about you.
     </p>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[0]"
+      (change)="updateSectionAcceptance(0, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>I agree to speak up if I see or hear something amiss.</h3>
     <p>
       Harassment is not tolerated, and you are empowered to politely engage when
@@ -53,6 +62,12 @@
       may not be aware of what they are doing, and politely bringing their
       behavior to their attention is encouraged.
     </p>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[1]"
+      (change)="updateSectionAcceptance(1, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>
       I agree to abide by the XL Community's ZERO TOLERANCE POLICY for in-person
       or online harassment of any kind.
@@ -70,6 +85,12 @@
       <li>Unwelcome sexual or physical attention</li>
       <li>Physical or cyber threats</li>
     </ul>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[2]"
+      (change)="updateSectionAcceptance(2, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>
       I understand the above policies are in relation to, but not limited to:
     </h3>
@@ -90,6 +111,12 @@
       <li>Military status</li>
       <li>Social demographic</li>
     </ul>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[3]"
+      (change)="updateSectionAcceptance(3, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>
       When asked to stop any harassing behavior, I will comply immediately.
     </h3>
@@ -99,6 +126,12 @@
       review every allegation of violation of our Event Community Guidelines and
       Anti-Harassment Policy and respond appropriately.
     </p>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[4]"
+      (change)="updateSectionAcceptance(4, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>
       I will report any behavior that makes me or others feel uncomfortable.
     </h3>
@@ -110,7 +143,12 @@
       >
       to file a report.
     </p>
-
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[5]"
+      (change)="updateSectionAcceptance(5, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>I understand this policy extends to all XL activities.</h3>
     <p>
       This policy extends to talks, forums, workshops, codelabs, social media,
@@ -126,6 +164,12 @@
       the XL staff may take any action they deem appropriate, including warning
       or expelling the offender from the event or space.
     </p>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[6]"
+      (change)="updateSectionAcceptance(6, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>
       I agree to take care of the XL spaces and equipment and to leave
       everything as clean, or cleaner, as before my usage.
@@ -146,6 +190,12 @@
       <li>Erasing whiteboards</li>
       <li>Not doing anything destructive</li>
     </ul>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[7]"
+      (change)="updateSectionAcceptance(7, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>
       I understand for this space to remain open to undergraduate students, I
       need to prove to faculty and administration I will take care of it.
@@ -160,6 +210,12 @@
       Over $80,000 of furniture was bought new for the space this year, please
       treat it like you bought it.
     </p>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[8]"
+      (change)="updateSectionAcceptance(8, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>Eat in the Lounge Area (SN142 or SN Lobby)</h3>
     <p>
       In order to keep the equipment and facilities of the XL as clean as
@@ -171,6 +227,12 @@
       Do not eat food or have open drinking containers in the workstation spaces
       with 2nd monitors in the XL.
     </p>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[9]"
+      (change)="updateSectionAcceptance(9, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>The XL is Not for Gaming - Please Use the Craige E-Sports Arena</h3>
     <p>
       The purpose of the XL is to serve as a community coworking, productivity,
@@ -186,11 +248,23 @@
       monitor space, you will be asked to stop and/or take the gameplay
       elsewhere.
     </p>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[10]"
+      (change)="updateSectionAcceptance(10, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
     <h3>
       I understand my access to the XL will be suspended if I leave messes
       behind, eat in the XL, fail to clean up after myself, destroy, damage
       property of the XL, or otherwise act outside the community's standards.
     </h3>
+    <mat-checkbox
+      *ngIf="!has_user_agreed"
+      [(ngModel)]="agreementSectionsAccepted[11]"
+      (change)="updateSectionAcceptance(11, $event.checked)">
+      <p>I agree</p></mat-checkbox
+    >
   </mat-card-content>
   <mat-card-actions class="actions">
     <button

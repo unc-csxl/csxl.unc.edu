@@ -18,6 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
@@ -54,6 +55,7 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     MatPaginatorModule,
     MatListModule,
     MatAutocompleteModule,
+    MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,

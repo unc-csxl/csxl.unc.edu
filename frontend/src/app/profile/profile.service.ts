@@ -81,4 +81,8 @@ export class ProfileService {
   unlinkGitHub() {
     return this.http.delete('/oauth/github');
   }
+
+  updateAcceptedAgreement(profile: Profile) {
+    return this.http.put<Profile>('/api/profile', profile);
+  }
 }
