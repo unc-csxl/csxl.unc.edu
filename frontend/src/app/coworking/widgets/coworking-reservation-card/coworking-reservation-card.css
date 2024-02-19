@@ -10,13 +10,13 @@
 /* Add media query for larger screens (adjust the breakpoint as needed) */
 @media (min-width: 768px) {
     .mat-mdc-card {
-      min-width: 560px; /* Set a fixed width for larger screens */
+      min-height: auto; /* Set a fixed width for larger screens */
     }
   }
 
   @media (min-height: 350px) {
     .mat-mdc-card {
-      min-height: 380px; /* Set a fixed width for larger screens */
+      min-height: auto; /* Set a fixed width for larger screens */
     }
   }
 
