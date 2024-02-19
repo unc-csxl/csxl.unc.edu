@@ -46,7 +46,7 @@
   <div class="upcoming-card-container">
     <!-- Show upcoming room reservations -->
     <ng-container *ngIf="upcomingRoomReservations$ | async as upcomingReservations">
-      <div *ngIf="upcomingReservations.length > 0; else noReservations">
+      <div *ngIf="upcomingReservations.length > 0">
         <div class="reservations-header">
           <h2 class="heading">Upcoming Reservations</h2>
         </div>
@@ -62,12 +62,5 @@
         </div>
       </div>
     </ng-container>
-  
-    <ng-template #noReservations>
-      <div class="no-reservations">
-        <p>No upcoming reservations.</p>
-      </div>
-    </ng-template>
   </div>
-
 </div>
