@@ -43,28 +43,31 @@
     </mat-action-list>
   </mat-card>
 
-  <!-- Show upcoming room reservations -->
-  <ng-container *ngIf="upcomingRoomReservations$ | async as upcomingReservations">
-    <div *ngIf="upcomingReservations.length > 0; else noReservations">
-      <div class="reservations-header">
-        <h2 class="heading">Upcoming Reservations</h2>
-      </div>
-      <div class="upcoming-reservations-container">
-        <ng-container *ngFor="let r of upcomingReservations">
-          <ng-container *ngIf="r?.room?.id">
-            <coworking-reservation-card
-              [reservation]="r"
-              (updateReservationsList)="handleUpdateReservationsList()">
-            </coworking-reservation-card>
+  <div class="upcoming-card-container">
+    <!-- Show upcoming room reservations -->
+    <ng-container *ngIf="upcomingRoomReservations$ | async as upcomingReservations">
+      <div *ngIf="upcomingReservations.length > 0; else noReservations">
+        <div class="reservations-header">
+          <h2 class="heading">Upcoming Reservations</h2>
+        </div>
+        <div class="upcoming-reservations-container">
+          <ng-container *ngFor="let r of upcomingReservations">
+            <ng-container *ngIf="r?.room?.id">
+              <coworking-reservation-card
+                [reservation]="r"
+                (updateReservationsList)="handleUpdateReservationsList()">
+              </coworking-reservation-card>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
+  
+    <ng-template #noReservations>
+      <div class="no-reservations">
+        <p>No upcoming reservations.</p>
+      </div>
+    </ng-template>
+  </div>
 
-  <ng-template #noReservations>
-    <div class="no-reservations">
-      <p>No upcoming reservations.</p>
-    </div>
-  </ng-template>
 </div>
