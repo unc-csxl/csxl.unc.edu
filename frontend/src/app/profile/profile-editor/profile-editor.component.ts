@@ -114,4 +114,12 @@ export class ProfileEditorComponent implements OnInit {
       next: () => (this.profile.github = '')
     });
   }
+
+  openAgreementDialog(): void {
+    const dialogRef = this.dialog.open(CommunityAgreement, {
+      autoFocus: 'dialog'
+    });
+    this.profileService.profile$.subscribe();
+    dialogRef.afterClosed().subscribe();
+  }
 }
