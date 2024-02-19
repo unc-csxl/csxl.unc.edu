@@ -15,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationResolver } from '../organization.resolver';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-organization-page',
@@ -45,7 +46,8 @@ export class OrganizationPageComponent {
 
   constructor(
     private route: ActivatedRoute,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    private gearService: NagivationAdminGearService
   ) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
@@ -54,5 +56,15 @@ export class OrganizationPageComponent {
     };
     this.profile = data.profile;
     this.organizations = data.organizations;
+  }
+
+  /** Runs whenever the view is rendered initally on the screen */
+  ngOnInit(): void {
+    this.gearService.showAdminGear(
+      'organization.*',
+      '',
+      '',
+      `organizations/admin`
+    );
   }
 }
