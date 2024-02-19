@@ -31,6 +31,7 @@
     </ng-container>
 
     <!-- Card Content -->
+
     <mat-card-content>
         <h3>
             <label>Who</label>
@@ -55,11 +56,11 @@
             cancellation.
         </p>
         <mat-divider></mat-divider>
-        <ng-container *ngIf="reservation.seats.length > 0">
+        <!-- check to see if this is a room reservation -->
+        <ng-container *ngIf="reservation.seats.length > 0" >
             <h3>
                 <label>What</label> <strong>{{ reservation.seats[0].title }}</strong>
             </h3>
-
             <mat-divider></mat-divider>
         </ng-container>
 
@@ -67,10 +68,10 @@
             <h3>
                 <label>What</label> <strong>{{ 'Room Reservation' }}</strong>
             </h3>
-
             <mat-divider></mat-divider>
         </ng-container>
-
+        
+        <!-- if not a room reservation then for XL Colab -->
         <ng-container *ngIf="!reservation.room">
             <h3>
                 <label>Where</label> <strong>The XL Colab in Sitterson 156</strong>
