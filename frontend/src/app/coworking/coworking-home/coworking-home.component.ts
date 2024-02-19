@@ -25,8 +25,10 @@ import {
   map,
   mergeMap,
   of,
-  timer
+  timer,
+  catchError
 } from 'rxjs';
+import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { ReservationService } from '../reservation/reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
@@ -44,6 +46,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   private timerSubscription!: Subscription;
 
+  public upcomingRoomReservations$!: Observable<Reservation[]>;
+
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
     path: '',
@@ -58,7 +62,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     public coworkingService: CoworkingService,
     private router: Router,
     private reservationService: ReservationService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    private roomReservationService: RoomReservationService
   ) {
     this.status$ = coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
@@ -66,28 +71,43 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.activeReservation$ = this.initActiveReservation();
   }
 
-  reserve(seatSelection: SeatAvailability[]) {
-    this.coworkingService.draftReservation(seatSelection).subscribe({
-      error: (error) =>
-        this.snackBar.open(
-          'Error. There may be a reservation in the next 2 hours. Please cancel that if you want to drop-in.',
-          '',
-          { duration: 8000 }
-        ),
-      next: (reservation) => {
-        this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
-      }
-    });
-  }
-
+  
   ngOnInit(): void {
     this.status$ = this.coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
     this.timerSubscription = timer(0, 10000).subscribe(() =>
-      this.coworkingService.pollStatus()
+    this.coworkingService.pollStatus()
     );
+    this.handleUpdateReservationsList();
+  }
+  
+  handleUpdateReservationsList() {
+    this.upcomingRoomReservations$ = this.roomReservationService
+      .getReservationsByState('CONFIRMED')
+      .pipe(
+        catchError((err: Error) => {
+          const message = 'Error while fetching upcoming reservations.';
+          this.snackBar.open(message, '', { duration: 8000 });
+          console.error(err);
+          return of([]);
+        })
+      );
+  }
+
+  reserve(seatSelection: SeatAvailability[]) {
+    this.coworkingService.draftReservation(seatSelection).subscribe({
+      error: (error) =>
+      this.snackBar.open(
+        'Error. There may be a reservation in the next 2 hours. Please cancel that if you want to drop-in.',
+        '',
+        { duration: 8000 }
+        ),
+      next: (reservation) => {
+        this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -139,4 +159,6 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   setActiveReservation() {
     this.activeReservation$ = this.initActiveReservation();
   }
+
+  
 }
