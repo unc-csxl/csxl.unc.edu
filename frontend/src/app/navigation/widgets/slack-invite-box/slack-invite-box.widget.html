@@ -41,6 +41,7 @@
     <mat-card-actions align="end">
       <button
         mat-button
+        mat-dialog-close
         (click)="openSlackInvite()"
         *ngIf="acceptAll; else pleaseAcceptAll">
         Join the XL Slack
