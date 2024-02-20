@@ -8,7 +8,7 @@ from datetime import datetime
 
 from backend.models.room import Room
 from ..authentication import registered_user
-from ...services.coworking.reservation import ReservationService
+from ...services.coworking.reservation import ReservationException, ReservationService
 from ...models import User
 from ...models.coworking import (
     Reservation,
@@ -36,7 +36,10 @@ def draft_reservation(
     reservation_svc: ReservationService = Depends(),
 ) -> Reservation:
     """Draft a reservation request."""
-    return reservation_svc.draft_reservation(subject, reservation_request)
+    try:
+        return reservation_svc.draft_reservation(subject, reservation_request)
+    except ReservationException as e:
+        raise HTTPException(status_code=422, detail=(str(e)))
 
 
 @api.get("/reservation/{id}", tags=["Coworking"])
