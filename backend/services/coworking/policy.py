@@ -18,8 +18,7 @@ class PolicyService:
     for different groups of users (e.g. majors, ambassadors, LAs, etc).
     """
 
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     def walkin_window(self, _subject: User) -> timedelta:
         """How far into the future can walkins be reserved?"""
@@ -54,3 +53,7 @@ class PolicyService:
 
     def reservation_checkin_timeout(self) -> timedelta:
         return timedelta(minutes=10)
+
+    def room_reservation_weekly_limit(self) -> timedelta:
+        """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
+        return timedelta(hours=6)
