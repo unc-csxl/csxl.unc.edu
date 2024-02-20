@@ -219,15 +219,29 @@ export class EventService {
       range_end: params.range_end
     };
     let query = new URLSearchParams(paramStrings);
-    return this.http
-      .get<PaginatedEvent<EventJson>>(
-        '/api/events/paginate?' + query.toString()
-      )
-      .pipe(
-        map((paginated) => ({
-          ...paginated,
-          items: paginated.items.map(parseEventJson)
-        }))
-      );
+    if (this.profile) {
+      return this.http
+        .get<PaginatedEvent<EventJson>>(
+          '/api/events/paginate?' + query.toString()
+        )
+        .pipe(
+          map((paginated) => ({
+            ...paginated,
+            items: paginated.items.map(parseEventJson)
+          }))
+        );
+    } else {
+      // if a user isn't logged in, return the normal endpoint without registration statuses
+      return this.http
+        .get<PaginatedEvent<EventJson>>(
+          '/api/events/paginate/unauthenticated?' + query.toString()
+        )
+        .pipe(
+          map((paginated) => ({
+            ...paginated,
+            items: paginated.items.map(parseEventJson)
+          }))
+        );
+    }
   }
 }

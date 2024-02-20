@@ -58,7 +58,9 @@ class EventService:
         self._user_svc = user_svc
 
     def get_paginated_events(
-        self, subject: User, pagination_params: EventPaginationParams
+        self,
+        pagination_params: EventPaginationParams,
+        subject: User | None = None,
     ) -> Paginated[EventDetails]:
         """List Events.
 
