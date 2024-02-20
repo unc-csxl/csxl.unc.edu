@@ -7,8 +7,7 @@ from typing import Sequence
 from sqlalchemy.orm import Session, joinedload
 from backend.entities.room_entity import RoomEntity
 
-from backend.models.room import Room
-from backend.test.services import room_data
+from backend.models.room_details import RoomDetails
 from ...database import db_session
 from ...models.user import User, UserIdentity
 from ..exceptions import UserPermissionException, ResourceNotFoundException
@@ -30,7 +29,7 @@ from .policy import PolicyService
 from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -207,7 +206,7 @@ class ReservationService:
         """
         reserved_date_map: dict[str, list[int]] = {}
         reservations = self._query_confirmed_reservations_by_date(date)
-        rooms = room_data.rooms
+        rooms = self._get_reservable_rooms()
         current_time = datetime.now()
         current_time_idx = self._idx_calculation(current_time) + 1
 
@@ -243,7 +242,7 @@ class ReservationService:
             reserved_date_map[room.id] = time_slots_for_room
 
         self._transform_date_map_for_unavailable(reserved_date_map)
-        del reserved_date_map["SN156"]
+
         return reserved_date_map
 
     def _idx_calculation(self, time: datetime) -> int:
@@ -325,6 +324,31 @@ class ReservationService:
         )
 
         return [reservation.to_model() for reservation in reservations]
+    
+    def _get_reservable_rooms(self) -> Sequence[RoomDetails]:
+        """
+        Retrieves a list of all reservable rooms, excluding the XL.
+        This method queries the RoomEntity table to find all rooms that are marked as reservable 
+        (i.e., their 'reservable' attribute is True) and are not the room with ID 'SN156'. 
+        The rooms are then ordered by their ID in ascending order. 
+        
+        Each room entity is converted to a RoomDetails model before being returned.
+
+        Returns:
+            Sequence[RoomDetails]: A sequence of RoomDetails models representing all the reservable rooms, excluding room 'SN156'.
+        """
+
+        rooms = (
+            self._session.query(RoomEntity)
+            .filter(
+                RoomEntity.id != 'SN156',
+                RoomEntity.reservable == True
+            )
+            .order_by(RoomEntity.id)
+            .all()
+        )
+
+        return [room.to_details_model() for room in rooms]
 
     def get_seat_reservations(
         self, seats: Sequence[Seat], time_range: TimeRange
