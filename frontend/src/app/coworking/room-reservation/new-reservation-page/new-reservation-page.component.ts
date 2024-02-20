@@ -51,4 +51,8 @@ export class NewReservationPageComponent implements OnInit {
         })
       );
   }
+
+  /*numHoursReserved() {
+    return 0;
+  }*/
 }
