@@ -8,19 +8,23 @@
  * @license MIT
  */
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Profile } from 'src/app/models.module';
 import { ProfileService } from 'src/app/profile/profile.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'community-agreement',
   templateUrl: './community-agreement.widget.html',
   styleUrls: ['./community-agreement.widget.css']
 })
-export class CommunityAgreement implements OnInit {
-  public has_user_agreed: boolean = false;
+export class CommunityAgreement {
+  public has_user_agreed: boolean | undefined = false;
   public agreementSectionsAccepted: boolean[];
+  public loggedInUser: Profile | undefined;
+  private subscription: Subscription;
 
   constructor(
     public dialogRef: MatDialogRef<CommunityAgreement>,
@@ -29,14 +33,9 @@ export class CommunityAgreement implements OnInit {
     public snackBar: MatSnackBar
   ) {
     this.agreementSectionsAccepted = new Array(12).fill(false);
-  }
-
-  ngOnInit(): void {
-    this.profileService.profile$.subscribe((profile) => {
-      if (profile) {
-        this.has_user_agreed = profile?.accepted_community_agreement;
-        console.log('profile when opening dialog', profile);
-      }
+    this.subscription = this.profileService.profile$.subscribe((profile) => {
+      this.loggedInUser = profile;
+      this.has_user_agreed = this.loggedInUser?.accepted_community_agreement;
     });
   }
 
@@ -64,14 +63,10 @@ export class CommunityAgreement implements OnInit {
   }
 
   onAcceptClick() {
-    this.profileService.profile$.subscribe((profile) => {
-      if (profile) {
-        profile.accepted_community_agreement = true;
-        this.profileService.put(profile).subscribe((newprofile) => {
-          console.log('updatedProfile after accepting:', newprofile);
-        });
-      }
-    });
+    if (this.loggedInUser) {
+      this.loggedInUser.accepted_community_agreement = true;
+      this.profileService.put(this.loggedInUser).subscribe();
+    }
     this.dialogRef.close();
   }
 
