@@ -40,6 +40,8 @@ export class EventPageComponent implements OnInit, OnDestroy {
   public page: PaginatedEvent<Event>;
   public startDate = new Date();
   public endDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
+  public today: boolean = true;
+
   private static EventPaginationParams = {
     order_by: 'time',
     ascending: 'true',
@@ -98,6 +100,8 @@ export class EventPageComponent implements OnInit, OnDestroy {
     };
     this.profile = data.profile;
     this.page = data.page;
+    this.today =
+      this.startDate.setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0);
 
     // Group events by their dates
     this.eventsPerDay = eventService.groupEventsByDate(this.page.items);
@@ -220,6 +224,8 @@ export class EventPageComponent implements OnInit, OnDestroy {
     if (isPrevious === true) {
       this.page.params.ascending = 'false';
     }
+    this.today =
+      this.startDate.setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {

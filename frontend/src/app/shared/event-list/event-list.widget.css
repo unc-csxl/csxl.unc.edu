@@ -1,14 +1,35 @@
+.events-section {
+  height: 64.2vh;
+  overflow-y: auto;
+}
+
+/* Scroll Bar Styling */
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 
 .list-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .list-divider {
-    padding-bottom: 8px;
+  padding-bottom: 8px;
 }
 
 .list-event-group {
-    padding-bottom: 8px;
+  padding-bottom: 8px;
 }

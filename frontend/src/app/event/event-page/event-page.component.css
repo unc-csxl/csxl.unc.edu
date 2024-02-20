@@ -11,6 +11,11 @@
   /* Safari and Chrome */
 }
 
+.mat-mdc-card {
+  margin: 0;
+  max-width: 100%;
+}
+
 .events-grid {
   display: grid;
   grid-template-columns: auto 560px;
@@ -35,24 +40,26 @@
 .search-bar {
   width: 100%;
   border-radius: 100%;
-  margin-bottom: -10px;
 }
 
 .date-range {
   display: flex;
-  margin-top: -4px;
-  margin-bottom: 10px;
+  flex-direction: row;
+  margin-bottom: 10px !important;
   align-items: center;
   justify-content: space-between;
 }
 
-.mat-mdc-card {
-  margin: 0 !important;
-  max-width: 100%;
+.date-range-text {
+  font-size: large;
+  margin: 0;
 }
 
 .events-column {
-  margin-bottom: 24px;
+  position: sticky;
+  bottom: 24px;
+  top: 170px;
+  height: 73vh;
 }
 
 .details-column {
@@ -61,7 +68,7 @@
   bottom: 24px;
   top: 170px;
   width: 548px;
-  height: 71vh;
+  height: 72vh;
 }
 
 @media only screen and (max-width: 1100px) {
