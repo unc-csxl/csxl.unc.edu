@@ -20,6 +20,8 @@ class RoomEntity(EntityBase):
 
     # Room Model Fields
     id: Mapped[str] = mapped_column(String, primary_key=True)
+    # Optional Office Hours section ID
+    section_id: Mapped[int] = mapped_column(Integer, nullable=True)
     capacity: Mapped[int] = mapped_column(Integer, index=True)
     # RoomDetails Model Fields Follow
     building: Mapped[str] = mapped_column(String)

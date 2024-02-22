@@ -5,6 +5,8 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from backend.entities.office_hours import user_created_tickets_table
+
 from ...models.roster_role import RosterRole
 from ...models.academics.section_member import SectionMember
 
@@ -44,6 +46,12 @@ class SectionMemberEntity(EntityBase):
 
     # Type of relationship
     member_role: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
+
+    # Tickets that have been created by the user
+    created_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(secondary=user_created_tickets_table)
+
+    # Tickets that have been called by the user
+    called_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(back_populates="caller", cascade="all, delete")
 
     def to_flat_model(self) -> SectionMember:
         """
