@@ -22,3 +22,19 @@ export const permissionGuard = (
     );
   };
 };
+
+export const permissionGuardOrgs = (): CanActivateFn => {
+  return (_route, _state) => {
+    const permission = inject(PermissionService);
+    const router = inject(Router);
+    return permission.checkForOrgs().pipe(
+      map((isAuthenticated) => {
+        if (isAuthenticated) {
+          return true;
+        } else {
+          return router.createUrlTree(['']);
+        }
+      })
+    );
+  };
+};

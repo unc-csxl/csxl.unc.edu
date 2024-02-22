@@ -9,7 +9,7 @@
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { permissionGuard } from 'src/app/permission.guard';
+import { permissionGuardOrgs } from 'src/app/permission.guard';
 import { Organization } from '../../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrganizationAdminService } from '../organization-admin.service';
@@ -31,7 +31,7 @@ export class OrganizationListAdminComponent {
     path: 'admin',
     component: OrganizationListAdminComponent,
     title: 'Organization Administration',
-    canActivate: [permissionGuard('organization.list', 'organization')]
+    canActivate: [permissionGuardOrgs()]
   };
 
   constructor(
