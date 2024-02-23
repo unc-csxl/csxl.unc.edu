@@ -327,7 +327,7 @@ class ReservationService:
     
     def _get_reservable_rooms(self) -> Sequence[RoomDetails]:
         """
-        Retrieves a list of all reservable rooms, excluding the XL.
+        Retrieves a list of all reservable rooms.
         This method queries the RoomEntity table to find all rooms that are marked as reservable 
         (i.e., their 'reservable' attribute is True) and are not the room with ID 'SN156'. 
         The rooms are then ordered by their ID in ascending order. 
@@ -341,8 +341,7 @@ class ReservationService:
         rooms = (
             self._session.query(RoomEntity)
             .filter(
-                RoomEntity.id != 'SN156',
-                RoomEntity.reservable == True
+                RoomEntity.id.not_in(self._policy_svc.non_reservable_rooms())
             )
             .order_by(RoomEntity.id)
             .all()
