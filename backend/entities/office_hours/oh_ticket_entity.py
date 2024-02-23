@@ -59,7 +59,7 @@ class OfficeHoursTicketEntity(EntityBase):
 
     # UTA that has called the tickets
     caller_id: Mapped[int] = mapped_column(
-        ForeignKey("academics__user_section.pid_section_id"), nullable=True
+        ForeignKey("academics__user_section.user_section_id"), nullable=True
     )
     caller: Mapped["SectionMemberEntity"] = relationship(
         back_populates="called_tickets"
