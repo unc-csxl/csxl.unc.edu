@@ -12,5 +12,9 @@ user_created_tickets_table = Table(
     "office_hours__user_created_ticket",
     EntityBase.metadata,
     Column("ticket_id", ForeignKey("office_hours__ticket.id"), primary_key=True),
-    Column("user_id", ForeignKey("academics__user_section.user_id"), primary_key=True),
+    Column(
+        "user_section_id",
+        ForeignKey("academics__user_section.pid_section_id"),
+        primary_key=True,
+    ),
 )
