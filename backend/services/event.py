@@ -106,13 +106,10 @@ class EventService:
         limit = pagination_params.page_size
 
         if pagination_params.order_by != "":
-            if pagination_params.ascending == "false":
-                statement = statement.order_by(
-                    getattr(EventEntity, pagination_params.order_by).desc()
-                )
-            else:
-                statement = statement.order_by(
+            statement = statement.order_by(
                     getattr(EventEntity, pagination_params.order_by)
+                ) if pagination_params.ascending else statement.order_by(
+                    getattr(EventEntity, pagination_params.order_by).desc()
                 )
 
         statement = statement.offset(offset).limit(limit)

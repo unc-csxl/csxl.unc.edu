@@ -45,9 +45,10 @@
 .date-range {
   display: flex;
   flex-direction: row;
-  margin-bottom: 10px !important;
+  margin-bottom: 1.5vh !important;
   align-items: center;
   justify-content: space-between;
+  height: 6vh;
 }
 
 .date-range-text {

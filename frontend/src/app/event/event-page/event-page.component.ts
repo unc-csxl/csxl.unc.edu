@@ -80,6 +80,7 @@ export class EventPageComponent implements OnInit, OnDestroy {
   /** Stores the width of the window. */
   public innerWidth: any;
 
+  /** Search bar query string */
   public query: string = '';
 
   public searchUpdate = new Subject<string>();
@@ -199,7 +200,6 @@ export class EventPageComponent implements OnInit, OnDestroy {
       ).toLocaleString('en-GB');
       paginationParams.filter = this.query;
     }
-    console.log(paginationParams);
     this.eventService.list(paginationParams).subscribe((page) => {
       this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
       paginationParams.filter = '';
