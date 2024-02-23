@@ -38,7 +38,6 @@ import { ErrorDialogComponent } from './navigation/error-dialog/error-dialog.com
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
-import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
 
 @NgModule({
@@ -49,8 +48,7 @@ import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
     ErrorDialogComponent,
     HomeComponent,
     AboutComponent,
-    GateComponent,
-    ProfileEditorComponent
+    GateComponent
   ],
   imports: [
     /* Angular */

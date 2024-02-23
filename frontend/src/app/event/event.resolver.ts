@@ -11,6 +11,7 @@ import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { Event } from './event.model';
 import { EventService } from './event.service';
+import { map } from 'rxjs';
 
 /** This resolver injects the list of events into the events component. */
 export const eventResolver: ResolveFn<Event[] | undefined> = (route, state) => {

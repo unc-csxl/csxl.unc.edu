@@ -3,14 +3,18 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppTitleStrategy } from './app-title.strategy';
 import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
-import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   HomeComponent.Route,
   AboutComponent.Route,
-  ProfileEditorComponent.Route,
   GateComponent.Route,
+  {
+    path: 'profile',
+    title: 'Profile',
+    loadChildren: () =>
+      import('./profile/profile.module').then((m) => m.ProfileModule)
+  },
   {
     path: 'coworking',
     title: 'Cowork in the XL',

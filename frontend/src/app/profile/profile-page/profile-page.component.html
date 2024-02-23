@@ -1,0 +1,77 @@
+<!-- HTML Structure of Profile Page -->
+
+<div class="container">
+  <div class="profile-grid">
+    <!-- Profile Information Card -->
+    <div class="left-column">
+      <div class="profile-card-container">
+        <profile-about-card [profile]="profile" />
+      </div>
+      <mat-card *ngIf="profile.id" appearance="outlined">
+        <div *ngIf="profile.github !== ''; else associate_github">
+          <mat-card-header>
+            <img mat-card-avatar [src]="profile.github_avatar" />
+            <mat-card-title
+              >GitHub /
+              <a
+                id="github_link"
+                href="https://github.com/{{ profile.github }}"
+                target="_blank">
+                {{ profile.github }}
+              </a></mat-card-title
+            >
+          </mat-card-header>
+          <mat-card-actions>
+            <button mat-stroked-button (click)="unlinkGitHub()">
+              Unlink GitHub
+            </button>
+          </mat-card-actions>
+        </div>
+        <ng-template #associate_github>
+          <mat-card-header>
+            <mat-card-title>Link Your GitHub Account</mat-card-title>
+          </mat-card-header>
+          <mat-card-actions>
+            <button mat-stroked-button (click)="linkWithGitHub()">
+              Link with GitHub
+            </button>
+          </mat-card-actions>
+        </ng-template>
+      </mat-card>
+
+      <mat-card *ngIf="profile.id" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Auth Bearer Token</mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+          <button
+            class="token-button"
+            mat-stroked-button
+            type="submit"
+            (click)="displayToken()">
+            {{ showToken ? 'Hide Token' : 'Display Token' }}
+          </button>
+          <button
+            class="token-button"
+            mat-stroked-button
+            type="submit"
+            (click)="copyToken()">
+            Copy
+          </button>
+        </mat-card-actions>
+        <div *ngIf="showToken">
+          <mat-card-content class="token-text" *ngIf="token">
+            <code>{{ token }}</code></mat-card-content
+          >
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Event Registrations Card -->
+    <!-- <div class="events-card-container">
+    <profile-events-card
+      [events]="events"
+      (cancelRegistrationButtonPressedEvent)="cancelRegistration($event)" />
+  </div> -->
+  </div>
+</div>

@@ -1,3 +1,14 @@
+/**
+ * The Prfoile Module couples all features of the Profile Page feature
+ * into a single unit that can be loaded at once. This decreases load time
+ * for the overall application and decouples this feature from other features
+ * in the application.
+ *
+ * @author Jade Keegan
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -17,33 +28,17 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatChipsModule } from '@angular/material/chips';
-
-/* UI Widgets */
-import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
-import { SearchBar } from './search-bar/search-bar.widget';
-import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
-import { EventList } from './event-list/event-list.widget';
-import { UserLookup } from './user-lookup/user-lookup.widget';
-import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
-
-import { UserChipList } from './user-chip-list/user-chip-list.widget';
+import { SharedModule } from '../shared/shared.module';
+import { ProfilePageComponent } from './profile-page/profile-page.component';
+import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
+import { ProfileRoutingModule } from './profile-routing.module';
 
 @NgModule({
-  declarations: [
-    SocialMediaIcon,
-    SearchBar,
-    ProfileAboutCard,
-    EventCard,
-    EventList,
-    UserLookup,
-    UserChipList
-  ],
+  declarations: [ProfilePageComponent, ProfileEditorComponent],
   imports: [
     CommonModule,
     MatTabsModule,
-    MatChipsModule,
     MatTableModule,
     MatCardModule,
     MatDialogModule,
@@ -58,16 +53,9 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     ReactiveFormsModule,
     MatIconModule,
     MatTooltipModule,
-    RouterModule
-  ],
-  exports: [
-    SocialMediaIcon,
-    SearchBar,
-    ProfileAboutCard,
-    EventCard,
-    EventList,
-    UserLookup,
-    UserChipList
+    ProfileRoutingModule,
+    RouterModule,
+    SharedModule
   ]
 })
-export class SharedModule {}
+export class ProfileModule {}

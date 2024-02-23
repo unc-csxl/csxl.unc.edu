@@ -55,6 +55,13 @@ export class EventService {
     );
   }
 
+  /** Return all event registrations of the user using the backend HTTP get request.
+   * @returns Observable<EventRegistration[]>
+   */
+  getEventRegistrationsOfUser(): Observable<EventRegistration[]> {
+    return this.http.get<EventRegistration[]>(`/api/events/registrations`);
+  }
+
   /** Returns all event entries from the backend database table using the backend HTTP get request.
    * @returns {Observable<Event[]>}
    */

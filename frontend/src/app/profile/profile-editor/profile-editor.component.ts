@@ -13,7 +13,7 @@ import { Profile, ProfileService } from '../profile.service';
 })
 export class ProfileEditorComponent implements OnInit {
   public static Route: Route = {
-    path: 'profile',
+    path: 'edit',
     component: ProfileEditorComponent,
     title: 'Profile',
     canActivate: [isAuthenticated],
@@ -21,7 +21,6 @@ export class ProfileEditorComponent implements OnInit {
   };
 
   public profile: Profile;
-  public token: string;
   public showToken: boolean = false;
 
   public profileForm = this.formBuilder.group({
@@ -51,8 +50,6 @@ export class ProfileEditorComponent implements OnInit {
 
     const data = route.snapshot.data as { profile: Profile };
     this.profile = data.profile;
-
-    this.token = `${localStorage.getItem('bearerToken')}`;
   }
 
   ngOnInit(): void {
@@ -64,15 +61,6 @@ export class ProfileEditorComponent implements OnInit {
       email: profile.email,
       pronouns: profile.pronouns
     });
-  }
-
-  displayToken(): void {
-    this.showToken = !this.showToken;
-  }
-
-  copyToken(): void {
-    navigator.clipboard.writeText(this.token);
-    this.snackBar.open('Token Copied', '', { duration: 2000 });
   }
 
   onSubmit(): void {
@@ -91,17 +79,5 @@ export class ProfileEditorComponent implements OnInit {
 
   private onError(err: any) {
     console.error('How to handle this?');
-  }
-
-  linkWithGitHub(): void {
-    this.profileService.getGitHubOAuthLoginURL().subscribe((url) => {
-      window.location.href = url;
-    });
-  }
-
-  unlinkGitHub() {
-    this.profileService.unlinkGitHub().subscribe({
-      next: () => (this.profile.github = '')
-    });
   }
 }
