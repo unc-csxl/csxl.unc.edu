@@ -213,7 +213,12 @@ class ReservationService:
         return True
 
     def _get_total_time_user_reservations(self, user: UserIdentity) -> int:
-        """Add a docstring you lazy truck"""
+        """Calculate the total duration (in hours) of study room reservations for the given user.
+        Args:
+            user (UserIdentity): The user for whom to calculate the total reservation time.
+        Returns:
+            int: The total reservation time in hours.
+        """
         reservations = self.get_current_reservations_for_user(user, user)
         duration = timedelta()
         for reservation in reservations:
@@ -591,7 +596,7 @@ class ReservationService:
         bounds = TimeRange(start=start, end=end)
 
         # Check if user has exceeded reservation limit
-        if request.room.id is not "SN156":
+        if request.room.id is not None:
             if not self._check_user_reservation_duration(request.users[0], bounds):
                 raise ReservationException(
                     "Oops! Looks like you've reached your weekly study room reservation limit"
