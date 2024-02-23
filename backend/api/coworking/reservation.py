@@ -36,10 +36,7 @@ def draft_reservation(
     reservation_svc: ReservationService = Depends(),
 ) -> Reservation:
     """Draft a reservation request."""
-    try:
-        return reservation_svc.draft_reservation(subject, reservation_request)
-    except ReservationException as e:
-        raise HTTPException(status_code=422, detail=(str(e)))
+    return reservation_svc.draft_reservation(subject, reservation_request)
 
 
 @api.get("/reservation/{id}", tags=["Coworking"])
