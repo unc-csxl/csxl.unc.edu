@@ -11,37 +11,49 @@ from ..entity_base import EntityBase
 from typing import Self
 from sqlalchemy import Enum as SQLAlchemyEnum
 
-__authors__ = ["Madelyn Andrews"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
 class OfficeHoursEventEntity(EntityBase):
-    #TODO: write description
-    """Serves as the database model schema defining the shape of the `OfficeHoursEvent` table
-
-
-    """
+    """Serves as the database model schema defining the shape of the `OfficeHoursEvent` table"""
 
     # Name for the events table in the PostgreSQL database
     __tablename__ = "office_hours__event"
 
-    #TODO: add comments
+    # Unique id for OfficeHoursEvent
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    type: Mapped[OfficeHoursType] = mapped_column(SQLAlchemyEnum(OfficeHoursType), nullable=False)
+    # Type of event
+    type: Mapped[OfficeHoursType] = mapped_column(
+        SQLAlchemyEnum(OfficeHoursType), nullable=False
+    )
+    # Name of event
     title: Mapped[str] = mapped_column(String, nullable=False)
+    # Description of event
     description: Mapped[str] = mapped_column(String, nullable=True)
+    # Description of the location; allows for instructors to write note about attending office hours
     location_description: Mapped[str] = mapped_column(String, nullable=True)
+    # Date of the event
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    # Time the event starts
     start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    end_time: Mapped[datetime] = mapped_column(DateTime,nullable=False)
+    # Time the event ends
+    end_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
-    office_hours_section_id: Mapped[int] = mapped_column(ForeignKey("office_hours__section.id"), nullable=False)
-    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(back_populates="events")
+    # NOTE: Many-to-one relationship of OfficeHoursEvents to OH section
+    office_hours_section_id: Mapped[int] = mapped_column(
+        ForeignKey("office_hours__section.id"), nullable=False
+    )
+    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(
+        back_populates="events"
+    )
 
-    # Unidirectional relationship to Room
+    # NOTE: Unidirectional relationship to Room
     location_id: Mapped[int] = mapped_column(ForeignKey("room.id"), nullable=False)
     location: Mapped["RoomEntity"] = relationship("RoomEntity")
 
-    # Tickets that have been created during the event
-    tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(back_populates="event", cascade="all, delete")
+    # NOTE: One-to-many relationship of OfficeHoursEvent to tickets
+    tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
+        back_populates="event", cascade="all, delete"
+    )

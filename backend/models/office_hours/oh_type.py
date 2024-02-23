@@ -1,8 +1,8 @@
-"""Determines the type of an office hours event."""
+"""Enum for the type of an office hours event."""
 
 from enum import Enum
 
-__authors__ = ["Madelyn Andrews"]
+__authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 

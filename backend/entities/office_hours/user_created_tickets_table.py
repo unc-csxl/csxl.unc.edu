@@ -4,10 +4,12 @@ from sqlalchemy import Column, ForeignKey, Table
 from ..entity_base import EntityBase
 
 
-__authors__ = ["Madelyn Andrews"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
+# Association table between OfficeHoursTicket and SectionMember
+# TODO: fix unique constraint error
 user_created_tickets_table = Table(
     "office_hours__user_created_ticket",
     EntityBase.metadata,
