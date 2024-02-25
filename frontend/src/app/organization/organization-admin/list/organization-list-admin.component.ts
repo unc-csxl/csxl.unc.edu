@@ -7,40 +7,74 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { permissionGuardOrgs } from 'src/app/permission.guard';
 import { Organization } from '../../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrganizationAdminService } from '../organization-admin.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import { profileResolver } from 'src/app/profile/profile.resolver';
+import { organizationResolver } from '../../organization.resolver';
 
 @Component({
   selector: 'app-organization-list-admin',
   templateUrl: './organization-list-admin.component.html',
   styleUrls: ['./organization-list-admin.component.css']
 })
-export class OrganizationListAdminComponent {
+export class OrganizationListAdminComponent implements OnInit {
   /** Organizations List */
   public organizations$: Observable<Organization[]>;
 
   public displayedColumns: string[] = ['name'];
+
+  public profile: Profile;
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
     path: 'admin',
     component: OrganizationListAdminComponent,
     title: 'Organization Administration',
-    canActivate: [permissionGuardOrgs()]
+    canActivate: [permissionGuardOrgs()],
+    resolve: { profile: profileResolver, organizations: organizationResolver }
   };
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
     private organizationAdminService: OrganizationAdminService
   ) {
     this.organizations$ = organizationAdminService.organizations$;
     organizationAdminService.list();
+
+    const data = this.route.snapshot.data as {
+      profile: Profile;
+    };
+    this.profile = data.profile;
+  }
+
+  ngOnInit() {
+    if (this.profile.permissions[0].resource !== '*') {
+      let permissionedOrganizations: string[] = this.profile.permissions
+        .filter((element) => element.resource.includes('organization'))
+        .map((element) => {
+          element.resource = element.resource.substring(13);
+          return element.resource;
+        });
+      this.organizations$ = this.organizations$.pipe(
+        map((organizations) =>
+          organizations.filter((organization) =>
+            permissionedOrganizations.includes(organization.slug)
+          )
+        )
+      );
+    }
+  }
+
+  editOrganization(organization: Organization): void {
+    this.router.navigate(['organizations', organization.slug, 'edit']);
   }
 
   /** Event handler to open the Organization Editor to create a new organization */
