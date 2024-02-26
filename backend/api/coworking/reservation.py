@@ -95,3 +95,12 @@ def get_reservations_for_rooms_by_date(
         return reservation_svc.get_map_reserved_times_by_date(date, subject)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get("/user-reservations/", tags=["Coworking"])
+def get_total_hours_study_room_reservations(
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends(),
+) -> str:
+    """Allows a user to know how many hours they have reserved in all study rooms (Excludes CSXL)."""
+    return reservation_svc._get_total_time_user_reservations(subject)
