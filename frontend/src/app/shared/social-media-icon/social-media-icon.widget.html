@@ -1,5 +1,13 @@
-<a href="{{ href }}" target="_blank">
+<!-- Used when link is provided -->
+<a href="{{ href }}" target="_blank" *ngIf="href !== ''; else noLink">
   <button mat-icon-button color="basic">
     <mat-icon fontIcon="{{ fontIcon }}" svgIcon="{{ svgIcon }}"></mat-icon>
   </button>
 </a>
+
+<!-- Used when no link is provided -->
+<ng-template #noLink>
+  <button mat-icon-button color="basic">
+    <mat-icon fontIcon="{{ fontIcon }}" svgIcon="{{ svgIcon }}"></mat-icon>
+  </button>
+</ng-template>

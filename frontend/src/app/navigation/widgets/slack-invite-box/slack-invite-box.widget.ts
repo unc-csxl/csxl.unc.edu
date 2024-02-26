@@ -1,3 +1,13 @@
+/**
+ * The Slack Invite Box widget allows CSXL members to join the
+ * CSXL Slack as a dialog box. It requires that students fulfill
+ * four requirements represented as checkboxes.
+ *
+ * @author Rohan Kashyap, Kris Jordan
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 
 @Component({

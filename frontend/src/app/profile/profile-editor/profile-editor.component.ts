@@ -5,6 +5,8 @@ import { ActivatedRoute, Route } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
 import { Profile, ProfileService } from '../profile.service';
+import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-editor',
@@ -35,7 +37,8 @@ export class ProfileEditorComponent implements OnInit {
     route: ActivatedRoute,
     protected formBuilder: FormBuilder,
     protected profileService: ProfileService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected dialog: MatDialog
   ) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
@@ -78,6 +81,13 @@ export class ProfileEditorComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
+      if (!this.profile.accepted_community_agreement) {
+        const dialogRef = this.dialog.open(CommunityAgreement, {
+          disableClose: true,
+          autoFocus: 'dialog'
+        });
+        dialogRef.afterClosed().subscribe();
+      }
       this.profileService.put(this.profile).subscribe({
         next: (user) => this.onSuccess(user),
         error: (err) => this.onError(err)
@@ -103,5 +113,13 @@ export class ProfileEditorComponent implements OnInit {
     this.profileService.unlinkGitHub().subscribe({
       next: () => (this.profile.github = '')
     });
+  }
+
+  openAgreementDialog(): void {
+    const dialogRef = this.dialog.open(CommunityAgreement, {
+      autoFocus: 'dialog'
+    });
+    this.profileService.profile$.subscribe();
+    dialogRef.afterClosed().subscribe();
   }
 }

@@ -234,3 +234,50 @@ def test_update_user_enforces_permission(
     permission_svc_mock.enforce.assert_called_with(
         root, "user.update", f"user/{user.id}"
     )
+
+
+def test_new_user_accepted_agreement_is_false(user_svc: UserService):
+    """Test that makes sure newly registered users have not accepted the agreement"""
+    new_user = NewUser(pid=123456789, onyen="new_user", email="new_user@unc.edu")
+    user_svc.create(root, new_user)
+    assert new_user.accepted_community_agreement == False
+
+
+def test_update_profile_community_agreement_stays_false(user_svc: UserService):
+    """Tests that users who update their profile will still have to accept agreement if they have not yet"""
+    current_user = user_svc.get(user.pid)
+    assert current_user is not None
+    current_user.first_name = "Sam"
+    current_user.accepted_community_agreement = False
+    assert current_user.accepted_community_agreement == False
+    updated_user = user_svc.update(root, current_user)
+    assert updated_user is not None
+    assert updated_user.first_name == "Sam"
+    assert updated_user.accepted_community_agreement == False
+
+
+def test_update_profile_community_agreement_stays_true(user_svc: UserService):
+    """Tests that users who update their profile won't have to accept agreement if they have previously"""
+    current_user = user_svc.get(user.pid)
+    assert current_user is not None
+    current_user.first_name = "Sam"
+    current_user.accepted_community_agreement = True
+    assert current_user.accepted_community_agreement == True
+    updated_user = user_svc.update(root, current_user)
+    assert updated_user is not None
+    assert updated_user.first_name == "Sam"
+    assert updated_user.accepted_community_agreement == True
+
+
+def test_update_profile_then_accept_community_agreement(user_svc: UserService):
+    """Tests to make sure fields are changed correctly after updating profile, then accepting agreement for first time"""
+    current_user = user_svc.get(user.pid)
+    assert current_user is not None
+    current_user.first_name = "Sam"
+    current_user.accepted_community_agreement = False
+    updated_user = user_svc.update(root, current_user)
+    assert updated_user is not None
+    assert updated_user.first_name == "Sam"
+    assert updated_user.accepted_community_agreement == False
+    updated_user.accepted_community_agreement = True
+    assert updated_user.accepted_community_agreement == True
