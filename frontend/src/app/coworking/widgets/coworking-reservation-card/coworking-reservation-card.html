@@ -6,7 +6,6 @@
         </mat-card-header>
 
         <mat-card-header *ngSwitchCase="'CONFIRMED'">
-            <mat-card-title>Reservation #{{ reservation.id }} Confirmed</mat-card-title>
             <mat-card-subtitle *ngIf="!reservation.room">See the XL Ambassador staffing the front desk to
                 check-in.</mat-card-subtitle>
         </mat-card-header>
