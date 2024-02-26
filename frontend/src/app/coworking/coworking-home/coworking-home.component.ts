@@ -97,7 +97,6 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
           return of([]);
         })
       );
-      console.log("handleUpdateReservationsList has been executed");
   }
 
   reserve(seatSelection: SeatAvailability[]) {
