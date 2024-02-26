@@ -11,7 +11,7 @@
     padding-top: 24px;
     padding-left: 24px;
     padding-right: 24px;
-    grid-template-columns: 4fr 1fr;
+    grid-template-columns: 4fr;
     /* grid-template-rows: 0fr 2fr; <-- UNCOMMENT */
     row-gap: 15px;
     column-gap: 15px;
@@ -49,12 +49,13 @@
         display: grid;
         padding: 24px; /* Assuming this is the padding on all sides */
         grid-template-columns: 1fr;
-        grid-template-rows: auto; /* This allows each row to grow as tall as its content */
+        grid-template-rows: 1fr; /* This allows each row to grow as tall as its content */
         row-gap: 15px;
     }
     
     .coworking-reservations-grid > * {
         box-sizing: border-box;
+        padding: 0px;
      
     }
 
