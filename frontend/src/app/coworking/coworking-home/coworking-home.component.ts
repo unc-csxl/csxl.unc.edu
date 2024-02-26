@@ -12,6 +12,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
+import { ProfileService } from 'src/app/profile/profile.service';
 import {
   CoworkingStatus,
   OperatingHours,
@@ -28,6 +29,8 @@ import {
   timer
 } from 'rxjs';
 import { ReservationService } from '../reservation/reservation.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
 
 @Component({
   selector: 'app-coworking-home',
@@ -57,7 +60,9 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     route: ActivatedRoute,
     public coworkingService: CoworkingService,
     private router: Router,
-    private reservationService: ReservationService
+    private reservationService: ReservationService,
+    private profileService: ProfileService,
+    private dialog: MatDialog
   ) {
     this.status$ = coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
@@ -77,6 +82,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.timerSubscription = timer(0, 10000).subscribe(() =>
       this.coworkingService.pollStatus()
     );
+    this.hasAcceptedAgreement();
   }
 
   ngOnDestroy(): void {
@@ -116,5 +122,20 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
           : of(undefined)
       )
     );
+  }
+
+  private hasAcceptedAgreement() {
+    this.profileService.profile$.subscribe((profile) => {
+      if (profile) {
+        if (profile.accepted_community_agreement === false) {
+          const dialogRef = this.dialog.open(CommunityAgreement, {
+            width: '1000px',
+            disableClose: true,
+            autoFocus: false
+          });
+          dialogRef.afterClosed().subscribe();
+        }
+      }
+    });
   }
 }

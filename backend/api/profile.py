@@ -65,6 +65,7 @@ def update_profile(
             last_name=profile.last_name,
             email=profile.email,
             pronouns=profile.pronouns,
+            accepted_community_agreement=profile.accepted_community_agreement,
         )
         user = user_svc.create(user, user)
     else:
@@ -73,6 +74,7 @@ def update_profile(
         user.email = profile.email
         user.pronouns = profile.pronouns
         user.onyen = onyen
+        user.accepted_community_agreement = profile.accepted_community_agreement
         user = user_svc.update(user, user)
 
     user_details = user_svc.get(user.pid)
