@@ -5,6 +5,7 @@
       <coworking-operating-hours-panel
         [operatingHours]="status.operating_hours"
         [openOperatingHours]="openOperatingHours" />
+    </ng-container>
 
       <ng-container
         *ngIf="activeReservation$ | async as activeReservation; else dropin">
@@ -14,6 +15,7 @@
           [reservation]="activeReservation"></coworking-reservation-card>
       </ng-container>
 
+    <ng-container>
       <ng-template #dropin>
         <div class="dropin-card-container">
           <coworking-dropin-availability-card
@@ -29,9 +31,8 @@
     </ng-template>
   </ng-container>
 
-  <mat-card appearance="outlined">
-    <mat-action-list>
-      <ng-container>
+  <mat-card class="reservation-card" appearance="outlined">
+    <mat-action-list class="reservation-link">
         <mat-list-item (click)="navigateToNewReservation()">
           <h3 matListItemTitle>{{ ' Room Reservations' }}</h3>
           <p matListItemLine>
@@ -39,28 +40,25 @@
           </p>
           <h3 matListItemMeta>&rsaquo;</h3>
         </mat-list-item>
-      </ng-container>
     </mat-action-list>
   </mat-card>
 
   <div class="upcoming-card-container">
     <!-- Show upcoming room reservations -->
-    <ng-container *ngIf="upcomingRoomReservations$ | async as upcomingReservations">
-      <div *ngIf="upcomingReservations.length > 0">
+    <ng-container *ngIf="((filteredRoomReservations$ | async) ?? []).length > 0">
         <div class="reservations-header">
           <h2 class="heading">Upcoming Reservations</h2>
         </div>
         <div class="upcoming-reservations-container">
-          <ng-container *ngFor="let r of upcomingReservations">
+          <ng-container *ngFor="let r of (filteredRoomReservations$ | async)">
             <ng-container *ngIf="r?.room?.id">
               <coworking-reservation-card
                 [reservation]="r"
-                (updateReservationsList)="handleUpdateReservationsList()">
+                (reloadCoworkingHome)="ngOnInit()">
               </coworking-reservation-card>
             </ng-container>
           </ng-container>
         </div>
-      </div>
     </ng-container>
   </div>
 </div>

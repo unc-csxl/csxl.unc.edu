@@ -46,7 +46,9 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   private timerSubscription!: Subscription;
 
-  public upcomingRoomReservations$!: Observable<Reservation[]>;
+  public upcomingReservation$!: Observable<Reservation[]>;
+
+  public filteredRoomReservations$!: Observable<Reservation[]>;
 
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
@@ -81,10 +83,11 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.coworkingService.pollStatus()
     );
     this.handleUpdateReservationsList();
+    this.filteredRoomReservations$ = this.filterReservationsByRooms();
   }
   
   handleUpdateReservationsList() {
-    this.upcomingRoomReservations$ = this.roomReservationService
+    this.upcomingReservation$ = this.roomReservationService
       .getReservationsByState('CONFIRMED')
       .pipe(
         catchError((err: Error) => {
@@ -94,6 +97,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
           return of([]);
         })
       );
+      console.log("handleUpdateReservationsList has been executed");
   }
 
   reserve(seatSelection: SeatAvailability[]) {
@@ -133,12 +137,13 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   private initActiveReservation(): Observable<Reservation | undefined> {
+    const activeStates = ["CONFIRMED","CHECKED_IN"]
     return this.status$.pipe(
       map((status) => {
         let reservations = status.my_reservations;
         let now = new Date();
         return reservations.find(
-          (reservation) => reservation.start <= now && reservation.end > now
+          (reservation) => reservation.start <= now && reservation.end > now && activeStates.includes(reservation.state)
         );
       }),
       mergeMap((reservation) =>
@@ -154,11 +159,14 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that is when coworking card triggers a need to refresh the active reservation
+   * Function that is used when coworking card triggers a need to refresh the active reservation
    */
   setActiveReservation() {
     this.activeReservation$ = this.initActiveReservation();
   }
 
+  filterReservationsByRooms():Observable<Reservation[]>{
+    return this.roomReservationService.filterReservationsByRooms(this.upcomingReservation$)
+  }
   
 }

@@ -66,7 +66,9 @@
                 <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
             </h3>
         </div>
+
         <mat-divider></mat-divider>
+        
         <div #Actions>
             <mat-card-actions align="end" [ngSwitch]="reservation.state">
                 <ng-container *ngSwitchCase="'DRAFT'">
@@ -84,7 +86,7 @@
                         Cancel
                     </button>
                     &nbsp;
-                    <button *ngIf="checkCheckinAllowed()" mat-stroked-button type="submit" color="primary"
+                    <button *ngIf="checkCheckinAllowed() && reservation.room" mat-stroked-button type="submit" color="primary"
                         (click)="checkin()">
                         Check In
                     </button>

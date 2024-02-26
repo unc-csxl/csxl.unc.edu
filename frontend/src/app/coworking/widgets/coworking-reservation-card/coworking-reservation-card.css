@@ -1,54 +1,36 @@
 .mat-mdc-card {
-    max-width: 550px;
-    max-height: 450px;
-    margin: 0;
-    border-radius: 10px;
-    margin-bottom: 15px;
+  max-width: 640px;
+  margin: 0;
 }
 
-/* Add media query for larger screens (adjust the breakpoint as needed) */
-@media (min-width: 768px) {
-    .mat-mdc-card {
-      min-height: auto; /* Set a fixed width for larger screens */
-    }
-  }
-
-  @media (min-height: 350px) {
-    .mat-mdc-card {
-      min-height: auto; /* Set a fixed width for larger screens */
-    }
-  }
-
 .mat-mdc-card-header {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .mat-mdc-card-actions {
-    bottom: 10px; /* Adjust the bottom spacing as needed */
-    right: 10px; /* Adjust the right spacing as needed */
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 .mat-divider {
-    margin: 1em 0;
+  margin: 1em 0;
 }
 
 h3 {
-    font-size: 16px;
-    margin-bottom: 0px;
+  font-size: 18px;
+  margin-bottom: 0px;
 }
 
 h3>label {
-    width: 64px;
-    display: inline-block;
+  width: 64px;
+  display: inline-block;
 }
 
 p {
-    margin-left: 64px;
+  margin-left: 64px;
 }
-  
-/* Add this style to your global or component CSS file */
-.action-button {
-    margin-left: 10px; /* Adjust the margin as needed */
+
+@media only screen and (max-device-width: 730px) {
+  h3>*{
+    font-size: .8em;
   }
-  
+}

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Reservation } from 'src/app/coworking/coworking.models';
-import { Observable, map, mergeMap, timer } from 'rxjs';
+import { Observable, map, mergeMap, timer, filter } from 'rxjs';
 import { Router } from '@angular/router';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -34,12 +34,11 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   cancel() {
-    this.reservationService.deleteRoomReservation(this.reservation).subscribe(
-      () => {
-        this.triggerUpdateReservationsList();
-        this.router.navigateByUrl('/coworking');
+    this.reservationService.deleteRoomReservation(this.reservation).subscribe({
+      next: () => {
+        this.refreshCoworkingHome();
       },
-      (error: Error) => {
+      error: (error: Error) => {
         this.snackBar.open(
           'Error: Issue cancelling reservation. Please see CSXL Ambassador for assistance.',
           '',
@@ -47,27 +46,30 @@ export class CoworkingReservationCard implements OnInit {
         );
         console.error(error.message);
       }
-    );
+    });
   }
 
   confirm() {
     this.isConfirmed.emit(true);
-    this.reservationService.confirm(this.reservation).subscribe(
-      () => this.router.navigateByUrl('/coworking'),
-      (error: Error) => {
-        this.snackBar.open(
-          'Error: Issue confirming reservation. Please see CSXL Ambassador for assistance.',
-          '',
-          { duration: 8000 }
-        );
-        console.error(error.message);
-      }
-    );
+    this.reservationService.confirm(this.reservation).subscribe({
+      next: () => {
+        this.refreshCoworkingHome();
+        // this.router.navigateByUrl('/coworking');
+      },
+      error: (error: Error) => {
+          this.snackBar.open(
+            'Error: Issue confirming reservation. Please see CSXL Ambassador for assistance.',
+            '',
+            { duration: 8000 }
+          );
+          console.error(error.message);
+        }
+    });
   }
 
   checkout() {
     this.reservationService.checkout(this.reservation).subscribe({
-      next: () => this.triggerUpdateReservationsList(),
+      next: () => this.refreshCoworkingHome(),
       error: (error: Error) => {
         this.snackBar.open(
           'Error: Issue checking out reservation. Please see CSXL Ambassador for assistance.',
@@ -129,6 +131,8 @@ export class CoworkingReservationCard implements OnInit {
 
   refreshCoworkingHome(): void {
     this.reloadCoworkingHome.emit();
+    this.router.navigateByUrl('/coworking');
+    
   }
 
   checkCheckinAllowed(): boolean {
