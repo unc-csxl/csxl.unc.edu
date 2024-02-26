@@ -16,15 +16,21 @@
       <td mat-cell *matCellDef="let element">
         <div class="row">
           <p>{{ element.name }}</p>
-          <button
-            mat-stroked-button
-            (click)="deleteOrganization(element)"
-            *ngIf="admin">
-            Delete
-          </button>
-          <button mat-stroked-button (click)="editOrganization(element)">
-            Edit
-          </button>
+          <div class="button-container">
+            <button
+              mat-stroked-button
+              (click)="deleteOrganization(element)"
+              class="control-buttons"
+              *ngIf="admin">
+              Delete
+            </button>
+            <button
+              mat-stroked-button
+              class="control-buttons"
+              (click)="editOrganization(element)">
+              Edit
+            </button>
+          </div>
         </div>
       </td>
     </ng-container>
