@@ -47,9 +47,9 @@
 @media only screen and (max-device-width: 730px) {
     .coworking-reservations-grid {
         display: grid;
-        padding: 20px; /* Assuming this is the padding on all sides */
+        padding: 20px;
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr; /* This allows each row to grow as tall as its content */
+        grid-template-rows: 1fr;
         row-gap: 15px;
     }
     
@@ -194,4 +194,8 @@ a {
 .reservation-link {
     flex: 1;
 }
-  
+
+mat-divider {
+    margin-top: 8px; /* Space above the divider */
+    margin-bottom: 8px; /* Space below the divider */
+  }
