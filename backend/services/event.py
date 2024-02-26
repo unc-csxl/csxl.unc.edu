@@ -5,7 +5,7 @@ The Event Service allows the API to manipulate event data in the database.
 from typing import Sequence
 
 from fastapi import Depends
-from sqlalchemy import func, select, or_
+from sqlalchemy import func, select, and_, func, or_, exists, or_
 from sqlalchemy.orm import Session, aliased
 from backend.entities.user_entity import UserEntity
 from backend.models.event_registration import EventRegistration
@@ -14,7 +14,7 @@ from backend.models.organization_details import OrganizationDetails
 from backend.models.pagination import Paginated, PaginationParams
 from backend.models.registration_type import RegistrationType
 
-from backend.models.user import User
+from ..models import User, Event, EventDetails, Paginated, EventPaginationParams
 from ..database import db_session
 from backend.models.event import Event, DraftEvent
 from backend.models.event_details import EventDetails
@@ -23,12 +23,14 @@ from ..entities import (
     EventEntity,
     EventRegistrationEntity,
 )
+from ..entities import EventEntity, OrganizationEntity
 from .permission import PermissionService
 from .exceptions import (
     ResourceNotFoundException,
     EventRegistrationException,
 )
 from . import UserService
+from datetime import datetime
 
 __authors__ = [
     "Ajay Gandecha",
@@ -54,6 +56,72 @@ class EventService:
         self._session = session
         self._permission = permission
         self._user_svc = user_svc
+
+    def get_paginated_events(
+        self,
+        pagination_params: EventPaginationParams,
+        subject: User | None = None,
+    ) -> Paginated[EventDetails]:
+        """List Events.
+
+        Parameters:
+            pagination_params: The pagination parameters.
+
+        Returns:
+            Paginated[Event]: The paginated list of events.
+        """
+
+        statement = select(EventEntity)
+        length_statement = select(func.count()).select_from(EventEntity)
+        if pagination_params.range_start != "":
+            range_start = pagination_params.range_start
+            range_end = pagination_params.range_end
+            criteria = and_(
+                EventEntity.time
+                >= datetime.strptime(range_start, "%d/%m/%Y, %H:%M:%S"),
+                EventEntity.time <= datetime.strptime(range_end, "%d/%m/%Y, %H:%M:%S"),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
+
+        if pagination_params.filter != "":
+            query = pagination_params.filter
+
+            criteria = or_(
+                EventEntity.name.ilike(f"%{query}%"),
+                EventEntity.description.ilike(f"%{query}%"),
+                exists().where(
+                    OrganizationEntity.id == EventEntity.organization_id,
+                    OrganizationEntity.name.ilike(f"%{query}%"),
+                ),
+                exists().where(
+                    OrganizationEntity.id == EventEntity.organization_id,
+                    OrganizationEntity.slug.ilike(f"%{query}%"),
+                ),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
+
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+
+        if pagination_params.order_by != "":
+            statement = statement.order_by(
+                    getattr(EventEntity, pagination_params.order_by)
+                ) if pagination_params.ascending else statement.order_by(
+                    getattr(EventEntity, pagination_params.order_by).desc()
+                )
+
+        statement = statement.offset(offset).limit(limit)
+
+        length = self._session.execute(length_statement).scalar()
+        entities = self._session.execute(statement).scalars()
+
+        return Paginated(
+            items=[entity.to_details_model(subject) for entity in entities],
+            length=length,
+            params=pagination_params,
+        )
 
     def all(
         self,

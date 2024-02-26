@@ -97,8 +97,7 @@ import { SharedModule } from './shared/shared.module';
       useClass: HttpRequestInterceptor,
       multi: true
     },
-    DatePipe,
-    EventFilterPipe
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
