@@ -59,20 +59,23 @@ export class PermissionService {
       map((profile) => {
         if (profile === undefined) {
           return false;
-        } else {
+        } else if (profile.permissions.length !== 0) {
           return this.hasOrgPermission(profile.permissions);
+        } else {
+          return false;
         }
       })
     );
   }
 
   private hasOrgPermission(permissions: Permission[]) {
-    if (permissions[0].resource !== '*') {
+    if (permissions[0].resource === '*') {
+      return true;
+    } else {
       let organization_index = permissions.findIndex((element) =>
         element.resource.includes('organization')
       );
       return organization_index !== -1;
     }
-    return true;
   }
 }
