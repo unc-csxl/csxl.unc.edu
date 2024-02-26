@@ -64,8 +64,10 @@ export class OrganizationListAdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.profile.permissions[0].resource !== '*') {
-      let profilePermissions: Permission[] = this.profile.permissions;
+    let profilePermissions: Permission[] = this.profile.permissions;
+    if (profilePermissions[0].resource === '*') {
+      this.admin = true;
+    } else {
       let userOrganizationPermissions: string[] = profilePermissions
         .filter((element) => element.resource.includes('organization'))
         .map((element) => {
@@ -78,8 +80,6 @@ export class OrganizationListAdminComponent implements OnInit {
           )
         )
       );
-    } else {
-      this.admin = true;
     }
   }
 
