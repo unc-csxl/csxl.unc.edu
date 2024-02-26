@@ -594,7 +594,7 @@ class ReservationService:
         bounds = TimeRange(start=start, end=end)
 
         # Check if user has exceeded reservation limit
-        if request.room.id is not None:
+        if request.room:
             if not self._check_user_reservation_duration(request.users[0], bounds):
                 raise ReservationException(
                     "Oops! Looks like you've reached your weekly study room reservation limit"
