@@ -32,9 +32,11 @@ export class OrganizationListAdminComponent implements OnInit {
 
   public displayedColumns: string[] = ['name'];
 
-  public profile: Profile;
+  protected profile: Profile;
 
-  public displayedOrganizations$: Observable<Organization[]>;
+  protected displayedOrganizations$: Observable<Organization[]>;
+
+  protected admin: boolean = false;
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
@@ -64,13 +66,11 @@ export class OrganizationListAdminComponent implements OnInit {
   ngOnInit() {
     if (this.profile.permissions[0].resource !== '*') {
       let profilePermissions: Permission[] = this.profile.permissions;
-      console.log(profilePermissions);
       let userOrganizationPermissions: string[] = profilePermissions
         .filter((element) => element.resource.includes('organization'))
         .map((element) => {
           return element.resource.substring(13);
         });
-      console.log(userOrganizationPermissions);
       this.displayedOrganizations$ = this.organizations$.pipe(
         map((organizations) =>
           organizations.filter((organization) =>
@@ -78,6 +78,8 @@ export class OrganizationListAdminComponent implements OnInit {
           )
         )
       );
+    } else {
+      this.admin = true;
     }
   }
 
