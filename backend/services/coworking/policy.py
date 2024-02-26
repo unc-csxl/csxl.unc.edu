@@ -51,6 +51,10 @@ class PolicyService:
 
     def reservation_draft_timeout(self) -> timedelta:
         return timedelta(minutes=5)
+    
 
     def reservation_checkin_timeout(self) -> timedelta:
         return timedelta(minutes=10)
+    
+    def non_reservable_rooms(self) -> list[str]:
+        return ['SN151']
