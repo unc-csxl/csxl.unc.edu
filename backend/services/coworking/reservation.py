@@ -205,27 +205,25 @@ class ReservationService:
         total_duration += bounds.end - bounds.start
 
         for reservation in reservations:
-            if reservation.room.id is None:
-                continue
-            total_duration += reservation.end - reservation.start
+            if reservation.room:
+                total_duration += reservation.end - reservation.start
         if total_duration > self._policy_svc.room_reservation_weekly_limit():
             return False
         return True
 
-    def _get_total_time_user_reservations(self, user: UserIdentity) -> int:
+    def _get_total_time_user_reservations(self, user: UserIdentity) -> str:
         """Calculate the total duration (in hours) of study room reservations for the given user.
         Args:
             user (UserIdentity): The user for whom to calculate the total reservation time.
         Returns:
-            int: The total reservation time in hours.
+            str: The total reservation time in hours.
         """
         reservations = self.get_current_reservations_for_user(user, user)
         duration = timedelta()
         for reservation in reservations:
-            if reservation.room.id is None:
-                continue
-            duration += reservation.end - reservation.start
-        return duration
+            if reservation.room:
+                duration += reservation.end - reservation.start
+        return str(duration.total_seconds() / 3600)
 
     def get_map_reserved_times_by_date(
         self, date: datetime, subject: User
