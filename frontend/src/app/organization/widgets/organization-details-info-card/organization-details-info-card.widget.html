@@ -65,14 +65,6 @@
             [svgIcon]="'youtube'"
             [href]="organization!.youtube"
             *ngIf="organization!.youtube !== ''" />
-          <!-- Link to Organization Editor -->
-          <a
-            [routerLink]="['/organizations', organization!.slug, 'edit']"
-            *ngIf="checkPermissions() | async">
-            <button mat-icon-button color="basic">
-              <mat-icon>edit</mat-icon>
-            </button>
-          </a>
         </div>
       </div>
     </div>
