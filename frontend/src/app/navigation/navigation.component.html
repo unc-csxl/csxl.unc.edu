@@ -62,35 +62,10 @@
         mat-list-item
         class="bottom-button-container"
         *ngIf="profile$ | async as profile">
-        <button
-          mat-button
-          class="bottom-button"
-          (click)="onSlackInviteClick()"
-          type="button">
-          <picture>
-            <img
-              class="logo-icon"
-              src="/assets/slack-logo-monochrome.png"
-              alt="Slack Logo" />
-          </picture>
-        </button>
-        <button
-          mat-button
-          class="bottom-button"
-          onclick="window.open('https://github.com/unc-csxl/csxl.unc.edu','_blank')"
-          type="button">
-          <picture>
-            <source
-              class="logo-icon"
-              srcset="/assets/github-logo-dark.png"
-              media="(prefers-color-scheme: dark)"
-              alt="GitHub Logo" />
-            <img
-              class="logo-icon"
-              src="/assets/github-logo-light.png"
-              alt="GitHub Logo" />
-          </picture>
-        </button>
+        <social-media-icon svgIcon="slack" (click)="onSlackInviteClick()" />
+        <social-media-icon
+          svgIcon="github"
+          href="https://github.com/unc-csxl/csxl.unc.edu" />
       </div>
     </div>
   </mat-sidenav>

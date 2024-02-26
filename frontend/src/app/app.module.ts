@@ -27,6 +27,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* Application Specific */
@@ -40,6 +41,7 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -76,9 +78,11 @@ import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
     MatSnackBarModule,
     MatTabsModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatCheckboxModule,
     FormsModule,
     RouterModule,
+    SharedModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
