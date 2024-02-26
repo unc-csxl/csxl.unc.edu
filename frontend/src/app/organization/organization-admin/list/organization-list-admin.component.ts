@@ -14,7 +14,10 @@ import { Organization } from '../../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrganizationAdminService } from '../organization-admin.service';
 import { Observable, map } from 'rxjs';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import {
+  Permission,
+  Profile
+} from '/workspace/frontend/src/app/profile/profile.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { organizationResolver } from '../../organization.resolver';
 
@@ -30,6 +33,8 @@ export class OrganizationListAdminComponent implements OnInit {
   public displayedColumns: string[] = ['name'];
 
   public profile: Profile;
+
+  public displayedOrganizations$: Observable<Organization[]>;
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
@@ -48,6 +53,7 @@ export class OrganizationListAdminComponent implements OnInit {
   ) {
     this.organizations$ = organizationAdminService.organizations$;
     organizationAdminService.list();
+    this.displayedOrganizations$ = this.organizations$;
 
     const data = this.route.snapshot.data as {
       profile: Profile;
@@ -57,16 +63,18 @@ export class OrganizationListAdminComponent implements OnInit {
 
   ngOnInit() {
     if (this.profile.permissions[0].resource !== '*') {
-      let permissionedOrganizations: string[] = this.profile.permissions
+      let profilePermissions: Permission[] = this.profile.permissions;
+      console.log(profilePermissions);
+      let userOrganizationPermissions: string[] = profilePermissions
         .filter((element) => element.resource.includes('organization'))
         .map((element) => {
-          element.resource = element.resource.substring(13);
-          return element.resource;
+          return element.resource.substring(13);
         });
-      this.organizations$ = this.organizations$.pipe(
+      console.log(userOrganizationPermissions);
+      this.displayedOrganizations$ = this.organizations$.pipe(
         map((organizations) =>
           organizations.filter((organization) =>
-            permissionedOrganizations.includes(organization.slug)
+            userOrganizationPermissions.includes(organization.slug)
           )
         )
       );

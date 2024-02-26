@@ -1,5 +1,5 @@
 <!-- HTML Structure of Admin Organizations List -->
-<div class="content" *ngIf="organizations$ | async as organizations">
+<div class="content" *ngIf="displayedOrganizations$ | async as organizations">
   <table mat-table [dataSource]="organizations">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
