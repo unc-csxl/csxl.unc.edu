@@ -27,6 +27,10 @@ class RoomEntity(EntityBase):
     nickname: Mapped[str] = mapped_column(String)
     reservable: Mapped[bool] = mapped_column(Boolean)
 
+    # Optional Office Hours Section ID
+    # NOTE: If null, indicates "official" room; otherwise, indicates entity is created for office hours use.
+    section_id: Mapped[int] = mapped_column(Integer, nullable=True)
+
     seats: Mapped[list["SeatEntity"]] = relationship(  # type: ignore
         "SeatEntity", back_populates="room"
     )

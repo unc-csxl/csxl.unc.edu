@@ -4,14 +4,10 @@ from typing import Self
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ...models.room_assignment_type import RoomAssignmentType
 
 from ..entity_base import EntityBase
-from datetime import datetime
 from ...models.academics import Section
 from ...models.academics import SectionDetails
-from ...models.academics.section_member import SectionMember
-from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -78,6 +74,10 @@ class SectionEntity(EntityBase):
         viewonly=True,
         primaryjoin="and_(SectionEntity.id==SectionMemberEntity.section_id, SectionMemberEntity.member_role!='STUDENT')",
     )
+
+    # Optional office hours section ID
+    office_hours_id: Mapped[int] = mapped_column(ForeignKey("office_hours__section.id"), nullable=True)
+    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(back_populates="sections")
 
     @classmethod
     def from_model(cls, model: Section) -> Self:
