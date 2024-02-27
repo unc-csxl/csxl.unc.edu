@@ -223,7 +223,10 @@ class ReservationService:
         for reservation in reservations:
             if reservation.room:
                 duration += reservation.end - reservation.start
-        return str(duration.total_seconds() / 3600)
+        str_duration = str(duration.total_seconds() / 3600)
+        if str_duration[2] == "0":
+            return str_duration.rstrip("0").rstrip(".")
+        return str_duration
 
     def get_map_reserved_times_by_date(
         self, date: datetime, subject: User
