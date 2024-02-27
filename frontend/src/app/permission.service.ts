@@ -53,29 +53,4 @@ export class PermissionService {
   private expandPattern(pattern: string): RegExp {
     return new RegExp(`^${pattern.replaceAll('*', '.*')}$`);
   }
-
-  checkForOrgs(): Observable<boolean> {
-    return this.profile$.pipe(
-      map((profile) => {
-        if (profile === undefined) {
-          return false;
-        } else if (profile.permissions.length !== 0) {
-          return this.hasOrgPermission(profile.permissions);
-        } else {
-          return false;
-        }
-      })
-    );
-  }
-
-  private hasOrgPermission(permissions: Permission[]) {
-    if (permissions[0].resource === '*') {
-      return true;
-    } else {
-      let organization_index = permissions.findIndex((element) =>
-        element.resource.includes('organization')
-      );
-      return organization_index !== -1;
-    }
-  }
 }

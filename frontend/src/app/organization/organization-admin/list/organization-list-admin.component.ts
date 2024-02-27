@@ -9,7 +9,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { permissionGuardOrgs } from 'src/app/permission.guard';
+import { OrganizationAdminPermissionGuard } from 'src/app/organization/organization-admin/organization-admin-permission.guard';
 import { Organization } from '../../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrganizationAdminService } from '../organization-admin.service';
@@ -43,7 +43,7 @@ export class OrganizationListAdminComponent implements OnInit {
     path: 'admin',
     component: OrganizationListAdminComponent,
     title: 'Organization Administration',
-    canActivate: [permissionGuardOrgs()],
+    canActivate: [OrganizationAdminPermissionGuard()],
     resolve: { profile: profileResolver, organizations: organizationResolver }
   };
 
@@ -83,6 +83,10 @@ export class OrganizationListAdminComponent implements OnInit {
     }
   }
 
+  /** Event hangler to open Organization Editor for the selected organization.
+   * @param organization: organization to be edited
+   * @returns void
+   */
   editOrganization(organization: Organization): void {
     this.router.navigate(['organizations', organization.slug, 'edit']);
   }
