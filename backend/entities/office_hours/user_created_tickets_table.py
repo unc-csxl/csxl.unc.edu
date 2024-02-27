@@ -9,10 +9,9 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 # Association table between OfficeHoursTicket and SectionMember
-# TODO: fix unique constraint error
 user_created_tickets_table = Table(
     "office_hours__user_created_ticket",
     EntityBase.metadata,
     Column("ticket_id", ForeignKey("office_hours__ticket.id"), primary_key=True),
-    Column("user_id", ForeignKey("academics__user_section.user_id"), primary_key=True),
+    Column("member_id", ForeignKey("academics__user_section.id"), primary_key=True),
 )

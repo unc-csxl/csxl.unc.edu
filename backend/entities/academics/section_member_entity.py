@@ -32,26 +32,31 @@ class SectionMemberEntity(EntityBase):
 
     # User Section properties (columns in the database table)
 
+    # Unique ID for a user's membership in an academic section
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
     # Section for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
-    section_id: Mapped[int] = mapped_column(
-        ForeignKey("academics__section.id"), primary_key=True
-    )
+    section_id: Mapped[int] = mapped_column(ForeignKey("academics__section.id"))
     section: Mapped["SectionEntity"] = relationship(back_populates="members")
 
     # User for the current relation
     # NOTE: This is ultimately a join table for a many-to-many relationship
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["UserEntity"] = relationship(back_populates="sections")
 
-    # Type of relationship
+    # Type of User Role in Academic Section
     member_role: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
 
     # Tickets that have been created by the user
-    created_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(secondary=user_created_tickets_table)
+    created_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
+        secondary=user_created_tickets_table
+    )
 
     # Tickets that have been called by the user
-    called_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(back_populates="caller", cascade="all, delete")
+    called_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
+        back_populates="caller", cascade="all, delete"
+    )
 
     def to_flat_model(self) -> SectionMember:
         """
