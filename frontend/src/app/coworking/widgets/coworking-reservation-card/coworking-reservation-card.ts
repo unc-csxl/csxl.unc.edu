@@ -132,7 +132,6 @@ export class CoworkingReservationCard implements OnInit {
   refreshCoworkingHome(): void {
     this.reloadCoworkingHome.emit();
     this.router.navigateByUrl('/coworking');
-    
   }
 
   checkCheckinAllowed(): boolean {
