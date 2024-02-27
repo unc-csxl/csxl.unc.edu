@@ -52,11 +52,4 @@ export class RoomReservationService extends ReservationService {
       `/api/coworking/reservation/${reservation.id}`
     );
   }
-
-  filterReservationsByRooms(upcomingReservations: Observable<Reservation[]>){
-    return upcomingReservations.pipe(
-      map(reservations => reservations
-        .filter(r => !!r.room && typeof r.room.id !== 'undefined'))
-    );
-  }
 }
