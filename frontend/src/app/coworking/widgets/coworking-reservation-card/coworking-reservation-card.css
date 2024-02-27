@@ -4,29 +4,41 @@
 }
 
 .mat-mdc-card-header {
-  margin-bottom: 16px;
+  margin-bottom: 0px;
+  padding: 0px;
 }
 
 .mat-mdc-card-actions {
-  margin-top: 16px;
+  margin-top: 0px;
+  padding: 0px;
 }
 
 .mat-divider {
-  margin: 1em 0;
+  margin: .7em 0;
+  padding: 0px;
+
 }
 
 h3 {
   font-size: 18px;
   margin-bottom: 0px;
+  padding: 0px;
+  margin-top: 0px;
 }
 
 h3>label {
   width: 64px;
   display: inline-block;
+  padding: 0px;
 }
 
 p {
   margin-left: 64px;
+  padding: 0px;
+}
+
+.divider{
+  margin: .5em
 }
 
 @media only screen and (max-device-width: 730px) {
