@@ -36,9 +36,6 @@
     margin: 0;
 }
 
-:host /deep/ .mat-mdc-card-header-text {
-    width: 100% !important;
-}
 .header-row {
     display: flex;
     flex-direction: row;
