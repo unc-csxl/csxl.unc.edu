@@ -3,18 +3,18 @@
   max-height: 90vh; 
   overflow: auto; 
   scroll-behavior: auto; 
+  padding-bottom: env(safe-area-inset-bottom);
 }
+
 ::-webkit-scrollbar {
   width: 5px;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 10px;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
