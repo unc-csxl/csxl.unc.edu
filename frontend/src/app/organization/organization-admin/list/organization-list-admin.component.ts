@@ -31,11 +31,11 @@ export class OrganizationListAdminComponent implements OnInit {
   public organizations$: Observable<Organization[]>;
 
   public displayedColumns: string[] = ['name'];
-
+  /** Profile of signed in user */
   protected profile: Profile;
-
+  /** List of displayed organizations for the signed in user */
   protected displayedOrganizations$: Observable<Organization[]>;
-
+  /** Used to determine if the signed in user is admin in HTML for create and delete buttons */
   protected admin: boolean = false;
 
   /** Route information to be used in Organization Routing Module */
@@ -57,6 +57,7 @@ export class OrganizationListAdminComponent implements OnInit {
     organizationAdminService.list();
     this.displayedOrganizations$ = this.organizations$;
 
+    /** Get the profile data of the signed in user */
     const data = this.route.snapshot.data as {
       profile: Profile;
     };
@@ -68,11 +69,13 @@ export class OrganizationListAdminComponent implements OnInit {
     if (profilePermissions[0].resource === '*') {
       this.admin = true;
     } else {
+      /** Filter and return the slug of the users organization permissions */
       let userOrganizationPermissions: string[] = profilePermissions
         .filter((element) => element.resource.includes('organization'))
         .map((element) => {
           return element.resource.substring(13);
         });
+      /** Update displayedOrganizations$ to only include the organizations the user has permissions for */
       this.displayedOrganizations$ = this.organizations$.pipe(
         map((organizations) =>
           organizations.filter((organization) =>
@@ -83,7 +86,7 @@ export class OrganizationListAdminComponent implements OnInit {
     }
   }
 
-  /** Event hangler to open Organization Editor for the selected organization.
+  /** Event handler to open Organization Editor for the selected organization.
    * @param organization: organization to be edited
    * @returns void
    */

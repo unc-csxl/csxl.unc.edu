@@ -37,6 +37,7 @@ export class OrganizationAdminPermissionService {
       let organization_index = permissions.findIndex((element) =>
         element.resource.includes('organization')
       );
+      /** If they have any organization permissions, return true, else false */
       return organization_index !== -1;
     }
   }
