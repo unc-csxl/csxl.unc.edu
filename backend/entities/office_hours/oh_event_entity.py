@@ -1,7 +1,7 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Office Hour Sections."""
 
-from datetime import datetime
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from datetime import datetime, date
+from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.models.office_hours.oh_type import OfficeHoursType
@@ -35,7 +35,7 @@ class OfficeHoursEventEntity(EntityBase):
     # Description of the location; allows for instructors to write note about attending office hours
     location_description: Mapped[str] = mapped_column(String, nullable=True)
     # Date of the event
-    date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    event_date: Mapped[date] = mapped_column(Date, nullable=False)  # type: ignore
     # Time the event starts
     start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # Time the event ends
