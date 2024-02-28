@@ -18,9 +18,5 @@ class OfficeHoursEventDetails(OfficeHoursEvent):
     """
 
     section: OfficeHoursSection
-    location: Room
+    room: Room
     tickets: list[OfficeHoursTicket]
-
-
-
-    
