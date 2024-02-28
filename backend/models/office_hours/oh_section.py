@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-__authors__ = ["Sadie Amato"]
+__authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 

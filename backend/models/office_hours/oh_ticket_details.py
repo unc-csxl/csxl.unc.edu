@@ -2,7 +2,7 @@ from ..academics.section_member import SectionMember
 from oh_event import OfficeHoursEvent
 from oh_ticket import OfficeHoursTicket
 
-__authors__ = ["Sadie Amato"]
+__authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -18,4 +18,4 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
 
     event: OfficeHoursEvent
     creators: list[SectionMember]
-    caller: SectionMember
+    caller: SectionMember | None = None

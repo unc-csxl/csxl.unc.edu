@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime, date
 from oh_type import OfficeHoursType
 
-__authors__ = ["Sadie Amato"]
+__authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -18,7 +18,6 @@ class OfficeHoursEventDraft(BaseModel):
     office_hours_section_id: int
     room_id: int
     type: OfficeHoursType
-    title: str
     description: str = ""
     location_description: str = ""
     date: date
@@ -33,7 +32,5 @@ class OfficeHoursEvent(OfficeHoursEventDraft):
     This model is based on the `OfficeHoursEventEntity` model, which defines the shape
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
-    
+
     id: int | None = None
-    
-    
