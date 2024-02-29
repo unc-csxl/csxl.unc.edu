@@ -77,12 +77,12 @@ class SectionMemberEntity(EntityBase):
     @classmethod
     def from_model(cls, model: SectionMember) -> Self:
         """
-        Class method that converts an `Organization` model into a `OrganizationEntity`
+        Class method that converts an `SectionMember` model into a `SectionMemberEntity`
 
         Parameters:
-            - model (Organization): Model to convert into an entity
+            - model (SectionMember): Model to convert into an entity
         Returns:
-            OrganizationEntity: Entity created from model
+            SectionMemberEntity: Entity created from model
         """
         return cls(
             id=model.id,
@@ -94,10 +94,10 @@ class SectionMemberEntity(EntityBase):
     
     def to_details_model(self) -> SectionMemberDetails:
         """
-        Converts a `OrganizationEntity` object into a `OrganizationDetails` model object
+        Converts a `SectionMemberEntity` object into a `SectionMemberDetails` model object
 
         Returns:
-            OrganizationDetails: `OrganizationDetails` object from the entity
+            SectionMemberDetails: `SectionMemberDetails` object from the entity
         """
         return SectionMemberDetails(
             id=self.id,

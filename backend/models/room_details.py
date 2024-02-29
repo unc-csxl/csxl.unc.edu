@@ -6,7 +6,7 @@ Importantly, it includes a room's seats, if seats are reservable as in the XL co
 from .room import Room
 from .coworking.seat import Seat
 
-__authors__ = ["Sadie Amato", "Madelyn Andrews", 'Bailey DeSouza', "Meghan Sun"]
+__authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
