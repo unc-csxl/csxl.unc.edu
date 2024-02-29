@@ -40,11 +40,13 @@ class OfficeHoursTicketEntity(EntityBase):
         DateTime, default=datetime.now, nullable=False
     )
     # Time ticket was closed by a TA; nullable if ticket gets canceled
-    closed_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    closed_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now, onupdate=datetime.now, nullable=False
+    )
     # Flag for if UTA has concerns about student
-    have_concerns: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    have_concerns: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     # Notes from TA
-    caller_notes: Mapped[str] = mapped_column(String, nullable=True)
+    caller_notes: Mapped[str] = mapped_column(String, default="", nullable=False)
 
     # One-to-one relationship to event that the ticket was created in
     event_id: Mapped[int] = mapped_column(
@@ -58,7 +60,7 @@ class OfficeHoursTicketEntity(EntityBase):
     )
 
     # One-to-one relationship of OfficeHoursTicket to UTA that has called it; optional field
-    caller_id: Mapped[int] = mapped_column(
+    caller_id: Mapped[int | None] = mapped_column(
         ForeignKey("academics__user_section.id"), nullable=True
     )
     caller: Mapped["SectionMemberEntity"] = relationship(
