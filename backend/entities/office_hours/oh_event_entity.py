@@ -8,7 +8,6 @@ from backend.models.office_hours.oh_type import OfficeHoursType
 
 
 from ..entity_base import EntityBase
-from typing import Self
 from sqlalchemy import Enum as SQLAlchemyEnum
 
 __authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
@@ -28,12 +27,12 @@ class OfficeHoursEventEntity(EntityBase):
     type: Mapped[OfficeHoursType] = mapped_column(
         SQLAlchemyEnum(OfficeHoursType), nullable=False
     )
-    # Name of event
-    title: Mapped[str] = mapped_column(String, nullable=False)
     # Description of event
-    description: Mapped[str] = mapped_column(String, nullable=True)
+    description: Mapped[str] = mapped_column(String, default="", nullable=False)
     # Description of the location; allows for instructors to write note about attending office hours
-    location_description: Mapped[str] = mapped_column(String, nullable=True)
+    location_description: Mapped[str] = mapped_column(
+        String, default="", nullable=False
+    )
     # Date of the event
     event_date: Mapped[date] = mapped_column(Date, nullable=False)  # type: ignore
     # Time the event starts
@@ -50,8 +49,8 @@ class OfficeHoursEventEntity(EntityBase):
     )
 
     # NOTE: Unidirectional relationship to Room
-    location_id: Mapped[int] = mapped_column(ForeignKey("room.id"), nullable=False)
-    location: Mapped["RoomEntity"] = relationship("RoomEntity")
+    room_id: Mapped[int] = mapped_column(ForeignKey("room.id"), nullable=False)
+    room: Mapped["RoomEntity"] = relationship("RoomEntity")
 
     # NOTE: One-to-many relationship of OfficeHoursEvent to tickets
     tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
