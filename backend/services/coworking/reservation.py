@@ -210,6 +210,13 @@ class ReservationService:
         current_time = datetime.now()
         current_time_idx = self._idx_calculation(current_time) + 1
 
+        if self._is_xl_closed(date):
+            # Mark the entire table as unavailable if XL is closed
+            for room in rooms:
+                if room.id:
+                    reserved_date_map[room.id] = [3] * 16
+            return reserved_date_map
+
         for room in rooms:
             time_slots_for_room = [0] * 16
 
@@ -244,6 +251,23 @@ class ReservationService:
         self._transform_date_map_for_unavailable(reserved_date_map)
 
         return reserved_date_map
+
+    def _is_xl_closed(self, date: datetime) -> bool:
+        """
+        Returns a boolean value to signify if XL is closed.
+
+        This will return False during weekends and university holidays.
+
+        Args: 
+            date (datetime): Check whether XL is closed on this date.
+
+        Returns:
+            bool: Flag whether XL is closed or open.
+        """
+        if date.weekday() in [5, 6]:
+            return True
+        return False
+
 
     def _idx_calculation(self, time: datetime) -> int:
         """
