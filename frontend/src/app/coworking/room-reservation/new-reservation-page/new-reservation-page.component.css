@@ -1,3 +1,15 @@
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling for the table container */
+  max-width: 100%; /* Ensure it doesn't exceed the viewport width */
+}
+
+.horizontal-scroll {
+  white-space: nowrap; /* Prevent line breaks for child elements */
+}
+
+/* Add any additional styling for the room-reservation-table if needed */
+
+
 .date-selector {
     padding: 10px; /* Adjust the value as needed */
   }
