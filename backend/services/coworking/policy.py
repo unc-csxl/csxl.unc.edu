@@ -50,10 +50,16 @@ class PolicyService:
 
     def reservation_draft_timeout(self) -> timedelta:
         return timedelta(minutes=5)
+    
 
     def reservation_checkin_timeout(self) -> timedelta:
         return timedelta(minutes=10)
 
+
     def room_reservation_weekly_limit(self) -> timedelta:
         """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
         return timedelta(hours=6)
+    
+    def non_reservable_rooms(self) -> list[str]:
+        return ['SN151']
+

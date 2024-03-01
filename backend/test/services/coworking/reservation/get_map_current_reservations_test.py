@@ -1,4 +1,4 @@
-"""ReservationService#get_map_reservations_for_date tests."""
+"""Tests for ReservationService#get_map_reservations_for_date and helper functions."""
 
 from unittest.mock import create_autospec
 
@@ -23,7 +23,7 @@ from ..time import *
 from ...core_data import user_data
 from ...core_data import setup_insert_data_fixture as insert_order_0
 from ..operating_hours_data import fake_data_fixture as insert_order_1
-from room_data import fake_data_fixture as insert_order_2
+from ...room_data import fake_data_fixture as insert_order_2
 from ..seat_data import fake_data_fixture as insert_order_3
 from .reservation_data import fake_data_fixture as insert_order_4
 
@@ -62,6 +62,13 @@ def test_idx_calculation(reservation_svc: ReservationService):
     time_3 = datetime.now().replace(hour=13, minute=40)
     assert reservation_svc._idx_calculation(time_3) == 7
 
+
+def test_get_reservable_rooms(reservation_svc: ReservationService):
+    rooms = reservation_svc._get_reservable_rooms()
+    assert rooms[0].id == 'SN135' and rooms[0].reservable is True
+    assert rooms[1].id == 'SN137' and rooms[1].reservable is True
+    assert rooms[2].id == 'SN139' and rooms[2].reservable is True
+    assert rooms[3].id == 'SN141' and rooms[3].reservable is True
 
 def test_get_map_reserved_times_by_date(
     reservation_svc: ReservationService, time: dict[str, datetime]
