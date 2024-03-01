@@ -23,6 +23,7 @@ export class NewReservationPageComponent implements OnInit {
   };
 
   public upcomingRoomReservations$!: Observable<Reservation[]>;
+  public numHoursStudyRoomReservations$!: Observable<string>;
 
   constructor(
     private router: Router,
@@ -33,6 +34,7 @@ export class NewReservationPageComponent implements OnInit {
 
   ngOnInit() {
     this.handleUpdateReservationsList();
+    this.getNumHoursStudyRoomReservations();
   }
 
   navigateToNewReservation() {
@@ -50,5 +52,9 @@ export class NewReservationPageComponent implements OnInit {
           return of([]);
         })
       );
+  }
+  getNumHoursStudyRoomReservations() {
+    this.numHoursStudyRoomReservations$ =
+      this.roomReservationService.getNumHoursStudyRoomReservations();
   }
 }

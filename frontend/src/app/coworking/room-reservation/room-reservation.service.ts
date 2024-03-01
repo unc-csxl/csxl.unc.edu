@@ -52,4 +52,8 @@ export class RoomReservationService extends ReservationService {
       `/api/coworking/reservation/${reservation.id}`
     );
   }
+
+  getNumHoursStudyRoomReservations(): Observable<string> {
+    return this.http.get<string>('/api/coworking/user-reservations/');
+  }
 }

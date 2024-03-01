@@ -186,6 +186,47 @@ class ReservationService:
 
         return [reservation.to_model() for reservation in reservations]
 
+    def _check_user_reservation_duration(
+        self, user: UserIdentity, bounds: TimeRange
+    ) -> bool:
+        """Helper method to check if the total reservation duration for a user exceeds 6 hours.
+
+        Args:
+            user (User): The user for whom to check reservation duration.
+            bounds (TimeRange): The time range to check for reservation duration.
+
+        Returns:
+            True if a user has >= 6 total hours reserved
+            False if a user has exceeded the limit
+        """
+        reservations = self.get_current_reservations_for_user(user, user)
+        total_duration = timedelta()
+        total_duration += bounds.end - bounds.start
+
+        for reservation in reservations:
+            if reservation.room:
+                total_duration += reservation.end - reservation.start
+        if total_duration > self._policy_svc.room_reservation_weekly_limit():
+            return False
+        return True
+
+    def _get_total_time_user_reservations(self, user: UserIdentity) -> str:
+        """Calculate the total duration (in hours) of study room reservations for the given user.
+        Args:
+            user (UserIdentity): The user for whom to calculate the total reservation time.
+        Returns:
+            str: The total reservation time in hours.
+        """
+        reservations = self.get_current_reservations_for_user(user, user)
+        duration = timedelta()
+        for reservation in reservations:
+            if reservation.room:
+                duration += reservation.end - reservation.start
+        str_duration = str(duration.total_seconds() / 3600)
+        if str_duration[2] == "0":
+            return str_duration.rstrip("0").rstrip(".")
+        return str_duration
+
     def get_map_reserved_times_by_date(
         self, date: datetime, subject: User
     ) -> dict[str, list[int]]:
@@ -224,7 +265,7 @@ class ReservationService:
                     start_idx = self._idx_calculation(reservation.start)
                     end_idx = self._idx_calculation(reservation.end)
 
-                    if start_idx < 0 or end_idx > 15:
+                    if start_idx < 0 or end_idx > 16:
                         continue
 
                     # Gray out previous time slots for today only
@@ -578,6 +619,13 @@ class ReservationService:
         # Enforce request range is within bounds of walkin vs. pre-reserved policies
         bounds = TimeRange(start=start, end=end)
 
+        # Check if user has exceeded reservation limit
+        if request.room:
+            if not self._check_user_reservation_duration(request.users[0], bounds):
+                raise ReservationException(
+                    "Oops! Looks like you've reached your weekly study room reservation limit"
+                )
+
         # Fetch User entities for all requested in reservation
         user_entities = (
             self._session.query(UserEntity)
@@ -605,6 +653,7 @@ class ReservationService:
                 raise ReservationException(
                     "Users may not have conflicting reservations."
                 )
+
         # Dead code because of the NotImplementedError testing for multiple users at the top
         # else:
         #     # Draft of expected functionality (needs testing and sanity checking)
