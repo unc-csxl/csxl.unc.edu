@@ -194,7 +194,9 @@ class ReservationService:
 
         This function returns a dictionary where each key is a room ID and the value
         is a list of time slot statuses for that room. The statuses are represented as integers:
-        0 (Available - Green), 1 (Reserved - Red), 2 (Selected - Orange, managed by frontend),
+        0 (Available - Green) 
+        1 (Reserved - Red)
+        2 (Selected - Orange, managed by frontend)
         3 (Unavailable - Grayed out), and 4 (Subject's Reservation - Red).
 
         Args:
@@ -205,17 +207,21 @@ class ReservationService:
             dict[str, list[int]]: A dictionary mapping each room ID to a list of reservation statuses.
         """
         reserved_date_map: dict[str, list[int]] = {}
-        reservations = self._query_confirmed_reservations_by_date(date)
-        rooms = self._get_reservable_rooms()
-        current_time = datetime.now()
-        current_time_idx = self._idx_calculation(current_time) + 1
 
+        rooms = self._get_reservable_rooms()
+
+        # Check if the XL is closed. If it is, then return all cells as unavailable. 
         if self._is_xl_closed(date):
-            # Mark the entire table as unavailable if XL is closed
             for room in rooms:
                 if room.id:
                     reserved_date_map[room.id] = [3] * 16
             return reserved_date_map
+        
+        # If the XL is not closed, then query through current confirmed reservations.
+        reservations = self._query_confirmed_reservations_by_date(date)
+        
+        current_time = datetime.now()
+        current_time_idx = self._idx_calculation(current_time) + 1
 
         for room in rooms:
             time_slots_for_room = [0] * 16
@@ -231,7 +237,7 @@ class ReservationService:
                     start_idx = self._idx_calculation(reservation.start)
                     end_idx = self._idx_calculation(reservation.end)
 
-                    if start_idx < 0 or end_idx > 15:
+                    if start_idx < 0 or end_idx > 16:
                         continue
 
                     # Gray out previous time slots for today only
