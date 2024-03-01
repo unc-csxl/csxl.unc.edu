@@ -15,14 +15,14 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-api = APIRouter(prefix="/api/office-hours")
+api = APIRouter(prefix="/api/office-hours/section")
 openapi_tags = {
     "name": "Office Hours",
     "description": "Office hours section, event, and ticket functionality",
 }
 
 
-@api.post("/section", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
+@api.post("", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
 def new_oh_section(
     oh_section: OfficeHoursSectionDraft,
     subject: User = Depends(registered_user),
@@ -37,11 +37,9 @@ def new_oh_section(
     return oh_section_service.create(subject, oh_section)
 
 
-@api.get("", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
+@api.get("/{term_id}", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
 def get_oh_sections_by_term_id(
-    term_id: str,
-    subject: User = Depends(registered_user),
-    oh_section_service: OfficeHoursSectionService = Depends(),
+    term_id: str, subject: User = Depends(registered_user), oh_section_service: OfficeHoursSectionService = Depends()
 ) -> list[OfficeHoursSectionDetails]:
     """
     Gets list of OH sections by term ID
@@ -52,11 +50,7 @@ def get_oh_sections_by_term_id(
     return oh_section_service.get_sections_by_term(subject, term_id)
 
 
-@api.get(
-    "api/office-hours/term/",
-    response_model=list[OfficeHoursSectionDetails],
-    tags=["Office Hours"],
-)
+@api.get("", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
 def get_oh_sections_by_user_and_term(
     term_id: str,
     subject: User = Depends(registered_user),
@@ -68,7 +62,7 @@ def get_oh_sections_by_user_and_term(
     Returns:
         list[OfficeHoursSectionDetails]: User's OH sections within the given term
     """
-    return oh_section_service.get_user_sections_by_term(term_id, subject)
+    return oh_section_service.get_user_sections_by_term(subject, term_id)
 
 
 @api.put("", response_model=OfficeHoursSectionDetails, tags=["Academics"])
