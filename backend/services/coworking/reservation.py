@@ -19,6 +19,7 @@ from ...models.coworking import (
     TimeRange,
     SeatAvailability,
     ReservationState,
+    RoomState,
     AvailabilityList,
     OperatingHours,
 )
@@ -197,7 +198,8 @@ class ReservationService:
         0 (Available - Green) 
         1 (Reserved - Red)
         2 (Selected - Orange, managed by frontend)
-        3 (Unavailable - Grayed out), and 4 (Subject's Reservation - Red).
+        3 (Unavailable - Grayed out)
+        4 (Subject's Reservation - Red)
 
         Args:
             date (datetime): The date for which to query reservations.
@@ -210,27 +212,35 @@ class ReservationService:
 
         rooms = self._get_reservable_rooms()
 
+        current_time = datetime.now()
+        current_time_idx = self._idx_calculation(current_time) + 1
+
+        # open_duration_hr = self._operating_hours_svc.schedule()
+
         # Check if the XL is closed. If it is, then return all cells as unavailable. 
         if self._is_xl_closed(date):
             for room in rooms:
                 if room.id:
-                    reserved_date_map[room.id] = [3] * 16
+                    reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
             return reserved_date_map
         
+
         # If the XL is not closed, then query through current confirmed reservations.
         reservations = self._query_confirmed_reservations_by_date(date)
-        
-        current_time = datetime.now()
-        current_time_idx = self._idx_calculation(current_time) + 1
 
         for room in rooms:
             time_slots_for_room = [0] * 16
 
-            # - Making slots up till current time gray
+            # Making slots up till current time gray
             if date.date() == current_time.date():
                 for i in range(0, current_time_idx):
-                    time_slots_for_room[i] = 3
+                    time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
+            # TODO: Consider abstracting this into the SQL query rather than relying
+            #       on Python since it will be slower, especially with larger number
+            #       of reservations when time complexity will be a bigger issue.
+            #       Query for reservations by date and room instead, although it will 
+            #       require doing multiple queries. Consider the tradeoffs.
             for reservation in reservations:
                 reservation_id = reservation.room.id if reservation.room else "SN156"
                 if reservation_id == room.id:
@@ -247,11 +257,13 @@ class ReservationService:
                         start_idx = max(current_time_idx, start_idx)
 
                     for idx in range(start_idx, end_idx):
+                        # Currently only assuming single user. 
+                        # TODO: If making group reservations, need to change this.
                         if reservation.users[0].id == subject.id:
-                            time_slots_for_room[idx] = 4  # Reserved by subject
+                            time_slots_for_room[idx] = RoomState.SUBJECT_RESERVED.value
                         else:
-                            if time_slots_for_room[idx] != 4:
-                                time_slots_for_room[idx] = 1  # Reserved by someone else
+                            if time_slots_for_room[idx] != RoomState.SUBJECT_RESERVED.value:
+                                time_slots_for_room[idx] = RoomState.RESERVED.value
             reserved_date_map[room.id] = time_slots_for_room
 
         self._transform_date_map_for_unavailable(reserved_date_map)
@@ -310,14 +322,14 @@ class ReservationService:
         columns_with_4 = set()
         for key, values in reserved_date_map.items():
             for i, value in enumerate(values):
-                if value == 4:
+                if value == RoomState.SUBJECT_RESERVED.value:
                     columns_with_4.add(i)
 
         # Transform the dictionary as per the rules
         for key, values in reserved_date_map.items():
             for i in columns_with_4:
-                if values[i] == 0:
-                    values[i] = 3
+                if values[i] == RoomState.AVAILABLE.value:
+                    values[i] = RoomState.UNAVAILABLE.value
 
     def _query_confirmed_reservations_by_date(
         self, date: datetime
