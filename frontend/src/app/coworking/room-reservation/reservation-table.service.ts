@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subscription } from 'rxjs';
 import {
   Reservation,
+  ReservationMapDetails,
   ReservationRequest,
   TableCell,
   TablePropertyMap
@@ -72,12 +73,12 @@ export class ReservationTableService {
   //TODO Change route from ISO String to date object
   getReservationsForRoomsByDate(
     date: Date
-  ): Observable<Record<string, number[]>> {
+  ): Observable<ReservationMapDetails> {
     let params = new HttpParams().set('date', date.toISOString());
-    return this.http.get<Record<string, number[]>>(
+    return this.http.get<ReservationMapDetails>(
       `/api/coworking/room-reservation/`,
       { params }
-    );
+    )
   }
 
   draftReservation(
