@@ -264,6 +264,7 @@ export class ReservationTableService {
       leftFrom < rightFrom
     );
   }
+  
   /**
    * Filters selected cells based on their index relative to a given index.
    *
