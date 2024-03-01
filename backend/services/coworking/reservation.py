@@ -14,6 +14,7 @@ from ..exceptions import UserPermissionException, ResourceNotFoundException
 from ...models.coworking import (
     Seat,
     Reservation,
+    ReservationMapDetails,
     ReservationRequest,
     ReservationPartial,
     TimeRange,
@@ -189,7 +190,7 @@ class ReservationService:
 
     def get_map_reserved_times_by_date(
         self, date: datetime, subject: User
-    ) -> dict[str, list[int]]:
+    ) -> dict[str, str]:
         """
         Generates a map of room reservations for a given date.
 
@@ -271,8 +272,13 @@ class ReservationService:
 
         self._transform_date_map_for_unavailable(reserved_date_map)
 
-        return reserved_date_map
-
+        return ReservationMapDetails(
+            reserved_date_map=reserved_date_map,
+            operating_hours_start=operating_hours_start,
+            operating_hours_end=operating_hours_end,
+            number_of_time_slots=operating_hours_duration
+        )
+    
     def _round_to_closest_half_hour(self, dt: datetime, round_up: bool = True) -> datetime:
         """
         This helper rounds a datetime object to the closest half hour either up or down based on the round_up flag.

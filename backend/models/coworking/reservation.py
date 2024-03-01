@@ -35,6 +35,13 @@ class Reservation(ReservationIdentity, TimeRange):
     updated_at: datetime
 
 
+class ReservationMapDetails(BaseModel):
+    reserved_date_map: dict[str, list[int]] = {}
+    operating_hours_start: datetime | None = None
+    operating_hours_end: datetime | None = None
+    number_of_time_slots: int | None = None
+
+
 class ReservationPartial(Reservation, BaseModel):
     start: datetime | None = None
     end: datetime | None = None

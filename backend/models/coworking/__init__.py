@@ -10,6 +10,7 @@ from .reservation import (
     ReservationRequest,
     ReservationState,
     ReservationPartial,
+    ReservationMapDetails,
     ReservationIdentity,
 )
 
