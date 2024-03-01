@@ -14,7 +14,7 @@ from .reservation import (
 )
 
 from .availability_list import AvailabilityList
-from .availability import SeatAvailability, RoomAvailability
+from .availability import RoomState, SeatAvailability, RoomAvailability
 
 from .status import Status
 
