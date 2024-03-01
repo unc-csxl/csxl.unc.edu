@@ -212,9 +212,6 @@ class ReservationService:
 
         rooms = self._get_reservable_rooms()
 
-        current_time = datetime.now()
-        current_time_idx = self._idx_calculation(current_time) + 1
-
         date_midnight = date.replace(hour=0, minute=0, second=0)
         tomorrow_midnight = date_midnight + timedelta(days=1)
         day_range = TimeRange(start=date_midnight, end=tomorrow_midnight)
@@ -228,21 +225,19 @@ class ReservationService:
                 if room.id:
                     reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
 
-        operating_hours_time_delta = operating_hours_on_date.duration()
+        operating_hours_start = self._round_to_closest_half_hour(operating_hours_on_date.start, round_up=True)
+        operating_hours_end = self._round_to_closest_half_hour(operating_hours_on_date.end, round_up=False)
+        operating_hours_time_delta = operating_hours_end - operating_hours_start
+
         # Multiply by 2 because 30 min interval indexes
         operating_hours_duration = int(2 * operating_hours_time_delta.total_seconds() / 3600)  
 
-        # # Check if the XL is closed. If it is, then return all cells as unavailable. 
-        # if self._is_xl_closed(date):
-        #     for room in rooms:
-        #         if room.id:
-        #             reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
-        #     return reserved_date_map
-
-        # If the XL is not closed, then query through current confirmed reservations.
+        # Need current time to gray out slots in the past on that day.
+        current_time = datetime.now()
+        current_time_idx = self._idx_calculation(current_time, operating_hours_start) + 1
 
         for room in rooms:
-            time_slots_for_room = [0] * 16
+            time_slots_for_room = [0] * operating_hours_duration
 
             # Making slots up till current time gray
             if date.date() == current_time.date():
@@ -252,10 +247,10 @@ class ReservationService:
             reservations = self._query_confirmed_reservations_by_date_and_room(date, room.id)
             for reservation in reservations:
                 if reservation.room.id == room.id:
-                    start_idx = self._idx_calculation(reservation.start)
-                    end_idx = self._idx_calculation(reservation.end)
+                    start_idx = self._idx_calculation(reservation.start, operating_hours_start)
+                    end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
-                    if start_idx < 0 or end_idx > 16:
+                    if start_idx < 0 or end_idx > operating_hours_duration:
                         continue
 
                     # Gray out previous time slots for today only
@@ -278,24 +273,37 @@ class ReservationService:
 
         return reserved_date_map
 
-    # def _is_xl_closed(self, date: datetime) -> bool:
-    #     """
-    #     Returns a boolean value to signify if XL is closed.
+    def _round_to_closest_half_hour(self, dt: datetime, round_up: bool = True) -> datetime:
+        """
+        This helper rounds a datetime object to the closest half hour either up or down based on the round_up flag.
+        
+        Args:
+            dt (datetime): The datetime object you want to round.
+            round_up (bool): If True, rounds up to the closest half hour. If False, rounds down to the closest half hour.
+        
+        Returns:
+            datetime: Rounded datetime object.
+        """
+        minutes = dt.minute
+        
+        if round_up:
+            if minutes < 30:
+                to_add = timedelta(minutes=(30 - minutes))
+            else:
+                to_add = timedelta(minutes=(60 - minutes))
+            rounded_dt = dt + to_add
+        else:
+            if minutes > 30:
+                to_subtract = timedelta(minutes=(minutes - 30))
+            else:
+                to_subtract = timedelta(minutes=minutes)
+            rounded_dt = dt - to_subtract
 
-    #     This will return False during weekends and university holidays.
+        rounded_dt = rounded_dt.replace(second=0, microsecond=0)
+        
+        return rounded_dt
 
-    #     Args: 
-    #         date (datetime): Check whether XL is closed on this date.
-
-    #     Returns:
-    #         bool: Flag whether XL is closed or open.
-    #     """
-    #     if date.weekday() in [5, 6]:
-    #         return True
-    #     return False
-
-
-    def _idx_calculation(self, time: datetime) -> int:
+    def _idx_calculation(self, time: datetime, operating_hours_start: datetime) -> int:
         """
         Calculates the index of a time slot based on a given time.
 
@@ -304,11 +312,13 @@ class ReservationService:
 
         Args:
             time (datetime): The time to convert into an index.
+            operating_hours_start (int): The hour when the XL opens as an int.
 
         Returns:
             int: The index of the time slot corresponding to the given time.
         """
-        return 2 * (time.hour - 10) + (time.minute // 30)
+        return int(2 * (time.hour - operating_hours_start.hour)) + \
+             ((time.minute - operating_hours_start.minute) // 30)
 
     def _transform_date_map_for_unavailable(
         self, reserved_date_map: dict[str, list[int]]
