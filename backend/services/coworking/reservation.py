@@ -215,18 +215,31 @@ class ReservationService:
         current_time = datetime.now()
         current_time_idx = self._idx_calculation(current_time) + 1
 
-        # open_duration_hr = self._operating_hours_svc.schedule()
+        date_midnight = date.replace(hour=0, minute=0, second=0)
+        tomorrow_midnight = date_midnight + timedelta(days=1)
+        day_range = TimeRange(start=date_midnight, end=tomorrow_midnight)
 
-        # Check if the XL is closed. If it is, then return all cells as unavailable. 
-        if self._is_xl_closed(date):
+        # Check if operating hours exist on date
+        try:
+            operating_hours_on_date = self._operating_hours_svc.schedule(day_range)[0]
+        except:
+            # TODO: Possibly consider thowing exception and handling on the frontend?
             for room in rooms:
                 if room.id:
                     reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
-            return reserved_date_map
-        
+
+        operating_hours_time_delta = operating_hours_on_date.duration()
+        # Multiply by 2 because 30 min interval indexes
+        operating_hours_duration = int(2 * operating_hours_time_delta.total_seconds() / 3600)  
+
+        # # Check if the XL is closed. If it is, then return all cells as unavailable. 
+        # if self._is_xl_closed(date):
+        #     for room in rooms:
+        #         if room.id:
+        #             reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
+        #     return reserved_date_map
 
         # If the XL is not closed, then query through current confirmed reservations.
-        reservations = self._query_confirmed_reservations_by_date(date)
 
         for room in rooms:
             time_slots_for_room = [0] * 16
@@ -236,14 +249,9 @@ class ReservationService:
                 for i in range(0, current_time_idx):
                     time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
-            # TODO: Consider abstracting this into the SQL query rather than relying
-            #       on Python since it will be slower, especially with larger number
-            #       of reservations when time complexity will be a bigger issue.
-            #       Query for reservations by date and room instead, although it will 
-            #       require doing multiple queries. Consider the tradeoffs.
+            reservations = self._query_confirmed_reservations_by_date_and_room(date, room.id)
             for reservation in reservations:
-                reservation_id = reservation.room.id if reservation.room else "SN156"
-                if reservation_id == room.id:
+                if reservation.room.id == room.id:
                     start_idx = self._idx_calculation(reservation.start)
                     end_idx = self._idx_calculation(reservation.end)
 
@@ -270,21 +278,21 @@ class ReservationService:
 
         return reserved_date_map
 
-    def _is_xl_closed(self, date: datetime) -> bool:
-        """
-        Returns a boolean value to signify if XL is closed.
+    # def _is_xl_closed(self, date: datetime) -> bool:
+    #     """
+    #     Returns a boolean value to signify if XL is closed.
 
-        This will return False during weekends and university holidays.
+    #     This will return False during weekends and university holidays.
 
-        Args: 
-            date (datetime): Check whether XL is closed on this date.
+    #     Args: 
+    #         date (datetime): Check whether XL is closed on this date.
 
-        Returns:
-            bool: Flag whether XL is closed or open.
-        """
-        if date.weekday() in [5, 6]:
-            return True
-        return False
+    #     Returns:
+    #         bool: Flag whether XL is closed or open.
+    #     """
+    #     if date.weekday() in [5, 6]:
+    #         return True
+    #     return False
 
 
     def _idx_calculation(self, time: datetime) -> int:
@@ -331,32 +339,36 @@ class ReservationService:
                 if values[i] == RoomState.AVAILABLE.value:
                     values[i] = RoomState.UNAVAILABLE.value
 
-    def _query_confirmed_reservations_by_date(
-        self, date: datetime
+    def _query_confirmed_reservations_by_date_and_room(
+        self, 
+        date: datetime,
+        room_id: str
     ) -> Sequence[Reservation]:
         """
-        Queries and returns confirmed and checked in reservations for a given date.
+        Queries and returns confirmed and checked-in reservations for a given date and room.
 
-        This function fetches all confirmed and checked in reservations from the database for a specified date.
+        This function fetches all confirmed and checked-in reservations from the database for a specified date and room.
         It includes reservations that have any overlap with the 24-hour period starting from the
-        beginning of the given date.
+        beginning of the given date, and are associated with a specific room ID.
 
         Args:
             date (datetime): The date for which to query confirmed reservations.
+            room_id (str): The ID of the room for which to query confirmed reservations.
 
         Returns:
-            Sequence[Reservation]: A sequence of Reservation model objects representing the confirmed reservations.
+            Sequence[Reservation]: A sequence of Reservation model objects representing the confirmed reservations for the specified date and room.
         """
         start = date.replace(hour=0, minute=0, second=0, microsecond=0)
         reservations = (
             self._session.query(ReservationEntity)
-            .join(ReservationEntity.users)  # TODO Join rooms if this is an issue.
+            .join(ReservationEntity.room) 
             .filter(
                 ReservationEntity.start < start + timedelta(hours=24),
                 ReservationEntity.end > start,
                 ReservationEntity.state.not_in(
                     [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
                 ),
+                RoomEntity.id == room_id
             )
             .options(
                 joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
