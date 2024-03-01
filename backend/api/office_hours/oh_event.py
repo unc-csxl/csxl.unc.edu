@@ -17,14 +17,14 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-api = APIRouter(prefix="/api/office-hours")
+api = APIRouter(prefix="/api/office-hours/event")
 openapi_tags = {
     "name": "Office Hours",
-    "description": "Office hours event, event, and ticket functionality",
+    "description": "Office hours event functionality",
 }
 
 
-@api.post("/event", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
+@api.post("", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
 def new_oh_event(
     oh_event: OfficeHoursEventDraft,
     subject: User = Depends(registered_user),
@@ -66,7 +66,7 @@ def delete_oh_event(
     return oh_event_service.delete(subject, oh_event_id)
 
 
-@api.get("", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
+@api.get("/{section_id}", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
 def get_oh_events_by_section(
     oh_section_id: int,
     subject: User = Depends(registered_user),
@@ -81,7 +81,7 @@ def get_oh_events_by_section(
     return oh_event_service.get_events_by_section(subject, oh_section_id)
 
 
-@api.get("", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
+@api.get("/{section_id}/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
 def get_upcoming_oh_events_by_section(
     oh_section_id: int,
     subject: User = Depends(registered_user),
@@ -101,7 +101,7 @@ def get_upcoming_oh_events_by_section(
     )
 
 
-@api.get("", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
+@api.get("/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
 def get_upcoming_oh_events_by_user(
     start: datetime = datetime.now(),
     subject: User = Depends(registered_user),

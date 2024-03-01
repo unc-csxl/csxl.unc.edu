@@ -18,7 +18,7 @@ __license__ = "MIT"
 api = APIRouter(prefix="/api/office-hours/section")
 openapi_tags = {
     "name": "Office Hours",
-    "description": "Office hours section, event, and ticket functionality",
+    "description": "Office hours section functionality",
 }
 
 
