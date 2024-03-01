@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
-from ticket_type import TicketType
-from ticket_state import TicketState
+from .ticket_type import TicketType
+from .ticket_state import TicketState
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
