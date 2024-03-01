@@ -16,7 +16,7 @@ class OfficeHoursEventDraft(BaseModel):
     """
 
     office_hours_section_id: int
-    room_id: int
+    room_id: str
     type: OfficeHoursType
     description: str = ""
     location_description: str = ""

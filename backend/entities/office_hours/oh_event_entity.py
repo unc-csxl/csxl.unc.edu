@@ -52,12 +52,13 @@ class OfficeHoursEventEntity(EntityBase):
     )
 
     # NOTE: Unidirectional relationship to Room
-    room_id: Mapped[int] = mapped_column(ForeignKey("room.id"), nullable=False)
+    room_id: Mapped[str] = mapped_column(ForeignKey("room.id"), nullable=False)
     room: Mapped["RoomEntity"] = relationship("RoomEntity")
 
     # NOTE: One-to-many relationship of OfficeHoursEvent to tickets
     tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
-        back_populates="event", cascade="all, delete")
+        back_populates="oh_event", cascade="all, delete"
+    )
 
     @classmethod
     def from_model(cls, model: OfficeHoursEvent) -> Self:
@@ -78,7 +79,7 @@ class OfficeHoursEventEntity(EntityBase):
             location_description=model.location_description,
             date=model.date,
             start_time=model.start_time,
-            end_time=model.end_time
+            end_time=model.end_time,
         )
 
     def to_model(self) -> OfficeHoursEvent:
@@ -97,9 +98,9 @@ class OfficeHoursEventEntity(EntityBase):
             location_description=self.location_description,
             date=self.date,
             start_time=self.start_time,
-            end_time=self.end_time
+            end_time=self.end_time,
         )
-    
+
     def to_details_model(self) -> OfficeHoursEventDetails:
         """
         Converts a `OfficeHoursEventEntity` object into a `OfficeHoursEventDetails` model object
@@ -119,5 +120,5 @@ class OfficeHoursEventEntity(EntityBase):
             end_time=self.end_time,
             section=self.office_hours_section.to_model(),
             room=self.room.to_model(),
-            tickets=[ticket.to_model() for ticket in self.tickets]  
+            tickets=[ticket.to_model() for ticket in self.tickets],
         )
