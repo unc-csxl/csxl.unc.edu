@@ -16,7 +16,7 @@ class OfficeHoursTicketDraft(BaseModel):
     of the `OfficeHoursTicket` database in the PostgreSQL database.
     """
 
-    office_hours_event_id: int
+    oh_event_id: int
     description: str
     type: TicketType
     state: TicketState

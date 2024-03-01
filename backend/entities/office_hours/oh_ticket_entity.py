@@ -51,10 +51,10 @@ class OfficeHoursTicketEntity(EntityBase):
     caller_notes: Mapped[str] = mapped_column(String, default="", nullable=False)
 
     # One-to-one relationship to event that the ticket was created in
-    event_id: Mapped[int] = mapped_column(
+    oh_event_id: Mapped[int] = mapped_column(
         ForeignKey("office_hours__event.id"), nullable=False
     )
-    event: Mapped["OfficeHoursEventEntity"] = relationship(back_populates="tickets")
+    oh_event: Mapped["OfficeHoursEventEntity"] = relationship(back_populates="tickets")
 
     # One-to-many relationship of OfficeHoursTicket to section member(s)
     creators: Mapped[list["SectionMemberEntity"]] = relationship(
@@ -84,7 +84,7 @@ class OfficeHoursTicketEntity(EntityBase):
             caller_id=model.caller_id,
             have_concerns=model.have_concerns,
             caller_notes=model.caller_notes,
-            event_id=model.office_hours_event_id,
+            oh_event_id=model.oh_event_id,
             description=model.description,
             type=model.type,
             state=model.state,
@@ -104,7 +104,7 @@ class OfficeHoursTicketEntity(EntityBase):
             caller_id=self.caller_id,
             have_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
-            office_hours_event_id=self.event_id,
+            oh_event_id=self.oh_event_id,
             description=self.description,
             type=self.type,
             state=self.state,
@@ -130,7 +130,7 @@ class OfficeHoursTicketEntity(EntityBase):
             state=self.state,
             created_at=self.created_at,
             closed_at=self.closed_at,
-            event=self.event.to_model(),
+            oh_event=self.oh_event.to_model(),
             creators=[creator.to_model() for creator in self.creators],
             caller=self.caller.to_model(),
         )
