@@ -1,8 +1,7 @@
 """Tests for ReservationService#get_map_reservations_for_date and helper functions."""
 
-from unittest.mock import create_autospec
-
 from backend.models.coworking.reservation import ReservationState
+from datetime import date
 
 from .....services.coworking import ReservationService
 
@@ -35,21 +34,60 @@ from . import reservation_data
 __authors__ = [
     "Nick Wherthey",
     "Yuvraj Jain",
-    "Aarjav Jain",
-    "John Schachte",
 ]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-def test_query_confirmed_reservations_by_date(
-    reservation_svc: ReservationService, time: dict[str, datetime]
-):
-    """Test getting all reservations for a particular date."""
-    reservations = reservation_svc._query_confirmed_reservations_by_date(time[TOMORROW])
-    assert len(reservations) == 1
-    assert reservations[0].start >= time[MIDNIGHT_TOMORROW]
-    assert reservations[0].start <= time[MIDNIGHT_TOMORROW] + timedelta(hours=24)
+def test_is_xl_closed(reservation_svc: ReservationService):
+    """Test to check if XL is closed"""
+    day = date(year=2024, month=2, day=28) # Because it's Kris's birthday :)
+    assert reservation_svc._is_xl_closed(day) == False
+
+
+def test_transform_date_map_for_unavailable_simple(reservation_svc: ReservationService):
+    """
+    Validates the transformation of the date map to indicate unavailable time slots.
+    
+    This test ensures that time slots are appropriately grayed out for all other rooms
+    once a user has made a reservation. For example, if Sally Student reserves room SN135
+    from 1 pm to 3 pm on February 29, she should be prevented from booking any other room
+    during these hours. The function verifies that the data map returned by the endpoint
+    accurately reflects these unavailable slots, enhancing the user experience by
+    preventing double bookings.
+    """
+    
+    sample_date_map_1 = {
+        'SN135': [0, 0, 0, 0],
+        'SN137': [0, 0, 4, 4],
+        'SN139': [0, 0, 0, 0]
+    }
+
+    expected_transformed_date_map_1 = {
+        'SN135': [0, 0, 3, 3],
+        'SN137': [0, 0, 4, 4],
+        'SN139': [0, 0, 3, 3]
+    }
+
+    reservation_svc._transform_date_map_for_unavailable(sample_date_map_1)
+    assert sample_date_map_1 == expected_transformed_date_map_1
+
+
+def test_transform_date_map_for_unavailable_complex(reservation_svc: ReservationService):    
+    sample_date_map_2 = {
+        'SN135': [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+        'SN137': [0, 0, 1, 1, 4, 4, 4, 4, 0, 0],
+        'SN139': [0, 4, 4, 1, 1, 0, 0, 0, 0, 0]
+    }
+
+    expected_transformed_date_map_2 = {
+        'SN135': [0, 3, 3, 0, 3, 3, 1, 1, 1, 1],
+        'SN137': [0, 3, 1, 1, 4, 4, 4, 4, 0, 0],
+        'SN139': [0, 4, 4, 1, 1, 3, 3, 3, 0, 0]
+    }
+
+    reservation_svc._transform_date_map_for_unavailable(sample_date_map_2)
+    assert expected_transformed_date_map_2 == sample_date_map_2
 
 
 def test_idx_calculation(reservation_svc: ReservationService):
@@ -62,6 +100,15 @@ def test_idx_calculation(reservation_svc: ReservationService):
     time_3 = datetime.now().replace(hour=13, minute=40)
     assert reservation_svc._idx_calculation(time_3) == 7
 
+
+def test_query_confirmed_reservations_by_date(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """Test getting all reservations for a particular date."""
+    reservations = reservation_svc._query_confirmed_reservations_by_date(time[TOMORROW])
+    assert len(reservations) == 2
+    assert reservations[0].start >= time[MIDNIGHT_TOMORROW]
+    assert reservations[0].start <= time[MIDNIGHT_TOMORROW] + timedelta(hours=24)
 
 def test_get_reservable_rooms(reservation_svc: ReservationService):
     rooms = reservation_svc._get_reservable_rooms()
