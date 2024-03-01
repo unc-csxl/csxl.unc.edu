@@ -37,7 +37,7 @@ class OfficeHoursEventEntity(EntityBase):
         String, default="", nullable=False
     )
     # Date of the event
-    event_date: Mapped[date] = mapped_column(Date, nullable=False)  # type: ignore
+    date: Mapped[date] = mapped_column(Date, nullable=False)  # type: ignore
     # Time the event starts
     start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # Time the event ends
@@ -76,7 +76,7 @@ class OfficeHoursEventEntity(EntityBase):
             type=model.type,
             description=model.description,
             location_description=model.location_description,
-            date=model.event_date,
+            date=model.date,
             start_time=model.start_time,
             end_time=model.end_time
         )
@@ -95,7 +95,7 @@ class OfficeHoursEventEntity(EntityBase):
             type=self.type,
             description=self.description,
             location_description=self.location_description,
-            date=self.event_date,
+            date=self.date,
             start_time=self.start_time,
             end_time=self.end_time
         )
@@ -114,7 +114,7 @@ class OfficeHoursEventEntity(EntityBase):
             type=self.type,
             description=self.description,
             location_description=self.location_description,
-            date=self.event_date,
+            date=self.date,
             start_time=self.start_time,
             end_time=self.end_time,
             section=self.office_hours_section.to_model(),
