@@ -24,6 +24,8 @@ export class RoomReservationWidgetComponent {
   //- Select Button enabled
   selectButton: boolean = false;
 
+  operationStart: Date = new Date();
+
   //- Selected Date
   selectedDate: string = '';
   // private subscription: Subscription;
@@ -56,16 +58,12 @@ export class RoomReservationWidgetComponent {
   getReservationsByDate(date: Date) {
     this.reservationTableService.getReservationsForRoomsByDate(date).subscribe(
       (result) => {
-        console.log("result: ", result);
-        {}
         this.reservationsMap = result.reserved_date_map;
         let end = new Date(result.operating_hours_end);
-        let start = new Date(result.operating_hours_start);
+        this.operationStart = new Date(result.operating_hours_start);
         let slots = result.number_of_time_slots;
         
-        this.timeSlots = this.generateTimeSlots(start,end,slots);
-        
-        console.log("reservationMap: ", this.reservationsMap)
+        this.timeSlots = this.reservationTableService.generateTimeSlots(this.operationStart,end,slots);
       },
       (error) => {
         // Handle the error here
@@ -134,7 +132,7 @@ export class RoomReservationWidgetComponent {
         draftReservation() {
           const result = this.reservationTableService.draftReservation(
             this.reservationsMap,
-            this.selectedDate
+            this.operationStart
             );
             result.subscribe(
               (reservation: Reservation) => {
@@ -174,42 +172,5 @@ export class RoomReservationWidgetComponent {
   public setSlotAvailable(key: string, index: number) {
     this.reservationsMap[key][index] =
       ReservationTableService.CellEnum.AVAILABLE;
-  }
-
-  /**
-   * Formats a date object into a string of the format 'HH:MMAM/PM'.
-   * 
-   * @private
-   * @param {Date} date - The date object to be formatted.
-   * @returns {string} The formatted time string in 'HH:MMAM/PM' format.
-   */
-  private formatAMPM(date: Date): string {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    const minutesStr = minutes < 10 ? '0' + minutes : minutes.toString();
-    return `${hours}:${minutesStr}${ampm}`;
-  }
-
-  /**
-   * Generates time slots between two dates in increments of thirty minutes, formatted as 'HH:MMA/PM <br> to <br> HH:MMPM'.
-   * 
-   * @private
-   * @param {Date} start - The start date and time for generating time slots.
-   * @param {Date} end - The end date and time for the time slots.
-   * @param {number} slots - The number of slots to generate.
-   * @returns {string[]} An array of strings representing the time slots in 'HH:MMA/PM <br> to <br> HH:MMPM' format.
-   */
-  private generateTimeSlots(start: Date, end: Date, slots: number): string[] {
-    const timeSlots = [];
-    const ThirtyMinutes = 30 * 60000; // Thirty minutes in milliseconds
-    while(start < end){
-      let thirtyMinutesLater = new Date(start.getTime() + ThirtyMinutes);
-      timeSlots.push(`${this.formatAMPM(start)} <br> to <br> ${this.formatAMPM(thirtyMinutesLater)}`);
-      start = thirtyMinutesLater;
-    }
-    return timeSlots;
   }
 }
