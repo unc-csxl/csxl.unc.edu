@@ -121,7 +121,7 @@ def test_get_map_reserved_times_by_date(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """Test for getting a dictionary where keys are room ids and time slots array are values."""
-    test_time = time[TOMORROW].replace(hour=11, minute=20)
+    test_time = time[NOW].replace(year=2024, month=2, day=28, hour=11, minute=20)
     reserved_date_map = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.user
     )
