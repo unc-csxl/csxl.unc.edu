@@ -84,12 +84,12 @@ class OfficeHoursTicketEntity(EntityBase):
             caller_id=model.caller_id,
             have_concerns=model.have_concerns,
             caller_notes=model.caller_notes,
-            office_hours_event_id=model.office_hours_event_id,
+            event_id=model.office_hours_event_id,
             description=model.description,
             type=model.type,
             state=model.state,
             created_at=model.created_at,
-            closed_at=model.closed_at
+            closed_at=model.closed_at,
         )
 
     def to_model(self) -> OfficeHoursTicket:
@@ -104,14 +104,14 @@ class OfficeHoursTicketEntity(EntityBase):
             caller_id=self.caller_id,
             have_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
-            office_hours_event_id=self.office_hours_event_id,
+            office_hours_event_id=self.event_id,
             description=self.description,
             type=self.type,
             state=self.state,
             created_at=self.created_at,
-            closed_at=self.closed_at
+            closed_at=self.closed_at,
         )
-    
+
     def to_details_model(self) -> OfficeHoursTicketDetails:
         """
         Converts a `OfficeHoursTicketEntity` object into a `OfficeHoursTicketDetails` model object
@@ -124,13 +124,13 @@ class OfficeHoursTicketEntity(EntityBase):
             caller_id=self.caller_id,
             have_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
-            office_hours_event_id=self.office_hours_event_id,
+            office_hours_event_id=self.event_id,
             description=self.description,
             type=self.type,
             state=self.state,
             created_at=self.created_at,
             closed_at=self.closed_at,
-            event= self.event.to_model(),
-            creators= [creator.to_model() for creator in self.creators],
-            caller= self.caller.to_model()
+            event=self.event.to_model(),
+            creators=[creator.to_model() for creator in self.creators],
+            caller=self.caller.to_model(),
         )

@@ -3,7 +3,7 @@
 from pydantic import BaseModel
 from typing import Sequence
 
-from oh_ticket import OfficeHoursTicket
+from .oh_ticket import OfficeHoursTicket
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"

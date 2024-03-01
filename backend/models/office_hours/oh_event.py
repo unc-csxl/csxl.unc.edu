@@ -16,11 +16,11 @@ class OfficeHoursEventDraft(BaseModel):
     """
 
     office_hours_section_id: int
-    room_id: int
+    room_id: str
     type: OfficeHoursType
     description: str = ""
     location_description: str = ""
-    date: date
+    event_date: date
     start_time: datetime
     end_time: datetime
 
