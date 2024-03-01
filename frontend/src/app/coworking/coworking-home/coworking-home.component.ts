@@ -71,6 +71,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     private roomReservationService: RoomReservationService
   ) {
     this.status$ = coworkingService.status$;
+    this.upcomingRoomReservation$ = roomReservationService.upcomingReservations$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
@@ -81,29 +82,26 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.status$ = this.coworkingService.status$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
-    this.activeReservation$ = this.initActiveReservation();
+    // this.activeReservation$ = this.initActiveReservation();
     this.timerSubscription = timer(0, 10000).subscribe(() =>{
       this.coworkingService.pollStatus();
-      this.initRoomReservationsList();
+      this.roomReservationService.pollUpcomingRoomReservation(this.snackBar);
     });
   }
   
-  initRoomReservationsList() {
-    console.log("in initUpdateReservationsList");
-    
-    // predicate to determine if this is a non active upcoming room reservation
-    const isUpcomingRoomReservation = (r:Reservation) => !this.findActiveReservationPredicate(r) && !!r && !!r.room
+  // initRoomReservationsList() {
+  //   console.log("in initUpdateReservationsList");
 
-    this.upcomingRoomReservation$ = this.roomReservationService.getReservationsByState('CONFIRMED').pipe(
-      map(reservations => reservations.filter(r => isUpcomingRoomReservation(r))),
-      catchError((err: Error) => {
-        const message = 'Error while fetching upcoming reservations.';
-        this.snackBar.open(message, '', { duration: 8000 });
-        console.error(err);
-        return of([]);
-      })
-    );
-  }
+  //   this.upcomingRoomReservation$ = this.roomReservationService.getReservationsByState('CONFIRMED').pipe(
+  //     map(reservations => reservations.filter(r => isUpcomingRoomReservation(r))),
+  //     catchError((err: Error) => {
+  //       const message = 'Error while fetching upcoming reservations.';
+  //       this.snackBar.open(message, '', { duration: 8000 });
+  //       console.error(err);
+  //       return of([]);
+  //     })
+  //   );
+  // }
   
 
   reserve(seatSelection: SeatAvailability[]) {
@@ -142,19 +140,12 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  private findActiveReservationPredicate(reservation:Reservation){
-    let now = new Date();
-    const activeStates = ["CONFIRMED","CHECKED_IN"];
-    return reservation.start <= now && reservation.end > now && activeStates.includes(reservation.state)
-
-  }
-
   private initActiveReservation(): Observable<Reservation | undefined> {
     return this.status$.pipe(
       map((status) => {
         let reservations = status.my_reservations;
         let now = new Date();
-        return reservations.find(this.findActiveReservationPredicate);
+        return reservations.find(this.roomReservationService.findActiveReservationPredicate);
       }),
       mergeMap((reservation) =>
         reservation
