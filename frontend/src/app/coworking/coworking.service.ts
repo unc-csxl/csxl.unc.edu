@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, Subscription, map, tap } from 'rxjs';
+import { Observable, Subscription, map, BehaviorSubject } from 'rxjs';
 import {
   CoworkingStatus,
   CoworkingStatusJSON,
-  Reservation,
   ReservationJSON,
   SeatAvailability,
   parseCoworkingStatusJSON,
@@ -25,6 +24,8 @@ export class CoworkingService implements OnDestroy {
 
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
+
+  isCancelExpanded = new BehaviorSubject<boolean>(false);
 
   public constructor(
     protected http: HttpClient,
@@ -65,5 +66,9 @@ export class CoworkingService implements OnDestroy {
     return this.http
       .post<ReservationJSON>('/api/coworking/reservation', reservation)
       .pipe(map(parseReservationJSON));
+  }
+
+  toggleCancelExpansion(): void {
+    this.isCancelExpanded.next(!this.isCancelExpanded.value);
   }
 }
