@@ -1,3 +1,11 @@
+/**
+ * This component is the primary screen for ambassadors at the check-in desk.
+ *
+ * @author Kris Jordan <kris@cs.unc.edu>
+ * @copyright 2023 - 2024
+ * @license MIT
+ */
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';

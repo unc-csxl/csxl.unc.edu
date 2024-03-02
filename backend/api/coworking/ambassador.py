@@ -10,7 +10,7 @@ from ...models import User
 from ...models.coworking import Reservation, ReservationPartial, ReservationRequest, ReservationState
 
 __authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2023 - 2024"
 __license__ = "MIT"
 
 
