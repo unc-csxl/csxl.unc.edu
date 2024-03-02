@@ -9,6 +9,7 @@ from backend.models.office_hours.oh_ticket import (
     OfficeHoursTicketDraft,
 )
 from backend.models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from backend.services.office_hours.oh_ticket import OfficeHoursTicketService
 from ..authentication import registered_user
 from ...models import User
 
@@ -41,12 +42,31 @@ def new_oh_ticket(
 
 
 @api.get(
-    "/{section_id}",
+    "/{oh_ticket_id}",
+    response_model=OfficeHoursTicketDetails,
+    tags=["Office Hours"],
+)
+def get_oh_ticket_by_id(
+    oh_ticket_id: int,
+    subject: User = Depends(registered_user),
+    oh_ticket_service: OfficeHoursTicketService = Depends(),
+) -> OfficeHoursTicketDetails:
+    """
+    Gets an OH ticket by its id
+
+    Returns:
+        OfficeHoursTicketDetails: OH ticket with the given id
+    """
+    return oh_ticket_service.get_ticket_by_id(subject, oh_ticket_id)
+
+
+@api.get(
+    "/{oh_section_id}",
     response_model=list[OfficeHoursTicketDetails],
     tags=["Office Hours"],
 )
 def get_oh_tickets_by_section(
-    section_id: int,
+    oh_section_id: int,
     subject: User = Depends(registered_user),
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> list[OfficeHoursTicketDetails]:
@@ -56,13 +76,12 @@ def get_oh_tickets_by_section(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section
     """
-    return oh_ticket_service.get_tickets_by_section(subject, section_id)
+    return oh_ticket_service.get_tickets_by_section(subject, oh_section_id)
 
 
-# TODO: check this api route
 @api.get("", response_model=list[OfficeHoursTicketDetails], tags=["Office Hours"])
 def get_oh_tickets_by_section_and_user(
-    section_id: int,
+    oh_section_id: int,
     subject: User = Depends(registered_user),
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> list[OfficeHoursTicketDetails]:
@@ -72,14 +91,16 @@ def get_oh_tickets_by_section_and_user(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific user
     """
-    return oh_ticket_service.get_tickets_by_section_and_user(subject, section_id)
+    return oh_ticket_service.get_tickets_by_section_and_user(subject, oh_section_id)
 
 
 @api.get(
-    "/{event_id}", response_model=list[OfficeHoursTicketDetails], tags=["Office Hours"]
+    "/{oh_event_id}",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
 )
 def get_oh_tickets_by_event(
-    event_id: int,
+    oh_event_id: int,
     subject: User = Depends(registered_user),
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> list[OfficeHoursTicketDetails]:
@@ -89,10 +110,10 @@ def get_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given event
     """
-    return oh_ticket_service.get_tickets_by_event(subject, event_id)
+    return oh_ticket_service.get_tickets_by_event(subject, oh_event_id)
 
 
-@api.put("", response_model=OfficeHoursTicketDetails, tags=["Academics"])
+@api.put("", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
 def update_oh_ticket(
     oh_ticket: OfficeHoursTicket,
     subject: User = Depends(registered_user),
@@ -107,8 +128,7 @@ def update_oh_ticket(
     return oh_ticket_service.update(subject, oh_ticket)
 
 
-# TODO: Please check this api route
-@api.put("/state", response_model=OfficeHoursTicketDetails, tags=["Academics"])
+@api.put("/state", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
 def update_oh_ticket_state(
     oh_ticket: OfficeHoursTicket,
     subject: User = Depends(registered_user),

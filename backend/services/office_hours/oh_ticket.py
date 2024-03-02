@@ -43,13 +43,26 @@ class OfficeHoursTicketService:
         # TODO
         return None
 
+    def get_ticket_by_id(
+        self, subject: User, oh_ticket_id: int
+    ) -> OfficeHoursTicketDetails:
+        """Retrieves an office hours ticket from the table by its id.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_ticket_id: ID of the ticket to query by.
+        Returns:
+            OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
+        """
+        # TODO
+        return None
+
     def get_tickets_by_section(
-        self, subject: User, section_id: int
+        self, subject: User, oh_section_id: int
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets from the table by a section.
         Args:
             subject: a valid User model representing the currently logged in User
-            section_id: ID of the section to query by.
+            oh_section_id: ID of the section to query by.
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHsection
         """
@@ -57,12 +70,12 @@ class OfficeHoursTicketService:
         return None
 
     def get_tickets_by_section_and_user(
-        self, subject: User, section_id: int
+        self, subject: User, oh_section_id: int
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all of the subject's office hours tickets in a section from the table.
         Args:
             subject: a valid User model representing the currently logged in User
-            section_id: ID of the section to query by.
+            oh_section_id: ID of the section to query by.
         Returns:
             list[OfficeHoursTicketDetails]: List of all of a user's `OfficeHoursTicketDetails` in an OHsection
         """
@@ -70,12 +83,12 @@ class OfficeHoursTicketService:
         return None
 
     def get_tickets_by_event(
-        self, subject: User, event_id: int
+        self, subject: User, oh_event_id: int
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets in an event from the table.
         Args:
             subject: a valid User model representing the currently logged in User
-            event_id: ID of the event to query by.
+            oh_event_id: ID of the event to query by.
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
