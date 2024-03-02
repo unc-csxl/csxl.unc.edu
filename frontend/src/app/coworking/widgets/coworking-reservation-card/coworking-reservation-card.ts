@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Reservation } from 'src/app/coworking/coworking.models';
-import { Observable, map, mergeMap, timer, filter } from 'rxjs';
+import { Observable, map, mergeMap, timer, filter, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CoworkingService } from '../../coworking.service';
 
 @Component({
   selector: 'coworking-reservation-card',
@@ -18,12 +19,17 @@ export class CoworkingReservationCard implements OnInit {
   @Output() reloadCoworkingHome = new EventEmitter<void>();
 
   public draftConfirmationDeadline$!: Observable<string>;
-
+  isCancelExpanded$: Observable<boolean>;
+  
   constructor(
     public router: Router,
     public reservationService: RoomReservationService,
-    protected snackBar: MatSnackBar
-  ) {}
+    protected snackBar: MatSnackBar,
+    public coworkingService: CoworkingService,
+
+  ) {
+    this.isCancelExpanded$ = this.coworkingService.isCancelExpanded.asObservable();
+  }
 
   ngOnInit(): void {
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
@@ -140,5 +146,9 @@ export class CoworkingReservationCard implements OnInit {
       new Date(this.reservation!.start) <= now &&
       now <= new Date(this.reservation!.end)
     );
+  }
+
+  toggleCancelExpansion(): void {
+    this.coworkingService.toggleCancelExpansion();
   }
 }
