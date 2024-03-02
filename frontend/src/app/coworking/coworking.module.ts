@@ -15,21 +15,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { ReservationComponent } from './reservation/reservation.component';
 import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating-hours-dialog.widget';
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-<<<<<<< Updated upstream
-=======
-import { UserLookup } from '../shared/user-lookup/user-lookup.widget';
 import { SharedModule } from '../shared/shared.module';
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
 @NgModule({
   declarations: [
@@ -50,25 +40,13 @@ import { SharedModule } from '../shared/shared.module';
     MatExpansionModule,
     MatButtonModule,
     MatTableModule,
-<<<<<<< Updated upstream
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
     MatCardModule,
-    ReactiveFormsModule,
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-    AsyncPipe
-=======
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatCardModule,
-    ReactiveFormsModule,
+    AsyncPipe,
     AsyncPipe,
     SharedModule
->>>>>>> Stashed changes
   ]
 })
 export class CoworkingModule {}

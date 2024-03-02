@@ -1,35 +1,3 @@
-<<<<<<< Updated upstream
-<div>
-  <mat-card class="content" appearance="outlined">
-    <mat-card-header>
-      <mat-card-title>Front Desk Check-in</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-form-field appearance="outline">
-        <mat-label>User</mat-label>
-        <input
-          type="text"
-          placeholder="Find User"
-          aria-label="User"
-          matInput
-          [matAutocomplete]="auto"
-          [formControl]="userLookup" />
-        <mat-autocomplete
-          #auto="matAutocomplete"
-          (optionSelected)="onOptionSelected($event)">
-          <mat-option
-            *ngFor="let option of filteredUsers$ | async"
-            [value]="option">
-            {{ option.first_name }} {{ option.last_name }} ({{option.pid}})
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </mat-card-content>
-  </mat-card>
-</div>
-=======
-<<<<<<< Updated upstream
-=======
 <div>
   <mat-card class="content" appearance="outlined">
     <mat-card-header>
@@ -44,8 +12,6 @@
     </mat-card-content>
   </mat-card>
 </div>
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 <div *ngIf="upcomingReservations$ | async as reservations">
   <mat-card
     class="content"
