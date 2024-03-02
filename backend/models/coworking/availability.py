@@ -8,6 +8,11 @@ from .seat import Seat
 from .time_range import TimeRange
 from .availability_list import AvailabilityList
 
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2024"
+__license__ = "MIT"
+
+
 class RoomState(int, Enum):
     AVAILABLE = 0
     RESERVED = 1

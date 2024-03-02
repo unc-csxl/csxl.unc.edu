@@ -6,6 +6,10 @@ from ..room import Room, RoomPartial
 from .seat import Seat, SeatIdentity
 from .time_range import TimeRange
 
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2024"
+__license__ = "MIT"
+
 
 class ReservationState(str, Enum):
     DRAFT = "DRAFT"

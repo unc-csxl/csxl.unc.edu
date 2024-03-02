@@ -18,7 +18,7 @@ from ...models.coworking import (
     ReservationMapDetails
 )
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
