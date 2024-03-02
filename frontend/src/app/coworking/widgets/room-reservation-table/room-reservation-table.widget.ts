@@ -145,11 +145,7 @@ export class RoomReservationWidgetComponent {
       (error) => {
         // Handle errors here
         console.error('Error drafting reservation', error);
-        this.snackBar.open(
-          'Error drafting reservation. Please try again or see CSXL Ambassador for assistance.',
-          'Close',
-          this.snackBarOptions
-        );
+        this.snackBar.open(error.error.message, 'Close', this.snackBarOptions);
       }
     );
   }
