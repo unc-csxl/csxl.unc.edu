@@ -231,7 +231,7 @@ class ReservationService:
 
     def get_map_reserved_times_by_date(
         self, date: datetime, subject: User
-    ) -> dict[str, str]:
+    ) -> ReservationMapDetails:
         """
         Retrieves a detailed mapping of room reservation statuses for a specific date, tailored for a given user.
 
