@@ -27,9 +27,11 @@ import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
   styleUrls: ['./user-lookup.widget.css']
 })
 export class UserLookup implements OnInit {
-  @Input() profile!: Profile | null;
-  @Input() users!: PublicProfile[];
-  @Input() adminPermission!: boolean | null;
+  @Input() label: string = 'Users';
+  @Input() maxSelected: number | null = null;
+  @Input() profile: Profile | null = null;
+  @Input() users: PublicProfile[] = [];
+  @Input() disabled: boolean | null = false;
 
   userLookup = new FormControl();
 
@@ -49,7 +51,7 @@ export class UserLookup implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.adminPermission) {
+    if (this.disabled) {
       this.userLookup.disable();
     }
   }
@@ -68,7 +70,6 @@ export class UserLookup implements OnInit {
       };
       this.users.push(organizer);
     }
-
     this.usersInput.nativeElement.value = '';
     this.userLookup.setValue('');
   }
