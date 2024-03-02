@@ -7,7 +7,15 @@
  * @license MIT
  */
 
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import {
@@ -31,6 +39,8 @@ export class UserLookup implements OnInit {
   @Input() maxSelected: number | null = null;
   @Input() users: PublicProfile[] = [];
   @Input() disabled: boolean | null = false;
+
+  @Output() usersChanged: EventEmitter<PublicProfile[]> = new EventEmitter();
 
   userLookup = new FormControl();
 
@@ -71,11 +81,13 @@ export class UserLookup implements OnInit {
     }
     this.usersInput.nativeElement.value = '';
     this.userLookup.setValue('');
+    this.usersChanged.emit(this.users);
   }
 
   /** Handler for selecting an option in the who chip grid. */
   public onUserRemoved(person: PublicProfile) {
     this.users.splice(this.users.indexOf(person), 1);
     this.userLookup.setValue('');
+    this.usersChanged.emit(this.users);
   }
 }
