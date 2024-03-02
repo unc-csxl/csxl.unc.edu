@@ -51,55 +51,67 @@
                 <strong>{{ ', ' }}</strong>
                 <strong class="date">{{
                     reservation.start | date: 'dd MMM yyyy'
-                    }}</strong>
+                }}</strong>
             </h3>
-
-            <p *ngIf="reservation.state === 'CONFIRMED'">
-                <!-- Check-in between {{ reservation.start | date: 'shortTime' }} and
-                {{ checkinDeadline(reservation.start) | date: 'shortTime' }} to avoid
-                cancellation. -->
-            </p>
             
             <mat-divider></mat-divider>
             <!-- check to see if this is a room reservation -->
-            <!-- Define the condition and specify the else template -->
             <ng-container *ngIf="reservation.seats.length > 0">
                 <h3>
                     <label>What</label> <strong>{{ reservation.seats[0].title }}</strong>
                 </h3>
                 <mat-divider></mat-divider>
             </ng-container>
+            
+            <div class="header-container">
+                <!-- if not a room reservation then  XL Colab -->
+                <h3>
+                    <label>Where</label> 
+                    <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
+                </h3>
 
-            <!-- if not a room reservation then  XL Colab -->
-            <h3>
-                <label>Where</label> 
-                <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
-            </h3>
+                <ng-container *ngIf="reservation.state === 'CONFIRMED' || reservation.state === 'DRAFT'">
+                    <!-- Accordion Toggle Button with Material Icon -->
+                    <button mat-icon-button (click)="toggleCancelExpansion()"
+                            matTooltip="Toggle Action Buttons" 
+                            aria-label="Toggle Action Buttons">
+                        <mat-icon>{{ (isCancelExpanded$ | async) ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </button>
+                </ng-container>
+                
+            </div>
         </div>
 
         <mat-divider></mat-divider>
-        
+
         <div #Actions>
             <mat-card-actions align="end" [ngSwitch]="reservation.state">
                 <ng-container *ngSwitchCase="'DRAFT'">
-                    <button mat-stroked-button type="submit" (click)="cancel()">
-                        Cancel
-                    </button>
-                    &nbsp;
-                    <button mat-stroked-button type="submit" color="primary" class="action-button" (click)="confirm()">
-                        {{ draftConfirmationDeadline$ | async }}
-                    </button>
+                    <ng-container *ngIf="isCancelExpanded$ | async">
+                        <button mat-stroked-button type="submit" (click)="cancel()">
+                            Cancel
+                        </button>
+                        &nbsp;
+                        <button mat-stroked-button type="submit" color="primary" class="action-button" (click)="confirm()">
+                            {{ draftConfirmationDeadline$ | async }}
+                        </button>
+                    </ng-container>
                 </ng-container>
     
                 <ng-container *ngSwitchCase="'CONFIRMED'">
-                    <button mat-stroked-button type="submit" (click)="cancel()">
-                        Cancel
-                    </button>
-                    &nbsp;
-                    <button *ngIf="checkCheckinAllowed() && reservation.room" mat-stroked-button type="submit" color="primary"
-                        (click)="checkin()">
-                        Check In
-                    </button>
+
+                
+                    <!-- Accordion Content -->
+                    <ng-container *ngIf="isCancelExpanded$ | async ">
+                        <button mat-stroked-button type="submit" (click)="cancel()">
+                            Cancel
+                        </button>
+                        &nbsp;
+                        <button *ngIf="checkCheckinAllowed() && reservation.room" mat-stroked-button type="submit" color="primary"
+                            (click)="checkin()">
+                            Check In
+                        </button>
+                    </ng-container>
                 </ng-container>
     
                 <ng-container *ngSwitchCase="'CHECKED_IN'">
