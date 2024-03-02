@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <div>
   <mat-card class="content" appearance="outlined">
     <mat-card-header>
@@ -26,6 +27,25 @@
     </mat-card-content>
   </mat-card>
 </div>
+=======
+<<<<<<< Updated upstream
+=======
+<div>
+  <mat-card class="content" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Welcome Desk Reservation</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <user-lookup
+        label="Visitor Lookup"
+        [maxSelected]="1"
+        [profile]="null"
+        [users]="[]"></user-lookup>
+    </mat-card-content>
+  </mat-card>
+</div>
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 <div *ngIf="upcomingReservations$ | async as reservations">
   <mat-card
     class="content"
