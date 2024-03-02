@@ -29,7 +29,6 @@ import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
 export class UserLookup implements OnInit {
   @Input() label: string = 'Users';
   @Input() maxSelected: number | null = null;
-  @Input() profile: Profile | null = null;
   @Input() users: PublicProfile[] = [];
   @Input() disabled: boolean | null = false;
 
