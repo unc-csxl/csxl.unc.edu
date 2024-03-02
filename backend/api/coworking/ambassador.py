@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationService
 from ...models import User
-from ...models.coworking import Reservation, ReservationPartial
+from ...models.coworking import Reservation, ReservationPartial, ReservationRequest, ReservationState
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -36,3 +36,20 @@ def checkin_reservation(
 ) -> Reservation:
     """CheckIn a confirmed reservation."""
     return reservation_svc.staff_checkin_reservation(subject, reservation)
+
+
+@api.post("/reservation", tags=["Coworking"])
+def staff_reservation(
+    reservation_request: ReservationRequest,
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends(),
+) -> Reservation:
+    # TODO: The efficiency of this operation could be improved with a custom method, but since this
+    # happens at the speed of an ambassador manually checking someone in (and is the sequence of steps
+    # that normally take place otherwise), reusing existing methods here is fine for now.
+    reservation_draft = reservation_svc.draft_reservation(subject, reservation_request)
+    # Confirm the Draft Reservation
+    reservation_partial = ReservationPartial(id=reservation_draft.id, state=ReservationState.CONFIRMED)
+    reservation_confirmed = reservation_svc.change_reservation(subject, reservation_partial)
+    # Check Reservation In
+    return reservation_svc.staff_checkin_reservation(subject, reservation_confirmed)

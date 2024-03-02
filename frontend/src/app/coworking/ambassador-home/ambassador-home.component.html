@@ -1,14 +1,26 @@
 <div>
   <mat-card class="content" appearance="outlined">
     <mat-card-header>
-      <mat-card-title>Welcome Desk Reservation</mat-card-title>
+      <mat-card-title>Reserve a Drop-in at the Welcome Desk</mat-card-title>
+      <mat-card-subtitle
+        >Create a walk-in reservation for an XL community member at the welcome
+        desk. Members must be registered with the XL and accept the Community
+        Agreement.</mat-card-subtitle
+      >
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="walkinReservation">
       <user-lookup
-        label="Visitor Lookup"
+        label="Member Lookup"
         [maxSelected]="1"
-        [profile]="null"
-        [users]="[]"></user-lookup>
+        [users]="welcomeDeskReservationSelection"
+        (usersChanged)="onUsersChanged($event)"></user-lookup>
+      <ng-container *ngIf="welcomeDeskReservationSelection.length > 0">
+        <ng-container *ngIf="status$ | async as status">
+          <coworking-dropin-availability-card
+            [seat_availability]="status.seat_availability"
+            (seatsSelected)="onWalkinSeatSelection($event)" />
+        </ng-container>
+      </ng-container>
     </mat-card-content>
   </mat-card>
 </div>

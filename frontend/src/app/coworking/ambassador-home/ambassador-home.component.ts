@@ -14,12 +14,17 @@ import {
   tap,
   timer
 } from 'rxjs';
-import { Reservation } from '../coworking.models';
+import {
+  CoworkingStatus,
+  Reservation,
+  SeatAvailability
+} from '../coworking.models';
 import { AmbassadorService } from './ambassador.service';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Profile } from 'src/app/models.module';
-import { ProfileService } from 'src/app/profile/profile.service';
+import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
+import { CoworkingService } from '../coworking.service';
 
 @Component({
   selector: 'app-coworking-ambassador-home',
@@ -36,15 +41,12 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
     resolve: { profile: profileResolver }
   };
 
-  userLookup: FormControl = new FormControl();
-  public selectedUser?: Profile;
-  private filteredUsers: ReplaySubject<Profile[]> = new ReplaySubject();
-  public filteredUsers$: Observable<Profile[]> =
-    this.filteredUsers.asObservable();
-
   reservations$: Observable<Reservation[]>;
   upcomingReservations$: Observable<Reservation[]>;
   activeReservations$: Observable<Reservation[]>;
+
+  welcomeDeskReservationSelection: PublicProfile[] = [];
+  status$: Observable<CoworkingStatus>;
 
   columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
 
@@ -52,7 +54,8 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
 
   constructor(
     public ambassadorService: AmbassadorService,
-    public profileService: ProfileService
+    public profileService: ProfileService,
+    public coworkingService: CoworkingService
   ) {
     this.reservations$ = this.ambassadorService.reservations$;
     this.upcomingReservations$ = this.reservations$.pipe(
@@ -63,28 +66,55 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
         reservations.filter((r) => r.state === 'CHECKED_IN')
       )
     );
+
+    this.status$ = coworkingService.status$;
   }
 
   ngOnInit(): void {
-    this.refreshSubscription = timer(0, 5000)
+    this.refreshSubscription = timer(0, 50000)
       .pipe(tap((_) => this.ambassadorService.fetchReservations()))
       .subscribe();
-
-    this.filteredUsers$ = this.userLookup.valueChanges.pipe(
-      startWith(''),
-      filter((search: string) => search.length > 2),
-      debounceTime(100),
-      mergeMap((search) => this.profileService.search(search))
-    );
   }
 
   ngOnDestroy(): void {
     this.refreshSubscription.unsubscribe();
   }
 
-  public onOptionSelected(event: MatAutocompleteSelectedEvent) {
-    let user = event.option.value as Profile;
-    this.selectedUser = user;
-    this.userLookup.setValue('');
+  onUsersChanged(users: PublicProfile[]) {
+    if (users.length > 0) {
+      this.coworkingService.pollStatus();
+    }
+  }
+
+  onWalkinSeatSelection(seatSelection: SeatAvailability[]) {
+    if (
+      seatSelection.length > 0 &&
+      this.welcomeDeskReservationSelection.length > 0
+    ) {
+      this.ambassadorService
+        .makeDropinReservation(
+          seatSelection,
+          this.welcomeDeskReservationSelection
+        )
+        .subscribe({
+          next: (reservation) => {
+            this.welcomeDeskReservationSelection = [];
+            // Hack to force the pull of new reservations
+            this.ngOnDestroy();
+            this.ngOnInit();
+            alert(
+              `Walk-in reservation made for ${
+                reservation.users[0].first_name
+              } ${
+                reservation.users[0].last_name
+              }!\nReservation ends at ${reservation.end.toLocaleTimeString()}`
+            );
+          },
+          error: (e) => {
+            this.welcomeDeskReservationSelection = [];
+            alert(e.message + '\n\n' + e.error.message);
+          }
+        });
+    }
   }
 }
