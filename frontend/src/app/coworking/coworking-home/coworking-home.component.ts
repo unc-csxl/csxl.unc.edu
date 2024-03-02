@@ -21,15 +21,10 @@ import {
 import {
   Observable,
   Subscription,
-  filter,
   map,
   mergeMap,
   of,
-  timer,
-  catchError,
-  combineLatest,
-  take,
-  switchMap
+  timer
 } from 'rxjs';
 import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { ReservationService } from '../reservation/reservation.service';
@@ -88,21 +83,6 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
       this.roomReservationService.pollUpcomingRoomReservation(this.snackBar);
     });
   }
-  
-  // initRoomReservationsList() {
-  //   console.log("in initUpdateReservationsList");
-
-  //   this.upcomingRoomReservation$ = this.roomReservationService.getReservationsByState('CONFIRMED').pipe(
-  //     map(reservations => reservations.filter(r => isUpcomingRoomReservation(r))),
-  //     catchError((err: Error) => {
-  //       const message = 'Error while fetching upcoming reservations.';
-  //       this.snackBar.open(message, '', { duration: 8000 });
-  //       console.error(err);
-  //       return of([]);
-  //     })
-  //   );
-  // }
-  
 
   reserve(seatSelection: SeatAvailability[]) {
     this.coworkingService.draftReservation(seatSelection).subscribe({
