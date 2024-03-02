@@ -15,7 +15,7 @@ import { EventService } from '../event.service';
 import { profileResolver } from '../../profile/profile.resolver';
 import { Profile, PublicProfile } from '../../profile/profile.service';
 import { OrganizationService } from '../../organization/organization.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
@@ -48,7 +48,7 @@ export class EventEditorComponent {
   public profile: Profile | null = null;
 
   /** Stores whether the user has admin permission over the current organization. */
-  public adminPermission$: Observable<boolean>;
+  public enabled$: Observable<boolean>;
 
   /** Store organizers */
   public organizers: PublicProfile[] = [];
@@ -121,11 +121,13 @@ export class EventEditorComponent {
       Validators.min(this.event.registration_count)
     );
 
-    // Set permission value
-    this.adminPermission$ = this.permission.check(
-      'organization.events.update',
-      `organization/${this.organization!.id}`
-    );
+    // Should the edit form be enabled?
+    this.enabled$ = this.permission
+      .check(
+        'organization.events.update',
+        `organization/${this.organization!.id}`
+      )
+      .pipe(map((permission) => permission || this.event.is_organizer));
 
     // Set the organizers
     // If no organizers already, set current user as organizer
