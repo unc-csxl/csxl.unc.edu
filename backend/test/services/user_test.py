@@ -111,12 +111,12 @@ def test_search_no_match(user_svc: UserService):
 
 
 def test_search_by_pid_does_not_exist(user_svc: UserService):
-    """Test that no users result from a search with no matches."""
+    """Test searching for a partial PID that does not exist."""
     users = user_svc.search(ambassador, "123")
     assert len(users) == 0
 
 def test_search_by_pid_rhonda(user_svc: UserService):
-    """Test that no users result from a search with no matches."""
+    """Test searching for a partial PID that does exist."""
     users = user_svc.search(ambassador, "999")
     assert len(users) == 1
     assert users[0] == root
