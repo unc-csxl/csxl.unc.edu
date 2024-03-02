@@ -46,3 +46,9 @@ p {
     font-size: .8em;
   }
 }
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* This ensures vertical alignment if needed */
+}
