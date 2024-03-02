@@ -39,11 +39,13 @@ def checkin_reservation(
 
 
 @api.post("/reservation", tags=["Coworking"])
-def staff_reservation(
+def create_walkin_reservation(
     reservation_request: ReservationRequest,
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
 ) -> Reservation:
+    """Create a walk-in reservation as an ambassador for a user showing up to the desk
+    without having drafted/confirmed a reservation of their own ahead of time."""
     # TODO: The efficiency of this operation could be improved with a custom method, but since this
     # happens at the speed of an ambassador manually checking someone in (and is the sequence of steps
     # that normally take place otherwise), reusing existing methods here is fine for now.
