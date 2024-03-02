@@ -57,4 +57,4 @@ class PolicyService:
         return timedelta(minutes=10)
     
     def non_reservable_rooms(self) -> list[str]:
-        return ['SN156','404']
+        return ['404']
