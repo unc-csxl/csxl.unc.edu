@@ -192,27 +192,49 @@ class ReservationService:
         self, date: datetime, subject: User
     ) -> dict[str, str]:
         """
-        Generates a map of room reservations for a given date.
+        Retrieves a detailed mapping of room reservation statuses for a specific date, tailored for a given user.
 
-        This function returns a dictionary where each key is a room ID and the value
-        is a list of time slot statuses for that room. The statuses are represented as integers:
-        0 (Available - Green) 
-        1 (Reserved - Red)
-        2 (Selected - Orange, managed by frontend)
-        3 (Unavailable - Grayed out)
-        4 (Subject's Reservation - Red)
+        This method returns an instance of ReservationMapDetails, which includes:
+        - A dictionary (`reserved_date_map`) where keys are room IDs and values are lists of time slot statuses 
+        for each room. Statuses are integers representing: 
+            0 (Available - Green)
+            1 (Reserved - Red)
+            2 (Selected - Orange)
+            3 (Unavailable - Grayed out)
+            4 (Subject's Reservation - Blue).
+        - The start (`operating_hours_start`) and end (`operating_hours_end`) times of operating hours for 
+        the date queried.
+        - The total number of time slots (`number_of_time_slots`) available within the operating hours, 
+        based on 30-minute intervals.
+
+        It handles various scenarios including days without operating hours by providing a default schedule 
+        (10 am to 6 pm) and adjusting time slots based on current time to mark past slots as unavailable. 
+        It supports rounding start and end times to the nearest half-hour and excludes reservations that
+        are outside the operating hours.
 
         Args:
-            date (datetime): The date for which to query reservations.
-            subject (User): The user for whom the reservation statuses are being checked.
+            date (datetime): The date for which the reservation statuses are to be fetched.
+            subject (User): The user for whom the reservation statuses are being determined, to highlight 
+                            their own reservations.
 
         Returns:
-            dict[str, list[int]]: A dictionary mapping each room ID to a list of reservation statuses.
+            ReservationMapDetails: An object containing the mapping of room reservation statuses, 
+                                   operating hours, and the number of time slots.
+
+        Note:
+            This method assumes individual user reservations. Group reservations require adjustments to 
+            the implementation. 
+            
+            Future reservations are shown up to the current time, with past slots marked as unavailable 
+            for today's date.
         """
         reserved_date_map: dict[str, list[int]] = {}
 
+        # Query DB to get reservable rooms. You can change coworking policy to change
+        # which rooms are reservable. SN156 should not go in coworking policy.
         rooms = self._get_reservable_rooms()
 
+        # Generate a 1 day time range to get operating hours on date.
         date_midnight = date.replace(hour=0, minute=0, second=0)
         tomorrow_midnight = date_midnight + timedelta(days=1)
         day_range = TimeRange(start=date_midnight, end=tomorrow_midnight)
@@ -222,10 +244,19 @@ class ReservationService:
             operating_hours_on_date = self._operating_hours_svc.schedule(day_range)[0]
         except:
             # TODO: Possibly consider thowing exception and handling on the frontend?
+            # If operating hours don't exist, then return an all grayed out table
+            # from 10 am to 6 pm which is the standard office hours.
             for room in rooms:
                 if room.id:
                     reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
+            return ReservationMapDetails(
+                reserved_date_map=reserved_date_map,
+                operating_hours_start=date.replace(hour=10),
+                operating_hours_end=date.replace(hour=18),
+                number_of_time_slots=16
+            )
 
+        # Extract the start time and end time for operating hours rounded to the closest half hour
         operating_hours_start = self._round_to_closest_half_hour(operating_hours_on_date.start, round_up=True)
         operating_hours_end = self._round_to_closest_half_hour(operating_hours_on_date.end, round_up=False)
         operating_hours_time_delta = operating_hours_end - operating_hours_start
@@ -245,33 +276,33 @@ class ReservationService:
                 for i in range(0, current_time_idx):
                     time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
-            reservations = self._query_confirmed_reservations_by_date_and_room(date, room.id)
+            room_id = room.id if room else "SN156"
+            reservations = self._query_confirmed_reservations_by_date_and_room(date, room_id)
             for reservation in reservations:
-                if reservation.room.id == room.id:
-                    start_idx = self._idx_calculation(reservation.start, operating_hours_start)
-                    end_idx = self._idx_calculation(reservation.end, operating_hours_start)
+                start_idx = self._idx_calculation(reservation.start, operating_hours_start)
+                end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
-                    if start_idx < 0 or end_idx > operating_hours_duration:
+                if start_idx < 0 or end_idx > operating_hours_duration:
+                    continue
+
+                # Gray out previous time slots for today only
+                if date.date() == current_time.date():
+                    if end_idx < current_time_idx:
                         continue
+                    start_idx = max(current_time_idx, start_idx)
 
-                    # Gray out previous time slots for today only
-                    if date.date() == current_time.date():
-                        if end_idx < current_time_idx:
-                            continue
-                        start_idx = max(current_time_idx, start_idx)
-
-                    for idx in range(start_idx, end_idx):
-                        # Currently only assuming single user. 
-                        # TODO: If making group reservations, need to change this.
-                        if reservation.users[0].id == subject.id:
-                            time_slots_for_room[idx] = RoomState.SUBJECT_RESERVED.value
-                        else:
-                            if time_slots_for_room[idx] != RoomState.SUBJECT_RESERVED.value:
-                                time_slots_for_room[idx] = RoomState.RESERVED.value
+                for idx in range(start_idx, end_idx):
+                    # Currently only assuming single user. 
+                    # TODO: If making group reservations, need to change this.
+                    if reservation.users[0].id == subject.id:
+                        time_slots_for_room[idx] = RoomState.SUBJECT_RESERVED.value
+                    else:
+                        if time_slots_for_room[idx] != RoomState.SUBJECT_RESERVED.value:
+                            time_slots_for_room[idx] = RoomState.RESERVED.value
             reserved_date_map[room.id] = time_slots_for_room
 
         self._transform_date_map_for_unavailable(reserved_date_map)
-
+        del reserved_date_map['SN156']
         return ReservationMapDetails(
             reserved_date_map=reserved_date_map,
             operating_hours_start=operating_hours_start,
