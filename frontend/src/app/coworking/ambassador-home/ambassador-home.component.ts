@@ -12,6 +12,8 @@ import { AmbassadorService } from './ambassador.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { CoworkingService } from '../coworking.service';
 
+const FIVE_SECONDS = 5 * 1000;
+
 @Component({
   selector: 'app-coworking-ambassador-home',
   templateUrl: './ambassador-home.component.html',
@@ -56,7 +58,7 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.refreshSubscription = timer(0, 50000)
+    this.refreshSubscription = timer(0, FIVE_SECONDS)
       .pipe(tap((_) => this.ambassadorService.fetchReservations()))
       .subscribe();
   }
