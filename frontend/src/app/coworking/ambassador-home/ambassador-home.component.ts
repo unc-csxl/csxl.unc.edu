@@ -2,9 +2,24 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, Subscription, map, mergeMap, tap, timer } from 'rxjs';
+import {
+  Observable,
+  ReplaySubject,
+  Subscription,
+  debounceTime,
+  filter,
+  map,
+  mergeMap,
+  startWith,
+  tap,
+  timer
+} from 'rxjs';
 import { Reservation } from '../coworking.models';
 import { AmbassadorService } from './ambassador.service';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Profile } from 'src/app/models.module';
+import { ProfileService } from 'src/app/profile/profile.service';
 
 @Component({
   selector: 'app-coworking-ambassador-home',
@@ -21,6 +36,12 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
     resolve: { profile: profileResolver }
   };
 
+  userLookup: FormControl = new FormControl();
+  public selectedUser?: Profile;
+  private filteredUsers: ReplaySubject<Profile[]> = new ReplaySubject();
+  public filteredUsers$: Observable<Profile[]> =
+    this.filteredUsers.asObservable();
+
   reservations$: Observable<Reservation[]>;
   upcomingReservations$: Observable<Reservation[]>;
   activeReservations$: Observable<Reservation[]>;
@@ -29,7 +50,10 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
 
   private refreshSubscription!: Subscription;
 
-  constructor(public ambassadorService: AmbassadorService) {
+  constructor(
+    public ambassadorService: AmbassadorService,
+    public profileService: ProfileService
+  ) {
     this.reservations$ = this.ambassadorService.reservations$;
     this.upcomingReservations$ = this.reservations$.pipe(
       map((reservations) => reservations.filter((r) => r.state === 'CONFIRMED'))
@@ -45,9 +69,22 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
     this.refreshSubscription = timer(0, 5000)
       .pipe(tap((_) => this.ambassadorService.fetchReservations()))
       .subscribe();
+
+    this.filteredUsers$ = this.userLookup.valueChanges.pipe(
+      startWith(''),
+      filter((search: string) => search.length > 2),
+      debounceTime(100),
+      mergeMap((search) => this.profileService.search(search))
+    );
   }
 
   ngOnDestroy(): void {
     this.refreshSubscription.unsubscribe();
+  }
+
+  public onOptionSelected(event: MatAutocompleteSelectedEvent) {
+    let user = event.option.value as Profile;
+    this.selectedUser = user;
+    this.userLookup.setValue('');
   }
 }
