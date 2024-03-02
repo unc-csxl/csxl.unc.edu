@@ -9,11 +9,11 @@
  */
 
 import { Component } from '@angular/core';
-import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
+import { profileResolver } from '../../profile/profile.resolver';
 import { Organization } from '../organization.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import { Profile } from '../../profile/profile.service';
 import { organizationResolver } from '../organization.resolver';
 
 @Component({

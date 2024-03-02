@@ -15,9 +15,9 @@ import {
   Route
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
+import { profileResolver } from '../../profile/profile.resolver';
 import { Organization } from '../organization.model';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import { Profile } from '../../profile/profile.service';
 import {
   organizationDetailResolver,
   organizationEventsResolver
