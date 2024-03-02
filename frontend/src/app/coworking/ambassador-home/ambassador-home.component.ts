@@ -2,28 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import {
-  Observable,
-  ReplaySubject,
-  Subscription,
-  debounceTime,
-  filter,
-  map,
-  mergeMap,
-  startWith,
-  tap,
-  timer
-} from 'rxjs';
+import { Observable, Subscription, map, tap, timer } from 'rxjs';
 import {
   CoworkingStatus,
   Reservation,
   SeatAvailability
 } from '../coworking.models';
 import { AmbassadorService } from './ambassador.service';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Profile } from 'src/app/models.module';
-import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
+import { PublicProfile } from 'src/app/profile/profile.service';
 import { CoworkingService } from '../coworking.service';
 
 @Component({
@@ -54,7 +40,6 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
 
   constructor(
     public ambassadorService: AmbassadorService,
-    public profileService: ProfileService,
     public coworkingService: CoworkingService
   ) {
     this.reservations$ = this.ambassadorService.reservations$;
