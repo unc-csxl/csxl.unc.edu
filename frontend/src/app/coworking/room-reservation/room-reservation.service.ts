@@ -63,11 +63,9 @@ export class RoomReservationService extends ReservationService {
     );
   }
 
-  // private findActiveReservationPredicate(reservation:Reservation){
-  //   let now = new Date();
-  //   const activeStates = ["CONFIRMED","CHECKED_IN"];
-  //   return reservation.start <= now && reservation.end > now && activeStates.includes(reservation.state)
-  // }
+  getNumHoursStudyRoomReservations(): Observable<string> {
+    return this.http.get<string>('/api/coworking/user-reservations/');
+  }
 
   pollUpcomingRoomReservation(snackBar: MatSnackBar){
     console.log("running poll UpcomingRoomReservations");
