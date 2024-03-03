@@ -218,8 +218,3 @@ a {
 .reservation-link {
   flex: 1;
 }
-
-mat-divider {
-  margin-top: 8px; /* Space above the divider */
-  margin-bottom: 8px; /* Space below the divider */
-}
