@@ -2,7 +2,7 @@
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from datetime import timedelta
+from datetime import timedelta, datetime, time
 from ...database import db_session
 from ...models import User
 
@@ -10,6 +10,13 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+MONDAY = 0
+TUESDAY = 1
+WEDNESDAY = 2
+THURSDAY = 3
+FRIDAY = 4
+SATURDAY = 5
+SUNDAY = 6
 
 class PolicyService:
     """RoleService is the access layer to the role data model, its members, and permissions.
@@ -62,3 +69,91 @@ class PolicyService:
     
     def non_reservable_rooms(self) -> list[str]:
         return ['404']
+
+    def office_hours(self, date: datetime):
+        day = date.weekday()
+        if day == MONDAY:
+            return {
+                'SN135' : [
+                    (time(hour=16, minute=30), time(hour=17, minute=00)),
+                    ],
+                'SN137' : [
+                    (time(hour=15, minute=00), time(hour=16, minute=30))
+                ],
+                'SN139' : [],
+                'SN141' : [
+                    (time(hour=16, minute=00), time(hour=17, minute=30))
+                ]
+            }
+        elif day == TUESDAY:
+            return {
+                'SN135' : [
+                    (time(hour=14, minute=30), time(hour=16, minute=00)),
+                    (time(hour=11, minute=00), time(hour=12, minute=00))
+                    ],
+                'SN137' : [],
+                'SN139' : [
+                    (time(hour=10, minute=30), time(hour=11, minute=00)),
+                    (time(hour=11, minute=30), time(hour=13, minute=00)),
+                ],
+                'SN141' : [
+                    (time(hour=10, minute=00), time(hour=11, minute=00))
+                ]
+            }
+        elif day == WEDNESDAY:
+            return {
+                'SN135' : [
+                    (time(hour=11, minute=00), time(hour=12, minute=00))
+                    ],
+                'SN137' : [],
+                'SN139' : [
+                    (time(hour=10, minute=30), time(hour=11, minute=00)),
+                    (time(hour=11, minute=30), time(hour=13, minute=00)),
+                    (time(hour=14, minute=30), time(hour=15, minute=00))
+                ],
+                'SN141' : [
+                    (time(hour=10, minute=00), time(hour=11, minute=00))
+                ]
+            }
+        elif day == THURSDAY:
+            return {
+                'SN135' : [
+                    (time(hour=14, minute=30), time(hour=16, minute=00)),
+                    (time(hour=11, minute=00), time(hour=12, minute=00))
+                    ],
+                'SN137' : [],
+                'SN139' : [
+                    (time(hour=10, minute=30), time(hour=11, minute=00)),
+                    (time(hour=11, minute=30), time(hour=13, minute=00)),
+                    (time(hour=14, minute=30), time(hour=15, minute=00))
+                ],
+                'SN141' : []
+            }
+        elif day == FRIDAY:
+            return {
+                'SN135' : [
+                    (time(hour=11, minute=00), time(hour=12, minute=00))
+                    ],
+                'SN137' : [],
+                'SN139' : [
+                    (time(hour=10, minute=30), time(hour=11, minute=00)),
+                    (time(hour=14, minute=30), time(hour=15, minute=00))
+                ],
+                'SN141' : [
+                    (time(hour=10, minute=00), time(hour=11, minute=00))
+                ]
+            }
+        elif day == SATURDAY:
+            return {
+                'SN135' : [],
+                'SN137' : [],
+                'SN139' : [],
+                'SN141' : []
+            }
+        elif day == SUNDAY:
+            return {
+                'SN135' : [],
+                'SN137' : [],
+                'SN139' : [],
+                'SN141' : []
+            }    
