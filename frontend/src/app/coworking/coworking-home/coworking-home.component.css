@@ -6,11 +6,14 @@
 *
 */
 
+.coworking-home-top{
+    padding-bottom: 24px;
+    padding-top: 24px;
+}
+
 .coworking-reservations-grid {
     display: grid;
-    padding-top: 24px;
-    padding-left: 24px;
-    padding-right: 24px;
+    padding: 0px 24px 0px 24px !important;
     grid-template-columns: 4fr;
     /* grid-template-rows: 0fr 2fr; <-- UNCOMMENT */
     row-gap: 15px;
@@ -45,9 +48,15 @@
 
 /** Make cards display in one column, with the event card appearing last */
 @media only screen and (max-device-width: 730px) {
+    .coworking-home-top{
+        padding-bottom: 20px;
+        padding-top: 20px;
+    }
+
     .coworking-reservations-grid {
         display: grid;
-        padding: 20px;
+        box-sizing: border-box; /* This ensures padding is included in the width */
+        padding: 0px 20px 0px 20px !important;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
         row-gap: 15px;
@@ -57,22 +66,25 @@
         box-sizing: border-box;
         padding: 0px;
         margin: 0px;
-     
     }
+
+    .reservation-card {
+        padding: 4px 16px 4px 16px !important;
+        box-sizing: border-box;
+        max-width: 348px; /* Max width as per the other element */
+        /* max-height: 321px; Max height as per the other element */
+        /* ... other necessary styles ... */
+    }
+    
 
     .dropin-card-container {
         order: 1;
-    }
-
-    .reservation-card{
-        order: 2;
     }
 
     .upcoming-card-container {
         order: 3;
     }
 }
-
 
 .navigation-card {
     background-color: rgb(71, 134, 198); /* Set the background color to gray */
@@ -113,16 +125,12 @@
     color: white;
 }
 
-.mat-mdc-card {
-    padding: 0px 16px 16px;
-}
-
 
 .mat-mdc-list-item-meta.mdc-list-item__end {
     display: flex;
     align-items: center;
-    justify-content: center; /* If you also want to center it horizontally */
-    height: 100%; /* Set a specific height if necessary */
+    justify-content: center;
+    height: 100%; 
 }
 
 
@@ -134,8 +142,7 @@
   
 .mdc-list-item {
     display: flex;
-    align-items: center; /* This will vertically center the children elements */
-    /* ... other styles ... */
+    align-items: center;
 }
 
 .mdc-list-item--with-leading-icon .mdc-list-item__start.unavailable {
@@ -149,10 +156,9 @@
 /* End Action List Styling */
 
 .mat-mdc-card {
+    padding: 0px;
     margin: 0 !important;
     max-width: 640px;
-    padding-left: 20px;
-    padding-right: 16px;
 }
 
 .dropin-header {
@@ -210,10 +216,7 @@ a {
 }
 
 .reservation-card {
-    display: flex;
-    flex-direction: column;
-    margin: 0px;
-    padding: 0px 16px 16px ;
+    padding:8px 16px 8px 16px; /* Top padding is now the same as sides and bottom */
 }
 
 .reservation-link {
@@ -223,4 +226,4 @@ a {
 mat-divider {
     margin-top: 8px; /* Space above the divider */
     margin-bottom: 8px; /* Space below the divider */
-  }
+}
