@@ -15,9 +15,10 @@ from ...models.coworking import (
     ReservationRequest,
     ReservationPartial,
     ReservationState,
+    ReservationMapDetails
 )
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -89,7 +90,7 @@ def get_reservations_for_rooms_by_date(
     date: datetime,
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
-) -> dict[str, list[int]]:
+) -> ReservationMapDetails:
     """See available rooms for any given day."""
     try:
         return reservation_svc.get_map_reserved_times_by_date(date, subject)

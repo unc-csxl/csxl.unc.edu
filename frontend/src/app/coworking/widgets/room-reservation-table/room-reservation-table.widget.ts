@@ -1,12 +1,8 @@
-import { COMPILER_OPTIONS, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
-import { Subscription, max, Observable, throwError, catchError } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import {
-  Reservation,
-  ReservationRequest,
-  TableCell
-} from 'src/app/coworking/coworking.models';
+import { Reservation, TableCell } from 'src/app/coworking/coworking.models';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { CloseScrollStrategy } from '@angular/cdk/overlay';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,30 +13,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./room-reservation-table.widget.css']
 })
 export class RoomReservationWidgetComponent {
-  timeSlots = [
-    '10:00AM <br> to<br> 10:30AM',
-    '10:30AM <br> to<br> 11:00AM',
-    '11:00AM <br> to<br> 11:30AM',
-    '11:30AM <br> to<br> 12:00PM',
-    '12:00PM <br> to<br> 12:30PM',
-    '12:30PM <br> to<br>  1:00PM',
-    ' &nbsp;1:00PM&nbsp;  <br>  to <br>  &nbsp;1:30PM&nbsp;',
-    ' &nbsp;1:30PM&nbsp;  <br>  to <br>  &nbsp;2:00PM&nbsp;',
-    ' &nbsp;2:00PM&nbsp;  <br>  to <br>  &nbsp;2:30PM&nbsp;',
-    ' &nbsp;2:30PM&nbsp;  <br>  to <br>  &nbsp;3:00PM&nbsp;',
-    ' &nbsp;3:00PM&nbsp;  <br>  to <br>  &nbsp;3:30PM&nbsp;',
-    ' &nbsp;3:30PM&nbsp;  <br>  to <br>  &nbsp;4:00PM&nbsp;',
-    ' &nbsp;4:00PM&nbsp;  <br>  to <br>  &nbsp;4:30PM&nbsp;',
-    ' &nbsp;4:30PM&nbsp;  <br>  to <br>  &nbsp;5:00PM&nbsp;',
-    ' &nbsp;5:00PM&nbsp;  <br>  to <br>  &nbsp;5:30PM&nbsp;',
-    ' &nbsp;5:30PM&nbsp;  <br>  to <br>  &nbsp;6:00PM&nbsp;'
-  ];
+  timeSlots: string[] = [];
 
   //- Reservations Map
   reservationsMap: Record<string, number[]> = {};
 
   //- Select Button enabled
   selectButton: boolean = false;
+
+  operationStart: Date = new Date();
 
   //- Selected Date
   selectedDate: string = '';
@@ -73,7 +54,16 @@ export class RoomReservationWidgetComponent {
   getReservationsByDate(date: Date) {
     this.reservationTableService.getReservationsForRoomsByDate(date).subscribe(
       (result) => {
-        this.reservationsMap = result;
+        this.reservationsMap = result.reserved_date_map;
+        let end = new Date(result.operating_hours_end);
+        this.operationStart = new Date(result.operating_hours_start);
+        let slots = result.number_of_time_slots;
+
+        this.timeSlots = this.reservationTableService.generateTimeSlots(
+          this.operationStart,
+          end,
+          slots
+        );
       },
       (error) => {
         // Handle the error here
@@ -142,7 +132,7 @@ export class RoomReservationWidgetComponent {
   draftReservation() {
     const result = this.reservationTableService.draftReservation(
       this.reservationsMap,
-      this.selectedDate
+      this.operationStart
     );
     result.subscribe(
       (reservation: Reservation) => {
@@ -151,6 +141,7 @@ export class RoomReservationWidgetComponent {
           `/coworking/confirm-reservation/${reservation.id}`
         );
       },
+
       (error) => {
         // Handle errors here
         console.error('Error drafting reservation', error);
