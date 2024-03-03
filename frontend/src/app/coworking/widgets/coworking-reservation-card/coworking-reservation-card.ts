@@ -1,6 +1,12 @@
+/**
+ * @author John Schachte
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Reservation } from 'src/app/coworking/coworking.models';
-import { Observable, map, mergeMap, timer, filter, BehaviorSubject } from 'rxjs';
+import { Observable, map, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -31,6 +37,14 @@ export class CoworkingReservationCard implements OnInit {
     this.isCancelExpanded$ = this.coworkingService.isCancelExpanded.asObservable();
   }
 
+  /**
+ * A lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
+ * 
+ * Use this hook to initialize the directive or component. This is the right place to fetch data from a server,
+ * set up any local state, or perform operations that need to be executed only once when the component is instantiated.
+ * 
+ * @returns {void} - This method does not return a value.
+ */
   ngOnInit(): void {
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
   }
@@ -90,7 +104,7 @@ export class CoworkingReservationCard implements OnInit {
   checkin(): void {
     this.reservationService.checkin(this.reservation).subscribe({
       next: () => {
-        this.triggerUpdateReservationsList();
+        this.refreshCoworkingHome();
       },
       error: (error: Error) => {
         this.snackBar.open(
@@ -128,11 +142,6 @@ export class CoworkingReservationCard implements OnInit {
       map(reservationDraftDeadline),
       map(deadlineString)
     );
-  }
-
-  triggerUpdateReservationsList() {
-    this.updateActiveReservation.emit();
-    this.updateReservationsList.emit();
   }
 
   refreshCoworkingHome(): void {

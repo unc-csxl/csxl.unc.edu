@@ -32,4 +32,7 @@ table {
     padding: 10px 20px; /* Add padding */
     margin-left: 10px;
   }
-  
+
+  .divider {
+    margin-bottom: 1em;
+  }

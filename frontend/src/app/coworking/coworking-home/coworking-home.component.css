@@ -213,7 +213,7 @@ a {
     display: flex;
     flex-direction: column;
     margin: 0px;
-    padding: 0px 16px 16px;
+    padding: 0px 16px 16px ;
 }
 
 .reservation-link {

@@ -1,3 +1,9 @@
+/**
+ * @author John Schachte, Aarjav Jain, Nick Wherthey
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';

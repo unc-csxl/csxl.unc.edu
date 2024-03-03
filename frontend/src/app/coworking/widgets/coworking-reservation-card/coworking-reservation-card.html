@@ -14,18 +14,13 @@
     
             <mat-card-header *ngSwitchCase="'CHECKED_IN'">
                 <mat-card-title>You're Checked In!</mat-card-title>
-                <ng-component *ngIf="!reservation.room; else checkedInText">
+                <ng-component *ngIf="!reservation.room">
                     <mat-card-subtitle>See the XL Ambassador if you need anything. When you're done, just
                         press the Check Out button or check out with the XL Ambassador.
                         <br/>
                         Changing seats? Please check out and check back in.
                     </mat-card-subtitle>
                 </ng-component>
-                <ng-template #checkedInText>
-                    <mat-card-subtitle>
-                        When you're done, press the Check Out button or check out with the XL Ambassador.
-                    </mat-card-subtitle>
-                </ng-template>
             </mat-card-header>
     
             <mat-card-header *ngSwitchCase="'CHECKED_OUT'">
@@ -70,7 +65,7 @@
                     <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
                 </h3>
 
-                <ng-container *ngIf="reservation.state === 'CONFIRMED' || reservation.state === 'DRAFT'">
+                <ng-container *ngIf="reservation.state === 'CONFIRMED'">
                     <!-- Accordion Toggle Button with Material Icon -->
                     <button mat-icon-button (click)="toggleCancelExpansion()"
                             matTooltip="Toggle Action Buttons" 
@@ -87,7 +82,6 @@
         <div #Actions>
             <mat-card-actions align="end" [ngSwitch]="reservation.state">
                 <ng-container *ngSwitchCase="'DRAFT'">
-                    <ng-container *ngIf="isCancelExpanded$ | async">
                         <button mat-stroked-button type="submit" (click)="cancel()">
                             Cancel
                         </button>
@@ -95,7 +89,6 @@
                         <button mat-stroked-button type="submit" color="primary" class="action-button" (click)="confirm()">
                             {{ draftConfirmationDeadline$ | async }}
                         </button>
-                    </ng-container>
                 </ng-container>
     
                 <ng-container *ngSwitchCase="'CONFIRMED'">

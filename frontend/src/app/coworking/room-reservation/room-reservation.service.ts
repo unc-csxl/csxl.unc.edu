@@ -67,6 +67,25 @@ export class RoomReservationService extends ReservationService {
     return this.http.get<string>('/api/coworking/user-reservations/');
   }
 
+  /**
+   * Polls for upcoming room reservations with a 'CONFIRMED' state that are not currently active.
+   * 
+   * This method fetches reservations and filters them to find upcoming reservations based on a specific predicate.
+   * The predicate checks that the reservation is not active and that it has a defined room.
+   * In case of an error while fetching reservations, it displays an error message using `MatSnackBar`.
+   * 
+   * @param {MatSnackBar} snackBar - The MatSnackBar service used to display notifications or error messages.
+   * 
+   * @example
+   * pollUpcomingRoomReservation(this.snackBar);
+   * 
+   * @remarks
+   * This method utilizes RxJS operators to process the stream of reservations. The `map` operator is used to filter
+   * reservations based on the provided predicate. The `catchError` operator handles any errors during the fetching process,
+   * displaying an error message and logging the error to the console.
+   * 
+   * @returns {void} - This method does not return a value; it sets the upcoming reservations in a state management variable.
+   */
   pollUpcomingRoomReservation(snackBar: MatSnackBar){
     console.log("running poll UpcomingRoomReservations");
 
