@@ -26,25 +26,25 @@ export class CoworkingReservationCard implements OnInit {
 
   public draftConfirmationDeadline$!: Observable<string>;
   isCancelExpanded$: Observable<boolean>;
-  
+
   constructor(
     public router: Router,
     public reservationService: RoomReservationService,
     protected snackBar: MatSnackBar,
-    public coworkingService: CoworkingService,
-
+    public coworkingService: CoworkingService
   ) {
-    this.isCancelExpanded$ = this.coworkingService.isCancelExpanded.asObservable();
+    this.isCancelExpanded$ =
+      this.coworkingService.isCancelExpanded.asObservable();
   }
 
   /**
- * A lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
- * 
- * Use this hook to initialize the directive or component. This is the right place to fetch data from a server,
- * set up any local state, or perform operations that need to be executed only once when the component is instantiated.
- * 
- * @returns {void} - This method does not return a value.
- */
+   * A lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
+   *
+   * Use this hook to initialize the directive or component. This is the right place to fetch data from a server,
+   * set up any local state, or perform operations that need to be executed only once when the component is instantiated.
+   *
+   * @returns {void} - This method does not return a value.
+   */
   ngOnInit(): void {
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
   }
@@ -77,13 +77,13 @@ export class CoworkingReservationCard implements OnInit {
         // this.router.navigateByUrl('/coworking');
       },
       error: (error: Error) => {
-          this.snackBar.open(
-            'Error: Issue confirming reservation. Please see CSXL Ambassador for assistance.',
-            '',
-            { duration: 8000 }
-          );
-          console.error(error.message);
-        }
+        this.snackBar.open(
+          'Error: Issue confirming reservation. Please see CSXL Ambassador for assistance.',
+          '',
+          { duration: 8000 }
+        );
+        console.error(error.message);
+      }
     });
   }
 

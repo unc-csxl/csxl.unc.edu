@@ -1,130 +1,157 @@
 <mat-card appearance="outlined">
-    <!-- Card Header -->
-    <mat-card-content>
-        <ng-container [ngSwitch]="reservation.state">
-            <mat-card-header *ngSwitchCase="'DRAFT'">
-                <mat-card-title>Confirm Reservation Details</mat-card-title>
-            </mat-card-header>
-    
-            <mat-card-header *ngSwitchCase="'CONFIRMED'">
-                <mat-card-subtitle *ngIf="!reservation.room">See the XL Ambassador staffing the front desk to
-                    check-in.
-                </mat-card-subtitle>
-            </mat-card-header>
-    
-            <mat-card-header *ngSwitchCase="'CHECKED_IN'">
-                <mat-card-title>You're Checked In!</mat-card-title>
-                <ng-component *ngIf="!reservation.room">
-                    <mat-card-subtitle>See the XL Ambassador if you need anything. When you're done, just
-                        press the Check Out button or check out with the XL Ambassador.
-                        <br/>
-                        Changing seats? Please check out and check back in.
-                    </mat-card-subtitle>
-                </ng-component>
-            </mat-card-header>
-    
-            <mat-card-header *ngSwitchCase="'CHECKED_OUT'">
-                <mat-card-title>Thanks for visiting!</mat-card-title>
-                <mat-card-subtitle>You're all checked out.</mat-card-subtitle>
-            </mat-card-header>
-    
-            <mat-card-header *ngSwitchCase="'CANCELLED'">
-                <mat-card-title>Reservation Cancelled</mat-card-title>
-                <mat-card-subtitle></mat-card-subtitle>
-            </mat-card-header>
-        </ng-container>
-    </mat-card-content>
+  <!-- Card Header -->
+  <mat-card-content>
+    <ng-container [ngSwitch]="reservation.state">
+      <mat-card-header *ngSwitchCase="'DRAFT'">
+        <mat-card-title>Confirm Reservation Details</mat-card-title>
+      </mat-card-header>
 
-    <div class="divider"></div>
-    
-    <mat-card-content>
-        <div #Details>
-            <h3>
-                <label>When</label>
-                <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
-                <strong>{{ reservation.end | date: 'shortTime' }}</strong>
-                <strong>{{ ', ' }}</strong>
-                <strong class="date">{{
-                    reservation.start | date: 'dd MMM yyyy'
-                }}</strong>
-            </h3>
-            
-            <mat-divider></mat-divider>
-            <!-- check to see if this is a room reservation -->
-            <ng-container *ngIf="reservation.seats.length > 0">
-                <h3>
-                    <label>What</label> <strong>{{ reservation.seats[0].title }}</strong>
-                </h3>
-                <mat-divider></mat-divider>
-            </ng-container>
-            
-            <div class="header-container">
-                <!-- if not a room reservation then  XL Colab -->
-                <h3>
-                    <label>Where</label> 
-                    <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
-                </h3>
+      <mat-card-header *ngSwitchCase="'CONFIRMED'">
+        <mat-card-subtitle *ngIf="!reservation.room"
+          >See the XL Ambassador staffing the front desk to check-in.
+        </mat-card-subtitle>
+      </mat-card-header>
 
-                <ng-container *ngIf="reservation.state === 'CONFIRMED'">
-                    <!-- Accordion Toggle Button with Material Icon -->
-                    <button mat-icon-button (click)="toggleCancelExpansion()"
-                            matTooltip="Toggle Action Buttons" 
-                            aria-label="Toggle Action Buttons">
-                        <mat-icon>{{ (isCancelExpanded$ | async) ? 'expand_less' : 'expand_more' }}</mat-icon>
-                    </button>
-                </ng-container>
-                
-            </div>
-        </div>
+      <mat-card-header *ngSwitchCase="'CHECKED_IN'">
+        <mat-card-title>You're Checked In!</mat-card-title>
+        <ng-component *ngIf="!reservation.room">
+          <mat-card-subtitle
+            >See the XL Ambassador if you need anything. When you're done, just
+            press the Check Out button or check out with the XL Ambassador.
+            <br />
+            Changing seats? Please check out and check back in.
+          </mat-card-subtitle>
+        </ng-component>
+      </mat-card-header>
 
+      <mat-card-header *ngSwitchCase="'CHECKED_OUT'">
+        <mat-card-title>Thanks for visiting!</mat-card-title>
+        <mat-card-subtitle>You're all checked out.</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-header *ngSwitchCase="'CANCELLED'">
+        <mat-card-title>Reservation Cancelled</mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+      </mat-card-header>
+    </ng-container>
+  </mat-card-content>
+
+  <div class="divider"></div>
+
+  <mat-card-content>
+    <div #Details>
+      <h3>
+        <label>When</label>
+        <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
+        <strong>{{ reservation.end | date: 'shortTime' }}</strong>
+        <strong>{{ ', ' }}</strong>
+        <strong class="date"
+          >{{ reservation.start | date: 'dd MMM yyyy' }}</strong
+        >
+      </h3>
+
+      <mat-divider></mat-divider>
+      <!-- check to see if this is a room reservation -->
+      <ng-container *ngIf="reservation.seats.length > 0">
+        <h3>
+          <label>What</label> <strong>{{ reservation.seats[0].title }}</strong>
+        </h3>
         <mat-divider></mat-divider>
+      </ng-container>
 
-        <div #Actions>
-            <mat-card-actions align="end" [ngSwitch]="reservation.state">
-                <ng-container *ngSwitchCase="'DRAFT'">
-                        <button mat-stroked-button type="submit" (click)="cancel()">
-                            Cancel
-                        </button>
-                        &nbsp;
-                        <button mat-stroked-button type="submit" color="primary" class="action-button" (click)="confirm()">
-                            {{ draftConfirmationDeadline$ | async }}
-                        </button>
-                </ng-container>
-    
-                <ng-container *ngSwitchCase="'CONFIRMED'">
+      <div class="header-container">
+        <!-- if not a room reservation then  XL Colab -->
+        <h3>
+          <label>Where</label>
+          <strong
+            >{{ reservation.room ? reservation.room.id : 'The XL Colab in
+            Sitterson 156' }}</strong
+          >
+        </h3>
 
-                
-                    <!-- Accordion Content -->
-                    <ng-container *ngIf="isCancelExpanded$ | async ">
-                        <button mat-stroked-button type="submit" (click)="cancel()">
-                            Cancel
-                        </button>
-                        &nbsp;
-                        <button *ngIf="checkCheckinAllowed() && reservation.room" mat-stroked-button type="submit" color="primary"
-                            (click)="checkin()">
-                            Check In
-                        </button>
-                    </ng-container>
-                </ng-container>
-    
-                <ng-container *ngSwitchCase="'CHECKED_IN'">
-                    <button mat-stroked-button type="submit" (click)="checkout()" color="primary">
-                        Check Out
-                    </button>
-                </ng-container>
-    
-                <ng-container *ngSwitchCase="'CHECKED_OUT'">
-                    <button mat-stroked-button type="submit" (click)="refreshCoworkingHome()" color="primary">
-                        Return to Coworking Home
-                    </button>
-                </ng-container>
-    
-                <ng-container *ngSwitchCase="'CANCELLED'">
-                    <button mat-stroked-button type="submit" (click)="refreshCoworkingHome()" color="primary">
-                        Return to Coworking Home
-                    </button>
-                </ng-container>
-            </mat-card-actions>
-        </div>
-    </mat-card-content>
+        <ng-container *ngIf="reservation.state === 'CONFIRMED'">
+          <!-- Accordion Toggle Button with Material Icon -->
+          <button
+            mat-icon-button
+            (click)="toggleCancelExpansion()"
+            matTooltip="Toggle Action Buttons"
+            aria-label="Toggle Action Buttons">
+            <mat-icon
+              >{{ (isCancelExpanded$ | async) ? 'expand_less' : 'expand_more'
+              }}</mat-icon
+            >
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div #Actions>
+      <mat-card-actions align="end" [ngSwitch]="reservation.state">
+        <ng-container *ngSwitchCase="'DRAFT'">
+          <button mat-stroked-button type="submit" (click)="cancel()">
+            Cancel
+          </button>
+          &nbsp;
+          <button
+            mat-stroked-button
+            type="submit"
+            color="primary"
+            class="action-button"
+            (click)="confirm()">
+            {{ draftConfirmationDeadline$ | async }}
+          </button>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'CONFIRMED'">
+          <!-- Accordion Content -->
+          <ng-container *ngIf="isCancelExpanded$ | async ">
+            <button mat-stroked-button type="submit" (click)="cancel()">
+              Cancel
+            </button>
+            &nbsp;
+            <button
+              *ngIf="checkCheckinAllowed() && reservation.room"
+              mat-stroked-button
+              type="submit"
+              color="primary"
+              (click)="checkin()">
+              Check In
+            </button>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'CHECKED_IN'">
+          <button
+            mat-stroked-button
+            type="submit"
+            (click)="checkout()"
+            color="primary">
+            Check Out
+          </button>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'CHECKED_OUT'">
+          <button
+            mat-stroked-button
+            type="submit"
+            (click)="refreshCoworkingHome()"
+            color="primary">
+            Return to Coworking Home
+          </button>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'CANCELLED'">
+          <button
+            mat-stroked-button
+            type="submit"
+            (click)="refreshCoworkingHome()"
+            color="primary">
+            Return to Coworking Home
+          </button>
+        </ng-container>
+      </mat-card-actions>
+    </div>
+  </mat-card-content>
 </mat-card>

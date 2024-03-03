@@ -18,14 +18,7 @@ import {
   Reservation,
   SeatAvailability
 } from '../coworking.models';
-import {
-  Observable,
-  Subscription,
-  map,
-  mergeMap,
-  of,
-  timer
-} from 'rxjs';
+import { Observable, Subscription, map, mergeMap, of, timer } from 'rxjs';
 import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { ReservationService } from '../reservation/reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -65,7 +58,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     private roomReservationService: RoomReservationService
   ) {
     this.status$ = coworkingService.status$;
-    this.upcomingRoomReservation$ = roomReservationService.upcomingReservations$;
+    this.upcomingRoomReservation$ =
+      roomReservationService.upcomingReservations$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
@@ -73,10 +67,10 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   /**
    * A lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
-   * 
+   *
    * Use this hook to initialize the directive or component. This is the right place to fetch data from a server,
    * set up any local state, or perform operations that need to be executed only once when the component is instantiated.
-   * 
+   *
    * @returns {void} - This method does not return a value.
    */
   ngOnInit(): void {
@@ -84,7 +78,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
-    this.timerSubscription = timer(0, 10000).subscribe(() =>{
+    this.timerSubscription = timer(0, 10000).subscribe(() => {
       this.coworkingService.pollStatus();
       this.roomReservationService.pollUpcomingRoomReservation(this.snackBar);
     });
@@ -93,10 +87,10 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   reserve(seatSelection: SeatAvailability[]) {
     this.coworkingService.draftReservation(seatSelection).subscribe({
       error: (error) =>
-      this.snackBar.open(
-        'Error. There may be a reservation in the next 2 hours. Please cancel that if you want to drop-in.',
-        '',
-        { duration: 8000 }
+        this.snackBar.open(
+          'Error. There may be a reservation in the next 2 hours. Please cancel that if you want to drop-in.',
+          '',
+          { duration: 8000 }
         ),
       next: (reservation) => {
         this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
@@ -131,7 +125,9 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
       map((status) => {
         let reservations = status.my_reservations;
         let now = new Date();
-        return reservations.find(this.roomReservationService.findActiveReservationPredicate);
+        return reservations.find(
+          this.roomReservationService.findActiveReservationPredicate
+        );
       }),
       mergeMap((reservation) =>
         reservation

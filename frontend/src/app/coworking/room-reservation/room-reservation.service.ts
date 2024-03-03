@@ -23,14 +23,18 @@ import { RxUpcomingReservation } from '../rx-coworking-status';
   providedIn: 'root'
 })
 export class RoomReservationService extends ReservationService {
-  private upcomingReservations: RxUpcomingReservation = new RxUpcomingReservation();
-  public upcomingReservations$: Observable<Reservation[]> = this.upcomingReservations.value$
-  public findActiveReservationPredicate: (r: Reservation) => boolean = (r:Reservation) => {
+  private upcomingReservations: RxUpcomingReservation =
+    new RxUpcomingReservation();
+  public upcomingReservations$: Observable<Reservation[]> =
+    this.upcomingReservations.value$;
+  public findActiveReservationPredicate: (r: Reservation) => boolean = (
+    r: Reservation
+  ) => {
     let now = new Date();
-    const activeStates = ["CONFIRMED","CHECKED_IN"];
-    return r.start <= now && r.end > now && activeStates.includes(r.state)
-  }
-  
+    const activeStates = ['CONFIRMED', 'CHECKED_IN'];
+    return r.start <= now && r.end > now && activeStates.includes(r.state);
+  };
+
   constructor(http: HttpClient) {
     super(http);
   }
@@ -69,37 +73,44 @@ export class RoomReservationService extends ReservationService {
 
   /**
    * Polls for upcoming room reservations with a 'CONFIRMED' state that are not currently active.
-   * 
+   *
    * This method fetches reservations and filters them to find upcoming reservations based on a specific predicate.
    * The predicate checks that the reservation is not active and that it has a defined room.
    * In case of an error while fetching reservations, it displays an error message using `MatSnackBar`.
-   * 
+   *
    * @param {MatSnackBar} snackBar - The MatSnackBar service used to display notifications or error messages.
-   * 
+   *
    * @example
    * pollUpcomingRoomReservation(this.snackBar);
-   * 
+   *
    * @remarks
    * This method utilizes RxJS operators to process the stream of reservations. The `map` operator is used to filter
    * reservations based on the provided predicate. The `catchError` operator handles any errors during the fetching process,
    * displaying an error message and logging the error to the console.
-   * 
+   *
    * @returns {void} - This method does not return a value; it sets the upcoming reservations in a state management variable.
    */
-  pollUpcomingRoomReservation(snackBar: MatSnackBar){
-    console.log("running poll UpcomingRoomReservations");
+  pollUpcomingRoomReservation(snackBar: MatSnackBar) {
+    console.log('running poll UpcomingRoomReservations');
 
     // predicate to determine if this is a non active upcoming room reservation
-    const isUpcomingRoomReservation = (r:Reservation) => !this.findActiveReservationPredicate(r) && !!r && !!r.room
-    
-    this.getReservationsByState('CONFIRMED').pipe(
-      map(reservations => reservations.filter(r => isUpcomingRoomReservation(r))),
-      catchError((err: Error) => {
-        const message = 'Error while fetching upcoming reservations.';
-        snackBar.open(message, '', { duration: 8000 });
-        console.error(err);
-        return of([]);
-      })
-    ).subscribe((upcomingRoomReservations) => this.upcomingReservations.set(upcomingRoomReservations));
+    const isUpcomingRoomReservation = (r: Reservation) =>
+      !this.findActiveReservationPredicate(r) && !!r && !!r.room;
+
+    this.getReservationsByState('CONFIRMED')
+      .pipe(
+        map((reservations) =>
+          reservations.filter((r) => isUpcomingRoomReservation(r))
+        ),
+        catchError((err: Error) => {
+          const message = 'Error while fetching upcoming reservations.';
+          snackBar.open(message, '', { duration: 8000 });
+          console.error(err);
+          return of([]);
+        })
+      )
+      .subscribe((upcomingRoomReservations) =>
+        this.upcomingReservations.set(upcomingRoomReservations)
+      );
   }
 }

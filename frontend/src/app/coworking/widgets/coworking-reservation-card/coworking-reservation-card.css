@@ -14,9 +14,8 @@
 }
 
 .mat-divider {
-  margin: .7em 0;
+  margin: 0.7em 0;
   padding: 0px;
-
 }
 
 h3 {
@@ -26,7 +25,7 @@ h3 {
   margin-top: 0px;
 }
 
-h3>label {
+h3 > label {
   width: 64px;
   display: inline-block;
   padding: 0px;
@@ -37,13 +36,13 @@ p {
   padding: 0px;
 }
 
-.divider{
-  margin: .5em
+.divider {
+  margin: 0.5em;
 }
 
 @media only screen and (max-device-width: 730px) {
-  h3>*{
-    font-size: .8em;
+  h3 > * {
+    font-size: 0.8em;
   }
 }
 

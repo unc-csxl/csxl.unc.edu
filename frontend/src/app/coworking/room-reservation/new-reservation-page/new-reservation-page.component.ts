@@ -37,13 +37,13 @@ export class NewReservationPageComponent implements OnInit {
   ) {}
 
   /**
- * A lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
- * 
- * Use this hook to initialize the directive or component. This is the right place to fetch data from a server,
- * set up any local state, or perform operations that need to be executed only once when the component is instantiated.
- * 
- * @returns {void} - This method does not return a value.
- */
+   * A lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
+   *
+   * Use this hook to initialize the directive or component. This is the right place to fetch data from a server,
+   * set up any local state, or perform operations that need to be executed only once when the component is instantiated.
+   *
+   * @returns {void} - This method does not return a value.
+   */
 
   ngOnInit() {
     this.initUpdateReservationsList();
