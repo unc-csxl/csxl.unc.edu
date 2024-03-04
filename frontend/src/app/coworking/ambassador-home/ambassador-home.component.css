@@ -10,11 +10,6 @@
   padding-bottom: 0;
 }
 
-coworking-dropin-availability-card:last-child {
-  display: block;
-  margin-bottom: 16px;
-}
-
 button {
   margin-right: 1vw;
 }

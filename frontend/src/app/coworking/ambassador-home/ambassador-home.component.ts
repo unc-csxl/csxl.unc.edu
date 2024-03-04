@@ -65,10 +65,17 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
     this.status$ = coworkingService.status$;
   }
 
-  ngOnInit(): void {
+  beginReservationRefresh(): void {
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
     this.refreshSubscription = timer(0, FIVE_SECONDS)
       .pipe(tap((_) => this.ambassadorService.fetchReservations()))
       .subscribe();
+  }
+
+  ngOnInit(): void {
+    this.beginReservationRefresh();
   }
 
   ngOnDestroy(): void {
@@ -94,9 +101,7 @@ export class AmbassadorPageComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (reservation) => {
             this.welcomeDeskReservationSelection = [];
-            // Hack to force the pull of new reservations
-            this.ngOnDestroy();
-            this.ngOnInit();
+            this.beginReservationRefresh();
             alert(
               `Walk-in reservation made for ${
                 reservation.users[0].first_name
