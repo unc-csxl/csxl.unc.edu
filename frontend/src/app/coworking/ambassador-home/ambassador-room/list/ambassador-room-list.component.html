@@ -48,7 +48,10 @@
           <td mat-cell *matCellDef="let reservation">
             <button
               mat-stroked-button
-              (click)="this.ambassadorService.checkIn(reservation)">
+              (click)="this.ambassadorService.checkIn(reservation)"
+              [disabled]="
+                this.ambassadorService.isCheckInDisabled(reservation)
+              ">
               Check-in
             </button>
             <button
