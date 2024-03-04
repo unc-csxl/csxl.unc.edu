@@ -19,7 +19,7 @@ export class AmbassadorRoomService {
 
   fetchReservations(): void {
     this.http
-      .get<ReservationJSON[]>('/api/coworking/ambassador')
+      .get<ReservationJSON[]>('/api/coworking/ambassador/rooms')
       .subscribe((reservations) => {
         this.reservations.set(reservations.map(parseReservationJSON));
       });
