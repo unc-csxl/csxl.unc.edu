@@ -344,6 +344,8 @@ class ReservationService:
 
         self._transform_date_map_for_unavailable(reserved_date_map)
         del reserved_date_map['SN156']
+        self._transform_date_map_for_officehours(date, reserved_date_map, operating_hours_start, operating_hours_duration)
+
         return ReservationMapDetails(
             reserved_date_map=reserved_date_map,
             operating_hours_start=operating_hours_start,
@@ -426,6 +428,25 @@ class ReservationService:
             for i in columns_with_4:
                 if values[i] == RoomState.AVAILABLE.value:
                     values[i] = RoomState.UNAVAILABLE.value
+
+    def _transform_date_map_for_officehours(
+        self, 
+        date: datetime,
+        reserved_date_map: dict[str, list[int]],
+        operating_hours_start: datetime,
+        operating_hours_duration: int
+    ) -> None:
+        """
+        Transforms date map in place.
+        """
+        office_hours = self._policy_svc.office_hours(date=date)
+        for room_id, hours in office_hours.items():
+            for start, end in hours:
+                start_idx = max(self._idx_calculation(start, operating_hours_start), 0)
+                end_idx = min(self._idx_calculation(end, operating_hours_start), operating_hours_duration)
+                if start_idx < end_idx:
+                    for idx in range(start_idx, end_idx):
+                        reserved_date_map[room_id][idx] = RoomState.UNAVAILABLE.value
 
     def _query_confirmed_reservations_by_date_and_room(
         self, 

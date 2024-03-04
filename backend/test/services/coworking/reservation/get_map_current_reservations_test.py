@@ -131,7 +131,7 @@ def test_get_map_reserved_times_by_date(
     """
     test_time = time[NOW]
     reserved_date_map = reservation_svc.get_map_reserved_times_by_date(
-        test_time, user_data.user
+        test_time + timedelta(days=2), user_data.user
     )
 
     reserved_date_map_root = reservation_svc.get_map_reserved_times_by_date(
