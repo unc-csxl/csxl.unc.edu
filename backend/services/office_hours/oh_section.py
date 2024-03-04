@@ -1,18 +1,20 @@
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database import db_session
-from backend.entities.academics.section_entity import SectionEntity
-from backend.entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
-from backend.models.office_hours.oh_section import OfficeHoursSection, OfficeHoursSectionDraft
-from backend.models.office_hours.oh_section_details import OfficeHoursSectionDetails
-from backend.models.user import User
-from backend.services.exceptions import ResourceNotFoundException
 
-from backend.services.permission import PermissionService
+from backend.models.office_hours.oh_event_details import OfficeHoursEventDetails
+from ...database import db_session
+from ...entities.academics.section_entity import SectionEntity
+from ...entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
+from ...models.office_hours.oh_section import OfficeHoursSection, OfficeHoursSectionDraft
+from ...models.office_hours.oh_section_details import OfficeHoursSectionDetails
+from ...models.user import User
+from ..services.exceptions import ResourceNotFoundException
+
+from ..services.permission import PermissionService
 
 
-__authors__ = ["Sadie Amato", "Bailey DeSouza"]
+__authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -66,6 +68,18 @@ class OfficeHoursSectionService:
             oh_section_id: ID of the office hours section to query by.
         Returns:
             OfficeHoursSectionDetails: the office hours section with the given id
+        """
+        # TODO
+        return None
+    
+    def get_events_by_section(self, subject: User, oh_section: OfficeHoursSectionDetails) -> list[OfficeHoursEventDetails]:
+        """Returns all events for a given office hours section
+
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: OfficeHoursSectionDetails to get all the events of
+        Returns:
+            list[OfficeHoursEventDetails]: list of all office hours events for the given section
         """
         # TODO
         return None

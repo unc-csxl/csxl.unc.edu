@@ -4,16 +4,16 @@ This API is used to access OH Event data."""
 
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends
-from backend.models.coworking.time_range import TimeRange
-from backend.models.office_hours.oh_event import OfficeHoursEvent, OfficeHoursEventDraft
-from backend.models.office_hours.oh_event_details import OfficeHoursEventDetails
-from backend.services.office_hours.oh_event import OfficeHoursEventService
+from ...models.coworking.time_range import TimeRange
+from ...models.office_hours.oh_event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
+from ...services.office_hours.oh_event import OfficeHoursEventService
 
 from ..authentication import registered_user
 from ...models import User
 
 
-__authors__ = ["Sadie Amato", "Bailey DeSouza"]
+__authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -79,21 +79,6 @@ def get_oh_section_by_id(
         OfficeHoursEventDetails: The OH event with the given OH event id
     """
     return oh_event_service.get_event_by_id(subject, oh_event_id)
-
-
-@api.get("/section/{section_id}", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
-def get_oh_events_by_section(
-    oh_section_id: int,
-    subject: User = Depends(registered_user),
-    oh_event_service: OfficeHoursEventService = Depends(),
-) -> list[OfficeHoursEventDetails]:
-    """
-    Gets list of OH events by section ID
-
-    Returns:
-        list[OfficeHoursSectionDetails]: OH events associated with a given section
-    """
-    return oh_event_service.get_events_by_section(subject, oh_section_id)
 
 
 @api.get("/section/{section_id}/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])

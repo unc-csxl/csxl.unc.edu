@@ -1,19 +1,19 @@
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database import db_session
-from backend.entities.academics.event_entity import EventEntity
-from backend.entities.office_hours.oh_event_entity import OfficeHoursEventEntity
-from backend.models.coworking.time_range import TimeRange
-from backend.models.office_hours.oh_event import OfficeHoursEvent, OfficeHoursEventDraft
-from backend.models.office_hours.oh_event_details import OfficeHoursEventDetails
-from backend.models.user import User
-from backend.services.exceptions import ResourceNotFoundException
+from ...database import db_session
+from ...entities.academics.event_entity import EventEntity
+from ...entities.office_hours.oh_event_entity import OfficeHoursEventEntity
+from ...models.coworking.time_range import TimeRange
+from ...models.office_hours.oh_event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
+from ...models.user import User
+from ..services.exceptions import ResourceNotFoundException
 
-from backend.services.permission import PermissionService
+from ..services.permission import PermissionService
 
 
-__authors__ = ["Sadie Amato", "Bailey DeSouza"]
+__authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -83,19 +83,6 @@ class OfficeHoursEventService:
         #TODO
         return None
 
-    
-    def get_events_by_section(self, subject: User, oh_section_id: int) -> list[OfficeHoursEventDetails]:
-        """Gets all office hours events for a section.
-
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_section_id: OfficeHoursSection id to get all events for
-
-        Returns:
-            list[OfficeHoursEventDetails]: OH events associated with a given section
-        """ 
-        #TODO
-        return None
     
     def get_upcoming_events_by_section(self, oh_section_id: int, time_range: TimeRange) -> list[OfficeHoursEventDetails]:
         """Gets all upcoming office hours events for a section.
