@@ -65,7 +65,7 @@ class OfficeHoursSectionService:
         # Return added object
         return oh_section_entity.to_details_model()
 
-    def get_section_by_id(
+    def get_oh_section_by_id(
         self, subject: User, oh_section_id: int
     ) -> OfficeHoursSectionDetails:
         """Returns the office hours section from the table by an OH section id
@@ -79,7 +79,7 @@ class OfficeHoursSectionService:
         # TODO
         return None
 
-    def get_events_by_section(
+    def get_oh_events_by_oh_section(
         self,
         subject: User,
         oh_section: OfficeHoursSectionDetails,
@@ -98,7 +98,7 @@ class OfficeHoursSectionService:
         # if time range is not None, you are retrieving upcoming events
         return None
 
-    def get_sections_by_term(
+    def get_oh_sections_by_term(
         self, subject: User, term_id: int
     ) -> list[OfficeHoursSectionDetails]:
         """Retrieves all office hours sections from the table by a term.
@@ -122,7 +122,7 @@ class OfficeHoursSectionService:
         # Return the model
         return [entity.to_details_model() for entity in entities]
 
-    def get_user_sections_by_term(
+    def get_user_oh_sections_by_term(
         self, subject: User, term_id: int
     ) -> list[OfficeHoursSectionDetails]:
         """Retrieves all office hours sections from the table by a term and specific user.
@@ -135,7 +135,7 @@ class OfficeHoursSectionService:
         # TODO
         return []
 
-    def get_section_tickets(
+    def get_oh_section_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets from the table by a section.
@@ -148,7 +148,7 @@ class OfficeHoursSectionService:
         # TODO
         return None
 
-    def get_user_section_tickets(
+    def get_user_oh_section_tickets(
         self, subject: User, oh_section_id: int
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all of the subject's office hours tickets in a section from the table.

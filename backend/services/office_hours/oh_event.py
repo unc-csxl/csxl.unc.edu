@@ -43,8 +43,17 @@ class OfficeHoursEventService:
         Returns:
             OfficeHoursEventDetails: Object added to table
         """
-        # TODO
-        return None
+        #TODO: Add Permissions
+
+        # Create new object
+        oh_event_entity = OfficeHoursEventEntity.from_model(oh_event)
+
+        # Add new object to table and commit changes
+        self._session.add(oh_event_entity)
+        self._session.commit()
+
+        # Return added object
+        return oh_event_entity.to_details_model()
 
     def update(
         self, subject: User, oh_event: OfficeHoursEvent
@@ -58,8 +67,31 @@ class OfficeHoursEventService:
         Returns:
             OfficeHoursEventDetails: Updated object in table
         """
-        # TODO
-        return None
+        #TODO: Permissions
+
+        # Find the entity to update
+        oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event.id)
+
+        # Raise an error if no entity was found
+        if oh_event_entity is None:
+            raise ResourceNotFoundException(
+                f"Event with id: {oh_event.id} does not exist."
+            )
+
+        # Update the entity
+        oh_event_entity.type = oh_event.type
+        oh_event_entity.description = oh_event.description
+        oh_event_entity.location_description = oh_event.location_description
+        oh_event_entity.date = oh_event.date
+        oh_event_entity.start_time = oh_event.start_time
+        oh_event_entity.end_time = oh_event.end_time
+        oh_event_entity.room_id = oh_event.room_id
+
+        # Commit changes
+        self._session.commit()
+
+        # Return edited object
+        return oh_event_entity.to_details_model()
 
     def delete(self, subject: User, oh_event: OfficeHoursEventDetails) -> None:
         """Deletes an office hours event.
@@ -68,9 +100,20 @@ class OfficeHoursEventService:
             subject: a valid User model representing the currently logged in User
             oh_event: OfficeHoursEventDetails to delete
         """
-        # TODO
+        # TODO: Permissions
 
-    def get_event_by_id(
+        # Find the entity to delete
+        oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event.id)
+
+        # Raise an error if no entity was found
+        if oh_event_entity is None:
+            raise ResourceNotFoundException(f"Event with id: {oh_event.id} does not exist.")
+
+        # Delete and commit changes
+        self._session.delete(oh_event_entity)
+        self._session.commit()
+
+    def get_oh_event_by_id(
         self, subject: User, oh_event_id: int
     ) -> OfficeHoursEventDetails:
         """Gets an office hour event based on OH event id.
@@ -82,10 +125,17 @@ class OfficeHoursEventService:
         Returns:
             OfficeHoursEventDetails: OH event associated with the OH event id
         """
-        # TODO
-        return None
+        # Select the event with the corresponding id
+        oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event_id)
 
-    def get_upcoming_events_by_user(
+        # Raise an error if no entity was found.
+        if oh_event_entity is None:
+            raise ResourceNotFoundException(f"Event with id: {oh_event_id} does not exist.")
+
+        # Return the details model
+        return oh_event_entity.to_details_model()
+
+    def get_upcoming_oh_events_by_user(
         self, subject: User, time_range: TimeRange
     ) -> list[OfficeHoursEventDetails]:
         """Gets all upcoming office hours events for a user.
@@ -100,7 +150,7 @@ class OfficeHoursEventService:
         # TODO
         return None
 
-    def get_event_tickets(
+    def get_oh_event_tickets(
         self, subject: User, oh_event: OfficeHoursEventDetails
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets in an event from the table.
