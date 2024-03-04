@@ -1,16 +1,16 @@
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database import db_session
-from backend.entities.office_hours.oh_ticket_entity import OfficeHoursTicketEntity
-from backend.models.office_hours.oh_ticket import (
+from ...database import db_session
+from ...entities.office_hours.oh_ticket_entity import OfficeHoursTicketEntity
+from ...models.office_hours.oh_ticket import (
     OfficeHoursTicket,
     OfficeHoursTicketDraft,
 )
-from backend.models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
-from backend.models.user import User
+from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from ...models.user import User
 
-from backend.services.permission import PermissionService
+from ...services.permission import PermissionService
 
 
 __authors__ = ["Sadie Amato", "Bailey DeSouza"]
