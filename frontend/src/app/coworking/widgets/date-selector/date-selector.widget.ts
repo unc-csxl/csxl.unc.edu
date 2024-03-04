@@ -1,7 +1,7 @@
 /**
  * The date selector widget that abstracts date selection.
  *
- * @author Aarjav Jain, John Schachte, Nick Wherthey, Yuvraj Jain
+ * @author Aarjav Jain, John Schachte
  * @copyright 2023
  * @license MIT
  */

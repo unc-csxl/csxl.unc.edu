@@ -1,9 +1,16 @@
+/**
+ * @author John Schachte
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Reservation } from 'src/app/coworking/coworking.models';
-import { Observable, map, mergeMap, timer } from 'rxjs';
+import { Observable, map, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CoworkingService } from '../../coworking.service';
 
 @Component({
   selector: 'coworking-reservation-card',
@@ -18,13 +25,26 @@ export class CoworkingReservationCard implements OnInit {
   @Output() reloadCoworkingHome = new EventEmitter<void>();
 
   public draftConfirmationDeadline$!: Observable<string>;
+  isCancelExpanded$: Observable<boolean>;
 
   constructor(
     public router: Router,
     public reservationService: RoomReservationService,
-    protected snackBar: MatSnackBar
-  ) {}
+    protected snackBar: MatSnackBar,
+    public coworkingService: CoworkingService
+  ) {
+    this.isCancelExpanded$ =
+      this.coworkingService.isCancelExpanded.asObservable();
+  }
 
+  /**
+   * A lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
+   *
+   * Use this hook to initialize the directive or component. This is the right place to fetch data from a server,
+   * set up any local state, or perform operations that need to be executed only once when the component is instantiated.
+   *
+   * @returns {void} - This method does not return a value.
+   */
   ngOnInit(): void {
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
   }
@@ -34,12 +54,11 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   cancel() {
-    this.reservationService.deleteRoomReservation(this.reservation).subscribe(
-      () => {
-        this.triggerUpdateReservationsList();
-        this.router.navigateByUrl('/coworking');
+    this.reservationService.deleteRoomReservation(this.reservation).subscribe({
+      next: () => {
+        this.refreshCoworkingHome();
       },
-      (error: Error) => {
+      error: (error: Error) => {
         this.snackBar.open(
           'Error: Issue cancelling reservation. Please see CSXL Ambassador for assistance.',
           '',
@@ -47,14 +66,17 @@ export class CoworkingReservationCard implements OnInit {
         );
         console.error(error.message);
       }
-    );
+    });
   }
 
   confirm() {
     this.isConfirmed.emit(true);
-    this.reservationService.confirm(this.reservation).subscribe(
-      () => this.router.navigateByUrl('/coworking'),
-      (error: Error) => {
+    this.reservationService.confirm(this.reservation).subscribe({
+      next: () => {
+        this.refreshCoworkingHome();
+        // this.router.navigateByUrl('/coworking');
+      },
+      error: (error: Error) => {
         this.snackBar.open(
           'Error: Issue confirming reservation. Please see CSXL Ambassador for assistance.',
           '',
@@ -62,12 +84,12 @@ export class CoworkingReservationCard implements OnInit {
         );
         console.error(error.message);
       }
-    );
+    });
   }
 
   checkout() {
     this.reservationService.checkout(this.reservation).subscribe({
-      next: () => this.triggerUpdateReservationsList(),
+      next: () => this.refreshCoworkingHome(),
       error: (error: Error) => {
         this.snackBar.open(
           'Error: Issue checking out reservation. Please see CSXL Ambassador for assistance.',
@@ -82,7 +104,7 @@ export class CoworkingReservationCard implements OnInit {
   checkin(): void {
     this.reservationService.checkin(this.reservation).subscribe({
       next: () => {
-        this.triggerUpdateReservationsList();
+        this.refreshCoworkingHome();
       },
       error: (error: Error) => {
         this.snackBar.open(
@@ -122,13 +144,9 @@ export class CoworkingReservationCard implements OnInit {
     );
   }
 
-  triggerUpdateReservationsList() {
-    this.updateActiveReservation.emit();
-    this.updateReservationsList.emit();
-  }
-
   refreshCoworkingHome(): void {
     this.reloadCoworkingHome.emit();
+    this.router.navigateByUrl('/coworking');
   }
 
   checkCheckinAllowed(): boolean {
@@ -137,5 +155,9 @@ export class CoworkingReservationCard implements OnInit {
       new Date(this.reservation!.start) <= now &&
       now <= new Date(this.reservation!.end)
     );
+  }
+
+  toggleCancelExpansion(): void {
+    this.coworkingService.toggleCancelExpansion();
   }
 }

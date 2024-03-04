@@ -1,3 +1,9 @@
+/**
+ * @author John Schachte, Aarjav Jain, Nick Wherthey
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
@@ -71,14 +77,12 @@ export class ReservationTableService {
   }
 
   //TODO Change route from ISO String to date object
-  getReservationsForRoomsByDate(
-    date: Date
-  ): Observable<ReservationMapDetails> {
+  getReservationsForRoomsByDate(date: Date): Observable<ReservationMapDetails> {
     let params = new HttpParams().set('date', date.toISOString());
     return this.http.get<ReservationMapDetails>(
       `/api/coworking/room-reservation/`,
       { params }
-    )
+    );
   }
 
   draftReservation(
@@ -182,7 +186,9 @@ export class ReservationTableService {
     //- Finding the room with the selected cells (assuming only 1 row)
     const result = Object.entries(reservationsMap).find(
       ([id, availability]) => {
-        return availability.includes(ReservationTableService.CellEnum.RESERVING);
+        return availability.includes(
+          ReservationTableService.CellEnum.RESERVING
+        );
       }
     );
     return result ? { room: result[0], availability: result[1] } : null;
@@ -192,12 +198,20 @@ export class ReservationTableService {
     selectedRoom: { room: string; availability: number[] },
     operationStart: Date
   ): ReservationRequest {
-    const minIndex = selectedRoom?.availability.indexOf(ReservationTableService.CellEnum.RESERVING);
-    const maxIndex = selectedRoom?.availability.lastIndexOf(ReservationTableService.CellEnum.RESERVING);
-    const thirtyMinutes = 30*60*1000
-    const startDateTime = new Date(operationStart.getTime() + thirtyMinutes *  minIndex);
+    const minIndex = selectedRoom?.availability.indexOf(
+      ReservationTableService.CellEnum.RESERVING
+    );
+    const maxIndex = selectedRoom?.availability.lastIndexOf(
+      ReservationTableService.CellEnum.RESERVING
+    );
+    const thirtyMinutes = 30 * 60 * 1000;
+    const startDateTime = new Date(
+      operationStart.getTime() + thirtyMinutes * minIndex
+    );
 
-    const endDateTime = new Date(operationStart.getTime() + thirtyMinutes * (maxIndex+1));
+    const endDateTime = new Date(
+      operationStart.getTime() + thirtyMinutes * (maxIndex + 1)
+    );
 
     return {
       users: [this.profile!],
@@ -259,6 +273,7 @@ export class ReservationTableService {
       leftFrom < rightFrom
     );
   }
+
   /**
    * Filters selected cells based on their index relative to a given index.
    *
@@ -315,40 +330,44 @@ export class ReservationTableService {
     return result;
   }
 
-      /**
-     * Formats a date object into a string of the format 'HH:MMAM/PM'.
-     * 
-     * @private
-     * @param {Date} date - The date object to be formatted.
-     * @returns {string} The formatted time string in 'HH:MMAM/PM' format.
-     */
-     private formatAMPM(date: Date): string {
-      let hours = date.getHours();
-      let minutes = date.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
-      const minutesStr = minutes < 10 ? '0' + minutes : minutes.toString();
-      return `${hours}:${minutesStr}${ampm}`;
+  /**
+   * Formats a date object into a string of the format 'HH:MMAM/PM'.
+   *
+   * @private
+   * @param {Date} date - The date object to be formatted.
+   * @returns {string} The formatted time string in 'HH:MMAM/PM' format.
+   */
+  private formatAMPM(date: Date): string {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    const minutesStr = minutes < 10 ? '0' + minutes : minutes.toString();
+    return `${hours}:${minutesStr}${ampm}`;
+  }
+
+  /**
+   * Generates time slots between two dates in increments of thirty minutes, formatted as 'HH:MMA/PM <br> to <br> HH:MMPM'.
+   *
+   * @private
+   * @param {Date} start - The start date and time for generating time slots.
+   * @param {Date} end - The end date and time for the time slots.
+   * @param {number} slots - The number of slots to generate.
+   * @returns {string[]} An array of strings representing the time slots in 'HH:MMA/PM <br> to <br> HH:MMPM' format.
+   */
+  generateTimeSlots(start: Date, end: Date, slots: number): string[] {
+    const timeSlots = [];
+    const ThirtyMinutes = 30 * 60000; // Thirty minutes in milliseconds
+    while (start < end) {
+      let thirtyMinutesLater = new Date(start.getTime() + ThirtyMinutes);
+      timeSlots.push(
+        `${this.formatAMPM(start)} <br> to <br> ${this.formatAMPM(
+          thirtyMinutesLater
+        )}`
+      );
+      start = thirtyMinutesLater;
     }
-  
-    /**
-     * Generates time slots between two dates in increments of thirty minutes, formatted as 'HH:MMA/PM <br> to <br> HH:MMPM'.
-     * 
-     * @private
-     * @param {Date} start - The start date and time for generating time slots.
-     * @param {Date} end - The end date and time for the time slots.
-     * @param {number} slots - The number of slots to generate.
-     * @returns {string[]} An array of strings representing the time slots in 'HH:MMA/PM <br> to <br> HH:MMPM' format.
-     */
-    generateTimeSlots(start: Date, end: Date, slots: number): string[] {
-      const timeSlots = [];
-      const ThirtyMinutes = 30 * 60000; // Thirty minutes in milliseconds
-      while(start < end){
-        let thirtyMinutesLater = new Date(start.getTime() + ThirtyMinutes);
-        timeSlots.push(`${this.formatAMPM(start)} <br> to <br> ${this.formatAMPM(thirtyMinutesLater)}`);
-        start = thirtyMinutesLater;
-      }
-      return timeSlots;
-    }
+    return timeSlots;
+  }
 }

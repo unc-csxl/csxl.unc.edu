@@ -9,11 +9,10 @@
 
 /* Add any additional styling for the room-reservation-table if needed */
 
-
 .date-selector {
-    padding: 10px; /* Adjust the value as needed */
-  }
-  
+  padding: 10px; /* Adjust the value as needed */
+}
+
 .upcoming-reservations-container {
   display: flex;
   flex-wrap: wrap;

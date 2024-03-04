@@ -29,20 +29,6 @@
   </div>
 </div>
 
-<div class="reservations-header">
-  <h2 class="heading">Upcoming Reservations</h2>
-</div>
-<div class="upcoming-reservations-container">
-  <ng-container *ngFor="let r of upcomingRoomReservations$ | async">
-    <ng-container *ngIf="r?.room?.id">
-      <coworking-reservation-card
-        [reservation]="r"
-        (updateReservationsList)="
-          handleUpdateReservationsList()
-        "></coworking-reservation-card>
-    </ng-container>
-  </ng-container>
-  <div>
-    <p>Total Number of Hours: {{ numHoursStudyRoomReservations$ | async }}</p>
-  </div>
+<div class="date-selector">
+  <p>Total Number of Hours: {{ numHoursStudyRoomReservations$ | async }}</p>
 </div>

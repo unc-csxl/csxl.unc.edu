@@ -1,10 +1,15 @@
+/**
+ * @author Kris Jordan, John Schachte
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, Subscription, map, tap } from 'rxjs';
+import { Observable, Subscription, map, BehaviorSubject } from 'rxjs';
 import {
   CoworkingStatus,
   CoworkingStatusJSON,
-  Reservation,
   ReservationJSON,
   SeatAvailability,
   parseCoworkingStatusJSON,
@@ -25,6 +30,8 @@ export class CoworkingService implements OnDestroy {
 
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
+
+  isCancelExpanded = new BehaviorSubject<boolean>(false);
 
   public constructor(
     protected http: HttpClient,
@@ -65,5 +72,23 @@ export class CoworkingService implements OnDestroy {
     return this.http
       .post<ReservationJSON>('/api/coworking/reservation', reservation)
       .pipe(map(parseReservationJSON));
+  }
+
+  /**
+   * Toggles the expansion state of the cancellation UI.
+   *
+   * This method inverts the current boolean state of `isCancelExpanded`.
+   * If `isCancelExpanded` is currently true, calling this method will set it to false, and vice versa.
+   * This is typically used to control the visibility of a UI element that allows the user to cancel an action.
+   *
+   * @example
+   * // Assuming `isCancelExpanded` is initially false
+   * toggleCancelExpansion();
+   * // Now `isCancelExpanded` is true
+   *
+   * @returns {void}
+   */
+  toggleCancelExpansion(): void {
+    this.isCancelExpanded.next(!this.isCancelExpanded.value);
   }
 }

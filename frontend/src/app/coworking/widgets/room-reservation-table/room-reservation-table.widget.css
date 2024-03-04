@@ -1,35 +1,39 @@
 /* room-reservation-table.widget.css */
 
 table {
-    border-collapse: collapse;
-    width: 99%;
-    margin-left: 10px;
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  th {
-    height: 40px; /* Set the height for header rows */
-    width: 30px;
-  }
-  
-  td {
-    height: 40px; /* Set the height for data rows */
-    width: 30px;
-  }
-  
-  .time-slot {
-    font-size: 12px; /* Set the font size for time slot headings */
-  }
+  border-collapse: collapse;
+  width: 99%;
+  margin-left: 10px;
+}
 
-  .button {
-    margin-top: 20px; /* Add top margin for spacing */
-    font-size: 16px; /* Increase font size */
-    padding: 10px 20px; /* Add padding */
-    margin-left: 10px;
-  }
-  
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  height: 40px; /* Set the height for header rows */
+  width: 30px;
+}
+
+td {
+  height: 40px; /* Set the height for data rows */
+  width: 30px;
+}
+
+.time-slot {
+  font-size: 12px; /* Set the font size for time slot headings */
+}
+
+.button {
+  margin-top: 20px; /* Add top margin for spacing */
+  font-size: 16px; /* Increase font size */
+  padding: 10px 20px; /* Add padding */
+  margin-left: 10px;
+}
+
+.divider {
+  margin-bottom: 1em;
+}

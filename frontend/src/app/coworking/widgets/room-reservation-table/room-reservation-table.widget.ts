@@ -1,10 +1,15 @@
+/**
+ * @author John Schachte, Aarjav Jain, Nick Wherthey
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { Reservation, TableCell } from 'src/app/coworking/coworking.models';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
-import { CloseScrollStrategy } from '@angular/cdk/overlay';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -44,7 +49,7 @@ export class RoomReservationWidgetComponent {
       this.reservationTableService.setMinDate().toDateString()
     );
     this.subscription = this.reservationTableService.selectedDate$.subscribe(
-      (selectedDate) => {
+      (selectedDate: string) => {
         this.selectedDate = selectedDate;
         this.getReservationsByDate(new Date(selectedDate));
       }
@@ -65,7 +70,7 @@ export class RoomReservationWidgetComponent {
           slots
         );
       },
-      (error) => {
+      (error: Error) => {
         // Handle the error here
         this.snackBar.open(
           'Error fetching reservations',
