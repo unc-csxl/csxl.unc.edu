@@ -1,7 +1,7 @@
-from oh_ticket import OfficeHoursTicket
+from .oh_ticket import OfficeHoursTicket
 from ..room import Room
-from oh_event import OfficeHoursEvent
-from oh_section import OfficeHoursSection
+from .oh_event import OfficeHoursEvent
+from .oh_section import OfficeHoursSection
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"

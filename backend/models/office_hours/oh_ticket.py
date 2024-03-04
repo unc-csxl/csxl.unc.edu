@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
-from ticket_type import TicketType
-from ticket_state import TicketState
+from .ticket_type import TicketType
+from .ticket_state import TicketState
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
@@ -16,7 +16,7 @@ class OfficeHoursTicketDraft(BaseModel):
     of the `OfficeHoursTicket` database in the PostgreSQL database.
     """
 
-    office_hours_event_id: int
+    oh_event_id: int
     description: str
     type: TicketType
     state: TicketState

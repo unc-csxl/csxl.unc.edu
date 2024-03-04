@@ -6,14 +6,15 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.office_hours import user_created_tickets_table
+from backend.models.academics.section_member_details import SectionMemberDetails
 
 from ...models.roster_role import RosterRole
 from ...models.academics.section_member import SectionMember
 
 from ..entity_base import EntityBase
 
-__authors__ = ["Ajay Gandecha"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Ajay Gandecha", "Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -66,9 +67,44 @@ class SectionMemberEntity(EntityBase):
             SectionMember: `SectionMember` object from the entity
         """
         return SectionMember(
-            id=self.user.id,
+            id=self.id,
             first_name=self.user.first_name,
             last_name=self.user.last_name,
             pronouns=self.user.pronouns,
             member_role=self.member_role,
+        )
+    
+    @classmethod
+    def from_model(cls, model: SectionMember) -> Self:
+        """
+        Class method that converts an `SectionMember` model into a `SectionMemberEntity`
+
+        Parameters:
+            - model (SectionMember): Model to convert into an entity
+        Returns:
+            SectionMemberEntity: Entity created from model
+        """
+        return cls(
+            id=model.id,
+            first_name=model.user.first_name,
+            last_name=model.user.last_name,
+            pronouns=model.user.pronouns,
+            member_role=model.member_role,
+        )
+    
+    def to_details_model(self) -> SectionMemberDetails:
+        """
+        Converts a `SectionMemberEntity` object into a `SectionMemberDetails` model object
+
+        Returns:
+            SectionMemberDetails: `SectionMemberDetails` object from the entity
+        """
+        return SectionMemberDetails(
+            id=self.id,
+            first_name=self.user.first_name,
+            last_name=self.user.last_name,
+            pronouns=self.user.pronouns,
+            member_role=self.member_role,
+            created_tickets=[ticket.to_model() for ticket in self.created_tickets],
+            called_tickets= [ticket.to_model() for ticket in self.called_tickets]
         )
