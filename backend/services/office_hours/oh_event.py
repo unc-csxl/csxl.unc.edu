@@ -45,11 +45,12 @@ class OfficeHoursEventService:
         return None
     
 
-    def update(self, subject: User, oh_event: OfficeHoursEvent) -> OfficeHoursEventDetails:
+    def update(self, subject: User, oh_event_id: int, oh_event: OfficeHoursEvent) -> OfficeHoursEventDetails:
         """Updates an office hours event.
 
         Args:
             subject: a valid User model representing the currently logged in User
+            oh_event_id: id of the OfficeHoursEvent to update in the table
             oh_event: OfficeHoursEvent to update in the table
 
         Returns:
@@ -59,12 +60,12 @@ class OfficeHoursEventService:
         return None
     
     
-    def delete(self, subject: User, oh_event_id: int) -> None:
+    def delete(self, subject: User, oh_event: OfficeHoursEventDetails) -> None:
         """Deletes an office hours event.
 
         Args:
             subject: a valid User model representing the currently logged in User
-            oh_event_id: ID of office hours event to delete
+            oh_event: OfficeHoursEventDetails to delete
         """
         #TODO
 

@@ -106,11 +106,12 @@ class OfficeHoursSectionService:
         return []  
     
 
-    def update(self, subject: User, oh_section: OfficeHoursSection) -> OfficeHoursSectionDetails:
+    def update(self, subject: User, oh_section_id: int, oh_section: OfficeHoursSection) -> OfficeHoursSectionDetails:
         """Updates an OfficeHoursSection.
 
         Args:
             subject: a valid User model representing the currently logged in User
+            oh_section_id: id of the OfficeHoursSection to update
             oh_section: the updated OfficeHoursSection
         Returns:
             OfficeHoursSectionDetails: updated OfficeHoursSectionDetails
@@ -119,23 +120,11 @@ class OfficeHoursSectionService:
         return None  
     
 
-    def delete(self, subject: User, section_id: int) -> None:
+    def delete(self, subject: User, oh_section: int) -> None:
         """Deletes an office hours section.
 
         Args:
             subject: a valid User model representing the currently logged in User
-            section_id: ID of office hours section to delete
+            oh_section: OfficeHoursSectionDetails to delete
         """
-        # TODO: this is a WIP!
-        # TODO: add permission check
-
-        # Find the entity to delete
-        oh_section_entity = self._session.get(OfficeHoursSectionEntity, section_id)
-
-        # Raise an error if no entity was found
-        if oh_section_entity is None:
-            raise ResourceNotFoundException(f"Office hours section with id: {section_id} does not exist.")
-
-        # Delete and commit changes
-        self._session.delete(oh_section_entity)
-        self._session.commit()
+        #TODO

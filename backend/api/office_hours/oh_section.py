@@ -4,7 +4,7 @@ This API is used to access OH section data."""
 
 from fastapi import APIRouter, Depends
 
-from backend.models.office_hours.oh_section import OfficeHoursSectionDraft
+from backend.models.office_hours.oh_section import OfficeHoursSection, OfficeHoursSectionDraft
 from backend.models.office_hours.oh_section_details import OfficeHoursSectionDetails
 from backend.services.office_hours.oh_section import OfficeHoursSectionService
 from ..authentication import registered_user
@@ -79,9 +79,10 @@ def get_oh_sections_by_user_and_term(
     return oh_section_service.get_user_sections_by_term(subject, term_id)
 
 
-@api.put("", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
+@api.put("/{oh_section_id}", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
 def update_oh_section(
-    oh_section: OfficeHoursSectionDraft,
+    oh_section_id: int,
+    oh_section: OfficeHoursSection,
     subject: User = Depends(registered_user),
     oh_section_service: OfficeHoursSectionService = Depends(),
 ) -> OfficeHoursSectionDetails:
@@ -91,7 +92,7 @@ def update_oh_section(
     Returns:
         OfficeHoursSectionDetails: OH Section updated
     """
-    return oh_section_service.update(subject, oh_section)
+    return oh_section_service.update(subject, oh_section_id, oh_section)
 
 
 @api.delete("/{oh_section_id}", response_model=None, tags=["Office Hours"])
@@ -103,4 +104,5 @@ def delete_oh_section(
     """
     Deletes an OfficeHoursSection from the database
     """
-    return oh_section_service.delete(subject, oh_section_id)
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(oh_section_id)
+    return oh_section_service.delete(subject, oh_section)
