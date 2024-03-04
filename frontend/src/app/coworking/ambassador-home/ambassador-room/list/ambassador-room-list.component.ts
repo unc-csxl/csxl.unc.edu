@@ -23,7 +23,7 @@ export class AmbassadorRoomListComponent implements OnInit, OnDestroy {
   upcomingReservations$: Observable<Reservation[]>;
   activeReservations$: Observable<Reservation[]>;
 
-  columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
+  columnsToDisplay = ['id', 'name', 'room', 'date', 'start', 'end', 'actions'];
 
   private refreshSubscription!: Subscription;
 
