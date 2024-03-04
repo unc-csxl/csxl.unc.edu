@@ -2,6 +2,7 @@
 
 This API is used to access OH section data."""
 
+import datetime
 from fastapi import APIRouter, Depends
 
 from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
@@ -66,6 +67,21 @@ def get_section_events(
     return oh_section_service.get_events_by_section(subject, oh_section)
 
 
+@api.get("/{oh_section_id}/events/upcoming", response_model=list[OfficeHoursEventDetails], tag=["Office Hours"])
+def get_section_upcoming_events(
+    oh_section_id: int, subject: User = Depends(registered_user), oh_section_service: OfficeHoursSectionService = Depends(),
+    start: datetime = datetime.now(), end: datetime = datetime.now() + datetime.timedelta(weeks=1)
+) -> list[OfficeHoursEventDetails]:
+    """
+    Gets a list of upcoming OH events within a time range.
+
+    Returns:
+        list[OfficeHoursEventDetails]: OH events associated with a given user in a time range
+    """
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(oh_section_id)
+    return oh_section_service.get_events_by_section(subject, oh_section)
+
+
 @api.get("/term/{term_id}", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
 def get_oh_sections_by_term_id(
     term_id: str, subject: User = Depends(registered_user), oh_section_service: OfficeHoursSectionService = Depends()
@@ -96,7 +112,6 @@ def get_oh_sections_by_user_and_term(
 
 @api.put("/{oh_section_id}", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
 def update_oh_section(
-    oh_section_id: int,
     oh_section: OfficeHoursSection,
     subject: User = Depends(registered_user),
     oh_section_service: OfficeHoursSectionService = Depends(),
@@ -107,7 +122,7 @@ def update_oh_section(
     Returns:
         OfficeHoursSectionDetails: OH Section updated
     """
-    return oh_section_service.update(subject, oh_section_id, oh_section)
+    return oh_section_service.update(subject, oh_section)
 
 
 @api.delete("/{oh_section_id}", response_model=None, tags=["Office Hours"])

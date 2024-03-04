@@ -1,6 +1,7 @@
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from backend.models.coworking.time_range import TimeRange
 
 from backend.models.office_hours.oh_event_details import OfficeHoursEventDetails
 from ...database import db_session
@@ -72,7 +73,7 @@ class OfficeHoursSectionService:
         # TODO
         return None
     
-    def get_events_by_section(self, subject: User, oh_section: OfficeHoursSectionDetails) -> list[OfficeHoursEventDetails]:
+    def get_events_by_section(self, subject: User, oh_section: OfficeHoursSectionDetails, time_range: TimeRange | None = None) -> list[OfficeHoursEventDetails]:
         """Returns all events for a given office hours section
 
         Args:
@@ -82,6 +83,8 @@ class OfficeHoursSectionService:
             list[OfficeHoursEventDetails]: list of all office hours events for the given section
         """
         # TODO
+        # make sure to check if time range is None
+        # if time range is not None, you are retrieving upcoming events
         return None
     
     def get_sections_by_term(self, subject: User, term_id: int) -> list[OfficeHoursSectionDetails]:
@@ -120,7 +123,7 @@ class OfficeHoursSectionService:
         return []  
     
 
-    def update(self, subject: User, oh_section_id: int, oh_section: OfficeHoursSection) -> OfficeHoursSectionDetails:
+    def update(self, subject: User, oh_section: OfficeHoursSection) -> OfficeHoursSectionDetails:
         """Updates an OfficeHoursSection.
 
         Args:

@@ -45,7 +45,7 @@ class OfficeHoursEventService:
         return None
     
 
-    def update(self, subject: User, oh_event_id: int, oh_event: OfficeHoursEvent) -> OfficeHoursEventDetails:
+    def update(self, subject: User, oh_event: OfficeHoursEvent) -> OfficeHoursEventDetails:
         """Updates an office hours event.
 
         Args:
@@ -82,21 +82,6 @@ class OfficeHoursEventService:
         """
         #TODO
         return None
-
-    
-    def get_upcoming_events_by_section(self, oh_section_id: int, time_range: TimeRange) -> list[OfficeHoursEventDetails]:
-        """Gets all upcoming office hours events for a section.
-
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_section_id: OfficeHoursSection id to get all upcoming events for
-            time_range: Time range to retrieve events for
-
-        Returns:
-            list[OfficeHoursEventDetails]: upcoming OH events associated with a given section
-        """ 
-        #TODO
-        return None 
     
 
     def get_upcoming_events_by_user(self, subject: User, time_range: TimeRange) -> list[OfficeHoursEventDetails]:

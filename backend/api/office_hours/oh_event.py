@@ -42,7 +42,6 @@ def new_oh_event(
 
 @api.put("/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
 def update_oh_event(
-    oh_event_id: int,
     oh_event: OfficeHoursEvent,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
@@ -53,7 +52,7 @@ def update_oh_event(
     Returns:
         OfficeHoursEventDetails: OH Event updated
     """
-    return oh_event_service.update(subject, oh_event_id, oh_event)
+    return oh_event_service.update(subject, oh_event)
 
 
 @api.delete("/{oh_event_id}", response_model=None, tags=["Office Hours"])
@@ -79,26 +78,6 @@ def get_oh_section_by_id(
         OfficeHoursEventDetails: The OH event with the given OH event id
     """
     return oh_event_service.get_event_by_id(subject, oh_event_id)
-
-
-@api.get("/section/{section_id}/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
-def get_upcoming_oh_events_by_section(
-    oh_section_id: int,
-    subject: User = Depends(registered_user),
-    start: datetime = datetime.now(),
-    end: datetime = datetime.now() + timedelta(weeks=1),
-    oh_event_service: OfficeHoursEventService = Depends(),
-) -> list[OfficeHoursEventDetails]:
-    """
-    Gets list of upcoming OH events within a time range by section ID
-
-    Returns:
-        list[OfficeHoursSectionDetails]: OH events associated with a given section in a time range
-    """
-    time_range = TimeRange(start=start, end=end)
-    return oh_event_service.get_upcoming_events_by_section(
-        subject, oh_section_id, time_range
-    )
 
 
 @api.get("/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
