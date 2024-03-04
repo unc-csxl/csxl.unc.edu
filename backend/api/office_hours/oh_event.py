@@ -4,6 +4,8 @@ This API is used to access OH Event data."""
 
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends
+
+from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.oh_event import OfficeHoursEvent, OfficeHoursEventDraft
 from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
@@ -40,7 +42,9 @@ def new_oh_event(
     return oh_event_service.create(subject, oh_event)
 
 
-@api.put("/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
+@api.put(
+    "/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"]
+)
 def update_oh_event(
     oh_event: OfficeHoursEvent,
     subject: User = Depends(registered_user),
@@ -67,9 +71,14 @@ def delete_oh_event(
     oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
     return oh_event_service.delete(subject, oh_event)
 
-@api.get("/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
-def get_oh_section_by_id(
-    oh_event_id: int, subject: User = Depends(registered_user), oh_event_service: OfficeHoursEventService = Depends()
+
+@api.get(
+    "/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"]
+)
+def get_oh_event_by_id(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
 ) -> OfficeHoursEventDetails:
     """
     Gets an OH event by OH event ID
@@ -80,7 +89,9 @@ def get_oh_section_by_id(
     return oh_event_service.get_event_by_id(subject, oh_event_id)
 
 
-@api.get("/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])
+@api.get(
+    "/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"]
+)
 def get_upcoming_oh_events_by_user(
     start: datetime = datetime.now(),
     subject: User = Depends(registered_user),
@@ -95,3 +106,23 @@ def get_upcoming_oh_events_by_user(
     """
     time_range = TimeRange(start=start, end=end)
     return oh_event_service.get_upcoming_events_by_user(subject, time_range)
+
+
+@api.get(
+    "/{oh_event_id}/tickets",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
+)
+def get_oh_tickets_by_event(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of OH tickets by OH event
+
+    Returns:
+        list[OfficeHoursTicketDetails]: OH tickets within the given event
+    """
+    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
+    return oh_event_service.get_event_tickets(subject, oh_event)

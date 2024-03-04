@@ -60,60 +60,9 @@ def get_oh_ticket_by_id(
     return oh_ticket_service.get_ticket_by_id(subject, oh_ticket_id)
 
 
-@api.get(
-    "/{oh_section_id}",
-    response_model=list[OfficeHoursTicketDetails],
-    tags=["Office Hours"],
+@api.put(
+    "/{oh_ticket_id}", response_model=OfficeHoursTicketDetails, tags=["Office Hours"]
 )
-def get_oh_tickets_by_section(
-    oh_section_id: int,
-    subject: User = Depends(registered_user),
-    oh_ticket_service: OfficeHoursTicketService = Depends(),
-) -> list[OfficeHoursTicketDetails]:
-    """
-    Gets list of OH tickets by OH section
-
-    Returns:
-        list[OfficeHoursTicketDetails]: OH tickets within the given section
-    """
-    return oh_ticket_service.get_tickets_by_section(subject, oh_section_id)
-
-
-@api.get("", response_model=list[OfficeHoursTicketDetails], tags=["Office Hours"])
-def get_oh_tickets_by_section_and_user(
-    oh_section_id: int,
-    subject: User = Depends(registered_user),
-    oh_ticket_service: OfficeHoursTicketService = Depends(),
-) -> list[OfficeHoursTicketDetails]:
-    """
-    Gets list of OH tickets by OH section and user
-
-    Returns:
-        list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific user
-    """
-    return oh_ticket_service.get_tickets_by_section_and_user(subject, oh_section_id)
-
-
-@api.get(
-    "/{oh_event_id}",
-    response_model=list[OfficeHoursTicketDetails],
-    tags=["Office Hours"],
-)
-def get_oh_tickets_by_event(
-    oh_event_id: int,
-    subject: User = Depends(registered_user),
-    oh_ticket_service: OfficeHoursTicketService = Depends(),
-) -> list[OfficeHoursTicketDetails]:
-    """
-    Gets list of OH tickets by OH event
-
-    Returns:
-        list[OfficeHoursTicketDetails]: OH tickets within the given event
-    """
-    return oh_ticket_service.get_tickets_by_event(subject, oh_event_id)
-
-
-@api.put("/{ticket_id}", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
 def update_oh_ticket(
     oh_ticket: OfficeHoursTicket,
     subject: User = Depends(registered_user),
@@ -128,7 +77,11 @@ def update_oh_ticket(
     return oh_ticket_service.update(subject, oh_ticket)
 
 
-@api.put("/state/{id}", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
+@api.put(
+    "/state/{oh_ticket_id}",
+    response_model=OfficeHoursTicketDetails,
+    tags=["Office Hours"],
+)
 def update_oh_ticket_state(
     oh_ticket: OfficeHoursTicket,
     subject: User = Depends(registered_user),

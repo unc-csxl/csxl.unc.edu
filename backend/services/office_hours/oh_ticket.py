@@ -56,45 +56,6 @@ class OfficeHoursTicketService:
         # TODO
         return None
 
-    def get_tickets_by_section(
-        self, subject: User, oh_section_id: int
-    ) -> list[OfficeHoursTicketDetails]:
-        """Retrieves all office hours tickets from the table by a section.
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_section_id: ID of the section to query by.
-        Returns:
-            list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHsection
-        """
-        # TODO
-        return None
-
-    def get_tickets_by_section_and_user(
-        self, subject: User, oh_section_id: int
-    ) -> list[OfficeHoursTicketDetails]:
-        """Retrieves all of the subject's office hours tickets in a section from the table.
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_section_id: ID of the section to query by.
-        Returns:
-            list[OfficeHoursTicketDetails]: List of all of a user's `OfficeHoursTicketDetails` in an OHsection
-        """
-        # TODO
-        return None
-
-    def get_tickets_by_event(
-        self, subject: User, oh_event_id: int
-    ) -> list[OfficeHoursTicketDetails]:
-        """Retrieves all office hours tickets in an event from the table.
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event_id: ID of the event to query by.
-        Returns:
-            list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
-        """
-        # TODO
-        return None
-
     def update(
         self, subject: User, oh_ticket: OfficeHoursTicket
     ) -> OfficeHoursTicketDetails:
