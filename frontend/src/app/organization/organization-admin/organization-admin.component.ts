@@ -21,8 +21,8 @@ export class OrganizationAdminComponent {
   public static Route = {
     path: 'admin',
     component: OrganizationAdminComponent,
-    title: 'Organization Administration',
-    canActivate: [permissionGuard('organization.list', 'organization')]
+    title: 'Organization Administration'
+    // canActivate: [permissionGuard('organization.*', 'organization/cads')]
   };
 
   constructor(
@@ -36,6 +36,7 @@ export class OrganizationAdminComponent {
 
   /** Event handler to open the Organization Editor to edit an existing organization */
   editOrganization(organization: Organization): void {
+    // if()
     this.router.navigate(['organizations', organization.slug, 'edit']);
   }
 }

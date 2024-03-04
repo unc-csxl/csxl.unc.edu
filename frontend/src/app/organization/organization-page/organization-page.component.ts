@@ -60,11 +60,18 @@ export class OrganizationPageComponent {
 
   /** Runs whenever the view is rendered initally on the screen */
   ngOnInit(): void {
-    this.gearService.showAdminGear(
-      'organization.*',
-      '',
-      '',
-      `organizations/admin`
-    );
+    for (let org of this.organizations) {
+      console.log(org.slug);
+      this.gearService.showAdminGear(
+        'organization.*',
+        `organization/${org.slug}`,
+        '',
+        `organizations/admin`
+      );
+
+      if (this.gearService.adminView == true) {
+        break;
+      }
+    }
   }
 }
