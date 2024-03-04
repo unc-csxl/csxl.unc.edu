@@ -68,7 +68,7 @@ def delete_oh_event(
     """
     Deletes an OfficeHoursEvent from the database
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
+    oh_event: OfficeHoursEventDetails = oh_event_service.get_oh_event_by_id(oh_event_id)
     return oh_event_service.delete(subject, oh_event)
 
 
@@ -86,7 +86,7 @@ def get_oh_event_by_id(
     Returns:
         OfficeHoursEventDetails: The OH event with the given OH event id
     """
-    return oh_event_service.get_event_by_id(subject, oh_event_id)
+    return oh_event_service.get_oh_event_by_id(subject, oh_event_id)
 
 
 @api.get(
@@ -105,7 +105,7 @@ def get_upcoming_oh_events_by_user(
         list[OfficeHoursSectionDetails]: OH events associated with a given user in a time range
     """
     time_range = TimeRange(start=start, end=end)
-    return oh_event_service.get_upcoming_events_by_user(subject, time_range)
+    return oh_event_service.get_upcoming_oh_events_by_user(subject, time_range)
 
 
 @api.get(
@@ -124,5 +124,5 @@ def get_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given event
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
-    return oh_event_service.get_event_tickets(subject, oh_event)
+    oh_event: OfficeHoursEventDetails = oh_event_service.get_oh_event_by_id(oh_event_id)
+    return oh_event_service.get_oh_event_tickets(subject, oh_event)

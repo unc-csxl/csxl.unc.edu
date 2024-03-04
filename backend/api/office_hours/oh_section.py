@@ -58,7 +58,7 @@ def get_oh_section_by_id(
     Returns:
         OfficeHoursSectionDetails: The OH section with the given OH section id
     """
-    return oh_section_service.get_section_by_id(subject, oh_section_id)
+    return oh_section_service.get_oh_section_by_id(subject, oh_section_id)
 
 
 @api.get(
@@ -77,10 +77,10 @@ def get_oh_section_events(
     Returns:
         list[OfficeHoursEventDetails]: List of events for the given section
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_oh_section_by_id(
         oh_section_id
     )
-    return oh_section_service.get_events_by_section(subject, oh_section)
+    return oh_section_service.get_oh_events_by_oh_section(subject, oh_section)
 
 
 @api.get(
@@ -101,10 +101,10 @@ def get_oh_section_upcoming_events(
     Returns:
         list[OfficeHoursEventDetails]: OH events associated with a given user in a time range
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_oh_section_by_id(
         oh_section_id
     )
-    return oh_section_service.get_events_by_section(subject, oh_section)
+    return oh_section_service.get_oh_events_by_oh_section(subject, oh_section)
 
 
 @api.get(
@@ -123,7 +123,7 @@ def get_oh_sections_by_term_id(
     Returns:
         list[OfficeHoursSectionDetails]: OH sections within the given term
     """
-    return oh_section_service.get_sections_by_term(subject, term_id)
+    return oh_section_service.get_oh_sections_by_term(subject, term_id)
 
 
 @api.get(
@@ -142,7 +142,7 @@ def get_oh_sections_by_user_and_term(
     Returns:
         list[OfficeHoursSectionDetails]: User's OH sections within the given term
     """
-    return oh_section_service.get_user_sections_by_term(subject, term_id)
+    return oh_section_service.get_user_oh_sections_by_term(subject, term_id)
 
 
 @api.get(
@@ -161,7 +161,7 @@ def get_oh_section_tickets(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_oh_section_by_id(
         oh_section_id
     )
     return oh_section_service.get_section_tickets(subject, oh_section)
@@ -183,10 +183,10 @@ def get_oh_tickets_by_section_and_user(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific user
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_oh_section_by_id(
         oh_section_id
     )
-    return oh_section_service.get_tickets_by_section_and_user(subject, oh_section)
+    return oh_section_service.get_user_oh_section_tickets(subject, oh_section)
 
 
 @api.put(
@@ -215,7 +215,7 @@ def delete_oh_section(
     """
     Deletes an OfficeHoursSection from the database
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_oh_section_by_id(
         oh_section_id
     )
     return oh_section_service.delete(subject, oh_section)
