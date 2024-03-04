@@ -113,7 +113,7 @@ def get_oh_tickets_by_event(
     return oh_ticket_service.get_tickets_by_event(subject, oh_event_id)
 
 
-@api.put("", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
+@api.put("/{ticket_id}", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
 def update_oh_ticket(
     oh_ticket: OfficeHoursTicket,
     subject: User = Depends(registered_user),
@@ -128,7 +128,7 @@ def update_oh_ticket(
     return oh_ticket_service.update(subject, oh_ticket)
 
 
-@api.put("/state", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
+@api.put("/state/{id}", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
 def update_oh_ticket_state(
     oh_ticket: OfficeHoursTicket,
     subject: User = Depends(registered_user),
