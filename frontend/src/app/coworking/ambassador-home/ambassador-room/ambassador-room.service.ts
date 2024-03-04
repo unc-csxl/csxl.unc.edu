@@ -25,6 +25,12 @@ export class AmbassadorRoomService {
       });
   }
 
+  isCheckInDisabled(reservation: Reservation): boolean {
+    const currentTime = new Date();
+    const reservationStartTime = new Date(reservation.start);
+    return reservationStartTime > currentTime;
+  }
+
   checkIn(reservation: Reservation): void {
     this.http
       .put<ReservationJSON>(`/api/coworking/ambassador/checkin`, {
