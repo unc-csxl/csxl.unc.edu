@@ -69,6 +69,20 @@ class OfficeHoursEventService:
         #TODO
 
     
+    def get_event_by_id(self, subject: User, oh_event_id: int) -> OfficeHoursEventDetails:
+        """Gets an office hour event based on OH event id.
+        
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_event_id: OfficeHoursEvent id to get the corresponding event for
+        
+        Returns:
+            OfficeHoursEventDetails: OH event associated with the OH event id
+        """
+        #TODO
+        return None
+
+    
     def get_events_by_section(self, subject: User, oh_section_id: int) -> list[OfficeHoursEventDetails]:
         """Gets all office hours events for a section.
 

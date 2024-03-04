@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends
 
 from backend.models.office_hours.oh_section import OfficeHoursSectionDraft
 from backend.models.office_hours.oh_section_details import OfficeHoursSectionDetails
+from backend.services.office_hours.oh_section import OfficeHoursSectionService
 from ..authentication import registered_user
 from ...models import User
 
@@ -37,7 +38,20 @@ def new_oh_section(
     return oh_section_service.create(subject, oh_section)
 
 
-@api.get("/{term_id}", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
+@api.get("/{oh_section_id}", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
+def get_oh_section_by_id(
+    oh_section_id: int, subject: User = Depends(registered_user), oh_section_service: OfficeHoursSectionService = Depends()
+) -> OfficeHoursSectionDetails:
+    """
+    Gets an OH section by OH section ID
+
+    Returns:
+        OfficeHoursSectionDetails: The OH section with the given OH section id
+    """
+    return oh_section_service.get_section_by_id(subject, oh_section_id)
+
+
+@api.get("/term/{term_id}", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
 def get_oh_sections_by_term_id(
     term_id: str, subject: User = Depends(registered_user), oh_section_service: OfficeHoursSectionService = Depends()
 ) -> list[OfficeHoursSectionDetails]:
@@ -50,7 +64,7 @@ def get_oh_sections_by_term_id(
     return oh_section_service.get_sections_by_term(subject, term_id)
 
 
-@api.get("", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
+@api.get("/user/term/{term_id}", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
 def get_oh_sections_by_user_and_term(
     term_id: str,
     subject: User = Depends(registered_user),
@@ -65,7 +79,7 @@ def get_oh_sections_by_user_and_term(
     return oh_section_service.get_user_sections_by_term(subject, term_id)
 
 
-@api.put("", response_model=OfficeHoursSectionDetails, tags=["Academics"])
+@api.put("", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
 def update_oh_section(
     oh_section: OfficeHoursSectionDraft,
     subject: User = Depends(registered_user),

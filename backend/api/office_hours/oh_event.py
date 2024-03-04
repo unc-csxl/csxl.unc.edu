@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends
 from backend.models.coworking.time_range import TimeRange
 from backend.models.office_hours.oh_event import OfficeHoursEventDraft
 from backend.models.office_hours.oh_event_details import OfficeHoursEventDetails
+from backend.services.office_hours.oh_event import OfficeHoursEventService
 
 from ..authentication import registered_user
 from ...models import User
@@ -39,7 +40,7 @@ def new_oh_event(
     return oh_event_service.create(subject, oh_event)
 
 
-@api.put("", response_model=OfficeHoursEventDetails, tags=["Academics"])
+@api.put("", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
 def update_oh_event(
     oh_event: OfficeHoursEventDraft,
     subject: User = Depends(registered_user),
@@ -64,6 +65,18 @@ def delete_oh_event(
     Deletes an OfficeHoursEvent from the database
     """
     return oh_event_service.delete(subject, oh_event_id)
+
+@api.get("/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
+def get_oh_section_by_id(
+    oh_event_id: int, subject: User = Depends(registered_user), oh_event_service: OfficeHoursEventService = Depends()
+) -> OfficeHoursEventDetails:
+    """
+    Gets an OH event by OH event ID
+
+    Returns:
+        OfficeHoursEventDetails: The OH event with the given OH event id
+    """
+    return oh_event_service.get_event_by_id(subject, oh_event_id)
 
 
 @api.get("/{section_id}", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"])

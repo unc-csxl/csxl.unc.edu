@@ -58,6 +58,18 @@ class OfficeHoursSectionService:
         # Return added object
         return oh_section_entity.to_details_model()
     
+    def get_section_by_id(self, subject: User, oh_section_id: int) -> OfficeHoursSectionDetails:
+        """Returns the office hours section from the table by an OH section id
+        
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section_id: ID of the office hours section to query by.
+        Returns:
+            OfficeHoursSectionDetails: the office hours section with the given id
+        """
+        # TODO
+        return None
+    
     def get_sections_by_term(self, subject: User, term_id: int) -> list[OfficeHoursSectionDetails]:
         """Retrieves all office hours sections from the table by a term.
 
