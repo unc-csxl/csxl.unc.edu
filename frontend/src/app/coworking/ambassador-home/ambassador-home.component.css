@@ -1,7 +1,15 @@
 .mat-mdc-card {
-    max-width: 100%;
+  max-width: 100%;
+}
+
+.mat-mdc-card-header {
+  margin-bottom: 16px;
+}
+
+.walkinReservation.mat-mdc-card-content:last-child {
+  padding-bottom: 0;
 }
 
 button {
-    margin-right: 1vw;
+  margin-right: 1vw;
 }

@@ -110,6 +110,17 @@ def test_search_no_match(user_svc: UserService):
     assert len(users) == 0
 
 
+def test_search_by_pid_does_not_exist(user_svc: UserService):
+    """Test searching for a partial PID that does not exist."""
+    users = user_svc.search(ambassador, "123")
+    assert len(users) == 0
+
+def test_search_by_pid_rhonda(user_svc: UserService):
+    """Test searching for a partial PID that does exist."""
+    users = user_svc.search(ambassador, "999")
+    assert len(users) == 1
+    assert users[0] == root
+
 def test_list(user_svc: UserService):
     """Test that a paginated list of users can be produced."""
     pagination_params = PaginationParams(page=0, page_size=2, order_by="id", filter="")

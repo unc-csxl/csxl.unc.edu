@@ -15,6 +15,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { ReservationComponent } from './reservation/reservation.component';
 import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating-hours-dialog.widget';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +40,13 @@ import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating
     MatExpansionModule,
     MatButtonModule,
     MatTableModule,
-    AsyncPipe
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    AsyncPipe,
+    AsyncPipe,
+    SharedModule
   ]
 })
 export class CoworkingModule {}
