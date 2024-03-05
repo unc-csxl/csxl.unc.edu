@@ -1,9 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Route, Router } from '@angular/router';
-import { permissionGuard } from 'src/app/permission.guard';
-import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, Subscription, map, mergeMap, tap, timer } from 'rxjs';
-import { Reservation } from '../coworking.models';
+import { Router } from '@angular/router';
 import { AmbassadorService } from './ambassador.service';
 
 @Component({
