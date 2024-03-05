@@ -57,7 +57,7 @@ class OfficeHoursEventEntity(EntityBase):
 
     # NOTE: One-to-many relationship of OfficeHoursEvent to tickets
     tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
-        back_populates="event", cascade="all, delete"
+        back_populates="oh_event", cascade="all, delete"
     )
 
     @classmethod

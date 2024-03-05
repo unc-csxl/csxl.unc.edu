@@ -43,7 +43,7 @@ comp_110_oh_event_1 = OfficeHoursEvent(
     type=OfficeHoursType.OFFICE_HOURS,
     description="Office Hours",
     location_description="In Person",
-    event_date=date.today(),
+    date=date.today(),
     start_time=datetime.now(),
     end_time=datetime.now(),
 )
@@ -55,7 +55,7 @@ comp_110_oh_event_2 = OfficeHoursEvent(
     type=OfficeHoursType.OFFICE_HOURS,
     description="Office Hours",
     location_description="In Person",
-    event_date=date.today(),
+    date=date.today(),
     start_time=datetime.now(),
     end_time=datetime.now(),
 )
@@ -64,7 +64,7 @@ comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
 pending_ticket = OfficeHoursTicket(
-    office_hours_event_id=1,
+    oh_event_id=1,
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.PENDING,
@@ -72,7 +72,7 @@ pending_ticket = OfficeHoursTicket(
 )
 
 called_ticket = OfficeHoursTicket(
-    office_hours_event_id=1,
+    oh_event_id=1,
     description="I cannot debug this.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CALLED,
@@ -81,7 +81,7 @@ called_ticket = OfficeHoursTicket(
 )
 
 closed_ticket = OfficeHoursTicket(
-    office_hours_event_id=1,
+    oh_event_id=1,
     description="Help me with Wordle.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
