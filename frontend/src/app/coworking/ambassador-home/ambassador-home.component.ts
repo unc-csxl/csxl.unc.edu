@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AmbassadorService } from './ambassador.service';
 
 @Component({
   selector: 'app-coworking-ambassador-home',
@@ -17,10 +16,7 @@ export class AmbassadorPageComponent implements OnInit {
     { label: 'Room Reservations', path: '/coworking/ambassador/room' }
   ];
 
-  constructor(
-    public ambassadorService: AmbassadorService,
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     // Find the default link and navigate to it

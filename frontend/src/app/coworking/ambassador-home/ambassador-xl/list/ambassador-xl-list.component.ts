@@ -3,7 +3,7 @@ import { Route } from '@angular/router';
 import { Observable, Subscription, map, timer, tap } from 'rxjs';
 import { Reservation } from 'src/app/coworking/coworking.models';
 import { permissionGuard } from 'src/app/permission.guard';
-import { AmbassadorService } from '../../ambassador.service';
+import { AmbassadorXlService } from '../ambassador-xl.service';
 
 @Component({
   selector: 'app-ambassador-xl-list',
@@ -28,7 +28,7 @@ export class AmbassadorXlListComponent implements OnDestroy, OnInit {
 
   private refreshSubscription!: Subscription;
 
-  constructor(public ambassadorService: AmbassadorService) {
+  constructor(public ambassadorService: AmbassadorXlService) {
     this.reservations$ = this.ambassadorService.reservations$;
     this.upcomingReservations$ = this.reservations$.pipe(
       map((reservations) => reservations.filter((r) => r.state === 'CONFIRMED'))
