@@ -12,6 +12,7 @@ import { Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
+import { ProfileService } from 'src/app/profile/profile.service';
 import {
   CoworkingStatus,
   OperatingHours,
@@ -21,6 +22,8 @@ import {
 import { Observable, Subscription, map, mergeMap, of, timer } from 'rxjs';
 import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { ReservationService } from '../reservation/reservation.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
 import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-coworking-home',
@@ -55,7 +58,9 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private reservationService: ReservationService,
     protected snackBar: MatSnackBar,
-    private roomReservationService: RoomReservationService
+    private roomReservationService: RoomReservationService,
+    private profileService: ProfileService,
+    private dialog: MatDialog
   ) {
     this.status$ = coworkingService.status$;
     this.upcomingRoomReservation$ =
@@ -146,5 +151,20 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
    */
   setActiveReservation() {
     this.activeReservation$ = this.initActiveReservation();
+  }
+
+  private hasAcceptedAgreement() {
+    this.profileService.profile$.subscribe((profile) => {
+      if (profile) {
+        if (profile.accepted_community_agreement === false) {
+          const dialogRef = this.dialog.open(CommunityAgreement, {
+            width: '1000px',
+            disableClose: true,
+            autoFocus: false
+          });
+          dialogRef.afterClosed().subscribe();
+        }
+      }
+    });
   }
 }

@@ -7,7 +7,15 @@
  * @license MIT
  */
 
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import {
@@ -27,9 +35,12 @@ import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
   styleUrls: ['./user-lookup.widget.css']
 })
 export class UserLookup implements OnInit {
-  @Input() profile!: Profile | null;
-  @Input() users!: PublicProfile[];
-  @Input() adminPermission!: boolean | null;
+  @Input() label: string = 'Users';
+  @Input() maxSelected: number | null = null;
+  @Input() users: PublicProfile[] = [];
+  @Input() disabled: boolean | null = false;
+
+  @Output() usersChanged: EventEmitter<PublicProfile[]> = new EventEmitter();
 
   userLookup = new FormControl();
 
@@ -49,7 +60,7 @@ export class UserLookup implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.adminPermission) {
+    if (this.disabled) {
       this.userLookup.disable();
     }
   }
@@ -68,14 +79,15 @@ export class UserLookup implements OnInit {
       };
       this.users.push(organizer);
     }
-
     this.usersInput.nativeElement.value = '';
     this.userLookup.setValue('');
+    this.usersChanged.emit(this.users);
   }
 
   /** Handler for selecting an option in the who chip grid. */
   public onUserRemoved(person: PublicProfile) {
     this.users.splice(this.users.indexOf(person), 1);
     this.userLookup.setValue('');
+    this.usersChanged.emit(this.users);
   }
 }

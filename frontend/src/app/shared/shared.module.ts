@@ -18,6 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
@@ -26,6 +27,7 @@ import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
 import { EventList } from './event-list/event-list.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
+import { CommunityAgreement } from './community-agreement/community-agreement.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 
@@ -36,7 +38,8 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     EventCard,
     EventList,
     UserLookup,
-    UserChipList
+    UserChipList,
+    CommunityAgreement
   ],
   imports: [
     CommonModule,
@@ -52,6 +55,7 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     MatPaginatorModule,
     MatListModule,
     MatAutocompleteModule,
+    MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,

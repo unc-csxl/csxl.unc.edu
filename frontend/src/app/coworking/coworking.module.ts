@@ -24,6 +24,11 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating-hours-dialog.widget';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { SharedModule } from '../shared/shared.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -55,7 +60,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatExpansionModule,
     MatButtonModule,
     MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatCardModule,
     AsyncPipe,
+    AsyncPipe,
+    SharedModule,
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,

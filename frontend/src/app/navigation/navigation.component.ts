@@ -7,10 +7,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthenticationService } from '../authentication.service';
-import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
+import { Router, RouterEvent } from '@angular/router';
 import { Profile, ProfileService } from '../profile/profile.service';
 import { PermissionService } from '../permission.service';
 import { NagivationAdminGearService } from './navigation-admin-gear.service';
+import { SlackInviteBox } from './widgets/slack-invite-box/slack-invite-box.widget';
 
 @Component({
   selector: 'app-navigation',
@@ -36,7 +37,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     protected navigationService: NavigationTitleService,
     protected navigationAdminGearService: NagivationAdminGearService,
-    protected errorDialog: MatDialog
+    protected errorDialog: MatDialog,
+    protected slackDialog: MatDialog
   ) {
     this.profile$ = this.profileService.profile$;
     this.checkinPermission$ = this.permission.check(
@@ -71,6 +73,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
     if (this.isHandset) {
       nav.close();
     }
+  }
+
+  onSlackInviteClick(): void {
+    const dialogRef = this.slackDialog.open(SlackInviteBox, {
+      autoFocus: 'dialog'
+    });
+    dialogRef.afterClosed().subscribe();
   }
 
   private initErrorDialog() {

@@ -17,7 +17,7 @@ import {
   parseEventJson
 } from './event.model';
 import { DatePipe } from '@angular/common';
-import { EventFilterPipe } from './event-filter/event-filter.pipe';
+import { EventPaginationParams, PaginatedEvent } from 'src/app/pagination';
 import { Profile, ProfileService } from '../profile/profile.service';
 import { Paginated, PaginationParams } from '../pagination';
 
@@ -31,8 +31,7 @@ export class EventService {
   constructor(
     protected http: HttpClient,
     protected profileSvc: ProfileService,
-    public datePipe: DatePipe,
-    public eventFilterPipe: EventFilterPipe
+    public datePipe: DatePipe
   ) {
     this.profileSubscription = this.profileSvc.profile$.subscribe(
       (profile) => (this.profile = profile)
@@ -139,7 +138,7 @@ export class EventService {
     let groups: Map<string, Event[]> = new Map();
 
     // Transform the list of events based on the event filter pipe and query
-    this.eventFilterPipe.transform(events, query).forEach((event) => {
+    events.forEach((event) => {
       // Find the date to group by
       let dateString =
         this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? '';
@@ -209,5 +208,40 @@ export class EventService {
     return this.http.delete<EventRegistration>(
       `/api/events/${event_id}/registration`
     );
+  }
+
+  list(params: EventPaginationParams) {
+    let paramStrings = {
+      order_by: params.order_by,
+      ascending: params.ascending,
+      filter: params.filter,
+      range_start: params.range_start,
+      range_end: params.range_end
+    };
+    let query = new URLSearchParams(paramStrings);
+    if (this.profile) {
+      return this.http
+        .get<PaginatedEvent<EventJson>>(
+          '/api/events/paginate?' + query.toString()
+        )
+        .pipe(
+          map((paginated) => ({
+            ...paginated,
+            items: paginated.items.map(parseEventJson)
+          }))
+        );
+    } else {
+      // if a user isn't logged in, return the normal endpoint without registration statuses
+      return this.http
+        .get<PaginatedEvent<EventJson>>(
+          '/api/events/paginate/unauthenticated?' + query.toString()
+        )
+        .pipe(
+          map((paginated) => ({
+            ...paginated,
+            items: paginated.items.map(parseEventJson)
+          }))
+        );
+    }
   }
 }

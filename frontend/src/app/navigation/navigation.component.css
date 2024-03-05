@@ -5,9 +5,25 @@
     text-align: center;
 }
 
+.logo-icon {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+  }
+
 .logo {
     margin: 0;
     height: 32px;
+}
+
+.bottom-button-container {
+    width: 100%;
+    margin-bottom: 6px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .sidenav-container {
@@ -16,6 +32,13 @@
 
 .sidenav {
     width: 200px;
+}
+
+.inner-sidenav-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .sidenav .mat-toolbar {

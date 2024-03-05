@@ -302,3 +302,18 @@ def test_draft_reservation_multiple_users_not_implemented(
                 }
             ),
         )
+
+
+def test_draft_reservation_user_did_not_accepted_agreement(
+    reservation_svc: ReservationService,
+):
+    """This test ensures that a user cannot make a reservation if they did not accept community agreement"""
+    user_data.user.accepted_community_agreement = False
+
+    with pytest.raises(ReservationException):
+        reservation = reservation_svc.draft_reservation(
+            user_data.user,
+            reservation_data.test_request(
+                {"users": [UserIdentity(**user_data.user.model_dump())]}
+            ),
+        )

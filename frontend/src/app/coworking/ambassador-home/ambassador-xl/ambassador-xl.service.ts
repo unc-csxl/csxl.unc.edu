@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import {
   Reservation,
   ReservationJSON,
+  SeatAvailability,
   parseReservationJSON
 } from '../../coworking.models';
 import { RxReservations } from '../rx-reservations';
@@ -65,5 +66,28 @@ export class AmbassadorXlService {
           alert(err);
         }
       });
+  }
+
+  makeDropinReservation(
+    seatSelection: SeatAvailability[],
+    users: PublicProfile[]
+  ) {
+    let start = seatSelection[0].availability[0].start;
+    let end = new Date(start.getTime() + 2 * ONE_HOUR);
+    let reservation = {
+      users: users,
+      seats: seatSelection.map((seatAvailability) => {
+        return { id: seatAvailability.id };
+      }),
+      start,
+      end
+    };
+
+    return this.http
+      .post<ReservationJSON>(
+        '/api/coworking/ambassador/reservation',
+        reservation
+      )
+      .pipe(map(parseReservationJSON));
   }
 }
