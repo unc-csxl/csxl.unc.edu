@@ -93,7 +93,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.coworkingService.draftReservation(seatSelection).subscribe({
       error: (error) =>
         this.snackBar.open(
-          'Error. There may be a reservation in the next 2 hours. Please cancel that if you want to drop-in.',
+          'Error. There may be a conflicting upcoming reservation. Please check upcoming reservations.',
           '',
           { duration: 8000 }
         ),
