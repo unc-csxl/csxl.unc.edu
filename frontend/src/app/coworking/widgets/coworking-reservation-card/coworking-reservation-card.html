@@ -64,12 +64,10 @@
         <h3>
           <label>Where</label>
           <strong
-            >{{ reservation.room ? reservation.room.id : 'The XL Colab in
-            Sitterson 156' }}</strong
-          >
+            >{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
         </h3>
 
-        <ng-container *ngIf="reservation.state === 'CONFIRMED'">
+        <ng-container *ngIf="reservation.state === 'CONFIRMED' && !checkCheckinAllowed()">
           <!-- Accordion Toggle Button with Material Icon -->
           <button
             mat-icon-button
@@ -106,7 +104,7 @@
 
         <ng-container *ngSwitchCase="'CONFIRMED'">
           <!-- Accordion Content -->
-          <ng-container *ngIf="isCancelExpanded$ | async ">
+          <ng-container *ngIf="isExpandedOrAllowCheckin() | async ">
             <button mat-stroked-button type="submit" (click)="cancel()">
               Cancel
             </button>
