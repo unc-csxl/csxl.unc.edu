@@ -35,8 +35,6 @@ export class OrganizationListAdminComponent implements OnInit {
   protected profile: Profile;
   /** List of displayed organizations for the signed in user */
   protected displayedOrganizations$: Observable<Organization[]>;
-  /** Used to determine if the signed in user is admin in HTML for create and delete buttons */
-  protected admin: boolean = false;
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
@@ -66,9 +64,7 @@ export class OrganizationListAdminComponent implements OnInit {
 
   ngOnInit() {
     let profilePermissions: Permission[] = this.profile.permissions;
-    if (profilePermissions[0].resource === '*') {
-      this.admin = true;
-    } else {
+    if (profilePermissions[0].resource !== '*') {
       /** Filter and return the slug of the users organization permissions */
       let userOrganizationPermissions: string[] = profilePermissions
         .filter((element) => element.resource.includes('organization'))
@@ -84,6 +80,11 @@ export class OrganizationListAdminComponent implements OnInit {
         )
       );
     }
+  }
+
+  /** Resposible for generating delete and create buttons in HTML code when admin signed in */
+  adminPermissions(): boolean {
+    return this.profile.permissions[0].resource === '*';
   }
 
   /** Event handler to open Organization Editor for the selected organization.

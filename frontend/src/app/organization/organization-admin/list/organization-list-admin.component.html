@@ -8,7 +8,7 @@
           <button
             mat-stroked-button
             (click)="createOrganization()"
-            *ngIf="admin">
+            *ngIf="adminPermissions()">
             Create
           </button>
         </div>
@@ -21,7 +21,7 @@
               mat-stroked-button
               (click)="deleteOrganization(element)"
               class="control-buttons"
-              *ngIf="admin">
+              *ngIf="adminPermissions()">
               Delete
             </button>
             <button
