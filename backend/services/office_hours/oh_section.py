@@ -48,12 +48,7 @@ class OfficeHoursSectionService:
         Returns:
             OfficeHoursSectionDetails: Object added to table
         """
-        # TODO: this is a WIP!
-        # ----- Permission check for section creation ----
-        # Check if user has admin permissions
-        # self._permission_svc.enforce(subject, "academics.section.create", f"section/")
-
-        # TODO: investigate what permission checks we will need to do here
+        # TODO: Permissions
 
         # Create new object
         oh_section_entity = OfficeHoursSectionEntity.from_model(oh_section)
@@ -76,8 +71,17 @@ class OfficeHoursSectionService:
         Returns:
             OfficeHoursSectionDetails: the office hours section with the given id
         """
-        # TODO
-        return None
+        #TODO: Permissions
+
+        # Select the section with the corresponding id
+        oh_section_entity = self._session.get(OfficeHoursSectionEntity, oh_section_id)
+
+        # Raise an error if no entity was found.
+        if oh_section_entity is None:
+            raise ResourceNotFoundException(f"Section with id: {oh_section_id} does not exist.")
+
+        # Return the details model
+        return oh_section_entity.to_details_model()
 
     def get_oh_events_by_oh_section(
         self,
@@ -146,6 +150,8 @@ class OfficeHoursSectionService:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHsection
         """
         # TODO
+
+        #TODO: Permissions
         return None
 
     def get_user_oh_section_tickets(
@@ -159,6 +165,8 @@ class OfficeHoursSectionService:
             list[OfficeHoursTicketDetails]: List of all of a user's `OfficeHoursTicketDetails` in an OHsection
         """
         # TODO
+
+        #TODO: Permissions
         return None
 
     def update(
@@ -172,6 +180,8 @@ class OfficeHoursSectionService:
             OfficeHoursSectionDetails: updated OfficeHoursSectionDetails
         """
         # TODO
+
+        #TODO: Permissions
         return None
 
     def delete(self, subject: User, oh_section: int) -> None:
@@ -180,4 +190,15 @@ class OfficeHoursSectionService:
             subject: a valid User model representing the currently logged in User
             oh_section: OfficeHoursSectionDetails to delete
         """
-        # TODO
+        # TODO: Permissions
+
+        # Find the entity to delete
+        oh_section_entity = self._session.get(OfficeHoursSectionEntity, oh_section.id)
+
+        # Raise an error if no entity was found
+        if oh_section_entity is None:
+            raise ResourceNotFoundException(f"Section with id: {oh_section.id} does not exist.")
+
+        # Delete and commit changes
+        self._session.delete(oh_section_entity)
+        self._session.commit()
