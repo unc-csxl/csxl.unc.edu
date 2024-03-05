@@ -5,11 +5,12 @@ import { AmbassadorPageComponent } from './ambassador-home/ambassador-home.compo
 import { ReservationComponent } from './reservation/reservation.component';
 import { NewReservationPageComponent } from './room-reservation/new-reservation-page/new-reservation-page.component';
 import { ConfirmReservationComponent } from './room-reservation/confirm-reservation/confirm-reservation.component';
+import { AmbassadorXlListComponent } from './ambassador-home/ambassador-xl/list/ambassador-xl-list.component';
 
 const routes: Routes = [
   CoworkingPageComponent.Route,
   ReservationComponent.Route,
-  AmbassadorPageComponent.Route,
+  AmbassadorXlListComponent.Route,
   NewReservationPageComponent.Route,
   ConfirmReservationComponent.Route
 ];
