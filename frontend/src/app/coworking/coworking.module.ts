@@ -24,6 +24,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating-hours-dialog.widget';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
@@ -59,7 +60,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatInputModule,
     MatNativeDateModule,
     MatFormFieldModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule
   ]
 })
 export class CoworkingModule {}

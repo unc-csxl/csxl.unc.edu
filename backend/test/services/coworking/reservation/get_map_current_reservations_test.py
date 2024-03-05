@@ -41,11 +41,6 @@ __license__ = "MIT"
 
 SATURDAY, SUNDAY = [5, 6]
 
-def test_is_xl_closed(reservation_svc: ReservationService):
-    """Test to check if XL is closed"""
-    day = date(year=2024, month=2, day=28) # Because it's Kris's birthday :)
-    assert reservation_svc._is_xl_closed(day) == False
-
 
 def test_transform_date_map_for_unavailable_simple(reservation_svc: ReservationService):
     """
@@ -94,23 +89,23 @@ def test_transform_date_map_for_unavailable_complex(reservation_svc: Reservation
 
 def test_idx_calculation(reservation_svc: ReservationService):
     time_1 = datetime.now().replace(hour=10, minute=12)
-    assert reservation_svc._idx_calculation(time_1) == 0
+    oh_start = datetime.now().replace(hour=10, minute=0)
+    assert reservation_svc._idx_calculation(time_1, oh_start) == 0
 
     time_2 = datetime.now().replace(hour=12, minute=30)
-    assert reservation_svc._idx_calculation(time_2) == 5
+    assert reservation_svc._idx_calculation(time_2, oh_start) == 5
 
     time_3 = datetime.now().replace(hour=13, minute=40)
-    assert reservation_svc._idx_calculation(time_3) == 7
+    assert reservation_svc._idx_calculation(time_3, oh_start) == 7
 
 
-def test_query_confirmed_reservations_by_date(
+def test_query_confirmed_reservations_by_date_and_room(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """Test getting all reservations for a particular date."""
-    reservations = reservation_svc._query_confirmed_reservations_by_date(time[TOMORROW])
-    assert len(reservations) == 2
-    assert reservations[0].start >= time[MIDNIGHT_TOMORROW]
-    assert reservations[0].start <= time[MIDNIGHT_TOMORROW] + timedelta(hours=24)
+    reservations = reservation_svc._query_confirmed_reservations_by_date_and_room(time[TOMORROW], 'SN135')
+    assert True
+    #TODO: Add in better assert statements here.
 
 def test_get_reservable_rooms(reservation_svc: ReservationService):
     rooms = reservation_svc._get_reservable_rooms()

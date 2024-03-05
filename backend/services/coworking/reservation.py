@@ -236,37 +236,37 @@ class ReservationService:
         Retrieves a detailed mapping of room reservation statuses for a specific date, tailored for a given user.
 
         This method returns an instance of ReservationMapDetails, which includes:
-        - A dictionary (`reserved_date_map`) where keys are room IDs and values are lists of time slot statuses 
-        for each room. Statuses are integers representing: 
+        - A dictionary (`reserved_date_map`) where keys are room IDs and values are lists of time slot statuses
+        for each room. Statuses are integers representing:
             0 (Available - Green)
             1 (Reserved - Red)
             2 (Selected - Orange)
             3 (Unavailable - Grayed out)
             4 (Subject's Reservation - Blue).
-        - The start (`operating_hours_start`) and end (`operating_hours_end`) times of operating hours for 
+        - The start (`operating_hours_start`) and end (`operating_hours_end`) times of operating hours for
         the date queried.
-        - The total number of time slots (`number_of_time_slots`) available within the operating hours, 
+        - The total number of time slots (`number_of_time_slots`) available within the operating hours,
         based on 30-minute intervals.
 
-        It handles various scenarios including days without operating hours by providing a default schedule 
-        (10 am to 6 pm) and adjusting time slots based on current time to mark past slots as unavailable. 
+        It handles various scenarios including days without operating hours by providing a default schedule
+        (10 am to 6 pm) and adjusting time slots based on current time to mark past slots as unavailable.
         It supports rounding start and end times to the nearest half-hour and excludes reservations that
         are outside the operating hours.
 
         Args:
             date (datetime): The date for which the reservation statuses are to be fetched.
-            subject (User): The user for whom the reservation statuses are being determined, to highlight 
+            subject (User): The user for whom the reservation statuses are being determined, to highlight
                             their own reservations.
 
         Returns:
-            ReservationMapDetails: An object containing the mapping of room reservation statuses, 
+            ReservationMapDetails: An object containing the mapping of room reservation statuses,
                                    operating hours, and the number of time slots.
 
         Note:
-            This method assumes individual user reservations. Group reservations require adjustments to 
-            the implementation. 
-            
-            Future reservations are shown up to the current time, with past slots marked as unavailable 
+            This method assumes individual user reservations. Group reservations require adjustments to
+            the implementation.
+
+            Future reservations are shown up to the current time, with past slots marked as unavailable
             for today's date.
         """
         reserved_date_map: dict[str, list[int]] = {}
@@ -294,20 +294,28 @@ class ReservationService:
                 reserved_date_map=reserved_date_map,
                 operating_hours_start=date.replace(hour=10),
                 operating_hours_end=date.replace(hour=18),
-                number_of_time_slots=16
+                number_of_time_slots=16,
             )
 
         # Extract the start time and end time for operating hours rounded to the closest half hour
-        operating_hours_start = self._round_to_closest_half_hour(operating_hours_on_date.start, round_up=True)
-        operating_hours_end = self._round_to_closest_half_hour(operating_hours_on_date.end, round_up=False)
+        operating_hours_start = self._round_to_closest_half_hour(
+            operating_hours_on_date.start, round_up=True
+        )
+        operating_hours_end = self._round_to_closest_half_hour(
+            operating_hours_on_date.end, round_up=False
+        )
         operating_hours_time_delta = operating_hours_end - operating_hours_start
 
         # Multiply by 2 because 30 min interval indexes
-        operating_hours_duration = int(2 * operating_hours_time_delta.total_seconds() / 3600)  
+        operating_hours_duration = int(
+            2 * operating_hours_time_delta.total_seconds() / 3600
+        )
 
         # Need current time to gray out slots in the past on that day.
         current_time = datetime.now()
-        current_time_idx = self._idx_calculation(current_time, operating_hours_start) + 1
+        current_time_idx = (
+            self._idx_calculation(current_time, operating_hours_start) + 1
+        )
 
         for room in rooms:
             time_slots_for_room = [0] * operating_hours_duration
@@ -318,9 +326,13 @@ class ReservationService:
                     time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
             room_id = room.id if room else "SN156"
-            reservations = self._query_confirmed_reservations_by_date_and_room(date, room_id)
+            reservations = self._query_confirmed_reservations_by_date_and_room(
+                date, room_id
+            )
             for reservation in reservations:
-                start_idx = self._idx_calculation(reservation.start, operating_hours_start)
+                start_idx = self._idx_calculation(
+                    reservation.start, operating_hours_start
+                )
                 end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
                 if start_idx < 0 or end_idx > operating_hours_duration:
@@ -333,7 +345,7 @@ class ReservationService:
                     start_idx = max(current_time_idx, start_idx)
 
                 for idx in range(start_idx, end_idx):
-                    # Currently only assuming single user. 
+                    # Currently only assuming single user.
                     # TODO: If making group reservations, need to change this.
                     if reservation.users[0].id == subject.id:
                         time_slots_for_room[idx] = RoomState.SUBJECT_RESERVED.value
@@ -343,29 +355,33 @@ class ReservationService:
             reserved_date_map[room.id] = time_slots_for_room
 
         self._transform_date_map_for_unavailable(reserved_date_map)
-        del reserved_date_map['SN156']
-        self._transform_date_map_for_officehours(date, reserved_date_map, operating_hours_start, operating_hours_duration)
+        del reserved_date_map["SN156"]
+        self._transform_date_map_for_officehours(
+            date, reserved_date_map, operating_hours_start, operating_hours_duration
+        )
 
         return ReservationMapDetails(
             reserved_date_map=reserved_date_map,
             operating_hours_start=operating_hours_start,
             operating_hours_end=operating_hours_end,
-            number_of_time_slots=operating_hours_duration
+            number_of_time_slots=operating_hours_duration,
         )
-    
-    def _round_to_closest_half_hour(self, dt: datetime, round_up: bool = True) -> datetime:
+
+    def _round_to_closest_half_hour(
+        self, dt: datetime, round_up: bool = True
+    ) -> datetime:
         """
         This helper rounds a datetime object to the closest half hour either up or down based on the round_up flag.
-        
+
         Args:
             dt (datetime): The datetime object you want to round.
             round_up (bool): If True, rounds up to the closest half hour. If False, rounds down to the closest half hour.
-        
+
         Returns:
             datetime: Rounded datetime object.
         """
         minutes = dt.minute
-        
+
         if round_up:
             if minutes < 30:
                 to_add = timedelta(minutes=(30 - minutes))
@@ -380,7 +396,7 @@ class ReservationService:
             rounded_dt = dt - to_subtract
 
         rounded_dt = rounded_dt.replace(second=0, microsecond=0)
-        
+
         return rounded_dt
 
     def _idx_calculation(self, time: datetime, operating_hours_start: datetime) -> int:
@@ -397,8 +413,9 @@ class ReservationService:
         Returns:
             int: The index of the time slot corresponding to the given time.
         """
-        return int(2 * (time.hour - operating_hours_start.hour)) + \
-             ((time.minute - operating_hours_start.minute) // 30)
+        return int(2 * (time.hour - operating_hours_start.hour)) + (
+            (time.minute - operating_hours_start.minute) // 30
+        )
 
     def _transform_date_map_for_unavailable(
         self, reserved_date_map: dict[str, list[int]]
@@ -430,11 +447,11 @@ class ReservationService:
                     values[i] = RoomState.UNAVAILABLE.value
 
     def _transform_date_map_for_officehours(
-        self, 
+        self,
         date: datetime,
         reserved_date_map: dict[str, list[int]],
         operating_hours_start: datetime,
-        operating_hours_duration: int
+        operating_hours_duration: int,
     ) -> None:
         """
         Transforms date map in place.
@@ -443,15 +460,16 @@ class ReservationService:
         for room_id, hours in office_hours.items():
             for start, end in hours:
                 start_idx = max(self._idx_calculation(start, operating_hours_start), 0)
-                end_idx = min(self._idx_calculation(end, operating_hours_start), operating_hours_duration)
+                end_idx = min(
+                    self._idx_calculation(end, operating_hours_start),
+                    operating_hours_duration,
+                )
                 if start_idx < end_idx:
                     for idx in range(start_idx, end_idx):
                         reserved_date_map[room_id][idx] = RoomState.UNAVAILABLE.value
 
     def _query_confirmed_reservations_by_date_and_room(
-        self, 
-        date: datetime,
-        room_id: str
+        self, date: datetime, room_id: str
     ) -> Sequence[Reservation]:
         """
         Queries and returns confirmed and checked-in reservations for a given date and room.
@@ -470,14 +488,14 @@ class ReservationService:
         start = date.replace(hour=0, minute=0, second=0, microsecond=0)
         reservations = (
             self._session.query(ReservationEntity)
-            .join(ReservationEntity.room) 
+            .join(ReservationEntity.room)
             .filter(
                 ReservationEntity.start < start + timedelta(hours=24),
                 ReservationEntity.end > start,
                 ReservationEntity.state.not_in(
                     [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
                 ),
-                RoomEntity.id == room_id
+                RoomEntity.id == room_id,
             )
             .options(
                 joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
@@ -487,14 +505,14 @@ class ReservationService:
         )
 
         return [reservation.to_model() for reservation in reservations]
-    
+
     def _get_reservable_rooms(self) -> Sequence[RoomDetails]:
         """
         Retrieves a list of all reservable rooms.
-        This method queries the RoomEntity table to find all rooms that are marked as reservable 
-        (i.e., their 'reservable' attribute is True) and are not the room with ID 'SN156'. 
-        The rooms are then ordered by their ID in ascending order. 
-        
+        This method queries the RoomEntity table to find all rooms that are marked as reservable
+        (i.e., their 'reservable' attribute is True) and are not the room with ID 'SN156'.
+        The rooms are then ordered by their ID in ascending order.
+
         Each room entity is converted to a RoomDetails model before being returned.
 
         Returns:
@@ -503,9 +521,7 @@ class ReservationService:
 
         rooms = (
             self._session.query(RoomEntity)
-            .filter(
-                RoomEntity.id.not_in(self._policy_svc.non_reservable_rooms())
-            )
+            .filter(RoomEntity.id.not_in(self._policy_svc.non_reservable_rooms()))
             .order_by(RoomEntity.id)
             .all()
         )
@@ -769,7 +785,7 @@ class ReservationService:
                 )
 
             nonconflicting = bounds.subtract(conflict)
-            if len(nonconflicting) == 1:
+            if len(nonconflicting) >= 1:
                 bounds = nonconflicting[0]
             else:
                 raise ReservationException(
@@ -921,8 +937,10 @@ class ReservationService:
 
         return valid_transition
 
-    def list_all_active_and_upcoming(self, subject: User) -> Sequence[Reservation]:
-        """Ambassadors need to see all active and upcoming reservations.
+    def list_all_active_and_upcoming_for_xl(
+        self, subject: User
+    ) -> Sequence[Reservation]:
+        """Ambassadors need to see all active and upcoming reservations for the XL.
 
         This method queries all future events. When pre-reservations are added, this method
         will need redesign to support date/time based pagination.
@@ -954,11 +972,53 @@ class ReservationService:
                         ReservationState.CHECKED_OUT,
                     )
                 ),
+                ReservationEntity.room == None,
             )
             .options(
                 joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
             )
             .order_by(ReservationEntity.start.desc())
+            .all()
+        )
+        return [reservation.to_model() for reservation in reservations]
+
+    def list_all_active_and_upcoming_for_rooms(
+        self, subject: User
+    ) -> Sequence[Reservation]:
+        """Ambassadors need to see all active and upcoming reservations for the rooms.
+
+        This method queries all future events. When pre-reservations are added, this method
+        will need redesign to support date/time based pagination.
+
+        Args:
+            subject (User): The user initiating the reservation change request.
+
+        Returns:
+            Sequence[Reservation] - all active and upcoming reservations for rooms.
+
+        Raises:
+            UserPermissionException when user does not have permission to read reservations
+        """
+        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
+        now = datetime.now()
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start >= now - timedelta(minutes=10),
+                ReservationEntity.state.in_(
+                    (
+                        ReservationState.CONFIRMED,
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                    )
+                ),
+                ReservationEntity.room != None,
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start.asc())
             .all()
         )
         return [reservation.to_model() for reservation in reservations]
