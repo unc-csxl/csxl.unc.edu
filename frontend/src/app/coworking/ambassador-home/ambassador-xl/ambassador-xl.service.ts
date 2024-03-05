@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import {
   Reservation,
   ReservationJSON,
@@ -8,6 +8,9 @@ import {
   parseReservationJSON
 } from '../../coworking.models';
 import { RxReservations } from '../rx-reservations';
+import { PublicProfile } from 'src/app/profile/profile.service';
+
+const ONE_HOUR = 60 * 60 * 1000;
 
 @Injectable({
   providedIn: 'root'
