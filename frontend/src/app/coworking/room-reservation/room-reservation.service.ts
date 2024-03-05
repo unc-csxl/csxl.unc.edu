@@ -91,8 +91,6 @@ export class RoomReservationService extends ReservationService {
    * @returns {void} - This method does not return a value; it sets the upcoming reservations in a state management variable.
    */
   pollUpcomingRoomReservation(snackBar: MatSnackBar) {
-    console.log('running poll UpcomingRoomReservations');
-
     // predicate to determine if this is a non active upcoming room reservation
     const isUpcomingRoomReservation = (r: Reservation) =>
       !this.findActiveReservationPredicate(r) && !!r && !!r.room;
