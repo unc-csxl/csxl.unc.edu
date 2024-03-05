@@ -16,9 +16,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { AmbassadorRoomListComponent } from './ambassador-room/list/ambassador-room-list.component';
 
 @NgModule({
-  declarations: [AmbassadorXlListComponent],
+  declarations: [AmbassadorXlListComponent, AmbassadorRoomListComponent],
   imports: [
     CommonModule,
     AmbassadorHomeRoutingModule,
