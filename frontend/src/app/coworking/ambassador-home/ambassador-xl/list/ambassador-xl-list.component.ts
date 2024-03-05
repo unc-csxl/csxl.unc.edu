@@ -15,7 +15,7 @@ export class AmbassadorXlListComponent implements OnDestroy, OnInit {
   public static Route: Route = {
     path: 'xl',
     component: AmbassadorXlListComponent,
-    title: 'XL Ambassador',
+    title: 'XL Reservations',
     canActivate: [permissionGuard('coworking.reservation.*', '*')],
     resolve: {}
   };
