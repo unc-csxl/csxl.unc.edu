@@ -921,8 +921,8 @@ class ReservationService:
 
         return valid_transition
 
-    def list_all_active_and_upcoming(self, subject: User) -> Sequence[Reservation]:
-        """Ambassadors need to see all active and upcoming reservations.
+    def list_all_active_and_upcoming_for_xl(self, subject: User) -> Sequence[Reservation]:
+        """Ambassadors need to see all active and upcoming reservations for the XL.
 
         This method queries all future events. When pre-reservations are added, this method
         will need redesign to support date/time based pagination.
@@ -954,6 +954,46 @@ class ReservationService:
                         ReservationState.CHECKED_OUT,
                     )
                 ),
+                ReservationEntity.room == None
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start.desc())
+            .all()
+        )
+        return [reservation.to_model() for reservation in reservations]
+    
+    def list_all_active_and_upcoming_for_rooms(self, subject: User) -> Sequence[Reservation]:
+        """Ambassadors need to see all active and upcoming reservations for the rooms.
+
+        This method queries all future events. When pre-reservations are added, this method
+        will need redesign to support date/time based pagination.
+
+        Args:
+            subject (User): The user initiating the reservation change request.
+
+        Returns:
+            Sequence[Reservation] - all active and upcoming reservations for rooms.
+
+        Raises:
+            UserPermissionException when user does not have permission to read reservations
+        """
+        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
+        now = datetime.now()
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start >= now,
+                ReservationEntity.state.in_(
+                    (
+                        ReservationState.CONFIRMED,
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                    )
+                ),
+                ReservationEntity.room != None
             )
             .options(
                 joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
