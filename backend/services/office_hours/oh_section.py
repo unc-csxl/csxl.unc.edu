@@ -98,8 +98,6 @@ class OfficeHoursSectionService:
             list[OfficeHoursEventDetails]: list of all office hours events for the given section
         """
         # TODO
-        # make sure to check if time range is None
-        # if time range is not None, you are retrieving upcoming events
         return None
 
     def get_oh_sections_by_term(
