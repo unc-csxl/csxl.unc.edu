@@ -24,4 +24,4 @@ class OfficeHoursSection(OfficeHoursSectionDraft):
     of the `OfficeHoursSection` database in the PostgreSQL database.
     """
 
-    id: int | None = None
+    id: int

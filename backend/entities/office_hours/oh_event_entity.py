@@ -4,10 +4,10 @@ from datetime import datetime, date
 from typing import Self
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from backend.models.office_hours.oh_event import OfficeHoursEvent
-from backend.models.office_hours.oh_event_details import OfficeHoursEventDetails
+from backend.models.office_hours.event import OfficeHoursEvent
+from backend.models.office_hours.event_details import OfficeHoursEventDetails
 
-from backend.models.office_hours.oh_type import OfficeHoursType
+from backend.models.office_hours.event_type import OfficeHoursEventType
 
 
 from ..entity_base import EntityBase
@@ -27,8 +27,8 @@ class OfficeHoursEventEntity(EntityBase):
     # Unique id for OfficeHoursEvent
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Type of event
-    type: Mapped[OfficeHoursType] = mapped_column(
-        SQLAlchemyEnum(OfficeHoursType), nullable=False
+    type: Mapped[OfficeHoursEventType] = mapped_column(
+        SQLAlchemyEnum(OfficeHoursEventType), nullable=False
     )
     # Description of event
     description: Mapped[str] = mapped_column(String, default="", nullable=False)
