@@ -21,8 +21,6 @@ import { ConfirmReservationComponent } from './room-reservation/confirm-reservat
 import { DateSelector } from './widgets/date-selector/date-selector.widget';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating-hours-dialog.widget';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -31,6 +29,8 @@ import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from '../shared/shared.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AmbassadorXlListComponent } from './ambassador-home/ambassador-xl/list/ambassador-xl-list.component';
+import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/list/ambassador-room-list.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +39,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CoworkingPageComponent,
     ReservationComponent,
     AmbassadorPageComponent,
+    AmbassadorXlListComponent,
+    AmbassadorRoomListComponent,
     CoworkingDropInCard,
     CoworkingReservationCard,
     CoworkingHoursCard,
