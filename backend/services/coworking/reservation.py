@@ -224,7 +224,7 @@ class ReservationService:
         for reservation in reservations:
             if reservation.room:
                 duration += reservation.end - reservation.start
-        str_duration = str(duration.total_seconds() / 3600)
+        str_duration = str(6 - (round((duration.total_seconds() / 3600) * 2) / 2))
         if str_duration[2] == "0":
             return str_duration.rstrip("0").rstrip(".")
         return str_duration
