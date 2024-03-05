@@ -3,7 +3,6 @@ import { Route } from '@angular/router';
 import { Observable, Subscription, map, timer, tap } from 'rxjs';
 import { Reservation } from 'src/app/coworking/coworking.models';
 import { permissionGuard } from 'src/app/permission.guard';
-import { profileResolver } from 'src/app/profile/profile.resolver';
 import { AmbassadorService } from '../../ambassador.service';
 
 @Component({
@@ -18,7 +17,7 @@ export class AmbassadorXlListComponent implements OnDestroy, OnInit {
     component: AmbassadorXlListComponent,
     title: 'XL Ambassador',
     canActivate: [permissionGuard('coworking.reservation.*', '*')],
-    resolve: { profile: profileResolver }
+    resolve: {}
   };
 
   reservations$: Observable<Reservation[]>;
