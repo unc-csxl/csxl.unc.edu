@@ -14,7 +14,7 @@ const routes: Routes = [
   ConfirmReservationComponent.Route,
   {
     path: 'ambassador',
-    title: 'Admin',
+    title: 'Ambassador',
     loadChildren: () =>
       import('./ambassador-home/ambassador-home.module').then(
         (m) => m.AmbassadorHomeModule
