@@ -119,9 +119,19 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="room">
-          <th mat-header-cell *matHeaderCellDef>Seat</th>
+          <th mat-header-cell *matHeaderCellDef>Room</th>
           <td mat-cell *matCellDef="let reservation">
             {{ reservation.room.id }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let reservation">
+            <button
+              mat-stroked-button
+              (click)="this.ambassadorService.checkOut(reservation)">
+              Check Out
+            </button>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
@@ -141,5 +151,3 @@
     </mat-card>
   </ng-template>
 </div>
-
-<p>this works!</p>
