@@ -160,4 +160,11 @@ export class CoworkingReservationCard implements OnInit {
   toggleCancelExpansion(): void {
     this.coworkingService.toggleCancelExpansion();
   }
+
+  isExpandedOrAllowCheckin(): Observable<boolean> {
+    return this.isCancelExpanded$.pipe(
+      map(isCancelExpanded => isCancelExpanded || this.checkCheckinAllowed())
+    );
+  }
+  
 }
