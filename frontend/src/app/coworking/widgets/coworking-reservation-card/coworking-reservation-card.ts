@@ -161,6 +161,20 @@ export class CoworkingReservationCard implements OnInit {
     this.coworkingService.toggleCancelExpansion();
   }
 
+  /**
+   * Evaluates if the cancel operation is expanded or if check-in is allowed.
+   * 
+   * Combines the observable `isCancelExpanded$` with the result of `checkCheckinAllowed()` to
+   * determine the UI state. It uses RxJS's `map` to emit true if either condition is met: the
+   * cancel operation is expanded (`isCancelExpanded$` is true) or check-in is allowed (`checkCheckinAllowed()`
+   * returns true).
+   * 
+   * @returns {Observable<boolean>} Observable that emits true if either condition is true, otherwise false.
+   * 
+   * Usage:
+   * Can be used in Angular templates with async pipe for conditional UI rendering:
+   * `<ng-container *ngIf="isExpandedOrAllowCheckin() | async">...</ng-container>`
+   */
   isExpandedOrAllowCheckin(): Observable<boolean> {
     return this.isCancelExpanded$.pipe(
       map(isCancelExpanded => isCancelExpanded || this.checkCheckinAllowed())
