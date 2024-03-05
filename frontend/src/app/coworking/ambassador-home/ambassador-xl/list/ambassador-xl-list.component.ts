@@ -14,7 +14,7 @@ import { AmbassadorService } from '../../ambassador.service';
 export class AmbassadorXlListComponent implements OnDestroy, OnInit {
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
-    path: 'ambassador/xl',
+    path: 'xl',
     component: AmbassadorXlListComponent,
     title: 'XL Ambassador',
     canActivate: [permissionGuard('coworking.reservation.*', '*')],

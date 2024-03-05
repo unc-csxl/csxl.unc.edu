@@ -10,9 +10,16 @@ import { AmbassadorXlListComponent } from './ambassador-home/ambassador-xl/list/
 const routes: Routes = [
   CoworkingPageComponent.Route,
   ReservationComponent.Route,
-  AmbassadorXlListComponent.Route,
   NewReservationPageComponent.Route,
-  ConfirmReservationComponent.Route
+  ConfirmReservationComponent.Route,
+  {
+    path: 'ambassador',
+    title: 'Admin',
+    loadChildren: () =>
+      import('./ambassador-home/ambassador-home.module').then(
+        (m) => m.AmbassadorHomeModule
+      )
+  }
 ];
 
 @NgModule({

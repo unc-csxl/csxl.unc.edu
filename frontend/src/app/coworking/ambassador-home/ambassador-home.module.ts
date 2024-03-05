@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { AmbassadorHomeRoutingModule } from './ambassador-home-routing.module';
 import { AmbassadorXlListComponent } from './ambassador-xl/list/ambassador-xl-list.component';
-import { MatCardModule } from '@angular/material/card';
+import { MatCard, MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +22,7 @@ import { MatTabsModule } from '@angular/material/tabs';
   imports: [
     CommonModule,
     AmbassadorHomeRoutingModule,
+    MatCardModule,
     MatTabsModule,
     MatTableModule,
     MatDialogModule,
