@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime, date
-from .oh_type import OfficeHoursType
+from .event_type import OfficeHoursEventType
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
@@ -17,7 +17,7 @@ class OfficeHoursEventDraft(BaseModel):
 
     office_hours_section_id: int
     room_id: str
-    type: OfficeHoursType
+    type: OfficeHoursEventType
     description: str = ""
     location_description: str = ""
     date: date
@@ -33,4 +33,4 @@ class OfficeHoursEvent(OfficeHoursEventDraft):
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
 
-    id: int | None = None
+    id: int

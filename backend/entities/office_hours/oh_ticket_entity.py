@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.models.office_hours.ticket_state import TicketState
 from backend.models.office_hours.ticket_type import TicketType
-from backend.models.office_hours.oh_ticket import OfficeHoursTicket
-from backend.models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from backend.models.office_hours.ticket import OfficeHoursTicket
+from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
 from .user_created_tickets_table import user_created_tickets_table
 
 
@@ -89,7 +89,7 @@ class OfficeHoursTicketEntity(EntityBase):
             type=model.type,
             state=model.state,
             created_at=model.created_at,
-            closed_at=model.closed_at
+            closed_at=model.closed_at,
         )
 
     def to_model(self) -> OfficeHoursTicket:
@@ -109,9 +109,9 @@ class OfficeHoursTicketEntity(EntityBase):
             type=self.type,
             state=self.state,
             created_at=self.created_at,
-            closed_at=self.closed_at
+            closed_at=self.closed_at,
         )
-    
+
     def to_details_model(self) -> OfficeHoursTicketDetails:
         """
         Converts a `OfficeHoursTicketEntity` object into a `OfficeHoursTicketDetails` model object
@@ -130,7 +130,7 @@ class OfficeHoursTicketEntity(EntityBase):
             state=self.state,
             created_at=self.created_at,
             closed_at=self.closed_at,
-            oh_event= self.oh_event.to_model(),
-            creators= [creator.to_model() for creator in self.creators],
-            caller= self.caller.to_model()
+            oh_event=self.oh_event.to_model(),
+            creators=[creator.to_model() for creator in self.creators],
+            caller=self.caller.to_model(),
         )

@@ -1,13 +1,13 @@
-from ..academics.section_member import SectionMember
-from .oh_event import OfficeHoursEvent
-from .oh_ticket import OfficeHoursTicket
+from ..academics.section import Section
+from .event import OfficeHoursEvent
+from .section import OfficeHoursSection
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class OfficeHoursTicketDetails(OfficeHoursTicket):
+class OfficeHoursSectionDetails(OfficeHoursSection):
     """
     Pydantic model to represent an `OfficeHoursSection`, including back-populated
     relationship fields.
@@ -16,6 +16,5 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
     of the `OfficeHoursSection` database in the PostgreSQL database.
     """
 
-    event: OfficeHoursEvent
-    creators: list[SectionMember]
-    caller: SectionMember | None = None
+    sections: list[Section]
+    events: list[OfficeHoursEvent]
