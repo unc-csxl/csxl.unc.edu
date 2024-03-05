@@ -2,6 +2,8 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...entities.office_hours.oh_ticket_entity import OfficeHoursTicketEntity
+
 from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
 from ...entities.office_hours.oh_event_entity import OfficeHoursEventEntity
@@ -147,7 +149,7 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursEventDetails]: upcoming OH events associated with a user
         """
-        # TODO
+        # TODO: Add Permissions
         return None
 
     def get_oh_event_tickets(
@@ -160,5 +162,8 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
-        # TODO
-        return None
+        #TODO: Permissions
+
+        #WIP - check this:
+        tickets = self._session.query(OfficeHoursEventEntity).join(OfficeHoursEventEntity.tickets).order_by(OfficeHoursTicketEntity.created_at.desc).all()
+        return tickets
