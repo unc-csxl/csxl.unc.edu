@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 
 import { AmbassadorHomeRoutingModule } from './ambassador-home-routing.module';
-import { AmbassadorXlListComponent } from './ambassador-xl/list/ambassador-xl-list.component';
 import { MatCard, MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -16,10 +15,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AmbassadorRoomListComponent } from './ambassador-room/list/ambassador-room-list.component';
+// import { AmbassadorXlListComponent } from './ambassador-xl/list/ambassador-xl-list.component';
+// import { AmbassadorRoomListComponent } from './ambassador-room/list/ambassador-room-list.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
-  declarations: [AmbassadorXlListComponent, AmbassadorRoomListComponent],
   imports: [
     CommonModule,
     AmbassadorHomeRoutingModule,
@@ -33,7 +33,9 @@ import { AmbassadorRoomListComponent } from './ambassador-room/list/ambassador-r
     MatInputModule,
     MatPaginatorModule,
     MatListModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    AsyncPipe,
+    SharedModule
   ]
 })
 export class AmbassadorHomeModule {}
