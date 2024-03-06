@@ -14,4 +14,3 @@ class Application(BaseModel):
     """
 
     id: int | None = None
-    video: str

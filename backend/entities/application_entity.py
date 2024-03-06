@@ -21,8 +21,8 @@ class ApplicationEntity(EntityBase):
 
     # Unique ID for the application
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    # Link to introductory video
-    video: Mapped[str] = mapped_column(String, nullable=False, default="")
+
+    # Courses LA'd for, reference to section_meber
 
     @classmethod
     def from_model(cls, model: Application) -> Self:
@@ -34,7 +34,7 @@ class ApplicationEntity(EntityBase):
         Returns:
             ApplicationEntity: Entity created from model
         """
-        return cls(id=model.id, video=model.video)
+        return cls(id=model.id)
 
     def to_model(self) -> Application:
         """
