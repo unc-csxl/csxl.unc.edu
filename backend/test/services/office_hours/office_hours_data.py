@@ -9,13 +9,13 @@ from backend.entities.office_hours import user_created_tickets_table
 from backend.entities.office_hours.oh_event_entity import OfficeHoursEventEntity
 from backend.entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
 from backend.entities.office_hours.oh_ticket_entity import OfficeHoursTicketEntity
-from backend.models.office_hours.oh_event import OfficeHoursEvent
+from backend.models.office_hours.event import OfficeHoursEvent
 
-from backend.models.office_hours.oh_section import OfficeHoursSection
-from backend.models.office_hours.oh_ticket import OfficeHoursTicket
+from backend.models.office_hours.section import OfficeHoursSection
+from backend.models.office_hours.ticket import OfficeHoursTicket
 from backend.models.office_hours.ticket_type import TicketType
 from backend.models.office_hours.ticket_state import TicketState
-from backend.models.office_hours.oh_type import OfficeHoursType
+from backend.models.office_hours.event_type import OfficeHoursEventType
 from backend.test.services.coworking.time import *
 from ..academics import section_data
 
@@ -40,7 +40,7 @@ comp_110_oh_event_1 = OfficeHoursEvent(
     id=1,
     office_hours_section_id=1,
     room_id="SN156",
-    type=OfficeHoursType.OFFICE_HOURS,
+    type=OfficeHoursEventType.OFFICE_HOURS,
     description="Office Hours",
     location_description="In Person",
     date=date.today(),
@@ -52,7 +52,7 @@ comp_110_oh_event_2 = OfficeHoursEvent(
     id=2,
     office_hours_section_id=1,
     room_id="SN156",
-    type=OfficeHoursType.OFFICE_HOURS,
+    type=OfficeHoursEventType.OFFICE_HOURS,
     description="Office Hours",
     location_description="In Person",
     date=date.today(),
@@ -64,14 +64,16 @@ comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
 pending_ticket = OfficeHoursTicket(
+    id=1,
     oh_event_id=1,
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.PENDING,
+    state=TicketState.QUEUED,
     created_at=datetime.now(),
 )
 
 called_ticket = OfficeHoursTicket(
+    id=2,
     oh_event_id=1,
     description="I cannot debug this.",
     type=TicketType.ASSIGNMENT_HELP,
@@ -81,6 +83,7 @@ called_ticket = OfficeHoursTicket(
 )
 
 closed_ticket = OfficeHoursTicket(
+    id=3,
     oh_event_id=1,
     description="Help me with Wordle.",
     type=TicketType.ASSIGNMENT_HELP,

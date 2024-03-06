@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.models.office_hours.ticket_state import TicketState
 from backend.models.office_hours.ticket_type import TicketType
-from backend.models.office_hours.oh_ticket import OfficeHoursTicket
-from backend.models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from backend.models.office_hours.ticket import OfficeHoursTicket
+from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
 from .user_created_tickets_table import user_created_tickets_table
 
 

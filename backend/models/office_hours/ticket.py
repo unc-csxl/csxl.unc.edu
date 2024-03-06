@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
+
+from backend.models.public_user import PublicUser
 from .ticket_type import TicketType
 from .ticket_state import TicketState
 
@@ -32,7 +34,7 @@ class OfficeHoursTicket(OfficeHoursTicketDraft):
     of the `OfficeHoursTicket` database in the PostgreSQL database.
     """
 
-    id: int | None = None
+    id: int
     caller_id: int | None = None
     have_concerns: bool = False
     caller_notes: str = ""
