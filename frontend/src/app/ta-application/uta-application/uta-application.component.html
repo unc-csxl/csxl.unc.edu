@@ -2,6 +2,41 @@
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Introductory Video</ng-template>
+      <div className="introText">
+        <p>
+          Record a video up to 2-minutes long using your laptop or phone's video
+          recording functionality. Please do not go beyond 2-minutes!
+        </p>
+        <p>
+          Upload it as an UNLISTED but *not* private (meaning the public cannot
+          see it, just us) YouTube video. You should spend no more than 10
+          minutes on recording the video. We promise your first take is good
+          enough and your second take is *definitely* good enough. Be sure your
+          link works in an incognito window.
+        </p>
+        <p>
+          This should not be overly formal or overproduced. You should take it
+          lightly, be yourself, and have fun. A selfie-mode recording from your
+          phone or laptop is expected.
+        </p>
+        <p>Please address:</p>
+        <p>
+          1. Introduce yourself. (Who are you? How long at UNC? Where are you
+          from?)<br />
+          2. Why are you applying for a Computer Science Learning Assistant
+          position?<br />
+          3. What challenge(s) have you faced in your computer science career at
+          UNC? What strategies or advice would you give to other students
+          confronting similar challenges?
+        </p>
+        <p>
+          Please add a link to your *UNLISTED* (NOT PRIVATE!) YouTube video
+          below. Be sure that you can view this link in an Incognito Window or
+          have a friend ensure they were able to view it from their machine.
+          Videos uploaded such that we cannot view them will disqualify your
+          application.
+        </p>
+      </div>
       <mat-form-field>
         <mat-label>Video Link</mat-label>
         <input
@@ -18,10 +53,15 @@
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Experience</ng-template>
+      <div className="experienceText">
+        <p>
+          What was your prior programming experience before attending UNC? *
+        </p>
+      </div>
       <div class="form-field-wrapper">
         <mat-form-field>
           <mat-label>Experience</mat-label>
-          <mat-select formControlName="secondCtrl">
+          <mat-select>
             <mat-option
               *ngFor="let exp of experienceList"
               [value]="exp.value"
@@ -31,16 +71,28 @@
           </mat-select>
         </mat-form-field>
       </div>
+      <div className="serviceExperienceText">
+        <p>
+          What experience do you have providing service directly to other people
+          (at jobs or volunteering)? What lessons did you learn or take away
+          from this experience? *
+        </p>
+      </div>
       <div class="form-field-wrapper">
         <mat-form-field>
           <mat-label>Service Experience</mat-label>
           <textarea
             matInput
-            formControlName="secondCtrl"
             placeholder="Cashier, Waiter, ..."
             name="service_experience"
             required></textarea>
         </mat-form-field>
+      </div>
+      <div className="additionalExperienceText">
+        <p>
+          Outside of anything mentioned above, do you have additional job or
+          working experience? *
+        </p>
       </div>
       <div class="form-field-wrapper">
         <mat-form-field>
@@ -48,14 +100,8 @@
           <textarea
             matInput
             placeholder="Developer, Business Owner, ..."
-            formControlName="secondCtrl"
             name="additional_experience"
             required></textarea>
-          <!-- <input
-            matInput
-            formControlName="secondCtrl"
-            placeholder="Developer, Business Owner, ..."
-            required /> -->
         </mat-form-field>
       </div>
       <div>
@@ -67,13 +113,70 @@
   <mat-step [stepControl]="thirdFormGroup">
     <form [formGroup]="thirdFormGroup">
       <ng-template matStepLabel>Academics and Extracurriculars</ng-template>
+      <div className="academicHoursText">
+        <p>
+          How many academic hours are you planning to enroll in next semester? *
+        </p>
+      </div>
       <mat-form-field>
-        <mat-label>Address</mat-label>
-        <input
-          matInput
-          formControlName="thirdCtrl"
-          placeholder="Ex. 1 Main St, New York, NY"
-          required />
+        <mat-label>Academic Hours</mat-label>
+        <input matInput formControlName="thirdCtrl" placeholder="15" required />
+      </mat-form-field>
+      <div className="extracurricularText">
+        <p>
+          What extracurricular activities (clubs, jobs, etc.) will you be
+          involved with next semester? About how many hours per week do you
+          estimate each involvement? *
+        </p>
+      </div>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>Extracurriculars</mat-label>
+          <textarea
+            matInput
+            placeholder="Developer, Business Owner, ..."
+            name="additional_experience"
+            required></textarea>
+        </mat-form-field>
+      </div>
+      <div className="graduationText">
+        <p>When is your expected graduation? *</p>
+      </div>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>Expected Graduation</mat-label>
+          <mat-select>
+            <mat-option
+              *ngFor="let exp of experienceList"
+              [value]="exp.value"
+              required
+              >{{ exp.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div className="programText">
+        <p>What program are you pursuing? *</p>
+      </div>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>Program</mat-label>
+          <mat-select>
+            <mat-option
+              *ngFor="let exp of experienceList"
+              [value]="exp.value"
+              required
+              >{{ exp.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div className="otherProgramText">
+        <p>If pursuing another major/minor in addition, please specify here.</p>
+      </div>
+      <mat-form-field>
+        <mat-label>Other Program</mat-label>
+        <input matInput placeholder="Econ" />
       </mat-form-field>
       <div>
         <button mat-stroked-button matStepperPrevious>Back</button>
@@ -84,13 +187,19 @@
   <mat-step [stepControl]="fourthFormGroup">
     <form [formGroup]="fourthFormGroup">
       <ng-template matStepLabel>GPA and Transcript</ng-template>
+      <div className="gpaText">
+        <p>What is your overall GPA? *</p>
+      </div>
       <mat-form-field>
-        <mat-label>Address</mat-label>
-        <input
-          matInput
-          formControlName="fourthCtrl"
-          placeholder="Ex. 1 Main St, New York, NY"
-          required />
+        <mat-label>GPA</mat-label>
+        <input matInput placeholder="4.0" required />
+      </mat-form-field>
+      <div className="compGpaText">
+        <p>What is your Computer Science (COMP) GPA? *</p>
+      </div>
+      <mat-form-field>
+        <mat-label>COMP GPA</mat-label>
+        <input matInput placeholder="4.0" required />
       </mat-form-field>
       <div>
         <button mat-stroked-button matStepperPrevious>Back</button>
@@ -101,14 +210,71 @@
   <mat-step [stepControl]="fifthFormGroup">
     <form [formGroup]="fifthFormGroup">
       <ng-template matStepLabel>Course Selection</ng-template>
+      <div className="eligibilityText">
+        <p>Courses Eligible For *</p>
+      </div>
       <mat-form-field>
-        <mat-label>Address</mat-label>
-        <input
-          matInput
-          formControlName="fifthCtrl"
-          placeholder="Ex. 1 Main St, New York, NY"
-          required />
+        <mat-label>Eligibility</mat-label>
+        <input type="text" matInput [matAutocomplete]="auto" />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let exp of experienceList"
+            [value]="exp.value"
+            required
+            >{{ exp.viewValue }}</mat-option
+          >
+        </mat-autocomplete>
       </mat-form-field>
+      <div className="eligibilityText">
+        <p>Course Preferences *</p>
+      </div>
+      <mat-form-field>
+        <mat-label>Preferences</mat-label>
+        <input type="text" matInput [matAutocomplete]="auto" />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let exp of experienceList"
+            [value]="exp.value"
+            required
+            >{{ exp.viewValue }}</mat-option
+          >
+        </mat-autocomplete>
+      </mat-form-field>
+      <div className="peerText">
+        <p>COMP227 *</p>
+      </div>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>COMP 227</mat-label>
+          <mat-select>
+            <mat-option
+              *ngFor="let exp of experienceList"
+              [value]="exp.value"
+              required
+              >{{ exp.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div className="openPairingText">
+        <p>
+          If we cannot pair you with one of your top choices, are you open to
+          being paired with another course you are eligible for? *
+        </p>
+      </div>
+      <div class="form-field-wrapper">
+        <mat-form-field>
+          <mat-label>Yes or No</mat-label>
+          <mat-select>
+            <mat-option
+              *ngFor="let exp of experienceList"
+              [value]="exp.value"
+              required
+              >{{ exp.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
       <div>
         <button mat-stroked-button matStepperPrevious>Back</button>
         <button mat-stroked-button matStepperNext>Next</button>

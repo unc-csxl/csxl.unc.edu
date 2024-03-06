@@ -14,7 +14,7 @@ export class ApplicationComponent {
 
   constructor(protected dialog: MatDialog) {}
 
-  onApplicationClick(): void {
+  onUTAClick(): void {
     const dialogRef = this.dialog.open(UTANoticeComponent, {
       width: '1000px',
       autoFocus: false
