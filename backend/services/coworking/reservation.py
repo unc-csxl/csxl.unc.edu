@@ -292,8 +292,8 @@ class ReservationService:
                     reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
             return ReservationMapDetails(
                 reserved_date_map=reserved_date_map,
-                operating_hours_start=date.replace(hour=10),
-                operating_hours_end=date.replace(hour=18),
+                operating_hours_start=date.replace(hour=15),
+                operating_hours_end=date.replace(hour=23),
                 number_of_time_slots=16,
             )
 
