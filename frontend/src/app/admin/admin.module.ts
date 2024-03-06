@@ -20,6 +20,7 @@ import { AdminUsersListComponent } from './users/list/admin-users-list.component
 import { AdminRolesListComponent } from './roles/list/admin-roles-list.component';
 import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.component';
 import { AdminOrganizationListComponent } from './organization/list/admin-organization-list.component';
+import { AdminApplicationsListComponent } from './applications/list/admin-applications-list.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { AdminOrganizationListComponent } from './organization/list/admin-organi
     AdminUsersListComponent,
     AdminRolesListComponent,
     AdminRoleDetailsComponent,
-    AdminOrganizationListComponent
+    AdminOrganizationListComponent,
+    AdminApplicationsListComponent
   ],
   imports: [
     CommonModule,

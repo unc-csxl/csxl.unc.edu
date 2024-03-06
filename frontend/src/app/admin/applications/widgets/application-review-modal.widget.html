@@ -1,0 +1,20 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title>Equipment Checkout</h1>
+  <div mat-dialog-content>
+    <p>Student Name</p>
+    <div *ngFor="let keyValuePair of applicationProperties">
+      <p><strong>{{ keyValuePair.key }}</strong>: {{ keyValuePair.value }}</p>
+    </div>
+  </div>
+
+  <!-- <div mat-dialog-actions>
+    <button
+      mat-stroked-button
+      [mat-dialog-close]=""
+      cdkFocusInitial
+      (click)="onSubmit(data.equipment)">
+      Check-out
+    </button>
+  </div>
+</div> -->
+</div>
