@@ -2,6 +2,9 @@
 
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from backend.entities.academics.section_entity import SectionEntity
+
+from backend.entities.user_entity import UserEntity
 from .entity_base import EntityBase
 from .section_application_table import section_application_table
 from typing import Self
@@ -33,10 +36,7 @@ class ApplicationEntity(EntityBase):
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     type = Column(String(50))
-    __mapper_args__ = {
-        'polymorphic_identity':'application',
-        'polymorphic_on':type
-    }
+    __mapper_args__ = {"polymorphic_identity": "application", "polymorphic_on": type}
 
     ### Still need to setup models and classmethods.
 
@@ -50,7 +50,12 @@ class ApplicationEntity(EntityBase):
         Returns:
             ApplicationEntity: Entity created from model
         """
-        return cls(id=model.id)
+        return cls(
+            id=model.id,
+            user_id=model.user_id,
+            user=model.user,
+            previous_sections=model.previous_sections,
+        )
 
     def to_model(self) -> Application:
         """
@@ -59,7 +64,13 @@ class ApplicationEntity(EntityBase):
         Returns:
             Application: `Application` object from the entity
         """
-        return Application(id=self.id)
+        return Application(
+            id=self.id,
+            user_id=self.user_id,
+            user=self.user,
+            previous_sections=self.previous_sections,
+        )
+
 
 class UTA(Application):
     """Serves as the database model schema for applications specific to Undergraduate TA's"""
@@ -126,11 +137,12 @@ class New_UTA(UTA):
     additional_experience: Mapped[str] = mapped_column(
         String, nullable=False
     )  # maybe nullable = true?
-    
+
     # Set up for single-table inheritance (assign unique polymorphic identity)
     __mapper_args__ = {
         "polymorphic_identity": "new_uta",
     }
+
 
 class Returning_UTA(UTA):
     """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
@@ -140,7 +152,7 @@ class Returning_UTA(UTA):
     # TA Experience and what they have gotten out of it
     ta_experience: Mapped[str] = mapped_column(String, nullable=False)
 
-     # Best student interaction/moment
+    # Best student interaction/moment
     best_moment: Mapped[str] = mapped_column(String, nullable=False)
 
     # Desired personal improvement
