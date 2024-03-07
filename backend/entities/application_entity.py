@@ -8,7 +8,7 @@ from backend.entities.user_entity import UserEntity
 from .entity_base import EntityBase
 from .section_application_table import section_application_table
 from typing import Self
-from ..models.application import Application
+from ..models.application import Application, UTA, New_UTA, Returning_UTA
 
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
@@ -32,8 +32,6 @@ class ApplicationEntity(EntityBase):
     # Set up for single-table inheritance (assign unique polymorphic identity)
     type = Column(String(50))
     __mapper_args__ = {"polymorphic_identity": "application", "polymorphic_on": type}
-
-    ### Still need to setup models and classmethods.
 
     @classmethod
     def from_model(cls, model: Application) -> Self:
@@ -113,6 +111,51 @@ class UTA(Application):
         "polymorphic_identity": "uta",
     }
 
+    @classmethod
+    def from_model(cls, model: UTA) -> Self:
+        """
+        Class method that converts an `Application` model into a `ApplicationEntity`
+
+        Parameters:
+            - model (Application): Model to convert into an entity
+        Returns:
+            ApplicationEntity: Entity created from model
+        """
+        return cls(
+            academic_hours=model.academic_hours,
+            extracurriculars=model.extracurriculars,
+            expected_graduation=model.expected_graduation,
+            program_pursued=model.program_pursued,
+            other_programs=model.other_programs,
+            gpa=model.gpa,
+            comp_gpa=model.comp_gpa,
+            comp_227=model.comp_227,
+            open_pairing=model.open_pairing,
+            preferred_courses=model.preferred_courses,
+            eligible_courses=model.eligible_courses,
+        )
+
+    def to_model(self) -> UTA:
+        """
+        Converts an `ApplicationEntity` object into an `Application` model object
+
+        Returns:
+            Application: `Application` object from the entity
+        """
+        return UTA(
+            academic_hours=self.academic_hours,
+            extracurriculars=self.extracurriculars,
+            expected_graduation=self.expected_graduation,
+            program_pursued=self.program_pursued,
+            other_programs=self.other_programs,
+            gpa=self.gpa,
+            comp_gpa=self.comp_gpa,
+            comp_227=self.comp_227,
+            open_pairing=self.open_pairing,
+            preferred_courses=self.preferred_courses,
+            eligible_courses=self.eligible_courses,
+        )
+
 
 class New_UTA(UTA):
     """Serves as the database model schema for applications specific to new Undergraduate TA's"""
@@ -138,6 +181,37 @@ class New_UTA(UTA):
         "polymorphic_identity": "new_uta",
     }
 
+    @classmethod
+    def from_model(cls, model: New_UTA) -> Self:
+        """
+        Class method that converts an `Application` model into a `ApplicationEntity`
+
+        Parameters:
+            - model (Application): Model to convert into an entity
+        Returns:
+            ApplicationEntity: Entity created from model
+        """
+        return cls(
+            intro_video=model.intro_video,
+            prior_experience=model.prior_experience,
+            service_experience=model.service_experience,
+            additional_experience=model.additional_experience,
+        )
+
+    def to_model(self) -> New_UTA:
+        """
+        Converts an `ApplicationEntity` object into an `Application` model object
+
+        Returns:
+            Application: `Application` object from the entity
+        """
+        return New_UTA(
+            intro_video=self.intro_video,
+            prior_experience=self.prior_experience,
+            service_experience=self.service_experience,
+            additional_experience=self.additional_experience,
+        )
+
 
 class Returning_UTA(UTA):
     """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
@@ -157,3 +231,32 @@ class Returning_UTA(UTA):
     __mapper_args__ = {
         "polymorphic_identity": "returning_uta",
     }
+
+    @classmethod
+    def from_model(cls, model: Returning_UTA) -> Self:
+        """
+        Class method that converts an `Application` model into a `ApplicationEntity`
+
+        Parameters:
+            - model (Application): Model to convert into an entity
+        Returns:
+            ApplicationEntity: Entity created from model
+        """
+        return cls(
+            ta_experience=model.ta_experience,
+            best_moment=model.best_moment,
+            desired_improvement=model.desired_improvement,
+        )
+
+    def to_model(self) -> Returning_UTA:
+        """
+        Converts an `ApplicationEntity` object into an `Application` model object
+
+        Returns:
+            Application: `Application` object from the entity
+        """
+        return Returning_UTA(
+            ta_experience=self.ta_experience,
+            best_moment=self.best_moment,
+            desired_improvement=self.desired_improvement,
+        )
