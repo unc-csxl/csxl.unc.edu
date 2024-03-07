@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ...models.room_assignment_type import RoomAssignmentType
 
 from ..entity_base import EntityBase
+from ..section_application_table import section_application_table
 from datetime import datetime
 from ...models.academics import Section
 from ...models.academics import SectionDetails
@@ -77,6 +78,18 @@ class SectionEntity(EntityBase):
         back_populates="section",
         viewonly=True,
         primaryjoin="and_(SectionEntity.id==SectionMemberEntity.section_id, SectionMemberEntity.member_role!='STUDENT')",
+    )
+
+    # All applicants where section is preferred
+    # NOTE: This field establishes a many-to-many relationship between the sections and applications table.
+    preferred_applicants: Mapped[list["ApplicationEntity"]] = relationship(
+        secondary=section_application_table, back_populates="preferred_courses"
+    )
+
+    # All applicants where section is eligible (and !preferred?)!!!!
+    # NOTE: This field establishes a many-to-many relationship between the sections and application table.
+    eligible_applicants: Mapped[list["ApplicationEntity"]] = relationship(
+        secondary=section_application_table, back_populates="eligible_courses"
     )
 
     @classmethod
