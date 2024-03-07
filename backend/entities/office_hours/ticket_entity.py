@@ -85,7 +85,6 @@ class OfficeHoursTicketEntity(EntityBase):
         """
         return cls(
             id=model.id,
-            caller_id=model.caller_id,
             have_concerns=model.have_concerns,
             caller_notes=model.caller_notes,
             oh_event_id=model.oh_event.id,

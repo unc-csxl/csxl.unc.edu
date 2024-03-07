@@ -114,6 +114,7 @@ comp110_student = SectionMemberEntity(
 
 comp_110_members = [comp110_instructor, comp110_uta, comp110_student]
 
+# Room Assignments Relative to Section
 room_assignment_110_001 = (
     comp_101_001.id,
     virtual_room.id,
