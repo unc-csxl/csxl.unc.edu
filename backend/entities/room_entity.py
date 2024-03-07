@@ -9,7 +9,7 @@ from ..models import Room, RoomDetails
 from typing import Self
 
 __authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -29,7 +29,7 @@ class RoomEntity(EntityBase):
 
     # Optional Office Hours Section ID
     # NOTE: If null, indicates "official" room; otherwise, indicates entity is created for office hours use.
-    section_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    section_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     seats: Mapped[list["SeatEntity"]] = relationship(  # type: ignore
         "SeatEntity", back_populates="room"
@@ -59,6 +59,7 @@ class RoomEntity(EntityBase):
             capacity=self.capacity,
             reservable=self.reservable,
             seats=[seat.to_model() for seat in self.seats],
+            section_id=self.section_id
         )
 
     @classmethod
@@ -77,4 +78,5 @@ class RoomEntity(EntityBase):
             room=model.room,
             capacity=model.capacity,
             reservable=model.reservable,
+            section_id=model.section_id
         )

@@ -7,9 +7,9 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class OfficeHoursType(Enum):
+class OfficeHoursEventType(Enum):
     """
-    Determines the type of an office hours.
+    Determines the type of an office hours event.
     """
 
     OFFICE_HOURS = 0
