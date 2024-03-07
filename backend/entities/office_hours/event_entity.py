@@ -72,8 +72,8 @@ class OfficeHoursEventEntity(EntityBase):
         """
         return cls(
             id=model.id,
-            office_hours_section_id=model.office_hours_section_id,
-            room_id=model.room_id,
+            office_hours_section_id=model.oh_section.id,
+            room_id=model.room.id,
             type=model.type,
             description=model.description,
             location_description=model.location_description,

@@ -18,10 +18,21 @@ class OfficeHoursSectionDraft(BaseModel):
 
 class OfficeHoursSection(OfficeHoursSectionDraft):
     """
-    Pydantic model to represent an `OfficeHoursSection` that has not been created yet.
+    Pydantic model to represent an `OfficeHoursSection`.
 
     This model is based on the `OfficeHoursSectionEntity` model, which defines the shape
     of the `OfficeHoursSection` database in the PostgreSQL database.
     """
 
     id: int
+
+
+class OfficeHoursSectionPartial(OfficeHoursSection):
+    """
+    Pydantic model to represent a partial `OfficeHoursSection`.
+
+    This model is based on the `OfficeHoursSectionEntity` model, which defines the shape
+    of the `OfficeHoursSection` database in the PostgreSQL database.
+    """
+
+    title: str | None = None
