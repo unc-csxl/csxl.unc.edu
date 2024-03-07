@@ -4,12 +4,12 @@ This API is used to access OH ticket data for history purposes."""
 
 from fastapi import APIRouter, Depends
 
-from ...models.office_hours.oh_ticket import (
+from ...models.office_hours.ticket import (
     OfficeHoursTicket,
     OfficeHoursTicketDraft,
 )
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
-from ...services.office_hours.oh_ticket import OfficeHoursTicketService
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
+from ...services.office_hours.ticket import OfficeHoursTicketService
 from ..authentication import registered_user
 from ...models import User
 
@@ -76,21 +76,3 @@ def update_oh_ticket(
     """
     return oh_ticket_service.update(subject, oh_ticket)
 
-
-@api.put(
-    "/state/{oh_ticket_id}",
-    response_model=OfficeHoursTicketDetails,
-    tags=["Office Hours"],
-)
-def update_oh_ticket_state(
-    oh_ticket: OfficeHoursTicket,
-    subject: User = Depends(registered_user),
-    oh_ticket_service: OfficeHoursTicketService = Depends(),
-) -> OfficeHoursTicketDetails:
-    """
-    Updates an OfficeHoursTicket's state in the database
-
-    Returns:
-        OfficeHoursTicketDetails: OH Ticket updated
-    """
-    return oh_ticket_service.update_state(subject, oh_ticket)

@@ -4,16 +4,16 @@ from sqlalchemy.orm import Session
 
 from ..exceptions import ResourceNotFoundException
 from ...database import db_session
-from ...entities.office_hours.oh_ticket_entity import OfficeHoursTicketEntity
-from ...models.office_hours.oh_ticket import (
+from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+from ...models.office_hours.ticket import (
     OfficeHoursTicket,
     OfficeHoursTicketDraft,
 )
 from ...models.office_hours.ticket_state import TicketState
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.user import User
 
-from ...services.permission import PermissionService
+from ..permission import PermissionService
 
 
 __authors__ = ["Sadie Amato", "Bailey DeSouza"]
