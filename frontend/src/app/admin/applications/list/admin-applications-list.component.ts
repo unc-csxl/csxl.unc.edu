@@ -13,7 +13,7 @@ import { permissionGuard } from 'src/app/permission.guard';
 import { Organization } from '../../../organization/organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AdminApplicationsService } from '../admin-applications.service';
-import { ApplicationReviewModalComponent } from '../widgets/application-review-modal.widget';
+import { ApplicationReviewModal } from '../widgets/application-review-modal.widget';
 import { Application } from '../admin-application.model';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -49,7 +49,7 @@ export class AdminApplicationsListComponent {
 
   reviewApplication(selectedApplication: Application): void {
     const dialogRef = this.applicationReviewDialog.open(
-      ApplicationReviewModalComponent,
+      ApplicationReviewModal,
       {
         data: { application: selectedApplication }
       }

@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './application-review-modal.widget.html',
   styleUrls: ['./application-review-modal.widget.css']
 })
-export class ApplicationReviewModalComponent {
+export class ApplicationReviewModal {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { application: Application },
     protected http: HttpClient,

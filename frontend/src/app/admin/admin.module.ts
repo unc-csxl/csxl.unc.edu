@@ -22,6 +22,8 @@ import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.co
 import { AdminOrganizationListComponent } from './organization/list/admin-organization-list.component';
 import { AdminApplicationsListComponent } from './applications/list/admin-applications-list.component';
 
+import { ApplicationReviewModal } from './applications/widgets/application-review-modal.widget';
+
 @NgModule({
   declarations: [
     AdminComponent,
@@ -29,7 +31,8 @@ import { AdminApplicationsListComponent } from './applications/list/admin-applic
     AdminRolesListComponent,
     AdminRoleDetailsComponent,
     AdminOrganizationListComponent,
-    AdminApplicationsListComponent
+    AdminApplicationsListComponent,
+    ApplicationReviewModal
   ],
   imports: [
     CommonModule,
