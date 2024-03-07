@@ -1,4 +1,7 @@
 from pydantic import BaseModel
+from backend.entities.academics.section_entity import SectionEntity
+
+from backend.models.user import User
 
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
@@ -14,3 +17,54 @@ class Application(BaseModel):
     """
 
     id: int | None = None
+    user_id: int
+    user: User
+    previous_sections: list[SectionEntity] = []
+
+
+class UTA(Application):
+    """
+    Pydantic model to represent a `UTA`.
+
+    This model is based on the `Application` model, which defines the shape
+    of the `Application` database in the PostgreSQL database.
+    """
+
+    academic_hours: int
+    extracurriculars: str
+    expected_graduation: str
+    program_pursued: str
+    other_programs: str
+    gpa: str
+    comp_gpa: str
+    comp_227: bool
+    open_pairing: bool
+    preferred_courses: list[SectionEntity] = []
+    eligible_courses: list[SectionEntity] = []
+
+
+class New_UTA(UTA):
+    """
+    Pydantic model to represent a `New UTA`.
+
+    This model is based on the `UTA` model, which defines the shape
+    of the `Application` database in the PostgreSQL database.
+    """
+
+    intro_video: str
+    prior_experience: str
+    service_experience: str
+    additional_experience: str
+
+
+class Returning_UTA(UTA):
+    """
+    Pydantic model to represent a `Returning UTA`.
+
+    This model is based on the `UTA` model, which defines the shape
+    of the `Application` database in the PostgreSQL database.
+    """
+
+    ta_experience: str
+    best_moment: str
+    desired_improvement: str
