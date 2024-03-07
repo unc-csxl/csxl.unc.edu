@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-from .event import OfficeHoursEventPartial
-from public_user import PublicUser
+from ..academics.section_member import SectionMember
+from .event import OfficeHoursEvent, OfficeHoursEventPartial
 from .ticket_type import TicketType
 from .ticket_state import TicketState
 
@@ -19,11 +19,9 @@ class OfficeHoursTicketDraft(BaseModel):
     of the `OfficeHoursTicket` database in the PostgreSQL database.
     """
 
-    office_hours_event: OfficeHoursEventPartial
+    oh_event: OfficeHoursEventPartial
     description: str
     type: TicketType
-    state: TicketState
-    closed_at: datetime | None = None
 
 
 class OfficeHoursTicket(OfficeHoursTicketDraft):
@@ -36,9 +34,24 @@ class OfficeHoursTicket(OfficeHoursTicketDraft):
 
     id: int
     created_at: datetime
-    caller_id: int | None = None
+    state: TicketState
     have_concerns: bool = False
     caller_notes: str = ""
+    called_at: datetime | None = None
+    closed_at: datetime | None = None
+
+
+class OfficeHoursTicketDetails(OfficeHoursTicket):
+    """
+    Pydantic model to represent an `OfficeHoursSection`, including back-populated
+    relationship fields.
+
+    This model is based on the `OfficeHoursSectionEntity` model, which defines the shape
+    of the `OfficeHoursSection` database in the PostgreSQL database.
+    """
+
+    creators: list[SectionMember]
+    caller: SectionMember | None = None
 
 
 class OfficeHoursTicketPartial(OfficeHoursTicket):
@@ -52,6 +65,7 @@ class OfficeHoursTicketPartial(OfficeHoursTicket):
     description: str | None = None
     type: TicketType | None = None
     state: TicketState | None = None
+    called_at: datetime | None = None
     closed_at: datetime | None = None
     caller_id: int | None = None
     have_concerns: bool | None = None

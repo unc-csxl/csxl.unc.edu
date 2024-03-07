@@ -1,9 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime, date
 
-from room import RoomPartial
-
-from .section import OfficeHoursSectionPartial
+from ..room import Room, RoomPartial
+from .section import OfficeHoursSection, OfficeHoursSectionPartial
 from .event_type import OfficeHoursEventType
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
@@ -19,7 +18,7 @@ class OfficeHoursEventDraft(BaseModel):
     of the `OfficeHoursEvent` database in the PostgreSQL database
     """
 
-    office_hours_section: OfficeHoursSectionPartial
+    oh_section: OfficeHoursSectionPartial
     room: RoomPartial
     type: OfficeHoursEventType
     description: str = ""
@@ -48,8 +47,8 @@ class OfficeHoursEventPartial(OfficeHoursEvent):
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
 
-    office_hours_section: OfficeHoursSectionPartial | None = None
-    room: RoomPartial | None = None
+    oh_section: OfficeHoursSection | None = None
+    room: Room | None = None
     type: OfficeHoursEventType | None = None
     description: str | None = None
     location_description: str | None = None
