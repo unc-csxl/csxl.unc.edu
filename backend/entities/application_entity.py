@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Applications."""
 
-from sqlalchemy import Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from .section_application_table import section_application_table
@@ -18,8 +18,6 @@ class ApplicationEntity(EntityBase):
     # Name for the applications table in the PostgreSQL database
     __tablename__ = "application"
 
-    # Application properties (columns in the database table)
-
     # Unique ID for the application
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
@@ -32,6 +30,13 @@ class ApplicationEntity(EntityBase):
     previous_sections: Mapped[list["SectionEntity"]] = relationship(
         back_populates="tas"
     )
+
+    # Set up for single-table inheritance (assign unique polymorphic identity)
+    type = Column(String(50))
+    __mapper_args__ = {
+        'polymorphic_identity':'application',
+        'polymorphic_on':type
+    }
 
     ### Still need to setup models and classmethods.
 
@@ -56,77 +61,92 @@ class ApplicationEntity(EntityBase):
         """
         return Application(id=self.id)
 
-    class UTA(Application):
-        """Serves as the database model schema for applications specific to Undergraduate TA's"""
+class UTA(Application):
+    """Serves as the database model schema for applications specific to Undergraduate TA's"""
 
-        # Application properties (columns in the database table) specific to UTA Applications
+    # Application properties (columns in the database table) specific to UTA Applications
 
-        # Academic Hours student plans to take
-        academic_hours: Mapped[int] = mapped_column(Integer, nullable=False)
+    # Academic Hours student plans to take
+    academic_hours: Mapped[int] = mapped_column(Integer, nullable=False)
 
-        # Extracurriculars student is a part of
-        extracurriculars: Mapped[str] = mapped_column(String, nullable=False)
+    # Extracurriculars student is a part of
+    extracurriculars: Mapped[str] = mapped_column(String, nullable=False)
 
-        # Expected graduation
-        expected_graduation: Mapped[str] = mapped_column(String, nullable=False)
+    # Expected graduation
+    expected_graduation: Mapped[str] = mapped_column(String, nullable=False)
 
-        # Program pursued
-        program_pursued: Mapped[str] = mapped_column(String, nullable=False)
+    # Program pursued
+    program_pursued: Mapped[str] = mapped_column(String, nullable=False)
 
-        # Other programs being pursued
-        other_programs: Mapped[str] = mapped_column(String, nullable=True)
+    # Other programs being pursued
+    other_programs: Mapped[str] = mapped_column(String, nullable=True)
 
-        # GPA
-        gpa: Mapped[str] = mapped_column(String, nullable=True)
+    # GPA
+    gpa: Mapped[str] = mapped_column(String, nullable=True)
 
-        # COMP GPA
-        comp_gpa: Mapped[str] = mapped_column(String, nullable=True)
+    # COMP GPA
+    comp_gpa: Mapped[str] = mapped_column(String, nullable=True)
 
-        # Do they want to do this as COMP 227?
-        comp_227: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    # Do they want to do this as COMP 227?
+    comp_227: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
-        # Open pairing?
-        open_pairing: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    # Open pairing?
+    open_pairing: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
-        # Sections student prefers
-        preferred_courses: Mapped[list["SectionEntity"]] = relationship(
-            secondary=section_application_table, back_populates="preferred_applicants"
-        )
+    # Sections student prefers
+    preferred_courses: Mapped[list["SectionEntity"]] = relationship(
+        secondary=section_application_table, back_populates="preferred_applicants"
+    )
 
-        # Sections student is eligible for
-        eligible_courses: Mapped[list["SectionEntity"]] = relationship(
-            secondary=section_application_table, back_populates="eligible_applicants"
-        )
+    # Sections student is eligible for
+    eligible_courses: Mapped[list["SectionEntity"]] = relationship(
+        secondary=section_application_table, back_populates="eligible_applicants"
+    )
 
-    class New_UTA(UTA):
-        """Serves as the database model schema for applications specific to new Undergraduate TA's"""
+    __mapper_args__ = {
+        "polymorphic_identity": "uta",
+    }
 
-        # Application properties (columns in the database table) specific to First-Time UTA Applications
 
-        # Intro video explaining why they want to be a TA
-        intro_video: Mapped[str] = mapped_column(String, nullable=False)
+class New_UTA(UTA):
+    """Serves as the database model schema for applications specific to new Undergraduate TA's"""
 
-        # Prior experience in the workforce
-        prior_experience: Mapped[str] = mapped_column(String, nullable=False)
+    # Application properties (columns in the database table) specific to First-Time UTA Applications
 
-        # Service experience such as volunteering/workforce
-        service_experience: Mapped[str] = mapped_column(String, nullable=False)
+    # Intro video explaining why they want to be a TA
+    intro_video: Mapped[str] = mapped_column(String, nullable=False)
 
-        # Additonal experience that is relevant
-        additional_expereince: Mapped[str] = mapped_column(
-            String, nullable=False
-        )  # maybe nullable = true?
+    # Prior experience in the workforce
+    prior_experience: Mapped[str] = mapped_column(String, nullable=False)
 
-    class Returning_UTA(UTA):
-        """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
+    # Service experience such as volunteering/workforce
+    service_experience: Mapped[str] = mapped_column(String, nullable=False)
 
-        # Application properties (columns in the database table) specific to Returning UTA Applications
+    # Additonal experience that is relevant
+    additional_experience: Mapped[str] = mapped_column(
+        String, nullable=False
+    )  # maybe nullable = true?
+    
+    # Set up for single-table inheritance (assign unique polymorphic identity)
+    __mapper_args__ = {
+        "polymorphic_identity": "new_uta",
+    }
 
-        # TA Experience and what they have gotten out of it
-        ta_experience: Mapped[str] = mapped_column(String, nullable=False)
+class Returning_UTA(UTA):
+    """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
 
-        # Best student interaction/moment
-        best_moment: Mapped[str] = mapped_column(String, nullable=False)
+    # Application properties (columns in the database table) specific to Returning UTA Applications
 
-        # Desired personal improvement
-        desired_improvement: Mapped[str] = mapped_column(String, nullable=False)
+    # TA Experience and what they have gotten out of it
+    ta_experience: Mapped[str] = mapped_column(String, nullable=False)
+
+     # Best student interaction/moment
+    best_moment: Mapped[str] = mapped_column(String, nullable=False)
+
+    # Desired personal improvement
+    desired_improvement: Mapped[str] = mapped_column(String, nullable=False)
+
+    # Set up for single-table inheritance (assign unique polymorphic identity)
+    __mapper_args__ = {
+        "polymorphic_identity": "returning_uta",
+    }
