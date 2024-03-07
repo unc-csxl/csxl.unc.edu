@@ -62,7 +62,9 @@ class UserEntity(EntityBase):
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
 
     # Section relations that the user is a part of.
-    sections: Mapped[list["SectionMemberEntity"]] = relationship(back_populates="user")
+    sections: Mapped[list["SectionMemberEntity"]] = relationship(
+        back_populates="user"
+    )  ### This handles previous sections
 
     # The applications for the  user.
     applications: Mapped[list["ApplicationEntity"]] = relationship(

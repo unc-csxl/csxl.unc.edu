@@ -51,7 +51,7 @@ class SectionMemberEntity(EntityBase):
     tas: Mapped["ApplicationEntity"] = relationship(
         back_populates="previous_sections",
         primaryjoin=(
-            "and_(SectionMemberEntity.member_role == RosterRole.UTA,SectionMemberEntity.member_role == RosterRole.GTA)"
+            "or_(SectionMemberEntity.member_role == RosterRole.UTA,SectionMemberEntity.member_role == RosterRole.GTA)"
         ),
     )
 

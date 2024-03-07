@@ -29,11 +29,6 @@ class ApplicationEntity(EntityBase):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=True)
     user: Mapped["UserEntity"] = relationship(back_populates="applications")
 
-    # Sections TA'd for, reference to section_member
-    previous_sections: Mapped[list["SectionEntity"]] = relationship(
-        back_populates="tas"
-    )
-
     # Set up for single-table inheritance (assign unique polymorphic identity)
     type = Column(String(50))
     __mapper_args__ = {"polymorphic_identity": "application", "polymorphic_on": type}
