@@ -113,6 +113,7 @@ class OfficeHoursTicketEntity(EntityBase):
             created_at=self.created_at,
             called_at=self.called_at,
             closed_at=self.closed_at,
+            oh_event=self.oh_event.to_model(),
         )
 
     def to_details_model(self) -> OfficeHoursTicketDetails:
