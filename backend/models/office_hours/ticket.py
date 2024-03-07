@@ -41,19 +41,6 @@ class OfficeHoursTicket(OfficeHoursTicketDraft):
     closed_at: datetime | None = None
 
 
-class OfficeHoursTicketDetails(OfficeHoursTicket):
-    """
-    Pydantic model to represent an `OfficeHoursSection`, including back-populated
-    relationship fields.
-
-    This model is based on the `OfficeHoursSectionEntity` model, which defines the shape
-    of the `OfficeHoursSection` database in the PostgreSQL database.
-    """
-
-    creators: list[SectionMember]
-    caller: SectionMember | None = None
-
-
 class OfficeHoursTicketPartial(OfficeHoursTicket):
     """
     Pydantic model to represent an `OfficeHoursTicket`.
