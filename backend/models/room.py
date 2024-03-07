@@ -11,3 +11,7 @@ __license__ = "MIT"
 class Room(BaseModel):
     id: str
     nickname: str = ""
+
+
+class RoomPartial(Room):
+    nickname: str | None = None

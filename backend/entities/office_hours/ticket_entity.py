@@ -41,9 +41,13 @@ class OfficeHoursTicketEntity(EntityBase):
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now, nullable=False
     )
-    # Time ticket was closed by a TA; nullable if ticket gets canceled
-    closed_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.now, onupdate=datetime.now, nullable=False
+    # Time ticket was called by a TA
+    called_at: Mapped[datetime | None] = mapped_column(
+        DateTime, default=None, nullable=True
+    )
+    # Time ticket was closed by a TA
+    closed_at: Mapped[datetime | None] = mapped_column(
+        DateTime, default=None, nullable=True
     )
     # Flag for if UTA has concerns about student
     have_concerns: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
@@ -84,11 +88,12 @@ class OfficeHoursTicketEntity(EntityBase):
             caller_id=model.caller_id,
             have_concerns=model.have_concerns,
             caller_notes=model.caller_notes,
-            oh_event_id=model.oh_event_id,
+            oh_event_id=model.oh_event.id,
             description=model.description,
             type=model.type,
             state=model.state,
             created_at=model.created_at,
+            called_at=model.called_at,
             closed_at=model.closed_at,
         )
 
@@ -101,7 +106,6 @@ class OfficeHoursTicketEntity(EntityBase):
         """
         return OfficeHoursTicket(
             id=self.id,
-            caller_id=self.caller_id,
             have_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
             oh_event_id=self.oh_event_id,
@@ -109,6 +113,7 @@ class OfficeHoursTicketEntity(EntityBase):
             type=self.type,
             state=self.state,
             created_at=self.created_at,
+            called_at=self.called_at,
             closed_at=self.closed_at,
         )
 
@@ -121,7 +126,6 @@ class OfficeHoursTicketEntity(EntityBase):
         """
         return OfficeHoursTicketDetails(
             id=self.id,
-            caller_id=self.caller_id,
             have_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
             office_hours_event_id=self.event_id,
@@ -129,6 +133,7 @@ class OfficeHoursTicketEntity(EntityBase):
             type=self.type,
             state=self.state,
             created_at=self.created_at,
+            called_at=self.called_at,
             closed_at=self.closed_at,
             oh_event=self.oh_event.to_model(),
             creators=[creator.to_model() for creator in self.creators],
