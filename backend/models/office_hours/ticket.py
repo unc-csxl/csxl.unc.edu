@@ -39,6 +39,7 @@ class OfficeHoursTicket(OfficeHoursTicketDraft):
     caller_notes: str = ""
     called_at: datetime | None = None
     closed_at: datetime | None = None
+    oh_event: OfficeHoursEvent
 
 
 class OfficeHoursTicketPartial(OfficeHoursTicket):
