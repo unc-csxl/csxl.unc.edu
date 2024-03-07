@@ -33,6 +33,8 @@ class ApplicationEntity(EntityBase):
         back_populates="tas"
     )
 
+    ### Still need to setup models and classmethods.
+
     @classmethod
     def from_model(cls, model: Application) -> Self:
         """
