@@ -22,3 +22,6 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
+    lecture_room: Room | None = None
+    staff: list[SectionMember] = []
+    office_hour_rooms: list[Room] = []

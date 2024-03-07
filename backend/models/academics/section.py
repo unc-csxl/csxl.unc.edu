@@ -1,6 +1,4 @@
 from pydantic import BaseModel
-from datetime import datetime
-from .section_member import SectionMember
 from ..room import Room
 
 __authors__ = ["Ajay Gandecha"]
@@ -21,8 +19,5 @@ class Section(BaseModel):
     number: str
     term_id: str
     meeting_pattern: str
-    staff: list[SectionMember] = []
-    lecture_room: Room | None = None
-    office_hour_rooms: list[Room] = []
     override_title: str
     override_description: str
