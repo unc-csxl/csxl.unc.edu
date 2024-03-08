@@ -74,12 +74,8 @@ class PolicyService:
         day = date.weekday()
         if day == MONDAY:
             return {
-                'SN135' : [
-                    (time(hour=16, minute=30), time(hour=17, minute=00)),
-                    ],
-                'SN137' : [
-                    (time(hour=15, minute=00), time(hour=16, minute=30))
-                ],
+                'SN135' : [],
+                'SN137' : [],
                 'SN139' : [],
                 'SN141' : [
                     (time(hour=16, minute=00), time(hour=17, minute=30))
@@ -87,58 +83,34 @@ class PolicyService:
             }
         elif day == TUESDAY:
             return {
-                'SN135' : [
-                    (time(hour=14, minute=30), time(hour=16, minute=00)),
-                    (time(hour=11, minute=00), time(hour=12, minute=00))
-                    ],
+                'SN135' : [],
                 'SN137' : [],
-                'SN139' : [
-                    (time(hour=10, minute=30), time(hour=11, minute=00)),
-                    (time(hour=11, minute=30), time(hour=13, minute=00)),
-                ],
+                'SN139' : [],
                 'SN141' : [
                     (time(hour=10, minute=00), time(hour=11, minute=00))
                 ]
             }
         elif day == WEDNESDAY:
             return {
-                'SN135' : [
-                    (time(hour=11, minute=00), time(hour=12, minute=00))
-                    ],
+                'SN135' : [],
                 'SN137' : [],
-                'SN139' : [
-                    (time(hour=10, minute=30), time(hour=11, minute=00)),
-                    (time(hour=11, minute=30), time(hour=13, minute=00)),
-                    (time(hour=14, minute=30), time(hour=15, minute=00))
-                ],
+                'SN139' : [],
                 'SN141' : [
                     (time(hour=10, minute=00), time(hour=11, minute=00))
                 ]
             }
         elif day == THURSDAY:
             return {
-                'SN135' : [
-                    (time(hour=14, minute=30), time(hour=16, minute=00)),
-                    (time(hour=11, minute=00), time(hour=12, minute=00))
-                    ],
+                'SN135' : [],
                 'SN137' : [],
-                'SN139' : [
-                    (time(hour=10, minute=30), time(hour=11, minute=00)),
-                    (time(hour=11, minute=30), time(hour=13, minute=00)),
-                    (time(hour=14, minute=30), time(hour=15, minute=00))
-                ],
+                'SN139' : [],
                 'SN141' : []
             }
         elif day == FRIDAY:
             return {
-                'SN135' : [
-                    (time(hour=11, minute=00), time(hour=12, minute=00))
-                    ],
+                'SN135' : [],
                 'SN137' : [],
-                'SN139' : [
-                    (time(hour=10, minute=30), time(hour=11, minute=00)),
-                    (time(hour=14, minute=30), time(hour=15, minute=00))
-                ],
+                'SN139' : [],
                 'SN141' : [
                     (time(hour=10, minute=00), time(hour=11, minute=00))
                 ]
