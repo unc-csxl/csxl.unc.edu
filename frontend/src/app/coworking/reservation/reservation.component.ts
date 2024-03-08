@@ -1,7 +1,7 @@
 /**
  * The Reservation Page Component shows the details of an individual reservation and handles its operations.
  *
- * @author Kris Jordan
+ * @author Kris Jordan, John Schachte
  * @copyright 2023
  * @license MIT
  */
@@ -50,6 +50,8 @@ export class ReservationComponent {
   public id: number;
   public reservation$: Observable<Reservation>;
 
+  isConfirmed: boolean = false; // flag to see if reservation was confirmed
+
   constructor(
     public route: ActivatedRoute,
     public reservationService: ReservationService,
@@ -57,5 +59,22 @@ export class ReservationComponent {
   ) {
     this.id = parseInt(route.snapshot.params['id']);
     this.reservation$ = reservationService.get(this.id);
+  }
+
+  /**
+   * This method is called when the component is destroyed. It checks if the current reservation was confirmed.
+   * If the reservation was not confirmed, it cancels the draft, allowing the user to make another reservation.
+   * This is achieved by subscribing to the reservation$ observable, examining the state of the emitted reservation,
+   * and if the state is not 'CONFIRMED', it triggers a cancellation through the reservationService.
+  */
+  ngOnDestroy(): void {
+    if (this.isConfirmed) return;
+    this.reservationService
+      .cancelById(this.id)
+      .subscribe();
+  }
+
+  setConfirmation(isConfirmed: boolean) {
+    this.isConfirmed = isConfirmed;
   }
 }
