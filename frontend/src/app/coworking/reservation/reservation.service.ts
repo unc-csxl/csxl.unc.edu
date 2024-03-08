@@ -34,6 +34,18 @@ export class ReservationService {
     );
   }
 
+  cancelById(id: number) {
+    let endpoint = `/api/coworking/reservation/${id.toString()}`;
+    let payload = { id, state: 'CANCELLED' };
+    return this.http.put<ReservationJSON>(endpoint, payload).pipe(
+      map(parseReservationJSON),
+      tap((reservation) => {
+        let rxReservation = this.getRxReservation(reservation.id);
+        rxReservation.set(reservation);
+      })
+    );
+  }
+
   confirm(reservation: Reservation) {
     let endpoint = `/api/coworking/reservation/${reservation.id}`;
     let payload = { id: reservation.id, state: 'CONFIRMED' };
