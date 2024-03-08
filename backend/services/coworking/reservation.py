@@ -522,7 +522,6 @@ class ReservationService:
 
         rooms = (
             self._session.query(RoomEntity)
-            # .where(RoomEntity.id.not_in(self._policy_svc.non_reservable_rooms()))
             .where(RoomEntity.reservable == True)
             .order_by(RoomEntity.id)
             .all()
