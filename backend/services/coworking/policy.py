@@ -77,55 +77,55 @@ class PolicyService:
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                'SN141' : [
-                    (time(hour=16, minute=00), time(hour=17, minute=30))
-                ]
+                # 'SN141' : [
+                #     (time(hour=16, minute=00), time(hour=17, minute=30))
+                # ]
             }
         elif day == TUESDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                'SN141' : [
-                    (time(hour=10, minute=00), time(hour=11, minute=00))
-                ]
+                # 'SN141' : [
+                #     (time(hour=10, minute=00), time(hour=11, minute=00))
+                # ]
             }
         elif day == WEDNESDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                'SN141' : [
-                    (time(hour=10, minute=00), time(hour=11, minute=00))
-                ]
+                # 'SN141' : [
+                #     (time(hour=10, minute=00), time(hour=11, minute=00))
+                # ]
             }
         elif day == THURSDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                'SN141' : []
+                # 'SN141' : []
             }
         elif day == FRIDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                'SN141' : [
-                    (time(hour=10, minute=00), time(hour=11, minute=00))
-                ]
+                # 'SN141' : [
+                #     (time(hour=10, minute=00), time(hour=11, minute=00))
+                # ]
             }
         elif day == SATURDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                'SN141' : []
+                # 'SN141' : []
             }
         elif day == SUNDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                'SN141' : []
+                # 'SN141' : []
             }    
