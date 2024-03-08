@@ -1,19 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RxReservations } from './rx-reservations';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   Reservation,
   ReservationJSON,
-  SeatAvailability,
   parseReservationJSON
-} from '../coworking.models';
-import { HttpClient } from '@angular/common/http';
-import { PublicProfile } from 'src/app/profile/profile.service';
+} from '../../coworking.models';
+import { RxReservations } from '../rx-reservations';
 
-const ONE_HOUR = 60 * 60 * 1000;
-
-@Injectable({ providedIn: 'root' })
-export class AmbassadorService {
+@Injectable({
+  providedIn: 'root'
+})
+export class AmbassadorRoomService {
   private reservations: RxReservations = new RxReservations();
   public reservations$: Observable<Reservation[]> = this.reservations.value$;
 
@@ -21,10 +19,16 @@ export class AmbassadorService {
 
   fetchReservations(): void {
     this.http
-      .get<ReservationJSON[]>('/api/coworking/ambassador')
+      .get<ReservationJSON[]>('/api/coworking/ambassador/rooms')
       .subscribe((reservations) => {
         this.reservations.set(reservations.map(parseReservationJSON));
       });
+  }
+
+  isCheckInDisabled(reservation: Reservation): boolean {
+    const currentTime = new Date();
+    const reservationStartTime = new Date(reservation.start);
+    return reservationStartTime > currentTime;
   }
 
   checkIn(reservation: Reservation): void {
@@ -67,28 +71,5 @@ export class AmbassadorService {
           alert(err);
         }
       });
-  }
-
-  makeDropinReservation(
-    seatSelection: SeatAvailability[],
-    users: PublicProfile[]
-  ) {
-    let start = seatSelection[0].availability[0].start;
-    let end = new Date(start.getTime() + 2 * ONE_HOUR);
-    let reservation = {
-      users: users,
-      seats: seatSelection.map((seatAvailability) => {
-        return { id: seatAvailability.id };
-      }),
-      start,
-      end
-    };
-
-    return this.http
-      .post<ReservationJSON>(
-        '/api/coworking/ambassador/reservation',
-        reservation
-      )
-      .pipe(map(parseReservationJSON));
   }
 }

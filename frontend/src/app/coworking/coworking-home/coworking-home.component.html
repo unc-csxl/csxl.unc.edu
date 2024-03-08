@@ -1,29 +1,72 @@
-<div class="coworking-reservations-grid">
-  <ng-container *ngIf="status$ | async as status">
-    <ng-container
-      *ngIf="openOperatingHours$ | async as openOperatingHours; else closed">
-      <coworking-operating-hours-panel
-        [operatingHours]="status.operating_hours"
-        [openOperatingHours]="openOperatingHours" />
+<div class="coworking-home-top">
+  <div class="coworking-reservations-grid">
+    <ng-container *ngIf="status$ | async as status">
+      <ng-container
+        *ngIf="openOperatingHours$ | async as openOperatingHours; else closed">
+        <coworking-operating-hours-panel
+          [operatingHours]="status.operating_hours"
+          [openOperatingHours]="openOperatingHours" />
+      </ng-container>
 
       <ng-container
         *ngIf="activeReservation$ | async as activeReservation; else dropin">
         <coworking-reservation-card
+          (updateActiveReservation)="setActiveReservation()"
+          (reloadCoworkingHome)="ngOnInit()"
           [reservation]="activeReservation"></coworking-reservation-card>
       </ng-container>
 
-      <ng-template #dropin>
-        <div class="dropin-card-container">
-          <coworking-dropin-availability-card
-            [seat_availability]="status.seat_availability"
-            (seatsSelected)="reserve($event)" />
-        </div>
+      <ng-container>
+        <ng-template #dropin>
+          <div class="dropin-card-container">
+            <coworking-dropin-availability-card
+              [seat_availability]="status.seat_availability"
+              (seatsSelected)="reserve($event)" />
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <ng-template #closed>
+        <coworking-operating-hours-panel
+          [operatingHours]="status.operating_hours" />
       </ng-template>
     </ng-container>
+  </div>
+  <br />
+  <div class="coworking-reservations-grid">
+    <mat-card appearance="outlined">
+      <mat-card-content class="reservation-card">
+        <mat-action-list class="reservation-link">
+          <mat-list-item (click)="navigateToNewReservation()">
+            <h3 matListItemTitle>{{ 'Room Reservations' }}</h3>
+            <p matListItemLine>{{ 'Make a new room reservations!' }}</p>
+            <h3 matListItemMeta>&rsaquo;</h3>
+          </mat-list-item>
+        </mat-action-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-    <ng-template #closed>
-      <coworking-operating-hours-panel
-        [operatingHours]="status.operating_hours" />
-    </ng-template>
-  </ng-container>
+  <div class="coworking-reservations-grid">
+    <div class="upcoming-card-container">
+      <!-- Show upcoming room reservations -->
+      <ng-container
+        *ngIf="((upcomingRoomReservation$ | async) ?? []).length > 0">
+        <div class="reservations-header">
+          <h2 class="heading">Upcoming Reservations</h2>
+        </div>
+        <div class="upcoming-reservations-container">
+          <ng-container *ngFor="let r of upcomingRoomReservation$ | async">
+            <ng-container *ngIf="r?.room?.id">
+              <coworking-reservation-card
+                [reservation]="r"
+                (reloadCoworkingHome)="ngOnInit()">
+              </coworking-reservation-card>
+              <br />
+            </ng-container>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>

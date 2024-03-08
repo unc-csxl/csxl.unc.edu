@@ -1,0 +1,58 @@
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling for the table container */
+  max-width: 100%; /* Ensure it doesn't exceed the viewport width */
+}
+
+.horizontal-scroll {
+  white-space: nowrap; /* Prevent line breaks for child elements */
+}
+
+/* Add any additional styling for the room-reservation-table if needed */
+
+.date-selector {
+  padding: 10px; /* Adjust the value as needed */
+}
+
+.upcoming-reservations-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Adjust the gap as needed */
+}
+
+.coworking-reservation-card {
+  width: calc(50% - 10px); /* Adjust the width and margin as needed */
+  margin-bottom: 20px;
+  box-sizing: border-box; /* Include padding and border in the total width */
+}
+
+.heading {
+  padding-top: 30px;
+  padding-left: 10px;
+}
+
+.legend-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px; /* Adjust the margin as needed */
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-left: 10px; /* Adjust the margin between legend items */
+  margin-top: 5px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.legend-text {
+  font-size: 14px;
+}
+
+.reservation-limit {
+  padding-left: 10px;
+}

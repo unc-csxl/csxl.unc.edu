@@ -5,8 +5,7 @@
       *ngIf="openOperatingHours; else closed">
       <div class="header-row">
         <span class="badge">Open</span>
-        until
-        {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}
+        until {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}
         <button mat-stroked-button id="hours-button" (click)="openDialog()">
           All Hours
         </button>
