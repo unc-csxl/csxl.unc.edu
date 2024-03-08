@@ -40,12 +40,12 @@ This section of the documents contains the instructions to replicate the steps w
   - <span style="color: #4d4d4d"> Unavailable (Gray)</span>: These slots are unavailble to be reserved because they are either in the past or you have a conflicting reservation in another room or at the CSXL.
   - <span style="color: #3479be"> Your Reservations (Blue)</span>: These slots represent your reservations. You will notice that once you make a reservation, all other time slots in the same column turn gray.
 
-![Make Reservations](./images/tech-demo-2/make-reservation.png)
+![Make Reservations](../images/specs/room-reservation/make-reservation.png)
 
 - Once you have picked the slots you like, click on the **Select** button, which will draft a reservation for you, and redirect you to the confirmation page.
 - On the confirmation page, you can view the details of your selection including the time, location, and date for your reservation. If you are happy with your selection, click on the **Confirm** button. Otherwise, click on **Cancel**. Note that your reservation draft will automatically be cancelled within 5 minutes if you don't press anything. Navigating out of the page also cancels your reservation.
 
-![Confirmation Page](./images/tech-demo-2/confirmation-page.png)
+![Confirmation Page](../images/specs/room-reservation/confirmation-page.png)
 
 ## How do I view my room reservation?
 
@@ -57,7 +57,7 @@ Well, our team has come up with a visually succinct way of displaying this infor
 
 - Now you should be able to view all your upcoming reservations below the reservation table under the "Upcoming Reservations" header.
 
-![Profile Card After Reservation](./images/tech-demo-2/reservation-confirmed.png)
+![Profile Card After Reservation](../images/specs/room-reservation/reservation-confirmed.png)
 
 - Please note that our upcoming reservations only show reservations to the rooms and not to the Colab CSXL SN156 room, since SN156 currently doesn't accept pre-reservations and only takes walk-ins.
 
@@ -71,7 +71,7 @@ Well, our team has come up with a visually succinct way of displaying this infor
 
 - Once you have checked in, the reservation becomes active. The active reservations can be found on the Coworking page.
 
-![Active Reservations](./images/tech-demo-2/active-reservations.png)
+![Active Reservations](../images/specs/room-reservation/active-reservations.png)
 
 # Descriptions and Sample Data Representation of feature
 
@@ -234,7 +234,7 @@ While implementing the API routes for drafting reservations, our team also consi
 
 This is in context to making new reservations as illustrated in our Figma wireframe below.
 
-![Make Reservations](./images/make-reservations.png)
+![Make Reservations](../images/make-reservations.png)
 
 When making reservations, you can see that some of the slots are marked red. These are possibly other reservations that other people in the XL might have made while Sally is trying to make her reservation. In order to actually get this information from the backend, we were debating whether we want to send back a list of reservation objects from the backend to the frontend or send back a matrix of 0s and 1s to represent time slots that are available vs time slots that are reserved. These are the possible trade-offs we considered.
 
