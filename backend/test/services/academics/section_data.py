@@ -26,7 +26,7 @@ from ..user_data import fake_data_fixture as insert_user_fake_data
 from . import course_data, term_data
 from .. import user_data, role_data, permission_data
 
-__authors__ = ["Ajay Gandecha"]
+__authors__ = ["Ajay Gandecha", "Meghan Sun"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 

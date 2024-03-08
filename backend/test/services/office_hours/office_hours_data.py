@@ -1,31 +1,30 @@
-"""Course data for Office Hours."""
+"""Test Data for Office Hours."""
 
-import time
 import pytest
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 from sqlalchemy.orm import Session
-from backend.entities.academics.section_member_entity import SectionMemberEntity
-from backend.entities.office_hours import user_created_tickets_table
-from backend.entities.office_hours.event_entity import OfficeHoursEventEntity
-from backend.entities.office_hours.section_entity import OfficeHoursSectionEntity
-from backend.entities.office_hours.ticket_entity import OfficeHoursTicketEntity
-from backend.models.office_hours.event import OfficeHoursEvent, OfficeHoursEventPartial
 
-from backend.models.office_hours.section import (
+from ..academics import section_data
+
+from ....entities.office_hours import user_created_tickets_table
+from ....entities.office_hours.event_entity import OfficeHoursEventEntity
+from ....entities.office_hours.section_entity import OfficeHoursSectionEntity
+from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+
+from ....models.office_hours.event import OfficeHoursEvent, OfficeHoursEventPartial
+from ....models.office_hours.event_type import OfficeHoursEventType
+from ....models.office_hours.section import (
     OfficeHoursSection,
     OfficeHoursSectionPartial,
 )
-from backend.models.office_hours.ticket import OfficeHoursTicket
-from backend.models.office_hours.ticket_type import TicketType
-from backend.models.office_hours.ticket_state import TicketState
-from backend.models.office_hours.event_type import OfficeHoursEventType
-from backend.models.room import RoomPartial
-from backend.test.services.coworking.time import *
-from ..academics import section_data
+from ....models.office_hours.ticket import OfficeHoursTicket
+from ....models.office_hours.ticket_type import TicketType
+from ....models.office_hours.ticket_state import TicketState
+from ....models.room import RoomPartial
 
 
-__authors__ = ["Ajay Gandecha"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 # Office Hours Section Data
@@ -88,7 +87,7 @@ called_ticket = OfficeHoursTicket(
 closed_ticket = OfficeHoursTicket(
     id=3,
     oh_event=OfficeHoursEventPartial(id=1),
-    description="Help me with Wordle.",
+    description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
     created_at=datetime.now(),
@@ -102,7 +101,7 @@ closed_ticket = OfficeHoursTicket(
 cancelled_ticket = OfficeHoursTicket(
     id=4,
     oh_event=OfficeHoursEventPartial(id=1),
-    description="I need help",
+    description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CANCELED,
     created_at=datetime.now(),
