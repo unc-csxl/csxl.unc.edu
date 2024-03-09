@@ -9,15 +9,6 @@
     margin-bottom: 12px;
 }
 
-.table-container {
-  overflow-x: auto; /* Enable horizontal scrolling for the table container */
-  max-width: 100%; /* Ensure it doesn't exceed the viewport width */
-}
-
-.horizontal-scroll {
-  white-space: nowrap; /* Prevent line breaks for child elements */
-}
-
 .mat-mdc-card-title {
   padding-left: 10px;
 }

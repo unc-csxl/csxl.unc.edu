@@ -1,9 +1,16 @@
 /* room-reservation-table.widget.css */
 
+
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+
+}
 table {
   border-collapse: collapse;
   width: 99%;
   margin-left: 10px;
+  white-space: nowrap; /* Prevent line breaks for child elements */
 }
 
 th,
