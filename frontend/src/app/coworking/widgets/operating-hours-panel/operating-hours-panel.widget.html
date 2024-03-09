@@ -6,9 +6,6 @@
       <div class="header-row">
         <span class="badge">Open</span>
         until {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}
-        <button mat-stroked-button id="hours-button" (click)="openDialog()">
-          All Hours
-        </button>
       </div>
     </mat-card-title>
     <ng-template #closed>
@@ -16,5 +13,8 @@
         ><span class="badge">Closed</span></mat-card-title
       >
     </ng-template>
+    <button mat-stroked-button id="hours-button" (click)="openDialog()">
+      All Hours
+    </button>
   </mat-card-header>
 </mat-card>

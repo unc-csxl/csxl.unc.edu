@@ -1,4 +1,6 @@
-.header {
+.mat-mdc-card-header {
+  display: flex;
+  justify-content: space-between;
   padding: 16px;
 }
 
@@ -40,8 +42,4 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-}
-
-#hours-button {
-  margin-left: auto;
 }
