@@ -18,6 +18,15 @@
   white-space: nowrap; /* Prevent line breaks for child elements */
 }
 
+.mat-mdc-card-title {
+  padding-left: 10px;
+}
+
+.mat-mdc-card-subtitle {
+  padding-left: 10px;
+}
+
+
 /* Add any additional styling for the room-reservation-table if needed */
 
 .date-selector {
@@ -67,4 +76,11 @@
 
 .reservation-limit {
   padding-left: 10px;
+}
+
+@media only screen and (max-width: 900px) {
+  .mat-mdc-card-header {
+    flex-direction: column;
+    align-items: baseline;
+  }
 }
