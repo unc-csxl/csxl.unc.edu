@@ -1,3 +1,14 @@
+.mat-mdc-card {
+  max-width: 100%;
+}
+
+.mat-mdc-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
 .table-container {
   overflow-x: auto; /* Enable horizontal scrolling for the table container */
   max-width: 100%; /* Ensure it doesn't exceed the viewport width */
@@ -47,6 +58,7 @@
   width: 20px;
   height: 20px;
   margin-right: 5px;
+  border-radius: 6px;
 }
 
 .legend-text {
