@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+
 from backend.models.academics.section import Section
 from backend.models.application import Application, UTA
 
@@ -18,7 +19,6 @@ class ApplicationDetails(Application):
     """
 
     user: User
-    previous_sections: list[Section] = []
 
 
 class UTADetails(UTA):

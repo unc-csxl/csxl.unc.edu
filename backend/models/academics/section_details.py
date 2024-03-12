@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
-from ..room import Room
+from backend.models.application import UTA
+
 from .course import Course
 from .term import Term
 from .section import Section
-from .section_member import SectionMember
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -22,6 +22,5 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
-    lecture_room: Room | None = None
-    staff: list[SectionMember] = []
-    office_hour_rooms: list[Room] = []
+    preferred_applicants: list[UTA]
+    eligible_applicants: list[UTA]

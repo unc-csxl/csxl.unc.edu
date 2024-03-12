@@ -1,5 +1,7 @@
 from pydantic import BaseModel
-from ..room import Room
+
+from backend.models.academics.section_member import SectionMember
+from backend.models.room import Room
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -19,5 +21,8 @@ class Section(BaseModel):
     number: str
     term_id: str
     meeting_pattern: str
+    lecture_room: Room | None = None
+    staff: list[SectionMember] = []
+    office_hour_rooms: list[Room] = []
     override_title: str
     override_description: str

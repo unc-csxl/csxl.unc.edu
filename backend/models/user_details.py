@@ -1,3 +1,4 @@
+from backend.models.academics.section import Section
 from .application import Application
 from .permission import Permission
 from .user import User
@@ -18,3 +19,4 @@ class UserDetails(User):
 
     permissions: list["Permission"] = []
     applications: list[Application] = []
+    sections: list[Section] = []

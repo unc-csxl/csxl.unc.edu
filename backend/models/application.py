@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-from backend.models.academics.section import Section
-
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"

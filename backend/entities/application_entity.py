@@ -2,7 +2,6 @@
 
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from backend.entities.academics.section_entity import SectionEntity
 
 from backend.entities.user_entity import UserEntity
 from .entity_base import EntityBase
@@ -28,11 +27,6 @@ class ApplicationEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the user and application tables.
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=True)
     user: Mapped["UserEntity"] = relationship(back_populates="applications")
-
-    # Sections TA'd for, reference to section_member
-    previous_sections: Mapped[list["SectionEntity"]] = relationship(
-        back_populates="tas"
-    )
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     type = Column(String(50))
@@ -70,7 +64,7 @@ class ApplicationEntity(EntityBase):
         )
 
 
-class UTA(Application):
+class UTAEntity(ApplicationEntity):
     """Serves as the database model schema for applications specific to Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to UTA Applications
@@ -162,7 +156,7 @@ class UTA(Application):
         )
 
 
-class New_UTA(UTA):
+class New_UTA_Entity(UTAEntity):
     """Serves as the database model schema for applications specific to new Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to First-Time UTA Applications
@@ -218,7 +212,7 @@ class New_UTA(UTA):
         )
 
 
-class Returning_UTA(UTA):
+class Returning_UTA_Entity(UTAEntity):
     """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to Returning UTA Applications
