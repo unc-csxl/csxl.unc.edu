@@ -110,8 +110,6 @@ class SectionEntity(EntityBase):
             meeting_pattern=model.meeting_pattern,
             override_title=model.override_title,
             override_description=model.override_description,
-            preferred_applicants=model.preferred_applicants,
-            eligible_applicants=model.eligible_applicants,
         )
 
     def to_model(self) -> Section:
@@ -137,8 +135,6 @@ class SectionEntity(EntityBase):
             staff=[members.to_flat_model() for members in self.staff],
             override_title=self.override_title,
             override_description=self.override_description,
-            preferred_applicants=self.preferred_applicants,
-            eligible_applicants=self.eligible_applicants,
         )
 
     def to_details_model(self) -> SectionDetails:
@@ -164,6 +160,10 @@ class SectionEntity(EntityBase):
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,
-            preferred_applicants=self.preferred_applicants,
-            eligible_applicants=self.eligible_applicants,
+            preferred_applicants=[
+                applicant.to_model() for applicant in self.preferred_applicants
+            ],
+            eligible_applicants=[
+                applicant.to_model() for applicant in self.eligible_applicants
+            ],
         )

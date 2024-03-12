@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from backend.models.academics.section import Section
-from backend.models.application import Application, UTA
+from backend.models.application import Application, UTA, New_UTA
 
 from backend.models.user import User
 
@@ -21,11 +21,11 @@ class ApplicationDetails(Application):
     user: User
 
 
-class UTADetails(UTA):
+class UTADetails(UTA or New_UTA):
     """
-    Pydantic model to represent an `Application`.
+    Pydantic model to represent a `UTA Application`.
 
-    This model is based on the `ApplicationEntity` model, which defines the shape
+    This model is based on the `UTA` model, which defines the shape
     of the `Application` database in the PostgreSQL database.
     """
 

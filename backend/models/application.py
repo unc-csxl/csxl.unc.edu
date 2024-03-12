@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from backend.models.user import User
+
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
