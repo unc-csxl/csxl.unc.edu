@@ -18,22 +18,22 @@ export class ApplicationReviewModal {
 
   testApplication: Application = {
     id: 1,
+    user_id: 1,
     user: {},
-    section_member: [],
-    intro_video: '',
-    prior_experience: '',
-    service_experience: '',
-    additional_experience: '',
     academics_hours: '',
     extracurriculars: '',
     program_pursued: '',
     other_programs: '',
     gpa: '',
     comp_gpa: '',
-    courses_eligible: [],
-    course_preferences: [],
+    eligible_courses: [],
+    preferred_courses: [],
     comp_227: '',
-    open_pairing: true
+    open_pairing: true,
+    intro_video: '',
+    prior_experience: '',
+    service_experience: '',
+    additional_experience: ''
   };
 
   get applicationProperties(): { key: string; value: any }[] {

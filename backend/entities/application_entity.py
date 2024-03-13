@@ -4,7 +4,11 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.user_entity import UserEntity
-from backend.models.application_details import ApplicationDetails, UTADetails
+from backend.models.application_details import (
+    ApplicationDetails,
+    New_UTADetails,
+    UTADetails,
+)
 from .entity_base import EntityBase
 from .section_application_table import section_application_table
 from typing import Self
@@ -67,7 +71,9 @@ class ApplicationEntity(EntityBase):
         Returns:
             ApplicationDetails: `ApplicationDetails` object from the entity
         """
-        return Application(id=self.id, user_id=self.user_id, user=self.user.to_model())
+        return ApplicationDetails(
+            id=self.id, user_id=self.user_id, user=self.user.to_model()
+        )
 
 
 class UTAEntity(ApplicationEntity):
@@ -148,18 +154,19 @@ class UTAEntity(ApplicationEntity):
             Application: `Application` object from the entity
         """
 
-        model = super().to_model()
-        model.academic_hours = self.academic_hours
-        model.extracurriculars = self.extracurriculars
-        model.expected_graduation = self.expected_graduation
-        model.program_pursued = self.program_pursued
-        model.other_programs = self.other_programs
-        model.gpa = self.gpa
-        model.comp_gpa = self.comp_gpa
-        model.comp_227 = self.comp_227
-        model.open_pairing = self.open_pairing
-
-        return model
+        parent_model = super().to_model().model_dump()
+        return UTA(
+            **parent_model,
+            academic_hours=self.academic_hours,
+            extracurriculars=self.extracurriculars,
+            expected_graduation=self.expected_graduation,
+            program_pursued=self.program_pursued,
+            other_programs=self.other_programs,
+            gpa=self.gpa,
+            comp_gpa=self.comp_gpa,
+            comp_227=self.comp_227,
+            open_pairing=self.open_pairing,
+        )
 
     def to_details_model(self) -> UTADetails:
         """
@@ -169,24 +176,23 @@ class UTAEntity(ApplicationEntity):
             ApplicationDetails: `ApplicationDetails` object from the entity
         """
 
-        model = super().to_model()
-        model.academic_hours = self.academic_hours
-        model.extracurriculars = self.extracurriculars
-        model.expected_graduation = self.expected_graduation
-        model.program_pursued = self.program_pursued
-        model.other_programs = self.other_programs
-        model.gpa = self.gpa
-        model.comp_gpa = self.comp_gpa
-        model.comp_227 = self.comp_227
-        model.open_pairing = self.open_pairing
-        model.preferred_courses = [
-            section.to_model() for section in self.preferred_courses
-        ]
-        model.eligible_courses = [
-            section.to_model() for section in self.eligible_courses
-        ]
-
-        return model
+        parent_model = super().to_details_model().model_dump()
+        return UTADetails(
+            **parent_model,
+            academic_hours=self.academic_hours,
+            extracurriculars=self.extracurriculars,
+            expected_graduation=self.expected_graduation,
+            program_pursued=self.program_pursued,
+            other_programs=self.other_programs,
+            gpa=self.gpa,
+            comp_gpa=self.comp_gpa,
+            comp_227=self.comp_227,
+            open_pairing=self.open_pairing,
+            preferred_courses=[
+                section.to_model() for section in self.preferred_courses
+            ],
+            eligible_courses=[section.to_model() for section in self.eligible_courses],
+        )
 
 
 class New_UTA_Entity(UTAEntity):
@@ -238,13 +244,32 @@ class New_UTA_Entity(UTAEntity):
             Application: `Application` object from the entity
         """
 
-        model = super().to_model()
-        model.intro_video = self.intro_video
-        model.prior_experience = self.prior_experience
-        model.service_experience = self.service_experience
-        model.additional_experience = self.additional_experience
+        parent_model = super().to_details_model().model_dump()
+        return New_UTA(
+            **parent_model,
+            intro_video=self.intro_video,
+            prior_experience=self.prior_experience,
+            service_experience=self.service_experience,
+            additional_experience=self.additional_experience,
+        )
 
-        return model
+    def to_details_model(self) -> New_UTADetails:
+        """
+        Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
+
+        Returns:
+            ApplicationDetails: `ApplicationDetails` object from the entity
+        """
+
+        parent_model = super().to_details_model().model_dump()
+        return New_UTADetails(
+            **parent_model,
+            intro_video=self.intro_video,
+            prior_experience=self.prior_experience,
+            service_experience=self.service_experience,
+            additional_experience=self.additional_experience,
+            user=self.user.to_model(),
+        )
 
 
 class Returning_UTA_Entity(UTAEntity):
@@ -292,9 +317,10 @@ class Returning_UTA_Entity(UTAEntity):
             Application: `Application` object from the entity
         """
 
-        model = super().to_model()
-        model.ta_experience = self.ta_experience
-        model.best_moment = self.best_moment
-        model.desired_improvement = self.desired_improvement
-
-        return model
+        parent_model = super().to_model().model_dump()
+        return Returning_UTA(
+            **parent_model,
+            ta_experience=self.ta_experience,
+            best_moment=self.best_moment,
+            desired_improvement=self.desired_improvement,
+        )

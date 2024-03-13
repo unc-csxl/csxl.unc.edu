@@ -5,6 +5,7 @@ Application routes are used to create, retrieve, and update Applications."""
 from fastapi import APIRouter, Depends
 
 from backend.models.application import Application, New_UTA
+from backend.models.application_details import New_UTADetails
 from backend.services.application import ApplicationService
 
 from ..api.authentication import registered_user
@@ -23,10 +24,10 @@ openapi_tags = {
 api = APIRouter(prefix="/api/applications")
 
 
-@api.get("", response_model=list[Application], tags=["Applications"])
+@api.get("", response_model=list[New_UTADetails], tags=["Applications"])
 def get_applications(
     application_service: ApplicationService = Depends(),
-) -> list[Application]:
+) -> list[New_UTADetails]:
     """
     Get all applications
 

@@ -4,7 +4,11 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
 from backend.models.application import Application, New_UTA
-from backend.models.application_details import ApplicationDetails, UTADetails
+from backend.models.application_details import (
+    ApplicationDetails,
+    New_UTADetails,
+    UTADetails,
+)
 from backend.models.user import User
 from ..database import db_session
 
@@ -25,14 +29,32 @@ class ApplicationService:
         """
         self._session = session
 
-    def list(self) -> list[ApplicationDetails]:
+    def list(self) -> list[New_UTADetails]:
         """Returns all TA applications.
 
         Returns:
-            list[ApplicationDetails]: List of all current and previously submitted applications.
+            list[New_UTA]: List of all current and previously submitted applications.
         """
         entities = self._session.query(ApplicationEntity).all()
-        return [entity.to_model() for entity in entities]
+        return [entity.to_details_model() for entity in entities]
+
+        # implement list() for all types here later
+
+        # applications = []
+
+        # for entity in entities:
+        #     if entity.type == "new_uta": # type: ignore
+        #         applications.append(
+        #             entity.to_details_model()
+        #         )
+        #     elif entity.type == "returning_uta":
+        #         applications.append(entity.to_details_model())
+        #     elif entity.type == "uta":
+        #         applications.append(entity.to_details_model())
+        #     else:
+        #         applications.append(entity.to_model())
+
+        # return applications
 
     def create_undergrad(self, application: New_UTA) -> UTADetails:
         """
@@ -61,4 +83,4 @@ class ApplicationService:
         self._session.commit()
 
         # Return added object
-        return application_entity.to_model()
+        return application_entity.to_details_model()

@@ -1,13 +1,13 @@
 <!-- HTML Structure of Admin Applications List -->
-<div class="content" *ngIf="organizations$ | async as organizations">
-  <table mat-table [dataSource]="organizations">
+<div class="content" *ngIf="applications$ | async as applications">
+  <table mat-table [dataSource]="applications">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <div class="header">Applications</div>
       </th>
       <td mat-cell *matCellDef="let element">
         <div class="row">
-          <p>{{ element.name }}</p>
+          <p>{{ element.user.first_name + ' ' + element.user.last_name }}</p>
           <button mat-stroked-button (click)="reviewApplication(element)">
             Review
           </button>
