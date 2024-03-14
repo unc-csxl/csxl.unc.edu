@@ -1,11 +1,22 @@
-.table-container {
-  overflow-x: auto; /* Enable horizontal scrolling for the table container */
-  max-width: 100%; /* Ensure it doesn't exceed the viewport width */
+.mat-mdc-card {
+  max-width: 100%;
 }
 
-.horizontal-scroll {
-  white-space: nowrap; /* Prevent line breaks for child elements */
+.mat-mdc-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
+
+.mat-mdc-card-title {
+  padding-left: 10px;
+}
+
+.mat-mdc-card-subtitle {
+  padding-left: 10px;
+}
+
 
 /* Add any additional styling for the room-reservation-table if needed */
 
@@ -47,6 +58,7 @@
   width: 20px;
   height: 20px;
   margin-right: 5px;
+  border-radius: 6px;
 }
 
 .legend-text {
@@ -55,4 +67,11 @@
 
 .reservation-limit {
   padding-left: 10px;
+}
+
+@media only screen and (max-width: 900px) {
+  .mat-mdc-card-header {
+    flex-direction: column;
+    align-items: baseline;
+  }
 }

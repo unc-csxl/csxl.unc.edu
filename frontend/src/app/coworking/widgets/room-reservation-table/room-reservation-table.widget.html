@@ -1,26 +1,29 @@
-<table class="table">
-  <tr>
-    <th></th>
-    <ng-container *ngFor="let timeSlot of timeSlots">
-      <th [innerHTML]="timeSlot" class="time-slot"></th>
-    </ng-container>
-  </tr>
-  <tr *ngFor="let record of reservationsMap | keyvalue">
-    <th>{{ record.key }}</th>
-    <td
-      *ngFor="let timeSlot of record.value; let j = index"
-      [style.background]="cellPropertyMap[timeSlot].backgroundColor"
-      (click)="
-        !cellPropertyMap[timeSlot].isDisabled && toggleCellColor(record.key, j)
-      "></td>
-  </tr>
-</table>
+<div class="table-container">
+  <table class="table">
+    <tr>
+      <th></th>
+      <ng-container *ngFor="let timeSlot of timeSlots">
+        <th [innerHTML]="timeSlot" class="time-slot"></th>
+      </ng-container>
+    </tr>
+    <tr *ngFor="let record of reservationsMap | keyvalue">
+      <th>{{ record.key }}</th>
+      <td
+        *ngFor="let timeSlot of record.value; let j = index"
+        [style.background]="cellPropertyMap[timeSlot].backgroundColor"
+        (click)="
+          !cellPropertyMap[timeSlot].isDisabled &&
+            toggleCellColor(record.key, j)
+        "></td>
+    </tr>
+  </table>
+</div>
 <div class="divider">
   <button
-    mat-raised-button
+    mat-stroked-button
     class="button"
     (click)="draftReservation()"
     [disabled]="!selectButton">
-    Select
+    Reserve
   </button>
 </div>
