@@ -31,8 +31,11 @@ export class RoomReservationService extends ReservationService {
     r: Reservation
   ) => {
     let now = new Date();
+    let soon = new Date(
+      Date.now() + 10 /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */
+    );
     const activeStates = ['CONFIRMED', 'CHECKED_IN'];
-    return r.start <= now && r.end > now && activeStates.includes(r.state);
+    return r.start <= soon && r.end > now && activeStates.includes(r.state);
   };
 
   constructor(http: HttpClient) {
