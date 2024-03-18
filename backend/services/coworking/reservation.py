@@ -312,7 +312,7 @@ class ReservationService:
         )
 
         # Need current time to gray out slots in the past on that day.
-        current_time = datetime.now()
+        current_time = self._round_to_closest_half_hour(datetime.now())
         current_time_idx = (
             self._idx_calculation(current_time, operating_hours_start) + 1
         )
@@ -519,7 +519,6 @@ class ReservationService:
         Returns:
             Sequence[RoomDetails]: A sequence of RoomDetails models representing all the reservable rooms, excluding room 'SN156'.
         """
-
         rooms = (
             self._session.query(RoomEntity)
             .where(RoomEntity.reservable == True)
