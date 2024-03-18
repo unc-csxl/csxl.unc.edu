@@ -29,9 +29,6 @@ class UTADetails(UTA):
     of the `Application` database in the PostgreSQL database.
     """
 
-    preferred_courses: list[Section] = []
-    eligible_courses: list[Section] = []
-
 
 class New_UTADetails(New_UTA):
     """
@@ -42,6 +39,8 @@ class New_UTADetails(New_UTA):
     """
 
     user: User
+    preferred_courses: list[Section] = []
+    eligible_courses: list[Section] = []
 
 
 class Returning_UTADetails(Returning_UTA):

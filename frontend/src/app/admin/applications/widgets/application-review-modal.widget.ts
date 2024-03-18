@@ -20,7 +20,7 @@ export class ApplicationReviewModal {
     id: 1,
     user_id: 1,
     user: {},
-    academics_hours: '',
+    academic_hours: 0,
     extracurriculars: '',
     program_pursued: '',
     other_programs: '',

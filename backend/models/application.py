@@ -32,7 +32,7 @@ class UTA(Application):
     other_programs: str
     gpa: str
     comp_gpa: str
-    comp_227: bool
+    comp_227: str
     open_pairing: bool
 
 

@@ -56,7 +56,7 @@ class ApplicationService:
 
         # return applications
 
-    def create_undergrad(self, application: New_UTA) -> UTADetails:
+    def create_undergrad(self, application: New_UTADetails) -> New_UTADetails:
         """
         Creates an application based on the input object and adds it to the table.
         If the application's ID is unique to the table, a new entry is added.
@@ -70,17 +70,12 @@ class ApplicationService:
             Application: Object added to table
         """
 
-        # Checks if the application already exists in the table
         if application.id:
-            # Set id to None so database can handle setting the id
             application.id = None
 
-        # Otherwise, create new object
         application_entity = New_UTA_Entity.from_model(application)
 
-        # Add new object to table and commit changes
         self._session.add(application_entity)
         self._session.commit()
 
-        # Return added object
         return application_entity.to_details_model()

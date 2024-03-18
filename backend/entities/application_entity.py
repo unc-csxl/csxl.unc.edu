@@ -82,19 +82,19 @@ class UTAEntity(ApplicationEntity):
     # Application properties (columns in the database table) specific to UTA Applications
 
     # Academic Hours student plans to take
-    academic_hours: Mapped[int] = mapped_column(Integer, nullable=False)
+    academic_hours: Mapped[int] = mapped_column(Integer, nullable=True)
 
     # Extracurriculars student is a part of
-    extracurriculars: Mapped[str] = mapped_column(String, nullable=False)
+    extracurriculars: Mapped[str] = mapped_column(String, nullable=True)
 
     # Expected graduation
-    expected_graduation: Mapped[str] = mapped_column(String, nullable=False)
+    expected_graduation: Mapped[str] = mapped_column(String, nullable=True)
 
     # Program pursued
-    program_pursued: Mapped[str] = mapped_column(String)
+    program_pursued: Mapped[str] = mapped_column(String, nullable=True)
 
     # Other programs being pursued
-    other_programs: Mapped[str] = mapped_column(String)
+    other_programs: Mapped[str] = mapped_column(String, nullable=True)
 
     # GPA
     gpa: Mapped[str] = mapped_column(String, nullable=True)
@@ -103,10 +103,10 @@ class UTAEntity(ApplicationEntity):
     comp_gpa: Mapped[str] = mapped_column(String, nullable=True)
 
     # Do they want to do this as COMP 227?
-    comp_227: Mapped[bool] = mapped_column(Boolean)
+    comp_227: Mapped[str] = mapped_column(String, nullable=True)
 
     # Open pairing?
-    open_pairing: Mapped[bool] = mapped_column(Boolean)
+    open_pairing: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
     # Sections student prefers
     preferred_courses: Mapped[list["SectionEntity"]] = relationship(
@@ -188,10 +188,6 @@ class UTAEntity(ApplicationEntity):
             comp_gpa=self.comp_gpa,
             comp_227=self.comp_227,
             open_pairing=self.open_pairing,
-            preferred_courses=[
-                section.to_model() for section in self.preferred_courses
-            ],
-            eligible_courses=[section.to_model() for section in self.eligible_courses],
         )
 
 
@@ -201,16 +197,16 @@ class New_UTA_Entity(UTAEntity):
     # Application properties (columns in the database table) specific to First-Time UTA Applications
 
     # Intro video explaining why they want to be a TA
-    intro_video: Mapped[str] = mapped_column(String, nullable=False)
+    intro_video: Mapped[str] = mapped_column(String, nullable=True)
 
     # Prior experience in the workforce
-    prior_experience: Mapped[str] = mapped_column(String, nullable=False)
+    prior_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Service experience such as volunteering/workforce
-    service_experience: Mapped[str] = mapped_column(String)
+    service_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Additonal experience that is relevant
-    additional_experience: Mapped[str] = mapped_column(String)
+    additional_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     __mapper_args__ = {
@@ -269,6 +265,10 @@ class New_UTA_Entity(UTAEntity):
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
             user=self.user.to_model(),
+            preferred_courses=[
+                section.to_model() for section in self.preferred_courses
+            ],
+            eligible_courses=[section.to_model() for section in self.eligible_courses],
         )
 
 
@@ -278,13 +278,13 @@ class Returning_UTA_Entity(UTAEntity):
     # Application properties (columns in the database table) specific to Returning UTA Applications
 
     # TA Experience and what they have gotten out of it
-    ta_experience: Mapped[str] = mapped_column(String)
+    ta_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Best student interaction/moment
-    best_moment: Mapped[str] = mapped_column(String)
+    best_moment: Mapped[str] = mapped_column(String, nullable=True)
 
     # Desired personal improvement
-    desired_improvement: Mapped[str] = mapped_column(String)
+    desired_improvement: Mapped[str] = mapped_column(String, nullable=True)
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     __mapper_args__ = {

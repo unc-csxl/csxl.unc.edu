@@ -42,11 +42,11 @@ def get_applications(
     return application_service.list()
 
 
-@api.post("", response_model=New_UTA, tags=["Applications"])
+@api.post("", response_model=New_UTADetails, tags=["Applications"])
 def new_undergrad_application(
-    application: New_UTA,
+    application: New_UTADetails,
     application_service: ApplicationService = Depends(),
-) -> New_UTA:
+) -> New_UTADetails:
     """
     Create application
 

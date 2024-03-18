@@ -42,12 +42,9 @@
         <input
           matInput
           placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-          formControlName="firstCtrl"
+          formControlName="intro_video"
           required />
       </mat-form-field>
-      <div>
-        <button mat-stroked-button matStepperNext>Next</button>
-      </div>
     </form>
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
@@ -61,12 +58,9 @@
       <div class="form-field-wrapper">
         <mat-form-field>
           <mat-label>Experience</mat-label>
-          <mat-select>
-            <mat-option
-              *ngFor="let exp of experienceList"
-              [value]="exp.value"
-              required
-              >{{ exp.viewValue }}</mat-option
+          <mat-select formControlName="prior_experience" required>
+            <mat-option *ngFor="let o of experienceList" [value]="o.value"
+              >{{ o.viewValue }}</mat-option
             >
           </mat-select>
         </mat-form-field>
@@ -84,7 +78,7 @@
           <textarea
             matInput
             placeholder="Cashier, Waiter, ..."
-            name="service_experience"
+            formControlName="service_experience"
             required></textarea>
         </mat-form-field>
       </div>
@@ -100,13 +94,9 @@
           <textarea
             matInput
             placeholder="Developer, Business Owner, ..."
-            name="additional_experience"
+            formControlName="additional_experience"
             required></textarea>
         </mat-form-field>
-      </div>
-      <div>
-        <button mat-stroked-button matStepperPrevious>Back</button>
-        <button mat-stroked-button matStepperNext>Next</button>
       </div>
     </form>
   </mat-step>
@@ -120,7 +110,11 @@
       </div>
       <mat-form-field>
         <mat-label>Academic Hours</mat-label>
-        <input matInput formControlName="thirdCtrl" placeholder="15" required />
+        <input
+          matInput
+          formControlName="academic_hours"
+          placeholder="15"
+          required />
       </mat-form-field>
       <div className="extracurricularText">
         <p>
@@ -135,7 +129,7 @@
           <textarea
             matInput
             placeholder="Developer, Business Owner, ..."
-            name="additional_experience"
+            formControlName="extracurriculars"
             required></textarea>
         </mat-form-field>
       </div>
@@ -145,12 +139,11 @@
       <div class="form-field-wrapper">
         <mat-form-field>
           <mat-label>Expected Graduation</mat-label>
-          <mat-select>
+          <mat-select formControlName="expected_graduation" required>
             <mat-option
-              *ngFor="let exp of experienceList"
-              [value]="exp.value"
-              required
-              >{{ exp.viewValue }}</mat-option
+              *ngFor="let o of expectedGraduationDates"
+              [value]="o.value"
+              >{{ o.viewValue }}</mat-option
             >
           </mat-select>
         </mat-form-field>
@@ -161,12 +154,9 @@
       <div class="form-field-wrapper">
         <mat-form-field>
           <mat-label>Program</mat-label>
-          <mat-select>
-            <mat-option
-              *ngFor="let exp of experienceList"
-              [value]="exp.value"
-              required
-              >{{ exp.viewValue }}</mat-option
+          <mat-select formControlName="program_pursued" required>
+            <mat-option *ngFor="let o of programsList" [value]="o.value"
+              >{{ o.viewValue }}</mat-option
             >
           </mat-select>
         </mat-form-field>
@@ -176,12 +166,8 @@
       </div>
       <mat-form-field>
         <mat-label>Other Program</mat-label>
-        <input matInput placeholder="Econ" />
+        <input matInput placeholder="Econ" formControlName="other_programs" />
       </mat-form-field>
-      <div>
-        <button mat-stroked-button matStepperPrevious>Back</button>
-        <button mat-stroked-button matStepperNext>Next</button>
-      </div>
     </form>
   </mat-step>
   <mat-step [stepControl]="fourthFormGroup">
@@ -192,19 +178,15 @@
       </div>
       <mat-form-field>
         <mat-label>GPA</mat-label>
-        <input matInput placeholder="4.0" required />
+        <input matInput placeholder="4.0" formControlName="gpa" required />
       </mat-form-field>
       <div className="compGpaText">
         <p>What is your Computer Science (COMP) GPA? *</p>
       </div>
       <mat-form-field>
         <mat-label>COMP GPA</mat-label>
-        <input matInput placeholder="4.0" required />
+        <input matInput placeholder="4.0" formControlName="comp_gpa" required />
       </mat-form-field>
-      <div>
-        <button mat-stroked-button matStepperPrevious>Back</button>
-        <button mat-stroked-button matStepperNext>Next</button>
-      </div>
     </form>
   </mat-step>
   <mat-step [stepControl]="fifthFormGroup">
@@ -215,12 +197,13 @@
       </div>
       <mat-form-field>
         <mat-label>Eligibility</mat-label>
-        <input type="text" matInput [matAutocomplete]="auto" />
+        <input
+          type="text"
+          matInput
+          [matAutocomplete]="auto"
+          formControlName="eligible_courses" />
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option
-            *ngFor="let exp of experienceList"
-            [value]="exp.value"
-            required
+          <mat-option *ngFor="let exp of experienceList" [value]="exp.value"
             >{{ exp.viewValue }}</mat-option
           >
         </mat-autocomplete>
@@ -230,12 +213,13 @@
       </div>
       <mat-form-field>
         <mat-label>Preferences</mat-label>
-        <input type="text" matInput [matAutocomplete]="auto" />
+        <input
+          type="text"
+          matInput
+          [matAutocomplete]="auto"
+          formControlName="preferred_courses" />
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option
-            *ngFor="let exp of experienceList"
-            [value]="exp.value"
-            required
+          <mat-option *ngFor="let exp of experienceList" [value]="exp.value"
             >{{ exp.viewValue }}</mat-option
           >
         </mat-autocomplete>
@@ -246,12 +230,9 @@
       <div class="form-field-wrapper">
         <mat-form-field>
           <mat-label>COMP 227</mat-label>
-          <mat-select>
-            <mat-option
-              *ngFor="let exp of experienceList"
-              [value]="exp.value"
-              required
-              >{{ exp.viewValue }}</mat-option
+          <mat-select formControlName="comp_227">
+            <mat-option *ngFor="let o of comp227" [value]="o.value" required
+              >{{ o.viewValue }}</mat-option
             >
           </mat-select>
         </mat-form-field>
@@ -265,19 +246,12 @@
       <div class="form-field-wrapper">
         <mat-form-field>
           <mat-label>Yes or No</mat-label>
-          <mat-select>
-            <mat-option
-              *ngFor="let exp of experienceList"
-              [value]="exp.value"
-              required
-              >{{ exp.viewValue }}</mat-option
+          <mat-select formControlName="open_pairing">
+            <mat-option *ngFor="let o of openPairing" [value]="o.value" required
+              >{{ o.viewValue }}</mat-option
             >
           </mat-select>
         </mat-form-field>
-      </div>
-      <div>
-        <button mat-stroked-button matStepperPrevious>Back</button>
-        <button mat-stroked-button matStepperNext>Next</button>
       </div>
     </form>
   </mat-step>
@@ -285,8 +259,7 @@
     <ng-template matStepLabel>Done</ng-template>
     <p>You are now done.</p>
     <div>
-      <button mat-stroked-button matStepperPrevious>Back</button>
-      <button mat-stroked-button (click)="stepper.reset()">Reset</button>
+      <button mat-stroked-button (click)="onSubmit()">Submit</button>
     </div>
   </mat-step>
 </mat-stepper>
