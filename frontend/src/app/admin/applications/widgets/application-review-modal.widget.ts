@@ -16,31 +16,20 @@ export class ApplicationReviewModal {
     protected snackBar: MatSnackBar
   ) {}
 
-  testApplication: Application = {
-    id: 1,
-    user_id: 1,
-    user: {},
-    academic_hours: 0,
-    extracurriculars: '',
-    program_pursued: '',
-    other_programs: '',
-    gpa: '',
-    comp_gpa: '',
-    eligible_courses: [],
-    preferred_courses: [],
-    comp_227: '',
-    open_pairing: true,
-    intro_video: '',
-    prior_experience: '',
-    service_experience: '',
-    additional_experience: ''
-  };
-
   get applicationProperties(): { key: string; value: any }[] {
-    return Object.keys(this.testApplication).map((key) => ({
+    const userData = Object.keys(this.data.application.user).map((key) => ({
       key,
-      value: this.testApplication[key]
+      value: this.data.application.user[key]
     }));
+
+    const applicationData = Object.keys(this.data.application)
+      .filter((key) => key !== 'user')
+      .map((key) => ({
+        key,
+        value: this.data.application[key]
+      }));
+
+    return [...userData, ...applicationData];
   }
 
   /** Opens a confirmation snackbar when a checkout is successfully created.
