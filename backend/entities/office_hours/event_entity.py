@@ -77,7 +77,7 @@ class OfficeHoursEventEntity(EntityBase):
             type=model.type,
             description=model.description,
             location_description=model.location_description,
-            date=model.date,
+            date=model.event_date,
             start_time=model.start_time,
             end_time=model.end_time,
         )

@@ -23,7 +23,7 @@ class OfficeHoursEventDraft(BaseModel):
     type: OfficeHoursEventType
     description: str = ""
     location_description: str = ""
-    date: date
+    event_date: date
     start_time: datetime
     end_time: datetime
 
@@ -52,6 +52,6 @@ class OfficeHoursEventPartial(OfficeHoursEvent):
     type: OfficeHoursEventType | None = None
     description: str | None = None
     location_description: str | None = None
-    date: date | None = None  # type: ignore
+    event_date: date | None = None
     start_time: datetime | None = None
     end_time: datetime | None = None

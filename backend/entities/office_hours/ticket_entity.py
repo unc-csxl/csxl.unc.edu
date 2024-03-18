@@ -85,7 +85,6 @@ class OfficeHoursTicketEntity(EntityBase):
         """
         return cls(
             id=model.id,
-            caller_id=model.caller_id,
             have_concerns=model.have_concerns,
             caller_notes=model.caller_notes,
             oh_event_id=model.oh_event.id,
@@ -108,13 +107,13 @@ class OfficeHoursTicketEntity(EntityBase):
             id=self.id,
             have_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
-            oh_event_id=self.oh_event_id,
             description=self.description,
             type=self.type,
             state=self.state,
             created_at=self.created_at,
             called_at=self.called_at,
             closed_at=self.closed_at,
+            oh_event=self.oh_event.to_model(),
         )
 
     def to_details_model(self) -> OfficeHoursTicketDetails:
@@ -128,7 +127,6 @@ class OfficeHoursTicketEntity(EntityBase):
             id=self.id,
             have_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
-            office_hours_event_id=self.office_hours_event_id,
             description=self.description,
             type=self.type,
             state=self.state,

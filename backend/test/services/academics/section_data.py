@@ -26,7 +26,9 @@ from ..user_data import fake_data_fixture as insert_user_fake_data
 from . import course_data, term_data
 from .. import user_data, role_data, permission_data
 
-__authors__ = ["Ajay Gandecha"]
+__authors__ = [
+    "Ajay Gandecha, Madelyn Andrews, Sadie Amato, Bailey DeSouza, Meghan Sun"
+]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -90,12 +92,31 @@ new_section = Section(
     override_description="",
 )
 
-ta = SectionMemberEntity(
-    user_id=user_data.ambassador.id,
+# Add Users to Academic Sections in Respective Roles
+comp110_instructor = SectionMemberEntity(
+    id=1,
+    user_id=user_data.instructor.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
+comp110_uta = SectionMemberEntity(
+    id=2,
+    user_id=user_data.ambassador.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.UTA,
+)
+
+comp110_student = SectionMemberEntity(
+    id=3,
+    user_id=user_data.user.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.STUDENT,
+)
+
+comp_110_members = [comp110_instructor, comp110_uta, comp110_student]
+
+# Room Assignments Relative to Section
 room_assignment_110_001 = (
     comp_101_001.id,
     virtual_room.id,
@@ -130,7 +151,8 @@ def insert_fake_data(session: Session):
         entity = SectionEntity.from_model(section)
         session.add(entity)
 
-    session.add(ta)
+    for member in comp_110_members:
+        session.add(member)
 
     for assignment in assignments:
         section_id, room_id, assignment_type = assignment

@@ -48,7 +48,17 @@ user = User(
     pronouns="She / They",
 )
 
-users = [root, ambassador, user]
+instructor = User(
+    id=4,
+    pid=190312311,
+    onyen="Ina",
+    email="ina@unc.edu",
+    first_name="Ina",
+    last_name="Instructor",
+    pronouns="They / Them / Theirs",
+)
+
+users = [root, ambassador, user, instructor]
 
 roles_users = {
     role_data.root_role.id: [root],
