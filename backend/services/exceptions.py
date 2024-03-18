@@ -19,13 +19,6 @@ class UserPermissionException(Exception):
         super().__init__(f"Not authorized to perform `{action}` on `{resource}`")
 
 
-class OrganizationNotFoundException(Exception):
-    """OrganizationNotFoundException is raised when trying to access an organization that does not exist."""
-
-    def __init__(self, id: str):
-        super().__init__(f"No organization found matching slug/id: {id}")
-
-
 class EventRegistrationException(Exception):
     """EventRegistrationException is raised when a user attempts to register and cannot (i.e., when the event is full)."""
 

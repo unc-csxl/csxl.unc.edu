@@ -3,7 +3,10 @@
 import pytest
 from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
-from ....services import PermissionService
+from ....services import (
+    PermissionService,
+    RoomService,
+)
 from ....services.coworking import (
     OperatingHoursService,
     SeatService,
@@ -12,7 +15,13 @@ from ....services.coworking import (
     StatusService,
 )
 
-__authors__ = ["Kris Jordan"]
+__authors__ = [
+    "Kris Jordan",
+    "Aarjav Jain",
+    "John Schachte",
+    "Nick Wherthey",
+    "Yuvraj Jain",
+]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -27,6 +36,12 @@ def permission_svc(session: Session):
 def operating_hours_svc(session: Session, permission_svc: PermissionService):
     """OperatingHoursService fixture."""
     return OperatingHoursService(session, permission_svc)
+
+
+@pytest.fixture()
+def room_svc(session: Session):
+    """RoomService fixture."""
+    return RoomService(session)
 
 
 @pytest.fixture()

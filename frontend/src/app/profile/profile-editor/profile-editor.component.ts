@@ -86,7 +86,9 @@ export class ProfileEditorComponent implements OnInit {
           disableClose: true,
           autoFocus: 'dialog'
         });
-        dialogRef.afterClosed().subscribe();
+        dialogRef.afterClosed().subscribe((profile) => {
+          this.profile.accepted_community_agreement = true;
+        });
       }
       this.profileService.put(this.profile).subscribe({
         next: (user) => this.onSuccess(user),

@@ -13,6 +13,7 @@ from ...core_data import user_data
 from ...reset_table_id_seq import reset_table_id_seq
 from .. import seat_data
 from .. import operating_hours_data
+from ... import room_data
 
 
 __authors__ = ["Kris Jordan"]
@@ -29,6 +30,8 @@ reservation_3: Reservation
 reservation_4: Reservation
 # Draft reservation for user tomorrow
 reservation_5: Reservation
+# Future room reservation
+reservation_6: Reservation
 
 # Lists used for access
 active_reservations: list[Reservation]
@@ -38,7 +41,7 @@ reservations: list[Reservation]
 
 
 def instantiate_global_models(time: dict[str, datetime]):
-    global reservation_1, reservation_2, reservation_3, reservation_4, reservation_5
+    global reservation_1, reservation_2, reservation_3, reservation_4, reservation_5, reservation_6
     global active_reservations, reservations, draft_reservations, confirmed_reservations
     reservation_1 = Reservation(
         id=1,
@@ -109,6 +112,22 @@ def instantiate_global_models(time: dict[str, datetime]):
         seats=[seat_data.reservable_seats[0]],
     )
 
+    # Confirm Room Reservation
+    reservation_6 = Reservation(
+        id=6,
+        start=operating_hours_data.tomorrow.start.replace(hour=12, minute=0)
+        + timedelta(hours=24),
+        end=operating_hours_data.tomorrow.end.replace(hour=14, minute=30)
+        + timedelta(hours=24),
+        created_at=time[NOW],
+        updated_at=time[NOW],
+        walkin=False,
+        room=room_data.group_b,
+        state=ReservationState.CONFIRMED,
+        users=[user_data.user],
+        seats=[],
+    )
+
     active_reservations = [reservation_1]
     confirmed_reservations = [reservation_4]
     draft_reservations = [reservation_5]
@@ -118,6 +137,7 @@ def instantiate_global_models(time: dict[str, datetime]):
         reservation_3,
         reservation_4,
         reservation_5,
+        reservation_6,
     ]
 
 

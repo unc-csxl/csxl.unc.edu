@@ -35,8 +35,8 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-def test_list_all_active_and_upcoming(reservation_svc: ReservationService):
-    all = reservation_svc.list_all_active_and_upcoming(user_data.ambassador)
+def test_list_all_active_and_upcoming_for_xl(reservation_svc: ReservationService):
+    all = reservation_svc.list_all_active_and_upcoming_for_xl(user_data.ambassador)
     assert len(all) == len(reservation_data.active_reservations) + len(
         reservation_data.confirmed_reservations
     )
@@ -46,7 +46,7 @@ def test_list_all_active_and_upcoming_permission(reservation_svc: ReservationSer
     permission_svc = create_autospec(PermissionService)
     permission_svc.enforce.return_value = None
     reservation_svc._permission_svc = permission_svc
-    reservation_svc.list_all_active_and_upcoming(user_data.ambassador)
+    reservation_svc.list_all_active_and_upcoming_for_xl(user_data.ambassador)
     permission_svc.enforce.assert_called_once_with(
         user_data.ambassador,
         "coworking.reservation.read",

@@ -104,6 +104,21 @@ def test_create_as_root(section_svc: SectionService):
     assert section.id == section_data.new_section.id
 
 
+def test_create_with_lecture_room(section_svc: SectionService):
+    permission_svc = create_autospec(PermissionService)
+    section_svc._permission_svc = permission_svc
+
+    section = section_svc.create(
+        user_data.root, section_data.new_section_with_lecture_room
+    )
+
+    permission_svc.enforce.assert_called_with(
+        user_data.root, "academics.section.create", "section/"
+    )
+    assert isinstance(section, SectionDetails)
+    assert section.id == section_data.new_section.id
+
+
 def test_create_as_user(section_svc: SectionService):
     with pytest.raises(UserPermissionException):
         section = section_svc.create(user_data.user, section_data.new_section)
@@ -121,6 +136,34 @@ def test_update_as_root(section_svc: SectionService):
     )
     assert isinstance(section, SectionDetails)
     assert section.id == section_data.edited_comp_110.id
+
+
+def test_update_with_lecture_room_with_previous_assignment(section_svc: SectionService):
+    permission_svc = create_autospec(PermissionService)
+    section_svc._permission_svc = permission_svc
+
+    section = section_svc.update(user_data.root, section_data.edited_comp_110_with_room)
+
+    permission_svc.enforce.assert_called_with(
+        user_data.root, "academics.section.update", f"section/{section.id}"
+    )
+    assert isinstance(section, SectionDetails)
+    assert section.id == section_data.edited_comp_110_with_room.id
+
+
+def test_update_with_lecture_room_without_previous_assignment(
+    section_svc: SectionService,
+):
+    permission_svc = create_autospec(PermissionService)
+    section_svc._permission_svc = permission_svc
+
+    section = section_svc.update(user_data.root, section_data.edited_comp_301_with_room)
+
+    permission_svc.enforce.assert_called_with(
+        user_data.root, "academics.section.update", f"section/{section.id}"
+    )
+    assert isinstance(section, SectionDetails)
+    assert section.id == section_data.edited_comp_301_with_room.id
 
 
 def test_update_as_root_not_found(section_svc: SectionService):

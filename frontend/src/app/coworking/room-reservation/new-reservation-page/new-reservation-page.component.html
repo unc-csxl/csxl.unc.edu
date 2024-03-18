@@ -1,0 +1,39 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Reserve a Room</mat-card-title>
+    <mat-card-subtitle
+      >Total Hours Remaining:
+      {{ numHoursStudyRoomReservations$ | async }}</mat-card-subtitle
+    >
+    <div class="date-selector">
+      <date-selector></date-selector>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <room-reservation-table class="horizontal-scroll"></room-reservation-table>
+
+    <div class="legend-container">
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #03691e"></div>
+        <span class="legend-text">Available</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: red"></div>
+        <span class="legend-text">Reserved</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #3479be"></div>
+        <span class="legend-text">Your Reservations</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: orange"></div>
+        <span class="legend-text">Selected</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #4d4d4d"></div>
+        <span class="legend-text">Unavailable</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -17,15 +17,26 @@ __license__ = "MIT"
 api = APIRouter(prefix="/api/coworking/ambassador")
 
 
-@api.get("", tags=["Coworking"])
-def active_and_upcoming_reservations(
+@api.get("/xl", tags=["Coworking"])
+def active_and_upcoming_reservations_for_xl(
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
 ) -> Sequence[Reservation]:
-    """List active and upcoming reservations.
+    """List active and upcoming reservations for the XL.
 
     This list drives the ambassador's checkin UI."""
-    return reservation_svc.list_all_active_and_upcoming(subject)
+    return reservation_svc.list_all_active_and_upcoming_for_xl(subject)
+
+
+@api.get("/rooms", tags=["Coworking"])
+def active_and_upcoming_reservations_for_rooms(
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends(),
+) -> Sequence[Reservation]:
+    """List active and upcoming reservations for the rooms.
+
+    This list drives the ambassador's checkin UI."""
+    return reservation_svc.list_all_active_and_upcoming_for_rooms(subject)
 
 
 @api.put("/checkin", tags=["Coworking"])

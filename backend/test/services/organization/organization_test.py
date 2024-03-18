@@ -25,6 +25,7 @@ from .organization_test_data import (
     to_add,
     cads,
     new_cads,
+    to_add_conflicting_id,
 )
 from ..user_data import root, user
 
@@ -81,6 +82,17 @@ def test_create_organization_as_root(organization_svc_integration: OrganizationS
     assert created_organization.id is not None
 
 
+def test_create_organization_id_already_exists(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that the root user is able to create new organizations when an extraneous ID is provided."""
+    created_organization = organization_svc_integration.create(
+        root, to_add_conflicting_id
+    )
+    assert created_organization is not None
+    assert created_organization.id is not None
+
+
 def test_create_organization_as_user(organization_svc_integration: OrganizationService):
     """Test that any user is *unable* to create new organizations."""
     with pytest.raises(UserPermissionException):
@@ -106,6 +118,14 @@ def test_update_organization_as_user(organization_svc_integration: OrganizationS
     """Test that any user is *unable* to update new organizations."""
     with pytest.raises(UserPermissionException):
         organization_svc_integration.update(user, new_cads)
+
+
+def test_update_organization_does_not_exist(
+    organization_svc_integration: OrganizationService,
+):
+    """Test updating an organization that does not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.update(root, to_add)
 
 
 def test_delete_enforces_permission(organization_svc_integration: OrganizationService):
@@ -134,3 +154,11 @@ def test_delete_organization_as_user(organization_svc_integration: OrganizationS
     """Test that any user is *unable* to delete organizations."""
     with pytest.raises(UserPermissionException):
         organization_svc_integration.delete(user, cads.slug)
+
+
+def test_delete_organization_does_not_exist(
+    organization_svc_integration: OrganizationService,
+):
+    """Test deleting an organization that does not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.delete(root, to_add.slug)

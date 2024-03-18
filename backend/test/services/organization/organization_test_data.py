@@ -83,6 +83,23 @@ to_add = Organization(
     public=True,
 )
 
+to_add_conflicting_id = Organization(
+    id=2,
+    name="Android Development Club",
+    shorthand="Android Club",
+    slug="android-club",
+    logo="https://1000logos.net/wp-content/uploads/2016/10/Android-Logo.png",
+    short_description="UNC Chapel Hill's Android development team.",
+    long_description="We make super cool Android apps for the UNC CS department.",
+    website="",
+    email="",
+    instagram="",
+    linked_in="",
+    youtube="",
+    heel_life="",
+    public=True,
+)
+
 new_cads = Organization(
     id=1,
     name="Carolina Analytics & Data Science Club",

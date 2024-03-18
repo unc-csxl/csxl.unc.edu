@@ -15,9 +15,8 @@ from ... import entities
 from ...entities.coworking import SeatEntity, OperatingHoursEntity, RoomEntity
 from ...test.services.reset_table_id_seq import reset_table_id_seq
 
-from ...test.services import role_data, user_data, permission_data
+from ...test.services import role_data, user_data, permission_data, room_data
 from ...test.services.coworking import (
-    room_data,
     seat_data,
     operating_hours_data,
     time,
