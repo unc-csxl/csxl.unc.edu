@@ -6,28 +6,31 @@
 *
 */
 
-.coworking-top-grid {
-    display: grid;
-    padding-top: 24px;
-    padding-left: 24px;
-    padding-right: 24px;
-    grid-template-columns: 4fr 1fr;
-    /* grid-template-rows: 0fr 2fr; <-- UNCOMMENT */
-    row-gap: 15px;
-    column-gap: 15px;
+.coworking-home-top {
+  padding-bottom: 24px;
+  padding-top: 24px;
 }
 
 .coworking-reservations-grid {
-    display: grid;
-    padding: 24px;
-    /* grid-template-columns: 1fr 1fr; */
-    /* grid-template-rows: 0fr 2fr; <-- UNCOMMENT */
-    row-gap: 15px;
-    column-gap: 15px;
+  display: grid;
+  padding: 0px 24px 0px 24px !important;
+  grid-template-columns: 4fr;
+  /* grid-template-rows: 0fr 2fr; <-- UNCOMMENT */
+  row-gap: 15px;
+  column-gap: 15px;
+}
+
+.coworking-reservations-grid {
+  display: grid;
+  padding: 24px;
+  /* grid-template-columns: 1fr 1fr; */
+  /* grid-template-rows: 0fr 2fr; <-- UNCOMMENT */
+  row-gap: 15px;
+  column-gap: 15px;
 }
 
 .coworking-top-card-container {
-    grid-column: span 1;
+  grid-column: span 1;
 }
 
 /* UNCOMMENT THE FOLLOWING: */
@@ -40,21 +43,178 @@
 } */
 
 .other-dropin-card-container {
-    grid-column-start: 1;
+  grid-column-start: 1;
 }
 
 /** Make cards display in one column, with the event card appearing last */
 @media only screen and (max-device-width: 730px) {
-    .coworking-grid {
-        display: grid;
-        padding: 24px;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr;
-        row-gap: 15px;
-        column-gap: 24px;
-    }
+  .coworking-home-top {
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
 
-    .dropin-card-container {
-        order: 1;
-    }
+  .coworking-reservations-grid {
+    display: grid;
+    box-sizing: border-box; /* This ensures padding is included in the width */
+    padding: 0px 20px 0px 20px !important;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    row-gap: 15px;
+  }
+
+  .coworking-reservations-grid > * {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .reservation-card {
+    padding: 4px 16px 4px 16px !important;
+    box-sizing: border-box;
+    max-width: 348px; /* Max width as per the other element */
+    /* max-height: 321px; Max height as per the other element */
+    /* ... other necessary styles ... */
+  }
+
+  .dropin-card-container {
+    order: 1;
+  }
+
+  .upcoming-card-container {
+    order: 3;
+  }
+}
+
+.navigation-card {
+  background-color: rgb(71, 134, 198); /* Set the background color to gray */
+  border: 1px solid #999; /* Set the border color */
+  padding: 10px; /* Add padding for spacing */
+  margin-top: 15px; /* Add margin for spacing */
+  text-align: center; /* Align the content to the left */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  width: 200px; /* Set the width of the cards */
+}
+
+.navigation-card a {
+  text-decoration: none; /* Remove the default underline on the link */
+  color: white; /* Set the text color */
+  font-weight: bold; /* Make the text bold */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Add this to your global or component CSS file */
+.room-reservation-button {
+  font-size: 12px; /* Adjust the font size as needed */
+  background-color: red;
+  width: 180px;
+  height: 40px;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start {
+  font-size: 24px;
+  background: #4786c6;
+  width: 36px;
+  height: 50%;
+  text-align: center;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  line-height: 36px;
+  border-radius: 100%;
+  color: white;
+}
+
+.mat-mdc-list-item-meta.mdc-list-item__end {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.mat-mdc-list-item-meta {
+  height: 100%;
+  vertical-align: middle;
+  font-size: 32px;
+}
+
+.mdc-list-item {
+  display: flex;
+  align-items: center;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start.unavailable {
+  background: #612d23;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start.upcoming {
+  background: #234261;
+}
+
+/* End Action List Styling */
+
+.mat-mdc-card {
+  padding: 0px;
+  margin: 0 !important;
+  max-width: 640px;
+}
+
+.dropin-header {
+  display: flex;
+  margin-bottom: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mdc-list-group__subheader {
+  margin: 0;
+}
+
+.mdc-list-item {
+  padding: 0 !important;
+  display: flex;
+  align-items: baseline;
+}
+
+.mdc-list-group__subheader {
+  margin: 0;
+}
+
+.mat-mdc-list-base {
+  padding: 0;
+}
+
+.mat-expansion-panel-header-description {
+  align-items: right;
+  flex: 0 0 auto;
+}
+
+.mat-expansion-panel-header-description button {
+  z-index: 10 !important;
+}
+
+mat-expansion-panel {
+  margin-top: 8px;
+}
+
+.mat-action-row {
+  align-items: center;
+}
+
+mat-checkbox {
+  flex: 1;
+}
+
+.bolded {
+  font-weight: 500;
+}
+
+a {
+  text-decoration: none;
+}
+
+.reservation-card {
+  padding: 8px 16px 8px 16px; /* Top padding is now the same as sides and bottom */
+}
+
+.reservation-link {
+  flex: 1;
 }

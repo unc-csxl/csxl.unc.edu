@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthenticationService } from '../authentication.service';
-import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
+import { Router, RouterEvent } from '@angular/router';
 import { Profile, ProfileService } from '../profile/profile.service';
 import { PermissionService } from '../permission.service';
 import { NagivationAdminGearService } from './navigation-admin-gear.service';

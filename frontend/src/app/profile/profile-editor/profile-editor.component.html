@@ -60,7 +60,7 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button type="submit" [disabled]="profileForm.invalid">
-        SAVE
+        Save
       </button>
     </mat-card-actions>
   </mat-card>
@@ -94,6 +94,21 @@
       </button>
     </mat-card-actions>
   </ng-template>
+</mat-card>
+
+<mat-card *ngIf="profile.id" appearance="outlined">
+  <mat-card-title style="margin-left: 10px; margin-top: 10px">
+    Community Agreement</mat-card-title
+  >
+  <mat-card-actions class="token">
+    <button
+      class="agreement-button"
+      mat-stroked-button
+      type="button"
+      (click)="openAgreementDialog()">
+      View Agreement
+    </button>
+  </mat-card-actions>
 </mat-card>
 
 <mat-card *ngIf="profile.id" appearance="outlined">

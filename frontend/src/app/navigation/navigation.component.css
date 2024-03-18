@@ -17,15 +17,6 @@
     height: 32px;
 }
 
-.bottom-button {
-    height: 36px;
-    width: 36px;
-    min-width: 36px;
-    margin-right: 3px;
-    margin-left: 3px;
-    padding: 0;
-}
-
 .bottom-button-container {
     width: 100%;
     margin-bottom: 6px;
