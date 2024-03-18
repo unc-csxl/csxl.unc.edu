@@ -4,6 +4,7 @@ from fastapi import Depends
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
+from sqlalchemy import or_
 from sqlalchemy.orm import Session, joinedload
 from backend.entities.room_entity import RoomEntity
 
@@ -271,8 +272,7 @@ class ReservationService:
         """
         reserved_date_map: dict[str, list[int]] = {}
 
-        # Query DB to get reservable rooms. You can change coworking policy to change
-        # which rooms are reservable. SN156 should not go in coworking policy.
+        # Query DB to get reservable rooms. 
         rooms = self._get_reservable_rooms()
 
         # Generate a 1 day time range to get operating hours on date.
@@ -323,10 +323,12 @@ class ReservationService:
                 for i in range(0, current_time_idx):
                     time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
-            room_id = room.id if room else "SN156"
-            reservations = self._query_confirmed_reservations_by_date_and_room(
-                date, room_id
-            )
+            if room.id == "SN156":
+                reservations = self._query_xl_reservations_by_date_for_user(date, subject)
+            else:
+                reservations = self._query_confirmed_reservations_by_date_and_room(
+                    date, room.id
+                )
             for reservation in reservations:
                 start_idx = self._idx_calculation(
                     reservation.start, operating_hours_start
@@ -353,8 +355,8 @@ class ReservationService:
             reserved_date_map[room.id] = time_slots_for_room
 
         self._transform_date_map_for_unavailable(reserved_date_map)
-        if "SN156" in reserved_date_map:
-            del reserved_date_map["SN156"]
+        # if "SN156" in reserved_date_map:
+        #     del reserved_date_map["SN156"]
         self._transform_date_map_for_officehours(
             date, reserved_date_map, operating_hours_start, operating_hours_duration
         )
@@ -507,6 +509,28 @@ class ReservationService:
 
         return [reservation.to_model() for reservation in reservations]
 
+    def _query_xl_reservations_by_date_for_user(
+        self, date: datetime, subject: User
+    ) -> Sequence[Reservation]:
+        start = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start < start + timedelta(hours=24),
+                ReservationEntity.end > start,
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
+                ),
+                ReservationEntity.room == None,
+                UserEntity.id == subject.id
+            )
+            .order_by(ReservationEntity.start)
+            .all()
+        )
+
+        return [reservation.to_model() for reservation in reservations]
+
     def _get_reservable_rooms(self) -> Sequence[RoomDetails]:
         """
         Retrieves a list of all reservable rooms.
@@ -521,7 +545,7 @@ class ReservationService:
         """
         rooms = (
             self._session.query(RoomEntity)
-            .where(RoomEntity.reservable == True)
+            .where(or_(RoomEntity.reservable == True, RoomEntity.id == 'SN156'))
             .order_by(RoomEntity.id)
             .all()
         )
