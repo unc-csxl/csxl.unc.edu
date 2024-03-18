@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Application } from '../admin/applications/admin-application.model';
 import { RxApplication } from '../admin/applications/rx-applications';
+import { Profile } from '../profile/profile.service';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationsService {
@@ -35,5 +36,9 @@ export class ApplicationsService {
    */
   createApplication(application: Application): Observable<Application> {
     return this.http.post<Application>('/api/applications', application);
+  }
+
+  getProfile(): Observable<Profile> {
+    return this.http.get<Profile>('/api/profile');
   }
 }

@@ -136,6 +136,7 @@ export class UndergradApplicationComponent {
   });
 
   isLinear = false;
+  userId!: number | null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -143,6 +144,17 @@ export class UndergradApplicationComponent {
     private router: Router,
     protected snackBar: MatSnackBar
   ) {}
+
+  fetchUserProfile() {
+    this.applicationService.getProfile().subscribe({
+      next: (userDetails) => {
+        this.userId = userDetails.id;
+      },
+      error: (err) => {
+        console.error('Failed to fetch user details', err);
+      }
+    });
+  }
 
   onSubmit() {
     if (
@@ -152,36 +164,45 @@ export class UndergradApplicationComponent {
       this.fourthFormGroup.valid &&
       this.fifthFormGroup.valid
     ) {
-      const formData: Application = {
-        id: 0, //backend will repalce this value accordingly
-        user_id: 1,
-        user: {}, //backend will repalce this value accordingly
-        academic_hours: this.thirdFormGroup.value.academic_hours ?? 0,
-        extracurriculars: this.thirdFormGroup.value.extracurriculars ?? '',
-        expected_graduation:
-          this.thirdFormGroup.value.expected_graduation ?? '',
-        program_pursued: this.thirdFormGroup.value.program_pursued ?? '',
-        other_programs: this.thirdFormGroup.value.other_programs ?? '',
-        gpa: this.fourthFormGroup.value.gpa ?? '',
-        comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
-        preferred_courses: this.fifthFormGroup.value.preferred_courses,
-        eligible_courses: this.fifthFormGroup.value.eligible_courses,
-        comp_227: this.fifthFormGroup.value.comp_227 ?? '',
-        open_pairing:
-          this.fifthFormGroup.value.open_pairing === 'Yes' ||
-          this.fifthFormGroup.value.open_pairing === 'No',
-        intro_video: this.firstFormGroup.value.intro_video ?? '',
-        prior_experience: this.secondFormGroup.value.prior_experience ?? '',
-        service_experience: this.secondFormGroup.value.service_experience ?? '',
-        additional_experience:
-          this.secondFormGroup.value.additional_experience ?? ''
-      };
+      this.applicationService.getProfile().subscribe({
+        next: (userDetails) => {
+          const formData: Omit<Application, 'id'> = {
+            user_id: userDetails.id ?? 0,
+            user: userDetails,
+            academic_hours: this.thirdFormGroup.value.academic_hours ?? 0,
+            extracurriculars: this.thirdFormGroup.value.extracurriculars ?? '',
+            expected_graduation:
+              this.thirdFormGroup.value.expected_graduation ?? '',
+            program_pursued: this.thirdFormGroup.value.program_pursued ?? '',
+            other_programs: this.thirdFormGroup.value.other_programs ?? '',
+            gpa: this.fourthFormGroup.value.gpa ?? '',
+            comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
+            preferred_courses: this.fifthFormGroup.value.preferred_courses,
+            eligible_courses: this.fifthFormGroup.value.eligible_courses,
+            comp_227: this.fifthFormGroup.value.comp_227 ?? '',
+            open_pairing:
+              this.fifthFormGroup.value.open_pairing === 'Yes' ||
+              this.fifthFormGroup.value.open_pairing === 'No',
+            intro_video: this.firstFormGroup.value.intro_video ?? '',
+            prior_experience: this.secondFormGroup.value.prior_experience ?? '',
+            service_experience:
+              this.secondFormGroup.value.service_experience ?? '',
+            additional_experience:
+              this.secondFormGroup.value.additional_experience ?? ''
+          };
 
-      console.log(formData);
+          console.log(formData);
 
-      this.applicationService.createApplication(formData).subscribe({
-        next: (application) => this.onSuccess(application),
-        error: (err) => this.onError(err)
+          this.applicationService
+            .createApplication(formData as Application)
+            .subscribe({
+              next: (application) => this.onSuccess(application),
+              error: (err) => this.onError(err)
+            });
+        },
+        error: (err) => {
+          console.error('Failed to fetch user details', err);
+        }
       });
     }
   }
