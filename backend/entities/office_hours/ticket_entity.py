@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from backend.entities.office_hours.event_entity import OfficeHoursEventEntity
 from backend.models.office_hours.ticket_state import TicketState
 from backend.models.office_hours.ticket_type import TicketType
 from backend.models.office_hours.ticket import OfficeHoursTicket
@@ -35,7 +36,7 @@ class OfficeHoursTicketEntity(EntityBase):
     type: Mapped[TicketType] = mapped_column(SQLAlchemyEnum(TicketType), nullable=False)
     # State of OH ticket
     state: Mapped[TicketState] = mapped_column(
-        SQLAlchemyEnum(TicketState), nullable=False
+        SQLAlchemyEnum(TicketState), default=TicketState.QUEUED, nullable=False
     )
     # Time ticket was created
     created_at: Mapped[datetime] = mapped_column(
@@ -94,6 +95,22 @@ class OfficeHoursTicketEntity(EntityBase):
             created_at=model.created_at,
             called_at=model.called_at,
             closed_at=model.closed_at,
+        )
+
+    @classmethod
+    def from_draft_model(cls, model: OfficeHoursTicket) -> Self:
+        """
+        Class method that converts an `OfficeHoursTicket` model into a `OfficeHoursTicketEntity`
+
+        Parameters:
+            - model (OfficeHoursTicket): Model to convert into an entity
+        Returns:
+            OfficeHoursTicketEntity: Entity created from model
+        """
+        return cls(
+            oh_event_id=model.oh_event.id,
+            description=model.description,
+            type=model.type,
         )
 
     def to_model(self) -> OfficeHoursTicket:

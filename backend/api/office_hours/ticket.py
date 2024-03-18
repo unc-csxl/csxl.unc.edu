@@ -4,12 +4,12 @@ This API is used to access OH ticket data for history purposes."""
 
 from fastapi import APIRouter, Depends
 
-from ...models.office_hours.oh_ticket import (
+from ...models.office_hours.ticket import (
     OfficeHoursTicket,
     OfficeHoursTicketDraft,
 )
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
-from ...services.office_hours.oh_ticket import OfficeHoursTicketService
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
+from ...services.office_hours.ticket import OfficeHoursTicketService
 from ..authentication import registered_user
 from ...models import User
 

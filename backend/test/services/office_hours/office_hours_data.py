@@ -66,48 +66,48 @@ comp_110_oh_event_2 = OfficeHoursEvent(
 comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
-pending_ticket = OfficeHoursTicket(
-    id=1,
-    oh_event=OfficeHoursEventPartial(id=1),
-    description="I need help",
-    type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.QUEUED,
-    created_at=datetime.now(),
-)
+# pending_ticket = OfficeHoursTicket(
+#     id=1,
+#     oh_event=OfficeHoursEventPartial(id=1),
+#     description="I need help",
+#     type=TicketType.ASSIGNMENT_HELP,
+#     state=TicketState.QUEUED,
+#     created_at=datetime.now(),
+# )
 
-called_ticket = OfficeHoursTicket(
-    id=2,
-    oh_event=OfficeHoursEventPartial(id=1),
-    description="I cannot debug this.",
-    type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CALLED,
-    created_at=datetime.now(),
-)
+# called_ticket = OfficeHoursTicket(
+#     id=2,
+#     oh_event=OfficeHoursEventPartial(id=1),
+#     description="I cannot debug this.",
+#     type=TicketType.ASSIGNMENT_HELP,
+#     state=TicketState.CALLED,
+#     created_at=datetime.now(),
+# )
 
-closed_ticket = OfficeHoursTicket(
-    id=3,
-    oh_event=OfficeHoursEventPartial(id=1),
-    description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
-    type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CLOSED,
-    created_at=datetime.now(),
-    caller_id=section_data.comp110_uta.id,
-    closed_at=datetime.now(),
-    have_concerns=False,
-    caller_notes="Forgot to Return Function.",
-)
+# closed_ticket = OfficeHoursTicket(
+#     id=3,
+#     oh_event=OfficeHoursEventPartial(id=1),
+#     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
+#     type=TicketType.ASSIGNMENT_HELP,
+#     state=TicketState.CLOSED,
+#     created_at=datetime.now(),
+#     caller_id=section_data.comp110_uta.id,
+#     closed_at=datetime.now(),
+#     have_concerns=False,
+#     caller_notes="Forgot to Return Function.",
+# )
 
 
-cancelled_ticket = OfficeHoursTicket(
-    id=4,
-    oh_event=OfficeHoursEventPartial(id=1),
-    description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
-    type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CANCELED,
-    created_at=datetime.now(),
-)
+# cancelled_ticket = OfficeHoursTicket(
+#     id=4,
+#     oh_event=OfficeHoursEventPartial(id=1),
+#     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
+#     type=TicketType.ASSIGNMENT_HELP,
+#     state=TicketState.CANCELED,
+#     created_at=datetime.now(),
+# )
 
-comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
+# comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
 
 
 def insert_fake_data(session: Session):
@@ -122,26 +122,26 @@ def insert_fake_data(session: Session):
         event_entity = OfficeHoursEventEntity.from_model(event)
         session.add(event_entity)
 
-    # Add User Created Tickets
-    for ticket in comp110_tickets:
-        ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
-        session.add(ticket_entity)
-        session.commit()
+    # # Add User Created Tickets
+    # for ticket in comp110_tickets:
+    #     ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
+    #     session.add(ticket_entity)
+    #     session.commit()
 
-        # Associate with Ticket and User Create Tickets
-        session.execute(
-            user_created_tickets_table.insert().values(
-                {
-                    "ticket_id": ticket_entity.id,
-                    "member_id": section_data.comp110_student.id,
-                }
-            )
-        )
+    #     # Associate with Ticket and User Create Tickets
+    #     session.execute(
+    #         user_created_tickets_table.insert().values(
+    #             {
+    #                 "ticket_id": ticket_entity.id,
+    #                 "member_id": section_data.comp110_student.id,
+    #             }
+    #         )
+    #     )
 
     # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
-    session.query(OfficeHoursTicketEntity).filter(
-        OfficeHoursTicketEntity.id.in_([called_ticket.id, closed_ticket.id])
-    ).update({"caller_id": section_data.comp110_uta.id})
+    # session.query(OfficeHoursTicketEntity).filter(
+    #     OfficeHoursTicketEntity.id.in_([called_ticket.id, closed_ticket.id])
+    # ).update({"caller_id": section_data.comp110_uta.id})
 
 
 @pytest.fixture(autouse=True)

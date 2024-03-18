@@ -92,7 +92,6 @@ class OfficeHoursEventEntity(EntityBase):
         return OfficeHoursEvent(
             id=self.id,
             office_hours_section_id=self.office_hours_section_id,
-            room_id=self.room_id,
             type=self.type,
             description=self.description,
             location_description=self.location_description,
@@ -111,7 +110,6 @@ class OfficeHoursEventEntity(EntityBase):
         return OfficeHoursEventDetails(
             id=self.id,
             office_hours_section_id=self.office_hours_section_id,
-            room_id=self.room_id,
             type=self.type,
             description=self.description,
             location_description=self.location_description,

@@ -19,7 +19,7 @@ class OfficeHoursEventDraft(BaseModel):
     """
 
     oh_section: OfficeHoursSectionPartial
-    room: RoomPartial
+    room: RoomPartial | None = None
     type: OfficeHoursEventType
     description: str = ""
     location_description: str = ""

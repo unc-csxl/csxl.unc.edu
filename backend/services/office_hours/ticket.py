@@ -2,15 +2,15 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from ...database import db_session
-from ...entities.office_hours.oh_ticket_entity import OfficeHoursTicketEntity
-from ...models.office_hours.oh_ticket import (
+from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+from ...models.office_hours.ticket import (
     OfficeHoursTicket,
     OfficeHoursTicketDraft,
 )
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.user import User
 
-from ...services.permission import PermissionService
+from ..permission import PermissionService
 
 
 __authors__ = ["Sadie Amato", "Bailey DeSouza"]
@@ -40,8 +40,20 @@ class OfficeHoursTicketService:
         Returns:
             OfficeHoursTicketDetails: Object added to table
         """
-        # TODO
-        return None
+        # TODO: this is a WIP!
+        # ----- Permission check for section creation ----
+        # Check if user has admin permissions
+        # self._permission_svc.enforce(subject, "academics.section.create", f"section/")
+
+        # Create new object
+        oh_ticket_entity = OfficeHoursTicketEntity.from_draft_model(oh_ticket)
+
+        # Add new object to table and commit changes
+        self._session.add(oh_ticket_entity)
+        self._session.commit()
+
+        # Return added object
+        return oh_ticket_entity.to_details_model()
 
     def get_ticket_by_id(
         self, subject: User, oh_ticket_id: int

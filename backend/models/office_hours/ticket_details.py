@@ -18,3 +18,4 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
 
     creators: list[SectionMember]
     caller: SectionMember | None = None
+    oh_event: OfficeHoursEvent
