@@ -312,10 +312,8 @@ class ReservationService:
         )
 
         # Need current time to gray out slots in the past on that day.
-        current_time = self._round_to_closest_half_hour(datetime.now())
-        current_time_idx = (
-            self._idx_calculation(current_time, operating_hours_start) + 1
-        )
+        current_time = datetime.now()
+        current_time_idx = self._idx_calculation(current_time, operating_hours_start)
 
         for room in rooms:
             time_slots_for_room = [0] * operating_hours_duration
