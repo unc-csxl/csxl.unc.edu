@@ -360,8 +360,8 @@ class ReservationService:
             reserved_date_map[room.id] = time_slots_for_room
 
         self._transform_date_map_for_unavailable(reserved_date_map)
-        # if "SN156" in reserved_date_map:
-        #     del reserved_date_map["SN156"]
+        if "SN156" in reserved_date_map:
+            del reserved_date_map["SN156"]
         self._transform_date_map_for_officehours(
             date, reserved_date_map, operating_hours_start, operating_hours_duration
         )
