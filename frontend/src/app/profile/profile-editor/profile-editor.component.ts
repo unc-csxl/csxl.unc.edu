@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Route } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from '../profile.resolver';
 import { Profile, ProfileService } from '../profile.service';
@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ProfileEditorComponent implements OnInit {
   public static Route: Route = {
-    path: 'profile',
+    path: 'edit',
     component: ProfileEditorComponent,
     title: 'Profile',
     canActivate: [isAuthenticated],
@@ -38,7 +38,8 @@ export class ProfileEditorComponent implements OnInit {
     protected formBuilder: FormBuilder,
     protected profileService: ProfileService,
     protected snackBar: MatSnackBar,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    private router: Router
   ) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
@@ -69,15 +70,6 @@ export class ProfileEditorComponent implements OnInit {
     });
   }
 
-  displayToken(): void {
-    this.showToken = !this.showToken;
-  }
-
-  copyToken(): void {
-    navigator.clipboard.writeText(this.token);
-    this.snackBar.open('Token Copied', '', { duration: 2000 });
-  }
-
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
@@ -98,30 +90,11 @@ export class ProfileEditorComponent implements OnInit {
   }
 
   private onSuccess(profile: Profile) {
+    this.router.navigate(['/profile']);
     this.snackBar.open('Profile Saved', '', { duration: 2000 });
   }
 
   private onError(err: any) {
     console.error('How to handle this?');
-  }
-
-  linkWithGitHub(): void {
-    this.profileService.getGitHubOAuthLoginURL().subscribe((url) => {
-      window.location.href = url;
-    });
-  }
-
-  unlinkGitHub() {
-    this.profileService.unlinkGitHub().subscribe({
-      next: () => (this.profile.github = '')
-    });
-  }
-
-  openAgreementDialog(): void {
-    const dialogRef = this.dialog.open(CommunityAgreement, {
-      autoFocus: 'dialog'
-    });
-    this.profileService.profile$.subscribe();
-    dialogRef.afterClosed().subscribe();
   }
 }
