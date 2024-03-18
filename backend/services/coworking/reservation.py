@@ -298,8 +298,13 @@ class ReservationService:
             )
 
         # Extract the start time and end time for operating hours rounded to the closest half hour
-        operating_hours_start = self._round_to_closest_half_hour(
-            operating_hours_on_date.start, round_up=True
+        operating_hours_start = max(
+            self._round_to_closest_half_hour(
+                operating_hours_on_date.start, round_up=True
+            ),
+            self._round_to_closest_half_hour(
+                datetime.now(), round_up=False
+            )
         )
         operating_hours_end = self._round_to_closest_half_hour(
             operating_hours_on_date.end, round_up=False
