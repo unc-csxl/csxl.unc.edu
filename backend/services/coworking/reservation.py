@@ -382,7 +382,9 @@ class ReservationService:
         minutes = dt.minute
 
         if round_up:
-            if minutes < 30:
+            if minutes == 0:
+                to_add = timedelta(minutes=0)
+            elif minutes < 30:
                 to_add = timedelta(minutes=(30 - minutes))
             else:
                 to_add = timedelta(minutes=(60 - minutes))
