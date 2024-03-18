@@ -323,10 +323,12 @@ class ReservationService:
         for room in rooms:
             time_slots_for_room = [0] * operating_hours_duration
 
-            # Making slots up till current time gray
-            if date.date() == current_time.date():
-                for i in range(0, current_time_idx):
-                    time_slots_for_room[i] = RoomState.UNAVAILABLE.value
+            # # Making slots up till current time gray
+            # This code no longer required, but may be required in the future. 
+            # Please keep this here for now.
+            # if date.date() == current_time.date():
+            #     for i in range(0, current_time_idx):
+            #         time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
             if room.id == "SN156":
                 reservations = self._query_xl_reservations_by_date_for_user(date, subject)
