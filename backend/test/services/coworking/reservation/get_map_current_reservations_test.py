@@ -99,13 +99,28 @@ def test_idx_calculation(reservation_svc: ReservationService):
     assert reservation_svc._idx_calculation(time_3, oh_start) == 7
 
 
+def test_round_idx_calculation(reservation_svc: ReservationService):
+    time = datetime.now().replace(hour=10, minute=0)
+    time2 = datetime.now().replace(hour=18, minute=0)
+    time3 = datetime.now().replace(hour=10, minute=1)
+    time4 = datetime.now().replace(hour=18, minute=14)
+    rounded_time = reservation_svc._round_to_closest_half_hour(time, True)
+    rounded_time2 = reservation_svc._round_to_closest_half_hour(time2, False)
+    rounded_time3 = reservation_svc._round_to_closest_half_hour(time3, True)
+    rounded_time4 = reservation_svc._round_to_closest_half_hour(time4, False)
+
+    assert rounded_time.hour == 10 and rounded_time.minute == 0
+    assert rounded_time2.hour == 18 and rounded_time2.minute == 0
+    assert rounded_time3.hour == 10 and rounded_time3.minute == 30
+    assert rounded_time4.hour == 18 and rounded_time4.minute == 0 
+
 def test_query_confirmed_reservations_by_date_and_room(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """Test getting all reservations for a particular date."""
     reservations = reservation_svc._query_confirmed_reservations_by_date_and_room(time[TOMORROW], 'SN135')
     assert True
-    #TODO: Add in better assert statements here.
+    #TODO: Add in better assert statements here. 
 
 def test_get_reservable_rooms(reservation_svc: ReservationService):
     rooms = reservation_svc._get_reservable_rooms()
