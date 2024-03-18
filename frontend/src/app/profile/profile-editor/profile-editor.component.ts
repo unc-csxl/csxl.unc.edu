@@ -7,6 +7,7 @@ import { profileResolver } from '../profile.resolver';
 import { Profile, ProfileService } from '../profile.service';
 import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
 import { MatDialog } from '@angular/material/dialog';
+import { SwPush } from '@angular/service-worker';
 
 @Component({
   selector: 'app-profile-editor',
@@ -26,6 +27,9 @@ export class ProfileEditorComponent implements OnInit {
   public token: string;
   public showToken: boolean = false;
 
+  readonly VAPID_PUBLIC_KEY =
+    'BLF7mpi9p5V8sJAqbKIDgzDtrlRUFR36rr2kC_8VSJBT3BjTnTsPq2Ifuc4DbwLBOxOFGvADjL1hVupu4cP5FAc';
+
   public profileForm = this.formBuilder.group({
     first_name: '',
     last_name: '',
@@ -38,7 +42,8 @@ export class ProfileEditorComponent implements OnInit {
     protected formBuilder: FormBuilder,
     protected profileService: ProfileService,
     protected snackBar: MatSnackBar,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    private swPush: SwPush
   ) {
     const form = this.profileForm;
     form.get('first_name')?.addValidators(Validators.required);
@@ -123,5 +128,21 @@ export class ProfileEditorComponent implements OnInit {
     });
     this.profileService.profile$.subscribe();
     dialogRef.afterClosed().subscribe();
+  }
+
+  subscribeToNotifiations() {
+    Notification.requestPermission().then((result) => {
+      if (result == 'granted') {
+        this.swPush
+          .requestSubscription({
+            serverPublicKey: this.VAPID_PUBLIC_KEY
+          })
+          .then((sub) => console.log(sub))
+          .catch((err) =>
+            console.error('Could not subscribe to notifications', err)
+          );
+      }
+    });
+    return true;
   }
 }

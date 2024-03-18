@@ -127,6 +127,12 @@
       (click)="copyToken()">
       Copy
     </button>
+    <button
+      mat-stroked-button
+      (click)="subscribeToNotifiations()"
+      type="submit">
+      Register for Push Notifications
+    </button>
   </mat-card-actions>
   <div *ngIf="showToken">
     <mat-card-content class="token" *ngIf="token">
