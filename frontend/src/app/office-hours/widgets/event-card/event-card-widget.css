@@ -27,6 +27,8 @@
     flex-direction: row;
     width: 100%;
     font-size: 1.25rem;
+    justify-content: center;
+    align-items: center;
 }
 
 .button-row {
@@ -46,5 +48,13 @@
     text-decoration-line: none;
     text-decoration-style: solid;
     text-decoration-thickness: auto;
+    flex: 1;
     -webkit-font-smoothing: antialiased;
+}
+
+.location {
+    flex: 1;
+    position: absolute;
+    right: 0;
+    padding-right: 1rem;
 }

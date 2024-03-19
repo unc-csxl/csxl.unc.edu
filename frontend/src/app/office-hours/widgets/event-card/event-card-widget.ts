@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { flushMicrotasks } from '@angular/core/testing';
 
 @Component({
   selector: 'event-card-widget',
@@ -6,6 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./event-card-widget.css']
 })
 
+
 export class EventCard {
 
+  constructor() {
+  }
 }

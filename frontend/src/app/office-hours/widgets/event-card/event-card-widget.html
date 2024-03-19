@@ -8,12 +8,16 @@
             <!-- TODO: Put this in a widget -->
             <div class="open header-row">
                 <div class="operating-hours">
-                    <span class="badge">Open</span>
-                    until 5:00 pm
+                    <span class="badge">Open</span> until 5:00 pm
+                </div>
+                <div class="location">
+                    <p>Location: SN007</p>
                 </div>
             </div>
             <div class="button-row">
-                <button mat-stroked-button>Get Help</button>
+                <a [routerLink]="['create-new-ticket']">
+                    <button mat-stroked-button>Get Help</button>
+                </a>
             </div>
         </mat-card-content>
     </div>
