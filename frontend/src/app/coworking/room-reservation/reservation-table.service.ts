@@ -27,7 +27,7 @@ export class ReservationTableService {
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
 
-  private EndingOperationalHour: number = 17;
+  private EndingOperationalHour: number = 18;
 
   static readonly MAX_RESERVATION_CELL_LENGTH: number = 4; // rule for how long a reservation can be consecutively
 
