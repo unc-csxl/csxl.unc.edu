@@ -17,7 +17,7 @@ from ....models.office_hours.section import (
     OfficeHoursSection,
     OfficeHoursSectionPartial,
 )
-from ....models.office_hours.ticket import OfficeHoursTicket
+from ....models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
 from ....models.room import RoomPartial
@@ -66,48 +66,32 @@ comp_110_oh_event_2 = OfficeHoursEvent(
 comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
-# pending_ticket = OfficeHoursTicket(
-#     id=1,
-#     oh_event=OfficeHoursEventPartial(id=1),
-#     description="I need help",
-#     type=TicketType.ASSIGNMENT_HELP,
-#     state=TicketState.QUEUED,
-#     created_at=datetime.now(),
-# )
+ticket_0 = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
+    type=TicketType.ASSIGNMENT_HELP,
+)
 
-# called_ticket = OfficeHoursTicket(
-#     id=2,
-#     oh_event=OfficeHoursEventPartial(id=1),
-#     description="I cannot debug this.",
-#     type=TicketType.ASSIGNMENT_HELP,
-#     state=TicketState.CALLED,
-#     created_at=datetime.now(),
-# )
-
-# closed_ticket = OfficeHoursTicket(
-#     id=3,
-#     oh_event=OfficeHoursEventPartial(id=1),
-#     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
-#     type=TicketType.ASSIGNMENT_HELP,
-#     state=TicketState.CLOSED,
-#     created_at=datetime.now(),
-#     caller_id=section_data.comp110_uta.id,
-#     closed_at=datetime.now(),
-#     have_concerns=False,
-#     caller_notes="Forgot to Return Function.",
-# )
+ticket_1 = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="Assignment Part: ex01 Hello World \nGoal: I cannot open the assignment. \nConcepts: Docker. \nTried: To delete my workspace.",
+    type=TicketType.ASSIGNMENT_HELP,
+)
 
 
-# cancelled_ticket = OfficeHoursTicket(
-#     id=4,
-#     oh_event=OfficeHoursEventPartial(id=1),
-#     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
-#     type=TicketType.ASSIGNMENT_HELP,
-#     state=TicketState.CANCELED,
-#     created_at=datetime.now(),
-# )
+ticket_2 = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="Assignment Part: ex01 Hello World \nGoal: I cannot open the assignment. \nConcepts: Docker. \nTried: To delete my workspace.",
+    type=TicketType.ASSIGNMENT_HELP,
+)
 
-# comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
+ticket_3 = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
+    type=TicketType.ASSIGNMENT_HELP,
+)
+
+comp110_tickets = [ticket_0, ticket_1, ticket_2, ticket_3]
 
 
 def insert_fake_data(session: Session):
@@ -122,26 +106,56 @@ def insert_fake_data(session: Session):
         event_entity = OfficeHoursEventEntity.from_model(event)
         session.add(event_entity)
 
-    # # Add User Created Tickets
-    # for ticket in comp110_tickets:
-    #     ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
-    #     session.add(ticket_entity)
-    #     session.commit()
+    # Add User Created Tickets
+    for ticket in comp110_tickets:
+        ticket_entity = OfficeHoursTicketEntity.from_draft_model(ticket)
+        session.add(ticket_entity)
+        session.commit()
 
-    #     # Associate with Ticket and User Create Tickets
-    #     session.execute(
-    #         user_created_tickets_table.insert().values(
-    #             {
-    #                 "ticket_id": ticket_entity.id,
-    #                 "member_id": section_data.comp110_student.id,
-    #             }
-    #         )
-    #     )
+        # Associate with Ticket and User Create Tickets
+        session.execute(
+            user_created_tickets_table.insert().values(
+                {
+                    "ticket_id": ticket_entity.id,
+                    "member_id": section_data.comp110_student.id,
+                }
+            )
+        )
 
-    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
-    # session.query(OfficeHoursTicketEntity).filter(
-    #     OfficeHoursTicketEntity.id.in_([called_ticket.id, closed_ticket.id])
-    # ).update({"caller_id": section_data.comp110_uta.id})
+    # Update Fields For Called Ticket State
+    session.query(OfficeHoursTicketEntity).filter(
+        OfficeHoursTicketEntity.id == 1
+    ).update(
+        {
+            "caller_id": section_data.comp110_uta.id,
+            "state": TicketState.CALLED,
+            "called_at": datetime.now(),
+        }
+    )
+
+    # Update Fields For Closed Ticket State
+    session.query(OfficeHoursTicketEntity).filter(
+        OfficeHoursTicketEntity.id == 2
+    ).update(
+        {
+            "caller_id": section_data.comp110_uta.id,
+            "state": TicketState.CLOSED,
+            "have_concerns": True,
+            "caller_notes": "Didn't have proper software downloaded",
+            "called_at": datetime.now(),
+            "closed_at": datetime.now(),
+        }
+    )
+
+    # Update Fields For Cancelled Ticket State
+    session.query(OfficeHoursTicketEntity).filter(
+        OfficeHoursTicketEntity.id == 3
+    ).update(
+        {
+            "state": TicketState.CANCELED,
+            "closed_at": datetime.now(),
+        }
+    )
 
 
 @pytest.fixture(autouse=True)
