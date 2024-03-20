@@ -4,11 +4,10 @@ from datetime import datetime
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.entities.office_hours.event_entity import OfficeHoursEventEntity
-from backend.models.office_hours.ticket_state import TicketState
-from backend.models.office_hours.ticket_type import TicketType
-from backend.models.office_hours.ticket import OfficeHoursTicket
-from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
+from ...models.office_hours.ticket_state import TicketState
+from ...models.office_hours.ticket_type import TicketType
+from ...models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from .user_created_tickets_table import user_created_tickets_table
 
 
@@ -98,7 +97,7 @@ class OfficeHoursTicketEntity(EntityBase):
         )
 
     @classmethod
-    def from_draft_model(cls, model: OfficeHoursTicket) -> Self:
+    def from_draft_model(cls, model: OfficeHoursTicketDraft) -> Self:
         """
         Class method that converts an `OfficeHoursTicket` model into a `OfficeHoursTicketEntity`
 
@@ -151,6 +150,6 @@ class OfficeHoursTicketEntity(EntityBase):
             called_at=self.called_at,
             closed_at=self.closed_at,
             oh_event=self.oh_event.to_model(),
-            creators=[creator.to_model() for creator in self.creators],
-            caller=self.caller.to_model(),
+            creators=[creator.to_flat_model() for creator in self.creators],
+            caller=(self.caller.to_flat_model() if self.caller is not None else None),
         )

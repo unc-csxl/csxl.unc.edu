@@ -4,6 +4,8 @@ import pytest
 from datetime import datetime, date
 from sqlalchemy.orm import Session
 
+from ....entities.academics.section_entity import SectionEntity
+
 from ..academics import section_data
 
 from ....entities.office_hours import user_created_tickets_table
@@ -11,13 +13,16 @@ from ....entities.office_hours.event_entity import OfficeHoursEventEntity
 from ....entities.office_hours.section_entity import OfficeHoursSectionEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
-from ....models.office_hours.event import OfficeHoursEvent, OfficeHoursEventPartial
+from ....models.office_hours.event import (
+    OfficeHoursEventDraft,
+    OfficeHoursEventPartial,
+)
 from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
     OfficeHoursSectionPartial,
 )
-from ....models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
+from ....models.office_hours.ticket import OfficeHoursTicketDraft
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
 from ....models.room import RoomPartial
@@ -39,8 +44,7 @@ comp_523_oh_section = OfficeHoursSection(
 oh_sections = [comp_110_oh_section, comp_523_oh_section]
 
 # Office Hours Event Data
-comp_110_oh_event_1 = OfficeHoursEvent(
-    id=1,
+comp_110_oh_event_1 = OfficeHoursEventDraft(
     oh_section=OfficeHoursSectionPartial(id=1),
     room=RoomPartial(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
@@ -51,8 +55,7 @@ comp_110_oh_event_1 = OfficeHoursEvent(
     end_time=datetime.now(),
 )
 
-comp_110_oh_event_2 = OfficeHoursEvent(
-    id=2,
+comp_110_oh_event_2 = OfficeHoursEventDraft(
     oh_section=OfficeHoursSectionPartial(id=1),
     room=RoomPartial(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
@@ -101,9 +104,13 @@ def insert_fake_data(session: Session):
         entity = OfficeHoursSectionEntity.from_model(oh_section)
         session.add(entity)
 
+    for comp_110_section in section_data.comp_110_sections:
+        section = session.get(SectionEntity, comp_110_section.id)
+        section.office_hours_id = comp_110_oh_section.id
+
     # Add Office Hours Event
     for event in comp_110_oh_events:
-        event_entity = OfficeHoursEventEntity.from_model(event)
+        event_entity = OfficeHoursEventEntity.from_draft_model(event)
         session.add(event_entity)
 
     # Add User Created Tickets

@@ -4,10 +4,12 @@ from datetime import datetime, date
 from typing import Self
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from backend.models.office_hours.event import OfficeHoursEvent
-from backend.models.office_hours.event_details import OfficeHoursEventDetails
+from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.event_details import OfficeHoursEventDetails
 
-from backend.models.office_hours.event_type import OfficeHoursEventType
+from ...models.office_hours.event_type import OfficeHoursEventType
+from ...models.office_hours.section import OfficeHoursSectionPartial
+from ...models.room import RoomPartial
 
 
 from ..entity_base import EntityBase
@@ -82,6 +84,28 @@ class OfficeHoursEventEntity(EntityBase):
             end_time=model.end_time,
         )
 
+    @classmethod
+    # TODO: Fix Comments
+    def from_draft_model(cls, model: OfficeHoursEventDraft) -> Self:
+        """
+        Class method that converts an `OfficeHoursEvent` model into a `OfficeHoursEventEntity`
+
+        Parameters:
+            - model (OfficeHoursEvent): Model to convert into an entity
+        Returns:
+            OfficeHoursEventEntity: Entity created from model
+        """
+        return cls(
+            office_hours_section_id=model.oh_section.id,
+            room_id=model.room.id,
+            type=model.type,
+            description=model.description,
+            location_description=model.location_description,
+            date=model.event_date,
+            start_time=model.start_time,
+            end_time=model.end_time,
+        )
+
     def to_model(self) -> OfficeHoursEvent:
         """
         Converts a `OfficeHoursEventEntity` object into a `OfficeHoursEvent` model object
@@ -91,13 +115,14 @@ class OfficeHoursEventEntity(EntityBase):
         """
         return OfficeHoursEvent(
             id=self.id,
-            office_hours_section_id=self.office_hours_section_id,
             type=self.type,
             description=self.description,
             location_description=self.location_description,
-            date=self.date,
+            event_date=self.date,
             start_time=self.start_time,
             end_time=self.end_time,
+            oh_section=self.office_hours_section.to_model(),
+            room=self.room.to_model(),
         )
 
     def to_details_model(self) -> OfficeHoursEventDetails:
@@ -109,14 +134,11 @@ class OfficeHoursEventEntity(EntityBase):
         """
         return OfficeHoursEventDetails(
             id=self.id,
-            office_hours_section_id=self.office_hours_section_id,
             type=self.type,
             description=self.description,
             location_description=self.location_description,
-            date=self.date,
+            event_date=self.date,
             start_time=self.start_time,
             end_time=self.end_time,
-            section=self.office_hours_section.to_model(),
-            room=self.room.to_model(),
             tickets=[ticket.to_model() for ticket in self.tickets],
         )
