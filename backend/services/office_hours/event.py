@@ -43,8 +43,18 @@ class OfficeHoursEventService:
         Returns:
             OfficeHoursEventDetails: Object added to table
         """
-        # TODO
-        return None
+        # TODO: Add Check if user has relevant permissions
+        ### General Format: self._permission_svc.enforce(subject, "academics.section.create", f"section/")
+
+        # Create new object
+        oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event)
+
+        # Add new object to table and commit changes
+        self._session.add(oh_event_entity)
+        self._session.commit()
+
+        # Return added object
+        return oh_event_entity.to_details_model()
 
     def update(
         self, subject: User, oh_event: OfficeHoursEvent

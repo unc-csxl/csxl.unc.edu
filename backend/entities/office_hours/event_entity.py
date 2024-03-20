@@ -4,7 +4,7 @@ from datetime import datetime, date
 from typing import Self
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from backend.models.office_hours.event import OfficeHoursEvent
+from backend.models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
 from backend.models.office_hours.event_details import OfficeHoursEventDetails
 
 from backend.models.office_hours.event_type import OfficeHoursEventType
@@ -72,6 +72,27 @@ class OfficeHoursEventEntity(EntityBase):
         """
         return cls(
             id=model.id,
+            office_hours_section_id=model.oh_section.id,
+            room_id=model.room.id,
+            type=model.type,
+            description=model.description,
+            location_description=model.location_description,
+            date=model.event_date,
+            start_time=model.start_time,
+            end_time=model.end_time,
+        )
+
+    @classmethod
+    def from_draft_model(cls, model: OfficeHoursEventDraft) -> Self:
+        """
+        Class method that converts an `OfficeHoursEventDraft` model into a `OfficeHoursEventEntity`
+
+        Parameters:
+            - model (OfficeHoursEventDraft): Draft model to convert into an entity
+        Returns:
+            OfficeHoursEventEntity: Entity created from model
+        """
+        return cls(
             office_hours_section_id=model.oh_section.id,
             room_id=model.room.id,
             type=model.type,
