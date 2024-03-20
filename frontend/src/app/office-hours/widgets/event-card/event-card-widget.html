@@ -1,0 +1,24 @@
+<mat-card appearance="outlined">
+    <div class="card-container">
+        <mat-card-title>Office Hours</mat-card-title>
+    </div>
+    <mat-divider></mat-divider>
+    <div>
+        <mat-card-content>
+            <!-- TODO: Put this in a widget -->
+            <div class="open header-row">
+                <div class="operating-hours">
+                    <span class="badge">Open</span> until 5:00 pm
+                </div>
+                <div class="location">
+                    <p>Location: SN007</p>
+                </div>
+            </div>
+            <div class="button-row">
+                <a [routerLink]="['create-new-ticket']">
+                    <button mat-stroked-button>Get Help</button>
+                </a>
+            </div>
+        </mat-card-content>
+    </div>
+</mat-card>
