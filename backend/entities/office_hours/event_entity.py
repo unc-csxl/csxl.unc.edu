@@ -85,13 +85,12 @@ class OfficeHoursEventEntity(EntityBase):
         )
 
     @classmethod
-    # TODO: Fix Comments
     def from_draft_model(cls, model: OfficeHoursEventDraft) -> Self:
         """
-        Class method that converts an `OfficeHoursEvent` model into a `OfficeHoursEventEntity`
+        Class method that converts an `OfficeHoursEventDraft` model into a `OfficeHoursEventEntity`
 
         Parameters:
-            - model (OfficeHoursEvent): Model to convert into an entity
+            - model (OfficeHoursEventDraft): Draft model to convert into an entity
         Returns:
             OfficeHoursEventEntity: Entity created from model
         """
