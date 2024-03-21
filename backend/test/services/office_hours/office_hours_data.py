@@ -65,7 +65,7 @@ comp_110_oh_event_2 = OfficeHoursEvent(
     end_time=datetime.now(),
 )
 
-# comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
+comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
 pending_ticket = OfficeHoursTicket(
@@ -109,7 +109,7 @@ cancelled_ticket = OfficeHoursTicket(
     created_at=datetime.now(),
 )
 
-# comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
+comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
 
 
 def insert_fake_data(session: Session):

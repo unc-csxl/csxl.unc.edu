@@ -93,7 +93,16 @@ class OfficeHoursEventService:
             OfficeHoursEventDetails: OH event associated with the OH event id
         """
         # TODO
-        return None
+        # Select all entries in the `Course` table and sort by end date
+        query = select(OfficeHoursEventEntity).filter(OfficeHoursEventEntity.id == oh_event_id)
+        entity = self._session.scalars(query).one_or_none()
+
+        # Raise an error if no entity was found.
+        if entity is None:
+            raise ResourceNotFoundException(f"Event with id: {oh_event_id} does not exist.")
+
+        # Return the model
+        return entity.to_details_model()
 
     def get_upcoming_events_by_user(
         self, subject: User, time_range: TimeRange
