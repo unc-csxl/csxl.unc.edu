@@ -14,6 +14,7 @@ export class TicketCreationFormComponent {
     component: TicketCreationFormComponent,
     canActivate: []
   };
+  assignmentType: String = '';
 
   constructor() {}
 }

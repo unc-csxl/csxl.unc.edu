@@ -1,18 +1,73 @@
-<mat-vertical-stepper color="accent">
-    <mat-step label="Select Ticket Type">
-        <mat-card class="card-container" appearance="outlined">
-            <mat-card-title>Create Ticket</mat-card-title>
-            <mat-card-content>
-
-            </mat-card-content>
-        </mat-card>
-    </mat-step>
-    <mat-step label="Ticket Information">
-        <mat-card class="card-container" appearance="outlined">
-            <mat-card-title>Create Ticket</mat-card-title>
-            <mat-card-content>
-
-            </mat-card-content>
-        </mat-card>
-    </mat-step>
+<mat-vertical-stepper [linear]="true" color="accent">
+  <mat-step label="Select Ticket Type">
+    <div class="page-container">
+      <mat-card appearance="outlined">
+        <div class="card-container">
+          <mat-card-title>Create Ticket</mat-card-title>
+        </div>
+        <mat-divider></mat-divider>
+        <mat-card-content class="card-container">
+          <p>What do you need help on?</p>
+          <mat-form-field>
+            <mat-label>Select one</mat-label>
+            <mat-select [(ngModel)]="assignmentType" required>
+              <mat-option value="assignment_help"> Assignment Help </mat-option>
+              <mat-option value="conceptual_help"> Conceptual Help </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-step>
+  <mat-step label="Ticket Information">
+    <div class="page-container">
+      <mat-card appearance="outlined">
+        <div class="card-container">
+          <mat-card-title>Create Ticket</mat-card-title>
+        </div>
+        <mat-divider></mat-divider>
+        <mat-card-content class="card-container">
+          <div *ngIf="assignmentType === 'assignment_help'">
+            <p>1. What section of the assignment do you need help with?</p>
+            <mat-form-field>
+              <mat-label>Ex. EX01, Part 2</mat-label>
+              <input matInput required />
+            </mat-form-field>
+            <p>
+              2. Describe in English what you are trying to express in code.
+            </p>
+            <mat-form-field>
+              <mat-label>Ex. I am trying to...</mat-label>
+              <textarea matInput required></textarea>
+            </mat-form-field>
+            <p>3. What concepts do you need to use to solve this problem?</p>
+            <mat-form-field>
+              <mat-label>
+                Ex. Languages, class concepts, technologies involved
+              </mat-label>
+              <textarea matInput required></textarea>
+            </mat-form-field>
+            <p>4. What have you tried? Why do you suspect it didn't work?</p>
+            <mat-form-field>
+              <mat-label>Ex. I have already tried...</mat-label>
+              <textarea matInput required></textarea>
+            </mat-form-field>
+          </div>
+          <div *ngIf="assignmentType === 'conceptual_help'">
+            <p>1. What questions or topics do you want to talk through?</p>
+            <mat-form-field>
+              <mat-label></mat-label>
+              <textarea matInput required></textarea>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-step>
 </mat-vertical-stepper>
+<div class="button-row">
+  <a [routerLink]="['..']">
+    <button mat-raised-button>Cancel</button>
+  </a>
+  <button mat-raised-button>Submit</button>
+</div>
