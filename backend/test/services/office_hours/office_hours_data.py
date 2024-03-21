@@ -4,8 +4,8 @@ import pytest
 from datetime import datetime, date
 from sqlalchemy.orm import Session
 
-from backend.entities.academics.section_entity import SectionEntity
-from backend.test.services.reset_table_id_seq import reset_table_id_seq
+from ....entities.academics.section_entity import SectionEntity
+from ...services.reset_table_id_seq import reset_table_id_seq
 
 from ..academics import section_data
 
@@ -18,12 +18,11 @@ from ....models.office_hours.event import OfficeHoursEvent, OfficeHoursEventPart
 from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
-    OfficeHoursSectionPartial,
 )
 from ....models.office_hours.ticket import OfficeHoursTicket
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
-from ....models.room import Room, RoomPartial
+from ....models.room import Room
 
 
 __authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
