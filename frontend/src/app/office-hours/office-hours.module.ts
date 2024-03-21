@@ -12,9 +12,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { StudentSectionHomeComponent } from './student-section-home/student-section-home.component';
+import { EventCard } from './widgets/event-card/event-card-widget';
+import { ScheduleCard } from './widgets/schedule-card/schedule-card-widget';
+import { TicketCreationFormComponent } from './ticket-creation-form/ticket-creation-form.component';
 
 @NgModule({
-  declarations: [OfficeHoursPageComponent, EventCreationFormComponent],
+  declarations: [
+    OfficeHoursPageComponent,
+    StudentSectionHomeComponent,
+    EventCard,
+    ScheduleCard,
+    TicketCreationFormComponent,
+    EventCreationFormComponent
+  ],
   imports: [
     CommonModule,
     OfficeHoursRoutingModule,
@@ -27,7 +38,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSelectModule,
     MatStepperModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatInputModule
   ]
 })
 export class OfficeHoursModule {}

@@ -1,0 +1,22 @@
+.card-container {
+    padding: 1rem;
+}
+
+.no-margin {
+    margin: 0;
+    padding: 0;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+mat-card {
+    width: 50rem;
+}

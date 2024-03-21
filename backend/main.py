@@ -80,6 +80,7 @@ feature_apis = [
     section,
     room,
     event,
+    ticket,
 ]
 
 for feature_api in feature_apis:

@@ -1,0 +1,29 @@
+<mat-card appearance="outlined">
+  <div class="card-container">
+    <mat-card-title>Office Hours</mat-card-title>
+  </div>
+  <mat-divider></mat-divider>
+  <div>
+    <mat-card-content>
+      <!-- TODO: Put this in a widget? -->
+      <div class="open header-row">
+        <div class="operating-hours">
+          <span class="badge">Open</span>until 5:00pm
+        </div>
+        <div class="location">Location: SN007</div>
+      </div>
+      <!-- add an if statement to check if event has queue? -->
+      <div class="header-row">
+        <div class="queued"><span class="number-badge">9</span>Queued</div>
+        <div class="helped">
+          <span class="number-badge">3</span>Being Helped
+        </div>
+      </div>
+      <div class="button-row">
+        <a [routerLink]="['create-new-ticket']">
+          <button mat-stroked-button>Get Help</button>
+        </a>
+      </div>
+    </mat-card-content>
+  </div>
+</mat-card>

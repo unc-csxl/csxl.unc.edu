@@ -14,12 +14,15 @@ from ....entities.office_hours.event_entity import OfficeHoursEventEntity
 from ....entities.office_hours.section_entity import OfficeHoursSectionEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
-from ....models.office_hours.event import OfficeHoursEvent, OfficeHoursEventPartial
+from ....models.office_hours.event import (
+    OfficeHoursEventDraft,
+    OfficeHoursEventPartial,
+)
 from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
 )
-from ....models.office_hours.ticket import OfficeHoursTicket
+from ....models.office_hours.ticket import OfficeHoursTicketDraft
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
 from ....models.room import Room
@@ -73,8 +76,6 @@ pending_ticket = OfficeHoursTicket(
     oh_event=comp_110_oh_event_1,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.QUEUED,
-    created_at=datetime.now(),
 )
 
 called_ticket = OfficeHoursTicket(
@@ -82,8 +83,6 @@ called_ticket = OfficeHoursTicket(
     oh_event=comp_110_oh_event_1,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CALLED,
-    created_at=datetime.now(),
 )
 
 closed_ticket = OfficeHoursTicket(
@@ -91,12 +90,6 @@ closed_ticket = OfficeHoursTicket(
     oh_event=comp_110_oh_event_1,
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CLOSED,
-    created_at=datetime.now(),
-    caller_id=section_data.comp110_uta.id,
-    closed_at=datetime.now(),
-    have_concerns=False,
-    caller_notes="Forgot to Return Function.",
 )
 
 
@@ -105,11 +98,9 @@ cancelled_ticket = OfficeHoursTicket(
     oh_event=comp_110_oh_event_1,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CANCELED,
-    created_at=datetime.now(),
 )
 
-comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
+comp110_tickets = [ticket_0, ticket_1, ticket_2, ticket_3]
 
 
 def insert_fake_data(session: Session):
@@ -133,7 +124,7 @@ def insert_fake_data(session: Session):
 
     # Add Office Hours Event
     for event in comp_110_oh_events:
-        event_entity = OfficeHoursEventEntity.from_model(event)
+        event_entity = OfficeHoursEventEntity.from_draft_model(event)
         session.add(event_entity)
 
     reset_table_id_seq(
@@ -148,6 +139,10 @@ def insert_fake_data(session: Session):
     #     ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
     #     session.add(ticket_entity)
     #     session.commit()
+    for ticket in comp110_tickets:
+        ticket_entity = OfficeHoursTicketEntity.from_draft_model(ticket)
+        session.add(ticket_entity)
+        session.commit()
 
     #     # Associate with Ticket and User Create Tickets
     #     session.execute(
@@ -159,7 +154,7 @@ def insert_fake_data(session: Session):
     #         )
     #     )
 
-    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
+    # Update Fields For Cancelled Ticket State
     session.query(OfficeHoursTicketEntity).filter(
         OfficeHoursTicketEntity.id.in_([called_ticket.id, closed_ticket.id])
     ).update({"caller_id": section_data.comp110_uta.id})

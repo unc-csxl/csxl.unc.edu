@@ -4,10 +4,12 @@ from datetime import datetime, date
 from typing import Self
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from backend.models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
-from backend.models.office_hours.event_details import OfficeHoursEventDetails
+from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.event_details import OfficeHoursEventDetails
 
-from backend.models.office_hours.event_type import OfficeHoursEventType
+from ...models.office_hours.event_type import OfficeHoursEventType
+from ...models.office_hours.section import OfficeHoursSectionPartial
+from ...models.room import RoomPartial
 
 
 from ..entity_base import EntityBase
@@ -112,8 +114,6 @@ class OfficeHoursEventEntity(EntityBase):
         """
         return OfficeHoursEvent(
             id=self.id,
-            office_hours_section_id=self.office_hours_section_id,
-            room_id=self.room_id,
             type=self.type,
             description=self.description,
             location_description=self.location_description,
@@ -133,11 +133,10 @@ class OfficeHoursEventEntity(EntityBase):
         """
         return OfficeHoursEventDetails(
             id=self.id,
-            office_hours_section_id=self.office_hours_section_id,
-            room_id=self.room_id,
             type=self.type,
             description=self.description,
             location_description=self.location_description,
+            event_date=self.date,
             event_date=self.date,
             start_time=self.start_time,
             end_time=self.end_time,
