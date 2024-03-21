@@ -1,0 +1,55 @@
+<div class="page-container">
+  <mat-card appearance="outlined">
+    <div class="card-container">
+      <mat-card-title>Create Event</mat-card-title>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-card-content class="card-container">
+      <p>Event Type:</p>
+      <mat-form-field>
+        <mat-label>Select Type</mat-label>
+        <mat-select required>
+          <mat-option value="office_hours"> Office Hours </mat-option>
+          <mat-option value="office_hour_virtual">
+            Virtual Office Hours
+          </mat-option>
+          <mat-option value="tutoring"> Tutoring </mat-option>
+          <mat-option value="virtual_tutoring"> Virtual Tutoring </mat-option>
+          <mat-option value="review_session"> Review Session </mat-option>
+          <mat-option value="review_session_virtual">
+            Virtual Review Session
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p>Description:</p>
+      <mat-form-field>
+        <mat-label>Description of Event</mat-label>
+        <textarea matInput required> </textarea>
+      </mat-form-field>
+      <p>Start Time:</p>
+      <mat-form-field>
+        <mat-label>Select Time:</mat-label>
+        <input matInput type="datetime-local" required />
+      </mat-form-field>
+      <p>End Time:</p>
+      <mat-form-field>
+        <mat-label>Select Time:</mat-label>
+        <input matInput type="datetime-local" required />
+      </mat-form-field>
+      <p>Location</p>
+      <mat-form-field>
+        <mat-label>Ex. SN007</mat-label>
+        <input matInput required />
+      </mat-form-field>
+      <!-- <p>Check in Method:</p>
+          <mat-label>Select A Method</mat-label>
+          <mat-select required>
+              <mat-option></mat-option>
+          </mat-select> -->
+      <button mat-stroked-button>Submit</button>
+      <a [routerLink]="['..']">
+        <button mat-stroked-button>Cancel</button>
+      </a>
+    </mat-card-content>
+  </mat-card>
+</div>
