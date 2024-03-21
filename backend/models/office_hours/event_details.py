@@ -18,6 +18,4 @@ class OfficeHoursEventDetails(OfficeHoursEvent):
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
 
-    section: OfficeHoursSection
-    room: Room
     tickets: list[OfficeHoursTicket]
