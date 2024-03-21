@@ -5,11 +5,11 @@ This API is used to access OH Event data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends
 
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
-from ...models.office_hours.oh_event import OfficeHoursEvent, OfficeHoursEventDraft
-from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
-from ...services.office_hours.oh_event import OfficeHoursEventService
+from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.event_details import OfficeHoursEventDetails
+from ...services.office_hours.event import OfficeHoursEventService
 
 from ..authentication import registered_user
 from ...models import User

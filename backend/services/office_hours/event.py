@@ -2,16 +2,16 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
-from ...entities.office_hours.oh_event_entity import OfficeHoursEventEntity
+from ...entities.office_hours import OfficeHoursEventEntity
 from ...models.coworking.time_range import TimeRange
-from ...models.office_hours.oh_event import OfficeHoursEvent, OfficeHoursEventDraft
-from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
+from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.event_details import OfficeHoursEventDetails
 from ...models.user import User
 
-from ...services.exceptions import ResourceNotFoundException
-from ...services.permission import PermissionService
+from ..exceptions import ResourceNotFoundException
+from ..permission import PermissionService
 
 
 __authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]

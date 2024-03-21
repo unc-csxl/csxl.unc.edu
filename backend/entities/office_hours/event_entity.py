@@ -139,5 +139,7 @@ class OfficeHoursEventEntity(EntityBase):
             event_date=self.date,
             start_time=self.start_time,
             end_time=self.end_time,
+            oh_section=self.office_hours_section.to_model(),
+            room=self.room.to_model(),
             tickets=[ticket.to_model() for ticket in self.tickets],
         )
