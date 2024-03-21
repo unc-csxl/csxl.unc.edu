@@ -2,6 +2,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
 from ...entities.office_hours import OfficeHoursEventEntity
@@ -92,8 +93,17 @@ class OfficeHoursEventService:
         Returns:
             OfficeHoursEventDetails: OH event associated with the OH event id
         """
-        # TODO
-        return None
+        # Query the event with matching id
+        entity = self._session.get(OfficeHoursEventEntity, oh_event_id)
+
+        # Check if result is null
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"No office hours event found with matching ID: {oh_event_id}"
+            )
+
+        # Convert entry to a model and return
+        return entity.to_details_model()
 
     def get_upcoming_events_by_user(
         self, subject: User, time_range: TimeRange
@@ -120,5 +130,14 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
-        # TODO
-        return None
+
+        # Query for tickets with a matching event id
+        tickets = (
+            self._session.query(OfficeHoursTicketEntity)
+            .filter(OfficeHoursTicketEntity.oh_event_id == oh_event.id)
+            .order_by(OfficeHoursTicketEntity.created_at)
+            .all()
+        )
+
+        # Convert entities to models and return
+        return [ticket.to_details_model(subject) for ticket in tickets]

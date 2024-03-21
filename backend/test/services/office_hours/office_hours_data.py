@@ -66,7 +66,7 @@ comp_110_oh_event_2 = OfficeHoursEventDraft(
     end_time=datetime.now(),
 )
 
-# comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
+comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
 ticket_0 = OfficeHoursTicketDraft(
