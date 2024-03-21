@@ -4,15 +4,15 @@ This API is used to access OH section data."""
 
 from datetime import datetime
 from fastapi import APIRouter, Depends
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...services.office_hours.ticket import OfficeHoursTicketService
-from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
-from ...models.office_hours.oh_section import (
+from ...models.office_hours.event_details import OfficeHoursEventDetails
+from ...models.office_hours.section import (
     OfficeHoursSection,
     OfficeHoursSectionDraft,
 )
-from ...models.office_hours.oh_section_details import OfficeHoursSectionDetails
-from ...services.office_hours.oh_section import OfficeHoursSectionService
+from ...models.office_hours.section_details import OfficeHoursSectionDetails
+from ...services.office_hours.section import OfficeHoursSectionService
 from ..authentication import registered_user
 from ...models import User
 

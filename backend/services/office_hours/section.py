@@ -3,20 +3,20 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from ...models.coworking.time_range import TimeRange
 
-from ...models.office_hours.oh_event_details import OfficeHoursEventDetails
-from ...models.office_hours.oh_ticket_details import OfficeHoursTicketDetails
+from ...models.office_hours.event_details import OfficeHoursEventDetails
+from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
 from ...entities.academics.section_entity import SectionEntity
-from ...entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
-from ...models.office_hours.oh_section import (
+from ...entities.office_hours import OfficeHoursSectionEntity
+from ...models.office_hours.section import (
     OfficeHoursSection,
     OfficeHoursSectionDraft,
 )
-from ...models.office_hours.oh_section_details import OfficeHoursSectionDetails
+from ...models.office_hours.section_details import OfficeHoursSectionDetails
 from ...models.user import User
-from ...services.exceptions import ResourceNotFoundException
+from ..exceptions import ResourceNotFoundException
 
-from ...services.permission import PermissionService
+from ..permission import PermissionService
 
 
 __authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]

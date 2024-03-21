@@ -66,7 +66,7 @@ comp_110_oh_event_2 = OfficeHoursEventDraft(
     end_time=datetime.now(),
 )
 
-comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
+# comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
 ticket_0 = OfficeHoursTicketDraft(
@@ -119,15 +119,15 @@ def insert_fake_data(session: Session):
         session.add(ticket_entity)
         session.commit()
 
-        # Associate with Ticket and User Create Tickets
-        session.execute(
-            user_created_tickets_table.insert().values(
-                {
-                    "ticket_id": ticket_entity.id,
-                    "member_id": section_data.comp110_student.id,
-                }
-            )
-        )
+    #     # Associate with Ticket and User Create Tickets
+    #     session.execute(
+    #         user_created_tickets_table.insert().values(
+    #             {
+    #                 "ticket_id": ticket_entity.id,
+    #                 "member_id": section_data.comp110_student.id,
+    #             }
+    #         )
+    #     )
 
     # Update Fields For Called Ticket State
     session.query(OfficeHoursTicketEntity).filter(
