@@ -96,9 +96,11 @@ class OfficeHoursEventEntity(EntityBase):
             type=self.type,
             description=self.description,
             location_description=self.location_description,
-            date=self.date,
+            event_date=self.date,
             start_time=self.start_time,
             end_time=self.end_time,
+            oh_section=self.office_hours_section.to_model(),
+            room=self.room.to_model(),
         )
 
     def to_details_model(self) -> OfficeHoursEventDetails:
@@ -115,10 +117,10 @@ class OfficeHoursEventEntity(EntityBase):
             type=self.type,
             description=self.description,
             location_description=self.location_description,
-            date=self.date,
+            event_date=self.date,
             start_time=self.start_time,
             end_time=self.end_time,
-            section=self.office_hours_section.to_model(),
+            oh_section=self.office_hours_section.to_model(),
             room=self.room.to_model(),
             tickets=[ticket.to_model() for ticket in self.tickets],
         )
