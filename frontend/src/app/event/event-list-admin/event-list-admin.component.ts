@@ -11,8 +11,12 @@ import {
 import { Organization } from 'src/app/organization/organization.model';
 import { Event } from 'src/app/event/event.model';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { organizationResolver } from 'src/app/organization/organization.resolver';
+import {
+  organizationEventsResolver,
+  organizationResolver
+} from 'src/app/organization/organization.resolver';
 import { EventService } from 'src/app/event/event.service';
+import { eventResolver } from '../event.resolver';
 
 @Component({
   selector: 'app-event-list-admin',
@@ -22,12 +26,13 @@ import { EventService } from 'src/app/event/event.service';
 export class EventListAdminComponent implements OnInit {
   /** Organizations List */
   public organizations$: Observable<Organization[]>;
+  public events$: Observable<Event[]>;
 
   public displayedColumns: string[] = ['name'];
   /** Profile of signed in user */
   protected profile: Profile;
   /** List of displayed organizations for the signed in user */
-  protected displayedEvents$: Observable<Event[]>;
+  protected displayedEvents$!: Observable<Event[]>;
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
@@ -35,7 +40,11 @@ export class EventListAdminComponent implements OnInit {
     component: EventListAdminComponent,
     title: 'Event Administration',
     canActivate: [OrganizationAdminPermissionGuard()],
-    resolve: { profile: profileResolver, organizations: organizationResolver }
+    resolve: {
+      profile: profileResolver,
+      organizations: organizationResolver,
+      events: organizationEventsResolver
+    }
   };
 
   constructor(
@@ -47,7 +56,10 @@ export class EventListAdminComponent implements OnInit {
   ) {
     this.organizations$ = organizationAdminService.organizations$;
     organizationAdminService.list();
-    this.displayedEvents$ = of([]);
+    this.events$ = eventService.events$;
+    eventService.getEvents();
+
+    this.displayedEvents$ = this.events$;
 
     /** Get the profile data of the signed in user */
     const data = this.route.snapshot.data as {
@@ -57,37 +69,20 @@ export class EventListAdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    let profilePermissions: Permission[] = this.profile.permissions;
-    if (profilePermissions[0].resource !== '*') {
-      /** Filter and return the slug of the users organization permissions */
-      let userOrganizationPermissions: string[] = profilePermissions
-        .filter((element) => element.resource.includes('organization'))
-        .map((element) => {
-          return element.resource.substring(13);
-        });
-      for (let i = 0; i < userOrganizationPermissions.length; i++) {
-        this.displayedEvents$ = this.eventService.getEventsByOrganization(
-          userOrganizationPermissions[i]
-        );
-      }
+    if (this.profile.permissions[0].resource !== '*') {
+      let userOrganizationPermissions: string[] = this.profile.permissions
+        .filter((permission) => permission.resource.includes('organization'))
+        .map((permission) => permission.resource.substring(13));
 
-      /** Update displayedOrganizations$ to only include the organizations the user has permissions for */
-      //   this.displayedEvents$ = this.organizations$.pipe(
-      //       map(organizations => organizations.filter(organization =>
-      //           userOrganizationPermissions.includes(organization.slug)
-      //       )),
-      //       map(filteredOrganizations => filteredOrganizations.map(organization =>
-      //           this.eventService.getEventsByOrganization(organization.slug)
-      //       ))
-      //   );
-
-      //     this.displayedEvents$ = this.organizations$.pipe(
-      //       this.eventService.getEventsByOrganization(organization.slug)
-      //         organizations.filter((organization) =>
-      //           userOrganizationPermissions.includes(organization.slug)
-      //         )
-      //       )
-      //     );
+      this.displayedEvents$ = this.displayedEvents$.pipe(
+        map((events) =>
+          events.filter(
+            (event) =>
+              event.organization &&
+              userOrganizationPermissions.includes(event.organization.slug)
+          )
+        )
+      );
     }
   }
 
