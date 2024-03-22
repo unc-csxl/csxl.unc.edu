@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, map, startWith } from 'rxjs';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 interface OptionSelect {
   value: string;
@@ -138,12 +142,78 @@ export class UndergradApplicationComponent {
   isLinear = false;
   userId!: number | null;
 
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  eligibilityCtrl = new FormControl('');
+  preferenceCtrl = new FormControl('');
+  filteredEligibility: Observable<string[]>;
+  filteredPreferences: Observable<string[]>;
+  fruits: string[] = ['Lemon'];
+  allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+
+  @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement> | undefined;
+
   constructor(
     private formBuilder: FormBuilder,
     private applicationService: ApplicationsService,
     private router: Router,
     protected snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.filteredEligibility = this.eligibilityCtrl.valueChanges.pipe(
+      startWith(null),
+      map((fruit: string | null) =>
+        fruit ? this._filter(fruit) : this.allFruits.slice()
+      )
+    );
+    this.filteredPreferences = this.preferenceCtrl.valueChanges.pipe(
+      startWith(null),
+      map((fruit: string | null) =>
+        fruit ? this._filter(fruit) : this.allFruits.slice()
+      )
+    );
+  }
+
+  addEligibility(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value) {
+      this.fruits.push(value);
+    }
+    event.chipInput!.clear();
+    this.eligibilityCtrl.setValue(null);
+  }
+
+  addPreferences(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value) {
+      this.fruits.push(value);
+    }
+    event.chipInput!.clear();
+    this.preferenceCtrl.setValue(null);
+  }
+
+  remove(fruit: string): void {
+    const index = this.fruits.indexOf(fruit);
+    if (index >= 0) {
+      this.fruits.splice(index, 1);
+    }
+  }
+
+  selectedEligibility(event: MatAutocompleteSelectedEvent): void {
+    this.fruits.push(event.option.viewValue);
+    this.eligibilityCtrl.setValue(null);
+  }
+
+  selectedPreferences(event: MatAutocompleteSelectedEvent): void {
+    this.fruits.push(event.option.viewValue);
+    this.preferenceCtrl.setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.allFruits.filter((fruit) =>
+      fruit.toLowerCase().includes(filterValue)
+    );
+  }
 
   fetchUserProfile() {
     this.applicationService.getProfile().subscribe({

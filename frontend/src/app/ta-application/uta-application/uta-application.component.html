@@ -195,33 +195,63 @@
       <div className="eligibilityText">
         <p>Courses Eligible For *</p>
       </div>
-      <mat-form-field>
-        <mat-label>Eligibility</mat-label>
+      <mat-form-field class="example-chip-list">
+        <mat-label>Eligible Courses</mat-label>
+        <mat-chip-grid #eligibleCourses aria-label="Fruit selection">
+          <mat-chip-row *ngFor="let fruit of fruits" (removed)="remove(fruit)">
+            {{ fruit }}
+            <button matChipRemove [attr.aria-label]="'remove ' + fruit">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
         <input
-          type="text"
-          matInput
+          placeholder="New Fruit..."
+          #fruitInput
+          [formControl]="eligibilityCtrl"
+          [matChipInputFor]="eligibleCourses"
           [matAutocomplete]="auto"
-          formControlName="eligible_courses" />
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let exp of experienceList" [value]="exp.value"
-            >{{ exp.viewValue }}</mat-option
-          >
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)" />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selected($event)">
+          <mat-option
+            *ngFor="let course of filteredEligibility | async"
+            [value]="course">
+            {{ course }}
+          </mat-option>
         </mat-autocomplete>
       </mat-form-field>
       <div className="eligibilityText">
         <p>Course Preferences *</p>
       </div>
-      <mat-form-field>
-        <mat-label>Preferences</mat-label>
+      <mat-form-field class="example-chip-list">
+        <mat-label>Preferred Courses</mat-label>
+        <mat-chip-grid #preferredCourses aria-label="Fruit selection">
+          <mat-chip-row *ngFor="let fruit of fruits" (removed)="remove(fruit)">
+            {{ fruit }}
+            <button matChipRemove [attr.aria-label]="'remove ' + fruit">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
         <input
-          type="text"
-          matInput
+          placeholder="New Fruit..."
+          #fruitInput
+          [formControl]="preferenceCtrl"
+          [matChipInputFor]="preferredCourses"
           [matAutocomplete]="auto"
-          formControlName="preferred_courses" />
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let exp of experienceList" [value]="exp.value"
-            >{{ exp.viewValue }}</mat-option
-          >
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)" />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selected($event)">
+          <mat-option
+            *ngFor="let section of filteredPreferences | async"
+            [value]="section">
+            {{ section }}
+          </mat-option>
         </mat-autocomplete>
       </mat-form-field>
       <div className="peerText">
