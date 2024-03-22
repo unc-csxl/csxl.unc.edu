@@ -123,8 +123,8 @@ export class EventEditorComponent {
 
     // Set permission value
     this.adminPermission$ = this.permission.check(
-      'organization.events.update',
-      `organization/${this.organization!.id}`
+      'organization.*',
+      `organization/${this.organization.slug}`
     );
 
     // Set the organizers

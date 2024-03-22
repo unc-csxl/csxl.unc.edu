@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationResolver } from '../organization.resolver';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-organization-page',
@@ -46,6 +47,8 @@ export class OrganizationPageComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    protected snackBar: MatSnackBar,
+    private gearService: NagivationAdminGearService
     protected snackBar: MatSnackBar,
     private gearService: NagivationAdminGearService
   ) {
