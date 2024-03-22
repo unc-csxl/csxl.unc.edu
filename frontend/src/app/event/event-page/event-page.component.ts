@@ -17,6 +17,7 @@ import { DatePipe } from '@angular/common';
 import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 import { EventService } from '../event.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { EventListAdminComponent } from '../event-list-admin/event-list-admin.component';
 
 @Component({
   selector: 'app-event-page',
@@ -80,8 +81,45 @@ export class EventPageComponent implements OnInit {
   ngOnInit() {
     // Keep track of the initial width of the browser window
     this.innerWidth = window.innerWidth;
-    this.gearService.showAdminGear('organization.*', `event`, '', `event`);
+    this.gearService.showAdminGear(
+      'organization.*',
+      `event`,
+      '',
+      `events/admin`
+    );
   }
+
+  /** Ensure there is a currently signed in user before testing permissions */
+  //   if (this.profile !== undefined) {
+  //     let userPermissions = this.profile.permissions;
+  //     /** Ensure that the signed in user has permissions before looking at the resource */
+  //     if (userPermissions.length !== 0) {
+  //       /** Admin user, no need to check further */
+  //       if (userPermissions[0].resource === '*') {
+  //         this.gearService.showAdminGear(
+  //           'organizations.*',
+  //           '*',
+  //           '',
+  //           'events/admin'
+  //         );
+  //       } else {
+  //         /** Find if the signed in user has any organization permissions */
+  //         let organizationPermissions = userPermissions.filter((element) =>
+  //           element.resource.includes('organization')
+  //         );
+  //         /** If they do, show admin gear */
+  //         if (organizationPermissions.length !== 0) {
+  //           this.gearService.showAdminGear(
+  //             'organizations.*',
+  //             organizationPermissions[0].resource,
+  //             '',
+  //             'events/admin'
+  //           );
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   /** Handler that runs when the window resizes */
   @HostListener('window:resize', ['$event'])
