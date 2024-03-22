@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Organization } from '../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AdminOrganizationService } from 'src/app/admin/organization/admin-organization.service';
+import { OrganizationAdminService } from './organization-admin.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -28,7 +28,7 @@ export class OrganizationAdminComponent {
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
-    private organizationAdminService: AdminOrganizationService
+    private organizationAdminService: OrganizationAdminService
   ) {
     this.organizations$ = organizationAdminService.organizations$;
     organizationAdminService.list();
@@ -36,7 +36,6 @@ export class OrganizationAdminComponent {
 
   /** Event handler to open the Organization Editor to edit an existing organization */
   editOrganization(organization: Organization): void {
-    // if()
     this.router.navigate(['organizations', organization.slug, 'edit']);
   }
 }
