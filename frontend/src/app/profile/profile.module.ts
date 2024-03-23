@@ -1,3 +1,14 @@
+/**
+ * The Prfoile Module couples all features of the Profile Page feature
+ * into a single unit that can be loaded at once. This decreases load time
+ * for the overall application and decouples this feature from other features
+ * in the application.
+ *
+ * @author Jade Keegan
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -17,36 +28,17 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-
-/* UI Widgets */
-import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
-import { SearchBar } from './search-bar/search-bar.widget';
-import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
-import { EventList } from './event-list/event-list.widget';
-import { UserLookup } from './user-lookup/user-lookup.widget';
-import { CommunityAgreement } from './community-agreement/community-agreement.widget';
-
-import { UserChipList } from './user-chip-list/user-chip-list.widget';
-import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
+import { SharedModule } from '../shared/shared.module';
+import { ProfilePageComponent } from './profile-page/profile-page.component';
+import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
+import { ProfileRoutingModule } from './profile-routing.module';
 
 @NgModule({
-  declarations: [
-    SocialMediaIcon,
-    SearchBar,
-    EventCard,
-    EventList,
-    UserLookup,
-    UserChipList,
-    CommunityAgreement,
-    ProfileAboutCard
-  ],
+  declarations: [ProfilePageComponent, ProfileEditorComponent],
   imports: [
     CommonModule,
     MatTabsModule,
-    MatChipsModule,
     MatTableModule,
     MatCardModule,
     MatDialogModule,
@@ -57,21 +49,13 @@ import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget
     MatPaginatorModule,
     MatListModule,
     MatAutocompleteModule,
-    MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
     MatTooltipModule,
-    RouterModule
-  ],
-  exports: [
-    SocialMediaIcon,
-    SearchBar,
-    EventCard,
-    EventList,
-    UserLookup,
-    UserChipList,
-    ProfileAboutCard
+    ProfileRoutingModule,
+    RouterModule,
+    SharedModule
   ]
 })
-export class SharedModule {}
+export class ProfileModule {}

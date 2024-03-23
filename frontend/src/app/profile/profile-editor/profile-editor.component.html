@@ -21,7 +21,7 @@
         <mat-label>First Name</mat-label>
         <input
           matInput
-          placeholder="Jane"
+          placeholder="First Name"
           formControlName="first_name"
           name="first_name"
           required />
@@ -30,7 +30,7 @@
         <mat-label>Last Name</mat-label>
         <input
           matInput
-          placeholder="Doe"
+          placeholder="Last Name"
           formControlName="last_name"
           name="last_name"
           required />
@@ -40,7 +40,7 @@
         <input
           matInput
           type="email"
-          placeholder="jane.doe@unc.edu"
+          placeholder="email@unc.edu"
           formControlName="email"
           name="email"
           required />
@@ -59,78 +59,10 @@
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
+      <button mat-stroked-button routerLink="/profile">Cancel</button>
       <button mat-stroked-button type="submit" [disabled]="profileForm.invalid">
         Save
       </button>
     </mat-card-actions>
   </mat-card>
 </form>
-
-<mat-card *ngIf="profile.id" appearance="outlined">
-  <div *ngIf="profile.github !== ''; else associate_github">
-    <mat-card-header>
-      <img mat-card-avatar [src]="profile.github_avatar" />
-      <mat-card-title
-        >GitHub /
-        <a
-          id="github_link"
-          href="https://github.com/{{ profile.github }}"
-          target="_blank">
-          {{ profile.github }}
-        </a></mat-card-title
-      >
-    </mat-card-header>
-    <mat-card-actions>
-      <button mat-stroked-button (click)="unlinkGitHub()">Unlink GitHub</button>
-    </mat-card-actions>
-  </div>
-  <ng-template #associate_github>
-    <mat-card-header>
-      <mat-card-title>Link Your GitHub Account</mat-card-title>
-    </mat-card-header>
-    <mat-card-actions>
-      <button mat-stroked-button (click)="linkWithGitHub()">
-        Link with GitHub
-      </button>
-    </mat-card-actions>
-  </ng-template>
-</mat-card>
-
-<mat-card *ngIf="profile.id" appearance="outlined">
-  <mat-card-title style="margin-left: 10px; margin-top: 10px">
-    Community Agreement</mat-card-title
-  >
-  <mat-card-actions class="token">
-    <button
-      class="agreement-button"
-      mat-stroked-button
-      type="button"
-      (click)="openAgreementDialog()">
-      View Agreement
-    </button>
-  </mat-card-actions>
-</mat-card>
-
-<mat-card *ngIf="profile.id" appearance="outlined">
-  <mat-card-actions class="token">
-    <button
-      class="display"
-      mat-stroked-button
-      type="submit"
-      (click)="displayToken()">
-      {{ showToken ? 'Hide Bearer Token' : 'Display Bearer Token' }}
-    </button>
-    <button
-      class="cancel-button"
-      mat-stroked-button
-      type="submit"
-      (click)="copyToken()">
-      Copy
-    </button>
-  </mat-card-actions>
-  <div *ngIf="showToken">
-    <mat-card-content class="token" *ngIf="token">
-      <code>{{ token }}</code></mat-card-content
-    >
-  </div>
-</mat-card>

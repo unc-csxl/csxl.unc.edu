@@ -50,8 +50,7 @@ import { SharedModule } from './shared/shared.module';
     ErrorDialogComponent,
     HomeComponent,
     AboutComponent,
-    GateComponent,
-    ProfileEditorComponent
+    GateComponent
   ],
   imports: [
     /* Angular */

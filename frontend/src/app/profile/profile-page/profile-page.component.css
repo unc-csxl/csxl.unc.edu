@@ -1,0 +1,90 @@
+/** 
+* profile-page.component.css 
+* 
+* The profile page should include basic information about the user, the
+* user's organizations, and the user's past/upcoming events in a simple,
+* easily navigable manner. Major details about events should be
+* expandable so the screen is not overcrowded.
+*
+*/
+
+.mat-mdc-card {
+  margin: 15px 0px !important;
+}
+
+.container {
+  padding-left: 24px;
+  padding-top: 24px;
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 480px auto;
+  margin-top: 4px;
+  row-gap: 15px;
+  column-gap: 24px;
+  width: inherit;
+}
+
+.events-card-container {
+  grid-area: span 2;
+}
+
+.section-title {
+  font-size: large;
+  font-weight: 500;
+  margin: 16px 0px 5px 0px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-grow: inherit;
+}
+
+.action-button {
+  width: fit-content;
+  margin-right: 10px;
+}
+
+.token-text {
+  width: 450px;
+  word-wrap: break-word;
+}
+
+.profile-management-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 16px 16px 16px;
+}
+
+@media (prefers-color-scheme: light) {
+  #github_link {
+    color: black;
+  }
+}
+
+/** Make cards display in one column, with the event card appearing last */
+@media only screen and (max-device-width: 730px) {
+  .profile-grid {
+    display: grid;
+    padding: 24px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    row-gap: 15px;
+    column-gap: 24px;
+  }
+
+  .events-card-container {
+    order: 1;
+  }
+}
