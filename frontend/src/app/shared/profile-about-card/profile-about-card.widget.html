@@ -4,6 +4,7 @@
     <div class="left-header-info">
       <!-- Profile Image -->
       <img
+        class="user-avatar"
         *ngIf="profile.github_avatar; else default"
         matChipAvatar
         [src]="profile.github_avatar" />
