@@ -31,6 +31,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AmbassadorXlListComponent } from './ambassador-home/ambassador-xl/list/ambassador-xl-list.component';
 import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/list/ambassador-room-list.component';
+import { GroupReservation } from './widgets/group-reservation-card/group-reservation-card.widget';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/l
     ConfirmReservationComponent,
     NewReservationPageComponent,
     DateSelector,
-    OperatingHoursDialog
+    OperatingHoursDialog,
+    GroupReservation
   ],
   imports: [
     CommonModule,
