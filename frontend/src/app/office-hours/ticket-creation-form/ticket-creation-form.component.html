@@ -1,6 +1,11 @@
 <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
   <mat-vertical-stepper [linear]="true" color="accent">
-    <mat-step label="Select Ticket Type">
+    <mat-step
+      label="Select Ticket Type"
+      [completed]="
+        ticketForm.get('assignment_type')?.valid &&
+        ticketForm.get('assignment_type')?.touched
+      ">
       <div class="page-container">
         <mat-card appearance="outlined">
           <div class="card-container">
@@ -12,9 +17,9 @@
             <mat-form-field>
               <mat-label>Select one</mat-label>
               <mat-select
-                [(ngModel)]="assignmentType"
                 required
-                formControlName="assignment_type">
+                formControlName="assignment_type"
+                (selectionChange)="onAssignmentTypeChange($event.value)">
                 <mat-option value="assignment_help">
                   Assignment Help
                 </mat-option>
@@ -23,11 +28,27 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
+            <a [routerLink]="['..']">
+              <button mat-stroked-button class="button" type="button">
+                Cancel
+              </button>
+            </a>
+            <button mat-button matStepperNext type="button">Next</button>
           </mat-card-content>
         </mat-card>
       </div>
     </mat-step>
-    <mat-step label="Ticket Information">
+    <mat-step
+      label="Ticket Information"
+      label="Ticket Information"
+      [completed]="
+        ticketForm.get('assignment_type')?.valid &&
+        ticketForm.get('assignment_type')?.touched &&
+        ticketForm.get('assignmentQ1')?.valid &&
+        ticketForm.get('assignmentQ2')?.valid &&
+        ticketForm.get('assignmentQ3')?.valid &&
+        ticketForm.get('assignmentQ4')?.valid
+      ">
       <div class="page-container">
         <mat-card appearance="outlined">
           <div class="card-container">
@@ -39,7 +60,7 @@
               <p>1. What section of the assignment do you need help with?</p>
               <mat-form-field>
                 <mat-label>Ex. EX01, Part 2</mat-label>
-                <input matInput required formControlName="assignmentQ1"/>
+                <input matInput required formControlName="assignmentQ1" />
               </mat-form-field>
               <p>
                 2. Describe in English what you are trying to express in code.
@@ -80,15 +101,25 @@
                   formControlName="conceptualQ1"></textarea>
               </mat-form-field>
             </div>
+            <div>
+              <button
+                mat-flat-button
+                type="submit"
+                class="button"
+                color="primary"
+                [disabled]="ticketForm.invalid">
+                Submit
+              </button>
+            </div>
+            <a [routerLink]="['..']">
+              <button mat-stroked-button class="button" type="button">
+                Cancel
+              </button>
+            </a>
+            <button mat-button matStepperPrevious type="button">Back</button>
           </mat-card-content>
         </mat-card>
       </div>
     </mat-step>
   </mat-vertical-stepper>
-  <div class="button-row">
-    <a [routerLink]="['..']">
-      <button mat-raised-button>Cancel</button>
-    </a>
-    <button mat-raised-button type="submit">Submit</button>
-  </div>
 </form>

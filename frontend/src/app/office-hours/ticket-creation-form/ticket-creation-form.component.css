@@ -20,3 +20,8 @@ mat-form-field {
 mat-card {
     width: 50rem;
 }
+
+.button {
+    float: right;
+    margin: .25rem
+}

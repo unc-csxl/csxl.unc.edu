@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { OfficeHoursService } from '../office-hours.service';
 import { TicketDraft, TicketType } from '../office-hours.models';
+import { ChangeDetectorRef } from '@angular/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'ticket-creation-form',
@@ -20,7 +22,9 @@ export class TicketCreationFormComponent {
 
   constructor(
     public officeHoursService: OfficeHoursService,
-    protected formBuilder: FormBuilder
+    protected formBuilder: FormBuilder,
+    protected cdr: ChangeDetectorRef,
+    private location: Location
   ) {}
 
   public ticketForm = this.formBuilder.group({
@@ -32,7 +36,13 @@ export class TicketCreationFormComponent {
     conceptualQ1: ''
   });
 
+  onAssignmentTypeChange(value: string) {
+    this.assignmentType = value;
+    this.cdr.detectChanges();
+  }
+
   onSubmit() {
+    console.log('hi');
     let form_description: string = '';
     let form_type: TicketType;
     if (this.assignmentType === 'conceptual_help') {
@@ -70,5 +80,7 @@ export class TicketCreationFormComponent {
     this.officeHoursService.createTicket(ticket_draft).subscribe({
       next: (ticket) => console.log(ticket)
     });
+    this.ticketForm.reset();
+    this.location.back();
   }
 }
