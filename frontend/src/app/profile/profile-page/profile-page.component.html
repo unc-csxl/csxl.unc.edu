@@ -62,22 +62,15 @@
                   Copy Bearer Token
                 </button>
               </div>
+              <div class="token-text">
+                <p *ngIf="showToken && token">
+                  <code>{{ token }}</code>
+                </p>
+              </div>
             </div>
           </mat-card-actions>
-          <div *ngIf="showToken">
-            <mat-card-content class="token-text" *ngIf="token">
-              <code>{{ token }}</code></mat-card-content
-            >
-          </div>
         </mat-card>
       </div>
-
-      <!-- Event Registrations Card -->
-      <!-- <div class="events-card-container">
-    <profile-events-card
-      [events]="events"
-      (cancelRegistrationButtonPressedEvent)="cancelRegistration($event)" />
-  </div> -->
     </div>
   </div>
 </div>
