@@ -18,6 +18,7 @@ export class TicketCreationFormComponent {
     component: TicketCreationFormComponent,
     canActivate: []
   };
+  // Stores the AssignmentType chosen in the first part of stepper
   assignmentType: String = '';
 
   constructor(
@@ -37,18 +38,23 @@ export class TicketCreationFormComponent {
   });
 
   onAssignmentTypeChange(value: string) {
+    /* checks for assignment type in the form (accounts for user 
+      clicking back button and changing again) */
     this.assignmentType = value;
     this.cdr.detectChanges();
   }
 
   onSubmit() {
-    console.log('hi');
     let form_description: string = '';
     let form_type: TicketType;
+    /* Below is logic for checking form values and assigning the correct
+      TicketType and ticket description accordingly
+    */
     if (this.assignmentType === 'conceptual_help') {
       form_description = this.ticketForm.value.conceptualQ1 ?? '';
       form_type = TicketType.CONCEPTUAL_HELP;
     } else {
+      // Concatenates form description together and adds in new line characters
       form_description =
         (this.ticketForm.value.assignmentQ1 ?? '') +
         ' \n' +
@@ -62,6 +68,7 @@ export class TicketCreationFormComponent {
     }
 
     let ticket_draft: TicketDraft = {
+      // Event is hard-coded for now
       oh_event: {
         id: 1,
         oh_section: null,
@@ -75,12 +82,14 @@ export class TicketCreationFormComponent {
       },
       description: form_description,
       type: form_type,
+      // Creators is hard-coded for now
       creators: [{ id: 3 }]
     };
     this.officeHoursService.createTicket(ticket_draft).subscribe({
-      next: (ticket) => console.log(ticket)
+      next: (ticket) => console.log(ticket) //remove console.log later -> for demo purposes
     });
     this.ticketForm.reset();
+    // brings user to previous page (the course Office Hours home page)
     this.location.back();
   }
 }
