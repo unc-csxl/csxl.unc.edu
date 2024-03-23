@@ -77,55 +77,50 @@ class PolicyService:
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                # 'SN141' : [
-                #     (time(hour=16, minute=00), time(hour=17, minute=30))
-                # ]
+                'SN141' : [(time(hour=10, minute=30), time(hour=18))], # KMP 426
+                'SN144' : [],
+                'SN146' : [],
+                'SN147' : [(time(hour=15), time(hour=18))], # Sridhar
             }
         elif day == TUESDAY:
-            return {
-                'SN135' : [],
-                'SN137' : [],
-                'SN139' : [],
-                # 'SN141' : [
-                #     (time(hour=10, minute=00), time(hour=11, minute=00))
-                # ]
+            return { # Temporary fix for blocking off furniture install days
+                'SN135' : [(time(hour=10), time(hour=19))],
+                'SN137' : [(time(hour=10), time(hour=19))],
+                'SN139' : [(time(hour=10), time(hour=19))],
+                'SN141' : [(time(hour=10), time(hour=19))],
+                'SN144' : [(time(hour=10), time(hour=19))],
+                'SN146' : [(time(hour=10), time(hour=19))],
+                'SN147' : [(time(hour=10), time(hour=19))],
             }
         elif day == WEDNESDAY:
-            return {
-                'SN135' : [],
-                'SN137' : [],
-                'SN139' : [],
-                # 'SN141' : [
-                #     (time(hour=10, minute=00), time(hour=11, minute=00))
-                # ]
+            return { # Temporary fix for blocking off furniture install days
+                'SN135' : [(time(hour=10, minute=0), time(hour=19, minute=0))],
+                'SN137' : [(time(hour=10), time(hour=19))], # [(time(hour=15), time(hour=16))] # Leong
+                'SN139' : [(time(hour=10), time(hour=19))],
+                'SN141' : [(time(hour=10), time(hour=19))],
+                'SN144' : [(time(hour=10), time(hour=19))],
+                'SN146' : [(time(hour=10), time(hour=19))],
+                'SN147' : [(time(hour=10), time(hour=19))], # [(time(hour=15), time(hour=18))], # Sridhar
             }
         elif day == THURSDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                # 'SN141' : []
+                'SN141' : [],
+                'SN144' : [],
+                'SN146' : [],
+                'SN147' : [(time(hour=16), time(hour=18))], # Sridhar
             }
         elif day == FRIDAY:
             return {
                 'SN135' : [],
                 'SN137' : [],
                 'SN139' : [],
-                # 'SN141' : [
-                #     (time(hour=10, minute=00), time(hour=11, minute=00))
-                # ]
+                'SN141' : [],
+                'SN144' : [],
+                'SN146' : [],
+                'SN147' : [],
             }
-        elif day == SATURDAY:
-            return {
-                'SN135' : [],
-                'SN137' : [],
-                'SN139' : [],
-                # 'SN141' : []
-            }
-        elif day == SUNDAY:
-            return {
-                'SN135' : [],
-                'SN137' : [],
-                'SN139' : [],
-                # 'SN141' : []
-            }    
+        else:
+            return {}
