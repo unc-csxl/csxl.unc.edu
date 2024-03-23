@@ -63,6 +63,10 @@
   grid-template-columns: 1fr 1fr;
 }
 
+#github_id {
+  color: rgb(67, 140, 200);
+}
+
 .mat-mdc-card-avatar {
   margin-bottom: 0 !important;
 }
