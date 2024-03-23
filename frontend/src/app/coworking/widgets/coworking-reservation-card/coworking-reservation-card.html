@@ -41,6 +41,13 @@
   <mat-card-content>
     <div #Details>
       <h3>
+        <label>Who</label>
+        <button (click)="openMemberSelectionDialog()" type="button">+</button>
+      </h3>
+
+      <mat-divider></mat-divider>
+
+      <h3>
         <label>When</label>
         <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
         <strong>{{ reservation.end | date: 'shortTime' }}</strong>

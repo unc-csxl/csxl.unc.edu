@@ -1,0 +1,8 @@
+<!-- group-reservation-card.widget.html -->
+<div>
+  <h2>Add Users to Reservation</h2>
+  <user-lookup
+    [label]="'Search for users'"
+    (usersChanged)="onUsersChanged($event)">
+  </user-lookup>
+</div>
