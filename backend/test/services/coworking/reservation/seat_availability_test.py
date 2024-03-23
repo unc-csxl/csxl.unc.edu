@@ -99,7 +99,7 @@ def test_seat_availability_with_reservation(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """Test data has one of the reservable seats reserved."""
-    today = TimeRange(start=time[NOW], end=time[IN_THIRTY_MINUTES])
+    today = TimeRange(start=time[NOW], end=time[IN_TEN_MINUTES])
     available_seats = reservation_svc.seat_availability(
         seat_data.reservable_seats, today
     )
