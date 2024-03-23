@@ -39,12 +39,17 @@
   grid-area: span 2;
 }
 
-.token-button {
-  margin-right: 1rem;
-}
-
 .token-text {
   word-wrap: break-word;
+}
+
+.profile-management-actions {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: auto auto;
+  column-gap: 20px;
+  row-gap: 10px;
+  margin-bottom: 10px;
 }
 
 @media (prefers-color-scheme: light) {
