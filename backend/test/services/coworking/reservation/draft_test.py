@@ -144,10 +144,9 @@ def test_draft_reservation_future(reservation_svc: ReservationService):
     start = operating_hours_data.future.start
     end = operating_hours_data.future.start + future_reservation_limit
     reservation = reservation_svc.draft_reservation(
-        user_data.user,
+        user_data.ambassador,
         reservation_data.test_request(
             {
-                "users": [UserIdentity(**user_data.user.model_dump())],
                 "seats": [
                     SeatIdentity(**seat.model_dump())
                     for seat in seat_data.reservable_seats
@@ -192,7 +191,8 @@ def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService)
                         SeatIdentity(
                             **reservation_data.reservation_1.seats[0].model_dump()
                         ),
-                    ]
+                    ],
+                    "end": reservation_data.reservation_1.end + timedelta(minutes=8),
                 }
             ),
         )
@@ -205,7 +205,10 @@ def test_draft_reservation_has_reservation_conflict(
         reservation = reservation_svc.draft_reservation(
             user_data.user,
             reservation_data.test_request(
-                {"users": [UserIdentity(**user_data.user.model_dump())]}
+                {
+                    "users": [UserIdentity(**user_data.user.model_dump())],
+                    "end": datetime.now() + TEN_MINUTES,
+                }
             ),
         )
 

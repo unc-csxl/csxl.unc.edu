@@ -46,7 +46,7 @@ def instantiate_global_models(time: dict[str, datetime]):
     reservation_1 = Reservation(
         id=1,
         start=time[THIRTY_MINUTES_AGO],
-        end=time[IN_THIRTY_MINUTES],
+        end=time[IN_TEN_MINUTES],
         created_at=time[THIRTY_MINUTES_AGO],
         updated_at=time[THIRTY_MINUTES_AGO],
         walkin=False,
