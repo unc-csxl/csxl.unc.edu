@@ -29,9 +29,26 @@
 
   <!-- Profile Personal Information -->
   <mat-card-content class="user-info">
-    <p class="user-info-label">Email</p>
-    <p class="user-info-detail">{{ profile.email }}</p>
     <p class="user-info-label">Pronouns</p>
     <p class="user-info-detail">{{ profile.pronouns }}</p>
+
+    <div class="contact-info">
+      <div>
+        <p class="user-info-label">Email</p>
+        <p class="user-info-detail">{{ profile.email }}</p>
+      </div>
+
+      <div>
+        <p *ngIf="profile.github !== ''" class="user-info-label">Github</p>
+        <p *ngIf="profile.github !== ''" class="user-info-detail">
+          <a
+            id="github_link"
+            href="https://github.com/{{ profile.github }}"
+            target="_blank">
+            {{ profile.github }}
+          </a>
+        </p>
+      </div>
+    </div>
   </mat-card-content>
 </mat-card>

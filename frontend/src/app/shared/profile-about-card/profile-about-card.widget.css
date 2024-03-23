@@ -48,17 +48,27 @@
   -webkit-box-orient: vertical;
 }
 
+.user-info-label {
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.user-info-detail {
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.contact-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .mat-mdc-card-avatar {
   margin-bottom: 0 !important;
 }
 
 .mdc-list-group__subheader {
   margin: 0;
-}
-
-.user-info-label {
-  font-weight: 500;
-  margin-bottom: 0;
 }
 
 .mdc-list-item {
@@ -73,8 +83,4 @@
 
 .mat-mdc-list-base {
   padding: 0;
-}
-
-.user-info-detail {
-  margin-top: 4px;
 }
