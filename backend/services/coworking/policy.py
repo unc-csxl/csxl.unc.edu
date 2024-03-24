@@ -18,6 +18,7 @@ FRIDAY = 4
 SATURDAY = 5
 SUNDAY = 6
 
+
 class PolicyService:
     """RoleService is the access layer to the role data model, its members, and permissions.
 
@@ -57,70 +58,80 @@ class PolicyService:
 
     def reservation_draft_timeout(self) -> timedelta:
         return timedelta(minutes=5)
-    
 
     def reservation_checkin_timeout(self) -> timedelta:
         return timedelta(minutes=10)
 
-
     def room_reservation_weekly_limit(self) -> timedelta:
         """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
         return timedelta(hours=6)
-    
+
     def non_reservable_rooms(self) -> list[str]:
-        return ['404']
+        return ["404"]
 
     def office_hours(self, date: datetime):
         day = date.weekday()
         if day == MONDAY:
-            return {
-                'SN135' : [],
-                'SN137' : [],
-                'SN139' : [],
-                'SN141' : [(time(hour=10, minute=30), time(hour=18))], # KMP 426
-                'SN144' : [],
-                'SN146' : [],
-                'SN147' : [(time(hour=15), time(hour=18))], # Sridhar
+            return {  # Temporary fix for blocking off furniture install days
+                "SN135": [(time(hour=10), time(hour=19))],
+                "SN137": [(time(hour=10), time(hour=19))],
+                "SN139": [(time(hour=10), time(hour=19))],
+                "SN141": [(time(hour=10), time(hour=19))],
+                "SN144": [(time(hour=10), time(hour=19))],
+                "SN146": [(time(hour=10), time(hour=19))],
+                "SN147": [(time(hour=10), time(hour=19))],
+                # Future
+                # 'SN135' : [],
+                # 'SN137' : [],
+                # 'SN139' : [],
+                # 'SN141' : [(time(hour=10, minute=30), time(hour=18))], # KMP 426
+                # 'SN144' : [],
+                # 'SN146' : [],
+                # 'SN147' : [(time(hour=15), time(hour=18))], # Sridhar
             }
         elif day == TUESDAY:
-            return { # Temporary fix for blocking off furniture install days
-                'SN135' : [(time(hour=10), time(hour=19))],
-                'SN137' : [(time(hour=10), time(hour=19))],
-                'SN139' : [(time(hour=10), time(hour=19))],
-                'SN141' : [(time(hour=10), time(hour=19))],
-                'SN144' : [(time(hour=10), time(hour=19))],
-                'SN146' : [(time(hour=10), time(hour=19))],
-                'SN147' : [(time(hour=10), time(hour=19))],
+            return {  # Temporary fix for blocking off furniture install days
+                "SN135": [(time(hour=10), time(hour=19))],
+                "SN137": [(time(hour=10), time(hour=19))],
+                "SN139": [(time(hour=10), time(hour=19))],
+                "SN141": [(time(hour=10), time(hour=19))],
+                "SN144": [(time(hour=10), time(hour=19))],
+                "SN146": [(time(hour=10), time(hour=19))],
+                "SN147": [(time(hour=10), time(hour=19))],
             }
         elif day == WEDNESDAY:
-            return { # Temporary fix for blocking off furniture install days
-                'SN135' : [(time(hour=10, minute=0), time(hour=19, minute=0))],
-                'SN137' : [(time(hour=10), time(hour=19))], # [(time(hour=15), time(hour=16))] # Leong
-                'SN139' : [(time(hour=10), time(hour=19))],
-                'SN141' : [(time(hour=10), time(hour=19))],
-                'SN144' : [(time(hour=10), time(hour=19))],
-                'SN146' : [(time(hour=10), time(hour=19))],
-                'SN147' : [(time(hour=10), time(hour=19))], # [(time(hour=15), time(hour=18))], # Sridhar
+            return {  # Temporary fix for blocking off furniture install days
+                "SN135": [(time(hour=10, minute=0), time(hour=19, minute=0))],
+                "SN137": [
+                    (time(hour=10), time(hour=19))
+                ],  # [(time(hour=15), time(hour=16))] # Leong
+                "SN139": [(time(hour=10), time(hour=19))],
+                "SN141": [(time(hour=10), time(hour=19))],
+                "SN144": [(time(hour=10), time(hour=19))],
+                "SN146": [(time(hour=10), time(hour=19))],
+                "SN147": [
+                    (time(hour=10), time(hour=19))
+                ],  # [(time(hour=15), time(hour=18))], # Sridhar
             }
         elif day == THURSDAY:
             return {
-                'SN135' : [],
-                'SN137' : [],
-                'SN139' : [],
-                'SN141' : [],
-                'SN144' : [],
-                'SN146' : [],
-                'SN147' : [(time(hour=16), time(hour=18))], # Sridhar
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [],
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
             }
         elif day == FRIDAY:
             return {
-                'SN135' : [],
-                'SN137' : [],
-                'SN139' : [],
-                'SN141' : [],
-                'SN144' : [],
-                'SN146' : [],
-                'SN147' : [],
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [],
+                "SN144": [],
+                "SN146": [],
+                "SN147": [],
             }
         else:
             return {}
