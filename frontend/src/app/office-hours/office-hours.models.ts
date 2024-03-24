@@ -91,13 +91,17 @@ export interface OfficeHoursEventPartial {
 
 export interface OfficeHoursEventDraft {
   oh_section: OfficeHoursSectionPartial;
-  // room: RoomPartial
+  room: RoomPartial; // should this be a room or room partial?
   type: OfficeHoursEventType;
   description: string;
   location_description: string;
-  event_date: Date;
+  event_date: string;
   start_time: Date;
   end_time: Date;
+}
+
+export interface RoomPartial {
+  id: string;
 }
 
 export interface OfficeHoursEventDetails {
