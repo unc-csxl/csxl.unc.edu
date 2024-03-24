@@ -16,6 +16,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { CourseCard } from './widgets/course-card/course-card-widget';
+import { OpenEventHoursCard } from './widgets/open-event-hours-card/open-event-hours-card-widget';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,9 @@ import { MatIconModule } from '@angular/material/icon';
     StudentSectionHomeComponent,
     EventCard,
     ScheduleCard,
-    TicketCreationFormComponent
+    TicketCreationFormComponent,
+    CourseCard,
+    OpenEventHoursCard
   ],
   imports: [
     CommonModule,
@@ -39,7 +44,8 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule
   ]
 })
 export class OfficeHoursModule {}
