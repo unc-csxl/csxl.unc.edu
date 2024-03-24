@@ -73,6 +73,8 @@ pending_ticket = OfficeHoursTicket(
     oh_event=comp_110_oh_event_1,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
+    state=TicketState.QUEUED,
+    created_at=datetime.now(),
 )
 
 called_ticket = OfficeHoursTicket(
@@ -80,6 +82,8 @@ called_ticket = OfficeHoursTicket(
     oh_event=comp_110_oh_event_1,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
+    state=TicketState.CALLED,
+    created_at=datetime.now(),
 )
 
 closed_ticket = OfficeHoursTicket(
@@ -140,10 +144,6 @@ def insert_fake_data(session: Session):
     )
 
     # Add User Created Tickets
-    # for ticket in comp110_tickets:
-    #     ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
-    #     session.add(ticket_entity)
-    #     session.commit()
     for ticket in comp110_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
         session.add(ticket_entity)

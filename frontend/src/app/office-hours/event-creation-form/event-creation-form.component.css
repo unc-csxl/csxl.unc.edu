@@ -15,3 +15,13 @@ mat-form-field {
 mat-card {
     width: 50rem;
 }
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.button {
+    margin: 0.25rem;
+}

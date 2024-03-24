@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { OfficeHoursService } from '../office-hours.service';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-event-creation-form',
@@ -12,4 +14,20 @@ export class EventCreationFormComponent {
     component: EventCreationFormComponent,
     canActivate: []
   };
+
+  constructor(
+    public officeHoursService: OfficeHoursService,
+    protected formBuilder: FormBuilder
+  ) {}
+
+  public eventForm = this.formBuilder.group({
+    event_type: '',
+    description: '',
+    start_time: '',
+    end_time: '',
+    location: '',
+    location_description: ''
+  });
+
+  onSubmit() {}
 }

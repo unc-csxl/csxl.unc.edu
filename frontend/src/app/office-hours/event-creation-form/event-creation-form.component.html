@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" [formGroup]="eventForm" (ngSubmit)="onSubmit()">
   <mat-card appearance="outlined">
     <div class="card-container">
       <mat-card-title>Create Event</mat-card-title>
@@ -8,7 +8,7 @@
       <p>Event Type:</p>
       <mat-form-field>
         <mat-label>Select Type</mat-label>
-        <mat-select required>
+        <mat-select required formControlName="event_type">
           <mat-option value="office_hours"> Office Hours </mat-option>
           <mat-option value="office_hour_virtual">
             Virtual Office Hours
@@ -24,32 +24,51 @@
       <p>Description:</p>
       <mat-form-field>
         <mat-label>Description of Event</mat-label>
-        <textarea matInput required> </textarea>
+        <textarea matInput formControlName="description"> </textarea>
       </mat-form-field>
       <p>Start Time:</p>
       <mat-form-field>
         <mat-label>Select Time:</mat-label>
-        <input matInput type="datetime-local" required />
+        <input
+          matInput
+          type="datetime-local"
+          required
+          formControlName="start_time" />
       </mat-form-field>
       <p>End Time:</p>
       <mat-form-field>
         <mat-label>Select Time:</mat-label>
-        <input matInput type="datetime-local" required />
+        <input
+          matInput
+          type="datetime-local"
+          required
+          formControlName="end_time" />
       </mat-form-field>
-      <p>Location</p>
+      <p>Location:</p>
       <mat-form-field>
         <mat-label>Ex. SN007</mat-label>
-        <input matInput required />
+        <input matInput required formControlName="location" />
       </mat-form-field>
-      <!-- <p>Check in Method:</p>
-          <mat-label>Select A Method</mat-label>
-          <mat-select required>
-              <mat-option></mat-option>
-          </mat-select> -->
-      <button mat-stroked-button>Submit</button>
-      <a [routerLink]="['..']">
-        <button mat-stroked-button>Cancel</button>
-      </a>
+      <p>Location Description:</p>
+      <mat-form-field>
+        <mat-label>Ex. It's the room across from...</mat-label>
+        <input matInput formControlName="location_description" />
+      </mat-form-field>
+      <div class="buttons">
+        <a [routerLink]="['..']">
+          <button mat-stroked-button class="button" type="button">
+            Cancel
+          </button>
+        </a>
+        <button
+          mat-flat-button
+          color="primary"
+          class="button"
+          type="submit"
+          [disabled]="!eventForm.valid">
+          Submit
+        </button>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

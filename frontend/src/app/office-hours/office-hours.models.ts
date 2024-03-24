@@ -69,7 +69,22 @@ export interface EventPartial {
   end_time: Date | null;
 }
 
+export interface EventDraft {
+  oh_section: SectionPartial;
+  // room: RoomPartial
+  type: EventType;
+  description: string;
+  location_description: string;
+  event_date: Date;
+  start_time: Date;
+  end_time: Date;
+}
+
 export interface Section {
   id: number;
   title: string;
+}
+
+export interface SectionPartial {
+  // TODO
 }
