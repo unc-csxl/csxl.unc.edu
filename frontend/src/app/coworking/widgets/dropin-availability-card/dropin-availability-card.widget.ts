@@ -100,7 +100,9 @@ export class CoworkingDropInCard implements OnChanges {
           this.categories[SITTING_BENCH].push(seat);
         }
       } else {
-        this.categories[COLLAB_AREA].push(seat);
+        // Temporary hack for furniture installation
+        // Closing off communal area for office hours
+        // this.categories[COLLAB_AREA].push(seat);
       }
     }
   }
@@ -116,7 +118,9 @@ export class CoworkingDropInCard implements OnChanges {
     return [
       new SeatCategory('Sitting Desk with Monitor'),
       new SeatCategory('Standing Desk with Monitor'),
-      new SeatCategory('Communal Area Seat')
+      new SeatCategory(
+        'Communal Area (Closed while Hallway Renovations Complete)' // TODO: Revert after furniture install
+      )
     ];
   }
 }
