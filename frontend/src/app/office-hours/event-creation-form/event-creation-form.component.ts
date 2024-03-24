@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import { FormBuilder } from '@angular/forms';
+import { OfficeHoursEventDraft } from '../office-hours.models';
 
 @Component({
   selector: 'app-event-creation-form',
@@ -29,5 +30,27 @@ export class EventCreationFormComponent {
     location_description: ''
   });
 
-  onSubmit() {}
+  onSubmit() {
+    console.log('got here!');
+    //   let event_draft: OfficeHoursEventDraft = {
+    //     // TODO: use event form values to set (most of) these
+    //     //oh_section: {
+    //     // TODO
+    //     // id: ,
+    //     // title:
+    //     //}
+
+    //     // type: OfficeHoursEventType;
+    //     description: this.eventForm.value.description ?? '',
+    //     location_description: this.eventForm.value.location_description ?? ''
+    //     // event_date: Date;
+    //     // start_time: Date;
+    //     // end_time: Date;
+    //   };
+    //   this.officeHoursService.createEvent(event_draft).subscribe({
+    //     next: (event) => console.log(event) //remove console.log later -> for demo purposes
+    //   });
+    //   this.eventForm.reset();
+    //   // TODO: bring user to a diff location
+  }
 }
