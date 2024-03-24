@@ -16,6 +16,7 @@ import { StudentSectionHomeComponent } from './student-section-home/student-sect
 import { EventCard } from './widgets/event-card/event-card-widget';
 import { ScheduleCard } from './widgets/schedule-card/schedule-card-widget';
 import { TicketCreationFormComponent } from './ticket-creation-form/ticket-creation-form.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { TicketCreationFormComponent } from './ticket-creation-form/ticket-creat
     MatStepperModule,
     ReactiveFormsModule,
     FormsModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ]
 })
 export class OfficeHoursModule {}

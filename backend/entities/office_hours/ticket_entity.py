@@ -151,5 +151,5 @@ class OfficeHoursTicketEntity(EntityBase):
             closed_at=self.closed_at,
             oh_event=self.oh_event.to_model(),
             creators=[creator.to_flat_model() for creator in self.creators],
-            caller=self.caller.to_flat_model(),
+            caller=(self.caller.to_flat_model() if self.caller is not None else None),
         )
