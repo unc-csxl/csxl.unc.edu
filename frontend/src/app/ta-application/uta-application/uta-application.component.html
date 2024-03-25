@@ -212,10 +212,10 @@
           [matChipInputFor]="eligibleCourses"
           [matAutocomplete]="auto"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="add($event)" />
+          (matChipInputTokenEnd)="addEligibility($event)" />
         <mat-autocomplete
           #auto="matAutocomplete"
-          (optionSelected)="selected($event)">
+          (optionSelected)="selectedEligibility($event)">
           <mat-option
             *ngFor="let course of filteredEligibility | async"
             [value]="course">
@@ -243,10 +243,10 @@
           [matChipInputFor]="preferredCourses"
           [matAutocomplete]="auto"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="add($event)" />
+          (matChipInputTokenEnd)="addPreferences($event)" />
         <mat-autocomplete
           #auto="matAutocomplete"
-          (optionSelected)="selected($event)">
+          (optionSelected)="selectedPreferences($event)">
           <mat-option
             *ngFor="let section of filteredPreferences | async"
             [value]="section">
