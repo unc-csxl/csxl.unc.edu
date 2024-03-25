@@ -16,7 +16,7 @@ export class RxEvent extends RxObject<Event[]> {
     this.notify();
   }
 
-  updateOrganization(event: Event): void {
+  updateEvent(event: Event): void {
     this.value = this.value.map((o) => {
       return o.id !== event.id ? o : event;
     });

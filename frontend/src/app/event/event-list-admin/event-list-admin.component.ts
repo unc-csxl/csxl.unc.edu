@@ -11,10 +11,7 @@ import {
 import { Organization } from 'src/app/organization/organization.model';
 import { Event } from 'src/app/event/event.model';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import {
-  organizationEventsResolver,
-  organizationResolver
-} from 'src/app/organization/organization.resolver';
+import { organizationResolver } from 'src/app/organization/organization.resolver';
 import { EventService } from 'src/app/event/event.service';
 import { eventResolver } from '../event.resolver';
 
@@ -24,15 +21,13 @@ import { eventResolver } from '../event.resolver';
   styleUrls: ['./event-list-admin.component.css']
 })
 export class EventListAdminComponent implements OnInit {
-  /** Organizations List */
-  public organizations$: Observable<Organization[]>;
-  public events$: Observable<Event[]>;
-
+  /** Events List */
+  protected displayedEvents$: Observable<Event[]>;
   public displayedColumns: string[] = ['name'];
+
   /** Profile of signed in user */
   protected profile: Profile;
   /** List of displayed organizations for the signed in user */
-  protected displayedEvents$!: Observable<Event[]>;
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
@@ -43,23 +38,18 @@ export class EventListAdminComponent implements OnInit {
     resolve: {
       profile: profileResolver,
       organizations: organizationResolver,
-      events: organizationEventsResolver
+      events: eventResolver
     }
   };
 
   constructor(
     private route: ActivatedRoute,
-    // private router: Router,
-    // private snackBar: MatSnackBar,
+    private router: Router,
+    private snackBar: MatSnackBar,
     private organizationAdminService: OrganizationAdminService,
     private eventService: EventService
   ) {
-    this.organizations$ = organizationAdminService.organizations$;
-    organizationAdminService.list();
-    this.events$ = eventService.events$;
-    eventService.getEvents();
-
-    this.displayedEvents$ = this.events$;
+    this.displayedEvents$ = eventService.getEvents();
 
     /** Get the profile data of the signed in user */
     const data = this.route.snapshot.data as {
@@ -74,6 +64,9 @@ export class EventListAdminComponent implements OnInit {
         .filter((permission) => permission.resource.includes('organization'))
         .map((permission) => permission.resource.substring(13));
 
+      // this.displayedEvents$ = this.route.snapshot.data['events'] as Observable<
+      //   Event[]
+      // >;
       this.displayedEvents$ = this.displayedEvents$.pipe(
         map((events) =>
           events.filter(
@@ -89,5 +82,20 @@ export class EventListAdminComponent implements OnInit {
   /** Resposible for generating delete and create buttons in HTML code when admin signed in */
   adminPermissions(): boolean {
     return this.profile.permissions[0].resource === '*';
+  }
+
+  /** Event handler to open Event Editor for the selected event.
+   * @param event: event to be edited
+   * @returns void
+   */
+  editEvent(event: Event): void {
+    this.router.navigate([
+      'events',
+      'organizations',
+      event.organization?.slug,
+      'events',
+      event.id,
+      'edit'
+    ]);
   }
 }
