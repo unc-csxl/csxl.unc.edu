@@ -7,38 +7,69 @@
  * @license MIT
  */
 
-import { Component, HostListener, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  inject,
+  OnDestroy
+} from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { eventResolver } from '../event.resolver';
 import { ActivatedRoute } from '@angular/router';
 import { Permission, Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
-import { EventFilterPipe } from '../event-filter/event-filter.pipe';
 import { EventService } from '../event.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { EventListAdminComponent } from '../event-list-admin/event-list-admin.component';
+
+import { PaginatedEvent } from 'src/app/pagination';
+import {
+  Subject,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  tap
+} from 'rxjs';
 
 @Component({
   selector: 'app-event-page',
   templateUrl: './event-page.component.html',
   styleUrls: ['./event-page.component.css']
 })
-export class EventPageComponent implements OnInit {
+export class EventPageComponent implements OnInit, OnDestroy {
+  public page: PaginatedEvent<Event>;
+  public startDate = new Date();
+  public endDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
+  public today: boolean = true;
+
+  private static EventPaginationParams = {
+    order_by: 'time',
+    ascending: 'true',
+    filter: '',
+    range_start: new Date().toLocaleString('en-GB'),
+    range_end: new Date(
+      new Date().setMonth(new Date().getMonth() + 1)
+    ).toLocaleString('en-GB')
+  };
+
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: '',
     title: 'Events',
     component: EventPageComponent,
     canActivate: [],
-    resolve: { profile: profileResolver, events: eventResolver }
+    resolve: {
+      profile: profileResolver,
+      page: () =>
+        inject(EventService).list(EventPageComponent.EventPaginationParams)
+    }
   };
 
   /** Store the content of the search bar */
   public searchBarQuery = '';
-
-  /** Store list of Events */
-  public events: Event[];
 
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
@@ -52,9 +83,17 @@ export class EventPageComponent implements OnInit {
   /** Stores the width of the window. */
   public innerWidth: any;
 
+  /** Search bar query string */
+  public query: string = '';
+
+  public searchUpdate = new Subject<string>();
+
+  private routeSubscription!: Subscription;
+
   /** Constructor for the events page. */
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     public datePipe: DatePipe,
     public eventFilterPipe: EventFilterPipe,
     public eventService: EventService,
@@ -63,18 +102,30 @@ export class EventPageComponent implements OnInit {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
       profile: Profile;
-      events: Event[];
+      page: PaginatedEvent<Event>;
     };
     this.profile = data.profile;
-    this.events = data.events;
+    this.page = data.page;
+    this.today =
+      this.startDate.setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0);
 
     // Group events by their dates
-    this.eventsPerDay = eventService.groupEventsByDate(this.events);
+    this.eventsPerDay = eventService.groupEventsByDate(this.page.items);
 
     // Initialize the initially selected event
-    if (data.events.length > 0) {
-      this.selectedEvent = eventFilterPipe.transform(data.events, '')[0];
+    if (data.page.items.length > 0) {
+      this.selectedEvent = this.page.items[0];
     }
+
+    this.searchUpdate
+      .pipe(
+        filter((search: string) => search.length > 2 || search.length == 0),
+        debounceTime(500),
+        distinctUntilChanged()
+      )
+      .subscribe((query) => {
+        this.onSearchBarQueryChange(query);
+      });
   }
 
   /** Runs when the frontend UI loads */
@@ -121,7 +172,25 @@ export class EventPageComponent implements OnInit {
    * @param query: Search bar query to filter the items
    */
   onSearchBarQueryChange(query: string) {
-    this.eventsPerDay = this.eventService.groupEventsByDate(this.events, query);
+    this.query = query;
+    let paginationParams = this.page.params;
+    paginationParams.ascending = 'true';
+    if (query == '') {
+      paginationParams.range_start = this.startDate.toLocaleString('en-GB');
+      paginationParams.range_end = this.endDate.toLocaleString('en-GB');
+    } else {
+      paginationParams.range_start = new Date(
+        new Date().setFullYear(new Date().getFullYear() - 100)
+      ).toLocaleString('en-GB');
+      paginationParams.range_end = new Date(
+        new Date().setFullYear(new Date().getFullYear() + 100)
+      ).toLocaleString('en-GB');
+      paginationParams.filter = this.query;
+    }
+    this.eventService.list(paginationParams).subscribe((page) => {
+      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
+      paginationParams.filter = '';
+    });
   }
 
   /** Handler that runs when an event card is clicked.
@@ -130,5 +199,28 @@ export class EventPageComponent implements OnInit {
    */
   onEventCardClicked(event: Event) {
     this.selectedEvent = event;
+  }
+
+  showEvents(isPrevious: boolean) {
+    //let paginationParams = this.page.params;
+    this.startDate = isPrevious
+      ? new Date(this.startDate.setMonth(this.startDate.getMonth() - 1))
+      : new Date(this.startDate.setMonth(this.startDate.getMonth() + 1));
+    this.endDate = isPrevious
+      ? new Date(this.endDate.setMonth(this.endDate.getMonth() - 1))
+      : new Date(this.endDate.setMonth(this.endDate.getMonth() + 1));
+    if (isPrevious === true) {
+      this.page.params.ascending = 'false';
+    }
+    this.today =
+      this.startDate.setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        start_date: this.startDate.toISOString(),
+        end_date: this.endDate.toISOString()
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 }

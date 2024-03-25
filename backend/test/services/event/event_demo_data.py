@@ -85,7 +85,25 @@ event_four = EventEntity(
     organization_id=cads.id,
 )
 
-events = [event_one, event_two, event_three, event_four]
+event_five = EventEntity(
+    name="API Workshop",
+    time=date_maker(days_in_future=-10, hour=19, minutes=0),
+    location="FB 009",
+    description="If you are interested in APIs, come out to learn!",
+    public=True,
+    organization_id=cads.id,
+)
+
+event_six = EventEntity(
+    name="Python Workshop",
+    time=date_maker(days_in_future=-15, hour=19, minutes=0),
+    location="FB 009",
+    description="If you are interested in Python, come out to learn!",
+    public=True,
+    organization_id=cads.id,
+)
+
+events = [event_one, event_two, event_three, event_four, event_five, event_six]
 
 # Data Functions
 

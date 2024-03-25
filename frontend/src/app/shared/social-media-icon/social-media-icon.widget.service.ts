@@ -23,6 +23,12 @@ export class SocialMediaIconWidgetService {
       )
     );
     iconRegistry.addSvgIcon(
+      'slack',
+      sanitizer.bypassSecurityTrustResourceUrl(
+        'https://simpleicons.org/icons/slack.svg'
+      )
+    );
+    iconRegistry.addSvgIcon(
       'linkedin',
       sanitizer.bypassSecurityTrustResourceUrl(
         'https://simpleicons.org/icons/linkedin.svg'

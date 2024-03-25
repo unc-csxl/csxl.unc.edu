@@ -17,7 +17,7 @@ from ....models.coworking.time_range import TimeRange
 from ..coworking.time import *
 
 # Tested Dependencies
-from ....models import Event, EventDetails
+from ....models import Event, EventDetails, EventPaginationParams
 from ....services import EventService
 
 # Injected Service Fixtures
@@ -45,6 +45,8 @@ from .event_test_data import (
     event_three,
 )
 from ..user_data import root, ambassador, user
+
+from .event_demo_data import date_maker
 
 # Test Functions
 
@@ -86,6 +88,57 @@ def test_get_by_id_unauthenticated(event_svc_integration: EventService):
     assert fetched_event is not None
     assert isinstance(fetched_event, Event)
     assert fetched_event.id == event_one.id
+
+
+def test_list(event_svc_integration: EventService):
+    """Test that a paginated list of events can be produced."""
+    pagination_params = EventPaginationParams(
+        order_by="id",
+        range_start=date_maker(days_in_future=1, hour=10, minutes=0).strftime(
+            "%d/%m/%Y, %H:%M:%S"
+        ),
+        range_end=date_maker(days_in_future=2, hour=10, minutes=0).strftime(
+            "%d/%m/%Y, %H:%M:%S"
+        ),
+    )
+    fetched_events = event_svc_integration.get_paginated_events(
+        pagination_params, ambassador
+    )
+    assert len(fetched_events.items) == 1
+
+
+def test_list_filter(event_svc_integration: EventService):
+    """Test that a paginated list of events can be produced."""
+    pagination_params = EventPaginationParams(filter="Workshop")
+    fetched_events = event_svc_integration.get_paginated_events(
+        pagination_params, ambassador
+    )
+    assert len(fetched_events.items) == 1
+
+
+def test_list_unauthenticated(event_svc_integration: EventService):
+    """Test that a paginated list of events can be produced for unauthenticated users."""
+    pagination_params = EventPaginationParams(
+        order_by="id",
+        range_start=date_maker(days_in_future=1, hour=10, minutes=0).strftime(
+            "%d/%m/%Y, %H:%M:%S"
+        ),
+        range_end=date_maker(days_in_future=2, hour=10, minutes=0).strftime(
+            "%d/%m/%Y, %H:%M:%S"
+        ),
+    )
+    fetched_events = event_svc_integration.get_paginated_events(pagination_params)
+    assert len(fetched_events.items) == 1
+
+
+def test_get_events_in_time_range(event_svc_integration: EventService):
+    """Test that a list of events can be produced for a valid time range."""
+    range = TimeRange(
+        start=date_maker(days_in_future=1, hour=0, minutes=0),
+        end=date_maker(days_in_future=3, hour=0, minutes=0),
+    )
+    events = event_svc_integration.get_events_in_time_range(range, root)
+    assert len(events) == 3
 
 
 def test_create_enforces_permission(event_svc_integration: EventService):

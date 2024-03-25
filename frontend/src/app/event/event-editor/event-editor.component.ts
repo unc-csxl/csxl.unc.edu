@@ -15,7 +15,7 @@ import { EventService } from '../event.service';
 import { profileResolver } from '../../profile/profile.resolver';
 import { Profile, PublicProfile } from '../../profile/profile.service';
 import { OrganizationService } from '../../organization/organization.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
@@ -48,7 +48,7 @@ export class EventEditorComponent {
   public profile: Profile | null = null;
 
   /** Stores whether the user has admin permission over the current organization. */
-  public adminPermission$: Observable<boolean>;
+  public enabled$: Observable<boolean>;
 
   /** Store organizers */
   public organizers: PublicProfile[] = [];
@@ -127,6 +127,7 @@ export class EventEditorComponent {
       `organization/${this.organization.slug}`
     );
 
+
     // Set the organizers
     // If no organizers already, set current user as organizer
     if (this.event.id == null) {
@@ -168,6 +169,13 @@ export class EventEditorComponent {
       }
       this.router.navigate(['/organizations/', this.organization_slug]);
     }
+  }
+
+  /** Takes user back to events page without changing any event info.
+   * @returns {void}
+   */
+  onCancel(): void {
+    this.router.navigate([`events/`]);
   }
 
   /** Opens a confirmation snackbar when an event is successfully created.
