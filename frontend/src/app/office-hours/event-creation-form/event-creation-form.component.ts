@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import { FormBuilder } from '@angular/forms';
 import {
   OfficeHoursEventDraft,
   OfficeHoursEventType
 } from '../office-hours.models';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { Room } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'app-event-creation-form',
   templateUrl: './event-creation-form.component.html',
   styleUrls: ['./event-creation-form.component.css']
 })
-export class EventCreationFormComponent {
+export class EventCreationFormComponent implements OnInit {
   public static Route = {
     path: 'spring-2024/comp110/create-new-event',
     title: 'COMP 110: Intro to Programming',
@@ -19,10 +21,17 @@ export class EventCreationFormComponent {
     canActivate: []
   };
 
+  rooms: Room[] = [];
+
   constructor(
     public officeHoursService: OfficeHoursService,
-    protected formBuilder: FormBuilder
+    protected formBuilder: FormBuilder,
+    public academicsService: AcademicsService
   ) {}
+
+  ngOnInit() {
+    this.getRooms();
+  }
 
   public eventForm = this.formBuilder.group({
     event_type: '',
@@ -32,6 +41,12 @@ export class EventCreationFormComponent {
     location: '',
     location_description: ''
   });
+
+  getRooms() {
+    this.academicsService.getRooms().subscribe((rooms) => {
+      this.rooms = rooms;
+    });
+  }
 
   onSubmit() {
     // Below is logic for assigning the correct OfficeHoursEventtype
