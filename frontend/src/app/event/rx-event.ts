@@ -22,11 +22,4 @@ export class RxEvent extends RxObject<Event[]> {
     });
     this.notify();
   }
-
-  //   removeEvent(eventToRemove: Event): void {
-  //     this.value = this.value.filter(
-  //       (event) => eventToRemove.slug !== event.slug
-  //     );
-  //     this.notify();
-  //   }
 }

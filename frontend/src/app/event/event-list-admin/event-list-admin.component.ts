@@ -23,11 +23,11 @@ import { eventResolver } from '../event.resolver';
 export class EventListAdminComponent implements OnInit {
   /** Events List */
   protected displayedEvents$: Observable<Event[]>;
+
   public displayedColumns: string[] = ['name'];
 
   /** Profile of signed in user */
   protected profile: Profile;
-  /** List of displayed organizations for the signed in user */
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {
@@ -64,9 +64,6 @@ export class EventListAdminComponent implements OnInit {
         .filter((permission) => permission.resource.includes('organization'))
         .map((permission) => permission.resource.substring(13));
 
-      // this.displayedEvents$ = this.route.snapshot.data['events'] as Observable<
-      //   Event[]
-      // >;
       this.displayedEvents$ = this.displayedEvents$.pipe(
         map((events) =>
           events.filter(
