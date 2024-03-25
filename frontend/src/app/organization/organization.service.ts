@@ -13,6 +13,7 @@ import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { Organization } from './organization.model';
+import { Role } from '../role';
 
 @Injectable({
   providedIn: 'root'
@@ -53,5 +54,13 @@ export class OrganizationService {
    */
   updateOrganization(organization: Organization): Observable<Organization> {
     return this.http.put<Organization>('/api/organizations', organization);
+  }
+
+  /** Returns the new role object from the backend database table using the backend HTTP post request.
+   * @param role: Role representing the new role
+   * @returns {Observable<Role>}
+   */
+  createRole(role: Role): Observable<Role> {
+    return this.http.post<Role>('/api/admin/roles', role);
   }
 }

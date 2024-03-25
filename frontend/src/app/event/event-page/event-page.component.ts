@@ -15,11 +15,14 @@ import {
   OnDestroy
 } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { ActivatedRoute, ActivationEnd, Params, Router } from '@angular/router';
-import { Profile } from 'src/app/profile/profile.service';
+import { eventResolver } from '../event.resolver';
+import { ActivatedRoute } from '@angular/router';
+import { Permission, Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { EventService } from '../event.service';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { EventListAdminComponent } from '../event-list-admin/event-list-admin.component';
 
 import { PaginatedEvent } from 'src/app/pagination';
 import {
@@ -92,7 +95,9 @@ export class EventPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public datePipe: DatePipe,
-    public eventService: EventService
+    public eventFilterPipe: EventFilterPipe,
+    public eventService: EventService,
+    private gearService: NagivationAdminGearService
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -125,53 +130,35 @@ export class EventPageComponent implements OnInit, OnDestroy {
 
   /** Runs when the frontend UI loads */
   ngOnInit() {
-    // Keep track of the initial width of the browser window
-    this.innerWidth = window.innerWidth;
-
-    // Watch current route's query params
-    this.route.queryParams.subscribe((params: Params): void => {
-      this.startDate = params['start_date']
-        ? new Date(Date.parse(params['start_date']))
-        : new Date();
-      this.endDate = params['end_date']
-        ? new Date(Date.parse(params['end_date']))
-        : new Date(new Date().setMonth(new Date().getMonth() + 1));
-    });
-
-    const today = new Date();
-    if (this.startDate.getTime() < today.setHours(0, 0, 0, 0)) {
-      this.page.params.ascending = 'false';
+    if (this.profile !== undefined) {
+      let userPermissions = this.profile.permissions;
+      /** Ensure that the signed in user has permissions before looking at the resource */
+      if (userPermissions.length !== 0) {
+        /** Admin user, no need to check further */
+        if (userPermissions[0].resource === '*') {
+          this.gearService.showAdminGear(
+            'organizations.*',
+            '*',
+            '',
+            'events/admin'
+          );
+        } else {
+          /** Find if the signed in user has any organization permissions */
+          let organizationPermissions = userPermissions.filter((element) =>
+            element.resource.includes('organization')
+          );
+          /** If they do, show admin gear */
+          if (organizationPermissions.length !== 0) {
+            this.gearService.showAdminGear(
+              'organizations.*',
+              organizationPermissions[0].resource,
+              '',
+              'events/admin'
+            );
+          }
+        }
+      }
     }
-
-    let paginationParams = this.page.params;
-    paginationParams.range_start = this.startDate.toLocaleString('en-GB');
-    paginationParams.range_end = this.endDate.toLocaleString('en-GB');
-    this.eventService.list(paginationParams).subscribe((page) => {
-      this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
-    });
-
-    let prevUrl = '';
-    this.routeSubscription = this.router.events
-      .pipe(
-        filter((e) => e instanceof ActivationEnd),
-        distinctUntilChanged(() => this.router.url === prevUrl),
-        tap(() => (prevUrl = this.router.url))
-      )
-      .subscribe((_) => {
-        this.page.params.ascending = (
-          this.startDate.getTime() > today.setHours(0, 0, 0, 0)
-        ).toString();
-        let paginationParams = this.page.params;
-        paginationParams.range_start = this.startDate.toLocaleString('en-GB');
-        paginationParams.range_end = this.endDate.toLocaleString('en-GB');
-        this.eventService.list(paginationParams).subscribe((page) => {
-          this.eventsPerDay = this.eventService.groupEventsByDate(page.items);
-        });
-      });
-  }
-
-  ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
   }
 
   /** Handler that runs when the window resizes */

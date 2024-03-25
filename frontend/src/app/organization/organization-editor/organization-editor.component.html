@@ -36,7 +36,7 @@
       </mat-form-field>
       <!-- Slug Field -->
       <mat-form-field
-        hintLabel="Must contain only lowercase letters, numbers, or dashes"
+        hintLabel="Lowercase letters, numbers, or dashes"
         appearance="outline"
         color="accent">
         <mat-label>Slug</mat-label>
@@ -49,27 +49,29 @@
       </mat-form-field>
       <!-- Short Description Field -->
       <mat-form-field
+        class="short-description"
         hintLabel="Max 150 characters"
         appearance="outline"
         color="accent">
         <mat-label>Short Description</mat-label>
-        <input
+        <textarea
           matInput
           placeholder="Enter short description here."
           formControlName="short_description"
-          name="short_description" />
+          name="short_description"></textarea>
       </mat-form-field>
       <!-- Long Description Field -->
       <mat-form-field
+        class="long-description"
         hintLabel="Max 2000 characters"
         appearance="outline"
         color="accent">
         <mat-label>Long Description</mat-label>
-        <input
+        <textarea
           matInput
           placeholder="Enter long description here."
           formControlName="long_description"
-          name="long_description" />
+          name="long_description"></textarea>
       </mat-form-field>
       <!-- Website Field -->
       <mat-form-field appearance="outline" color="accent">
@@ -124,19 +126,15 @@
           formControlName="heel_life"
           name="heel_life" />
       </mat-form-field>
-    </mat-card-content>
-    <mat-card-actions>
-      <!-- Cancel Button -->
-      <button mat-stroked-button type="button" (click)="onCancel()">
-        Cancel
-      </button>
       <!-- Submit Button -->
       <button
         mat-stroked-button
         type="submit"
-        [disabled]="organizationForm.invalid">
-        Save
+        [disabled]="organizationForm.invalid"
+        class="save-button">
+        SAVE
       </button>
-    </mat-card-actions>
+    </mat-card-content>
+    <mat-card-actions class="button-container"> </mat-card-actions>
   </mat-card>
 </form>

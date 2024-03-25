@@ -5,6 +5,15 @@
     text-align: center;
 }
 
+.bottom-button {
+    height: 36px;
+    width: 36px;
+    min-width: 38px;
+    margin-right: 3px;
+    margin-left: 3px;
+    padding: 0;
+}
+
 .logo-icon {
     display: block;
     margin-left: auto;
@@ -19,11 +28,7 @@
 
 .bottom-button-container {
     width: 100%;
-    margin-bottom: 6px;
-    margin-top: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 6px;
 }
 
 .sidenav-container {

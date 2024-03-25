@@ -1,17 +1,29 @@
-.mat-mdc-card {
-  margin: 1em;
-  max-width: 640px;
+mat-card {
+  display: flex;
+  flex-direction: column;
 }
 
-.mat-mdc-form-field {
-  width: stretch;
-}
-
-.mat-mdc-card-actions .mdc-button {
-  margin-left: 8px;
-  margin-bottom: 8px;
+mat-card-header {
+  display: flex;
+  margin-bottom: 20px;
 }
 
 mat-card-content {
-  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+mat-form-field {
+  flex: 0 0 48.6%;
+}
+
+.long-description,
+.short-description {
+  flex: 0 0 100%;
+}
+
+.save-button {
+  margin-top: -8px;
+  margin-bottom: 8px;
 }

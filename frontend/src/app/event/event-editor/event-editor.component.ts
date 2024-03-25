@@ -121,13 +121,12 @@ export class EventEditorComponent {
       Validators.min(this.event.registration_count)
     );
 
-    // Should the edit form be enabled?
-    this.enabled$ = this.permission
-      .check(
-        'organization.events.update',
-        `organization/${this.organization!.id}`
-      )
-      .pipe(map((permission) => permission || this.event.is_organizer));
+    // Set permission value
+    this.adminPermission$ = this.permission.check(
+      'organization.*',
+      `organization/${this.organization.slug}`
+    );
+
 
     // Set the organizers
     // If no organizers already, set current user as organizer

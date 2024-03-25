@@ -13,20 +13,6 @@
     <div class="event-actions">
       <button
         mat-icon-button
-        *ngIf="(this.adminPermission$ | async) || this.event.is_organizer"
-        [routerLink]="[
-          'events',
-          'organizations',
-          event.organization!.slug,
-          'events',
-          event.id,
-          'edit'
-        ]"
-        [relativeTo]="null">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button
-        mat-icon-button
         *ngIf="this.adminPermission$ | async"
         (click)="deleteEvent(event)">
         <mat-icon>delete</mat-icon>

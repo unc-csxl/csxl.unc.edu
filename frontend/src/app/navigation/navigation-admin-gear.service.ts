@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { PermissionService } from '../permission.service';
 import { ReplaySubject } from 'rxjs';
 import { AdminSettingsNavigationData } from './navigation.service';
+import { Organization } from '../organization/organization.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ export class NagivationAdminGearService {
   private adminSettingsData: ReplaySubject<AdminSettingsNavigationData | null> =
     new ReplaySubject(1);
   public adminSettingsData$ = this.adminSettingsData.asObservable();
+
+  public adminView: boolean = false;
 
   constructor(private permissionService: PermissionService) {}
 
@@ -35,6 +38,7 @@ export class NagivationAdminGearService {
         // If the user has the permission, then update the settings
         // navigation data so that it shows. If not, clear the data.
         if (hasPermission) {
+          this.adminView = true;
           // Update the settings data
           this.adminSettingsData.next({
             tooltip: tooltip,
