@@ -25,6 +25,8 @@ class EventPaginationParams(PaginationParams):
     order_by: str = ""
     ascending: str = "true"
     filter: str = ""
+    organization_slug: str = ""
+    user_id: int = None
     range_start: str = ""
     range_end: str = ""
 

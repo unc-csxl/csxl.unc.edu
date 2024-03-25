@@ -73,6 +73,7 @@ class EventService:
 
         statement = select(EventEntity)
         length_statement = select(func.count()).select_from(EventEntity)
+
         if pagination_params.range_start != "":
             range_start = pagination_params.range_start
             range_end = pagination_params.range_end
@@ -80,6 +81,26 @@ class EventService:
                 EventEntity.time
                 >= datetime.strptime(range_start, "%d/%m/%Y, %H:%M:%S"),
                 EventEntity.time <= datetime.strptime(range_end, "%d/%m/%Y, %H:%M:%S"),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
+
+        # Filter events by organization
+        if pagination_params.organization_slug != "":
+            query = pagination_params.organization_slug
+            criteria = exists().where(
+                OrganizationEntity.id == EventEntity.organization_id,
+                OrganizationEntity.slug.ilike(f"{query}"),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
+
+        # # Filter events by user_id
+        if pagination_params.user_id is not None:
+            query = pagination_params.user_id
+            criteria = exists().where(
+                EventRegistrationEntity.event_id == EventEntity.id,
+                EventRegistrationEntity.user_id == query,
             )
             statement = statement.where(criteria)
             length_statement = length_statement.where(criteria)
@@ -106,11 +127,13 @@ class EventService:
         limit = pagination_params.page_size
 
         if pagination_params.order_by != "":
-            statement = statement.order_by(
-                    getattr(EventEntity, pagination_params.order_by)
-                ) if pagination_params.ascending else statement.order_by(
+            statement = (
+                statement.order_by(getattr(EventEntity, pagination_params.order_by))
+                if pagination_params.ascending
+                else statement.order_by(
                     getattr(EventEntity, pagination_params.order_by).desc()
                 )
+            )
 
         statement = statement.offset(offset).limit(limit)
 
