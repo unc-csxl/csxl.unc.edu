@@ -91,7 +91,10 @@ export class TicketCreationFormComponent {
       creators: [{ id: 3 }]
     };
     this.officeHoursService.createTicket(ticket_draft).subscribe({
-      next: (ticket) => console.log(ticket) //remove console.log later -> for demo purposes
+      next: (ticket) => {
+        console.log(ticket);
+        this.officeHoursService.setCurrentTicket(ticket.id);
+      } //remove console.log later -> for demo purposes
     });
     this.ticketForm.reset();
     // brings user to previous page (the course Office Hours home page)
