@@ -168,6 +168,9 @@ def insert_fake_data(session: Session):
     for member in comp_110_members:
         session.add(member)
 
+    reset_table_id_seq(
+        session, SectionMemberEntity, SectionMemberEntity.id, len(comp_110_members) + 1
+    )
     for assignment in assignments:
         section_id, room_id, assignment_type = assignment
         entity = SectionRoomEntity(

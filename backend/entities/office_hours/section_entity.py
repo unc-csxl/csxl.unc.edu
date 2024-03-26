@@ -44,6 +44,7 @@ class OfficeHoursSectionEntity(EntityBase):
     def from_draft_model(cls, model: OfficeHoursSectionDraft) -> Self:
         return cls(title=model.title)
 
+    @classmethod
     def from_model(cls, model: OfficeHoursSection) -> Self:
         """
         Class method that converts an `OfficeHoursSection` model into a `OfficeHoursSectionEntity`
