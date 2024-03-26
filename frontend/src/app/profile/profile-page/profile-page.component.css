@@ -13,8 +13,7 @@
 }
 
 .container {
-  padding-left: 24px;
-  padding-top: 24px;
+  padding: 24px;
   -ms-overflow-style: none;
   /* Internet Explorer 10+ */
   scrollbar-width: none;
@@ -35,8 +34,15 @@
   width: inherit;
 }
 
-.events-card-container {
-  grid-area: span 2;
+.profile-management-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 16px 16px 16px;
+}
+
+.action-section {
+  width: 100% !important;
 }
 
 .section-title {
@@ -47,24 +53,18 @@
 
 .action-buttons {
   display: flex;
-  flex-grow: inherit;
+  flex: 1;
 }
 
 .action-button {
-  width: fit-content;
   margin-right: 10px;
+  white-space: normal;
+  word-wrap: normal;
 }
 
 .token-text {
-  width: 450px;
   word-wrap: break-word;
-}
-
-.profile-management-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0 16px 16px 16px;
+  margin-bottom: 0;
 }
 
 @media (prefers-color-scheme: light) {
@@ -74,17 +74,17 @@
 }
 
 /** Make cards display in one column, with the event card appearing last */
-@media only screen and (max-device-width: 730px) {
+@media only screen and (max-device-width: 750px) {
   .profile-grid {
-    display: grid;
-    padding: 24px;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    row-gap: 15px;
-    column-gap: 24px;
+    display: flex;
+    flex-direction: column;
   }
+}
 
-  .events-card-container {
-    order: 1;
+@media only screen and (max-device-width: 450px) {
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
   }
 }
