@@ -1,7 +1,5 @@
 from .ticket import OfficeHoursTicket
-from ..room import Room
 from .event import OfficeHoursEvent
-from .section import OfficeHoursSection
 
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
@@ -18,6 +16,4 @@ class OfficeHoursEventDetails(OfficeHoursEvent):
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
 
-    section: OfficeHoursSection
-    room: Room
     tickets: list[OfficeHoursTicket]

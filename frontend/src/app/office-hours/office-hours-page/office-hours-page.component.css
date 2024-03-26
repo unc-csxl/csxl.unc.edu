@@ -1,0 +1,13 @@
+.page-container {
+    padding: 1rem;
+}
+
+.add-button{
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+}
+
+.add-button mat-icon {
+    color: white;
+}
