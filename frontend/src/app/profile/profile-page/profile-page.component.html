@@ -62,11 +62,9 @@
                   Copy Bearer Token
                 </button>
               </div>
-              <div class="token-text">
-                <p *ngIf="showToken && token">
-                  <code>{{ token }}</code>
-                </p>
-              </div>
+              <p class="token-text" *ngIf="showToken && token">
+                <code>{{ token }}</code>
+              </p>
             </div>
           </mat-card-actions>
         </mat-card>
