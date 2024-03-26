@@ -37,7 +37,10 @@ class OfficeHoursSectionService:
         self._permission_svc = permission_svc
 
     def create(
-        self, subject: User, oh_section: OfficeHoursSection
+        self,
+        subject: User,
+        oh_section: OfficeHoursSectionDraft,
+        academic_ids: list[int],
     ) -> OfficeHoursSectionDetails:
         """Creates a new office hours section.
 
@@ -54,12 +57,19 @@ class OfficeHoursSectionService:
         # self._permission_svc.enforce(subject, "academics.section.create", f"section/")
 
         # TODO: investigate what permission checks we will need to do here
+        # Add Office Section Academic Section
 
         # Create new object
-        oh_section_entity = OfficeHoursSectionEntity.from_model(oh_section)
+        oh_section_entity = OfficeHoursSectionEntity.from_draft_model(oh_section)
 
         # Add new object to table and commit changes
         self._session.add(oh_section_entity)
+        self._session.commit()
+
+        for id in academic_ids:
+            section = self._session.get(SectionEntity, id)
+            section.office_hours_id = oh_section_entity.id
+
         self._session.commit()
 
         # Return added object

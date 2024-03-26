@@ -3,8 +3,11 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.models.office_hours.section import OfficeHoursSection
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
+from ...models.office_hours.section import (
+    OfficeHoursSection,
+    OfficeHoursSectionDraft,
+)
+from ...models.office_hours.section_details import OfficeHoursSectionDetails
 
 
 from ..entity_base import EntityBase
@@ -38,6 +41,9 @@ class OfficeHoursSectionEntity(EntityBase):
     )
 
     @classmethod
+    def from_draft_model(cls, model: OfficeHoursSectionDraft) -> Self:
+        return cls(title=model.title)
+
     def from_model(cls, model: OfficeHoursSection) -> Self:
         """
         Class method that converts an `OfficeHoursSection` model into a `OfficeHoursSectionEntity`
