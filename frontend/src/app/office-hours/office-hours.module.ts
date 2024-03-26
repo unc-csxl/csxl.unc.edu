@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CourseCard } from './widgets/course-card/course-card-widget';
 import { OpenEventHoursCard } from './widgets/open-event-hours-card/open-event-hours-card-widget';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SectionCreationFormComponent } from './section-creation-form/section-creation-form.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     ScheduleCard,
     TicketCreationFormComponent,
     CourseCard,
-    OpenEventHoursCard
+    OpenEventHoursCard,
+    SectionCreationFormComponent
   ],
   imports: [
     CommonModule,
