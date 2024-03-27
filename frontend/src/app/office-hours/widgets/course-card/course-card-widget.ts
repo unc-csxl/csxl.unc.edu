@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
+import { OfficeHoursSectionDetails } from '../../office-hours.models';
 
 @Component({
   selector: 'course-card-widget',
@@ -7,6 +8,8 @@ import { flushMicrotasks } from '@angular/core/testing';
   styleUrls: ['./course-card-widget.css']
 })
 export class CourseCard {
+  /** The course to show */
+  @Input() section!: OfficeHoursSectionDetails;
   constructor() {}
 
   openDialog() {

@@ -151,5 +151,9 @@ class SectionEntity(EntityBase):
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,
-            office_hours_section=self.office_hours_section.to_model(),
+            office_hours_section=(
+                self.office_hours_section.to_model()
+                if self.office_hours_section is not None
+                else None
+            ),
         )

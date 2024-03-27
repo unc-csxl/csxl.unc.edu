@@ -24,4 +24,4 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
-    office_hours_section: OfficeHoursSection
+    office_hours_section: OfficeHoursSection | None
