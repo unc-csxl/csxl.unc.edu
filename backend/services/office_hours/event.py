@@ -3,8 +3,11 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...entities.office_hours.section_entity import OfficeHoursSectionEntity
+from ...entities.academics.section_entity import SectionEntity
+from ...services.office_hours.section import OfficeHoursSectionService
+from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...models.office_hours.ticket_state import TicketState
-
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
@@ -113,7 +116,9 @@ class OfficeHoursEventService:
         return entity.to_details_model()
 
     def get_upcoming_events_by_user(
-        self, subject: User, time_range: TimeRange
+        self,
+        subject: User,
+        time_range: TimeRange,
     ) -> list[OfficeHoursEventDetails]:
         """Gets all upcoming office hours events for a user.
 
@@ -124,8 +129,20 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursEventDetails]: upcoming OH events associated with a user
         """
-        # TODO
-        return None
+        query = (
+            select(OfficeHoursEventEntity)
+            .where(SectionMemberEntity.user_id == subject.id)
+            .where(SectionEntity.id == SectionMemberEntity.section_id)
+            .where(OfficeHoursSectionEntity.id == SectionEntity.office_hours_id)
+            .where(
+                OfficeHoursEventEntity.office_hours_section_id
+                == OfficeHoursSectionEntity.id
+            )
+            .where(OfficeHoursEventEntity.start_time < time_range.end)
+        )
+
+        entities = self._session.scalars(query).all()
+        return [entity.to_details_model() for entity in entities]
 
     def get_event_tickets(
         self, subject: User, oh_event: OfficeHoursEventDetails
