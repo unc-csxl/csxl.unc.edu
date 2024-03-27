@@ -22,7 +22,7 @@ from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import term, course, section
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
-from .api.office_hours import ticket
+from .api.office_hours import ticket, event
 from .services.exceptions import (
     EventRegistrationException,
     UserPermissionException,
@@ -54,6 +54,7 @@ app = FastAPI(
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
         ticket.openapi_tags,
+        event.openapi_tags,
     ],
 )
 
@@ -78,6 +79,7 @@ feature_apis = [
     course,
     section,
     room,
+    event,
     ticket,
 ]
 

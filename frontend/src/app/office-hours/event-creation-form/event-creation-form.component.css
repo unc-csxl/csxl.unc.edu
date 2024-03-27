@@ -1,0 +1,27 @@
+.card-container {
+    padding: 1rem;
+}
+
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+mat-card {
+    width: 50rem;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.button {
+    margin: 0.25rem;
+}

@@ -12,7 +12,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { TicketDetails, TicketDraft } from './office-hours.models';
+import {
+  OfficeHoursEventDetails,
+  OfficeHoursEventDraft,
+  TicketDetails,
+  TicketDraft
+} from './office-hours.models';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +33,15 @@ export class OfficeHoursService {
     return this.http.post<TicketDetails>(
       '/api/office-hours/ticket',
       ticket_draft
+    );
+  }
+
+  createEvent(
+    event_draft: OfficeHoursEventDraft
+  ): Observable<OfficeHoursEventDetails> {
+    return this.http.post<OfficeHoursEventDetails>(
+      '/api/office-hours/event',
+      event_draft
     );
   }
 }

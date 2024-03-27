@@ -44,8 +44,18 @@ class OfficeHoursEventService:
         Returns:
             OfficeHoursEventDetails: Object added to table
         """
-        # TODO
-        return None
+        # TODO: Add Check if user has relevant permissions
+        ### General Format: self._permission_svc.enforce(subject, "academics.section.create", f"section/")
+
+        # Create new object
+        oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event)
+
+        # Add new object to table and commit changes
+        self._session.add(oh_event_entity)
+        self._session.commit()
+
+        # Return added object
+        return oh_event_entity.to_details_model()
 
     def update(
         self, subject: User, oh_event: OfficeHoursEvent
@@ -84,7 +94,16 @@ class OfficeHoursEventService:
             OfficeHoursEventDetails: OH event associated with the OH event id
         """
         # TODO
-        return None
+        # Select all entries in the `Course` table and sort by end date
+        query = select(OfficeHoursEventEntity).filter(OfficeHoursEventEntity.id == oh_event_id)
+        entity = self._session.scalars(query).one_or_none()
+
+        # Raise an error if no entity was found.
+        if entity is None:
+            raise ResourceNotFoundException(f"Event with id: {oh_event_id} does not exist.")
+
+        # Return the model
+        return entity.to_details_model()
 
     def get_upcoming_events_by_user(
         self, subject: User, time_range: TimeRange
