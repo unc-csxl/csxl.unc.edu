@@ -342,14 +342,9 @@ class ReservationService:
                 )
                 end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
-                if start_idx < 0 or end_idx > operating_hours_duration:
+                if end_idx < current_time_idx:
                     continue
-
-                # Gray out previous time slots for today only
-                if date.date() == current_time.date():
-                    if end_idx < current_time_idx:
-                        continue
-                    start_idx = max(current_time_idx, start_idx)
+                start_idx = max(current_time_idx, start_idx)
 
                 for idx in range(start_idx, end_idx):
                     # Currently only assuming single user.
