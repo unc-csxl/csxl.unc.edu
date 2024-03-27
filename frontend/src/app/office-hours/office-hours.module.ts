@@ -21,6 +21,7 @@ import { OpenEventHoursCard } from './widgets/open-event-hours-card/open-event-h
 import { MatDialogModule } from '@angular/material/dialog';
 import { SectionCreationFormComponent } from './section-creation-form/section-creation-form.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { SectionCreationDialog } from './widgets/section-creation-dialog/section-creation-dialog.widget';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { MatMenuModule } from '@angular/material/menu';
     ScheduleCard,
     TicketCreationFormComponent,
     CourseCard,
+    SectionCreationDialog,
     OpenEventHoursCard,
     SectionCreationFormComponent
   ],

@@ -8,11 +8,16 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { TicketDetails, TicketDraft } from './office-hours.models';
+import {
+  OfficeHoursSectionDetails,
+  OfficeHoursSectionDraft,
+  TicketDetails,
+  TicketDraft
+} from './office-hours.models';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +33,20 @@ export class OfficeHoursService {
     return this.http.post<TicketDetails>(
       '/api/office-hours/ticket',
       ticket_draft
+    );
+  }
+
+  createSection(
+    section_draft: OfficeHoursSectionDraft,
+    academic_ids: number[]
+  ): Observable<OfficeHoursSectionDetails> {
+    const requestBody = {
+      section_draft: section_draft,
+      academic_ids: academic_ids
+    };
+    return this.http.post<OfficeHoursSectionDetails>(
+      '/api/office-hours/section',
+      requestBody
     );
   }
 }

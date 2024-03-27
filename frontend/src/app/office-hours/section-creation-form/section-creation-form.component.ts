@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Section, Term } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
+import { OfficeHoursService } from '../office-hours.service';
+import { OfficeHoursSectionDraft } from '../office-hours.models';
 
 @Component({
   selector: 'section-creation-form',
@@ -13,7 +15,8 @@ export class SectionCreationFormComponent implements OnInit {
 
   constructor(
     protected formBuilder: FormBuilder,
-    private academicService: AcademicsService
+    private academicService: AcademicsService,
+    private officeHoursService: OfficeHoursService
   ) {}
 
   ngOnInit(): void {
@@ -33,5 +36,22 @@ export class SectionCreationFormComponent implements OnInit {
     });
   }
 
-  onSubmit() {}
+  onSubmit() {
+    if (this.sectionForm.valid) {
+      let oh_title = this.sectionForm.value.section_name ?? '';
+      let section_draft: OfficeHoursSectionDraft = { title: oh_title };
+      let academic_ids = this.sectionForm.value.academic_sections ?? [];
+      console.log(oh_title);
+      console.log(section_draft);
+      console.log(academic_ids);
+      this.officeHoursService
+        .createSection(section_draft, academic_ids)
+        .subscribe({
+          next: (section) => console.log(section)
+        });
+    }
+  }
+}
+function OfficeHoursSectionDraft(title: string) {
+  throw new Error('Function not implemented.');
 }

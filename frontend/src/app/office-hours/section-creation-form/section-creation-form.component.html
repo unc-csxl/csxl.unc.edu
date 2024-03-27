@@ -1,15 +1,15 @@
 <form class="page-container" [formGroup]="sectionForm" (ngSubmit)="onSubmit()">
   <mat-card appearance="outlined">
     <div class="card-container">
-      <mat-card-title>Create Event</mat-card-title>
+      <mat-card-title>Create Office Hours Section</mat-card-title>
     </div>
     <mat-divider></mat-divider>
-    <mat-card-subtitle class="card-container"
-      >Office Hours Sections allow for students to check into office hours for
-      your courses. ‘Section Name’ is what will appear to students in your
+    <mat-card-subtitle class="card-container">
+      Office Hours Sections allow for students to check into office hours for
+      your courses. 'Section Name' is what will appear to students in your
       course(s). Select all courses you wish to use this Office Hours section
-      for.</mat-card-subtitle
-    >
+      for.
+    </mat-card-subtitle>
     <mat-card-content class="card-container">
       <p>Section Name:</p>
       <mat-form-field>
@@ -22,17 +22,12 @@
         <mat-select formControlName="academic_sections" multiple required>
           <mat-option
             *ngFor="let section of academicSections"
-            [value]="section.course_id">
-            {{ section.course_id }} - {{ section.number }}
+            [value]="section.id">
+            {{ section.course_id }}-{{ section.number }}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <div class="buttons">
-        <a [routerLink]="['..']">
-          <button mat-stroked-button class="button" type="button">
-            Cancel
-          </button>
-        </a>
         <button
           mat-flat-button
           color="primary"

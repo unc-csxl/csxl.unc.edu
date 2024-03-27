@@ -1,6 +1,7 @@
 import { SectionMember } from '../academics/academics.models';
 import { Room } from '../coworking/coworking.models';
 import { UserSummary } from '../models.module';
+import { Section } from '../academics/academics.models';
 
 export enum TicketState {
   QUEUED,
@@ -47,7 +48,7 @@ export interface TicketDraft {
 
 export interface Event {
   id: number;
-  oh_section: Section;
+  oh_section: OfficeHoursSection;
   room: Room;
   type: EventType;
   description: string;
@@ -69,7 +70,17 @@ export interface EventPartial {
   end_time: Date | null;
 }
 
-export interface Section {
+export interface OfficeHoursSectionDraft {
+  title: string;
+}
+
+export interface OfficeHoursSection {
   id: number;
   title: string;
+}
+
+export interface OfficeHoursSectionDetails {
+  id: number;
+  title: string;
+  sections: Section[];
 }

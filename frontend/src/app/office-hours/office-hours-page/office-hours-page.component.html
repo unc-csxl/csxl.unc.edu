@@ -15,9 +15,9 @@
     <mat-icon>add</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item>Create Office Hours Section</button>
+    <button mat-menu-item (click)="openFormDialog()">
+      Create Office Hours Section
+    </button>
     <button mat-menu-item>Item 2</button>
   </mat-menu>
-
-  <section-creation-form> </section-creation-form>
 </div>
