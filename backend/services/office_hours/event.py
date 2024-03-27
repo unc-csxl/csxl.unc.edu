@@ -2,6 +2,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
 from ...entities.office_hours import OfficeHoursEventEntity
@@ -101,6 +102,19 @@ class OfficeHoursEventService:
         return None
 
     def get_event_tickets(
+        self, subject: User, oh_event: OfficeHoursEventDetails
+    ) -> list[OfficeHoursTicketDetails]:
+        """Retrieves all office hours tickets in an event from the table.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_event: the OfficeHoursEventDetails to query by.
+        Returns:
+            list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
+        """
+        query = select(OfficeHoursTicketEntity)
+        return None
+
+    def get_queued_and_called_event_tickets(
         self, subject: User, oh_event: OfficeHoursEventDetails
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets in an event from the table.

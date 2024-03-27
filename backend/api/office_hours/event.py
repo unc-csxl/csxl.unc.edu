@@ -126,3 +126,23 @@ def get_oh_tickets_by_event(
     """
     oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
     return oh_event_service.get_event_tickets(subject, oh_event)
+
+
+@api.get(
+    "/{oh_event_id}/queue",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
+)
+def get_oh_tickets_by_event(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of all queued and called OH tickets by OH event
+
+    Returns:
+        list[OfficeHoursTicketDetails]: OH tickets fitting the criteria within the given event
+    """
+    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
+    return oh_event_service.get_event_tickets(subject, oh_event)
