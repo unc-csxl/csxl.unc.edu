@@ -39,13 +39,10 @@ export class SectionCreationFormComponent implements OnInit {
   onSubmit() {
     if (this.sectionForm.valid) {
       let oh_title = this.sectionForm.value.section_name ?? '';
-      let section_draft: OfficeHoursSectionDraft = { title: oh_title };
+      let oh_section: OfficeHoursSectionDraft = { title: oh_title };
       let academic_ids = this.sectionForm.value.academic_sections ?? [];
-      console.log(oh_title);
-      console.log(section_draft);
-      console.log(academic_ids);
       this.officeHoursService
-        .createSection(section_draft, academic_ids)
+        .createSection(oh_section, academic_ids)
         .subscribe({
           next: (section) => console.log(section)
         });

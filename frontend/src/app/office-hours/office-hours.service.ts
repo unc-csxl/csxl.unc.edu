@@ -41,7 +41,7 @@ export class OfficeHoursService {
     academic_ids: number[]
   ): Observable<OfficeHoursSectionDetails> {
     const requestBody = {
-      section_draft: section_draft,
+      oh_section: section_draft,
       academic_ids: academic_ids
     };
     return this.http.post<OfficeHoursSectionDetails>(
