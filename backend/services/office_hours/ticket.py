@@ -214,9 +214,12 @@ class OfficeHoursTicketService:
             ResourceNotFoundException if cannot office hours section for given office hours event.
         """
 
+        oh_events = oh_section_entity = self._session.query(
+            OfficeHoursEventEntity
+        ).all()
         # Find Office Hours Section
         oh_section_entity = (
-            self._session.query(OfficeHoursSectionEntity)
+            self._session.query(OfficeHoursEventEntity)
             .filter(OfficeHoursEventEntity.id == oh_event_id)
             .filter(
                 OfficeHoursSectionEntity.id

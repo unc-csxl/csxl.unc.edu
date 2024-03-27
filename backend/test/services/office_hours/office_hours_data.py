@@ -19,7 +19,7 @@ from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
 )
-from ....models.office_hours.ticket import OfficeHoursTicket
+from ....models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
 from ....models.room import Room
@@ -108,6 +108,19 @@ cancelled_ticket = OfficeHoursTicket(
     state=TicketState.CANCELED,
     created_at=datetime.now(),
 )
+
+draft_ticket = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="help!!",
+    type=TicketType.ASSIGNMENT_HELP,
+)
+
+draft_ticket_with_non_existing_event = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=4),
+    description="help!!",
+    type=TicketType.ASSIGNMENT_HELP,
+)
+
 
 comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
 
