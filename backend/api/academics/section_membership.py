@@ -11,8 +11,8 @@ from ...services.academics import SectionMembershipService
 from ...models import User
 from ...models.academics import Section, SectionDetails
 
-__authors__ = ["Ajay Gandecha"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Meghan Sun"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 

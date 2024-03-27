@@ -10,7 +10,14 @@
     mat-fab
     color="accent"
     aria-label="Example icon button with a delete icon"
-    class="add-button">
+    class="add-button"
+    [matMenuTriggerFor]="menu">
     <mat-icon>add</mat-icon>
   </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>Create Office Hours Section</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+  <section-creation-form> </section-creation-form>
 </div>

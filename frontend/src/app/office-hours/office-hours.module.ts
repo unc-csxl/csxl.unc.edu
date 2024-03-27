@@ -20,6 +20,7 @@ import { CourseCard } from './widgets/course-card/course-card-widget';
 import { OpenEventHoursCard } from './widgets/open-event-hours-card/open-event-hours-card-widget';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SectionCreationFormComponent } from './section-creation-form/section-creation-form.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { SectionCreationFormComponent } from './section-creation-form/section-cr
     FormsModule,
     MatInputModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatMenuModule
   ]
 })
 export class OfficeHoursModule {}
