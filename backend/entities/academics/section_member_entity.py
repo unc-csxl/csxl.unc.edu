@@ -13,7 +13,13 @@ from ...models.academics.section_member import SectionMember
 
 from ..entity_base import EntityBase
 
-__authors__ = ["Ajay Gandecha", "Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
+__authors__ = [
+    "Ajay Gandecha",
+    "Sadie Amato",
+    "Madelyn Andrews",
+    "Bailey DeSouza",
+    "Meghan Sun",
+]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -73,7 +79,13 @@ class SectionMemberEntity(EntityBase):
             pronouns=self.user.pronouns,
             member_role=self.member_role,
         )
-    
+
+    @classmethod
+    def from_draft_model(cls, user_id: int, section_id: int) -> Self:
+        return cls(
+            section_id=section_id, user_id=user_id, member_role=RosterRole.STUDENT
+        )
+
     @classmethod
     def from_model(cls, model: SectionMember) -> Self:
         """
@@ -91,7 +103,7 @@ class SectionMemberEntity(EntityBase):
             pronouns=model.user.pronouns,
             member_role=model.member_role,
         )
-    
+
     def to_details_model(self) -> SectionMemberDetails:
         """
         Converts a `SectionMemberEntity` object into a `SectionMemberDetails` model object
@@ -106,5 +118,5 @@ class SectionMemberEntity(EntityBase):
             pronouns=self.user.pronouns,
             member_role=self.member_role,
             created_tickets=[ticket.to_model() for ticket in self.created_tickets],
-            called_tickets= [ticket.to_model() for ticket in self.called_tickets]
+            called_tickets=[ticket.to_model() for ticket in self.called_tickets],
         )
