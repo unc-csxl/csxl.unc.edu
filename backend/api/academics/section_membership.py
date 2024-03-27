@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from backend.models.academics.section_member import SectionMember
 from backend.models.office_hours.section import OfficeHoursSectionPartial
+from backend.models.office_hours.section_details import OfficeHoursSectionDetails
 from ..authentication import registered_user
 from ...services.academics import SectionMembershipService
 from ...models import User
@@ -25,7 +26,7 @@ openapi_tags = {
 
 @api.post("", response_model=list[SectionMember], tags=["Academics"])
 def add_user_memberships(
-    oh_sections: list[OfficeHoursSectionPartial],
+    oh_sections: list[OfficeHoursSectionDetails],
     subject: User = Depends(registered_user),
     section_membership: SectionMembershipService = Depends(),
 ) -> list[SectionMember]:

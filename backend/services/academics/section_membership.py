@@ -13,6 +13,7 @@ from backend.models.office_hours.section import (
     OfficeHoursSectionDraft,
     OfficeHoursSectionPartial,
 )
+from backend.models.office_hours.section_details import OfficeHoursSectionDetails
 
 from ...database import db_session
 from ...models.academics import Section
@@ -47,7 +48,7 @@ class SectionMembershipService:
     def add_user_oh_memberships(
         self,
         subject: User,
-        oh_sections: list[OfficeHoursSectionPartial],
+        oh_sections: list[OfficeHoursSectionDetails],
     ) -> list[SectionMember]:
         """Retrieves all sections from the table
 
