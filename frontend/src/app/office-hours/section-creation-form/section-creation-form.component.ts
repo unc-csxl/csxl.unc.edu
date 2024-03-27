@@ -1,3 +1,11 @@
+/**
+ * The Section Creation Form Component shows options to create a new office hours section and handles the creation.
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Section, Term } from 'src/app/academics/academics.models';

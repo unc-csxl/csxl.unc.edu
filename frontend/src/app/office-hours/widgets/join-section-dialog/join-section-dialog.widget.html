@@ -17,6 +17,16 @@
             <mat-option>Example Course 2</mat-option>
           </mat-select>
         </mat-form-field>
+        <div class="buttons">
+          <button
+            mat-flat-button
+            color="primary"
+            class="button"
+            type="submit"
+            [disabled]="!joinSectionForm.valid">
+            Submit
+          </button>
+        </div>
       </mat-card-content>
     </mat-card>
   </form>
