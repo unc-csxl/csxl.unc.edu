@@ -147,6 +147,7 @@ class OfficeHoursSectionService:
             .join(SectionEntity)
             .where(SectionEntity.term_id == term_id)
             .order_by(OfficeHoursSectionEntity.title)
+            .distinct()
         )
         entities = self._session.scalars(query).all()
 
