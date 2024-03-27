@@ -3,7 +3,7 @@
 This API is used to access OH section data."""
 
 from datetime import datetime
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...services.office_hours.ticket import OfficeHoursTicketService
 from ...models.office_hours.event_details import OfficeHoursEventDetails
@@ -42,7 +42,31 @@ def new_oh_section(
     Returns:
         OfficeHoursSectionDetails: OH Section created
     """
-    return oh_section_service.create(subject, oh_section, academic_ids)
+    try:
+        return oh_section_service.create(subject, oh_section, academic_ids)
+    except PermissionError as e:
+        raise HTTPException(status_code=403, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get("", response_model=list[OfficeHoursSectionDetails], tags=["Office Hours"])
+def get_all_sections(
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursSectionDetails]:
+    """
+    Gets all OH sections
+
+    Returns:
+        list[OfficeHoursSectionDetails]: A list of all OH sections
+    """
+    try:
+        return oh_section_service.get_all_sections(subject)
+    except PermissionError as e:
+        raise HTTPException(status_code=403, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
