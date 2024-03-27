@@ -124,7 +124,9 @@ def get_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given event
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
+    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
+        subject, oh_event_id
+    )
     return oh_event_service.get_event_tickets(subject, oh_event)
 
 
@@ -133,7 +135,7 @@ def get_oh_tickets_by_event(
     response_model=list[OfficeHoursTicketDetails],
     tags=["Office Hours"],
 )
-def get_oh_tickets_by_event(
+def get_queued_and_called_oh_tickets_by_event(
     oh_event_id: int,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
@@ -144,5 +146,7 @@ def get_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets fitting the criteria within the given event
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
-    return oh_event_service.get_event_tickets(subject, oh_event)
+    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
+        subject, oh_event_id
+    )
+    return oh_event_service.get_queued_and_called_event_tickets(subject, oh_event)

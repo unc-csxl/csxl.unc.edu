@@ -1,6 +1,9 @@
+from operator import or_
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from ...models.office_hours.ticket_state import TicketState
 
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
@@ -95,12 +98,16 @@ class OfficeHoursEventService:
         """
         # TODO
         # Select all entries in the `Course` table and sort by end date
-        query = select(OfficeHoursEventEntity).filter(OfficeHoursEventEntity.id == oh_event_id)
+        query = select(OfficeHoursEventEntity).filter(
+            OfficeHoursEventEntity.id == oh_event_id
+        )
         entity = self._session.scalars(query).one_or_none()
 
         # Raise an error if no entity was found.
         if entity is None:
-            raise ResourceNotFoundException(f"Event with id: {oh_event_id} does not exist.")
+            raise ResourceNotFoundException(
+                f"Event with id: {oh_event_id} does not exist."
+            )
 
         # Return the model
         return entity.to_details_model()
@@ -130,8 +137,16 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
-        query = select(OfficeHoursTicketEntity)
-        return None
+        # TODO: permissions
+
+        query = (
+            select(OfficeHoursTicketEntity)
+            .where(OfficeHoursTicketEntity.oh_event_id == oh_event.id)
+            .order_by(OfficeHoursTicketEntity.created_at)
+        )
+
+        entities = self._session.scalars(query).all()
+        return [entity.to_details_model() for entity in entities]
 
     def get_queued_and_called_event_tickets(
         self, subject: User, oh_event: OfficeHoursEventDetails
@@ -143,5 +158,21 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
-        # TODO
-        return None
+        # TODO: permissions
+
+        query = (
+            select(OfficeHoursTicketEntity)
+            .where(OfficeHoursTicketEntity.oh_event_id == oh_event.id)
+            .where(
+                or_(
+                    OfficeHoursTicketEntity.state == TicketState.QUEUED,
+                    OfficeHoursTicketEntity.state == TicketState.CALLED,
+                )
+            )
+            .order_by(
+                OfficeHoursTicketEntity.created_at
+            )  # may need to alter this ordering
+        )
+
+        entities = self._session.scalars(query).all()
+        return [entity.to_details_model() for entity in entities]
