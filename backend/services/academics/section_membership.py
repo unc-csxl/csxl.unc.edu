@@ -44,31 +44,38 @@ class SectionMembershipService:
         self._session = session
         self._permission_svc = permission_svc
 
-    def add_user_oh_membership(
+    def add_user_oh_memberships(
         self,
         subject: User,
-        oh_section: OfficeHoursSectionPartial,
-    ) -> SectionMember:
+        oh_sections: list[OfficeHoursSectionPartial],
+    ) -> list[SectionMember]:
         """Retrieves all sections from the table
 
         Returns:
             list[SectionDetails]: List of all `SectionDetails`
         """
+        # TODO: Permissions
+        section_memberships: list[SectionMemberEntity] = []
+        for oh_section in oh_sections:
+            academic_sections = (
+                self._session.query(SectionEntity)
+                .filter(SectionEntity.office_hours_id == oh_section.id)
+                .all()
+            )
 
-        academic_sections = (
-            self._session.query(SectionEntity)
-            .filter(SectionEntity.office_hours_id == oh_section.id)
-            .all()
-        )
+            if len(academic_sections) == 0:
+                raise Exception("No Academic Section Found")
 
-        if len(academic_sections) == 0:
-            raise Exception("No Academic Section Found")
+            section_membership = SectionMemberEntity.from_draft_model(
+                user_id=subject.id, section_id=academic_sections[0].id
+            )
 
-        section_membership = SectionMemberEntity.from_draft_model(
-            user_id=subject.id, section_id=academic_sections[0].id
-        )
+            self._session.add(section_membership)
+            self._session.commit()
 
-        self._session.add(section_membership)
-        self._session.commit()
+            section_memberships.append(section_membership)
 
-        return section_membership.to_flat_model()
+        return [
+            section_membership.to_flat_model()
+            for section_membership in section_memberships
+        ]
