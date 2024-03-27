@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from ...models.office_hours.section import OfficeHoursSection
+
 from ..room import Room
 from .course import Course
 from .term import Term
@@ -22,3 +24,4 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
+    office_hours_section: OfficeHoursSection

@@ -164,8 +164,19 @@ class OfficeHoursSectionService:
         Returns:
             list[OfficeHoursSectionDetails]: List of all `OfficeHoursSectionDetails`
         """
-        # TODO
-        return []
+        # TODO: Permission
+
+        query = (
+            select(OfficeHoursSectionEntity)
+            .where(SectionMemberEntity.user_id == subject.id)
+            .where(SectionEntity.id == SectionMemberEntity.section_id)
+            .where(SectionEntity.term_id == term_id)
+            .where(OfficeHoursSectionEntity.id == SectionEntity.office_hours_id)
+            .distinct()
+        )
+
+        entities = self._session.scalars(query).all()
+        return [entity.to_details_model() for entity in entities]
 
     def get_section_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
