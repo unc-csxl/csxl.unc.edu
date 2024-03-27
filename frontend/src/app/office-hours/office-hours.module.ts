@@ -22,6 +22,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { SectionCreationFormComponent } from './section-creation-form/section-creation-form.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { SectionCreationDialog } from './widgets/section-creation-dialog/section-creation-dialog.widget';
+import { JoinSectionDialog } from './widgets/join-section-dialog/join-section-dialog.widget';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { SectionCreationDialog } from './widgets/section-creation-dialog/section
     CourseCard,
     SectionCreationDialog,
     OpenEventHoursCard,
-    SectionCreationFormComponent
+    SectionCreationFormComponent,
+    JoinSectionDialog
   ],
   imports: [
     CommonModule,

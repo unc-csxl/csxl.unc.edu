@@ -10,7 +10,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SectionCreationDialog } from '../widgets/section-creation-dialog/section-creation-dialog.widget';
-import { NONE_TYPE } from '@angular/compiler';
+import { JoinSectionDialog } from '../widgets/join-section-dialog/join-section-dialog.widget';
 
 @Component({
   selector: 'app-office-hours-page',
@@ -27,8 +27,15 @@ export class OfficeHoursPageComponent {
 
   constructor(public dialog: MatDialog) {}
 
-  openFormDialog() {
+  openSectionCreationFormDialog() {
     const dialogRef = this.dialog.open(SectionCreationDialog, {
+      height: 'auto',
+      width: 'auto'
+    });
+  }
+
+  openJoinSectionDialog() {
+    const dialogRef = this.dialog.open(JoinSectionDialog, {
       height: 'auto',
       width: 'auto'
     });
