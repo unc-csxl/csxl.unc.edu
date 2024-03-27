@@ -2,7 +2,7 @@
 
 This API is used to access course data."""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from backend.models.academics.section_member import SectionMember
 from backend.models.office_hours.section import OfficeHoursSectionPartial
@@ -23,16 +23,19 @@ openapi_tags = {
 }
 
 
-@api.post("", response_model=SectionMember, tags=["Academics"])
-def add_user_membership(
-    oh_section: OfficeHoursSectionPartial,
+@api.post("", response_model=list[SectionMember], tags=["Academics"])
+def add_user_memberships(
+    oh_sections: list[OfficeHoursSectionPartial],
     subject: User = Depends(registered_user),
     section_membership: SectionMembershipService = Depends(),
-) -> SectionMember:
+) -> list[SectionMember]:
     """
     Get all sections
 
     Returns:
         list[SectionDetails]: All `Section`s in the `Section` database table
     """
-    return section_membership.add_user_oh_membership(subject, oh_section)
+    try:
+        return section_membership.add_user_oh_memberships(subject, oh_sections)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
