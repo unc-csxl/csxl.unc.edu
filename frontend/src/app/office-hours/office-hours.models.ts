@@ -74,6 +74,11 @@ export interface OfficeHoursSectionDraft {
   title: string;
 }
 
+export interface OfficeHoursSectionPartial {
+  id: number;
+  title: string | null;
+}
+
 export interface OfficeHoursSection {
   id: number;
   title: string;

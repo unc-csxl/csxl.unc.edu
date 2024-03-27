@@ -14,10 +14,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import {
   OfficeHoursSectionDetails,
+  OfficeHoursSectionPartial,
   OfficeHoursSectionDraft,
   TicketDetails,
   TicketDraft
 } from './office-hours.models';
+import { SectionMember } from '../academics/academics.models';
 
 @Injectable({
   providedIn: 'root'
@@ -54,5 +56,13 @@ export class OfficeHoursService {
     return this.http.get<OfficeHoursSectionDetails[]>(
       '/api/office-hours/section/term/' + term_id
     );
+  }
+
+  joinSection(
+    oh_sections: OfficeHoursSectionDetails[]
+  ): Observable<SectionMember[]> {
+    return this.http.post<SectionMember[]>('/api/academics/section-member', {
+      oh_sections: oh_sections
+    });
   }
 }
