@@ -49,4 +49,10 @@ export class OfficeHoursService {
       requestBody
     );
   }
+
+  getSectionsByTerm(term_id: String): Observable<OfficeHoursSectionDetails[]> {
+    return this.http.get<OfficeHoursSectionDetails[]>(
+      '/api/office-hours/section/term/' + term_id
+    );
+  }
 }

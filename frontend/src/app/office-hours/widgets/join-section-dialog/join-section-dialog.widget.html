@@ -13,8 +13,11 @@
         <mat-form-field>
           <mat-label>Select:</mat-label>
           <mat-select formControlName="oh_section" multiple required>
-            <mat-option>Example Course 1</mat-option>
-            <mat-option>Example Course 2</mat-option>
+            <mat-option
+              *ngFor="let section of officeHoursSections"
+              [value]="section">
+              {{ section.title }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
         <div class="buttons">

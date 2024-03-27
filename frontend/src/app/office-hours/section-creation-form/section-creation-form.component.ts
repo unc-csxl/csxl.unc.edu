@@ -8,10 +8,11 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Section, Term } from 'src/app/academics/academics.models';
+import { Section } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { OfficeHoursService } from '../office-hours.service';
 import { OfficeHoursSectionDraft } from '../office-hours.models';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'section-creation-form',
@@ -24,7 +25,8 @@ export class SectionCreationFormComponent implements OnInit {
   constructor(
     protected formBuilder: FormBuilder,
     private academicService: AcademicsService,
-    private officeHoursService: OfficeHoursService
+    private officeHoursService: OfficeHoursService,
+    protected snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +39,7 @@ export class SectionCreationFormComponent implements OnInit {
   });
 
   getAcademicSections() {
+    // TODO: use the current term instead of F23; Academics service has a method to get the current term
     this.academicService.getTerm('F23').subscribe((term) => {
       this.academicService.getSectionsByTerm(term).subscribe((sections) => {
         this.academicSections = sections;
@@ -52,11 +55,15 @@ export class SectionCreationFormComponent implements OnInit {
       this.officeHoursService
         .createSection(oh_section, academic_ids)
         .subscribe({
-          next: (section) => console.log(section)
+          next: (section) => console.log(section),
+          error: (err) => this.onError(err)
         });
     }
   }
-}
-function OfficeHoursSectionDraft(title: string) {
-  throw new Error('Function not implemented.');
+
+  private onError(err: any): void {
+    this.snackBar.open('Error: Unable to create Office Hours Section', '', {
+      duration: 2000
+    });
+  }
 }
