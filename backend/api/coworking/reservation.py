@@ -49,20 +49,6 @@ def get_reservation(
     return reservation_svc.get_reservation(subject, id)
 
 
-@api.get("/room-reservations/", tags=["Coworking"])
-def get_all_reservations_by_state(
-    state: ReservationState,
-    subject: User = Depends(registered_user),
-    reservation_svc: ReservationService = Depends(),
-) -> Sequence[Reservation]:
-    try:
-        return reservation_svc.get_current_reservations_for_user(
-            subject=subject, focus=subject, state=state
-        )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
-
 @api.put("/reservation/{id}", tags=["Coworking"])
 def update_reservation(
     reservation: ReservationPartial,
