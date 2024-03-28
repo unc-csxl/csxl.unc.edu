@@ -41,9 +41,11 @@ export class SectionCreationFormComponent implements OnInit {
   getAcademicSections() {
     // TODO: use the current term instead of F23; Academics service has a method to get the current term
     this.academicService.getTerm('F23').subscribe((term) => {
-      this.academicService.getSectionsByTerm(term).subscribe((sections) => {
-        this.academicSections = sections;
-      });
+      this.academicService
+        .getSectionsWithNoOfficeHoursByTerm(term)
+        .subscribe((sections) => {
+          this.academicSections = sections;
+        });
     });
   }
 

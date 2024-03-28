@@ -51,8 +51,25 @@ class OfficeHoursSectionService:
             OfficeHoursSectionDetails: Object added to table
         """
 
-        # Permissions - Checks If User Has Proper Role to Create and If a Member in a Section
+        # PERMISSIONS
+
+        # 1. Checks If User Has Proper Role to Create and If is a Member in a Section
         self._check_membership_and_edit_permissions(subject.id, academic_ids)
+
+        # 2. Check If Give Academic Sections Already Have an Office Hours Event
+        # Query and Execution to Update All Academic Section With New OH Section ID
+        query = select(SectionEntity).where(SectionEntity.id.in_(academic_ids))
+        academic_section_entities = self._session.scalars(query).all()
+
+        for entity in academic_section_entities:
+            if entity.office_hours_id is not None:
+                raise Exception("Office Hours Section Already Exists!")
+
+        # Check If All Academic Sections Were Queried
+        if len(academic_section_entities) != len(academic_ids):
+            raise ResourceNotFoundException(
+                f"Unable to Fetch All Academic Sections. Only {len(academic_section_entities)} out of {len(academic_ids)} was found."
+            )
 
         # Create new object
         oh_section_entity = OfficeHoursSectionEntity.from_draft_model(oh_section)
@@ -62,16 +79,6 @@ class OfficeHoursSectionService:
 
         # Save Changes To Get OH Section ID
         self._session.commit()
-
-        # Query and Execution to Update All Academic Section With New OH Section ID
-        query = select(SectionEntity).where(SectionEntity.id.in_(academic_ids))
-        academic_section_entities = self._session.scalars(query).all()
-
-        # Check If All Academic Sections Were Queried
-        if len(academic_section_entities) != len(academic_ids):
-            raise ResourceNotFoundException(
-                f"Unable to Fetch All Academic Sections. Only {len(academic_section_entities)} out of {len(academic_ids)} was found."
-            )
 
         # Now Update Office Hours ID
         for entity in academic_section_entities:
@@ -228,7 +235,7 @@ class OfficeHoursSectionService:
             SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
         Raises:
             ResourceNotFoundException if cannot user is not a member in given academic section.
-            PermissionError if user creating event is not a UTA/GTA/Instructor
+            PermissionError if user creating event is not a Instructor
         """
 
         query = (
@@ -244,9 +251,9 @@ class OfficeHoursSectionService:
                 f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_ids}"
             )
 
-        if section_member_entity.member_role == RosterRole.STUDENT:
+        if section_member_entity.member_role != RosterRole.INSTRUCTOR:
             raise PermissionError(
-                f"Section Member is a Student. User Does not have Permision Create an Office Hours Section."
+                f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
             )
 
         return section_member_entity
