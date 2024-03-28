@@ -58,6 +58,18 @@ export class ReservationService {
     );
   }
 
+  checkin(reservation: Reservation) {
+    let endpoint = `/api/coworking/reservation/${reservation.id}`;
+    let payload = { id: reservation.id, state: 'CHECKED_IN' };
+    return this.http.put<ReservationJSON>(endpoint, payload).pipe(
+      map(parseReservationJSON),
+      tap((reservation) => {
+        let rxReservation = this.getRxReservation(reservation.id);
+        rxReservation.set(reservation);
+      })
+    );
+  }
+
   private getRxReservation(id: number): RxReservation {
     let reservation = this.reservations.get(id);
     if (reservation === undefined) {

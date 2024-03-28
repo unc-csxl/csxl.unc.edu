@@ -27,7 +27,6 @@ export class NewReservationPageComponent implements OnInit {
     resolve: { profile: profileResolver }
   };
 
-  public upcomingRoomReservations$!: Observable<Reservation[]>;
   public numHoursStudyRoomReservations$!: Observable<string>;
 
   constructor(
@@ -46,7 +45,6 @@ export class NewReservationPageComponent implements OnInit {
    */
 
   ngOnInit() {
-    this.initUpdateReservationsList();
     this.getNumHoursStudyRoomReservations();
   }
 
@@ -54,18 +52,6 @@ export class NewReservationPageComponent implements OnInit {
     this.router.navigateByUrl('/coworking/new-reservation');
   }
 
-  initUpdateReservationsList() {
-    this.upcomingRoomReservations$ = this.roomReservationService
-      .getReservationsByState('CONFIRMED')
-      .pipe(
-        catchError((err) => {
-          const message = 'Error while fetching upcoming reservations.';
-          this.snackBar.open(message, '', { duration: 8000 });
-          console.error(err);
-          return of([]);
-        })
-      );
-  }
   getNumHoursStudyRoomReservations() {
     this.numHoursStudyRoomReservations$ =
       this.roomReservationService.getNumHoursStudyRoomReservations();
