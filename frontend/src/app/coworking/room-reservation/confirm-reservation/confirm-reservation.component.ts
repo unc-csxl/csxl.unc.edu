@@ -44,7 +44,7 @@ export class ConfirmReservationComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.isConfirmed) return;
     this.roomReservationService
-      .deleteRoomReservation(this.reservation!)
+      .cancel(this.reservation!)
       .subscribe();
   }
 

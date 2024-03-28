@@ -29,7 +29,7 @@ export class CoworkingReservationCard implements OnInit {
 
   constructor(
     public router: Router,
-    public reservationService: RoomReservationService,
+    public roomReservationService: RoomReservationService,
     protected snackBar: MatSnackBar,
     public coworkingService: CoworkingService
   ) {
@@ -54,7 +54,7 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   cancel() {
-    this.reservationService.deleteRoomReservation(this.reservation).subscribe({
+    this.roomReservationService.cancel(this.reservation).subscribe({
       next: () => {
         this.refreshCoworkingHome();
       },
@@ -71,7 +71,7 @@ export class CoworkingReservationCard implements OnInit {
 
   confirm() {
     this.isConfirmed.emit(true);
-    this.reservationService.confirm(this.reservation).subscribe({
+    this.roomReservationService.confirm(this.reservation).subscribe({
       next: () => {
         this.refreshCoworkingHome();
         // this.router.navigateByUrl('/coworking');
@@ -88,7 +88,7 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   checkout() {
-    this.reservationService.checkout(this.reservation).subscribe({
+    this.roomReservationService.checkout(this.reservation).subscribe({
       next: () => this.refreshCoworkingHome(),
       error: (error: Error) => {
         this.snackBar.open(
@@ -102,7 +102,7 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   checkin(): void {
-    this.reservationService.checkin(this.reservation).subscribe({
+    this.roomReservationService.checkin(this.reservation).subscribe({
       next: () => {
         this.refreshCoworkingHome();
       },
