@@ -463,6 +463,8 @@ class ReservationService:
         """
         office_hours = self._policy_svc.office_hours(date=date)
         for room_id, hours in office_hours.items():
+            if room_id not in reserved_date_map:
+                continue
             for start, end in hours:
                 start_idx = max(self._idx_calculation(start, operating_hours_start), 0)
                 end_idx = min(
