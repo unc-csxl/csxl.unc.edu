@@ -37,6 +37,8 @@ import { ApplicationComponent } from './application-home/application-home.compon
 import { UndergradApplicationComponent } from './uta-application/uta-application.component';
 import { UTANoticeComponent } from './uta-notice/uta-notice.component';
 import { ApplicationsRoutingModule } from './ta-application-routing.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import { ApplicationsRoutingModule } from './ta-application-routing.module';
     MatTooltipModule,
     RouterModule,
     ApplicationsRoutingModule,
+    BrowserModule,
+    BrowserAnimationsModule,
     SharedModule
   ]
 })

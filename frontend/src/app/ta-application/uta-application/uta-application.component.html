@@ -192,65 +192,39 @@
   <mat-step [stepControl]="fifthFormGroup">
     <form [formGroup]="fifthFormGroup">
       <ng-template matStepLabel>Course Selection</ng-template>
-      <div className="eligibilityText">
-        <p>Courses Eligible For *</p>
-      </div>
-      <mat-form-field class="example-chip-list">
-        <mat-label>Eligible Courses</mat-label>
-        <mat-chip-grid #eligibleCourses aria-label="Fruit selection">
-          <mat-chip-row *ngFor="let fruit of fruits" (removed)="remove(fruit)">
-            {{ fruit }}
-            <button matChipRemove [attr.aria-label]="'remove ' + fruit">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
-        </mat-chip-grid>
-        <input
-          placeholder="New Fruit..."
-          #fruitInput
-          [formControl]="eligibilityCtrl"
-          [matChipInputFor]="eligibleCourses"
-          [matAutocomplete]="auto"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addEligibility($event)" />
-        <mat-autocomplete
-          #auto="matAutocomplete"
-          (optionSelected)="selectedEligibility($event)">
-          <mat-option
-            *ngFor="let course of filteredEligibility | async"
-            [value]="course">
-            {{ course }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <div className="eligibilityText">
+      <div className="preferenceText">
         <p>Course Preferences *</p>
       </div>
       <mat-form-field class="example-chip-list">
-        <mat-label>Preferred Courses</mat-label>
-        <mat-chip-grid #preferredCourses aria-label="Fruit selection">
-          <mat-chip-row *ngFor="let fruit of fruits" (removed)="remove(fruit)">
-            {{ fruit }}
-            <button matChipRemove [attr.aria-label]="'remove ' + fruit">
+        <mat-label>Preferred Sections</mat-label>
+        <mat-chip-listbox
+          #preferredSections
+          aria-label="Section Preferences selection">
+          <mat-chip
+            *ngFor="let section of selectedSections"
+            (removed)="removeSection(section.course_id)">
+            {{ section.course_id }}
+            <button
+              matChipRemove
+              [attr.aria-label]="'remove ' + section.course_id">
               <mat-icon>cancel</mat-icon>
             </button>
-          </mat-chip-row>
-        </mat-chip-grid>
+          </mat-chip>
+        </mat-chip-listbox>
         <input
-          placeholder="New Fruit..."
-          #fruitInput
+          placeholder="Add section..."
           [formControl]="preferenceCtrl"
-          [matChipInputFor]="preferredCourses"
-          [matAutocomplete]="auto"
+          [matChipInputFor]="preferredSections"
+          [matAutocomplete]="autoPreference"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           (matChipInputTokenEnd)="addPreferences($event)" />
         <mat-autocomplete
-          #auto="matAutocomplete"
+          #autoPreference="matAutocomplete"
           (optionSelected)="selectedPreferences($event)">
           <mat-option
             *ngFor="let section of filteredPreferences | async"
             [value]="section">
-            {{ section }}
+            {{ section.course_id + section.number }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>

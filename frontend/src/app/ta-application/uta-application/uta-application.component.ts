@@ -5,9 +5,10 @@ import { Application } from 'src/app/admin/applications/admin-application.model'
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, filter, map, startWith, switchMap } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Course, Section } from 'src/app/academics/academics.models';
 
 interface OptionSelect {
   value: string;
@@ -143,14 +144,12 @@ export class UndergradApplicationComponent {
   userId!: number | null;
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  eligibilityCtrl = new FormControl('');
   preferenceCtrl = new FormControl('');
-  filteredEligibility: Observable<string[]>;
-  filteredPreferences: Observable<string[]>;
-  fruits: string[] = ['Lemon'];
-  allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  filteredPreferences: Observable<Section[]>;
+  allSections$: Observable<Section[]>;
+  selectedSections: Section[] = [];
 
-  @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement> | undefined;
+  // @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement> | undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -158,61 +157,69 @@ export class UndergradApplicationComponent {
     private router: Router,
     protected snackBar: MatSnackBar
   ) {
-    this.filteredEligibility = this.eligibilityCtrl.valueChanges.pipe(
-      startWith(null),
-      map((fruit: string | null) =>
-        fruit ? this._filter(fruit) : this.allFruits.slice()
-      )
-    );
+    this.allSections$ = applicationService.sections$;
+    applicationService.getSections();
+
     this.filteredPreferences = this.preferenceCtrl.valueChanges.pipe(
-      startWith(null),
-      map((fruit: string | null) =>
-        fruit ? this._filter(fruit) : this.allFruits.slice()
-      )
+      startWith(''),
+      switchMap((value) => this.filterSections(value!))
     );
   }
 
-  addEligibility(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.fruits.push(value);
-    }
-    event.chipInput!.clear();
-    this.eligibilityCtrl.setValue(null);
+  private filterSections(value: string): Observable<Section[]> {
+    const filterValue = value.toLowerCase();
+    return this.allSections$.pipe(
+      map((sections) =>
+        sections.filter(
+          (section) =>
+            section.course?.subject_code.toLowerCase().includes(filterValue)
+        )
+      )
+    );
   }
 
   addPreferences(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
+    const input = event.chipInput;
+    let value = event.value;
+
     if (value) {
-      this.fruits.push(value);
+      value = value.trim();
+      const selectedSection = this.allSections$.pipe(
+        map((sections) => sections.find((section) => section.id == value)),
+        filter((section) => !!section)
+      );
+
+      selectedSection.subscribe((section) => {
+        if (section && !this.selectedSections.includes(section)) {
+          this.selectedSections.push(section);
+        }
+      });
     }
-    event.chipInput!.clear();
+
+    input?.clear();
+
     this.preferenceCtrl.setValue(null);
   }
 
-  remove(fruit: string): void {
-    const index = this.fruits.indexOf(fruit);
+  removeSection(sectionID: number): void {
+    const index = this.selectedSections.findIndex(
+      (section) => section.id === sectionID
+    );
     if (index >= 0) {
-      this.fruits.splice(index, 1);
+      this.selectedSections.splice(index, 1);
     }
-  }
-
-  selectedEligibility(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.eligibilityCtrl.setValue(null);
   }
 
   selectedPreferences(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
+    const section: Section = event.option.value;
+    if (
+      !this.selectedSections.some(
+        (selectedSection) => selectedSection.id === section.id
+      )
+    ) {
+      this.selectedSections.push(section);
+    }
     this.preferenceCtrl.setValue(null);
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.allFruits.filter((fruit) =>
-      fruit.toLowerCase().includes(filterValue)
-    );
   }
 
   fetchUserProfile() {
