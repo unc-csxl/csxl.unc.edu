@@ -61,8 +61,9 @@ export class OfficeHoursService {
   joinSection(
     oh_sections: OfficeHoursSectionDetails[]
   ): Observable<SectionMember[]> {
-    return this.http.post<SectionMember[]>('/api/academics/section-member', {
-      oh_sections: oh_sections
-    });
+    return this.http.post<SectionMember[]>(
+      '/api/academics/section-member',
+      oh_sections
+    );
   }
 }

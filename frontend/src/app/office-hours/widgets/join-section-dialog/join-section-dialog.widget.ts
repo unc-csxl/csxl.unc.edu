@@ -52,9 +52,11 @@ export class JoinSectionDialog implements OnInit {
         this.joinSectionForm.value.oh_section ?? [];
       console.log(oh_sections);
       console.log(oh_sections[0]);
-      this.officeHoursService.joinSection(oh_sections).subscribe({
-        next: (section_member) => console.log(section_member)
-      });
+      this.officeHoursService
+        .joinSection(oh_sections)
+        .subscribe((section_member) => {
+          console.log(section_member);
+        });
     }
   }
 }
