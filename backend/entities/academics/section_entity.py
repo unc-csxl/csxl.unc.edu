@@ -82,14 +82,8 @@ class SectionEntity(EntityBase):
 
     # All applicants where section is preferred
     # NOTE: This field establishes a many-to-many relationship between the sections and applications table.
-    preferred_applicants: Mapped[list["ApplicationEntity"]] = relationship(
-        secondary=section_application_table, back_populates="preferred_courses"
-    )
-
-    # All applicants where section is eligible (and !preferred?)!!!!
-    # NOTE: This field establishes a many-to-many relationship between the sections and application table.
-    eligible_applicants: Mapped[list["ApplicationEntity"]] = relationship(
-        secondary=section_application_table, back_populates="eligible_courses"
+    preferred_applicants: Mapped[list["UTAEntity"]] = relationship(
+        secondary=section_application_table, back_populates="preferred_sections"
     )
 
     @classmethod
@@ -160,4 +154,10 @@ class SectionEntity(EntityBase):
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,
+            preferred_applicants=[
+                applicant.to_model() for applicant in self.preferred_applicants
+            ],
+            eligible_applicants=[
+                applicant.to_model() for applicant in self.eligible_applicants
+            ],
         )

@@ -2,9 +2,14 @@
 
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from backend.entities.academics.section_entity import SectionEntity
 
 from backend.entities.user_entity import UserEntity
+from backend.models.application_details import (
+    ApplicationDetails,
+    New_UTADetails,
+    UTADetails,
+)
+from backend.models.academics.course import Course
 from .entity_base import EntityBase
 from .section_application_table import section_application_table
 from typing import Self
@@ -46,8 +51,6 @@ class ApplicationEntity(EntityBase):
         return cls(
             id=model.id,
             user_id=model.user_id,
-            user=model.user,
-            previous_sections=model.previous_sections,
         )
 
     def to_model(self) -> Application:
@@ -60,27 +63,36 @@ class ApplicationEntity(EntityBase):
         return Application(
             id=self.id,
             user_id=self.user_id,
-            user=self.user,
-            previous_sections=self.previous_sections,
+        )
+
+    def to_details_model(self) -> ApplicationDetails:
+        """
+        Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
+
+        Returns:
+            ApplicationDetails: `ApplicationDetails` object from the entity
+        """
+        return ApplicationDetails(
+            id=self.id, user_id=self.user_id, user=self.user.to_model()
         )
 
 
-class UTA(Application):
+class UTAEntity(ApplicationEntity):
     """Serves as the database model schema for applications specific to Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to UTA Applications
 
     # Academic Hours student plans to take
-    academic_hours: Mapped[int] = mapped_column(Integer, nullable=False)
+    academic_hours: Mapped[int] = mapped_column(Integer, nullable=True)
 
     # Extracurriculars student is a part of
-    extracurriculars: Mapped[str] = mapped_column(String, nullable=False)
+    extracurriculars: Mapped[str] = mapped_column(String, nullable=True)
 
     # Expected graduation
-    expected_graduation: Mapped[str] = mapped_column(String, nullable=False)
+    expected_graduation: Mapped[str] = mapped_column(String, nullable=True)
 
     # Program pursued
-    program_pursued: Mapped[str] = mapped_column(String, nullable=False)
+    program_pursued: Mapped[str] = mapped_column(String, nullable=True)
 
     # Other programs being pursued
     other_programs: Mapped[str] = mapped_column(String, nullable=True)
@@ -92,19 +104,14 @@ class UTA(Application):
     comp_gpa: Mapped[str] = mapped_column(String, nullable=True)
 
     # Do they want to do this as COMP 227?
-    comp_227: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    comp_227: Mapped[str] = mapped_column(String, nullable=True)
 
     # Open pairing?
-    open_pairing: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    open_pairing: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
     # Sections student prefers
-    preferred_courses: Mapped[list["SectionEntity"]] = relationship(
+    preferred_sections: Mapped[list["SectionEntity"]] = relationship(
         secondary=section_application_table, back_populates="preferred_applicants"
-    )
-
-    # Sections student is eligible for
-    eligible_courses: Mapped[list["SectionEntity"]] = relationship(
-        secondary=section_application_table, back_populates="eligible_applicants"
     )
 
     __mapper_args__ = {
@@ -121,19 +128,19 @@ class UTA(Application):
         Returns:
             ApplicationEntity: Entity created from model
         """
-        return cls(
-            academic_hours=model.academic_hours,
-            extracurriculars=model.extracurriculars,
-            expected_graduation=model.expected_graduation,
-            program_pursued=model.program_pursued,
-            other_programs=model.other_programs,
-            gpa=model.gpa,
-            comp_gpa=model.comp_gpa,
-            comp_227=model.comp_227,
-            open_pairing=model.open_pairing,
-            preferred_courses=model.preferred_courses,
-            eligible_courses=model.eligible_courses,
-        )
+
+        entity = super().from_model(model)
+        entity.academic_hours = model.academic_hours
+        entity.extracurriculars = model.extracurriculars
+        entity.expected_graduation = model.expected_graduation
+        entity.program_pursued = model.program_pursued
+        entity.other_programs = model.other_programs
+        entity.gpa = model.gpa
+        entity.comp_gpa = model.comp_gpa
+        entity.comp_227 = model.comp_227
+        entity.open_pairing = model.open_pairing
+
+        return entity
 
     def to_model(self) -> UTA:
         """
@@ -142,7 +149,10 @@ class UTA(Application):
         Returns:
             Application: `Application` object from the entity
         """
+
+        parent_model = super().to_model().model_dump()
         return UTA(
+            **parent_model,
             academic_hours=self.academic_hours,
             extracurriculars=self.extracurriculars,
             expected_graduation=self.expected_graduation,
@@ -152,29 +162,47 @@ class UTA(Application):
             comp_gpa=self.comp_gpa,
             comp_227=self.comp_227,
             open_pairing=self.open_pairing,
-            preferred_courses=self.preferred_courses,
-            eligible_courses=self.eligible_courses,
+        )
+
+    def to_details_model(self) -> UTADetails:
+        """
+        Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
+
+        Returns:
+            ApplicationDetails: `ApplicationDetails` object from the entity
+        """
+
+        parent_model = super().to_details_model().model_dump()
+        return UTADetails(
+            **parent_model,
+            academic_hours=self.academic_hours,
+            extracurriculars=self.extracurriculars,
+            expected_graduation=self.expected_graduation,
+            program_pursued=self.program_pursued,
+            other_programs=self.other_programs,
+            gpa=self.gpa,
+            comp_gpa=self.comp_gpa,
+            comp_227=self.comp_227,
+            open_pairing=self.open_pairing,
         )
 
 
-class New_UTA(UTA):
+class New_UTA_Entity(UTAEntity):
     """Serves as the database model schema for applications specific to new Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to First-Time UTA Applications
 
     # Intro video explaining why they want to be a TA
-    intro_video: Mapped[str] = mapped_column(String, nullable=False)
+    intro_video: Mapped[str] = mapped_column(String, nullable=True)
 
     # Prior experience in the workforce
-    prior_experience: Mapped[str] = mapped_column(String, nullable=False)
+    prior_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Service experience such as volunteering/workforce
-    service_experience: Mapped[str] = mapped_column(String, nullable=False)
+    service_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Additonal experience that is relevant
-    additional_experience: Mapped[str] = mapped_column(
-        String, nullable=False
-    )  # maybe nullable = true?
+    additional_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     __mapper_args__ = {
@@ -191,12 +219,14 @@ class New_UTA(UTA):
         Returns:
             ApplicationEntity: Entity created from model
         """
-        return cls(
-            intro_video=model.intro_video,
-            prior_experience=model.prior_experience,
-            service_experience=model.service_experience,
-            additional_experience=model.additional_experience,
-        )
+
+        entity = super().from_model(model)
+        entity.intro_video = model.intro_video
+        entity.prior_experience = model.prior_experience
+        entity.service_experience = model.service_experience
+        entity.additional_experience = model.additional_experience
+
+        return entity
 
     def to_model(self) -> New_UTA:
         """
@@ -205,27 +235,51 @@ class New_UTA(UTA):
         Returns:
             Application: `Application` object from the entity
         """
+
+        parent_model = super().to_details_model().model_dump()
         return New_UTA(
+            **parent_model,
             intro_video=self.intro_video,
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
         )
 
+    def to_details_model(self) -> New_UTADetails:
+        """
+        Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
 
-class Returning_UTA(UTA):
+        Returns:
+            ApplicationDetails: `ApplicationDetails` object from the entity
+        """
+
+        parent_model = super().to_details_model().model_dump()
+        return New_UTADetails(
+            **parent_model,
+            intro_video=self.intro_video,
+            prior_experience=self.prior_experience,
+            service_experience=self.service_experience,
+            additional_experience=self.additional_experience,
+            user=self.user.to_model(),
+            preferred_sections=[
+                section.to_model() for section in self.preferred_sections
+            ],
+        )
+
+
+class Returning_UTA_Entity(UTAEntity):
     """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to Returning UTA Applications
 
     # TA Experience and what they have gotten out of it
-    ta_experience: Mapped[str] = mapped_column(String, nullable=False)
+    ta_experience: Mapped[str] = mapped_column(String, nullable=True)
 
     # Best student interaction/moment
-    best_moment: Mapped[str] = mapped_column(String, nullable=False)
+    best_moment: Mapped[str] = mapped_column(String, nullable=True)
 
     # Desired personal improvement
-    desired_improvement: Mapped[str] = mapped_column(String, nullable=False)
+    desired_improvement: Mapped[str] = mapped_column(String, nullable=True)
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     __mapper_args__ = {
@@ -242,11 +296,13 @@ class Returning_UTA(UTA):
         Returns:
             ApplicationEntity: Entity created from model
         """
-        return cls(
-            ta_experience=model.ta_experience,
-            best_moment=model.best_moment,
-            desired_improvement=model.desired_improvement,
-        )
+
+        entity = super().from_model(model)
+        entity.ta_experience = model.ta_experience
+        entity.best_moment = model.best_moment
+        entity.desired_improvement = model.desired_improvement
+
+        return entity
 
     def to_model(self) -> Returning_UTA:
         """
@@ -255,7 +311,10 @@ class Returning_UTA(UTA):
         Returns:
             Application: `Application` object from the entity
         """
+
+        parent_model = super().to_model().model_dump()
         return Returning_UTA(
+            **parent_model,
             ta_experience=self.ta_experience,
             best_moment=self.best_moment,
             desired_improvement=self.desired_improvement,

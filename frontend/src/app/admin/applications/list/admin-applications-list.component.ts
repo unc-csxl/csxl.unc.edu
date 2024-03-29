@@ -10,7 +10,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Organization } from '../../../organization/organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AdminApplicationsService } from '../admin-applications.service';
 import { ApplicationReviewModal } from '../widgets/application-review-modal.widget';
@@ -25,7 +24,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AdminApplicationsListComponent {
   /** Application List */
-  public organizations$: Observable<Organization[]>;
+  public applications$: Observable<Application[]>;
 
   public displayedColumns: string[] = ['name'];
 
@@ -43,7 +42,7 @@ export class AdminApplicationsListComponent {
     private adminApplicationsService: AdminApplicationsService,
     protected applicationReviewDialog: MatDialog
   ) {
-    this.organizations$ = adminApplicationsService.organizations$;
+    this.applications$ = adminApplicationsService.applications$;
     adminApplicationsService.list();
   }
 

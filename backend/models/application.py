@@ -1,7 +1,4 @@
 from pydantic import BaseModel
-from backend.entities.academics.section_entity import SectionEntity
-
-from backend.models.user import User
 
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
@@ -18,8 +15,6 @@ class Application(BaseModel):
 
     id: int | None = None
     user_id: int
-    user: User
-    previous_sections: list[SectionEntity] = []
 
 
 class UTA(Application):
@@ -37,10 +32,8 @@ class UTA(Application):
     other_programs: str
     gpa: str
     comp_gpa: str
-    comp_227: bool
+    comp_227: str
     open_pairing: bool
-    preferred_courses: list[SectionEntity] = []
-    eligible_courses: list[SectionEntity] = []
 
 
 class New_UTA(UTA):

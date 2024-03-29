@@ -1,20 +1,20 @@
 export interface Application {
   id: number;
+  user_id: number;
   user: any;
-  section_member: any[];
-  intro_video: string;
-  prior_experience: string;
-  service_experience: string;
-  additional_experience: string;
-  academics_hours: string;
+  academic_hours: number;
   extracurriculars: string;
   program_pursued: string;
   other_programs: string;
   gpa: string;
   comp_gpa: string;
-  courses_eligible: string[];
-  course_preferences: string[];
+  preferred_courses: unknown[] | undefined;
+  eligible_courses: unknown[] | undefined;
   comp_227: string;
   open_pairing: boolean;
+  intro_video: string;
+  prior_experience: string;
+  service_experience: string;
+  additional_experience: string;
   [key: string]: any;
 }
