@@ -13,11 +13,22 @@ import { Observable } from 'rxjs';
 import { Application } from '../admin/applications/admin-application.model';
 import { RxApplication } from '../admin/applications/rx-applications';
 import { Profile } from '../profile/profile.service';
+import { Course, Section } from '../academics/academics.models';
+import {
+  RxCourseList,
+  RxSectionList
+} from '../academics/academics-admin/rx-academics-admin';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationsService {
   private applications: RxApplication = new RxApplication();
   public applications$: Observable<Application[]> = this.applications.value$;
+
+  private courses: RxCourseList = new RxCourseList();
+  public courses$: Observable<Course[]> = this.courses.value$;
+
+  private sections: RxSectionList = new RxSectionList();
+  public sections$: Observable<Section[]> = this.sections.value$;
 
   constructor(protected http: HttpClient) {}
 
@@ -40,5 +51,17 @@ export class ApplicationsService {
 
   getProfile(): Observable<Profile> {
     return this.http.get<Profile>('/api/profile');
+  }
+
+  getCourses(): void {
+    this.http
+      .get<Course[]>('/api/academics/course')
+      .subscribe((courses) => this.courses.set(courses));
+  }
+
+  getSections(): void {
+    this.http
+      .get<Section[]>('/api/academics/section')
+      .subscribe((sections) => this.sections.set(sections));
   }
 }
