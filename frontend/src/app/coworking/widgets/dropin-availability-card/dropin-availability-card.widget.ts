@@ -6,7 +6,7 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { Seat, SeatAvailability } from 'src/app/coworking/coworking.models';
+import { SeatAvailability } from 'src/app/coworking/coworking.models';
 
 class SeatCategory {
   public title: string;
@@ -100,9 +100,7 @@ export class CoworkingDropInCard implements OnChanges {
           this.categories[SITTING_BENCH].push(seat);
         }
       } else {
-        // Temporary hack for furniture installation
-        // Closing off communal area for office hours
-        // this.categories[COLLAB_AREA].push(seat);
+        this.categories[COLLAB_AREA].push(seat);
       }
     }
   }
@@ -118,9 +116,7 @@ export class CoworkingDropInCard implements OnChanges {
     return [
       new SeatCategory('Sitting Desk with Monitor'),
       new SeatCategory('Standing Desk with Monitor'),
-      new SeatCategory(
-        'Communal Area (Closed while Hallway Renovations Complete)' // TODO: Revert after furniture install
-      )
+      new SeatCategory('Communal Area')
     ];
   }
 }
