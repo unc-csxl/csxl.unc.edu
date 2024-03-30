@@ -3,7 +3,7 @@ FROM node:18 as build
 COPY ./frontend/package.json /workspace/frontend/package.json
 COPY ./frontend/angular.json /workspace/frontend/angular.json
 WORKDIR /workspace/frontend
-ENV NODE_OPTIONS=--max_old_space_size=4096
+ENV NODE_OPTIONS=--max_old_space_size=2000
 RUN npm install -g @angular/cli && npm install
 ENV SHELL=/bin/bash
 RUN ng analytics disable
