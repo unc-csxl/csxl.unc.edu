@@ -24,9 +24,6 @@ def setup_insert_data_fixture(session: Session):
     permission_data.insert_fake_data(session)
     organization_test_data.insert_fake_data(session)
     event_test_data.insert_fake_data(session)
-    # term_data.insert_fake_data(session)
-    # course_data.insert_fake_data(session)
-    # section_data.insert_fake_data(session)
-    # office_hours_data.insert_fake_data(session)
+
     session.commit()
     yield

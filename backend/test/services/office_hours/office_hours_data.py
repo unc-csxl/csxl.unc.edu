@@ -4,6 +4,9 @@ import pytest
 from datetime import datetime, date
 from sqlalchemy.orm import Session
 
+from backend.entities.academics.section_member_entity import SectionMemberEntity
+from backend.models.user import UserIdentity
+
 from ....entities.academics.section_entity import SectionEntity
 from ...services.reset_table_id_seq import reset_table_id_seq
 
@@ -115,6 +118,13 @@ draft_ticket = OfficeHoursTicketDraft(
     type=TicketType.ASSIGNMENT_HELP,
 )
 
+draft_ticket_group = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="help!!",
+    type=TicketType.ASSIGNMENT_HELP,
+    creators=[UserIdentity(id=2), UserIdentity(id=3)],
+)
+
 draft_ticket_with_non_existing_event = OfficeHoursTicketDraft(
     oh_event=OfficeHoursEventPartial(id=4),
     description="help!!",
@@ -167,7 +177,7 @@ def insert_fake_data(session: Session):
             user_created_tickets_table.insert().values(
                 {
                     "ticket_id": ticket_entity.id,
-                    "member_id": section_data.comp110_student.id,
+                    "member_id": 3,
                 }
             )
         )
@@ -176,7 +186,7 @@ def insert_fake_data(session: Session):
     session.query(OfficeHoursTicketEntity).filter(
         OfficeHoursTicketEntity.id.in_([called_ticket.id, closed_ticket.id])
     ).update({"caller_id": section_data.comp110_uta.id})
-
+    session.commit()
     reset_table_id_seq(
         session,
         OfficeHoursTicketEntity,
@@ -189,3 +199,4 @@ def insert_fake_data(session: Session):
 def fake_data_fixture(session: Session):
     insert_fake_data(session)
     session.commit()
+    yield

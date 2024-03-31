@@ -170,7 +170,7 @@ class OfficeHoursTicketService:
             SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
 
         Raises:
-            ResourceNotFoundException if cannot user is not a member in given academic section.
+            PermissionError if cannot user is not a member in given academic section.
         """
 
         # Find Academic Section and Their IDs
@@ -191,7 +191,7 @@ class OfficeHoursTicketService:
         )
 
         if section_member_entity is None:
-            raise ResourceNotFoundException(
+            raise PermissionError(
                 f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
             )
 
