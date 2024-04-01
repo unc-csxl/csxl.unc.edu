@@ -67,8 +67,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatTooltipModule,
     RouterModule,
     ApplicationsRoutingModule,
-    BrowserModule,
-    BrowserAnimationsModule,
     SharedModule
   ]
 })

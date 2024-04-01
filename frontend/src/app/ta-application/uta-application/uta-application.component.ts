@@ -5,7 +5,7 @@ import { Application } from 'src/app/admin/applications/admin-application.model'
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, filter, map, startWith, switchMap } from 'rxjs';
+import { Observable, filter, map, startWith, switchMap, take } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Course, Section } from 'src/app/academics/academics.models';
@@ -184,30 +184,30 @@ export class UndergradApplicationComponent {
 
     if (value) {
       value = value.trim();
-      const selectedSection = this.allSections$.pipe(
-        map((sections) => sections.find((section) => section.id == value)),
-        filter((section) => !!section)
-      );
+      const sectionId = Number(value);
 
-      selectedSection.subscribe((section) => {
-        if (section && !this.selectedSections.includes(section)) {
-          this.selectedSections.push(section);
-        }
-      });
+      this.allSections$
+        .pipe(
+          map((sections) =>
+            sections.find((section) => section.id === sectionId)
+          ),
+          filter((section) => !!section),
+          take(1)
+        )
+        .subscribe((section) => {
+          if (
+            section &&
+            !this.selectedSections.some(
+              (selected) => selected.id === section.id
+            )
+          ) {
+            this.selectedSections.push(section);
+          }
+        });
     }
 
     input?.clear();
-
     this.preferenceCtrl.setValue(null);
-  }
-
-  removeSection(sectionID: number): void {
-    const index = this.selectedSections.findIndex(
-      (section) => section.id === sectionID
-    );
-    if (index >= 0) {
-      this.selectedSections.splice(index, 1);
-    }
   }
 
   selectedPreferences(event: MatAutocompleteSelectedEvent): void {
@@ -220,6 +220,15 @@ export class UndergradApplicationComponent {
       this.selectedSections.push(section);
     }
     this.preferenceCtrl.setValue(null);
+  }
+
+  removeSection(sectionID: number | null): void {
+    const index = this.selectedSections.findIndex(
+      (section) => section.id === sectionID
+    );
+    if (index >= 0) {
+      this.selectedSections.splice(index, 1);
+    }
   }
 
   fetchUserProfile() {
