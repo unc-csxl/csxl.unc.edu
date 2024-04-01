@@ -8,9 +8,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { PermissionService } from 'src/app/permission.service';
+import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
 
 @Component({
   selector: 'app-academics-home',
@@ -26,7 +28,18 @@ export class AcademicsHomeComponent implements OnInit {
     canActivate: []
   };
 
-  constructor(private gearService: NagivationAdminGearService) {}
+  constructor(
+    private gearService: NagivationAdminGearService,
+    protected dialog: MatDialog
+  ) {}
+
+  onUTAClick(): void {
+    const dialogRef = this.dialog.open(UTANoticeComponent, {
+      width: '1000px',
+      autoFocus: false
+    });
+    dialogRef.afterClosed().subscribe();
+  }
 
   ngOnInit() {
     this.gearService.showAdminGear(
