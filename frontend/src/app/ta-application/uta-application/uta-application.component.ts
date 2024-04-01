@@ -134,7 +134,7 @@ export class UndergradApplicationComponent {
     comp_gpa: ['', Validators.required]
   });
   fifthFormGroup = this.formBuilder.group({
-    preferred_courses: this.formBuilder.array([]),
+    preferred_sections: this.formBuilder.array([]),
     comp_227: ['', Validators.required],
     open_pairing: ['', Validators.required]
   });
@@ -253,7 +253,6 @@ export class UndergradApplicationComponent {
         number: section.number,
         term_id: section.term_id,
         meeting_pattern: section.meeting_pattern,
-        lecture_room: section.lecture_room,
         staff: section.staff,
         office_hour_rooms: section.office_hour_rooms,
         override_title: section.override_title || '',
@@ -273,7 +272,7 @@ export class UndergradApplicationComponent {
             other_programs: this.thirdFormGroup.value.other_programs ?? '',
             gpa: this.fourthFormGroup.value.gpa ?? '',
             comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
-            preferred_courses: sectionsToSend,
+            preferred_sections: sectionsToSend,
             comp_227: this.fifthFormGroup.value.comp_227 ?? '',
             open_pairing:
               this.fifthFormGroup.value.open_pairing === 'Yes' ||
@@ -288,6 +287,8 @@ export class UndergradApplicationComponent {
 
           console.log(formData);
           console.log(sectionsToSend);
+          console.log(sectionsToSend[0]);
+          console.log(sectionsToSend[1]);
 
           this.applicationService
             .createApplication(formData as Application)
