@@ -76,7 +76,7 @@ class PolicyService:
                 "SN135": [],
                 "SN137": [],
                 "SN139": [],
-                "SN141": [time(hour=9), time(hour=16)],  # Stotts 301
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
                 "SN144": [],
                 "SN146": [],
                 "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
@@ -86,7 +86,7 @@ class PolicyService:
                 "SN135": [],
                 "SN137": [],
                 "SN139": [],
-                "SN141": [time(hour=9), time(hour=16)],  # Stotts 301
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
                 "SN144": [],
                 "SN146": [],
                 "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
@@ -94,9 +94,9 @@ class PolicyService:
         elif day == WEDNESDAY:
             return {
                 "SN135": [],
-                "SN137": [time(hour=3), time(hour=4)],  # Johnathan Leong
+                "SN137": [(time(hour=15), time(hour=16))],  # Johnathan Leong
                 "SN139": [],
-                "SN141": [time(hour=9), time(hour=16)],  # Stotts 301
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
                 "SN144": [],
                 "SN146": [],
                 "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
@@ -106,7 +106,7 @@ class PolicyService:
                 "SN135": [],
                 "SN137": [],
                 "SN139": [],
-                "SN141": [time(hour=9), time(hour=16)],  # Stotts 301
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
                 "SN144": [],
                 "SN146": [],
                 "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
@@ -116,7 +116,7 @@ class PolicyService:
                 "SN135": [],
                 "SN137": [],
                 "SN139": [],
-                "SN141": [time(hour=9), time(hour=16)],  # Stotts 301
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
                 "SN144": [],
                 "SN146": [],
                 "SN147": [],
