@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, filter, map, startWith, switchMap, take } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Course, Section } from 'src/app/academics/academics.models';
+import { Section } from 'src/app/academics/academics.models';
 
 interface OptionSelect {
   value: string;
@@ -148,8 +148,6 @@ export class UndergradApplicationComponent {
   allSections$: Observable<Section[]>;
   selectedSections: Section[] = [];
 
-  // @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement> | undefined;
-
   constructor(
     private formBuilder: FormBuilder,
     private applicationService: ApplicationsService,
@@ -255,6 +253,9 @@ export class UndergradApplicationComponent {
         number: section.number,
         term_id: section.term_id,
         meeting_pattern: section.meeting_pattern,
+        lecture_room: section.lecture_room,
+        staff: section.staff,
+        office_hour_rooms: section.office_hour_rooms,
         override_title: section.override_title || '',
         override_description: section.override_description || ''
       }));

@@ -3,6 +3,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
+from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application import Application, New_UTA
 from backend.models.application_details import (
     ApplicationDetails,
@@ -74,6 +75,11 @@ class ApplicationService:
             application.id = None
 
         application_entity = New_UTA_Entity.from_model(application)
+
+        existing_section_ids = [section.id for section in application.preferred_sections]
+        existing_sections = self._session.query(SectionEntity).filter(SectionEntity.id.in_(existing_section_ids)).all()
+
+        application_entity.preferred_sections = existing_sections
 
         self._session.add(application_entity)
         self._session.commit()

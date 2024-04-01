@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.user_entity import UserEntity
+from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application_details import (
     ApplicationDetails,
     New_UTADetails,
@@ -226,6 +227,9 @@ class New_UTA_Entity(UTAEntity):
         entity.service_experience = model.service_experience
         entity.additional_experience = model.additional_experience
 
+        preferred_section_entities = [SectionEntity.from_model(section) for section in model.preferred_sections]
+        entity.preferred_sections.extend(preferred_section_entities)
+    
         return entity
 
     def to_model(self) -> New_UTA:

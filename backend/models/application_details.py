@@ -39,7 +39,7 @@ class New_UTADetails(New_UTA):
     """
 
     user: User
-    preferred_sections: list[Section] = []
+    preferred_sections: list[Section]
 
 
 class Returning_UTADetails(Returning_UTA):
