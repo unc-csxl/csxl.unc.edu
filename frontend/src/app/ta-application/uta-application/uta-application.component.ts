@@ -1,6 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  ControlContainer,
+  FormBuilder,
+  FormControl,
+  Validators
+} from '@angular/forms';
 import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
@@ -114,8 +119,13 @@ export class UndergradApplicationComponent {
     }
   ];
 
+  validateIntroVideo(control: FormControl): { [key: string]: any } | null {
+    const valid = control.value && control.value.startsWith('https://youtu.be');
+    return valid ? null : { invalidURL: true };
+  }
+
   firstFormGroup = this.formBuilder.group({
-    intro_video: ['', Validators.required]
+    intro_video: ['', [Validators.required, this.validateIntroVideo.bind(this)]]
   });
   secondFormGroup = this.formBuilder.group({
     prior_experience: ['', Validators.required],
@@ -178,28 +188,28 @@ export class UndergradApplicationComponent {
     );
   }
 
-  addPreferences(event: MatChipInputEvent): void {
-    const input = event.chipInput;
-    let value = event.value;
+  // addPreferences(event: MatChipInputEvent): void {
+  //   const input = event.chipInput;
+  //   let value = event.value;
 
-    if (value) {
-      value = value.trim();
-      const selectedSection = this.allSections$.pipe(
-        map((sections) => sections.find((section) => section.id == value)),
-        filter((section) => !!section)
-      );
+  //   if (value) {
+  //     value = value.trim();
+  //     const selectedSection = this.allSections$.pipe(
+  //       map((sections) => sections.find((section) => section.id == value)),
+  //       filter((section) => !!section)
+  //     );
 
-      selectedSection.subscribe((section) => {
-        if (section && !this.selectedSections.includes(section)) {
-          this.selectedSections.push(section);
-        }
-      });
-    }
+  //     selectedSection.subscribe((section) => {
+  //       if (section && !this.selectedSections.includes(section)) {
+  //         this.selectedSections.push(section);
+  //       }
+  //     });
+  //   }
 
-    input?.clear();
+  //   input?.clear();
 
-    this.preferenceCtrl.setValue(null);
-  }
+  //   this.preferenceCtrl.setValue(null);
+  // }
 
   removeSection(sectionID: number): void {
     const index = this.selectedSections.findIndex(

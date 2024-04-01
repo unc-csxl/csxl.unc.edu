@@ -44,6 +44,10 @@
           placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           formControlName="intro_video"
           required />
+        <mat-error
+          *ngIf="firstFormGroup.get('intro_video')?.errors?.['invalidURL']">
+          Please enter a valid Youtube Link
+        </mat-error>
       </mat-form-field>
     </form>
   </mat-step>
@@ -59,9 +63,9 @@
         <mat-form-field>
           <mat-label>Experience</mat-label>
           <mat-select formControlName="prior_experience" required>
-            <mat-option *ngFor="let o of experienceList" [value]="o.value"
-              >{{ o.viewValue }}</mat-option
-            >
+            <mat-option *ngFor="let o of experienceList" [value]="o.value">
+              {{ o.viewValue }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -155,9 +159,9 @@
         <mat-form-field>
           <mat-label>Program</mat-label>
           <mat-select formControlName="program_pursued" required>
-            <mat-option *ngFor="let o of programsList" [value]="o.value"
-              >{{ o.viewValue }}</mat-option
-            >
+            <mat-option *ngFor="let o of programsList" [value]="o.value">
+              {{ o.viewValue }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -200,7 +204,7 @@
         <mat-chip-listbox
           #preferredSections
           aria-label="Section Preferences selection">
-          <mat-chip
+          <!-- <mat-chip
             *ngFor="let section of selectedSections"
             (removed)="removeSection(section.course_id)">
             {{ section.course_id }}
@@ -209,15 +213,15 @@
               [attr.aria-label]="'remove ' + section.course_id">
               <mat-icon>cancel</mat-icon>
             </button>
-          </mat-chip>
+          </mat-chip> -->
         </mat-chip-listbox>
-        <input
+        <!-- <input
           placeholder="Add section..."
           [formControl]="preferenceCtrl"
           [matChipInputFor]="preferredSections"
           [matAutocomplete]="autoPreference"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addPreferences($event)" />
+          (matChipInputTokenEnd)="addPreferences($event)" /> -->
         <mat-autocomplete
           #autoPreference="matAutocomplete"
           (optionSelected)="selectedPreferences($event)">
@@ -235,9 +239,9 @@
         <mat-form-field>
           <mat-label>COMP 227</mat-label>
           <mat-select formControlName="comp_227">
-            <mat-option *ngFor="let o of comp227" [value]="o.value" required
-              >{{ o.viewValue }}</mat-option
-            >
+            <mat-option *ngFor="let o of comp227" [value]="o.value" required>
+              {{ o.viewValue }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -251,9 +255,12 @@
         <mat-form-field>
           <mat-label>Yes or No</mat-label>
           <mat-select formControlName="open_pairing">
-            <mat-option *ngFor="let o of openPairing" [value]="o.value" required
-              >{{ o.viewValue }}</mat-option
-            >
+            <mat-option
+              *ngFor="let o of openPairing"
+              [value]="o.value"
+              required>
+              {{ o.viewValue }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
