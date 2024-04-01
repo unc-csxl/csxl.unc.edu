@@ -159,8 +159,6 @@ export class UndergradApplicationComponent {
   allSections$: Observable<Section[]>;
   selectedSections: Section[] = [];
 
-  // @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement> | undefined;
-
   constructor(
     private formBuilder: FormBuilder,
     private applicationService: ApplicationsService,
