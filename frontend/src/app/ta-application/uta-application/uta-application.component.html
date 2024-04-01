@@ -235,9 +235,9 @@
         <mat-form-field>
           <mat-label>COMP 227</mat-label>
           <mat-select formControlName="comp_227">
-            <mat-option *ngFor="let o of comp227" [value]="o.value" required
-              >{{ o.viewValue }}</mat-option
-            >
+            <mat-option *ngFor="let o of comp227" [value]="o.value" required>
+              {{ o.viewValue }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -251,9 +251,12 @@
         <mat-form-field>
           <mat-label>Yes or No</mat-label>
           <mat-select formControlName="open_pairing">
-            <mat-option *ngFor="let o of openPairing" [value]="o.value" required
-              >{{ o.viewValue }}</mat-option
-            >
+            <mat-option
+              *ngFor="let o of openPairing"
+              [value]="o.value"
+              required>
+              {{ o.viewValue }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>

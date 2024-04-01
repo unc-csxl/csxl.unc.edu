@@ -178,28 +178,28 @@ export class UndergradApplicationComponent {
     );
   }
 
-  addPreferences(event: MatChipInputEvent): void {
-    const input = event.chipInput;
-    let value = event.value;
+  // addPreferences(event: MatChipInputEvent): void {
+  //   const input = event.chipInput;
+  //   let value = event.value;
 
-    if (value) {
-      value = value.trim();
-      const selectedSection = this.allSections$.pipe(
-        map((sections) => sections.find((section) => section.id == value)),
-        filter((section) => !!section)
-      );
+  //   if (value) {
+  //     value = value.trim();
+  //     const selectedSection = this.allSections$.pipe(
+  //       map((sections) => sections.find((section) => section.id == value)),
+  //       filter((section) => !!section)
+  //     );
 
-      selectedSection.subscribe((section) => {
-        if (section && !this.selectedSections.includes(section)) {
-          this.selectedSections.push(section);
-        }
-      });
-    }
+  //     selectedSection.subscribe((section) => {
+  //       if (section && !this.selectedSections.includes(section)) {
+  //         this.selectedSections.push(section);
+  //       }
+  //     });
+  //   }
 
-    input?.clear();
+  //   input?.clear();
 
-    this.preferenceCtrl.setValue(null);
-  }
+  //   this.preferenceCtrl.setValue(null);
+  // }
 
   removeSection(sectionID: number): void {
     const index = this.selectedSections.findIndex(
