@@ -1,6 +1,6 @@
 /**
  * The Office Hours Page Component serves as the home page for the Office Hours feature.
- * 
+ *
  *
  * @author Madelyn Andrews, Bailey DeSouza, Meghan Sun, Sadie Amato
  * @copyright 2024
@@ -8,6 +8,9 @@
  */
 
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { SectionCreationDialog } from '../widgets/section-creation-dialog/section-creation-dialog.widget';
+import { JoinSectionDialog } from '../widgets/join-section-dialog/join-section-dialog.widget';
 
 @Component({
   selector: 'app-office-hours-page',
@@ -21,4 +24,20 @@ export class OfficeHoursPageComponent {
     component: OfficeHoursPageComponent,
     canActivate: []
   };
+
+  constructor(public dialog: MatDialog) {}
+
+  openSectionCreationFormDialog() {
+    const dialogRef = this.dialog.open(SectionCreationDialog, {
+      height: 'auto',
+      width: 'auto'
+    });
+  }
+
+  openJoinSectionDialog() {
+    const dialogRef = this.dialog.open(JoinSectionDialog, {
+      height: 'auto',
+      width: 'auto'
+    });
+  }
 }

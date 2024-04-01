@@ -139,7 +139,7 @@ def insert_fake_data(session: Session):
 
     # Add Office Hours Sections
     for oh_section in oh_sections:
-        entity = OfficeHoursSectionEntity.from_model(oh_section)
+        entity = OfficeHoursSectionEntity.from_model(model=oh_section)
         session.add(entity)
 
     reset_table_id_seq(

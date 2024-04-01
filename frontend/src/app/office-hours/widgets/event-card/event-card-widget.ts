@@ -6,10 +6,6 @@ import { flushMicrotasks } from '@angular/core/testing';
   templateUrl: './event-card-widget.html',
   styleUrls: ['./event-card-widget.css']
 })
-
-
 export class EventCard {
-
-  constructor() {
-  }
+  constructor() {}
 }

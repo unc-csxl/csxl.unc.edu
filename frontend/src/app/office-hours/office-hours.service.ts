@@ -8,11 +8,14 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import {
+  OfficeHoursSectionDetails,
+  OfficeHoursSectionPartial,
+  OfficeHoursSectionDraft,
   OfficeHoursEventDetails,
   OfficeHoursEventDraft,
   TicketDetails,
@@ -33,6 +36,35 @@ export class OfficeHoursService {
     return this.http.post<TicketDetails>(
       '/api/office-hours/ticket',
       ticket_draft
+    );
+  }
+
+  createSection(
+    section_draft: OfficeHoursSectionDraft,
+    academic_ids: number[]
+  ): Observable<OfficeHoursSectionDetails> {
+    const requestBody = {
+      oh_section: section_draft,
+      academic_ids: academic_ids
+    };
+    return this.http.post<OfficeHoursSectionDetails>(
+      '/api/office-hours/section',
+      requestBody
+    );
+  }
+
+  getSectionsByTerm(term_id: String): Observable<OfficeHoursSectionDetails[]> {
+    return this.http.get<OfficeHoursSectionDetails[]>(
+      '/api/office-hours/section/term/' + term_id
+    );
+  }
+
+  joinSection(
+    oh_sections: OfficeHoursSectionDetails[]
+  ): Observable<SectionMember[]> {
+    return this.http.post<SectionMember[]>(
+      '/api/academics/section-member',
+      oh_sections
     );
   }
 

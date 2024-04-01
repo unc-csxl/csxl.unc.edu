@@ -1,6 +1,9 @@
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from ...entities.academics.section_member_entity import SectionMemberEntity
+from ...models.roster_role import RosterRole
 from ...models.coworking.time_range import TimeRange
 
 from ...models.office_hours.event_details import OfficeHoursEventDetails
@@ -16,8 +19,6 @@ from ...models.office_hours.section_details import OfficeHoursSectionDetails
 from ...models.user import User
 from ..exceptions import ResourceNotFoundException
 
-from ..permission import PermissionService
-
 
 __authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2024"
@@ -30,14 +31,15 @@ class OfficeHoursSectionService:
     def __init__(
         self,
         session: Session = Depends(db_session),
-        permission_svc: PermissionService = Depends(),
     ):
         """Initializes the database session."""
         self._session = session
-        self._permission_svc = permission_svc
 
     def create(
-        self, subject: User, oh_section: OfficeHoursSection
+        self,
+        subject: User,
+        oh_section: OfficeHoursSectionDraft,
+        academic_ids: list[int],
     ) -> OfficeHoursSectionDetails:
         """Creates a new office hours section.
 
@@ -48,22 +50,58 @@ class OfficeHoursSectionService:
         Returns:
             OfficeHoursSectionDetails: Object added to table
         """
-        # TODO: this is a WIP!
-        # ----- Permission check for section creation ----
-        # Check if user has admin permissions
-        # self._permission_svc.enforce(subject, "academics.section.create", f"section/")
 
-        # TODO: investigate what permission checks we will need to do here
+        # PERMISSIONS
+
+        # 1. Checks If User Has Proper Role to Create and If is a Member in a Section
+        self._check_membership_and_edit_permissions(subject.id, academic_ids)
+
+        # 2. Check If Give Academic Sections Already Have an Office Hours Event
+        # Query and Execution to Update All Academic Section With New OH Section ID
+        query = select(SectionEntity).where(SectionEntity.id.in_(academic_ids))
+        academic_section_entities = self._session.scalars(query).all()
+
+        for entity in academic_section_entities:
+            if entity.office_hours_id is not None:
+                raise Exception("Office Hours Section Already Exists!")
+
+        # Check If All Academic Sections Were Queried
+        if len(academic_section_entities) != len(academic_ids):
+            raise ResourceNotFoundException(
+                f"Unable to Fetch All Academic Sections. Only {len(academic_section_entities)} out of {len(academic_ids)} was found."
+            )
 
         # Create new object
-        oh_section_entity = OfficeHoursSectionEntity.from_model(oh_section)
+        oh_section_entity = OfficeHoursSectionEntity.from_draft_model(oh_section)
 
         # Add new object to table and commit changes
         self._session.add(oh_section_entity)
+
+        # Save Changes To Get OH Section ID
+        self._session.commit()
+
+        # Now Update Office Hours ID
+        for entity in academic_section_entities:
+            entity.office_hours_id = oh_section_entity.id
+
         self._session.commit()
 
         # Return added object
         return oh_section_entity.to_details_model()
+
+    def get_all_sections(self, subject: User) -> list[OfficeHoursSectionDetails]:
+        """Fetches All Office Hours Sections.
+
+        Args:
+            subject: a valid User model representing the currently logged in User
+
+        Returns:
+            list[OfficeHoursSectionDetails]: List of all Office Hours Sections
+        """
+        query = select(OfficeHoursSectionEntity)
+        entities = self._session.scalars(query).all()
+
+        return [entity.to_details_model() for entity in entities]
 
     def get_section_by_id(
         self, subject: User, oh_section_id: int
@@ -116,6 +154,7 @@ class OfficeHoursSectionService:
             .join(SectionEntity)
             .where(SectionEntity.term_id == term_id)
             .order_by(OfficeHoursSectionEntity.title)
+            .distinct()
         )
         entities = self._session.scalars(query).all()
 
@@ -181,3 +220,40 @@ class OfficeHoursSectionService:
             oh_section: OfficeHoursSectionDetails to delete
         """
         # TODO
+
+    def _check_membership_and_edit_permissions(
+        self,
+        user_id: int,
+        section_ids: list[int],
+    ) -> SectionMemberEntity:
+        """Checks if a given user is a member in academic sections and has oh section edit permissions. A UTA/GTA/Instructor has this permission.
+        Note: An Office Hours section can have multiple academic sections assoicated with it.
+        Args:
+            user_id: The id of given User of interest
+            section_ids: List of ids of academic section.
+        Returns:
+            SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
+        Raises:
+            ResourceNotFoundException if cannot user is not a member in given academic section.
+            PermissionError if user creating event is not a Instructor
+        """
+
+        query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user_id)
+            .where(SectionMemberEntity.section_id.in_(section_ids))
+        )
+        # Find User Academic Section Entity
+        section_member_entity = self._session.scalars(query).one_or_none()
+
+        if section_member_entity is None:
+            raise ResourceNotFoundException(
+                f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_ids}"
+            )
+
+        if section_member_entity.member_role != RosterRole.INSTRUCTOR:
+            raise PermissionError(
+                f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
+            )
+
+        return section_member_entity
