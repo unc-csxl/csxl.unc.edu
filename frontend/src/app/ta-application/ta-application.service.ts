@@ -59,9 +59,9 @@ export class ApplicationsService {
       .subscribe((courses) => this.courses.set(courses));
   }
 
-  getSections(): void {
-    this.http
-      .get<Section[]>('/api/academics/section')
-      .subscribe((sections) => this.sections.set(sections));
-  }
+  // getSections(): void {
+  //   this.http
+  //     .get<Section[]>('/api/academics/section')
+  //     .subscribe((sections) => this.sections.set(sections));
+  // }
 }
