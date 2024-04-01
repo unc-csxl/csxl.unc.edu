@@ -7,7 +7,6 @@
 import { Section, SectionMember } from '../academics/academics.models';
 import { Room } from '../coworking/coworking.models';
 import { UserSummary } from '../models.module';
-import { Section } from '../academics/academics.models';
 
 export enum TicketState {
   QUEUED,
