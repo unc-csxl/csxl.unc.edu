@@ -21,6 +21,7 @@ import {
   TicketDetails,
   TicketDraft
 } from './office-hours.models';
+import { SectionMember } from '../academics/academics.models';
 
 @Injectable({
   providedIn: 'root'
