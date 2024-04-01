@@ -61,9 +61,11 @@ export class AdminTermComponent {
 
   /** Delete a temr object from the backend database table using the backend HTTP delete request.
    * @param term: term to delete
+   * @param event: event to stop progagation
    * @returns void
    */
-  deleteTerm(term: Term): void {
+  deleteTerm(term: Term, event: Event): void {
+    event.stopPropagation();
     let confirmDelete = this.snackBar.open(
       'Are you sure you want to delete this term?',
       'Delete'

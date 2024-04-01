@@ -80,6 +80,28 @@ edited_comp_110 = Section(
     override_description="",
 )
 
+edited_comp_110_with_room = Section(
+    id=2,
+    course_id=course_data.comp_110.id,
+    number="002",
+    term_id=term_data.f_23.id,
+    meeting_pattern="MW 1:30PM - 2:45PM",
+    override_title="",
+    override_description="",
+    lecture_room=virtual_room,
+)
+
+edited_comp_301_with_room = Section(
+    id=3,
+    course_id=course_data.comp_301.id,
+    number="001",
+    term_id=term_data.f_23.id,
+    meeting_pattern="TTh 8:00AM - 9:15AM",
+    override_title="",
+    override_description="",
+    lecture_room=virtual_room,
+)
+
 new_section = Section(
     id=4,
     course_id=course_data.comp_110.id,
@@ -88,6 +110,17 @@ new_section = Section(
     meeting_pattern="MW 1:30PM - 2:45PM",
     override_title="",
     override_description="",
+)
+
+new_section_with_lecture_room = Section(
+    id=4,
+    course_id=course_data.comp_110.id,
+    number="003",
+    term_id=term_data.f_23.id,
+    meeting_pattern="MW 1:30PM - 2:45PM",
+    override_title="",
+    override_description="",
+    lecture_room=virtual_room,
 )
 
 ta = SectionMemberEntity(
@@ -107,18 +140,9 @@ room_assignment_110_002 = (
     virtual_room.id,
     RoomAssignmentType.LECTURE_ROOM,
 )
-room_assignment_301_001 = (
-    comp_301_001.id,
-    virtual_room.id,
-    RoomAssignmentType.LECTURE_ROOM,
-)
 
 sections = [comp_101_001, comp_101_002, comp_301_001]
-assignments = [
-    room_assignment_110_001,
-    room_assignment_110_002,
-    room_assignment_301_001,
-]
+assignments = [room_assignment_110_001, room_assignment_110_002]
 comp_110_sections = [comp_101_001, comp_101_002]
 
 

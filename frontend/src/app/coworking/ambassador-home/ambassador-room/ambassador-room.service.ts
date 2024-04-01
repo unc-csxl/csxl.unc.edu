@@ -1,15 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RxReservations } from './rx-reservations';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   Reservation,
   ReservationJSON,
   parseReservationJSON
-} from '../coworking.models';
-import { HttpClient } from '@angular/common/http';
+} from '../../coworking.models';
+import { RxReservations } from '../rx-reservations';
 
-@Injectable({ providedIn: 'root' })
-export class AmbassadorService {
+@Injectable({
+  providedIn: 'root'
+})
+export class AmbassadorRoomService {
   private reservations: RxReservations = new RxReservations();
   public reservations$: Observable<Reservation[]> = this.reservations.value$;
 
@@ -17,10 +19,16 @@ export class AmbassadorService {
 
   fetchReservations(): void {
     this.http
-      .get<ReservationJSON[]>('/api/coworking/ambassador')
+      .get<ReservationJSON[]>('/api/coworking/ambassador/rooms')
       .subscribe((reservations) => {
         this.reservations.set(reservations.map(parseReservationJSON));
       });
+  }
+
+  isCheckInDisabled(reservation: Reservation): boolean {
+    const currentTime = new Date();
+    const reservationStartTime = new Date(reservation.start);
+    return reservationStartTime > currentTime;
   }
 
   checkIn(reservation: Reservation): void {

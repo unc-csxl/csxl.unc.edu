@@ -6,7 +6,7 @@ from unittest.mock import create_autospec
 from .....services import PermissionService
 from .....services.coworking import ReservationService
 from .....services.coworking.reservation import ReservationException
-from .....models.coworking import ReservationState
+from .....models.coworking import ReservationState, ReservationRequest
 
 from .....models.user import UserIdentity
 from .....models.coworking.seat import SeatIdentity
@@ -35,6 +35,7 @@ from .reservation_data import fake_data_fixture as insert_order_4
 from ...core_data import user_data
 from .. import operating_hours_data
 from .. import seat_data
+from ... import room_data
 from . import reservation_data
 
 __authors__ = ["Kris Jordan"]
@@ -143,10 +144,9 @@ def test_draft_reservation_future(reservation_svc: ReservationService):
     start = operating_hours_data.future.start
     end = operating_hours_data.future.start + future_reservation_limit
     reservation = reservation_svc.draft_reservation(
-        user_data.user,
+        user_data.ambassador,
         reservation_data.test_request(
             {
-                "users": [UserIdentity(**user_data.user.model_dump())],
                 "seats": [
                     SeatIdentity(**seat.model_dump())
                     for seat in seat_data.reservable_seats
@@ -191,7 +191,8 @@ def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService)
                         SeatIdentity(
                             **reservation_data.reservation_1.seats[0].model_dump()
                         ),
-                    ]
+                    ],
+                    "end": reservation_data.reservation_1.end + timedelta(minutes=8),
                 }
             ),
         )
@@ -204,7 +205,10 @@ def test_draft_reservation_has_reservation_conflict(
         reservation = reservation_svc.draft_reservation(
             user_data.user,
             reservation_data.test_request(
-                {"users": [UserIdentity(**user_data.user.model_dump())]}
+                {
+                    "users": [UserIdentity(**user_data.user.model_dump())],
+                    "end": datetime.now() + TEN_MINUTES,
+                }
             ),
         )
 
@@ -302,3 +306,111 @@ def test_draft_reservation_multiple_users_not_implemented(
                 }
             ),
         )
+
+
+def test_draft_reservation_user_did_not_accepted_agreement(
+    reservation_svc: ReservationService,
+):
+    """This test ensures that a user cannot make a reservation if they did not accept community agreement"""
+    user_data.user.accepted_community_agreement = False
+
+    with pytest.raises(ReservationException):
+        reservation = reservation_svc.draft_reservation(
+            user_data.user,
+            reservation_data.test_request(
+                {"users": [UserIdentity(**user_data.user.model_dump())]}
+            ),
+        )
+
+
+def test_draft_reservation_room_time_conflict(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """Users should not be able to reserve a room when it is already reserved."""
+    # Overlaps beginning
+    start = reservation_data.reservation_6.start - timedelta(minutes=30)
+    end = reservation_data.reservation_6.start + timedelta(minutes=30)
+    conflict_draft = ReservationRequest(
+        seats=[],
+        room=room_data.group_b,
+        start=start,
+        end=end,
+        users=[user_data.ambassador],
+    )
+    with pytest.raises(ReservationException):
+        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
+
+    # Overlaps same
+    conflict_draft.start = reservation_data.reservation_6.start
+    conflict_draft.end = reservation_data.reservation_6.end
+    with pytest.raises(ReservationException):
+        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
+
+    # Overlaps in the middle
+    conflict_draft.start = reservation_data.reservation_6.start + timedelta(minutes=30)
+    conflict_draft.end = reservation_data.reservation_6.end - timedelta(minutes=30)
+    with pytest.raises(ReservationException):
+        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
+
+    # Overlaps at the end
+    conflict_draft.start = reservation_data.reservation_6.end - timedelta(minutes=30)
+    conflict_draft.end = reservation_data.reservation_6.end + timedelta(minutes=30)
+    with pytest.raises(ReservationException):
+        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
+
+
+def test_draft_reservation_room_no_time_conflict_before(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """Users should be able to reserve a room up to the next reservation."""
+    start = reservation_data.reservation_6.start - timedelta(minutes=30)
+    end = reservation_data.reservation_6.start
+    conflict_draft = ReservationRequest(
+        seats=[],
+        room=room_data.group_b,
+        start=start,
+        end=end,
+        users=[user_data.ambassador],
+    )
+    reservation = reservation_svc.draft_reservation(
+        user_data.ambassador, conflict_draft
+    )
+    assert reservation.id is not None
+
+
+def test_draft_reservation_room_no_time_conflict_after(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """Users should be able to reserve a room directly following a reservation end."""
+    start = reservation_data.reservation_6.end
+    end = reservation_data.reservation_6.end + timedelta(minutes=30)
+    conflict_draft = ReservationRequest(
+        seats=[],
+        room=room_data.group_b,
+        start=start,
+        end=end,
+        users=[user_data.ambassador],
+    )
+    reservation = reservation_svc.draft_reservation(
+        user_data.ambassador, conflict_draft
+    )
+    assert reservation.id is not None
+
+
+def test_draft_reservation_different_room_time_conflict(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    """Users should be able to reserve rooms with time conflicts if they are different rooms."""
+    start = reservation_data.reservation_6.start
+    end = reservation_data.reservation_6.end
+    conflict_draft = ReservationRequest(
+        seats=[],
+        room=room_data.group_a,  # Existing test reservation is group_b
+        start=start,
+        end=end,
+        users=[user_data.ambassador],
+    )
+    reservation = reservation_svc.draft_reservation(
+        user_data.ambassador, conflict_draft
+    )
+    assert reservation.id is not None

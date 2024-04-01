@@ -2,6 +2,8 @@
 
 from unittest.mock import create_autospec
 
+from backend.models.coworking.reservation import ReservationState
+
 from .....services.coworking import ReservationService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -29,7 +31,13 @@ from ...core_data import user_data
 from .. import seat_data
 from . import reservation_data
 
-__authors__ = ["Kris Jordan"]
+__authors__ = [
+    "Kris Jordan",
+    "Nick Wherthey",
+    "Yuvraj Jain",
+    "Aarjav Jain",
+    "John Schachte",
+]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -41,9 +49,8 @@ def test_get_current_reservations_for_user_as_user(
     reservations = reservation_svc.get_current_reservations_for_user(
         user_data.user, user_data.user
     )
-    assert len(reservations) == 2
+    assert len(reservations) == 3
     assert reservations[0].id == reservation_data.reservation_1.id
-    assert reservations[1].id == reservation_data.reservation_5.id
 
     reservations = reservation_svc.get_current_reservations_for_user(
         user_data.ambassador, user_data.ambassador
@@ -66,3 +73,13 @@ def test_get_current_reservations_for_user_permissions(
         "coworking.reservation.read",
         f"user/{user_data.user.id}",
     )
+
+
+def test_get_current_reservation_for_user_by_state(reservation_svc: ReservationService):
+    """Get reservation for user by state."""
+    reservations = reservation_svc.get_current_reservations_for_user(
+        user_data.user, user_data.user, ReservationState.CHECKED_IN
+    )
+    assert len(reservations) == 1
+    assert reservations[0].id == reservation_data.reservation_1.id
+    assert reservations[0].state == reservation_data.reservation_1.state

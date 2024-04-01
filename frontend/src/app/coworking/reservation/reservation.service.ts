@@ -14,7 +14,7 @@ import { RxReservation } from './rx-reservation';
 export class ReservationService {
   private reservations: Map<number, RxReservation> = new Map();
 
-  constructor(private http: HttpClient) {}
+  constructor(protected http: HttpClient) {}
 
   get(id: number): Observable<Reservation> {
     let reservation = this.getRxReservation(id);

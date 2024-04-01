@@ -1,53 +1,36 @@
+/**
+ * This component is the primary screen for ambassadors at the check-in desk.
+ *
+ * @author Kris Jordan <kris@cs.unc.edu>
+ * @copyright 2023 - 2024
+ * @license MIT
+ */
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Route } from '@angular/router';
-import { permissionGuard } from 'src/app/permission.guard';
-import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, Subscription, map, mergeMap, tap, timer } from 'rxjs';
-import { Reservation } from '../coworking.models';
-import { AmbassadorService } from './ambassador.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-coworking-ambassador-home',
   templateUrl: './ambassador-home.component.html',
   styleUrls: ['./ambassador-home.component.css']
 })
-export class AmbassadorPageComponent implements OnInit, OnDestroy {
-  /** Route information to be used in App Routing Module */
-  public static Route: Route = {
-    path: 'ambassador',
-    component: AmbassadorPageComponent,
-    title: 'XL Ambassador',
-    canActivate: [permissionGuard('coworking.reservation.*', '*')],
-    resolve: { profile: profileResolver }
-  };
+export class AmbassadorPageComponent implements OnInit {
+  public links = [
+    {
+      label: 'XL Reservations',
+      path: '/coworking/ambassador/xl',
+      default: true
+    },
+    { label: 'Room Reservations', path: '/coworking/ambassador/room' }
+  ];
 
-  reservations$: Observable<Reservation[]>;
-  upcomingReservations$: Observable<Reservation[]>;
-  activeReservations$: Observable<Reservation[]>;
-
-  columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
-
-  private refreshSubscription!: Subscription;
-
-  constructor(public ambassadorService: AmbassadorService) {
-    this.reservations$ = this.ambassadorService.reservations$;
-    this.upcomingReservations$ = this.reservations$.pipe(
-      map((reservations) => reservations.filter((r) => r.state === 'CONFIRMED'))
-    );
-    this.activeReservations$ = this.reservations$.pipe(
-      map((reservations) =>
-        reservations.filter((r) => r.state === 'CHECKED_IN')
-      )
-    );
-  }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.refreshSubscription = timer(0, 5000)
-      .pipe(tap((_) => this.ambassadorService.fetchReservations()))
-      .subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.refreshSubscription.unsubscribe();
+    // Find the default link and navigate to it
+    const defaultLink = this.links.find((link) => link.default);
+    if (defaultLink) {
+      this.router.navigate([defaultLink.path]);
+    }
   }
 }

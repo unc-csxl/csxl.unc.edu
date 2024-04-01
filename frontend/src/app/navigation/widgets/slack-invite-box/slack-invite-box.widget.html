@@ -1,0 +1,56 @@
+<mat-card class="slack-dialog" appearance="outlined" #dialogContainer>
+  <mat-card-content class="content-container">
+    <h2>Join the CS Experience Labs' Slack Community</h2>
+    <p>
+      The CSXL Slack to get updates about the XL, learn about new opportunities
+      for CS students, and connect with fellow CS majors!
+    </p>
+    <h3>XL Slack Community Agreements</h3>
+    <p>
+      Please read and accept the following expectations of the XL Slack
+      Community:
+    </p>
+    <p>
+      <mat-checkbox [(ngModel)]="realName"
+        >I will use my <strong>real first and last names</strong> in my XL Slack
+        Profile.</mat-checkbox
+      >
+    </p>
+    <p>
+      <mat-checkbox [(ngModel)]="profilePicture"
+        >I will add set my <strong>profile picture</strong> to
+        <strong>include my face</strong>, and <em>no one else's face</em>, upon
+        joining.</mat-checkbox
+      >
+    </p>
+    <p>
+      <mat-checkbox [(ngModel)]="communityStandards"
+        >I will abide by the rules and standards detailed in the
+        <strong>CSXL Community Standards Agreement</strong>.</mat-checkbox
+      >
+    </p>
+    <p>
+      <mat-checkbox [(ngModel)]="fAroundFindOut"
+        >I understand my
+        <strong>failure to comply to these community standards</strong> may
+        result in <strong>being removed from the XL Slack community</strong> and
+        <strong>unable to make use of CS XL facilities</strong> in Sitterson
+        Hall and the Fred Brooks Building.</mat-checkbox
+      >
+    </p>
+    <mat-card-actions align="end">
+      <button
+        mat-button
+        mat-dialog-close
+        (click)="openSlackInvite()"
+        *ngIf="acceptAll; else pleaseAcceptAll">
+        Join the XL Slack
+      </button>
+      <ng-template #pleaseAcceptAll>
+        <button mat-button disabled="disabled">
+          Accept All XL Slack Community Agreements to Join
+        </button>
+      </ng-template>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
