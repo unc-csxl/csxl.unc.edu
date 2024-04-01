@@ -193,17 +193,16 @@
     <form [formGroup]="fifthFormGroup">
       <ng-template matStepLabel>Course Selection</ng-template>
       <div className="preferenceText">
-        <p>Course Preferences *</p>
+        <p>Section Preferences *</p>
       </div>
-      <mat-form-field class="example-chip-list">
-        <mat-label>Preferred Sections</mat-label>
+      <div class="example-chip-list">
         <mat-chip-listbox
           #preferredSections
           aria-label="Section Preferences selection">
           <mat-chip
             *ngFor="let section of selectedSections"
-            (removed)="removeSection(section.course_id)">
-            {{ section.course_id }}
+            (removed)="removeSection(section.id)">
+            {{ section.course_id }} - {{ section.number }}
             <button
               matChipRemove
               [attr.aria-label]="'remove ' + section.course_id">
@@ -211,23 +210,24 @@
             </button>
           </mat-chip>
         </mat-chip-listbox>
+      </div>
+      <mat-form-field>
         <input
+          matInput
           placeholder="Add section..."
           [formControl]="preferenceCtrl"
-          [matChipInputFor]="preferredSections"
-          [matAutocomplete]="autoPreference"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addPreferences($event)" />
-        <mat-autocomplete
-          #autoPreference="matAutocomplete"
-          (optionSelected)="selectedPreferences($event)">
-          <mat-option
-            *ngFor="let section of filteredPreferences | async"
-            [value]="section">
-            {{ section.course_id + section.number }}
-          </mat-option>
-        </mat-autocomplete>
+          [matAutocomplete]="autoPreference" />
       </mat-form-field>
+      <mat-autocomplete
+        #autoPreference="matAutocomplete"
+        (optionSelected)="selectedPreferences($event)">
+        <mat-option
+          *ngFor="let section of filteredPreferences | async"
+          [value]="section">
+          {{ section.course_id }} - {{ section.number }}
+        </mat-option>
+      </mat-autocomplete>
+
       <div className="peerText">
         <p>COMP227 *</p>
       </div>

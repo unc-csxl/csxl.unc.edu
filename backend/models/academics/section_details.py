@@ -23,4 +23,3 @@ class SectionDetails(Section):
     course: Course
     term: Term
     preferred_applicants: list[UTA]
-    eligible_applicants: list[UTA]
