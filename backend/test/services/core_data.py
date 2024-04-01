@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session
 from .organization import organization_test_data
 from .event import event_test_data
 from . import permission_data, role_data, user_data
+from .academics import section_data, term_data, course_data
+from .office_hours import office_hours_data
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
