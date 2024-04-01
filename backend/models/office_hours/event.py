@@ -37,6 +37,8 @@ class OfficeHoursEvent(OfficeHoursEventDraft):
     """
 
     id: int
+    oh_section: OfficeHoursSection
+    room: Room
 
 
 class OfficeHoursEventPartial(OfficeHoursEvent):

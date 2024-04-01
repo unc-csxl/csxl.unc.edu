@@ -1,0 +1,87 @@
+.card-container {
+    padding: 1rem;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.badge {
+    display: inline-block;
+    border-radius: 20px;
+    margin-right: 8px;
+    padding: 0 16px;
+    color: white;
+}
+
+.open .badge {
+    font-size: 1.25rem;
+    background: #256123;
+}
+
+.closed .badge {
+    background: #612d23;
+}
+
+.number-badge {
+    display: inline-block;
+    font-size: 1.75rem;
+    background: #4786c6;
+    width: 36px;
+    height: 50%;
+    text-align: center;
+    margin-bottom: 0;
+    margin-left: 8px;
+    margin-right: 8px;
+    padding-bottom: 0;
+    line-height: 36px;
+    border-radius: 100%;
+    color: white;
+}
+
+.button-row {
+    display: flex;
+    padding: 1.25rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.operating-hours {
+    flex: 1;
+    justify-self: left;
+    line-height: 2rem;
+    font-size: 1.25rem;
+}
+
+.location {
+    flex: 1;
+    text-align: right;
+    line-height: 2rem;
+    font-size: 1.25rem;
+}
+
+.header-row {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.queued {
+    flex: 1;
+    justify-self: left;
+    padding-left: 4rem;
+    line-height: 32px;
+    font-size: 1.25rem;
+}
+
+.helped {
+    flex: 1;
+    text-align: right;
+    padding-right: 4rem;
+    line-height: 32px;
+    font-size: 1.25rem;
+}
+
+button {
+    font-size: 1.25rem;
+}
