@@ -67,8 +67,6 @@ import { ApplicationsRoutingModule } from './ta-application-routing.module';
     MatTooltipModule,
     RouterModule,
     ApplicationsRoutingModule,
-    // BrowserModule,
-    // BrowserAnimationsModule,
     SharedModule
   ]
 })
