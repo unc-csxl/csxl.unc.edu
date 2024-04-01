@@ -172,7 +172,7 @@ def _query_confirmed_reservations_by_date(
 
 If you want a deeper understanding of how these functions works, we recommened reading [this section.](#future-developers)
 
-## 3. Route to get all upcoming reservations for a user
+## 3. Route to get all upcoming reservations for a user (deprecated)
 
 We added the following code into the backend API layer:
 
@@ -319,7 +319,7 @@ This preexisting widget is the method by which reservations are displayed to the
 
 For this feature, the backend primarily focuses on identifying available and reserved rooms, and also displays users' reservations. To understand the backend functionality, it's recommended to follow the outlined path where we move top-down i.e, we start at the API layer and move down to the queries that interact with the persistent storage.
 
-### 1. API Layer
+### 1. API Layer (deprecated)
 
 We recommend by checking out the code present in `backend/api/coworking/reservation.py`. Since this is the first layer that interacts with the frontend, it is the best to understand how the code is working. In this file we added the following routes:
 
