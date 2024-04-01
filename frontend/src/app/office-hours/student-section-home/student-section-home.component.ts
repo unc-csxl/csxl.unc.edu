@@ -1,6 +1,6 @@
 /**
  * The Student Section Home Component serves as a hub for students to view office hours events, see upcoming schedules, and view their ticket history
- * 
+ *
  *
  * @author Madelyn Andrews, Bailey DeSouza, Meghan Sun, Sadie Amato
  * @copyright 2024
@@ -17,7 +17,7 @@ import { Component } from '@angular/core';
 export class StudentSectionHomeComponent {
   public static Route = {
     // placeholder route
-    path: 'spring-2024/comp110',
+    path: 'spring-2024/:id',
     title: 'COMP 110: Intro to Programming',
     component: StudentSectionHomeComponent,
     canActivate: []

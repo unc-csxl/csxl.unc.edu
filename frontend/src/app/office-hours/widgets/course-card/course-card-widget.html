@@ -1,8 +1,8 @@
 <mat-card appearance="outlined">
   <div class="card-container">
-    <mat-card-title>COMP 110: Introduction to Programming</mat-card-title>
+    <mat-card-title>{{ section.title }}</mat-card-title>
     <div class="open-button">
-      <a [routerLink]="['spring-2024/comp110']">
+      <a [routerLink]="['spring-2024/', section.id]">
         <button
           mat-icon-button
           color="primary"
@@ -15,10 +15,12 @@
   <mat-divider></mat-divider>
   <div>
     <mat-card-content>
-      <div class="location">Location(s): SN11, Virtual</div>
+      <div class="location">Location(s):</div>
       <open-event-hours-card-widget></open-event-hours-card-widget>
       <div class="upcoming-hours-button">
-        <button mat-stroked-button (click)="openDialog()">Upcoming Hours</button>
+        <button mat-stroked-button (click)="openDialog()">
+          Upcoming Hours
+        </button>
       </div>
     </mat-card-content>
   </div>

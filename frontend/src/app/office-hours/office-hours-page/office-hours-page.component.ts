@@ -7,17 +7,19 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SectionCreationDialog } from '../widgets/section-creation-dialog/section-creation-dialog.widget';
 import { JoinSectionDialog } from '../widgets/join-section-dialog/join-section-dialog.widget';
+import { OfficeHoursService } from '../office-hours.service';
+import { OfficeHoursSectionDetails } from '../office-hours.models';
 
 @Component({
   selector: 'app-office-hours-page',
   templateUrl: './office-hours-page.component.html',
   styleUrls: ['./office-hours-page.component.css']
 })
-export class OfficeHoursPageComponent {
+export class OfficeHoursPageComponent implements OnInit {
   public static Route = {
     path: '',
     title: 'Office Hours',
@@ -25,7 +27,12 @@ export class OfficeHoursPageComponent {
     canActivate: []
   };
 
-  constructor(public dialog: MatDialog) {}
+  protected userSections: OfficeHoursSectionDetails[] = [];
+
+  constructor(
+    public dialog: MatDialog,
+    private officeHoursService: OfficeHoursService
+  ) {}
 
   openSectionCreationFormDialog() {
     const dialogRef = this.dialog.open(SectionCreationDialog, {
@@ -39,5 +46,17 @@ export class OfficeHoursPageComponent {
       height: 'auto',
       width: 'auto'
     });
+  }
+
+  ngOnInit(): void {
+    this.getUserSectionsByTerm('F23');
+  }
+
+  getUserSectionsByTerm(term_id: string) {
+    this.officeHoursService
+      .getUserSectionsByTerm(term_id)
+      .subscribe((sections) => {
+        (this.userSections = sections), console.log(sections);
+      });
   }
 }

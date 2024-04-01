@@ -114,17 +114,6 @@ new_section = Section(
     override_description="",
 )
 
-new_section_with_lecture_room = Section(
-    id=4,
-    course_id=course_data.comp_110.id,
-    number="004",
-    term_id=term_data.f_23.id,
-    meeting_pattern="MW 3:30PM - 4:45PM",
-    override_title="",
-    override_description="",
-    lecture_room=virtual_room,
-)
-
 # Add Users to Academic Sections in Respective Roles
 comp110_instructor = SectionMemberEntity(
     id=1,

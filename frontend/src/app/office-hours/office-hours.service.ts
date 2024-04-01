@@ -54,6 +54,14 @@ export class OfficeHoursService {
     );
   }
 
+  getUserSectionsByTerm(
+    term_id: string
+  ): Observable<OfficeHoursSectionDetails[]> {
+    return this.http.get<OfficeHoursSectionDetails[]>(
+      '/api/office-hours/section/user/term/' + term_id
+    );
+  }
+
   getSectionsByTerm(term_id: String): Observable<OfficeHoursSectionDetails[]> {
     return this.http.get<OfficeHoursSectionDetails[]>(
       '/api/office-hours/section/term/' + term_id

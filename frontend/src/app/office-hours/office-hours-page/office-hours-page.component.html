@@ -2,8 +2,9 @@
   <h2>Your Courses</h2>
 
   <h3>Spring 2024:</h3>
-
-  <course-card-widget></course-card-widget>
+  <course-card-widget
+    *ngFor="let section of userSections"
+    [section]="section"></course-card-widget>
 
   <!-- Dummy add class button for access in-progress component -->
   <button

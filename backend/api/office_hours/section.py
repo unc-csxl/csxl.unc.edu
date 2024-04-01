@@ -151,23 +151,23 @@ def get_oh_sections_by_term_id(
     return oh_section_service.get_sections_by_term(subject, term_id)
 
 
-# @api.get(
-#     "/user/term/{term_id}",
-#     response_model=list[OfficeHoursSectionDetails],
-#     tags=["Office Hours"],
-# )
-# def get_oh_sections_by_user_and_term(
-#     term_id: str,
-#     subject: User = Depends(registered_user),
-#     oh_section_service: OfficeHoursSectionService = Depends(),
-# ) -> list[OfficeHoursSectionDetails]:
-#     """
-#     Gets list of OH sections the currrent user is in during a given term
+@api.get(
+    "/user/term/{term_id}",
+    response_model=list[OfficeHoursSectionDetails],
+    tags=["Office Hours"],
+)
+def get_oh_sections_by_user_and_term(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursSectionDetails]:
+    """
+    Gets list of OH sections the currrent user is in during a given term
 
-#     Returns:
-#         list[OfficeHoursSectionDetails]: User's OH sections within the given term
-#     """
-#     return oh_section_service.get_user_sections_by_term(subject, term_id)
+    Returns:
+        list[OfficeHoursSectionDetails]: User's OH sections within the given term
+    """
+    return oh_section_service.get_user_sections_by_term(subject, term_id)
 
 
 # @api.get(

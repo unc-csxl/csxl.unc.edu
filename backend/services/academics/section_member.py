@@ -25,7 +25,7 @@ from ...entities.academics import CourseEntity
 from ...entities.academics import SectionRoomEntity
 from ..permission import PermissionService
 
-from ...services.exceptions import ResourceNotFoundException
+from ..exceptions import ResourceNotFoundException
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
