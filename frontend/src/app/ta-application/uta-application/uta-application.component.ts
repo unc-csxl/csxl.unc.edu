@@ -135,7 +135,6 @@ export class UndergradApplicationComponent {
   });
   fifthFormGroup = this.formBuilder.group({
     preferred_courses: this.formBuilder.array([]),
-    eligible_courses: this.formBuilder.array([]),
     comp_227: ['', Validators.required],
     open_pairing: ['', Validators.required]
   });
@@ -250,6 +249,16 @@ export class UndergradApplicationComponent {
       this.fourthFormGroup.valid &&
       this.fifthFormGroup.valid
     ) {
+      const sectionsToSend = this.selectedSections.map((section) => ({
+        id: section.id,
+        course_id: section.course_id,
+        number: section.number,
+        term_id: section.term_id,
+        meeting_pattern: section.meeting_pattern,
+        override_title: section.override_title || '',
+        override_description: section.override_description || ''
+      }));
+
       this.applicationService.getProfile().subscribe({
         next: (userDetails) => {
           const formData: Omit<Application, 'id'> = {
@@ -263,8 +272,7 @@ export class UndergradApplicationComponent {
             other_programs: this.thirdFormGroup.value.other_programs ?? '',
             gpa: this.fourthFormGroup.value.gpa ?? '',
             comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
-            preferred_courses: this.fifthFormGroup.value.preferred_courses,
-            eligible_courses: this.fifthFormGroup.value.eligible_courses,
+            preferred_courses: sectionsToSend,
             comp_227: this.fifthFormGroup.value.comp_227 ?? '',
             open_pairing:
               this.fifthFormGroup.value.open_pairing === 'Yes' ||
@@ -278,6 +286,7 @@ export class UndergradApplicationComponent {
           };
 
           console.log(formData);
+          console.log(sectionsToSend);
 
           this.applicationService
             .createApplication(formData as Application)
