@@ -157,7 +157,4 @@ class SectionEntity(EntityBase):
             preferred_applicants=[
                 applicant.to_model() for applicant in self.preferred_applicants
             ],
-            eligible_applicants=[
-                applicant.to_model() for applicant in self.eligible_applicants
-            ],
         )
