@@ -160,7 +160,7 @@ def insert_fake_data(session: Session):
             user_created_tickets_table.insert().values(
                 {
                     "ticket_id": ticket_entity.id,
-                    "member_id": section_data.comp110_student.id,
+                    "member_id": 3,
                 }
             )
         )
