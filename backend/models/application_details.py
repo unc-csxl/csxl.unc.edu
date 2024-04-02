@@ -29,7 +29,6 @@ class UTADetails(UTA, ApplicationDetails):
     of the `Application` database in the PostgreSQL database.
     """
 
-    # user: User
     preferred_sections: list[Section]
 
 
@@ -40,9 +39,6 @@ class New_UTADetails(New_UTA, UTADetails):
     This model is based on the `UTA` model, which defines the shape
     of the `Application` database in the PostgreSQL database.
     """
-
-    # user: User
-    # preferred_sections: list[Section]
 
 
 class Returning_UTADetails(Returning_UTA):
