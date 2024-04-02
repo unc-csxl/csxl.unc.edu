@@ -141,6 +141,11 @@ class UTAEntity(ApplicationEntity):
         entity.comp_227 = model.comp_227
         entity.open_pairing = model.open_pairing
 
+        preferred_section_entities = [
+            SectionEntity.from_model(section) for section in model.preferred_sections
+        ]
+        entity.preferred_sections.extend(preferred_section_entities)
+
         return entity
 
     def to_model(self) -> UTA:
@@ -185,6 +190,10 @@ class UTAEntity(ApplicationEntity):
             comp_gpa=self.comp_gpa,
             comp_227=self.comp_227,
             open_pairing=self.open_pairing,
+            # user=self.user.to_model(),
+            preferred_sections=[
+                section.to_model() for section in self.preferred_sections
+            ],
         )
 
 
@@ -227,9 +236,9 @@ class New_UTA_Entity(UTAEntity):
         entity.service_experience = model.service_experience
         entity.additional_experience = model.additional_experience
 
-        preferred_section_entities = [SectionEntity.from_model(section) for section in model.preferred_sections]
-        entity.preferred_sections.extend(preferred_section_entities)
-    
+        # preferred_section_entities = [SectionEntity.from_model(section) for section in model.preferred_sections]
+        # entity.preferred_sections.extend(preferred_section_entities)
+
         return entity
 
     def to_model(self) -> New_UTA:
@@ -264,10 +273,10 @@ class New_UTA_Entity(UTAEntity):
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
-            user=self.user.to_model(),
-            preferred_sections=[
-                section.to_model() for section in self.preferred_sections
-            ],
+            # user=self.user.to_model(),
+            # preferred_sections=[
+            #     section.to_model() for section in self.preferred_sections
+            # ],
         )
 
 
