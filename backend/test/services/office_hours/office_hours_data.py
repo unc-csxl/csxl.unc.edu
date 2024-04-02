@@ -19,7 +19,7 @@ from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
 )
-from ....models.office_hours.ticket import OfficeHoursTicket
+from ....models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
 from ....models.room import Room
@@ -110,6 +110,12 @@ cancelled_ticket = OfficeHoursTicket(
 )
 
 comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
+
+ticket_draft = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="I need help",
+    type=TicketType.ASSIGNMENT_HELP,
+)
 
 
 def insert_fake_data(session: Session):
