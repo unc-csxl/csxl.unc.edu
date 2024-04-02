@@ -21,7 +21,7 @@ class ApplicationDetails(Application):
     user: User
 
 
-class UTADetails(UTA):
+class UTADetails(UTA, ApplicationDetails):
     """
     Pydantic model to represent a `UTA Application`.
 
@@ -29,17 +29,20 @@ class UTADetails(UTA):
     of the `Application` database in the PostgreSQL database.
     """
 
-
-class New_UTADetails(New_UTA):
-    """
-    Pydantic model to represent a `UTA Application`.
-
-    This model is based on the `UTA` model, which defines the shape
-    of the `Application` database in the PostgreSQL database.
-    """
-
-    user: User
+    # user: User
     preferred_sections: list[Section]
+
+
+class New_UTADetails(New_UTA, UTADetails):
+    """
+    Pydantic model to represent a `UTA Application`.
+
+    This model is based on the `UTA` model, which defines the shape
+    of the `Application` database in the PostgreSQL database.
+    """
+
+    # user: User
+    # preferred_sections: list[Section]
 
 
 class Returning_UTADetails(Returning_UTA):
