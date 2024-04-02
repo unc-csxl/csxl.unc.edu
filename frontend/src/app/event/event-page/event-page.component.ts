@@ -15,14 +15,12 @@ import {
   OnDestroy
 } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { eventResolver } from '../event.resolver';
 import { ActivatedRoute, ActivationEnd, Params, Router } from '@angular/router';
-import { Permission, Profile } from 'src/app/profile/profile.service';
+import { Profile } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { EventService } from '../event.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
-import { EventListAdminComponent } from '../event-list-admin/event-list-admin.component';
 
 import { PaginatedEvent } from 'src/app/pagination';
 import {
@@ -95,7 +93,6 @@ export class EventPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public datePipe: DatePipe,
-    public eventFilterPipe: EventFilterPipe,
     public eventService: EventService,
     private gearService: NagivationAdminGearService
   ) {

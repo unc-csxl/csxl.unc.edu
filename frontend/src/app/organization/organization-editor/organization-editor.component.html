@@ -126,18 +126,13 @@
           formControlName="heel_life"
           name="heel_life" />
       </mat-form-field>
-    </mat-card-content>
-    <mat-card-actions>
-      <!-- Cancel Button -->
-      <button mat-stroked-button type="button" (click)="onCancel()">
-        Cancel
-      </button>
       <!-- Submit Button -->
       <button
         mat-stroked-button
         type="submit"
-        [disabled]="organizationForm.invalid">
-        Save
+        [disabled]="organizationForm.invalid"
+        class="save-button">
+        SAVE
       </button>
     </mat-card-content>
     <mat-card-actions class="button-container"> </mat-card-actions>
