@@ -1,0 +1,24 @@
+.card-container {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    flex-grow: 1rem;
+}
+
+.open-button {
+    align-items: right;
+}
+
+.location {
+    font-size: 1.2rem;
+}
+
+.upcoming-hours-button {
+    flex: 1;
+    justify-self: right;
+    text-align: right;
+}

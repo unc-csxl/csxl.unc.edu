@@ -117,16 +117,8 @@ class OfficeHoursTicketService:
         Returns:
             OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
         """
-        entity = self._session.get(OfficeHoursTicketEntity, oh_ticket_id)
-
-        # Check if result is null
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"No event found with matching ID: {oh_ticket_id}"
-            )
-
-        # Convert entry to a model and return
-        return entity.to_details_model()
+        # TODO
+        return None
 
     def update(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial

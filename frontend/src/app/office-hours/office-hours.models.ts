@@ -67,7 +67,7 @@ export interface TicketDraft {
 
 export interface OfficeHoursEvent {
   id: number;
-  oh_section: Section;
+  oh_section: OfficeHoursSection;
   room: Room;
   type: OfficeHoursEventType;
   description: string;

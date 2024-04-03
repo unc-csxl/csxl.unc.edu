@@ -1,0 +1,36 @@
+<mat-dialog-content>
+  <form
+    class="page-container"
+    [formGroup]="joinSectionForm"
+    (ngSubmit)="onSubmit()">
+    <mat-card appearance="outlined">
+      <div class="card-container">
+        <mat-card-title>Join Course(s)</mat-card-title>
+      </div>
+      <mat-divider></mat-divider>
+      <mat-card-content class="card-container">
+        <p>Course(s):</p>
+        <mat-form-field>
+          <mat-label>Select:</mat-label>
+          <mat-select formControlName="oh_section" multiple required>
+            <mat-option
+              *ngFor="let section of officeHoursSections"
+              [value]="section">
+              {{ section.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="buttons">
+          <button
+            mat-flat-button
+            color="primary"
+            class="button"
+            type="submit"
+            [disabled]="!joinSectionForm.valid">
+            Submit
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</mat-dialog-content>

@@ -108,6 +108,27 @@ class SectionService:
         # Return the model
         return entity.to_details_model()
 
+    def get_by_term_and_no_office_hours(self, term_id: int) -> list[SectionDetails]:
+        """Retrieves all sections from the table by term and that don't an OH Section associated to it.
+
+        Args:
+            term_id: term to be query.
+        Returns:
+            list[SectionDetails]: List of all `SectionDetails`
+        """
+
+        # Select all entries in the `Section` table
+        query = (
+            select(SectionEntity)
+            .where(SectionEntity.term_id == term_id)
+            .where(SectionEntity.office_hours_id.is_(None))
+            .order_by(SectionEntity.course_id, SectionEntity.number)
+        )
+        entities = self._session.scalars(query).all()
+
+        # Return the model
+        return [entity.to_details_model() for entity in entities]
+
     def get(
         self, subject_code: str, course_number: str, section_number: str
     ) -> SectionDetails:

@@ -76,8 +76,12 @@ class SectionEntity(EntityBase):
     )
 
     # Optional office hours section ID
-    office_hours_id: Mapped[int] = mapped_column(ForeignKey("office_hours__section.id"), nullable=True)
-    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(back_populates="sections")
+    office_hours_id: Mapped[int] = mapped_column(
+        ForeignKey("office_hours__section.id"), nullable=True
+    )
+    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(
+        back_populates="sections"
+    )
 
     @classmethod
     def from_model(cls, model: Section) -> Self:
@@ -147,4 +151,9 @@ class SectionEntity(EntityBase):
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,
+            office_hours_section=(
+                self.office_hours_section.to_model()
+                if self.office_hours_section is not None
+                else None
+            ),
         )

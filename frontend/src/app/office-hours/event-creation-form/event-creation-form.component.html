@@ -46,8 +46,12 @@
       </mat-form-field>
       <p>Location:</p>
       <mat-form-field>
-        <mat-label>Ex. SN007</mat-label>
-        <input matInput required formControlName="location" />
+        <mat-label>Select a Room!</mat-label>
+        <mat-select required formControlName="location">
+          <mat-option *ngFor="let room of rooms" [value]="room.id">{{
+            room.id
+          }}</mat-option>
+        </mat-select>
       </mat-form-field>
       <p>Location Description:</p>
       <mat-form-field>

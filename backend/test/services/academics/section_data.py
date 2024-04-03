@@ -137,7 +137,27 @@ comp110_student = SectionMemberEntity(
     member_role=RosterRole.STUDENT,
 )
 
-comp_110_members = [comp110_instructor, comp110_uta, comp110_student]
+comp301_instructor = SectionMemberEntity(
+    id=4,
+    user_id=user_data.instructor.id,
+    section_id=comp_301_001.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+comp_301_uta = SectionMemberEntity(
+    id=5,
+    user_id=user_data.ambassador.id,
+    section_id=comp_301_001.id,
+    member_role=RosterRole.UTA,
+)
+
+section_members = [
+    comp110_instructor,
+    comp110_uta,
+    comp110_student,
+    comp301_instructor,
+    comp_301_uta,
+]
 
 # Room Assignments Relative to Section
 room_assignment_110_001 = (
@@ -165,9 +185,12 @@ def insert_fake_data(session: Session):
         entity = SectionEntity.from_model(section)
         session.add(entity)
 
-    for member in comp_110_members:
+    for member in section_members:
         session.add(member)
 
+    reset_table_id_seq(
+        session, SectionMemberEntity, SectionMemberEntity.id, len(section_members) + 1
+    )
     for assignment in assignments:
         section_id, room_id, assignment_type = assignment
         entity = SectionRoomEntity(
