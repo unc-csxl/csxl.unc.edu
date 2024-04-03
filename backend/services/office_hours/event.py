@@ -3,11 +3,10 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...entities.office_hours.section_entity import OfficeHoursSectionEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...models.roster_role import RosterRole
-
-
 from ...services.office_hours.section import OfficeHoursSectionService
 from ...models.office_hours.ticket_state import TicketState
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity

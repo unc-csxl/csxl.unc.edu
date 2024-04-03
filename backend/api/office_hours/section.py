@@ -2,11 +2,13 @@
 
 This API is used to access OH section data."""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
+
+from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...services.office_hours.ticket import OfficeHoursTicketService
-from ...models.office_hours.event_details import OfficeHoursEventDetails
+from ...models.office_hours.event_details import OfficeHoursEvent
 from ...models.office_hours.section import (
     OfficeHoursSection,
     OfficeHoursSectionDraft,
@@ -87,49 +89,75 @@ def get_oh_section_by_id(
 
 
 @api.get(
-    "/{oh_section_id}/events",
-    response_model=list[OfficeHoursEventDetails],
+    "/{oh_section_id}/events/past",
+    response_model=list[OfficeHoursEvent],
     tags=["Office Hours"],
 )
-def get_oh_section_events(
+def get_past_oh_section_events(
     oh_section_id: int,
     subject: User = Depends(registered_user),
     oh_section_service: OfficeHoursSectionService = Depends(),
-) -> list[OfficeHoursEventDetails]:
+) -> list[OfficeHoursEvent]:
     """
-    Gets all events for a given section based on OH section id.
+    Gets all past events for a given section based on OH section id.
 
     Returns:
-        list[OfficeHoursEventDetails]: List of events for the given section
+        list[OfficeHoursEvent]: List of past events for the given section
     """
     oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        oh_section_id
+        subject, oh_section_id
     )
-    return oh_section_service.get_events_by_section(subject, oh_section)
+    return oh_section_service.get_past_events_by_section(subject, oh_section)
 
 
-# @api.get(
-#     "/{oh_section_id}/events/upcoming",
-#     response_model=list[OfficeHoursEventDetails],
-#     tags=["Office Hours"],
-# )
-# def get_oh_section_upcoming_events(
-#     oh_section_id: int,
-#     subject: User = Depends(registered_user),
-#     oh_section_service: OfficeHoursSectionService = Depends(),
-#     start: datetime = datetime.now(),
-#     end: datetime = datetime.now() + datetime.timedelta(weeks=1),
-# ) -> list[OfficeHoursEventDetails]:
-#     """
-#     Gets a list of upcoming OH events within a time range.
+@api.get(
+    "/{oh_section_id}/events/upcoming",
+    response_model=list[OfficeHoursEvent],
+    tags=["Office Hours"],
+)
+def get_upcoming_oh_section_events(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+    start: datetime = datetime.now(),
+    end: datetime = datetime.now() + timedelta(weeks=1),
+) -> list[OfficeHoursEvent]:
+    """
+    Gets a list of upcoming OH events within a time range.
 
-#     Returns:
-#         list[OfficeHoursEventDetails]: OH events associated with a given user in a time range
-#     """
-#     oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-#         oh_section_id
-#     )
-#     return oh_section_service.get_events_by_section(subject, oh_section)
+    Returns:
+        list[OfficeHoursEvent]: OH events associated with a given section in a time range
+    """
+
+    time_range = TimeRange(start=start, end=end)
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+        subject, oh_section_id
+    )
+    return oh_section_service.get_upcoming_events_by_section(
+        subject, oh_section, time_range
+    )
+
+
+@api.get(
+    "/{oh_section_id}/events/current",
+    response_model=list[OfficeHoursEvent],
+    tags=["Office Hours"],
+)
+def get_upcoming_oh_section_events(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursEvent]:
+    """
+    Gets a list of upcoming OH events within a time range.
+
+    Returns:
+        list[OfficeHoursEvent]: OH events associated with a given section in a time range
+    """
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+        subject, oh_section_id
+    )
+    return oh_section_service.get_current_events_by_section(subject, oh_section)
 
 
 @api.get(

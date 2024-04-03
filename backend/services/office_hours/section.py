@@ -1,12 +1,17 @@
+from datetime import datetime
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from ...models.office_hours.event import OfficeHoursEvent
+
+from ...entities.office_hours.event_entity import OfficeHoursEventEntity
 
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...models.roster_role import RosterRole
 from ...models.coworking.time_range import TimeRange
 
-from ...models.office_hours.event_details import OfficeHoursEventDetails
+from ...models.office_hours.event_details import OfficeHoursEvent
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
 from ...entities.academics.section_entity import SectionEntity
@@ -54,8 +59,14 @@ class OfficeHoursSectionService:
         # PERMISSIONS
 
         # 1. Checks If User Has Proper Role to Create and If is a Member in a Section
-        self._check_membership_and_edit_permissions(subject.id, academic_ids)
+        section_member_entity = self._check_membership_and_edit_permissions(
+            subject.id, academic_ids
+        )
 
+        if section_member_entity.member_role != RosterRole.INSTRUCTOR:
+            raise PermissionError(
+                f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
+            )
         # 2. Check If Give Academic Sections Already Have an Office Hours Event
         # Query and Execution to Update All Academic Section With New OH Section ID
         query = select(SectionEntity).where(SectionEntity.id.in_(academic_ids))
@@ -114,27 +125,139 @@ class OfficeHoursSectionService:
         Returns:
             OfficeHoursSectionDetails: the office hours section with the given id
         """
-        # TODO
-        return None
 
-    def get_events_by_section(
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section_id
+        )
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section_id}"
+            )
+
+        return entity.to_details_model()
+
+    def get_past_events_by_section(
         self,
         subject: User,
         oh_section: OfficeHoursSectionDetails,
-        time_range: TimeRange | None = None,
-    ) -> list[OfficeHoursEventDetails]:
+    ) -> list[OfficeHoursEvent]:
         """Returns all events for a given office hours section
 
         Args:
             subject: a valid User model representing the currently logged in User
             oh_section: OfficeHoursSectionDetails to get all the events of
         Returns:
-            list[OfficeHoursEventDetails]: list of all office hours events for the given section
+            list[OfficeHoursEvent]: list of all past office hours events for the given section
         """
-        # TODO
-        # make sure to check if time range is None
-        # if time range is not None, you are retrieving upcoming events
-        return None
+
+        # PERMISSIONS
+
+        # 1. Checks If User Has Proper Role to Create and If is a Member in a Section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a student. User Does Not Have Permision to get past section events."
+            )
+
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
+        oh_events = entity.to_details_model().events
+        return [
+            oh_event for oh_event in oh_events if oh_event.end_time < datetime.now()
+        ]
+
+    def get_upcoming_events_by_section(
+        self,
+        subject: User,
+        oh_section: OfficeHoursSectionDetails,
+        time_range: TimeRange,
+    ) -> list[OfficeHoursEvent]:
+        """Returns all events for a given office hours section
+
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: OfficeHoursSectionDetails to get all the events of
+            time_range: a TimeRange in which the events should be
+        Returns:
+            list[OfficeHoursEvent]: list of all upcoming office hours events for the given section
+        """
+        # Throws exception if user is not a member
+        self._check_user_section_membership(subject.id, oh_section.id)
+
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
+        oh_events = entity.to_details_model().events
+
+        return [
+            oh_event
+            for oh_event in oh_events
+            if (
+                oh_event.start_time >= time_range.start
+                and oh_event.start_time < time_range.end
+            )
+        ]
+
+    def get_current_events_by_section(
+        self,
+        subject: User,
+        oh_section: OfficeHoursSectionDetails,
+    ) -> list[OfficeHoursEvent]:
+        """Returns all events for a given office hours section
+
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: OfficeHoursSectionDetails to get all current events of
+        Returns:
+            list[OfficeHoursEvent]: list of all current office hours events for the given section
+        """
+        # Throws exception if user is not a member
+        self._check_user_section_membership(subject.id, oh_section.id)
+
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
+        oh_events = entity.to_details_model().events
+
+        # return all events that have started but haven't ended
+        return [
+            oh_event
+            for oh_event in oh_events
+            if (
+                oh_event.start_time <= datetime.now()
+                and oh_event.end_time > datetime.now()
+            )
+        ]
 
     def get_sections_by_term(
         self, subject: User, term_id: int
@@ -245,7 +368,7 @@ class OfficeHoursSectionService:
         Returns:
             SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
         Raises:
-            ResourceNotFoundException if cannot user is not a member in given academic section.
+            ResourceNotFoundException if user is not a member in given academic section.
             PermissionError if user creating event is not a Instructor
         """
 
@@ -262,9 +385,48 @@ class OfficeHoursSectionService:
                 f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_ids}"
             )
 
-        if section_member_entity.member_role != RosterRole.INSTRUCTOR:
-            raise PermissionError(
-                f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
+        return section_member_entity
+
+    def _check_user_section_membership(
+        self,
+        user_id: int,
+        oh_section_id: int,
+    ) -> SectionMemberEntity:
+        """Checks if a given user is a member in academic sections that are a part of an office hours section.
+
+           Note: An Office Hours section can have multiple academic sections assoicated with it.
+
+        Args:
+            user_id: The id of given User of interest
+            oh_section_id: The id of office hours section.
+        Returns:
+            SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
+
+        Raises:
+            ResourceNotFoundException if cannot user is not a member in given academic section.
+            PermissionError if user creating event is not a UTA/GTA/Instructor
+        """
+
+        # Find Academic Section and Their IDs
+        academic_sections = (
+            self._session.query(SectionEntity)
+            .filter(SectionEntity.office_hours_id == oh_section_id)
+            .all()
+        )
+
+        academic_section_ids = [section.id for section in academic_sections]
+
+        # Find User Academic Section Entity
+        section_member_entity = (
+            self._session.query(SectionMemberEntity)
+            .filter(SectionMemberEntity.user_id == user_id)
+            .filter(SectionMemberEntity.section_id.in_(academic_section_ids))
+            .first()
+        )
+
+        if section_member_entity is None:
+            raise ResourceNotFoundException(
+                f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
             )
 
         return section_member_entity
