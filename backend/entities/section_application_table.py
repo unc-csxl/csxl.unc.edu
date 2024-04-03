@@ -1,6 +1,6 @@
 """Join table of membership between Application and Section entities.""" ""
 
-from sqlalchemy import Table, Column, ForeignKey
+from sqlalchemy import Integer, Table, Column, ForeignKey
 from .entity_base import EntityBase
 
 __authors__ = ["Abdulaziz Al-Shayef, Ben Goulet"]
@@ -14,4 +14,13 @@ section_application_table = Table(
     EntityBase.metadata,
     Column("section_id", ForeignKey("academics__section.id"), primary_key=True),
     Column("application_id", ForeignKey("application.id"), primary_key=True),
+    Column("position", Integer, nullable=False)
 )
+
+# ordered_section_application_table = Table(
+#     "ordered_section_application",
+#     EntityBase.metadata,
+#     Column("section_id", ForeignKey("academics__section.id"), primary_key=True),
+#     Column("application_id", ForeignKey("application.id"), primary_key=True),
+    
+# )

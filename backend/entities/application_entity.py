@@ -122,12 +122,13 @@ class UTAEntity(ApplicationEntity):
     @classmethod
     def from_model(cls, model: UTA) -> Self:
         """
-        Class method that converts an `Application` model into a `ApplicationEntity`
+        Class method that converts a `UTA` model into a `UTAEntity`
 
         Parameters:
-            - model (Application): Model to convert into an entity
+            - model (UTA): Model to convert into an entity
+            - session (Session): Database session for querying existing sections
         Returns:
-            ApplicationEntity: Entity created from model
+            UTAEntity: Entity created from model
         """
 
         entity = super().from_model(model)

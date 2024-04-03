@@ -2,6 +2,7 @@
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from backend.entities import section_application_table
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application import Application, New_UTA
@@ -76,12 +77,24 @@ class ApplicationService:
 
         application_entity = New_UTA_Entity.from_model(application)
 
-        existing_section_ids = [section.id for section in application.preferred_sections]
-        existing_sections = self._session.query(SectionEntity).filter(SectionEntity.id.in_(existing_section_ids)).all()
+        self._session.add(application_entity, self._session)
+        self._session.flush()  # This will assign an ID to application_entity without committing the transaction
 
-        application_entity.preferred_sections = existing_sections
+        # Now that application_entity has an ID, you can create the section_application relationships
+        for index, section in enumerate(application.preferred_sections):
+            # Ensure the section exists in the database and fetch its entity
+            section_entity = self._session.query(SectionEntity).filter_by(id=section.id).one()
 
-        self._session.add(application_entity)
+            # Create the association with position
+            association = {
+                'section_id': section_entity.id,
+                'application_id': application_entity.id,
+                'position': index
+            }
+            self._session.execute(section_application_table.insert().values(**association))
+
+        # Commit the transaction to save the application and its associated sections
         self._session.commit()
 
+        # Convert the application entity back to a Pydantic model and return
         return application_entity.to_details_model()
