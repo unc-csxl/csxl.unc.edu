@@ -15,6 +15,7 @@ from .entity_base import EntityBase
 from .section_application_table import section_application_table
 from typing import Self
 from ..models.application import Application, UTA, New_UTA, Returning_UTA
+from ..models.application_details import UTADetails
 
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
@@ -120,7 +121,7 @@ class UTAEntity(ApplicationEntity):
     }
 
     @classmethod
-    def from_model(cls, model: UTA) -> Self:
+    def from_model(cls, model: UTADetails) -> Self:
         """
         Class method that converts an `Application` model into a `ApplicationEntity`
 
