@@ -42,11 +42,6 @@ export class TicketCreationFormComponent {
       clicking back button and changing again) */
     this.assignmentType = value;
     this.cdr.detectChanges();
-    this.ticketForm.get('assignmentQ1')?.reset();
-    this.ticketForm.get('assignmentQ2')?.reset();
-    this.ticketForm.get('assignmentQ3')?.reset();
-    this.ticketForm.get('assignmentQ4')?.reset();
-    this.ticketForm.get('conceptualQ1')?.reset();
   }
 
   onSubmit() {

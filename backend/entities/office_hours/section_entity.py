@@ -3,8 +3,11 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.models.office_hours.section import OfficeHoursSection
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
+from ...models.office_hours.section import (
+    OfficeHoursSection,
+    OfficeHoursSectionDraft,
+)
+from ...models.office_hours.section_details import OfficeHoursSectionDetails
 
 
 from ..entity_base import EntityBase
@@ -36,6 +39,10 @@ class OfficeHoursSectionEntity(EntityBase):
     events: Mapped[list["OfficeHoursEventEntity"]] = relationship(
         back_populates="office_hours_section", cascade="all, delete"
     )
+
+    @classmethod
+    def from_draft_model(cls, model: OfficeHoursSectionDraft) -> Self:
+        return cls(title=model.title)
 
     @classmethod
     def from_model(cls, model: OfficeHoursSection) -> Self:

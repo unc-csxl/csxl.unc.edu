@@ -3,6 +3,14 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...entities.academics.section_entity import SectionEntity
+from ...entities.academics.section_member_entity import SectionMemberEntity
+from ...models.roster_role import RosterRole
+
+from ...entities.academics.section_entity import SectionEntity
+from ...entities.academics.section_member_entity import SectionMemberEntity
+from ...models.roster_role import RosterRole
+
 from ...models.office_hours.ticket_state import TicketState
 
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
@@ -47,8 +55,8 @@ class OfficeHoursEventService:
         Returns:
             OfficeHoursEventDetails: Object added to table
         """
-        # TODO: Add Check if user has relevant permissions
-        ### General Format: self._permission_svc.enforce(subject, "academics.section.create", f"section/")
+        # Permissions - Raises Exception if Permission Fails
+        self._check_user_section_membership(subject.id, oh_event.oh_section.id)
 
         # Create new object
         oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event)
@@ -176,3 +184,52 @@ class OfficeHoursEventService:
 
         entities = self._session.scalars(query).all()
         return [entity.to_details_model() for entity in entities]
+
+    def _check_user_section_membership(
+        self,
+        user_id: int,
+        oh_section_id: int,
+    ) -> SectionMemberEntity:
+        """Checks if a given user is a member in academic sections that are a part of an office hours section.
+
+           Note: An Office Hours section can have multiple academic sections assoicated with it.
+
+        Args:
+            user_id: The id of given User of interest
+            oh_section_id: The id of office hours section.
+        Returns:
+            SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
+
+        Raises:
+            ResourceNotFoundException if cannot user is not a member in given academic section.
+            PermissionError if user creating event is not a UTA/GTA/Instructor
+        """
+
+        # Find Academic Section and Their IDs
+        academic_sections = (
+            self._session.query(SectionEntity)
+            .filter(SectionEntity.office_hours_id == oh_section_id)
+            .all()
+        )
+
+        academic_section_ids = [section.id for section in academic_sections]
+
+        # Find User Academic Section Entity
+        section_member_entity = (
+            self._session.query(SectionMemberEntity)
+            .filter(SectionMemberEntity.user_id == user_id)
+            .filter(SectionMemberEntity.section_id.in_(academic_section_ids))
+            .first()
+        )
+
+        if section_member_entity is None:
+            raise ResourceNotFoundException(
+                f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
+            )
+
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a Student. User does not have permision to create event"
+            )
+
+        return section_member_entity

@@ -17,6 +17,13 @@ import { EventCard } from './widgets/event-card/event-card-widget';
 import { ScheduleCard } from './widgets/schedule-card/schedule-card-widget';
 import { TicketCreationFormComponent } from './ticket-creation-form/ticket-creation-form.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CourseCard } from './widgets/course-card/course-card-widget';
+import { OpenEventHoursCard } from './widgets/open-event-hours-card/open-event-hours-card-widget';
+import { MatDialogModule } from '@angular/material/dialog';
+import { SectionCreationFormComponent } from './section-creation-form/section-creation-form.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { SectionCreationDialog } from './widgets/section-creation-dialog/section-creation-dialog.widget';
+import { JoinSectionDialog } from './widgets/join-section-dialog/join-section-dialog.widget';
 
 @NgModule({
   declarations: [
@@ -25,7 +32,12 @@ import { MatIconModule } from '@angular/material/icon';
     EventCard,
     ScheduleCard,
     TicketCreationFormComponent,
-    EventCreationFormComponent
+    EventCreationFormComponent,
+    CourseCard,
+    SectionCreationDialog,
+    OpenEventHoursCard,
+    SectionCreationFormComponent,
+    JoinSectionDialog
   ],
   imports: [
     CommonModule,
@@ -41,7 +53,9 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule,
+    MatMenuModule
   ]
 })
 export class OfficeHoursModule {}
