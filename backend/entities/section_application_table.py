@@ -16,11 +16,3 @@ section_application_table = Table(
     Column("application_id", ForeignKey("application.id"), primary_key=True),
     Column("position", Integer, nullable=False)
 )
-
-# ordered_section_application_table = Table(
-#     "ordered_section_application",
-#     EntityBase.metadata,
-#     Column("section_id", ForeignKey("academics__section.id"), primary_key=True),
-#     Column("application_id", ForeignKey("application.id"), primary_key=True),
-    
-# )

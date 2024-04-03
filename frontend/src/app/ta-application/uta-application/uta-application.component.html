@@ -108,7 +108,7 @@
           How many academic hours are you planning to enroll in next semester? *
         </p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>Academic Hours</mat-label>
         <input
           matInput
@@ -137,7 +137,7 @@
         <p>When is your expected graduation? *</p>
       </div>
       <div class="form-field-wrapper">
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-small">
           <mat-label>Expected Graduation</mat-label>
           <mat-select formControlName="expected_graduation" required>
             <mat-option
@@ -152,7 +152,7 @@
         <p>What program are you pursuing? *</p>
       </div>
       <div class="form-field-wrapper">
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-small">
           <mat-label>Program</mat-label>
           <mat-select formControlName="program_pursued" required>
             <mat-option *ngFor="let o of programsList" [value]="o.value"
@@ -164,7 +164,7 @@
       <div className="otherProgramText">
         <p>If pursuing another major/minor in addition, please specify here.</p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>Other Program</mat-label>
         <input matInput placeholder="Econ" formControlName="other_programs" />
       </mat-form-field>
@@ -176,14 +176,14 @@
       <div className="gpaText">
         <p>What is your overall GPA? *</p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>GPA</mat-label>
         <input matInput placeholder="4.0" formControlName="gpa" required />
       </mat-form-field>
       <div className="compGpaText">
         <p>What is your Computer Science (COMP) GPA? *</p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>COMP GPA</mat-label>
         <input matInput placeholder="4.0" formControlName="comp_gpa" required />
       </mat-form-field>
@@ -248,7 +248,7 @@
         </p>
       </div>
       <div class="form-field-wrapper">
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-small">
           <mat-label>Yes or No</mat-label>
           <mat-select formControlName="open_pairing">
             <mat-option
@@ -264,7 +264,7 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
+    <p>You have completed the Fall 2024 UTA Application!</p>
     <div>
       <button mat-stroked-button (click)="onSubmit()">Submit</button>
     </div>

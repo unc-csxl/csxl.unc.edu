@@ -9,3 +9,18 @@
 .form-field-wrapper {
   margin-bottom: 20px;
 }
+
+mat-form-field {
+  width: 50%;
+}
+
+.mat-form-field-small {
+  width: 25%;
+}
+
+@media (max-width: 768px) {
+  .form-field-wrapper,
+  mat-form-field {
+    width: 100%;
+  }
+}

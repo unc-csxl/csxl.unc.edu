@@ -74,18 +74,15 @@ class ApplicationService:
 
         if application.id:
             application.id = None
-
-        application_entity = New_UTA_Entity.from_model(application)
+            
+        application_entity = New_UTA_Entity.from_model(application, self._session)
 
         self._session.add(application_entity, self._session)
-        self._session.flush()  # This will assign an ID to application_entity without committing the transaction
+        self._session.flush()
 
-        # Now that application_entity has an ID, you can create the section_application relationships
         for index, section in enumerate(application.preferred_sections):
-            # Ensure the section exists in the database and fetch its entity
             section_entity = self._session.query(SectionEntity).filter_by(id=section.id).one()
 
-            # Create the association with position
             association = {
                 'section_id': section_entity.id,
                 'application_id': application_entity.id,
@@ -93,8 +90,6 @@ class ApplicationService:
             }
             self._session.execute(section_application_table.insert().values(**association))
 
-        # Commit the transaction to save the application and its associated sections
         self._session.commit()
 
-        # Convert the application entity back to a Pydantic model and return
         return application_entity.to_details_model()
