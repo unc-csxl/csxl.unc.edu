@@ -56,7 +56,13 @@ class OfficeHoursEventService:
             OfficeHoursEventDetails: Object added to table
         """
         # Permissions - Raises Exception if Permission Fails
-        self._check_user_section_membership(subject.id, oh_event.oh_section.id)
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a Student. User does not have permision to create event"
+            )
 
         # Create new object
         oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event)
@@ -145,7 +151,14 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
-        # TODO: permissions
+
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a Student. User does not have permision to get all tickets"
+            )
 
         query = (
             select(OfficeHoursTicketEntity)
@@ -166,7 +179,14 @@ class OfficeHoursEventService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
-        # TODO: permissions
+
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a Student. User does not have permision to get queue tickets"
+            )
 
         query = (
             select(OfficeHoursTicketEntity)
@@ -225,11 +245,6 @@ class OfficeHoursEventService:
         if section_member_entity is None:
             raise ResourceNotFoundException(
                 f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
-            )
-
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                f"Section Member is a Student. User does not have permision to create event"
             )
 
         return section_member_entity
