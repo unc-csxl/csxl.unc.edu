@@ -1,6 +1,9 @@
+from datetime import datetime
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from backend.models.office_hours.ticket_state import TicketState
 
 from ...services.exceptions import ResourceNotFoundException
 
@@ -130,8 +133,54 @@ class OfficeHoursTicketService:
         Returns:
             OfficeHoursTicketDetails: Updated object in table
         """
-        # TODO
+        # Permissions
+
         return None
+
+    def update_called_state(
+        self, subject: User, oh_ticket: OfficeHoursTicketPartial
+    ) -> OfficeHoursTicketDetails:
+        """Updates an office hours ticket.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_ticket: OfficeHoursTicket to update in the table
+        Returns:
+            OfficeHoursTicketDetails: Updated object in table
+        """
+        # Permissions
+
+        entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Reservation(id={oh_ticket.id}) does not exist"
+            )
+
+        # Ensure permissions to manage reservation checkins
+        # Verify We Have Caller id at miminum
+        if oh_ticket.caller_id is None:
+            raise Exception("Caller Information was not passed on.")
+
+        # If No Caller ID and Ticket is Queued, then update states
+        if entity.caller_id is None and entity.state == TicketState.QUEUED:
+            entity.caller_id = oh_ticket.caller_id
+            entity.state = TicketState.CALLED
+            entity.called_at = datetime.now()
+            self._session.commit()
+
+        elif entity.caller_id is not None:
+            raise Exception("Ticket Already has a caller!")
+
+        # Exception if State is Not Queued
+        elif entity.state in (
+            TicketState.CLOSED,
+            TicketState.CANCELED,
+            TicketState.CALLED,
+        ):
+            raise Exception(f"Cannot update from current state of {entity.state}")
+        else:
+            raise Exception("Cannot Update Ticket")
+
+        return entity.to_details_model()
 
     def update_state(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial

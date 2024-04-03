@@ -2,11 +2,12 @@
 
 This API is used to access OH ticket data for history purposes."""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from ...models.office_hours.ticket import (
     OfficeHoursTicket,
     OfficeHoursTicketDraft,
+    OfficeHoursTicketPartial,
 )
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...services.office_hours.ticket import OfficeHoursTicketService
@@ -64,7 +65,7 @@ def get_oh_ticket_by_id(
     "/{oh_ticket_id}", response_model=OfficeHoursTicketDetails, tags=["Office Hours"]
 )
 def update_oh_ticket(
-    oh_ticket: OfficeHoursTicket,
+    oh_ticket: OfficeHoursTicketPartial,
     subject: User = Depends(registered_user),
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> OfficeHoursTicketDetails:
@@ -75,6 +76,28 @@ def update_oh_ticket(
         OfficeHoursTicketDetails: OH Ticket updated
     """
     return oh_ticket_service.update(subject, oh_ticket)
+
+
+@api.put(
+    "/called/{oh_ticket_id}",
+    response_model=OfficeHoursTicketDetails,
+    tags=["Office Hours"],
+)
+def update_oh_ticket_when_called(
+    oh_ticket: OfficeHoursTicketPartial,
+    subject: User = Depends(registered_user),
+    oh_ticket_service: OfficeHoursTicketService = Depends(),
+) -> OfficeHoursTicketDetails:
+    """
+    Updates an OfficeHoursTicket to the database
+
+    Returns:
+        OfficeHoursTicketDetails: OH Ticket updated
+    """
+    try:
+        return oh_ticket_service.update_called_state(subject, oh_ticket)
+    except Exception as e:
+        raise HTTPException(status_code=403, detail=str(e))
 
 
 @api.put(
