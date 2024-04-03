@@ -76,10 +76,42 @@ class ApplicationService:
 
         application_entity = New_UTA_Entity.from_model(application)
 
-        existing_section_ids = [section.id for section in application.preferred_sections]
-        existing_sections = self._session.query(SectionEntity).filter(SectionEntity.id.in_(existing_section_ids)).all()
+        # existing_section_ids = [
+        #     section.id for section in application.preferred_sections
+        # ]
+
+        # existing_sections = (
+        #     self._session.query(SectionEntity)
+        #     .filter(SectionEntity.id.in_(existing_section_ids))
+        #     .all()
+        # )
+
+        # application_entity.preferred_sections = existing_sections
+
+        existing_sections = []
+
+        for id in application.preferred_sections:
+            existing_sections.append(
+                self._session.query(SectionEntity)
+                .filter(SectionEntity.id == id.id)
+                .first()
+            )
 
         application_entity.preferred_sections = existing_sections
+
+        # existing_sections = []
+
+        # for section in application.preferred_sections:
+        #     existing_sections.append(
+        #         self._session.query(SectionEntity)
+        #         .filter(SectionEntity.id == section.id)
+        #         .first()
+        #         .to_details_model()
+        #     )
+
+        # application.preferred_sections = existing_sections
+
+        # application_entity = New_UTA_Entity.from_model(application)
 
         self._session.add(application_entity)
         self._session.commit()

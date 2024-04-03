@@ -141,10 +141,16 @@ class UTAEntity(ApplicationEntity):
         entity.comp_227 = model.comp_227
         entity.open_pairing = model.open_pairing
 
-        preferred_section_entities = [
-            SectionEntity.from_model(section) for section in model.preferred_sections
-        ]
-        entity.preferred_sections.extend(preferred_section_entities)
+        # preferred_section_entities = [
+        #     SectionEntity.from_model(section) for section in model.preferred_sections
+        # ]
+        # entity.preferred_sections.extend(preferred_section_entities)
+
+        for section in model.preferred_sections:
+            section_entity = SectionEntity.from_model(section)
+            entity.preferred_sections.append(section_entity)
+
+        # entity.preferred_sections = model.preferred_sections
 
         return entity
 
