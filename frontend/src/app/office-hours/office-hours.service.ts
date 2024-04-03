@@ -93,4 +93,12 @@ export class OfficeHoursService {
       'api/office-hours/event/' + oh_event.id + '/tickets'
     );
   }
+
+  getEventQueueTickets(
+    oh_event: OfficeHoursEventDetails
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/event/' + oh_event.id + '/queue'
+    );
+  }
 }
