@@ -3,6 +3,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from backend.entities.section_application_table import section_application_table
 from backend.entities.user_entity import UserEntity
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application_details import (
@@ -12,7 +13,6 @@ from backend.models.application_details import (
 )
 from backend.models.academics.course import Course
 from .entity_base import EntityBase
-from .section_application_table import section_application_table
 from typing import Self
 from ..models.application import Application, UTA, New_UTA, Returning_UTA
 from ..models.application_details import UTADetails
@@ -113,7 +113,9 @@ class UTAEntity(ApplicationEntity):
 
     # Sections student prefers
     preferred_sections: Mapped[list["SectionEntity"]] = relationship(
-        secondary=section_application_table, back_populates="preferred_applicants"
+        "SectionEntity",
+        secondary=section_application_table,
+        back_populates="preferred_applicants",
     )
 
     __mapper_args__ = {
@@ -141,17 +143,12 @@ class UTAEntity(ApplicationEntity):
         entity.comp_gpa = model.comp_gpa
         entity.comp_227 = model.comp_227
         entity.open_pairing = model.open_pairing
-
-        # preferred_section_entities = [
-        #     SectionEntity.from_model(section) for section in model.preferred_sections
-        # ]
-        # entity.preferred_sections.extend(preferred_section_entities)
-
         for section in model.preferred_sections:
+            print("STARRRTTT")
+            print(section)
+            print("STOPpPPP")
             section_entity = SectionEntity.from_model(section)
             entity.preferred_sections.append(section_entity)
-
-        # entity.preferred_sections = model.preferred_sections
 
         return entity
 

@@ -3,6 +3,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
+from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application import Application, New_UTA
 from backend.models.application_details import (
@@ -36,7 +37,16 @@ class ApplicationService:
         Returns:
             list[New_UTA]: List of all current and previously submitted applications.
         """
-        entities = self._session.query(ApplicationEntity).all()
+        entities = (
+            self._session.query(ApplicationEntity)
+            .join(
+                section_application_table,
+                ApplicationEntity.id == section_application_table.c.application_id,
+            )
+            .order_by(section_application_table.c.preference.asc())
+            .all()
+        )
+
         return [entity.to_details_model() for entity in entities]
 
         # implement list() for all types here later
@@ -76,42 +86,21 @@ class ApplicationService:
 
         application_entity = New_UTA_Entity.from_model(application)
 
-        # existing_section_ids = [
-        #     section.id for section in application.preferred_sections
-        # ]
-
-        # existing_sections = (
-        #     self._session.query(SectionEntity)
-        #     .filter(SectionEntity.id.in_(existing_section_ids))
-        #     .all()
-        # )
-
-        # application_entity.preferred_sections = existing_sections
-
         existing_sections = []
 
-        for id in application.preferred_sections:
+        for section in application.preferred_sections:
             existing_sections.append(
                 self._session.query(SectionEntity)
-                .filter(SectionEntity.id == id.id)
+                .filter(SectionEntity.id == section.id)
                 .first()
             )
 
         application_entity.preferred_sections = existing_sections
 
-        # existing_sections = []
-
-        # for section in application.preferred_sections:
-        #     existing_sections.append(
-        #         self._session.query(SectionEntity)
-        #         .filter(SectionEntity.id == section.id)
-        #         .first()
-        #         .to_details_model()
-        #     )
-
-        # application.preferred_sections = existing_sections
-
-        # application_entity = New_UTA_Entity.from_model(application)
+        for section in application_entity.preferred_sections:
+            print("Iteration Start")
+            print(section.to_model())
+            print("Iteration End")
 
         self._session.add(application_entity)
         self._session.commit()
