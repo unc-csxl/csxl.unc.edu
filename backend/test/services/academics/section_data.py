@@ -114,52 +114,23 @@ new_section = Section(
     override_description="",
 )
 
-# Add Users to Academic Sections in Respective Roles
-comp110_instructor = SectionMemberEntity(
-    id=1,
-    user_id=user_data.instructor.id,
-    section_id=comp_101_001.id,
-    member_role=RosterRole.INSTRUCTOR,
-)
-
-
-comp110_uta = SectionMemberEntity(
-    id=2,
-    user_id=user_data.ambassador.id,
-    section_id=comp_101_001.id,
-    member_role=RosterRole.UTA,
-)
-
-comp110_student = SectionMemberEntity(
-    id=3,
-    user_id=user_data.user.id,
-    section_id=comp_101_001.id,
-    member_role=RosterRole.STUDENT,
-)
-
-comp301_instructor = SectionMemberEntity(
+new_section_with_lecture_room = Section(
     id=4,
-    user_id=user_data.instructor.id,
-    section_id=comp_301_001.id,
-    member_role=RosterRole.INSTRUCTOR,
+    course_id=course_data.comp_110.id,
+    number="003",
+    term_id=term_data.f_23.id,
+    meeting_pattern="MW 1:30PM - 2:45PM",
+    override_title="",
+    override_description="",
+    lecture_room=virtual_room,
 )
 
-comp_301_uta = SectionMemberEntity(
-    id=5,
+ta = SectionMemberEntity.from_draft_model(
     user_id=user_data.ambassador.id,
-    section_id=comp_301_001.id,
+    section_id=comp_101_001.id,
     member_role=RosterRole.UTA,
 )
 
-section_members = [
-    comp110_instructor,
-    comp110_uta,
-    comp110_student,
-    comp301_instructor,
-    comp_301_uta,
-]
-
-# Room Assignments Relative to Section
 room_assignment_110_001 = (
     comp_101_001.id,
     virtual_room.id,
@@ -185,12 +156,8 @@ def insert_fake_data(session: Session):
         entity = SectionEntity.from_model(section)
         session.add(entity)
 
-    for member in section_members:
-        session.add(member)
+    session.add(ta)
 
-    reset_table_id_seq(
-        session, SectionMemberEntity, SectionMemberEntity.id, len(section_members) + 1
-    )
     for assignment in assignments:
         section_id, room_id, assignment_type = assignment
         entity = SectionRoomEntity(

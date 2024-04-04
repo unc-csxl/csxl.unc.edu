@@ -4,7 +4,10 @@ Three users are setup for testing and development purposes:
 
 1. Rhonda Root (root user with all permissions)
 2. Amy Ambassador (staff of XL with elevated permissions)
-3. Sally Student (standard user without any special permissions)"""
+3. Sally Student (standard user without any special permissions)
+4. Ina Instructor
+5. Uhlissa UTA
+"""
 
 import pytest
 from sqlalchemy.orm import Session
@@ -61,7 +64,17 @@ instructor = User(
     pronouns="They / Them / Theirs",
 )
 
-users = [root, ambassador, user, instructor]
+uta = User(
+    id=5,
+    pid=333333333,
+    onyen="uhlissa",
+    email="uhlissa@unc.edu",
+    first_name="Uhlissa",
+    last_name="UTA",
+    pronouns="They / Them / Theirs",
+)
+
+users = [root, ambassador, user, instructor, uta]
 
 roles_users = {
     role_data.root_role.id: [root],

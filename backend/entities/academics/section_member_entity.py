@@ -81,10 +81,10 @@ class SectionMemberEntity(EntityBase):
         )
 
     @classmethod
-    def from_draft_model(cls, user_id: int, section_id: int) -> Self:
-        return cls(
-            section_id=section_id, user_id=user_id, member_role=RosterRole.STUDENT
-        )
+    def from_draft_model(
+        cls, user_id: int, section_id: int, member_role: RosterRole = RosterRole.STUDENT
+    ) -> Self:
+        return cls(section_id=section_id, user_id=user_id, member_role=member_role)
 
     @classmethod
     def from_model(cls, model: SectionMember) -> Self:
