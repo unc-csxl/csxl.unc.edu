@@ -301,6 +301,10 @@ export class UndergradApplicationComponent {
           console.error('Failed to fetch user details', err);
         }
       });
+    } else {
+      this.snackBar.open('Application not finished yet!', '', {
+        duration: 3000
+      });
     }
   }
 

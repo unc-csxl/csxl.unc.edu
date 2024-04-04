@@ -12,10 +12,16 @@
 
 mat-form-field {
   width: 50%;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .mat-form-field-small {
   width: 25%;
+}
+
+.field-title p {
+  margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
