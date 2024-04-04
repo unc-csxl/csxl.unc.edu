@@ -147,13 +147,27 @@ class OfficeHoursTicketService:
         Returns:
             OfficeHoursTicketDetails: Updated object in table
         """
-        # Permissions
+        # PERMISSION
 
-        entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
-        if entity is None:
+        # Get Ticket
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
+        if ticket_entity is None:
             raise ResourceNotFoundException(
                 f"Reservation(id={oh_ticket.id}) does not exist"
             )
+
+        # Fetch Office Hours Section - Needed To Determine if User Membership
+        oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
+            ticket_entity.oh_event_id
+        )
+
+        # Case: Current User
+        current_user_section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section_entity.id
+        )
+
+        if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError("User Doesn't Have Permission to Call Ticket.")
 
         # Ensure permissions to manage reservation checkins
         # Verify We Have Caller id at miminum
