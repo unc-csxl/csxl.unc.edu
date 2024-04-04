@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
 import { OfficeHoursSectionDetails } from '../../office-hours.models';
+import { MatDialog } from '@angular/material/dialog';
+import { UpcomingHoursDialog } from '../upcoming-hours-dialog/upcoming-hours-dialog.widget';
 
 @Component({
   selector: 'course-card-widget',
@@ -10,9 +12,17 @@ import { OfficeHoursSectionDetails } from '../../office-hours.models';
 export class CourseCard {
   /** The course to show */
   @Input() section!: OfficeHoursSectionDetails;
-  constructor() {}
+  constructor(public dialog: MatDialog) {}
 
   openDialog() {
-    console.log('hi');
+    const dialogRef = this.dialog.open(UpcomingHoursDialog, {
+      height: 'auto',
+      width: 'auto',
+      data: { sectionId: this.section.id }
+    });
+  }
+
+  navToOfficeHours() {
+    console.log('test');
   }
 }

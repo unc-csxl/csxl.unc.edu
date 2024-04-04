@@ -13,7 +13,7 @@ import { Location } from '@angular/common';
 export class TicketCreationFormComponent {
   public static Route = {
     // placeholder route
-    path: 'spring-2024/comp110/create-new-ticket',
+    path: 'spring-2024/:id/create-new-ticket',
     title: 'COMP 110: Intro to Programming',
     component: TicketCreationFormComponent,
     canActivate: []

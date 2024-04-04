@@ -1,5 +1,5 @@
 <mat-card appearance="outlined">
-  <div class="card-container">
+  <div class="card-container" (click)="navToOfficeHours()">
     <mat-card-title>{{ section.title }}</mat-card-title>
     <div class="open-button">
       <a [routerLink]="['spring-2024/', section.id]">

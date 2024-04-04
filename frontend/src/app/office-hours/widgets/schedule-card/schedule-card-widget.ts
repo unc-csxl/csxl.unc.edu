@@ -5,7 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './schedule-card-widget.html',
   styleUrls: ['./schedule-card-widget.css']
 })
-
-export class ScheduleCard {
-
-}
+export class ScheduleCard {}

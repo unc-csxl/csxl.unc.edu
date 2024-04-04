@@ -3,6 +3,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
+}
+
+.card-container:hover {
+    background-color: lightgray;
 }
 
 .title {
@@ -11,6 +16,10 @@
 
 .open-button {
     align-items: right;
+}
+
+.open-button:hover {
+    background-color: lightgray;
 }
 
 .location {
