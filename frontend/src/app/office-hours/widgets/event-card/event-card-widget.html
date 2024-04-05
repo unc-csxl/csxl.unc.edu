@@ -1,6 +1,6 @@
 <mat-card appearance="outlined">
   <div class="card-container">
-    <mat-card-title>Office Hours</mat-card-title>
+    <mat-card-title>{{formatEventType(event.type)}}</mat-card-title>
   </div>
   <mat-divider></mat-divider>
   <div>
@@ -8,9 +8,10 @@
       <!-- TODO: Put this in a widget? -->
       <div class="open header-row">
         <div class="operating-hours">
-          <span class="badge">Open</span>until 5:00pm
+          <span class="badge">Open</span>until {{event.end_time | date: 'h:mma'
+          | lowercase}}
         </div>
-        <div class="location">Location: SN007</div>
+        <div class="location">Location: {{event.room.id}}</div>
       </div>
       <!-- add an if statement to check if event has queue? -->
       <div class="header-row">

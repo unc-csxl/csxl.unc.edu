@@ -2,7 +2,11 @@
   <mat-tab-group color="accent">
     <mat-tab label="Events">
       <h3>Events</h3>
-      <event-card-widget></event-card-widget>
+      <div *ngIf="currentEvents && currentEvents.length > 0">
+        <div *ngFor="let event of currentEvents">
+          <event-card-widget [event]="event"></event-card-widget>
+        </div>
+      </div>
       <h3>Schedule</h3>
       <schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>
     </mat-tab>
