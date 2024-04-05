@@ -7,6 +7,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { UpcomingHoursDialog } from '../upcoming-hours-dialog/upcoming-hours-dialog.widget';
 import { OfficeHoursService } from '../../office-hours.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'course-card-widget',
@@ -20,7 +21,8 @@ export class CourseCard implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private officeHoursService: OfficeHoursService
+    private officeHoursService: OfficeHoursService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -37,6 +39,7 @@ export class CourseCard implements OnInit {
 
   navToOfficeHours() {
     console.log('test');
+    this.router.navigate(['/office-hours/spring-2024/', this.section.id]);
   }
 
   getCurrentEvents() {
