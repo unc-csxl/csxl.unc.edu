@@ -15,17 +15,21 @@
   <mat-divider></mat-divider>
   <div>
     <mat-card-content>
-      <div *ngIf="currentEvents && currentEvents.length > 0">
+      <div *ngIf="currentEvents && currentEvents.length > 0; else noHours">
         <div *ngFor="let event of currentEvents">
           <open-event-hours-card-widget
             [event]="event"></open-event-hours-card-widget>
         </div>
+        <div class="upcoming-hours-button">
+          <button mat-stroked-button (click)="openDialog()">
+            Upcoming Hours
+          </button>
+        </div>
       </div>
-      <div class="upcoming-hours-button">
-        <button mat-stroked-button (click)="openDialog()">
-          Upcoming Hours
-        </button>
-      </div>
+      <ng-template #noHours>
+        <upcoming-hours-text-widget
+          [sectionId]="section.id"></upcoming-hours-text-widget>
+      </ng-template>
     </mat-card-content>
   </div>
 </mat-card>

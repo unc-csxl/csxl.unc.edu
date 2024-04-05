@@ -5,16 +5,8 @@
     </div>
     <mat-divider></mat-divider>
     <mat-card-content class="card-container">
-      <div>
-        <ul *ngFor="let hour of upcomingHours">
-          <li>
-            {{ hour.start_time | date: 'EEEE M/d' }}, {{
-            formatEventType(hour.type) }}, from {{ hour.start_time | date:
-            'h:mma' | lowercase}} to {{ hour.end_time | date: 'h:mma' |
-            lowercase}}, {{ hour.room.id }}
-          </li>
-        </ul>
-      </div>
+      <upcoming-hours-text-widget
+        [sectionId]="sectionId"></upcoming-hours-text-widget>
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>

@@ -25,6 +25,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SectionCreationDialog } from './widgets/section-creation-dialog/section-creation-dialog.widget';
 import { JoinSectionDialog } from './widgets/join-section-dialog/join-section-dialog.widget';
 import { UpcomingHoursDialog } from './widgets/upcoming-hours-dialog/upcoming-hours-dialog.widget';
+import { UpcomingHoursText } from './widgets/upcoming-hours-text/upcoming-hours-text.widget';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { UpcomingHoursDialog } from './widgets/upcoming-hours-dialog/upcoming-ho
     OpenEventHoursCard,
     SectionCreationFormComponent,
     JoinSectionDialog,
-    UpcomingHoursDialog
+    UpcomingHoursDialog,
+    UpcomingHoursText
   ],
   imports: [
     CommonModule,
