@@ -1,11 +1,1 @@
-<mat-dialog-content class="dialog">
-  <mat-card appearance="outlined">
-    <mat-card-title class="card-contents">Upcoming Hours</mat-card-title>
-    <mat-divider></mat-divider>
-    <mat-card-content>
-      <ul *ngFor="let hour of upcomingHours">
-        <li>{{ formatEventType(hour.type) }}, {{ hour.room.id }}</li>
-      </ul>
-    </mat-card-content>
-  </mat-card>
-</mat-dialog-content>
+<schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>
