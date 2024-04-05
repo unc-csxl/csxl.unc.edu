@@ -24,7 +24,10 @@ export class ScheduleCard implements OnInit {
     this.officeHoursService
       .getUpcomingEventsBySection(this.sectionId)
       .subscribe((hours) => {
-        this.upcomingHours = hours;
+        this.upcomingHours = hours.sort(
+          (a, b) =>
+            new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+        );
       });
   }
 

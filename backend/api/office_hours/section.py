@@ -143,13 +143,13 @@ def get_upcoming_oh_section_events(
     response_model=list[OfficeHoursEvent],
     tags=["Office Hours"],
 )
-def get_upcoming_oh_section_events(
+def get_current_oh_section_events(
     oh_section_id: int,
     subject: User = Depends(registered_user),
     oh_section_service: OfficeHoursSectionService = Depends(),
 ) -> list[OfficeHoursEvent]:
     """
-    Gets a list of upcoming OH events within a time range.
+    Gets a list of current OH events within a time range.
 
     Returns:
         list[OfficeHoursEvent]: OH events associated with a given section in a time range

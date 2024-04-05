@@ -7,7 +7,8 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, RouteConfigLoadEnd } from '@angular/router';
 
 @Component({
   selector: 'app-student-section-home',
@@ -22,12 +23,14 @@ export class StudentSectionHomeComponent {
     component: StudentSectionHomeComponent,
     canActivate: []
   };
+  sectionId: number;
   navLinks: any;
 
-  constructor() {
+  constructor(private route: ActivatedRoute) {
     let navLinks = [
       { path: '/events', label: 'Events' },
       { path: '/history', label: 'History' }
     ];
+    this.sectionId = this.route.snapshot.params['id'];
   }
 }
