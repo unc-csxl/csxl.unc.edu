@@ -15,8 +15,12 @@
   <mat-divider></mat-divider>
   <div>
     <mat-card-content>
-      <div class="location">Location(s):</div>
-      <open-event-hours-card-widget></open-event-hours-card-widget>
+      <div *ngIf="currentEvents && currentEvents.length > 0">
+        <div *ngFor="let event of currentEvents">
+          <open-event-hours-card-widget
+            [event]="event"></open-event-hours-card-widget>
+        </div>
+      </div>
       <div class="upcoming-hours-button">
         <button mat-stroked-button (click)="openDialog()">
           Upcoming Hours

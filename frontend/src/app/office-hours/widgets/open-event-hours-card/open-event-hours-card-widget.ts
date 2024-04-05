@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
+import {
+  OfficeHoursEvent,
+  OfficeHoursEventType
+} from '../../office-hours.models';
 
 @Component({
   selector: 'open-event-hours-card-widget',
@@ -7,5 +11,25 @@ import { flushMicrotasks } from '@angular/core/testing';
   styleUrls: ['./open-event-hours-card-widget.css']
 })
 export class OpenEventHoursCard {
+  @Input() event!: OfficeHoursEvent;
+
   constructor() {}
+
+  formatEventType(typeNum: number) {
+    if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {
+      return 'Office Hours';
+    } else if (typeNum === OfficeHoursEventType.TUTORING) {
+      return 'Tutoring';
+    } else if (typeNum === OfficeHoursEventType.REVIEW_SESSION) {
+      return 'Review Session';
+    } else if (typeNum === OfficeHoursEventType.VIRTUAL_OFFICE_HOURS) {
+      return 'Virtual Office Hours';
+    } else if (typeNum === OfficeHoursEventType.VIRTUAL_TUTORING) {
+      return 'Virtual Tutoring';
+    } else if (typeNum === OfficeHoursEventType.VIRTUAL_REVIEW_SESSION) {
+      return 'Virtual Review Session';
+    } else {
+      return 'error';
+    }
+  }
 }

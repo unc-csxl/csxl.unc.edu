@@ -1,18 +1,31 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
-import { OfficeHoursSectionDetails } from '../../office-hours.models';
+import {
+  OfficeHoursEvent,
+  OfficeHoursSectionDetails
+} from '../../office-hours.models';
 import { MatDialog } from '@angular/material/dialog';
 import { UpcomingHoursDialog } from '../upcoming-hours-dialog/upcoming-hours-dialog.widget';
+import { OfficeHoursService } from '../../office-hours.service';
 
 @Component({
   selector: 'course-card-widget',
   templateUrl: './course-card-widget.html',
   styleUrls: ['./course-card-widget.css']
 })
-export class CourseCard {
+export class CourseCard implements OnInit {
   /** The course to show */
   @Input() section!: OfficeHoursSectionDetails;
-  constructor(public dialog: MatDialog) {}
+  currentEvents: OfficeHoursEvent[] = [];
+
+  constructor(
+    public dialog: MatDialog,
+    private officeHoursService: OfficeHoursService
+  ) {}
+
+  ngOnInit() {
+    this.getCurrentEvents();
+  }
 
   openDialog() {
     const dialogRef = this.dialog.open(UpcomingHoursDialog, {
@@ -24,5 +37,13 @@ export class CourseCard {
 
   navToOfficeHours() {
     console.log('test');
+  }
+
+  getCurrentEvents() {
+    this.officeHoursService
+      .getCurrentEventsBySection(this.section.id)
+      .subscribe((events) => {
+        this.currentEvents = events;
+      });
   }
 }
