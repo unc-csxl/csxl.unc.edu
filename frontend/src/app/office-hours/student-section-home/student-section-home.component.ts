@@ -19,7 +19,7 @@ import { OfficeHoursService } from '../office-hours.service';
 })
 export class StudentSectionHomeComponent implements OnInit {
   public static Route = {
-    // placeholder route
+    // TODO: replace this route + title to be un-hardcoded
     path: 'spring-2024/:id',
     title: 'COMP 110: Intro to Programming',
     component: StudentSectionHomeComponent,

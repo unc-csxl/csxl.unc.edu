@@ -39,6 +39,7 @@ export class CourseCard implements OnInit {
 
   navToOfficeHours() {
     console.log('test');
+    // TODO: replace this route later
     this.router.navigate(['/office-hours/spring-2024/', this.section.id]);
   }
 

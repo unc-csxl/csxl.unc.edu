@@ -41,6 +41,7 @@ export class SectionCreationFormComponent implements OnInit {
     academic_sections: []
   });
 
+  //TODO: use current term instead of 'F23'
   getAcademicSections() {
     this.academicService.getTerm('F23').subscribe((term) => {
       this.academicService

@@ -2,6 +2,7 @@
   <div class="card-container" (click)="navToOfficeHours()">
     <mat-card-title>{{ section.title }}</mat-card-title>
     <div class="open-button">
+      <!-- TODO: get rid of <a> element, keep arrow icon -->
       <a [routerLink]="['spring-2024/', section.id]">
         <button
           mat-icon-button

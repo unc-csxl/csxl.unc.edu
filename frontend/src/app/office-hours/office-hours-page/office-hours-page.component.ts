@@ -54,6 +54,7 @@ export class OfficeHoursPageComponent implements OnInit {
     });
   }
 
+  //TODO: Un-hardcode 'F23'
   ngOnInit(): void {
     this.getUserSectionsByTerm('F23');
   }
