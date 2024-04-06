@@ -39,3 +39,12 @@
     <button mat-stroked-button (click)="onUTAClick()">UTA</button>
   </mat-card-content>
 </mat-card>
+
+<div *ngIf="user_applications$ | async as applications">
+  <mat-card
+    class="content"
+    appearance="outlined"
+    *ngFor="let application of applications">
+    <mat-card-content> </mat-card-content>
+  </mat-card>
+</div>

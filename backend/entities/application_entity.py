@@ -12,6 +12,7 @@ from backend.models.application_details import (
     UTADetails,
 )
 from backend.models.academics.course import Course
+
 from .entity_base import EntityBase
 from typing import Self
 from ..models.application import Application, UTA, New_UTA, Returning_UTA
@@ -125,12 +126,13 @@ class UTAEntity(ApplicationEntity):
     @classmethod
     def from_model(cls, model: UTADetails) -> Self:
         """
-        Class method that converts an `Application` model into a `ApplicationEntity`
+        Class method that converts a `UTA` model into a `UTAEntity`
 
         Parameters:
-            - model (Application): Model to convert into an entity
+            - model (UTA): Model to convert into an entity
+            - session (Session): Database session for querying existing sections
         Returns:
-            ApplicationEntity: Entity created from model
+            UTAEntity: Entity created from model
         """
 
         entity = super().from_model(model)
@@ -143,12 +145,9 @@ class UTAEntity(ApplicationEntity):
         entity.comp_gpa = model.comp_gpa
         entity.comp_227 = model.comp_227
         entity.open_pairing = model.open_pairing
-        for section in model.preferred_sections:
-            print("STARRRTTT")
-            print(section)
-            print("STOPpPPP")
-            section_entity = SectionEntity.from_model(section)
-            entity.preferred_sections.append(section_entity)
+        entity.preferred_sections = [
+            SectionEntity.from_model(section) for section in model.preferred_sections
+        ]
 
         return entity
 
@@ -183,6 +182,7 @@ class UTAEntity(ApplicationEntity):
         """
 
         parent_model = super().to_details_model().model_dump()
+
         return UTADetails(
             **parent_model,
             academic_hours=self.academic_hours,
@@ -198,6 +198,31 @@ class UTAEntity(ApplicationEntity):
                 section.to_model() for section in self.preferred_sections
             ],
         )
+
+    def update(self, model: UTADetails) -> None:
+        """
+        Update an ApplciationEntity from a UTA model.
+
+        Args:
+            model (UTA): The model to update the entity from.
+
+        Returns:
+            None
+        """
+        self.academic_hours = model.academic_hours
+        self.extracurriculars = model.extracurriculars
+        self.expected_graduation = model.expected_graduation
+        self.program_pursued = model.program_pursued
+        self.other_programs = model.other_programs
+        self.gpa = model.gpa
+        self.comp_gpa = model.comp_gpa
+        self.comp_227 = model.comp_227
+        self.open_pairing = model.open_pairing
+        print("PLEASE RIGHT HERE")
+        self.preferred_sections = [
+            SectionEntity.from_model(section) for section in model.preferred_sections
+        ]
+        print("MAYBE RIGHT HERE UWUU")
 
 
 class New_UTA_Entity(UTAEntity):
@@ -274,6 +299,23 @@ class New_UTA_Entity(UTAEntity):
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
         )
+
+    def update(self, model: New_UTADetails) -> None:
+        """
+        Update an ApplciationEntity from a New_UTA model.
+
+        Args:
+            model (New_UTA): The model to update the entity from.
+
+        Returns:
+            None
+        """
+
+        super().update(model)
+        self.intro_video = model.intro_video
+        self.prior_experience = model.prior_experience
+        self.service_experience = model.service_experience
+        self.additional_experience = model.additional_experience
 
 
 class Returning_UTA_Entity(UTAEntity):

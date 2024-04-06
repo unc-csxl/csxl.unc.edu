@@ -24,6 +24,10 @@ export class ApplicationsService {
   private applications: RxApplication = new RxApplication();
   public applications$: Observable<Application[]> = this.applications.value$;
 
+  private user_applications: RxApplication = new RxApplication();
+  public user_applications$: Observable<Application[]> =
+    this.user_applications.value$;
+
   private courses: RxCourseList = new RxCourseList();
   public courses$: Observable<Course[]> = this.courses.value$;
 
@@ -63,5 +67,11 @@ export class ApplicationsService {
     this.http
       .get<Section[]>('/api/academics/section')
       .subscribe((sections) => this.sections.set(sections));
+  }
+
+  getApplications(): void {
+    this.http
+      .get<Application[]>('/api/applications/user')
+      .subscribe((applications) => this.user_applications.set(applications));
   }
 }

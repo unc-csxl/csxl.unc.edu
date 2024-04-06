@@ -2,7 +2,7 @@
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Introductory Video</ng-template>
-      <div className="introText">
+      <div class="field-title">
         <p>
           Record a video up to 2-minutes long using your laptop or phone's video
           recording functionality. Please do not go beyond 2-minutes!
@@ -54,7 +54,7 @@
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Experience</ng-template>
-      <div className="experienceText">
+      <div className="field-title">
         <p>
           What was your prior programming experience before attending UNC? *
         </p>
@@ -69,7 +69,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div className="serviceExperienceText">
+      <div class="field-title">
         <p>
           What experience do you have providing service directly to other people
           (at jobs or volunteering)? What lessons did you learn or take away
@@ -86,7 +86,7 @@
             required></textarea>
         </mat-form-field>
       </div>
-      <div className="additionalExperienceText">
+      <div class="field-title">
         <p>
           Outside of anything mentioned above, do you have additional job or
           working experience? *
@@ -107,12 +107,12 @@
   <mat-step [stepControl]="thirdFormGroup">
     <form [formGroup]="thirdFormGroup">
       <ng-template matStepLabel>Academics and Extracurriculars</ng-template>
-      <div className="academicHoursText">
+      <div class="field-title">
         <p>
           How many academic hours are you planning to enroll in next semester? *
         </p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>Academic Hours</mat-label>
         <input
           matInput
@@ -120,7 +120,7 @@
           placeholder="15"
           required />
       </mat-form-field>
-      <div className="extracurricularText">
+      <div class="field-title">
         <p>
           What extracurricular activities (clubs, jobs, etc.) will you be
           involved with next semester? About how many hours per week do you
@@ -137,11 +137,11 @@
             required></textarea>
         </mat-form-field>
       </div>
-      <div className="graduationText">
+      <div class="field-title">
         <p>When is your expected graduation? *</p>
       </div>
       <div class="form-field-wrapper">
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-small">
           <mat-label>Expected Graduation</mat-label>
           <mat-select formControlName="expected_graduation" required>
             <mat-option
@@ -152,11 +152,11 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div className="programText">
+      <div class="field-title">
         <p>What program are you pursuing? *</p>
       </div>
       <div class="form-field-wrapper">
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-small">
           <mat-label>Program</mat-label>
           <mat-select formControlName="program_pursued" required>
             <mat-option *ngFor="let o of programsList" [value]="o.value">
@@ -165,10 +165,10 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div className="otherProgramText">
+      <div class="field-title">
         <p>If pursuing another major/minor in addition, please specify here.</p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>Other Program</mat-label>
         <input matInput placeholder="Econ" formControlName="other_programs" />
       </mat-form-field>
@@ -177,17 +177,17 @@
   <mat-step [stepControl]="fourthFormGroup">
     <form [formGroup]="fourthFormGroup">
       <ng-template matStepLabel>GPA and Transcript</ng-template>
-      <div className="gpaText">
+      <div class="field-title">
         <p>What is your overall GPA? *</p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>GPA</mat-label>
         <input matInput placeholder="4.0" formControlName="gpa" required />
       </mat-form-field>
-      <div className="compGpaText">
+      <div class="field-title">
         <p>What is your Computer Science (COMP) GPA? *</p>
       </div>
-      <mat-form-field>
+      <mat-form-field class="mat-form-field-small">
         <mat-label>COMP GPA</mat-label>
         <input matInput placeholder="4.0" formControlName="comp_gpa" required />
       </mat-form-field>
@@ -196,7 +196,7 @@
   <mat-step [stepControl]="fifthFormGroup">
     <form [formGroup]="fifthFormGroup">
       <ng-template matStepLabel>Course Selection</ng-template>
-      <div className="preferenceText">
+      <div class="field-title">
         <p>Section Preferences *</p>
       </div>
       <div class="example-chip-list">
@@ -232,7 +232,7 @@
         </mat-option>
       </mat-autocomplete>
 
-      <div className="peerText">
+      <div class="field-title">
         <p>COMP227 *</p>
       </div>
       <div class="form-field-wrapper">
@@ -245,14 +245,14 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div className="openPairingText">
+      <div class="field-title">
         <p>
           If we cannot pair you with one of your top choices, are you open to
           being paired with another course you are eligible for? *
         </p>
       </div>
       <div class="form-field-wrapper">
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-small">
           <mat-label>Yes or No</mat-label>
           <mat-select formControlName="open_pairing">
             <mat-option
@@ -267,8 +267,8 @@
     </form>
   </mat-step>
   <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
+    <ng-template matStepLabel>Submission</ng-template>
+    <p>Thank you for completing the Fall 2024 UTA Application!</p>
     <div>
       <button mat-stroked-button (click)="onSubmit()">Submit</button>
     </div>

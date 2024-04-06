@@ -120,7 +120,7 @@ export class UndergradApplicationComponent {
   ];
 
   validateIntroVideo(control: FormControl): { [key: string]: any } | null {
-    const valid = control.value && control.value.startsWith('https://youtu.be');
+    const valid = control.value && control.value.startsWith('https://youtu');
     return valid ? null : { invalidURL: true };
   }
 
@@ -310,6 +310,10 @@ export class UndergradApplicationComponent {
         error: (err) => {
           console.error('Failed to fetch user details', err);
         }
+      });
+    } else {
+      this.snackBar.open('Application not finished yet!', '', {
+        duration: 3000
       });
     }
   }

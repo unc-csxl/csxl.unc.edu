@@ -13,6 +13,9 @@ import { RouterModule } from '@angular/router';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { PermissionService } from 'src/app/permission.service';
 import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
+import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
+import { Application } from 'src/app/admin/applications/admin-application.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-academics-home',
@@ -28,10 +31,16 @@ export class AcademicsHomeComponent implements OnInit {
     canActivate: []
   };
 
+  user_applications$: Observable<Application[]>;
+
   constructor(
     private gearService: NagivationAdminGearService,
-    protected dialog: MatDialog
-  ) {}
+    protected dialog: MatDialog,
+    private applicationService: ApplicationsService
+  ) {
+    this.user_applications$ = applicationService.user_applications$;
+    applicationService.getApplications();
+  }
 
   onUTAClick(): void {
     const dialogRef = this.dialog.open(UTANoticeComponent, {
