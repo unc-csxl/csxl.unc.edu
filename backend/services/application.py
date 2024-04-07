@@ -1,6 +1,7 @@
 """Service that manages applications for the COMP department"""
 
 from fastapi import Depends
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 from backend.entities import section_application_table
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
@@ -121,53 +122,12 @@ class ApplicationService:
             Application: Object added to table
         """
 
-        if application.id:
-            application.id = None
+        # if application.id:
+        #     application.id = None
 
-        application_entity = New_UTA_Entity.from_model(application)
+        # application_entity = New_UTA_Entity.from_model(application)
 
-        existing_sections = []
-
-        for section in application.preferred_sections:
-            existing_sections.append(
-                self._session.query(SectionEntity)
-                .filter(SectionEntity.id == section.id)
-                .first()
-            )
-
-        application_entity.preferred_sections = existing_sections
-
-        # This for loop forces the objects to be loaded by the ORM, this process establishes the correct order of preferences.
-        for section in application_entity.preferred_sections:
-            section.to_model()
-
-        self._session.add(application_entity)
-        self._session.commit()
-
-        return application_entity.to_details_model()
-
-        if application.id:
-            application.id = None
-
-        application_entity = New_UTA_Entity.from_model(application)
-
-        existing_sections = []
-
-        for section in application.preferred_sections:
-            existing_sections.append(
-                self._session.query(SectionEntity)
-                .filter(SectionEntity.id == section.id)
-                .first()
-            )
-
-        application_entity.preferred_sections = existing_sections
-
-        # This for loop forces the objects to be loaded by the ORM, this process establishes the correct order of preferences.
-        for section in application_entity.preferred_sections:
-            section.to_model()
-
-        self._session.add(application_entity)
-        self._session.commit()
+        # existing_sections = []
 
         # for section in application.preferred_sections:
         #     existing_sections.append(
@@ -175,26 +135,53 @@ class ApplicationService:
         #         .filter(SectionEntity.id == section.id)
         #         .first()
         #     )
-        for index, section in enumerate(application.preferred_sections):
-            print("66666666666")
-            # existing_sections.append(
-            #     self._session.query(SectionEntity)
-            #     .filter(SectionEntity.id == section.id)
-            #     .first()
-            # )
-            print("7777777777777")
 
-            association = {
-                "preference": index,
-                "section_id": section.id,
-                "application_id": application_entity.id,
-            }
-            print("88888888888")
-            self._session.execute(
-                section_application_table.update().values(**association)
+        # application_entity.preferred_sections = existing_sections
+
+        # # This for loop forces the objects to be loaded by the ORM, this process establishes the correct order of preferences.
+        # for section in application_entity.preferred_sections:
+        #     section.to_model()
+
+        # self._session.add(application_entity)
+        # self._session.commit()
+
+        # return application_entity.to_details_model()
+
+        if application.id:
+            application.id = None
+
+        application_entity = New_UTA_Entity.from_model(application)
+
+        existing_sections = []
+
+        for section in application.preferred_sections:
+            existing_sections.append(
+                self._session.query(SectionEntity)
+                .filter(SectionEntity.id == section.id)
+                .first()
             )
-            print("9999999999999")
 
+        application_entity.preferred_sections = existing_sections
+
+        # This for loop forces the objects to be loaded by the ORM, this process establishes the correct order of preferences.
+        for section in application_entity.preferred_sections:
+            section.to_model()
+
+        self._session.add(application_entity)
+        self._session.commit()
+
+        for index, section in enumerate(application.preferred_sections):
+            print("AZIZ HEREEE LOOK ")
+            print(index)
+
+            self._session.execute(
+                update(section_application_table)
+                .filter(
+                    section_application_table.c.application_id == application_entity.id,
+                    section_application_table.c.section_id == section.id,
+                )
+                .values(preference=index)
+            )
         self._session.commit()
 
         return application_entity.to_details_model()
@@ -224,6 +211,7 @@ class ApplicationService:
         if original_application is None:
             raise ResourceNotFoundException(f"Application does not exist")
 
+        print("DJFLKDJFLDKJDL")
         self._session.delete(original_application)
         self._session.commit()
 
