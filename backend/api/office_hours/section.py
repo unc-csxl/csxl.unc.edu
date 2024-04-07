@@ -198,48 +198,48 @@ def get_oh_sections_by_user_and_term(
     return oh_section_service.get_user_sections_by_term(subject, term_id)
 
 
-# @api.get(
-#     "/{oh_section_id}/tickets",
-#     response_model=list[OfficeHoursTicketDetails],
-#     tags=["Office Hours"],
-# )
-# def get_oh_section_tickets(
-#     oh_section_id: int,
-#     subject: User = Depends(registered_user),
-#     oh_section_service: OfficeHoursSectionService = Depends(),
-# ) -> list[OfficeHoursTicketDetails]:
-#     """
-#     Gets list of OH tickets from an OH section
+@api.get(
+    "/{oh_section_id}/tickets",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
+)
+def get_oh_section_tickets(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of OH tickets from an OH section
 
-#     Returns:
-#         list[OfficeHoursTicketDetails]: OH tickets within the given section
-#     """
-#     oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-#         oh_section_id
-#     )
-#     return oh_section_service.get_section_tickets(subject, oh_section)
+    Returns:
+        list[OfficeHoursTicketDetails]: OH tickets within the given section
+    """
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+        subject, oh_section_id
+    )
+    return oh_section_service.get_section_tickets(subject, oh_section)
 
 
-# @api.get(
-#     "/{oh_section_id}/user/tickets",
-#     response_model=list[OfficeHoursTicketDetails],
-#     tags=["Office Hours"],
-# )
-# def get_oh_tickets_by_section_and_user(
-#     oh_section_id: int,
-#     subject: User = Depends(registered_user),
-#     oh_section_service: OfficeHoursSectionService = Depends(),
-# ) -> list[OfficeHoursTicketDetails]:
-#     """
-#     Gets list of OH tickets by OH section and user
+@api.get(
+    "/{oh_section_id}/user/created_tickets",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
+)
+def get_user_section_created_tickets(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of OH tickets by OH section and user
 
-#     Returns:
-#         list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific user
-#     """
-#     oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-#         oh_section_id
-#     )
-#     return oh_section_service.get_tickets_by_section_and_user(subject, oh_section)
+    Returns:
+        list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific user
+    """
+    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+        subject, oh_section_id
+    )
+    return oh_section_service.get_user_section_created_tickets(subject, oh_section)
 
 
 # @api.put(

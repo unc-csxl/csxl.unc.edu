@@ -3,14 +3,13 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ...models.office_hours.event import OfficeHoursEvent
-
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
-
+from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
+
 from ...models.roster_role import RosterRole
 from ...models.coworking.time_range import TimeRange
-
+from ...models.office_hours.event import OfficeHoursEvent
 from ...models.office_hours.event_details import OfficeHoursEvent
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
@@ -154,7 +153,7 @@ class OfficeHoursSectionService:
 
         # PERMISSIONS
 
-        # 1. Checks If User Has Proper Role to Create and If is a Member in a Section
+        # 1. Checks If User Has Proper Role to Get and If is a Member in a Section
         section_member_entity = self._check_user_section_membership(
             subject.id, oh_section.id
         )
@@ -318,11 +317,39 @@ class OfficeHoursSectionService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHsection
         """
-        # TODO
-        return None
+        # PERMISSIONS
 
-    def get_user_section_tickets(
-        self, subject: User, oh_section_id: int
+        # Checks If User Has Proper Role to Get and If is a Member in a Section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a student. User Does Not Have Permision to get all tickets in section with id {oh_section.id}."
+            )
+
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
+        # Get the tickets that are linked to the events which are linked to the section
+        ticket_entities = [
+            ticket for event in entity.events for ticket in event.tickets
+        ]
+
+        # Return the details model of those tickets
+        return [entity.to_details_model() for entity in ticket_entities]
+
+    def get_user_section_created_tickets(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all of the subject's office hours tickets in a section from the table.
         Args:
@@ -331,8 +358,29 @@ class OfficeHoursSectionService:
         Returns:
             list[OfficeHoursTicketDetails]: List of all of a user's `OfficeHoursTicketDetails` in an OHsection
         """
-        # TODO
-        return None
+
+        # PERMISSIONS
+
+        # Throws exception if user is not a member
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        # Selects tickets from a certain section with the subject's id as one of the creators
+        user_ticket_entities = (
+            self._session.query(OfficeHoursTicketEntity)
+            .join(OfficeHoursEventEntity)
+            .join(OfficeHoursSectionEntity)
+            .filter(
+                OfficeHoursSectionEntity.id == oh_section.id,
+                OfficeHoursTicketEntity.creators.any(
+                    SectionMemberEntity.id == section_member_entity.id
+                ),
+            )
+            .all()
+        )
+
+        return [entity.to_details_model() for entity in user_ticket_entities]
 
     def update(
         self, subject: User, oh_section: OfficeHoursSection
