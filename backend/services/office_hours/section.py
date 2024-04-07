@@ -351,12 +351,12 @@ class OfficeHoursSectionService:
     def get_user_section_created_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
     ) -> list[OfficeHoursTicketDetails]:
-        """Retrieves all of the subject's office hours tickets in a section from the table.
+        """Retrieves all of the subject's created office hours tickets in a section from the table.
         Args:
             subject: a valid User model representing the currently logged in User
             oh_section: the OfficeHoursSectionDetails to query by.
         Returns:
-            list[OfficeHoursTicketDetails]: List of all of a user's `OfficeHoursTicketDetails` in an OHsection
+            list[OfficeHoursTicketDetails]: List of all of a user's created `OfficeHoursTicketDetails` in an OHsection
         """
 
         # PERMISSIONS
@@ -374,6 +374,40 @@ class OfficeHoursSectionService:
             .filter(
                 OfficeHoursSectionEntity.id == oh_section.id,
                 OfficeHoursTicketEntity.creators.any(
+                    SectionMemberEntity.id == section_member_entity.id
+                ),
+            )
+            .all()
+        )
+
+        return [entity.to_details_model() for entity in user_ticket_entities]
+
+    def get_user_section_called_tickets(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
+    ) -> list[OfficeHoursTicketDetails]:
+        """Retrieves all of the subject's called office hours tickets in a section from the table.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: the OfficeHoursSectionDetails to query by.
+        Returns:
+            list[OfficeHoursTicketDetails]: List of all of a user's called `OfficeHoursTicketDetails` in an OHsection
+        """
+
+        # PERMISSIONS
+
+        # Throws exception if user is not a member
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        # Selects tickets from a certain section with the subject's id as the caller
+        user_ticket_entities = (
+            self._session.query(OfficeHoursTicketEntity)
+            .join(OfficeHoursEventEntity)
+            .join(OfficeHoursSectionEntity)
+            .filter(
+                OfficeHoursSectionEntity.id == oh_section.id,
+                OfficeHoursTicketEntity.caller.has(
                     SectionMemberEntity.id == section_member_entity.id
                 ),
             )
