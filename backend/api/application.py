@@ -44,11 +44,11 @@ def get_applications(
     return application_service.list()
 
 
-@api.get("/user", response_model=UserApplication, tags=["Applications"])
+@api.get("/user", response_model=UserApplication | None, tags=["Applications"])
 def get_applications_user(
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> UserApplication:
+) -> UserApplication | None:
     """
     Get all applications
 
@@ -84,7 +84,7 @@ def new_undergrad_application(
     return application_service.create_undergrad(application)
 
 
-@api.post("/update", response_model=New_UTADetails, tags=["Applications"])
+@api.put("/update", response_model=New_UTADetails, tags=["Applications"])
 def update_undergrad_application(
     application: New_UTADetails,
     user: User = Depends(registered_user),
@@ -95,14 +95,35 @@ def update_undergrad_application(
 
     Parameters:
         application: a valid New_UTA model
-        user: The suer updating their model
+        user: The user updating their application
         application_service: a valid ApplicationService
 
     Returns:
         Application: Created application
 
     Raises:
-        HTTPException 422 if create() raises an Exception
+        ResourceNotFound if application doesn't exist
     """
 
     return application_service.update_undergrad(user, application)
+
+
+@api.delete("/delete", response_model=None, tags={"Applications"})
+def delete_application(
+    user: User = Depends(registered_user),
+    application_service: ApplicationService = Depends(),
+):
+    """
+    Delete Application
+
+    Parameters:
+        user: The user deleteing their application
+
+    Returns:
+        None
+
+    Raises:
+        ResourceNotFound if application doesn't exist
+    """
+
+    return application_service.delete_application(user)

@@ -9,9 +9,12 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Application } from '../admin/applications/admin-application.model';
-import { RxApplication } from '../admin/applications/rx-applications';
+import {
+  RxApplications,
+  RxApplication
+} from '../admin/applications/rx-applications';
 import { Profile } from '../profile/profile.service';
 import { Course, Section } from '../academics/academics.models';
 import {
@@ -21,12 +24,16 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationsService {
-  private applications: RxApplication = new RxApplication();
+  private applications: RxApplications = new RxApplications();
   public applications$: Observable<Application[]> = this.applications.value$;
 
-  private user_applications: RxApplication = new RxApplication();
-  public user_applications$: Observable<Application[]> =
-    this.user_applications.value$;
+  private user_application: RxApplication = new RxApplication();
+  public user_application$: Observable<Application | null> =
+    this.user_application.value$;
+
+  public new_uta$ = new BehaviorSubject<boolean>(false);
+
+  public new_uta: boolean;
 
   private courses: RxCourseList = new RxCourseList();
   public courses$: Observable<Course[]> = this.courses.value$;
@@ -34,7 +41,9 @@ export class ApplicationsService {
   private sections: RxSectionList = new RxSectionList();
   public sections$: Observable<Section[]> = this.sections.value$;
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient) {
+    this.new_uta = this.getApplication();
+  }
 
   /** Returns a list of all Applications
    * @returns {Observable<Application[]>}
@@ -45,12 +54,42 @@ export class ApplicationsService {
       .subscribe((applications) => this.applications.set(applications));
   }
 
+  getApplication(): boolean {
+    this.http
+      .get<Application>('/api/applications/user')
+      .subscribe((application) => {
+        console.log(application);
+        if (application !== null) {
+          this.user_application.set(application);
+          this.new_uta$.next(false);
+          this.new_uta = false;
+          console.log('false');
+          return false;
+        } else {
+          this.user_application.set(null);
+          this.new_uta$.next(true);
+          this.new_uta = true;
+          console.log('true');
+          return true;
+        }
+      });
+    return true;
+  }
+
   /** Creates an application
    * @param application: Application object that you want to add to the database
    * @returns {Observable<Application>}
    */
   createApplication(application: Application): Observable<Application> {
     return this.http.post<Application>('/api/applications', application);
+  }
+
+  updateApplication(application: Application): Observable<Application> {
+    return this.http.put<Application>('/api/applications/update', application);
+  }
+
+  deleteApplication(): void {
+    this.http.delete('/api/application/delete');
   }
 
   getProfile(): Observable<Profile> {
@@ -67,11 +106,5 @@ export class ApplicationsService {
     this.http
       .get<Section[]>('/api/academics/section')
       .subscribe((sections) => this.sections.set(sections));
-  }
-
-  getApplications(): void {
-    this.http
-      .get<Application[]>('/api/applications/user')
-      .subscribe((applications) => this.user_applications.set(applications));
   }
 }

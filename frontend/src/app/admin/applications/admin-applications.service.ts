@@ -11,11 +11,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Application } from './admin-application.model';
-import { RxApplication } from './rx-applications';
+import { RxApplications } from './rx-applications';
 
 @Injectable({ providedIn: 'root' })
 export class AdminApplicationsService {
-  private applications: RxApplication = new RxApplication();
+  private applications: RxApplications = new RxApplications();
   public applications$: Observable<Application[]> = this.applications.value$;
 
   constructor(protected http: HttpClient) {}

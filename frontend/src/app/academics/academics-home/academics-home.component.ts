@@ -31,15 +31,18 @@ export class AcademicsHomeComponent implements OnInit {
     canActivate: []
   };
 
-  user_applications$: Observable<Application[]>;
+  public user_application$: Observable<Application | null>;
+  public new_uta: boolean;
 
   constructor(
     private gearService: NagivationAdminGearService,
     protected dialog: MatDialog,
-    private applicationService: ApplicationsService
+    public applicationService: ApplicationsService
   ) {
-    this.user_applications$ = applicationService.user_applications$;
-    applicationService.getApplications();
+    this.applicationService.getApplication();
+    this.user_application$ = this.applicationService.user_application$;
+
+    this.new_uta = this.applicationService.new_uta;
   }
 
   onUTAClick(): void {

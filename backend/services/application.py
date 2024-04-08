@@ -1,7 +1,7 @@
 """Service that manages applications for the COMP department"""
 
 from fastapi import Depends
-from sqlalchemy import update
+from sqlalchemy import update, delete, insert
 from sqlalchemy.orm import Session
 from backend.entities import section_application_table
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
@@ -81,18 +81,18 @@ class ApplicationService:
         )
 
         if application_entity is None:
-            raise ResourceNotFoundException(f"Application does not exist")
+            return None
 
         application = application_entity.to_details_model()
 
-        subquery = (
+        sections = (
             self._session.query(section_application_table)
             .filter(section_application_table.c.application_id == application.id)
             .order_by(section_application_table.c.preference)
             .all()
         )
 
-        section_ids = [section[1] for section in subquery]
+        section_ids = [section[1] for section in sections]
 
         sections_entity = []
 
@@ -162,26 +162,25 @@ class ApplicationService:
             )
 
         application_entity.preferred_sections = existing_sections
-
-        # This for loop forces the objects to be loaded by the ORM, this process establishes the correct order of preferences.
-        for section in application_entity.preferred_sections:
-            section.to_model()
+        for index, preferred_section in enumerate(
+            application_entity.preferred_sections
+        ):
+            preferred_section.preference = index
 
         self._session.add(application_entity)
         self._session.commit()
 
-        for index, section in enumerate(application.preferred_sections):
-            print("AZIZ HEREEE LOOK ")
-            print(index)
+        # for index, section in enumerate(application.preferred_sections):
 
-            self._session.execute(
-                update(section_application_table)
-                .filter(
-                    section_application_table.c.application_id == application_entity.id,
-                    section_application_table.c.section_id == section.id,
-                )
-                .values(preference=index)
-            )
+        #     self._session.execute(
+        #         update(section_application_table)
+        #         .filter(
+        #             section_application_table.c.application_id == application_entity.id,
+        #             section_application_table.c.section_id == section.id,
+        #         )
+        #         .values(preference=index)
+        #     )
+
         self._session.commit()
 
         return application_entity.to_details_model()
@@ -190,20 +189,19 @@ class ApplicationService:
         self, subject: User, application: New_UTADetails
     ) -> New_UTADetails:
         """
-        Updates an application for a user based on the input object and adds it to the table.
-        We have to delete the original application and create a new entry with how current ordinaility is working.
+        Updates an application for a user based on the application sent in.
         The application id must exist or an error is raised.
 
         Parameters:
-            subject (User): The User that would like to update their applicaiton
-            application (New_UTADetails: The Applicaiton with the updated values
+            subject (User): The User that would like to update their application
+            application (New_UTADetails: The Application with the updated values
 
         Returns:
             New_UTADetails: Updated application
         """
 
         original_application = (
-            self._session.query(ApplicationEntity)
+            self._session.query(New_UTA_Entity)
             .filter(ApplicationEntity.user_id == subject.id)
             .first()
         )
@@ -211,8 +209,54 @@ class ApplicationService:
         if original_application is None:
             raise ResourceNotFoundException(f"Application does not exist")
 
-        print("DJFLKDJFLDKJDL")
-        self._session.delete(original_application)
+        self._session.execute(
+            delete(section_application_table).filter(
+                section_application_table.c.application_id == original_application.id
+            )
+        )
+
+        existing_sections = []
+        for section in application.preferred_sections:
+            existing_sections.append(
+                self._session.query(SectionEntity)
+                .filter(SectionEntity.id == section.id)
+                .first()
+            )
+
+        original_application.update(application, existing_sections)
+
         self._session.commit()
 
-        return self.create_undergrad(application)
+        for index, section in enumerate(application.preferred_sections):
+
+            self._session.execute(
+                update(section_application_table)
+                .filter(
+                    section_application_table.c.application_id
+                    == original_application.id,
+                    section_application_table.c.section_id == section.id,
+                )
+                .values(preference=index)
+            )
+        self._session.commit()
+
+        return original_application.to_details_model()
+
+    def delete_application(self, subject: User) -> None:
+        """
+        Deletes an application from the Application table.
+        Raises an error if user doesn't have an associated application.
+
+        """
+
+        original_application = (
+            self._session.query(New_UTA_Entity)
+            .filter(ApplicationEntity.user_id == subject.id)
+            .first()
+        )
+
+        if original_application is None:
+            raise ResourceNotFoundException(f"Application does not exist")
+
+        self._session.delete(original_application)
+        self._session.commit()

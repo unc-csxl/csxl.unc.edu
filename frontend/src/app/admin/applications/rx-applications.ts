@@ -1,7 +1,8 @@
 import { RxObject } from 'src/app/rx-object';
 import { Application } from './admin-application.model';
+import { ApplicationComponent } from 'src/app/ta-application/application-home/application-home.component';
 
-export class RxApplication extends RxObject<Application[]> {
+export class RxApplications extends RxObject<Application[]> {
   constructor() {
     super();
     this.value = [];
@@ -13,4 +14,11 @@ export class RxApplication extends RxObject<Application[]> {
   //     );
   //     this.notify();
   //   }
+}
+
+export class RxApplication extends RxObject<Application | null> {
+  constructor() {
+    super();
+    this.value = null;
+  }
 }

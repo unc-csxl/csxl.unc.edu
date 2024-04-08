@@ -11,7 +11,7 @@ from backend.models.application_details import (
     New_UTADetails,
     UTADetails,
 )
-from backend.models.academics.course import Course
+from backend.models.academics.section import Section
 
 from .entity_base import EntityBase
 from typing import Self
@@ -119,6 +119,11 @@ class UTAEntity(ApplicationEntity):
         back_populates="preferred_applicants",
     )
 
+    # Potential better way to
+    # preferred_sections_join: Mapped[list[section_application_table]] = relationship(
+    #     "section_application_table"
+    # )
+
     __mapper_args__ = {
         "polymorphic_identity": "uta",
     }
@@ -199,7 +204,7 @@ class UTAEntity(ApplicationEntity):
             ],
         )
 
-    def update(self, model: UTADetails) -> None:
+    def update(self, model: UTADetails, sections: list[SectionEntity]) -> None:
         """
         Update an ApplciationEntity from a UTA model.
 
@@ -218,11 +223,7 @@ class UTAEntity(ApplicationEntity):
         self.comp_gpa = model.comp_gpa
         self.comp_227 = model.comp_227
         self.open_pairing = model.open_pairing
-        print("PLEASE RIGHT HERE")
-        self.preferred_sections = [
-            SectionEntity.from_model(section) for section in model.preferred_sections
-        ]
-        print("MAYBE RIGHT HERE UWUU")
+        self.preferred_sections = sections
 
 
 class New_UTA_Entity(UTAEntity):
@@ -300,7 +301,7 @@ class New_UTA_Entity(UTAEntity):
             additional_experience=self.additional_experience,
         )
 
-    def update(self, model: New_UTADetails) -> None:
+    def update(self, model: New_UTADetails, sections: list[Section]) -> None:
         """
         Update an ApplciationEntity from a New_UTA model.
 
@@ -311,7 +312,7 @@ class New_UTA_Entity(UTAEntity):
             None
         """
 
-        super().update(model)
+        super().update(model, sections)
         self.intro_video = model.intro_video
         self.prior_experience = model.prior_experience
         self.service_experience = model.service_experience
