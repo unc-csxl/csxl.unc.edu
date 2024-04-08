@@ -72,53 +72,41 @@ class PolicyService:
     def office_hours(self, date: datetime):
         day = date.weekday()
         if day == MONDAY:
-            return {  # Temporary fix for blocking off furniture install days
-                "SN135": [(time(hour=10), time(hour=19))],
-                "SN137": [(time(hour=10), time(hour=19))],
-                "SN139": [(time(hour=10), time(hour=19))],
-                "SN141": [(time(hour=10), time(hour=19))],
-                "SN144": [(time(hour=10), time(hour=19))],
-                "SN146": [(time(hour=10), time(hour=19))],
-                "SN147": [(time(hour=10), time(hour=19))],
-                # Future
-                # 'SN135' : [],
-                # 'SN137' : [],
-                # 'SN139' : [],
-                # 'SN141' : [(time(hour=10, minute=30), time(hour=18))], # KMP 426
-                # 'SN144' : [],
-                # 'SN146' : [],
-                # 'SN147' : [(time(hour=15), time(hour=18))], # Sridhar
+            return {
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
             }
         elif day == TUESDAY:
-            return {  # Temporary fix for blocking off furniture install days
-                "SN135": [(time(hour=10), time(hour=19))],
-                "SN137": [(time(hour=10), time(hour=19))],
-                "SN139": [(time(hour=10), time(hour=19))],
-                "SN141": [(time(hour=10), time(hour=19))],
-                "SN144": [(time(hour=10), time(hour=19))],
-                "SN146": [(time(hour=10), time(hour=19))],
-                "SN147": [(time(hour=10), time(hour=19))],
+            return {
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
             }
         elif day == WEDNESDAY:
-            return {  # Temporary fix for blocking off furniture install days
-                "SN135": [(time(hour=10, minute=0), time(hour=19, minute=0))],
-                "SN137": [
-                    (time(hour=10), time(hour=19))
-                ],  # [(time(hour=15), time(hour=16))] # Leong
-                "SN139": [(time(hour=10), time(hour=19))],
-                "SN141": [(time(hour=10), time(hour=19))],
-                "SN144": [(time(hour=10), time(hour=19))],
-                "SN146": [(time(hour=10), time(hour=19))],
-                "SN147": [
-                    (time(hour=10), time(hour=19))
-                ],  # [(time(hour=15), time(hour=18))], # Sridhar
+            return {
+                "SN135": [],
+                "SN137": [(time(hour=15), time(hour=16))],  # Johnathan Leong
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
             }
         elif day == THURSDAY:
             return {
                 "SN135": [],
                 "SN137": [],
                 "SN139": [],
-                "SN141": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
                 "SN144": [],
                 "SN146": [],
                 "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
@@ -128,7 +116,7 @@ class PolicyService:
                 "SN135": [],
                 "SN137": [],
                 "SN139": [],
-                "SN141": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
                 "SN144": [],
                 "SN146": [],
                 "SN147": [],

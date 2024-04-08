@@ -342,10 +342,6 @@ class ReservationService:
                 )
                 end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
-                if start_idx < 0 or end_idx > operating_hours_duration:
-                    continue
-
-                # Gray out previous time slots for today only
                 if date.date() == current_time.date():
                     if end_idx < current_time_idx:
                         continue
@@ -399,7 +395,7 @@ class ReservationService:
                 to_add = timedelta(minutes=(60 - minutes))
             rounded_dt = dt + to_add
         else:
-            if minutes > 30:
+            if minutes >= 30:
                 to_subtract = timedelta(minutes=(minutes - 30))
             else:
                 to_subtract = timedelta(minutes=minutes)
@@ -468,6 +464,8 @@ class ReservationService:
         """
         office_hours = self._policy_svc.office_hours(date=date)
         for room_id, hours in office_hours.items():
+            if room_id not in reserved_date_map:
+                continue
             for start, end in hours:
                 start_idx = max(self._idx_calculation(start, operating_hours_start), 0)
                 end_idx = min(
@@ -1040,7 +1038,7 @@ class ReservationService:
             self._session.query(ReservationEntity)
             .join(ReservationEntity.users)
             .filter(
-                ReservationEntity.start >= now - timedelta(minutes=10),
+                ReservationEntity.end > now,
                 ReservationEntity.state.in_(
                     (
                         ReservationState.CONFIRMED,

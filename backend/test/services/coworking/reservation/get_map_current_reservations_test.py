@@ -96,7 +96,7 @@ def test_idx_calculation(reservation_svc: ReservationService):
     assert reservation_svc._idx_calculation(time_2, oh_start) == 5
 
     time_3 = datetime.now().replace(hour=13, minute=40)
-    assert reservation_svc._idx_calculation(time_3, oh_start) == 7
+    assert reservation_svc._idx_calculation(time_3, oh_start) == 7    
 
 
 def test_round_idx_calculation(reservation_svc: ReservationService):
@@ -149,9 +149,18 @@ def test_get_map_reserved_times_by_date(
     the reserved_date_map in the debugger.
     """
     test_time = time[NOW]
-    reserved_date_map = reservation_svc.get_map_reserved_times_by_date(
+    reservation_details = reservation_svc.get_map_reserved_times_by_date(
         test_time + timedelta(days=2), user_data.user
     )
+
+    expected_date_map = {
+        'SN135' : [3, 3, 3, 3, 3],
+        'SN137' : [4, 4, 4, 4, 3],
+        'SN139' : [3, 3, 3, 3, 3],
+        'SN141' : [3, 3, 3, 3, 3]
+    }
+
+    assert reservation_details.reserved_date_map == expected_date_map
 
     reserved_date_map_root = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.root
