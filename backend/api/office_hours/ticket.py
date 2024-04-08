@@ -83,7 +83,7 @@ def get_oh_ticket_by_id(
 
 
 @api.put(
-    "/called/{oh_ticket_id}",
+    "/call",
     response_model=OfficeHoursTicketDetails,
     tags=["Office Hours"],
 )
@@ -105,7 +105,7 @@ def update_oh_ticket_when_called(
 
 
 @api.put(
-    "/cancel/{oh_ticket_id}",
+    "/cancel",
     response_model=OfficeHoursTicketDetails,
     tags=["Office Hours"],
 )
@@ -128,7 +128,7 @@ def cancel_oh_ticket(
 
 
 @api.put(
-    "/close/{oh_ticket_id}",
+    "/close",
     response_model=OfficeHoursTicketDetails,
     tags=["Office Hours"],
 )
@@ -151,7 +151,7 @@ def close_oh_ticket(
 
 
 @api.put(
-    "/feedback/{oh_ticket_id}",
+    "/feedback",
     response_model=OfficeHoursTicketDetails,
     tags=["Office Hours"],
 )
