@@ -377,6 +377,7 @@ class OfficeHoursSectionService:
                     SectionMemberEntity.id == section_member_entity.id
                 ),
             )
+            .order_by(OfficeHoursTicketEntity.created_at.desc())
             .all()
         )
 
@@ -411,6 +412,7 @@ class OfficeHoursSectionService:
                     SectionMemberEntity.id == section_member_entity.id
                 ),
             )
+            .order_by(OfficeHoursTicketEntity.created_at.desc())
             .all()
         )
 
