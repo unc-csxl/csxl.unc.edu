@@ -19,7 +19,9 @@ import {
   OfficeHoursEventDetails,
   OfficeHoursEventDraft,
   TicketDetails,
-  TicketDraft
+  TicketDraft,
+  TicketPartial,
+  Ticket
 } from './office-hours.models';
 import { SectionMember } from '../academics/academics.models';
 
@@ -83,6 +85,29 @@ export class OfficeHoursService {
     return this.http.post<OfficeHoursEventDetails>(
       '/api/office-hours/event',
       event_draft
+    );
+  }
+
+  // id
+  callTicket(oh_ticket: Ticket): Observable<TicketDetails> {
+    return this.http.put<TicketDetails>('/api/office-hours/call', oh_ticket);
+  }
+
+  // id
+  closeTicket(oh_ticket: Ticket): Observable<TicketDetails> {
+    return this.http.put<TicketDetails>('/api/office-hours/close', oh_ticket);
+  }
+
+  // id
+  cancelTicket(oh_ticket: Ticket): Observable<TicketDetails> {
+    return this.http.put<TicketDetails>('/api/office-hours/cancel', oh_ticket);
+  }
+
+  // id, have_concerns, caller_notes
+  addFeedback(oh_ticket: TicketPartial): Observable<TicketDetails> {
+    return this.http.put<TicketDetails>(
+      '/api/office-hours/feedback',
+      oh_ticket
     );
   }
 }
