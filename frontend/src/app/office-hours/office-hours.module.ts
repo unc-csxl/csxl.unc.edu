@@ -26,6 +26,8 @@ import { SectionCreationDialog } from './widgets/section-creation-dialog/section
 import { JoinSectionDialog } from './widgets/join-section-dialog/join-section-dialog.widget';
 import { UpcomingHoursDialog } from './widgets/upcoming-hours-dialog/upcoming-hours-dialog.widget';
 import { UpcomingHoursText } from './widgets/upcoming-hours-text/upcoming-hours-text.widget';
+import { TicketHistoryWidget } from './widgets/ticket-history/ticket-history.widget';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import { UpcomingHoursText } from './widgets/upcoming-hours-text/upcoming-hours-
     SectionCreationFormComponent,
     JoinSectionDialog,
     UpcomingHoursDialog,
-    UpcomingHoursText
+    UpcomingHoursText,
+    TicketHistoryWidget
   ],
   imports: [
     CommonModule,
@@ -59,7 +62,8 @@ import { UpcomingHoursText } from './widgets/upcoming-hours-text/upcoming-hours-
     MatInputModule,
     MatIconModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTableModule
   ]
 })
 export class OfficeHoursModule {}

@@ -1,0 +1,23 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ticket-history {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+table {
+    padding: 1rem;
+    margin-top: 2rem;
+    width: 80rem;
+}
