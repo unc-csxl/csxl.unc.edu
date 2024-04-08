@@ -122,64 +122,38 @@ class ApplicationService:
             Application: Object added to table
         """
 
-        # if application.id:
-        #     application.id = None
-
-        # application_entity = New_UTA_Entity.from_model(application)
-
-        # existing_sections = []
-
-        # for section in application.preferred_sections:
-        #     existing_sections.append(
-        #         self._session.query(SectionEntity)
-        #         .filter(SectionEntity.id == section.id)
-        #         .first()
-        #     )
-
-        # application_entity.preferred_sections = existing_sections
-
-        # # This for loop forces the objects to be loaded by the ORM, this process establishes the correct order of preferences.
-        # for section in application_entity.preferred_sections:
-        #     section.to_model()
-
-        # self._session.add(application_entity)
-        # self._session.commit()
-
-        # return application_entity.to_details_model()
-
         if application.id:
             application.id = None
 
         application_entity = New_UTA_Entity.from_model(application)
 
-        existing_sections = []
-
-        for section in application.preferred_sections:
-            existing_sections.append(
-                self._session.query(SectionEntity)
-                .filter(SectionEntity.id == section.id)
-                .first()
+        application_entity.preferred_sections = (
+            self._session.query(SectionEntity)
+            .filter(
+                SectionEntity.id.in_(
+                    section.id for section in application.preferred_sections
+                )
             )
-
-        application_entity.preferred_sections = existing_sections
-        for index, preferred_section in enumerate(
-            application_entity.preferred_sections
-        ):
-            preferred_section.preference = index
+            .all()
+        )
+        # for index, preferred_section in enumerate(
+        #     application_entity.preferred_sections
+        # ):
+        #     preferred_section.preference = index
 
         self._session.add(application_entity)
         self._session.commit()
 
-        # for index, section in enumerate(application.preferred_sections):
+        for index, section in enumerate(application.preferred_sections):
 
-        #     self._session.execute(
-        #         update(section_application_table)
-        #         .filter(
-        #             section_application_table.c.application_id == application_entity.id,
-        #             section_application_table.c.section_id == section.id,
-        #         )
-        #         .values(preference=index)
-        #     )
+            self._session.execute(
+                update(section_application_table)
+                .filter(
+                    section_application_table.c.application_id == application_entity.id,
+                    section_application_table.c.section_id == section.id,
+                )
+                .values(preference=index)
+            )
 
         self._session.commit()
 
@@ -215,15 +189,16 @@ class ApplicationService:
             )
         )
 
-        existing_sections = []
-        for section in application.preferred_sections:
-            existing_sections.append(
-                self._session.query(SectionEntity)
-                .filter(SectionEntity.id == section.id)
-                .first()
+        original_application.update(
+            application,
+            self._session.query(SectionEntity)
+            .filter(
+                SectionEntity.id.in_(
+                    section.id for section in application.preferred_sections
+                )
             )
-
-        original_application.update(application, existing_sections)
+            .all(),
+        )
 
         self._session.commit()
 
