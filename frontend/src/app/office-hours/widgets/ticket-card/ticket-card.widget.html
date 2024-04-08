@@ -1,9 +1,20 @@
 <mat-card appearance="outlined">
     <div class="card-container">
-        <mat-card-title>
-            {{formatTicketType(ticket.type)}}
-        </mat-card-title>
+        <div *ngIf="formatTicketState(ticket.state) === 'Queued'">
+            <mat-card-title>
+                {{formatTicketType(ticket.type)}}
+            </mat-card-title>
+            <mat-card-content class="newline">{{ticket.description}}</mat-card-content>
+            <button mat-stroked-button>Cancel</button>
+            <button mat-flat-button color="primary">Call</button>
+        </div>
+
+        <div *ngIf="formatTicketState(ticket.state) === 'Called'">
+            <mat-card-title *ngIf="formatTicketState(ticket.state) === 'Called'">
+                {{ticket.caller?.first_name}} is with {{ticket.creators[0].first_name}}
+            </mat-card-title>
+            <mat-card-content class="newline">{{ticket.description}}</mat-card-content>
+            <button mat-stroked-button>Cancel</button>
+        </div>
     </div>
-    <mat-card-content class="newline">{{ticket.description}}
-    </mat-card-content>
 </mat-card>

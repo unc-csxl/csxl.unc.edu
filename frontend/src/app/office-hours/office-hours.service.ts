@@ -20,7 +20,10 @@ import {
   OfficeHoursEventDraft,
   TicketDetails,
   TicketDraft,
-  OfficeHoursEvent
+  OfficeHoursEvent,
+  OfficeHoursEventType,
+  TicketType,
+  TicketState
 } from './office-hours.models';
 import { SectionMember } from '../academics/academics.models';
 
@@ -123,5 +126,43 @@ export class OfficeHoursService {
     return this.http.get<OfficeHoursEventDetails>(
       'api/office-hours/event/' + oh_event_id
     );
+  }
+
+  formatEventType(typeNum: number) {
+    if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {
+      return 'Office Hours';
+    } else if (typeNum === OfficeHoursEventType.TUTORING) {
+      return 'Tutoring';
+    } else if (typeNum === OfficeHoursEventType.REVIEW_SESSION) {
+      return 'Review Session';
+    } else if (typeNum === OfficeHoursEventType.VIRTUAL_OFFICE_HOURS) {
+      return 'Virtual Office Hours';
+    } else if (typeNum === OfficeHoursEventType.VIRTUAL_TUTORING) {
+      return 'Virtual Tutoring';
+    } else if (typeNum === OfficeHoursEventType.VIRTUAL_REVIEW_SESSION) {
+      return 'Virtual Review Session';
+    } else {
+      return 'error';
+    }
+  }
+
+  formatTicketType(typeNum: number) {
+    if (typeNum === TicketType.ASSIGNMENT_HELP) {
+      return 'Assignment Help';
+    } else return 'Conceptual Help';
+  }
+
+  formatTicketState(typeNum: number) {
+    if (typeNum === TicketState.CALLED) {
+      return 'Called';
+    } else if (typeNum === TicketState.CANCELED) {
+      return 'Canceled';
+    } else if (typeNum === TicketState.CLOSED) {
+      return 'Closed';
+    } else if (typeNum === TicketState.QUEUED) {
+      return 'Queued';
+    } else {
+      return 'error';
+    }
   }
 }

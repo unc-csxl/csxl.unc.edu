@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Ticket, TicketType } from '../../office-hours.models';
+import { Ticket, TicketDetails, TicketType } from '../../office-hours.models';
+import { OfficeHoursService } from '../../office-hours.service';
 
 @Component({
   selector: 'ticket-card-widget',
@@ -7,12 +8,14 @@ import { Ticket, TicketType } from '../../office-hours.models';
   styleUrls: ['./ticket-card.widget.css']
 })
 export class TicketCard {
-  @Input() ticket!: Ticket;
-  constructor() {}
+  @Input() ticket!: TicketDetails;
+  constructor(private officeHoursService: OfficeHoursService) {}
 
   formatTicketType(typeNum: number) {
-    if (typeNum === TicketType.ASSIGNMENT_HELP) {
-      return 'Assignment Help';
-    } else return 'Conceptual Help';
+    return this.officeHoursService.formatTicketType(typeNum);
+  }
+
+  formatTicketState(typeNum: number) {
+    return this.officeHoursService.formatTicketState(typeNum);
   }
 }
