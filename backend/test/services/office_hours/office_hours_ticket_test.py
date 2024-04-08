@@ -58,3 +58,29 @@ def test_create_ticket_exception_for_non_section_member_group_ticket(
             user_data.root, office_hours_data.group_ticket_draft_non_member
         )
         pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_create_ticket_exception_invalid_event(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    with pytest.raises(ResourceNotFoundException):
+        oh_ticket_svc.create(
+            user_data.root, office_hours_data.ticket_draft_invalid_event
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_get_ticket_by_id(oh_ticket_svc: OfficeHoursTicketService):
+    ticket = oh_ticket_svc.get_ticket_by_id(
+        user_data.user, office_hours_data.called_ticket.id
+    )
+    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert ticket.id == office_hours_data.called_ticket.id
+
+
+def test_get_ticket_by_id_exception_when_id_does_not_exist(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    with pytest.raises(ResourceNotFoundException):
+        oh_ticket_svc.get_ticket_by_id(user_data.user, 10)
+        pytest.fail()  # Fail test if no error was thrown above

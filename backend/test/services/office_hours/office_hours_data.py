@@ -164,6 +164,12 @@ ticket_draft = OfficeHoursTicketDraft(
     type=TicketType.ASSIGNMENT_HELP,
 )
 
+ticket_draft_invalid_event = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=10),
+    description="I need help",
+    type=TicketType.ASSIGNMENT_HELP,
+)
+
 group_ticket_draft = OfficeHoursTicketDraft(
     oh_event=OfficeHoursEventPartial(id=1),
     description="I need help",
