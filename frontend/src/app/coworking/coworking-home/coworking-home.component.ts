@@ -38,6 +38,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   public activeReservation$: Observable<Reservation | undefined>;
 
+  public upcomingReservations$: Observable<Reservation[] | undefined>;
+
   private timerSubscription!: Subscription;
 
   public upcomingRoomReservation$!: Observable<Reservation[]>;
@@ -66,6 +68,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
+    this.upcomingReservations$ = this.initUpcomingReservations();
+
   }
 
   /**
