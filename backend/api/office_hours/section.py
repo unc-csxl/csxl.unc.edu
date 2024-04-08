@@ -195,7 +195,10 @@ def get_oh_sections_by_user_and_term(
     Returns:
         list[OfficeHoursSectionDetails]: User's OH sections within the given term
     """
-    return oh_section_service.get_user_sections_by_term(subject, term_id)
+    try:
+        return oh_section_service.get_user_sections_by_term(subject, term_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -214,10 +217,13 @@ def get_oh_section_tickets(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_section_tickets(subject, oh_section)
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_section_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -236,10 +242,13 @@ def get_user_section_created_tickets(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific creator
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_user_section_created_tickets(subject, oh_section)
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_user_section_created_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -258,10 +267,13 @@ def get_user_section_called_tickets(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific caller
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_user_section_called_tickets(subject, oh_section)
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_user_section_called_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 # @api.put(
