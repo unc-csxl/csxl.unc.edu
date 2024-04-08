@@ -408,9 +408,7 @@ class OfficeHoursSectionService:
             .join(OfficeHoursSectionEntity)
             .filter(
                 OfficeHoursSectionEntity.id == oh_section.id,
-                OfficeHoursTicketEntity.caller.has(
-                    SectionMemberEntity.id == section_member_entity.id
-                ),
+                OfficeHoursTicketEntity.caller_id == section_member_entity.id,
             )
             .order_by(OfficeHoursTicketEntity.created_at.desc())
             .all()
