@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 
+
 from ..authentication import registered_user
 
 from ...models.academics.section_member import SectionMember
