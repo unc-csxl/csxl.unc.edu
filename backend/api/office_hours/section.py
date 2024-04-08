@@ -5,6 +5,7 @@ This API is used to access OH section data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
+from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...services.office_hours.ticket import OfficeHoursTicketService
@@ -272,6 +273,31 @@ def get_user_section_called_tickets(
             subject, oh_section_id
         )
         return oh_section_service.get_user_section_called_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_section_id}/people",
+    response_model=list[SectionMemberDetails],
+    tags=["Office Hours"],
+)
+def get_oh_section_members(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of OH section members
+
+    Returns:
+        list[SectionMemberDetails]: List of all `SectionMemberDetails` in an OHsection
+    """
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_oh_section_members(subject, oh_section)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

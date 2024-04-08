@@ -3,6 +3,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...models.academics.section_member_details import SectionMemberDetails
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -415,6 +416,47 @@ class OfficeHoursSectionService:
         )
 
         return [entity.to_details_model() for entity in user_ticket_entities]
+
+    def get_oh_section_members(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
+    ) -> list[SectionMemberDetails]:
+        """Retrieves all of the subject's called office hours tickets in a section from the table.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: the OfficeHoursSectionDetails to query by.
+        Returns:
+            list[SectionMemberDetails]: List of all `SectionMemberDetails` in an OHsection
+        """
+        # PERMISSIONS
+
+        # Throws exception if user is not a member
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a Student. User Does Not Have Permission to Get Section Members."
+            )
+
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
+        # Get the members that are linked to the academic sections which are linked to the OH section
+        member_entities = [
+            member for section in entity.sections for member in section.members
+        ]
+
+        # Return the details model of those tickets
+        return [entity.to_details_model() for entity in member_entities]
 
     def update(
         self, subject: User, oh_section: OfficeHoursSection
