@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
@@ -120,6 +127,19 @@ export class UndergradApplicationComponent {
     return valid ? null : { invalidURL: true };
   }
 
+  // validatePreferredSections(control: AbstractControl): ValidationErrors | null {
+  //   if (!(control instanceof FormArray)) {
+  //     return null;
+  //   }
+
+  //   const minSectionsRequired = 1;
+  //   const totalSections = control.controls.filter((ctrl) => ctrl.value).length;
+
+  //   return totalSections >= minSectionsRequired
+  //     ? null
+  //     : { minSectionsRequired: true };
+  // }
+
   firstFormGroup = this.formBuilder.group({
     intro_video: ['', [Validators.required, this.validateIntroVideo.bind(this)]]
   });
@@ -140,7 +160,10 @@ export class UndergradApplicationComponent {
     comp_gpa: ['', Validators.required]
   });
   fifthFormGroup = this.formBuilder.group({
-    preferred_sections: this.formBuilder.array([]),
+    preferred_sections: this.formBuilder.array(
+      []
+      // this.validatePreferredSections.bind(this)
+    ),
     comp_227: ['', Validators.required],
     open_pairing: ['', Validators.required]
   });
