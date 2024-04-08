@@ -1,3 +1,7 @@
 .card-container {
     padding: 1rem;
 }
+
+.newline {
+    white-space: pre-line;
+}
