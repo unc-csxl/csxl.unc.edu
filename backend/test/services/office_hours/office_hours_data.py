@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from backend.entities.academics.section_member_entity import SectionMemberEntity
 from backend.models.roster_role import RosterRole
+from backend.models.user import UserIdentity
 from backend.test.services import user_data
 
 from ....entities.academics.section_entity import SectionEntity
@@ -40,15 +41,20 @@ comp110_instructor = SectionMemberEntity.from_draft_model(
     member_role=RosterRole.INSTRUCTOR,
 )
 
-
 comp110_uta = SectionMemberEntity.from_draft_model(
     user_id=user_data.uta.id,
     section_id=section_data.comp_101_001.id,
     member_role=RosterRole.UTA,
 )
 
-comp110_student = SectionMemberEntity.from_draft_model(
+comp110_student_0 = SectionMemberEntity.from_draft_model(
     user_id=user_data.user.id,
+    section_id=section_data.comp_101_001.id,
+    member_role=RosterRole.STUDENT,
+)
+
+comp110_student_1 = SectionMemberEntity.from_draft_model(
+    user_id=user_data.ambassador.id,
     section_id=section_data.comp_101_001.id,
     member_role=RosterRole.STUDENT,
 )
@@ -67,7 +73,8 @@ comp_301_uta = SectionMemberEntity.from_draft_model(
 
 section_members = [
     comp110_instructor,
-    comp110_student,
+    comp110_student_0,
+    comp110_student_1,
     comp110_uta,
     comp301_instructor,
     comp_301_uta,
@@ -157,18 +164,38 @@ ticket_draft = OfficeHoursTicketDraft(
     type=TicketType.ASSIGNMENT_HELP,
 )
 
+group_ticket_draft = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="I need help",
+    type=TicketType.ASSIGNMENT_HELP,
+    creators=[
+        UserIdentity(id=comp110_student_0.user_id),
+        UserIdentity(id=comp110_student_1.user_id),
+    ],
+)
+
+group_ticket_draft_non_member = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=1),
+    description="I need help",
+    type=TicketType.ASSIGNMENT_HELP,
+    creators=[
+        UserIdentity(id=comp110_student_0.user_id),
+        UserIdentity(id=user_data.root.id),
+    ],
+)
+
 
 def insert_fake_data(session: Session):
 
-    for section_member in section_members:
-        session.add(section_member)
+    # for section_member in section_members:
+    #     session.add(section_member)
 
-    reset_table_id_seq(
-        session,
-        SectionMemberEntity,
-        SectionMemberEntity.id,
-        len(oh_sections) + 1,
-    )
+    # reset_table_id_seq(
+    #     session,
+    #     SectionMemberEntity,
+    #     SectionMemberEntity.id,
+    #     len(oh_sections) + 1,
+    # )
 
     # Add Office Hours Sections
     for oh_section in oh_sections:
@@ -214,13 +241,22 @@ def insert_fake_data(session: Session):
     )
 
     session.add(comp110_uta)
-    comp110_student = SectionMemberEntity.from_draft_model(
+
+    comp110_student_0 = SectionMemberEntity.from_draft_model(
         user_id=user_data.user.id,
         section_id=section_data.comp_101_001.id,
         member_role=RosterRole.STUDENT,
     )
 
-    session.add(comp110_student)
+    session.add(comp110_student_0)
+
+    comp110_student_1 = SectionMemberEntity.from_draft_model(
+        user_id=user_data.ambassador.id,
+        section_id=section_data.comp_101_001.id,
+        member_role=RosterRole.STUDENT,
+    )
+    session.add(comp110_student_1)
+
     # Add User Created Tickets
     for ticket in comp110_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
@@ -232,7 +268,7 @@ def insert_fake_data(session: Session):
             user_created_tickets_table.insert().values(
                 {
                     "ticket_id": ticket_entity.id,
-                    "member_id": comp110_student.id,
+                    "member_id": comp110_student_0.id,
                 }
             )
         )

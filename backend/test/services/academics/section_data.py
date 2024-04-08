@@ -156,7 +156,7 @@ def insert_fake_data(session: Session):
         entity = SectionEntity.from_model(section)
         session.add(entity)
 
-    session.add(ta)
+    # session.add(ta)
 
     for assignment in assignments:
         section_id, room_id, assignment_type = assignment

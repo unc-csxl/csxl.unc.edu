@@ -3,6 +3,7 @@
 from unittest.mock import create_autospec
 import pytest
 from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
+from backend.models.office_hours.ticket_state import TicketState
 from backend.services.exceptions import (
     ResourceNotFoundException,
     UserPermissionException,
@@ -32,6 +33,13 @@ from ..academics import section_data
 def test_create_ticket(oh_ticket_svc: OfficeHoursTicketService):
     ticket = oh_ticket_svc.create(user_data.user, office_hours_data.ticket_draft)
     assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert ticket.state == TicketState.QUEUED
+
+
+def test_create_ticket_group(oh_ticket_svc: OfficeHoursTicketService):
+    ticket = oh_ticket_svc.create(user_data.user, office_hours_data.group_ticket_draft)
+    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert ticket.state == TicketState.QUEUED
 
 
 def test_create_ticket_exception_for_non_section_member(
@@ -39,4 +47,14 @@ def test_create_ticket_exception_for_non_section_member(
 ):
     with pytest.raises(PermissionError):
         oh_ticket_svc.create(user_data.root, office_hours_data.ticket_draft)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_create_ticket_exception_for_non_section_member_group_ticket(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.create(
+            user_data.root, office_hours_data.group_ticket_draft_non_member
+        )
         pytest.fail()  # Fail test if no error was thrown above
