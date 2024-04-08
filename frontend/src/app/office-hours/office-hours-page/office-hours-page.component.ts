@@ -46,8 +46,15 @@ export class OfficeHoursPageComponent implements OnInit {
       height: 'auto',
       width: 'auto'
     });
+
+    dialogRef.afterClosed().subscribe((open) => {
+      if (!open) {
+        window.location.reload();
+      }
+    });
   }
 
+  //TODO: Un-hardcode 'F23'
   ngOnInit(): void {
     this.getUserSectionsByTerm('F23');
   }

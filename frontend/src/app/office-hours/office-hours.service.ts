@@ -19,7 +19,8 @@ import {
   OfficeHoursEventDetails,
   OfficeHoursEventDraft,
   TicketDetails,
-  TicketDraft
+  TicketDraft,
+  OfficeHoursEvent
 } from './office-hours.models';
 import { SectionMember } from '../academics/academics.models';
 
@@ -99,6 +100,22 @@ export class OfficeHoursService {
   ): Observable<TicketDetails[]> {
     return this.http.get<TicketDetails[]>(
       'api/office-hours/event/' + oh_event.id + '/queue'
+    );
+  }
+
+  getUpcomingEventsBySection(
+    oh_section_id: number
+  ): Observable<OfficeHoursEvent[]> {
+    return this.http.get<OfficeHoursEvent[]>(
+      'api/office-hours/section/' + oh_section_id + '/events/upcoming'
+    );
+  }
+
+  getCurrentEventsBySection(
+    oh_section_id: number
+  ): Observable<OfficeHoursEvent[]> {
+    return this.http.get<OfficeHoursEvent[]>(
+      'api/office-hours/section/' + oh_section_id + '/events/current'
     );
   }
 }

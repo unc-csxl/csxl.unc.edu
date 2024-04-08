@@ -1,7 +1,7 @@
 """Test Data for Office Hours."""
 
 import pytest
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from sqlalchemy.orm import Session
 
 from ....entities.academics.section_entity import SectionEntity
@@ -49,8 +49,8 @@ comp_110_oh_event_1 = OfficeHoursEvent(
     description="Office Hours",
     location_description="In Person",
     event_date=date.today(),
-    start_time=datetime.now(),
-    end_time=datetime.now(),
+    start_time=datetime.now() - timedelta(hours=1),
+    end_time=datetime.now() + timedelta(hours=1),
 )
 
 comp_110_oh_event_2 = OfficeHoursEvent(
@@ -61,11 +61,23 @@ comp_110_oh_event_2 = OfficeHoursEvent(
     description="Office Hours",
     location_description="In Person",
     event_date=date.today(),
-    start_time=datetime.now(),
-    end_time=datetime.now(),
+    start_time=datetime.now() + timedelta(days=1),
+    end_time=datetime.now() + timedelta(days=1, hours=3),
 )
 
-comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
+comp_110_oh_event_3 = OfficeHoursEvent(
+    id=3,
+    oh_section=comp_110_oh_section,
+    room=Room(id="SN156"),
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    description="Office Hours",
+    location_description="In Person",
+    event_date=date.today(),
+    start_time=datetime.now() - timedelta(days=1, hours=3),
+    end_time=datetime.now() - timedelta(days=1),
+)
+
+comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2, comp_110_oh_event_3]
 
 # Ticket For An Event
 pending_ticket = OfficeHoursTicket(

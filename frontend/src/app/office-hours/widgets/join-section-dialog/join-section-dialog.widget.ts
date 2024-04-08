@@ -8,6 +8,8 @@ import {
   OfficeHoursSectionDetails,
   OfficeHoursSectionPartial
 } from '../../office-hours.models';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Section, SectionMember } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'join-section-dialog',
@@ -21,7 +23,8 @@ export class JoinSectionDialog implements OnInit {
     public dialogRef: MatDialogRef<JoinSectionDialog>,
     protected formBuilder: FormBuilder,
     private academicsService: AcademicsService,
-    private officeHoursService: OfficeHoursService
+    private officeHoursService: OfficeHoursService,
+    protected snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -52,11 +55,23 @@ export class JoinSectionDialog implements OnInit {
         this.joinSectionForm.value.oh_section ?? [];
       console.log(oh_sections);
       console.log(oh_sections[0]);
-      this.officeHoursService
-        .joinSection(oh_sections)
-        .subscribe((section_member) => {
-          console.log(section_member);
-        });
+      this.officeHoursService.joinSection(oh_sections).subscribe({
+        next: () => this.onSuccess(),
+        error: (err) => this.onError(err)
+      });
     }
+  }
+
+  private onError(err: any): void {
+    this.snackBar.open('Error: Unable to join Office Hours Section', '', {
+      duration: 2000
+    });
+  }
+
+  private onSuccess(): void {
+    this.snackBar.open('You have joined an office hours section!', '', {
+      duration: 3000
+    });
+    this.joinSectionForm.reset();
   }
 }

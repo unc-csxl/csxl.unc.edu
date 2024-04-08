@@ -6,11 +6,11 @@ import {
 } from '../../office-hours.models';
 
 @Component({
-  selector: 'schedule-card-widget',
-  templateUrl: './schedule-card-widget.html',
-  styleUrls: ['./schedule-card-widget.css']
+  selector: 'upcoming-hours-text-widget',
+  templateUrl: './upcoming-hours-text.widget.html',
+  styleUrls: ['./upcoming-hours-text.widget.css']
 })
-export class ScheduleCard implements OnInit {
+export class UpcomingHoursText implements OnInit {
   @Input() sectionId!: number;
   upcomingHours: OfficeHoursEvent[] = [];
 

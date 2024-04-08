@@ -14,6 +14,7 @@ import { Room } from 'src/app/academics/academics.models';
   styleUrls: ['./event-creation-form.component.css']
 })
 export class EventCreationFormComponent implements OnInit {
+  // TODO: Un-hardcode this route
   public static Route = {
     path: 'spring-2024/comp110/create-new-event',
     title: 'COMP 110: Intro to Programming',
@@ -88,7 +89,7 @@ export class EventCreationFormComponent implements OnInit {
     }
 
     let event_draft: OfficeHoursEventDraft = {
-      // OfficeHoursSection is hard-coded for now
+      // TODO: Un-hard code section
       oh_section: {
         id: 1,
         title: 'COMP 110: Introduction to Programming'

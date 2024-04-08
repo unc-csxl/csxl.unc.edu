@@ -1,20 +1,29 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { OfficeHoursService } from '../../office-hours.service';
-import {
-  OfficeHoursEvent,
-  OfficeHoursEventType
-} from '../../office-hours.models';
+import { OfficeHoursEvent } from '../../office-hours.models';
+import { OfficeHoursEventType } from '../../office-hours.models';
 
 @Component({
-  selector: 'schedule-card-widget',
-  templateUrl: './schedule-card-widget.html',
-  styleUrls: ['./schedule-card-widget.css']
+  selector: 'upcoming-hours-dialog',
+  templateUrl: './upcoming-hours-dialog.widget.html',
+  styleUrls: ['./upcoming-hours-dialog.widget.css']
 })
-export class ScheduleCard implements OnInit {
+export class UpcomingHoursDialog implements OnInit {
   @Input() sectionId!: number;
   upcomingHours: OfficeHoursEvent[] = [];
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: { sectionId: number },
+    public dialogRef: MatDialogRef<UpcomingHoursDialog>,
+    private officeHoursService: OfficeHoursService
+  ) {
+    this.sectionId = data.sectionId;
+  }
 
-  constructor(private officeHoursService: OfficeHoursService) {}
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 
   ngOnInit(): void {
     this.getUpcomingHours();
@@ -24,10 +33,7 @@ export class ScheduleCard implements OnInit {
     this.officeHoursService
       .getUpcomingEventsBySection(this.sectionId)
       .subscribe((hours) => {
-        this.upcomingHours = hours.sort(
-          (a, b) =>
-            new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
-        );
+        this.upcomingHours = hours;
       });
   }
 

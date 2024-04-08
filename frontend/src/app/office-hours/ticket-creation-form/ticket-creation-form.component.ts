@@ -12,8 +12,8 @@ import { Location } from '@angular/common';
 })
 export class TicketCreationFormComponent {
   public static Route = {
-    // placeholder route
-    path: 'spring-2024/comp110/create-new-ticket',
+    // TODO: un-hardcode this route
+    path: 'spring-2024/:id/create-new-ticket',
     title: 'COMP 110: Intro to Programming',
     component: TicketCreationFormComponent,
     canActivate: []
@@ -68,7 +68,7 @@ export class TicketCreationFormComponent {
     }
 
     let ticket_draft: TicketDraft = {
-      // Event is hard-coded for now
+      // TODO: un-hardcode event information
       oh_event: {
         id: 1,
         oh_section: null,
@@ -82,7 +82,7 @@ export class TicketCreationFormComponent {
       },
       description: form_description,
       type: form_type,
-      // Creators is hard-coded for now
+      // TODO: un-hardcode creators
       creators: [{ id: 3 }]
     };
     this.officeHoursService.createTicket(ticket_draft).subscribe({

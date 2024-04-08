@@ -2,15 +2,18 @@
   <div class="card-container">
     <div class="row-one">
       <div class="event-type">
-        <p>Office Hours</p>
+        <p>{{ formatEventType(event.type) }}</p>
       </div>
       <div class="hours">
-        <p>12:00pm to 4:00pm</p>
+        <p>
+          {{event.start_time | date: 'h:mma' | lowercase}} to {{ event.end_time
+          | date: 'h:mma' | lowercase}}
+        </p>
       </div>
     </div>
     <div class="row-two">
       <div class="location">
-        <p>SN11</p>
+        <p>{{ event.room.id }}</p>
       </div>
     </div>
   </div>
