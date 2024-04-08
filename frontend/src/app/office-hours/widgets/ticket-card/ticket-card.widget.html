@@ -1,5 +1,10 @@
 <mat-card appearance="outlined">
-    <mat-card-title>
-        Hi
-    </mat-card-title>
+    <div class="card-container">
+        <mat-card-title>
+            {{formatTicketType(ticket.type)}}
+        </mat-card-title>
+    </div>
+    <mat-card-content>
+        <pre>{{ticket.description}}</pre>
+    </mat-card-content>
 </mat-card>

@@ -118,4 +118,10 @@ export class OfficeHoursService {
       'api/office-hours/section/' + oh_section_id + '/events/current'
     );
   }
+
+  getEvent(oh_event_id: number): Observable<OfficeHoursEventDetails> {
+    return this.http.get<OfficeHoursEventDetails>(
+      'api/office-hours/event/' + oh_event_id
+    );
+  }
 }

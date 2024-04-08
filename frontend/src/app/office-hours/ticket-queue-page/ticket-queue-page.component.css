@@ -1,0 +1,13 @@
+.page-container {
+    padding: 1rem;
+}
+
+.home-button{
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+}
+
+.home-button mat-icon {
+    color: white;
+}

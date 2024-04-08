@@ -27,6 +27,7 @@ import { JoinSectionDialog } from './widgets/join-section-dialog/join-section-di
 import { UpcomingHoursDialog } from './widgets/upcoming-hours-dialog/upcoming-hours-dialog.widget';
 import { UpcomingHoursText } from './widgets/upcoming-hours-text/upcoming-hours-text.widget';
 import { TicketQueuePageComponent } from './ticket-queue-page/ticket-queue-page.component';
+import { TicketCard } from './widgets/ticket-card/ticket-card.widget';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { TicketQueuePageComponent } from './ticket-queue-page/ticket-queue-page.
     JoinSectionDialog,
     UpcomingHoursDialog,
     UpcomingHoursText,
-    TicketQueuePageComponent
+    TicketQueuePageComponent,
+    TicketCard
   ],
   imports: [
     CommonModule,
