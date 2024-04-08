@@ -13,8 +13,8 @@ export class AdminComponent {
   public links = [
     { label: 'Users', path: '/admin/users' },
     { label: 'Roles', path: '/admin/roles' },
-    { label: 'Organizations', path: '/admin/organizations' },
-    { label: 'Applications', path: '/admin/applications' }
+    { label: 'Organizations', path: '/admin/organizations' }
+    // { label: 'Applications', path: '/admin/applications' } ---> ignore until future development
   ];
 
   constructor(public profileService: ProfileService) {

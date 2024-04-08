@@ -63,13 +63,11 @@ export class ApplicationsService {
           this.user_application.set(application);
           this.new_uta$.next(false);
           this.new_uta = false;
-          console.log('false');
           return false;
         } else {
           this.user_application.set(null);
           this.new_uta$.next(true);
           this.new_uta = true;
-          console.log('true');
           return true;
         }
       });

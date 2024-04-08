@@ -1,17 +1,14 @@
 """Service that manages applications for the COMP department"""
 
 from fastapi import Depends
-from sqlalchemy import update, delete, insert
+from sqlalchemy import update, delete
 from sqlalchemy.orm import Session
 from backend.entities import section_application_table
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
-from backend.models.application import Application, New_UTA
 from backend.models.application_details import (
-    ApplicationDetails,
     New_UTADetails,
-    UTADetails,
     UserApplication,
 )
 from backend.models.user import User
@@ -20,10 +17,7 @@ from backend.services.exceptions import ResourceNotFoundException
 
 from ..database import db_session
 
-from typing import List
-
-
-__authors__ = ["Ben Goulet"]
+__authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -136,10 +130,6 @@ class ApplicationService:
             )
             .all()
         )
-        # for index, preferred_section in enumerate(
-        #     application_entity.preferred_sections
-        # ):
-        #     preferred_section.preference = index
 
         self._session.add(application_entity)
         self._session.commit()
@@ -221,7 +211,6 @@ class ApplicationService:
         """
         Deletes an application from the Application table.
         Raises an error if user doesn't have an associated application.
-
         """
 
         original_application = (

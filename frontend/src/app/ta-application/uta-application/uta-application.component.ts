@@ -1,11 +1,6 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import {
-  ControlContainer,
-  FormBuilder,
-  FormControl,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
@@ -120,7 +115,8 @@ export class UndergradApplicationComponent {
   ];
 
   validateIntroVideo(control: FormControl): { [key: string]: any } | null {
-    const valid = control.value && control.value.startsWith('https://youtu');
+    const valid =
+      control.value && control.value.startsWith('https://www.youtu');
     return valid ? null : { invalidURL: true };
   }
 
@@ -294,11 +290,6 @@ export class UndergradApplicationComponent {
             additional_experience:
               this.secondFormGroup.value.additional_experience ?? ''
           };
-
-          console.log(formData);
-          console.log(sectionsToSend);
-          console.log(sectionsToSend[0]);
-          console.log(sectionsToSend[1]);
 
           this.applicationService
             .createApplication(formData as Application)

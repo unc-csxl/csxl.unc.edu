@@ -15,8 +15,8 @@ const routes: Routes = [
       AdminUsersListComponent.Route,
       AdminRolesListComponent.Route,
       AdminRoleDetailsComponent.Route,
-      AdminOrganizationListComponent.Route,
-      AdminApplicationsListComponent.Route
+      AdminOrganizationListComponent.Route
+      // AdminApplicationsListComponent.Route ----> ignore until future development of admin view
     ]
   }
 ];

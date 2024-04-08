@@ -31,7 +31,7 @@ import { ApplicationReviewModal } from './applications/widgets/application-revie
     AdminRolesListComponent,
     AdminRoleDetailsComponent,
     AdminOrganizationListComponent,
-    AdminApplicationsListComponent,
+    // AdminApplicationsListComponent, ---> ignore until future development
     ApplicationReviewModal
   ],
   imports: [

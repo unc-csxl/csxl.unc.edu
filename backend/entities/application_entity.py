@@ -18,7 +18,7 @@ from typing import Self
 from ..models.application import Application, UTA, New_UTA, Returning_UTA
 from ..models.application_details import UTADetails
 
-__authors__ = ["Ben Goulet"]
+__authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -118,11 +118,6 @@ class UTAEntity(ApplicationEntity):
         secondary=section_application_table,
         back_populates="preferred_applicants",
     )
-
-    # Potential better way to
-    # preferred_sections_join: Mapped[list[section_application_table]] = relationship(
-    #     "section_application_table"
-    # )
 
     __mapper_args__ = {
         "polymorphic_identity": "uta",

@@ -9,13 +9,9 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ApplicationComponent } from './application-home/application-home.component';
 import { UndergradApplicationComponent } from './uta-application/uta-application.component';
 
-const routes: Routes = [
-  ApplicationComponent.Route,
-  UndergradApplicationComponent.Route
-];
+const routes: Routes = [UndergradApplicationComponent.Route];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

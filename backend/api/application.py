@@ -13,7 +13,7 @@ from backend.services.application import ApplicationService
 from ..api.authentication import registered_user
 from ..models.user import User
 
-__authors__ = ["Ben Goulet"]
+__authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
