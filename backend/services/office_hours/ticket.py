@@ -1,19 +1,21 @@
 from datetime import datetime
 from fastapi import Depends
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.models.office_hours.ticket_state import TicketState
+from backend.models.roster_role import RosterRole
+
+from ...models.office_hours.ticket_state import TicketState
+from ...models.office_hours.section import OfficeHoursSection
 
 from ...services.exceptions import ResourceNotFoundException
 
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
-from ...entities.office_hours.section_entity import OfficeHoursSectionEntity
 
 from ...entities.office_hours import user_created_tickets_table
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ...models.roster_role import RosterRole
 from ...database import db_session
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...models.office_hours.ticket import (
@@ -57,23 +59,17 @@ class OfficeHoursTicketService:
         """
         # PERMISSIONS
 
-        # Need event_id to fetch office hours section id
-        if oh_ticket.oh_event.id is None:
-            raise Exception(
-                "Create Office Hours Ticket Request Doesn't Include Office Hours Event id."
-            )
-
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
-            oh_ticket.oh_event.id
+        oh_section: OfficeHoursSection = (
+            self._get_office_hours_sections_given_oh_event_id(oh_ticket.oh_event.id)
         )
 
         # Check If Current Users and Creators Are Section Members and thus have permission to create a ticket.
         section_member_entities: list[SectionMemberEntity] = []
 
         # Case: Current User
-        current_user_section_member_entity = self._check_user_section_membership(
-            subject.id, oh_section_entity.id
+        current_user_section_member_entity: SectionMemberEntity = (
+            self._check_user_section_membership(subject.id, oh_section.id)
         )
 
         section_member_entities.append(current_user_section_member_entity)
@@ -82,7 +78,7 @@ class OfficeHoursTicketService:
         for creator in oh_ticket.creators:
             if creator.id != subject.id:
                 section_member_entity = self._check_user_section_membership(
-                    creator.id, oh_section_entity.id
+                    creator.id, oh_section.id
                 )
                 section_member_entities.append(section_member_entity)
 
@@ -158,20 +154,6 @@ class OfficeHoursTicketService:
 
         return ticket_entity.to_details_model()
 
-    def update(
-        self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
-        """Updates an office hours ticket.
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_ticket: OfficeHoursTicket to update in the table
-        Returns:
-            OfficeHoursTicketDetails: Updated object in table
-        """
-        # Permissions
-
-        return None
-
     def update_called_state(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
     ) -> OfficeHoursTicketDetails:
@@ -203,11 +185,6 @@ class OfficeHoursTicketService:
 
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError("User Doesn't Have Permission to Call Ticket.")
-
-        # Ensure permissions to manage reservation checkins
-        # Verify We Have Caller id at miminum
-        if oh_ticket.caller_id is None:
-            raise Exception("Caller Information was not passed on.")
 
         # If No Caller ID and Ticket is Queued, then update states
         if (
@@ -393,7 +370,7 @@ class OfficeHoursTicketService:
             SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
 
         Raises:
-            ResourceNotFoundException if cannot user is not a member in given academic section.
+            PermissionError if cannot user is not a member in given academic section.
         """
 
         # Find Academic Section and Their IDs
@@ -414,7 +391,7 @@ class OfficeHoursTicketService:
         )
 
         if section_member_entity is None:
-            raise ResourceNotFoundException(
+            raise PermissionError(
                 f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
             )
 
@@ -422,7 +399,7 @@ class OfficeHoursTicketService:
 
     def _get_office_hours_sections_given_oh_event_id(
         self, oh_event_id: int
-    ) -> OfficeHoursSectionEntity:
+    ) -> OfficeHoursSection:
         """Checks if a given user is a member in academic sections that are a part of an office hours section.
 
            Note: An Office Hours section can have multiple academic sections assoicated with it.
@@ -431,26 +408,24 @@ class OfficeHoursTicketService:
             oh_event_id: The id of Office Hours Section of interest
 
         Returns:
-            OfficeHoursSectionEntity: `OfficeHoursSectionEntity` associated with a given event.
+            OfficeHoursSection: `OfficeHoursSection` associated with a given event.
 
         Raises:
-            ResourceNotFoundException if cannot office hours section for given office hours event.
+            ResourceNotFoundException if cannot office hours event or section for given office hours event.
         """
 
-        # Find Office Hours Section
-        oh_section_entity = (
-            self._session.query(OfficeHoursSectionEntity)
-            .filter(OfficeHoursEventEntity.id == oh_event_id)
-            .filter(
-                OfficeHoursSectionEntity.id
-                == OfficeHoursEventEntity.office_hours_section_id
-            )
-            .first()
-        )
+        # Fetch Office Hours Event
+        oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event_id)
 
-        if oh_section_entity is None:
+        if oh_event_entity is None:
             raise ResourceNotFoundException(
-                f"Couldn't Find Office Hours Section related to office hours event with id: {oh_event_id}"
+                f"Couldn't Find Office Hours Event with id: {oh_event_id}"
             )
 
-        return oh_section_entity
+        # Entity to Model
+        oh_event_model = oh_event_entity.to_details_model()
+
+        # Fetch Office Hours Section From Event Model
+        oh_section = oh_event_model.oh_section
+
+        return oh_section
