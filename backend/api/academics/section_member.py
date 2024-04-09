@@ -67,7 +67,7 @@ def get_membership_by_user_and_oh_section_id(
     """
     try:
         return section_member_svc.get_section_member_by_user_id_and_section_id(
-            subject, id
+            subject, section_id
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
