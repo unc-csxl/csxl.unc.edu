@@ -37,6 +37,10 @@ __authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
+comp110_uta_user = user_data.uta
+comp110_student_1_user = user_data.user
+comp110_student_2_user = user_data.student
+comp110_instructor_user = user_data.instructor
 
 comp110_instructor = SectionMemberEntity.from_draft_model(
     user_id=user_data.instructor.id,

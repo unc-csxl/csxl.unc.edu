@@ -162,6 +162,19 @@ def test_update_called_state_exception_if_ticket_has_caller_already(
         pytest.fail()  # Fail test if no error was thrown above
 
 
+def test_update_called_state_exception_for_nonexisting_ticket_id(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    with pytest.raises(ResourceNotFoundException):
+        oh_ticket_svc.update_called_state(
+            subject=user_data.uta,
+            oh_ticket=OfficeHoursTicketPartial(
+                id=10,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
 def test_update_called_state_exception_if_ticket_is_not_queued(
     oh_ticket_svc: OfficeHoursTicketService,
 ):
@@ -170,6 +183,221 @@ def test_update_called_state_exception_if_ticket_is_not_queued(
             subject=user_data.uta,
             oh_ticket=OfficeHoursTicketPartial(
                 id=office_hours_data.called_ticket.id,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_cancel_ticket_for_uta(oh_ticket_svc: OfficeHoursTicketService):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.uta, office_hours_data.pending_ticket.id
+    )
+
+    assert ticket_details.state == TicketState.QUEUED
+
+    cancelled_ticket = oh_ticket_svc.cancel_ticket(user_data.uta, ticket_details)
+
+    assert isinstance(cancelled_ticket, OfficeHoursTicketDetails)
+    assert cancelled_ticket.state == TicketState.CANCELED
+
+
+def test_cancel_ticket_for_student(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.user, office_hours_data.pending_ticket.id
+    )
+
+    assert ticket_details.state == TicketState.QUEUED
+
+    cancelled_ticket = oh_ticket_svc.cancel_ticket(user_data.user, ticket_details)
+
+    assert isinstance(cancelled_ticket, OfficeHoursTicketDetails)
+    assert cancelled_ticket.state == TicketState.CANCELED
+
+
+def test_cancel_ticket_exception_for_non_student_creator(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.user, office_hours_data.pending_ticket.id
+    )
+
+    assert ticket_details.state == TicketState.QUEUED
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.cancel_ticket(user_data.student, ticket_details)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_cancel_ticket_exception_for_non_section_member(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.user, office_hours_data.pending_ticket.id
+    )
+
+    assert ticket_details.state == TicketState.QUEUED
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.cancel_ticket(user_data.root, ticket_details)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_cancel_ticket_exception_when_ticket_not_queued(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.user, office_hours_data.called_ticket.id
+    )
+
+    with pytest.raises(Exception):
+        oh_ticket_svc.cancel_ticket(user_data.user, ticket_details)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_close_ticket(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.uta, office_hours_data.called_ticket.id
+    )
+
+    assert ticket_details.state == TicketState.CALLED
+    assert ticket_details.closed_at is None
+
+    closed_ticket = oh_ticket_svc.close_ticket(user_data.uta, ticket_details)
+
+    assert isinstance(closed_ticket, OfficeHoursTicketDetails)
+    assert closed_ticket.state == TicketState.CLOSED
+    assert closed_ticket.closed_at is not None
+
+
+def test_close_ticket_exception_when_student_closes(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.user, office_hours_data.called_ticket.id
+    )
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.close_ticket(user_data.user, ticket_details)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_close_ticket_exception_if_ticket_not_called(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    ticket_details = oh_ticket_svc.get_ticket_by_id(
+        user_data.user, office_hours_data.pending_ticket.id
+    )
+
+    with pytest.raises(Exception):
+        oh_ticket_svc.close_ticket(user_data.user, ticket_details)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_update_ticket_feedback(oh_ticket_svc: OfficeHoursTicketService):
+    mock_have_concerns = False
+    mock_caller_notes = "Great to work with!"
+
+    ticket = oh_ticket_svc.update_ticket_feedback(
+        user_data.uta,
+        OfficeHoursTicketPartial(
+            id=office_hours_data.closed_ticket.id,
+            have_concerns=mock_have_concerns,
+            caller_notes=mock_caller_notes,
+        ),
+    )
+
+    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert ticket.state == TicketState.CLOSED
+    assert ticket.have_concerns == mock_have_concerns
+    assert ticket.caller_notes == mock_caller_notes
+
+
+def test_update_ticket_feedback_exception_if_student(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+
+    mock_have_concerns = False
+    mock_caller_notes = "Great to work with!"
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.update_ticket_feedback(
+            user_data.user,
+            OfficeHoursTicketPartial(
+                id=office_hours_data.closed_ticket.id,
+                have_concerns=mock_have_concerns,
+                caller_notes=mock_caller_notes,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_update_ticket_feedback_exception_if_not_ticket_caller(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    mock_have_concerns = False
+    mock_caller_notes = "Great to work with!"
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.update_ticket_feedback(
+            user_data.ambassador,
+            OfficeHoursTicketPartial(
+                id=office_hours_data.closed_ticket.id,
+                have_concerns=mock_have_concerns,
+                caller_notes=mock_caller_notes,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_update_ticket_feedback_exception_if_ticket_not_closed(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    mock_have_concerns = False
+    mock_caller_notes = "Great to work with!"
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.update_ticket_feedback(
+            user_data.uta,
+            OfficeHoursTicketPartial(
+                id=office_hours_data.pending_ticket.id,
+                have_concerns=mock_have_concerns,
+                caller_notes=mock_caller_notes,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_update_ticket_feedback_exception_if_missing_feedback(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+
+    with pytest.raises(Exception):
+        oh_ticket_svc.update_ticket_feedback(
+            user_data.uta,
+            OfficeHoursTicketPartial(
+                id=office_hours_data.closed_ticket.id,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_update_ticket_feedback_exception_for_nonexisting_ticket(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    mock_have_concerns = False
+    mock_caller_notes = "Great to work with!"
+
+    with pytest.raises(ResourceNotFoundException):
+        oh_ticket_svc.update_ticket_feedback(
+            user_data.uta,
+            OfficeHoursTicketPartial(
+                id=99,
+                have_concerns=mock_have_concerns,
+                caller_notes=mock_caller_notes,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above
