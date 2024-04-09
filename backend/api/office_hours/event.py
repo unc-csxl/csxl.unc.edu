@@ -140,7 +140,12 @@ def get_queued_and_called_oh_tickets_by_event(
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
 ) -> OfficeHoursEventStatus:
+    """
+    Gets Queued and Called Ticket Status Count For Given Event.
 
+    Returns:
+        (OfficeHoursEventStatus): Model that contains queued and called ticket count
+    """
     try:
         oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
             subject, oh_event_id

@@ -146,8 +146,23 @@ class OfficeHoursEventService:
     def get_queued_helped_stats_by_oh_event(
         self, subject: User, oh_event: OfficeHoursEventDetails
     ) -> OfficeHoursEventStatus:
+        """
+        Retrieve queued and called ticket statistics for a specific office hours event.
 
-        # TODO: Permissions
+        Args:
+            subject (User): The user object representing the authenticated user making the request.
+            oh_event (OfficeHoursEventDetails): The details of the office hours event.
+
+        Returns:
+            OfficeHoursEventStatus: An `OfficeHoursEventStatus` object representing the statistics
+                (queued and called ticket counts) for the specified office hours event.
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+                the office hours section associated with the event (`oh_event`).
+        """
+        # PERMISSIONS: Check If User is an OH Section Member - Exception If Not.
+        self._check_user_section_membership(subject.id, oh_event.id)
 
         # Fetch Queued Tickets and Count
         queued_tickets_query = (
@@ -215,13 +230,8 @@ class OfficeHoursEventService:
         )
 
         if section_member_entity is None:
-            raise ResourceNotFoundException(
-                f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
-            )
-
-        if section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError(
-                f"Section Member is a Student. User does not have permision to create event"
+                f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
             )
 
         return section_member_entity
