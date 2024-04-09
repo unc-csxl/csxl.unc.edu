@@ -19,7 +19,10 @@ from ....entities.office_hours.event_entity import OfficeHoursEventEntity
 from ....entities.office_hours.section_entity import OfficeHoursSectionEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
-from ....models.office_hours.event import OfficeHoursEvent, OfficeHoursEventPartial
+from ....models.office_hours.event import (
+    OfficeHoursEvent,
+    OfficeHoursEventPartial,
+)
 from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
@@ -192,16 +195,6 @@ group_ticket_draft_non_member = OfficeHoursTicketDraft(
 
 
 def insert_fake_data(session: Session):
-
-    # for section_member in section_members:
-    #     session.add(section_member)
-
-    # reset_table_id_seq(
-    #     session,
-    #     SectionMemberEntity,
-    #     SectionMemberEntity.id,
-    #     len(oh_sections) + 1,
-    # )
 
     # Add Office Hours Sections
     for oh_section in oh_sections:

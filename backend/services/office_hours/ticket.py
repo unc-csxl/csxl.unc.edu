@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import select
+
 from sqlalchemy.orm import Session
 
 from ...models.office_hours.section import OfficeHoursSection
@@ -8,11 +8,9 @@ from ...services.exceptions import ResourceNotFoundException
 
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
-from ...entities.office_hours.section_entity import OfficeHoursSectionEntity
 
 from ...entities.office_hours import user_created_tickets_table
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ...models.roster_role import RosterRole
 from ...database import db_session
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...models.office_hours.ticket import (
@@ -124,32 +122,6 @@ class OfficeHoursTicketService:
         # Convert entry to a model and return
         return entity.to_details_model()
 
-    def update(
-        self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
-        """Updates an office hours ticket.
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_ticket: OfficeHoursTicket to update in the table
-        Returns:
-            OfficeHoursTicketDetails: Updated object in table
-        """
-        # TODO
-        return None
-
-    def update_state(
-        self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
-        """Updates an office hours ticket's state.
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_ticket: OfficeHoursTicket to update in the table
-        Returns:
-            OfficeHoursTicketDetails: Updated object in table
-        """
-        # TODO
-        return None
-
     def _check_user_section_membership(
         self,
         user_id: int,
@@ -223,10 +195,5 @@ class OfficeHoursTicketService:
 
         # Fetch Office Hours Section From Event Model
         oh_section = oh_event_model.oh_section
-
-        if oh_section is None:
-            raise ResourceNotFoundException(
-                f"Couldn't Find Office Hours Section related to Office Hours event with id: {oh_event_id}"
-            )
 
         return oh_section
