@@ -57,7 +57,7 @@ comp110_student_0 = SectionMemberEntity.from_draft_model(
 )
 
 comp110_student_1 = SectionMemberEntity.from_draft_model(
-    user_id=user_data.ambassador.id,
+    user_id=user_data.student.id,
     section_id=section_data.comp_101_001.id,
     member_role=RosterRole.STUDENT,
 )
@@ -250,7 +250,7 @@ def insert_fake_data(session: Session):
     session.add(comp110_student_0)
 
     comp110_student_1 = SectionMemberEntity.from_draft_model(
-        user_id=user_data.ambassador.id,
+        user_id=user_data.student.id,
         section_id=section_data.comp_101_001.id,
         member_role=RosterRole.STUDENT,
     )

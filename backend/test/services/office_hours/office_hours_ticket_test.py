@@ -82,10 +82,44 @@ def test_get_ticket_by_id(oh_ticket_svc: OfficeHoursTicketService):
     assert ticket.id == office_hours_data.called_ticket.id
 
 
-def test_get_ticket_by_id_exception_when_id_does_not_exist(
+def test_get_ticket_by_id_exception_when_ticket_id_does_not_exist(
     oh_ticket_svc: OfficeHoursTicketService,
 ):
     """Test case to validate that retrieving a ticket with a non-existing ID raises ResourceNotFoundException."""
     with pytest.raises(ResourceNotFoundException):
         oh_ticket_svc.get_ticket_by_id(user_data.user, 10)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_get_ticket_by_id_for_uta(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    """Test case to validate that retrieving a ticket by  ID for UTA in section."""
+
+    ticket = oh_ticket_svc.get_ticket_by_id(
+        user_data.uta, office_hours_data.pending_ticket.id
+    )
+    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert ticket.id == office_hours_data.pending_ticket.id
+
+
+def test_get_ticket_by_id_exception_non_section_member(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.get_ticket_by_id(
+            user_data.root, office_hours_data.pending_ticket.id
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_get_ticket_by_id_exception_if_student_user_not_ticket_creator(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.get_ticket_by_id(
+            user_data.student, office_hours_data.pending_ticket.id
+        )
         pytest.fail()  # Fail test if no error was thrown above

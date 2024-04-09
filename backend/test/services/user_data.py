@@ -74,7 +74,18 @@ uta = User(
     pronouns="They / Them / Theirs",
 )
 
-users = [root, ambassador, user, instructor, uta]
+# Another Student
+student = User(
+    id=6,
+    pid=555555555,
+    onyen="Stewie",
+    email="stewie@unc.edu",
+    first_name="Stewie",
+    last_name="Student",
+    pronouns="They / Them / Theirs",
+)
+
+users = [root, ambassador, user, instructor, uta, student]
 
 roles_users = {
     role_data.root_role.id: [root],

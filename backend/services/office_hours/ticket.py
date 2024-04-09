@@ -1,7 +1,10 @@
 from datetime import datetime
 from fastapi import Depends
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from backend.models.roster_role import RosterRole
 
 from ...models.office_hours.ticket_state import TicketState
 from ...models.office_hours.section import OfficeHoursSection
@@ -121,6 +124,11 @@ class OfficeHoursTicketService:
         )
         ticket_entity = self._session.scalars(query).one_or_none()
 
+        if ticket_entity is None:
+            raise ResourceNotFoundException(
+                f"Office Hours Ticket with id={oh_ticket_id} not found."
+            )
+
         # Fetch Office Hours Section - Needed To Determine if User Membership
         oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
             ticket_entity.oh_event_id
@@ -130,11 +138,6 @@ class OfficeHoursTicketService:
         current_user_section_member_entity = self._check_user_section_membership(
             subject.id, oh_section_entity.id
         )
-
-        if ticket_entity is None:
-            raise ResourceNotFoundException(
-                f"Office Hours Ticket with id={oh_ticket_id} not found."
-            )
 
         ticket_creators = ticket_entity.to_details_model().creators
 
@@ -150,20 +153,6 @@ class OfficeHoursTicketService:
                 )
 
         return ticket_entity.to_details_model()
-
-    def update(
-        self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
-        """Updates an office hours ticket.
-        Args:
-            subject: a valid User model representing the currently logged in User
-            oh_ticket: OfficeHoursTicket to update in the table
-        Returns:
-            OfficeHoursTicketDetails: Updated object in table
-        """
-        # Permissions
-
-        return None
 
     def update_called_state(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
