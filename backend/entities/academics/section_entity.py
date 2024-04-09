@@ -1,18 +1,12 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course Sections."""
 
 from typing import Self
-from sqlalchemy import Integer, String, DateTime, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from ...models.room_assignment_type import RoomAssignmentType
-
 from ..entity_base import EntityBase
 from ..section_application_table import section_application_table
-from datetime import datetime
 from ...models.academics import Section
 from ...models.academics import SectionDetails
-from ...models.academics.section_member import SectionMember
-from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

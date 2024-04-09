@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  ValidationErrors,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
@@ -118,19 +111,6 @@ export class UndergradApplicationComponent {
     return valid ? null : { invalidURL: true };
   }
 
-  // validatePreferredSections(control: AbstractControl): ValidationErrors | null {
-  //   if (!(control instanceof FormArray)) {
-  //     return null;
-  //   }
-
-  //   const minSectionsRequired = 1;
-  //   const totalSections = control.controls.filter((ctrl) => ctrl.value).length;
-
-  //   return totalSections >= minSectionsRequired
-  //     ? null
-  //     : { minSectionsRequired: true };
-  // }
-
   firstFormGroup = this.formBuilder.group({
     intro_video: ['', [Validators.required, this.validateIntroVideo.bind(this)]]
   });
@@ -147,14 +127,11 @@ export class UndergradApplicationComponent {
     other_programs: ['']
   });
   fourthFormGroup = this.formBuilder.group({
-    gpa: ['', Validators.required],
-    comp_gpa: ['', Validators.required]
+    gpa: [null, [Validators.required, Validators.min(0)]],
+    comp_gpa: [null, [Validators.required, Validators.min(0)]]
   });
   fifthFormGroup = this.formBuilder.group({
-    preferred_sections: this.formBuilder.array(
-      []
-      // this.validatePreferredSections.bind(this)
-    ),
+    preferred_sections: this.formBuilder.array([]),
     comp_227: ['', Validators.required]
   });
 
@@ -245,6 +222,19 @@ export class UndergradApplicationComponent {
     if (index >= 0) {
       this.selectedSections.splice(index, 1);
     }
+  }
+
+  getInstructorName(section: Section): string {
+    if (section.staff && section.staff.length > 0 && section.staff[0]) {
+      const instructor = section.staff[0];
+      return `${instructor.first_name} ${instructor.last_name}`;
+    } else {
+      return 'Instructor TBA';
+    }
+  }
+
+  capitalizedCourseId(section: Section): string {
+    return section.course_id.toUpperCase();
   }
 
   fetchUserProfile() {

@@ -49,13 +49,6 @@ class SectionMemberEntity(EntityBase):
         ForeignKey("application.id"), nullable=True
     )
 
-    # tas: Mapped["ApplicationEntity"] = relationship(
-    #     back_populates="previous_sections",
-    #     primaryjoin=(
-    #         "or_(SectionMemberEntity.member_role == RosterRole.UTA,SectionMemberEntity.member_role == RosterRole.GTA)"
-    #     ),
-    # )
-
     def to_flat_model(self) -> SectionMember:
         """
         Converts a `SectionEntity` object into a `SectionMember` model object
