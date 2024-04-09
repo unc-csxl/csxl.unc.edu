@@ -65,6 +65,20 @@ export interface TicketDraft {
   creators: { id: number }[]; // check this type ?
 }
 
+export interface TicketPartial {
+  id: number;
+  oh_event: OfficeHoursEventPartial | null;
+  type: TicketType | null;
+  state: TicketState | null;
+  description: string | null;
+  have_concerns: boolean | null;
+  caller_notes: string | null;
+  created_at: Date | null;
+  called_at: Date | null;
+  closed_at: Date | null;
+  caller: SectionMember | null;
+}
+
 export interface OfficeHoursEvent {
   id: number;
   oh_section: OfficeHoursSection;
