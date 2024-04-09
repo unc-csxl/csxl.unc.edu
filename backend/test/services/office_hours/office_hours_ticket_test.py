@@ -134,3 +134,42 @@ def test_update_called_state(oh_ticket_svc: OfficeHoursTicketService):
 
     assert isinstance(ticket, OfficeHoursTicketDetails)
     assert ticket.state == TicketState.CALLED
+
+
+def test_update_called_state_exception_if_student_calls(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.update_called_state(
+            subject=user_data.student,
+            oh_ticket=OfficeHoursTicketPartial(
+                id=office_hours_data.pending_ticket.id,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_update_called_state_exception_if_ticket_has_caller_already(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    with pytest.raises(Exception):
+        oh_ticket_svc.update_called_state(
+            subject=user_data.uta,
+            oh_ticket=OfficeHoursTicketPartial(
+                id=office_hours_data.called_ticket.id,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_update_called_state_exception_if_ticket_is_not_queued(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    with pytest.raises(Exception):
+        oh_ticket_svc.update_called_state(
+            subject=user_data.uta,
+            oh_ticket=OfficeHoursTicketPartial(
+                id=office_hours_data.called_ticket.id,
+            ),
+        )
+        pytest.fail()  # Fail test if no error was thrown above

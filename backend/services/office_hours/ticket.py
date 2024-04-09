@@ -118,7 +118,7 @@ class OfficeHoursTicketService:
         Returns:
             OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
         """
-
+        # Fetch Ticket By ID
         query = select(OfficeHoursTicketEntity).filter(
             OfficeHoursTicketEntity.id == oh_ticket_id
         )
@@ -129,16 +129,20 @@ class OfficeHoursTicketService:
                 f"Office Hours Ticket with id={oh_ticket_id} not found."
             )
 
+        # USER PERMISSIONS:
+
         # Fetch Office Hours Section - Needed To Determine if User Membership
         oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
             ticket_entity.oh_event_id
         )
 
-        # Case: Current User
+        # Fetch Current User Section Membership
         current_user_section_member_entity = self._check_user_section_membership(
             subject.id, oh_section_entity.id
         )
 
+        # If current user is student, check if they are creator of ticket
+        # Raise Exception if Not Creator!
         ticket_creators = ticket_entity.to_details_model().creators
 
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
@@ -152,6 +156,7 @@ class OfficeHoursTicketService:
                     f"User Doesn't Have Permission to Get Ticket id={ticket_entity.id}"
                 )
 
+        # Passed Permissions - Good to Return Ticket Information
         return ticket_entity.to_details_model()
 
     def update_called_state(
@@ -166,12 +171,10 @@ class OfficeHoursTicketService:
         """
         # PERMISSION
 
-        # Get Ticket
+        # Fetch Ticket By ID
         ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
         if ticket_entity is None:
-            raise ResourceNotFoundException(
-                f"Reservation(id={oh_ticket.id}) does not exist"
-            )
+            raise ResourceNotFoundException(f"Ticket(id={oh_ticket.id}) does not exist")
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
         oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
@@ -429,3 +432,102 @@ class OfficeHoursTicketService:
         oh_section = oh_event_model.oh_section
 
         return oh_section
+
+    # def update_ticket(
+    #     self, subject: User, delta: OfficeHoursTicketPartial
+    # ) -> OfficeHoursTicketDetails:
+    #     """Updates an office hours ticket.
+    #     Args:
+    #         subject: a valid User model representing the currently logged in User
+    #         oh_ticket: OfficeHoursTicket to update in the table
+    #     Returns:
+    #         OfficeHoursTicketDetails: Updated object in table
+    #     """
+    #     # PERMISSION
+
+    #     # Fetch Ticket By ID
+    #     ticket_entity = self._session.get(OfficeHoursTicketEntity, delta.id)
+    #     if ticket_entity is None:
+    #         raise ResourceNotFoundException(f"Ticket(id={delta.id}) does not exist")
+
+    #     # Fetch Office Hours Section - Needed To Determine if User Membership
+    #     oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
+    #         ticket_entity.oh_event_id
+    #     )
+
+    #     # Fetch Current User
+    #     current_user_section_member_entity = self._check_user_section_membership(
+    #         subject.id, oh_section_entity.id
+    #     )
+
+    #     # Case: Delta State is Called - Ticket Is Being Called
+    #     if delta.state == TicketState.CALLED:
+
+    #         # PERMISSIONS
+    #         # 1. Caller Must Have Roles - UTA/GTA/INSTRUCTOR
+    #         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+    #             raise PermissionError("User Doesn't Have Permission to Call Ticket.")
+
+    #         # 2. Cannot Call Ticket If A Caller is Already Linked
+    #         if ticket_entity.caller_id is not None:
+    #             raise Exception("Ticket Already has a caller!")
+
+    #         # 3. Ticket Must Be Queued
+    #         if ticket_entity.state != TicketState.QUEUED:
+    #             raise Exception(
+    #                 f"Ticket Must Be Queued In Order to Be Called. Current Ticket State is {ticket_entity.state}"
+    #             )
+
+    #         # If No Caller ID and Ticket is Queued, then update states
+    #         if (
+    #             ticket_entity.caller_id is None
+    #             and ticket_entity.state == TicketState.QUEUED
+    #         ):
+    #             ticket_entity.caller_id = delta.caller_id
+    #             ticket_entity.state = TicketState.CALLED
+    #             ticket_entity.called_at = datetime.now()
+    #             self._session.commit()
+
+    #         else:
+    #             raise Exception("Failed To Update Ticket with Update Information")
+
+    #     if delta.state == TicketState.CLOSED:
+
+    #         # PERMISSIONS
+    #         # 1. Caller Must Have Roles - UTA/GTA/INSTRUCTOR
+    #         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+    #             raise PermissionError("User Doesn't Have Permission to Close Ticket.")
+
+    #         # 2. Ticket Must Be Called Before It Can be Closed
+    #         if ticket_entity.state != TicketState.CALLED:
+    #             raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
+
+    #         ticket_entity.state = TicketState.CLOSED
+    #         ticket_entity.closed_at = datetime.now()
+
+    #         self._session.commit()
+
+    #     if delta.state == TicketState.CANCELED:
+
+    #         ticket_creators = ticket_entity.to_details_model().creators
+
+    #         # CASE: Student Permission - Can Only Cancel Their Own Ticket
+    #         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+    #             # Check If Current User is in Creator List
+    #             isCreator = False
+    #             for creator in ticket_creators:
+    #                 if creator.id == current_user_section_member_entity.id:
+    #                     isCreator = True
+
+    #             if not isCreator:
+    #                 raise PermissionError(
+    #                     f"User Doesn't Have Permission to Cancel Ticket id={delta.id}"
+    #                 )
+
+    #         if ticket_entity.state != TicketState.QUEUED:
+    #             raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
+
+    #         ticket_entity.state = TicketState.CANCELED
+    #         self._session.commit()
+
+    #     return ticket_entity.to_details_model()
