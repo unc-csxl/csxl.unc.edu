@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {
   TicketDetails,
   OfficeHoursEventDetails,
-  OfficeHoursEventType
+  OfficeHoursEventType,
+  OfficeHoursSectionDetails
 } from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 export class TicketQueuePageComponent implements OnInit {
   // TODO: Update this route later to not be hard-coded!
   public static Route = {
-    path: 'spring-2024/1/:event_id/queue',
+    path: 'spring-2024/:section_id/:event_id/queue',
     title: 'COMP 110: Intro to Programming',
     component: TicketQueuePageComponent,
     canActivate: []
@@ -25,6 +26,8 @@ export class TicketQueuePageComponent implements OnInit {
   // TODO: update this to get the eventId from the route!
   eventId: number;
   event: OfficeHoursEventDetails | null = null;
+  sectionId: number;
+  section: OfficeHoursSectionDetails | null = null;
   // TODO: Store event details object and pass this in as input!
 
   constructor(
@@ -32,10 +35,12 @@ export class TicketQueuePageComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.eventId = this.route.snapshot.params['event_id'];
+    this.sectionId = this.route.snapshot.params['section_id'];
   }
 
   ngOnInit() {
     this.getEvent();
+    this.getSection();
   }
 
   getCurrentTickets() {
@@ -53,6 +58,12 @@ export class TicketQueuePageComponent implements OnInit {
       .subscribe((event) => {
         (this.event = event), this.getCurrentTickets();
       });
+  }
+
+  getSection() {
+    this.officeHoursService.getSection(this.sectionId).subscribe((section) => {
+      this.section = section;
+    });
   }
 
   formatEventType(typeNum: number) {

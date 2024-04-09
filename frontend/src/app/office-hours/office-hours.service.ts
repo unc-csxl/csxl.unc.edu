@@ -128,6 +128,12 @@ export class OfficeHoursService {
     );
   }
 
+  getSection(oh_section_id: number): Observable<OfficeHoursSectionDetails> {
+    return this.http.get<OfficeHoursSectionDetails>(
+      'api/office-hours/section/' + oh_section_id
+    );
+  }
+
   formatEventType(typeNum: number) {
     if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {
       return 'Office Hours';

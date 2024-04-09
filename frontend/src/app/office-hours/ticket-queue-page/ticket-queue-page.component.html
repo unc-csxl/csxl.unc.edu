@@ -1,15 +1,15 @@
 <div class="page-container">
-    <h2 *ngIf="event">{{ formatEventType(event.type) }}</h2>
-    <h3>Location: {{ event?.room?.id }}</h3>
-    <ticket-card-widget *ngFor="let ticket of tickets" [ticket]="ticket">
-    </ticket-card-widget>
-    <a [routerLink]="['../..']">
-        <button
-        mat-fab
-        color="accent"
-        aria-label="Example icon button with a home icon"
-        class="home-button">
-        <mat-icon>home</mat-icon>
-        </button>
-    </a>
+  <h2 *ngIf="event">{{ formatEventType(event.type) }}</h2>
+  <h3>Location: {{ event?.room?.id }}</h3>
+  <ticket-card-widget *ngFor="let ticket of tickets" [ticket]="ticket">
+  </ticket-card-widget>
+  <a [routerLink]="['../..']">
+    <button
+      mat-fab
+      color="accent"
+      aria-label="Example icon button with a home icon"
+      class="home-button">
+      <mat-icon>home</mat-icon>
+    </button>
+  </a>
 </div>
