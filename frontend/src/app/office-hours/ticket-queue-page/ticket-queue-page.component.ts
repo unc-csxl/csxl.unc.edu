@@ -7,6 +7,7 @@ import {
 } from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
 import { ActivatedRoute } from '@angular/router';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-ticket-queue-page',
@@ -47,7 +48,10 @@ export class TicketQueuePageComponent implements OnInit {
     if (this.event) {
       this.officeHoursService
         .getEventQueueTickets(this.event)
-        .subscribe((tickets) => (this.tickets = tickets));
+        .subscribe((tickets) => {
+          this.tickets = tickets;
+          console.log(tickets);
+        });
     }
   }
 
