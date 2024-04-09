@@ -3,11 +3,8 @@
     <mat-card-title>{{ section.title }}</mat-card-title>
     <div class="open-button">
       <!-- TODO: get rid of <a> element, keep arrow icon -->
-      <a [routerLink]="['spring-2024/', section.id]">
-        <button
-          mat-icon-button
-          color="primary"
-          aria-label="Example icon button with a home icon">
+      <a *ngIf="rosterRole === 0" [routerLink]="['spring-2024/', section.id]">
+        <button mat-icon-button color="primary" aria-label="Example icon button with a home icon">
           <mat-icon>keyboard_arrow_right</mat-icon>
         </button>
       </a>
@@ -18,8 +15,7 @@
     <mat-card-content>
       <div *ngIf="currentEvents && currentEvents.length > 0; else noHours">
         <div *ngFor="let event of currentEvents">
-          <open-event-hours-card-widget
-            [event]="event"></open-event-hours-card-widget>
+          <open-event-hours-card-widget [event]="event"></open-event-hours-card-widget>
         </div>
         <div class="upcoming-hours-button">
           <button mat-stroked-button (click)="openDialog()">
@@ -28,8 +24,7 @@
         </div>
       </div>
       <ng-template #noHours>
-        <upcoming-hours-text-widget
-          [sectionId]="section.id"></upcoming-hours-text-widget>
+        <upcoming-hours-text-widget [sectionId]="section.id"></upcoming-hours-text-widget>
       </ng-template>
     </mat-card-content>
   </div>

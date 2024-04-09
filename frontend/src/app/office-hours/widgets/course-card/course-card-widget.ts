@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { UpcomingHoursDialog } from '../upcoming-hours-dialog/upcoming-hours-dialog.widget';
 import { OfficeHoursService } from '../../office-hours.service';
 import { Router } from '@angular/router';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { RosterRole } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'course-card-widget',
@@ -18,15 +20,20 @@ export class CourseCard implements OnInit {
   /** The course to show */
   @Input() section!: OfficeHoursSectionDetails;
   currentEvents: OfficeHoursEvent[] = [];
+  rosterRole: RosterRole | null;
 
   constructor(
     public dialog: MatDialog,
     private officeHoursService: OfficeHoursService,
+    private academicsService: AcademicsService,
     private router: Router
-  ) {}
+  ) {
+    this.rosterRole = null;
+  }
 
   ngOnInit() {
     this.getCurrentEvents();
+    this.checkRosterRole();
   }
 
   openDialog() {
@@ -39,8 +46,12 @@ export class CourseCard implements OnInit {
 
   navToOfficeHours() {
     console.log('test');
+    console.log(this.section.id);
+    console.log(this.rosterRole);
     // TODO: replace this route later
-    this.router.navigate(['/office-hours/spring-2024/', this.section.id]);
+    if (this.rosterRole === RosterRole.STUDENT) {
+      this.router.navigate(['/office-hours/spring-2024/', this.section.id]);
+    }
   }
 
   getCurrentEvents() {
@@ -48,6 +59,15 @@ export class CourseCard implements OnInit {
       .getCurrentEventsBySection(this.section.id)
       .subscribe((events) => {
         this.currentEvents = events;
+      });
+  }
+
+  checkRosterRole() {
+    this.academicsService
+      .getMembershipBySection(this.section.id)
+      .subscribe((section_member) => {
+        this.rosterRole = section_member.member_role;
+        return section_member;
       });
   }
 }

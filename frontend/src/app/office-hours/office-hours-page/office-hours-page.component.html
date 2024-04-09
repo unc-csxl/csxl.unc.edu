@@ -2,16 +2,10 @@
   <h2>Your Courses</h2>
   <!-- TODO: Use terms instead of hard coding Spring 2024 -->
   <h3>Spring 2024:</h3>
-  <course-card-widget
-    *ngFor="let section of userSections"
-    [section]="section"></course-card-widget>
+  <course-card-widget *ngFor="let section of userSections" [section]="section"></course-card-widget>
 
   <!-- Dummy add class button for access in-progress component -->
-  <button
-    mat-fab
-    color="accent"
-    aria-label="Example icon button with a delete icon"
-    class="add-button"
+  <button mat-fab color="accent" aria-label="Example icon button with a delete icon" class="add-button"
     [matMenuTriggerFor]="menu">
     <mat-icon>add</mat-icon>
   </button>
