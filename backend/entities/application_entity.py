@@ -109,9 +109,6 @@ class UTAEntity(ApplicationEntity):
     # Do they want to do this as COMP 227?
     comp_227: Mapped[str] = mapped_column(String, nullable=True)
 
-    # Open pairing?
-    open_pairing: Mapped[bool] = mapped_column(Boolean, nullable=True)
-
     # Sections student prefers
     preferred_sections: Mapped[list["SectionEntity"]] = relationship(
         "SectionEntity",
@@ -144,7 +141,6 @@ class UTAEntity(ApplicationEntity):
         entity.gpa = model.gpa
         entity.comp_gpa = model.comp_gpa
         entity.comp_227 = model.comp_227
-        entity.open_pairing = model.open_pairing
         entity.preferred_sections = [
             SectionEntity.from_model(section) for section in model.preferred_sections
         ]
@@ -170,7 +166,6 @@ class UTAEntity(ApplicationEntity):
             gpa=self.gpa,
             comp_gpa=self.comp_gpa,
             comp_227=self.comp_227,
-            open_pairing=self.open_pairing,
         )
 
     def to_details_model(self) -> UTADetails:
@@ -193,7 +188,6 @@ class UTAEntity(ApplicationEntity):
             gpa=self.gpa,
             comp_gpa=self.comp_gpa,
             comp_227=self.comp_227,
-            open_pairing=self.open_pairing,
             preferred_sections=[
                 section.to_model() for section in self.preferred_sections
             ],
@@ -217,7 +211,6 @@ class UTAEntity(ApplicationEntity):
         self.gpa = model.gpa
         self.comp_gpa = model.comp_gpa
         self.comp_227 = model.comp_227
-        self.open_pairing = model.open_pairing
         self.preferred_sections = sections
 
 

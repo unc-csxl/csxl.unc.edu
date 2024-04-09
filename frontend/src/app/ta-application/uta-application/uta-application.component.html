@@ -245,25 +245,6 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="field-title">
-        <p>
-          If we cannot pair you with one of your top choices, are you open to
-          being paired with another course you are eligible for? *
-        </p>
-      </div>
-      <div class="form-field-wrapper">
-        <mat-form-field class="mat-form-field-small">
-          <mat-label>Yes or No</mat-label>
-          <mat-select formControlName="open_pairing">
-            <mat-option
-              *ngFor="let o of openPairing"
-              [value]="o.value"
-              required>
-              {{ o.viewValue }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
     </form>
   </mat-step>
   <mat-step>

@@ -113,14 +113,6 @@ export class UndergradApplicationComponent {
     }
   ];
 
-  openPairing: OptionSelect[] = [
-    { value: 'Yes', viewValue: 'Yes' },
-    {
-      value: 'No',
-      viewValue: 'No'
-    }
-  ];
-
   validateIntroVideo(control: FormControl): { [key: string]: any } | null {
     const valid =
       control.value && control.value.startsWith('https://www.youtu');
@@ -164,8 +156,7 @@ export class UndergradApplicationComponent {
       []
       // this.validatePreferredSections.bind(this)
     ),
-    comp_227: ['', Validators.required],
-    open_pairing: ['', Validators.required]
+    comp_227: ['', Validators.required]
   });
 
   isLinear = false;
@@ -303,9 +294,6 @@ export class UndergradApplicationComponent {
             comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
             preferred_sections: sectionsToSend,
             comp_227: this.fifthFormGroup.value.comp_227 ?? '',
-            open_pairing:
-              this.fifthFormGroup.value.open_pairing === 'Yes' ||
-              this.fifthFormGroup.value.open_pairing === 'No',
             intro_video: this.firstFormGroup.value.intro_video ?? '',
             prior_experience: this.secondFormGroup.value.prior_experience ?? '',
             service_experience:

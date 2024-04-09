@@ -33,7 +33,6 @@ class UTA(Application):
     gpa: str
     comp_gpa: str
     comp_227: str
-    open_pairing: bool
 
 
 class New_UTA(UTA):

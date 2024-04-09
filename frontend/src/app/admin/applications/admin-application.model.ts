@@ -10,7 +10,6 @@ export interface Application {
   comp_gpa: string;
   preferred_sections: unknown[] | undefined;
   comp_227: string;
-  open_pairing: boolean;
   intro_video: string;
   prior_experience: string;
   service_experience: string;
