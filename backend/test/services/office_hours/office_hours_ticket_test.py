@@ -2,6 +2,7 @@
 
 from unittest.mock import create_autospec
 import pytest
+from backend.models.office_hours.ticket import OfficeHoursTicketPartial
 from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
 from backend.models.office_hours.ticket_state import TicketState
 from backend.services.exceptions import (
@@ -73,29 +74,18 @@ def test_create_ticket_exception_invalid_event(
         pytest.fail()  # Fail test if no error was thrown above
 
 
-def test_get_ticket_by_id(oh_ticket_svc: OfficeHoursTicketService):
-    """Test case to ensure getting a ticket by ID returns the correct ticket details."""
+def test_get_ticket_by_id_student_creator(oh_ticket_svc: OfficeHoursTicketService):
+    """Test case to validate getting a ticket by ID returns correct ticket details."""
     ticket = oh_ticket_svc.get_ticket_by_id(
         user_data.user, office_hours_data.called_ticket.id
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
     assert ticket.id == office_hours_data.called_ticket.id
+    assert ticket.state == office_hours_data.called_ticket.state
 
 
-def test_get_ticket_by_id_exception_when_ticket_id_does_not_exist(
-    oh_ticket_svc: OfficeHoursTicketService,
-):
-    """Test case to validate that retrieving a ticket with a non-existing ID raises ResourceNotFoundException."""
-    with pytest.raises(ResourceNotFoundException):
-        oh_ticket_svc.get_ticket_by_id(user_data.user, 10)
-        pytest.fail()  # Fail test if no error was thrown above
-
-
-def test_get_ticket_by_id_for_uta(
-    oh_ticket_svc: OfficeHoursTicketService,
-):
-    """Test case to validate that retrieving a ticket by  ID for UTA in section."""
-
+def test_get_ticket_by_id_for_section_uta(oh_ticket_svc: OfficeHoursTicketService):
+    """Test case to validate getting a ticket by ID for section UTA returns ticket correct ticket details."""
     ticket = oh_ticket_svc.get_ticket_by_id(
         user_data.uta, office_hours_data.pending_ticket.id
     )
@@ -103,10 +93,30 @@ def test_get_ticket_by_id_for_uta(
     assert ticket.id == office_hours_data.pending_ticket.id
 
 
+def test_get_ticket_by_id_exception_when_ticket_id_does_not_exist(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    """Test case to validate an exception is raised when retrieving a non-existing ticket by ID."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_ticket_svc.get_ticket_by_id(user_data.user, 10)
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_get_ticket_by_id_exception_if_student_user_not_ticket_creator(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    """Test case to validate a PermissionError exception is raised if a student user is not the ticket creator."""
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.get_ticket_by_id(
+            user_data.student, office_hours_data.pending_ticket.id
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
 def test_get_ticket_by_id_exception_non_section_member(
     oh_ticket_svc: OfficeHoursTicketService,
 ):
-
+    """Test case to validate a PermissionError exception is raised when a non-section member tries to retrieve a ticket."""
     with pytest.raises(PermissionError):
         oh_ticket_svc.get_ticket_by_id(
             user_data.root, office_hours_data.pending_ticket.id
@@ -114,12 +124,13 @@ def test_get_ticket_by_id_exception_non_section_member(
         pytest.fail()  # Fail test if no error was thrown above
 
 
-def test_get_ticket_by_id_exception_if_student_user_not_ticket_creator(
-    oh_ticket_svc: OfficeHoursTicketService,
-):
+def test_update_called_state(oh_ticket_svc: OfficeHoursTicketService):
+    ticket = oh_ticket_svc.update_called_state(
+        subject=user_data.uta,
+        oh_ticket=OfficeHoursTicketPartial(
+            id=office_hours_data.pending_ticket.id,
+        ),
+    )
 
-    with pytest.raises(PermissionError):
-        oh_ticket_svc.get_ticket_by_id(
-            user_data.student, office_hours_data.pending_ticket.id
-        )
-        pytest.fail()  # Fail test if no error was thrown above
+    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert ticket.state == TicketState.CALLED

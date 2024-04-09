@@ -186,11 +186,6 @@ class OfficeHoursTicketService:
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError("User Doesn't Have Permission to Call Ticket.")
 
-        # Ensure permissions to manage reservation checkins
-        # Verify We Have Caller id at miminum
-        if oh_ticket.caller_id is None:
-            raise Exception("Caller Information was not passed on.")
-
         # If No Caller ID and Ticket is Queued, then update states
         if (
             ticket_entity.caller_id is None
