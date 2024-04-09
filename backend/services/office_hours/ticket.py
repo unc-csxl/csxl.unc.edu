@@ -128,6 +128,11 @@ class OfficeHoursTicketService:
         )
         ticket_entity = self._session.scalars(query).one_or_none()
 
+        if ticket_entity is None:
+            raise ResourceNotFoundException(
+                f"Office Hours Ticket with id={oh_ticket_id} not found."
+            )
+
         # Fetch Office Hours Section - Needed To Determine if User Membership
         oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
             ticket_entity.oh_event_id
@@ -137,11 +142,6 @@ class OfficeHoursTicketService:
         current_user_section_member_entity = self._check_user_section_membership(
             subject.id, oh_section_entity.id
         )
-
-        if ticket_entity is None:
-            raise ResourceNotFoundException(
-                f"Office Hours Ticket with id={oh_ticket_id} not found."
-            )
 
         ticket_creators = ticket_entity.to_details_model().creators
 
