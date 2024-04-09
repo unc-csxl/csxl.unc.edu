@@ -118,7 +118,8 @@
           matInput
           formControlName="academic_hours"
           placeholder="15"
-          required />
+          required
+          type="number" />
       </mat-form-field>
       <div class="field-title">
         <p>
@@ -182,14 +183,24 @@
       </div>
       <mat-form-field class="mat-form-field-small">
         <mat-label>GPA</mat-label>
-        <input matInput placeholder="4.0" formControlName="gpa" required />
+        <input
+          matInput
+          placeholder="4.0"
+          formControlName="gpa"
+          required
+          type="number" />
       </mat-form-field>
       <div class="field-title">
         <p>What is your Computer Science (COMP) GPA? *</p>
       </div>
       <mat-form-field class="mat-form-field-small">
         <mat-label>COMP GPA</mat-label>
-        <input matInput placeholder="4.0" formControlName="comp_gpa" required />
+        <input
+          matInput
+          placeholder="4.0"
+          formControlName="comp_gpa"
+          required
+          type="number" />
       </mat-form-field>
     </form>
   </mat-step>
