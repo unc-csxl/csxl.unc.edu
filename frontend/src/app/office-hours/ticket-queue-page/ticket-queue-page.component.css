@@ -26,10 +26,14 @@
 }
 
 .operating-hours {
-    flex: 1;
-    justify-self: left;
+    display: flex;
+    align-items: right;
+    justify-items: right;
+    justify-content: ;
     line-height: 2rem;
-    font-size: 1.25rem;
+    font-size: 1rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
 
 .card-container {
@@ -41,7 +45,7 @@
     justify-self: left;
     padding-left: 4rem;
     line-height: 32px;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
 }
 
 .helped {
@@ -49,13 +53,18 @@
     text-align: right;
     padding-right: 4rem;
     line-height: 32px;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
 }
 
-.header-row {
+.location {
+    flex: 1;
+    justify-self: left;
+}
+
+.queue-row {
     display: flex;
     align-items: center;
-    padding: 1rem;
+    padding: 0.5rem;
 }
 
 .number-badge {
@@ -72,4 +81,10 @@
     line-height: 36px;
     border-radius: 100%;
     color: white;
+}
+
+.header-row {
+    display: flex;
+    padding: 0.5rem;
+    align-items: center;
 }

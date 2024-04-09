@@ -8,8 +8,14 @@
         >{{ticket.description}}</mat-card-content
       >
       <div class="button-row">
-        <button mat-stroked-button>Cancel</button>
-        <button mat-flat-button color="accent">Call</button>
+        <button mat-stroked-button (click)="cancelTicket()">Cancel</button>
+        <button
+          *ngIf="queuePosition < 2"
+          mat-flat-button
+          color="accent"
+          (click)="callTicket()">
+          Call
+        </button>
       </div>
     </div>
 
@@ -23,7 +29,7 @@
         >{{ticket.description}}</mat-card-content
       >
       <div class="button-row">
-        <button mat-stroked-button>Cancel</button>
+        <button mat-stroked-button (click)="closeTicket()">Close</button>
       </div>
     </div>
   </div>

@@ -1,16 +1,20 @@
 <div class="page-container">
   <mat-card class="card-container" appearance="outlined">
-    <mat-card-title *ngIf="event"
-      >{{ formatEventType(event.type) }}</mat-card-title
-    >
-    <mat-card-subtitle>Location: {{ event?.room?.id }}</mat-card-subtitle>
-    <mat-divider></mat-divider>
-    <mat-card-content class="card-container">
+    <div class="header-row">
+      <div class="location">
+        <mat-card-title *ngIf="event">
+          {{ formatEventType(event.type) }}
+        </mat-card-title>
+        <mat-card-subtitle>Location: {{ event?.room?.id }}</mat-card-subtitle>
+      </div>
       <div class="open operating-hours">
         <span class="badge">Open</span>until {{ event?.end_time | date: 'h:mma'
         | lowercase }}
       </div>
-      <div class="header-row">
+    </div>
+    <mat-divider></mat-divider>
+    <mat-card-content class="card-container">
+      <div class="queue-row">
         <div class="queued"><span class="number-badge">9</span>Queued</div>
         <div class="helped">
           <span class="number-badge">3</span>Being Helped
@@ -18,7 +22,11 @@
       </div>
     </mat-card-content>
   </mat-card>
-  <ticket-card-widget *ngFor="let ticket of tickets" [ticket]="ticket">
+  <!-- Eventually, subtract number being helped from place in queue to pass in -->
+  <ticket-card-widget
+    *ngFor="let ticket of tickets; let i = index"
+    [ticket]="ticket"
+    [queuePosition]="i">
   </ticket-card-widget>
   <a [routerLink]="['../..']">
     <button

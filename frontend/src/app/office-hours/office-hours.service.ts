@@ -176,23 +176,32 @@ export class OfficeHoursService {
 
   // id
   callTicket(oh_ticket: Ticket): Observable<TicketDetails> {
-    return this.http.put<TicketDetails>('/api/office-hours/call', oh_ticket);
+    return this.http.put<TicketDetails>(
+      '/api/office-hours/ticket/call',
+      oh_ticket
+    );
   }
 
   // id
   closeTicket(oh_ticket: Ticket): Observable<TicketDetails> {
-    return this.http.put<TicketDetails>('/api/office-hours/close', oh_ticket);
+    return this.http.put<TicketDetails>(
+      '/api/office-hours/ticket/close',
+      oh_ticket
+    );
   }
 
   // id
   cancelTicket(oh_ticket: Ticket): Observable<TicketDetails> {
-    return this.http.put<TicketDetails>('/api/office-hours/cancel', oh_ticket);
+    return this.http.put<TicketDetails>(
+      '/api/office-hours/ticket/cancel',
+      oh_ticket
+    );
   }
 
   // id, have_concerns, caller_notes
   addFeedback(oh_ticket: TicketPartial): Observable<TicketDetails> {
     return this.http.put<TicketDetails>(
-      '/api/office-hours/feedback',
+      '/api/office-hours/ticket/feedback',
       oh_ticket
     );
   }
