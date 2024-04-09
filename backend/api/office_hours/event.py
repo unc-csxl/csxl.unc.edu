@@ -3,7 +3,9 @@
 This API is used to access OH Event data."""
 
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+
+from backend.models.office_hours.event_status import OfficeHoursEventStatus
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
@@ -126,3 +128,23 @@ def get_oh_tickets_by_event(
     """
     oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
     return oh_event_service.get_event_tickets(subject, oh_event)
+
+
+@api.get(
+    "/{oh_event_id}/queue-stats",
+    response_model=OfficeHoursEventStatus,
+    tags=["Office Hours"],
+)
+def get_queued_and_called_oh_tickets_by_event(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> OfficeHoursEventStatus:
+
+    try:
+        oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.get_queued_helped_stats_by_oh_event(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))

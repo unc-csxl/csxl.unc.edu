@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 
 from backend.entities.academics.section_entity import SectionEntity
 from backend.entities.academics.section_member_entity import SectionMemberEntity
+from backend.entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+from backend.models.office_hours.event_status import OfficeHoursEventStatus
+from backend.models.office_hours.ticket_state import TicketState
 from backend.models.roster_role import RosterRole
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
@@ -139,6 +142,40 @@ class OfficeHoursEventService:
         """
         # TODO
         return None
+
+    def get_queued_helped_stats_by_oh_event(
+        self, subject: User, oh_event: OfficeHoursEventDetails
+    ) -> OfficeHoursEventStatus:
+
+        # TODO: Permissions
+
+        # Fetch Queued Tickets and Count
+        queued_tickets_query = (
+            select(OfficeHoursTicketEntity)
+            .filter(OfficeHoursTicketEntity.oh_event_id == oh_event.id)
+            .filter(OfficeHoursTicketEntity.state == TicketState.QUEUED)
+        )
+
+        queued_ticket_entities = self._session.scalars(queued_tickets_query).all()
+        queued_ticket_count = len(queued_ticket_entities)
+
+        # Fetch Called Tickets and Count
+        called_tickets_query = (
+            select(OfficeHoursTicketEntity)
+            .filter(OfficeHoursTicketEntity.oh_event_id == oh_event.id)
+            .filter(OfficeHoursTicketEntity.state == TicketState.CALLED)
+        )
+
+        called_ticket_entities = self._session.scalars(called_tickets_query).all()
+        called_ticket_count = len(called_ticket_entities)
+
+        # Build Event Status Status
+        event_status = OfficeHoursEventStatus(
+            open_tickets_count=called_ticket_count,
+            queued_tickets_count=queued_ticket_count,
+        )
+
+        return event_status
 
     def _check_user_section_membership(
         self,
