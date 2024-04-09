@@ -114,8 +114,7 @@ export class UndergradApplicationComponent {
   ];
 
   validateIntroVideo(control: FormControl): { [key: string]: any } | null {
-    const valid =
-      control.value && control.value.startsWith('https://www.youtu');
+    const valid = control.value && control.value.includes('youtu');
     return valid ? null : { invalidURL: true };
   }
 
