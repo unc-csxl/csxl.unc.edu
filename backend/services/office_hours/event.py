@@ -173,7 +173,7 @@ class OfficeHoursEventService:
         query = (
             select(OfficeHoursTicketEntity)
             .where(OfficeHoursTicketEntity.oh_event_id == oh_event.id)
-            .order_by(OfficeHoursTicketEntity.created_at)
+            .order_by(OfficeHoursTicketEntity.created_at.desc())
         )
 
         entities = self._session.scalars(query).all()
@@ -207,9 +207,7 @@ class OfficeHoursEventService:
                     OfficeHoursTicketEntity.state == TicketState.CALLED,
                 )
             )
-            .order_by(
-                OfficeHoursTicketEntity.created_at
-            )  # may need to alter this ordering
+            .order_by(OfficeHoursTicketEntity.created_at.desc())
         )
 
         entities = self._session.scalars(query).all()
