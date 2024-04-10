@@ -8,7 +8,7 @@ import {
 } from '../office-hours.models';
 import { ChangeDetectorRef } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'ticket-creation-form',
@@ -27,14 +27,16 @@ export class TicketCreationFormComponent implements OnInit {
   assignmentType: String = '';
   eventId: number;
   event: OfficeHoursEventDetails | undefined;
+  sectionId: number;
 
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
     protected cdr: ChangeDetectorRef,
-    private location: Location,
+    private router: Router,
     private route: ActivatedRoute
   ) {
+    this.sectionId = this.route.snapshot.params['id'];
     this.eventId = this.route.snapshot.params['event_id'];
   }
 
@@ -94,12 +96,15 @@ export class TicketCreationFormComponent implements OnInit {
         // TODO: un-hardcode creators
         creators: [{ id: 3 }]
       };
-      this.officeHoursService.createTicket(ticket_draft).subscribe({
-        next: (ticket) => console.log(ticket) //remove console.log later -> for demo purposes
+      this.officeHoursService.createTicket(ticket_draft).subscribe((ticket) => {
+        this.router.navigate([
+          'office-hours/spring-2024/',
+          this.sectionId,
+          this.eventId,
+          'ticket',
+          ticket.id
+        ]);
       });
-      this.ticketForm.reset();
-      // brings user to previous page (the course Office Hours home page)
-      this.location.back();
     }
   }
 }

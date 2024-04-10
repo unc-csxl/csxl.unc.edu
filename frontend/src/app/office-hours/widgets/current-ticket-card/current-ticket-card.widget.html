@@ -1,0 +1,32 @@
+<!-- eslint-disable prettier/prettier -->
+<mat-card appearance="outlined">
+  <div class="card-container">
+    <div *ngIf="formatTicketState(ticket.state) === 'Queued'">
+      <div class="header-row">
+        <div class="title">
+          <mat-card-title> Your Ticket</mat-card-title>
+          <mat-card-subtitle> Location: {{ event.room.id }} </mat-card-subtitle>
+        </div>
+        <div class="button-row">
+          <button mat-icon-button>
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="cancelTicket()">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <mat-card-content class="newline">
+        {{ticket.description}}
+      </mat-card-content>
+    </div>
+
+    <div *ngIf="formatTicketState(ticket.state) === 'Called'">
+      <mat-card-content *ngIf="formatTicketState(ticket.state) === 'Called'">
+        {{ticket.caller?.first_name}} ({{ ticket.caller?.pronouns}}) is calling
+        your ticket!
+      </mat-card-content>
+    </div>
+  </div>
+</mat-card>

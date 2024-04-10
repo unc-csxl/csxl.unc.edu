@@ -205,4 +205,10 @@ export class OfficeHoursService {
       oh_ticket
     );
   }
+
+  getTicket(oh_ticket_id: number): Observable<TicketDetails> {
+    return this.http.get<TicketDetails>(
+      '/api/office-hours/ticket/' + oh_ticket_id
+    );
+  }
 }
