@@ -72,17 +72,19 @@ export class TicketCreationFormComponent implements OnInit {
       TicketType and ticket description accordingly
     */
     if (this.assignmentType === 'conceptual_help') {
-      form_description = this.ticketForm.value.conceptualQ1 ?? '';
+      form_description =
+        'Conceptual: ' + (this.ticketForm.value.conceptualQ1 ?? '');
       form_type = TicketType.CONCEPTUAL_HELP;
     } else {
       // Concatenates form description together and adds in new line characters
       form_description =
+        'Assignment Part: ' +
         (this.ticketForm.value.assignmentQ1 ?? '') +
-        ' \n' +
+        ' \nGoal: ' +
         (this.ticketForm.value.assignmentQ2 ?? '') +
-        ' \n' +
+        ' \nConcepts: ' +
         (this.ticketForm.value.assignmentQ3 ?? '') +
-        ' \n' +
+        ' \nTried: ' +
         (this.ticketForm.value.assignmentQ4 ?? '');
 
       form_type = TicketType.ASSIGNMENT_HELP;
