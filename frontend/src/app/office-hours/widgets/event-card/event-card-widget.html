@@ -1,20 +1,18 @@
 <mat-card appearance="outlined">
-  <div class="card-container">
-    <mat-card-title>{{formatEventType(event.type)}}</mat-card-title>
+  <div class="header-row">
+    <div class="location">
+      <mat-card-title>{{ formatEventType(event.type) }}</mat-card-title>
+      <mat-card-subtitle>Location: {{ event.room.id }}</mat-card-subtitle>
+    </div>
+    <div class="open operating-hours">
+      <span class="badge">Open</span>until {{ event.end_time | date: 'h:mma' |
+      lowercase }}
+    </div>
   </div>
   <mat-divider></mat-divider>
-  <div>
+  <div class="card-container">
     <mat-card-content>
-      <!-- TODO: Put this in a widget? -->
-      <div class="open header-row">
-        <div class="operating-hours">
-          <span class="badge">Open</span>until {{event.end_time | date: 'h:mma'
-          | lowercase}}
-        </div>
-        <div class="location">Location: {{event.room.id}}</div>
-      </div>
-      <!-- TODO: add an if statement to check if event has queue? -->
-      <div class="header-row">
+      <div class="queue-row">
         <div class="queued"><span class="number-badge">9</span>Queued</div>
         <div class="helped">
           <span class="number-badge">3</span>Being Helped

@@ -9,7 +9,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, RouteConfigLoadEnd } from '@angular/router';
-import { OfficeHoursEvent } from '../office-hours.models';
+import { OfficeHoursEvent, TicketDetails } from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { RosterRole } from 'src/app/academics/academics.models';
@@ -31,6 +31,7 @@ export class StudentSectionHomeComponent implements OnInit {
   sectionId: number;
   navLinks: any;
   rosterRole: RosterRole | null;
+  userTickets: TicketDetails[] = [];
 
   constructor(
     private route: ActivatedRoute,

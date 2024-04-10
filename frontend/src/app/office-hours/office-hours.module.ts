@@ -31,6 +31,8 @@ import { TicketCard } from './widgets/ticket-card/ticket-card.widget';
 import { TaSectionHomeComponent } from './ta-section-home/ta-section-home.component';
 import { CurrentTicketPageComponent } from './current-ticket-page/current-ticket-page.component';
 import { CurrentTicketCard } from './widgets/current-ticket-card/current-ticket-card.widget';
+import { TicketHistoryWidget } from './widgets/ticket-history/ticket-history.widget';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,7 @@ import { CurrentTicketCard } from './widgets/current-ticket-card/current-ticket-
     JoinSectionDialog,
     UpcomingHoursDialog,
     UpcomingHoursText,
+    TicketHistoryWidget,
     TicketQueuePageComponent,
     TicketCard,
     TaSectionHomeComponent,
@@ -69,7 +72,8 @@ import { CurrentTicketCard } from './widgets/current-ticket-card/current-ticket-
     MatInputModule,
     MatIconModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTableModule
   ]
 })
 export class OfficeHoursModule {}
