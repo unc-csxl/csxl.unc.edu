@@ -3,8 +3,7 @@ import { OfficeHoursService } from '../office-hours.service';
 import { ActivatedRoute } from '@angular/router';
 import {
   OfficeHoursEvent,
-  OfficeHoursEventDetails,
-  OfficeHoursSectionDetails,
+  OfficeHoursSection,
   TicketDetails
 } from '../office-hours.models';
 
@@ -24,8 +23,8 @@ export class CurrentTicketPageComponent implements OnInit {
   sectionId: number;
   eventId: number;
   ticketId: number;
-  section: OfficeHoursSectionDetails | null = null;
-  event: OfficeHoursEventDetails | null = null;
+  section: OfficeHoursSection | null = null;
+  event: OfficeHoursEvent | null = null;
   ticket: TicketDetails | null = null;
 
   constructor(
@@ -38,25 +37,14 @@ export class CurrentTicketPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSection();
-    this.getEvent();
-    this.getTicket();
-  }
-  getSection() {
-    this.officeHoursService.getSection(this.sectionId).subscribe((section) => {
-      this.section = section;
-    });
+    this.getTicketInfo();
   }
 
-  getEvent() {
-    this.officeHoursService.getEvent(this.eventId).subscribe((event) => {
-      this.event = event;
-    });
-  }
-
-  getTicket() {
+  getTicketInfo() {
     this.officeHoursService.getTicket(this.ticketId).subscribe((ticket) => {
       this.ticket = ticket;
+      this.event = ticket.oh_event;
+      this.section = ticket.oh_event.oh_section;
     });
   }
 }

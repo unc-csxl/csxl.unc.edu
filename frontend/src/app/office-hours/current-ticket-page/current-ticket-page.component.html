@@ -1,4 +1,8 @@
-<current-ticket-card-widget
-  *ngIf="ticket && event"
-  [ticket]="ticket"
-  [event]="event"></current-ticket-card-widget>
+<div class="queue-and-ticket-info">
+  <current-ticket-card-widget
+    class="full-width-card"
+    *ngIf="ticket && event"
+    [ticket]="ticket"
+    [event]="event"></current-ticket-card-widget>
+</div>
+<schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>

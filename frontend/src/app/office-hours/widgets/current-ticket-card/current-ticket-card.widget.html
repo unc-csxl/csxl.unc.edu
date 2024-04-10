@@ -1,11 +1,18 @@
 <!-- eslint-disable prettier/prettier -->
-<mat-card appearance="outlined">
-  <div class="card-container">
-    <div *ngIf="formatTicketState(ticket.state) === 'Queued'">
+<div *ngIf="formatTicketState(ticket.state) === 'Canceled'">
+  {{ displayCanceledMessage() }} {{ navToHome() }}
+</div>
+<div
+  class="ticket-queue-row"
+  *ngIf="formatTicketState(ticket.state) === 'Queued'">
+  <mat-card appearance="outlined">
+    <div class="card-container">
       <div class="header-row">
         <div class="title">
           <mat-card-title> Your Ticket</mat-card-title>
-          <mat-card-subtitle> Location: {{ event.room.id }} </mat-card-subtitle>
+          <mat-card-subtitle>
+            {{ formatTicketType(ticket.type) }}
+          </mat-card-subtitle>
         </div>
         <div class="button-row">
           <button mat-icon-button>
@@ -21,12 +28,52 @@
         {{ticket.description}}
       </mat-card-content>
     </div>
-
-    <div *ngIf="formatTicketState(ticket.state) === 'Called'">
-      <mat-card-content *ngIf="formatTicketState(ticket.state) === 'Called'">
-        {{ticket.caller?.first_name}} ({{ ticket.caller?.pronouns}}) is calling
-        your ticket!
-      </mat-card-content>
+  </mat-card>
+  <mat-card appearance="outlined">
+    <div class="card-container">
+      <div *ngIf="formatTicketState(ticket.state) === 'Queued'">
+        <div class="header-row">
+          <div class="title">
+            <mat-card-title> {{ formatEventType(event.type) }}</mat-card-title>
+            <mat-card-subtitle>
+              Location: {{ event.room.id }}
+            </mat-card-subtitle>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="queue-row">
+          <div class="position">
+            You're Number<span class="number-badge" style="background: #4786c6"
+              >2</span
+            >in the Queue
+          </div>
+        </div>
+        <mat-card-content>
+          <div class="queue-row">
+            <div class="queued"><span class="number-badge">9</span>Queued</div>
+            <div class="helped">
+              <span class="number-badge">3</span>Being Helped
+            </div>
+          </div>
+        </mat-card-content>
+      </div>
     </div>
-  </div>
-</mat-card>
+  </mat-card>
+</div>
+
+<div *ngIf="formatTicketState(ticket.state) === 'Called'">
+  <mat-card>
+    <div class="header-row">
+      <div class="title">
+        <mat-card-title> Your Ticket</mat-card-title>
+        <mat-card-subtitle> Location: {{ event.room.id }} </mat-card-subtitle>
+      </div>
+    </div>
+    <mat-card-content *ngIf="formatTicketState(ticket.state) === 'Called'">
+      <p>
+        Your ticket is being called by {{ticket.caller?.first_name}} ({{
+        ticket.caller?.pronouns}})
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
