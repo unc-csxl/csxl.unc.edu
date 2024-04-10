@@ -3,10 +3,12 @@ import { OfficeHoursService } from '../office-hours.service';
 import { FormBuilder } from '@angular/forms';
 import {
   OfficeHoursEventDraft,
-  OfficeHoursEventType
+  OfficeHoursEventType,
+  OfficeHoursSectionDetails
 } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Room } from 'src/app/academics/academics.models';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-event-creation-form',
@@ -16,19 +18,24 @@ import { Room } from 'src/app/academics/academics.models';
 export class EventCreationFormComponent implements OnInit {
   // TODO: Un-hardcode this route
   public static Route = {
-    path: 'spring-2024/comp110/create-new-event',
+    path: 'ta/spring-2024/:id/create-new-event',
     title: 'COMP 110: Intro to Programming',
     component: EventCreationFormComponent,
     canActivate: []
   };
 
   rooms: Room[] = [];
+  sectionId: number;
+  section: OfficeHoursSectionDetails | undefined;
 
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
-    public academicsService: AcademicsService
-  ) {}
+    public academicsService: AcademicsService,
+    private route: ActivatedRoute
+  ) {
+    this.sectionId = this.route.snapshot.params['id'];
+  }
 
   ngOnInit() {
     this.getRooms();
@@ -47,6 +54,12 @@ export class EventCreationFormComponent implements OnInit {
     this.academicsService.getRooms().subscribe((rooms) => {
       this.rooms = rooms;
     });
+  }
+
+  getSection() {
+    this.officeHoursService
+      .getSection(this.sectionId)
+      .subscribe((section) => (this.section = section));
   }
 
   onSubmit() {
@@ -87,27 +100,23 @@ export class EventCreationFormComponent implements OnInit {
     } else {
       end_time = new Date();
     }
-
-    let event_draft: OfficeHoursEventDraft = {
-      // TODO: Un-hard code section
-      oh_section: {
-        id: 1,
-        title: 'COMP 110: Introduction to Programming'
-      },
-      room: {
-        id: this.eventForm.value.location ?? ''
-      },
-      type: event_type,
-      description: this.eventForm.value.description ?? '',
-      location_description: this.eventForm.value.location_description ?? '',
-      event_date: event_date_start_time.toISOString().slice(0, 10),
-      start_time: event_date_start_time,
-      end_time: end_time
-    };
-    this.officeHoursService.createEvent(event_draft).subscribe({
-      next: (event) => console.log(event) // remove console.log later -> for demo/debug purposes
-    });
-    this.eventForm.reset();
+    if (this.section) {
+      let event_draft: OfficeHoursEventDraft = {
+        // TODO: Un-hard code section
+        oh_section: this.section,
+        room: { id: this.eventForm.value.location ?? '' },
+        type: event_type,
+        description: this.eventForm.value.description ?? '',
+        location_description: this.eventForm.value.location_description ?? '',
+        event_date: event_date_start_time.toISOString().slice(0, 10),
+        start_time: event_date_start_time,
+        end_time: end_time
+      };
+      this.officeHoursService.createEvent(event_draft).subscribe({
+        next: (event) => console.log(event) // remove console.log later -> for demo/debug purposes
+      });
+      this.eventForm.reset();
+    }
     // TODO: bring user to new location
   }
 }

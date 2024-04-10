@@ -8,7 +8,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OfficeHoursService } from '../office-hours.service';
 import { OfficeHoursEvent } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
@@ -35,7 +35,8 @@ export class TaSectionHomeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private officeHoursService: OfficeHoursService,
-    private academicsService: AcademicsService
+    private academicsService: AcademicsService,
+    private router: Router
   ) {
     this.navLinks = [
       { path: '/events', label: 'Events' },
@@ -66,5 +67,14 @@ export class TaSectionHomeComponent implements OnInit {
         this.rosterRole = section_member.member_role;
         return section_member;
       });
+  }
+
+  navToCreateForm() {
+    // TODO: Unhard code this later
+    this.router.navigate([
+      '/office-hours/ta/spring-2024/',
+      this.sectionId,
+      'create-new-event'
+    ]);
   }
 }
