@@ -14,6 +14,7 @@ from backend.models.office_hours.section import (
     OfficeHoursSectionPartial,
 )
 from backend.models.office_hours.section_details import OfficeHoursSectionDetails
+from backend.models.roster_role import RosterRole
 
 from ...database import db_session
 from ...models.academics import Section
@@ -136,3 +137,26 @@ class SectionMembershipService:
             section_membership.to_flat_model()
             for section_membership in section_memberships
         ]
+
+    def search_instructor_memberships(self, subject: User) -> list[SectionMemberEntity]:
+        """
+        Find all instructor memberships for a given user. If not an instructor, returns empty list.
+
+        Args:
+            subject (User): The user object representing the user for whom to find memberships.
+
+        Returns:
+            List[SectionMemberEntity]: A list of SectionMemberEntity objects representing
+                all instructor memberships of the given user.
+        """
+
+        query = (
+            select(SectionMemberEntity)
+            .filter(SectionMemberEntity.user_id == subject.id)
+            .filter(SectionMemberEntity.member_role == RosterRole.INSTRUCTOR)
+        )
+        entities = self._session.scalars(query).all()
+
+        section_memberships = [entity.to_flat_model() for entity in entities]
+
+        return section_memberships
