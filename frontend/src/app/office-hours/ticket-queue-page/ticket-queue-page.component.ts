@@ -17,7 +17,7 @@ import { interval } from 'rxjs';
 export class TicketQueuePageComponent implements OnInit {
   // TODO: Update this route later to not be hard-coded!
   public static Route = {
-    path: 'spring-2024/:section_id/:event_id/queue',
+    path: 'ta/spring-2024/:section_id/:event_id/queue',
     title: 'COMP 110: Intro to Programming',
     component: TicketQueuePageComponent,
     canActivate: []

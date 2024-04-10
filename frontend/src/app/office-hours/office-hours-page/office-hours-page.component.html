@@ -5,8 +5,7 @@
   <course-card-widget *ngFor="let section of userSections" [section]="section"></course-card-widget>
 
   <!-- Dummy add class button for access in-progress component -->
-  <button mat-fab color="accent" aria-label="Example icon button with a delete icon" class="add-button"
-    [matMenuTriggerFor]="menu">
+  <button mat-fab color="accent" class="add-button" [matMenuTriggerFor]="menu">
     <mat-icon>add</mat-icon>
   </button>
   <mat-menu #menu="matMenu">

@@ -20,9 +20,14 @@
           <span class="number-badge">3</span>Being Helped
         </div>
       </div>
-      <div class="button-row">
+      <div class="button-row" *ngIf="rosterRole === 0">
         <a [routerLink]="[event.id + '/create-new-ticket']">
           <button mat-stroked-button>Get Help</button>
+        </a>
+      </div>
+      <div class="button-row" *ngIf="rosterRole === 1">
+        <a [routerLink]="[event.id + '/queue']">
+          <button mat-stroked-button>Check In</button>
         </a>
       </div>
     </mat-card-content>

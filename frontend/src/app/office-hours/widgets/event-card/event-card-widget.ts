@@ -13,7 +13,7 @@ import { RosterRole } from 'src/app/academics/academics.models';
 })
 export class EventCard {
   @Input() event!: OfficeHoursEvent;
-  // @Input() rosterRole!: RosterRole | null;
+  @Input() rosterRole!: RosterRole | null;
   constructor() {
     console.log('reached event card.');
   }

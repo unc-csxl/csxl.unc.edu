@@ -11,6 +11,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, RouteConfigLoadEnd } from '@angular/router';
 import { OfficeHoursEvent } from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { RosterRole } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'app-student-section-home',
@@ -28,20 +30,24 @@ export class StudentSectionHomeComponent implements OnInit {
   currentEvents: OfficeHoursEvent[] = [];
   sectionId: number;
   navLinks: any;
+  rosterRole: RosterRole | null;
 
   constructor(
     private route: ActivatedRoute,
-    private officeHoursService: OfficeHoursService
+    private officeHoursService: OfficeHoursService,
+    private academicsService: AcademicsService
   ) {
     let navLinks = [
       { path: '/events', label: 'Events' },
       { path: '/history', label: 'History' }
     ];
     this.sectionId = this.route.snapshot.params['id'];
+    this.rosterRole = null;
   }
 
   ngOnInit(): void {
     this.getCurrentEvents();
+    this.checkRosterRole();
   }
 
   getCurrentEvents() {
@@ -49,6 +55,15 @@ export class StudentSectionHomeComponent implements OnInit {
       .getCurrentEventsBySection(this.sectionId)
       .subscribe((events) => {
         this.currentEvents = events;
+      });
+  }
+
+  checkRosterRole() {
+    this.academicsService
+      .getMembershipBySection(this.sectionId)
+      .subscribe((section_member) => {
+        this.rosterRole = section_member.member_role;
+        return section_member;
       });
   }
 }

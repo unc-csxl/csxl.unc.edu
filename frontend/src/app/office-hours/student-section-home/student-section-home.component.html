@@ -4,7 +4,7 @@
       <h3>Events</h3>
       <div *ngIf="currentEvents && currentEvents.length > 0">
         <div *ngFor="let event of currentEvents">
-          <event-card-widget [event]="event"></event-card-widget>
+          <event-card-widget [event]="event" [rosterRole]="rosterRole"></event-card-widget>
         </div>
       </div>
       <h3>Schedule</h3>
