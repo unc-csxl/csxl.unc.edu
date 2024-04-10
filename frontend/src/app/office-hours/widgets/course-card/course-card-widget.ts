@@ -45,12 +45,11 @@ export class CourseCard implements OnInit {
   }
 
   navToOfficeHours() {
-    console.log('test');
-    console.log(this.section.id);
-    console.log(this.rosterRole);
     // TODO: replace this route later
     if (this.rosterRole === RosterRole.STUDENT) {
       this.router.navigate(['/office-hours/spring-2024/', this.section.id]);
+    } else if (this.rosterRole === RosterRole.UTA) {
+      this.router.navigate(['/office-hours/ta/spring-2024/', this.section.id]);
     }
   }
 

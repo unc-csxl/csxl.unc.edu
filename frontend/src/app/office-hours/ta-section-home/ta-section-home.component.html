@@ -1,0 +1,11 @@
+<p *ngIf="rosterRole === 0">You are not authorized to view this page.</p>
+<div class="page-container" *ngIf="rosterRole === 1">
+    <mat-tab-group color="accent">
+        <mat-tab label="Events">
+            <h3>Events</h3>
+            <h3>Schedule</h3>
+        </mat-tab>
+        <mat-tab label="History"></mat-tab>
+        <mat-tab label="People"></mat-tab>
+    </mat-tab-group>
+</div>

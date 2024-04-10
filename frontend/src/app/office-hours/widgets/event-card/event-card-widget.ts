@@ -4,6 +4,7 @@ import {
   OfficeHoursEvent,
   OfficeHoursEventType
 } from '../../office-hours.models';
+import { RosterRole } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'event-card-widget',
@@ -12,7 +13,10 @@ import {
 })
 export class EventCard {
   @Input() event!: OfficeHoursEvent;
-  constructor() {}
+  // @Input() rosterRole!: RosterRole | null;
+  constructor() {
+    console.log('reached event card.');
+  }
 
   formatEventType(typeNum: number) {
     if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {
