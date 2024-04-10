@@ -29,6 +29,8 @@ import { UpcomingHoursText } from './widgets/upcoming-hours-text/upcoming-hours-
 import { TicketQueuePageComponent } from './ticket-queue-page/ticket-queue-page.component';
 import { TicketCard } from './widgets/ticket-card/ticket-card.widget';
 import { TaSectionHomeComponent } from './ta-section-home/ta-section-home.component';
+import { CurrentTicketPageComponent } from './current-ticket-page/current-ticket-page.component';
+import { CurrentTicketCard } from './widgets/current-ticket-card/current-ticket-card.widget';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { TaSectionHomeComponent } from './ta-section-home/ta-section-home.compon
     UpcomingHoursText,
     TicketQueuePageComponent,
     TicketCard,
-    TaSectionHomeComponent
+    TaSectionHomeComponent,
+    CurrentTicketPageComponent,
+    CurrentTicketCard
   ],
   imports: [
     CommonModule,

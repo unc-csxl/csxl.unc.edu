@@ -6,6 +6,7 @@ import { StudentSectionHomeComponent } from './student-section-home/student-sect
 import { TicketCreationFormComponent } from './ticket-creation-form/ticket-creation-form.component';
 import { TicketQueuePageComponent } from './ticket-queue-page/ticket-queue-page.component';
 import { TaSectionHomeComponent } from './ta-section-home/ta-section-home.component';
+import { CurrentTicketPageComponent } from './current-ticket-page/current-ticket-page.component';
 
 const routes: Routes = [
   OfficeHoursPageComponent.Route,
@@ -13,7 +14,8 @@ const routes: Routes = [
   StudentSectionHomeComponent.Route,
   TicketCreationFormComponent.Route,
   TicketQueuePageComponent.Route,
-  TaSectionHomeComponent.Route
+  TaSectionHomeComponent.Route,
+  CurrentTicketPageComponent.Route
 ];
 
 @NgModule({
