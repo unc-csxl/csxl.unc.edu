@@ -207,7 +207,7 @@ class OfficeHoursEventService:
                     OfficeHoursTicketEntity.state == TicketState.CALLED,
                 )
             )
-            .order_by(OfficeHoursTicketEntity.created_at.desc())
+            .order_by(OfficeHoursTicketEntity.created_at)
         )
 
         entities = self._session.scalars(query).all()

@@ -95,7 +95,7 @@ called_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CALLED,
-    created_at=datetime.now(),
+    created_at=datetime.now() - timedelta(minutes=2),
 )
 
 closed_ticket = OfficeHoursTicket(
@@ -104,9 +104,9 @@ closed_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
-    created_at=datetime.now(),
+    created_at=datetime.now() - timedelta(minutes=10),
     caller_id=section_data.comp110_uta.id,
-    closed_at=datetime.now(),
+    closed_at=datetime.now() - timedelta(minutes=1),
     have_concerns=False,
     caller_notes="Forgot to Return Function.",
 )
@@ -118,7 +118,7 @@ cancelled_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CANCELED,
-    created_at=datetime.now(),
+    created_at=datetime.now() - timedelta(minutes=5),
 )
 
 comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
