@@ -4,6 +4,7 @@ export interface Application {
   user: any;
   academic_hours: number;
   extracurriculars: string;
+  expected_graduation: string;
   program_pursued: string;
   other_programs: string;
   gpa: string;

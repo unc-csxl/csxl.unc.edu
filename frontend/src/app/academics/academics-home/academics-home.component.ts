@@ -9,9 +9,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
-import { PermissionService } from 'src/app/permission.service';
 import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
 import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
 import { Application } from 'src/app/admin/applications/admin-application.model';
@@ -45,11 +43,13 @@ export class AcademicsHomeComponent implements OnInit {
     this.new_uta = this.applicationService.new_uta;
   }
 
-  onUTAClick(): void {
+  onUTAClick(editMode: boolean = false): void {
     const dialogRef = this.dialog.open(UTANoticeComponent, {
       width: '1000px',
-      autoFocus: false
+      autoFocus: false,
+      data: { editMode }
     });
+
     dialogRef.afterClosed().subscribe();
   }
 

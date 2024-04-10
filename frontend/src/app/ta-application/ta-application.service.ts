@@ -9,7 +9,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, take, tap } from 'rxjs';
 import { Application } from '../admin/applications/admin-application.model';
 import {
   RxApplications,
@@ -31,9 +31,8 @@ export class ApplicationsService {
   public user_application$: Observable<Application | null> =
     this.user_application.value$;
 
-  public new_uta$ = new BehaviorSubject<boolean>(false);
-
-  public new_uta: boolean;
+  private new_uta$ = new BehaviorSubject<boolean>(true);
+  public new_uta: Observable<boolean> = this.new_uta$.asObservable();
 
   private courses: RxCourseList = new RxCourseList();
   public courses$: Observable<Course[]> = this.courses.value$;
@@ -42,7 +41,7 @@ export class ApplicationsService {
   public sections$: Observable<Section[]> = this.sections.value$;
 
   constructor(protected http: HttpClient) {
-    this.new_uta = this.getApplication();
+    this.initializeApplicationState();
   }
 
   /** Returns a list of all Applications
@@ -54,36 +53,61 @@ export class ApplicationsService {
       .subscribe((applications) => this.applications.set(applications));
   }
 
-  getApplication(): boolean {
-    this.http
-      .get<Application>('/api/applications/user')
-      .subscribe((application) => {
-        console.log(application);
-        if (application !== null) {
-          this.user_application.set(application);
-          this.new_uta$.next(false);
-          this.new_uta = false;
-          return false;
-        } else {
-          this.user_application.set(null);
-          this.new_uta$.next(true);
-          this.new_uta = true;
-          return true;
-        }
-      });
-    return true;
+  initializeApplicationState(): void {
+    this.getApplication().subscribe((application) => {
+      this.user_application.set(application);
+      this.new_uta$.next(!application);
+    });
   }
 
-  /** Creates an application
-   * @param application: Application object that you want to add to the database
-   * @returns {Observable<Application>}
-   */
-  createApplication(application: Application): Observable<Application> {
-    return this.http.post<Application>('/api/applications', application);
+  getApplication(): Observable<Application | null> {
+    return this.http
+      .get<Application | null>('/api/applications/user')
+      .pipe(
+        tap((application) => console.log('Fetched application:', application))
+      );
   }
 
-  updateApplication(application: Application): Observable<Application> {
-    return this.http.put<Application>('/api/applications/update', application);
+  submitApplication(
+    application: Omit<Application, 'id'>
+  ): Observable<Application> {
+    return this.user_application.value$.pipe(
+      take(1),
+      switchMap((currentApplication) => {
+        return currentApplication
+          ? this.updateApplication(
+              application,
+              currentApplication.id.toString()
+            )
+          : this.createApplication(application);
+      })
+    );
+  }
+
+  private updateApplication(
+    application: Omit<Application, 'id'>,
+    appId: string
+  ): Observable<Application> {
+    return this.http
+      .put<Application>(`/api/applications/${appId}`, application)
+      .pipe(
+        tap((updatedApplication) => {
+          this.user_application.set(updatedApplication);
+          console.log('Application updated:', updatedApplication);
+        })
+      );
+  }
+
+  private createApplication(
+    application: Omit<Application, 'id'>
+  ): Observable<Application> {
+    return this.http.post<Application>('/api/applications', application).pipe(
+      tap((newApplication) => {
+        this.user_application.set(newApplication);
+        this.new_uta$.next(false);
+        console.log('Application created:', newApplication);
+      })
+    );
   }
 
   deleteApplication(): void {

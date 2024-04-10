@@ -9,6 +9,7 @@ import { Observable, filter, map, startWith, switchMap, take } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Section } from 'src/app/academics/academics.models';
+import { Profile } from 'src/app/profile/profile.service';
 
 interface OptionSelect {
   value: string;
@@ -120,15 +121,15 @@ export class UndergradApplicationComponent {
     additional_experience: ['', Validators.required]
   });
   thirdFormGroup = this.formBuilder.group({
-    academic_hours: [null, [Validators.required, Validators.min(0)]],
+    academic_hours: [0, [Validators.required, Validators.min(0)]],
     extracurriculars: ['', Validators.required],
     expected_graduation: ['', Validators.required],
     program_pursued: ['', Validators.required],
     other_programs: ['']
   });
   fourthFormGroup = this.formBuilder.group({
-    gpa: [null, [Validators.required, Validators.min(0)]],
-    comp_gpa: [null, [Validators.required, Validators.min(0)]]
+    gpa: ['', [Validators.required, Validators.min(0)]],
+    comp_gpa: ['', [Validators.required, Validators.min(0)]]
   });
   fifthFormGroup = this.formBuilder.group({
     preferred_sections: this.formBuilder.array([]),
@@ -143,6 +144,7 @@ export class UndergradApplicationComponent {
   filteredPreferences: Observable<Section[]>;
   allSections$: Observable<Section[]>;
   selectedSections: Section[] = [];
+  userDetails: Profile | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -157,6 +159,104 @@ export class UndergradApplicationComponent {
       startWith(''),
       switchMap((value) => this.filterSections(value!))
     );
+
+    this.applicationService.user_application$.subscribe((application) => {
+      if (application) {
+        this.populateForm(application);
+      }
+    });
+  }
+
+  private populateForm(application: Application): void {
+    this.firstFormGroup.patchValue({
+      intro_video: application.intro_video
+    });
+    this.secondFormGroup.patchValue({
+      prior_experience: application.prior_experience,
+      service_experience: application.service_experience,
+      additional_experience: application.additional_experience
+    });
+    this.thirdFormGroup.patchValue({
+      academic_hours: application.academic_hours,
+      extracurriculars: application.extracurriculars,
+      expected_graduation: application.expected_graduation,
+      program_pursued: application.program_pursued,
+      other_programs: application.other_programs
+    });
+    this.fourthFormGroup.patchValue({
+      gpa: application.gpa,
+      comp_gpa: application.comp_gpa
+    });
+    this.fifthFormGroup.patchValue({
+      preferred_sections: application.preferred_sections,
+      comp_227: application.comp_227
+    });
+  }
+
+  private validateForm(): boolean {
+    return (
+      this.firstFormGroup.valid &&
+      this.secondFormGroup.valid &&
+      this.thirdFormGroup.valid &&
+      this.fourthFormGroup.valid &&
+      this.fifthFormGroup.valid
+    );
+  }
+
+  private collectFormData(userDetails: Profile): Omit<Application, 'id'> {
+    const sectionsToSend = this.selectedSections.map((section) => ({
+      id: section.id,
+      course_id: section.course_id,
+      number: section.number,
+      term_id: section.term_id,
+      meeting_pattern: section.meeting_pattern,
+      staff: section.staff,
+      office_hour_rooms: section.office_hour_rooms,
+      override_title: section.override_title || '',
+      override_description: section.override_description || ''
+    }));
+
+    return {
+      user_id: userDetails.id ?? 0,
+      user: userDetails,
+      academic_hours: this.thirdFormGroup.value.academic_hours ?? 0,
+      extracurriculars: this.thirdFormGroup.value.extracurriculars ?? '',
+      expected_graduation: this.thirdFormGroup.value.expected_graduation ?? '',
+      program_pursued: this.thirdFormGroup.value.program_pursued ?? '',
+      other_programs: this.thirdFormGroup.value.other_programs ?? '',
+      gpa: this.fourthFormGroup.value.gpa ?? '',
+      comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
+      preferred_sections: sectionsToSend,
+      comp_227: this.fifthFormGroup.value.comp_227 ?? '',
+      intro_video: this.firstFormGroup.value.intro_video ?? '',
+      prior_experience: this.secondFormGroup.value.prior_experience ?? '',
+      service_experience: this.secondFormGroup.value.service_experience ?? '',
+      additional_experience:
+        this.secondFormGroup.value.additional_experience ?? ''
+    } as Omit<Application, 'id'>;
+  }
+
+  onSubmit() {
+    if (this.validateForm()) {
+      this.applicationService.getProfile().subscribe({
+        next: (userDetails) => {
+          this.userDetails = userDetails;
+          const formData = this.collectFormData(userDetails);
+          this.applicationService.submitApplication(formData).subscribe({
+            next: (application) => this.onSuccess(application),
+            error: (err) => this.onError(err)
+          });
+        },
+        error: (err) => {
+          console.error('Failed to fetch user details', err);
+          this.onError(err);
+        }
+      });
+    } else {
+      this.snackBar.open('Application not finished yet!', '', {
+        duration: 3000
+      });
+    }
   }
 
   private filterSections(value: string): Observable<Section[]> {
@@ -246,67 +346,6 @@ export class UndergradApplicationComponent {
         console.error('Failed to fetch user details', err);
       }
     });
-  }
-
-  onSubmit() {
-    if (
-      this.firstFormGroup.valid &&
-      this.secondFormGroup.valid &&
-      this.thirdFormGroup.valid &&
-      this.fourthFormGroup.valid &&
-      this.fifthFormGroup.valid
-    ) {
-      const sectionsToSend = this.selectedSections.map((section) => ({
-        id: section.id,
-        course_id: section.course_id,
-        number: section.number,
-        term_id: section.term_id,
-        meeting_pattern: section.meeting_pattern,
-        staff: section.staff,
-        office_hour_rooms: section.office_hour_rooms,
-        override_title: section.override_title || '',
-        override_description: section.override_description || ''
-      }));
-
-      this.applicationService.getProfile().subscribe({
-        next: (userDetails) => {
-          const formData: Omit<Application, 'id'> = {
-            user_id: userDetails.id ?? 0,
-            user: userDetails,
-            academic_hours: this.thirdFormGroup.value.academic_hours ?? 0,
-            extracurriculars: this.thirdFormGroup.value.extracurriculars ?? '',
-            expected_graduation:
-              this.thirdFormGroup.value.expected_graduation ?? '',
-            program_pursued: this.thirdFormGroup.value.program_pursued ?? '',
-            other_programs: this.thirdFormGroup.value.other_programs ?? '',
-            gpa: this.fourthFormGroup.value.gpa ?? '',
-            comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
-            preferred_sections: sectionsToSend,
-            comp_227: this.fifthFormGroup.value.comp_227 ?? '',
-            intro_video: this.firstFormGroup.value.intro_video ?? '',
-            prior_experience: this.secondFormGroup.value.prior_experience ?? '',
-            service_experience:
-              this.secondFormGroup.value.service_experience ?? '',
-            additional_experience:
-              this.secondFormGroup.value.additional_experience ?? ''
-          };
-
-          this.applicationService
-            .createApplication(formData as Application)
-            .subscribe({
-              next: (application) => this.onSuccess(application),
-              error: (err) => this.onError(err)
-            });
-        },
-        error: (err) => {
-          console.error('Failed to fetch user details', err);
-        }
-      });
-    } else {
-      this.snackBar.open('Application not finished yet!', '', {
-        duration: 3000
-      });
-    }
   }
 
   /** Opens a confirmation snackbar when an application is successfully submitted.

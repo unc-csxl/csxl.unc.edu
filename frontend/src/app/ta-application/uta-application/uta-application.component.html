@@ -222,7 +222,7 @@
           <mat-chip
             *ngFor="let section of selectedSections"
             (removed)="removeSection(section.id)">
-            {{ capitalizedCourseId(section) }} {{ section.number }} - {{
+            {{ capitalizedCourseId(section) }} - {{ section.number }} - {{
             getInstructorName(section) }}
             <button
               matChipRemove
@@ -245,7 +245,7 @@
         <mat-option
           *ngFor="let section of filteredPreferences | async"
           [value]="section">
-          {{ capitalizedCourseId(section) }} {{ section.number }} - {{
+          {{ capitalizedCourseId(section) }} - {{ section.number }} - {{
           getInstructorName(section) }}
         </mat-option>
       </mat-autocomplete>
