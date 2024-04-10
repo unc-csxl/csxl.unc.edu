@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from backend.entities.academics.section_room_entity import SectionRoomEntity
 from backend.entities.academics.course_entity import CourseEntity
 from backend.entities.room_entity import RoomEntity
+from backend.models.academics.section_member import SectionMemberDraft
 from backend.models.room_assignment_type import RoomAssignmentType
 
 from ....models.room import Room
@@ -114,52 +115,83 @@ new_section = Section(
     override_description="",
 )
 
-# Add Users to Academic Sections in Respective Roles
-comp110_instructor = SectionMemberEntity(
-    id=1,
-    user_id=user_data.instructor.id,
+new_section_with_lecture_room = Section(
+    id=4,
+    course_id=course_data.comp_110.id,
+    number="003",
+    term_id=term_data.f_23.id,
+    meeting_pattern="MW 1:30PM - 2:45PM",
+    override_title="",
+    override_description="",
+    lecture_room=virtual_room,
+)
+
+# Variables To Help Associate User Data to Section Members
+user__comp110_instructor = user_data.instructor
+user__comp110_uta_0 = user_data.uta
+user__comp110_uta_1 = user_data.ambassador
+user__comp110_student_0 = user_data.user
+user__comp110_student_1 = user_data.student
+
+# Root Will Not Be Enrolled In Section!
+user__comp110_non_member = user_data.root
+
+user__comp301_instructor = user_data.instructor
+user__comp301_uta = user_data.ambassador
+
+
+comp110_instructor = SectionMemberDraft(
+    user_id=user__comp110_instructor.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
-
-comp110_uta = SectionMemberEntity(
-    id=2,
-    user_id=user_data.ambassador.id,
+comp110_uta = SectionMemberDraft(
+    user_id=user__comp110_uta_0.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.UTA,
 )
 
-comp110_student = SectionMemberEntity(
-    id=3,
-    user_id=user_data.user.id,
+comp110_uta_1 = SectionMemberDraft(
+    user_id=user__comp110_uta_1.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.UTA,
+)
+
+
+comp110_student_0 = SectionMemberDraft(
+    user_id=user__comp110_student_0.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.STUDENT,
 )
 
-comp301_instructor = SectionMemberEntity(
-    id=4,
-    user_id=user_data.instructor.id,
+comp110_student_1 = SectionMemberDraft(
+    user_id=user__comp110_student_1.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.STUDENT,
+)
+
+comp301_instructor = SectionMemberDraft(
+    user_id=user__comp301_instructor.id,
     section_id=comp_301_001.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
-comp_301_uta = SectionMemberEntity(
-    id=5,
-    user_id=user_data.ambassador.id,
+comp_301_uta = SectionMemberDraft(
+    user_id=user__comp301_uta.id,
     section_id=comp_301_001.id,
     member_role=RosterRole.UTA,
 )
 
 section_members = [
     comp110_instructor,
+    comp110_student_0,
+    comp110_student_1,
     comp110_uta,
-    comp110_student,
     comp301_instructor,
     comp_301_uta,
 ]
 
-# Room Assignments Relative to Section
 room_assignment_110_001 = (
     comp_101_001.id,
     virtual_room.id,
@@ -186,11 +218,17 @@ def insert_fake_data(session: Session):
         session.add(entity)
 
     for member in section_members:
-        session.add(member)
+        section_member_entity = SectionMemberEntity.from_draft_model(member)
+
+        session.add(section_member_entity)
+        session.commit()
 
     reset_table_id_seq(
         session, SectionMemberEntity, SectionMemberEntity.id, len(section_members) + 1
     )
+
+    session.commit()
+
     for assignment in assignments:
         section_id, room_id, assignment_type = assignment
         entity = SectionRoomEntity(

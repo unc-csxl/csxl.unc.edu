@@ -21,3 +21,9 @@ class SectionMember(BaseModel):
     last_name: str
     pronouns: str
     member_role: RosterRole
+
+
+class SectionMemberDraft(BaseModel):
+    user_id: int
+    section_id: int
+    member_role: RosterRole = RosterRole.STUDENT

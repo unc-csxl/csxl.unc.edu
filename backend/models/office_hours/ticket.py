@@ -57,9 +57,10 @@ class OfficeHoursTicketPartial(OfficeHoursTicket):
     description: str | None = None
     type: TicketType | None = None
     state: TicketState | None = None
+    created_at: datetime | None = None
     called_at: datetime | None = None
     closed_at: datetime | None = None
     caller_id: int | None = None
     have_concerns: bool | None = None
     caller_notes: str | None = None
-    oh_event: OfficeHoursEventPartial
+    oh_event: OfficeHoursEventPartial | None = None
