@@ -65,23 +65,6 @@ def get_oh_ticket_by_id(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-# @api.put(
-#     "/{oh_ticket_id}", response_model=OfficeHoursTicketDetails, tags=["Office Hours"]
-# )
-# def update_oh_ticket(
-#     oh_ticket: OfficeHoursTicketPartial,
-#     subject: User = Depends(registered_user),
-#     oh_ticket_service: OfficeHoursTicketService = Depends(),
-# ) -> OfficeHoursTicketDetails:
-#     """
-#     Updates an OfficeHoursTicket to the database
-
-#     Returns:
-#         OfficeHoursTicketDetails: OH Ticket updated
-#     """
-#     return oh_ticket_service.update(subject, oh_ticket)
-
-
 @api.put(
     "/call",
     response_model=OfficeHoursTicketDetails,
@@ -101,7 +84,7 @@ def update_oh_ticket_when_called(
     try:
         return oh_ticket_service.update_called_state(subject, oh_ticket)
     except Exception as e:
-        raise HTTPException(status_code=403, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.put(
@@ -121,8 +104,7 @@ def cancel_oh_ticket(
         OfficeHoursTicketDetails: OH Ticket updated
     """
     try:
-        oh_ticket_model = oh_ticket_service.get_ticket_by_id(subject, oh_ticket.id)
-        return oh_ticket_service.cancel_ticket(subject, oh_ticket_model)
+        return oh_ticket_service.cancel_ticket(subject, oh_ticket)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -144,8 +126,7 @@ def close_oh_ticket(
         OfficeHoursTicketDetails: OH Ticket updated
     """
     try:
-        oh_ticket_model = oh_ticket_service.get_ticket_by_id(subject, oh_ticket.id)
-        return oh_ticket_service.close_ticket(subject, oh_ticket_model)
+        return oh_ticket_service.close_ticket(subject, oh_ticket)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

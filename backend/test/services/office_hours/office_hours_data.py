@@ -4,10 +4,10 @@ import pytest
 from datetime import datetime, date
 from sqlalchemy.orm import Session
 
-from backend.entities.academics.section_member_entity import SectionMemberEntity
-from backend.models.roster_role import RosterRole
-from backend.models.user import UserIdentity
-from backend.test.services import user_data
+from ....entities.academics.section_member_entity import SectionMemberEntity
+from ....models.roster_role import RosterRole
+from ....models.user import UserIdentity
+from ....test.services import user_data
 
 from ....entities.academics.section_entity import SectionEntity
 from ...services.reset_table_id_seq import reset_table_id_seq
@@ -37,55 +37,6 @@ __authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
-comp110_uta_user = user_data.uta
-comp110_student_1_user = user_data.user
-comp110_student_2_user = user_data.student
-comp110_instructor_user = user_data.instructor
-
-comp110_instructor = SectionMemberEntity.from_draft_model(
-    user_id=user_data.instructor.id,
-    section_id=section_data.comp_101_001.id,
-    member_role=RosterRole.INSTRUCTOR,
-)
-
-comp110_uta = SectionMemberEntity.from_draft_model(
-    user_id=user_data.uta.id,
-    section_id=section_data.comp_101_001.id,
-    member_role=RosterRole.UTA,
-)
-
-comp110_student_0 = SectionMemberEntity.from_draft_model(
-    user_id=user_data.user.id,
-    section_id=section_data.comp_101_001.id,
-    member_role=RosterRole.STUDENT,
-)
-
-comp110_student_1 = SectionMemberEntity.from_draft_model(
-    user_id=user_data.student.id,
-    section_id=section_data.comp_101_001.id,
-    member_role=RosterRole.STUDENT,
-)
-
-comp301_instructor = SectionMemberEntity.from_draft_model(
-    user_id=user_data.instructor.id,
-    section_id=section_data.comp_301_001.id,
-    member_role=RosterRole.INSTRUCTOR,
-)
-
-comp_301_uta = SectionMemberEntity.from_draft_model(
-    user_id=user_data.ambassador.id,
-    section_id=section_data.comp_301_001.id,
-    member_role=RosterRole.UTA,
-)
-
-section_members = [
-    comp110_instructor,
-    comp110_student_0,
-    comp110_student_1,
-    comp110_uta,
-    comp301_instructor,
-    comp_301_uta,
-]
 
 # Office Hours Section Data
 comp_110_oh_section = OfficeHoursSection(
@@ -123,6 +74,7 @@ comp_110_oh_event_2 = OfficeHoursEvent(
     end_time=datetime.now(),
 )
 
+# Events to Be Inserted Into Demo
 comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
 
 # Ticket For An Event
@@ -165,6 +117,7 @@ cancelled_ticket = OfficeHoursTicket(
 
 comp110_tickets = [pending_ticket, called_ticket, closed_ticket, cancelled_ticket]
 
+# Ticket Variations For Unit Test Purposes
 ticket_draft = OfficeHoursTicketDraft(
     oh_event=OfficeHoursEventPartial(id=1),
     description="I need help",
@@ -182,8 +135,8 @@ group_ticket_draft = OfficeHoursTicketDraft(
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
     creators=[
-        UserIdentity(id=comp110_student_0.user_id),
-        UserIdentity(id=comp110_student_1.user_id),
+        UserIdentity(id=section_data.comp110_student_0.user_id),
+        UserIdentity(id=section_data.comp110_student_1.user_id),
     ],
 )
 
@@ -192,8 +145,8 @@ group_ticket_draft_non_member = OfficeHoursTicketDraft(
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
     creators=[
-        UserIdentity(id=comp110_student_0.user_id),
-        UserIdentity(id=user_data.root.id),
+        UserIdentity(id=section_data.user__comp110_student_0.id),
+        UserIdentity(id=section_data.user__comp110_non_member.id),
     ],
 )
 
@@ -212,6 +165,8 @@ def insert_fake_data(session: Session):
         len(oh_sections) + 1,
     )
 
+    session.commit()
+
     # Associate Office Hours Section with Academic Section
     for comp_110_section in section_data.comp_110_sections:
         section = session.get(SectionEntity, comp_110_section.id)
@@ -229,36 +184,19 @@ def insert_fake_data(session: Session):
         len(comp_110_oh_events) + 1,
     )
 
-    comp110_instructor = SectionMemberEntity.from_draft_model(
-        user_id=user_data.instructor.id,
-        section_id=section_data.comp_101_001.id,
-        member_role=RosterRole.INSTRUCTOR,
+    session.commit()
+
+    # Fetch a Student and UTA
+    student = (
+        session.query(SectionMemberEntity)
+        .where(SectionMemberEntity.member_role == RosterRole.STUDENT)
+        .first()
     )
-
-    session.add(comp110_instructor)
-
-    comp110_uta = SectionMemberEntity.from_draft_model(
-        user_id=user_data.uta.id,
-        section_id=section_data.comp_101_001.id,
-        member_role=RosterRole.UTA,
+    uta = (
+        session.query(SectionMemberEntity)
+        .where(SectionMemberEntity.member_role == RosterRole.UTA)
+        .first()
     )
-
-    session.add(comp110_uta)
-
-    comp110_student_0 = SectionMemberEntity.from_draft_model(
-        user_id=user_data.user.id,
-        section_id=section_data.comp_101_001.id,
-        member_role=RosterRole.STUDENT,
-    )
-
-    session.add(comp110_student_0)
-
-    comp110_student_1 = SectionMemberEntity.from_draft_model(
-        user_id=user_data.student.id,
-        section_id=section_data.comp_101_001.id,
-        member_role=RosterRole.STUDENT,
-    )
-    session.add(comp110_student_1)
 
     # Add User Created Tickets
     for ticket in comp110_tickets:
@@ -271,7 +209,7 @@ def insert_fake_data(session: Session):
             user_created_tickets_table.insert().values(
                 {
                     "ticket_id": ticket_entity.id,
-                    "member_id": comp110_student_0.id,
+                    "member_id": student.id,
                 }
             )
         )
@@ -279,7 +217,7 @@ def insert_fake_data(session: Session):
     # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
     session.query(OfficeHoursTicketEntity).filter(
         OfficeHoursTicketEntity.id.in_([called_ticket.id, closed_ticket.id])
-    ).update({"caller_id": comp110_uta.id})
+    ).update({"caller_id": uta.id})
 
     reset_table_id_seq(
         session,
@@ -287,6 +225,8 @@ def insert_fake_data(session: Session):
         OfficeHoursTicketEntity.id,
         len(comp110_tickets) + 1,
     )
+
+    session.commit()
 
 
 @pytest.fixture(autouse=True)

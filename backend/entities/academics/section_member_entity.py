@@ -9,7 +9,7 @@ from backend.entities.office_hours import user_created_tickets_table
 from backend.models.academics.section_member_details import SectionMemberDetails
 
 from ...models.roster_role import RosterRole
-from ...models.academics.section_member import SectionMember
+from ...models.academics.section_member import SectionMember, SectionMemberDraft
 
 from ..entity_base import EntityBase
 
@@ -81,10 +81,12 @@ class SectionMemberEntity(EntityBase):
         )
 
     @classmethod
-    def from_draft_model(
-        cls, user_id: int, section_id: int, member_role: RosterRole = RosterRole.STUDENT
-    ) -> Self:
-        return cls(section_id=section_id, user_id=user_id, member_role=member_role)
+    def from_draft_model(cls, model: SectionMemberDraft) -> Self:
+        return cls(
+            section_id=model.section_id,
+            user_id=model.user_id,
+            member_role=model.member_role,
+        )
 
     @classmethod
     def from_model(cls, model: SectionMember) -> Self:

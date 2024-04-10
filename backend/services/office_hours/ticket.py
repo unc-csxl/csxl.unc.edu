@@ -60,8 +60,8 @@ class OfficeHoursTicketService:
         # PERMISSIONS
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section: OfficeHoursSection = (
-            self._get_office_hours_sections_given_oh_event_id(oh_ticket.oh_event.id)
+        oh_section: OfficeHoursSection = self._get_office_hours_sections_by_oh_event_id(
+            oh_ticket.oh_event.id
         )
 
         # Check If Current Users and Creators Are Section Members and thus have permission to create a ticket.
@@ -71,6 +71,11 @@ class OfficeHoursTicketService:
         current_user_section_member_entity: SectionMemberEntity = (
             self._check_user_section_membership(subject.id, oh_section.id)
         )
+
+        if current_user_section_member_entity.member_role != RosterRole.STUDENT:
+            raise PermissionError(
+                "Only Section Member Students Are Allowed to Create Tickets."
+            )
 
         section_member_entities.append(current_user_section_member_entity)
 
@@ -119,10 +124,7 @@ class OfficeHoursTicketService:
             OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
         """
         # Fetch Ticket By ID
-        query = select(OfficeHoursTicketEntity).filter(
-            OfficeHoursTicketEntity.id == oh_ticket_id
-        )
-        ticket_entity = self._session.scalars(query).one_or_none()
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket_id)
 
         if ticket_entity is None:
             raise ResourceNotFoundException(
@@ -132,7 +134,7 @@ class OfficeHoursTicketService:
         # USER PERMISSIONS:
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
+        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -143,15 +145,15 @@ class OfficeHoursTicketService:
 
         # If current user is student, check if they are creator of ticket
         # Raise Exception if Not Creator!
-        ticket_creators = ticket_entity.to_details_model().creators
-
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
-            isCreator = False
+            is_creator = False
+            ticket_creators = ticket_entity.to_details_model().creators
+
             for creator in ticket_creators:
                 if creator.id == current_user_section_member_entity.id:
-                    isCreator = True
+                    is_creator = True
 
-            if not isCreator:
+            if not is_creator:
                 raise PermissionError(
                     f"User Doesn't Have Permission to Get Ticket id={ticket_entity.id}"
                 )
@@ -169,17 +171,18 @@ class OfficeHoursTicketService:
         Returns:
             OfficeHoursTicketDetails: Updated object in table
         """
-        # PERMISSIONS
-
-        # PERMISSION
 
         # Fetch Ticket By ID
         ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
-        if ticket_entity is None:
-            raise ResourceNotFoundException(f"Ticket(id={oh_ticket.id}) does not exist")
 
+        if ticket_entity is None:
+            raise ResourceNotFoundException(
+                f"Cannot Find Ticket with id={oh_ticket.id}"
+            )
+
+        # PERMISSIONS
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
+        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -190,12 +193,17 @@ class OfficeHoursTicketService:
 
         # 1. Caller Must Have Roles - UTA/GTA/INSTRUCTOR
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError("User Doesn't Have Permission to Call Ticket.")
+            raise PermissionError(
+                "User is a Student and Do Not Have Permission to Call Ticket."
+            )
 
-        # 3. Ticket Must Be Queued
-        if ticket_entity.state != TicketState.QUEUED:
+        # 2. Ticket Must Be Queued and Not Have a Caller Linked (Queued Is Only State at which Caller Is Not Linked)
+        if (
+            ticket_entity.state != TicketState.QUEUED
+            or ticket_entity.caller_id is not None
+        ):
             raise Exception(
-                f"Ticket Must Be Queued In Order to Be Called. Current Ticket State is {ticket_entity.state}"
+                f"Ticket Must Be Queued In Order to Be Called/ Have No Caller Linked To It. Current Ticket State is {ticket_entity.state}"
             )
 
         # If No Caller ID and Ticket is Queued, then update states
@@ -211,12 +219,19 @@ class OfficeHoursTicketService:
         return ticket_entity.to_details_model()
 
     def cancel_ticket(
-        self, subject: User, oh_ticket: OfficeHoursTicketDetails
+        self, subject: User, oh_ticket: OfficeHoursTicketPartial
     ) -> OfficeHoursTicketDetails:
 
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
+
+        if ticket_entity is None:
+            raise ResourceNotFoundException(
+                f"Cannot Find Ticket with id={oh_ticket.id}"
+            )
+
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
-            oh_ticket.oh_event.id
+        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
+            ticket_entity.oh_event_id
         )
 
         # Case: Current User
@@ -224,41 +239,48 @@ class OfficeHoursTicketService:
             subject.id, oh_section_entity.id
         )
 
-        query = select(OfficeHoursTicketEntity).filter(
-            OfficeHoursTicketEntity.id == oh_ticket.id
-        )
-        ticket_entity = self._session.scalars(query).one_or_none()
-
-        ticket_creators = ticket_entity.to_details_model().creators
-
+        # PERMISSION CHECK:
+        # 1. Ticket Must be Queued State
         if ticket_entity.state != TicketState.QUEUED:
             raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
 
-        # CASE: Student Permission - Can Only Cancel Their Own Ticket
+        # 2. If Student, Can Only Cancel Their Own Ticket; Otherwise, other roles are fine to cancel.
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+
+            ticket_creators = ticket_entity.to_details_model().creators
             # Check If Current User is in Creator List
-            isCreator = False
+            is_creator = False
             for creator in ticket_creators:
                 if creator.id == current_user_section_member_entity.id:
-                    isCreator = True
+                    is_creator = True
 
-            if not isCreator:
+            if not is_creator:
                 raise PermissionError(
                     f"User Doesn't Have Permission to Cancel Ticket id={oh_ticket.id}"
                 )
 
+        # Good to Update Cancel State
         ticket_entity.state = TicketState.CANCELED
         self._session.commit()
 
         return ticket_entity.to_details_model()
 
     def close_ticket(
-        self, subject: User, oh_ticket: OfficeHoursTicketDetails
+        self, subject: User, oh_ticket: OfficeHoursTicketPartial
     ) -> OfficeHoursTicketDetails:
 
+        # Query Ticket
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
+
+        if ticket_entity is None:
+            raise ResourceNotFoundException(f"Cannot Find Ticket id={oh_ticket.id}")
+
+        if ticket_entity.state != TicketState.CALLED:
+            raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
+
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
-            oh_ticket.oh_event.id
+        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
+            ticket_entity.oh_event_id
         )
 
         # Case: Current User
@@ -266,15 +288,9 @@ class OfficeHoursTicketService:
             subject.id, oh_section_entity.id
         )
 
-        query = select(OfficeHoursTicketEntity).filter(
-            OfficeHoursTicketEntity.id == oh_ticket.id
-        )
-        ticket_entity = self._session.scalars(query).one_or_none()
+        # PERMISSIONS
 
-        if ticket_entity.state != TicketState.CALLED:
-            raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
-
-        # CASE: Student Permission - Can Only Cancel Their Own Ticket
+        # 1. If student, cannot close ticket - a student can onlyl cancel ticket
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError(
                 f"User Doesn't Have Permission to Close Ticket id={oh_ticket.id}"
@@ -297,17 +313,18 @@ class OfficeHoursTicketService:
             OfficeHoursTicketDetails: Updated object in table
         """
 
+        # Check Feedback Fields Are Not None
+        if oh_ticket.have_concerns is None or oh_ticket.caller_notes is None:
+            raise Exception("Missing Data To Update Ticket Feedback")
+
         # Query Ticket
-        query = select(OfficeHoursTicketEntity).filter(
-            OfficeHoursTicketEntity.id == oh_ticket.id
-        )
-        ticket_entity = self._session.scalars(query).one_or_none()
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
 
         if ticket_entity is None:
             raise ResourceNotFoundException(f"Cannot Find Ticket id={oh_ticket.id}")
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_given_oh_event_id(
+        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -316,21 +333,19 @@ class OfficeHoursTicketService:
             subject.id, oh_section_entity.id
         )
 
-        # CASE: Student Permission - Can Only Add Feedback If UTA
+        # PERMISSIONS:
+
+        # 1. CASE: Student Permission - Can Only Add Feedback If UTA
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError(
                 f"User Doesn't Have Permission to Give Feedback For Ticket id={oh_ticket.id}"
             )
 
-        # Check is Ticket Is Closed
+        # 2. Check if Ticket Is Closed
         if ticket_entity.state != TicketState.CLOSED:
             raise PermissionError(
                 f"Ticket is Not Closed. Cannot Give Feedback for Ticket id={oh_ticket.id}"
             )
-
-        # Check Feedback Fields Are Not None
-        if oh_ticket.have_concerns is None or oh_ticket.caller_notes is None:
-            raise Exception("Missing Data")
 
         ticket_entity.have_concerns = oh_ticket.have_concerns
         ticket_entity.caller_notes = oh_ticket.caller_notes
@@ -377,12 +392,12 @@ class OfficeHoursTicketService:
 
         if section_member_entity is None:
             raise PermissionError(
-                f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
+                f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}. User Doesn't Have Permission to Perform Action."
             )
 
         return section_member_entity
 
-    def _get_office_hours_sections_given_oh_event_id(
+    def _get_office_hours_sections_by_oh_event_id(
         self, oh_event_id: int
     ) -> OfficeHoursSection:
         """Checks if a given user is a member in academic sections that are a part of an office hours section.
