@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { Ticket, TicketDetails, TicketType } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
+import { MatDialog } from '@angular/material/dialog';
+import { TicketFeedbackDialog } from '../ticket-feedback-dialog/ticket-feedback-dialog';
 
 @Component({
   selector: 'ticket-card-widget',
@@ -10,7 +12,10 @@ import { OfficeHoursService } from '../../office-hours.service';
 export class TicketCard {
   @Input() ticket!: TicketDetails;
   @Input() queuePosition!: number;
-  constructor(private officeHoursService: OfficeHoursService) {}
+  constructor(
+    private officeHoursService: OfficeHoursService,
+    public dialog: MatDialog
+  ) {}
 
   formatTicketType(typeNum: number) {
     return this.officeHoursService.formatTicketType(typeNum);
@@ -37,6 +42,20 @@ export class TicketCard {
   closeTicket() {
     this.officeHoursService.closeTicket(this.ticket).subscribe(() => {
       window.location.reload();
+    });
+  }
+
+  openTicketFeedbackFormDialog() {
+    const dialogRef = this.dialog.open(TicketFeedbackDialog, {
+      height: 'auto',
+      width: 'auto',
+      data: { ticket: this.ticket }
+    });
+
+    dialogRef.afterClosed().subscribe((open) => {
+      if (!open) {
+        window.location.reload();
+      }
     });
   }
 }

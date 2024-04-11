@@ -76,6 +76,7 @@ export interface TicketPartial {
   created_at: Date | null;
   called_at: Date | null;
   closed_at: Date | null;
+  creators: SectionMember[] | null;
   caller: SectionMember | null;
 }
 
@@ -93,7 +94,7 @@ export interface OfficeHoursEvent {
 
 export interface OfficeHoursEventPartial {
   id: number;
-  oh_section: Section | null;
+  oh_section: OfficeHoursSection | null;
   room: Room | null;
   type: OfficeHoursEventType | null;
   description: string | null;
@@ -120,7 +121,7 @@ export interface RoomPartial {
 
 export interface OfficeHoursEventDetails {
   id: number;
-  oh_section: Section;
+  oh_section: OfficeHoursSection;
   room: Room;
   type: OfficeHoursEventType;
   description: string;
