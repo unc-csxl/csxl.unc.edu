@@ -214,11 +214,20 @@ export class OfficeHoursService {
     );
   }
 
+  // TODO: change to Ticket once backend is refactored to not expose concerns
   getUserSectionCreatedTickets(
     oh_section_id: number
   ): Observable<TicketDetails[]> {
     return this.http.get<TicketDetails[]>(
       'api/office-hours/section/' + oh_section_id + '/user/created_tickets'
+    );
+  }
+
+  getUserSectionCalledTickets(
+    oh_section_id: number
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/user/called_tickets'
     );
   }
 
