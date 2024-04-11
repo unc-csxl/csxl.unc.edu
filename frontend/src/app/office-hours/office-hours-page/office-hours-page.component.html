@@ -1,6 +1,10 @@
 <div class="page-container">
   <h2>Your Courses</h2>
   <!-- TODO: Use terms instead of hard coding Spring 2024 -->
+  <p *ngIf="userSections.length === 0">
+    You are not enrolled in any courses. Please click the add button to add a
+    course.
+  </p>
   <h3>Spring 2024:</h3>
   <course-card-widget
     *ngFor="let section of userSections"
