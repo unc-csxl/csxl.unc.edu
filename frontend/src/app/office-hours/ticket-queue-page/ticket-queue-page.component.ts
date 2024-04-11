@@ -1,3 +1,12 @@
+/**
+ * The Ticket Queue Page allows TAs, GTAs, and Instructors to view an event queue, and
+ * call and cancel tickets
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, OnInit } from '@angular/core';
 import {
   TicketDetails,

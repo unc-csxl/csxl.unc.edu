@@ -1,3 +1,14 @@
+/**
+ * The Current Ticket Page displays a student's current ticket in the queue
+ * - Student can edit/delete ticket
+ * - Student can see current place in the queue
+ * - Student can see upcoming Office Hours Events for that section
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import { ActivatedRoute } from '@angular/router';
@@ -13,6 +24,7 @@ import {
   styleUrls: ['./current-ticket-page.component.css']
 })
 export class CurrentTicketPageComponent implements OnInit {
+  // TODO: Un-hardcode 'spring-2024'
   public static Route = {
     path: 'spring-2024/:id/:event_id/ticket/:ticket_id',
     title: 'COMP 110: Intro to Programming',

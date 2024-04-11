@@ -1,3 +1,12 @@
+/**
+ * The Open Event Hours Card is used on the Office Hours Home page and shows
+ * what events are currently open + their location and times
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
 import {

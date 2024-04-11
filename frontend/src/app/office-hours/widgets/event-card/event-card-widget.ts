@@ -1,3 +1,14 @@
+/**
+ * The Event Card Widget displays the following about an ongoing event:
+ * - Queue stats
+ * - Location
+ * - How long the event is open until
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
 import {

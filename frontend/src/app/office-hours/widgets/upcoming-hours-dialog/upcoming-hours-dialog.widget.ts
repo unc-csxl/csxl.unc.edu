@@ -1,3 +1,11 @@
+/**
+ * The Upcoming Hours Dialog
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { OfficeHoursService } from '../../office-hours.service';

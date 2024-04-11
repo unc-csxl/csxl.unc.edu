@@ -1,5 +1,5 @@
 /**
- * The Section Creation Form Component shows options to create a new office hours section and handles the creation.
+ * The Section Creation Form Component allows TAs to create a new Office Hours section
  *
  * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
  * @copyright 2024

@@ -1,3 +1,12 @@
+/**
+ * The Schedule Card abstracts the implementation of getting
+ * upcoming events away from other components
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../../office-hours.service';
 import {

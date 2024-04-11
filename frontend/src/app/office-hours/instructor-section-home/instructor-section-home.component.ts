@@ -1,6 +1,6 @@
 /**
  * The Instructor Section Home Component serves as a hub for Instructors and GTAs to view office hours events, see upcoming schedules,
- * check-in to event queues, see ticket history, and view people in the office hours section, elevate rosterRoles, and see Data
+ * check-in to event queues, see ticket history, view people in the office hours section, elevate rosterRoles, and see Data
  *
  * @author Madelyn Andrews, Bailey DeSouza, Meghan Sun, Sadie Amato
  * @copyright 2024

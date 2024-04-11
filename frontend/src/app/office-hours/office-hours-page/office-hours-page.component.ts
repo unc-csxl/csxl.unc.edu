@@ -1,6 +1,7 @@
 /**
  * The Office Hours Page Component serves as the home page for the Office Hours feature.
- *
+ * The Office Hours Page is a hub for students to join Office Hours Sections, and for instructors to
+ * create new Office Hours Sections
  *
  * @author Madelyn Andrews, Bailey DeSouza, Meghan Sun, Sadie Amato
  * @copyright 2024

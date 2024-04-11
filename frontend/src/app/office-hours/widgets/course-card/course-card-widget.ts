@@ -1,3 +1,12 @@
+/**
+ * The Course Card Widget abstracts the implementation of the detail course
+ * card away from the Office Hours Home Page
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
 import {

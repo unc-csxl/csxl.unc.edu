@@ -1,3 +1,11 @@
+/**
+ * The Ticket Creation Form allows students to create a new ticket and join the current queue
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { OfficeHoursService } from '../office-hours.service';

@@ -1,3 +1,11 @@
+/**
+ * The Event Creation Form allows TAs, GTAs, and Instructors to create new Office Hours Events
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import { FormBuilder } from '@angular/forms';
