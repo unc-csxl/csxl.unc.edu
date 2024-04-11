@@ -1,6 +1,7 @@
 /**
  * The Office Hours Page Component serves as the home page for the Office Hours feature.
- *
+ * The Office Hours Page is a hub for students to join Office Hours Sections, and for instructors to
+ * create new Office Hours Sections
  *
  * @author Madelyn Andrews, Bailey DeSouza, Meghan Sun, Sadie Amato
  * @copyright 2024
@@ -13,6 +14,8 @@ import { SectionCreationDialog } from '../widgets/section-creation-dialog/sectio
 import { JoinSectionDialog } from '../widgets/join-section-dialog/join-section-dialog.widget';
 import { OfficeHoursService } from '../office-hours.service';
 import { OfficeHoursSectionDetails } from '../office-hours.models';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { SectionMember } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'app-office-hours-page',
@@ -28,10 +31,13 @@ export class OfficeHoursPageComponent implements OnInit {
   };
 
   protected userSections: OfficeHoursSectionDetails[] = [];
+  // List of all instances where the user is an instructor of a course
+  protected instructorCourses: SectionMember[] = [];
 
   constructor(
     public dialog: MatDialog,
-    private officeHoursService: OfficeHoursService
+    private officeHoursService: OfficeHoursService,
+    private academicsService: AcademicsService
   ) {}
 
   openSectionCreationFormDialog() {
@@ -57,6 +63,7 @@ export class OfficeHoursPageComponent implements OnInit {
   //TODO: Un-hardcode 'F23'
   ngOnInit(): void {
     this.getUserSectionsByTerm('F23');
+    this.checkInstructorship();
   }
 
   getUserSectionsByTerm(term_id: string) {
@@ -65,5 +72,11 @@ export class OfficeHoursPageComponent implements OnInit {
       .subscribe((sections) => {
         (this.userSections = sections), console.log(sections);
       });
+  }
+
+  checkInstructorship() {
+    this.academicsService.checkInstructorship().subscribe((section_members) => {
+      this.instructorCourses = section_members;
+    });
   }
 }

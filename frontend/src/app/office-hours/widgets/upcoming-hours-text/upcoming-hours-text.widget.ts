@@ -1,3 +1,12 @@
+/**
+ * The Upcoming Hours Text makes it easy to reuse upcoming hours information
+ * across different parts on the Office Hours Feature
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../../office-hours.service';
 import {

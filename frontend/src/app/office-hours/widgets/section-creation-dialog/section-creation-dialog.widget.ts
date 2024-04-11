@@ -1,3 +1,11 @@
+/**
+ * Section Creation Dialog
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 

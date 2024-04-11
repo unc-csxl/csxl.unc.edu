@@ -1,3 +1,12 @@
+/**
+ * The Ticket History widget abstracts the implementation of a student's ticket history
+ * away from other components
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { OfficeHoursEventType, TicketDetails } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';

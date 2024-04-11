@@ -121,6 +121,8 @@ called_ticket = OfficeHoursTicket(
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CALLED,
     created_at=datetime.now() - timedelta(minutes=2),
+    called_at=datetime.now(),
+    caller_id=section_data.user__comp110_uta_0.id,
 )
 
 closed_ticket = OfficeHoursTicket(
@@ -130,6 +132,7 @@ closed_ticket = OfficeHoursTicket(
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
     created_at=datetime.now() - timedelta(minutes=10),
+    caller_id=section_data.user__comp110_uta_0.id,
     closed_at=datetime.now() - timedelta(minutes=1),
     have_concerns=False,
     caller_notes="Forgot to Return Function.",
@@ -243,11 +246,6 @@ def insert_fake_data(session: Session):
                 }
             )
         )
-
-    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
-    session.query(OfficeHoursTicketEntity).filter(
-        OfficeHoursTicketEntity.id.in_([called_ticket.id, closed_ticket.id])
-    ).update({"caller_id": uta.id})
 
     reset_table_id_seq(
         session,

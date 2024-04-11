@@ -1,3 +1,12 @@
+/**
+ * The Ticket Card widget abstracts ticket details and implementation
+ * away from the ticket queue component
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input } from '@angular/core';
 import { Ticket, TicketDetails, TicketType } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';

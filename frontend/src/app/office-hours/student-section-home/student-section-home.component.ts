@@ -1,6 +1,6 @@
 /**
- * The Student Section Home Component serves as a hub for students to view office hours events, see upcoming schedules, and view their ticket history
- *
+ * The Student Section Home Component serves as a hub for students to view office hours events,
+ * see upcoming schedules, and view their ticket history
  *
  * @author Madelyn Andrews, Bailey DeSouza, Meghan Sun, Sadie Amato
  * @copyright 2024

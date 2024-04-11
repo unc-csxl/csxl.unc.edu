@@ -1,3 +1,12 @@
+/**
+ * The Current Ticket widget abstracts the implementation of a student's current ticket
+ * information card away from the Current Ticket Page
+ *
+ * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input } from '@angular/core';
 import {
   OfficeHoursEvent,
@@ -53,10 +62,8 @@ export class CurrentTicketCard {
   }
 
   displayCanceledMessage() {
-    this.snackBar.open(
-      'Ticket #' + this.ticket.id + ' has been canceled.',
-      '',
-      { duration: 2000 }
-    );
+    this.snackBar.open('Your ticket has been canceled.', '', {
+      duration: 2000
+    });
   }
 }
