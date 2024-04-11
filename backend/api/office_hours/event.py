@@ -74,19 +74,17 @@ def delete_oh_event(
     return oh_event_service.delete(subject, oh_event)
 
 
-@api.get(
-    "/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"]
-)
+@api.get("/{oh_event_id}", response_model=OfficeHoursEvent, tags=["Office Hours"])
 def get_oh_event_by_id(
     oh_event_id: int,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
-) -> OfficeHoursEventDetails:
+) -> OfficeHoursEvent:
     """
     Gets an OH event by OH event ID
 
     Returns:
-        OfficeHoursEventDetails: The OH event with the given OH event id
+        OfficeHoursEvent: The OH event with the given OH event id
     """
     return oh_event_service.get_event_by_id(subject, oh_event_id)
 
@@ -126,7 +124,7 @@ def get_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given event
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
+    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(oh_event_id)
     return oh_event_service.get_event_tickets(subject, oh_event)
 
 
@@ -147,7 +145,7 @@ def get_queued_and_called_oh_tickets_by_event(
         (OfficeHoursEventStatus): Model that contains queued and called ticket count
     """
     try:
-        oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
             subject, oh_event_id
         )
         return oh_event_service.get_queued_helped_stats_by_oh_event(subject, oh_event)

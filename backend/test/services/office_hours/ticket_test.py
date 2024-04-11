@@ -1,16 +1,13 @@
 """Tests for Office Hours Ticket Service."""
 
-from unittest.mock import create_autospec
 import pytest
-from backend.models.office_hours.ticket import OfficeHoursTicketPartial
-from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
-from backend.models.office_hours.ticket_state import TicketState
-from backend.services.exceptions import (
-    ResourceNotFoundException,
-)
-from backend.services.office_hours.ticket import OfficeHoursTicketService
-from backend.services.permission import PermissionService
 
+from ....models.office_hours.ticket import OfficeHoursTicketPartial
+from ....models.office_hours.ticket_details import OfficeHoursTicketDetails
+from ....models.office_hours.ticket_state import TicketState
+
+from ....services.exceptions import ResourceNotFoundException
+from ....services.office_hours.ticket import OfficeHoursTicketService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, oh_ticket_svc
@@ -25,7 +22,6 @@ from .office_hours_data import fake_data_fixture as insert_order_5
 
 # Import the fake model data in a namespace for test assertions
 from . import office_hours_data
-from .. import user_data
 from ..academics.section_data import (
     user__comp110_instructor,
     user__comp110_student_0,
@@ -35,9 +31,13 @@ from ..academics.section_data import (
     user__comp110_non_member,
 )
 
+__authors__ = ["Meghan Sun"]
+__copyright__ = "Copyright 2024"
+__license__ = "MIT"
+
 
 def test_create_ticket(oh_ticket_svc: OfficeHoursTicketService):
-    # Test case to ensure a ticket is successfully created and is in QUEUED state
+    """Test case to ensure a ticket is successfully created and is in QUEUED state."""
     ticket = oh_ticket_svc.create(
         user__comp110_student_0, office_hours_data.ticket_draft
     )
@@ -231,7 +231,7 @@ def test_update_called_state_exception_if_ticket_is_not_queued(
 def test_cancel_ticket_for_uta(oh_ticket_svc: OfficeHoursTicketService):
     """Test case for cancellation of ticket by a UTA."""
     cancelled_ticket = oh_ticket_svc.cancel_ticket(
-        user_data.uta,
+        user__comp110_uta_0,
         OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
     )
 
@@ -244,7 +244,7 @@ def test_cancel_ticket_for_student(
 ):
     """Test case for cancellation of ticket by a student."""
     cancelled_ticket = oh_ticket_svc.cancel_ticket(
-        user_data.user,
+        user__comp110_student_0,
         OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
     )
 
@@ -319,7 +319,7 @@ def test_close_ticket_exception_when_student_closes(
     """Test case for exception raised if student attempts to close a ticket."""
     with pytest.raises(PermissionError):
         oh_ticket_svc.close_ticket(
-            user_data.user,
+            user__comp110_student_0,
             OfficeHoursTicketPartial(id=office_hours_data.called_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -331,7 +331,7 @@ def test_close_ticket_exception_if_ticket_not_called(
     """Test case for exception raised when trying to close a ticket that hasn't been called."""
     with pytest.raises(Exception):
         oh_ticket_svc.close_ticket(
-            user_data.user,
+            user__comp110_student_0,
             OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -343,7 +343,7 @@ def test_close_ticket_exception_invalid_ticket_id(
     """Test case for exception raised when closing a ticket with an invalid ID."""
     with pytest.raises(ResourceNotFoundException):
         oh_ticket_svc.close_ticket(
-            user_data.user,
+            user__comp110_student_0,
             OfficeHoursTicketPartial(id=99),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -406,7 +406,7 @@ def test_update_ticket_feedback_exception_if_ticket_not_closed(
     """Test case for exception raised if trying to update feedback on a non-closed ticket."""
     with pytest.raises(PermissionError):
         oh_ticket_svc.update_ticket_feedback(
-            user_data.uta,
+            user__comp110_uta_0,
             OfficeHoursTicketPartial(
                 id=office_hours_data.pending_ticket.id,
                 have_concerns=False,
@@ -422,7 +422,7 @@ def test_update_ticket_feedback_exception_if_missing_feedback(
     """Test case for exception raised if feedback is missing during update."""
     with pytest.raises(Exception):
         oh_ticket_svc.update_ticket_feedback(
-            user_data.uta,
+            user__comp110_uta_0,
             OfficeHoursTicketPartial(
                 id=office_hours_data.closed_ticket.id,
             ),
@@ -436,7 +436,7 @@ def test_update_ticket_feedback_exception_for_nonexisting_ticket(
     """Test case for exception raised for updating feedback on a non-existing ticket."""
     with pytest.raises(ResourceNotFoundException):
         oh_ticket_svc.update_ticket_feedback(
-            user_data.uta,
+            user__comp110_uta_0,
             OfficeHoursTicketPartial(
                 id=99,
                 have_concerns=False,

@@ -51,8 +51,14 @@ class OfficeHoursEventService:
             OfficeHoursEventDetails: Object added to table
         """
         # Permissions - Raises Exception if Permission Fails
-        self._check_user_section_membership(subject.id, oh_event.oh_section.id)
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
 
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                "User is a Student In Section and Do Not Have Permissions to Create an OH Event."
+            )
         # Create new object
         oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event)
 
@@ -87,9 +93,7 @@ class OfficeHoursEventService:
         """
         # TODO
 
-    def get_event_by_id(
-        self, subject: User, oh_event_id: int
-    ) -> OfficeHoursEventDetails:
+    def get_event_by_id(self, subject: User, oh_event_id: int) -> OfficeHoursEvent:
         """Gets an office hour event based on OH event id.
 
         Args:
@@ -97,7 +101,7 @@ class OfficeHoursEventService:
             oh_event_id: OfficeHoursEvent id to get the corresponding event for
 
         Returns:
-            OfficeHoursEventDetails: OH event associated with the OH event id
+            OfficeHoursEvent: OH event associated with the OH event id
         """
         # TODO
         # Select all entries in the `Course` table and sort by end date
@@ -112,8 +116,8 @@ class OfficeHoursEventService:
                 f"Event with id: {oh_event_id} does not exist."
             )
 
-        # Return the model
-        return entity.to_details_model()
+        # Good to Go - return the model
+        return entity.to_model()
 
     def get_upcoming_events_by_user(
         self, subject: User, time_range: TimeRange
@@ -131,7 +135,7 @@ class OfficeHoursEventService:
         return None
 
     def get_event_tickets(
-        self, subject: User, oh_event: OfficeHoursEventDetails
+        self, subject: User, oh_event: OfficeHoursEvent
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets in an event from the table.
         Args:
@@ -144,7 +148,7 @@ class OfficeHoursEventService:
         return None
 
     def get_queued_helped_stats_by_oh_event(
-        self, subject: User, oh_event: OfficeHoursEventDetails
+        self, subject: User, oh_event: OfficeHoursEvent
     ) -> OfficeHoursEventStatus:
         """
         Retrieve queued and called ticket statistics for a specific office hours event.

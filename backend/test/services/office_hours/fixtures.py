@@ -35,5 +35,5 @@ def oh_event_svc(session: Session, permission_svc: PermissionService):
 
 @pytest.fixture()
 def oh_section_svc(session: Session, permission_svc: PermissionService):
-    """CourseService fixture."""
+    """OfficeHoursSectionService fixture."""
     return OfficeHoursSectionService(session, permission_svc)

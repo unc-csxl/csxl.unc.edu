@@ -21,16 +21,18 @@ from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
 from ....models.office_hours.event import (
     OfficeHoursEvent,
+    OfficeHoursEventDraft,
     OfficeHoursEventPartial,
 )
 from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
+    OfficeHoursSectionPartial,
 )
 from ....models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
-from ....models.room import Room
+from ....models.room import Room, RoomPartial
 
 
 __authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
@@ -76,6 +78,18 @@ comp_110_oh_event_2 = OfficeHoursEvent(
 
 # Events to Be Inserted Into Demo
 comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2]
+
+comp110_event_draft = OfficeHoursEventDraft(
+    oh_section=OfficeHoursSectionPartial(id=1),
+    room=RoomPartial(id="SN156"),
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    description="COMP 110 OH",
+    location_description="In Sitterson",
+    event_date=date.today(),
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+)
+
 
 # Ticket For An Event
 pending_ticket = OfficeHoursTicket(
