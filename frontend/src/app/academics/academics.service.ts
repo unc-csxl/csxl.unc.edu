@@ -207,4 +207,10 @@ export class AcademicsService {
       `/api/academics/section-member/oh-section/${section_id}`
     );
   }
+
+  checkInstructorship(): Observable<SectionMember[]> {
+    return this.http.get<SectionMember[]>(
+      'api/academics/section-member/instructor-memberships/'
+    );
+  }
 }
