@@ -23,7 +23,7 @@
           <button mat-stroked-button>Get Help</button>
         </a>
       </div>
-      <div class="button-row" *ngIf="rosterRole === 1">
+      <div class="button-row" *ngIf="rosterRole !== 0">
         <a [routerLink]="[event.id + '/queue']">
           <button mat-stroked-button>Check In</button>
         </a>

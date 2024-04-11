@@ -33,6 +33,7 @@ import { CurrentTicketPageComponent } from './current-ticket-page/current-ticket
 import { CurrentTicketCard } from './widgets/current-ticket-card/current-ticket-card.widget';
 import { TicketHistoryWidget } from './widgets/ticket-history/ticket-history.widget';
 import { MatTableModule } from '@angular/material/table';
+import { InstructorSectionHomeComponent } from './instructor-section-home/instructor-section-home.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { MatTableModule } from '@angular/material/table';
     TicketCard,
     TaSectionHomeComponent,
     CurrentTicketPageComponent,
-    CurrentTicketCard
+    CurrentTicketCard,
+    InstructorSectionHomeComponent
   ],
   imports: [
     CommonModule,

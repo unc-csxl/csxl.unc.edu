@@ -50,6 +50,12 @@ export class CourseCard implements OnInit {
       this.router.navigate(['/office-hours/spring-2024/', this.section.id]);
     } else if (this.rosterRole === RosterRole.UTA) {
       this.router.navigate(['/office-hours/ta/spring-2024/', this.section.id]);
+    } else {
+      // RosterRole is GTA or Instructor
+      this.router.navigate([
+        '/office-hours/instructor/spring-2024/',
+        this.section.id
+      ]);
     }
   }
 

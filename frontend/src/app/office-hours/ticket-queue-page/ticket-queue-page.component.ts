@@ -16,12 +16,20 @@ import { interval } from 'rxjs';
 })
 export class TicketQueuePageComponent implements OnInit {
   // TODO: Update this route later to not be hard-coded!
-  public static Route = {
-    path: 'ta/spring-2024/:section_id/:event_id/queue',
-    title: 'COMP 110: Intro to Programming',
-    component: TicketQueuePageComponent,
-    canActivate: []
-  };
+  public static Routes = [
+    {
+      path: 'ta/spring-2024/:section_id/:event_id/queue',
+      title: 'COMP 110: Intro to Programming',
+      component: TicketQueuePageComponent,
+      canActivate: []
+    },
+    {
+      path: 'instructor/spring-2024/:section_id/:event_id/queue',
+      title: 'COMP 110: Intro to Programming',
+      component: TicketQueuePageComponent,
+      canActivate: []
+    }
+  ];
 
   protected tickets: TicketDetails[] = [];
   // TODO: update this to get the eventId from the route!

@@ -17,12 +17,20 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class EventCreationFormComponent implements OnInit {
   // TODO: Un-hardcode this route
-  public static Route = {
-    path: 'ta/spring-2024/:id/create-new-event',
-    title: 'COMP 110: Intro to Programming',
-    component: EventCreationFormComponent,
-    canActivate: []
-  };
+  public static Routes = [
+    {
+      path: 'ta/spring-2024/:id/create-new-event',
+      title: 'COMP 110: Intro to Programming',
+      component: EventCreationFormComponent,
+      canActivate: []
+    },
+    {
+      path: 'instructor/spring-2024/:id/create-new-event',
+      title: 'COMP 110: Intro to Programming',
+      component: EventCreationFormComponent,
+      canActivate: []
+    }
+  ];
 
   rooms: Room[] = [];
   sectionId: number;
