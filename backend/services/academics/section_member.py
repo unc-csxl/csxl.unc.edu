@@ -1,5 +1,5 @@
 """
-The Section Service allows the API to manipulate sections data in the database.
+The Section Member Service allows the API to manipulate section member data in the database.
 """
 
 from fastapi import Depends
@@ -29,7 +29,7 @@ from ..permission import PermissionService
 from ..exceptions import ResourceNotFoundException
 from datetime import datetime
 
-__authors__ = ["Meghan Sun"]
+__authors__ = ["Meghan Sun, Sadie Amato"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -160,3 +160,27 @@ class SectionMembershipService:
         section_memberships = [entity.to_flat_model() for entity in entities]
 
         return section_memberships
+
+    def update_member_role(
+        self, subject: User, user_to_modify: SectionMember
+    ) -> SectionMember:
+        # TODO: should we add a partial model and change the parameter to SectionMemberPartial?
+        """
+        Allows a GTA or Instructor to update a section member's Roster Role.
+
+        Args:
+            subject (User): The user object representing the user attempting to change a role.
+            user_to_modify (SectionMember): The SectionMember whose role is being changed.
+
+        Returns:
+            SectionMember: The updated SectionMember object
+        """
+        # Implementation thoughts:
+        # will need to check if the subject is an instructor or a GTA of the
+        # specific OH section that the desired updated SectionMember is associated with
+
+        # method will allow changing from any role to any role, for reversal purposes + ease of use
+        # actual changes at the end will look like the following:
+        # section_member_entity.member_role = user_to_modify.member_role
+        # self._session.commit()
+        # return section_member_entity.to_model()
