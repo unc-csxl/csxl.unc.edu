@@ -129,7 +129,7 @@ closed_ticket = OfficeHoursTicket(
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
     created_at=datetime.now() - timedelta(minutes=10),
-    caller_id=section_data.comp110_uta.id,
+    caller_id=section_data.comp110_uta.user_id,
     closed_at=datetime.now() - timedelta(minutes=1),
     have_concerns=False,
     caller_notes="Forgot to Return Function.",
