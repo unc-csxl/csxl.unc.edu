@@ -9,9 +9,9 @@
     <div class="card-container">
       <div class="header-row">
         <div class="title">
-          <mat-card-title> Your Ticket</mat-card-title>
+          <mat-card-title> Your Ticket:</mat-card-title>
           <mat-card-subtitle>
-            {{ formatTicketType(ticket.type) }}
+            created at {{ ticket.created_at | date: 'h:mma' | lowercase }}
           </mat-card-subtitle>
         </div>
         <div class="button-row">
