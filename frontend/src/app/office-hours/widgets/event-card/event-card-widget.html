@@ -8,6 +8,17 @@
       <span class="badge">Open</span>until {{ event.end_time | date: 'h:mma' |
       lowercase }}
     </div>
+    <button
+      mat-icon-button
+      style="margin: 0.5rem"
+      [matMenuTriggerFor]="menu"
+      *ngIf="rosterRole !== 0">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Edit Event</button>
+      <button mat-menu-item>Delete Event</button>
+    </mat-menu>
   </div>
   <mat-divider></mat-divider>
   <div class="card-container">
