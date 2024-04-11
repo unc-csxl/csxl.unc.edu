@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.entities.academics.section_member_entity import SectionMemberEntity
-from backend.models.academics.section_member import SectionMember
+from backend.models.academics.section_member import SectionMember, SectionMemberDraft
 from backend.models.academics.section_member_details import SectionMemberDetails
 from backend.models.office_hours.section import (
     OfficeHoursSectionDraft,
@@ -123,10 +123,10 @@ class SectionMembershipService:
 
             if len(academic_sections) == 0:
                 raise ResourceNotFoundException("No Academic Section Found")
-
-            section_membership = SectionMemberEntity.from_draft_model(
+            draft = SectionMemberDraft(
                 user_id=subject.id, section_id=academic_sections[0].id
             )
+            section_membership = SectionMemberEntity.from_draft_model(draft)
 
             self._session.add(section_membership)
             self._session.commit()

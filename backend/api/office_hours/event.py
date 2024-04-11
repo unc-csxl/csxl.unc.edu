@@ -3,7 +3,9 @@
 This API is used to access OH Event data."""
 
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+
+from backend.models.office_hours.event_status import OfficeHoursEventStatus
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
@@ -27,34 +29,32 @@ openapi_tags = {
 }
 
 
-@api.post("", response_model=OfficeHoursEventDetails, tags=["Office Hours"])
+@api.post("", response_model=OfficeHoursEvent, tags=["Office Hours"])
 def new_oh_event(
     oh_event: OfficeHoursEventDraft,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
-) -> OfficeHoursEventDetails:
+) -> OfficeHoursEvent:
     """
     Adds a new OH event to the database
 
     Returns:
-        OfficeHoursEventDetails: OH Event created
+        OfficeHoursEvent: OH Event created
     """
     return oh_event_service.create(subject, oh_event)
 
 
-@api.put(
-    "/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"]
-)
+@api.put("/{oh_event_id}", response_model=OfficeHoursEvent, tags=["Office Hours"])
 def update_oh_event(
     oh_event: OfficeHoursEvent,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
-) -> OfficeHoursEventDetails:
+) -> OfficeHoursEvent:
     """
     Updates an OfficeHoursEvent to the database
 
     Returns:
-        OfficeHoursEventDetails: OH Event updated
+        OfficeHoursEvent: OH Event updated
     """
     return oh_event_service.update(subject, oh_event)
 
@@ -68,36 +68,32 @@ def delete_oh_event(
     """
     Deletes an OfficeHoursEvent from the database
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(oh_event_id)
+    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(oh_event_id)
     return oh_event_service.delete(subject, oh_event)
 
 
-@api.get(
-    "/{oh_event_id}", response_model=OfficeHoursEventDetails, tags=["Office Hours"]
-)
+@api.get("/{oh_event_id}", response_model=OfficeHoursEvent, tags=["Office Hours"])
 def get_oh_event_by_id(
     oh_event_id: int,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
-) -> OfficeHoursEventDetails:
+) -> OfficeHoursEvent:
     """
     Gets an OH event by OH event ID
 
     Returns:
-        OfficeHoursEventDetails: The OH event with the given OH event id
+        OfficeHoursEvent: The OH event with the given OH event id
     """
     return oh_event_service.get_event_by_id(subject, oh_event_id)
 
 
-@api.get(
-    "/upcoming", response_model=list[OfficeHoursEventDetails], tags=["Office Hours"]
-)
+@api.get("/upcoming", response_model=list[OfficeHoursEvent], tags=["Office Hours"])
 def get_upcoming_oh_events_by_user(
     start: datetime = datetime.now(),
     subject: User = Depends(registered_user),
     end: datetime = datetime.now() + timedelta(weeks=1),
     oh_event_service: OfficeHoursEventService = Depends(),
-) -> list[OfficeHoursEventDetails]:
+) -> list[OfficeHoursEvent]:
     """
     Gets list of upcoming OH events within a time range by user
 
@@ -127,26 +123,30 @@ def get_oh_tickets_by_event(
     oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
         subject, oh_event_id
     )
+    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(subject, oh_event_id)
     return oh_event_service.get_event_tickets(subject, oh_event)
 
 
 @api.get(
-    "/{oh_event_id}/queue",
-    response_model=list[OfficeHoursTicketDetails],
+    "/{oh_event_id}/queue-stats",
+    response_model=OfficeHoursEventStatus,
     tags=["Office Hours"],
 )
 def get_queued_and_called_oh_tickets_by_event(
     oh_event_id: int,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
-) -> list[OfficeHoursTicketDetails]:
+) -> OfficeHoursEventStatus:
     """
-    Gets list of all queued and called OH tickets by OH event
+    Gets Queued and Called Ticket Status Count For Given Event.
 
     Returns:
-        list[OfficeHoursTicketDetails]: OH tickets fitting the criteria within the given event
+        (OfficeHoursEventStatus): Model that contains queued and called ticket count
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
-        subject, oh_event_id
-    )
-    return oh_event_service.get_queued_and_called_event_tickets(subject, oh_event)
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.get_queued_helped_stats_by_oh_event(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))

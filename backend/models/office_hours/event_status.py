@@ -18,9 +18,8 @@ class TAOfficeHoursEventStatus(BaseModel):
     queued_tickets_count: int
 
 
-class StudentOfficeHoursEventStatus(BaseModel):
+class OfficeHoursEventStatus(BaseModel):
     """Pydantic model to represent the status of a given event, including their position in the queues, for a given student."""
 
     open_tickets_count: int
     queued_tickets_count: int
-    queue_position: int
