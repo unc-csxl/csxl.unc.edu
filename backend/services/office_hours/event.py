@@ -76,7 +76,7 @@ class OfficeHoursEventService:
         self._session.commit()
 
         # Return added object
-        return oh_event_entity.to_details_model()
+        return oh_event_entity.to_model()
 
     def update(self, subject: User, oh_event: OfficeHoursEvent) -> OfficeHoursEvent:
         """Updates an office hours event.
@@ -163,7 +163,7 @@ class OfficeHoursEventService:
         self,
         subject: User,
         time_range: TimeRange,
-    ) -> list[OfficeHoursEventDetails]:
+    ) -> list[OfficeHoursEvent]:
         """Gets all upcoming office hours events for a user.
 
         Args:
@@ -186,7 +186,7 @@ class OfficeHoursEventService:
         )
 
         entities = self._session.scalars(query).all()
-        return [entity.to_details_model() for entity in entities]
+        return [entity.to_model() for entity in entities]
 
     def get_event_tickets(
         self, subject: User, oh_event: OfficeHoursEvent
