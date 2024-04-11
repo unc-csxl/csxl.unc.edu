@@ -1,27 +1,29 @@
 <p *ngIf="rosterRole === 0">You are not authorized to view this page.</p>
 <div class="page-container" *ngIf="rosterRole === 1">
-    <mat-tab-group color="accent">
-        <mat-tab label="Events">
-            <h3>Events</h3>
-            <div *ngIf="currentEvents && currentEvents.length > 0">
-                <div *ngFor="let event of currentEvents">
-                    <event-card-widget [event]="event" [rosterRole]="rosterRole"></event-card-widget>
-                </div>
-            </div>
-            <h3>Schedule</h3>
-            <schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>
-        </mat-tab>
-        <mat-tab label="History">
-            <p>History Feature Coming Soon!</p>
-        </mat-tab>
-        <mat-tab label="People">
-            <p>People Feature Coming Soon!</p>
-        </mat-tab>
-    </mat-tab-group>
-    <button mat-fab color="accent" class="add-button" [matMenuTriggerFor]="menu">
-        <mat-icon>settings</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="navToCreateForm()">Create Event</button>
-    </mat-menu>
+  <mat-tab-group color="accent">
+    <mat-tab label="Events">
+      <h3>Events</h3>
+      <div *ngIf="currentEvents && currentEvents.length > 0">
+        <div *ngFor="let event of currentEvents">
+          <event-card-widget
+            [event]="event"
+            [rosterRole]="rosterRole"></event-card-widget>
+        </div>
+      </div>
+      <h3>Schedule</h3>
+      <schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>
+    </mat-tab>
+    <mat-tab label="History">
+      <ticket-history-widget [sectionId]="sectionId"></ticket-history-widget>
+    </mat-tab>
+    <mat-tab label="People">
+      <p>People Feature Coming Soon!</p>
+    </mat-tab>
+  </mat-tab-group>
+  <button mat-fab color="accent" class="add-button" [matMenuTriggerFor]="menu">
+    <mat-icon>settings</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="navToCreateForm()">Create Event</button>
+  </mat-menu>
 </div>
