@@ -211,7 +211,7 @@ class OfficeHoursTicketService:
             ticket_entity.caller_id is None
             and ticket_entity.state == TicketState.QUEUED
         ):
-            ticket_entity.caller_id = oh_ticket.caller_id
+            ticket_entity.caller_id = current_user_section_member_entity.id
             ticket_entity.state = TicketState.CALLED
             ticket_entity.called_at = datetime.now()
             self._session.commit()

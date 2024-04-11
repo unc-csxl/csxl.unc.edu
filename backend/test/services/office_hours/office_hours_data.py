@@ -89,6 +89,7 @@ comp_110_oh_event_3 = OfficeHoursEvent(
     end_time=datetime.now() - timedelta(days=1),
 )
 
+
 comp_110_oh_events = [comp_110_oh_event_1, comp_110_oh_event_2, comp_110_oh_event_3]
 
 comp110_event_draft = OfficeHoursEventDraft(
@@ -129,7 +130,6 @@ closed_ticket = OfficeHoursTicket(
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
     created_at=datetime.now() - timedelta(minutes=10),
-    caller_id=section_data.comp110_uta.id,
     closed_at=datetime.now() - timedelta(minutes=1),
     have_concerns=False,
     caller_notes="Forgot to Return Function.",
