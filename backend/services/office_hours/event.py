@@ -40,7 +40,7 @@ class OfficeHoursEventService:
 
     def create(
         self, subject: User, oh_event: OfficeHoursEventDraft
-    ) -> OfficeHoursEventDetails:
+    ) -> OfficeHoursEvent:
         """Creates a new office hours event.
 
         Args:
@@ -48,7 +48,7 @@ class OfficeHoursEventService:
             oh_event: OfficeHoursEventDraft to add to table
 
         Returns:
-            OfficeHoursEventDetails: Object added to table
+            OfficeHoursEvent: Object added to table
         """
         # Permissions - Raises Exception if Permission Fails
         section_member_entity = self._check_user_section_membership(
@@ -69,9 +69,7 @@ class OfficeHoursEventService:
         # Return added object
         return oh_event_entity.to_details_model()
 
-    def update(
-        self, subject: User, oh_event: OfficeHoursEvent
-    ) -> OfficeHoursEventDetails:
+    def update(self, subject: User, oh_event: OfficeHoursEvent) -> OfficeHoursEvent:
         """Updates an office hours event.
 
         Args:
@@ -79,17 +77,17 @@ class OfficeHoursEventService:
             oh_event: OfficeHoursEvent to update in the table
 
         Returns:
-            OfficeHoursEventDetails: Updated object in table
+            OfficeHoursEvent: Updated object in table
         """
         # TODO
         return None
 
-    def delete(self, subject: User, oh_event: OfficeHoursEventDetails) -> None:
+    def delete(self, subject: User, oh_event: OfficeHoursEvent) -> None:
         """Deletes an office hours event.
 
         Args:
             subject: a valid User model representing the currently logged in User
-            oh_event: OfficeHoursEventDetails to delete
+            oh_event: OfficeHoursEvent to delete
         """
         # TODO
 
@@ -121,7 +119,7 @@ class OfficeHoursEventService:
 
     def get_upcoming_events_by_user(
         self, subject: User, time_range: TimeRange
-    ) -> list[OfficeHoursEventDetails]:
+    ) -> list[OfficeHoursEvent]:
         """Gets all upcoming office hours events for a user.
 
         Args:
@@ -129,7 +127,7 @@ class OfficeHoursEventService:
             time_range: Time range to retrieve events for
 
         Returns:
-            list[OfficeHoursEventDetails]: upcoming OH events associated with a user
+            list[OfficeHoursEvent]: upcoming OH events associated with a user
         """
         # TODO
         return None
@@ -140,7 +138,7 @@ class OfficeHoursEventService:
         """Retrieves all office hours tickets in an event from the table.
         Args:
             subject: a valid User model representing the currently logged in User
-            oh_event: the OfficeHoursEventDetails to query by.
+            oh_event: the OfficeHoursEvent to query by.
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
         """
@@ -155,7 +153,7 @@ class OfficeHoursEventService:
 
         Args:
             subject (User): The user object representing the authenticated user making the request.
-            oh_event (OfficeHoursEventDetails): The details of the office hours event.
+            oh_event (OfficeHoursEvent): The details of the office hours event.
 
         Returns:
             OfficeHoursEventStatus: An `OfficeHoursEventStatus` object representing the statistics
