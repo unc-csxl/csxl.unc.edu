@@ -152,3 +152,14 @@ export interface OfficeHoursSectionDetails {
   sections: Section[];
   events: OfficeHoursEvent[];
 }
+
+export interface OfficeHoursEventStatus {
+  open_tickets_count: number;
+  queued_tickets_count: number;
+}
+
+export interface StudentOfficeHoursEventStatus {
+  open_tickets_count: number;
+  queued_tickets_count: number;
+  ticket_position: number;
+}

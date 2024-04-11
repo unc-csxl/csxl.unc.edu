@@ -13,9 +13,12 @@
   <div class="card-container">
     <mat-card-content>
       <div class="queue-row">
-        <div class="queued"><span class="number-badge">9</span>Queued</div>
+        <div class="queued">
+          <span class="number-badge">{{ this.queued_tickets }}</span>Queued
+        </div>
         <div class="helped">
-          <span class="number-badge">3</span>Being Helped
+          <span class="number-badge">{{ this.called_tickets }}</span>Being
+          Helped
         </div>
       </div>
       <div class="button-row" *ngIf="rosterRole === 0">

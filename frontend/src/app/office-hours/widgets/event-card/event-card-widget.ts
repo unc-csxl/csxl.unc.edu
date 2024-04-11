@@ -9,24 +9,34 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { flushMicrotasks } from '@angular/core/testing';
 import {
   OfficeHoursEvent,
   OfficeHoursEventType
 } from '../../office-hours.models';
 import { RosterRole } from 'src/app/academics/academics.models';
+import { OfficeHoursService } from '../../office-hours.service';
 
 @Component({
   selector: 'event-card-widget',
   templateUrl: './event-card-widget.html',
   styleUrls: ['./event-card-widget.css']
 })
-export class EventCard {
+export class EventCard implements OnInit {
   @Input() event!: OfficeHoursEvent;
   @Input() rosterRole!: RosterRole | null;
-  constructor() {
+  queued_tickets: number | null;
+  called_tickets: number | null;
+
+  constructor(private officeHoursService: OfficeHoursService) {
     console.log('reached event card.');
+    this.queued_tickets = null;
+    this.called_tickets = null;
+  }
+
+  ngOnInit(): void {
+    this.getTicketStats();
   }
 
   formatEventType(typeNum: number) {
@@ -45,5 +55,14 @@ export class EventCard {
     } else {
       return 'error';
     }
+  }
+
+  getTicketStats() {
+    this.officeHoursService
+      .getQueuedAndCalledTicketCount(this.event.id)
+      .subscribe((event_status) => {
+        this.called_tickets = event_status.open_tickets_count;
+        this.queued_tickets = event_status.queued_tickets_count;
+      });
   }
 }

@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   OfficeHoursEvent,
   OfficeHoursEventDetails,
@@ -26,14 +26,26 @@ import { config } from 'rxjs';
   templateUrl: './current-ticket-card.widget.html',
   styleUrls: ['./current-ticket-card.widget.css']
 })
-export class CurrentTicketCard {
+export class CurrentTicketCard implements OnInit {
   @Input() ticket!: TicketDetails;
   @Input() event!: OfficeHoursEvent;
+  queued_tickets: number | null;
+  called_tickets: number | null;
+  queue_spot: number | null;
+
   constructor(
     private officeHoursService: OfficeHoursService,
     private router: Router,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.queued_tickets = null;
+    this.called_tickets = null;
+    this.queue_spot = null;
+  }
+
+  ngOnInit(): void {
+    this.getTicketStats();
+  }
 
   formatTicketType(typeNum: number) {
     return this.officeHoursService.formatTicketType(typeNum);
@@ -65,5 +77,15 @@ export class CurrentTicketCard {
     this.snackBar.open('Your ticket has been canceled.', '', {
       duration: 2000
     });
+  }
+
+  getTicketStats() {
+    this.officeHoursService
+      .getQueueStatsForStudent(this.event.id, this.ticket.id)
+      .subscribe((stats) => {
+        this.called_tickets = stats.open_tickets_count;
+        this.queued_tickets = stats.queued_tickets_count;
+        this.queue_spot = stats.ticket_position;
+      });
   }
 }
