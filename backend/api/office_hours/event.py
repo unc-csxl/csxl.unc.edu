@@ -5,10 +5,11 @@ This API is used to access OH Event data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
-from backend.models.office_hours.event_status import (
+from ...models.office_hours.event_status import (
     OfficeHoursEventStatus,
     StaffHelpingStatus,
     StudentOfficeHoursEventStatus,
+    StudentQueuedTicketStatus,
 )
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
@@ -225,5 +226,30 @@ def check_staff_helping_status(
             subject, oh_event_id
         )
         return oh_event_service.check_staff_helping_status(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_event_id}/student-status",
+    response_model=StudentQueuedTicketStatus,
+    tags=["Office Hours"],
+)
+def check_student_in_queue_status(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> StudentQueuedTicketStatus:
+    """
+    Gets Ticket a student has queued, or returns id None.
+
+    Returns:
+        (StudentQueuedTicketStatus): Model that contains ticket id student has queued
+    """
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.check_student_in_queue_status(subject, oh_event)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
