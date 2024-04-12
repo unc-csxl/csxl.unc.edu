@@ -27,3 +27,12 @@ class SectionMemberDraft(BaseModel):
     user_id: int
     section_id: int
     member_role: RosterRole = RosterRole.STUDENT
+
+
+class SectionMemberPartial(BaseModel):
+    """
+    Pydantic model to represent a partial SectionMember to allow for easy updates
+    """
+
+    id: int
+    member_role: RosterRole | None = None

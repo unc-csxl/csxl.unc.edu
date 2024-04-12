@@ -6,15 +6,19 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.entities.academics.section_member_entity import SectionMemberEntity
-from backend.models.academics.section_member import SectionMember, SectionMemberDraft
-from backend.models.academics.section_member_details import SectionMemberDetails
-from backend.models.office_hours.section import (
+from ...entities.academics.section_member_entity import SectionMemberEntity
+from ...models.academics.section_member import (
+    SectionMember,
+    SectionMemberDraft,
+    SectionMemberPartial,
+)
+from ...models.academics.section_member_details import SectionMemberDetails
+from ...models.office_hours.section import (
     OfficeHoursSectionDraft,
     OfficeHoursSectionPartial,
 )
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
-from backend.models.roster_role import RosterRole
+from ...models.office_hours.section_details import OfficeHoursSectionDetails
+from ...models.roster_role import RosterRole
 
 from ...database import db_session
 from ...models.academics import Section
@@ -160,27 +164,3 @@ class SectionMembershipService:
         section_memberships = [entity.to_flat_model() for entity in entities]
 
         return section_memberships
-
-    def update_member_role(
-        self, subject: User, user_to_modify: SectionMember
-    ) -> SectionMember:
-        # TODO: should we add a partial model and change the parameter to SectionMemberPartial?
-        """
-        Allows a GTA or Instructor to update a section member's Roster Role.
-
-        Args:
-            subject (User): The user object representing the user attempting to change a role.
-            user_to_modify (SectionMember): The SectionMember whose role is being changed.
-
-        Returns:
-            SectionMember: The updated SectionMember object
-        """
-        # Implementation thoughts:
-        # will need to check if the subject is an instructor or a GTA of the
-        # specific OH section that the desired updated SectionMember is associated with
-
-        # method will allow changing from any role to any role, for reversal purposes + ease of use
-        # actual changes at the end will look like the following:
-        # section_member_entity.member_role = user_to_modify.member_role
-        # self._session.commit()
-        # return section_member_entity.to_model()
