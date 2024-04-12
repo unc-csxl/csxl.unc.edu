@@ -11,6 +11,7 @@ from ...entities.office_hours import OfficeHoursEventEntity
 
 from ...models.office_hours.event_status import (
     OfficeHoursEventStatus,
+    StaffHelpingStatus,
     StudentOfficeHoursEventStatus,
 )
 from ...models.office_hours.ticket_state import TicketState
@@ -311,6 +312,35 @@ class OfficeHoursEventService:
         )
 
         return student_event_status
+
+    def check_staff_helping_status(
+        self, subject: User, oh_event: OfficeHoursEvent
+    ) -> StaffHelpingStatus:
+        """
+        Retrieve the ticket a staff member is currently helping, if there is one.
+
+        Args:
+            subject (User): The user object representing the authenticated user making the request.
+            oh_event: The office hours event.
+        Returns:
+            StaffHelpingStatus: A `StaffHelpingStatus` object representing the ticket a staff member is working on.
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+                the office hours section associated with the event with id (`oh_event`).
+        """
+
+        event_ticket_entities = self._get_called_tickets_by_oh_event(oh_event.id)
+        # Throws PermissionError if user is not a SectionMember of the given OH section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+
+        for ticket in event_ticket_entities:
+            if section_member_entity.id == ticket.caller_id:
+                return StaffHelpingStatus(ticket.id)
+
+        return StaffHelpingStatus(None)
 
     def _find_ticket_position(
         self, tickets_list: list[OfficeHoursTicketEntity], ticket_id: int
