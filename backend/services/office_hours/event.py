@@ -89,7 +89,6 @@ class OfficeHoursEventService:
             OfficeHoursEvent: Updated object in table
         """
         # TODO
-        return None
 
     def delete(self, subject: User, oh_event: OfficeHoursEvent) -> None:
         """Deletes an office hours event.
@@ -125,7 +124,7 @@ class OfficeHoursEventService:
         # Good to Go - return the model
         return entity.to_model()
 
-    def get_queued_and_called_event_tickets(
+    def get_queued_and_called_tickets_by_event(
         self, subject: User, oh_event: OfficeHoursEvent
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets in an event from the table.
@@ -158,35 +157,6 @@ class OfficeHoursEventService:
 
         entities = self._session.scalars(query).all()
         return [entity.to_details_model() for entity in entities]
-
-    def get_upcoming_events_by_user(
-        self,
-        subject: User,
-        time_range: TimeRange,
-    ) -> list[OfficeHoursEvent]:
-        """Gets all upcoming office hours events for a user.
-
-        Args:
-            subject: a valid User model representing the currently logged in User
-            time_range: Time range to retrieve events for
-
-        Returns:
-            list[OfficeHoursEvent]: upcoming OH events associated with a user
-        """
-        query = (
-            select(OfficeHoursEventEntity)
-            .where(SectionMemberEntity.user_id == subject.id)
-            .where(SectionEntity.id == SectionMemberEntity.section_id)
-            .where(OfficeHoursSectionEntity.id == SectionEntity.office_hours_id)
-            .where(
-                OfficeHoursEventEntity.office_hours_section_id
-                == OfficeHoursSectionEntity.id
-            )
-            .where(OfficeHoursEventEntity.start_time < time_range.end)
-        )
-
-        entities = self._session.scalars(query).all()
-        return [entity.to_model() for entity in entities]
 
     def get_event_tickets(
         self, subject: User, oh_event: OfficeHoursEvent

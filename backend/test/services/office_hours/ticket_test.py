@@ -101,20 +101,20 @@ def test_create_ticket_exception_invalid_event(
 def test_get_ticket_by_id_student_creator(oh_ticket_svc: OfficeHoursTicketService):
     """Test case to validate getting a ticket by ID returns correct ticket details."""
     ticket = oh_ticket_svc.get_ticket_by_id(
-        user__comp110_student_0, office_hours_data.called_ticket.id
+        user__comp110_student_0, office_hours_data.comp110_called_ticket.id
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
-    assert ticket.id == office_hours_data.called_ticket.id
-    assert ticket.state == office_hours_data.called_ticket.state
+    assert ticket.id == office_hours_data.comp110_called_ticket.id
+    assert ticket.state == office_hours_data.comp110_called_ticket.state
 
 
 def test_get_ticket_by_id_for_section_uta(oh_ticket_svc: OfficeHoursTicketService):
     """Test case to validate getting a ticket by ID for section UTA returns ticket correct ticket details."""
     ticket = oh_ticket_svc.get_ticket_by_id(
-        user__comp110_uta_0, office_hours_data.pending_ticket.id
+        user__comp110_uta_0, office_hours_data.comp110_queued_ticket.id
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
-    assert ticket.id == office_hours_data.pending_ticket.id
+    assert ticket.id == office_hours_data.comp110_queued_ticket.id
 
 
 def test_get_ticket_by_id_for_section_instructor(
@@ -122,10 +122,10 @@ def test_get_ticket_by_id_for_section_instructor(
 ):
     """Test case to validate getting a ticket by ID for section Instructor returns ticket correct ticket details."""
     ticket = oh_ticket_svc.get_ticket_by_id(
-        user__comp110_instructor, office_hours_data.pending_ticket.id
+        user__comp110_instructor, office_hours_data.comp110_queued_ticket.id
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
-    assert ticket.id == office_hours_data.pending_ticket.id
+    assert ticket.id == office_hours_data.comp110_queued_ticket.id
 
 
 def test_get_ticket_by_id_exception_when_ticket_id_does_not_exist(
@@ -143,7 +143,7 @@ def test_get_ticket_by_id_exception_if_student_user_not_ticket_creator(
     """Test case to validate a PermissionError exception is raised if a student user is not the ticket creator."""
     with pytest.raises(PermissionError):
         oh_ticket_svc.get_ticket_by_id(
-            user__comp110_student_1, office_hours_data.pending_ticket.id
+            user__comp110_student_1, office_hours_data.comp110_queued_ticket.id
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -154,7 +154,7 @@ def test_get_ticket_by_id_exception_non_section_member(
     """Test case to validate a PermissionError exception is raised when a non-section member tries to retrieve a ticket."""
     with pytest.raises(PermissionError):
         oh_ticket_svc.get_ticket_by_id(
-            user__comp110_non_member, office_hours_data.pending_ticket.id
+            user__comp110_non_member, office_hours_data.comp110_queued_ticket.id
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -164,7 +164,7 @@ def test_update_called_state(oh_ticket_svc: OfficeHoursTicketService):
     ticket = oh_ticket_svc.update_called_state(
         subject=user__comp110_uta_0,
         oh_ticket=OfficeHoursTicketPartial(
-            id=office_hours_data.pending_ticket.id,
+            id=office_hours_data.comp110_queued_ticket.id,
         ),
     )
 
@@ -180,7 +180,7 @@ def test_update_called_state_exception_if_student_calls(
         oh_ticket_svc.update_called_state(
             subject=user__comp110_student_0,
             oh_ticket=OfficeHoursTicketPartial(
-                id=office_hours_data.pending_ticket.id,
+                id=office_hours_data.comp110_queued_ticket.id,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -194,7 +194,7 @@ def test_update_called_state_exception_if_ticket_has_caller_already(
         oh_ticket_svc.update_called_state(
             subject=user__comp110_uta_0,
             oh_ticket=OfficeHoursTicketPartial(
-                id=office_hours_data.called_ticket.id,
+                id=office_hours_data.comp110_called_ticket.id,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -222,7 +222,7 @@ def test_update_called_state_exception_if_ticket_is_not_queued(
         oh_ticket_svc.update_called_state(
             subject=user__comp110_uta_0,
             oh_ticket=OfficeHoursTicketPartial(
-                id=office_hours_data.called_ticket.id,
+                id=office_hours_data.comp110_called_ticket.id,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -232,7 +232,7 @@ def test_cancel_ticket_for_uta(oh_ticket_svc: OfficeHoursTicketService):
     """Test case for cancellation of ticket by a UTA."""
     cancelled_ticket = oh_ticket_svc.cancel_ticket(
         user__comp110_uta_0,
-        OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
+        OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
     )
 
     assert isinstance(cancelled_ticket, OfficeHoursTicketDetails)
@@ -245,7 +245,7 @@ def test_cancel_ticket_for_student(
     """Test case for cancellation of ticket by a student."""
     cancelled_ticket = oh_ticket_svc.cancel_ticket(
         user__comp110_student_0,
-        OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
+        OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
     )
 
     assert isinstance(cancelled_ticket, OfficeHoursTicketDetails)
@@ -259,7 +259,7 @@ def test_cancel_ticket_exception_for_non_student_creator(
     with pytest.raises(PermissionError):
         oh_ticket_svc.cancel_ticket(
             user__comp110_student_1,
-            OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -271,7 +271,7 @@ def test_cancel_ticket_exception_for_non_section_member(
     with pytest.raises(PermissionError):
         oh_ticket_svc.cancel_ticket(
             user__comp110_non_member,
-            OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -294,7 +294,7 @@ def test_cancel_ticket_exception_when_ticket_not_queued(
     with pytest.raises(Exception):
         oh_ticket_svc.cancel_ticket(
             user__comp110_student_0,
-            OfficeHoursTicketPartial(id=office_hours_data.called_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_called_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -305,7 +305,7 @@ def test_close_ticket(
     """Test case for closing a ticket by a UTA."""
     closed_ticket = oh_ticket_svc.close_ticket(
         user__comp110_uta_0,
-        OfficeHoursTicketPartial(id=office_hours_data.called_ticket.id),
+        OfficeHoursTicketPartial(id=office_hours_data.comp110_called_ticket.id),
     )
 
     assert isinstance(closed_ticket, OfficeHoursTicketDetails)
@@ -320,7 +320,7 @@ def test_close_ticket_exception_when_student_closes(
     with pytest.raises(PermissionError):
         oh_ticket_svc.close_ticket(
             user__comp110_student_0,
-            OfficeHoursTicketPartial(id=office_hours_data.called_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_called_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -332,7 +332,7 @@ def test_close_ticket_exception_if_ticket_not_called(
     with pytest.raises(Exception):
         oh_ticket_svc.close_ticket(
             user__comp110_student_0,
-            OfficeHoursTicketPartial(id=office_hours_data.pending_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -356,7 +356,7 @@ def test_update_ticket_feedback(oh_ticket_svc: OfficeHoursTicketService):
     ticket = oh_ticket_svc.update_ticket_feedback(
         user__comp110_uta_0,
         OfficeHoursTicketPartial(
-            id=office_hours_data.closed_ticket.id,
+            id=office_hours_data.comp110_closed_ticket.id,
             have_concerns=mock_have_concerns,
             caller_notes=mock_caller_notes,
         ),
@@ -376,7 +376,7 @@ def test_update_ticket_feedback_exception_if_student(
         oh_ticket_svc.update_ticket_feedback(
             user__comp110_student_0,
             OfficeHoursTicketPartial(
-                id=office_hours_data.closed_ticket.id,
+                id=office_hours_data.comp110_closed_ticket.id,
                 have_concerns=False,
                 caller_notes="Great to work with!",
             ),
@@ -392,7 +392,7 @@ def test_update_ticket_feedback_exception_if_not_ticket_caller(
         oh_ticket_svc.update_ticket_feedback(
             user__comp110_uta_1,
             OfficeHoursTicketPartial(
-                id=office_hours_data.closed_ticket.id,
+                id=office_hours_data.comp110_closed_ticket.id,
                 have_concerns=False,
                 caller_notes="Great to work with!",
             ),
@@ -408,7 +408,7 @@ def test_update_ticket_feedback_exception_if_ticket_not_closed(
         oh_ticket_svc.update_ticket_feedback(
             user__comp110_uta_0,
             OfficeHoursTicketPartial(
-                id=office_hours_data.pending_ticket.id,
+                id=office_hours_data.comp110_queued_ticket.id,
                 have_concerns=False,
                 caller_notes="Great to work with!",
             ),
@@ -424,7 +424,7 @@ def test_update_ticket_feedback_exception_if_missing_feedback(
         oh_ticket_svc.update_ticket_feedback(
             user__comp110_uta_0,
             OfficeHoursTicketPartial(
-                id=office_hours_data.closed_ticket.id,
+                id=office_hours_data.comp110_closed_ticket.id,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above

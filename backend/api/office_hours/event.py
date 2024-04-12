@@ -90,23 +90,6 @@ def get_oh_event_by_id(
     return oh_event_service.get_event_by_id(subject, oh_event_id)
 
 
-@api.get("/upcoming", response_model=list[OfficeHoursEvent], tags=["Office Hours"])
-def get_upcoming_oh_events_by_user(
-    start: datetime = datetime.now(),
-    subject: User = Depends(registered_user),
-    end: datetime = datetime.now() + timedelta(weeks=1),
-    oh_event_service: OfficeHoursEventService = Depends(),
-) -> list[OfficeHoursEvent]:
-    """
-    Gets list of upcoming OH events within a time range by user
-
-    Returns:
-        list[OfficeHoursSectionDetails]: OH events associated with a given user in a time range
-    """
-    time_range = TimeRange(start=start, end=end)
-    return oh_event_service.get_upcoming_events_by_user(subject, time_range)
-
-
 @api.get(
     "/{oh_event_id}/tickets",
     response_model=list[OfficeHoursTicketDetails],
@@ -147,7 +130,7 @@ def get_queued_and_called_oh_tickets_by_event(
         list[OfficeHoursTicketDetails]: OH tickets fitting the criteria within the given event
     """
     oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(subject, oh_event_id)
-    return oh_event_service.get_queued_and_called_event_tickets(subject, oh_event)
+    return oh_event_service.get_queued_and_called_tickets_by_event(subject, oh_event)
 
 
 @api.get(

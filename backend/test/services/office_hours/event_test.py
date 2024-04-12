@@ -3,9 +3,13 @@
 import pytest
 
 from backend.models.office_hours.event_details import OfficeHoursEventDetails
+from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
 
 from ....models.office_hours.event import OfficeHoursEvent
-from ....models.office_hours.event_status import OfficeHoursEventStatus
+from ....models.office_hours.event_status import (
+    OfficeHoursEventStatus,
+    StudentOfficeHoursEventStatus,
+)
 
 from ....services.exceptions import ResourceNotFoundException
 from ....services.office_hours.event import OfficeHoursEventService
@@ -40,7 +44,7 @@ def test_create_by_uta(oh_event_svc: OfficeHoursEventService):
     oh_event = oh_event_svc.create(
         user__comp110_uta_0, office_hours_data.comp110_event_draft
     )
-    assert isinstance(oh_event, OfficeHoursEventDetails)
+    assert isinstance(oh_event, OfficeHoursEvent)
     assert oh_event.description == office_hours_data.comp110_event_draft.description
 
 
@@ -49,7 +53,7 @@ def test_create_by_instructor(oh_event_svc: OfficeHoursEventService):
     oh_event = oh_event_svc.create(
         user__comp110_instructor, office_hours_data.comp110_event_draft
     )
-    assert isinstance(oh_event, OfficeHoursEventDetails)
+    assert isinstance(oh_event, OfficeHoursEvent)
     assert oh_event.description == office_hours_data.comp110_event_draft.description
 
 
@@ -142,3 +146,140 @@ def test_get_queued_and_called_oh_tickets_by_event_exception_for_non_member(
             user__comp110_non_member, oh_event
         )
         pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_get_queued_and_called_tickets_by_event(oh_event_svc: OfficeHoursEventService):
+    oh_event = oh_event_svc.get_event_by_id(user__comp110_uta_0, 1)
+    event_tickets = oh_event_svc.get_queued_and_called_tickets_by_event(
+        user__comp110_uta_0, oh_event
+    )
+
+    assert isinstance(event_tickets[0], OfficeHoursTicketDetails)
+    assert len(event_tickets) == 2
+
+    # Check if ticket is order by newer ticket last
+    assert event_tickets[0].created_at < event_tickets[1].created_at
+
+
+def test_get_queued_and_called_tickets_by_event_exception_if_student(
+    oh_event_svc: OfficeHoursEventService,
+):
+    oh_event = oh_event_svc.get_event_by_id(user__comp110_uta_0, 1)
+
+    with pytest.raises(PermissionError):
+        oh_event_svc.get_queued_and_called_tickets_by_event(
+            user__comp110_student_0, oh_event
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_get_queued_and_called_tickets_by_event_exception_if_non_member(
+    oh_event_svc: OfficeHoursEventService,
+):
+    oh_event = oh_event_svc.get_event_by_id(user__comp110_non_member, 1)
+
+    with pytest.raises(PermissionError):
+        oh_event_svc.get_queued_and_called_tickets_by_event(
+            user__comp110_non_member, oh_event
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_get_event_tickets_by_uta(oh_event_svc: OfficeHoursEventService):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_uta_0, office_hours_data.comp_110_oh_event_1.id
+    )
+    event_tickets = oh_event_svc.get_event_tickets(user__comp110_uta_0, oh_event)
+
+    assert isinstance(event_tickets[0], OfficeHoursTicketDetails)
+    assert len(event_tickets) == 4
+
+
+def test_get_event_tickets_by_instructor(oh_event_svc: OfficeHoursEventService):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_instructor, office_hours_data.comp_110_oh_event_1.id
+    )
+    event_tickets = oh_event_svc.get_event_tickets(user__comp110_instructor, oh_event)
+
+    assert isinstance(event_tickets[0], OfficeHoursTicketDetails)
+    assert len(event_tickets) == 4
+
+
+def test_get_event_tickets_exception_if_student(oh_event_svc: OfficeHoursEventService):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
+    )
+
+    with pytest.raises(PermissionError):
+        oh_event_svc.get_event_tickets(user__comp110_student_0, oh_event)
+
+
+def test_get_event_tickets_exception_if_non_member(
+    oh_event_svc: OfficeHoursEventService,
+):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
+    )
+
+    with pytest.raises(PermissionError):
+        oh_event_svc.get_event_tickets(user__comp110_non_member, oh_event)
+
+
+def test_get_queued_helped_stats_by_oh_event_for_student(
+    oh_event_svc: OfficeHoursEventService,
+):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
+    )
+    student_ticket_status = (
+        oh_event_svc.get_queued_helped_stats_by_oh_event_for_student(
+            user__comp110_student_0,
+            oh_event,
+            office_hours_data.comp110_queued_ticket.id,
+        )
+    )
+
+    assert isinstance(student_ticket_status, StudentOfficeHoursEventStatus)
+    assert student_ticket_status.queued_tickets_count == 1
+    assert student_ticket_status.ticket_position == 1
+
+
+def test_get_queued_helped_stats_by_oh_event_for_student_exception_invalid_ticket_id(
+    oh_event_svc: OfficeHoursEventService,
+):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
+    )
+
+    with pytest.raises(ResourceNotFoundException):
+        oh_event_svc.get_queued_helped_stats_by_oh_event_for_student(
+            user__comp110_student_0, oh_event, 99
+        )
+
+
+def test_get_queued_helped_stats_by_oh_event_for_student_exception_ticket_not_in_event(
+    oh_event_svc: OfficeHoursEventService,
+):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
+    )
+
+    with pytest.raises(Exception):
+        oh_event_svc.get_queued_helped_stats_by_oh_event_for_student(
+            user__comp110_student_0, oh_event, office_hours_data.comp_523_pending_ticket
+        )
+
+
+def test_get_queued_helped_stats_by_oh_event_for_student_exception_ticket_not_queued(
+    oh_event_svc: OfficeHoursEventService,
+):
+    oh_event = oh_event_svc.get_event_by_id(
+        user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
+    )
+
+    with pytest.raises(Exception):
+        oh_event_svc.get_queued_helped_stats_by_oh_event_for_student(
+            user__comp110_student_0,
+            oh_event,
+            office_hours_data.comp110_called_ticket.id,
+        )
