@@ -3,6 +3,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...models.academics.section_member import SectionMember
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
@@ -419,7 +420,7 @@ class OfficeHoursSectionService:
 
     def get_oh_section_members(
         self, subject: User, oh_section: OfficeHoursSectionDetails
-    ) -> list[SectionMemberDetails]:
+    ) -> list[SectionMember]:
         """Retrieves all of the subject's called office hours tickets in a section from the table.
         Args:
             subject: a valid User model representing the currently logged in User
@@ -434,11 +435,13 @@ class OfficeHoursSectionService:
             subject.id, oh_section.id
         )
 
+        # Raises PermissionError if user trying to fetch all members is a Student
         if section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError(
                 f"Section Member is a Student. User Does Not Have Permission to Get Section Members."
             )
 
+        # Select OH Section by id
         query = select(OfficeHoursSectionEntity).where(
             OfficeHoursSectionEntity.id == oh_section.id
         )
@@ -455,8 +458,8 @@ class OfficeHoursSectionService:
             member for section in entity.sections for member in section.members
         ]
 
-        # Return the details model of those tickets
-        return [entity.to_details_model() for entity in member_entities]
+        # Return the model version of those members
+        return [entity.to_flat_model() for entity in member_entities]
 
     def update(
         self, subject: User, oh_section: OfficeHoursSection
