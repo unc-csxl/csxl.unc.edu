@@ -8,11 +8,25 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, RouteConfigLoadEnd } from '@angular/router';
-import { OfficeHoursEvent, TicketDetails } from '../office-hours.models';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  RouteConfigLoadEnd
+} from '@angular/router';
+import {
+  OfficeHoursEvent,
+  OfficeHoursSectionDetails,
+  TicketDetails
+} from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { RosterRole } from 'src/app/academics/academics.models';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'app-student-section-home',
@@ -23,10 +37,19 @@ export class StudentSectionHomeComponent implements OnInit {
   public static Route = {
     // TODO: replace this route + title to be un-hardcoded
     path: 'spring-2024/:id',
-    title: 'COMP 110: Intro to Programming',
     component: StudentSectionHomeComponent,
-    canActivate: []
+    canActivate: [],
+    resolve: { section: sectionResolver },
+    children: [
+      {
+        path: '',
+        title: titleResolver,
+        component: StudentSectionHomeComponent
+      }
+    ]
   };
+
+  protected section: OfficeHoursSectionDetails;
   currentEvents: OfficeHoursEvent[] = [];
   sectionId: number;
   navLinks: any;
@@ -44,6 +67,12 @@ export class StudentSectionHomeComponent implements OnInit {
     ];
     this.sectionId = this.route.snapshot.params['id'];
     this.rosterRole = null;
+
+    /** Initialize data from resolvers. */
+    const data = this.route.snapshot.data as {
+      section: OfficeHoursSectionDetails;
+    };
+    this.section = data.section;
   }
 
   ngOnInit(): void {

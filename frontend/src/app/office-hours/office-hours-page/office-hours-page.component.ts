@@ -16,6 +16,8 @@ import { OfficeHoursService } from '../office-hours.service';
 import { OfficeHoursSectionDetails } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { SectionMember } from 'src/app/academics/academics.models';
+import { sectionsListResolver } from '../office-hours.resolver';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-office-hours-page',
@@ -27,7 +29,8 @@ export class OfficeHoursPageComponent implements OnInit {
     path: '',
     title: 'Office Hours',
     component: OfficeHoursPageComponent,
-    canActivate: []
+    canActivate: [],
+    resolve: { userSections: sectionsListResolver }
   };
 
   protected userSections: OfficeHoursSectionDetails[] = [];
@@ -37,8 +40,15 @@ export class OfficeHoursPageComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private officeHoursService: OfficeHoursService,
-    private academicsService: AcademicsService
-  ) {}
+    private academicsService: AcademicsService,
+    private route: ActivatedRoute
+  ) {
+    /** Initialize data from resolvers. */
+    const data = this.route.snapshot.data as {
+      userSections: OfficeHoursSectionDetails[];
+    };
+    this.userSections = data.userSections;
+  }
 
   openSectionCreationFormDialog() {
     const dialogRef = this.dialog.open(SectionCreationDialog, {
@@ -60,18 +70,8 @@ export class OfficeHoursPageComponent implements OnInit {
     });
   }
 
-  //TODO: Un-hardcode 'F23'
   ngOnInit(): void {
-    this.getUserSectionsByTerm('F23');
     this.checkInstructorship();
-  }
-
-  getUserSectionsByTerm(term_id: string) {
-    this.officeHoursService
-      .getUserSectionsByTerm(term_id)
-      .subscribe((sections) => {
-        (this.userSections = sections), console.log(sections);
-      });
   }
 
   checkInstructorship() {
