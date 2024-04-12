@@ -16,7 +16,8 @@ import {
 } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Room } from 'src/app/academics/academics.models';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-event-creation-form',
@@ -48,13 +49,17 @@ export class EventCreationFormComponent implements OnInit {
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
     public academicsService: AcademicsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected snackBar: MatSnackBar,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.sectionId = this.route.snapshot.params['id'];
   }
 
   ngOnInit() {
     this.getRooms();
+    this.getSection();
   }
 
   public eventForm = this.formBuilder.group({
@@ -103,18 +108,11 @@ export class EventCreationFormComponent implements OnInit {
       default:
         event_type = OfficeHoursEventType.OFFICE_HOURS;
     }
-    // Date validation for the dates entered in the form; default date is the current date
-    let event_date_start_time: Date;
-    if (this.eventForm.value.start_time) {
-      event_date_start_time = new Date(this.eventForm.value.start_time);
-    } else {
-      event_date_start_time = new Date();
+    if (!this.eventForm.value.start_time) {
+      this.eventForm.value.start_time = '';
     }
-    let end_time: Date;
-    if (this.eventForm.value.end_time) {
-      end_time = new Date(this.eventForm.value.end_time);
-    } else {
-      end_time = new Date();
+    if (!this.eventForm.value.end_time) {
+      this.eventForm.value.end_time = '';
     }
     if (this.section) {
       let event_draft: OfficeHoursEventDraft = {
@@ -124,15 +122,29 @@ export class EventCreationFormComponent implements OnInit {
         type: event_type,
         description: this.eventForm.value.description ?? '',
         location_description: this.eventForm.value.location_description ?? '',
-        event_date: event_date_start_time.toISOString().slice(0, 10),
-        start_time: event_date_start_time,
-        end_time: end_time
+        event_date: this.eventForm.value.start_time.slice(0, 10),
+        start_time: this.eventForm.value.start_time,
+        end_time: this.eventForm.value.end_time
       };
       this.officeHoursService.createEvent(event_draft).subscribe({
-        next: (event) => console.log(event) // remove console.log later -> for demo/debug purposes
+        next: () => this.onSuccess(),
+        error: (err) => this.onError(err)
       });
-      this.eventForm.reset();
     }
     // TODO: bring user to new location
+  }
+
+  private onSuccess(): void {
+    this.snackBar.open('You have created a new event!', '', {
+      duration: 3000
+    });
+    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+    this.eventForm.reset();
+  }
+
+  private onError(err: any): void {
+    this.snackBar.open('Error: Unable to create event', '', {
+      duration: 2000
+    });
   }
 }
