@@ -104,7 +104,7 @@ export class TicketCreationFormComponent implements OnInit {
         description: form_description,
         type: form_type,
         // TODO: un-hardcode creators
-        creators: [{ id: 3 }]
+        creators: []
       };
       this.officeHoursService.createTicket(ticket_draft).subscribe((ticket) => {
         this.router.navigate([

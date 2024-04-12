@@ -18,12 +18,21 @@ import { OfficeHoursService } from '../../office-hours.service';
 })
 export class TicketHistoryWidget implements OnInit {
   @Input() sectionId!: number;
-  public userTickets: TicketDetails[] = [];
-  public displayedColumns: string[] = [
+  public createdTickets: TicketDetails[] = [];
+  public calledTickets: TicketDetails[] = [];
+  public displayedStudentColumns: string[] = [
     'date',
     'event-type',
     'TA',
     'description'
+  ];
+  public displayedUTAColumns: string[] = [
+    'date',
+    'event-type',
+    'student',
+    'description',
+    'notes',
+    'concerns'
   ];
   constructor(private officeHoursService: OfficeHoursService) {}
 
@@ -35,7 +44,14 @@ export class TicketHistoryWidget implements OnInit {
     this.officeHoursService
       .getUserSectionCreatedTickets(this.sectionId)
       .subscribe((tickets) => {
-        this.userTickets = tickets;
+        this.createdTickets = tickets;
+        console.log(tickets);
+      });
+    this.officeHoursService
+      .getUserSectionCalledTickets(this.sectionId)
+      .subscribe((tickets) => {
+        this.calledTickets = tickets;
+        console.log(tickets);
       });
   }
 

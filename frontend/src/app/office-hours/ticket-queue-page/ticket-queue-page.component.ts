@@ -46,6 +46,8 @@ export class TicketQueuePageComponent implements OnInit {
   event: OfficeHoursEventDetails | null = null;
   sectionId: number;
   section: OfficeHoursSectionDetails | null = null;
+  queued_tickets: number | null;
+  called_tickets: number | null;
   // TODO: Store event details object and pass this in as input!
 
   constructor(
@@ -54,11 +56,14 @@ export class TicketQueuePageComponent implements OnInit {
   ) {
     this.eventId = this.route.snapshot.params['event_id'];
     this.sectionId = this.route.snapshot.params['section_id'];
+    this.queued_tickets = null;
+    this.called_tickets = null;
   }
 
   ngOnInit() {
     this.getEvent();
     this.getSection();
+    this.getTicketStats();
   }
 
   getCurrentTickets() {
@@ -89,5 +94,14 @@ export class TicketQueuePageComponent implements OnInit {
 
   formatEventType(typeNum: number) {
     return this.officeHoursService.formatEventType(typeNum);
+  }
+
+  getTicketStats() {
+    this.officeHoursService
+      .getQueuedAndCalledTicketCount(this.eventId)
+      .subscribe((event_status) => {
+        this.called_tickets = event_status.open_tickets_count;
+        this.queued_tickets = event_status.queued_tickets_count;
+      });
   }
 }

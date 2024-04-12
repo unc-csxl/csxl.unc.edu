@@ -15,6 +15,7 @@ import { TicketDetails } from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { map, mergeMap, switchMap } from 'rxjs';
 
 @Component({
   selector: 'ticket-feedback-form',
@@ -38,6 +39,7 @@ export class TicketFeedbackFormComponent {
   onSubmit() {
     if (this.ticketFeedbackForm.valid) {
       if (this.ticketFeedbackForm.value.have_concerns === 'Yes') {
+        console.log('concerns');
         this.ticket.have_concerns = true;
       }
       if (
@@ -46,16 +48,13 @@ export class TicketFeedbackFormComponent {
       ) {
         this.ticket.caller_notes = this.ticketFeedbackForm.value.notes;
       }
-    }
-    console.log(this.ticket);
-    this.officeHoursService
-      .closeTicket(this.ticket)
-      .subscribe((ticket) =>
-        this.officeHoursService
-          .addFeedback(ticket)
-          .subscribe((ticket) => console.log(ticket))
+      console.log(this.ticket);
+      this.officeHoursService.closeTicket(this.ticket).subscribe(() =>
+        this.officeHoursService.addFeedback(this.ticket).subscribe((ticket) => {
+          this.ticketFeedbackForm.reset();
+          this.dialogRef.close();
+        })
       );
-    this.ticketFeedbackForm.reset();
-    this.dialogRef.close();
+    }
   }
 }

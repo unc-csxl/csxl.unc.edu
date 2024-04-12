@@ -8,14 +8,28 @@
       <span class="badge">Open</span>until {{ event.end_time | date: 'h:mma' |
       lowercase }}
     </div>
+    <button
+      mat-icon-button
+      style="margin: 0.5rem"
+      [matMenuTriggerFor]="menu"
+      *ngIf="rosterRole !== 0">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Edit Event</button>
+      <button mat-menu-item>Delete Event</button>
+    </mat-menu>
   </div>
   <mat-divider></mat-divider>
   <div class="card-container">
     <mat-card-content>
       <div class="queue-row">
-        <div class="queued"><span class="number-badge">9</span>Queued</div>
+        <div class="queued">
+          <span class="number-badge">{{ this.queued_tickets }}</span>Queued
+        </div>
         <div class="helped">
-          <span class="number-badge">3</span>Being Helped
+          <span class="number-badge">{{ this.called_tickets }}</span>Being
+          Helped
         </div>
       </div>
       <div class="button-row" *ngIf="rosterRole === 0">

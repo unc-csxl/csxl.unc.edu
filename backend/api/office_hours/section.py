@@ -5,6 +5,7 @@ This API is used to access OH section data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
+from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
@@ -196,7 +197,10 @@ def get_oh_sections_by_user_and_term(
     Returns:
         list[OfficeHoursSectionDetails]: User's OH sections within the given term
     """
-    return oh_section_service.get_user_sections_by_term(subject, term_id)
+    try:
+        return oh_section_service.get_user_sections_by_term(subject, term_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -215,10 +219,13 @@ def get_oh_section_tickets(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_section_tickets(subject, oh_section)
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_section_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -237,10 +244,13 @@ def get_user_section_created_tickets(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific creator
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_user_section_created_tickets(subject, oh_section)
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_user_section_created_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -259,10 +269,58 @@ def get_user_section_called_tickets(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific caller
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_user_section_called_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_section_id}/people",
+    response_model=list[SectionMember],
+    tags=["Office Hours"],
+)
+def get_oh_section_members(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[SectionMember]:
+    """
+    Gets list of OH section members
+
+    Returns:
+        list[SectionMember]: List of all `SectionMember` in an OHsection
+    """
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_oh_section_members(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.put(
+    "/{oh_section_id}/update-role", response_model=SectionMember, tags=["Office Hours"]
+)
+def update_oh_section_member_role(
+    user_to_modify: SectionMemberPartial,
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> SectionMember:
+    """
+    Updates a SectionMember in an OH Section to the database
+
+    Returns:
+        SectionMember: SectionMember updated
+    """
+    return oh_section_service.update_oh_section_member_role(
+        subject, user_to_modify, oh_section_id
     )
-    return oh_section_service.get_user_section_called_tickets(subject, oh_section)
 
 
 @api.put(

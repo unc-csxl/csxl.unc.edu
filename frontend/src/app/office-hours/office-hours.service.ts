@@ -25,7 +25,9 @@ import {
   TicketType,
   TicketState,
   TicketPartial,
-  Ticket
+  Ticket,
+  OfficeHoursEventStatus,
+  StudentOfficeHoursEventStatus
 } from './office-hours.models';
 import { SectionMember } from '../academics/academics.models';
 
@@ -212,11 +214,40 @@ export class OfficeHoursService {
     );
   }
 
+  // TODO: change to Ticket once backend is refactored to not expose concerns
   getUserSectionCreatedTickets(
     oh_section_id: number
   ): Observable<TicketDetails[]> {
     return this.http.get<TicketDetails[]>(
       'api/office-hours/section/' + oh_section_id + '/user/created_tickets'
+    );
+  }
+
+  getUserSectionCalledTickets(
+    oh_section_id: number
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/user/called_tickets'
+    );
+  }
+
+  getQueuedAndCalledTicketCount(
+    oh_event_id: number
+  ): Observable<OfficeHoursEventStatus> {
+    return this.http.get<OfficeHoursEventStatus>(
+      'api/office-hours/event/' + oh_event_id + '/queue-stats'
+    );
+  }
+
+  getQueueStatsForStudent(
+    oh_event_id: number,
+    ticket_id: number
+  ): Observable<StudentOfficeHoursEventStatus> {
+    return this.http.get<StudentOfficeHoursEventStatus>(
+      'api/office-hours/event/' +
+        oh_event_id +
+        '/student-queue-stats/' +
+        ticket_id
     );
   }
 }

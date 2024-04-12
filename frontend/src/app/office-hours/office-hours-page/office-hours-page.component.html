@@ -1,17 +1,41 @@
 <div class="page-container">
   <h2>Your Courses</h2>
   <!-- TODO: Use terms instead of hard coding Spring 2024 -->
+  <p *ngIf="userSections.length === 0">
+    You are not enrolled in any courses. Please click the add button to add a
+    course.
+  </p>
   <h3>Spring 2024:</h3>
-  <course-card-widget *ngFor="let section of userSections" [section]="section"></course-card-widget>
+  <course-card-widget
+    *ngFor="let section of userSections"
+    [section]="section"></course-card-widget>
 
-  <!-- Dummy add class button for access in-progress component -->
-  <button mat-fab color="accent" class="add-button" [matMenuTriggerFor]="menu">
-    <mat-icon>add</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="openSectionCreationFormDialog()">
-      Create Course
+  <!-- Add Button for Instructors: -->
+  <div *ngIf="instructorCourses.length > 0">
+    <button
+      mat-fab
+      color="accent"
+      class="add-button"
+      [matMenuTriggerFor]="menu">
+      <mat-icon>add</mat-icon>
     </button>
-    <button mat-menu-item (click)="openJoinSectionDialog()">Join Course</button>
-  </mat-menu>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="openSectionCreationFormDialog()">
+        Create Course
+      </button>
+      <button mat-menu-item (click)="openJoinSectionDialog()">
+        Join Course
+      </button>
+    </mat-menu>
+  </div>
+  <!-- Add Button for Students/TAs: -->
+  <div *ngIf="instructorCourses.length === 0">
+    <button
+      mat-fab
+      color="accent"
+      class="add-button"
+      (click)="openJoinSectionDialog()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 </div>

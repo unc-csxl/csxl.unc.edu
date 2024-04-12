@@ -188,6 +188,7 @@ section_members = [
     comp110_student_0,
     comp110_student_1,
     comp110_uta,
+    comp110_uta_1,
     comp301_instructor,
     comp_301_uta,
 ]

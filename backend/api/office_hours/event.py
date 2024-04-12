@@ -5,7 +5,10 @@ This API is used to access OH Event data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
-from backend.models.office_hours.event_status import OfficeHoursEventStatus
+from backend.models.office_hours.event_status import (
+    OfficeHoursEventStatus,
+    StudentOfficeHoursEventStatus,
+)
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
@@ -128,6 +131,26 @@ def get_oh_tickets_by_event(
 
 
 @api.get(
+    "/{oh_event_id}/queue",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
+)
+def get_queued_and_called_oh_tickets_by_event(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of all queued and called OH tickets by OH event
+
+    Returns:
+        list[OfficeHoursTicketDetails]: OH tickets fitting the criteria within the given event
+    """
+    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(subject, oh_event_id)
+    return oh_event_service.get_queued_and_called_event_tickets(subject, oh_event)
+
+
+@api.get(
     "/{oh_event_id}/queue-stats",
     response_model=OfficeHoursEventStatus,
     tags=["Office Hours"],
@@ -148,5 +171,33 @@ def get_queued_and_called_oh_tickets_by_event(
             subject, oh_event_id
         )
         return oh_event_service.get_queued_helped_stats_by_oh_event(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_event_id}/student-queue-stats/{ticket_id}",
+    response_model=StudentOfficeHoursEventStatus,
+    tags=["Office Hours"],
+)
+def get_queued_and_called_oh_tickets_by_event_for_student(
+    oh_event_id: int,
+    ticket_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> StudentOfficeHoursEventStatus:
+    """
+    Gets Queued and Called Ticket Status Count For Given Event.
+
+    Returns:
+        (OfficeHoursEventStatus): Model that contains queued and called ticket count
+    """
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.get_queued_helped_stats_by_oh_event_for_student(
+            subject, oh_event, ticket_id
+        )
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

@@ -23,3 +23,7 @@ class OfficeHoursEventStatus(BaseModel):
 
     open_tickets_count: int
     queued_tickets_count: int
+
+
+class StudentOfficeHoursEventStatus(OfficeHoursEventStatus):
+    ticket_position: int

@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
-
+from ...models.academics.section_member_details import SectionMemberDetails
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -379,6 +379,7 @@ class OfficeHoursSectionService:
                     SectionMemberEntity.id == section_member_entity.id
                 ),
             )
+            .order_by(OfficeHoursTicketEntity.created_at.desc())
             .all()
         )
 
@@ -409,14 +410,56 @@ class OfficeHoursSectionService:
             .join(OfficeHoursSectionEntity)
             .filter(
                 OfficeHoursSectionEntity.id == oh_section.id,
-                OfficeHoursTicketEntity.caller.has(
-                    SectionMemberEntity.id == section_member_entity.id
-                ),
+                OfficeHoursTicketEntity.caller_id == section_member_entity.id,
             )
+            .order_by(OfficeHoursTicketEntity.created_at.desc())
             .all()
         )
 
         return [entity.to_details_model() for entity in user_ticket_entities]
+
+    def get_oh_section_members(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
+    ) -> list[SectionMember]:
+        """Retrieves all of the subject's called office hours tickets in a section from the table.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: the OfficeHoursSectionDetails to query by.
+        Returns:
+            list[SectionMemberDetails]: List of all `SectionMemberDetails` in an OHsection
+        """
+        # PERMISSIONS
+
+        # Throws exception if user is not a member
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        # Raises PermissionError if user trying to fetch all members is a Student
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a Student. User Does Not Have Permission to Get Section Members."
+            )
+
+        # Select OH Section by id
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
+        # Get the members that are linked to the academic sections which are linked to the OH section
+        member_entities = [
+            member for section in entity.sections for member in section.members
+        ]
+
+        # Return the model version of those members
+        return [entity.to_flat_model() for entity in member_entities]
 
     def update_oh_section_member_role(
         self, subject: User, user_to_modify: SectionMemberPartial, oh_section_id: int

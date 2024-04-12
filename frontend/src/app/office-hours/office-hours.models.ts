@@ -87,9 +87,9 @@ export interface OfficeHoursEvent {
   type: OfficeHoursEventType;
   description: string;
   location_description: string;
-  event_date: Date;
-  start_time: Date;
-  end_time: Date;
+  event_date: string;
+  start_time: string;
+  end_time: string;
 }
 
 export interface OfficeHoursEventPartial {
@@ -99,9 +99,9 @@ export interface OfficeHoursEventPartial {
   type: OfficeHoursEventType | null;
   description: string | null;
   location_description: string | null;
-  event_date: Date | null;
-  start_time: Date | null;
-  end_time: Date | null;
+  event_date: string | null;
+  start_time: string | null;
+  end_time: string | null;
 }
 
 export interface OfficeHoursEventDraft {
@@ -111,8 +111,8 @@ export interface OfficeHoursEventDraft {
   description: string;
   location_description: string;
   event_date: string;
-  start_time: Date;
-  end_time: Date;
+  start_time: string;
+  end_time: string;
 }
 
 export interface RoomPartial {
@@ -126,9 +126,9 @@ export interface OfficeHoursEventDetails {
   type: OfficeHoursEventType;
   description: string;
   location_description: string;
-  event_date: Date;
-  start_time: Date;
-  end_time: Date;
+  event_date: string;
+  start_time: string;
+  end_time: string;
   tickets: Ticket[];
 }
 
@@ -151,4 +151,15 @@ export interface OfficeHoursSectionDetails {
   title: string;
   sections: Section[];
   events: OfficeHoursEvent[];
+}
+
+export interface OfficeHoursEventStatus {
+  open_tickets_count: number;
+  queued_tickets_count: number;
+}
+
+export interface StudentOfficeHoursEventStatus {
+  open_tickets_count: number;
+  queued_tickets_count: number;
+  ticket_position: number;
 }
