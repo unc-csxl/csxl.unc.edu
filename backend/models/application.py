@@ -30,8 +30,8 @@ class UTA(Application):
     expected_graduation: str
     program_pursued: str
     other_programs: str
-    gpa: str
-    comp_gpa: str
+    gpa: int
+    comp_gpa: int
     comp_227: str
 
 

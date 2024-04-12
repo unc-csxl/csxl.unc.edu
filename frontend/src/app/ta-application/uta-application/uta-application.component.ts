@@ -128,8 +128,8 @@ export class UndergradApplicationComponent {
     other_programs: ['']
   });
   fourthFormGroup = this.formBuilder.group({
-    gpa: ['', [Validators.required, Validators.min(0)]],
-    comp_gpa: ['', [Validators.required, Validators.min(0)]]
+    gpa: [0, [Validators.required, Validators.min(0)]],
+    comp_gpa: [0, [Validators.required, Validators.min(0)]]
   });
   fifthFormGroup = this.formBuilder.group({
     preferred_sections: this.formBuilder.array([]),
@@ -224,8 +224,8 @@ export class UndergradApplicationComponent {
       expected_graduation: this.thirdFormGroup.value.expected_graduation ?? '',
       program_pursued: this.thirdFormGroup.value.program_pursued ?? '',
       other_programs: this.thirdFormGroup.value.other_programs ?? '',
-      gpa: this.fourthFormGroup.value.gpa ?? '',
-      comp_gpa: this.fourthFormGroup.value.comp_gpa ?? '',
+      gpa: this.fourthFormGroup.value.gpa ?? 0,
+      comp_gpa: this.fourthFormGroup.value.comp_gpa ?? 0,
       preferred_sections: sectionsToSend,
       comp_227: this.fifthFormGroup.value.comp_227 ?? '',
       intro_video: this.firstFormGroup.value.intro_video ?? '',
@@ -242,6 +242,7 @@ export class UndergradApplicationComponent {
         next: (userDetails) => {
           this.userDetails = userDetails;
           const formData = this.collectFormData(userDetails);
+          console.log('Submitting form data:', formData);
           this.applicationService.submitApplication(formData).subscribe({
             next: (application) => this.onSuccess(application),
             error: (err) => this.onError(err)

@@ -13,7 +13,6 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
 import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
 import { Application } from 'src/app/admin/applications/admin-application.model';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-academics-home',
@@ -29,29 +28,11 @@ export class AcademicsHomeComponent implements OnInit {
     canActivate: []
   };
 
-  public user_application$: Observable<Application | null>;
-  public new_uta: boolean;
-
   constructor(
     private gearService: NagivationAdminGearService,
     protected dialog: MatDialog,
     public applicationService: ApplicationsService
-  ) {
-    this.applicationService.getApplication();
-    this.user_application$ = this.applicationService.user_application$;
-
-    this.new_uta = this.applicationService.new_uta;
-  }
-
-  onUTAClick(editMode: boolean = false): void {
-    const dialogRef = this.dialog.open(UTANoticeComponent, {
-      width: '1000px',
-      autoFocus: false,
-      data: { editMode }
-    });
-
-    dialogRef.afterClosed().subscribe();
-  }
+  ) {}
 
   ngOnInit() {
     this.gearService.showAdminGear(
@@ -60,5 +41,15 @@ export class AcademicsHomeComponent implements OnInit {
       '',
       'academics/admin/section'
     );
+  }
+
+  onUTAClick(application: Application | null): void {
+    const dialogRef = this.dialog.open(UTANoticeComponent, {
+      width: '1000px',
+      autoFocus: false,
+      data: { application }
+    });
+
+    dialogRef.afterClosed().subscribe();
   }
 }

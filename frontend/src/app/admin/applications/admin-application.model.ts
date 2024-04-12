@@ -7,8 +7,8 @@ export interface Application {
   expected_graduation: string;
   program_pursued: string;
   other_programs: string;
-  gpa: string;
-  comp_gpa: string;
+  gpa: number;
+  comp_gpa: number;
   preferred_sections: unknown[] | undefined;
   comp_227: string;
   intro_video: string;
