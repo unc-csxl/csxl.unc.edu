@@ -2,9 +2,7 @@
 
 import pytest
 
-from backend.models.office_hours.event_details import OfficeHoursEventDetails
-from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
-
+from ....models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ....models.office_hours.event import OfficeHoursEvent
 from ....models.office_hours.event_status import (
     OfficeHoursEventStatus,
@@ -149,6 +147,7 @@ def test_get_queued_and_called_oh_tickets_by_event_exception_for_non_member(
 
 
 def test_get_queued_and_called_tickets_by_event(oh_event_svc: OfficeHoursEventService):
+    """Test case to ensure correct ordering and length of queued and called tickets for an event."""
     oh_event = oh_event_svc.get_event_by_id(user__comp110_uta_0, 1)
     event_tickets = oh_event_svc.get_queued_and_called_tickets_by_event(
         user__comp110_uta_0, oh_event
@@ -156,36 +155,37 @@ def test_get_queued_and_called_tickets_by_event(oh_event_svc: OfficeHoursEventSe
 
     assert isinstance(event_tickets[0], OfficeHoursTicketDetails)
     assert len(event_tickets) == 2
-
-    # Check if ticket is order by newer ticket last
     assert event_tickets[0].created_at < event_tickets[1].created_at
 
 
 def test_get_queued_and_called_tickets_by_event_exception_if_student(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test case to ensure a PermissionError is raised when a student attempts to access queued/called tickets."""
     oh_event = oh_event_svc.get_event_by_id(user__comp110_uta_0, 1)
 
     with pytest.raises(PermissionError):
         oh_event_svc.get_queued_and_called_tickets_by_event(
             user__comp110_student_0, oh_event
         )
-        pytest.fail()  # Fail test if no error was thrown above
+        pytest.fail()
 
 
 def test_get_queued_and_called_tickets_by_event_exception_if_non_member(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test case to ensure a PermissionError is raised when a non-member attempts to access queued/called tickets."""
     oh_event = oh_event_svc.get_event_by_id(user__comp110_non_member, 1)
 
     with pytest.raises(PermissionError):
         oh_event_svc.get_queued_and_called_tickets_by_event(
             user__comp110_non_member, oh_event
         )
-        pytest.fail()  # Fail test if no error was thrown above
+        pytest.fail()
 
 
 def test_get_event_tickets_by_uta(oh_event_svc: OfficeHoursEventService):
+    """Test case to ensure fetching event tickets by UTAs, verifying type and count."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_uta_0, office_hours_data.comp_110_oh_event_1.id
     )
@@ -196,6 +196,7 @@ def test_get_event_tickets_by_uta(oh_event_svc: OfficeHoursEventService):
 
 
 def test_get_event_tickets_by_instructor(oh_event_svc: OfficeHoursEventService):
+    """Test case to ensure fetching event tickets by instructors, verifying type and count."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_instructor, office_hours_data.comp_110_oh_event_1.id
     )
@@ -206,6 +207,7 @@ def test_get_event_tickets_by_instructor(oh_event_svc: OfficeHoursEventService):
 
 
 def test_get_event_tickets_exception_if_student(oh_event_svc: OfficeHoursEventService):
+    """Test case to ensure a PermissionError is raised when a student attempts to access event tickets."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
     )
@@ -217,6 +219,7 @@ def test_get_event_tickets_exception_if_student(oh_event_svc: OfficeHoursEventSe
 def test_get_event_tickets_exception_if_non_member(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test case to ensure a PermissionError is raised when a non-member attempts to access event tickets."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
     )
@@ -228,6 +231,7 @@ def test_get_event_tickets_exception_if_non_member(
 def test_get_queued_helped_stats_by_oh_event_for_student(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test case to ensure fetching queued and helped stats for an event by a student."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
     )
@@ -247,6 +251,7 @@ def test_get_queued_helped_stats_by_oh_event_for_student(
 def test_get_queued_helped_stats_by_oh_event_for_student_exception_invalid_ticket_id(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test case to ensure a ResourceNotFoundException is raised for an invalid ticket ID."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
     )
@@ -260,6 +265,7 @@ def test_get_queued_helped_stats_by_oh_event_for_student_exception_invalid_ticke
 def test_get_queued_helped_stats_by_oh_event_for_student_exception_ticket_not_in_event(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test case to ensure an exception is raised when the ticket does not belong to the specified event."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
     )
@@ -273,6 +279,7 @@ def test_get_queued_helped_stats_by_oh_event_for_student_exception_ticket_not_in
 def test_get_queued_helped_stats_by_oh_event_for_student_exception_ticket_not_queued(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test case to ensure an exception is raised when attempting to get stats for a ticket not in the queued state."""
     oh_event = oh_event_svc.get_event_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_event_1.id
     )
