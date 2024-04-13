@@ -53,6 +53,12 @@ export interface SectionMember {
   member_role: RosterRole;
 }
 
+/** Defines a Section Member Partial */
+export interface SectionMemberPartial {
+  id: number;
+  member_role: RosterRole | null;
+}
+
 /** Defines a Room */
 export interface Room {
   id: string;
