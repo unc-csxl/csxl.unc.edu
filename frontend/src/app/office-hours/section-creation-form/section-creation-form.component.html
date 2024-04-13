@@ -32,8 +32,9 @@
           mat-flat-button
           color="primary"
           class="button"
-          type="submit"
-          [disabled]="!sectionForm.valid">
+          type="reset"
+          [disabled]="!sectionForm.valid"
+          (click)="onSubmit()">
           Submit
         </button>
       </div>

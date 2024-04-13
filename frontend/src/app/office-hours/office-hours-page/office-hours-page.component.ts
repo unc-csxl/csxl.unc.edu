@@ -55,6 +55,12 @@ export class OfficeHoursPageComponent implements OnInit {
       height: 'auto',
       width: 'auto'
     });
+
+    dialogRef.afterClosed().subscribe((open) => {
+      if (!open) {
+        window.location.reload();
+      }
+    });
   }
 
   openJoinSectionDialog() {

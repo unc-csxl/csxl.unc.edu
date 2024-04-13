@@ -25,7 +25,8 @@
             mat-flat-button
             color="primary"
             class="button"
-            type="submit"
+            type="reset"
+            (click)="onSubmit()"
             [disabled]="!joinSectionForm.valid">
             Submit
           </button>

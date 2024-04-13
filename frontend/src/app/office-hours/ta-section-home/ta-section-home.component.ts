@@ -8,11 +8,24 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Router
+} from '@angular/router';
 import { OfficeHoursService } from '../office-hours.service';
-import { OfficeHoursEvent } from '../office-hours.models';
+import {
+  OfficeHoursEvent,
+  OfficeHoursSectionDetails
+} from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { RosterRole } from 'src/app/academics/academics.models';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'app-ta-section-home',
@@ -23,10 +36,18 @@ export class TaSectionHomeComponent implements OnInit {
   public static Route = {
     // TODO: replace spring-2024 in this route!
     path: 'ta/spring-2024/:id',
-    title: 'COMP 110: Intro to Programming',
     component: TaSectionHomeComponent,
-    canActivate: []
+    canActivate: [],
+    resolve: { section: sectionResolver },
+    children: [
+      {
+        path: '',
+        title: titleResolver,
+        component: TaSectionHomeComponent
+      }
+    ]
   };
+  protected section: OfficeHoursSectionDetails;
   currentEvents: OfficeHoursEvent[] = [];
   sectionId: number;
   navLinks: any;
@@ -45,6 +66,12 @@ export class TaSectionHomeComponent implements OnInit {
     ];
     this.sectionId = this.route.snapshot.params['id'];
     this.rosterRole = null;
+
+    /** Initialize data from resolvers. */
+    const data = this.route.snapshot.data as {
+      section: OfficeHoursSectionDetails;
+    };
+    this.section = data.section;
   }
 
   ngOnInit(): void {
