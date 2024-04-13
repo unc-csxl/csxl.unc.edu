@@ -1,20 +1,24 @@
 """
-The Section Service allows the API to manipulate sections data in the database.
+The Section Member Service allows the API to manipulate section member data in the database.
 """
 
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.entities.academics.section_member_entity import SectionMemberEntity
-from backend.models.academics.section_member import SectionMember, SectionMemberDraft
-from backend.models.academics.section_member_details import SectionMemberDetails
-from backend.models.office_hours.section import (
+from ...entities.academics.section_member_entity import SectionMemberEntity
+from ...models.academics.section_member import (
+    SectionMember,
+    SectionMemberDraft,
+    SectionMemberPartial,
+)
+from ...models.academics.section_member_details import SectionMemberDetails
+from ...models.office_hours.section import (
     OfficeHoursSectionDraft,
     OfficeHoursSectionPartial,
 )
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
-from backend.models.roster_role import RosterRole
+from ...models.office_hours.section_details import OfficeHoursSectionDetails
+from ...models.roster_role import RosterRole
 
 from ...database import db_session
 from ...models.academics import Section
@@ -29,7 +33,7 @@ from ..permission import PermissionService
 from ..exceptions import ResourceNotFoundException
 from datetime import datetime
 
-__authors__ = ["Meghan Sun"]
+__authors__ = ["Meghan Sun, Sadie Amato"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 

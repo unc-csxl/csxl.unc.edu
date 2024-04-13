@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ...models.academics.section_member import SectionMember
+from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
@@ -460,6 +460,52 @@ class OfficeHoursSectionService:
 
         # Return the model version of those members
         return [entity.to_flat_model() for entity in member_entities]
+
+    def update_oh_section_member_role(
+        self, subject: User, user_to_modify: SectionMemberPartial, oh_section_id: int
+    ) -> SectionMember:
+        """
+        Allows a GTA or Instructor to update a section member's Roster Role.
+
+        Args:
+            subject (User): The user object representing the user attempting to change a role.
+            user_to_modify (SectionMemberPartial): The SectionMemberPartial whose role is being changed.
+            oh_section_id: The id of the OH section where the SectionMember role is being changed.
+
+        Returns:
+            SectionMember: The updated SectionMember object
+        """
+
+        # PERMISSIONS:
+        subject_section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section_id
+        )
+
+        if subject_section_member_entity.member_role != (
+            RosterRole.INSTRUCTOR or RosterRole.GTA
+        ):
+            raise PermissionError(
+                f"Section Member is not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
+            )
+
+        # Select SectionMember
+        query = select(SectionMemberEntity).where(
+            SectionMemberEntity.id == user_to_modify.id
+        )
+        section_member_entity = self._session.scalars(query).one_or_none()
+        if section_member_entity is None:
+            raise ResourceNotFoundException(
+                f"SectionMember with id {user_to_modify.id} not found."
+            )
+        # Throw error if member to update isn't a member of the OH section
+        self._check_user_section_membership(
+            section_member_entity.user_id, oh_section_id
+        )
+
+        # Change role and return model
+        section_member_entity.member_role = user_to_modify.member_role
+        self._session.commit()
+        return section_member_entity.to_flat_model()
 
     def update(
         self, subject: User, oh_section: OfficeHoursSection
