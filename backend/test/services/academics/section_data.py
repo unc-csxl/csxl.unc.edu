@@ -73,6 +73,16 @@ comp_301_001 = Section(
     override_description="",
 )
 
+comp_210_001 = Section(
+    id=6,
+    course_id=course_data.comp_210.id,
+    number="001",
+    term_id=term_data.f_23.id,
+    meeting_pattern="TTh 9:00AM - 10:15AM",
+    override_title="",
+    override_description="",
+)
+
 comp_523_001 = Section(
     id=5,
     course_id=course_data.comp_523.id,
@@ -148,7 +158,7 @@ user__comp110_non_member = user_data.root
 
 user__comp301_instructor = user_data.instructor
 user__comp301_uta = user_data.ambassador
-
+user__comp301_student = user_data.student
 
 comp110_instructor = SectionMemberDraft(
     user_id=user__comp110_instructor.id,
@@ -193,6 +203,12 @@ comp_301_uta = SectionMemberDraft(
     member_role=RosterRole.UTA,
 )
 
+comp_301_student = SectionMemberDraft(
+    user_id=user__comp301_student.id,
+    section_id=comp_301_001.id,
+    member_role=RosterRole.STUDENT,
+)
+
 section_members = [
     comp110_instructor,
     comp110_student_0,
@@ -201,7 +217,9 @@ section_members = [
     comp110_uta_1,
     comp301_instructor,
     comp_301_uta,
+    comp_301_student,
 ]
+
 
 room_assignment_110_001 = (
     comp_101_001.id,
@@ -215,7 +233,7 @@ room_assignment_110_002 = (
     RoomAssignmentType.LECTURE_ROOM,
 )
 
-sections = [comp_101_001, comp_101_002, comp_301_001, comp_523_001]
+sections = [comp_101_001, comp_101_002, comp_301_001, comp_523_001, comp_210_001]
 assignments = [room_assignment_110_001, room_assignment_110_002]
 comp_110_sections = [comp_101_001, comp_101_002]
 

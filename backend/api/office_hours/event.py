@@ -153,7 +153,7 @@ def get_queued_and_called_oh_tickets_by_event(
         oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
             subject, oh_event_id
         )
-        return oh_event_service.get_queued_helped_stats_by_oh_event(subject, oh_event)
+        return oh_event_service.get_event_queue_stats(subject, oh_event)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -179,7 +179,7 @@ def get_queued_and_called_oh_tickets_by_event_for_student(
         oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
             subject, oh_event_id
         )
-        return oh_event_service.get_queued_helped_stats_by_oh_event_for_student(
+        return oh_event_service.get_event_queue_stats_for_student_with_ticket(
             subject, oh_event, ticket_id
         )
     except Exception as e:

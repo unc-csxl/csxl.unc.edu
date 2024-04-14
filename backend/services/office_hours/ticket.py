@@ -64,7 +64,7 @@ class OfficeHoursTicketService:
         # PERMISSIONS
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section: OfficeHoursSection = self._get_office_hours_sections_by_oh_event_id(
+        oh_section: OfficeHoursSection = self._get_office_hours_section_by_oh_event_id(
             oh_ticket.oh_event.id
         )
 
@@ -141,7 +141,7 @@ class OfficeHoursTicketService:
         # USER PERMISSIONS:
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -168,7 +168,7 @@ class OfficeHoursTicketService:
         # Passed Permissions - Good to Return Ticket Information
         return ticket_entity.to_details_model()
 
-    def update_called_state(
+    def call_ticket(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
     ) -> OfficeHoursTicketDetails:
         """
@@ -196,7 +196,7 @@ class OfficeHoursTicketService:
 
         # PERMISSIONS
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -259,7 +259,7 @@ class OfficeHoursTicketService:
             )
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -322,7 +322,7 @@ class OfficeHoursTicketService:
             raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -375,7 +375,7 @@ class OfficeHoursTicketService:
             raise ResourceNotFoundException(f"Cannot Find Ticket id={oh_ticket.id}")
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section_entity = self._get_office_hours_sections_by_oh_event_id(
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
@@ -447,7 +447,7 @@ class OfficeHoursTicketService:
 
         return section_member_entity
 
-    def _get_office_hours_sections_by_oh_event_id(
+    def _get_office_hours_section_by_oh_event_id(
         self, oh_event_id: int
     ) -> OfficeHoursSection:
         """Checks if a given user is a member in academic sections that are a part of an office hours section.

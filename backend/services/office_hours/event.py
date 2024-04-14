@@ -3,7 +3,6 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ...entities.office_hours.section_entity import OfficeHoursSectionEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
@@ -53,11 +52,15 @@ class OfficeHoursEventService:
         """Creates a new office hours event.
 
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event: OfficeHoursEventDraft to add to table
+            subject (User): a valid User model representing the currently logged in User
+            oh_event (OfficeHoursEventDraft): Event draft to add to table
 
         Returns:
             OfficeHoursEvent: Object added to table
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+            the office hours section associated with the event (`oh_event`) or is a Student in section.
         """
         # Permissions - Raises Exception if Permission Fails
         section_member_entity = self._check_user_section_membership(
@@ -82,8 +85,8 @@ class OfficeHoursEventService:
         """Updates an office hours event.
 
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event: OfficeHoursEvent to update in the table
+            subject (User): a valid User model representing the currently logged in User
+            oh_event (OfficeHoursEvent): OfficeHoursEvent to update in the table
 
         Returns:
             OfficeHoursEvent: Updated object in table
@@ -103,11 +106,14 @@ class OfficeHoursEventService:
         """Gets an office hour event based on OH event id.
 
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event_id: OfficeHoursEvent id to get the corresponding event for
+            subject (User): a valid User model representing the currently logged in User
+            oh_event_id (int): OfficeHoursEvent id to get the corresponding event for
 
         Returns:
             OfficeHoursEvent: OH event associated with the OH event id
+
+        Raises:
+            ResourceNotFoundException: If office hours event is not found given `oh_event_id`.
         """
         # Select all entries in the `Course` table and sort by end date
         query = select(OfficeHoursEventEntity).filter(
@@ -128,11 +134,17 @@ class OfficeHoursEventService:
         self, subject: User, oh_event: OfficeHoursEvent
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets in an event from the table.
+
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event: the OfficeHoursEventDetails to query by.
+            subject (User): a valid User model representing the currently logged in User
+            oh_event (OfficeHoursEvent): the OfficeHoursEvent to query by.
+
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+            the office hours section associated with the event (`oh_event`) or is a Student in section.
         """
 
         section_member_entity = self._check_user_section_membership(
@@ -162,11 +174,17 @@ class OfficeHoursEventService:
         self, subject: User, oh_event: OfficeHoursEvent
     ) -> list[OfficeHoursTicketDetails]:
         """Retrieves all office hours tickets in an event from the table.
+
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event: the OfficeHoursEvent to query by.
+            subject (User): a valid User model representing the currently logged in User
+            oh_event (OfficeHoursEvent): the OfficeHoursEvent to query by.
+
         Returns:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+            the office hours section associated with the event (`oh_event`) or is a Student in section.
         """
 
         section_member_entity = self._check_user_section_membership(
@@ -186,11 +204,10 @@ class OfficeHoursEventService:
         entities = self._session.scalars(query).all()
         return [entity.to_details_model() for entity in entities]
 
-    def get_queued_helped_stats_by_oh_event(
+    def get_event_queue_stats(
         self, subject: User, oh_event: OfficeHoursEvent
     ) -> OfficeHoursEventStatus:
-        """
-        Retrieve queued and called ticket statistics for a specific office hours event.
+        """Retrieve queued and called ticket statistics for a specific office hours event.
 
         Args:
             subject (User): The user object representing the authenticated user making the request.
@@ -205,7 +222,7 @@ class OfficeHoursEventService:
                 the office hours section associated with the event (`oh_event`).
         """
         # PERMISSIONS: Check If User is an OH Section Member - Exception If Not.
-        self._check_user_section_membership(subject.id, oh_event.id)
+        self._check_user_section_membership(subject.id, oh_event.oh_section.id)
 
         # Queued Tickets
         queued_ticket_entities = self._get_queued_tickets_by_oh_event(oh_event.id)
@@ -223,11 +240,10 @@ class OfficeHoursEventService:
 
         return event_status
 
-    def get_queued_helped_stats_by_oh_event_for_student(
+    def get_event_queue_stats_for_student_with_ticket(
         self, subject: User, oh_event: OfficeHoursEvent, ticket_id: int
     ) -> StudentOfficeHoursEventStatus:
-        """
-        Retrieve queued and called ticket statistics for a specific office hours event.
+        """Retrieve queued and called ticket statistics for a specific office hours event.
 
         Args:
             subject (User): The user object representing the authenticated user making the request.
@@ -241,10 +257,14 @@ class OfficeHoursEventService:
             PermissionError: Raised if the authenticated user (`subject`) is not a member of
                 the office hours section associated with the event (`oh_event`).
         """
-        # PERMISSIONS: Check If User is an OH Section Member - Exception If Not.
-        self._check_user_section_membership(subject.id, oh_event.id)
+        # PERMISSIONS:
 
-        # Check Ticket Exists in Office Hours Event
+        # 1. Check If User is an OH Section Member - Exception If Not.
+        current_user_section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+
+        # 2. Check Ticket Exists in Office Hours Event
         ticket_entity = self._session.get(OfficeHoursTicketEntity, ticket_id)
 
         if ticket_entity is None:
@@ -253,6 +273,19 @@ class OfficeHoursEventService:
         if ticket_entity.oh_event_id != oh_event.id:
             raise Exception(
                 f"Given Ticket id={ticket_id} Is Not A Part of OH Event id={oh_event.id}"
+            )
+
+        # 3. Check if User is Creator of Ticket
+        ticket_creators = ticket_entity.to_details_model().creators
+        is_creator = False
+
+        for creator in ticket_creators:
+            if creator.id == current_user_section_member_entity.id:
+                is_creator = True
+
+        if not is_creator:
+            raise PermissionError(
+                f"User Doesn't Have Permission to View Queue Stats for Ticket id={ticket_entity.id}"
             )
 
         # Queued Tickets
@@ -285,6 +318,15 @@ class OfficeHoursEventService:
     def _find_ticket_position(
         self, tickets_list: list[OfficeHoursTicketEntity], ticket_id: int
     ) -> int:
+        """Find the position (1-based index) of a ticket in a list by ticket ID.
+
+        Args:
+            tickets_list (list[OfficeHoursTicketEntity]): List of OfficeHoursTicketEntity objects.
+            ticket_id (int): ID of the ticket to find.
+
+        Returns:
+            int: 1-based index of the ticket in the list if found; otherwise, returns -1.
+        """
         for index, ticket in enumerate(tickets_list, start=1):
             if ticket.id == ticket_id:
                 return index
@@ -293,7 +335,15 @@ class OfficeHoursEventService:
     def _get_called_tickets_by_oh_event(
         self, oh_event_id: int
     ) -> list[OfficeHoursTicketEntity]:
+        """Retrieve a list of called tickets for a specific office hours event.
 
+        Args:
+            oh_event_id (int): ID of the office hours event.
+
+        Returns:
+            list[OfficeHoursTicketEntity]: List of OfficeHoursTicketEntity objects
+                that are in the 'CALLED' state for the specified event.
+        """
         # Fetch Called Tickets and Count
         called_tickets_query = (
             select(OfficeHoursTicketEntity)
@@ -307,6 +357,15 @@ class OfficeHoursEventService:
     def _get_queued_tickets_by_oh_event(
         self, oh_event_id: int
     ) -> list[OfficeHoursTicketEntity]:
+        """Retrieve a list of queued tickets for a specific office hours event.
+
+        Args:
+            oh_event_id (int): ID of the office hours event.
+
+        Returns:
+            list[OfficeHoursTicketEntity]: List of OfficeHoursTicketEntity objects
+                that are in the 'QUEUED' state for the specified event, ordered by ticket ID.
+        """
         # Fetch Queued Tickets and Count
         queued_tickets_query = (
             select(OfficeHoursTicketEntity)
@@ -316,7 +375,6 @@ class OfficeHoursEventService:
         )
 
         queued_ticket_entities = self._session.scalars(queued_tickets_query).all()
-
         return queued_ticket_entities
 
     def _check_user_section_membership(
@@ -324,13 +382,13 @@ class OfficeHoursEventService:
         user_id: int,
         oh_section_id: int,
     ) -> SectionMemberEntity:
-        """Checks if a given user is a member in academic sections that are a part of an office hours section.
+        """Checks if a given user is a member in tue academic section associate with given office hours section ID.
 
-           Note: An Office Hours section can have multiple academic sections assoicated with it.
+        Note: An Office Hours section can have multiple academic sections assoicated with it.
 
         Args:
-            user_id: The id of given User of interest
-            oh_section_id: The id of office hours section.
+            user_id (int): The id of given User of interest
+            oh_section_id (int): The id of office hours section.
         Returns:
             SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
 

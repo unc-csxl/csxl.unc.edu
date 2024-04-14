@@ -27,6 +27,7 @@ from ....models.office_hours.event import (
 from ....models.office_hours.event_type import OfficeHoursEventType
 from ....models.office_hours.section import (
     OfficeHoursSection,
+    OfficeHoursSectionDraft,
     OfficeHoursSectionPartial,
 )
 from ....models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
@@ -51,8 +52,9 @@ comp_523_oh_section = OfficeHoursSection(
 
 oh_sections = [comp_110_oh_section, comp_523_oh_section]
 
+oh_section_draft = OfficeHoursSectionDraft(title="Draft OH Section")
 # Office Hours Event Data
-comp_110_oh_event_1 = OfficeHoursEvent(
+comp_110_current_oh_event = OfficeHoursEvent(
     id=1,
     oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
@@ -64,7 +66,7 @@ comp_110_oh_event_1 = OfficeHoursEvent(
     end_time=datetime.now() + timedelta(hours=1),
 )
 
-comp_110_oh_event_2 = OfficeHoursEvent(
+comp_110_upcoming_oh_event = OfficeHoursEvent(
     id=2,
     oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
@@ -77,7 +79,7 @@ comp_110_oh_event_2 = OfficeHoursEvent(
 )
 
 # Events to Be Inserted Into Demo
-comp_110_oh_event_3 = OfficeHoursEvent(
+comp_110_past_oh_event_0 = OfficeHoursEvent(
     id=3,
     oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
@@ -89,9 +91,9 @@ comp_110_oh_event_3 = OfficeHoursEvent(
     end_time=datetime.now() - timedelta(days=1),
 )
 
-comp_523_oh_event_1 = OfficeHoursEvent(
+comp_110_past_oh_event_1 = OfficeHoursEvent(
     id=4,
-    oh_section=comp_523_oh_section,
+    oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
     description="Office Hours",
@@ -101,12 +103,29 @@ comp_523_oh_event_1 = OfficeHoursEvent(
     end_time=datetime.now() - timedelta(days=1),
 )
 
+comp_523_current_oh_event = OfficeHoursEvent(
+    id=5,
+    oh_section=comp_523_oh_section,
+    room=Room(id="SN156"),
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    description="Office Hours",
+    location_description="In Person",
+    event_date=date.today(),
+    start_time=datetime.now() - timedelta(days=2, hours=3),
+    end_time=datetime.now() - timedelta(days=2),
+)
+
 oh_events = [
-    comp_110_oh_event_1,
-    comp_110_oh_event_2,
-    comp_110_oh_event_3,
-    comp_523_oh_event_1,
+    comp_110_current_oh_event,
+    comp_110_upcoming_oh_event,
+    comp_110_past_oh_event_0,
+    comp_110_past_oh_event_1,
+    comp_523_current_oh_event,
 ]
+
+comp110_oh_past_events = [comp_110_past_oh_event_0, comp_110_past_oh_event_1]
+comp110_oh_current_events = [comp_110_current_oh_event]
+comp110_oh_upcoming_events = [comp_110_upcoming_oh_event]
 
 comp110_event_draft = OfficeHoursEventDraft(
     oh_section=OfficeHoursSectionPartial(id=1),
@@ -123,7 +142,7 @@ comp110_event_draft = OfficeHoursEventDraft(
 # Ticket For An Event
 comp110_queued_ticket = OfficeHoursTicket(
     id=1,
-    oh_event=comp_110_oh_event_1,
+    oh_event=comp_110_current_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.QUEUED,
@@ -132,7 +151,7 @@ comp110_queued_ticket = OfficeHoursTicket(
 
 comp110_called_ticket = OfficeHoursTicket(
     id=2,
-    oh_event=comp_110_oh_event_1,
+    oh_event=comp_110_current_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CALLED,
@@ -142,7 +161,7 @@ comp110_called_ticket = OfficeHoursTicket(
 
 comp110_closed_ticket = OfficeHoursTicket(
     id=3,
-    oh_event=comp_110_oh_event_1,
+    oh_event=comp_110_current_oh_event,
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
@@ -155,7 +174,7 @@ comp110_closed_ticket = OfficeHoursTicket(
 
 comp110_cancelled_ticket = OfficeHoursTicket(
     id=4,
-    oh_event=comp_110_oh_event_1,
+    oh_event=comp_110_current_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CANCELED,
@@ -164,7 +183,7 @@ comp110_cancelled_ticket = OfficeHoursTicket(
 
 comp_523_pending_ticket = OfficeHoursTicket(
     id=5,
-    oh_event=comp_523_oh_event_1,
+    oh_event=comp_523_current_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.QUEUED,
@@ -176,6 +195,13 @@ tickets = [
     comp110_closed_ticket,
     comp110_cancelled_ticket,
     comp_523_pending_ticket,
+]
+
+comp110_tickets = [
+    comp110_queued_ticket,
+    comp110_called_ticket,
+    comp110_closed_ticket,
+    comp110_cancelled_ticket,
 ]
 
 
@@ -234,6 +260,9 @@ def insert_fake_data(session: Session):
         section = session.get(SectionEntity, comp_110_section.id)
         section.office_hours_id = comp_110_oh_section.id
 
+    comp_523_section_entity = session.get(SectionEntity, section_data.comp_523_001.id)
+    comp_523_section_entity.office_hours_id = comp_523_oh_section.id
+
     # Add Office Hours Event
     for event in oh_events:
         event_entity = OfficeHoursEventEntity.from_model(event)
@@ -261,7 +290,7 @@ def insert_fake_data(session: Session):
     )
 
     # Add User Created Tickets
-    for ticket in tickets:
+    for ticket in comp110_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
         session.add(ticket_entity)
         session.commit()
@@ -281,7 +310,7 @@ def insert_fake_data(session: Session):
         OfficeHoursTicketEntity.id.in_(
             [comp110_called_ticket.id, comp110_closed_ticket.id]
         )
-    ).update({"caller_id": uta.id})
+    ).update({"caller_id": uta.id, "called_at": datetime.now()})
 
     reset_table_id_seq(
         session,

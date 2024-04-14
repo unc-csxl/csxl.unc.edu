@@ -163,18 +163,8 @@ class OfficeHoursSectionService:
                 f"Section Member is a student. User Does Not Have Permision to get past section events."
             )
 
-        query = select(OfficeHoursSectionEntity).where(
-            OfficeHoursSectionEntity.id == oh_section.id
-        )
+        oh_events = oh_section.events
 
-        entity = self._session.scalars(query).one_or_none()
-
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
-        oh_events = entity.to_details_model().events
         return [
             oh_event for oh_event in oh_events if oh_event.end_time < datetime.now()
         ]
@@ -197,18 +187,7 @@ class OfficeHoursSectionService:
         # Throws exception if user is not a member
         self._check_user_section_membership(subject.id, oh_section.id)
 
-        query = select(OfficeHoursSectionEntity).where(
-            OfficeHoursSectionEntity.id == oh_section.id
-        )
-
-        entity = self._session.scalars(query).one_or_none()
-
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
-        oh_events = entity.to_details_model().events
+        oh_events = oh_section.events
 
         return [
             oh_event
@@ -235,18 +214,7 @@ class OfficeHoursSectionService:
         # Throws exception if user is not a member
         self._check_user_section_membership(subject.id, oh_section.id)
 
-        query = select(OfficeHoursSectionEntity).where(
-            OfficeHoursSectionEntity.id == oh_section.id
-        )
-
-        entity = self._session.scalars(query).one_or_none()
-
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
-        oh_events = entity.to_details_model().events
+        oh_events = oh_section.events
 
         # return all events that have started but haven't ended
         return [
@@ -335,11 +303,6 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
         # Get the tickets that are linked to the events which are linked to the section
         ticket_entities = [
             ticket for event in entity.events for ticket in event.tickets
@@ -361,26 +324,20 @@ class OfficeHoursSectionService:
 
         # PERMISSIONS
 
-        # Throws exception if user is not a member
+        # Raises exception if user is not a member
         section_member_entity = self._check_user_section_membership(
             subject.id, oh_section.id
         )
 
-        # Selects tickets from a certain section with the subject's id as one of the creators
-        user_ticket_entities = (
-            self._session.query(OfficeHoursTicketEntity)
-            .join(OfficeHoursEventEntity)
-            .join(OfficeHoursSectionEntity)
-            .filter(
-                OfficeHoursSectionEntity.id == oh_section.id,
-                OfficeHoursTicketEntity.creators.any(
-                    SectionMemberEntity.id == section_member_entity.id
-                ),
-            )
-            .all()
-        )
+        # Take Created Ticket Relationship From SectionMemberEntity
+        created_tickets = [
+            entity.to_details_model()
+            for entity in section_member_entity.created_tickets
+        ]
 
-        return [entity.to_details_model() for entity in user_ticket_entities]
+        # Order so lastest is first
+        created_tickets.sort(key=lambda x: x.created_at, reverse=True)
+        return created_tickets
 
     def get_user_section_called_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
@@ -395,26 +352,22 @@ class OfficeHoursSectionService:
 
         # PERMISSIONS
 
-        # Throws exception if user is not a member
+        # Raises exception if user is not a member
         section_member_entity = self._check_user_section_membership(
             subject.id, oh_section.id
         )
 
         # Selects tickets from a certain section with the subject's id as the caller
-        user_ticket_entities = (
-            self._session.query(OfficeHoursTicketEntity)
-            .join(OfficeHoursEventEntity)
-            .join(OfficeHoursSectionEntity)
-            .filter(
-                OfficeHoursSectionEntity.id == oh_section.id,
-                OfficeHoursTicketEntity.caller.has(
-                    SectionMemberEntity.id == section_member_entity.id
-                ),
-            )
-            .all()
-        )
+        called_tickets = [
+            entity.to_details_model()
+            for entity in section_member_entity.called_tickets
+            if entity.called_at is not None
+        ]
 
-        return [entity.to_details_model() for entity in user_ticket_entities]
+        # Order with Lastest First
+        called_tickets.sort(key=lambda x: x.called_at, reverse=True)
+
+        return called_tickets
 
     def update(
         self, subject: User, oh_section: OfficeHoursSection
@@ -427,7 +380,6 @@ class OfficeHoursSectionService:
             OfficeHoursSectionDetails: updated OfficeHoursSectionDetails
         """
         # TODO
-        return None
 
     def delete(self, subject: User, oh_section: int) -> None:
         """Deletes an office hours section.
@@ -463,7 +415,7 @@ class OfficeHoursSectionService:
         section_member_entity = self._session.scalars(query).one_or_none()
 
         if section_member_entity is None:
-            raise ResourceNotFoundException(
+            raise PermissionError(
                 f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_ids}"
             )
 
@@ -507,7 +459,7 @@ class OfficeHoursSectionService:
         )
 
         if section_member_entity is None:
-            raise ResourceNotFoundException(
+            raise PermissionError(
                 f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
             )
 
