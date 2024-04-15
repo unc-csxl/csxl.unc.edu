@@ -22,7 +22,11 @@ from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...database import db_session
 
 from ...models.coworking.time_range import TimeRange
-from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.event import (
+    OfficeHoursEvent,
+    OfficeHoursEventDraft,
+    OfficeHoursEventPartial,
+)
 from ...models.office_hours.event_details import OfficeHoursEventDetails
 from ...models.user import User
 
@@ -78,27 +82,97 @@ class OfficeHoursEventService:
         # Return added object
         return oh_event_entity.to_model()
 
-    def update(self, subject: User, oh_event: OfficeHoursEvent) -> OfficeHoursEvent:
+    def update(
+        self, subject: User, oh_event_delta: OfficeHoursEventPartial
+    ) -> OfficeHoursEvent:
         """Updates an office hours event.
 
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event: OfficeHoursEvent to update in the table
+            subject (User): a valid User model representing the currently logged in User
+            oh_event_delta (OfficeHoursEventPartial): OfficeHoursEventPartial delta to update in the table
 
         Returns:
             OfficeHoursEvent: Updated object in table
+
+        Raises:
+            PermissionError: If the user attempting to update the event is a student.
+
         """
-        # TODO
-        return None
+        oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event_delta.id)
+
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event_entity.office_hours_section_id
+        )
+
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                "User is a Student. Do not have permission to update an event."
+            )
+
+        # Update Delta Fields
+        if oh_event_delta.event_date is not None:
+            oh_event_entity.date = oh_event_delta.event_date
+
+        if oh_event_delta.start_time is not None:
+            oh_event_entity.start_time = oh_event_delta.start_time
+
+        if oh_event_delta.end_time is not None:
+            oh_event_entity.end_time = oh_event_delta.end_time
+
+        if oh_event_delta.location_description is not None:
+            oh_event_entity.location_description = oh_event_delta.location_description
+
+        if oh_event_delta.description is not None:
+            oh_event_entity.description = oh_event_delta.description
+
+        if oh_event_delta.type is not None:
+            oh_event_entity.type = oh_event_delta.type
+
+        if oh_event_delta.room is not None:
+            oh_event_entity.room_id = oh_event_delta.room.id
+
+        if oh_event_delta.oh_section is not None:
+            oh_event_entity.office_hours_section_id = oh_event_delta.oh_section.id
+
+        self._session.commit()
+
+        return oh_event_entity.to_model()
 
     def delete(self, subject: User, oh_event: OfficeHoursEvent) -> None:
-        """Deletes an office hours event.
+        """Delete the specified office hours event.
 
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_event: OfficeHoursEvent to delete
+            subject (User): The user initiating the delete operation.
+            oh_event (OfficeHoursEvent): The office hours event to be deleted.
+
+        Returns:
+            None
+
+        Raises:
+            PermissionError: If the user attempting to delete the event is a student.
+            ResourceNotFoundException: If the specified office hours event does not exist.
+
         """
-        # TODO
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                "User is a Student. Do not have permission to delete an office hours event."
+            )
+
+        oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event.id)
+
+        if oh_event_entity is None:
+            raise ResourceNotFoundException(
+                f"Could not find office hours event with id={oh_event.id}"
+            )
+
+        self._session.delete(oh_event_entity)
+        self._session.commit()
+
+        return None
 
     def get_event_by_id(self, subject: User, oh_event_id: int) -> OfficeHoursEvent:
         """Gets an office hour event based on OH event id.

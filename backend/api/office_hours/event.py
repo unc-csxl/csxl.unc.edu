@@ -12,7 +12,11 @@ from backend.models.office_hours.event_status import (
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
-from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.event import (
+    OfficeHoursEvent,
+    OfficeHoursEventDraft,
+    OfficeHoursEventPartial,
+)
 from ...models.office_hours.event_details import OfficeHoursEventDetails
 from ...services.office_hours.event import OfficeHoursEventService
 
@@ -47,9 +51,9 @@ def new_oh_event(
     return oh_event_service.create(subject, oh_event)
 
 
-@api.put("/{oh_event_id}", response_model=OfficeHoursEvent, tags=["Office Hours"])
+@api.put("", response_model=OfficeHoursEvent, tags=["Office Hours"])
 def update_oh_event(
-    oh_event: OfficeHoursEvent,
+    oh_event: OfficeHoursEventPartial,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
 ) -> OfficeHoursEvent:
@@ -59,7 +63,10 @@ def update_oh_event(
     Returns:
         OfficeHoursEvent: OH Event updated
     """
-    return oh_event_service.update(subject, oh_event)
+    try:
+        return oh_event_service.update(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.delete("/{oh_event_id}", response_model=None, tags=["Office Hours"])
@@ -71,8 +78,13 @@ def delete_oh_event(
     """
     Deletes an OfficeHoursEvent from the database
     """
-    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(oh_event_id)
-    return oh_event_service.delete(subject, oh_event)
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.delete(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get("/{oh_event_id}", response_model=OfficeHoursEvent, tags=["Office Hours"])
