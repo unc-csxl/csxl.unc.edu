@@ -107,6 +107,11 @@ class OfficeHoursEventService:
         """
         oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event_delta.id)
 
+        if oh_event_entity is None:
+            raise ResourceNotFoundException(
+                f"Could not find Office Hours event with id={oh_event_delta.id}"
+            )
+
         section_member_entity = self._check_user_section_membership(
             subject.id, oh_event_entity.office_hours_section_id
         )
@@ -139,7 +144,7 @@ class OfficeHoursEventService:
             oh_event_entity.room_id = oh_event_delta.room.id
 
         if oh_event_delta.oh_section is not None:
-            oh_event_entity.office_hours_section_id = oh_event_delta.oh_section.id
+            raise Exception("Updating Office Hours Event OH Section is Not Allowed.")
 
         self._session.commit()
 
@@ -171,9 +176,9 @@ class OfficeHoursEventService:
 
         oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event.id)
 
-        if oh_event_entity is None:
-            raise ResourceNotFoundException(
-                f"Could not find office hours event with id={oh_event.id}"
+        if len(oh_event_entity.tickets) != 0:
+            raise Exception(
+                f"Ticket data exists for office hours event with id={oh_event.id}. Unable to delete event due to existing ticket data."
             )
 
         self._session.delete(oh_event_entity)
