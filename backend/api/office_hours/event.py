@@ -7,7 +7,9 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ...models.office_hours.event_status import (
     OfficeHoursEventStatus,
+    StaffHelpingStatus,
     StudentOfficeHoursEventStatus,
+    StudentQueuedTicketStatus,
 )
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
@@ -194,5 +196,55 @@ def get_queued_and_called_oh_tickets_by_event_for_student(
         return oh_event_service.get_event_queue_stats_for_student_with_ticket(
             subject, oh_event, ticket_id
         )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_event_id}/staff-status",
+    response_model=StaffHelpingStatus,
+    tags=["Office Hours"],
+)
+def check_staff_helping_status(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> StaffHelpingStatus:
+    """
+    Gets Ticket staff member is helping, or returns id None.
+
+    Returns:
+        (StaffHelpingStatus): Model that contains ticket id staff is helping
+    """
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.check_staff_helping_status(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_event_id}/student-status",
+    response_model=StudentQueuedTicketStatus,
+    tags=["Office Hours"],
+)
+def check_student_in_queue_status(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> StudentQueuedTicketStatus:
+    """
+    Gets Ticket a student has queued, or returns id None.
+
+    Returns:
+        (StudentQueuedTicketStatus): Model that contains ticket id student has queued
+    """
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.check_student_in_queue_status(subject, oh_event)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

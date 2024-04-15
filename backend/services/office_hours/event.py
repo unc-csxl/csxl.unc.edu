@@ -3,6 +3,8 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...models.office_hours.ticket import OfficeHoursTicket
+
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
@@ -10,7 +12,9 @@ from ...entities.office_hours import OfficeHoursEventEntity
 
 from ...models.office_hours.event_status import (
     OfficeHoursEventStatus,
+    StaffHelpingStatus,
     StudentOfficeHoursEventStatus,
+    StudentQueuedTicketStatus,
 )
 from ...models.office_hours.ticket_state import TicketState
 from ...models.roster_role import RosterRole
@@ -389,6 +393,67 @@ class OfficeHoursEventService:
         )
 
         return student_event_status
+
+    def check_staff_helping_status(
+        self, subject: User, oh_event: OfficeHoursEvent
+    ) -> StaffHelpingStatus:
+        """
+        Retrieve the ticket a staff member is currently helping, if there is one.
+
+        Args:
+            subject (User): The user object representing the authenticated user making the request.
+            oh_event (OfficeHoursEvent): The office hours event.
+        Returns:
+            StaffHelpingStatus: A `StaffHelpingStatus` object representing the ticket a staff member is working on.
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+                the office hours section associated with the event with id (`oh_event`).
+        """
+        # Throws PermissionError if user is not a SectionMember of the given OH section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+
+        called_event_ticket_entities = self._get_called_tickets_by_oh_event(oh_event.id)
+
+        for ticket in called_event_ticket_entities:
+            if section_member_entity.id == ticket.caller_id:
+                return StaffHelpingStatus(ticket_id=ticket.id)
+
+        return StaffHelpingStatus(ticket_id=None)
+
+    def check_student_in_queue_status(
+        self, subject: User, oh_event: OfficeHoursEvent
+    ) -> OfficeHoursTicket:
+        """
+        Retrieve the ticket a student currently has in the queue, if there is one.
+
+        Args:
+            subject (User): The user object representing the authenticated user making the request.
+            oh_event (OfficeHoursEvent): The office hours event.
+        Returns:
+            StudentQueuedTicketStatus: A `StudentQueuedTicketStatus` object representing the ticket a student has queued up.
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+                the office hours section associated with the event with id (`oh_event`).
+        """
+
+        # Throws PermissionError if user is not a SectionMember of the given OH section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.oh_section.id
+        )
+
+        queued_event_ticket_entities = self._get_queued_tickets_by_oh_event(oh_event.id)
+
+        # Find queued ticket with student's id as creator, or assign id to None in Status model
+        for ticket in queued_event_ticket_entities:
+            creator_ids = [creator.id for creator in ticket.creators]
+            if section_member_entity.id in creator_ids:
+                return StudentQueuedTicketStatus(ticket_id=ticket.id)
+
+        return StudentQueuedTicketStatus(ticket_id=None)
 
     def _find_ticket_position(
         self, tickets_list: list[OfficeHoursTicketEntity], ticket_id: int
