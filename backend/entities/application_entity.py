@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Applications."""
 
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.section_application_table import section_application_table

@@ -13,6 +13,7 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
 import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
 import { Application } from 'src/app/admin/applications/admin-application.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-academics-home',
@@ -31,7 +32,8 @@ export class AcademicsHomeComponent implements OnInit {
   constructor(
     private gearService: NagivationAdminGearService,
     protected dialog: MatDialog,
-    public applicationService: ApplicationsService
+    public applicationService: ApplicationsService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -44,12 +46,16 @@ export class AcademicsHomeComponent implements OnInit {
   }
 
   onUTAClick(application: Application | null): void {
-    const dialogRef = this.dialog.open(UTANoticeComponent, {
-      width: '1000px',
-      autoFocus: false,
-      data: { application }
-    });
+    if (application) {
+      this.router.navigate(['/ta-application/uta-application/']);
+    } else {
+      const dialogRef = this.dialog.open(UTANoticeComponent, {
+        width: '1000px',
+        autoFocus: false,
+        data: { application }
+      });
 
-    dialogRef.afterClosed().subscribe();
+      dialogRef.afterClosed().subscribe();
+    }
   }
 }

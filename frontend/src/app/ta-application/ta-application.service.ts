@@ -75,21 +75,17 @@ export class ApplicationsService {
       take(1),
       switchMap((currentApplication) => {
         return currentApplication
-          ? this.updateApplication(
-              application,
-              currentApplication.id.toString()
-            )
+          ? this.updateApplication(application)
           : this.createApplication(application);
       })
     );
   }
 
   private updateApplication(
-    application: Omit<Application, 'id'>,
-    appId: string
+    application: Omit<Application, 'id'>
   ): Observable<Application> {
     return this.http
-      .put<Application>(`/api/applications/${appId}`, application)
+      .put<Application>(`/api/applications/update`, application)
       .pipe(
         tap((updatedApplication) => {
           this.user_application.set(updatedApplication);

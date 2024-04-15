@@ -5,7 +5,16 @@ import { Application } from 'src/app/admin/applications/admin-application.model'
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, filter, map, startWith, switchMap, take } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil
+} from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Section } from 'src/app/academics/academics.models';
@@ -121,15 +130,15 @@ export class UndergradApplicationComponent {
     additional_experience: ['', Validators.required]
   });
   thirdFormGroup = this.formBuilder.group({
-    academic_hours: [0, [Validators.required, Validators.min(0)]],
+    academic_hours: [14, [Validators.required, Validators.min(0)]],
     extracurriculars: ['', Validators.required],
     expected_graduation: ['', Validators.required],
     program_pursued: ['', Validators.required],
     other_programs: ['']
   });
   fourthFormGroup = this.formBuilder.group({
-    gpa: [0, [Validators.required, Validators.min(0)]],
-    comp_gpa: [0, [Validators.required, Validators.min(0)]]
+    gpa: [0.0, [Validators.required, Validators.min(0)]],
+    comp_gpa: [0.0, [Validators.required, Validators.min(0)]]
   });
   fifthFormGroup = this.formBuilder.group({
     preferred_sections: this.formBuilder.array([]),
@@ -145,6 +154,7 @@ export class UndergradApplicationComponent {
   allSections$: Observable<Section[]>;
   selectedSections: Section[] = [];
   userDetails: Profile | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -167,30 +177,60 @@ export class UndergradApplicationComponent {
     });
   }
 
-  private populateForm(application: Application): void {
-    this.firstFormGroup.patchValue({
-      intro_video: application.intro_video
-    });
-    this.secondFormGroup.patchValue({
-      prior_experience: application.prior_experience,
-      service_experience: application.service_experience,
-      additional_experience: application.additional_experience
-    });
-    this.thirdFormGroup.patchValue({
-      academic_hours: application.academic_hours,
-      extracurriculars: application.extracurriculars,
-      expected_graduation: application.expected_graduation,
-      program_pursued: application.program_pursued,
-      other_programs: application.other_programs
-    });
-    this.fourthFormGroup.patchValue({
-      gpa: application.gpa,
-      comp_gpa: application.comp_gpa
-    });
-    this.fifthFormGroup.patchValue({
-      preferred_sections: application.preferred_sections,
-      comp_227: application.comp_227
-    });
+  ngOnInit() {
+    this.fetchApplicationData();
+  }
+
+  fetchApplicationData(): void {
+    this.applicationService.user_application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application) => {
+        if (application) {
+          this.populateForm(application);
+        } else {
+          this.resetForm();
+        }
+      });
+
+    this.applicationService.getApplication();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private populateForm(application: Application | null): void {
+    if (application) {
+      this.firstFormGroup.patchValue({
+        intro_video: application.intro_video
+      });
+      this.secondFormGroup.patchValue({
+        prior_experience: application.prior_experience,
+        service_experience: application.service_experience,
+        additional_experience: application.additional_experience
+      });
+      this.thirdFormGroup.patchValue({
+        academic_hours: application.academic_hours,
+        extracurriculars: application.extracurriculars,
+        expected_graduation: application.expected_graduation,
+        program_pursued: application.program_pursued,
+        other_programs: application.other_programs
+      });
+      this.fourthFormGroup.patchValue({
+        gpa: application.gpa ? parseFloat(application.gpa.toFixed(2)) : 0.0,
+        comp_gpa: application.comp_gpa
+          ? parseFloat(application.comp_gpa.toFixed(2))
+          : 0.0
+      });
+
+      this.fifthFormGroup.patchValue({
+        preferred_sections: application.preferred_sections,
+        comp_227: application.comp_227
+      });
+    } else {
+      this.resetForm();
+    }
   }
 
   private validateForm(): boolean {
@@ -210,22 +250,23 @@ export class UndergradApplicationComponent {
       number: section.number,
       term_id: section.term_id,
       meeting_pattern: section.meeting_pattern,
-      staff: section.staff,
-      office_hour_rooms: section.office_hour_rooms,
+      lecture_room: section.lecture_room ?? { id: '', nickname: '' },
+      staff: section.staff ?? [],
+      office_hour_rooms: section.office_hour_rooms ?? [],
       override_title: section.override_title || '',
       override_description: section.override_description || ''
     }));
 
     return {
-      user_id: userDetails.id ?? 0,
+      user_id: userDetails.id ?? 1,
       user: userDetails,
       academic_hours: this.thirdFormGroup.value.academic_hours ?? 0,
       extracurriculars: this.thirdFormGroup.value.extracurriculars ?? '',
       expected_graduation: this.thirdFormGroup.value.expected_graduation ?? '',
       program_pursued: this.thirdFormGroup.value.program_pursued ?? '',
       other_programs: this.thirdFormGroup.value.other_programs ?? '',
-      gpa: this.fourthFormGroup.value.gpa ?? 0,
-      comp_gpa: this.fourthFormGroup.value.comp_gpa ?? 0,
+      gpa: this.fourthFormGroup.value.gpa ?? 0.0,
+      comp_gpa: this.fourthFormGroup.value.comp_gpa ?? 0.0,
       preferred_sections: sectionsToSend,
       comp_227: this.fifthFormGroup.value.comp_227 ?? '',
       intro_video: this.firstFormGroup.value.intro_video ?? '',
@@ -234,6 +275,32 @@ export class UndergradApplicationComponent {
       additional_experience:
         this.secondFormGroup.value.additional_experience ?? ''
     } as Omit<Application, 'id'>;
+  }
+
+  resetForm(): void {
+    this.firstFormGroup.reset({
+      intro_video: ''
+    });
+    this.secondFormGroup.reset({
+      prior_experience: '',
+      service_experience: '',
+      additional_experience: ''
+    });
+    this.thirdFormGroup.reset({
+      academic_hours: 0,
+      extracurriculars: '',
+      expected_graduation: '',
+      program_pursued: '',
+      other_programs: ''
+    });
+    this.fourthFormGroup.reset({
+      gpa: 0.0,
+      comp_gpa: 0.0
+    });
+    this.fifthFormGroup.reset({
+      preferred_sections: [],
+      comp_227: ''
+    });
   }
 
   onSubmit() {
@@ -361,8 +428,11 @@ export class UndergradApplicationComponent {
    * @returns {void}
    */
   private onError(err: any): void {
-    this.snackBar.open('Application Failed', '', {
-      duration: 2000
-    });
+    console.error('Error processing the application:', err);
+    this.snackBar.open(
+      'Error processing your application. Please try again.',
+      '',
+      { duration: 3000 }
+    );
   }
 }
