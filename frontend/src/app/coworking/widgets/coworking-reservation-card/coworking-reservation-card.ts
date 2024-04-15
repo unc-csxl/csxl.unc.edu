@@ -49,8 +49,8 @@ export class CoworkingReservationCard implements OnInit {
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
   }
 
-  checkinDeadline(reservationStart: Date): Date {
-    return new Date(reservationStart.getTime() + 10 * 60 * 1000);
+  checkinDeadline(reservationStart: Date, reservationEnd: Date): Date {
+    return new Date(Math.min(reservationStart.getTime() + 10 * 60 * 1000, reservationEnd.getTime()));
   }
 
   cancel() {
