@@ -56,7 +56,7 @@
           <h2 class="heading">Upcoming Reservations</h2>
         </div>
         <div class="upcoming-reservations-container">
-          <ng-container *ngFor="let r of initUpcomingReservations() | async">
+          <ng-container *ngFor="let r of upcomingReservations$ | async">
             <ng-container *ngIf="r?.room?.id">
               <coworking-reservation-card
                 [reservation]="r"
