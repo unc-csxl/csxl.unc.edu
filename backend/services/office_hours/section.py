@@ -371,6 +371,50 @@ class OfficeHoursSectionService:
 
         return called_tickets
 
+    def get_section_tickets_with_concerns(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
+    ) -> list[OfficeHoursTicketDetails]:
+        """Retrieves all office hours tickets that were flagged for concern from the table by a section.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: the OfficeHoursSectionDetails to query by.
+        Returns:
+            list[OfficeHoursTicketDetails]: List of all concerning `OfficeHoursTicketDetails` in an OHsection
+        """
+
+        # Checks If User Has Proper Role to Get and If is a Member in a Section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        if (
+            section_member_entity.member_role != RosterRole.INSTRUCTOR
+            and section_member_entity.member_role != RosterRole.GTA
+        ):
+            raise PermissionError(
+                f"Section Member is not an Instructor or GTA. User Does Not Have Permision to get concerning tickets in section with id {oh_section.id}."
+            )
+
+        # Selects the section entity based on the ID
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        # Get the tickets that are linked to the events which are linked to the section
+        ticket_entities = [
+            ticket for event in entity.events for ticket in event.tickets
+        ]
+
+        # Access the details models of those tickets
+        ticket_details_models = [
+            entity.to_details_model() for entity in ticket_entities
+        ]
+
+        # Return tickets where have_concerns is True
+        return [ticket for ticket in ticket_details_models if ticket.have_concerns]
+
     def get_oh_section_members(
         self, subject: User, oh_section: OfficeHoursSectionDetails
     ) -> list[SectionMember]:

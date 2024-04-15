@@ -279,6 +279,31 @@ def get_user_section_called_tickets(
 
 
 @api.get(
+    "/{oh_section_id}/data/concerns",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
+)
+def get_section_tickets_with_concerns(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of OH tickets in a section that were marked for concern
+
+    Returns:
+        list[OfficeHoursTicketDetails]: OH tickets within the given section that were marked for concern
+    """
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_section_tickets_with_concerns(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
     "/{oh_section_id}/people",
     response_model=list[SectionMember],
     tags=["Office Hours"],
