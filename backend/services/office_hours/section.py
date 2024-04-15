@@ -309,6 +309,14 @@ class OfficeHoursSectionService:
         entities = self._session.scalars(query).all()
         return [entity.to_details_model() for entity in entities]
 
+    def get_user_not_enrolled_sections_by_term(
+        self, subject: User, term_id: int
+    ) -> list[OfficeHoursSectionDetails]:
+        # Query all sections by terms
+        # Query all user sections by terms
+        # Return not alike sections
+        return None
+
     def get_section_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
     ) -> list[OfficeHoursTicketDetails]:
