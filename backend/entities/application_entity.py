@@ -101,10 +101,10 @@ class UTAEntity(ApplicationEntity):
     other_programs: Mapped[str] = mapped_column(String, nullable=True)
 
     # GPA
-    gpa: Mapped[int] = mapped_column(Integer, nullable=True)
+    gpa: Mapped[float] = mapped_column(Float, nullable=True)
 
     # COMP GPA
-    comp_gpa: Mapped[int] = mapped_column(Integer, nullable=True)
+    comp_gpa: Mapped[float] = mapped_column(Float, nullable=True)
 
     # Do they want to do this as COMP 227?
     comp_227: Mapped[str] = mapped_column(String, nullable=True)
