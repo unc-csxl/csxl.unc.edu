@@ -79,6 +79,12 @@ export class CurrentTicketCard implements OnInit {
     });
   }
 
+  displayClosedMessage() {
+    this.snackBar.open('This ticket has been closed.', '', {
+      duration: 2000
+    });
+  }
+
   getTicketStats() {
     this.officeHoursService
       .getQueueStatsForStudent(this.event.id, this.ticket.id)

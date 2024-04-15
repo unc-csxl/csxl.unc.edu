@@ -87,6 +87,12 @@ export class TicketQueuePageComponent implements OnInit {
       section: OfficeHoursSectionDetails;
     };
     this.section = data.section;
+
+    // subscribe to observable every 10 seconds and get tickets + stats
+    let refresh = interval(10000).subscribe(() => {
+      this.getTicketStats();
+      this.getEvent();
+    });
   }
 
   ngOnInit() {
@@ -101,7 +107,6 @@ export class TicketQueuePageComponent implements OnInit {
         .getEventQueueTickets(this.event)
         .subscribe((tickets) => {
           this.tickets = tickets;
-          console.log(tickets);
         });
     }
   }

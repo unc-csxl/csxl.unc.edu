@@ -17,6 +17,7 @@ import {
   OfficeHoursSection,
   TicketDetails
 } from '../office-hours.models';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-current-ticket-page',
@@ -46,6 +47,13 @@ export class CurrentTicketPageComponent implements OnInit {
     this.sectionId = this.route.snapshot.params['id'];
     this.eventId = this.route.snapshot.params['event_id'];
     this.ticketId = this.route.snapshot.params['ticket_id'];
+    let refresh = interval(10000).subscribe(() => {
+      let prevState = this.ticket;
+      this.getTicketInfo();
+      if (this.ticket !== prevState) {
+        this.ngOnInit();
+      }
+    });
   }
 
   ngOnInit(): void {
