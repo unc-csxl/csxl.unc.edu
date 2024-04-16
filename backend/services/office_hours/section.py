@@ -307,11 +307,6 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
         # Get the tickets that are linked to the events which are linked to the section
         ticket_entities = [
             ticket for event in entity.events for ticket in event.tickets
@@ -409,11 +404,6 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
         # Get the tickets that are linked to the events which are linked to the section
         ticket_entities = [
             ticket for event in entity.events for ticket in event.tickets
@@ -460,11 +450,6 @@ class OfficeHoursSectionService:
         )
 
         entity = self._session.scalars(query).one_or_none()
-
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
 
         # Get the tickets that are linked to the events which are linked to the section
         ticket_entities = [
@@ -554,11 +539,6 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
         # Get the members that are linked to the academic sections which are linked to the OH section
         member_entities = [
             member for section in entity.sections for member in section.members
@@ -594,7 +574,7 @@ class OfficeHoursSectionService:
                 f"Section Member is not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
             )
 
-        # Select SectionMember
+        # Select SectionMember to modify
         query = select(SectionMemberEntity).where(
             SectionMemberEntity.id == user_to_modify.id
         )
@@ -603,7 +583,8 @@ class OfficeHoursSectionService:
             raise ResourceNotFoundException(
                 f"SectionMember with id {user_to_modify.id} not found."
             )
-        # Throw error if member to update isn't a member of the OH section
+
+        # Raise error if member to update isn't a member of the OH section
         self._check_user_section_membership(
             section_member_entity.user_id, oh_section_id
         )
