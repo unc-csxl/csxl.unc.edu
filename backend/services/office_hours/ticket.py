@@ -404,6 +404,57 @@ class OfficeHoursTicketService:
 
         return ticket_entity.to_details_model()
 
+    def update_ticket_description(
+        self, subject: User, oh_ticket: OfficeHoursTicketPartial
+    ) -> OfficeHoursTicketDetails:
+
+        # Check Feedback Fields Are Not None
+        if oh_ticket.description is None:
+            raise Exception("Missing Data To Update Ticket Description")
+
+        # Query Ticket
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket.id)
+
+        if ticket_entity is None:
+            raise ResourceNotFoundException(f"Cannot Find Ticket id={oh_ticket.id}")
+
+        # Fetch Office Hours Section - Needed To Determine if User Membership
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
+            ticket_entity.oh_event_id
+        )
+
+        # Case: Current User
+        current_user_section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section_entity.id
+        )
+
+        # PERMISSIONS:
+        # 1. Check if Ticket Is Queued
+        if ticket_entity.state != TicketState.QUEUED:
+            raise PermissionError(
+                f"Ticket is Not Queued. Cannot Update Ticket Description for Ticket id={oh_ticket.id}"
+            )
+
+        # 2. CASE: Only Creator(s) of Ticket Can Update
+        section_created_tickets: list[OfficeHoursTicketEntity] = (
+            current_user_section_member_entity.created_tickets
+        )
+
+        is_creator = False
+        for ticket in section_created_tickets:
+            if ticket.id == ticket_entity.id:
+                is_creator = True
+
+        if not is_creator:
+            raise PermissionError(
+                f"User id={subject.id} is not a creator or ticket id={ticket_entity.id} and does not have permission to edit."
+            )
+
+        ticket_entity.description = oh_ticket.description
+        self._session.commit()
+
+        return ticket_entity.to_details_model()
+
     def _check_user_section_membership(
         self,
         user_id: int,
