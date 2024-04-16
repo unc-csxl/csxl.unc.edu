@@ -213,10 +213,10 @@ def get_user_not_enrolled_sections(
     oh_section_service: OfficeHoursSectionService = Depends(),
 ) -> list[OfficeHoursSection]:
     """
-    Gets list of OH sections the currrent user is in during a given term
+    Gets list of OH sections the currrent user not apart of.
 
     Returns:
-        list[OfficeHoursSectionDetails]: User's OH sections within the given term
+        list[OfficeHoursSection]: User's OH sections within the given term
     """
     try:
         return oh_section_service.get_user_not_enrolled_sections(subject)
