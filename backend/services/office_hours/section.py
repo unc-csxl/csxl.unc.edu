@@ -312,8 +312,15 @@ class OfficeHoursSectionService:
         return [entity.to_details_model() for entity in entities]
 
     def get_user_not_enrolled_sections(self, subject: User) -> list[OfficeHoursSection]:
+        """Retrieves all office hours sections user not a member of.
+        Args:
+            subject (User): a valid User model representing the currently logged in User
 
-        user_oh_sections_by_term_query = (
+        Returns:
+            list[OfficeHoursSection]: List of all `OfficeHoursSection`
+
+        """
+        user_oh_sections_ids_query = (
             select(OfficeHoursSectionEntity.id)
             .where(SectionMemberEntity.user_id == subject.id)
             .where(SectionMemberEntity.section_id == SectionEntity.id)
@@ -322,7 +329,7 @@ class OfficeHoursSectionService:
         )
 
         query_user_not_enrolled_sections = select(OfficeHoursSectionEntity).filter(
-            not_(OfficeHoursSectionEntity.id.in_(user_oh_sections_by_term_query))
+            not_(OfficeHoursSectionEntity.id.in_(user_oh_sections_ids_query))
         )
 
         sections_not_in = self._session.scalars(query_user_not_enrolled_sections).all()
