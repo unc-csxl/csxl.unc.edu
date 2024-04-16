@@ -225,7 +225,7 @@ def get_user_not_enrolled_sections(
 
 
 @api.get(
-    "/user/term/{term_id}/not-enrolled",
+    "/user/not-enrolled/term/{term_id}",
     response_model=list[OfficeHoursSection],
     tags=["Office Hours"],
 )
@@ -235,7 +235,7 @@ def get_user_not_enrolled_sections(
     oh_section_service: OfficeHoursSectionService = Depends(),
 ) -> list[OfficeHoursSection]:
     """
-    Gets list of OH sections the currrent user not apart of.
+    Gets list of OH sections the currrent user not apart of by term.
 
     Returns:
         list[OfficeHoursSection]: User's OH sections within the given term

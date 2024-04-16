@@ -52,6 +52,9 @@ comp_523_oh_section = OfficeHoursSection(
 
 oh_sections = [comp_110_oh_section, comp_523_oh_section]
 
+# For Test
+f23_oh_sections = [comp_110_oh_section, comp_523_oh_section]
+
 oh_section_draft = OfficeHoursSectionDraft(title="Draft OH Section")
 # Office Hours Event Data
 comp_110_current_oh_event = OfficeHoursEvent(

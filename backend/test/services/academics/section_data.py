@@ -145,15 +145,6 @@ new_section_with_lecture_room = Section(
     override_description="",
     lecture_room=virtual_room,
 )
-comp_210_001 = Section(
-    id=5,
-    course_id=course_data.comp_210.id,
-    number="001",
-    term_id=term_data.f_23.id,
-    meeting_pattern="TTh 8:00AM - 9:15AM",
-    override_title="",
-    override_description="",
-)
 
 # Variables To Help Associate User Data to Section Members
 user__comp110_instructor = user_data.instructor
