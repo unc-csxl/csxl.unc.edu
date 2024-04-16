@@ -381,11 +381,24 @@ class OfficeHoursSectionService:
         Returns:
             list[SectionMemberDetails]: List of all `SectionMemberDetails` in an OHsection
         """
+
+        # Select OH Section by id
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        oh_section_entity = self._session.scalars(query).one_or_none()
+
+        if oh_section_entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
         # PERMISSIONS
 
         # Throws exception if user is not a member
         section_member_entity = self._check_user_section_membership(
-            subject.id, oh_section.id
+            subject.id, oh_section_entity.id
         )
 
         # Raises PermissionError if user trying to fetch all members is a Student
@@ -394,21 +407,11 @@ class OfficeHoursSectionService:
                 f"Section Member is a Student. User Does Not Have Permission to Get Section Members."
             )
 
-        # Select OH Section by id
-        query = select(OfficeHoursSectionEntity).where(
-            OfficeHoursSectionEntity.id == oh_section.id
-        )
-
-        entity = self._session.scalars(query).one_or_none()
-
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
-            )
-
         # Get the members that are linked to the academic sections which are linked to the OH section
         member_entities = [
-            member for section in entity.sections for member in section.members
+            member
+            for section in oh_section_entity.sections
+            for member in section.members
         ]
 
         # Return the model version of those members

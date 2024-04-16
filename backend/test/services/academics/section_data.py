@@ -74,7 +74,7 @@ comp_301_001 = Section(
 )
 
 comp_210_001 = Section(
-    id=6,
+    id=5,
     course_id=course_data.comp_210.id,
     number="001",
     term_id=term_data.f_23.id,
@@ -84,7 +84,7 @@ comp_210_001 = Section(
 )
 
 comp_523_001 = Section(
-    id=5,
+    id=6,
     course_id=course_data.comp_523.id,
     number="001",
     term_id=term_data.f_23.id,
@@ -218,6 +218,14 @@ section_members = [
     comp301_instructor,
     comp_301_uta,
     comp_301_student,
+]
+
+comp110_members = [
+    comp110_instructor,
+    comp110_student_0,
+    comp110_student_1,
+    comp110_uta,
+    comp110_uta_1,
 ]
 
 
