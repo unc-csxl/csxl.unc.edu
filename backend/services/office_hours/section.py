@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import statistics
 from fastapi import Depends
 from sqlalchemy import select
@@ -451,26 +451,21 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
-        # Get the tickets from the past week that are linked to the events which are linked to the section
-        filtered_ticket_entities = [
-            ticket
-            for event in entity.events
-            for ticket in event.tickets
-            if ticket.created_at > datetime.now() - timedelta(days=7)
+        # Get the tickets that are linked to the events which are linked to the section
+        ticket_entities = [
+            ticket for event in entity.events for ticket in event.tickets
         ]
 
         # Get unique creators
         unique_ticket_creators = {
-            creator
-            for ticket in filtered_ticket_entities
-            for creator in ticket.creators
+            creator for ticket in ticket_entities for creator in ticket.creators
         }
 
         # --- Get wait time statistics ---
         # Calculate wait times in minutes for each ticket with a called time filled in
         wait_times = [
             (ticket.called_at - ticket.created_at).total_seconds() / 60
-            for ticket in filtered_ticket_entities
+            for ticket in ticket_entities
             if ticket.called_at
         ]
 
@@ -487,8 +482,8 @@ class OfficeHoursSectionService:
         # Calculate ticket duration in minutes for each ticket with a called time filled in
         ticket_duration_times = [
             (ticket.closed_at - ticket.called_at).total_seconds() / 60
-            for ticket in filtered_ticket_entities
-            if (ticket.closed_at and ticket.called_at)
+            for ticket in ticket_entities
+            if ticket.closed_at
         ]
 
         # Compute the average
@@ -506,7 +501,7 @@ class OfficeHoursSectionService:
 
         # --- Round floats to two decimal places, construct the model and return it ---
         return OfficeHoursSectionTrailingWeekData(
-            number_of_tickets=len(filtered_ticket_entities),
+            number_of_tickets=len(ticket_entities),
             number_of_students=len(unique_ticket_creators),
             average_wait_time=round(avg_wait_time, 2),
             standard_deviation_wait_time=round(std_dev_wait_time, 2),
