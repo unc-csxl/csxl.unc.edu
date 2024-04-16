@@ -25,20 +25,3 @@ mat-card {
 .button {
     margin: 0.25rem;
 }
-
-.header-row {
-    display: flex;
-    align-items: center;
-    padding: 1.5rem;
-  }
-
-  .vertical {
-    align-self: right;
-    align-items: right;
-    justify-items: right;
-    display: flex;
-  }
-
-  .title {
-    flex: 1;
-  }
