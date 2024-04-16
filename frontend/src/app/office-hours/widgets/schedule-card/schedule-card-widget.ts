@@ -13,6 +13,9 @@ import {
   OfficeHoursEvent,
   OfficeHoursEventType
 } from '../../office-hours.models';
+import { RosterRole } from 'src/app/academics/academics.models';
+import { DeleteEventDialog } from '../delete-event-dialog/delete-event-dialog.widget';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'schedule-card-widget',
@@ -21,9 +24,13 @@ import {
 })
 export class ScheduleCard implements OnInit {
   @Input() sectionId!: number;
+  @Input() rosterRole!: RosterRole | null;
   upcomingHours: OfficeHoursEvent[] = [];
 
-  constructor(private officeHoursService: OfficeHoursService) {}
+  constructor(
+    private officeHoursService: OfficeHoursService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.getUpcomingHours();
@@ -56,5 +63,19 @@ export class ScheduleCard implements OnInit {
     } else {
       return 'error';
     }
+  }
+
+  openDeleteEventDialog() {
+    const dialogRef = this.dialog.open(DeleteEventDialog, {
+      height: 'auto',
+      width: 'auto',
+      data: { isCurrent: false, events: this.upcomingHours }
+    });
+
+    dialogRef.afterClosed().subscribe((open) => {
+      if (!open) {
+        window.location.reload();
+      }
+    });
   }
 }

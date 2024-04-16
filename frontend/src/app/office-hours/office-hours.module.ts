@@ -37,6 +37,9 @@ import { InstructorSectionHomeComponent } from './instructor-section-home/instru
 import { TicketFeedbackFormComponent } from './ticket-feedback-form/ticket-feedback-form.component';
 import { TicketFeedbackDialog } from './widgets/ticket-feedback-dialog/ticket-feedback-dialog';
 import { PeopleTableComponent } from './people-table/people-table.component';
+import { DeleteEventFormComponent } from './delete-event-form/delete-event-form.component';
+import { DeleteEventDialog } from './widgets/delete-event-dialog/delete-event-dialog.widget';
+import { DeleteTicketDialog } from './widgets/delete-ticket-dialog/delete-ticket-dialog.widget';
 
 @NgModule({
   declarations: [
@@ -62,7 +65,10 @@ import { PeopleTableComponent } from './people-table/people-table.component';
     InstructorSectionHomeComponent,
     TicketFeedbackFormComponent,
     TicketFeedbackDialog,
-    PeopleTableComponent
+    PeopleTableComponent,
+    DeleteEventFormComponent,
+    DeleteEventDialog,
+    DeleteTicketDialog
   ],
   imports: [
     CommonModule,

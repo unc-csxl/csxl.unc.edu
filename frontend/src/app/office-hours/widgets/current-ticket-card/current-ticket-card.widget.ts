@@ -20,6 +20,8 @@ import { OfficeHoursService } from '../../office-hours.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { config } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog.widget';
 
 @Component({
   selector: 'current-ticket-card-widget',
@@ -36,7 +38,8 @@ export class CurrentTicketCard implements OnInit {
   constructor(
     private officeHoursService: OfficeHoursService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {
     this.queued_tickets = null;
     this.called_tickets = null;
@@ -56,9 +59,10 @@ export class CurrentTicketCard implements OnInit {
   }
 
   cancelTicket() {
-    this.officeHoursService.cancelTicket(this.ticket).subscribe(() => {
-      this.displayCanceledMessage();
-      this.navToHome();
+    const dialogRef = this.dialog.open(DeleteTicketDialog, {
+      height: 'auto',
+      width: 'auto',
+      data: { ticket: this.ticket, event: this.event }
     });
   }
 
