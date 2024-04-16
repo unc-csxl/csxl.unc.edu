@@ -63,6 +63,17 @@ comp_101_002 = Section(
     override_description="",
 )
 
+comp_101_001_sp_24 = Section(
+    id=7,
+    course_id=course_data.comp_110.id,
+    number="001",
+    term_id=term_data.sp_24.id,
+    meeting_pattern="TTh 12:00PM - 1:15PM",
+    override_title="",
+    override_description="",
+)
+
+
 comp_301_001 = Section(
     id=3,
     course_id=course_data.comp_301.id,
@@ -82,6 +93,7 @@ comp_210_001 = Section(
     override_title="",
     override_description="",
 )
+
 
 comp_523_001 = Section(
     id=5,
@@ -233,7 +245,14 @@ room_assignment_110_002 = (
     RoomAssignmentType.LECTURE_ROOM,
 )
 
-sections = [comp_101_001, comp_101_002, comp_301_001, comp_523_001, comp_210_001]
+sections = [
+    comp_101_001,
+    comp_101_002,
+    comp_301_001,
+    comp_523_001,
+    comp_210_001,
+    comp_101_001_sp_24,
+]
 assignments = [room_assignment_110_001, room_assignment_110_002]
 comp_110_sections = [comp_101_001, comp_101_002]
 
