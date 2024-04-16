@@ -36,9 +36,14 @@ import { SharedModule } from '../shared/shared.module';
 import { UndergradApplicationComponent } from './uta-application/uta-application.component';
 import { UTANoticeComponent } from './uta-notice/uta-notice.component';
 import { ApplicationsRoutingModule } from './ta-application-routing.module';
+import { ApplicationHomeComponent } from './home/application-home.component';
 
 @NgModule({
-  declarations: [UTANoticeComponent, UndergradApplicationComponent],
+  declarations: [
+    ApplicationHomeComponent,
+    UTANoticeComponent,
+    UndergradApplicationComponent
+  ],
   imports: [
     CommonModule,
     MatTabsModule,

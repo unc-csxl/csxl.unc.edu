@@ -420,7 +420,7 @@ export class UndergradApplicationComponent {
    * @returns {void}
    */
   private onSuccess(application: Application): void {
-    this.router.navigate(['/coworking/']);
+    this.router.navigate(['/ta-application/']);
     this.snackBar.open('Application Submitted!', '', { duration: 2000 });
   }
 
