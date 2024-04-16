@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
 import { Router } from '@angular/router';
@@ -30,7 +35,7 @@ interface OptionSelect {
   templateUrl: 'uta-application.component.html',
   styleUrls: ['uta-application.component.css']
 })
-export class UndergradApplicationComponent {
+export class UndergradApplicationComponent implements OnInit, OnDestroy {
   public static Route = {
     path: 'uta-application',
     component: UndergradApplicationComponent
@@ -121,29 +126,11 @@ export class UndergradApplicationComponent {
     return valid ? null : { invalidURL: true };
   }
 
-  firstFormGroup = this.formBuilder.group({
-    intro_video: ['', [Validators.required, this.validateIntroVideo.bind(this)]]
-  });
-  secondFormGroup = this.formBuilder.group({
-    prior_experience: ['', Validators.required],
-    service_experience: ['', Validators.required],
-    additional_experience: ['', Validators.required]
-  });
-  thirdFormGroup = this.formBuilder.group({
-    academic_hours: [14, [Validators.required, Validators.min(0)]],
-    extracurriculars: ['', Validators.required],
-    expected_graduation: ['', Validators.required],
-    program_pursued: ['', Validators.required],
-    other_programs: ['']
-  });
-  fourthFormGroup = this.formBuilder.group({
-    gpa: [0.0, [Validators.required, Validators.min(0)]],
-    comp_gpa: [0.0, [Validators.required, Validators.min(0)]]
-  });
-  fifthFormGroup = this.formBuilder.group({
-    preferred_sections: this.formBuilder.array([]),
-    comp_227: ['', Validators.required]
-  });
+  firstFormGroup: FormGroup;
+  secondFormGroup: FormGroup;
+  thirdFormGroup: FormGroup;
+  fourthFormGroup: FormGroup;
+  fifthFormGroup: FormGroup;
 
   isLinear = false;
   userId!: number | null;
@@ -162,12 +149,39 @@ export class UndergradApplicationComponent {
     private router: Router,
     protected snackBar: MatSnackBar
   ) {
+    this.firstFormGroup = this.formBuilder.group({
+      intro_video: [
+        '',
+        [Validators.required, this.validateIntroVideo.bind(this)]
+      ]
+    });
+    this.secondFormGroup = this.formBuilder.group({
+      prior_experience: ['', Validators.required],
+      service_experience: ['', Validators.required],
+      additional_experience: ['', Validators.required]
+    });
+    this.thirdFormGroup = this.formBuilder.group({
+      academic_hours: [0, [Validators.required, Validators.min(0)]],
+      extracurriculars: ['', Validators.required],
+      expected_graduation: ['', Validators.required],
+      program_pursued: ['', Validators.required],
+      other_programs: ['']
+    });
+    this.fourthFormGroup = this.formBuilder.group({
+      gpa: [0.0, [Validators.required, Validators.min(0)]],
+      comp_gpa: [0.0, [Validators.required, Validators.min(0)]]
+    });
+    this.fifthFormGroup = this.formBuilder.group({
+      preferred_sections: this.formBuilder.array([]),
+      comp_227: ['', Validators.required]
+    });
+
     this.allSections$ = applicationService.sections$;
     applicationService.getSections();
 
     this.filteredPreferences = this.preferenceCtrl.valueChanges.pipe(
       startWith(''),
-      switchMap((value) => this.filterSections(value!))
+      switchMap((value) => this.filterSections(value || ''))
     );
 
     this.applicationService.user_application$.subscribe((application) => {
@@ -177,22 +191,23 @@ export class UndergradApplicationComponent {
     });
   }
 
-  ngOnInit() {
-    this.fetchApplicationData();
-  }
-
-  fetchApplicationData(): void {
-    this.applicationService.user_application$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((application) => {
+  ngOnInit(): void {
+    this.applicationService.getApplication().subscribe(
+      (response) => {
+        const application = response ? response['application'] : null;
         if (application) {
           this.populateForm(application);
         } else {
           this.resetForm();
         }
-      });
-
-    this.applicationService.getApplication();
+      },
+      (error) => {
+        console.error('Failed to fetch application:', error);
+        this.snackBar.open('Failed to fetch application details!', 'Close', {
+          duration: 3000
+        });
+      }
+    );
   }
 
   ngOnDestroy() {
@@ -200,37 +215,30 @@ export class UndergradApplicationComponent {
     this.destroy$.complete();
   }
 
-  private populateForm(application: Application | null): void {
-    if (application) {
-      this.firstFormGroup.patchValue({
-        intro_video: application.intro_video
-      });
-      this.secondFormGroup.patchValue({
-        prior_experience: application.prior_experience,
-        service_experience: application.service_experience,
-        additional_experience: application.additional_experience
-      });
-      this.thirdFormGroup.patchValue({
-        academic_hours: application.academic_hours,
-        extracurriculars: application.extracurriculars,
-        expected_graduation: application.expected_graduation,
-        program_pursued: application.program_pursued,
-        other_programs: application.other_programs
-      });
-      this.fourthFormGroup.patchValue({
-        gpa: application.gpa ? parseFloat(application.gpa.toFixed(2)) : 0.0,
-        comp_gpa: application.comp_gpa
-          ? parseFloat(application.comp_gpa.toFixed(2))
-          : 0.0
-      });
-
-      this.fifthFormGroup.patchValue({
-        preferred_sections: application.preferred_sections,
-        comp_227: application.comp_227
-      });
-    } else {
-      this.resetForm();
-    }
+  populateForm(application: Application): void {
+    console.log('Attempting to populate form with: ', application);
+    this.firstFormGroup.patchValue({
+      intro_video: application.intro_video
+    });
+    this.secondFormGroup.patchValue({
+      prior_experience: application.prior_experience,
+      service_experience: application.service_experience,
+      additional_experience: application.additional_experience
+    });
+    this.thirdFormGroup.patchValue({
+      academic_hours: application.academic_hours,
+      extracurriculars: application.extracurriculars,
+      expected_graduation: application.expected_graduation,
+      program_pursued: application.program_pursued,
+      other_programs: application.other_programs
+    });
+    this.fourthFormGroup.patchValue({
+      gpa: application.gpa,
+      comp_gpa: application.comp_gpa
+    });
+    this.fifthFormGroup.patchValue({
+      comp_227: application.comp_227
+    });
   }
 
   private validateForm(): boolean {
@@ -278,58 +286,40 @@ export class UndergradApplicationComponent {
   }
 
   resetForm(): void {
-    this.firstFormGroup.reset({
-      intro_video: ''
-    });
-    this.secondFormGroup.reset({
-      prior_experience: '',
-      service_experience: '',
-      additional_experience: ''
-    });
-    this.thirdFormGroup.reset({
-      academic_hours: 0,
-      extracurriculars: '',
-      expected_graduation: '',
-      program_pursued: '',
-      other_programs: ''
-    });
-    this.fourthFormGroup.reset({
-      gpa: 0.0,
-      comp_gpa: 0.0
-    });
-    this.fifthFormGroup.reset({
-      preferred_sections: [],
-      comp_227: ''
-    });
+    this.firstFormGroup.reset();
+    this.secondFormGroup.reset();
+    this.thirdFormGroup.reset();
+    this.fourthFormGroup.reset();
+    this.fifthFormGroup.reset();
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.validateForm()) {
       this.applicationService.getProfile().subscribe({
         next: (userDetails) => {
-          this.userDetails = userDetails;
           const formData = this.collectFormData(userDetails);
-          console.log('Submitting form data:', formData);
           this.applicationService.submitApplication(formData).subscribe({
             next: (application) => this.onSuccess(application),
             error: (err) => this.onError(err)
           });
         },
         error: (err) => {
-          console.error('Failed to fetch user details', err);
-          this.onError(err);
+          console.error('Failed to fetch user details:', err);
+          this.snackBar.open('Failed to fetch user details.', '', {
+            duration: 3000
+          });
         }
       });
     } else {
-      this.snackBar.open('Application not finished yet!', '', {
+      this.snackBar.open('Please complete all required fields.', '', {
         duration: 3000
       });
     }
   }
 
-  private filterSections(value: string): Observable<Section[]> {
+  filterSections(value: string): Observable<Section[]> {
     const filterValue = value.toLowerCase();
-    return this.allSections$.pipe(
+    return this.applicationService.sections$.pipe(
       map((sections) =>
         sections.filter(
           (section) =>
@@ -340,34 +330,30 @@ export class UndergradApplicationComponent {
   }
 
   addPreferences(event: MatChipInputEvent): void {
-    const input = event.chipInput;
-    let value = event.value;
+    const input = event.input;
+    const value = event.value;
 
-    if (value) {
-      value = value.trim();
-      const sectionId = Number(value);
+    if ((value || '').trim()) {
+      const sectionId = Number(value.trim());
 
-      this.allSections$
+      this.applicationService.sections$
         .pipe(
           map((sections) =>
             sections.find((section) => section.id === sectionId)
           ),
-          filter((section) => !!section),
           take(1)
         )
         .subscribe((section) => {
-          if (
-            section &&
-            !this.selectedSections.some(
-              (selected) => selected.id === section.id
-            )
-          ) {
+          if (section && !this.selectedSections.includes(section)) {
             this.selectedSections.push(section);
           }
         });
     }
 
-    input?.clear();
+    if (input) {
+      input.value = '';
+    }
+
     this.preferenceCtrl.setValue(null);
   }
 
@@ -384,6 +370,10 @@ export class UndergradApplicationComponent {
   }
 
   removeSection(sectionID: number | null): void {
+    if (sectionID === null) {
+      console.error('Section ID is null');
+      return;
+    }
     const index = this.selectedSections.findIndex(
       (section) => section.id === sectionID
     );

@@ -1,3 +1,5 @@
+import { Section } from 'src/app/academics/academics.models';
+
 export interface Application {
   id: number;
   user_id: number;
@@ -9,7 +11,7 @@ export interface Application {
   other_programs: string;
   gpa: number;
   comp_gpa: number;
-  preferred_sections: unknown[] | undefined;
+  preferred_sections: Section[];
   comp_227: string;
   intro_video: string;
   prior_experience: string;
