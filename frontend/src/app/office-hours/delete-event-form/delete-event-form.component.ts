@@ -29,11 +29,9 @@ export class DeleteEventFormComponent {
     protected snackBar: MatSnackBar
   ) {}
 
-  public deleteEventForm = this.formBuilder.group({});
-
-  onSubmit() {
-    console.log('submitted');
-  }
+  public deleteEventForm = this.formBuilder.group({
+    event: ''
+  });
 
   formatEventType(typeNum: number) {
     return this.officeHoursService.formatEventType(typeNum);
@@ -46,6 +44,17 @@ export class DeleteEventFormComponent {
         next: () => this.onSuccess(),
         error: (err) => this.onError(err)
       });
+  }
+
+  deleteUpcomingEvent() {
+    if (this.deleteEventForm.value.event) {
+      this.officeHoursService
+        .deleteOfficeHoursEvent(+this.deleteEventForm.value.event)
+        .subscribe({
+          next: () => this.onSuccess(),
+          error: (err) => this.onError(err)
+        });
+    }
   }
 
   private onError(err: any): void {
