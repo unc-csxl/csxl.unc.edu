@@ -284,4 +284,8 @@ export class OfficeHoursService {
       user_to_modify
     );
   }
+
+  deleteOfficeHoursEvent(id: number) {
+    return this.http.delete('api/office-hours/event/' + id);
+  }
 }

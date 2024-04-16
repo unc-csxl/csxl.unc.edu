@@ -4,11 +4,15 @@
       <h3>Events</h3>
       <div *ngIf="currentEvents && currentEvents.length > 0">
         <div *ngFor="let event of currentEvents">
-          <event-card-widget [event]="event" [rosterRole]="rosterRole"></event-card-widget>
+          <event-card-widget
+            [event]="event"
+            [rosterRole]="rosterRole"></event-card-widget>
         </div>
       </div>
       <h3>Schedule</h3>
-      <schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>
+      <schedule-card-widget
+        [sectionId]="sectionId"
+        [rosterRole]="rosterRole"></schedule-card-widget>
     </mat-tab>
     <mat-tab label="History">
       <ticket-history-widget [sectionId]="sectionId"></ticket-history-widget>

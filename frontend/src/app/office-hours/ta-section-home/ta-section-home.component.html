@@ -11,7 +11,9 @@
         </div>
       </div>
       <h3>Schedule</h3>
-      <schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>
+      <schedule-card-widget
+        [sectionId]="sectionId"
+        [rosterRole]="rosterRole"></schedule-card-widget>
     </mat-tab>
     <mat-tab label="History">
       <ticket-history-widget [sectionId]="sectionId"></ticket-history-widget>

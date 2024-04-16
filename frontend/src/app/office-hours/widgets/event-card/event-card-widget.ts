@@ -17,6 +17,8 @@ import {
 } from '../../office-hours.models';
 import { RosterRole } from 'src/app/academics/academics.models';
 import { OfficeHoursService } from '../../office-hours.service';
+import { DeleteEventDialog } from '../delete-event-dialog/delete-event-dialog.widget';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'event-card-widget',
@@ -29,7 +31,10 @@ export class EventCard implements OnInit {
   queued_tickets: number | null;
   called_tickets: number | null;
 
-  constructor(private officeHoursService: OfficeHoursService) {
+  constructor(
+    private officeHoursService: OfficeHoursService,
+    public dialog: MatDialog
+  ) {
     console.log('reached event card.');
     this.queued_tickets = null;
     this.called_tickets = null;
@@ -64,5 +69,19 @@ export class EventCard implements OnInit {
         this.called_tickets = event_status.open_tickets_count;
         this.queued_tickets = event_status.queued_tickets_count;
       });
+  }
+
+  openDeleteEventDialog() {
+    const dialogRef = this.dialog.open(DeleteEventDialog, {
+      height: 'auto',
+      width: 'auto',
+      data: { isCurrent: true, events: [this.event] }
+    });
+
+    dialogRef.afterClosed().subscribe((open) => {
+      if (!open) {
+        window.location.reload();
+      }
+    });
   }
 }

@@ -13,6 +13,7 @@ import {
   OfficeHoursEvent,
   OfficeHoursEventType
 } from '../../office-hours.models';
+import { RosterRole } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'schedule-card-widget',
@@ -21,6 +22,7 @@ import {
 })
 export class ScheduleCard implements OnInit {
   @Input() sectionId!: number;
+  @Input() rosterRole!: RosterRole | null;
   upcomingHours: OfficeHoursEvent[] = [];
 
   constructor(private officeHoursService: OfficeHoursService) {}
