@@ -39,33 +39,33 @@
         Deleting an office hours event will also delete all of its associated
         data - including ticket data. Are you sure you want to proceed?
       </mat-card-subtitle>
-      <mat-divider></mat-divider>
-      <mat-card-content>
-        <p>Event to Delete:</p>
-        <mat-form-field>
-          <mat-label>Select:</mat-label>
-          <mat-select formControlName="event" required>
-            <mat-option *ngFor="let event of events" [value]="event.id">
-              {{ event.start_time | date: 'EEEE M/d' }}, {{
-              formatEventType(event.type) }}, from {{ event.start_time | date:
-              'h:mma' | lowercase}} to {{ event.end_time | date: 'h:mma' |
-              lowercase}}, {{ event.room.id }}</mat-option
-            >
-          </mat-select>
-        </mat-form-field>
-        <div class="buttons">
-          <button
-            mat-flat-button
-            color="primary"
-            class="button"
-            (click)="deleteUpcomingEvent()"
-            [disabled]="!deleteEventForm.valid"
-            type="reset"
-            *ngIf="isDeletable">
-            Confirm
-          </button>
-        </div>
-      </mat-card-content>
     </div>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <p>Event to Delete:</p>
+      <mat-form-field>
+        <mat-label>Select:</mat-label>
+        <mat-select formControlName="event" required>
+          <mat-option *ngFor="let event of events" [value]="event.id">
+            {{ event.start_time | date: 'EEEE M/d' }}, {{
+            formatEventType(event.type) }}, from {{ event.start_time | date:
+            'h:mma' | lowercase}} to {{ event.end_time | date: 'h:mma' |
+            lowercase}}, {{ event.room.id }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <div class="buttons">
+        <button
+          mat-flat-button
+          color="primary"
+          class="button"
+          (click)="deleteUpcomingEvent()"
+          [disabled]="!deleteEventForm.valid"
+          type="reset"
+          *ngIf="isDeletable">
+          Confirm
+        </button>
+      </div>
+    </mat-card-content>
   </mat-card>
 </form>
