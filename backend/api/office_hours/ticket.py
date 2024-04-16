@@ -151,3 +151,25 @@ def update_oh_ticket_feedback(
         return oh_ticket_service.update_ticket_feedback(subject, oh_ticket)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.put(
+    "/ticket-description",
+    response_model=OfficeHoursTicketDetails,
+    tags=["Office Hours"],
+)
+def update_oh_ticket_feedback(
+    oh_ticket: OfficeHoursTicketPartial,
+    subject: User = Depends(registered_user),
+    oh_ticket_service: OfficeHoursTicketService = Depends(),
+) -> OfficeHoursTicketDetails:
+    """
+    Updates an OfficeHoursTicket's state in the database
+
+    Returns:
+        OfficeHoursTicketDetails: OH Ticket updated
+    """
+    try:
+        return oh_ticket_service.update_ticket_description(subject, oh_ticket)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
