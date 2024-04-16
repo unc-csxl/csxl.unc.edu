@@ -407,7 +407,21 @@ class OfficeHoursTicketService:
     def update_ticket_description(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
     ) -> OfficeHoursTicketDetails:
+        """Update the description of an office hours ticket.
 
+        Args:
+            subject (User): The user attempting to update the ticket description.
+            oh_ticket (OfficeHoursTicketPartial): Partial ticket data including the new description.
+
+        Returns:
+            OfficeHoursTicketDetails: Updated ticket details after the description has been updated.
+
+        Raises:
+            Exception: If the description data is missing or None.
+            ResourceNotFoundException: If the ticket with the provided ID does not exist.
+            PermissionError: If the user attempting to update is not the creator of the ticket
+                            or if the ticket is not in the QUEUED state.
+        """
         # Check Feedback Fields Are Not None
         if oh_ticket.description is None:
             raise Exception("Missing Data To Update Ticket Description")
@@ -418,38 +432,40 @@ class OfficeHoursTicketService:
         if ticket_entity is None:
             raise ResourceNotFoundException(f"Cannot Find Ticket id={oh_ticket.id}")
 
-        # Fetch Office Hours Section - Needed To Determine if User Membership
+        # USER PERMISSIONS:
+
+        # 1a. Fetch Office Hours Section - Needed To Determine if User Membership
         oh_section_entity = self._get_office_hours_section_by_oh_event_id(
             ticket_entity.oh_event_id
         )
 
-        # Case: Current User
+        # 1b. Check Current User Section Membership
         current_user_section_member_entity = self._check_user_section_membership(
             subject.id, oh_section_entity.id
         )
 
-        # PERMISSIONS:
-        # 1. Check if Ticket Is Queued
+        # 2. CASE: Only Creator(s) of Ticket Can Update
+        section_user_created_tickets: list[OfficeHoursTicketEntity] = (
+            current_user_section_member_entity.created_tickets
+        )
+
+        # True if Current Ticket Exists In User's Created Ticket List
+        is_subject_creator: bool = any(
+            ticket.id == ticket_entity.id for ticket in section_user_created_tickets
+        )
+
+        if not is_subject_creator:
+            raise PermissionError(
+                f"User id={subject.id} is not a creator of ticket id={ticket_entity.id} and does not have permission to edit."
+            )
+
+        # Check If Ticket is Queued
         if ticket_entity.state != TicketState.QUEUED:
             raise PermissionError(
                 f"Ticket is Not Queued. Cannot Update Ticket Description for Ticket id={oh_ticket.id}"
             )
 
-        # 2. CASE: Only Creator(s) of Ticket Can Update
-        section_created_tickets: list[OfficeHoursTicketEntity] = (
-            current_user_section_member_entity.created_tickets
-        )
-
-        is_creator = False
-        for ticket in section_created_tickets:
-            if ticket.id == ticket_entity.id:
-                is_creator = True
-
-        if not is_creator:
-            raise PermissionError(
-                f"User id={subject.id} is not a creator or ticket id={ticket_entity.id} and does not have permission to edit."
-            )
-
+        # Update Ticket Description
         ticket_entity.description = oh_ticket.description
         self._session.commit()
 
