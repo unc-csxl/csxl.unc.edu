@@ -1,6 +1,8 @@
 from datetime import datetime
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import and_, not_, select, select, outerjoin, and_, not_
+from sqlalchemy import select, not_, and_
+from sqlalchemy.orm import aliased
 from sqlalchemy.orm import Session
 
 from ...models.academics.section_member import SectionMember
@@ -309,13 +311,23 @@ class OfficeHoursSectionService:
         entities = self._session.scalars(query).all()
         return [entity.to_details_model() for entity in entities]
 
-    def get_user_not_enrolled_sections_by_term(
-        self, subject: User, term_id: int
-    ) -> list[OfficeHoursSectionDetails]:
-        # Query all sections by terms
-        # Query all user sections by terms
-        # Return not alike sections
-        return None
+    def get_user_not_enrolled_sections(self, subject: User) -> list[OfficeHoursSection]:
+
+        user_oh_sections_by_term_query = (
+            select(OfficeHoursSectionEntity.id)
+            .where(SectionMemberEntity.user_id == subject.id)
+            .where(SectionMemberEntity.section_id == SectionEntity.id)
+            .where(OfficeHoursSectionEntity.id == SectionEntity.office_hours_id)
+            .distinct()
+        )
+
+        query_user_not_enrolled_sections = select(OfficeHoursSectionEntity).filter(
+            not_(OfficeHoursSectionEntity.id.in_(user_oh_sections_by_term_query))
+        )
+
+        sections_not_in = self._session.scalars(query_user_not_enrolled_sections).all()
+
+        return [entity.to_model() for entity in sections_not_in]
 
     def get_section_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
