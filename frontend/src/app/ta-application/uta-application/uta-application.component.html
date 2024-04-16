@@ -220,8 +220,8 @@
           #preferredSections
           aria-label="Section Preferences selection">
           <mat-chip
-            *ngFor="let section of selectedSections"
-            (removed)="removeSection(section.id)">
+            *ngFor="let section of selectedSections; let i = index"
+            (removed)="removeSection(i)">
             {{ capitalizedCourseId(section) }} - {{ section.number }} - {{
             getInstructorName(section) }}
             <button

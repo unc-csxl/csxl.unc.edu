@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
+  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -215,30 +216,80 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  populateForm(application: Application): void {
-    console.log('Attempting to populate form with: ', application);
-    this.firstFormGroup.patchValue({
-      intro_video: application.intro_video
+  setPreferredSections(sections: Section[]): void {
+    const sectionFormGroups = sections.map((section) => {
+      return new FormGroup({
+        id: new FormControl(section.id),
+        course_id: new FormControl(section.course_id),
+        number: new FormControl(section.number),
+        term_id: new FormControl(section.term_id),
+        meeting_pattern: new FormControl(section.meeting_pattern),
+        lecture_room: new FormGroup({
+          id: new FormControl(section.lecture_room?.id || ''),
+          nickname: new FormControl(section.lecture_room?.nickname || '')
+        }),
+        staff: new FormArray(
+          (section.staff || []).map(
+            (staffMember) =>
+              new FormGroup({
+                id: new FormControl(staffMember.id),
+                first_name: new FormControl(staffMember.first_name),
+                last_name: new FormControl(staffMember.last_name),
+                member_role: new FormControl(staffMember.member_role),
+                pronouns: new FormControl(staffMember.pronouns)
+              })
+          )
+        ),
+        office_hour_rooms: new FormArray(
+          (section.office_hour_rooms || []).map(
+            (room) =>
+              new FormGroup({
+                id: new FormControl(room.id),
+                nickname: new FormControl(room.nickname)
+              })
+          )
+        ),
+        override_title: new FormControl(section.override_title),
+        override_description: new FormControl(section.override_description)
+      });
     });
-    this.secondFormGroup.patchValue({
-      prior_experience: application.prior_experience,
-      service_experience: application.service_experience,
-      additional_experience: application.additional_experience
-    });
-    this.thirdFormGroup.patchValue({
-      academic_hours: application.academic_hours,
-      extracurriculars: application.extracurriculars,
-      expected_graduation: application.expected_graduation,
-      program_pursued: application.program_pursued,
-      other_programs: application.other_programs
-    });
-    this.fourthFormGroup.patchValue({
-      gpa: application.gpa,
-      comp_gpa: application.comp_gpa
-    });
-    this.fifthFormGroup.patchValue({
-      comp_227: application.comp_227
-    });
+
+    this.fifthFormGroup.setControl(
+      'preferred_sections',
+      new FormArray(sectionFormGroups)
+    );
+  }
+
+  populateForm(application: Application | null): void {
+    if (application) {
+      this.firstFormGroup.patchValue({
+        intro_video: application.intro_video
+      });
+      this.secondFormGroup.patchValue({
+        prior_experience: application.prior_experience,
+        service_experience: application.service_experience,
+        additional_experience: application.additional_experience
+      });
+      this.thirdFormGroup.patchValue({
+        academic_hours: application.academic_hours,
+        extracurriculars: application.extracurriculars,
+        expected_graduation: application.expected_graduation,
+        program_pursued: application.program_pursued,
+        other_programs: application.other_programs
+      });
+      this.fourthFormGroup.patchValue({
+        gpa: application.gpa,
+        comp_gpa: application.comp_gpa
+      });
+      this.fifthFormGroup.patchValue({
+        comp_227: application.comp_227
+      });
+
+      this.setPreferredSections(application.preferred_sections || []);
+      this.selectedSections = application.preferred_sections || [];
+    } else {
+      this.resetForm();
+    }
   }
 
   private validateForm(): boolean {
@@ -369,16 +420,13 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     this.preferenceCtrl.setValue(null);
   }
 
-  removeSection(sectionID: number | null): void {
-    if (sectionID === null) {
-      console.error('Section ID is null');
-      return;
-    }
-    const index = this.selectedSections.findIndex(
-      (section) => section.id === sectionID
-    );
-    if (index >= 0) {
-      this.selectedSections.splice(index, 1);
+  removeSection(index: number): void {
+    const sectionsArray = this.fifthFormGroup.get(
+      'preferred_sections'
+    ) as FormArray;
+    if (sectionsArray) {
+      sectionsArray.removeAt(index);
+      this.selectedSections.splice(index, 1); // Keep the array and form sync
     }
   }
 
