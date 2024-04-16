@@ -12,6 +12,7 @@ import { OfficeHoursEvent } from '../office-hours.models';
 import { FormBuilder } from '@angular/forms';
 import { OfficeHoursService } from '../office-hours.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'delete-event-form',
@@ -38,6 +39,7 @@ export class DeleteEventFormComponent {
   }
 
   deleteCurrentEvent() {
+    console.log(this.events[0]);
     this.officeHoursService
       .deleteOfficeHoursEvent(this.events[0].id)
       .subscribe({
@@ -57,10 +59,14 @@ export class DeleteEventFormComponent {
     }
   }
 
-  private onError(err: any): void {
-    this.snackBar.open('Error: Unable to create Office Hours Section', '', {
-      duration: 2000
-    });
+  private onError(err: HttpErrorResponse): void {
+    this.snackBar.open(
+      'Ticket Data exists for this event. You are unable to delete this event.',
+      '',
+      {
+        duration: 5000
+      }
+    );
   }
 
   private onSuccess(): void {
