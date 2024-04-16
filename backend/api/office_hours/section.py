@@ -5,6 +5,7 @@ This API is used to access OH section data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
+from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.coworking.time_range import TimeRange
@@ -299,6 +300,31 @@ def get_section_tickets_with_concerns(
             subject, oh_section_id
         )
         return oh_section_service.get_section_tickets_with_concerns(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_section_id}/data/statistics",
+    response_model=OfficeHoursSectionTrailingWeekData,
+    tags=["Office Hours"],
+)
+def get_section_trailing_week_data(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> OfficeHoursSectionTrailingWeekData:
+    """
+    Gets OH Section Data model for the given section
+
+    Returns:
+        OfficeHoursSectionTrailingWeekData: The given OH section's data statistics for the trailing week
+    """
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_section_trailing_week_data(subject, oh_section)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

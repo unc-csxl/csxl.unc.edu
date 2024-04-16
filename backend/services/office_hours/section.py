@@ -1,8 +1,10 @@
 from datetime import datetime
+import statistics
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
@@ -305,6 +307,11 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
         # Get the tickets that are linked to the events which are linked to the section
         ticket_entities = [
             ticket for event in entity.events for ticket in event.tickets
@@ -402,6 +409,11 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
         # Get the tickets that are linked to the events which are linked to the section
         ticket_entities = [
             ticket for event in entity.events for ticket in event.tickets
@@ -414,6 +426,103 @@ class OfficeHoursSectionService:
 
         # Return tickets where have_concerns is True
         return [ticket for ticket in ticket_details_models if ticket.have_concerns]
+
+    def get_section_trailing_week_data(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
+    ) -> OfficeHoursSectionTrailingWeekData:
+        """Retrieves all trailing week statistics in a section from the table.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: the OfficeHoursSectionDetails to query by.
+        Returns:
+            OfficeHoursSectionTrailingWeekData: Model of all trailing week statistics for the given OH section
+        """
+
+        # PERMISSIONS
+
+        # Throws exception if user is not a member of the given section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        # Raises PermissionError if user trying to fetch data is not an Instructor or GTA
+        if (
+            section_member_entity.member_role != RosterRole.INSTRUCTOR
+            and section_member_entity.member_role != RosterRole.GTA
+        ):
+            raise PermissionError(
+                f"Section Member is not an Instructor or GTA. User Does Not Have Permission to Get data in section with id {oh_section.id}."
+            )
+
+        # Select OH Section by id
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
+        # Get the tickets that are linked to the events which are linked to the section
+        ticket_entities = [
+            ticket for event in entity.events for ticket in event.tickets
+        ]
+
+        # Get unique creators
+        unique_ticket_creators = {
+            creator for ticket in ticket_entities for creator in ticket.creators
+        }
+
+        # --- Get wait time statistics ---
+        # Calculate wait times in minutes for each ticket with a called time filled in
+        wait_times = [
+            (ticket.called_at - ticket.created_at).total_seconds() / 60
+            for ticket in ticket_entities
+            if ticket.called_at
+        ]
+
+        # Compute the average
+        avg_wait_time = sum(wait_times) / len(wait_times) if wait_times else 0.0
+
+        # Compute the standard deviation of wait times; handle if built in stdev raises Error
+        try:
+            std_dev_wait_time = statistics.stdev(wait_times)
+        except statistics.StatisticsError:
+            std_dev_wait_time = 0.0
+
+        # --- Get ticket duration statistics ---
+        # Calculate ticket duration in minutes for each ticket with a called time filled in
+        ticket_duration_times = [
+            (ticket.closed_at - ticket.called_at).total_seconds() / 60
+            for ticket in ticket_entities
+            if ticket.closed_at
+        ]
+
+        # Compute the average
+        avg_duration_time = (
+            sum(ticket_duration_times) / len(ticket_duration_times)
+            if ticket_duration_times
+            else 0.0
+        )
+
+        # Compute the standard deviation of duration times; handle if built in stdev raises Error
+        try:
+            std_dev_duration_time = statistics.stdev(ticket_duration_times)
+        except statistics.StatisticsError:
+            std_dev_duration_time = 0.0
+
+        # --- Round floats to two decimal places, construct the model and return it ---
+        return OfficeHoursSectionTrailingWeekData(
+            number_of_tickets=len(ticket_entities),
+            number_of_students=len(unique_ticket_creators),
+            average_wait_time=round(avg_wait_time, 2),
+            standard_deviation_wait_time=round(std_dev_wait_time, 2),
+            average_ticket_duration=round(avg_duration_time, 2),
+            standard_deviation_ticket_duration=round(std_dev_duration_time, 2),
+        )
 
     def get_oh_section_members(
         self, subject: User, oh_section: OfficeHoursSectionDetails
