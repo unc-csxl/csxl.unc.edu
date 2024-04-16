@@ -120,9 +120,7 @@ def get_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given event
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
-        subject, oh_event_id
-    )
+
     oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(subject, oh_event_id)
     return oh_event_service.get_event_tickets(subject, oh_event)
 

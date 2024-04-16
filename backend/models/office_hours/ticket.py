@@ -38,8 +38,6 @@ class OfficeHoursTicket(OfficeHoursTicketDraft):
     id: int
     created_at: datetime
     state: TicketState = TicketState.QUEUED
-    have_concerns: bool = False
-    caller_notes: str = ""
     called_at: datetime | None = None
     closed_at: datetime | None = None
     oh_event: OfficeHoursEvent

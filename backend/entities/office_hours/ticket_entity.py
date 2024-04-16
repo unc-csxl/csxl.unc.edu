@@ -121,8 +121,6 @@ class OfficeHoursTicketEntity(EntityBase):
         """
         return OfficeHoursTicket(
             id=self.id,
-            have_concerns=self.have_concerns,
-            caller_notes=self.caller_notes,
             description=self.description,
             type=self.type,
             state=self.state,

@@ -17,3 +17,5 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
     """
 
     caller: SectionMember | None = None
+    have_concerns: bool = False
+    caller_notes: str = ""

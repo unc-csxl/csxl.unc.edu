@@ -4,6 +4,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ...models.office_hours.ticket import OfficeHoursTicket
 from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.academics.section_member_details import SectionMemberDetails
@@ -317,13 +318,13 @@ class OfficeHoursSectionService:
 
     def get_user_section_created_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
-    ) -> list[OfficeHoursTicketDetails]:
+    ) -> list[OfficeHoursTicket]:
         """Retrieves all of the subject's created office hours tickets in a section from the table.
         Args:
             subject: a valid User model representing the currently logged in User
             oh_section: the OfficeHoursSectionDetails to query by.
         Returns:
-            list[OfficeHoursTicketDetails]: List of all of a user's created `OfficeHoursTicketDetails` in an OHsection
+            list[OfficeHoursTicket]: List of all of a user's created `OfficeHoursTicket` in an OHsection
         """
 
         # PERMISSIONS
@@ -335,8 +336,7 @@ class OfficeHoursSectionService:
 
         # Take Created Ticket Relationship From SectionMemberEntity
         created_tickets = [
-            entity.to_details_model()
-            for entity in section_member_entity.created_tickets
+            entity.to_model() for entity in section_member_entity.created_tickets
         ]
 
         # Order so lastest is first

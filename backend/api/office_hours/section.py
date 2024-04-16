@@ -5,6 +5,7 @@ This API is used to access OH section data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
+from ...models.office_hours.ticket import OfficeHoursTicket
 from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
@@ -231,19 +232,19 @@ def get_oh_section_tickets(
 
 @api.get(
     "/{oh_section_id}/user/created_tickets",
-    response_model=list[OfficeHoursTicketDetails],
+    response_model=list[OfficeHoursTicket],
     tags=["Office Hours"],
 )
 def get_user_section_created_tickets(
     oh_section_id: int,
     subject: User = Depends(registered_user),
     oh_section_service: OfficeHoursSectionService = Depends(),
-) -> list[OfficeHoursTicketDetails]:
+) -> list[OfficeHoursTicket]:
     """
     Gets list of OH tickets by OH section and creator
 
     Returns:
-        list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific creator
+        list[OfficeHoursTicket]: OH tickets within the given section and for the specific creator
     """
     try:
         oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(

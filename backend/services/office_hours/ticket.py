@@ -234,7 +234,7 @@ class OfficeHoursTicketService:
 
     def cancel_ticket(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
+    ) -> OfficeHoursTicket:
         """
         Updates state to cancel an office hours ticket.
 
@@ -243,7 +243,7 @@ class OfficeHoursTicketService:
             oh_ticket (OfficeHoursTicketPartial): OfficeHoursTicketPartial object representing the ticket to be canceled.
 
         Returns:
-            OfficeHoursTicketDetails: Updated OfficeHoursTicketDetails object after canceling the ticket.
+            OfficeHoursTicket: Updated OfficeHoursTicket object after canceling the ticket.
 
         Raises:
             ResourceNotFoundException: If the ticket with the specified ID (`oh_ticket.id`) is not found.
@@ -292,7 +292,7 @@ class OfficeHoursTicketService:
         ticket_entity.state = TicketState.CANCELED
         self._session.commit()
 
-        return ticket_entity.to_details_model()
+        return ticket_entity.to_model()
 
     def close_ticket(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
@@ -333,7 +333,7 @@ class OfficeHoursTicketService:
 
         # PERMISSIONS
 
-        # 1. If student, cannot close ticket - a student can onlyl cancel ticket
+        # 1. If student, cannot close ticket - a student can only cancel ticket
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError(
                 f"User Doesn't Have Permission to Close Ticket id={oh_ticket.id}"
@@ -406,7 +406,7 @@ class OfficeHoursTicketService:
 
     def update_ticket_description(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
+    ) -> OfficeHoursTicket:
         """Update the description of an office hours ticket.
 
         Args:
@@ -414,7 +414,7 @@ class OfficeHoursTicketService:
             oh_ticket (OfficeHoursTicketPartial): Partial ticket data including the new description.
 
         Returns:
-            OfficeHoursTicketDetails: Updated ticket details after the description has been updated.
+            OfficeHoursTicket: Updated ticket details after the description has been updated.
 
         Raises:
             Exception: If the description data is missing or None.
@@ -469,7 +469,7 @@ class OfficeHoursTicketService:
         ticket_entity.description = oh_ticket.description
         self._session.commit()
 
-        return ticket_entity.to_details_model()
+        return ticket_entity.to_model()
 
     def _check_user_section_membership(
         self,
