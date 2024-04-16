@@ -39,6 +39,7 @@ import { TicketFeedbackDialog } from './widgets/ticket-feedback-dialog/ticket-fe
 import { PeopleTableComponent } from './people-table/people-table.component';
 import { DeleteEventFormComponent } from './delete-event-form/delete-event-form.component';
 import { DeleteEventDialog } from './widgets/delete-event-dialog/delete-event-dialog.widget';
+import { DeleteTicketDialog } from './widgets/delete-ticket-dialog/delete-ticket-dialog.widget';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { DeleteEventDialog } from './widgets/delete-event-dialog/delete-event-di
     TicketFeedbackDialog,
     PeopleTableComponent,
     DeleteEventFormComponent,
-    DeleteEventDialog
+    DeleteEventDialog,
+    DeleteTicketDialog
   ],
   imports: [
     CommonModule,

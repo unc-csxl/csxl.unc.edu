@@ -1,0 +1,21 @@
+<mat-dialog-content>
+  <form class="page-container">
+    <mat-card appearance="outlined">
+      <div class="card-container">
+        <mat-card-title>Delete Ticket</mat-card-title>
+        <p>
+          Deleting a ticket is irreversible. Are you sure you want to proceed?
+        </p>
+        <div class="buttons">
+          <button
+            mat-flat-button
+            color="primary"
+            class="button"
+            (click)="cancelTicket()">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </form>
+</mat-dialog-content>
