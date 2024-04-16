@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import Depends
 from sqlalchemy import and_, not_, select, select, outerjoin, and_, not_
-from sqlalchemy import select, not_, and_
+from sqlalchemy import select, not_, and_, union
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm import Session
 
@@ -288,7 +288,7 @@ class OfficeHoursSectionService:
         return [entity.to_details_model() for entity in entities]
 
     def get_user_sections_by_term(
-        self, subject: User, term_id: int
+        self, subject: User, term_id: str
     ) -> list[OfficeHoursSectionDetails]:
         """Retrieves all office hours sections from the table by a term and specific user.
         Args:
@@ -335,6 +335,33 @@ class OfficeHoursSectionService:
         sections_not_in = self._session.scalars(query_user_not_enrolled_sections).all()
 
         return [entity.to_model() for entity in sections_not_in]
+
+    def get_user_not_enrolled_sections_by_term(
+        self, subject: User, term_id: str
+    ) -> list[OfficeHoursSection]:
+        """Retrieves all office hours sections user not a member of by term.
+        Args:
+            subject (User): a valid User model representing the currently logged in User
+            term_id: ID of the term to query by.
+
+        Returns:
+            list[OfficeHoursSection]: List of all `OfficeHoursSection`
+
+        """
+        user_sections = self.get_user_sections_by_term(subject, term_id)
+        user_section_ids = [row.id for row in user_sections]
+
+        query = (
+            select(OfficeHoursSectionEntity)
+            .filter(OfficeHoursSectionEntity.id.not_in(user_section_ids))
+            .join(SectionEntity)
+            .filter(SectionEntity.term_id == term_id)
+            .distinct()
+        )
+
+        user_not_enrolled_oh_sections = self._session.scalars(query).all()
+
+        return [entity.to_model() for entity in user_not_enrolled_oh_sections]
 
     def get_section_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails

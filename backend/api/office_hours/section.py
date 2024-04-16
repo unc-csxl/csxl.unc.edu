@@ -225,6 +225,30 @@ def get_user_not_enrolled_sections(
 
 
 @api.get(
+    "/user/term/{term_id}/not-enrolled",
+    response_model=list[OfficeHoursSection],
+    tags=["Office Hours"],
+)
+def get_user_not_enrolled_sections(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursSection]:
+    """
+    Gets list of OH sections the currrent user not apart of.
+
+    Returns:
+        list[OfficeHoursSection]: User's OH sections within the given term
+    """
+    try:
+        return oh_section_service.get_user_not_enrolled_sections_by_term(
+            subject, term_id
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
     "/{oh_section_id}/tickets",
     response_model=list[OfficeHoursTicketDetails],
     tags=["Office Hours"],
