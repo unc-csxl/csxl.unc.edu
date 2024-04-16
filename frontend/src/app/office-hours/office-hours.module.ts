@@ -36,6 +36,7 @@ import { MatTableModule } from '@angular/material/table';
 import { InstructorSectionHomeComponent } from './instructor-section-home/instructor-section-home.component';
 import { TicketFeedbackFormComponent } from './ticket-feedback-form/ticket-feedback-form.component';
 import { TicketFeedbackDialog } from './widgets/ticket-feedback-dialog/ticket-feedback-dialog';
+import { PeopleTableComponent } from './people-table/people-table.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { TicketFeedbackDialog } from './widgets/ticket-feedback-dialog/ticket-fe
     CurrentTicketCard,
     InstructorSectionHomeComponent,
     TicketFeedbackFormComponent,
-    TicketFeedbackDialog
+    TicketFeedbackDialog,
+    PeopleTableComponent
   ],
   imports: [
     CommonModule,

@@ -2,6 +2,9 @@
 <div *ngIf="formatTicketState(ticket.state) === 'Canceled'">
   {{ displayCanceledMessage() }} {{ navToHome() }}
 </div>
+<div *ngIf="formatTicketState(ticket.state) === 'Closed'">
+  {{ displayClosedMessage() }} {{ navToHome() }}
+</div>
 <div
   class="ticket-queue-row"
   *ngIf="formatTicketState(ticket.state) === 'Queued'">
@@ -65,15 +68,16 @@
 </div>
 
 <div *ngIf="formatTicketState(ticket.state) === 'Called'">
-  <mat-card>
+  <mat-card appearance="outlined">
     <div class="header-row">
       <div class="title">
         <mat-card-title> Your Ticket</mat-card-title>
         <mat-card-subtitle> Location: {{ event.room.id }} </mat-card-subtitle>
       </div>
     </div>
+    <mat-divider></mat-divider>
     <mat-card-content *ngIf="formatTicketState(ticket.state) === 'Called'">
-      <p>
+      <p class="ticket-called-dialog">
         Your ticket is being called by {{ticket.caller?.first_name}} ({{
         ticket.caller?.pronouns}})
       </p>

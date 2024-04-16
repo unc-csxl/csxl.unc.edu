@@ -15,8 +15,17 @@ import {
   OfficeHoursSectionDetails
 } from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
-import { ActivatedRoute } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn
+} from '@angular/router';
 import { interval } from 'rxjs';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'app-ticket-queue-page',
@@ -28,15 +37,29 @@ export class TicketQueuePageComponent implements OnInit {
   public static Routes = [
     {
       path: 'ta/spring-2024/:section_id/:event_id/queue',
-      title: 'COMP 110: Intro to Programming',
       component: TicketQueuePageComponent,
-      canActivate: []
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: TicketQueuePageComponent
+        }
+      ]
     },
     {
       path: 'instructor/spring-2024/:section_id/:event_id/queue',
-      title: 'COMP 110: Intro to Programming',
       component: TicketQueuePageComponent,
-      canActivate: []
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: TicketQueuePageComponent
+        }
+      ]
     }
   ];
 
@@ -45,7 +68,7 @@ export class TicketQueuePageComponent implements OnInit {
   eventId: number;
   event: OfficeHoursEventDetails | null = null;
   sectionId: number;
-  section: OfficeHoursSectionDetails | null = null;
+  protected section: OfficeHoursSectionDetails | null = null;
   queued_tickets: number | null;
   called_tickets: number | null;
   // TODO: Store event details object and pass this in as input!
@@ -58,6 +81,18 @@ export class TicketQueuePageComponent implements OnInit {
     this.sectionId = this.route.snapshot.params['section_id'];
     this.queued_tickets = null;
     this.called_tickets = null;
+
+    /** Initialize data from resolvers. */
+    const data = this.route.snapshot.data as {
+      section: OfficeHoursSectionDetails;
+    };
+    this.section = data.section;
+
+    // subscribe to observable every 10 seconds and get tickets + stats
+    let refresh = interval(10000).subscribe(() => {
+      this.getTicketStats();
+      this.getEvent();
+    });
   }
 
   ngOnInit() {
@@ -72,7 +107,6 @@ export class TicketQueuePageComponent implements OnInit {
         .getEventQueueTickets(this.event)
         .subscribe((tickets) => {
           this.tickets = tickets;
-          console.log(tickets);
         });
     }
   }

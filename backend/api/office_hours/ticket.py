@@ -82,7 +82,7 @@ def update_oh_ticket_when_called(
         OfficeHoursTicketDetails: OH Ticket updated
     """
     try:
-        return oh_ticket_service.update_called_state(subject, oh_ticket)
+        return oh_ticket_service.call_ticket(subject, oh_ticket)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

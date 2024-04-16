@@ -5,8 +5,8 @@ This API is used to access OH section data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
-from ...models.academics.section_member import SectionMember
 from ...models.academics.section_member_details import SectionMemberDetails
+from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...services.office_hours.ticket import OfficeHoursTicketService
@@ -346,6 +346,46 @@ def get_oh_section_members(
         return oh_section_service.get_oh_section_members(subject, oh_section)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.put(
+    "/{oh_section_id}/update-role", response_model=SectionMember, tags=["Office Hours"]
+)
+def update_oh_section_member_role(
+    user_to_modify: SectionMemberPartial,
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> SectionMember:
+    """
+    Updates a SectionMember in an OH Section to the database
+
+    Returns:
+        SectionMember: SectionMember updated
+    """
+    return oh_section_service.update_oh_section_member_role(
+        subject, user_to_modify, oh_section_id
+    )
+
+
+@api.put(
+    "/{oh_section_id}/update-role", response_model=SectionMember, tags=["Office Hours"]
+)
+def update_oh_section_member_role(
+    user_to_modify: SectionMemberPartial,
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> SectionMember:
+    """
+    Updates a SectionMember in an OH Section to the database
+
+    Returns:
+        SectionMember: SectionMember updated
+    """
+    return oh_section_service.update_oh_section_member_role(
+        subject, user_to_modify, oh_section_id
+    )
 
 
 # @api.put(

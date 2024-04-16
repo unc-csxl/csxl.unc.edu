@@ -5,14 +5,20 @@ This API is used to access OH Event data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
-from backend.models.office_hours.event_status import (
+from ...models.office_hours.event_status import (
     OfficeHoursEventStatus,
+    StaffHelpingStatus,
     StudentOfficeHoursEventStatus,
+    StudentQueuedTicketStatus,
 )
 
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
-from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
+from ...models.office_hours.event import (
+    OfficeHoursEvent,
+    OfficeHoursEventDraft,
+    OfficeHoursEventPartial,
+)
 from ...models.office_hours.event_details import OfficeHoursEventDetails
 from ...services.office_hours.event import OfficeHoursEventService
 
@@ -47,9 +53,9 @@ def new_oh_event(
     return oh_event_service.create(subject, oh_event)
 
 
-@api.put("/{oh_event_id}", response_model=OfficeHoursEvent, tags=["Office Hours"])
+@api.put("", response_model=OfficeHoursEvent, tags=["Office Hours"])
 def update_oh_event(
-    oh_event: OfficeHoursEvent,
+    oh_event: OfficeHoursEventPartial,
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
 ) -> OfficeHoursEvent:
@@ -59,7 +65,10 @@ def update_oh_event(
     Returns:
         OfficeHoursEvent: OH Event updated
     """
-    return oh_event_service.update(subject, oh_event)
+    try:
+        return oh_event_service.update(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.delete("/{oh_event_id}", response_model=None, tags=["Office Hours"])
@@ -71,8 +80,13 @@ def delete_oh_event(
     """
     Deletes an OfficeHoursEvent from the database
     """
-    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(oh_event_id)
-    return oh_event_service.delete(subject, oh_event)
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.delete(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get("/{oh_event_id}", response_model=OfficeHoursEvent, tags=["Office Hours"])
@@ -88,23 +102,6 @@ def get_oh_event_by_id(
         OfficeHoursEvent: The OH event with the given OH event id
     """
     return oh_event_service.get_event_by_id(subject, oh_event_id)
-
-
-@api.get("/upcoming", response_model=list[OfficeHoursEvent], tags=["Office Hours"])
-def get_upcoming_oh_events_by_user(
-    start: datetime = datetime.now(),
-    subject: User = Depends(registered_user),
-    end: datetime = datetime.now() + timedelta(weeks=1),
-    oh_event_service: OfficeHoursEventService = Depends(),
-) -> list[OfficeHoursEvent]:
-    """
-    Gets list of upcoming OH events within a time range by user
-
-    Returns:
-        list[OfficeHoursSectionDetails]: OH events associated with a given user in a time range
-    """
-    time_range = TimeRange(start=start, end=end)
-    return oh_event_service.get_upcoming_events_by_user(subject, time_range)
 
 
 @api.get(
@@ -147,7 +144,7 @@ def get_queued_and_called_oh_tickets_by_event(
         list[OfficeHoursTicketDetails]: OH tickets fitting the criteria within the given event
     """
     oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(subject, oh_event_id)
-    return oh_event_service.get_queued_and_called_event_tickets(subject, oh_event)
+    return oh_event_service.get_queued_and_called_tickets_by_event(subject, oh_event)
 
 
 @api.get(
@@ -170,7 +167,7 @@ def get_queued_and_called_oh_tickets_by_event(
         oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
             subject, oh_event_id
         )
-        return oh_event_service.get_queued_helped_stats_by_oh_event(subject, oh_event)
+        return oh_event_service.get_event_queue_stats(subject, oh_event)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -196,8 +193,58 @@ def get_queued_and_called_oh_tickets_by_event_for_student(
         oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
             subject, oh_event_id
         )
-        return oh_event_service.get_queued_helped_stats_by_oh_event_for_student(
+        return oh_event_service.get_event_queue_stats_for_student_with_ticket(
             subject, oh_event, ticket_id
         )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_event_id}/staff-status",
+    response_model=StaffHelpingStatus,
+    tags=["Office Hours"],
+)
+def check_staff_helping_status(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> StaffHelpingStatus:
+    """
+    Gets Ticket staff member is helping, or returns id None.
+
+    Returns:
+        (StaffHelpingStatus): Model that contains ticket id staff is helping
+    """
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.check_staff_helping_status(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_event_id}/student-status",
+    response_model=StudentQueuedTicketStatus,
+    tags=["Office Hours"],
+)
+def check_student_in_queue_status(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> StudentQueuedTicketStatus:
+    """
+    Gets Ticket a student has queued, or returns id None.
+
+    Returns:
+        (StudentQueuedTicketStatus): Model that contains ticket id student has queued
+    """
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.check_student_in_queue_status(subject, oh_event)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

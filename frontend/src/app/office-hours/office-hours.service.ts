@@ -29,7 +29,11 @@ import {
   OfficeHoursEventStatus,
   StudentOfficeHoursEventStatus
 } from './office-hours.models';
-import { SectionMember } from '../academics/academics.models';
+import {
+  Section,
+  SectionMember,
+  SectionMemberPartial
+} from '../academics/academics.models';
 
 @Injectable({
   providedIn: 'root'
@@ -176,6 +180,20 @@ export class OfficeHoursService {
     }
   }
 
+  formatRosterRole(typeNum: number) {
+    if (typeNum === 0) {
+      return 'Student';
+    } else if (typeNum === 1) {
+      return 'UTA';
+    } else if (typeNum === 2) {
+      return 'GTA';
+    } else if (typeNum === 3) {
+      return 'Instructor';
+    } else {
+      return 'error';
+    }
+  }
+
   // id
   callTicket(oh_ticket: Ticket): Observable<TicketDetails> {
     return this.http.put<TicketDetails>(
@@ -248,6 +266,22 @@ export class OfficeHoursService {
         oh_event_id +
         '/student-queue-stats/' +
         ticket_id
+    );
+  }
+
+  getSectionMembers(oh_section_id: number): Observable<SectionMember[]> {
+    return this.http.get<SectionMember[]>(
+      'api/office-hours/section/' + oh_section_id + '/people'
+    );
+  }
+
+  updateMemberRole(
+    user_to_modify: SectionMemberPartial,
+    oh_section_id: number
+  ): Observable<SectionMember> {
+    return this.http.put<SectionMember>(
+      'api/office-hours/section/' + oh_section_id + '/update-role',
+      user_to_modify
     );
   }
 }

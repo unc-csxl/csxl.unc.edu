@@ -27,3 +27,17 @@ class OfficeHoursEventStatus(BaseModel):
 
 class StudentOfficeHoursEventStatus(OfficeHoursEventStatus):
     ticket_position: int
+
+
+class StaffHelpingStatus(BaseModel):
+    """Pydantic model to represent the ticket a staff member is currently working on.
+    Ticket id will be null if no ticket is being worked on."""
+
+    ticket_id: int | None
+
+
+class StudentQueuedTicketStatus(BaseModel):
+    """Pydantic model to represent the ticket a student currently has in the queue.
+    Ticket id will be null if no ticket is in the queue."""
+
+    ticket_id: int | None

@@ -8,11 +8,24 @@
  */
 
 import { Component } from '@angular/core';
-import { OfficeHoursEvent } from '../office-hours.models';
+import {
+  OfficeHoursEvent,
+  OfficeHoursSectionDetails
+} from '../office-hours.models';
 import { RosterRole } from 'src/app/academics/academics.models';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Router
+} from '@angular/router';
 import { OfficeHoursService } from '../office-hours.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'app-instructor-section-home',
@@ -23,10 +36,18 @@ export class InstructorSectionHomeComponent {
   public static Route = {
     // TODO: replace spring-2024 in this route!
     path: 'instructor/spring-2024/:id',
-    title: 'COMP 110: Intro to Programming',
     component: InstructorSectionHomeComponent,
-    canActivate: []
+    canActivate: [],
+    resolve: { section: sectionResolver },
+    children: [
+      {
+        path: '',
+        title: titleResolver,
+        component: InstructorSectionHomeComponent
+      }
+    ]
   };
+  protected section: OfficeHoursSectionDetails;
   currentEvents: OfficeHoursEvent[] = [];
   sectionId: number;
   navLinks: any;
@@ -46,6 +67,12 @@ export class InstructorSectionHomeComponent {
     ];
     this.sectionId = this.route.snapshot.params['id'];
     this.rosterRole = null;
+
+    /** Initialize data from resolvers. */
+    const data = this.route.snapshot.data as {
+      section: OfficeHoursSectionDetails;
+    };
+    this.section = data.section;
   }
 
   ngOnInit(): void {
