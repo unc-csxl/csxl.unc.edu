@@ -1,12 +1,15 @@
 """Service that manages applications for the COMP department"""
 
+from typing import List
 from fastapi import Depends
 from sqlalchemy import update, delete
 from sqlalchemy.orm import Session
+from typing import Dict
 from backend.entities import section_application_table
 from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
+from backend.models.academics.section import Section
 from backend.models.application_details import (
     New_UTADetails,
     UserApplication,
@@ -60,7 +63,8 @@ class ApplicationService:
         #         applications.append(entity.to_model())
 
         # return applications
-
+        
+    
     def get_application(self, subject: User) -> UserApplication:
         """Returns application(s) for a specific user
 
@@ -77,11 +81,9 @@ class ApplicationService:
         if application_entity is None:
             return None
 
-        application = application_entity.to_details_model()
-
         sections = (
             self._session.query(section_application_table)
-            .filter(section_application_table.c.application_id == application.id)
+            .filter(section_application_table.c.application_id == application_entity.id)
             .order_by(section_application_table.c.preference)
             .all()
         )
@@ -89,7 +91,6 @@ class ApplicationService:
         section_ids = [section[1] for section in sections]
 
         sections_entity = []
-
         for id in section_ids:
             sections_entity.append(
                 self._session.query(SectionEntity)
@@ -101,7 +102,10 @@ class ApplicationService:
             i: section.to_model() for i, section in enumerate(sections_entity)
         }
 
-        return UserApplication(application=application, preferences=section_dict)
+        application = application_entity.map_application_to_detail_model(section_dict)
+
+        return UserApplication(application=application)
+    
 
     def create_undergrad(self, application: New_UTADetails) -> New_UTADetails:
         """

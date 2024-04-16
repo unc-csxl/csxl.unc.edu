@@ -14,7 +14,7 @@ from backend.models.application_details import (
 from backend.models.academics.section import Section
 
 from .entity_base import EntityBase
-from typing import Self
+from typing import Self, Dict
 from ..models.application import Application, UTA, New_UTA, Returning_UTA
 from ..models.application_details import UTADetails
 
@@ -305,6 +305,31 @@ class New_UTA_Entity(UTAEntity):
         self.prior_experience = model.prior_experience
         self.service_experience = model.service_experience
         self.additional_experience = model.additional_experience
+
+    def map_application_to_detail_model(self, section_preferences: Dict[int, SectionEntity]) -> New_UTADetails:
+        """Returns the correctly mapped application for a specific user
+
+        Returns:
+            New_UTADetails: Object that represents an application for a new UTA
+        """
+        return New_UTADetails(
+            id=self.id,
+            user_id=self.user_id,
+            academic_hours=self.academic_hours,
+            extracurriculars=self.extracurriculars,
+            expected_graduation=self.expected_graduation,
+            program_pursued=self.program_pursued,
+            other_programs=self.other_programs,
+            gpa=self.gpa,
+            comp_gpa=self.comp_gpa,
+            comp_227=self.comp_227,
+            intro_video=self.intro_video,
+            prior_experience=self.prior_experience,
+            service_experience=self.service_experience,
+            additional_experience=self.additional_experience,
+            user=self.user.to_model(),  
+            preferred_sections=[section for section in section_preferences.values()]
+        )
 
 
 class Returning_UTA_Entity(UTAEntity):

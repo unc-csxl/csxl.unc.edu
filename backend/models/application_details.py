@@ -61,5 +61,4 @@ class UserApplication(BaseModel):
     students preferences.
     """
 
-    application: ApplicationDetails
-    preferences: Dict[int, Section]
+    application: New_UTADetails
