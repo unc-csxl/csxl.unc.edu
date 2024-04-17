@@ -93,7 +93,6 @@ export class EventPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public datePipe: DatePipe,
-    public eventFilterPipe: EventFilterPipe,
     public eventService: EventService,
     private gearService: NagivationAdminGearService
   ) {

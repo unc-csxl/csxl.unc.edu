@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Users."""
 
-from sqlalchemy import Integer, String
+from sqlalchemy import Boolean, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 
