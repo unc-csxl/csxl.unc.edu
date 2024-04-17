@@ -38,6 +38,10 @@ body {
     fill: white;
 }
 
+.sidebar-button-tooltip-panel {
+    max-width: 150px;
+}
+
 @media (prefers-color-scheme: light) {
 
     .mat-icon,

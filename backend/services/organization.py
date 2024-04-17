@@ -131,7 +131,11 @@ class OrganizationService:
         )
 
         # Query the organization with matching id
-        obj = self._session.get(OrganizationEntity, organization.id)
+        obj = (
+            self._session.get(OrganizationEntity, organization.id)
+            if organization.id
+            else None
+        )
 
         # Check if result is null
         if obj is None:

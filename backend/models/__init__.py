@@ -2,7 +2,7 @@
 
 from .application import Application, UTA, New_UTA, Returning_UTA
 from .application_details import ApplicationDetails, UTADetails
-from .pagination import Paginated, PaginationParams
+from .pagination import Paginated, PaginationParams, EventPaginationParams
 from .permission import Permission
 from .user import User, ProfileForm
 from .user_details import UserDetails

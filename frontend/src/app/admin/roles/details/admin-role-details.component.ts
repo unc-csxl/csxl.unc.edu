@@ -1,9 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {
-  MatAutocompleteActivatedEvent,
-  MatAutocompleteSelectedEvent
-} from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,

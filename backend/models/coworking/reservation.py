@@ -2,9 +2,13 @@ from enum import Enum
 from pydantic import BaseModel
 from datetime import datetime
 from ...models.user import User, UserIdentity
-from ..room import Room
+from ..room import Room, RoomPartial
 from .seat import Seat, SeatIdentity
 from .time_range import TimeRange
+
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2024"
+__license__ = "MIT"
 
 
 class ReservationState(str, Enum):
@@ -22,6 +26,7 @@ class ReservationIdentity(BaseModel):
 class ReservationRequest(TimeRange):
     users: list[UserIdentity] = []
     seats: list[SeatIdentity] = []
+    room: RoomPartial | None = None
 
 
 class Reservation(ReservationIdentity, TimeRange):
@@ -32,6 +37,13 @@ class Reservation(ReservationIdentity, TimeRange):
     walkin: bool = False
     created_at: datetime
     updated_at: datetime
+
+
+class ReservationMapDetails(BaseModel):
+    reserved_date_map: dict[str, list[int]] = {}
+    operating_hours_start: datetime | None = None
+    operating_hours_end: datetime | None = None
+    number_of_time_slots: int | None = None
 
 
 class ReservationPartial(Reservation, BaseModel):
