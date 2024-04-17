@@ -50,6 +50,10 @@
         >
       </h3>
 
+      <p *ngIf="reservation.state == 'CONFIRMED'">Check-in between {{ reservation.start|date:'shortTime' }} and {{
+        checkinDeadline(reservation.start,reservation.end)|date:'shortTime' }} to avoid cancellation.
+      </p>
+
       <mat-divider></mat-divider>
       <!-- check to see if this is a room reservation -->
       <ng-container *ngIf="reservation.seats.length > 0">

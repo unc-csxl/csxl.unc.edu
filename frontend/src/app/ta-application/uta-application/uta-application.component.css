@@ -1,0 +1,32 @@
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+
+.form-field-wrapper {
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: 50%;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.mat-form-field-small {
+  width: 25%;
+}
+
+.field-title p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .form-field-wrapper,
+  mat-form-field {
+    width: 100%;
+  }
+}

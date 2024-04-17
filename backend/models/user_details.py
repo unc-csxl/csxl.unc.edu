@@ -1,7 +1,9 @@
+from backend.models.academics.section import Section
+from .application import Application
 from .permission import Permission
-from .user import User, UserIdentity
+from .user import User
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Kris Jordan", "Ben Goulet"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -16,3 +18,5 @@ class UserDetails(User):
     """
 
     permissions: list["Permission"] = []
+    applications: list[Application] = []
+    sections: list[Section] = []

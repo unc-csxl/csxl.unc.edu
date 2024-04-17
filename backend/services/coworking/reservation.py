@@ -342,9 +342,10 @@ class ReservationService:
                 )
                 end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
-                if end_idx < current_time_idx:
-                    continue
-                start_idx = max(current_time_idx, start_idx)
+                if date.date() == current_time.date():
+                    if end_idx < current_time_idx:
+                        continue
+                    start_idx = max(current_time_idx, start_idx)
 
                 for idx in range(start_idx, end_idx):
                     # Currently only assuming single user.
@@ -394,7 +395,7 @@ class ReservationService:
                 to_add = timedelta(minutes=(60 - minutes))
             rounded_dt = dt + to_add
         else:
-            if minutes > 30:
+            if minutes >= 30:
                 to_subtract = timedelta(minutes=(minutes - 30))
             else:
                 to_subtract = timedelta(minutes=minutes)
