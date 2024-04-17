@@ -10,8 +10,8 @@ from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan", "Matt Vu"]
+__copyright__ = "Copyright 2023 - 2024"
 __license__ = "MIT"
 
 
@@ -43,6 +43,10 @@ class UserEntity(EntityBase):
     github_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # GitHub Avatar permalink for the user
     github_avatar: Mapped[str | None] = mapped_column(String(), nullable=True)
+    # Checks whether or not the user has accepted community agreement
+    accepted_community_agreement: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False
+    )
 
     # All of the roles for the given user.
     # NOTE: This field establishes a many-to-many relationship between the users and roles table.
@@ -87,6 +91,7 @@ class UserEntity(EntityBase):
             github=model.github,
             github_id=model.github_id,
             github_avatar=model.github_avatar,
+            accepted_community_agreement=model.accepted_community_agreement,
         )
 
     def to_model(self) -> User:
@@ -107,6 +112,7 @@ class UserEntity(EntityBase):
             github_id=self.github_id,
             github_avatar=self.github_avatar,
             pronouns=self.pronouns,
+            accepted_community_agreement=self.accepted_community_agreement,
         )
 
     def update(self, model: User) -> None:
@@ -126,3 +132,4 @@ class UserEntity(EntityBase):
         self.github = model.github
         self.github_id = model.github_id or None
         self.github_avatar = model.github_avatar or ""
+        self.accepted_community_agreement = model.accepted_community_agreement

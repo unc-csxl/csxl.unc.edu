@@ -4,7 +4,7 @@ The User Service provides access to the User model and its associated database o
 """
 
 from fastapi import Depends
-from sqlalchemy import select, or_, func
+from sqlalchemy import select, or_, func, cast, String
 from sqlalchemy.orm import Session
 from ..database import db_session
 from ..models import User, UserDetails, Paginated, PaginationParams
@@ -84,6 +84,7 @@ class UserService:
             UserEntity.last_name.ilike(f"%{query}%"),
             UserEntity.onyen.ilike(f"%{query}%"),
             UserEntity.email.ilike(f"%{query}%"),
+            cast(UserEntity.pid, String).ilike(f"%{query}%")
         )
         statement = statement.where(criteria).limit(10)
         entities = self._session.execute(statement).scalars()

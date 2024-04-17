@@ -26,6 +26,7 @@ root = User(
     first_name="Rhonda",
     last_name="Root",
     pronouns="She / Her / Hers",
+    accepted_community_agreement=True,
 )
 
 ambassador = User(
@@ -36,6 +37,7 @@ ambassador = User(
     first_name="Amy",
     last_name="Ambassador",
     pronouns="They / Them / Theirs",
+    accepted_community_agreement=True,
 )
 
 user = User(
@@ -46,6 +48,7 @@ user = User(
     first_name="Sally",
     last_name="Student",
     pronouns="She / They",
+    accepted_community_agreement=True,
 )
 
 users = [root, ambassador, user]

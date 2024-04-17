@@ -30,6 +30,9 @@ export class PermissionService {
     action: string,
     resource: string
   ) {
+    if (!permissions) {
+      return false;
+    }
     let permission = permissions.find((p) =>
       this.checkPermission(p, action, resource)
     );

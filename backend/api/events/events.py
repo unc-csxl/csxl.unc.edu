@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, timedelta
 from typing import Sequence
 from backend.models.public_user import PublicUser
-from backend.models.pagination import Paginated, PaginationParams
+from backend.models.pagination import EventPaginationParams, Paginated, PaginationParams
 
 from backend.services.organization import OrganizationService
 
@@ -34,6 +34,49 @@ openapi_tags = {
     "name": "Events",
     "description": "Create, update, delete, and retrieve CS Events.",
 }
+
+
+@api.get("/paginate", tags=["Events"])
+def list_events(
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+    order_by: str = "time",
+    ascending: str = "true",
+    filter: str = "",
+    range_start: str = "",
+    range_end: str = "",
+) -> Paginated[EventDetails]:
+    """List events in time range via standard backend pagination query parameters."""
+
+    pagination_params = EventPaginationParams(
+        order_by=order_by,
+        ascending=ascending,
+        filter=filter,
+        range_start=range_start,
+        range_end=range_end,
+    )
+    return event_service.get_paginated_events(pagination_params, subject)
+
+
+@api.get("/paginate/unauthenticated", tags=["Events"])
+def list_events_unauthenticated(
+    event_service: EventService = Depends(),
+    order_by: str = "time",
+    ascending: str = "true",
+    filter: str = "",
+    range_start: str = "",
+    range_end: str = "",
+) -> Paginated[EventDetails]:
+    """List events in time range via standard backend pagination query parameters for unauthenticated users."""
+
+    pagination_params = EventPaginationParams(
+        order_by=order_by,
+        ascending=ascending,
+        filter=filter,
+        range_start=range_start,
+        range_end=range_end,
+    )
+    return event_service.get_paginated_events(pagination_params)
 
 
 @api.get("", response_model=list[EventDetails], tags=["Events"])
@@ -125,26 +168,6 @@ def get_event_by_id(
         EventDetails: a valid EventDetails model corresponding to the given event id
     """
     return event_service.get_by_id(id, subject)
-
-
-@api.get("/unauthenticated", response_model=list[EventDetails], tags=["Events"])
-def get_events_unauthenticated(
-    event_service: EventService = Depends(),
-) -> list[EventDetails]:
-    """
-    Get all events for unauthenticated users
-
-    Args:
-        event_service: a valid EventService
-
-    Returns:
-        list[EventDetails]: All `EventDetails`s in the `Event` database table
-    """
-    # For some reason this API route always returns "Not authenticated" regardless of the service method in it,
-    # even for the Root user. It isn't actually used since I opted for the time range version, but still unsure
-    # why it's not working.
-    raise NotImplementedError
-    # return event_service.all()
 
 
 @api.get("/range/unauthenticated", response_model=list[EventDetails], tags=["Events"])

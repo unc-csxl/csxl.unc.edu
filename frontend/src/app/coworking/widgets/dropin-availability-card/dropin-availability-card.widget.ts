@@ -6,7 +6,7 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { Seat, SeatAvailability } from 'src/app/coworking/coworking.models';
+import { SeatAvailability } from 'src/app/coworking/coworking.models';
 
 class SeatCategory {
   public title: string;
@@ -33,18 +33,23 @@ class SeatCategory {
            to server and client sharing the same system clock, but experienced in
            prod on day 0 with many laptops having slightly drifted system clocks. */
     const now = new Date(Date.now() + epsilon);
+    const preReservableAt = new Date(
+      Date.now() + 10 /*minutes*/ * 60 /*seconds*/ * 1000 /*milliseconds*/
+    ); // Currently set by backend/services/coworking/policy.py
     if (seat.availability[0].start <= now) {
       this.seats_available_now.push(seat);
       if (this.seats_available_now.length === 1) {
         this.reservable_now = true;
         this.next_available = seat;
       }
-    } else {
+    } else if (seat.availability[0].start <= preReservableAt) {
       this.seats_available_soon.push(seat);
       if (!this.reservable_now && this.seats_available_soon.length === 1) {
         this.reservable_soon = true;
         this.next_available = seat;
       }
+    } else {
+      // Ignore seats that are not pre-reservable
     }
   }
 
@@ -111,7 +116,7 @@ export class CoworkingDropInCard implements OnChanges {
     return [
       new SeatCategory('Sitting Desk with Monitor'),
       new SeatCategory('Standing Desk with Monitor'),
-      new SeatCategory('Communal Area Seat')
+      new SeatCategory('Communal Area')
     ];
   }
 }

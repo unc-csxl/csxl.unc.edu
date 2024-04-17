@@ -18,6 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
@@ -26,9 +27,10 @@ import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
 import { EventList } from './event-list/event-list.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
-import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
+import { CommunityAgreement } from './community-agreement/community-agreement.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
+import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     EventList,
     UserLookup,
     UserChipList,
-    SlackInviteBox
+    CommunityAgreement,
+    ProfileAboutCard
   ],
   imports: [
     CommonModule,
@@ -54,6 +57,7 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     MatPaginatorModule,
     MatListModule,
     MatAutocompleteModule,
+    MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
@@ -66,7 +70,8 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
     EventCard,
     EventList,
     UserLookup,
-    UserChipList
+    UserChipList,
+    ProfileAboutCard
   ]
 })
 export class SharedModule {}

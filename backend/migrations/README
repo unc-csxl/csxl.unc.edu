@@ -5,10 +5,13 @@ To create a migration:
 
 0. Be sure you have pushed all changes to a remote branch
 1. Switch to `main`
-2. Run the generate migration script:
+2. Bring the database up to date with `main` and the latest migration:
+    1. `python3 -m backend.script.reset_demo`
+    2. `alembic stamp head`
+3. Run the migration generation script:
     `python3 -m backend.script.generate_migration <remote> <branch>`
-3. Review the generated migration by looking at the new file added to `backend/migration/versions`
-4. Edit the contents of the generated migration to match the desired migration
+4. Review the generated migration by looking at the new file added to `backend/migration/versions`
+5. Edit the contents of the generated migration to match the desired migration
     Common issues:
         1. Renamed tables shouldn't be created and dropped as new tables
         2. Enums need to be explicitly dropped (see 3b3cd for an example)
@@ -19,13 +22,13 @@ Validate the migration:
 1. Run `alembic upgrade head` to run the migration (all tables should be created)
 2. Try using the app to validate functionality
 3. Run `alembic downgrade head-1` to undo the migration and test rollback
-4. Repeat 8 and 9 to confirm rollback and upgrade work as expected
+4. Repeat `upgrade`/`downgrade` to confirm rollback and upgrade work as expected
 
 When things go wrong:
 
 If the initial upgrade/downgrade fail, you can try to fix the migration and run it/downgrade again.
 
-If the initial upgrade/downgrade succeeds, but the second upgrade fails, your best bet is typically to do the following:
+If the initial upgrade/downgrade succeeds, but the second upgrade fails, your best bet is typically to commit the migration to the development branch in question, then do the following:
 
 1. `git switch main`
 2. `python3 -m backend.script.reset_testing`

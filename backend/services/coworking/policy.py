@@ -2,13 +2,21 @@
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from datetime import timedelta
+from datetime import timedelta, datetime, time
 from ...database import db_session
 from ...models import User
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
+
+MONDAY = 0
+TUESDAY = 1
+WEDNESDAY = 2
+THURSDAY = 3
+FRIDAY = 4
+SATURDAY = 5
+SUNDAY = 6
 
 
 class PolicyService:
@@ -18,12 +26,11 @@ class PolicyService:
     for different groups of users (e.g. majors, ambassadors, LAs, etc).
     """
 
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     def walkin_window(self, _subject: User) -> timedelta:
         """How far into the future can walkins be reserved?"""
-        return timedelta(minutes=30)
+        return timedelta(minutes=10)
 
     def walkin_initial_duration(self, _subject: User) -> timedelta:
         """When making a walkin, this sets how long the initial reservation is for."""
@@ -54,3 +61,65 @@ class PolicyService:
 
     def reservation_checkin_timeout(self) -> timedelta:
         return timedelta(minutes=10)
+
+    def room_reservation_weekly_limit(self) -> timedelta:
+        """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
+        return timedelta(hours=6)
+
+    def non_reservable_rooms(self) -> list[str]:
+        return ["404"]
+
+    def office_hours(self, date: datetime):
+        day = date.weekday()
+        if day == MONDAY:
+            return {
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+            }
+        elif day == TUESDAY:
+            return {
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+            }
+        elif day == WEDNESDAY:
+            return {
+                "SN135": [],
+                "SN137": [(time(hour=15), time(hour=16))],  # Johnathan Leong
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+            }
+        elif day == THURSDAY:
+            return {
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
+            }
+        elif day == FRIDAY:
+            return {
+                "SN135": [],
+                "SN137": [],
+                "SN139": [],
+                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+                "SN144": [],
+                "SN146": [],
+                "SN147": [],
+            }
+        else:
+            return {}

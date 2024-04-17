@@ -1,9 +1,9 @@
 <mat-form-field class="form-field" appearance="outline" color="accent">
-  <mat-label>Organizers</mat-label>
+  <mat-label>{{ this.label }}</mat-label>
   <mat-chip-grid
     #chipGrid
     aria-label="Choose people"
-    [disabled]="!this.adminPermission">
+    [disabled]="this.disabled">
     <mat-chip-row *ngFor="let user of users" (removed)="onUserRemoved(user)">
       <img
         *ngIf="user.github_avatar"
@@ -24,7 +24,10 @@
       [matChipInputFor]="chipGrid"
       matInput
       [matAutocomplete]="auto"
-      [formControl]="userLookup" />
+      [formControl]="userLookup"
+      *ngIf="
+        this.maxSelected === null || this.users.length < this.maxSelected
+      " />
     <mat-autocomplete
       #auto="matAutocomplete"
       (optionSelected)="onUserAdded($event)">
