@@ -117,9 +117,7 @@ class OfficeHoursTicketService:
 
         return oh_ticket_entity.to_details_model()
 
-    def get_ticket_by_id(
-        self, subject: User, oh_ticket_id: int
-    ) -> OfficeHoursTicketDetails:
+    def get_ticket_by_id(self, subject: User, oh_ticket_id: int) -> OfficeHoursTicket:
         """
         Retrieves an office hours ticket from the table by its id.
 
@@ -128,7 +126,7 @@ class OfficeHoursTicketService:
             oh_ticket_id (int): ID of the ticket to query by.
 
         Returns:
-            OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
+            OfficeHoursTicket: `OfficeHoursTicket` with the given id
         """
         # Fetch Ticket By ID
         ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket_id)
@@ -166,6 +164,48 @@ class OfficeHoursTicketService:
                 )
 
         # Passed Permissions - Good to Return Ticket Information
+        return ticket_entity.to_model()
+
+    def get_ticket_details_by_id(
+        self, subject: User, oh_ticket_id: int
+    ) -> OfficeHoursTicketDetails:
+        """
+        Retrieves an office hours ticket details from the table by its id.
+
+        Args:
+            subject (User): A valid User model representing the currently logged-in user.
+            oh_ticket_id (int): ID of the ticket to query by.
+
+        Returns:
+            OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
+        """
+        # Fetch Ticket By ID
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket_id)
+
+        if ticket_entity is None:
+            raise ResourceNotFoundException(
+                f"Office Hours Ticket with id={oh_ticket_id} not found."
+            )
+
+        # USER PERMISSIONS:
+
+        # Fetch Office Hours Section - Needed To Determine if User Membership
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
+            ticket_entity.oh_event_id
+        )
+
+        # Fetch Current User Section Membership
+        current_user_section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section_entity.id
+        )
+
+        # Raise Exception if Student so that details are not exposed!
+        if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"User is a Student -- Doesn't Have Permission to Get Ticket Details with id={ticket_entity.id}"
+            )
+
+        # Passed Permissions - Good to Return All Ticket Information
         return ticket_entity.to_details_model()
 
     def call_ticket(

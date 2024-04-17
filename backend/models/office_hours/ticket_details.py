@@ -16,6 +16,5 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
     of the `OfficeHoursSection` database in the PostgreSQL database.
     """
 
-    caller: SectionMember | None = None
     have_concerns: bool = False
     caller_notes: str = ""

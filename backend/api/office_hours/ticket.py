@@ -45,10 +45,32 @@ def new_oh_ticket(
 
 @api.get(
     "/{oh_ticket_id}",
-    response_model=OfficeHoursTicketDetails,
+    response_model=OfficeHoursTicket,
     tags=["Office Hours"],
 )
 def get_oh_ticket_by_id(
+    oh_ticket_id: int,
+    subject: User = Depends(registered_user),
+    oh_ticket_service: OfficeHoursTicketService = Depends(),
+) -> OfficeHoursTicket:
+    """
+    Gets an OH ticket by its id
+
+    Returns:
+        OfficeHoursTicket: OH ticket with the given id
+    """
+    try:
+        return oh_ticket_service.get_ticket_by_id(subject, oh_ticket_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_ticket_id}/details",
+    response_model=OfficeHoursTicketDetails,
+    tags=["Office Hours"],
+)
+def get_oh_ticket_details_by_id(
     oh_ticket_id: int,
     subject: User = Depends(registered_user),
     oh_ticket_service: OfficeHoursTicketService = Depends(),
@@ -57,10 +79,10 @@ def get_oh_ticket_by_id(
     Gets an OH ticket by its id
 
     Returns:
-        OfficeHoursTicketDetails: OH ticket with the given id
+        OfficeHoursTicketDetails: OH ticket with the given id (including details)
     """
     try:
-        return oh_ticket_service.get_ticket_by_id(subject, oh_ticket_id)
+        return oh_ticket_service.get_ticket_details_by_id(subject, oh_ticket_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

@@ -8,7 +8,11 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { OfficeHoursEventType, TicketDetails } from '../../office-hours.models';
+import {
+  OfficeHoursEventType,
+  Ticket,
+  TicketDetails
+} from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
 
 @Component({
@@ -18,7 +22,7 @@ import { OfficeHoursService } from '../../office-hours.service';
 })
 export class TicketHistoryWidget implements OnInit {
   @Input() sectionId!: number;
-  public createdTickets: TicketDetails[] = [];
+  public createdTickets: Ticket[] = [];
   public calledTickets: TicketDetails[] = [];
   public displayedStudentColumns: string[] = [
     'date',

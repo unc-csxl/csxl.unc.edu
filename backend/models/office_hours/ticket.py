@@ -42,6 +42,7 @@ class OfficeHoursTicket(OfficeHoursTicketDraft):
     closed_at: datetime | None = None
     oh_event: OfficeHoursEvent
     creators: list[SectionMember] = []
+    caller: SectionMember | None = None
 
 
 class OfficeHoursTicketPartial(OfficeHoursTicket):

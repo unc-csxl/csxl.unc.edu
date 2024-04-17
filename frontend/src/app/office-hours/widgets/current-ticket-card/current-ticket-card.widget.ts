@@ -29,7 +29,7 @@ import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog
   styleUrls: ['./current-ticket-card.widget.css']
 })
 export class CurrentTicketCard implements OnInit {
-  @Input() ticket!: TicketDetails;
+  @Input() ticket!: Ticket;
   @Input() event!: OfficeHoursEvent;
   queued_tickets: number | null;
   called_tickets: number | null;
