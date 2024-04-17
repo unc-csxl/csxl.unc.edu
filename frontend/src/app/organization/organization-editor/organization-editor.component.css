@@ -1,48 +1,29 @@
 mat-card {
-  margin: 2em;
+  display: flex;
+  flex-direction: column;
 }
 
 mat-card-header {
   display: flex;
-  justify-content: center;
   margin-bottom: 20px;
-}
-
-mat-card-title {
-  flex: 1;
-  text-align: center;
 }
 
 mat-card-content {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: space-between;
 }
 
 mat-form-field {
-  flex: 0 0 calc(50% - 16px);
-  box-sizing: border-box;
+  flex: 0 0 48.6%;
 }
 
-.button-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-top: -8px;
-}
-
-.save-button,
-.events-button {
-  flex: 0 0 calc(33.33% - 8px);
-  margin-top: -8px;
-  margin-bottom: 8px;
+.long-description,
+.short-description {
+  flex: 0 0 100%;
 }
 
 .save-button {
-  margin-left: calc(8.34%);
-}
-
-.events-button {
-  margin-right: calc(8.34%);
+  margin-top: -8px;
+  margin-bottom: 8px;
 }

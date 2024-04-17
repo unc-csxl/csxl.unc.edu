@@ -48,7 +48,8 @@ export class EventEditorComponent {
   public profile: Profile | null = null;
 
   /** Stores whether the user has admin permission over the current organization. */
-  public enabled$: Observable<boolean>;
+  // public enabled$: Observable<boolean>;
+  public adminPermission$: Observable<boolean>;
 
   /** Store organizers */
   public organizers: PublicProfile[] = [];
@@ -121,13 +122,19 @@ export class EventEditorComponent {
       Validators.min(this.event.registration_count)
     );
 
-    // Should the edit form be enabled?
-    this.enabled$ = this.permission
-      .check(
-        'organization.events.update',
-        `organization/${this.organization!.id}`
-      )
-      .pipe(map((permission) => permission || this.event.is_organizer));
+    // // Should the edit form be enabled?
+    // this.enabled$ = this.permission
+    //   .check(
+    //     'organization.events.update',
+    //     `organization/${this.organization!.id}`
+    //   )
+    //   .pipe(map((permission) => permission || this.event.is_organizer));
+
+    // Set permission value
+    this.adminPermission$ = this.permission.check(
+      'organization.*',
+      `organization/${this.organization.slug}`
+    );
 
     // Set the organizers
     // If no organizers already, set current user as organizer

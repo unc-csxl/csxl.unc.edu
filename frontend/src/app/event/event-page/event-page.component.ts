@@ -127,6 +127,35 @@ export class EventPageComponent implements OnInit, OnDestroy {
 
   /** Runs when the frontend UI loads */
   ngOnInit() {
+    if (this.profile !== undefined) {
+      let userPermissions = this.profile.permissions;
+      /** Ensure that the signed in user has permissions before looking at the resource */
+      if (userPermissions.length !== 0) {
+        /** Admin user, no need to check further */
+        if (userPermissions[0].resource === '*') {
+          this.gearService.showAdminGear(
+            'organizations.*',
+            '*',
+            '',
+            'events/admin'
+          );
+        } else {
+          /** Find if the signed in user has any organization permissions */
+          let organizationPermissions = userPermissions.filter((element) =>
+            element.resource.includes('organization')
+          );
+          /** If they do, show admin gear */
+          if (organizationPermissions.length !== 0) {
+            this.gearService.showAdminGear(
+              'organizations.*',
+              organizationPermissions[0].resource,
+              '',
+              'events/admin'
+            );
+          }
+        }
+      }
+    }
     // Keep track of the initial width of the browser window
     this.innerWidth = window.innerWidth;
 
