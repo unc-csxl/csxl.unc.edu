@@ -200,10 +200,6 @@ export class OrganizationEditorComponent {
     }
   }
 
-  onCancel(organization: Organization): void {
-    this.router.navigate(['/organizations/', organization.slug]);
-  }
-
   /** Opens a confirmation snackbar when an organization is successfully updated.
    * @returns {void}
    */

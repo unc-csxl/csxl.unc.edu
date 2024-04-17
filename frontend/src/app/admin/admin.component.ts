@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Profile, ProfileService } from '../profile/profile.service';
 
@@ -12,8 +12,7 @@ export class AdminComponent {
 
   public links = [
     { label: 'Users', path: '/admin/users' },
-    { label: 'Roles', path: '/admin/roles' },
-    { label: 'Organizations', path: '/admin/organizations' }
+    { label: 'Roles', path: '/admin/roles' }
     // { label: 'Applications', path: '/admin/applications' } ---> ignore until future development
   ];
 

@@ -19,7 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AdminUsersListComponent } from './users/list/admin-users-list.component';
 import { AdminRolesListComponent } from './roles/list/admin-roles-list.component';
 import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.component';
-import { AdminOrganizationListComponent } from './organization/list/admin-organization-list.component';
+import { OrganizationListAdminComponent } from '../organization/organization-admin/list/organization-list-admin.component';
 import { AdminApplicationsListComponent } from './applications/list/admin-applications-list.component';
 
 import { ApplicationReviewModal } from './applications/widgets/application-review-modal.widget';
@@ -30,8 +30,6 @@ import { ApplicationReviewModal } from './applications/widgets/application-revie
     AdminUsersListComponent,
     AdminRolesListComponent,
     AdminRoleDetailsComponent,
-    AdminOrganizationListComponent,
-    // AdminApplicationsListComponent, ---> ignore until future development
     ApplicationReviewModal
   ],
   imports: [
