@@ -1,3 +1,4 @@
+<!-- eslint-disable prettier/prettier -->
 <div class="page-container">
   <mat-card class="card-container" appearance="outlined">
     <div class="header-row">
@@ -16,10 +17,11 @@
     <mat-card-content class="card-container">
       <div class="queue-row">
         <div class="queued">
-          <span class="number-badge">{{this.queued_tickets}}</span>Queued
+          <span class="number-badge">{{ this.queued_tickets }}</span>Queued
         </div>
         <div class="helped">
-          <span class="number-badge">{{this.called_tickets}}</span>Being Helped
+          <span class="number-badge">{{ this.called_tickets }}</span>Being
+          Helped
         </div>
       </div>
     </mat-card-content>
@@ -35,7 +37,8 @@
       mat-fab
       color="accent"
       aria-label="Example icon button with a home icon"
-      class="home-button">
+      class="home-button"
+      (click)="unsubscribeRefresh()">
       <mat-icon>home</mat-icon>
     </button>
   </a>

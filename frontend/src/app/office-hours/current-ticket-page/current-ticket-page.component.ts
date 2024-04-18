@@ -9,15 +9,16 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   OfficeHoursEvent,
   OfficeHoursSection,
   TicketDetails
 } from '../office-hours.models';
-import { interval } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-current-ticket-page',
@@ -38,23 +39,25 @@ export class CurrentTicketPageComponent implements OnInit {
   eventId: number;
   ticketId: number;
   section: OfficeHoursSection | null = null;
-  event: OfficeHoursEvent | null = null;
-  ticket: TicketDetails | null = null;
+  event!: OfficeHoursEvent;
+  ticket!: TicketDetails;
+  refresh: Subscription | undefined;
 
   constructor(
     private officeHoursService: OfficeHoursService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {
     // Get IDs from the route parameters
     this.sectionId = this.route.snapshot.params['id'];
     this.eventId = this.route.snapshot.params['event_id'];
     this.ticketId = this.route.snapshot.params['ticket_id'];
-    let refresh = interval(10000).subscribe(() => {
-      let prevState = this.ticket;
+
+    // Subscribe to observable every 10 seconds and get tickets + stats
+    this.refresh = interval(10000).subscribe(() => {
       this.getTicketInfo();
-      if (this.ticket !== prevState) {
-        this.ngOnInit();
-      }
+      console.log('here');
     });
   }
 
@@ -69,6 +72,48 @@ export class CurrentTicketPageComponent implements OnInit {
       this.ticket = ticket;
       this.event = ticket.oh_event;
       this.section = ticket.oh_event.oh_section;
+
+      if (this.formatTicketState(this.ticket.state) === 'Closed') {
+        this.displayClosedMessage();
+        this.navToHome();
+        if (this.refresh) {
+          this.refresh.unsubscribe();
+        }
+      }
+
+      if (this.formatTicketState(this.ticket.state) === 'Canceled') {
+        this.displayCanceledMessage();
+        this.navToHome();
+        if (this.refresh) {
+          this.refresh.unsubscribe();
+        }
+      }
+    });
+  }
+
+  formatTicketState(state: number) {
+    return this.officeHoursService.formatTicketState(state);
+  }
+
+  /* Helper function that navigates back to course home */
+  navToHome() {
+    this.router.navigate([
+      'office-hours/spring-2024/',
+      this.event.oh_section.id
+    ]);
+  }
+
+  /* Displays snackbar message if ticket has been canceled */
+  displayCanceledMessage() {
+    this.snackBar.open('Your ticket has been canceled.', '', {
+      duration: 2000
+    });
+  }
+
+  /* Displays snackbar message if ticket has been closed */
+  displayClosedMessage() {
+    this.snackBar.open('This ticket has been closed.', '', {
+      duration: 2000
     });
   }
 }
