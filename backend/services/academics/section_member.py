@@ -14,6 +14,7 @@ from ...models.academics.section_member import (
 )
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.office_hours.section import (
+    OfficeHoursSection,
     OfficeHoursSectionDraft,
     OfficeHoursSectionPartial,
 )
@@ -70,8 +71,8 @@ class SectionMemberService:
 
         return entity.to_flat_model()
 
-    def get_section_member_by_user_id_and_section_id(
-        self, subject: User, section_id: int
+    def get_section_member_by_user_id_and_oh_section_id(
+        self, subject: User, oh_section_id: int
     ) -> SectionMember:
         """Retrieve a section membership by user ID and office hours section ID.
 
@@ -87,14 +88,15 @@ class SectionMemberService:
         """
         query = (
             select(SectionMemberEntity)
+            .filter(SectionEntity.office_hours_id == oh_section_id)
+            .filter(SectionEntity.id == SectionMemberEntity.section_id)
             .filter(SectionMemberEntity.user_id == subject.id)
-            .filter(SectionMemberEntity.section_id == section_id)
         )
         entity = self._session.scalars(query).one_or_none()
 
         if entity is None:
             raise ResourceNotFoundException(
-                "Section Membership Not Found for User (id={subject.id}) and Office Hours Section (id={oh_section_id})"
+                f"Section Membership Not Found for User (id={subject.id}) and Office Hours Section (id={oh_section_id})"
             )
 
         return entity.to_flat_model()

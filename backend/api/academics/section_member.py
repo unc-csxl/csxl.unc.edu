@@ -66,7 +66,7 @@ def get_membership_by_user_and_oh_section_id(
         HTTPException(404): If the SectionMember's membership in the specified section is not found.
     """
     try:
-        return section_member_svc.get_section_member_by_user_id_and_section_id(
+        return section_member_svc.get_section_member_by_user_id_and_oh_section_id(
             subject, section_id
         )
     except Exception as e:

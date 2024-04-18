@@ -50,7 +50,14 @@ comp_523_oh_section = OfficeHoursSection(
     id=2, title="COMP 523: Software Engineering Lab"
 )
 
-oh_sections = [comp_110_oh_section, comp_523_oh_section]
+comp_110_oh_section_sp_24 = OfficeHoursSection(
+    id=3, title="COMP 110: Introduction to Programming SP24"
+)
+
+oh_sections = [comp_110_oh_section, comp_523_oh_section, comp_110_oh_section_sp_24]
+
+# For Test
+f23_oh_sections = [comp_110_oh_section, comp_523_oh_section]
 
 oh_section_draft = OfficeHoursSectionDraft(title="Draft OH Section")
 # Office Hours Event Data
@@ -262,6 +269,11 @@ def insert_fake_data(session: Session):
 
     comp_523_section_entity = session.get(SectionEntity, section_data.comp_523_001.id)
     comp_523_section_entity.office_hours_id = comp_523_oh_section.id
+
+    comp_110_sp_24_section_entity = session.get(
+        SectionEntity, section_data.comp_101_001_sp_24.id
+    )
+    comp_110_sp_24_section_entity.office_hours_id = comp_110_oh_section_sp_24.id
 
     # Add Office Hours Event
     for event in oh_events:

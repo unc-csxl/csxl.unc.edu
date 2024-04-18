@@ -1,8 +1,12 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import statistics
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import and_, not_, select, select, outerjoin, and_, not_
+from sqlalchemy import select, not_, and_, union
+from sqlalchemy.orm import aliased
 from sqlalchemy.orm import Session
 
+from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...entities.office_hours.event_entity import OfficeHoursEventEntity
@@ -254,7 +258,7 @@ class OfficeHoursSectionService:
         return [entity.to_details_model() for entity in entities]
 
     def get_user_sections_by_term(
-        self, subject: User, term_id: int
+        self, subject: User, term_id: str
     ) -> list[OfficeHoursSectionDetails]:
         """Retrieves all office hours sections from the table by a term and specific user.
         Args:
@@ -276,6 +280,58 @@ class OfficeHoursSectionService:
 
         entities = self._session.scalars(query).all()
         return [entity.to_details_model() for entity in entities]
+
+    def get_user_not_enrolled_sections(self, subject: User) -> list[OfficeHoursSection]:
+        """Retrieves all office hours sections user not a member of.
+        Args:
+            subject (User): a valid User model representing the currently logged in User
+
+        Returns:
+            list[OfficeHoursSection]: List of all `OfficeHoursSection`
+
+        """
+        user_oh_sections_ids_query = (
+            select(OfficeHoursSectionEntity.id)
+            .where(SectionMemberEntity.user_id == subject.id)
+            .where(SectionMemberEntity.section_id == SectionEntity.id)
+            .where(OfficeHoursSectionEntity.id == SectionEntity.office_hours_id)
+            .distinct()
+        )
+
+        query_user_not_enrolled_sections = select(OfficeHoursSectionEntity).filter(
+            not_(OfficeHoursSectionEntity.id.in_(user_oh_sections_ids_query))
+        )
+
+        sections_not_in = self._session.scalars(query_user_not_enrolled_sections).all()
+
+        return [entity.to_model() for entity in sections_not_in]
+
+    def get_user_not_enrolled_sections_by_term(
+        self, subject: User, term_id: str
+    ) -> list[OfficeHoursSection]:
+        """Retrieves all office hours sections user not a member of by term.
+        Args:
+            subject (User): a valid User model representing the currently logged in User
+            term_id: ID of the term to query by.
+
+        Returns:
+            list[OfficeHoursSection]: List of all `OfficeHoursSection`
+
+        """
+        user_sections = self.get_user_sections_by_term(subject, term_id)
+        user_section_ids = [row.id for row in user_sections]
+
+        query = (
+            select(OfficeHoursSectionEntity)
+            .filter(OfficeHoursSectionEntity.id.not_in(user_section_ids))
+            .join(SectionEntity)
+            .filter(SectionEntity.term_id == term_id)
+            .distinct()
+        )
+
+        user_not_enrolled_oh_sections = self._session.scalars(query).all()
+
+        return [entity.to_model() for entity in user_not_enrolled_oh_sections]
 
     def get_section_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
@@ -371,6 +427,147 @@ class OfficeHoursSectionService:
 
         return called_tickets
 
+    def get_section_tickets_with_concerns(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
+    ) -> list[OfficeHoursTicketDetails]:
+        """Retrieves all office hours tickets that were flagged for concern from the table by a section.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: the OfficeHoursSectionDetails to query by.
+        Returns:
+            list[OfficeHoursTicketDetails]: List of all concerning `OfficeHoursTicketDetails` in an OHsection
+        """
+
+        # Checks If User Has Proper Role to Get and If is a Member in a Section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        if (
+            section_member_entity.member_role != RosterRole.INSTRUCTOR
+            and section_member_entity.member_role != RosterRole.GTA
+        ):
+            raise PermissionError(
+                f"Section Member is not an Instructor or GTA. User Does Not Have Permision to get concerning tickets in section with id {oh_section.id}."
+            )
+
+        # Selects the section entity based on the ID
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        # Get the tickets that are linked to the events which are linked to the section
+        ticket_entities = [
+            ticket for event in entity.events for ticket in event.tickets
+        ]
+
+        # Access the details models of those tickets
+        ticket_details_models = [
+            entity.to_details_model() for entity in ticket_entities
+        ]
+
+        # Return tickets where have_concerns is True
+        return [ticket for ticket in ticket_details_models if ticket.have_concerns]
+
+    def get_section_trailing_week_data(
+        self, subject: User, oh_section: OfficeHoursSectionDetails
+    ) -> OfficeHoursSectionTrailingWeekData:
+        """Retrieves all trailing week statistics in a section from the table.
+        Args:
+            subject: a valid User model representing the currently logged in User
+            oh_section: the OfficeHoursSectionDetails to query by.
+        Returns:
+            OfficeHoursSectionTrailingWeekData: Model of all trailing week statistics for the given OH section
+        """
+
+        # PERMISSIONS
+
+        # Throws exception if user is not a member of the given section
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section.id
+        )
+
+        # Raises PermissionError if user trying to fetch data is not an Instructor or GTA
+        if (
+            section_member_entity.member_role != RosterRole.INSTRUCTOR
+            and section_member_entity.member_role != RosterRole.GTA
+        ):
+            raise PermissionError(
+                f"Section Member is not an Instructor or GTA. User Does Not Have Permission to Get data in section with id {oh_section.id}."
+            )
+
+        # Select OH Section by id
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        entity = self._session.scalars(query).one_or_none()
+
+        # Get the tickets from the past week that are linked to the events which are linked to the section
+        filtered_ticket_entities = [
+            ticket
+            for event in entity.events
+            for ticket in event.tickets
+            if ticket.created_at > datetime.now() - timedelta(days=7)
+        ]
+
+        # Get unique creators
+        unique_ticket_creators = {
+            creator
+            for ticket in filtered_ticket_entities
+            for creator in ticket.creators
+        }
+
+        # --- Get wait time statistics ---
+        # Calculate wait times in minutes for each ticket with a called time filled in
+        wait_times = [
+            (ticket.called_at - ticket.created_at).total_seconds() / 60
+            for ticket in filtered_ticket_entities
+            if ticket.called_at
+        ]
+
+        # Compute the average
+        avg_wait_time = sum(wait_times) / len(wait_times) if wait_times else 0.0
+
+        # Compute the standard deviation of wait times; handle if built in stdev raises Error
+        try:
+            std_dev_wait_time = statistics.stdev(wait_times)
+        except statistics.StatisticsError:
+            std_dev_wait_time = 0.0
+
+        # --- Get ticket duration statistics ---
+        # Calculate ticket duration in minutes for each ticket with a called time filled in
+        ticket_duration_times = [
+            (ticket.closed_at - ticket.called_at).total_seconds() / 60
+            for ticket in filtered_ticket_entities
+            if (ticket.closed_at and ticket.called_at)
+        ]
+
+        # Compute the average
+        avg_duration_time = (
+            sum(ticket_duration_times) / len(ticket_duration_times)
+            if ticket_duration_times
+            else 0.0
+        )
+
+        # Compute the standard deviation of duration times; handle if built in stdev raises Error
+        try:
+            std_dev_duration_time = statistics.stdev(ticket_duration_times)
+        except statistics.StatisticsError:
+            std_dev_duration_time = 0.0
+
+        # --- Round floats to two decimal places, construct the model and return it ---
+        return OfficeHoursSectionTrailingWeekData(
+            number_of_tickets=len(filtered_ticket_entities),
+            number_of_students=len(unique_ticket_creators),
+            average_wait_time=round(avg_wait_time, 2),
+            standard_deviation_wait_time=round(std_dev_wait_time, 2),
+            average_ticket_duration=round(avg_duration_time, 2),
+            standard_deviation_ticket_duration=round(std_dev_duration_time, 2),
+        )
+
     def get_oh_section_members(
         self, subject: User, oh_section: OfficeHoursSectionDetails
     ) -> list[SectionMember]:
@@ -444,7 +641,7 @@ class OfficeHoursSectionService:
                 f"Section Member is not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
             )
 
-        # Select SectionMember
+        # Select SectionMember to modify
         query = select(SectionMemberEntity).where(
             SectionMemberEntity.id == user_to_modify.id
         )
@@ -453,7 +650,8 @@ class OfficeHoursSectionService:
             raise ResourceNotFoundException(
                 f"SectionMember with id {user_to_modify.id} not found."
             )
-        # Throw error if member to update isn't a member of the OH section
+
+        # Raise error if member to update isn't a member of the OH section
         self._check_user_section_membership(
             section_member_entity.user_id, oh_section_id
         )

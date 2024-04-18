@@ -5,6 +5,7 @@ This API is used to access OH section data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
+from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.coworking.time_range import TimeRange
@@ -204,6 +205,51 @@ def get_oh_sections_by_user_and_term(
 
 
 @api.get(
+    "/user/not-enrolled",
+    response_model=list[OfficeHoursSection],
+    tags=["Office Hours"],
+)
+def get_user_not_enrolled_sections(
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursSection]:
+    """
+    Gets list of OH sections the currrent user not apart of.
+
+    Returns:
+        list[OfficeHoursSection]: User's OH sections within the given term
+    """
+    try:
+        return oh_section_service.get_user_not_enrolled_sections(subject)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/user/not-enrolled/term/{term_id}",
+    response_model=list[OfficeHoursSection],
+    tags=["Office Hours"],
+)
+def get_user_not_enrolled_sections(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursSection]:
+    """
+    Gets list of OH sections the currrent user not apart of by term.
+
+    Returns:
+        list[OfficeHoursSection]: User's OH sections within the given term
+    """
+    try:
+        return oh_section_service.get_user_not_enrolled_sections_by_term(
+            subject, term_id
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
     "/{oh_section_id}/tickets",
     response_model=list[OfficeHoursTicketDetails],
     tags=["Office Hours"],
@@ -274,6 +320,56 @@ def get_user_section_called_tickets(
             subject, oh_section_id
         )
         return oh_section_service.get_user_section_called_tickets(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_section_id}/data/concerns",
+    response_model=list[OfficeHoursTicketDetails],
+    tags=["Office Hours"],
+)
+def get_section_tickets_with_concerns(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> list[OfficeHoursTicketDetails]:
+    """
+    Gets list of OH tickets in a section that were marked for concern
+
+    Returns:
+        list[OfficeHoursTicketDetails]: OH tickets within the given section that were marked for concern
+    """
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_section_tickets_with_concerns(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
+    "/{oh_section_id}/data/statistics",
+    response_model=OfficeHoursSectionTrailingWeekData,
+    tags=["Office Hours"],
+)
+def get_section_trailing_week_data(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+) -> OfficeHoursSectionTrailingWeekData:
+    """
+    Gets OH Section Data model for the given section
+
+    Returns:
+        OfficeHoursSectionTrailingWeekData: The given OH section's data statistics for the trailing week
+    """
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_section_trailing_week_data(subject, oh_section)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
