@@ -35,7 +35,7 @@ class UTAApplication(Application):
     comp_227: str
 
 
-class New_UTA(UTAApplication):
+class NewUTAApplication(UTAApplication):
     """
     Pydantic model to represent a `New UTA`.
 

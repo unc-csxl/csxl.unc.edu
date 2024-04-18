@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends
 
 from typing import List
 
-from backend.models.application import Application, New_UTA
 from backend.models.application_details import New_UTADetails, UserApplication
 from backend.services.application import ApplicationService
 

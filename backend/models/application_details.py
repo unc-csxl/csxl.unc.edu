@@ -6,7 +6,7 @@ from backend.models.academics.section import Section
 from backend.models.application import (
     Application,
     UTAApplication,
-    New_UTA,
+    NewUTAApplication,
     Returning_UTA,
 )
 
@@ -39,7 +39,7 @@ class UTADetails(UTAApplication, ApplicationDetails):
     preferred_sections: list[Section]
 
 
-class New_UTADetails(New_UTA, UTADetails):
+class New_UTADetails(NewUTAApplication, UTADetails):
     """
     Pydantic model to represent a `UTA Application`.
 

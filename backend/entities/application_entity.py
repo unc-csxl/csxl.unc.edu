@@ -15,7 +15,12 @@ from backend.models.academics.section import Section
 
 from .entity_base import EntityBase
 from typing import Self, Dict
-from ..models.application import Application, UTAApplication, New_UTA, Returning_UTA
+from ..models.application import (
+    Application,
+    UTAApplication,
+    NewUTAApplication,
+    Returning_UTA,
+)
 from ..models.application_details import UTADetails
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
@@ -237,7 +242,7 @@ class New_UTA_Entity(UTAEntity):
     }
 
     @classmethod
-    def from_model(cls, model: New_UTA) -> Self:
+    def from_model(cls, model: NewUTAApplication) -> Self:
         """
         Class method that converts an `Application` model into a `ApplicationEntity`
 
@@ -255,7 +260,7 @@ class New_UTA_Entity(UTAEntity):
 
         return entity
 
-    def to_model(self) -> New_UTA:
+    def to_model(self) -> NewUTAApplication:
         """
         Converts an `ApplicationEntity` object into an `Application` model object
 
@@ -264,7 +269,7 @@ class New_UTA_Entity(UTAEntity):
         """
 
         parent_model = super().to_details_model().model_dump()
-        return New_UTA(
+        return NewUTAApplication(
             **parent_model,
             intro_video=self.intro_video,
             prior_experience=self.prior_experience,
