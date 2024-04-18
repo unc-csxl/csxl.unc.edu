@@ -126,6 +126,7 @@ class OfficeHoursTicketEntity(EntityBase):
             called_at=self.called_at,
             closed_at=self.closed_at,
             oh_event=self.oh_event.to_model(),
+            caller=(self.caller.to_flat_model() if self.caller is not None else None),
         )
 
     def to_details_model(self) -> OfficeHoursTicketDetails:
