@@ -9,7 +9,7 @@ from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application_details import (
     ApplicationDetails,
     New_UTADetails,
-    UTADetails,
+    UTAApplicationDetails,
 )
 from backend.models.academics.section import Section
 
@@ -21,7 +21,7 @@ from ..models.application import (
     NewUTAApplication,
     Returning_UTA,
 )
-from ..models.application_details import UTADetails
+from ..models.application_details import UTAApplicationDetails
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
@@ -39,7 +39,7 @@ class ApplicationEntity(EntityBase):
 
     # The user associated with the application
     # NOTE: This field establishes a one-to-many relationship between the user and application tables.
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["UserEntity"] = relationship(back_populates="applications")
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
@@ -85,28 +85,28 @@ class ApplicationEntity(EntityBase):
         )
 
 
-class UTAEntity(ApplicationEntity):
+class UTAApplicationEntity(ApplicationEntity):
     """Serves as the database model schema for applications specific to Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to UTA Applications
 
     # Academic Hours student plans to take
-    academic_hours: Mapped[int] = mapped_column(Integer, nullable=True)
+    academic_hours: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # Extracurriculars student is a part of
     extracurriculars: Mapped[str] = mapped_column(String, nullable=True)
 
     # Expected graduation
-    expected_graduation: Mapped[str] = mapped_column(String, nullable=True)
+    expected_graduation: Mapped[str] = mapped_column(String, nullable=False)
 
     # Program pursued
-    program_pursued: Mapped[str] = mapped_column(String, nullable=True)
+    program_pursued: Mapped[str] = mapped_column(String, nullable=False)
 
     # Other programs being pursued
     other_programs: Mapped[str] = mapped_column(String, nullable=True)
 
     # GPA
-    gpa: Mapped[float] = mapped_column(Float, nullable=True)
+    gpa: Mapped[float] = mapped_column(Float, nullable=False)
 
     # COMP GPA
     comp_gpa: Mapped[float] = mapped_column(Float, nullable=True)
@@ -121,12 +121,14 @@ class UTAEntity(ApplicationEntity):
         back_populates="preferred_applicants",
     )
 
+    # Any row in the main Application table that is an instance of UTAApplicationEntity will override
+    # the polymorephic_identity to "uta"
     __mapper_args__ = {
         "polymorphic_identity": "uta",
     }
 
     @classmethod
-    def from_model(cls, model: UTADetails) -> Self:
+    def from_model(cls, model: UTAApplicationDetails) -> Self:
         """
         Class method that converts a `UTA` model into a `UTAEntity`
 
@@ -173,7 +175,7 @@ class UTAEntity(ApplicationEntity):
             comp_227=self.comp_227,
         )
 
-    def to_details_model(self) -> UTADetails:
+    def to_details_model(self) -> UTAApplicationDetails:
         """
         Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
 
@@ -183,7 +185,7 @@ class UTAEntity(ApplicationEntity):
 
         parent_model = super().to_details_model().model_dump()
 
-        return UTADetails(
+        return UTAApplicationDetails(
             **parent_model,
             academic_hours=self.academic_hours,
             extracurriculars=self.extracurriculars,
@@ -198,7 +200,9 @@ class UTAEntity(ApplicationEntity):
             ],
         )
 
-    def update(self, model: UTADetails, sections: list[SectionEntity]) -> None:
+    def update(
+        self, model: UTAApplicationDetails, sections: list[SectionEntity]
+    ) -> None:
         """
         Update an ApplciationEntity from a UTA model.
 
@@ -219,13 +223,13 @@ class UTAEntity(ApplicationEntity):
         self.preferred_sections = sections
 
 
-class New_UTA_Entity(UTAEntity):
+class NewUTAApplicationEntity(UTAApplicationEntity):
     """Serves as the database model schema for applications specific to new Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to First-Time UTA Applications
 
     # Intro video explaining why they want to be a TA
-    intro_video_url: Mapped[str] = mapped_column(String, nullable=True)
+    intro_video_url: Mapped[str] = mapped_column(String, nullable=False)
 
     # Prior experience in the workforce
     prior_experience: Mapped[str] = mapped_column(String, nullable=True)
@@ -236,7 +240,8 @@ class New_UTA_Entity(UTAEntity):
     # Additonal experience that is relevant
     additional_experience: Mapped[str] = mapped_column(String, nullable=True)
 
-    # Set up for single-table inheritance (assign unique polymorphic identity)
+    # Any row in the main Application table that is an instance of NewUTAApplicationEntity will override
+    # the polymorephic_identity to "new_uta"
     __mapper_args__ = {
         "polymorphic_identity": "new_uta",
     }
@@ -296,7 +301,7 @@ class New_UTA_Entity(UTAEntity):
 
     def update(self, model: New_UTADetails, sections: list[Section]) -> None:
         """
-        Update an ApplciationEntity from a New_UTA model.
+        Update an ApplicationEntity from a New_UTA model.
 
         Args:
             model (New_UTA): The model to update the entity from.
@@ -339,7 +344,7 @@ class New_UTA_Entity(UTAEntity):
         )
 
 
-class Returning_UTA_Entity(UTAEntity):
+class ReturningUTAApplicationEntity(UTAApplicationEntity):
     """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to Returning UTA Applications
@@ -353,7 +358,8 @@ class Returning_UTA_Entity(UTAEntity):
     # Desired personal improvement
     desired_improvement: Mapped[str] = mapped_column(String, nullable=True)
 
-    # Set up for single-table inheritance (assign unique polymorphic identity)
+    # Any row in the main Application table that is an instance of ReturningUTAApplicationEntity will override
+    # the polymorephic_identity to "returning_uta"
     __mapper_args__ = {
         "polymorphic_identity": "returning_uta",
     }

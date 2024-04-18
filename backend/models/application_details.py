@@ -28,7 +28,7 @@ class ApplicationDetails(Application):
     user: User
 
 
-class UTADetails(UTAApplication, ApplicationDetails):
+class UTAApplicationDetails(UTAApplication, ApplicationDetails):
     """
     Pydantic model to represent a `UTA Application`.
 
@@ -39,7 +39,7 @@ class UTADetails(UTAApplication, ApplicationDetails):
     preferred_sections: list[Section]
 
 
-class New_UTADetails(NewUTAApplication, UTADetails):
+class New_UTADetails(NewUTAApplication, UTAApplicationDetails):
     """
     Pydantic model to represent a `UTA Application`.
 

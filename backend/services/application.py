@@ -6,7 +6,10 @@ from sqlalchemy import update, delete
 from sqlalchemy.orm import Session
 from typing import Dict
 from backend.entities import section_application_table
-from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
+from backend.entities.application_entity import (
+    ApplicationEntity,
+    NewUTAApplicationEntity,
+)
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.academics.section import Section
@@ -63,8 +66,7 @@ class ApplicationService:
         #         applications.append(entity.to_model())
 
         # return applications
-        
-    
+
     def get_application(self, subject: User) -> UserApplication:
         """Returns application(s) for a specific user
 
@@ -105,7 +107,6 @@ class ApplicationService:
         application = application_entity.map_application_to_detail_model(section_dict)
 
         return UserApplication(application=application)
-    
 
     def create_undergrad(self, application: New_UTADetails) -> New_UTADetails:
         """
@@ -123,7 +124,7 @@ class ApplicationService:
         if application.id:
             application.id = None
 
-        application_entity = New_UTA_Entity.from_model(application)
+        application_entity = NewUTAApplicationEntity.from_model(application)
 
         application_entity.preferred_sections = (
             self._session.query(SectionEntity)
@@ -169,7 +170,7 @@ class ApplicationService:
         """
 
         original_application = (
-            self._session.query(New_UTA_Entity)
+            self._session.query(NewUTAApplicationEntity)
             .filter(ApplicationEntity.user_id == subject.id)
             .first()
         )
@@ -218,7 +219,7 @@ class ApplicationService:
         """
 
         original_application = (
-            self._session.query(New_UTA_Entity)
+            self._session.query(NewUTAApplicationEntity)
             .filter(ApplicationEntity.user_id == subject.id)
             .first()
         )

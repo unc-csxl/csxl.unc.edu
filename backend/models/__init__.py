@@ -1,7 +1,7 @@
 """Package for all models in the application."""
 
 from .application import Application, UTAApplication, NewUTAApplication, Returning_UTA
-from .application_details import ApplicationDetails, UTADetails
+from .application_details import ApplicationDetails, UTAApplicationDetails
 from .pagination import Paginated, PaginationParams, EventPaginationParams
 from .permission import Permission
 from .user import User, ProfileForm
