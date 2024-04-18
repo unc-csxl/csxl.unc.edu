@@ -1,9 +1,9 @@
 /**
- * The Admin Organization Service abstracts backend calls from the
- * Admin organization List Component.
+ * The Admin Applications Service abstracts backend calls from the
+ * Admin Applications Component.
  *
- * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @author Ben Goulet
+ * @copyright 2024
  * @license MIT
  */
 

@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   Observable,
@@ -25,6 +25,8 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Section } from 'src/app/academics/academics.models';
 import { Profile } from 'src/app/profile/profile.service';
+import { profileResolver } from 'src/app/profile/profile.resolver';
+import { sectionResolver } from 'src/app/academics/academics.resolver';
 
 interface OptionSelect {
   value: string;
@@ -39,7 +41,11 @@ interface OptionSelect {
 export class UndergradApplicationComponent implements OnInit, OnDestroy {
   public static Route = {
     path: 'uta-application',
-    component: UndergradApplicationComponent
+    component: UndergradApplicationComponent,
+    resolve: {
+      sections: sectionResolver,
+      profile: profileResolver
+    }
   };
 
   experienceList: OptionSelect[] = [
@@ -140,16 +146,25 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   preferenceCtrl = new FormControl('');
   filteredPreferences: Observable<Section[]>;
   allSections$: Observable<Section[]>;
+  sections: Section[] = [];
+  profile: Profile;
   selectedSections: Section[] = [];
-  userDetails: Profile | null = null;
   private destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
     private applicationService: ApplicationsService,
     private router: Router,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    private route: ActivatedRoute
   ) {
+    const data = route.snapshot.data as {
+      sections: Section[];
+      profile: Profile;
+    };
+    this.sections = data.sections;
+    this.profile = data.profile;
+
     this.firstFormGroup = this.formBuilder.group({
       intro_video: [
         '',
@@ -302,7 +317,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     );
   }
 
-  private collectFormData(userDetails: Profile): Omit<Application, 'id'> {
+  private collectFormData(profile: Profile): Omit<Application, 'id'> {
     const sectionsToSend = this.selectedSections.map((section) => ({
       id: section.id,
       course_id: section.course_id,
@@ -317,8 +332,8 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     }));
 
     return {
-      user_id: userDetails.id ?? 1,
-      user: userDetails,
+      user_id: profile.id ?? 1,
+      user: profile,
       academic_hours: this.thirdFormGroup.value.academic_hours ?? 0,
       extracurriculars: this.thirdFormGroup.value.extracurriculars ?? '',
       expected_graduation: this.thirdFormGroup.value.expected_graduation ?? '',
@@ -346,20 +361,10 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.validateForm()) {
-      this.applicationService.getProfile().subscribe({
-        next: (userDetails) => {
-          const formData = this.collectFormData(userDetails);
-          this.applicationService.submitApplication(formData).subscribe({
-            next: (application) => this.onSuccess(application),
-            error: (err) => this.onError(err)
-          });
-        },
-        error: (err) => {
-          console.error('Failed to fetch user details:', err);
-          this.snackBar.open('Failed to fetch user details.', '', {
-            duration: 3000
-          });
-        }
+      const formData = this.collectFormData(this.profile);
+      this.applicationService.submitApplication(formData).subscribe({
+        next: (application) => this.onSuccess(application),
+        error: (err) => this.onError(err)
       });
     } else {
       this.snackBar.open('Please complete all required fields.', '', {
@@ -426,7 +431,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     ) as FormArray;
     if (sectionsArray) {
       sectionsArray.removeAt(index);
-      this.selectedSections.splice(index, 1); // Keep the array and form sync
+      this.selectedSections.splice(index, 1);
     }
   }
 
@@ -441,17 +446,6 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
 
   capitalizedCourseId(section: Section): string {
     return section.course_id.toUpperCase();
-  }
-
-  fetchUserProfile() {
-    this.applicationService.getProfile().subscribe({
-      next: (userDetails) => {
-        this.userId = userDetails.id;
-      },
-      error: (err) => {
-        console.error('Failed to fetch user details', err);
-      }
-    });
   }
 
   /** Opens a confirmation snackbar when an application is successfully submitted.

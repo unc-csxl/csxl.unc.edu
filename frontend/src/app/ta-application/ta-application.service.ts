@@ -121,12 +121,6 @@ export class ApplicationsService {
     return this.http.get<Profile>('/api/profile');
   }
 
-  getCourses(): void {
-    this.http
-      .get<Course[]>('/api/academics/course')
-      .subscribe((courses) => this.courses.set(courses));
-  }
-
   getSections(): void {
     this.http
       .get<Section[]>('/api/academics/section')
