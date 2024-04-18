@@ -9,13 +9,20 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, switchMap, take, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  switchMap,
+  take,
+  tap
+} from 'rxjs';
 import { Application } from '../admin/applications/admin-application.model';
 import {
   RxApplications,
   RxApplication
 } from '../admin/applications/rx-applications';
-import { Profile } from '../profile/profile.service';
+import { Profile, ProfileService } from '../profile/profile.service';
 import { Course, Section } from '../academics/academics.models';
 import {
   RxCourseList,
@@ -40,17 +47,17 @@ export class ApplicationsService {
   private sections: RxSectionList = new RxSectionList();
   public sections$: Observable<Section[]> = this.sections.value$;
 
-  constructor(protected http: HttpClient) {
-    this.initializeApplicationState();
-  }
+  private profile: Profile | undefined;
+  private profileSubscription!: Subscription;
 
-  /** Returns a list of all Applications
-   * @returns {Observable<Application[]>}
-   */
-  list(): void {
-    this.http
-      .get<Application[]>('/api/applications')
-      .subscribe((applications) => this.applications.set(applications));
+  constructor(
+    protected http: HttpClient,
+    protected profileSvc: ProfileService
+  ) {
+    this.initializeApplicationState();
+    this.profileSubscription = this.profileSvc.profile$.subscribe(
+      (profile) => (this.profile = profile)
+    );
   }
 
   initializeApplicationState(): void {

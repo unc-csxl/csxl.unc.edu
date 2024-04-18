@@ -20,6 +20,10 @@ mat-form-field {
   width: 25%;
 }
 
+.mat-form-field-full {
+  width: 100%;
+}
+
 .field-title p {
   margin-bottom: 0;
 }
@@ -29,4 +33,8 @@ mat-form-field {
   mat-form-field {
     width: 100%;
   }
+}
+
+.mat-mdc-card {
+  max-width: 100%;
 }
