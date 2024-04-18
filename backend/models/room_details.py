@@ -16,6 +16,7 @@ class RoomDetails(Room):
     room: str
     capacity: int
     reservable: bool
+    description: str
     seats: list[Seat] = []
 
     def to_room(self) -> Room:
