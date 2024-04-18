@@ -1,5 +1,5 @@
 /**
- * The Event Creation Form allows TAs, GTAs, and Instructors to create new Office Hours Events
+ * The Event Creation Form allows TAs, GTAs, and Instructors to create new Office Hours Events.
  *
  * @author Sadie Amato, Madelyn Andrews, Bailey DeSouza, Meghan Sun
  * @copyright 2024
@@ -41,7 +41,10 @@ export class EventCreationFormComponent implements OnInit {
     }
   ];
 
+  /* List of available rooms to hold Office Hours event */
   rooms: Room[] = [];
+
+  /* Section that the Office Hours event is being held for */
   sectionId: number;
   section: OfficeHoursSectionDetails | undefined;
 
@@ -57,11 +60,13 @@ export class EventCreationFormComponent implements OnInit {
     this.sectionId = this.route.snapshot.params['id'];
   }
 
+  /* Get rooms and associated section upon initialization */
   ngOnInit() {
     this.getRooms();
     this.getSection();
   }
 
+  /* EventForm contains data pertaining to event that is being created/modified */
   public eventForm = this.formBuilder.group({
     event_type: '',
     description: '',
@@ -84,7 +89,7 @@ export class EventCreationFormComponent implements OnInit {
   }
 
   onSubmit() {
-    // Below is logic for assigning the correct OfficeHoursEventtype
+    // Logic for assigning the correct OfficeHoursEventType enum
     let event_type: OfficeHoursEventType;
     switch (this.eventForm.value.event_type) {
       case 'office_hours':
@@ -108,15 +113,19 @@ export class EventCreationFormComponent implements OnInit {
       default:
         event_type = OfficeHoursEventType.OFFICE_HOURS;
     }
+
+    // Ensure start and end times aren't none
     if (!this.eventForm.value.start_time) {
       this.eventForm.value.start_time = '';
     }
     if (!this.eventForm.value.end_time) {
       this.eventForm.value.end_time = '';
     }
+
+    // Ensure that section must not be null to create/edit event
     if (this.section) {
+      // Create event draft model from form values
       let event_draft: OfficeHoursEventDraft = {
-        // TODO: Un-hard code section
         oh_section: this.section,
         room: { id: this.eventForm.value.location ?? '' },
         type: event_type,
@@ -131,9 +140,9 @@ export class EventCreationFormComponent implements OnInit {
         error: (err) => this.onError(err)
       });
     }
-    // TODO: bring user to new location
   }
 
+  /* On successful event creation, navigate back to section home */
   private onSuccess(): void {
     this.snackBar.open('You have created a new event!', '', {
       duration: 3000
@@ -142,6 +151,7 @@ export class EventCreationFormComponent implements OnInit {
     this.eventForm.reset();
   }
 
+  /* On error, display message informing user */
   private onError(err: any): void {
     this.snackBar.open('Error: Unable to create event', '', {
       duration: 2000

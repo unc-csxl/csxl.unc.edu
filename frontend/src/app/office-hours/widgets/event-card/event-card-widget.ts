@@ -10,7 +10,6 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { flushMicrotasks } from '@angular/core/testing';
 import {
   OfficeHoursEvent,
   OfficeHoursEventType
@@ -26,8 +25,10 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./event-card-widget.css']
 })
 export class EventCard implements OnInit {
+  /* Inputted  event to display and roster role to use */
   @Input() event!: OfficeHoursEvent;
   @Input() rosterRole!: RosterRole | null;
+  /* Ticket queue stats */
   queued_tickets: number | null;
   called_tickets: number | null;
 
@@ -35,7 +36,6 @@ export class EventCard implements OnInit {
     private officeHoursService: OfficeHoursService,
     public dialog: MatDialog
   ) {
-    console.log('reached event card.');
     this.queued_tickets = null;
     this.called_tickets = null;
   }
@@ -44,6 +44,7 @@ export class EventCard implements OnInit {
     this.getTicketStats();
   }
 
+  /* Helper function that formats event type */
   formatEventType(typeNum: number) {
     if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {
       return 'Office Hours';
@@ -62,6 +63,7 @@ export class EventCard implements OnInit {
     }
   }
 
+  /* Gets current ticket queue information to display */
   getTicketStats() {
     this.officeHoursService
       .getQueuedAndCalledTicketCount(this.event.id)
@@ -71,6 +73,7 @@ export class EventCard implements OnInit {
       });
   }
 
+  /* Opens dialog to confirm event deletion */
   openDeleteEventDialog() {
     const dialogRef = this.dialog.open(DeleteEventDialog, {
       height: 'auto',

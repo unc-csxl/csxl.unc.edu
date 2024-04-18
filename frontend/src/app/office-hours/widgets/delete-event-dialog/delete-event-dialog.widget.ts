@@ -22,6 +22,7 @@ export class DeleteEventDialog {
     console.log(data);
   }
 
+  /* Close dialog after clicking off */
   onNoClick(): void {
     this.dialogRef.close();
   }

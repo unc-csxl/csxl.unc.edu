@@ -12,7 +12,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SectionCreationDialog } from '../widgets/section-creation-dialog/section-creation-dialog.widget';
 import { JoinSectionDialog } from '../widgets/join-section-dialog/join-section-dialog.widget';
-import { OfficeHoursService } from '../office-hours.service';
 import { OfficeHoursSectionDetails } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { SectionMember } from 'src/app/academics/academics.models';
@@ -33,13 +32,14 @@ export class OfficeHoursPageComponent implements OnInit {
     resolve: { userSections: sectionsListResolver }
   };
 
+  /* List of all sections where user has membership */
   protected userSections: OfficeHoursSectionDetails[] = [];
-  // List of all instances where the user is an instructor of a course
+
+  /* List of all instances where the user is an instructor of a course */
   protected instructorCourses: SectionMember[] = [];
 
   constructor(
     public dialog: MatDialog,
-    private officeHoursService: OfficeHoursService,
     private academicsService: AcademicsService,
     private route: ActivatedRoute
   ) {
@@ -50,6 +50,7 @@ export class OfficeHoursPageComponent implements OnInit {
     this.userSections = data.userSections;
   }
 
+  /* Opens dialog panel that contains form to create new OH sections */
   openSectionCreationFormDialog() {
     const dialogRef = this.dialog.open(SectionCreationDialog, {
       height: 'auto',
@@ -63,6 +64,7 @@ export class OfficeHoursPageComponent implements OnInit {
     });
   }
 
+  /* Opens dialog panel that contains form to join OH sections */
   openJoinSectionDialog() {
     const dialogRef = this.dialog.open(JoinSectionDialog, {
       height: 'auto',
@@ -80,6 +82,7 @@ export class OfficeHoursPageComponent implements OnInit {
     this.checkInstructorship();
   }
 
+  /* Checks instructorship by seeing if user has any Instructor Courses */
   checkInstructorship() {
     this.academicsService.checkInstructorship().subscribe((section_members) => {
       this.instructorCourses = section_members;

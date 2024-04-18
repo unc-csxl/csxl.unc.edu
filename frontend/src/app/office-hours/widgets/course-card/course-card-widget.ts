@@ -8,7 +8,6 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { flushMicrotasks } from '@angular/core/testing';
 import {
   OfficeHoursEvent,
   OfficeHoursSectionDetails
@@ -29,6 +28,7 @@ export class CourseCard implements OnInit {
   /** The course to show */
   @Input() section!: OfficeHoursSectionDetails;
   currentEvents: OfficeHoursEvent[] = [];
+  /* Roster role in the course */
   rosterRole: RosterRole | null;
 
   constructor(
@@ -45,6 +45,7 @@ export class CourseCard implements OnInit {
     this.checkRosterRole();
   }
 
+  /* Opens upcoming hours dialog to display schedule */
   openDialog() {
     const dialogRef = this.dialog.open(UpcomingHoursDialog, {
       height: 'auto',
@@ -53,6 +54,7 @@ export class CourseCard implements OnInit {
     });
   }
 
+  /* Navigates to section page based on roster role */
   navToOfficeHours() {
     // TODO: replace this route later
     if (this.rosterRole === RosterRole.STUDENT) {
@@ -68,6 +70,7 @@ export class CourseCard implements OnInit {
     }
   }
 
+  /* Gets ongoing events for the section being displayed */
   getCurrentEvents() {
     this.officeHoursService
       .getCurrentEventsBySection(this.section.id)
@@ -76,6 +79,7 @@ export class CourseCard implements OnInit {
       });
   }
 
+  /* Returns roster role of user accessing the page */
   checkRosterRole() {
     this.academicsService
       .getMembershipBySection(this.section.id)
