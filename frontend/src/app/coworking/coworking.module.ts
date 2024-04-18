@@ -10,7 +10,7 @@ import { CoworkingDropInCard } from './widgets/dropin-availability-card/dropin-a
 import { MatListModule } from '@angular/material/list';
 import {
   CoworkingHoursCard,
-  FirstLetterCapitalPipe
+  OperatingHoursCapitalizationPipe
 } from './widgets/operating-hours-panel/operating-hours-panel.widget';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
@@ -51,7 +51,7 @@ import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/l
     NewReservationPageComponent,
     DateSelector,
     OperatingHoursDialog,
-    FirstLetterCapitalPipe
+    OperatingHoursCapitalizationPipe
   ],
   imports: [
     CommonModule,

@@ -13,11 +13,11 @@
         <mat-card-title class="hours-title closed">
           <span class="badge">Closed</span>
           <span *ngIf="operatingHours.length > 0"
-            >Reopens
+            >Open 
             {{
               operatingHours[0]!.start
-                | date: "EEEE (MM/dd) 'at' h:mma"
-                | firstLetterCapital
+                | date: "EEE, MMM d 'at' h:mma"
+                | operatingHoursCapitalizationPipe
             }}</span
           >
         </mat-card-title>

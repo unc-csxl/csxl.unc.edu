@@ -24,11 +24,21 @@ export class CoworkingHoursCard {
 
 /** Local pipe that capitalizes the first letter of the string. */
 @Pipe({
-  name: 'firstLetterCapital'
+  name: 'operatingHoursCapitalizationPipe'
 })
-export class FirstLetterCapitalPipe implements PipeTransform {
+export class OperatingHoursCapitalizationPipe implements PipeTransform {
   transform(sentence: string | null | undefined): string {
     if (!sentence) return '';
-    return sentence[0].toUpperCase() + sentence.substring(1).toLowerCase();
+    let newSentence = '';
+    sentence.split(' ').forEach((segment) => {
+      if (segment != 'at') {
+        newSentence +=
+          segment[0].toUpperCase() + segment.substring(1).toLowerCase();
+      } else {
+        newSentence += segment;
+      }
+      newSentence += ' ';
+    });
+    return newSentence.trimEnd();
   }
 }
