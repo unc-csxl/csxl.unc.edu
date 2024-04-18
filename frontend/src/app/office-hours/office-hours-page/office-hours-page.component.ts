@@ -18,10 +18,10 @@ import { SectionMember, Term } from 'src/app/academics/academics.models';
 import { ActivatedRoute } from '@angular/router';
 import {
   currentTermResolver,
-  termResolver,
   termsResolver
 } from 'src/app/academics/academics.resolver';
 import { FormControl } from '@angular/forms';
+import { OfficeHoursService } from '../office-hours.service';
 
 @Component({
   selector: 'app-office-hours-page',
@@ -53,6 +53,7 @@ export class OfficeHoursPageComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
+    private officeHoursService: OfficeHoursService,
     private academicsService: AcademicsService,
     private route: ActivatedRoute
   ) {
