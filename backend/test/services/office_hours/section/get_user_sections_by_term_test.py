@@ -37,7 +37,7 @@ __license__ = "MIT"
 def test_get_user_sections_by_term(oh_section_svc: OfficeHoursSectionService):
     """Test case for retrieving user sections by term and validating details."""
     sections = oh_section_svc.get_user_sections_by_term(
-        user_data.user, term_data.f_23.id
+        user_data.user, term_data.current_term.id
     )
     assert isinstance(sections[0], OfficeHoursSectionDetails)
     assert len(sections) == 1  # Only Enrolled in COMP 110 OH Section
@@ -49,7 +49,7 @@ def test_get_user_sections_by_term_no_oh_sections(
 ):
     """Test case for retrieving user sections by term when no OH sections exist."""
     sections = oh_section_svc.get_user_sections_by_term(
-        user_data.root, term_data.f_23.id
+        user_data.root, term_data.current_term.id
     )
     assert len(sections) == 0
 
@@ -59,7 +59,7 @@ def test_get_user_sections_by_term_instructor(
 ):
     """Test case for retrieving user sections by term for an instructor."""
     sections = oh_section_svc.get_user_sections_by_term(
-        user_data.instructor, term_data.f_23.id
+        user_data.instructor, term_data.current_term.id
     )
     assert isinstance(sections[0], OfficeHoursSectionDetails)
     assert len(sections) == 1  # COMP 110 OH Section

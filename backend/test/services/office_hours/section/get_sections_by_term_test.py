@@ -48,7 +48,7 @@ def test_get_sections_by_term(oh_section_svc: OfficeHoursSectionService):
         sections[0], OfficeHoursSectionDetails
     )  # Check type of first section.
     assert len(sections) == len(
-        office_hours_data.oh_sections
+        office_hours_data.f23_oh_sections
     )  # Ensure correct number of sections returned.
 
 

@@ -37,14 +37,14 @@ def test_all(section_svc: SectionService):
 
 
 def test_get_by_term(section_svc: SectionService):
-    sections = section_svc.get_by_term(term_data.f_23.id)
+    sections = section_svc.get_by_term(term_data.current_term.id)
 
-    assert len(sections) == len(section_data.sections)
+    assert len(sections) == len(section_data.current_term_sections)
     assert isinstance(sections[0], SectionDetails)
 
 
 def test_get_by_term_not_found(section_svc: SectionService):
-    sections = section_svc.get_by_term(term_data.sp_24.id)
+    sections = section_svc.get_by_term(term_data.sp_23.id)
 
     assert len(sections) == 0
 
@@ -63,13 +63,13 @@ def test_get_by_subject_not_found(section_svc: SectionService):
 
 
 def test_get_by_id(section_svc: SectionService):
-    if section_data.comp_101_001.id is None:
+    if section_data.comp_110_001_current_term.id is None:
         raise ResourceNotFoundException("Invalid ID for section.")
 
-    section = section_svc.get_by_id(section_data.comp_101_001.id)
+    section = section_svc.get_by_id(section_data.comp_110_001_current_term.id)
 
     assert isinstance(section, SectionDetails)
-    assert section.id == section_data.comp_101_001.id
+    assert section.id == section_data.comp_110_001_current_term.id
 
 
 def test_get_by_id_not_found(section_svc: SectionService):
@@ -79,10 +79,10 @@ def test_get_by_id_not_found(section_svc: SectionService):
 
 
 def test_get(section_svc: SectionService):
-    section = section_svc.get("COMP", "110", "001")
+    section = section_svc.get("COMP", "210", "001")
 
     assert isinstance(section, SectionDetails)
-    assert section.id == section_data.comp_101_001.id
+    assert section.id == section_data.comp_210_001_current_term.id
 
 
 def test_get_not_found(section_svc: SectionService):
@@ -182,18 +182,18 @@ def test_update_as_user(section_svc: SectionService):
 
 
 def test_delete_as_root(section_svc: SectionService):
-    if section_data.comp_101_001.id is None:
+    if section_data.comp_110_001_current_term.id is None:
         raise ResourceNotFoundException("Invalid ID for section.")
 
     permission_svc = create_autospec(PermissionService)
     section_svc._permission_svc = permission_svc
 
-    section_svc.delete(user_data.root, section_data.comp_101_001.id)
+    section_svc.delete(user_data.root, section_data.comp_110_001_current_term.id)
 
     permission_svc.enforce.assert_called_with(
         user_data.root,
         "academics.section.delete",
-        f"section/{section_data.comp_101_001.id}",
+        f"section/{section_data.comp_110_001_current_term.id}",
     )
 
     sections = section_svc.all()
@@ -213,9 +213,11 @@ def test_delete_as_root_not_found(section_svc: SectionService):
 
 
 def test_delete_as_user(section_svc: SectionService):
-    if section_data.comp_101_001.id is None:
+    if section_data.comp_110_001_current_term.id is None:
         raise ResourceNotFoundException("Invalid ID for section.")
 
     with pytest.raises(UserPermissionException):
-        section = section_svc.delete(user_data.user, section_data.comp_101_001.id)
+        section = section_svc.delete(
+            user_data.user, section_data.comp_110_001_current_term.id
+        )
         pytest.fail()

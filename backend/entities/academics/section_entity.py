@@ -65,7 +65,7 @@ class SectionEntity(EntityBase):
 
     # Members of the course
     members: Mapped[list["SectionMemberEntity"]] = relationship(
-        back_populates="section",
+        back_populates="section", cascade="delete"
     )
 
     # Relationship subset of members queries for non-students

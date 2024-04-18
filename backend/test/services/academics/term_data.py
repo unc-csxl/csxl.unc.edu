@@ -37,6 +37,8 @@ new_term = Term(
 
 terms = [sp_23, f_23, sp_24]
 
+current_term = sp_24
+
 today = datetime(2023, 12, 1)
 bad_day = datetime(3000, 1, 1)
 

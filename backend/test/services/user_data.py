@@ -7,6 +7,7 @@ Three users are setup for testing and development purposes:
 3. Sally Student (standard user without any special permissions)
 4. Ina Instructor
 5. Uhlissa UTA
+6. Stewie Student
 """
 
 import pytest
