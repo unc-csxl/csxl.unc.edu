@@ -24,6 +24,7 @@ class SectionMember(BaseModel):
 
 
 class SectionMemberDraft(BaseModel):
+    id: int | None = None
     user_id: int
     section_id: int
     member_role: RosterRole = RosterRole.STUDENT

@@ -1,5 +1,7 @@
-from backend.models.academics.section_member import SectionMember
-from backend.models.office_hours.ticket import OfficeHoursTicket
+from ...models.academics.section import Section
+from ...models.academics.section_member import SectionMember
+from ...models.office_hours.ticket import OfficeHoursTicket
+from ...models.user import User
 
 __authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
 __copyright__ = "Copyright 2024"
@@ -15,5 +17,7 @@ class SectionMemberDetails(SectionMember):
     of the `SectionMember` database in the PostgreSQL database.
     """
 
+    user: User
+    section: Section
     created_tickets: list[OfficeHoursTicket]
     called_ticket: list[OfficeHoursTicket]

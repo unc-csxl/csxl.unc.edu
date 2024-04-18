@@ -82,7 +82,10 @@ class SectionMemberEntity(EntityBase):
 
     @classmethod
     def from_draft_model(cls, model: SectionMemberDraft) -> Self:
+        # Draft Model Usually Will Not Have ID - Auto Generated.
+        # ID will not be None ONLY For Testing Purpose
         return cls(
+            id=model.id if model.id else None,
             section_id=model.section_id,
             user_id=model.user_id,
             member_role=model.member_role,
@@ -119,6 +122,8 @@ class SectionMemberEntity(EntityBase):
             last_name=self.user.last_name,
             pronouns=self.user.pronouns,
             member_role=self.member_role,
+            user=self.user.to_model(),
+            section=self.section.to_model(),
             created_tickets=[ticket.to_model() for ticket in self.created_tickets],
             called_tickets=[ticket.to_model() for ticket in self.called_tickets],
         )

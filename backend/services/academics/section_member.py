@@ -38,7 +38,7 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class SectionMembershipService:
+class SectionMemberService:
     """Service that performs all of the actions on the `Section` table"""
 
     def __init__(
@@ -71,7 +71,7 @@ class SectionMembershipService:
         return entity.to_flat_model()
 
     def get_section_member_by_user_id_and_section_id(
-        self, subject: User, oh_section_id: int
+        self, subject: User, section_id: int
     ) -> SectionMember:
         """Retrieve a section membership by user ID and office hours section ID.
 
@@ -88,7 +88,7 @@ class SectionMembershipService:
         query = (
             select(SectionMemberEntity)
             .filter(SectionMemberEntity.user_id == subject.id)
-            .filter(SectionMemberEntity.section_id == oh_section_id)
+            .filter(SectionMemberEntity.section_id == section_id)
         )
         entity = self._session.scalars(query).one_or_none()
 
@@ -99,7 +99,7 @@ class SectionMembershipService:
 
         return entity.to_flat_model()
 
-    def add_user_oh_memberships(
+    def add_user_section_memberships_by_oh_sections(
         self,
         subject: User,
         oh_sections: list[OfficeHoursSectionDetails],

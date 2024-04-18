@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from backend.entities.academics.section_room_entity import SectionRoomEntity
 from backend.entities.academics.course_entity import CourseEntity
 from backend.entities.room_entity import RoomEntity
-from backend.models.academics.section_member import SectionMemberDraft
+from backend.models.academics.section_member import SectionMember, SectionMemberDraft
 from backend.models.room_assignment_type import RoomAssignmentType
 
 from ....models.room import Room
@@ -161,18 +161,21 @@ user__comp301_uta = user_data.ambassador
 user__comp301_student = user_data.student
 
 comp110_instructor = SectionMemberDraft(
+    id=1,
     user_id=user__comp110_instructor.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
 comp110_uta = SectionMemberDraft(
+    id=2,
     user_id=user__comp110_uta_0.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.UTA,
 )
 
 comp110_uta_1 = SectionMemberDraft(
+    id=3,
     user_id=user__comp110_uta_1.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.UTA,
@@ -180,30 +183,35 @@ comp110_uta_1 = SectionMemberDraft(
 
 
 comp110_student_0 = SectionMemberDraft(
+    id=4,
     user_id=user__comp110_student_0.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.STUDENT,
 )
 
 comp110_student_1 = SectionMemberDraft(
+    id=5,
     user_id=user__comp110_student_1.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.STUDENT,
 )
 
 comp301_instructor = SectionMemberDraft(
+    id=6,
     user_id=user__comp301_instructor.id,
     section_id=comp_301_001.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
 comp_301_uta = SectionMemberDraft(
+    id=7,
     user_id=user__comp301_uta.id,
     section_id=comp_301_001.id,
     member_role=RosterRole.UTA,
 )
 
 comp_301_student = SectionMemberDraft(
+    id=8,
     user_id=user__comp301_student.id,
     section_id=comp_301_001.id,
     member_role=RosterRole.STUDENT,
