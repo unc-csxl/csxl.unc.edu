@@ -43,7 +43,7 @@ class NewUTAApplication(UTAApplication):
     of the `Application` database in the PostgreSQL database.
     """
 
-    intro_video: str
+    intro_video_url: str
     prior_experience: str
     service_experience: str
     additional_experience: str

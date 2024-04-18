@@ -225,7 +225,7 @@ class New_UTA_Entity(UTAEntity):
     # Application properties (columns in the database table) specific to First-Time UTA Applications
 
     # Intro video explaining why they want to be a TA
-    intro_video: Mapped[str] = mapped_column(String, nullable=True)
+    intro_video_url: Mapped[str] = mapped_column(String, nullable=True)
 
     # Prior experience in the workforce
     prior_experience: Mapped[str] = mapped_column(String, nullable=True)
@@ -253,7 +253,7 @@ class New_UTA_Entity(UTAEntity):
         """
 
         entity = super().from_model(model)
-        entity.intro_video = model.intro_video
+        entity.intro_video_url = model.intro_video_url
         entity.prior_experience = model.prior_experience
         entity.service_experience = model.service_experience
         entity.additional_experience = model.additional_experience
@@ -271,7 +271,7 @@ class New_UTA_Entity(UTAEntity):
         parent_model = super().to_details_model().model_dump()
         return NewUTAApplication(
             **parent_model,
-            intro_video=self.intro_video,
+            intro_video_url=self.intro_video_url,
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
@@ -288,7 +288,7 @@ class New_UTA_Entity(UTAEntity):
         parent_model = super().to_details_model().model_dump()
         return New_UTADetails(
             **parent_model,
-            intro_video=self.intro_video,
+            intro_video_url=self.intro_video_url,
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
@@ -306,7 +306,7 @@ class New_UTA_Entity(UTAEntity):
         """
 
         super().update(model, sections)
-        self.intro_video = model.intro_video
+        self.intro_video_url = model.intro_video_url
         self.prior_experience = model.prior_experience
         self.service_experience = model.service_experience
         self.additional_experience = model.additional_experience
@@ -330,7 +330,7 @@ class New_UTA_Entity(UTAEntity):
             gpa=self.gpa,
             comp_gpa=self.comp_gpa,
             comp_227=self.comp_227,
-            intro_video=self.intro_video,
+            intro_video_url=self.intro_video_url,
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
