@@ -15,9 +15,14 @@ import { JoinSectionDialog } from '../widgets/join-section-dialog/join-section-d
 import { OfficeHoursService } from '../office-hours.service';
 import { OfficeHoursSectionDetails } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import { SectionMember } from 'src/app/academics/academics.models';
-import { sectionsListResolver } from '../office-hours.resolver';
+import { SectionMember, Term } from 'src/app/academics/academics.models';
 import { ActivatedRoute } from '@angular/router';
+import {
+  currentTermResolver,
+  termResolver,
+  termsResolver
+} from 'src/app/academics/academics.resolver';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-office-hours-page',
@@ -30,12 +35,20 @@ export class OfficeHoursPageComponent implements OnInit {
     title: 'Office Hours',
     component: OfficeHoursPageComponent,
     canActivate: [],
-    resolve: { userSections: sectionsListResolver }
+    resolve: {
+      currentTerm: currentTermResolver,
+      terms: termsResolver
+    }
   };
 
   protected userSections: OfficeHoursSectionDetails[] = [];
   // List of all instances where the user is an instructor of a course
   protected instructorCourses: SectionMember[] = [];
+  protected currentTerm: Term;
+  protected terms: Term[];
+
+  /** Store the currently selected term from the form */
+  public displayTerm: FormControl<Term> = new FormControl();
 
   constructor(
     public dialog: MatDialog,
@@ -45,9 +58,13 @@ export class OfficeHoursPageComponent implements OnInit {
   ) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
-      userSections: OfficeHoursSectionDetails[];
+      currentTerm: Term;
+      terms: Term[];
     };
-    this.userSections = data.userSections;
+    this.currentTerm = data.currentTerm;
+    this.displayTerm.setValue(data.currentTerm);
+    this.terms = data.terms;
+    this.getSectionsByTerm(this.currentTerm.id);
   }
 
   openSectionCreationFormDialog() {
@@ -66,7 +83,8 @@ export class OfficeHoursPageComponent implements OnInit {
   openJoinSectionDialog() {
     const dialogRef = this.dialog.open(JoinSectionDialog, {
       height: 'auto',
-      width: 'auto'
+      width: 'auto',
+      data: { displayTerm: this.displayTerm.value }
     });
 
     dialogRef.afterClosed().subscribe((open) => {
@@ -84,5 +102,21 @@ export class OfficeHoursPageComponent implements OnInit {
     this.academicsService.checkInstructorship().subscribe((section_members) => {
       this.instructorCourses = section_members;
     });
+  }
+
+  getSectionsByTerm(term_id: string) {
+    this.officeHoursService
+      .getUserSectionsByTerm(term_id)
+      .subscribe((sections) => {
+        this.userSections = sections;
+      });
+  }
+
+  onTermChange(value: Term) {
+    this.officeHoursService
+      .getUserSectionsByTerm(value.id)
+      .subscribe((sections) => {
+        this.userSections = sections;
+      });
   }
 }

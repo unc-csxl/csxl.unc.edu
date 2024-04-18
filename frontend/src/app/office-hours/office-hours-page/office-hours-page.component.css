@@ -2,6 +2,12 @@
     padding: 1rem;
 }
 
+.course-heading-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .add-button{
     position: fixed;
     bottom: 2rem;
