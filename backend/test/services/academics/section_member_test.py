@@ -48,7 +48,7 @@ def test_get_section_member_by_user_id_and_section_id_instructor(
     section_member_svc: SectionMemberService,
 ):
     """Test case to retrieve a section member by user ID and section ID (instructor)."""
-    section_member = section_member_svc.get_section_member_by_user_id_and_section_id(
+    section_member = section_member_svc.get_section_member_by_user_id_and_oh_section_id(
         section_data.user__comp110_instructor, section_data.comp_101_001.id
     )
 
@@ -60,7 +60,7 @@ def test_get_section_member_by_user_id_and_section_id_student(
     section_member_svc: SectionMemberService,
 ):
     """Test case to retrieve a section member by user ID and section ID (student)."""
-    section_member = section_member_svc.get_section_member_by_user_id_and_section_id(
+    section_member = section_member_svc.get_section_member_by_user_id_and_oh_section_id(
         section_data.user__comp110_student_0, section_data.comp_101_001.id
     )
 
@@ -73,7 +73,7 @@ def test_get_section_member_by_user_id_and_section_id_exception_not_found(
 ):
     """Test case to check if retrieving a section member for a non-member raises an exception."""
     with pytest.raises(ResourceNotFoundException):
-        section_member_svc.get_section_member_by_user_id_and_section_id(
+        section_member_svc.get_section_member_by_user_id_and_oh_section_id(
             section_data.user__comp110_non_member, section_data.comp_101_001.id
         )
 
