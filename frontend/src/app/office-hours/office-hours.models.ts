@@ -35,12 +35,11 @@ export interface Ticket {
   type: TicketType;
   state: TicketState;
   description: string;
-  have_concerns: boolean;
-  caller_notes: string;
   created_at: Date;
   called_at: Date;
   closed_at: Date;
   creators: SectionMember[];
+  caller: SectionMember | null;
 }
 
 export interface TicketDetails {

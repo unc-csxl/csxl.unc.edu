@@ -119,9 +119,7 @@ class OfficeHoursTicketService:
         # Return details model
         return oh_ticket_entity.to_details_model()
 
-    def get_ticket_by_id(
-        self, subject: User, oh_ticket_id: int
-    ) -> OfficeHoursTicketDetails:
+    def get_ticket_by_id(self, subject: User, oh_ticket_id: int) -> OfficeHoursTicket:
         """
         Retrieves an office hours ticket from the table by its id.
 
@@ -130,7 +128,7 @@ class OfficeHoursTicketService:
             oh_ticket_id (int): ID of the ticket to query by.
 
         Returns:
-            OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
+            OfficeHoursTicket: `OfficeHoursTicket` with the given id
         """
         # Fetch Ticket By ID
         ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket_id)
@@ -168,6 +166,48 @@ class OfficeHoursTicketService:
                 )
 
         # Passed Permissions - Good to Return Ticket Information
+        return ticket_entity.to_model()
+
+    def get_ticket_details_by_id(
+        self, subject: User, oh_ticket_id: int
+    ) -> OfficeHoursTicketDetails:
+        """
+        Retrieves an office hours ticket details from the table by its id.
+
+        Args:
+            subject (User): A valid User model representing the currently logged-in user.
+            oh_ticket_id (int): ID of the ticket to query by.
+
+        Returns:
+            OfficeHoursTicketDetails: `OfficeHoursTicketDetails` with the given id
+        """
+        # Fetch Ticket By ID
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, oh_ticket_id)
+
+        if ticket_entity is None:
+            raise ResourceNotFoundException(
+                f"Office Hours Ticket with id={oh_ticket_id} not found."
+            )
+
+        # USER PERMISSIONS:
+
+        # Fetch Office Hours Section - Needed To Determine if User Membership
+        oh_section_entity = self._get_office_hours_section_by_oh_event_id(
+            ticket_entity.oh_event_id
+        )
+
+        # Fetch Current User Section Membership
+        current_user_section_member_entity = self._check_user_section_membership(
+            subject.id, oh_section_entity.id
+        )
+
+        # Raise Exception if Student so that details are not exposed!
+        if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"User is a Student -- Doesn't Have Permission to Get Ticket Details with id={ticket_entity.id}"
+            )
+
+        # Passed Permissions - Good to Return All Ticket Information
         return ticket_entity.to_details_model()
 
     def call_ticket(
@@ -237,7 +277,7 @@ class OfficeHoursTicketService:
 
     def cancel_ticket(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
+    ) -> OfficeHoursTicket:
         """
         Updates state to cancel an office hours ticket.
 
@@ -246,7 +286,7 @@ class OfficeHoursTicketService:
             oh_ticket (OfficeHoursTicketPartial): OfficeHoursTicketPartial object representing the ticket to be canceled.
 
         Returns:
-            OfficeHoursTicketDetails: Updated OfficeHoursTicketDetails object after canceling the ticket.
+            OfficeHoursTicket: Updated OfficeHoursTicket object after canceling the ticket.
 
         Raises:
             ResourceNotFoundException: If the ticket with the specified ID (`oh_ticket.id`) is not found.
@@ -295,8 +335,8 @@ class OfficeHoursTicketService:
         ticket_entity.state = TicketState.CANCELED
         self._session.commit()
 
-        # Return details model
-        return ticket_entity.to_details_model()
+        # Return model
+        return ticket_entity.to_model()
 
     def close_ticket(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
@@ -414,7 +454,7 @@ class OfficeHoursTicketService:
 
     def update_ticket_description(
         self, subject: User, oh_ticket: OfficeHoursTicketPartial
-    ) -> OfficeHoursTicketDetails:
+    ) -> OfficeHoursTicket:
         """Update the description of an office hours ticket.
 
         Args:
@@ -422,7 +462,7 @@ class OfficeHoursTicketService:
             oh_ticket (OfficeHoursTicketPartial): Partial ticket data including the new description.
 
         Returns:
-            OfficeHoursTicketDetails: Updated ticket details after the description has been updated.
+            OfficeHoursTicket: Updated ticket details after the description has been updated.
 
         Raises:
             Exception: If the description data is missing or None.
@@ -477,8 +517,8 @@ class OfficeHoursTicketService:
         ticket_entity.description = oh_ticket.description
         self._session.commit()
 
-        # Return details model
-        return ticket_entity.to_details_model()
+        # Return model
+        return ticket_entity.to_model()
 
     def _check_user_section_membership(
         self,

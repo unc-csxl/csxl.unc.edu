@@ -25,8 +25,7 @@ import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog
   styleUrls: ['./current-ticket-card.widget.css']
 })
 export class CurrentTicketCard implements OnInit {
-  /* TicketDetails and Event to display on widget */
-  @Input() ticket!: TicketDetails;
+  @Input() ticket!: Ticket;
   @Input() event!: OfficeHoursEvent;
   /* Ticket queue stats */
   queued_tickets: number | null;

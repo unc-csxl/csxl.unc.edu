@@ -15,7 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   OfficeHoursEvent,
   OfficeHoursSection,
-  TicketDetails
+  Ticket
 } from '../office-hours.models';
 import { interval } from 'rxjs';
 
@@ -39,7 +39,7 @@ export class CurrentTicketPageComponent implements OnInit {
   ticketId: number;
   section: OfficeHoursSection | null = null;
   event: OfficeHoursEvent | null = null;
-  ticket: TicketDetails | null = null;
+  ticket: Ticket | null = null;
 
   constructor(
     private officeHoursService: OfficeHoursService,
