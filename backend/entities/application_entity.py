@@ -15,7 +15,7 @@ from backend.models.academics.section import Section
 
 from .entity_base import EntityBase
 from typing import Self, Dict
-from ..models.application import Application, UTA, New_UTA, Returning_UTA
+from ..models.application import Application, UTAApplication, New_UTA, Returning_UTA
 from ..models.application_details import UTADetails
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
@@ -147,7 +147,7 @@ class UTAEntity(ApplicationEntity):
 
         return entity
 
-    def to_model(self) -> UTA:
+    def to_model(self) -> UTAApplication:
         """
         Converts an `ApplicationEntity` object into an `Application` model object
 
@@ -156,7 +156,7 @@ class UTAEntity(ApplicationEntity):
         """
 
         parent_model = super().to_model().model_dump()
-        return UTA(
+        return UTAApplication(
             **parent_model,
             academic_hours=self.academic_hours,
             extracurriculars=self.extracurriculars,
@@ -306,7 +306,9 @@ class New_UTA_Entity(UTAEntity):
         self.service_experience = model.service_experience
         self.additional_experience = model.additional_experience
 
-    def map_application_to_detail_model(self, section_preferences: Dict[int, SectionEntity]) -> New_UTADetails:
+    def map_application_to_detail_model(
+        self, section_preferences: Dict[int, SectionEntity]
+    ) -> New_UTADetails:
         """Returns the correctly mapped application for a specific user
 
         Returns:
@@ -327,8 +329,8 @@ class New_UTA_Entity(UTAEntity):
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
-            user=self.user.to_model(),  
-            preferred_sections=[section for section in section_preferences.values()]
+            user=self.user.to_model(),
+            preferred_sections=[section for section in section_preferences.values()],
         )
 
 

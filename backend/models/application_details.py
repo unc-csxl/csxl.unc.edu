@@ -3,7 +3,12 @@ from pydantic import BaseModel
 from typing import Dict
 
 from backend.models.academics.section import Section
-from backend.models.application import Application, UTA, New_UTA, Returning_UTA
+from backend.models.application import (
+    Application,
+    UTAApplication,
+    New_UTA,
+    Returning_UTA,
+)
 
 from backend.models.user import User
 
@@ -23,7 +28,7 @@ class ApplicationDetails(Application):
     user: User
 
 
-class UTADetails(UTA, ApplicationDetails):
+class UTADetails(UTAApplication, ApplicationDetails):
     """
     Pydantic model to represent a `UTA Application`.
 

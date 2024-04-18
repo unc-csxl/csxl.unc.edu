@@ -17,7 +17,7 @@ class Application(BaseModel):
     user_id: int
 
 
-class UTA(Application):
+class UTAApplication(Application):
     """
     Pydantic model to represent a `UTA`.
 
@@ -35,7 +35,7 @@ class UTA(Application):
     comp_227: str
 
 
-class New_UTA(UTA):
+class New_UTA(UTAApplication):
     """
     Pydantic model to represent a `New UTA`.
 
@@ -49,7 +49,7 @@ class New_UTA(UTA):
     additional_experience: str
 
 
-class Returning_UTA(UTA):
+class Returning_UTA(UTAApplication):
     """
     Pydantic model to represent a `Returning UTA`.
 
