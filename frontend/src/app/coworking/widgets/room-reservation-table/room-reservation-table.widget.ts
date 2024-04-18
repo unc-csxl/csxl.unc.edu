@@ -8,9 +8,16 @@ import { Component } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Reservation, TableCell } from 'src/app/coworking/coworking.models';
+import {
+  Reservation,
+  TableCell,
+  RoomDetails
+} from 'src/app/coworking/coworking.models';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { MatDialog } from '@angular/material/dialog';
+import { RoomCapacityDialogComponent } from '../room-dialogue/room-dialogue.component';
 
 @Component({
   selector: 'room-reservation-table',
@@ -22,6 +29,9 @@ export class RoomReservationWidgetComponent {
 
   //- Reservations Map
   reservationsMap: Record<string, number[]> = {};
+
+  //- Room Information
+  roomInformation: RoomDetails[] = [];
 
   //- Select Button enabled
   selectButton: boolean = false;
@@ -43,7 +53,8 @@ export class RoomReservationWidgetComponent {
     protected reservationTableService: ReservationTableService,
     private router: Router,
     private roomReservationService: RoomReservationService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {
     this.reservationTableService.setSelectedDate(
       this.reservationTableService.setMinDate().toDateString()
@@ -54,6 +65,10 @@ export class RoomReservationWidgetComponent {
         this.getReservationsByDate(new Date(selectedDate));
       }
     );
+
+    this.reservationTableService.getRoomInformation().subscribe((result) => {
+      this.roomInformation = result;
+    });
   }
 
   getReservationsByDate(date: Date) {
@@ -173,5 +188,15 @@ export class RoomReservationWidgetComponent {
   public setSlotAvailable(key: string, index: number) {
     this.reservationsMap[key][index] =
       ReservationTableService.CellEnum.AVAILABLE;
+  }
+
+  openDialog(roomId: string) {
+    const room = this.roomInformation.find((r) => r.id === roomId);
+    if (room) {
+      this.dialog.open(RoomCapacityDialogComponent, {
+        width: '250px',
+        data: { id: room.id, capacity: room.capacity }
+      });
+    }
   }
 }
