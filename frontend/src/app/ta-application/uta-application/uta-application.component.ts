@@ -151,7 +151,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     protected snackBar: MatSnackBar
   ) {
     this.firstFormGroup = this.formBuilder.group({
-      intro_video: [
+      intro_video_url: [
         '',
         [Validators.required, this.validateIntroVideo.bind(this)]
       ]
@@ -263,7 +263,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   populateForm(application: Application | null): void {
     if (application) {
       this.firstFormGroup.patchValue({
-        intro_video: application.intro_video
+        intro_video_url: application.intro_video_url
       });
       this.secondFormGroup.patchValue({
         prior_experience: application.prior_experience,
@@ -328,7 +328,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
       comp_gpa: this.fourthFormGroup.value.comp_gpa ?? 0.0,
       preferred_sections: sectionsToSend,
       comp_227: this.fifthFormGroup.value.comp_227 ?? '',
-      intro_video: this.firstFormGroup.value.intro_video ?? '',
+      intro_video_url: this.firstFormGroup.value.intro_video_url ?? '',
       prior_experience: this.secondFormGroup.value.prior_experience ?? '',
       service_experience: this.secondFormGroup.value.service_experience ?? '',
       additional_experience:
@@ -346,6 +346,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.validateForm()) {
+      console.log('Valid');
       this.applicationService.getProfile().subscribe({
         next: (userDetails) => {
           const formData = this.collectFormData(userDetails);

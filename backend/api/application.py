@@ -6,7 +6,11 @@ from fastapi import APIRouter, Depends
 
 from typing import List
 
-from backend.models.application_details import NewUTAApplicationDetails, UserApplication
+from backend.models.application_details import (
+    UTAApplicationDetails,
+    NewUTAApplicationDetails,
+    UserApplication,
+)
 from backend.services.application import ApplicationService
 
 from ..api.authentication import registered_user
@@ -25,10 +29,10 @@ openapi_tags = {
 api = APIRouter(prefix="/api/ta/applications")
 
 
-@api.get("", response_model=list[NewUTAApplicationDetails], tags=["Applications"])
+@api.get("", response_model=list[UTAApplicationDetails], tags=["Applications"])
 def get_applications(
     application_service: ApplicationService = Depends(),
-) -> list[NewUTAApplicationDetails]:
+) -> list[UTAApplicationDetails]:
     """
     Get all applications
 
@@ -80,7 +84,7 @@ def new_undergrad_application(
         HTTPException 422 if create() raises an Exception
     """
 
-    return application_service.create_undergrad(application)
+    return application_service.create_uta_application(application)
 
 
 @api.put("/update", response_model=NewUTAApplicationDetails, tags=["Applications"])
@@ -104,7 +108,7 @@ def update_undergrad_application(
         ResourceNotFound if application doesn't exist
     """
 
-    return application_service.update_undergrad(user, application)
+    return application_service.update_uta_application(user, application)
 
 
 @api.delete("/delete", response_model=None, tags={"Applications"})

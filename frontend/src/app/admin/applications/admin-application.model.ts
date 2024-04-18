@@ -13,7 +13,7 @@ export interface Application {
   comp_gpa: number;
   preferred_sections: Section[];
   comp_227: string;
-  intro_video: string;
+  intro_video_url: string;
   prior_experience: string;
   service_experience: string;
   additional_experience: string;

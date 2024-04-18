@@ -14,6 +14,7 @@ from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.academics.section import Section
 from backend.models.application_details import (
+    UTAApplicationDetails,
     NewUTAApplicationDetails,
     UserApplication,
 )
@@ -39,7 +40,7 @@ class ApplicationService:
         """
         self._session = session
 
-    def list(self) -> list[NewUTAApplicationDetails]:
+    def list(self) -> list[UTAApplicationDetails]:
         """Returns all TA applications.
 
         Returns:
@@ -48,24 +49,6 @@ class ApplicationService:
         entities = self._session.query(ApplicationEntity).all()
 
         return [entity.to_details_model() for entity in entities]
-
-        # implement list() for all types here later
-
-        # applications = []
-
-        # for entity in entities:
-        #     if entity.type == "new_uta": # type: ignore
-        #         applications.append(
-        #             entity.to_details_model()
-        #         )
-        #     elif entity.type == "returning_uta":
-        #         applications.append(entity.to_details_model())
-        #     elif entity.type == "uta":
-        #         applications.append(entity.to_details_model())
-        #     else:
-        #         applications.append(entity.to_model())
-
-        # return applications
 
     def get_application(self, subject: User) -> UserApplication:
         """Returns application(s) for a specific user
@@ -108,7 +91,7 @@ class ApplicationService:
 
         return UserApplication(application=application)
 
-    def create_undergrad(
+    def create_uta_application(
         self, application: NewUTAApplicationDetails
     ) -> NewUTAApplicationDetails:
         """
@@ -156,7 +139,7 @@ class ApplicationService:
 
         return application_entity.to_details_model()
 
-    def update_undergrad(
+    def update_uta_application(
         self, subject: User, application: NewUTAApplicationDetails
     ) -> NewUTAApplicationDetails:
         """
