@@ -626,11 +626,19 @@ class OfficeHoursSectionService:
             subject.id, oh_section_id
         )
 
-        if subject_section_member_entity.member_role != (
-            RosterRole.INSTRUCTOR or RosterRole.GTA
+        # Ensure only instructors and GTAs can change roles
+        if (
+            subject_section_member_entity.member_role == RosterRole.STUDENT
+            or subject_section_member_entity.member_role == RosterRole.UTA
         ):
             raise PermissionError(
                 f"Section Member is not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
+            )
+
+        # Do not allow changing roles to instructor so that students cannot create courses
+        if user_to_modify.member_role == RosterRole.INSTRUCTOR:
+            raise PermissionError(
+                f"Section Members cannot be elevated to the Instructor role."
             )
 
         # Select SectionMember to modify
@@ -642,6 +650,13 @@ class OfficeHoursSectionService:
             raise ResourceNotFoundException(
                 f"SectionMember with id {user_to_modify.id} not found."
             )
+
+        # Ensure that instructors are not demoted
+        if (
+            section_member_entity.member_role == RosterRole.INSTRUCTOR
+            and user_to_modify.member_role != RosterRole.INSTRUCTOR
+        ):
+            raise PermissionError(f"Instructors' roles cannot be modified.")
 
         # Raise error if member to update isn't a member of the OH section
         self._check_user_section_membership(
