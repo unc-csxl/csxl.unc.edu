@@ -43,21 +43,13 @@ export class SectionCreationFormComponent implements OnInit {
 
   //TODO: use current term instead of 'F23'
   getAcademicSections() {
-    this.academicService.getTerm('F23').subscribe((term) => {
+    this.academicService.getCurrentTerm().subscribe((term) => {
       this.academicService
         .getSectionsWithNoOfficeHoursByTerm(term)
         .subscribe((sections) => {
           this.academicSections = sections;
         });
     });
-    // TODO: Uncomment this to use the current term instead of F23
-    // this.academicService.getCurrentTerm().subscribe((term) => {
-    //   this.academicService
-    //     .getSectionsWithNoOfficeHoursByTerm(term)
-    //     .subscribe((sections) => {
-    //       this.academicSections = sections;
-    //     });
-    // });
   }
 
   onSubmit() {

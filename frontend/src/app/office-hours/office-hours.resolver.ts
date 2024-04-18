@@ -17,7 +17,7 @@ import { catchError, of } from 'rxjs';
 export const sectionsListResolver: ResolveFn<
   OfficeHoursSectionDetails[] | undefined
 > = (route) => {
-  return inject(OfficeHoursService).getUserSectionsByTerm('F23');
+  return inject(OfficeHoursService).getUserSectionsByTerm('S24');
 };
 
 /** This resolver injects a section into the Office Hours Section component. */

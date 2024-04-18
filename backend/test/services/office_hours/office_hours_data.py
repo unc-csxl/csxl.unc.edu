@@ -42,7 +42,7 @@ __license__ = "MIT"
 
 
 # Office Hours Section Data
-comp_110_oh_section = OfficeHoursSection(
+comp_110_oh_section_f23 = OfficeHoursSection(
     id=1, title="COMP 110: Introduction to Programming"
 )
 
@@ -50,14 +50,19 @@ comp_523_oh_section = OfficeHoursSection(
     id=2, title="COMP 523: Software Engineering Lab"
 )
 
-comp_110_oh_section_sp_24 = OfficeHoursSection(
-    id=3, title="COMP 110: Introduction to Programming SP24"
+comp_110_oh_section = OfficeHoursSection(
+    id=3, title="COMP 110: Introduction to Programming"
 )
 
-oh_sections = [comp_110_oh_section, comp_523_oh_section, comp_110_oh_section_sp_24]
+oh_sections = [
+    comp_110_oh_section_f23,
+    comp_523_oh_section,
+    comp_110_oh_section,
+]
 
 # For Test
-f23_oh_sections = [comp_110_oh_section, comp_523_oh_section]
+f23_oh_sections = [comp_110_oh_section_f23]
+s24_oh_sections = [comp_110_oh_section, comp_523_oh_section]
 
 oh_section_draft = OfficeHoursSectionDraft(title="Draft OH Section")
 # Office Hours Event Data
@@ -135,7 +140,7 @@ comp110_oh_current_events = [comp_110_current_oh_event]
 comp110_oh_upcoming_events = [comp_110_upcoming_oh_event]
 
 comp110_event_draft = OfficeHoursEventDraft(
-    oh_section=OfficeHoursSectionPartial(id=1),
+    oh_section=OfficeHoursSectionPartial(id=comp_110_oh_section.id),
     room=RoomPartial(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
     description="COMP 110 OH",
@@ -263,17 +268,21 @@ def insert_fake_data(session: Session):
     session.commit()
 
     # Associate Office Hours Section with Academic Section
-    for comp_110_section in section_data.comp_110_sections:
+    for comp_110_section in section_data.comp_110_sections_current:
         section = session.get(SectionEntity, comp_110_section.id)
         section.office_hours_id = comp_110_oh_section.id
 
-    comp_523_section_entity = session.get(SectionEntity, section_data.comp_523_001.id)
+    # Link 523 OH Section
+    comp_523_section_entity = session.get(
+        SectionEntity, section_data.comp_523_001_current_term.id
+    )
     comp_523_section_entity.office_hours_id = comp_523_oh_section.id
 
-    comp_110_sp_24_section_entity = session.get(
-        SectionEntity, section_data.comp_101_001_sp_24.id
+    # Link COMP 110 Past Semester OH Section
+    comp_110_f23_section_entity = session.get(
+        SectionEntity, section_data.comp_101_001.id
     )
-    comp_110_sp_24_section_entity.office_hours_id = comp_110_oh_section_sp_24.id
+    comp_110_f23_section_entity.office_hours_id = comp_110_oh_section_f23.id
 
     # Add Office Hours Event
     for event in oh_events:
