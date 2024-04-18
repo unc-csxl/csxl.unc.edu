@@ -10,7 +10,6 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-
 the_xl = RoomDetails(
     id="SN156",
     building="Sitterson",
@@ -18,6 +17,7 @@ the_xl = RoomDetails(
     nickname="The XL",
     capacity=40,
     reservable=False,
+    description="",
     seats=[],
 )
 
@@ -28,6 +28,7 @@ group_a = RoomDetails(
     nickname="Group A",
     capacity=4,
     reservable=True,
+    description="",
     seats=[],
 )
 
@@ -38,6 +39,7 @@ group_b = RoomDetails(
     nickname="Group B",
     capacity=4,
     reservable=True,
+    description="",
     seats=[],
 )
 
@@ -48,6 +50,7 @@ group_c = RoomDetails(
     nickname="Group C",
     capacity=6,
     reservable=True,
+    description="",
     seats=[],
 )
 
@@ -58,6 +61,7 @@ pair_a = RoomDetails(
     nickname="Pair A",
     capacity=2,
     reservable=True,
+    description="",
     seats=[],
 )
 
@@ -68,6 +72,7 @@ new_room = RoomDetails(
     nickname="Large Room",
     capacity=100,
     reservable=False,
+    description="",
     seats=[],
 )
 
@@ -78,6 +83,7 @@ edited_xl = RoomDetails(
     nickname="The CSXL",
     capacity=100,
     reservable=False,
+    description="",
     seats=[],
 )
 
