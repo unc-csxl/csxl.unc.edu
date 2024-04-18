@@ -49,7 +49,7 @@ export class ApplicationsService {
    */
   list(): void {
     this.http
-      .get<Application[]>('/api/applications')
+      .get<Application[]>('/api/ta/applications')
       .subscribe((applications) => this.applications.set(applications));
   }
 
@@ -62,7 +62,7 @@ export class ApplicationsService {
 
   getApplication(): Observable<Application | null> {
     return this.http
-      .get<Application | null>('/api/applications/user')
+      .get<Application | null>('/api/ta/applications/user')
       .pipe(
         tap((application) => console.log('Fetched application:', application))
       );
@@ -85,7 +85,7 @@ export class ApplicationsService {
     application: Omit<Application, 'id'>
   ): Observable<Application> {
     return this.http
-      .put<Application>(`/api/applications/update`, application)
+      .put<Application>(`/api/ta/applications/update`, application)
       .pipe(
         tap((updatedApplication) => {
           this.user_application.set(updatedApplication);
@@ -97,17 +97,19 @@ export class ApplicationsService {
   private createApplication(
     application: Omit<Application, 'id'>
   ): Observable<Application> {
-    return this.http.post<Application>('/api/applications', application).pipe(
-      tap((newApplication) => {
-        this.user_application.set(newApplication);
-        this.new_uta$.next(false);
-        console.log('Application created:', newApplication);
-      })
-    );
+    return this.http
+      .post<Application>('/api/ta/applications', application)
+      .pipe(
+        tap((newApplication) => {
+          this.user_application.set(newApplication);
+          this.new_uta$.next(false);
+          console.log('Application created:', newApplication);
+        })
+      );
   }
 
   deleteApplication(): void {
-    this.http.delete('/api/application/delete');
+    this.http.delete('/api/ta/application/delete');
   }
 
   getProfile(): Observable<Profile> {

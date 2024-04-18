@@ -23,7 +23,7 @@ openapi_tags = {
     "description": "Create, update, delete, and retrieve TA Applications.",
 }
 
-api = APIRouter(prefix="/api/applications")
+api = APIRouter(prefix="/api/ta/applications")
 
 
 @api.get("", response_model=list[New_UTADetails], tags=["Applications"])
