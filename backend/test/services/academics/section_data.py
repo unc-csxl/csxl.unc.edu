@@ -179,7 +179,6 @@ comp_301_001_current_term = Section(
     override_title="",
     override_description="",
 )
-
 # Variables To Help Associate User Data to Section Members
 user__comp110_instructor = user_data.instructor
 user__comp110_uta_0 = user_data.uta
@@ -194,6 +193,26 @@ user__comp301_instructor = user_data.instructor
 user__comp301_uta = user_data.ambassador
 user__comp301_student = user_data.student
 
+# F23 Section Memberships
+comp110_f23_instructor = SectionMemberDraft(
+    user_id=user__comp110_instructor.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+comp110_f23_uta = SectionMemberDraft(
+    user_id=user__comp110_uta_0.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.UTA,
+)
+
+comp110_f23_student = SectionMemberDraft(
+    user_id=user__comp110_student_0.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.STUDENT,
+)
+
+# CURRENT TERM MEMBERSHIPS
 comp110_instructor = SectionMemberDraft(
     user_id=user__comp110_instructor.id,
     section_id=comp_110_001_current_term.id,
@@ -244,6 +263,9 @@ comp_301_student = SectionMemberDraft(
 )
 
 section_members = [
+    comp110_f23_instructor,
+    comp110_f23_student,
+    comp110_f23_uta,
     comp110_instructor,
     comp110_student_0,
     comp110_student_1,

@@ -43,7 +43,7 @@ __license__ = "MIT"
 
 # Office Hours Section Data
 comp_110_oh_section_f23 = OfficeHoursSection(
-    id=1, title="COMP 110: Introduction to Programming"
+    id=1, title="COMP 110: Introduction to Programming Fall 23"
 )
 
 comp_523_oh_section = OfficeHoursSection(
