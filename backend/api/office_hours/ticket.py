@@ -27,7 +27,6 @@ openapi_tags = {
 }
 
 
-# TODO: Fix Comments
 @api.post("", response_model=OfficeHoursTicketDetails, tags=["Office Hours"])
 def new_oh_ticket(
     oh_ticket: OfficeHoursTicketDraft,
@@ -76,7 +75,7 @@ def update_oh_ticket_when_called(
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> OfficeHoursTicketDetails:
     """
-    Updates an OfficeHoursTicket to the database
+    Updates an OfficeHoursTicket's state to be called to the database
 
     Returns:
         OfficeHoursTicketDetails: OH Ticket updated
@@ -98,7 +97,7 @@ def cancel_oh_ticket(
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> OfficeHoursTicketDetails:
     """
-    Updates an OfficeHoursTicket's state in the database
+    Updates an OfficeHoursTicket's state to be canceled in the database
 
     Returns:
         OfficeHoursTicketDetails: OH Ticket updated
@@ -120,7 +119,7 @@ def close_oh_ticket(
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> OfficeHoursTicketDetails:
     """
-    Updates an OfficeHoursTicket's state in the database
+    Updates an OfficeHoursTicket's state to be closed in the database
 
     Returns:
         OfficeHoursTicketDetails: OH Ticket updated
@@ -142,7 +141,7 @@ def update_oh_ticket_feedback(
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> OfficeHoursTicketDetails:
     """
-    Updates an OfficeHoursTicket's state in the database
+    Updates an OfficeHoursTicket's feedback fields in the database
 
     Returns:
         OfficeHoursTicketDetails: OH Ticket updated
@@ -158,13 +157,13 @@ def update_oh_ticket_feedback(
     response_model=OfficeHoursTicketDetails,
     tags=["Office Hours"],
 )
-def update_oh_ticket_feedback(
+def update_oh_ticket_description(
     oh_ticket: OfficeHoursTicketPartial,
     subject: User = Depends(registered_user),
     oh_ticket_service: OfficeHoursTicketService = Depends(),
 ) -> OfficeHoursTicketDetails:
     """
-    Updates an OfficeHoursTicket's state in the database
+    Updates an OfficeHoursTicket's description in the database
 
     Returns:
         OfficeHoursTicketDetails: OH Ticket updated

@@ -26,6 +26,8 @@ class OfficeHoursEventStatus(BaseModel):
 
 
 class StudentOfficeHoursEventStatus(OfficeHoursEventStatus):
+    """Pydantic model to represent the position a student is in in the queue."""
+
     ticket_position: int
 
 

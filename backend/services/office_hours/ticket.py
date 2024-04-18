@@ -76,6 +76,7 @@ class OfficeHoursTicketService:
             self._check_user_section_membership(subject.id, oh_section.id)
         )
 
+        # Only allow students to create tickets
         if current_user_section_member_entity.member_role != RosterRole.STUDENT:
             raise PermissionError(
                 "Only Section Member Students Are Allowed to Create Tickets."
@@ -115,6 +116,7 @@ class OfficeHoursTicketService:
 
         self._session.commit()
 
+        # Return details model
         return oh_ticket_entity.to_details_model()
 
     def get_ticket_by_id(
@@ -230,6 +232,7 @@ class OfficeHoursTicketService:
             ticket_entity.called_at = datetime.now()
             self._session.commit()
 
+        # Return details model
         return ticket_entity.to_details_model()
 
     def cancel_ticket(
@@ -277,7 +280,7 @@ class OfficeHoursTicketService:
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
 
             ticket_creators = ticket_entity.to_details_model().creators
-            # Check If Current User is in Creator List
+            # Check If Current User is in Creator List, if not, raise Error
             is_creator = False
             for creator in ticket_creators:
                 if creator.id == current_user_section_member_entity.id:
@@ -292,6 +295,7 @@ class OfficeHoursTicketService:
         ticket_entity.state = TicketState.CANCELED
         self._session.commit()
 
+        # Return details model
         return ticket_entity.to_details_model()
 
     def close_ticket(
@@ -333,16 +337,18 @@ class OfficeHoursTicketService:
 
         # PERMISSIONS
 
-        # 1. If student, cannot close ticket - a student can onlyl cancel ticket
+        # 1. If student, cannot close ticket - a student can only cancel ticket
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError(
                 f"User Doesn't Have Permission to Close Ticket id={oh_ticket.id}"
             )
 
+        # Change state and commit changed entity
         ticket_entity.state = TicketState.CLOSED
         ticket_entity.closed_at = datetime.now()
         self._session.commit()
 
+        # Return details model
         return ticket_entity.to_details_model()
 
     def update_ticket_feedback(
@@ -397,11 +403,13 @@ class OfficeHoursTicketService:
                 f"Section member id={current_user_section_member_entity.id} is not caller of ticket and do not have permssion to give feedback."
             )
 
+        # Update fields and commit changed entity
         ticket_entity.have_concerns = oh_ticket.have_concerns
         ticket_entity.caller_notes = oh_ticket.caller_notes
 
         self._session.commit()
 
+        # Return details model
         return ticket_entity.to_details_model()
 
     def update_ticket_description(
@@ -465,10 +473,11 @@ class OfficeHoursTicketService:
                 f"Ticket is Not Queued. Cannot Update Ticket Description for Ticket id={oh_ticket.id}"
             )
 
-        # Update Ticket Description
+        # Update Ticket Description and commit changes
         ticket_entity.description = oh_ticket.description
         self._session.commit()
 
+        # Return details model
         return ticket_entity.to_details_model()
 
     def _check_user_section_membership(
@@ -512,6 +521,7 @@ class OfficeHoursTicketService:
                 f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}. User Doesn't Have Permission to Perform Action."
             )
 
+        # Return the entity
         return section_member_entity
 
     def _get_office_hours_section_by_oh_event_id(
@@ -545,4 +555,5 @@ class OfficeHoursTicketService:
         # Fetch Office Hours Section From Event Model
         oh_section = oh_event_model.oh_section
 
+        # Return section model
         return oh_section
