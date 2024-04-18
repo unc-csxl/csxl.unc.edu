@@ -11,7 +11,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   TicketDetails,
   OfficeHoursEventDetails,
-  OfficeHoursEventType,
   OfficeHoursSectionDetails
 } from '../office-hours.models';
 import { OfficeHoursService } from '../office-hours.service';
@@ -63,20 +62,24 @@ export class TicketQueuePageComponent implements OnInit {
     }
   ];
 
+  /* Tickets currently in the TicketQueue */
   protected tickets: TicketDetails[] = [];
-  // TODO: update this to get the eventId from the route!
+
+  /* Office Hours Event queue is associated with */
   eventId: number;
   event: OfficeHoursEventDetails | null = null;
+
+  /* Office Hours Section that event belongs to */
   sectionId: number;
   protected section: OfficeHoursSectionDetails | null = null;
   queued_tickets: number | null;
   called_tickets: number | null;
-  // TODO: Store event details object and pass this in as input!
 
   constructor(
     private officeHoursService: OfficeHoursService,
     private route: ActivatedRoute
   ) {
+    // Retrieves IDs from route parameters
     this.eventId = this.route.snapshot.params['event_id'];
     this.sectionId = this.route.snapshot.params['section_id'];
     this.queued_tickets = null;
@@ -88,19 +91,21 @@ export class TicketQueuePageComponent implements OnInit {
     };
     this.section = data.section;
 
-    // subscribe to observable every 10 seconds and get tickets + stats
+    // Subscribe to observable every 10 seconds and get tickets + stats
     let refresh = interval(10000).subscribe(() => {
       this.getTicketStats();
       this.getEvent();
     });
   }
 
+  /* On initialization, get event, section, and ticket stats */
   ngOnInit() {
     this.getEvent();
     this.getSection();
     this.getTicketStats();
   }
 
+  /* Gets current tickets that are in the queue */
   getCurrentTickets() {
     if (this.event) {
       this.officeHoursService
@@ -111,6 +116,7 @@ export class TicketQueuePageComponent implements OnInit {
     }
   }
 
+  /* Gets ongoing event that the ticket queue belongs to */
   getEvent() {
     this.officeHoursService
       .getEvent(this.eventId)
@@ -120,16 +126,22 @@ export class TicketQueuePageComponent implements OnInit {
       });
   }
 
+  /* Gets section that is holding the OH Event */
   getSection() {
     this.officeHoursService.getSection(this.sectionId).subscribe((section) => {
       this.section = section;
     });
   }
 
+  /** Helper function which formats event type enum to a string
+   * @param typeNum: OfficeHoursEventType enum value
+   * @returns formatted event type (string)
+   */
   formatEventType(typeNum: number) {
     return this.officeHoursService.formatEventType(typeNum);
   }
 
+  /* Gets queue stats, including # of tickets being helped and # of tickets waiting in queue */
   getTicketStats() {
     this.officeHoursService
       .getQueuedAndCalledTicketCount(this.eventId)

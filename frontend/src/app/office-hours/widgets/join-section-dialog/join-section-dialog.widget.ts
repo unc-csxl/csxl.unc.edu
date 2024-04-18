@@ -6,9 +6,9 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { OfficeHoursService } from '../../office-hours.service';
 import {
@@ -17,7 +17,11 @@ import {
   OfficeHoursSectionPartial
 } from '../../office-hours.models';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Section, SectionMember } from 'src/app/academics/academics.models';
+import {
+  Section,
+  SectionMember,
+  Term
+} from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'join-section-dialog',
@@ -25,15 +29,20 @@ import { Section, SectionMember } from 'src/app/academics/academics.models';
   styleUrls: ['./join-section-dialog.widget.css']
 })
 export class JoinSectionDialog implements OnInit {
+  @Input() displayTerm!: Term;
   protected officeHoursSections: OfficeHoursSection[] = [];
 
   constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: { displayTerm: Term },
     public dialogRef: MatDialogRef<JoinSectionDialog>,
     protected formBuilder: FormBuilder,
     private academicsService: AcademicsService,
     private officeHoursService: OfficeHoursService,
     protected snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.displayTerm = data.displayTerm;
+  }
 
   ngOnInit(): void {
     this.getOfficeHoursSection();
@@ -48,11 +57,13 @@ export class JoinSectionDialog implements OnInit {
   }
 
   getOfficeHoursSection() {
+    console.log(this.displayTerm.name);
     // TODO: change 'F23' to the current term using the academics service (this has a method to get current term)
     this.officeHoursService
-      .getSectionsByTerm('F23')
+      .getSectionsByTerm(this.displayTerm.id)
       .subscribe((oh_sections) => {
         this.officeHoursSections = oh_sections;
+        console.log('here');
       });
   }
 

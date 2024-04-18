@@ -31,12 +31,14 @@ export class TicketFeedbackFormComponent {
     protected snackBar: MatSnackBar
   ) {}
 
+  /* Form Group for ticket feedback fields */
   public ticketFeedbackForm = this.formBuilder.group({
     have_concerns: '',
     notes: ''
   });
 
   onSubmit() {
+    // If TicketFeedbackForm is valid, add feedback to ticket's data
     if (this.ticketFeedbackForm.valid) {
       if (this.ticketFeedbackForm.value.have_concerns === 'Yes') {
         console.log('concerns');

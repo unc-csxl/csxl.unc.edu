@@ -42,8 +42,8 @@ comp_523 = Course(
     id="comp523",
     subject_code="COMP",
     number="523",
-    title="Software Engineering Lab",
-    description="Work with Clients to Build Projects",
+    title="Software Engineering Laboratory",
+    description="Organization and scheduling of software engineering projects, structured programming, and design. Each team designs, codes, and debugs program components and synthesizes them into a tested, documented program product.",
     credit_hours=4,
 )
 

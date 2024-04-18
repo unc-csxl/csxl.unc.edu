@@ -31,10 +31,14 @@ export class TicketCreationFormComponent implements OnInit {
     component: TicketCreationFormComponent,
     canActivate: []
   };
-  // Stores the AssignmentType chosen in the first part of stepper
+  /* Stores the AssignmentType chosen in the first part of stepper */
   assignmentType: String = '';
+
+  /* Stores event that ticket is being created under */
   eventId: number;
   event: OfficeHoursEventDetails | undefined;
+
+  /* Section ID for Office Hours Section ticket is associated with */
   sectionId: number;
 
   constructor(
@@ -44,6 +48,7 @@ export class TicketCreationFormComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
+    /* Gets section and event IDs from route parameters */
     this.sectionId = this.route.snapshot.params['id'];
     this.eventId = this.route.snapshot.params['event_id'];
   }
@@ -52,11 +57,13 @@ export class TicketCreationFormComponent implements OnInit {
     this.getEvent();
   }
 
+  /* Gets OH Event from ID */
   getEvent() {
     this.officeHoursService.getEvent(this.eventId).subscribe((event) => {
       this.event = event;
     });
   }
+  /* TicketForm stores student's answers to ticket questionaire */
   public ticketForm = this.formBuilder.group({
     assignment_type: '',
     assignmentQ1: '',
@@ -66,9 +73,9 @@ export class TicketCreationFormComponent implements OnInit {
     conceptualQ1: ''
   });
 
+  /** Checks for assignment type in the form (accounts for user clicking back button and changing again)
+   * @param value - newly selected assignment type selected */
   onAssignmentTypeChange(value: string) {
-    /* checks for assignment type in the form (accounts for user 
-      clicking back button and changing again) */
     this.assignmentType = value;
     this.cdr.detectChanges();
   }
@@ -98,12 +105,12 @@ export class TicketCreationFormComponent implements OnInit {
       form_type = TicketType.ASSIGNMENT_HELP;
     }
     if (this.event) {
+      // Create ticket draft from inputted ticket information
       let ticket_draft: TicketDraft = {
-        // TODO: un-hardcode event information
         oh_event: this.event,
         description: form_description,
         type: form_type,
-        // TODO: un-hardcode creators
+        // TODO: if adding multiple creators (group tickets), would add users here
         creators: []
       };
       this.officeHoursService.createTicket(ticket_draft).subscribe((ticket) => {

@@ -26,11 +26,11 @@ from ...academics.section_data import (
     user__comp110_instructor,
     user__comp110_student_0,
     user__comp301_instructor,
-    comp_301_001,
-    comp_101_001,
-    comp_210_001,
     user__comp301_uta,
     user__comp301_student,
+    comp_301_001_current_term,
+    comp_110_001_current_term,
+    comp_210_001_current_term,
 )
 
 __authors__ = ["Meghan Sun"]
@@ -45,7 +45,7 @@ def test_create_by_instructor(
     oh_section = oh_section_svc.create(
         user__comp301_instructor,
         office_hours_data.oh_section_draft,
-        [comp_301_001.id],
+        [comp_301_001_current_term.id],
     )
 
     assert isinstance(oh_section, OfficeHoursSectionDetails)
@@ -59,13 +59,13 @@ def test_create_by_instructor_and_linked_to_academic_section(
     oh_section = oh_section_svc.create(
         user__comp301_instructor,
         office_hours_data.oh_section_draft,
-        [comp_301_001.id],
+        [comp_301_001_current_term.id],
     )
 
     assert isinstance(oh_section, OfficeHoursSectionDetails)
 
     # Check if OH Section Is Linked to Academic Section
-    academic_section = section_svc.get_by_id(comp_301_001.id)
+    academic_section = section_svc.get_by_id(comp_301_001_current_term.id)
     assert oh_section.id == academic_section.office_hours_section.id
 
 
@@ -76,7 +76,7 @@ def test_create_by_instructor_multiple_academic_sections(
     oh_section = oh_section_svc.create(
         user__comp301_instructor,
         office_hours_data.oh_section_draft,
-        [comp_301_001.id, comp_210_001.id],
+        [comp_301_001_current_term.id, comp_210_001_current_term.id],
     )
 
     assert isinstance(oh_section, OfficeHoursSectionDetails)
@@ -91,15 +91,15 @@ def test_create_by_instructor_multiple_academic_sections_and_linked_to_academic_
     oh_section = oh_section_svc.create(
         user__comp301_instructor,
         office_hours_data.oh_section_draft,
-        [comp_301_001.id, comp_210_001.id],
+        [comp_301_001_current_term.id, comp_210_001_current_term.id],
     )
 
     assert isinstance(oh_section, OfficeHoursSectionDetails)
     assert oh_section.title == office_hours_data.oh_section_draft.title
 
     # Check if OH Section Is Linked to Academic Sections
-    comp301 = section_svc.get_by_id(comp_301_001.id)
-    comp210 = section_svc.get_by_id(comp_210_001.id)
+    comp301 = section_svc.get_by_id(comp_301_001_current_term.id)
+    comp210 = section_svc.get_by_id(comp_210_001_current_term.id)
 
     assert oh_section.id == comp301.office_hours_section.id
     assert oh_section.id == comp210.office_hours_section.id
@@ -111,7 +111,7 @@ def test_create_exception_if_student(oh_section_svc: OfficeHoursSectionService):
         oh_section_svc.create(
             user__comp301_student,
             office_hours_data.oh_section_draft,
-            [comp_301_001.id],
+            [comp_301_001_current_term.id],
         )
         pytest.fail()
 
@@ -122,7 +122,7 @@ def test_create_exception_if_ta(oh_section_svc: OfficeHoursSectionService):
         oh_section_svc.create(
             user__comp301_uta,
             office_hours_data.oh_section_draft,
-            [comp_301_001.id],
+            [comp_301_001_current_term.id],
         )
         pytest.fail()
 
@@ -133,7 +133,7 @@ def test_create_exception_if_non_member(oh_section_svc: OfficeHoursSectionServic
         oh_section_svc.create(
             user__comp110_student_0,
             office_hours_data.oh_section_draft,
-            [comp_301_001.id],
+            [comp_301_001_current_term.id],
         )
         pytest.fail()
 
@@ -146,7 +146,7 @@ def test_create_exception_if_oh_section_exists(
         oh_section_svc.create(
             user__comp110_instructor,
             office_hours_data.oh_section_draft,
-            [comp_101_001.id],
+            [comp_110_001_current_term.id],
         )
         pytest.fail()
 
@@ -159,7 +159,7 @@ def test_create_exception_if_one_oh_section_exists_and_other_does_not_have_one(
         oh_section_svc.create(
             user__comp110_instructor,
             office_hours_data.oh_section_draft,
-            [comp_101_001.id, comp_301_001.id],
+            [comp_110_001_current_term.id, comp_301_001_current_term.id],
         )
         pytest.fail()
 
@@ -172,6 +172,6 @@ def test_create_exception_if_can_not_find_all_academic_sections(
         oh_section_svc.create(
             user__comp110_instructor,
             office_hours_data.oh_section_draft,
-            [comp_301_001.id, 99],
+            [comp_301_001_current_term.id, 99],
         )
         pytest.fail()

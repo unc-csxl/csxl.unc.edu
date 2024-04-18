@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import {
   OfficeHoursSectionDetails,
   OfficeHoursSectionPartial,
@@ -32,7 +32,8 @@ import {
 import {
   Section,
   SectionMember,
-  SectionMemberPartial
+  SectionMemberPartial,
+  Term
 } from '../academics/academics.models';
 
 @Injectable({

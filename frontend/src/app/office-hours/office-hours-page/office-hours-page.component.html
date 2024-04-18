@@ -1,11 +1,34 @@
 <div class="page-container">
-  <h2>Your Courses</h2>
+  <div class="course-heading-row">
+    <div>
+      <h2>Your Courses</h2>
+      <h3 *ngIf="userSections.length > 0">{{ displayTerm.value.name }}</h3>
+    </div>
+    <mat-form-field style="margin-left: auto" appearance="outline">
+      <mat-label>Select Term</mat-label>
+      <mat-select
+        [formControl]="displayTerm"
+        (selectionChange)="onTermChange($event.value)">
+        <mat-option *ngFor="let term of terms" [value]="term">
+          {{ term.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <!-- TODO: Use terms instead of hard coding Spring 2024 -->
-  <p *ngIf="userSections.length === 0">
-    You are not enrolled in any courses. Please click the add button to add a
-    course.
+  <p
+    *ngIf="
+      userSections.length === 0 && displayTerm.value.name === currentTerm.name
+    ">
+    You are not enrolled in any courses for {{ displayTerm.value.name }}. Please
+    click the add button to add a course.
   </p>
-  <h3>Spring 2024:</h3>
+  <p
+    *ngIf="
+      userSections.length === 0 && displayTerm.value.name !== currentTerm.name
+    ">
+    You do not have any past courses for {{ displayTerm.value.name }}.
+  </p>
   <course-card-widget
     *ngFor="let section of userSections"
     [section]="section"></course-card-widget>

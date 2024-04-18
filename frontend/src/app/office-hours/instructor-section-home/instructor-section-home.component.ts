@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   OfficeHoursEvent,
   OfficeHoursSectionDetails
@@ -32,7 +32,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   templateUrl: './instructor-section-home.component.html',
   styleUrls: ['./instructor-section-home.component.css']
 })
-export class InstructorSectionHomeComponent {
+export class InstructorSectionHomeComponent implements OnInit {
   public static Route = {
     // TODO: replace spring-2024 in this route!
     path: 'instructor/spring-2024/:id',
@@ -59,15 +59,16 @@ export class InstructorSectionHomeComponent {
     private academicsService: AcademicsService,
     private router: Router
   ) {
+    // TODO: check if we need this?
     this.navLinks = [
       { path: '/events', label: 'Events' },
       { path: '/history', label: 'History' },
       { path: '/data', label: 'Data' },
       { path: '/people', label: 'People' }
     ];
+    // Assign section ID to route parameter
     this.sectionId = this.route.snapshot.params['id'];
     this.rosterRole = null;
-
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
       section: OfficeHoursSectionDetails;
@@ -75,11 +76,13 @@ export class InstructorSectionHomeComponent {
     this.section = data.section;
   }
 
+  /* On initialization, get section's events and checks user's roster role */
   ngOnInit(): void {
     this.getCurrentEvents();
     this.checkRosterRole();
   }
 
+  /* Gets ongoing events for the section being viewed */
   getCurrentEvents() {
     this.officeHoursService
       .getCurrentEventsBySection(this.sectionId)
@@ -88,6 +91,7 @@ export class InstructorSectionHomeComponent {
       });
   }
 
+  /* Returns roster role of user accessing the page */
   checkRosterRole() {
     this.academicsService
       .getMembershipBySection(this.sectionId)
@@ -97,6 +101,7 @@ export class InstructorSectionHomeComponent {
       });
   }
 
+  /* Fuction that navigates to Event Editor component */
   navToCreateForm() {
     // TODO: Unhard code this later
     this.router.navigate([

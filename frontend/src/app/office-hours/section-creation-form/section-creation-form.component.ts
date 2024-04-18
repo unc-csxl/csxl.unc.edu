@@ -23,6 +23,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./section-creation-form.component.css']
 })
 export class SectionCreationFormComponent implements OnInit {
+  /* List of all academic sections within the current term */
   protected academicSections: Section[] = [];
 
   constructor(
@@ -32,6 +33,7 @@ export class SectionCreationFormComponent implements OnInit {
     protected snackBar: MatSnackBar
   ) {}
 
+  /* On initialization, get all academic sections */
   ngOnInit(): void {
     this.getAcademicSections();
   }
@@ -41,26 +43,20 @@ export class SectionCreationFormComponent implements OnInit {
     academic_sections: []
   });
 
+  /* Gets all academic sections in the current academic term */
   //TODO: use current term instead of 'F23'
   getAcademicSections() {
-    this.academicService.getTerm('F23').subscribe((term) => {
+    this.academicService.getCurrentTerm().subscribe((term) => {
       this.academicService
         .getSectionsWithNoOfficeHoursByTerm(term)
         .subscribe((sections) => {
           this.academicSections = sections;
         });
     });
-    // TODO: Uncomment this to use the current term instead of F23
-    // this.academicService.getCurrentTerm().subscribe((term) => {
-    //   this.academicService
-    //     .getSectionsWithNoOfficeHoursByTerm(term)
-    //     .subscribe((sections) => {
-    //       this.academicSections = sections;
-    //     });
-    // });
   }
 
   onSubmit() {
+    // If section creation form is valid, create new office hours section linked to academic section(s)
     if (this.sectionForm.valid) {
       let oh_title = this.sectionForm.value.section_name ?? '';
       let oh_section: OfficeHoursSectionDraft = { title: oh_title };

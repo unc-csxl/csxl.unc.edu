@@ -10,16 +10,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   OfficeHoursEvent,
-  OfficeHoursEventDetails,
   OfficeHoursEventType,
-  Ticket,
-  TicketDetails,
-  TicketType
+  TicketDetails
 } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { config } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog.widget';
 
@@ -29,8 +25,10 @@ import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog
   styleUrls: ['./current-ticket-card.widget.css']
 })
 export class CurrentTicketCard implements OnInit {
+  /* TicketDetails and Event to display on widget */
   @Input() ticket!: TicketDetails;
   @Input() event!: OfficeHoursEvent;
+  /* Ticket queue stats */
   queued_tickets: number | null;
   called_tickets: number | null;
   queue_spot: number | null;
@@ -50,14 +48,17 @@ export class CurrentTicketCard implements OnInit {
     this.getTicketStats();
   }
 
+  /* Helper function that formats ticket type enum */
   formatTicketType(typeNum: number) {
     return this.officeHoursService.formatTicketType(typeNum);
   }
 
+  /* Helper function that formats ticket state enum */
   formatTicketState(typeNum: number) {
     return this.officeHoursService.formatTicketState(typeNum);
   }
 
+  /* Cancels ticket and navigates user back to section home */
   cancelTicket() {
     const dialogRef = this.dialog.open(DeleteTicketDialog, {
       height: 'auto',
@@ -66,10 +67,12 @@ export class CurrentTicketCard implements OnInit {
     });
   }
 
+  /* Helper function that formats event type enum as string */
   formatEventType(eventType: OfficeHoursEventType) {
     return this.officeHoursService.formatEventType(eventType);
   }
 
+  /* Helper function that navigates back to course home */
   navToHome() {
     this.router.navigate([
       'office-hours/spring-2024/',
@@ -77,18 +80,21 @@ export class CurrentTicketCard implements OnInit {
     ]);
   }
 
+  /* Displays snackbar message if ticket has been canceled */
   displayCanceledMessage() {
     this.snackBar.open('Your ticket has been canceled.', '', {
       duration: 2000
     });
   }
 
+  /* Displays snackbar message if ticket has been closed */
   displayClosedMessage() {
     this.snackBar.open('This ticket has been closed.', '', {
       duration: 2000
     });
   }
 
+  /* Helper function that gets ticket queue stats */
   getTicketStats() {
     this.officeHoursService
       .getQueueStatsForStudent(this.event.id, this.ticket.id)

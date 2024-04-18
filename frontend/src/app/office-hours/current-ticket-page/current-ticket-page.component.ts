@@ -33,6 +33,7 @@ export class CurrentTicketPageComponent implements OnInit {
     canActivate: []
   };
 
+  /* IDs and data relating to a student's current ticket, including the OH section and event */
   sectionId: number;
   eventId: number;
   ticketId: number;
@@ -44,6 +45,7 @@ export class CurrentTicketPageComponent implements OnInit {
     private officeHoursService: OfficeHoursService,
     private route: ActivatedRoute
   ) {
+    // Get IDs from the route parameters
     this.sectionId = this.route.snapshot.params['id'];
     this.eventId = this.route.snapshot.params['event_id'];
     this.ticketId = this.route.snapshot.params['ticket_id'];
@@ -56,10 +58,12 @@ export class CurrentTicketPageComponent implements OnInit {
     });
   }
 
+  /* On initialization, get the ticket information */
   ngOnInit(): void {
     this.getTicketInfo();
   }
 
+  /* Gets ticket information including the associated event and section */
   getTicketInfo() {
     this.officeHoursService.getTicket(this.ticketId).subscribe((ticket) => {
       this.ticket = ticket;

@@ -11,8 +11,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
-  ResolveFn,
-  RouteConfigLoadEnd
+  ResolveFn
 } from '@angular/router';
 import {
   OfficeHoursEvent,
@@ -24,6 +23,7 @@ import { AcademicsService } from 'src/app/academics/academics.service';
 import { RosterRole } from 'src/app/academics/academics.models';
 import { sectionResolver } from '../office-hours.resolver';
 
+/* Resolves title to display Section as the page header */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['section']?.title ?? 'Section Not Found';
 };
@@ -35,7 +35,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 })
 export class StudentSectionHomeComponent implements OnInit {
   public static Route = {
-    // TODO: replace this route + title to be un-hardcoded
+    // TODO: replace term
     path: 'spring-2024/:id',
     component: StudentSectionHomeComponent,
     canActivate: [],
@@ -49,12 +49,13 @@ export class StudentSectionHomeComponent implements OnInit {
     ]
   };
 
+  /* Office Hours Section being displayed, along with its events and current user's tickets*/
   protected section: OfficeHoursSectionDetails;
-  currentEvents: OfficeHoursEvent[] = [];
   sectionId: number;
-  navLinks: any;
-  rosterRole: RosterRole | null;
+  currentEvents: OfficeHoursEvent[] = [];
   userTickets: TicketDetails[] = [];
+  rosterRole: RosterRole | null;
+  navLinks: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -65,6 +66,7 @@ export class StudentSectionHomeComponent implements OnInit {
       { path: '/events', label: 'Events' },
       { path: '/history', label: 'History' }
     ];
+    // Get section ID from route parameter
     this.sectionId = this.route.snapshot.params['id'];
     this.rosterRole = null;
 
@@ -75,11 +77,13 @@ export class StudentSectionHomeComponent implements OnInit {
     this.section = data.section;
   }
 
+  /* On initialization, get section's events and checks user's roster role */
   ngOnInit(): void {
     this.getCurrentEvents();
     this.checkRosterRole();
   }
 
+  /* Gets ongoing events for the section being viewed */
   getCurrentEvents() {
     this.officeHoursService
       .getCurrentEventsBySection(this.sectionId)
@@ -88,6 +92,7 @@ export class StudentSectionHomeComponent implements OnInit {
       });
   }
 
+  /* Returns roster role of user accessing the page */
   checkRosterRole() {
     this.academicsService
       .getMembershipBySection(this.sectionId)

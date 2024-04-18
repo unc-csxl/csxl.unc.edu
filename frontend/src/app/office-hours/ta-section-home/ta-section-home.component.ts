@@ -64,9 +64,9 @@ export class TaSectionHomeComponent implements OnInit {
       { path: '/history', label: 'History' },
       { path: '/people', label: 'People' }
     ];
+    // Get section ID from route parameter
     this.sectionId = this.route.snapshot.params['id'];
     this.rosterRole = null;
-
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
       section: OfficeHoursSectionDetails;
@@ -74,11 +74,13 @@ export class TaSectionHomeComponent implements OnInit {
     this.section = data.section;
   }
 
+  /* On initialization, get section's events and checks user's roster role */
   ngOnInit(): void {
     this.getCurrentEvents();
     this.checkRosterRole();
   }
 
+  /* Gets ongoing events for the section being viewed */
   getCurrentEvents() {
     this.officeHoursService
       .getCurrentEventsBySection(this.sectionId)
@@ -87,6 +89,7 @@ export class TaSectionHomeComponent implements OnInit {
       });
   }
 
+  /* Returns roster role of user accessing the page */
   checkRosterRole() {
     this.academicsService
       .getMembershipBySection(this.sectionId)
@@ -96,6 +99,7 @@ export class TaSectionHomeComponent implements OnInit {
       });
   }
 
+  /* Fuction that navigates to Event Editor component */
   navToCreateForm() {
     // TODO: Unhard code this later
     this.router.navigate([
