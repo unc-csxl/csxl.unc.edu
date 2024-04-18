@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 
 from typing import List
 
-from backend.models.application_details import New_UTADetails, UserApplication
+from backend.models.application_details import NewUTAApplicationDetails, UserApplication
 from backend.services.application import ApplicationService
 
 from ..api.authentication import registered_user
@@ -25,10 +25,10 @@ openapi_tags = {
 api = APIRouter(prefix="/api/ta/applications")
 
 
-@api.get("", response_model=list[New_UTADetails], tags=["Applications"])
+@api.get("", response_model=list[NewUTAApplicationDetails], tags=["Applications"])
 def get_applications(
     application_service: ApplicationService = Depends(),
-) -> list[New_UTADetails]:
+) -> list[NewUTAApplicationDetails]:
     """
     Get all applications
 
@@ -61,11 +61,11 @@ def get_applications_user(
     return application_service.get_application(user)
 
 
-@api.post("", response_model=New_UTADetails, tags=["Applications"])
+@api.post("", response_model=NewUTAApplicationDetails, tags=["Applications"])
 def new_undergrad_application(
-    application: New_UTADetails,
+    application: NewUTAApplicationDetails,
     application_service: ApplicationService = Depends(),
-) -> New_UTADetails:
+) -> NewUTAApplicationDetails:
     """
     Create application
 
@@ -83,12 +83,12 @@ def new_undergrad_application(
     return application_service.create_undergrad(application)
 
 
-@api.put("/update", response_model=New_UTADetails, tags=["Applications"])
+@api.put("/update", response_model=NewUTAApplicationDetails, tags=["Applications"])
 def update_undergrad_application(
-    application: New_UTADetails,
+    application: NewUTAApplicationDetails,
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> New_UTADetails:
+) -> NewUTAApplicationDetails:
     """
     Update application
 

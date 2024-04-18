@@ -39,7 +39,7 @@ class UTAApplicationDetails(UTAApplication, ApplicationDetails):
     preferred_sections: list[Section]
 
 
-class New_UTADetails(NewUTAApplication, UTAApplicationDetails):
+class NewUTAApplicationDetails(NewUTAApplication, UTAApplicationDetails):
     """
     Pydantic model to represent a `UTA Application`.
 
@@ -48,7 +48,7 @@ class New_UTADetails(NewUTAApplication, UTAApplicationDetails):
     """
 
 
-class Returning_UTADetails(Returning_UTA):
+class ReturningUTAApplicationDetails(Returning_UTA):
     """
     Pydantic model to represent a `UTA Application`.
 
@@ -66,4 +66,4 @@ class UserApplication(BaseModel):
     students preferences.
     """
 
-    application: New_UTADetails
+    application: NewUTAApplicationDetails

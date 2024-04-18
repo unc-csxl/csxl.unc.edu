@@ -14,7 +14,7 @@ from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.academics.section import Section
 from backend.models.application_details import (
-    New_UTADetails,
+    NewUTAApplicationDetails,
     UserApplication,
 )
 from backend.models.user import User
@@ -39,7 +39,7 @@ class ApplicationService:
         """
         self._session = session
 
-    def list(self) -> list[New_UTADetails]:
+    def list(self) -> list[NewUTAApplicationDetails]:
         """Returns all TA applications.
 
         Returns:
@@ -108,7 +108,9 @@ class ApplicationService:
 
         return UserApplication(application=application)
 
-    def create_undergrad(self, application: New_UTADetails) -> New_UTADetails:
+    def create_undergrad(
+        self, application: NewUTAApplicationDetails
+    ) -> NewUTAApplicationDetails:
         """
         Creates an application based on the input object and adds it to the table.
         If the application's ID is unique to the table, a new entry is added.
@@ -155,8 +157,8 @@ class ApplicationService:
         return application_entity.to_details_model()
 
     def update_undergrad(
-        self, subject: User, application: New_UTADetails
-    ) -> New_UTADetails:
+        self, subject: User, application: NewUTAApplicationDetails
+    ) -> NewUTAApplicationDetails:
         """
         Updates an application for a user based on the application sent in.
         The application id must exist or an error is raised.

@@ -8,7 +8,7 @@ from backend.entities.user_entity import UserEntity
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application_details import (
     ApplicationDetails,
-    New_UTADetails,
+    NewUTAApplicationDetails,
     UTAApplicationDetails,
 )
 from backend.models.academics.section import Section
@@ -282,7 +282,7 @@ class NewUTAApplicationEntity(UTAApplicationEntity):
             additional_experience=self.additional_experience,
         )
 
-    def to_details_model(self) -> New_UTADetails:
+    def to_details_model(self) -> NewUTAApplicationDetails:
         """
         Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
 
@@ -291,7 +291,7 @@ class NewUTAApplicationEntity(UTAApplicationEntity):
         """
 
         parent_model = super().to_details_model().model_dump()
-        return New_UTADetails(
+        return NewUTAApplicationDetails(
             **parent_model,
             intro_video_url=self.intro_video_url,
             prior_experience=self.prior_experience,
@@ -299,7 +299,7 @@ class NewUTAApplicationEntity(UTAApplicationEntity):
             additional_experience=self.additional_experience,
         )
 
-    def update(self, model: New_UTADetails, sections: list[Section]) -> None:
+    def update(self, model: NewUTAApplicationDetails, sections: list[Section]) -> None:
         """
         Update an ApplicationEntity from a New_UTA model.
 
@@ -318,13 +318,13 @@ class NewUTAApplicationEntity(UTAApplicationEntity):
 
     def map_application_to_detail_model(
         self, section_preferences: Dict[int, SectionEntity]
-    ) -> New_UTADetails:
+    ) -> NewUTAApplicationDetails:
         """Returns the correctly mapped application for a specific user
 
         Returns:
             New_UTADetails: Object that represents an application for a new UTA
         """
-        return New_UTADetails(
+        return NewUTAApplicationDetails(
             id=self.id,
             user_id=self.user_id,
             academic_hours=self.academic_hours,
