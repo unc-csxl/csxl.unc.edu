@@ -44,3 +44,8 @@ td {
 .divider {
   margin-bottom: 1em;
 }
+
+.capacity-text {
+  font-size: 0.8em; /* Smaller text size than the default */
+  color: rgb(255, 255, 255); /* Lighter color to make it less prominent */
+}
