@@ -30,8 +30,8 @@ export class RoomReservationWidgetComponent {
   //- Reservations Map
   reservationsMap: Record<string, number[]> = {};
 
-  //- Room Information
-  roomInformation: RoomDetails[] = [];
+  //- Room Details
+  roomDetailsArray: RoomDetails[] = [];
 
   //- Select Button enabled
   selectButton: boolean = false;
@@ -67,7 +67,7 @@ export class RoomReservationWidgetComponent {
     );
 
     this.reservationTableService.getRoomInformation().subscribe((result) => {
-      this.roomInformation = result;
+      this.roomDetailsArray = result;
     });
   }
 
@@ -191,12 +191,21 @@ export class RoomReservationWidgetComponent {
   }
 
   openDialog(roomId: string) {
-    const room = this.roomInformation.find((r) => r.id === roomId);
+    const room = this.roomDetailsArray.find((r) => r.id === roomId);
     if (room) {
       this.dialog.open(RoomCapacityDialogComponent, {
         width: '250px',
-        data: { id: room.id, capacity: room.capacity }
+        data: {
+          id: room.id,
+          capacity: room.capacity,
+          description: room.description
+        }
       });
     }
+  }
+
+  getRoomCapacity(roomId: string): number | null {
+    const room = this.roomDetailsArray.find((r) => r.id === roomId);
+    return room ? room.capacity : null;
   }
 }
