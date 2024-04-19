@@ -179,7 +179,7 @@ comp110_closed_ticket = OfficeHoursTicket(
     state=TicketState.CLOSED,
     created_at=datetime.now() - timedelta(minutes=10),
     closed_at=datetime.now() - timedelta(minutes=1),
-    have_concerns=False,
+    have_concerns=True,
     caller_notes="Forgot to Return Function.",
 )
 

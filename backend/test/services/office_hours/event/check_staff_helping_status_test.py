@@ -21,7 +21,7 @@ from ..office_hours_data import fake_data_fixture as insert_order_5
 from .. import office_hours_data
 from ...academics.section_data import (
     user__comp110_uta_0,
-    user__comp110_uta_1,
+    user__comp110_gta,
     user__comp110_non_member,
 )
 
@@ -46,9 +46,9 @@ def test_check_staff_helping_status_not_currently_helping(
 ):
     """Test case to check the staff helping status when not currently helping."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_uta_1, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_gta, office_hours_data.comp_110_current_oh_event.id
     )
-    status = oh_event_svc.check_staff_helping_status(user__comp110_uta_1, oh_event)
+    status = oh_event_svc.check_staff_helping_status(user__comp110_gta, oh_event)
 
     assert isinstance(status, StaffHelpingStatus)
     assert status.ticket_id is None
@@ -59,7 +59,7 @@ def test_check_staff_helping_status_exception_if_non_member(
 ):
     """Test case to check an expection is raised if a non member."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_uta_1, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_gta, office_hours_data.comp_110_current_oh_event.id
     )
 
     with pytest.raises(PermissionError):

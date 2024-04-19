@@ -638,7 +638,7 @@ class OfficeHoursSectionService:
             RosterRole.INSTRUCTOR or RosterRole.GTA
         ):
             raise PermissionError(
-                f"Section Member is not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
+                f"Section Member Role is {subject_section_member_entity.member_role} and not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
             )
 
         # Select SectionMember to modify
@@ -647,7 +647,7 @@ class OfficeHoursSectionService:
         )
         section_member_entity = self._session.scalars(query).one_or_none()
         if section_member_entity is None:
-            raise ResourceNotFoundException(
+            raise PermissionError(
                 f"SectionMember with id {user_to_modify.id} not found."
             )
 

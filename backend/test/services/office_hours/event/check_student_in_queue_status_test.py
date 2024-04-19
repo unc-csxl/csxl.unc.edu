@@ -20,7 +20,7 @@ from ..office_hours_data import fake_data_fixture as insert_order_5
 # Import the fake model data in a namespace for test assertions
 from .. import office_hours_data
 from ...academics.section_data import (
-    user__comp110_uta_1,
+    user__comp110_gta,
     user__comp110_non_member,
     user__comp110_student_0,
     user__comp110_student_1,
@@ -64,7 +64,7 @@ def test_test_check_student_in_queue_status_exception_if_non_member(
 ):
     """Test case to check an expection is raised if a non member."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_uta_1, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_gta, office_hours_data.comp_110_current_oh_event.id
     )
 
     with pytest.raises(PermissionError):

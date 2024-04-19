@@ -86,6 +86,7 @@ student = User(
     pronouns="They / Them / Theirs",
 )
 
+
 users = [root, ambassador, user, instructor, uta, student]
 
 roles_users = {
