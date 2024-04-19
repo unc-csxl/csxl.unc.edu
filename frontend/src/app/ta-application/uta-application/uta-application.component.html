@@ -43,10 +43,12 @@
           <input
             matInput
             placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            formControlName="intro_video"
+            formControlName="intro_video_url"
             required />
           <mat-error
-            *ngIf="firstFormGroup.get('intro_video')?.errors?.['invalidURL']">
+            *ngIf="
+              firstFormGroup.get('intro_video_url')?.errors?.['invalidURL']
+            ">
             Please enter a valid Youtube Link
           </mat-error>
         </mat-form-field>
