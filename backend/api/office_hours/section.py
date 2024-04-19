@@ -438,29 +438,6 @@ def update_oh_section_member_role(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@api.put(
-    "/{oh_section_id}/update-role", response_model=SectionMember, tags=["Office Hours"]
-)
-def update_oh_section_member_role(
-    user_to_modify: SectionMemberPartial,
-    oh_section_id: int,
-    subject: User = Depends(registered_user),
-    oh_section_service: OfficeHoursSectionService = Depends(),
-) -> SectionMember:
-    """
-    Updates a SectionMember in an OH Section to the database
-
-    Returns:
-        SectionMember: SectionMember updated
-    """
-    try:
-        return oh_section_service.update_oh_section_member_role(
-            subject, user_to_modify, oh_section_id
-        )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
-
 # @api.put(
 #     "/{oh_section_id}", response_model=OfficeHoursSectionDetails, tags=["Office Hours"]
 # )
