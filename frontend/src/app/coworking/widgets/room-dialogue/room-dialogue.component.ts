@@ -11,9 +11,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
         (click)="onCloseClick()">
         <mat-icon>close</mat-icon>
       </button>
-      <h1 class="dialog-title" mat-dialog-title>Room Capacity</h1>
+      <h1 class="dialog-title" mat-dialog-title>Room Information</h1>
       <div class="dialog-content" mat-dialog-content>
-        <p>Room ID: {{ data.id }}</p>
+        <p>Room: {{ data.id }}</p>
         <p>Capacity: {{ data.capacity }}</p>
         <p>Description: {{ data.description }}</p>
       </div>
@@ -23,7 +23,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     `
       .dialog-container {
         position: relative;
-        padding: 24px;
+        padding: 20px;
         box-sizing: border-box;
         font-family: 'Arial', sans-serif;
         background-color: rgb(42, 42, 42);
@@ -36,6 +36,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
         right: 10px;
         cursor: pointer;
         z-index: 1000;
+        transform: scale(0.8);
       }
       .dialog-title {
         margin-bottom: 16px;
