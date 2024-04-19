@@ -17,17 +17,15 @@ import {
   take,
   tap
 } from 'rxjs';
-import { Application } from '../admin/applications/admin-application.model';
-import {
-  RxApplications,
-  RxApplication
-} from '../admin/applications/rx-applications';
+
 import { Profile, ProfileService } from '../profile/profile.service';
 import { Course, Section } from '../academics/academics.models';
 import {
   RxCourseList,
   RxSectionList
 } from '../academics/academics-admin/rx-academics-admin';
+import { Application } from './application.model';
+import { RxApplication, RxApplications } from './rx-applications';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationsService {
@@ -47,17 +45,11 @@ export class ApplicationsService {
   private sections: RxSectionList = new RxSectionList();
   public sections$: Observable<Section[]> = this.sections.value$;
 
-  private profile: Profile | undefined;
-  private profileSubscription!: Subscription;
-
   constructor(
     protected http: HttpClient,
     protected profileSvc: ProfileService
   ) {
     this.initializeApplicationState();
-    this.profileSubscription = this.profileSvc.profile$.subscribe(
-      (profile) => (this.profile = profile)
-    );
   }
 
   initializeApplicationState(): void {

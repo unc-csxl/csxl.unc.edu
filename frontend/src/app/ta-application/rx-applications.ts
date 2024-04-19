@@ -1,5 +1,5 @@
 import { RxObject } from 'src/app/rx-object';
-import { Application } from './admin-application.model';
+import { Application } from './application.model';
 
 export class RxApplications extends RxObject<Application[]> {
   constructor() {

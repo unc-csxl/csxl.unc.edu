@@ -7,7 +7,6 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
-import { Application } from 'src/app/admin/applications/admin-application.model';
 import { ApplicationsService } from '../ta-application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,6 +27,7 @@ import { Section } from 'src/app/academics/academics.models';
 import { Profile } from 'src/app/profile/profile.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { sectionsResolver } from 'src/app/academics/academics.resolver';
+import { Application } from '../application.model';
 
 interface OptionSelect {
   value: string;
