@@ -117,6 +117,13 @@ export class AcademicsService {
     return this.http.get<Section[]>(`/api/academics/section/term/${term.id}`);
   }
 
+  /** Returns all section entries by a term.
+   * @returns {Observable<Section[]>}
+   */
+  getSectionsByTermF23(): Observable<Section[]> {
+    return this.http.get<Section[]>(`/api/academics/section/term/F23`);
+  }
+
   /** Returns one section from the backend database.
    * @param id ID of the section to look up
    * @returns {Observable<Section>}

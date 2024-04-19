@@ -16,6 +16,7 @@ import {
   Subject,
   filter,
   map,
+  of,
   startWith,
   switchMap,
   take,
@@ -26,7 +27,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Section } from 'src/app/academics/academics.models';
 import { Profile } from 'src/app/profile/profile.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { sectionResolver } from 'src/app/academics/academics.resolver';
+import { sectionsResolver } from 'src/app/academics/academics.resolver';
 
 interface OptionSelect {
   value: string;
@@ -43,7 +44,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     path: 'uta-application',
     component: UndergradApplicationComponent,
     resolve: {
-      sections: sectionResolver,
+      sections: sectionsResolver,
       profile: profileResolver
     }
   };
@@ -145,7 +146,6 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   preferenceCtrl = new FormControl('');
   filteredPreferences: Observable<Section[]>;
-  allSections$: Observable<Section[]>;
   sections: Section[] = [];
   profile: Profile;
   selectedSections: Section[] = [];
@@ -164,6 +164,13 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     };
     this.sections = data.sections;
     this.profile = data.profile;
+
+    console.log('Sections loaded via raw: ', data);
+
+    this.route.data.subscribe((data) => {
+      console.log('Sections loaded via subscribe: ', data['sections']);
+      this.sections = data['sections'];
+    });
 
     this.firstFormGroup = this.formBuilder.group({
       intro_video: [
@@ -191,9 +198,6 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
       preferred_sections: this.formBuilder.array([]),
       comp_227: ['', Validators.required]
     });
-
-    this.allSections$ = applicationService.sections$;
-    applicationService.getSections();
 
     this.filteredPreferences = this.preferenceCtrl.valueChanges.pipe(
       startWith(''),
@@ -374,15 +378,15 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   }
 
   filterSections(value: string): Observable<Section[]> {
+    if (!this.sections) {
+      return of([]);
+    }
     const filterValue = value.toLowerCase();
-    return this.applicationService.sections$.pipe(
-      map((sections) =>
-        sections.filter(
-          (section) =>
-            section.course?.subject_code.toLowerCase().includes(filterValue)
-        )
-      )
+    const filteredSections = this.sections.filter(
+      (section) =>
+        section.course?.subject_code.toLowerCase().includes(filterValue)
     );
+    return of(filteredSections);
   }
 
   addPreferences(event: MatChipInputEvent): void {
@@ -391,19 +395,11 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
 
     if ((value || '').trim()) {
       const sectionId = Number(value.trim());
+      const section = this.sections.find((section) => section.id === sectionId);
 
-      this.applicationService.sections$
-        .pipe(
-          map((sections) =>
-            sections.find((section) => section.id === sectionId)
-          ),
-          take(1)
-        )
-        .subscribe((section) => {
-          if (section && !this.selectedSections.includes(section)) {
-            this.selectedSections.push(section);
-          }
-        });
+      if (section && !this.selectedSections.includes(section)) {
+        this.selectedSections.push(section);
+      }
     }
 
     if (input) {
