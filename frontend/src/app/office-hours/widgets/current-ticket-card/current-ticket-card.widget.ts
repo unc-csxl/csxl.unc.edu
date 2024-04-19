@@ -11,7 +11,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   OfficeHoursEvent,
   OfficeHoursEventType,
-  TicketDetails
+  Ticket
 } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
 import { Router } from '@angular/router';
