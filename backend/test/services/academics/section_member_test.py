@@ -2,6 +2,8 @@
 
 import pytest
 
+from backend.test.services.office_hours import office_hours_data
+
 from ....models.academics.section_member import SectionMember
 from ....models.roster_role import RosterRole
 from ....services.academics.section_member import SectionMemberService
@@ -44,37 +46,38 @@ def test_get_section_member_by_id_exception_if_invalid_id(
         pytest.fail()
 
 
-def test_get_section_member_by_user_id_and_section_id_instructor(
+def test_get_section_member_by_user_id_and_oh_section_id_instructor(
     section_member_svc: SectionMemberService,
 ):
     """Test case to retrieve a section member by user ID and section ID (instructor)."""
     section_member = section_member_svc.get_section_member_by_user_id_and_oh_section_id(
-        section_data.user__comp110_instructor, section_data.comp_101_001.id
+        section_data.user__comp110_instructor, office_hours_data.comp_110_oh_section.id
     )
 
     assert isinstance(section_member, SectionMember)
     assert section_member.id == section_data.comp110_instructor.id
 
 
-def test_get_section_member_by_user_id_and_section_id_student(
+def test_get_section_member_by_user_id_and_oh_section_id_student(
     section_member_svc: SectionMemberService,
 ):
     """Test case to retrieve a section member by user ID and section ID (student)."""
     section_member = section_member_svc.get_section_member_by_user_id_and_oh_section_id(
-        section_data.user__comp110_student_0, section_data.comp_101_001.id
+        section_data.user__comp110_student_0, office_hours_data.comp_110_oh_section.id
     )
 
     assert isinstance(section_member, SectionMember)
     assert section_member.id == section_data.comp110_student_0.id
 
 
-def test_get_section_member_by_user_id_and_section_id_exception_not_found(
+def test_get_section_member_by_user_id_and_oh_section_id_exception_not_found(
     section_member_svc: SectionMemberService,
 ):
     """Test case to check if retrieving a section member for a non-member raises an exception."""
     with pytest.raises(ResourceNotFoundException):
         section_member_svc.get_section_member_by_user_id_and_oh_section_id(
-            section_data.user__comp110_non_member, section_data.comp_101_001.id
+            section_data.user__comp110_non_member,
+            office_hours_data.comp_110_oh_section.id,
         )
 
 
