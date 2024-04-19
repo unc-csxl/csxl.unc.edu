@@ -212,11 +212,8 @@ export class OfficeHoursService {
   }
 
   // id
-  cancelTicket(oh_ticket: Ticket): Observable<TicketDetails> {
-    return this.http.put<TicketDetails>(
-      '/api/office-hours/ticket/cancel',
-      oh_ticket
-    );
+  cancelTicket(oh_ticket: Ticket): Observable<Ticket> {
+    return this.http.put<Ticket>('/api/office-hours/ticket/cancel', oh_ticket);
   }
 
   // id, have_concerns, caller_notes
@@ -227,17 +224,12 @@ export class OfficeHoursService {
     );
   }
 
-  getTicket(oh_ticket_id: number): Observable<TicketDetails> {
-    return this.http.get<TicketDetails>(
-      '/api/office-hours/ticket/' + oh_ticket_id
-    );
+  getTicket(oh_ticket_id: number): Observable<Ticket> {
+    return this.http.get<Ticket>('/api/office-hours/ticket/' + oh_ticket_id);
   }
 
-  // TODO: change to Ticket once backend is refactored to not expose concerns
-  getUserSectionCreatedTickets(
-    oh_section_id: number
-  ): Observable<TicketDetails[]> {
-    return this.http.get<TicketDetails[]>(
+  getUserSectionCreatedTickets(oh_section_id: number): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>(
       'api/office-hours/section/' + oh_section_id + '/user/created_tickets'
     );
   }

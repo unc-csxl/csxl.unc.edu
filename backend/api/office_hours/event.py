@@ -50,7 +50,10 @@ def new_oh_event(
     Returns:
         OfficeHoursEvent: OH Event created
     """
-    return oh_event_service.create(subject, oh_event)
+    try:
+        return oh_event_service.create(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.put("", response_model=OfficeHoursEvent, tags=["Office Hours"])
@@ -101,7 +104,10 @@ def get_oh_event_by_id(
     Returns:
         OfficeHoursEvent: The OH event with the given OH event id
     """
-    return oh_event_service.get_event_by_id(subject, oh_event_id)
+    try:
+        return oh_event_service.get_event_by_id(subject, oh_event_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -120,11 +126,13 @@ def get_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets within the given event
     """
-    oh_event: OfficeHoursEventDetails = oh_event_service.get_event_by_id(
-        subject, oh_event_id
-    )
-    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(subject, oh_event_id)
-    return oh_event_service.get_event_tickets(subject, oh_event)
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.get_event_tickets(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -143,8 +151,15 @@ def get_queued_and_called_oh_tickets_by_event(
     Returns:
         list[OfficeHoursTicketDetails]: OH tickets fitting the criteria within the given event
     """
-    oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(subject, oh_event_id)
-    return oh_event_service.get_queued_and_called_tickets_by_event(subject, oh_event)
+    try:
+        oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(
+            subject, oh_event_id
+        )
+        return oh_event_service.get_queued_and_called_tickets_by_event(
+            subject, oh_event
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -184,10 +199,10 @@ def get_queued_and_called_oh_tickets_by_event_for_student(
     oh_event_service: OfficeHoursEventService = Depends(),
 ) -> StudentOfficeHoursEventStatus:
     """
-    Gets Queued and Called Ticket Status Count For Given Event.
+    Gets a student's position in the queue.
 
     Returns:
-        (OfficeHoursEventStatus): Model that contains queued and called ticket count
+        (StudentOfficeHoursEventStatus): Model that contains student's position in the queue
     """
     try:
         oh_event: OfficeHoursEvent = oh_event_service.get_event_by_id(

@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   OfficeHoursEvent,
   OfficeHoursSection,
-  TicketDetails
+  Ticket
 } from '../office-hours.models';
 import { Subscription, interval } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -40,7 +40,7 @@ export class CurrentTicketPageComponent implements OnInit {
   ticketId: number;
   section: OfficeHoursSection | null = null;
   event!: OfficeHoursEvent;
-  ticket!: TicketDetails;
+  ticket!: Ticket;
   refresh: Subscription | undefined;
 
   constructor(
