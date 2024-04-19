@@ -9,7 +9,6 @@ from typing import List
 from backend.models.application_details import (
     UTAApplicationDetails,
     NewUTAApplicationDetails,
-    UserApplication,
 )
 from backend.services.application import ApplicationService
 
@@ -47,11 +46,11 @@ def get_applications(
     return application_service.list()
 
 
-@api.get("/user", response_model=UserApplication | None, tags=["Applications"])
+@api.get("/user", response_model=NewUTAApplicationDetails | None, tags=["Applications"])
 def get_applications_user(
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> UserApplication | None:
+) -> NewUTAApplicationDetails | None:
     """
     Get all applications
 

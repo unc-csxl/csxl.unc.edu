@@ -16,7 +16,6 @@ from backend.models.academics.section import Section
 from backend.models.application_details import (
     UTAApplicationDetails,
     NewUTAApplicationDetails,
-    UserApplication,
 )
 from backend.models.user import User
 
@@ -50,7 +49,7 @@ class ApplicationService:
 
         return [entity.to_details_model() for entity in entities]
 
-    def get_application(self, subject: User) -> UserApplication:
+    def get_application(self, subject: User) -> NewUTAApplicationDetails:
         """Returns application(s) for a specific user
 
         Returns:
@@ -89,7 +88,7 @@ class ApplicationService:
 
         application = application_entity.map_application_to_detail_model(section_dict)
 
-        return UserApplication(application=application)
+        return NewUTAApplicationDetails(application=application)
 
     def create_uta_application(
         self, application: NewUTAApplicationDetails
