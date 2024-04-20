@@ -147,7 +147,8 @@ export class RoomReservationWidgetComponent {
   draftReservation() {
     const result = this.reservationTableService.draftReservation(
       this.reservationsMap,
-      this.operationStart
+      this.operationStart,
+      this.selectedUsers
     );
     result.subscribe(
       (reservation: Reservation) => {

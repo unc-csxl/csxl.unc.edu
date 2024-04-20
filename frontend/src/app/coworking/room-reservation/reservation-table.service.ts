@@ -6,7 +6,15 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  forkJoin,
+  map,
+  switchMap,
+  throwError
+} from 'rxjs';
 import {
   Reservation,
   ReservationMapDetails,
@@ -14,7 +22,7 @@ import {
   TableCell,
   TablePropertyMap
 } from '../coworking.models';
-import { ProfileService } from '../../profile/profile.service';
+import { ProfileService, PublicProfile } from '../../profile/profile.service';
 import { Profile } from '../../models.module';
 import { RoomReservationWidgetComponent } from '../widgets/room-reservation-table/room-reservation-table.widget';
 
@@ -87,17 +95,26 @@ export class ReservationTableService {
 
   draftReservation(
     reservationsMap: Record<string, number[]>,
-    operationStart: Date
+    operationStart: Date,
+    users: PublicProfile[]
   ): Observable<Reservation> {
-    const selectedRoom: { room: string; availability: number[] } | null =
-      this._findSelectedRoom(reservationsMap);
+    return this.publicToProfile(users).pipe(
+      switchMap((detailedUsers: Profile[]) => {
+        const selectedRoom = this._findSelectedRoom(reservationsMap);
+        if (!selectedRoom) {
+          return throwError(() => new Error('No room selected'));
+        }
 
-    if (!selectedRoom) throw new Error('No room selected');
-    const reservationRequest: ReservationRequest = this._makeReservationRequest(
-      selectedRoom!,
-      operationStart
+        const reservationRequest: ReservationRequest =
+          this._makeReservationRequest(
+            selectedRoom,
+            operationStart,
+            detailedUsers
+          );
+
+        return this.makeDraftReservation(reservationRequest);
+      })
     );
-    return this.makeDraftReservation(reservationRequest);
   }
 
   //TODO Draft Reservation method
@@ -110,6 +127,18 @@ export class ReservationTableService {
     );
   }
 
+  publicToProfile(users: PublicProfile[]): Observable<Profile[]> {
+    //Converts publicProfiles to Profiles to send into backend
+    const userRequests = users.map((user) =>
+      this.http.get<Profile>(`/api/profile/users/${user.id}`)
+    );
+
+    return forkJoin(userRequests).pipe(
+      map((userResponses) => {
+        return userResponses;
+      })
+    );
+  }
   /**
    * Deselects a cell in the reservations map and updates selected cells.
    *
@@ -196,7 +225,8 @@ export class ReservationTableService {
 
   _makeReservationRequest(
     selectedRoom: { room: string; availability: number[] },
-    operationStart: Date
+    operationStart: Date,
+    users: Profile[]
   ): ReservationRequest {
     const minIndex = selectedRoom?.availability.indexOf(
       ReservationTableService.CellEnum.RESERVING
@@ -214,7 +244,7 @@ export class ReservationTableService {
     );
 
     return {
-      users: [this.profile!],
+      users: users,
       seats: [],
       room: { id: selectedRoom!.room },
       start: startDateTime,

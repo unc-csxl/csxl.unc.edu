@@ -7,7 +7,7 @@ from .authentication import authenticated_pid
 from ..services import UserService
 from ..models import UserDetails, User, UnregisteredUser, ProfileForm
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Kris Jordan", "Matt Vu"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -38,6 +38,24 @@ def read_profile(
         return user
     else:
         return UnregisteredUser(pid=pid, onyen=onyen)
+
+
+@api.get(
+    "/users/{user_id}", response_model=UserDetails | UnregisteredUser, tags=["Profile"]
+)
+def get_profile_by_id(
+    user_id: int,
+    user_svc: UserService = Depends(),
+):
+    """
+    Retrieve a user's profile by ID.
+    If the user does not exist, return a placeholder for unregistered user
+    """
+    user = user_svc.get_by_id(user_id)
+    if user:
+        return user
+    else:
+        return UnregisteredUser(id=user_id)
 
 
 @api.put("", response_model=UserDetails, tags=["Profile"])
