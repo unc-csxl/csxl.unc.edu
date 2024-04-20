@@ -1,6 +1,6 @@
 /**
- * @author John Schachte
- * @copyright 2023
+ * @author John Schachte, Matt Vu
+ * @copyright 2024
  * @license MIT
  */
 
@@ -90,6 +90,7 @@ export class CoworkingReservationCard implements OnInit {
         console.error(error.message);
       }
     });
+    console.log(this.reservation);
   }
 
   checkout() {
@@ -187,6 +188,8 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   getUserNames(users: any[]): string {
-    return users.map((user) => user.name).join(', ');
+    return users
+      .map((user) => user.first_name + ' ' + user.last_name)
+      .join(', ');
   }
 }

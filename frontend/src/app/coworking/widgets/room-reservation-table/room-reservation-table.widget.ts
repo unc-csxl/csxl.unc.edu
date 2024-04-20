@@ -1,6 +1,6 @@
 /**
- * @author John Schachte, Aarjav Jain, Nick Wherthey
- * @copyright 2023
+ * @author John Schachte, Aarjav Jain, Nick Wherthey, Matt Vu
+ * @copyright 2024
  * @license MIT
  */
 
