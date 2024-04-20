@@ -1,0 +1,33 @@
+<mat-card appearance="outlined">
+  <div class="header-row">
+    <div class="title">
+      <mat-card-title>Trailing Week Data</mat-card-title>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="section-data-widget">
+    <div *ngIf="data">
+      <ul>
+        <li>
+          <strong>Tickets:</strong>
+          {{ data.number_of_tickets }}
+        </li>
+        <li>
+          <strong>Students:</strong>
+          {{ data.number_of_students }}
+        </li>
+        <li>
+          <strong>Average Wait Time:</strong>
+          {{ data.average_wait_time }} +/-
+          {{ data.standard_deviation_wait_time }} minutes
+        </li>
+        <li>
+          <strong>Average Ticket Duration:</strong>
+          {{ data.average_ticket_duration }} +/-
+          {{ data.standard_deviation_ticket_duration }} minutes
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="!data">No data available.</div>
+  </div>
+</mat-card>

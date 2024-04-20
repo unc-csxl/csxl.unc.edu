@@ -40,6 +40,7 @@ import { PeopleTableComponent } from './people-table/people-table.component';
 import { DeleteEventFormComponent } from './delete-event-form/delete-event-form.component';
 import { DeleteEventDialog } from './widgets/delete-event-dialog/delete-event-dialog.widget';
 import { DeleteTicketDialog } from './widgets/delete-ticket-dialog/delete-ticket-dialog.widget';
+import { SectionData } from './widgets/section-data/section-data-widget';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { DeleteTicketDialog } from './widgets/delete-ticket-dialog/delete-ticket
     PeopleTableComponent,
     DeleteEventFormComponent,
     DeleteEventDialog,
-    DeleteTicketDialog
+    DeleteTicketDialog,
+    SectionData
   ],
   imports: [
     CommonModule,
