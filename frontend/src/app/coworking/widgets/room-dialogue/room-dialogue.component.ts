@@ -26,7 +26,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
         padding: 20px;
         box-sizing: border-box;
         font-family: 'Arial', sans-serif;
-        background-color: rgb(42, 42, 42);
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
@@ -40,12 +39,21 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       }
       .dialog-title {
         margin-bottom: 16px;
-        color: rgb(255, 255, 255);
         font-size: 20px;
       }
       .dialog-content {
-        color: rgb(255, 255, 255);
         font-size: 16px;
+      }
+
+      /* Dark mode styles */
+      @media (prefers-color-scheme: dark) {
+        .dialog-container {
+          color: #fff; /* Light text color for dark mode */
+        }
+        .dialog-title,
+        .dialog-content {
+          color: inherit; /* Ensures text elements use the container's color */
+        }
       }
     `
   ]
