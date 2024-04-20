@@ -40,6 +40,20 @@
 
   <mat-card-content>
     <div #Details>
+      <ng-container *ngIf="reservation.room">
+        <!-- Conditionally display this section if there is a room -->
+        <mat-divider></mat-divider>
+        <h3>
+          <label>Who</label>
+          <span *ngIf="reservation.users && reservation.users.length > 0">
+            {{ getUserNames(reservation.users) }}
+            <!-- Displaying names of users -->
+          </span>
+        </h3>
+      </ng-container>
+
+      <mat-divider></mat-divider>
+
       <h3>
         <label>When</label>
         <strong>{{ reservation.start | date: 'shortTime' }}</strong> to

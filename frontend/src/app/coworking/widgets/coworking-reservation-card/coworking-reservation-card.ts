@@ -185,4 +185,8 @@ export class CoworkingReservationCard implements OnInit {
       map((isCancelExpanded) => isCancelExpanded || this.checkCheckinAllowed())
     );
   }
+
+  getUserNames(users: any[]): string {
+    return users.map((user) => user.name).join(', ');
+  }
 }
