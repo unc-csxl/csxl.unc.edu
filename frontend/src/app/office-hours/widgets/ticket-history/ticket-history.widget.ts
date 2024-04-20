@@ -24,6 +24,7 @@ export class TicketHistoryWidget implements OnInit {
   @Input() sectionId!: number;
   public createdTickets: Ticket[] = [];
   public calledTickets: TicketDetails[] = [];
+  public allTickets: TicketDetails[] = [];
   public displayedStudentColumns: string[] = [
     'date',
     'event-type',
@@ -42,6 +43,7 @@ export class TicketHistoryWidget implements OnInit {
 
   ngOnInit(): void {
     this.getUserTickets();
+    // Add check for role here
   }
 
   getUserTickets() {
@@ -57,7 +59,23 @@ export class TicketHistoryWidget implements OnInit {
         this.calledTickets = tickets;
         console.log(tickets);
       });
+    this.officeHoursService
+      .getAllSectionTickets(this.sectionId)
+      .subscribe((tickets) => {
+        this.allTickets = tickets;
+        console.log(tickets);
+      });
   }
+
+  // TODO: Add a method similar to the below to check if the user is a GTA or instructor
+  // in the given section. Add this method to the ngOnInit, and populate the
+  // allTickets field if the user is one of those roles
+  /* Checks instructorship by seeing if user has any Instructor Courses */
+  // checkInstructorship() {
+  //   this.academicsService.checkInstructorship().subscribe((section_members) => {
+  //     this.instructorCourses = section_members;
+  //   });
+  // }
 
   formatEventType(typeNum: number) {
     if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {

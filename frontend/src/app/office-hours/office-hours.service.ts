@@ -242,6 +242,12 @@ export class OfficeHoursService {
     );
   }
 
+  getAllSectionTickets(oh_section_id: number): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/tickets'
+    );
+  }
+
   getQueuedAndCalledTicketCount(
     oh_event_id: number
   ): Observable<OfficeHoursEventStatus> {
