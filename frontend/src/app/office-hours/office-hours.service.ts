@@ -271,6 +271,14 @@ export class OfficeHoursService {
     );
   }
 
+  getSectionTicketsWithConcern(
+    oh_section_id: number
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/data/concerns'
+    );
+  }
+
   getSectionMembers(oh_section_id: number): Observable<SectionMember[]> {
     return this.http.get<SectionMember[]>(
       'api/office-hours/section/' + oh_section_id + '/people'

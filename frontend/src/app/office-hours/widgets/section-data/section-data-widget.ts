@@ -9,7 +9,10 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../../office-hours.service';
-import { OfficeHoursSectionTrailingWeekData } from '../../office-hours.models';
+import {
+  OfficeHoursEventType,
+  OfficeHoursSectionTrailingWeekData
+} from '../../office-hours.models';
 import { RosterRole } from 'src/app/academics/academics.models';
 
 @Component({

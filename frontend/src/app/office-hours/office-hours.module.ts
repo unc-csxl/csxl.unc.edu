@@ -41,6 +41,7 @@ import { DeleteEventFormComponent } from './delete-event-form/delete-event-form.
 import { DeleteEventDialog } from './widgets/delete-event-dialog/delete-event-dialog.widget';
 import { DeleteTicketDialog } from './widgets/delete-ticket-dialog/delete-ticket-dialog.widget';
 import { SectionData } from './widgets/section-data/section-data-widget';
+import { ConcernTicketsWidget } from './widgets/concern-tickets/concern-tickets-widget';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { SectionData } from './widgets/section-data/section-data-widget';
     DeleteEventFormComponent,
     DeleteEventDialog,
     DeleteTicketDialog,
-    SectionData
+    SectionData,
+    ConcernTicketsWidget
   ],
   imports: [
     CommonModule,
