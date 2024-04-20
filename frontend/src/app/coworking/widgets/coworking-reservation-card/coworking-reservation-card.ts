@@ -11,9 +11,6 @@ import { Router } from '@angular/router';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
-import { MatDialog } from '@angular/material/dialog';
-import { Profile } from 'src/app/models.module';
-import { GroupReservation } from '../group-reservation-card/group-reservation-card.widget';
 
 @Component({
   selector: 'coworking-reservation-card',
@@ -34,8 +31,7 @@ export class CoworkingReservationCard implements OnInit {
     public router: Router,
     public reservationService: RoomReservationService,
     protected snackBar: MatSnackBar,
-    public coworkingService: CoworkingService,
-    public dialog: MatDialog
+    public coworkingService: CoworkingService
   ) {
     this.isCancelExpanded$ =
       this.coworkingService.isCancelExpanded.asObservable();
@@ -188,27 +184,5 @@ export class CoworkingReservationCard implements OnInit {
     return this.isCancelExpanded$.pipe(
       map((isCancelExpanded) => isCancelExpanded || this.checkCheckinAllowed())
     );
-  }
-
-  openMemberSelectionDialog(): void {
-    const dialogRef = this.dialog.open(GroupReservation, {
-      autoFocus: 'dialog',
-      width: '70vw',
-      height: '80vh'
-    });
-    dialogRef.afterClosed().subscribe((selectedUsers) => {
-      if (selectedUsers) {
-        this.reservation.users = selectedUsers;
-        this.updateReservationsList.emit();
-        console.log(this.reservation);
-      }
-    });
-  }
-
-  getUserNames(users: Profile[]): string {
-    // Concatenate the first name and last name for each user, then join with commas
-    return users
-      .map((user) => `${user.first_name} ${user.last_name}`)
-      .join(', ');
   }
 }

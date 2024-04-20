@@ -32,6 +32,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AmbassadorXlListComponent } from './ambassador-home/ambassador-xl/list/ambassador-xl-list.component';
 import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/list/ambassador-room-list.component';
 import { GroupReservation } from './widgets/group-reservation-card/group-reservation-card.widget';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,8 @@ import { GroupReservation } from './widgets/group-reservation-card/group-reserva
     MatCardModule,
     MatDividerModule,
     MatListModule,
+    MatDialogModule,
+    MatChipsModule,
     MatExpansionModule,
     MatButtonModule,
     MatTableModule,

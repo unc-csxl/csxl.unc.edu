@@ -4,13 +4,17 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { Reservation, TableCell } from 'src/app/coworking/coworking.models';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GroupReservation } from '../group-reservation-card/group-reservation-card.widget';
+import { Profile } from 'src/app/models.module';
+import { MatDialog } from '@angular/material/dialog';
+import { PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
   selector: 'room-reservation-table',
@@ -38,13 +42,19 @@ export class RoomReservationWidgetComponent {
   snackBarOptions: Object = {
     duration: 8000
   };
+  dialog: MatDialog;
+  reservation: any;
+  selectedUsers: PublicProfile[] = [];
+  updateReservationsList: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     protected reservationTableService: ReservationTableService,
     private router: Router,
     private roomReservationService: RoomReservationService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    dialog: MatDialog
   ) {
+    this.dialog = dialog;
     this.reservationTableService.setSelectedDate(
       this.reservationTableService.setMinDate().toDateString()
     );
@@ -173,5 +183,31 @@ export class RoomReservationWidgetComponent {
   public setSlotAvailable(key: string, index: number) {
     this.reservationsMap[key][index] =
       ReservationTableService.CellEnum.AVAILABLE;
+  }
+
+  openMemberSelectionDialog(): void {
+    const dialogRef = this.dialog.open(GroupReservation, {
+      autoFocus: 'dialog',
+      width: '500px',
+      height: '280px',
+      panelClass: 'custom-dialog-container',
+      data: { selectedUsers: this.selectedUsers }
+    });
+
+    dialogRef.afterClosed().subscribe((selectedUsers: PublicProfile[]) => {
+      if (selectedUsers) {
+        this.selectedUsers = selectedUsers;
+        console.log('Updated selected users:', this.selectedUsers);
+        if (this.reservation) {
+          this.reservation.users = selectedUsers;
+          this.updateReservationsList.emit(this.reservation);
+        }
+      }
+    });
+  }
+  getUserNames(users: Profile[]): string {
+    return users
+      .map((user) => `${user.first_name} ${user.last_name}`)
+      .join(', ');
   }
 }

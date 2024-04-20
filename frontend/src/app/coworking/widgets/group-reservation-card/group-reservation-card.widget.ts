@@ -6,7 +6,11 @@
  * @license MIT
  */
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef
+} from '@angular/material/dialog';
 import { Profile, PublicProfile } from 'src/app/profile/profile.service';
 import { ProfileService } from 'src/app/profile/profile.service';
 import { Subscription } from 'rxjs';
@@ -23,8 +27,10 @@ export class GroupReservation {
 
   constructor(
     public dialogRef: MatDialogRef<GroupReservation>,
-    public profileService: ProfileService
+    public profileService: ProfileService,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+    this.selectedUsers = data.selectedUsers || [];
     this.subscription = this.profileService.profile$.subscribe((profile) => {
       if (profile) {
         this.loggedInUser = profile;
@@ -58,6 +64,14 @@ export class GroupReservation {
   addUsers() {
     this.dialogRef.close(this.selectedUsers);
     console.log(this.selectedUsers);
+  }
+
+  removeUser(user: PublicProfile): void {
+    this.selectedUsers = this.selectedUsers.filter((u) => u.id !== user.id);
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close();
   }
 
   private convertToPublicProfile(profile: Profile): PublicProfile {

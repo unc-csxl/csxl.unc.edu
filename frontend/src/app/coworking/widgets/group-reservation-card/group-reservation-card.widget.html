@@ -1,22 +1,59 @@
 <!-- group-reservation-card.widget.html -->
 <div style="padding: 8px; box-sizing: border-box">
-  <h2 style="margin: 8px 8px 8px 8px">Add Users to Reservation</h2>
+  <h2 style="margin: 8px">Add Users to Reservation</h2>
   <user-lookup
     style="display: block; margin: 0 8px; box-sizing: border-box"
     [label]="'Search for users'"
     (usersChanged)="onUsersChanged($event)">
   </user-lookup>
-  <button
-    mat-button
-    color="primary"
+
+  <div style="margin: 8px">
+    <mat-chip-listbox>
+      <mat-chip
+        *ngFor="let user of selectedUsers"
+        [removable]="user.id !== loggedInUser?.id"
+        (removed)="removeUser(user)">
+        {{ user.first_name }} {{ user.last_name }}
+        <mat-icon matChipRemove *ngIf="user.id !== loggedInUser?.id"
+          >cancel</mat-icon
+        >
+      </mat-chip>
+    </mat-chip-listbox>
+  </div>
+
+  <!-- Button container -->
+  <div
     style="
-      background-color: rgb(61, 129, 184);
-      color: white;
-      display: block;
-      margin: 12px 8px 45px 8px;
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 8px 45px;
       box-sizing: border-box;
-    "
-    (click)="addUsers()">
-    Add Users
-  </button>
+    ">
+    <!-- Add Users Button -->
+    <button
+      mat-button
+      color="primary"
+      style="
+        flex: 1;
+        margin-right: 4px;
+        background-color: rgb(61, 129, 184);
+        color: white;
+      "
+      (click)="addUsers()">
+      Add Users
+    </button>
+
+    <!-- Cancel Button -->
+    <button
+      mat-button
+      style="
+        flex: 1;
+        margin-left: 4px;
+        background-color: rgb(204, 204, 204);
+        color: black;
+      "
+      (click)="closeDialog()">
+      Cancel
+    </button>
+  </div>
 </div>
