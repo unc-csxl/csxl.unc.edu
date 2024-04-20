@@ -348,11 +348,13 @@ class ReservationService:
                     start_idx = max(current_time_idx, start_idx)
 
                 for idx in range(start_idx, end_idx):
-                    # Currently only assuming single user.
-                    # TODO: If making group reservations, need to change this.
-                    if reservation.users[0].id == subject.id:
-                        time_slots_for_room[idx] = RoomState.SUBJECT_RESERVED.value
-                    else:
+                    flag = True
+                    for user in reservation.users:
+                        if user.id == subject.id:
+                            time_slots_for_room[idx] = RoomState.SUBJECT_RESERVED.value
+                            flag = True
+                            break
+                    if flag:
                         if time_slots_for_room[idx] != RoomState.SUBJECT_RESERVED.value:
                             time_slots_for_room[idx] = RoomState.RESERVED.value
             reserved_date_map[room.id] = time_slots_for_room
@@ -759,8 +761,6 @@ class ReservationService:
         # For the time being, reservations are limited to one user. As soon as
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
-        if len(request.users) > 1:
-            raise NotImplementedError("Multi-user reservations not yet supproted.")
 
         # Enforce Reservation Draft Permissions
         if subject.id not in [user.id for user in request.users]:
