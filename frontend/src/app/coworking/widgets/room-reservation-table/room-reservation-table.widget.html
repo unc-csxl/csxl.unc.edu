@@ -8,8 +8,8 @@
     </tr>
     <tr *ngFor="let record of reservationsMap | keyvalue">
       <th (click)="openDialog(record.key)" style="cursor: pointer">
-        {{ record.key }}
-        <br />
+        <span class="room-id">{{ record.key }}</span
+        ><br />
         <span class="capacity-text"
           >Capacity: {{ getRoomCapacity(record.key) || 'N/A' }}</span
         >

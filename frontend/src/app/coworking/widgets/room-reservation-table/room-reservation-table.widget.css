@@ -25,6 +25,14 @@ th {
   width: 30px;
 }
 
+/* room-reservation-table.widget.css */
+
+th:hover .room-id {
+  color: #007bff; /* Example color: blue */
+  text-decoration: underline; /* Optional: underline to make it obvious it's interactive */
+}
+
+
 td {
   height: 40px; /* Set the height for data rows */
   width: 30px;
@@ -47,5 +55,4 @@ td {
 
 .capacity-text {
   font-size: 0.8em; /* Smaller text size than the default */
-  color: rgb(255, 255, 255); /* Lighter color to make it less prominent */
 }
