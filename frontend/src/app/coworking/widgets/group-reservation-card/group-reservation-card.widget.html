@@ -1,0 +1,22 @@
+<!-- group-reservation-card.widget.html -->
+<div style="padding: 8px; box-sizing: border-box">
+  <h2 style="margin: 8px 8px 8px 8px">Add Users to Reservation</h2>
+  <user-lookup
+    style="display: block; margin: 0 8px; box-sizing: border-box"
+    [label]="'Search for users'"
+    (usersChanged)="onUsersChanged($event)">
+  </user-lookup>
+  <button
+    mat-button
+    color="primary"
+    style="
+      background-color: rgb(61, 129, 184);
+      color: white;
+      display: block;
+      margin: 12px 8px 45px 8px;
+      box-sizing: border-box;
+    "
+    (click)="addUsers()">
+    Add Users
+  </button>
+</div>

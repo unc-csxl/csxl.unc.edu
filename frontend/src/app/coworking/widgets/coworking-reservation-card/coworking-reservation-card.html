@@ -41,17 +41,31 @@
   <mat-card-content>
     <div #Details>
       <h3>
+        <label>Who</label>
+        <span *ngIf="reservation.users && reservation.users.length > 0">
+          {{ getUserNames(reservation.users) }}
+        </span>
+        <button (click)="openMemberSelectionDialog()" type="button">+</button>
+      </h3>
+
+      <mat-divider></mat-divider>
+      <h3>
         <label>When</label>
         <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
         <strong>{{ reservation.end | date: 'shortTime' }}</strong>
         <strong>{{ ', ' }}</strong>
-        <strong class="date"
-          >{{ reservation.start | date: 'dd MMM yyyy' }}</strong
-        >
+        <strong class="date">{{
+          reservation.start | date: 'dd MMM yyyy'
+        }}</strong>
       </h3>
 
-      <p *ngIf="reservation.state == 'CONFIRMED'">Check-in between {{ reservation.start|date:'shortTime' }} and {{
-        checkinDeadline(reservation.start,reservation.end)|date:'shortTime' }} to avoid cancellation.
+      <p *ngIf="reservation.state == 'CONFIRMED'">
+        Check-in between {{ reservation.start | date: 'shortTime' }} and
+        {{
+          checkinDeadline(reservation.start, reservation.end)
+            | date: 'shortTime'
+        }}
+        to avoid cancellation.
       </p>
 
       <mat-divider></mat-divider>
@@ -67,21 +81,24 @@
         <!-- if not a room reservation then  XL Colab -->
         <h3>
           <label>Where</label>
-          <strong
-            >{{ reservation.room ? reservation.room.id : 'The XL Colab in Sitterson 156' }}</strong>
+          <strong>{{
+            reservation.room
+              ? reservation.room.id
+              : 'The XL Colab in Sitterson 156'
+          }}</strong>
         </h3>
 
-        <ng-container *ngIf="reservation.state === 'CONFIRMED' && !checkCheckinAllowed()">
+        <ng-container
+          *ngIf="reservation.state === 'CONFIRMED' && !checkCheckinAllowed()">
           <!-- Accordion Toggle Button with Material Icon -->
           <button
             mat-icon-button
             (click)="toggleCancelExpansion()"
             matTooltip="Toggle Action Buttons"
             aria-label="Toggle Action Buttons">
-            <mat-icon
-              >{{ (isCancelExpanded$ | async) ? 'expand_less' : 'expand_more'
-              }}</mat-icon
-            >
+            <mat-icon>{{
+              (isCancelExpanded$ | async) ? 'expand_less' : 'expand_more'
+            }}</mat-icon>
           </button>
         </ng-container>
       </div>
@@ -108,7 +125,7 @@
 
         <ng-container *ngSwitchCase="'CONFIRMED'">
           <!-- Accordion Content -->
-          <ng-container *ngIf="isExpandedOrAllowCheckin() | async ">
+          <ng-container *ngIf="isExpandedOrAllowCheckin() | async">
             <button mat-stroked-button type="submit" (click)="cancel()">
               Cancel
             </button>
