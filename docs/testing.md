@@ -11,6 +11,24 @@ The file `backend/test/conftest.py` defines fixtures for automatically setting u
 
 At present, we do not have automated front-end testing instrumented; this remains a goal.
 
+### Loading Test Data and Fixtures
+
+To ensure that tests pre-load all test data (defined in `_data.py` files in the test folder) into the database, test files must import `setup_insert_data_fixture` from `core_data.py`.
+
+This `setup_insert_data_fixture` function is a _fixture_ - functions that, once you start running the tests, automatically run before the body of each test function runs.
+
+When a test is run the following process occurs in order:
+
+1. The `test_engine` fixture from `conftest.py` runs, which deletes the existing database (if it exists) and re-creates the database, adding all necessary tables. This fixture also creates the database engine.
+
+2. Using the database engine created above, the `session` fixture from `conftest.py` creates the SQLAlchemy session that all of the Pytests will use when interacting with the PostgreSQL database.
+
+3. The `setup_insert_data_fixture` fixture from `core_data.py` runs, which populates the newly-created empty database with all of the test data.
+
+4. Fixtures creating injectable backend services are created from the `fixture.,py` file, which enable Pytests to call and test the service functions they are supposed to.
+
+5. Test cases now run, after the database has been pre-populated with data and all services have been provided via fixtures!
+
 ### Pytest CLI
 
 The `pytest` command-line program will run all tests in the command-line.
@@ -27,7 +45,7 @@ To run a specific test within a test suite, use the [`-k` option of `pytest`](ht
 
 ### Pytest VSCode with Debugger
 
-VSCode's Python plugin has great support for testing. Click the test tube icon, configure VSCode to use Pytest and select the workspace. 
+VSCode's Python plugin has great support for testing. Click the test tube icon, configure VSCode to use Pytest and select the workspace.
 
 When you refresh, you will see tests you can run individually, or in the debugger and with breakpoints. When you encounter a bug or failing test and having a difficult time pinning down exactly why it is failing, developing the instinct to run the test in the VSCode debugger, setting a break point, and stepping through is encouraged.
 
@@ -35,7 +53,7 @@ For more, see the [official documentation](https://code.visualstudio.com/docs/py
 
 ### Code Coverage
 
-We expect 100% test coverage of backend services code and as much coverage for other code in the backend. 
+We expect 100% test coverage of backend services code and as much coverage for other code in the backend.
 
 To generate a test coverage report, run the following command in your development container:
 
