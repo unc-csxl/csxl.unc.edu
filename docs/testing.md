@@ -25,7 +25,7 @@ When a test is run the following process occurs in order:
 
 3. The `setup_insert_data_fixture` fixture from `core_data.py` runs, which populates the newly-created empty database with all of the test data.
 
-4. Fixtures creating injectable backend services are created from the `fixture.,py` file, which enable Pytests to call and test the service functions they are supposed to.
+4. Fixtures creating injectable backend services are created from the `fixture.py` file, which enable Pytests to call and test the service functions they are supposed to.
 
 5. Test cases now run, after the database has been pre-populated with data and all services have been provided via fixtures!
 
