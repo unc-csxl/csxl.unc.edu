@@ -34,8 +34,13 @@
         <td mat-cell *matCellDef="let element">
           <div class="row">
             <p>
-              {{ element.caller?.first_name ?? '' }} {{
-              element.caller?.last_name ?? 'N/A' }}
+              {{
+                element.caller
+                  ? (element.caller.first_name ?? '') +
+                    ' ' +
+                    (element.caller.last_name ?? 'N/A')
+                  : 'N/A, ' + formatTicketState(element.state)
+              }}
             </p>
           </div>
         </td>

@@ -11,7 +11,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   OfficeHoursEventType,
   Ticket,
-  TicketDetails
+  TicketDetails,
+  TicketState
 } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
 
@@ -90,6 +91,20 @@ export class TicketHistoryWidget implements OnInit {
       return 'Virtual Tutoring';
     } else if (typeNum === OfficeHoursEventType.VIRTUAL_REVIEW_SESSION) {
       return 'Virtual Review Session';
+    } else {
+      return 'error';
+    }
+  }
+
+  formatTicketState(typeNum: number) {
+    if (typeNum === TicketState.QUEUED) {
+      return 'Queued';
+    } else if (typeNum === TicketState.CALLED) {
+      return 'Called';
+    } else if (typeNum === TicketState.CANCELED) {
+      return 'Canceled';
+    } else if (typeNum === TicketState.CLOSED) {
+      return 'Closed';
     } else {
       return 'error';
     }
