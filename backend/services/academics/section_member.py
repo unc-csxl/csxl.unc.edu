@@ -121,6 +121,22 @@ class SectionMemberService:
 
         section_memberships: list[SectionMemberEntity] = []
         for oh_section in oh_sections:
+
+            # Check If Membership Exists
+            membership = (
+                self._session.query(SectionMemberEntity)
+                .where(SectionMemberEntity.user_id == subject.id)
+                .where(SectionEntity.office_hours_id == oh_section.id)
+                .where(SectionMemberEntity.section_id == SectionEntity.id)
+                .one_or_none()
+            )
+
+            if membership is not None:
+                raise Exception(
+                    f"User is already a member of office hours section id={oh_section.id}"
+                )
+
+        for oh_section in oh_sections:
             academic_sections = (
                 self._session.query(SectionEntity)
                 .filter(SectionEntity.office_hours_id == oh_section.id)
@@ -129,6 +145,7 @@ class SectionMemberService:
 
             if len(academic_sections) == 0:
                 raise ResourceNotFoundException("No Academic Section Found")
+
             draft = SectionMemberDraft(
                 user_id=subject.id, section_id=academic_sections[0].id
             )
