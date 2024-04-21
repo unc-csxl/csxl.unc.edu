@@ -19,7 +19,7 @@ import {
   ActivatedRouteSnapshot,
   ResolveFn
 } from '@angular/router';
-import { interval } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { sectionResolver } from '../office-hours.resolver';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -35,7 +35,7 @@ export class TicketQueuePageComponent implements OnInit {
   // TODO: Update this route later to not be hard-coded!
   public static Routes = [
     {
-      path: 'ta/spring-2024/:section_id/:event_id/queue',
+      path: 'ta/spring-2024/:id/:event_id/queue',
       component: TicketQueuePageComponent,
       canActivate: [],
       resolve: { section: sectionResolver },
@@ -48,7 +48,7 @@ export class TicketQueuePageComponent implements OnInit {
       ]
     },
     {
-      path: 'instructor/spring-2024/:section_id/:event_id/queue',
+      path: 'instructor/spring-2024/:id/:event_id/queue',
       component: TicketQueuePageComponent,
       canActivate: [],
       resolve: { section: sectionResolver },
@@ -75,13 +75,15 @@ export class TicketQueuePageComponent implements OnInit {
   queued_tickets: number | null;
   called_tickets: number | null;
 
+  refresh: Subscription | undefined;
+
   constructor(
     private officeHoursService: OfficeHoursService,
     private route: ActivatedRoute
   ) {
     // Retrieves IDs from route parameters
     this.eventId = this.route.snapshot.params['event_id'];
-    this.sectionId = this.route.snapshot.params['section_id'];
+    this.sectionId = this.route.snapshot.params['id'];
     this.queued_tickets = null;
     this.called_tickets = null;
 
@@ -92,9 +94,11 @@ export class TicketQueuePageComponent implements OnInit {
     this.section = data.section;
 
     // Subscribe to observable every 10 seconds and get tickets + stats
-    let refresh = interval(10000).subscribe(() => {
-      this.getTicketStats();
+    this.refresh = interval(10000).subscribe(() => {
+      this.getCurrentTickets();
       this.getEvent();
+      this.getTicketStats();
+      console.log('here');
     });
   }
 
@@ -149,5 +153,11 @@ export class TicketQueuePageComponent implements OnInit {
         this.called_tickets = event_status.open_tickets_count;
         this.queued_tickets = event_status.queued_tickets_count;
       });
+  }
+
+  unsubscribeRefresh() {
+    if (this.refresh) {
+      this.refresh.unsubscribe();
+    }
   }
 }

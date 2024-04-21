@@ -11,13 +11,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   OfficeHoursEvent,
   OfficeHoursEventType,
-  TicketDetails
+  Ticket
 } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog.widget';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'current-ticket-card-widget',
@@ -25,8 +26,7 @@ import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog
   styleUrls: ['./current-ticket-card.widget.css']
 })
 export class CurrentTicketCard implements OnInit {
-  /* TicketDetails and Event to display on widget */
-  @Input() ticket!: TicketDetails;
+  @Input() ticket!: Ticket;
   @Input() event!: OfficeHoursEvent;
   /* Ticket queue stats */
   queued_tickets: number | null;
@@ -35,8 +35,6 @@ export class CurrentTicketCard implements OnInit {
 
   constructor(
     private officeHoursService: OfficeHoursService,
-    private router: Router,
-    private snackBar: MatSnackBar,
     public dialog: MatDialog
   ) {
     this.queued_tickets = null;
@@ -70,28 +68,6 @@ export class CurrentTicketCard implements OnInit {
   /* Helper function that formats event type enum as string */
   formatEventType(eventType: OfficeHoursEventType) {
     return this.officeHoursService.formatEventType(eventType);
-  }
-
-  /* Helper function that navigates back to course home */
-  navToHome() {
-    this.router.navigate([
-      'office-hours/spring-2024/',
-      this.event.oh_section.id
-    ]);
-  }
-
-  /* Displays snackbar message if ticket has been canceled */
-  displayCanceledMessage() {
-    this.snackBar.open('Your ticket has been canceled.', '', {
-      duration: 2000
-    });
-  }
-
-  /* Displays snackbar message if ticket has been closed */
-  displayClosedMessage() {
-    this.snackBar.open('This ticket has been closed.', '', {
-      duration: 2000
-    });
   }
 
   /* Helper function that gets ticket queue stats */

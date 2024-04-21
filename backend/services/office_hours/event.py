@@ -148,6 +148,7 @@ class OfficeHoursEventService:
 
         self._session.commit()
 
+        # Return the model
         return oh_event_entity.to_model()
 
     def delete(self, subject: User, oh_event: OfficeHoursEvent) -> None:
@@ -252,6 +253,8 @@ class OfficeHoursEventService:
         )
 
         entities = self._session.scalars(query).all()
+
+        # Return the details models
         return [entity.to_details_model() for entity in entities]
 
     def get_event_tickets(
@@ -286,6 +289,8 @@ class OfficeHoursEventService:
         )
 
         entities = self._session.scalars(query).all()
+
+        # Return the details models
         return [entity.to_details_model() for entity in entities]
 
     def get_event_queue_stats(
@@ -316,12 +321,13 @@ class OfficeHoursEventService:
         called_ticket_entities = self._get_called_tickets_by_oh_event(oh_event.id)
         called_ticket_count = len(called_ticket_entities)
 
-        # Build Event Status Status
+        # Build Event Status
         event_status = OfficeHoursEventStatus(
             open_tickets_count=called_ticket_count,
             queued_tickets_count=queued_ticket_count,
         )
 
+        # Return the Status model
         return event_status
 
     def get_event_queue_stats_for_student_with_ticket(
@@ -390,13 +396,14 @@ class OfficeHoursEventService:
         called_ticket_entities = self._get_called_tickets_by_oh_event(oh_event.id)
         called_ticket_count = len(called_ticket_entities)
 
-        # Build Event Status Status
+        # Build Event Status
         student_event_status = StudentOfficeHoursEventStatus(
             open_tickets_count=called_ticket_count,
             queued_tickets_count=queued_ticket_count,
             ticket_position=current_ticket_position,
         )
 
+        # Return the Status model
         return student_event_status
 
     def check_staff_helping_status(
@@ -420,12 +427,15 @@ class OfficeHoursEventService:
             subject.id, oh_event.oh_section.id
         )
 
+        # Get all called tickets in the given event
         called_event_ticket_entities = self._get_called_tickets_by_oh_event(oh_event.id)
 
+        # Find queued ticket with subject's id as caller
         for ticket in called_event_ticket_entities:
             if section_member_entity.id == ticket.caller_id:
                 return StaffHelpingStatus(ticket_id=ticket.id)
 
+        # Return Status with id = None if not found to be helping a ticket
         return StaffHelpingStatus(ticket_id=None)
 
     def check_student_in_queue_status(
@@ -458,6 +468,7 @@ class OfficeHoursEventService:
             if section_member_entity.id in creator_ids:
                 return StudentQueuedTicketStatus(ticket_id=ticket.id)
 
+        # Return Status with id = None if no ticket currently queued
         return StudentQueuedTicketStatus(ticket_id=None)
 
     def _find_ticket_position(
@@ -489,7 +500,7 @@ class OfficeHoursEventService:
             list[OfficeHoursTicketEntity]: List of OfficeHoursTicketEntity objects
                 that are in the 'CALLED' state for the specified event.
         """
-        # Fetch Called Tickets and Count
+        # Fetch Called Tickets
         called_tickets_query = (
             select(OfficeHoursTicketEntity)
             .filter(OfficeHoursTicketEntity.oh_event_id == oh_event_id)
@@ -497,6 +508,8 @@ class OfficeHoursEventService:
         )
 
         called_ticket_entities = self._session.scalars(called_tickets_query).all()
+
+        # Return the entities
         return called_ticket_entities
 
     def _get_queued_tickets_by_oh_event(
@@ -511,7 +524,7 @@ class OfficeHoursEventService:
             list[OfficeHoursTicketEntity]: List of OfficeHoursTicketEntity objects
                 that are in the 'QUEUED' state for the specified event, ordered by ticket ID.
         """
-        # Fetch Queued Tickets and Count
+        # Fetch Queued Tickets
         queued_tickets_query = (
             select(OfficeHoursTicketEntity)
             .filter(OfficeHoursTicketEntity.oh_event_id == oh_event_id)
@@ -520,6 +533,8 @@ class OfficeHoursEventService:
         )
 
         queued_ticket_entities = self._session.scalars(queued_tickets_query).all()
+
+        # Return the entities
         return queued_ticket_entities
 
     def _check_user_section_membership(
@@ -564,4 +579,5 @@ class OfficeHoursEventService:
                 f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
             )
 
+        # Return the entity
         return section_member_entity

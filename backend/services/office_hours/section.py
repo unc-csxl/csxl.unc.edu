@@ -6,6 +6,7 @@ from sqlalchemy import select, not_, and_, union
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm import Session
 
+from ...models.office_hours.ticket import OfficeHoursTicket
 from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 from ...models.academics.section_member_details import SectionMemberDetails
@@ -102,7 +103,7 @@ class OfficeHoursSectionService:
 
         self._session.commit()
 
-        # Return added object
+        # Return details model version of added object
         return oh_section_entity.to_details_model()
 
     def get_all_sections(self, subject: User) -> list[OfficeHoursSectionDetails]:
@@ -114,9 +115,11 @@ class OfficeHoursSectionService:
         Returns:
             list[OfficeHoursSectionDetails]: List of all Office Hours Sections
         """
+        # Select all sections from the database
         query = select(OfficeHoursSectionEntity)
         entities = self._session.scalars(query).all()
 
+        # Return the details models
         return [entity.to_details_model() for entity in entities]
 
     def get_section_by_id(
@@ -130,17 +133,19 @@ class OfficeHoursSectionService:
         Returns:
             OfficeHoursSectionDetails: the office hours section with the given id
         """
-
+        # Select OHSection by id
         query = select(OfficeHoursSectionEntity).where(
             OfficeHoursSectionEntity.id == oh_section_id
         )
         entity = self._session.scalars(query).one_or_none()
 
+        # Raise ResourceNotFoundException if section with given id was not found
         if entity is None:
             raise ResourceNotFoundException(
                 f"Unable to find section with id {oh_section_id}"
             )
 
+        # Return details model
         return entity.to_details_model()
 
     def get_past_events_by_section(
@@ -171,6 +176,7 @@ class OfficeHoursSectionService:
 
         oh_events = oh_section.events
 
+        # Return OH Event models which ended in the past
         return [
             oh_event for oh_event in oh_events if oh_event.end_time < datetime.now()
         ]
@@ -195,6 +201,7 @@ class OfficeHoursSectionService:
 
         oh_events = oh_section.events
 
+        # Return OH Event models which start within the given time_range
         return [
             oh_event
             for oh_event in oh_events
@@ -222,7 +229,7 @@ class OfficeHoursSectionService:
 
         oh_events = oh_section.events
 
-        # return all events that have started but haven't ended
+        # Return OH Event models that have started and have not ended
         return [
             oh_event
             for oh_event in oh_events
@@ -243,7 +250,6 @@ class OfficeHoursSectionService:
         Returns:
             list[OfficeHoursSectionDetails]: List of all `OfficeHoursSectionDetails`
         """
-        # TODO: this is a WIP!
         # Select all entries in the `OfficeHoursSection` table where their section(s)'s term id == term_id
         query = (
             select(OfficeHoursSectionEntity)
@@ -254,7 +260,7 @@ class OfficeHoursSectionService:
         )
         entities = self._session.scalars(query).all()
 
-        # Return the model
+        # Return the details models
         return [entity.to_details_model() for entity in entities]
 
     def get_user_sections_by_term(
@@ -269,6 +275,7 @@ class OfficeHoursSectionService:
         """
         # TODO: Permission
 
+        # Select OH Section entities the user is a part of in the given term
         query = (
             select(OfficeHoursSectionEntity)
             .where(SectionMemberEntity.user_id == subject.id)
@@ -279,17 +286,20 @@ class OfficeHoursSectionService:
         )
 
         entities = self._session.scalars(query).all()
+
+        # Return details models
         return [entity.to_details_model() for entity in entities]
 
     def get_user_not_enrolled_sections(self, subject: User) -> list[OfficeHoursSection]:
-        """Retrieves all office hours sections user not a member of.
+        """Retrieves all office hours sections the user is not a member of.
         Args:
             subject (User): a valid User model representing the currently logged in User
 
         Returns:
-            list[OfficeHoursSection]: List of all `OfficeHoursSection`
+            list[OfficeHoursSection]: List of all `OfficeHoursSection` the user is not enrolled in.
 
         """
+        # TODO: add more comments here
         user_oh_sections_ids_query = (
             select(OfficeHoursSectionEntity.id)
             .where(SectionMemberEntity.user_id == subject.id)
@@ -304,6 +314,7 @@ class OfficeHoursSectionService:
 
         sections_not_in = self._session.scalars(query_user_not_enrolled_sections).all()
 
+        # Return details models
         return [entity.to_model() for entity in sections_not_in]
 
     def get_user_not_enrolled_sections_by_term(
@@ -315,7 +326,7 @@ class OfficeHoursSectionService:
             term_id: ID of the term to query by.
 
         Returns:
-            list[OfficeHoursSection]: List of all `OfficeHoursSection`
+            list[OfficeHoursSection]: List of all `OfficeHoursSection` the user is not enrolled in in the given term.
 
         """
         user_sections = self.get_user_sections_by_term(subject, term_id)
@@ -331,6 +342,7 @@ class OfficeHoursSectionService:
 
         user_not_enrolled_oh_sections = self._session.scalars(query).all()
 
+        # Return details models
         return [entity.to_model() for entity in user_not_enrolled_oh_sections]
 
     def get_section_tickets(
@@ -371,13 +383,13 @@ class OfficeHoursSectionService:
 
     def get_user_section_created_tickets(
         self, subject: User, oh_section: OfficeHoursSectionDetails
-    ) -> list[OfficeHoursTicketDetails]:
+    ) -> list[OfficeHoursTicket]:
         """Retrieves all of the subject's created office hours tickets in a section from the table.
         Args:
             subject: a valid User model representing the currently logged in User
             oh_section: the OfficeHoursSectionDetails to query by.
         Returns:
-            list[OfficeHoursTicketDetails]: List of all of a user's created `OfficeHoursTicketDetails` in an OHsection
+            list[OfficeHoursTicket]: List of all of a user's created `OfficeHoursTicket` in an OHsection
         """
 
         # PERMISSIONS
@@ -389,8 +401,7 @@ class OfficeHoursSectionService:
 
         # Take Created Ticket Relationship From SectionMemberEntity
         created_tickets = [
-            entity.to_details_model()
-            for entity in section_member_entity.created_tickets
+            entity.to_model() for entity in section_member_entity.created_tickets
         ]
 
         # Order so lastest is first
@@ -422,7 +433,7 @@ class OfficeHoursSectionService:
             if entity.called_at is not None
         ]
 
-        # Order with Lastest First
+        # Order with Lastest First, return
         called_tickets.sort(key=lambda x: x.called_at, reverse=True)
 
         return called_tickets
@@ -468,7 +479,7 @@ class OfficeHoursSectionService:
             entity.to_details_model() for entity in ticket_entities
         ]
 
-        # Return tickets where have_concerns is True
+        # Return ticket details models where have_concerns is True
         return [ticket for ticket in ticket_details_models if ticket.have_concerns]
 
     def get_section_trailing_week_data(
@@ -634,11 +645,19 @@ class OfficeHoursSectionService:
             subject.id, oh_section_id
         )
 
-        if subject_section_member_entity.member_role != (
-            RosterRole.INSTRUCTOR or RosterRole.GTA
+        # Ensure only instructors and GTAs can change roles
+        if (
+            subject_section_member_entity.member_role == RosterRole.STUDENT
+            or subject_section_member_entity.member_role == RosterRole.UTA
         ):
             raise PermissionError(
                 f"Section Member Role is {subject_section_member_entity.member_role} and not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
+            )
+
+        # Do not allow changing roles to instructor so that students cannot create courses
+        if user_to_modify.member_role == RosterRole.INSTRUCTOR:
+            raise PermissionError(
+                f"Section Members cannot be elevated to the Instructor role."
             )
 
         # Select SectionMember to modify
@@ -650,6 +669,13 @@ class OfficeHoursSectionService:
             raise PermissionError(
                 f"SectionMember with id {user_to_modify.id} not found."
             )
+
+        # Ensure that instructors are not demoted
+        if (
+            section_member_entity.member_role == RosterRole.INSTRUCTOR
+            and user_to_modify.member_role != RosterRole.INSTRUCTOR
+        ):
+            raise PermissionError(f"Instructors' roles cannot be modified.")
 
         # Raise error if member to update isn't a member of the OH section
         self._check_user_section_membership(
@@ -697,7 +723,7 @@ class OfficeHoursSectionService:
             ResourceNotFoundException if user is not a member in given academic section.
             PermissionError if user creating event is not a Instructor
         """
-
+        # Select SectionMembers where the user id and section id match the given ones
         query = (
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user_id)
@@ -711,6 +737,7 @@ class OfficeHoursSectionService:
                 f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_ids}"
             )
 
+        # Return entity
         return section_member_entity
 
     def _check_user_section_membership(
@@ -755,4 +782,5 @@ class OfficeHoursSectionService:
                 f"Unable To Find Section Member Entity for user with id:{user_id} in academic section with id:{academic_section_ids}"
             )
 
+        # Return the entity
         return section_member_entity

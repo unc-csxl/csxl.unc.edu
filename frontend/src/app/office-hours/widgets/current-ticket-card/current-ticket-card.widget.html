@@ -1,10 +1,4 @@
 <!-- eslint-disable prettier/prettier -->
-<div *ngIf="formatTicketState(ticket.state) === 'Canceled'">
-  {{ displayCanceledMessage() }} {{ navToHome() }}
-</div>
-<div *ngIf="formatTicketState(ticket.state) === 'Closed'">
-  {{ displayClosedMessage() }} {{ navToHome() }}
-</div>
 <div
   class="ticket-queue-row"
   *ngIf="formatTicketState(ticket.state) === 'Queued'">

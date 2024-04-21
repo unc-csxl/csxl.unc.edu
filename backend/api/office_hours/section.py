@@ -5,6 +5,7 @@ This API is used to access OH section data."""
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 
+from ...models.office_hours.ticket import OfficeHoursTicket
 from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
@@ -88,7 +89,10 @@ def get_oh_section_by_id(
     Returns:
         OfficeHoursSectionDetails: The OH section with the given OH section id
     """
-    return oh_section_service.get_section_by_id(subject, oh_section_id)
+    try:
+        return oh_section_service.get_section_by_id(subject, oh_section_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -107,10 +111,13 @@ def get_past_oh_section_events(
     Returns:
         list[OfficeHoursEvent]: List of past events for the given section
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_past_events_by_section(subject, oh_section)
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_past_events_by_section(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -132,13 +139,16 @@ def get_upcoming_oh_section_events(
         list[OfficeHoursEvent]: OH events associated with a given section in a time range
     """
 
-    time_range = TimeRange(start=start, end=end)
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_upcoming_events_by_section(
-        subject, oh_section, time_range
-    )
+    try:
+        time_range = TimeRange(start=start, end=end)
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_upcoming_events_by_section(
+            subject, oh_section, time_range
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -157,10 +167,13 @@ def get_current_oh_section_events(
     Returns:
         list[OfficeHoursEvent]: OH events associated with a given section in a time range
     """
-    oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
-        subject, oh_section_id
-    )
-    return oh_section_service.get_current_events_by_section(subject, oh_section)
+    try:
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_current_events_by_section(subject, oh_section)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -179,7 +192,10 @@ def get_oh_sections_by_term_id(
     Returns:
         list[OfficeHoursSectionDetails]: OH sections within the given term
     """
-    return oh_section_service.get_sections_by_term(subject, term_id)
+    try:
+        return oh_section_service.get_sections_by_term(subject, term_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(
@@ -276,19 +292,19 @@ def get_oh_section_tickets(
 
 @api.get(
     "/{oh_section_id}/user/created_tickets",
-    response_model=list[OfficeHoursTicketDetails],
+    response_model=list[OfficeHoursTicket],
     tags=["Office Hours"],
 )
 def get_user_section_created_tickets(
     oh_section_id: int,
     subject: User = Depends(registered_user),
     oh_section_service: OfficeHoursSectionService = Depends(),
-) -> list[OfficeHoursTicketDetails]:
+) -> list[OfficeHoursTicket]:
     """
     Gets list of OH tickets by OH section and creator
 
     Returns:
-        list[OfficeHoursTicketDetails]: OH tickets within the given section and for the specific creator
+        list[OfficeHoursTicket]: OH tickets within the given section and for the specific creator
     """
     try:
         oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
@@ -414,29 +430,12 @@ def update_oh_section_member_role(
     Returns:
         SectionMember: SectionMember updated
     """
-    return oh_section_service.update_oh_section_member_role(
-        subject, user_to_modify, oh_section_id
-    )
-
-
-@api.put(
-    "/{oh_section_id}/update-role", response_model=SectionMember, tags=["Office Hours"]
-)
-def update_oh_section_member_role(
-    user_to_modify: SectionMemberPartial,
-    oh_section_id: int,
-    subject: User = Depends(registered_user),
-    oh_section_service: OfficeHoursSectionService = Depends(),
-) -> SectionMember:
-    """
-    Updates a SectionMember in an OH Section to the database
-
-    Returns:
-        SectionMember: SectionMember updated
-    """
-    return oh_section_service.update_oh_section_member_role(
-        subject, user_to_modify, oh_section_id
-    )
+    try:
+        return oh_section_service.update_oh_section_member_role(
+            subject, user_to_modify, oh_section_id
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 # @api.put(
