@@ -67,7 +67,7 @@ def get_section_by_term_id(
     Returns:
         list[SectionDetails]: Sections with the given term
     """
-    return section_service.get_by_term_and_no_office_hours(term_id)
+    return section_service.get_sections_with_no_office_hours_by_term(term_id)
 
 
 @api.get("/subject/{subject}", response_model=list[SectionDetails], tags=["Academics"])

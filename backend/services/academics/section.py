@@ -108,7 +108,9 @@ class SectionService:
         # Return the model
         return entity.to_details_model()
 
-    def get_by_term_and_no_office_hours(self, term_id: int) -> list[SectionDetails]:
+    def get_sections_with_no_office_hours_by_term(
+        self, term_id: int
+    ) -> list[SectionDetails]:
         """Retrieves all sections from the table by term and that don't an OH Section associated to it.
 
         Args:
