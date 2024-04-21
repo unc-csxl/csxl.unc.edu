@@ -11,11 +11,9 @@ from .reservation import reservation_data
 
 # Since there are relationship dependencies between the entities, order matters.
 from .time import *
-from ..core_data import setup_insert_data_fixture as insert_order_0
-from .operating_hours_data import fake_data_fixture as insert_order_1
-from ..room_data import fake_data_fixture as insert_order_2
-from .seat_data import fake_data_fixture as insert_order_3
-from .reservation.reservation_data import fake_data_fixture as insert_order_4
+
+# Import core data to ensure all data loads for the tests.
+from ..core_data import setup_insert_data_fixture
 
 
 def test_status_dispatch(status_svc: StatusService):

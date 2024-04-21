@@ -13,8 +13,8 @@ from ....models.academics import TermDetails
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, term_svc
 
-# Import the setup_teardown fixture explicitly to load entities in database
-from .term_data import fake_data_fixture as insert_term_fake_data
+# Import core data to ensure all data loads for the tests.
+from ..core_data import setup_insert_data_fixture
 
 # Import the fake model data in a namespace for test assertions
 from . import term_data

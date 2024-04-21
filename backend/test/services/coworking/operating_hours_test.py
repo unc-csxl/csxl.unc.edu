@@ -12,9 +12,8 @@ from ....services.exceptions import ResourceNotFoundException
 from .fixtures import permission_svc, operating_hours_svc
 from .time import *
 
-# Insert fake data entities in database
-from ..core_data import setup_insert_data_fixture as insert_order_0
-from .operating_hours_data import fake_data_fixture as insert_order_1
+# Import core data to ensure all data loads for the tests.
+from ..core_data import setup_insert_data_fixture
 
 # Import the fake model data in a namespace for test assertions
 from . import operating_hours_data

@@ -13,8 +13,8 @@ from ....models.academics import CourseDetails
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, course_svc
 
-# Import the setup_teardown fixture explicitly to load entities in database
-from .course_data import fake_data_fixture as insert_course_fake_data
+# Import core data to ensure all data loads for the tests.
+from ..core_data import setup_insert_data_fixture
 
 # Import the fake model data in a namespace for test assertions
 from . import course_data

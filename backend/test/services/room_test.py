@@ -1,4 +1,5 @@
 """Tests for Coworking Rooms Service."""
+
 from unittest.mock import create_autospec
 import pytest
 from backend.services.exceptions import (
@@ -12,10 +13,8 @@ from ...models import RoomDetails
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import room_svc
 
-# Import the setup_teardown fixture explicitly to load entities in database
-from .role_data import fake_data_fixture as fake_role_data_fixture
-from .user_data import fake_data_fixture as fake_user_data_fixture
-from .room_data import fake_data_fixture as fake_room_data_fixture
+# Import core data to ensure all data loads for the tests.
+from .core_data import setup_insert_data_fixture
 
 # Import the fake model data in a namespace for test assertions
 from . import room_data

@@ -9,7 +9,7 @@ from .....models.user import UserIdentity
 from .....models.coworking.seat import SeatIdentity
 from ..time import *
 
-from ...core_data import user_data
+from ... import user_data
 from ...reset_table_id_seq import reset_table_id_seq
 from .. import seat_data
 from .. import operating_hours_data
