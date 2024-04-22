@@ -93,7 +93,7 @@ class ApplicationService:
 
         application = application_entity.map_application_to_detail_model(section_dict)
 
-        return NewUTAApplicationDetails(application=application)
+        return application
 
     def create_uta_application(
         self, application: NewUTAApplicationDetails
