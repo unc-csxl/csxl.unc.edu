@@ -28,6 +28,7 @@ import { Profile } from 'src/app/profile/profile.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { sectionsResolver } from 'src/app/academics/academics.resolver';
 import { Application } from '../application.model';
+import { Comp227 } from '../application.model';
 
 interface OptionSelect {
   value: string;
@@ -116,21 +117,23 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
 
   comp227: OptionSelect[] = [
     {
-      value: 'Monetary compensation only',
+      value: Comp227.COMPENSATION,
       viewValue: 'Monetary compensation only'
     },
     {
-      value: 'COMP 227 credit only',
+      value: Comp227.CREDIT,
       viewValue: 'COMP 227 credit only'
     },
     {
-      value: 'Open to either 227 credit or compensation',
+      value: Comp227.EITHER,
       viewValue: 'Open to either 227 credit or compensation'
     }
   ];
 
   validateIntroVideo(control: FormControl): { [key: string]: any } | null {
-    const valid = control.value && control.value.includes('youtu');
+    const valid =
+      control.value &&
+      (control.value.includes('youtu') || control.value.includes('you.tu'));
     return valid ? null : { invalidURL: true };
   }
 
@@ -165,15 +168,8 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     this.sections = data.sections;
     this.profile = data.profile;
 
-    console.log('Sections loaded via raw: ', data);
-
-    this.route.data.subscribe((data) => {
-      console.log('Sections loaded via subscribe: ', data['sections']);
-      this.sections = data['sections'];
-    });
-
     this.firstFormGroup = this.formBuilder.group({
-      intro_video: [
+      intro_video_url: [
         '',
         [Validators.required, this.validateIntroVideo.bind(this)]
       ]
@@ -214,9 +210,8 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.applicationService.getApplication().subscribe(
       (response) => {
-        const application = response ? response['application'] : null;
-        if (application) {
-          this.populateForm(application);
+        if (response) {
+          this.populateForm(response);
         } else {
           this.resetForm();
         }
@@ -282,7 +277,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   populateForm(application: Application | null): void {
     if (application) {
       this.firstFormGroup.patchValue({
-        intro_video: application.intro_video
+        intro_video_url: application.intro_video_url
       });
       this.secondFormGroup.patchValue({
         prior_experience: application.prior_experience,
@@ -347,7 +342,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
       comp_gpa: this.fourthFormGroup.value.comp_gpa ?? 0.0,
       preferred_sections: sectionsToSend,
       comp_227: this.fifthFormGroup.value.comp_227 ?? '',
-      intro_video: this.firstFormGroup.value.intro_video ?? '',
+      intro_video_url: this.firstFormGroup.value.intro_video_url ?? '',
       prior_experience: this.secondFormGroup.value.prior_experience ?? '',
       service_experience: this.secondFormGroup.value.service_experience ?? '',
       additional_experience:

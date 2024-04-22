@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from backend.models.application import UTA
+from backend.models.application import UTAApplication
 
 from .course import Course
 from .term import Term
@@ -22,4 +22,4 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
-    preferred_applicants: list[UTA]
+    preferred_applicants: list[UTAApplication]

@@ -6,8 +6,10 @@ from fastapi import APIRouter, Depends
 
 from typing import List
 
-from backend.models.application import Application, New_UTA
-from backend.models.application_details import New_UTADetails, UserApplication
+from backend.models.application_details import (
+    UTAApplicationDetails,
+    NewUTAApplicationDetails,
+)
 from backend.services.application import ApplicationService
 
 from ..api.authentication import registered_user
@@ -23,13 +25,14 @@ openapi_tags = {
     "description": "Create, update, delete, and retrieve TA Applications.",
 }
 
-api = APIRouter(prefix="/api/applications")
+api = APIRouter(prefix="/api/applications/ta")
 
 
-@api.get("", response_model=list[New_UTADetails], tags=["Applications"])
+@api.get("", response_model=list[NewUTAApplicationDetails], tags=["Applications"])
 def get_applications(
+    user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> list[New_UTADetails]:
+) -> list[UTAApplicationDetails]:
     """
     Get all applications
 
@@ -41,14 +44,14 @@ def get_applications(
     """
 
     # Return all applications
-    return application_service.list()
+    return application_service.list(user)
 
 
-@api.get("/user", response_model=UserApplication | None, tags=["Applications"])
+@api.get("/user", response_model=NewUTAApplicationDetails | None, tags=["Applications"])
 def get_applications_user(
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> UserApplication | None:
+) -> NewUTAApplicationDetails | None:
     """
     Get all applications
 
@@ -62,11 +65,12 @@ def get_applications_user(
     return application_service.get_application(user)
 
 
-@api.post("", response_model=New_UTADetails, tags=["Applications"])
+@api.post("", response_model=NewUTAApplicationDetails, tags=["Applications"])
 def new_undergrad_application(
-    application: New_UTADetails,
+    application: NewUTAApplicationDetails,
+    user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> New_UTADetails:
+) -> NewUTAApplicationDetails:
     """
     Create application
 
@@ -81,15 +85,15 @@ def new_undergrad_application(
         HTTPException 422 if create() raises an Exception
     """
 
-    return application_service.create_undergrad(application)
+    return application_service.create_uta_application(user, application)
 
 
-@api.put("/update", response_model=New_UTADetails, tags=["Applications"])
+@api.put("/update", response_model=NewUTAApplicationDetails, tags=["Applications"])
 def update_undergrad_application(
-    application: New_UTADetails,
+    application: NewUTAApplicationDetails,
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> New_UTADetails:
+) -> NewUTAApplicationDetails:
     """
     Update application
 
@@ -105,7 +109,7 @@ def update_undergrad_application(
         ResourceNotFound if application doesn't exist
     """
 
-    return application_service.update_undergrad(user, application)
+    return application_service.update_uta_application(user, application)
 
 
 @api.delete("/delete", response_model=None, tags={"Applications"})

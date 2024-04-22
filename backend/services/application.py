@@ -6,17 +6,25 @@ from sqlalchemy import update, delete
 from sqlalchemy.orm import Session
 from typing import Dict
 from backend.entities import section_application_table
-from backend.entities.application_entity import ApplicationEntity, New_UTA_Entity
+from backend.entities.application_entity import (
+    ApplicationEntity,
+    NewUTAApplicationEntity,
+)
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.academics.section import Section
 from backend.models.application_details import (
-    New_UTADetails,
-    UserApplication,
+    UTAApplicationDetails,
+    NewUTAApplicationDetails,
 )
 from backend.models.user import User
 
-from backend.services.exceptions import ResourceNotFoundException
+from backend.services.exceptions import (
+    ResourceNotFoundException,
+    UserPermissionException,
+)
+
+from .permission import PermissionService
 
 from ..database import db_session
 
@@ -28,48 +36,46 @@ __license__ = "MIT"
 class ApplicationService:
     """ApplicationService is the access layer to TA applications."""
 
-    def __init__(self, session: Session = Depends(db_session)):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission_svc: PermissionService = Depends(),
+    ):
         """Initializes a new ApplicationService.
 
         Args:
             session (Session): The database session to use, typically injected by FastAPI.
         """
         self._session = session
+        self._permission_svc = permission_svc
 
-    def list(self) -> list[New_UTADetails]:
+    def list(self, subject: User) -> list[UTAApplicationDetails]:
         """Returns all TA applications.
 
         Returns:
             list[New_UTA]: List of all current and previously submitted applications.
         """
+
+        self._permission_svc.enforce(
+            subject,
+            "applications.get",
+            f"applications/",
+        )
+
         entities = self._session.query(ApplicationEntity).all()
 
         return [entity.to_details_model() for entity in entities]
 
-        # implement list() for all types here later
-
-        # applications = []
-
-        # for entity in entities:
-        #     if entity.type == "new_uta": # type: ignore
-        #         applications.append(
-        #             entity.to_details_model()
-        #         )
-        #     elif entity.type == "returning_uta":
-        #         applications.append(entity.to_details_model())
-        #     elif entity.type == "uta":
-        #         applications.append(entity.to_details_model())
-        #     else:
-        #         applications.append(entity.to_model())
-
-        # return applications
-        
-    
-    def get_application(self, subject: User) -> UserApplication:
-        """Returns application(s) for a specific user
+    def get_application(self, subject: User) -> NewUTAApplicationDetails:
+        """Returns an application for a specific user during a specific term
 
         Returns:
             list[Application]: List of all current applications for a specific user
+
+
+        This method currently returns the first application that is found in the table, however
+        future implementation will be taking the current term into consideration and querying based off
+        of that term. If a user doesn't have an application during that term then None would be returned.
         """
 
         application_entity = (
@@ -104,10 +110,11 @@ class ApplicationService:
 
         application = application_entity.map_application_to_detail_model(section_dict)
 
-        return UserApplication(application=application)
-    
+        return application
 
-    def create_undergrad(self, application: New_UTADetails) -> New_UTADetails:
+    def create_uta_application(
+        self, subject: User, application: NewUTAApplicationDetails
+    ) -> NewUTAApplicationDetails:
         """
         Creates an application based on the input object and adds it to the table.
         If the application's ID is unique to the table, a new entry is added.
@@ -120,10 +127,17 @@ class ApplicationService:
             Application: Object added to table
         """
 
+        if subject.id != application.user_id:
+            self._permission_svc.enforce(
+                subject,
+                "applications.create",
+                f"applications/{application.id}",
+            )
+
         if application.id:
             application.id = None
 
-        application_entity = New_UTA_Entity.from_model(application)
+        application_entity = NewUTAApplicationEntity.from_model(application)
 
         application_entity.preferred_sections = (
             self._session.query(SectionEntity)
@@ -153,9 +167,9 @@ class ApplicationService:
 
         return application_entity.to_details_model()
 
-    def update_undergrad(
-        self, subject: User, application: New_UTADetails
-    ) -> New_UTADetails:
+    def update_uta_application(
+        self, subject: User, application: NewUTAApplicationDetails
+    ) -> NewUTAApplicationDetails:
         """
         Updates an application for a user based on the application sent in.
         The application id must exist or an error is raised.
@@ -169,7 +183,7 @@ class ApplicationService:
         """
 
         original_application = (
-            self._session.query(New_UTA_Entity)
+            self._session.query(NewUTAApplicationEntity)
             .filter(ApplicationEntity.user_id == subject.id)
             .first()
         )
@@ -218,7 +232,7 @@ class ApplicationService:
         """
 
         original_application = (
-            self._session.query(New_UTA_Entity)
+            self._session.query(NewUTAApplicationEntity)
             .filter(ApplicationEntity.user_id == subject.id)
             .first()
         )

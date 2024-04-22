@@ -29,7 +29,10 @@
 </mat-card>
 
 <div
-  *ngIf="applicationService.user_application$ | async as application; else noApplication">
+  *ngIf="
+    applicationService.user_application$ | async as application;
+    else noApplication
+  ">
   <mat-card class="content" appearance="outlined">
     <mat-card-content>
       <mat-card-title>Become a TA!</mat-card-title>

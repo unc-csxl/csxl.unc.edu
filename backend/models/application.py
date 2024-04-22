@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from .comp_227 import Comp227
+
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -17,7 +19,7 @@ class Application(BaseModel):
     user_id: int
 
 
-class UTA(Application):
+class UTAApplication(Application):
     """
     Pydantic model to represent a `UTA`.
 
@@ -32,10 +34,10 @@ class UTA(Application):
     other_programs: str
     gpa: float
     comp_gpa: float
-    comp_227: str
+    comp_227: Comp227
 
 
-class New_UTA(UTA):
+class NewUTAApplication(UTAApplication):
     """
     Pydantic model to represent a `New UTA`.
 
@@ -43,13 +45,13 @@ class New_UTA(UTA):
     of the `Application` database in the PostgreSQL database.
     """
 
-    intro_video: str
+    intro_video_url: str
     prior_experience: str
     service_experience: str
     additional_experience: str
 
 
-class Returning_UTA(UTA):
+class ReturningUTAApplication(UTAApplication):
     """
     Pydantic model to represent a `Returning UTA`.
 

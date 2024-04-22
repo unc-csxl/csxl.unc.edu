@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Applications."""
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.section_application_table import section_application_table
@@ -8,15 +8,22 @@ from backend.entities.user_entity import UserEntity
 from backend.entities.academics.section_entity import SectionEntity
 from backend.models.application_details import (
     ApplicationDetails,
-    New_UTADetails,
-    UTADetails,
+    NewUTAApplicationDetails,
+    UTAApplicationDetails,
 )
 from backend.models.academics.section import Section
 
 from .entity_base import EntityBase
 from typing import Self, Dict
-from ..models.application import Application, UTA, New_UTA, Returning_UTA
-from ..models.application_details import UTADetails
+from ..models.application import (
+    Application,
+    UTAApplication,
+    NewUTAApplication,
+    ReturningUTAApplication,
+)
+from ..models.application_details import UTAApplicationDetails
+
+from ..models.comp_227 import Comp227
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
@@ -34,7 +41,7 @@ class ApplicationEntity(EntityBase):
 
     # The user associated with the application
     # NOTE: This field establishes a one-to-many relationship between the user and application tables.
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["UserEntity"] = relationship(back_populates="applications")
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
@@ -80,34 +87,34 @@ class ApplicationEntity(EntityBase):
         )
 
 
-class UTAEntity(ApplicationEntity):
+class UTAApplicationEntity(ApplicationEntity):
     """Serves as the database model schema for applications specific to Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to UTA Applications
 
     # Academic Hours student plans to take
-    academic_hours: Mapped[int] = mapped_column(Integer, nullable=True)
+    academic_hours: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # Extracurriculars student is a part of
     extracurriculars: Mapped[str] = mapped_column(String, nullable=True)
 
     # Expected graduation
-    expected_graduation: Mapped[str] = mapped_column(String, nullable=True)
+    expected_graduation: Mapped[str] = mapped_column(String, nullable=False)
 
     # Program pursued
-    program_pursued: Mapped[str] = mapped_column(String, nullable=True)
+    program_pursued: Mapped[str] = mapped_column(String, nullable=False)
 
     # Other programs being pursued
     other_programs: Mapped[str] = mapped_column(String, nullable=True)
 
     # GPA
-    gpa: Mapped[float] = mapped_column(Float, nullable=True)
+    gpa: Mapped[float] = mapped_column(Float, nullable=False)
 
     # COMP GPA
     comp_gpa: Mapped[float] = mapped_column(Float, nullable=True)
 
     # Do they want to do this as COMP 227?
-    comp_227: Mapped[str] = mapped_column(String, nullable=True)
+    comp_227: Mapped[Comp227] = mapped_column(SQLAlchemyEnum(Comp227), nullable=True)
 
     # Sections student prefers
     preferred_sections: Mapped[list["SectionEntity"]] = relationship(
@@ -116,12 +123,14 @@ class UTAEntity(ApplicationEntity):
         back_populates="preferred_applicants",
     )
 
+    # Any row in the main Application table that is an instance of UTAApplicationEntity will override
+    # the polymorephic_identity to "uta"
     __mapper_args__ = {
         "polymorphic_identity": "uta",
     }
 
     @classmethod
-    def from_model(cls, model: UTADetails) -> Self:
+    def from_model(cls, model: UTAApplicationDetails) -> Self:
         """
         Class method that converts a `UTA` model into a `UTAEntity`
 
@@ -147,7 +156,7 @@ class UTAEntity(ApplicationEntity):
 
         return entity
 
-    def to_model(self) -> UTA:
+    def to_model(self) -> UTAApplication:
         """
         Converts an `ApplicationEntity` object into an `Application` model object
 
@@ -156,7 +165,7 @@ class UTAEntity(ApplicationEntity):
         """
 
         parent_model = super().to_model().model_dump()
-        return UTA(
+        return UTAApplication(
             **parent_model,
             academic_hours=self.academic_hours,
             extracurriculars=self.extracurriculars,
@@ -168,7 +177,7 @@ class UTAEntity(ApplicationEntity):
             comp_227=self.comp_227,
         )
 
-    def to_details_model(self) -> UTADetails:
+    def to_details_model(self) -> UTAApplicationDetails:
         """
         Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
 
@@ -178,7 +187,7 @@ class UTAEntity(ApplicationEntity):
 
         parent_model = super().to_details_model().model_dump()
 
-        return UTADetails(
+        return UTAApplicationDetails(
             **parent_model,
             academic_hours=self.academic_hours,
             extracurriculars=self.extracurriculars,
@@ -193,7 +202,9 @@ class UTAEntity(ApplicationEntity):
             ],
         )
 
-    def update(self, model: UTADetails, sections: list[SectionEntity]) -> None:
+    def update(
+        self, model: UTAApplicationDetails, sections: list[SectionEntity]
+    ) -> None:
         """
         Update an ApplciationEntity from a UTA model.
 
@@ -214,13 +225,13 @@ class UTAEntity(ApplicationEntity):
         self.preferred_sections = sections
 
 
-class New_UTA_Entity(UTAEntity):
+class NewUTAApplicationEntity(UTAApplicationEntity):
     """Serves as the database model schema for applications specific to new Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to First-Time UTA Applications
 
     # Intro video explaining why they want to be a TA
-    intro_video: Mapped[str] = mapped_column(String, nullable=True)
+    intro_video_url: Mapped[str] = mapped_column(String, nullable=False)
 
     # Prior experience in the workforce
     prior_experience: Mapped[str] = mapped_column(String, nullable=True)
@@ -231,13 +242,14 @@ class New_UTA_Entity(UTAEntity):
     # Additonal experience that is relevant
     additional_experience: Mapped[str] = mapped_column(String, nullable=True)
 
-    # Set up for single-table inheritance (assign unique polymorphic identity)
+    # Any row in the main Application table that is an instance of NewUTAApplicationEntity will override
+    # the polymorephic_identity to "new_uta"
     __mapper_args__ = {
         "polymorphic_identity": "new_uta",
     }
 
     @classmethod
-    def from_model(cls, model: New_UTA) -> Self:
+    def from_model(cls, model: NewUTAApplication) -> Self:
         """
         Class method that converts an `Application` model into a `ApplicationEntity`
 
@@ -248,14 +260,14 @@ class New_UTA_Entity(UTAEntity):
         """
 
         entity = super().from_model(model)
-        entity.intro_video = model.intro_video
+        entity.intro_video_url = model.intro_video_url
         entity.prior_experience = model.prior_experience
         entity.service_experience = model.service_experience
         entity.additional_experience = model.additional_experience
 
         return entity
 
-    def to_model(self) -> New_UTA:
+    def to_model(self) -> NewUTAApplication:
         """
         Converts an `ApplicationEntity` object into an `Application` model object
 
@@ -264,15 +276,15 @@ class New_UTA_Entity(UTAEntity):
         """
 
         parent_model = super().to_details_model().model_dump()
-        return New_UTA(
+        return NewUTAApplication(
             **parent_model,
-            intro_video=self.intro_video,
+            intro_video_url=self.intro_video_url,
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
         )
 
-    def to_details_model(self) -> New_UTADetails:
+    def to_details_model(self) -> NewUTAApplicationDetails:
         """
         Converts a `ApplicationEntity` object into a `ApplicationDetails` model object
 
@@ -281,17 +293,17 @@ class New_UTA_Entity(UTAEntity):
         """
 
         parent_model = super().to_details_model().model_dump()
-        return New_UTADetails(
+        return NewUTAApplicationDetails(
             **parent_model,
-            intro_video=self.intro_video,
+            intro_video_url=self.intro_video_url,
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
         )
 
-    def update(self, model: New_UTADetails, sections: list[Section]) -> None:
+    def update(self, model: NewUTAApplicationDetails, sections: list[Section]) -> None:
         """
-        Update an ApplciationEntity from a New_UTA model.
+        Update an ApplicationEntity from a New_UTA model.
 
         Args:
             model (New_UTA): The model to update the entity from.
@@ -301,18 +313,20 @@ class New_UTA_Entity(UTAEntity):
         """
 
         super().update(model, sections)
-        self.intro_video = model.intro_video
+        self.intro_video_url = model.intro_video_url
         self.prior_experience = model.prior_experience
         self.service_experience = model.service_experience
         self.additional_experience = model.additional_experience
 
-    def map_application_to_detail_model(self, section_preferences: Dict[int, SectionEntity]) -> New_UTADetails:
+    def map_application_to_detail_model(
+        self, section_preferences: Dict[int, SectionEntity]
+    ) -> NewUTAApplicationDetails:
         """Returns the correctly mapped application for a specific user
 
         Returns:
             New_UTADetails: Object that represents an application for a new UTA
         """
-        return New_UTADetails(
+        return NewUTAApplicationDetails(
             id=self.id,
             user_id=self.user_id,
             academic_hours=self.academic_hours,
@@ -323,16 +337,16 @@ class New_UTA_Entity(UTAEntity):
             gpa=self.gpa,
             comp_gpa=self.comp_gpa,
             comp_227=self.comp_227,
-            intro_video=self.intro_video,
+            intro_video_url=self.intro_video_url,
             prior_experience=self.prior_experience,
             service_experience=self.service_experience,
             additional_experience=self.additional_experience,
-            user=self.user.to_model(),  
-            preferred_sections=[section for section in section_preferences.values()]
+            user=self.user.to_model(),
+            preferred_sections=[section for section in section_preferences.values()],
         )
 
 
-class Returning_UTA_Entity(UTAEntity):
+class ReturningUTAApplicationEntity(UTAApplicationEntity):
     """Serves as the database model schema for applications specific to returning Undergraduate TA's"""
 
     # Application properties (columns in the database table) specific to Returning UTA Applications
@@ -346,13 +360,14 @@ class Returning_UTA_Entity(UTAEntity):
     # Desired personal improvement
     desired_improvement: Mapped[str] = mapped_column(String, nullable=True)
 
-    # Set up for single-table inheritance (assign unique polymorphic identity)
+    # Any row in the main Application table that is an instance of ReturningUTAApplicationEntity will override
+    # the polymorephic_identity to "returning_uta"
     __mapper_args__ = {
         "polymorphic_identity": "returning_uta",
     }
 
     @classmethod
-    def from_model(cls, model: Returning_UTA) -> Self:
+    def from_model(cls, model: ReturningUTAApplication) -> Self:
         """
         Class method that converts an `Application` model into a `ApplicationEntity`
 
@@ -369,7 +384,7 @@ class Returning_UTA_Entity(UTAEntity):
 
         return entity
 
-    def to_model(self) -> Returning_UTA:
+    def to_model(self) -> ReturningUTAApplication:
         """
         Converts an `ApplicationEntity` object into an `Application` model object
 
@@ -378,7 +393,7 @@ class Returning_UTA_Entity(UTAEntity):
         """
 
         parent_model = super().to_model().model_dump()
-        return Returning_UTA(
+        return ReturningUTAApplication(
             **parent_model,
             ta_experience=self.ta_experience,
             best_moment=self.best_moment,

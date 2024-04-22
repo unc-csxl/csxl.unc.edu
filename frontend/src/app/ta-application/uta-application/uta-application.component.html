@@ -43,10 +43,12 @@
           <input
             matInput
             placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            formControlName="intro_video"
+            formControlName="intro_video_url"
             required />
           <mat-error
-            *ngIf="firstFormGroup.get('intro_video')?.errors?.['invalidURL']">
+            *ngIf="
+              firstFormGroup.get('intro_video_url')?.errors?.['invalidURL']
+            ">
             Please enter a valid Youtube Link
           </mat-error>
         </mat-form-field>
@@ -250,8 +252,9 @@
               <mat-chip
                 *ngFor="let section of selectedSections; let i = index"
                 (removed)="removeSection(i)">
-                {{ capitalizedCourseId(section) }} - {{ section.number }} - {{
-                getInstructorName(section) }}
+                {{ capitalizedCourseId(section) }} - {{ section.number }}
+                <!--- {{
+                getInstructorName(section) }} -->
                 <button
                   matChipRemove
                   [attr.aria-label]="'remove ' + section.course_id">
@@ -265,8 +268,9 @@
               <mat-option
                 *ngFor="let section of filteredPreferences | async"
                 [value]="section">
-                {{ capitalizedCourseId(section) }} - {{ section.number }} - {{
-                getInstructorName(section) }}
+                {{ capitalizedCourseId(section) }} - {{ section.number }}
+                <!--  - {{
+                getInstructorName(section) }} -->
               </mat-option>
             </mat-autocomplete>
           </div>
