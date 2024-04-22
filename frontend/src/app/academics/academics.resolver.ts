@@ -135,7 +135,7 @@ export const sectionsResolver: ResolveFn<Section[]> | undefined = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  return inject(AcademicsService).getSectionsByTermF24();
+  return inject(AcademicsService).getSectionsByTermF23();
 };
 
 /** This resolver injects the list of rooms into the offerings component. */

@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Applications."""
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.section_application_table import section_application_table
@@ -22,6 +22,8 @@ from ..models.application import (
     ReturningUTAApplication,
 )
 from ..models.application_details import UTAApplicationDetails
+
+from ..models.comp_227 import Comp227
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
@@ -112,7 +114,7 @@ class UTAApplicationEntity(ApplicationEntity):
     comp_gpa: Mapped[float] = mapped_column(Float, nullable=True)
 
     # Do they want to do this as COMP 227?
-    comp_227: Mapped[str] = mapped_column(String, nullable=True)
+    comp_227: Mapped[Comp227] = mapped_column(SQLAlchemyEnum(Comp227), nullable=True)
 
     # Sections student prefers
     preferred_sections: Mapped[list["SectionEntity"]] = relationship(

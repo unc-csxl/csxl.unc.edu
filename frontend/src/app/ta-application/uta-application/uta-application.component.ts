@@ -28,6 +28,7 @@ import { Profile } from 'src/app/profile/profile.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { sectionsResolver } from 'src/app/academics/academics.resolver';
 import { Application } from '../application.model';
+import { Comp227 } from '../application.model';
 
 interface OptionSelect {
   value: string;
@@ -116,15 +117,15 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
 
   comp227: OptionSelect[] = [
     {
-      value: 'Monetary compensation only',
+      value: Comp227.COMPENSATION,
       viewValue: 'Monetary compensation only'
     },
     {
-      value: 'COMP 227 credit only',
+      value: Comp227.CREDIT,
       viewValue: 'COMP 227 credit only'
     },
     {
-      value: 'Open to either 227 credit or compensation',
+      value: Comp227.EITHER,
       viewValue: 'Open to either 227 credit or compensation'
     }
   ];

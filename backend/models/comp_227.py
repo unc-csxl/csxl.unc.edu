@@ -8,6 +8,6 @@ __license__ = "MIT"
 
 
 class Comp227(Enum):
-    COMPENSATION = 0
-    CREDIT = 1
-    BOTH = 2
+    COMPENSATION = 'Monetary compensation only'
+    CREDIT = 'COMP 227 credit only'
+    EITHER = 'Open to either 227 credit or compensation'

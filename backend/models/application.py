@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from .comp_227 import Comp227
+
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -32,7 +34,7 @@ class UTAApplication(Application):
     other_programs: str
     gpa: float
     comp_gpa: float
-    comp_227: str
+    comp_227: Comp227
 
 
 class NewUTAApplication(UTAApplication):

@@ -120,8 +120,8 @@ export class AcademicsService {
   /** Returns all section entries by a term.
    * @returns {Observable<Section[]>}
    */
-  getSectionsByTermF24(): Observable<Section[]> {
-    return this.http.get<Section[]>(`/api/academics/section/term/F24`);
+  getSectionsByTermF23(): Observable<Section[]> {
+    return this.http.get<Section[]>(`/api/academics/section/term/F23`);
   }
 
   /** Returns one section from the backend database.
