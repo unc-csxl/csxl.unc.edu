@@ -1,20 +1,30 @@
 <mat-card appearance="outlined">
   <mat-card-header class="header">
-    <mat-card-title
-      class="hours-title open"
-      *ngIf="openOperatingHours; else closed">
-      <div class="header-row">
-        <span class="badge">Open</span>
-        until {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}
-      </div>
-    </mat-card-title>
-    <ng-template #closed>
-      <mat-card-title class="hours-title closed"
-        ><span class="badge">Closed</span></mat-card-title
-      >
-    </ng-template>
-    <button mat-stroked-button id="hours-button" (click)="openDialog()">
-      All Hours
-    </button>
+    <div class="header-row">
+      <mat-card-title
+        class="hours-title open"
+        *ngIf="openOperatingHours; else closed">
+        <div class="header-row">
+          <span class="badge">Open</span>
+          until {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}
+        </div>
+      </mat-card-title>
+      <ng-template #closed>
+        <mat-card-title class="hours-title closed">
+          <span class="badge">Closed</span>
+          <span *ngIf="operatingHours.length > 0"
+            >Open 
+            {{
+              operatingHours[0]!.start
+                | date: "EEE, MMM d 'at' h:mma"
+                | operatingHoursCapitalizationPipe
+            }}</span
+          >
+        </mat-card-title>
+      </ng-template>
+      <button mat-stroked-button id="hours-button" (click)="openDialog()">
+        All Hours
+      </button>
+    </div>
   </mat-card-header>
 </mat-card>
