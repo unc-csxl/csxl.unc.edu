@@ -4,8 +4,6 @@ import { AdminComponent } from './admin.component';
 import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.component';
 import { AdminRolesListComponent } from './roles/list/admin-roles-list.component';
 import { AdminUsersListComponent } from './users/list/admin-users-list.component';
-import { AdminApplicationsListComponent } from './applications/list/admin-applications-list.component';
-import { OrganizationListAdminComponent } from '../organization/organization-admin/list/organization-list-admin.component';
 
 const routes: Routes = [
   {
@@ -14,8 +12,7 @@ const routes: Routes = [
     children: [
       AdminUsersListComponent.Route,
       AdminRolesListComponent.Route,
-      AdminRoleDetailsComponent.Route,
-      OrganizationListAdminComponent.Route
+      AdminRoleDetailsComponent.Route
     ]
   }
 ];

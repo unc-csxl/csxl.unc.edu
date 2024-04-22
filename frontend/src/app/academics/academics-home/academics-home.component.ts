@@ -12,8 +12,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
 import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
-import { Application } from 'src/app/admin/applications/admin-application.model';
 import { Router } from '@angular/router';
+import { Application } from 'src/app/ta-application/application.model';
 
 @Component({
   selector: 'app-academics-home',
