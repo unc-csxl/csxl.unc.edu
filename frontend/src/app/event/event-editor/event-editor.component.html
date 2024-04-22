@@ -10,38 +10,60 @@
       <mat-card-title *ngIf="event.id !== null">Update Event</mat-card-title>
     </mat-card-header>
 
-        <!-- Event Name -->
-        <mat-card-content>
-            <mat-form-field appearance="outline" color="accent">
-                <mat-label>Event Name</mat-label>
-                <input matInput placeholder="New Event" formControlName="name" name="name" required />
-            </mat-form-field>
+    <!-- Event Name -->
+    <mat-card-content>
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Event Name</mat-label>
+        <input
+          matInput
+          placeholder="New Event"
+          formControlName="name"
+          name="name"
+          required />
+      </mat-form-field>
 
-            <!-- Start Time -->
-            <mat-form-field appearance="outline" color="accent">
-                <input matInput type="datetime-local" placeholder="Start Time" formControlName="time" name="time"
-                    required />
-            </mat-form-field>
+      <!-- Start Time -->
+      <mat-form-field appearance="outline" color="accent">
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="Start Time"
+          formControlName="time"
+          name="time"
+          required />
+      </mat-form-field>
 
-            <!-- Location -->
-            <mat-form-field appearance="outline" color="accent">
-                <mat-label>Location</mat-label>
-                <input matInput placeholder="The Pit" formControlName="location" name="location" required />
-            </mat-form-field>
+      <!-- Location -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Location</mat-label>
+        <input
+          matInput
+          placeholder="The Pit"
+          formControlName="location"
+          name="location"
+          required />
+      </mat-form-field>
 
-            <!-- Description -->
-            <mat-form-field appearance="outline" color="accent">
-                <mat-label>Description</mat-label>
-                <textarea matInput placeholder="Event description here." formControlName="description"
-                    name="description"></textarea>
-            </mat-form-field>
+      <!-- Description -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          placeholder="Event description here."
+          formControlName="description"
+          name="description"></textarea>
+      </mat-form-field>
 
-            <!-- Registration Limit -->
-            <mat-form-field appearance="outline" color="accent">
-                <mat-label>Registration Limit</mat-label>
-                <input type="number" matInput placeholder="Registration limit here."
-                    formControlName="registration_limit" name="registration_limit" />
-            </mat-form-field>
+      <!-- Registration Limit -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Registration Limit</mat-label>
+        <input
+          type="number"
+          matInput
+          placeholder="Registration limit here."
+          formControlName="registration_limit"
+          name="registration_limit" />
+      </mat-form-field>
 
       <!-- User Selection / Organizers Form Control -->
       <user-lookup
@@ -50,20 +72,20 @@
         [disabled]="(enabled$ | async) === false"></user-lookup>
     </mat-card-content>
 
-        <!-- Cancel and Save Buttons -->
-        <mat-card-actions>
-            <button mat-stroked-button type="button" (click)="onCancel()">
-                Cancel
-            </button>
+    <!-- Cancel and Save Buttons -->
+    <mat-card-actions>
+      <button mat-stroked-button type="button" (click)="onCancel()">
+        Cancel
+      </button>
 
-            <button mat-stroked-button type="submit" [disabled]="eventForm.invalid">
-                Save
-            </button>
-        </mat-card-actions>
-    </mat-card>
+      <button mat-stroked-button type="submit" [disabled]="eventForm.invalid">
+        Save
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </form>
 
 <!-- Message for Non-Authenicated Users -->
 <ng-template #unauthenticated>
-    You do not have permission to view this page
+  You do not have permission to view this page
 </ng-template>

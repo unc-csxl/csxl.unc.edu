@@ -23,6 +23,8 @@
     "@angular/platform-browser-dynamic": "~15.2.10",
     "@angular/router": "~15.2.10",
     "@auth0/angular-jwt": "~5.1.2",
+    "dompurify": "^3.1.0",
+    "marked": "^12.0.2",
     "rxjs": "~7.8.0",
     "tslib": "~2.3.0",
     "zone.js": "~0.12.0"
@@ -36,6 +38,7 @@
     "@angular-eslint/template-parser": "~15.2.1",
     "@angular/cli": "~15.2.10",
     "@angular/compiler-cli": "~15.2.10",
+    "@types/dompurify": "^3.0.5",
     "@types/jasmine": "~4.3.0",
     "@typescript-eslint/eslint-plugin": "5.48.2",
     "@typescript-eslint/parser": "5.48.2",

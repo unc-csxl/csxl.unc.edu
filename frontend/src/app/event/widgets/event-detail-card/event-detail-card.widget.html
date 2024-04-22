@@ -64,9 +64,7 @@
   <mat-divider class="padded-divider" />
 
   <!-- Description -->
-  <div class="event-description">
-    <p>{{ event.description }}</p>
-  </div>
+  <div class="event-description" [innerHTML]="descriptionHTML"></div>
 
   <!-- Organizers -->
   <div

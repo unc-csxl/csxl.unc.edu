@@ -20,7 +20,7 @@ import { eventDetailResolver } from '../event.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
 import { Organization } from 'src/app/organization/organization.model';
-import { Event, RegistrationType } from '../event.model';
+import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 
 @Component({
