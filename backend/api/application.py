@@ -28,7 +28,7 @@ openapi_tags = {
 api = APIRouter(prefix="/api/ta/applications")
 
 
-@api.get("", response_model=list[UTAApplicationDetails], tags=["Applications"])
+@api.get("", response_model=list[NewUTAApplicationDetails], tags=["Applications"])
 def get_applications(
     application_service: ApplicationService = Depends(),
 ) -> list[UTAApplicationDetails]:
