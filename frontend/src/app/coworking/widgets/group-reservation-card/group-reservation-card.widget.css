@@ -1,0 +1,10 @@
+@media (prefers-color-scheme: dark) {
+    .content-container {
+      color: white;
+    }
+    
+    .add-users-heading {
+      color: white; 
+    }
+  }
+  
