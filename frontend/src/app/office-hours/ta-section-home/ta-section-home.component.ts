@@ -34,8 +34,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 })
 export class TaSectionHomeComponent implements OnInit {
   public static Route = {
-    // TODO: replace spring-2024 in this route!
-    path: 'ta/spring-2024/:id',
+    path: 'ta/:id',
     component: TaSectionHomeComponent,
     canActivate: [],
     resolve: { section: sectionResolver },
@@ -103,7 +102,7 @@ export class TaSectionHomeComponent implements OnInit {
   navToCreateForm() {
     // TODO: Unhard code this later
     this.router.navigate([
-      '/office-hours/ta/spring-2024/',
+      '/office-hours/ta/',
       this.sectionId,
       'create-new-event'
     ]);
