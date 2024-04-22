@@ -63,6 +63,7 @@ def test_get_event_tickets_exception_if_student(oh_event_svc: OfficeHoursEventSe
 
     with pytest.raises(PermissionError):
         oh_event_svc.get_event_tickets(user__comp110_student_0, oh_event)
+        pytest.fail()
 
 
 def test_get_event_tickets_exception_if_non_member(
@@ -75,3 +76,4 @@ def test_get_event_tickets_exception_if_non_member(
 
     with pytest.raises(PermissionError):
         oh_event_svc.get_event_tickets(user__comp110_non_member, oh_event)
+        pytest.fail()

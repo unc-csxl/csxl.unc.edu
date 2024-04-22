@@ -3,7 +3,7 @@
 import pytest
 
 from .....models.office_hours.ticket import OfficeHoursTicketPartial
-from .....models.office_hours.ticket_details import OfficeHoursTicketDetails
+from .....models.office_hours.ticket_details import OfficeHoursTicket
 from .....models.office_hours.ticket_state import TicketState
 
 from .....services.exceptions import ResourceNotFoundException
@@ -43,7 +43,7 @@ def test_cancel_ticket_for_uta(oh_ticket_svc: OfficeHoursTicketService):
         OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
     )
 
-    assert isinstance(cancelled_ticket, OfficeHoursTicketDetails)
+    assert isinstance(cancelled_ticket, OfficeHoursTicket)
     assert cancelled_ticket.state == TicketState.CANCELED
 
 
@@ -56,7 +56,7 @@ def test_cancel_ticket_for_student(
         OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
     )
 
-    assert isinstance(cancelled_ticket, OfficeHoursTicketDetails)
+    assert isinstance(cancelled_ticket, OfficeHoursTicket)
     assert cancelled_ticket.state == TicketState.CANCELED
 
 

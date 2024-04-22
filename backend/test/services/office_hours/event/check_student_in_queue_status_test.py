@@ -69,3 +69,4 @@ def test_test_check_student_in_queue_status_exception_if_non_member(
 
     with pytest.raises(PermissionError):
         oh_event_svc.check_staff_helping_status(user__comp110_non_member, oh_event)
+        pytest.fail()

@@ -43,7 +43,7 @@ def test_get_user_not_enrolled_sections_by_term_student(
 
     assert isinstance(oh_sections[0], OfficeHoursSection)
     # Student By Default Is Enrolled in One OH Section
-    assert len(oh_sections) == len(office_hours_data.s24_oh_sections) - 1
+    assert len(oh_sections) == len(office_hours_data.current_term_oh_sections) - 1
 
 
 def test_get_user_not_enrolled_sections_by_term_uta(
@@ -56,7 +56,7 @@ def test_get_user_not_enrolled_sections_by_term_uta(
 
     assert isinstance(oh_sections[0], OfficeHoursSection)
     # By Default Is Enrolled in One OH Section - Only Existing OH Section
-    assert len(oh_sections) == len(office_hours_data.s24_oh_sections) - 1
+    assert len(oh_sections) == len(office_hours_data.current_term_oh_sections) - 1
 
 
 def test_get_user_not_enrolled_sections_by_term_enrolled_in_none(

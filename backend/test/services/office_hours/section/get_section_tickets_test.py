@@ -2,12 +2,8 @@
 
 import pytest
 
-from backend.models.office_hours.event import OfficeHoursEvent
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
 from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
-from backend.services.academics.section import SectionService
 
-from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.

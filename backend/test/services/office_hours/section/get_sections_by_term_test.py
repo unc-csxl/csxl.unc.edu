@@ -1,14 +1,9 @@
 """Tests for `get_sections_by_term()` in Office Hours Section Service."""
 
-from datetime import datetime, timedelta
 import pytest
 
-from backend.models.coworking.time_range import TimeRange
-from backend.models.office_hours.event import OfficeHoursEvent
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
-from backend.services.academics.section import SectionService
+from .....models.office_hours.section_details import OfficeHoursSectionDetails
 
-from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -24,13 +19,9 @@ from ..office_hours_data import fake_data_fixture as insert_order_5
 
 # Import the fake model data in a namespace for test assertions
 from .. import office_hours_data
+from ...academics import term_data
 from ...academics.section_data import (
-    user__comp110_instructor,
     user__comp110_student_0,
-    user__comp110_uta_0,
-    user__comp301_instructor,
-    user__comp110_non_member,
-    term_data,
 )
 
 __authors__ = ["Meghan Sun"]

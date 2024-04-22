@@ -1,15 +1,9 @@
 """Tests for `get_sections_tickets_with_concerns()` in Office Hours Section Service."""
 
-from datetime import datetime, timedelta
 import pytest
 
-from backend.models.coworking.time_range import TimeRange
-from backend.models.office_hours.event import OfficeHoursEvent
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
-from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
-from backend.services.academics.section import SectionService
+from .....models.office_hours.ticket_details import OfficeHoursTicketDetails
 
-from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -29,9 +23,7 @@ from ...academics.section_data import (
     user__comp110_instructor,
     user__comp110_student_0,
     user__comp110_uta_0,
-    user__comp301_instructor,
     user__comp110_non_member,
-    term_data,
 )
 
 __authors__ = ["Meghan Sun"]

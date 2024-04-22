@@ -31,7 +31,6 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-# TODO: Add Comments
 class OfficeHoursTicketService:
     """Service that performs all of the actions on the `OfficeHoursTicket` table"""
 

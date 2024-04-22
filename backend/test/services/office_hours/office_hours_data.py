@@ -62,7 +62,7 @@ oh_sections = [
 
 # For Test
 f23_oh_sections = [comp_110_oh_section_f23]
-s24_oh_sections = [comp_110_oh_section, comp_523_oh_section]
+current_term_oh_sections = [comp_110_oh_section, comp_523_oh_section]
 
 oh_section_draft = OfficeHoursSectionDraft(title="Draft OH Section")
 # Office Hours Event Data
@@ -177,10 +177,7 @@ comp110_closed_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
-    created_at=datetime.now() - timedelta(minutes=10),
-    closed_at=datetime.now() - timedelta(minutes=1),
-    have_concerns=True,
-    caller_notes="Forgot to Return Function.",
+    created_at=datetime.now() - timedelta(minutes=20),
 )
 
 
@@ -339,7 +336,19 @@ def insert_fake_data(session: Session):
         OfficeHoursTicketEntity.id.in_(
             [comp110_called_ticket.id, comp110_closed_ticket.id]
         )
-    ).update({"caller_id": uta.id, "called_at": datetime.now()})
+    ).update({"caller_id": uta.id, "called_at": datetime.now() - timedelta(minutes=2)})
+
+    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
+    session.query(OfficeHoursTicketEntity).filter(
+        OfficeHoursTicketEntity.id.in_([comp110_closed_ticket.id])
+    ).update(
+        {
+            "have_concerns": True,
+            "called_at": datetime.now() - timedelta(minutes=10),
+            "closed_at": datetime.now() - timedelta(minutes=1),
+            "caller_notes": "Great to work with!",
+        }
+    )
 
     reset_table_id_seq(
         session,

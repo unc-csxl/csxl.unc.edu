@@ -19,7 +19,6 @@ from ..office_hours_data import fake_data_fixture as insert_order_5
 
 # Import the fake model data in a namespace for test assertions
 from .. import office_hours_data
-from ...academics import term_data
 from ...academics.section_data import (
     user__comp110_instructor,
     user__comp110_student_0,

@@ -2,8 +2,8 @@
 
 import pytest
 
-from .....models.office_hours.ticket import OfficeHoursTicketPartial
-from .....models.office_hours.ticket_details import OfficeHoursTicketDetails
+from .....models.office_hours.ticket import OfficeHoursTicket
+from .....models.office_hours.ticket_details import OfficeHoursTicket
 from .....models.office_hours.ticket_state import TicketState
 
 from .....services.exceptions import ResourceNotFoundException
@@ -41,7 +41,7 @@ def test_get_ticket_by_id_student_creator(oh_ticket_svc: OfficeHoursTicketServic
     ticket = oh_ticket_svc.get_ticket_by_id(
         user__comp110_student_0, office_hours_data.comp110_called_ticket.id
     )
-    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert isinstance(ticket, OfficeHoursTicket)
     assert ticket.id == office_hours_data.comp110_called_ticket.id
     assert ticket.state == office_hours_data.comp110_called_ticket.state
 
@@ -51,7 +51,7 @@ def test_get_ticket_by_id_for_section_uta(oh_ticket_svc: OfficeHoursTicketServic
     ticket = oh_ticket_svc.get_ticket_by_id(
         user__comp110_uta_0, office_hours_data.comp110_queued_ticket.id
     )
-    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert isinstance(ticket, OfficeHoursTicket)
     assert ticket.id == office_hours_data.comp110_queued_ticket.id
 
 
@@ -62,7 +62,7 @@ def test_get_ticket_by_id_for_section_instructor(
     ticket = oh_ticket_svc.get_ticket_by_id(
         user__comp110_instructor, office_hours_data.comp110_queued_ticket.id
     )
-    assert isinstance(ticket, OfficeHoursTicketDetails)
+    assert isinstance(ticket, OfficeHoursTicket)
     assert ticket.id == office_hours_data.comp110_queued_ticket.id
 
 

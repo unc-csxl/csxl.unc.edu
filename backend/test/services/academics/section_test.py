@@ -226,7 +226,7 @@ def test_delete_as_user(section_svc: SectionService):
 def test_get_sections_with_no_office_hours_by_term(section_svc: SectionService):
 
     sections_with_no_oh = section_svc.get_sections_with_no_office_hours_by_term(
-        term_data.current_term
+        term_data.current_term.id
     )
 
     assert len(sections_with_no_oh) > 0

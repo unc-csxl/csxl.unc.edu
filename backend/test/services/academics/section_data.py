@@ -193,6 +193,7 @@ user__comp301_instructor = user_data.instructor
 user__comp301_uta = user_data.ambassador
 user__comp301_student = user_data.student
 
+user__comp523_instructor = user_data.instructor
 
 # CURRENT TERM MEMBERSHIPS
 comp110_instructor = SectionMemberDraft(
@@ -252,23 +253,30 @@ comp_301_student = SectionMemberDraft(
     member_role=RosterRole.STUDENT,
 )
 
+comp_523_instructor = SectionMemberDraft(
+    id=9,
+    user_id=user__comp523_instructor.id,
+    section_id=comp_523_001_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
 # F23 Section Memberships
 comp110_f23_instructor = SectionMemberDraft(
-    id=9,
+    id=10,
     user_id=user__comp110_instructor.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
 comp110_f23_uta = SectionMemberDraft(
-    id=10,
+    id=11,
     user_id=user__comp110_uta_0.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.UTA,
 )
 
 comp110_f23_student = SectionMemberDraft(
-    id=11,
+    id=12,
     user_id=user__comp110_student_0.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.STUDENT,
@@ -286,6 +294,7 @@ section_members = [
     comp301_instructor,
     comp_301_uta,
     comp_301_student,
+    comp_523_instructor,
 ]
 
 comp110_members = [

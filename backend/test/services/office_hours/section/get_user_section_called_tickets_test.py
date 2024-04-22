@@ -2,12 +2,8 @@
 
 import pytest
 
-from backend.models.office_hours.event import OfficeHoursEvent
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
 from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
-from backend.services.academics.section import SectionService
 
-from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -40,6 +36,7 @@ __license__ = "MIT"
 def test_get_user_section_called_ticket_by_uta(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to get called tickets for a UTA in a section."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_uta_0, office_hours_data.comp_110_oh_section.id
     )
@@ -50,13 +47,14 @@ def test_get_user_section_called_ticket_by_uta(
     assert isinstance(called_tickets[0], OfficeHoursTicketDetails)
     assert len(called_tickets) == 2
 
-    # Lastest Ticket First
+    # Latest Ticket First
     assert called_tickets[0].created_at > called_tickets[1].created_at
 
 
 def test_get_user_section_called_ticket_by_student(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to get called tickets for a student in a section."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_student_1, office_hours_data.comp_110_oh_section.id
     )
@@ -70,12 +68,12 @@ def test_get_user_section_called_ticket_by_student(
 def test_get_user_section_called_ticket_exception_if_non_member(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to check if getting called tickets by a non-member raises an exception."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_non_member, office_hours_data.comp_110_oh_section.id
     )
 
     with pytest.raises(PermissionError):
-
         oh_section_svc.get_user_section_called_tickets(
             user__comp110_non_member, oh_section
         )

@@ -454,10 +454,8 @@ class OfficeHoursSectionService:
             subject.id, oh_section.id
         )
 
-        if (
-            section_member_entity.member_role != RosterRole.INSTRUCTOR
-            and section_member_entity.member_role != RosterRole.GTA
-        ):
+        roles_with_permissions = [RosterRole.INSTRUCTOR, RosterRole.GTA]
+        if section_member_entity.member_role not in roles_with_permissions:
             raise PermissionError(
                 f"Section Member is not an Instructor or GTA. User Does Not Have Permision to get concerning tickets in section with id {oh_section.id}."
             )

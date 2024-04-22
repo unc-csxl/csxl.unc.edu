@@ -45,6 +45,7 @@ def test_delete_by_uta(oh_event_svc: OfficeHoursEventService):
         oh_event_svc.get_event_by_id(
             user__comp110_uta_0, office_hours_data.comp_110_past_oh_event_0.id
         )
+        pytest.fail()
 
 
 def test_delete_by_instructor(oh_event_svc: OfficeHoursEventService):
@@ -60,6 +61,7 @@ def test_delete_by_instructor(oh_event_svc: OfficeHoursEventService):
         oh_event_svc.get_event_by_id(
             user__comp110_instructor, office_hours_data.comp_110_past_oh_event_0.id
         )
+        pytest.fail()
 
 
 def test_delete_exception_if_student(oh_event_svc: OfficeHoursEventService):
@@ -70,6 +72,7 @@ def test_delete_exception_if_student(oh_event_svc: OfficeHoursEventService):
 
     with pytest.raises(PermissionError):
         oh_event_svc.delete(user__comp110_student_0, oh_event)
+        pytest.fail()
 
 
 def test_delete_exception_if_non_member(oh_event_svc: OfficeHoursEventService):

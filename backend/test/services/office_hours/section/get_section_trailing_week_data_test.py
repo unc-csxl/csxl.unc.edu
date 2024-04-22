@@ -2,12 +2,8 @@
 
 import pytest
 
-from backend.models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
+from .....models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 
-from .....models.academics.section_member import SectionMember
-from .....models.office_hours.section import OfficeHoursSectionPartial
-
-from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -28,7 +24,6 @@ from ...academics.section_data import (
     user__comp110_student_0,
     user__comp110_uta_0,
     user__comp110_non_member,
-    comp110_members,
 )
 
 __authors__ = ["Meghan Sun"]
@@ -37,6 +32,7 @@ __license__ = "MIT"
 
 
 def test_get_section_trailing_week_data(oh_section_svc: OfficeHoursSectionService):
+    """Test to get trailing week data for a section."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_instructor, office_hours_data.comp_110_oh_section.id
     )
@@ -45,15 +41,41 @@ def test_get_section_trailing_week_data(oh_section_svc: OfficeHoursSectionServic
         user__comp110_instructor, oh_section
     )
 
-    # Future TODO: Calcalute Actual Stats From Demo Data
+    # Future TODO: Calculate Actual Stats From Demo Data
     assert isinstance(data, OfficeHoursSectionTrailingWeekData)
     assert data.number_of_students == 1
     assert data.number_of_tickets == len(office_hours_data.comp110_tickets)
+    assert data.average_wait_time is not None
+    assert data.average_ticket_duration is not None
+    assert data.standard_deviation_wait_time is not None
+    assert data.standard_deviation_ticket_duration is not None
+
+
+def test_get_section_trailing_week_data_no_ticket_info(
+    oh_section_svc: OfficeHoursSectionService,
+):
+    """Test to get trailing week data for a section with no ticket info."""
+    oh_section = oh_section_svc.get_section_by_id(
+        user__comp110_instructor, office_hours_data.comp_523_oh_section.id
+    )
+
+    data = oh_section_svc.get_section_trailing_week_data(
+        user__comp110_instructor, oh_section
+    )
+
+    assert isinstance(data, OfficeHoursSectionTrailingWeekData)
+    assert data.number_of_students == 0
+    assert data.number_of_tickets == 0
+    assert data.average_wait_time == 0
+    assert data.average_ticket_duration == 0
+    assert data.standard_deviation_wait_time == 0
+    assert data.standard_deviation_ticket_duration == 0
 
 
 def test_get_section_trailing_week_data_exception_by_student(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to check if getting trailing week data by a student raises an exception."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_section.id
     )
@@ -67,6 +89,7 @@ def test_get_section_trailing_week_data_exception_by_student(
 def test_get_section_trailing_week_data_exception_by_uta(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to check if getting trailing week data by a UTA raises an exception."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_uta_0, office_hours_data.comp_110_oh_section.id
     )
@@ -78,6 +101,7 @@ def test_get_section_trailing_week_data_exception_by_uta(
 def test_get_section_trailing_week_data_exception_by_non_member(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to check if getting trailing week data by a non-member raises an exception."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_non_member, office_hours_data.comp_110_oh_section.id
     )

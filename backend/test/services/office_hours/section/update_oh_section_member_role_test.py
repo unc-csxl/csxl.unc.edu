@@ -2,12 +2,10 @@
 
 import pytest
 
-from backend.models.academics.section_member import SectionMember, SectionMemberPartial
-from backend.models.roster_role import RosterRole
-from backend.services.academics.section_member import SectionMemberService
+from .....models.academics.section_member import SectionMember, SectionMemberPartial
+from .....models.roster_role import RosterRole
 
-from .....models.office_hours.section_details import OfficeHoursSectionDetails
-
+from .....services.academics.section_member import SectionMemberService
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -32,7 +30,6 @@ from ...academics.section_data import (
     user__comp301_instructor,
     user__comp110_non_member,
     user__comp110_gta,
-    term_data,
     comp110_student_0,
     comp110_uta,
     comp110_instructor,
@@ -46,7 +43,7 @@ __license__ = "MIT"
 def test_update_oh_section_member_role_student_to_uta(
     oh_section_svc: OfficeHoursSectionService, section_member_svc: SectionMemberService
 ):
-
+    """Test to update a student's role to UTA."""
     section_member_to_change = comp110_student_0
     role_change = RosterRole.UTA
     user_attempting_change = user__comp110_instructor
@@ -67,13 +64,13 @@ def test_update_oh_section_member_role_student_to_uta(
     section_member = section_member_svc.get_section_member_by_id(
         section_member_to_change.id
     )
-    section_member.member_role == role_change
+    assert section_member.member_role == role_change
 
 
 def test_update_oh_section_member_role_student_to_gta(
     oh_section_svc: OfficeHoursSectionService, section_member_svc: SectionMemberService
 ):
-
+    """Test to update a student's role to GTA."""
     section_member_to_change = comp110_student_0
     role_change = RosterRole.GTA
     user_attempting_change = user__comp110_instructor
@@ -94,13 +91,13 @@ def test_update_oh_section_member_role_student_to_gta(
     section_member = section_member_svc.get_section_member_by_id(
         section_member_to_change.id
     )
-    section_member.member_role == role_change
+    assert section_member.member_role == role_change
 
 
 def test_update_oh_section_member_role_uta_to_student(
     oh_section_svc: OfficeHoursSectionService, section_member_svc: SectionMemberService
 ):
-
+    """Test to update a UTA's role to student."""
     section_member_to_change = comp110_uta
     role_change = RosterRole.STUDENT
     user_attempting_change = user__comp110_instructor
@@ -121,13 +118,13 @@ def test_update_oh_section_member_role_uta_to_student(
     section_member = section_member_svc.get_section_member_by_id(
         section_member_to_change.id
     )
-    section_member.member_role == role_change
+    assert section_member.member_role == role_change
 
 
 def test_update_oh_section_member_role_uta_to_student_by_gta(
     oh_section_svc: OfficeHoursSectionService, section_member_svc: SectionMemberService
 ):
-
+    """Test to update a UTA's role to student by GTA."""
     section_member_to_change = user__comp110_uta_0
     role_change = RosterRole.STUDENT
     user_attempting_change = user__comp110_gta
@@ -148,13 +145,13 @@ def test_update_oh_section_member_role_uta_to_student_by_gta(
     section_member = section_member_svc.get_section_member_by_id(
         section_member_to_change.id
     )
-    section_member.member_role == role_change
+    assert section_member.member_role == role_change
 
 
 def test_update_oh_section_member_role_student_to_uta_by_gta(
     oh_section_svc: OfficeHoursSectionService, section_member_svc: SectionMemberService
 ):
-
+    """Test to update a student's role to UTA by GTA."""
     section_member_to_change = comp110_student_0
     role_change = RosterRole.UTA
     user_attempting_change = user__comp110_gta
@@ -175,13 +172,13 @@ def test_update_oh_section_member_role_student_to_uta_by_gta(
     section_member = section_member_svc.get_section_member_by_id(
         section_member_to_change.id
     )
-    section_member.member_role == role_change
+    assert section_member.member_role == role_change
 
 
 def test_update_oh_section_member_role_student_to_gta_by_gta(
     oh_section_svc: OfficeHoursSectionService, section_member_svc: SectionMemberService
 ):
-
+    """Test to update a student's role to GTA by GTA."""
     section_member_to_change = comp110_student_0
     role_change = RosterRole.GTA
     user_attempting_change = user__comp110_gta
@@ -202,13 +199,13 @@ def test_update_oh_section_member_role_student_to_gta_by_gta(
     section_member = section_member_svc.get_section_member_by_id(
         section_member_to_change.id
     )
-    section_member.member_role == role_change
+    assert section_member.member_role == role_change
 
 
 def test_update_oh_section_member_role_exception_if_by_uta(
     oh_section_svc: OfficeHoursSectionService,
 ):
-
+    """Test to check if updating a role by UTA raises an exception."""
     section_member_to_change = comp110_student_0
     role_change = RosterRole.GTA
     user_attempting_change = user__comp110_uta_0
@@ -228,7 +225,7 @@ def test_update_oh_section_member_role_exception_if_by_uta(
 def test_update_oh_section_member_role_exception_if_by_student(
     oh_section_svc: OfficeHoursSectionService,
 ):
-
+    """Test to check if updating a role by student raises an exception."""
     section_member_to_change = comp110_student_0
     delta = SectionMemberPartial(
         id=section_member_to_change.id, member_role=RosterRole.GTA
@@ -245,7 +242,7 @@ def test_update_oh_section_member_role_exception_if_by_student(
 def test_update_oh_section_member_role_exception_if_non_member(
     oh_section_svc: OfficeHoursSectionService,
 ):
-
+    """Test to check if updating a role by a non-member raises an exception."""
     section_member_to_change = comp110_student_0
     role_change = RosterRole.GTA
     user_attempting_change = user__comp110_non_member
@@ -265,7 +262,7 @@ def test_update_oh_section_member_role_exception_if_non_member(
 def test_update_oh_section_member_role_exception_if_gta_downgrades_instructor(
     oh_section_svc: OfficeHoursSectionService,
 ):
-
+    """Test to check if a GTA downgrading an instructor raises an exception."""
     section_member_to_change = comp110_instructor
     role_change = RosterRole.STUDENT
     user_attempting_change = user__comp110_gta
@@ -285,7 +282,7 @@ def test_update_oh_section_member_role_exception_if_gta_downgrades_instructor(
 def test_update_oh_section_member_role_exception_if_uta_downgrades_instructor(
     oh_section_svc: OfficeHoursSectionService,
 ):
-
+    """Test to check if a UTA downgrading an instructor raises an exception."""
     section_member_to_change = comp110_instructor
     role_change = RosterRole.STUDENT
     user_attempting_change = user__comp110_uta_0
@@ -303,14 +300,33 @@ def test_update_oh_section_member_role_exception_if_uta_downgrades_instructor(
 
 
 def test_update_oh_section_member_role_exception_if_non_member(
-    oh_section_svc: OfficeHoursSectionService, section_member_svc: SectionMemberService
+    oh_section_svc: OfficeHoursSectionService,
 ):
-
+    """Test to check if updating a role for an invalid member raises an exception."""
     invalid_section_member_id = 99
     role_change = RosterRole.UTA
     user_attempting_change = user__comp110_instructor
 
     delta = SectionMemberPartial(id=invalid_section_member_id, member_role=role_change)
+
+    with pytest.raises(PermissionError):
+        oh_section_svc.update_oh_section_member_role(
+            user_attempting_change, delta, office_hours_data.comp_110_oh_section.id
+        )
+        pytest.fail()
+
+
+def test_update_oh_section_member_role_exception_if_member_role_to_modify_is_instructor(
+    oh_section_svc: OfficeHoursSectionService,
+):
+    """Test to check if modifying an instructor's role raises an exception."""
+    section_member_to_change = comp110_student_0
+    role_change = RosterRole.INSTRUCTOR
+    user_attempting_change = user__comp110_gta
+
+    delta = SectionMemberPartial(
+        id=section_member_to_change.id, member_role=role_change
+    )
 
     with pytest.raises(PermissionError):
         oh_section_svc.update_oh_section_member_role(
