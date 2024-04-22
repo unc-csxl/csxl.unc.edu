@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   TicketDetails,
   OfficeHoursEventDetails,
@@ -32,7 +32,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   templateUrl: './ticket-queue-page.component.html',
   styleUrls: ['./ticket-queue-page.component.css']
 })
-export class TicketQueuePageComponent implements OnInit {
+export class TicketQueuePageComponent implements OnInit, OnDestroy {
   // TODO: Update this route later to not be hard-coded!
   public static Routes = [
     {
@@ -144,6 +144,10 @@ export class TicketQueuePageComponent implements OnInit {
     this.defaultTabTitle = this.tabTitle.getTitle();
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribeObservables();
+  }
+
   /* Gets current tickets that are in the queue */
   getCurrentTickets() {
     if (this.event) {
@@ -190,9 +194,12 @@ export class TicketQueuePageComponent implements OnInit {
       });
   }
 
-  unsubscribeRefresh() {
+  unsubscribeObservables() {
     if (this.refresh) {
       this.refresh.unsubscribe();
+    }
+    if (this.titleNotif) {
+      this.titleNotif.unsubscribe();
     }
   }
 

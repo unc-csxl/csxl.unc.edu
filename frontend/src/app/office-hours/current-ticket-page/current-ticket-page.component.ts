@@ -26,7 +26,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './current-ticket-page.component.html',
   styleUrls: ['./current-ticket-page.component.css']
 })
-export class CurrentTicketPageComponent implements OnInit {
+export class CurrentTicketPageComponent implements OnInit, OnDestroy {
   // TODO: Un-hardcode 'spring-2024'
   public static Route = {
     path: 'spring-2024/:id/:event_id/ticket/:ticket_id',
@@ -75,6 +75,11 @@ export class CurrentTicketPageComponent implements OnInit {
   /* On initialization, get the ticket information */
   ngOnInit(): void {
     this.getTicketInfo();
+  }
+
+  /* On destruction, unsubscribe from refresh observable */
+  ngOnDestroy(): void {
+    this.unsubscribeObservables();
   }
 
   /* Gets ticket information including the associated event and section */
@@ -144,5 +149,11 @@ export class CurrentTicketPageComponent implements OnInit {
         this.queued_tickets = stats.queued_tickets_count;
         this.queue_spot = stats.ticket_position;
       });
+  }
+
+  unsubscribeObservables() {
+    if (this.refresh) {
+      this.refresh.unsubscribe();
+    }
   }
 }
