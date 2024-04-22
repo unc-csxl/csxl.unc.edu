@@ -21,6 +21,7 @@ import {
 } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
 import { sectionResolver } from '../office-hours.resolver';
+import { Title } from '@angular/platform-browser';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['section']?.title ?? 'Section Not Found';
@@ -75,11 +76,22 @@ export class TicketQueuePageComponent implements OnInit {
   queued_tickets: number | null;
   called_tickets: number | null;
 
+  /* Stores refresh interval subscription so that it can be unsubscribed from */
   refresh: Subscription | undefined;
+
+  /* Stores title interval subscription so that it can be unsubscribed from */
+  titleNotif: Subscription | undefined;
+
+  /* Stores default tab title to revert when no new tickets are in queue */
+  defaultTabTitle: string = '';
+
+  /* Highest ticket ID in most recent refresh */
+  prevHighestTicketId: number = Number.MAX_VALUE;
 
   constructor(
     private officeHoursService: OfficeHoursService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected tabTitle: Title
   ) {
     // Retrieves IDs from route parameters
     this.eventId = this.route.snapshot.params['event_id'];
@@ -98,7 +110,28 @@ export class TicketQueuePageComponent implements OnInit {
       this.getCurrentTickets();
       this.getEvent();
       this.getTicketStats();
-      console.log('here');
+
+      // If there are no queued tickets, set tab title back to default
+      if (this.queued_tickets === 0) {
+        if (this.titleNotif) {
+          this.titleNotif.unsubscribe();
+        }
+        this.tabTitle.setTitle(this.defaultTabTitle);
+      }
+
+      // If there are new tickets in the queue, change tab title on an interval
+      if (this.getHighestTicketId() > this.prevHighestTicketId) {
+        this.titleNotif = interval(1500).subscribe((tick) => {
+          if (tick % 2 === 0) {
+            this.tabTitle.setTitle('• New Ticket •');
+          } else {
+            this.tabTitle.setTitle(this.defaultTabTitle);
+          }
+        });
+      }
+
+      // Set new highest ticket ID
+      this.prevHighestTicketId = this.getHighestTicketId();
     });
   }
 
@@ -107,6 +140,8 @@ export class TicketQueuePageComponent implements OnInit {
     this.getEvent();
     this.getSection();
     this.getTicketStats();
+    // Store default tab title
+    this.defaultTabTitle = this.tabTitle.getTitle();
   }
 
   /* Gets current tickets that are in the queue */
@@ -159,5 +194,9 @@ export class TicketQueuePageComponent implements OnInit {
     if (this.refresh) {
       this.refresh.unsubscribe();
     }
+  }
+
+  getHighestTicketId(): number {
+    return this.tickets.at(this.tickets.length - 1)?.id ?? -1;
   }
 }

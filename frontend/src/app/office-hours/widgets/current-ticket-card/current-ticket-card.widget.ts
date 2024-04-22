@@ -7,45 +7,26 @@
  * @license MIT
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import {
-  OfficeHoursEvent,
-  OfficeHoursEventType,
-  TicketDetails
-} from '../../office-hours.models';
+import { Component, Input } from '@angular/core';
+import { OfficeHoursEvent, TicketDetails } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
-import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog.widget';
-import { interval } from 'rxjs';
 
 @Component({
   selector: 'current-ticket-card-widget',
   templateUrl: './current-ticket-card.widget.html',
   styleUrls: ['./current-ticket-card.widget.css']
 })
-export class CurrentTicketCard implements OnInit {
+export class CurrentTicketCard {
   /* TicketDetails and Event to display on widget */
   @Input() ticket!: TicketDetails;
   @Input() event!: OfficeHoursEvent;
-  /* Ticket queue stats */
-  queued_tickets: number | null;
-  called_tickets: number | null;
-  queue_spot: number | null;
 
   constructor(
     private officeHoursService: OfficeHoursService,
     public dialog: MatDialog
-  ) {
-    this.queued_tickets = null;
-    this.called_tickets = null;
-    this.queue_spot = null;
-  }
-
-  ngOnInit(): void {
-    this.getTicketStats();
-  }
+  ) {}
 
   /* Helper function that formats ticket type enum */
   formatTicketType(typeNum: number) {
@@ -64,21 +45,5 @@ export class CurrentTicketCard implements OnInit {
       width: 'auto',
       data: { ticket: this.ticket, event: this.event }
     });
-  }
-
-  /* Helper function that formats event type enum as string */
-  formatEventType(eventType: OfficeHoursEventType) {
-    return this.officeHoursService.formatEventType(eventType);
-  }
-
-  /* Helper function that gets ticket queue stats */
-  getTicketStats() {
-    this.officeHoursService
-      .getQueueStatsForStudent(this.event.id, this.ticket.id)
-      .subscribe((stats) => {
-        this.called_tickets = stats.open_tickets_count;
-        this.queued_tickets = stats.queued_tickets_count;
-        this.queue_spot = stats.ticket_position;
-      });
   }
 }
