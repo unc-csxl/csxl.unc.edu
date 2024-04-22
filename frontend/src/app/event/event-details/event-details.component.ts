@@ -19,6 +19,8 @@ import {
 import { Event } from '../event.model';
 import { Observable, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
+import * as marked from 'marked';
+import * as DOMPurify from 'dompurify';
 
 /** Injects the event's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -47,6 +49,7 @@ export class EventDetailsComponent {
 
   /** Store Event */
   public event!: Event;
+  public eventDescriptionHTML: string = '';
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
@@ -63,6 +66,9 @@ export class EventDetailsComponent {
     };
     this.profile = data.profile;
     this.event = data.event;
+    this.eventDescriptionHTML = DOMPurify.sanitize(
+      marked.parse(this.event.description) as string
+    );
 
     // Admin Permission if has the actual permission or is event organizer
     this.adminPermission$ = this.permission.check(

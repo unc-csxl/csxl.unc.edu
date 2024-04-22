@@ -15,8 +15,6 @@ import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { Profile } from 'src/app/models.module';
 import { Router } from '@angular/router';
-import * as marked from 'marked';
-import * as DOMPurify from 'dompurify';
 
 @Component({
   selector: 'event-detail-card',
@@ -26,9 +24,10 @@ import * as DOMPurify from 'dompurify';
 export class EventDetailCard implements OnInit {
   /** The event for the event card to display */
   @Input() event!: Event;
+  @Input() descriptionHTML!: string;
   @Input() profile!: Profile;
+
   adminPermission$!: Observable<boolean>;
-  descriptionHTML!: string;
 
   /** Constructs the widget */
   constructor(
@@ -42,11 +41,6 @@ export class EventDetailCard implements OnInit {
     this.adminPermission$ = this.permission.check(
       'organization.events.*',
       `organization/${this.event.organization_id!}`
-    );
-
-    // Convert event description markdown text to HTML for innerHTML.
-    this.descriptionHTML = DOMPurify.sanitize(
-      marked.parse(this.event.description) as string
     );
   }
 

@@ -30,6 +30,8 @@ import {
   filter,
   tap
 } from 'rxjs';
+import * as marked from 'marked';
+import * as DOMPurify from 'dompurify';
 
 @Component({
   selector: 'app-event-page',
@@ -73,6 +75,7 @@ export class EventPageComponent implements OnInit, OnDestroy {
 
   /** Store the selected Event */
   public selectedEvent: Event | null = null;
+  public selectedEventDescriptionHTML: string = '';
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
@@ -110,6 +113,9 @@ export class EventPageComponent implements OnInit, OnDestroy {
     // Initialize the initially selected event
     if (data.page.items.length > 0) {
       this.selectedEvent = this.page.items[0];
+      this.selectedEventDescriptionHTML = DOMPurify.sanitize(
+        marked.parse(this.selectedEvent.description) as string
+      );
     }
 
     this.searchUpdate
@@ -212,6 +218,9 @@ export class EventPageComponent implements OnInit, OnDestroy {
    */
   onEventCardClicked(event: Event) {
     this.selectedEvent = event;
+    this.selectedEventDescriptionHTML = DOMPurify.sanitize(
+      marked.parse(this.selectedEvent.description) as string
+    );
   }
 
   showEvents(isPrevious: boolean) {
