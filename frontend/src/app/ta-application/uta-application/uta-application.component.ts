@@ -167,13 +167,6 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     this.sections = data.sections;
     this.profile = data.profile;
 
-    console.log('Sections loaded via raw: ', data);
-
-    this.route.data.subscribe((data) => {
-      console.log('Sections loaded via subscribe: ', data['sections']);
-      this.sections = data['sections'];
-    });
-
     this.firstFormGroup = this.formBuilder.group({
       intro_video_url: [
         '',
@@ -216,9 +209,8 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.applicationService.getApplication().subscribe(
       (response) => {
-        const application = response ? response['application'] : null;
-        if (application) {
-          this.populateForm(application);
+        if (response) {
+          this.populateForm(response);
         } else {
           this.resetForm();
         }
