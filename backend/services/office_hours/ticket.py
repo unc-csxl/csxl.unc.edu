@@ -434,7 +434,7 @@ class OfficeHoursTicketService:
         # 1. If student, cannot leave feedback. Any staff member can close and leave feedback on any ticket.
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
             raise PermissionError(
-                f"User Doesn't Have Permission to Give Feedback for Ticket id={oh_ticket.id}"
+                f"Student's Do Not Have Permission to Give Feedback for Ticket id={oh_ticket.id}"
             )
 
         # 2. Check if Ticket Is Closed
