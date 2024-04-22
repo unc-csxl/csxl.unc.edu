@@ -30,6 +30,7 @@ api = APIRouter(prefix="/api/applications/ta")
 
 @api.get("", response_model=list[NewUTAApplicationDetails], tags=["Applications"])
 def get_applications(
+    user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
 ) -> list[UTAApplicationDetails]:
     """
@@ -43,7 +44,7 @@ def get_applications(
     """
 
     # Return all applications
-    return application_service.list()
+    return application_service.list(user)
 
 
 @api.get("/user", response_model=NewUTAApplicationDetails | None, tags=["Applications"])
@@ -67,6 +68,7 @@ def get_applications_user(
 @api.post("", response_model=NewUTAApplicationDetails, tags=["Applications"])
 def new_undergrad_application(
     application: NewUTAApplicationDetails,
+    user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
 ) -> NewUTAApplicationDetails:
     """
@@ -83,7 +85,7 @@ def new_undergrad_application(
         HTTPException 422 if create() raises an Exception
     """
 
-    return application_service.create_uta_application(application)
+    return application_service.create_uta_application(user, application)
 
 
 @api.put("/update", response_model=NewUTAApplicationDetails, tags=["Applications"])

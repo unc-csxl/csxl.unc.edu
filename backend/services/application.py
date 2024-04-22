@@ -19,7 +19,12 @@ from backend.models.application_details import (
 )
 from backend.models.user import User
 
-from backend.services.exceptions import ResourceNotFoundException
+from backend.services.exceptions import (
+    ResourceNotFoundException,
+    UserPermissionException,
+)
+
+from .permission import PermissionService
 
 from ..database import db_session
 
@@ -31,20 +36,32 @@ __license__ = "MIT"
 class ApplicationService:
     """ApplicationService is the access layer to TA applications."""
 
-    def __init__(self, session: Session = Depends(db_session)):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission_svc: PermissionService = Depends(),
+    ):
         """Initializes a new ApplicationService.
 
         Args:
             session (Session): The database session to use, typically injected by FastAPI.
         """
         self._session = session
+        self._permission_svc = permission_svc
 
-    def list(self) -> list[UTAApplicationDetails]:
+    def list(self, subject: User) -> list[UTAApplicationDetails]:
         """Returns all TA applications.
 
         Returns:
             list[New_UTA]: List of all current and previously submitted applications.
         """
+
+        self._permission_svc.enforce(
+            subject,
+            "applications.get",
+            f"applications/",
+        )
+
         entities = self._session.query(ApplicationEntity).all()
 
         return [entity.to_details_model() for entity in entities]
@@ -96,7 +113,7 @@ class ApplicationService:
         return application
 
     def create_uta_application(
-        self, application: NewUTAApplicationDetails
+        self, subject: User, application: NewUTAApplicationDetails
     ) -> NewUTAApplicationDetails:
         """
         Creates an application based on the input object and adds it to the table.
@@ -109,6 +126,13 @@ class ApplicationService:
         Returns:
             Application: Object added to table
         """
+
+        if subject.id != application.user_id:
+            self._permission_svc.enforce(
+                subject,
+                "applications.create",
+                f"applications/{application.id}",
+            )
 
         if application.id:
             application.id = None
