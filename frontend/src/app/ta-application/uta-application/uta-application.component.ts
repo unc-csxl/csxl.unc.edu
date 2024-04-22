@@ -130,7 +130,9 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   ];
 
   validateIntroVideo(control: FormControl): { [key: string]: any } | null {
-    const valid = control.value && control.value.includes('youtu');
+    const valid =
+      control.value &&
+      (control.value.includes('youtu') || control.value.includes('you.tu'));
     return valid ? null : { invalidURL: true };
   }
 
