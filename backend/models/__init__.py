@@ -1,6 +1,11 @@
 """Package for all models in the application."""
 
-from .application import Application, UTAApplication, NewUTAApplication, Returning_UTA
+from .application import (
+    Application,
+    UTAApplication,
+    NewUTAApplication,
+    ReturningUTAApplication,
+)
 from .application_details import (
     ApplicationDetails,
     UTAApplicationDetails,

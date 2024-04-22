@@ -19,7 +19,7 @@ from ..models.application import (
     Application,
     UTAApplication,
     NewUTAApplication,
-    Returning_UTA,
+    ReturningUTAApplication,
 )
 from ..models.application_details import UTAApplicationDetails
 
@@ -365,7 +365,7 @@ class ReturningUTAApplicationEntity(UTAApplicationEntity):
     }
 
     @classmethod
-    def from_model(cls, model: Returning_UTA) -> Self:
+    def from_model(cls, model: ReturningUTAApplication) -> Self:
         """
         Class method that converts an `Application` model into a `ApplicationEntity`
 
@@ -382,7 +382,7 @@ class ReturningUTAApplicationEntity(UTAApplicationEntity):
 
         return entity
 
-    def to_model(self) -> Returning_UTA:
+    def to_model(self) -> ReturningUTAApplication:
         """
         Converts an `ApplicationEntity` object into an `Application` model object
 
@@ -391,7 +391,7 @@ class ReturningUTAApplicationEntity(UTAApplicationEntity):
         """
 
         parent_model = super().to_model().model_dump()
-        return Returning_UTA(
+        return ReturningUTAApplication(
             **parent_model,
             ta_experience=self.ta_experience,
             best_moment=self.best_moment,

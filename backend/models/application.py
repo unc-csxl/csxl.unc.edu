@@ -49,7 +49,7 @@ class NewUTAApplication(UTAApplication):
     additional_experience: str
 
 
-class Returning_UTA(UTAApplication):
+class ReturningUTAApplication(UTAApplication):
     """
     Pydantic model to represent a `Returning UTA`.
 

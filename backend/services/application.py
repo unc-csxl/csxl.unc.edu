@@ -50,10 +50,15 @@ class ApplicationService:
         return [entity.to_details_model() for entity in entities]
 
     def get_application(self, subject: User) -> NewUTAApplicationDetails:
-        """Returns application(s) for a specific user
+        """Returns an application for a specific user during a specific term
 
         Returns:
             list[Application]: List of all current applications for a specific user
+
+
+        This method currently returns the first application that is found in the table, however
+        future implementation will be taking the current term into consideration and querying based off
+        of that term. If a user doesn't have an application during that term then None would be returned.
         """
 
         application_entity = (

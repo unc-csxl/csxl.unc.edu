@@ -7,7 +7,7 @@ from backend.models.application import (
     Application,
     UTAApplication,
     NewUTAApplication,
-    Returning_UTA,
+    ReturningUTAApplication,
 )
 
 from backend.models.user import User
@@ -48,7 +48,7 @@ class NewUTAApplicationDetails(NewUTAApplication, UTAApplicationDetails):
     """
 
 
-class ReturningUTAApplicationDetails(Returning_UTA):
+class ReturningUTAApplicationDetails(ReturningUTAApplication):
     """
     Pydantic model to represent a `UTA Application`.
 
