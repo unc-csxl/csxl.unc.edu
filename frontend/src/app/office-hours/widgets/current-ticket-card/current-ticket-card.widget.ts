@@ -22,7 +22,7 @@ import { DeleteTicketDialog } from '../delete-ticket-dialog/delete-ticket-dialog
   templateUrl: './current-ticket-card.widget.html',
   styleUrls: ['./current-ticket-card.widget.css']
 })
-export class CurrentTicketCard implements OnInit {
+export class CurrentTicketCard {
   @Input() ticket!: Ticket;
   @Input() event!: OfficeHoursEvent;
 
