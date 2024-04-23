@@ -363,7 +363,7 @@ class OfficeHoursTicketService:
             raise ResourceNotFoundException(f"Cannot Find Ticket id={oh_ticket.id}")
 
         if ticket_entity.state != TicketState.CALLED:
-            raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
+            raise Exception("Ticket is Not Called - Cannot Close Ticket!")
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
         oh_section_entity = self._get_office_hours_section_by_oh_event_id(
@@ -407,7 +407,6 @@ class OfficeHoursTicketService:
         Raises:
             Exception: If `have_concerns` or `caller_notes` fields of `oh_ticket` are None.
             ResourceNotFoundException: If the ticket with the specified ID (`oh_ticket.id`) is not found.
-            PermissionError: If the ticket is not closed or if the logged-in user is not the caller of the ticket.
         """
 
         # Check Feedback Fields Are Not None
@@ -425,22 +424,23 @@ class OfficeHoursTicketService:
             ticket_entity.oh_event_id
         )
 
-        # Case: Current User
+        # Ensure subject is a member of the section
         current_user_section_member_entity = self._check_user_section_membership(
             subject.id, oh_section_entity.id
         )
 
-        # PERMISSIONS:
-        # 1. Check if Ticket Is Closed
+        # PERMISSIONS
+
+        # 1. If student, cannot leave feedback. Any staff member can close and leave feedback on any ticket.
+        if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Student's Do Not Have Permission to Give Feedback for Ticket id={oh_ticket.id}"
+            )
+
+        # 2. Check if Ticket Is Closed
         if ticket_entity.state != TicketState.CLOSED:
             raise PermissionError(
                 f"Ticket is Not Closed. Cannot Give Feedback for Ticket id={oh_ticket.id}"
-            )
-
-        # 2. CASE: Only Caller of Ticket Can Update
-        if ticket_entity.caller_id != current_user_section_member_entity.id:
-            raise PermissionError(
-                f"Section member id={current_user_section_member_entity.id} is not caller of ticket and do not have permssion to give feedback."
             )
 
         # Update fields and commit changed entity

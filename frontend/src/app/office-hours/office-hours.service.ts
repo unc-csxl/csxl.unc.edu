@@ -27,7 +27,8 @@ import {
   TicketPartial,
   Ticket,
   OfficeHoursEventStatus,
-  StudentOfficeHoursEventStatus
+  StudentOfficeHoursEventStatus,
+  OfficeHoursSectionTrailingWeekData
 } from './office-hours.models';
 import {
   Section,
@@ -259,6 +260,22 @@ export class OfficeHoursService {
         oh_event_id +
         '/student-queue-stats/' +
         ticket_id
+    );
+  }
+
+  getSectionData(
+    oh_section_id: number
+  ): Observable<OfficeHoursSectionTrailingWeekData> {
+    return this.http.get<OfficeHoursSectionTrailingWeekData>(
+      'api/office-hours/section/' + oh_section_id + '/data/statistics'
+    );
+  }
+
+  getSectionTicketsWithConcern(
+    oh_section_id: number
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/data/concerns'
     );
   }
 

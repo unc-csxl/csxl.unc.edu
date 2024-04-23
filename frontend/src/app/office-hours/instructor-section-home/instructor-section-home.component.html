@@ -24,7 +24,8 @@
       <p>History Feature Coming Soon!</p>
     </mat-tab>
     <mat-tab label="Data">
-      <p>Data Feature Coming Soon!</p>
+      <section-data-widget [sectionId]="sectionId"></section-data-widget>
+      <concern-tickets-widget [sectionId]="sectionId"></concern-tickets-widget>
     </mat-tab>
     <mat-tab label="People">
       <people-table [sectionId]="sectionId"></people-table>

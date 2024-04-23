@@ -479,6 +479,9 @@ class OfficeHoursSectionService:
             entity.to_details_model() for entity in ticket_entities
         ]
 
+        # Order the tickets so the most recent one is on top
+        ticket_details_models.sort(key=lambda x: x.created_at, reverse=True)
+
         # Return ticket details models where have_concerns is True
         return [ticket for ticket in ticket_details_models if ticket.have_concerns]
 
