@@ -11,11 +11,7 @@ import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { OfficeHoursService } from '../../office-hours.service';
-import {
-  OfficeHoursSection,
-  OfficeHoursSectionDetails,
-  OfficeHoursSectionPartial
-} from '../../office-hours.models';
+import { OfficeHoursSection } from '../../office-hours.models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   Section,
@@ -57,10 +53,8 @@ export class JoinSectionDialog implements OnInit {
   }
 
   getOfficeHoursSection() {
-    console.log(this.displayTerm.name);
-    // TODO: change 'F23' to the current term using the academics service (this has a method to get current term)
     this.officeHoursService
-      .getSectionsByTerm(this.displayTerm.id)
+      .getUserSectionsNotEnrolledByTerm(this.displayTerm.id)
       .subscribe((oh_sections) => {
         this.officeHoursSections = oh_sections;
         console.log('here');
@@ -70,10 +64,9 @@ export class JoinSectionDialog implements OnInit {
   onSubmit() {
     console.log(this.joinSectionForm.value.oh_section);
     if (this.joinSectionForm.valid) {
-      let oh_sections: OfficeHoursSectionDetails[] =
+      let oh_sections: OfficeHoursSection[] =
         this.joinSectionForm.value.oh_section ?? [];
-      console.log(oh_sections);
-      console.log(oh_sections[0]);
+
       this.officeHoursService.joinSection(oh_sections).subscribe({
         next: () => this.onSuccess(),
         error: (err) => this.onError(err)

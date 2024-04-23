@@ -6,8 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
 
 from ...models.academics.section_member import SectionMember
-from ...models.office_hours.section import OfficeHoursSectionPartial
-from ...models.office_hours.section_details import OfficeHoursSectionDetails
+from ...models.office_hours.section import OfficeHoursSection
 from ...models import User
 
 from ...services.academics import SectionMemberService
@@ -75,7 +74,7 @@ def get_membership_by_user_and_oh_section_id(
 
 @api.post("", response_model=list[SectionMember], tags=["Academics"])
 def add_user_memberships(
-    oh_sections: list[OfficeHoursSectionDetails],
+    oh_sections: list[OfficeHoursSection],
     subject: User = Depends(registered_user),
     section_member_svc: SectionMemberService = Depends(),
 ) -> list[SectionMember]:
@@ -83,7 +82,7 @@ def add_user_memberships(
     Adds memberships for a user given a list of Office Hours sections.
 
     Args:
-        oh_sections (list[OfficeHoursSectionDetails]): List of Office Hours sections to enroll the user into.
+        oh_sections (list[OfficeHoursSection]): List of Office Hours sections to enroll the user into.
         subject (User): The currently logged-in user.
         section_membership (SectionMemberService): Service dependency to manage Section Membership data.
 
