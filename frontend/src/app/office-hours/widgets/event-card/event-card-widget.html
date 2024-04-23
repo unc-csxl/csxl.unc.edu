@@ -26,9 +26,13 @@
     </mat-menu>
   </div>
   <mat-divider></mat-divider>
+  <div *ngIf="event.description">
+    <p class="card-container"><b>Description: </b>{{ event.description }}</p>
+    <mat-divider></mat-divider>
+  </div>
   <div class="card-container">
     <mat-card-content>
-      <p *ngIf="event.description">Notes: {{ event.description }}</p>
+      <!-- <p *ngIf="event.description">Notes: {{ event.description }}</p> -->
       <div class="queue-row">
         <div class="queued">
           <span class="number-badge">{{ this.queued_tickets }}</span>Queued
