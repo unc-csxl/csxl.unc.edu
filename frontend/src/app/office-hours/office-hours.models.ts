@@ -162,3 +162,12 @@ export interface StudentOfficeHoursEventStatus {
   queued_tickets_count: number;
   ticket_position: number;
 }
+
+export interface OfficeHoursSectionTrailingWeekData {
+  number_of_tickets: number;
+  number_of_students: number;
+  average_wait_time: number;
+  standard_deviation_wait_time: number;
+  average_ticket_duration: number;
+  standard_deviation_ticket_duration: number;
+}
