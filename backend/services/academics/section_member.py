@@ -104,13 +104,13 @@ class SectionMemberService:
     def add_user_section_memberships_by_oh_sections(
         self,
         subject: User,
-        oh_sections: list[OfficeHoursSectionDetails],
+        oh_sections: list[OfficeHoursSection],
     ) -> list[SectionMember]:
         """Add section memberships for a user to multiple office hours sections.
 
         Args:
             subject (User): The user for whom to add section memberships.
-            oh_sections (list[OfficeHoursSectionDetails]): List of office hours sections to enroll the user into.
+            oh_sections (list[OfficeHoursSection]): List of office hours sections to enroll the user into.
 
         Returns:
             list[SectionMember]: List of newly created SectionMember objects representing the user's memberships.

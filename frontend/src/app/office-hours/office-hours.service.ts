@@ -28,6 +28,7 @@ import {
   Ticket,
   OfficeHoursEventStatus,
   StudentOfficeHoursEventStatus,
+  OfficeHoursSection,
   OfficeHoursSectionTrailingWeekData
 } from './office-hours.models';
 import {
@@ -76,15 +77,21 @@ export class OfficeHoursService {
     );
   }
 
+  getUserSectionsNotEnrolledByTerm(
+    term_id: string
+  ): Observable<OfficeHoursSection[]> {
+    return this.http.get<OfficeHoursSection[]>(
+      '/api/office-hours/section/user/not-enrolled/term/' + term_id
+    );
+  }
+
   getSectionsByTerm(term_id: String): Observable<OfficeHoursSectionDetails[]> {
     return this.http.get<OfficeHoursSectionDetails[]>(
       '/api/office-hours/section/term/' + term_id
     );
   }
 
-  joinSection(
-    oh_sections: OfficeHoursSectionDetails[]
-  ): Observable<SectionMember[]> {
+  joinSection(oh_sections: OfficeHoursSection[]): Observable<SectionMember[]> {
     return this.http.post<SectionMember[]>(
       '/api/academics/section-member',
       oh_sections
@@ -276,7 +283,7 @@ export class OfficeHoursService {
   ): Observable<TicketDetails[]> {
     return this.http.get<TicketDetails[]>(
       'api/office-hours/section/' + oh_section_id + '/data/concerns'
-gi    );
+    );
   }
 
   getSectionMembers(oh_section_id: number): Observable<SectionMember[]> {
