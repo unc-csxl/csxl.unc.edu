@@ -51,16 +51,22 @@ export class PeopleTableComponent implements OnInit {
     return this.officeHoursService.formatRosterRole(typeNum);
   }
 
-  // TODO: Need to add functionality to the selects
-  onRoleChange(element: SectionMember) {
-    // console.log(element);
+  onRoleChange(element: SectionMember, role: number) {
+    // SectionMember model allows for null ids, so need to add this check
     if (element.id == null) {
-      console.log('error');
+      this.onError(
+        new HttpErrorResponse({
+          error: 'SectionMember not found',
+          status: 404
+        })
+      );
     } else {
+      // Build a partial with the Member's id and the target new role
       const member: SectionMemberPartial = {
         id: element.id,
-        member_role: element.member_role
+        member_role: role
       };
+      // Pass partial into updateMemberRole service method
       this.officeHoursService
         .updateMemberRole(member, this.sectionId)
         .subscribe({

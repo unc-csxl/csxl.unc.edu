@@ -38,7 +38,7 @@
         <div class="row">
           <mat-form-field>
             <mat-label>{{ formatRosterRole(element.member_role) }}</mat-label>
-            <mat-select (selectionChange)="onRoleChange(element)">
+            <mat-select (selectionChange)="onRoleChange(element, $event.value)">
               <mat-option *ngFor="let role of roles" [value]="formatEnum(role)">
                 {{ role }}
               </mat-option>
