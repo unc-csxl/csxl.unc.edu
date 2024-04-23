@@ -36,10 +36,7 @@ export class DeleteTicketDialog {
     this.snackBar.open('Your ticket has been canceled.', '', {
       duration: 2000
     });
-    this.router.navigate([
-      'office-hours/spring-2024/',
-      this.data.event.oh_section.id
-    ]);
+    this.router.navigate(['office-hours/', this.data.event.oh_section.id]);
   }
 
   private onError(err: any) {

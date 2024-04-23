@@ -100,3 +100,7 @@ button {
   justify-content: center;
   padding: 1rem;
 }
+
+.card-size {
+  width: 50vw;
+}

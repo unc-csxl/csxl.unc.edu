@@ -56,17 +56,13 @@ export class CourseCard implements OnInit {
 
   /* Navigates to section page based on roster role */
   navToOfficeHours() {
-    // TODO: replace this route later
     if (this.rosterRole === RosterRole.STUDENT) {
-      this.router.navigate(['/office-hours/spring-2024/', this.section.id]);
+      this.router.navigate(['/office-hours/', this.section.id]);
     } else if (this.rosterRole === RosterRole.UTA) {
-      this.router.navigate(['/office-hours/ta/spring-2024/', this.section.id]);
+      this.router.navigate(['/office-hours/ta/', this.section.id]);
     } else {
       // RosterRole is GTA or Instructor
-      this.router.navigate([
-        '/office-hours/instructor/spring-2024/',
-        this.section.id
-      ]);
+      this.router.navigate(['/office-hours/instructor/', this.section.id]);
     }
   }
 

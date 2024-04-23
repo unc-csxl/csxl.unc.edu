@@ -27,9 +27,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./current-ticket-page.component.css']
 })
 export class CurrentTicketPageComponent implements OnInit, OnDestroy {
-  // TODO: Un-hardcode 'spring-2024'
   public static Route = {
-    path: 'spring-2024/:id/:event_id/ticket/:ticket_id',
+    path: ':id/:event_id/ticket/:ticket_id',
     title: 'COMP 110: Intro to Programming',
     component: CurrentTicketPageComponent,
     canActivate: []
@@ -115,10 +114,7 @@ export class CurrentTicketPageComponent implements OnInit, OnDestroy {
 
   /* Helper function that navigates back to course home */
   navToHome() {
-    this.router.navigate([
-      'office-hours/spring-2024/',
-      this.event.oh_section.id
-    ]);
+    this.router.navigate(['office-hours/', this.event.oh_section.id]);
   }
 
   /* Displays snackbar message if ticket has been canceled */

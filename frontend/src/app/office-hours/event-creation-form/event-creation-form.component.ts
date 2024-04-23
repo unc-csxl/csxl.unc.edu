@@ -26,16 +26,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./event-creation-form.component.css']
 })
 export class EventCreationFormComponent implements OnInit {
-  // TODO: Un-hardcode this route
   public static Routes = [
     {
-      path: 'ta/spring-2024/:id/create-new-event',
+      path: 'ta/:id/create-new-event',
       title: 'COMP 110: Intro to Programming',
       component: EventCreationFormComponent,
       canActivate: []
     },
     {
-      path: 'instructor/spring-2024/:id/create-new-event',
+      path: 'instructor/:id/create-new-event',
       title: 'COMP 110: Intro to Programming',
       component: EventCreationFormComponent,
       canActivate: []

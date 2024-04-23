@@ -25,8 +25,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class TicketCreationFormComponent implements OnInit {
   public static Route = {
-    // TODO: un-hardcode this route
-    path: 'spring-2024/:id/:event_id/create-new-ticket',
+    path: ':id/:event_id/create-new-ticket',
     title: 'COMP 110: Intro to Programming',
     component: TicketCreationFormComponent,
     canActivate: []
@@ -115,7 +114,7 @@ export class TicketCreationFormComponent implements OnInit {
       };
       this.officeHoursService.createTicket(ticket_draft).subscribe((ticket) => {
         this.router.navigate([
-          'office-hours/spring-2024/',
+          'office-hours/',
           this.sectionId,
           this.eventId,
           'ticket',

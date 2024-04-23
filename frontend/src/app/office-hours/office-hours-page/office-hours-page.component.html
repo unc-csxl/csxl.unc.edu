@@ -31,7 +31,8 @@
   </p>
   <course-card-widget
     *ngFor="let section of userSections"
-    [section]="section"></course-card-widget>
+    [section]="section"
+    class="inline-block"></course-card-widget>
 
   <!-- Add Button for Instructors: -->
   <div *ngIf="instructorCourses.length > 0">

@@ -35,8 +35,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 })
 export class StudentSectionHomeComponent implements OnInit {
   public static Route = {
-    // TODO: replace term
-    path: 'spring-2024/:id',
+    path: ':id',
     component: StudentSectionHomeComponent,
     canActivate: [],
     resolve: { section: sectionResolver },
