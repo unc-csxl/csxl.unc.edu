@@ -3,6 +3,9 @@
     <div class="location">
       <mat-card-title>{{ formatEventType(event.type) }}</mat-card-title>
       <mat-card-subtitle>Location: {{ event.room.id }}</mat-card-subtitle>
+      <mat-card-subtitle *ngIf="event.location_description"
+        >{{ event.location_description }}</mat-card-subtitle
+      >
     </div>
     <div class="open operating-hours">
       <span class="badge">Open</span>until {{ event.end_time | date: 'h:mma' |
@@ -25,12 +28,7 @@
   <mat-divider></mat-divider>
   <div class="card-container">
     <mat-card-content>
-      <p *ngIf="event.description">
-        Event Description: {{ event.description }}
-      </p>
-      <p *ngIf="event.location_description">
-        Location Description: {{ event.location_description }}
-      </p>
+      <p *ngIf="event.description">Notes: {{ event.description }}</p>
       <div class="queue-row">
         <div class="queued">
           <span class="number-badge">{{ this.queued_tickets }}</span>Queued
