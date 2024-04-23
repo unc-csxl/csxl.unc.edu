@@ -33,10 +33,9 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   styleUrls: ['./ticket-queue-page.component.css']
 })
 export class TicketQueuePageComponent implements OnInit, OnDestroy {
-  // TODO: Update this route later to not be hard-coded!
   public static Routes = [
     {
-      path: 'ta/spring-2024/:id/:event_id/queue',
+      path: 'ta/:id/:event_id/queue',
       component: TicketQueuePageComponent,
       canActivate: [],
       resolve: { section: sectionResolver },
@@ -49,7 +48,7 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
       ]
     },
     {
-      path: 'instructor/spring-2024/:id/:event_id/queue',
+      path: 'instructor/:id/:event_id/queue',
       component: TicketQueuePageComponent,
       canActivate: [],
       resolve: { section: sectionResolver },
