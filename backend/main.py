@@ -1,6 +1,5 @@
 """Entrypoint of backend API exposing the FastAPI `app` to be served by an application server such as uvicorn."""
 
-
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -18,6 +17,7 @@ from .api import (
     authentication,
     user,
     room,
+    application,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import term, course, section
@@ -47,6 +47,7 @@ app = FastAPI(
         user.openapi_tags,
         organizations.openapi_tags,
         events.openapi_tags,
+        application.openapi_tags,
         reservation.openapi_tags,
         room.openapi_tags,
         course.openapi_tags,
@@ -77,6 +78,7 @@ feature_apis = [
     course,
     section,
     room,
+    application,
 ]
 
 for feature_api in feature_apis:

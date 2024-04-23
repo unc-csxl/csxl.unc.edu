@@ -1,17 +1,12 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course Sections."""
 
 from typing import Self
-from sqlalchemy import Integer, String, DateTime, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from ...models.room_assignment_type import RoomAssignmentType
-
 from ..entity_base import EntityBase
-from datetime import datetime
+from ..section_application_table import section_application_table
 from ...models.academics import Section
 from ...models.academics import SectionDetails
-from ...models.academics.section_member import SectionMember
-from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -77,6 +72,12 @@ class SectionEntity(EntityBase):
         back_populates="section",
         viewonly=True,
         primaryjoin="and_(SectionEntity.id==SectionMemberEntity.section_id, SectionMemberEntity.member_role!='STUDENT')",
+    )
+
+    # All applicants where section is preferred
+    # NOTE: This field establishes a many-to-many relationship between the sections and applications table.
+    preferred_applicants: Mapped[list["UTAApplicationEntity"]] = relationship(
+        secondary=section_application_table, back_populates="preferred_sections"
     )
 
     @classmethod
@@ -147,4 +148,7 @@ class SectionEntity(EntityBase):
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,
+            preferred_applicants=[
+                applicant.to_model() for applicant in self.preferred_applicants
+            ],
         )
