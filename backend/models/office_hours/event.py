@@ -3,7 +3,7 @@ from datetime import datetime, date
 
 from ..room import Room, RoomPartial
 from .section import OfficeHoursSection, OfficeHoursSectionPartial
-from .event_type import OfficeHoursEventType
+from .event_type import OfficeHoursEventModeType, OfficeHoursEventType
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
@@ -20,6 +20,7 @@ class OfficeHoursEventDraft(BaseModel):
 
     oh_section: OfficeHoursSectionPartial
     room: RoomPartial
+    mode: OfficeHoursEventModeType
     type: OfficeHoursEventType
     description: str = ""
     location_description: str = ""
@@ -51,6 +52,7 @@ class OfficeHoursEventPartial(OfficeHoursEvent):
 
     oh_section: OfficeHoursSection | None = None
     room: Room | None = None
+    mode: OfficeHoursEventModeType | None = None
     type: OfficeHoursEventType | None = None
     description: str | None = None
     location_description: str | None = None
