@@ -55,6 +55,7 @@ export class TicketFeedbackFormComponent {
         this.officeHoursService.addFeedback(this.ticket).subscribe((ticket) => {
           this.ticketFeedbackForm.reset();
           this.dialogRef.close();
+          window.location.reload();
         })
       );
     }
