@@ -9,7 +9,12 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
-import { SectionMember } from 'src/app/academics/academics.models';
+import {
+  SectionMember,
+  SectionMemberPartial
+} from 'src/app/academics/academics.models';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'people-table',
@@ -24,10 +29,13 @@ export class PeopleTableComponent implements OnInit {
     'pronouns',
     'role'
   ];
-  roles: string[] = ['Student', 'UTA', 'Instructor'];
+  roles: string[] = ['Student', 'UTA', 'GTA', 'Instructor'];
   sectionMembers: SectionMember[] = [];
 
-  constructor(private officeHoursService: OfficeHoursService) {}
+  constructor(
+    private officeHoursService: OfficeHoursService,
+    protected snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.getSectionMembers();
@@ -43,9 +51,29 @@ export class PeopleTableComponent implements OnInit {
     return this.officeHoursService.formatRosterRole(typeNum);
   }
 
-  // TODO: Need to add functionality to the selects
-  onRoleChange(element: SectionMember) {
-    console.log(element);
+  onRoleChange(element: SectionMember, role: number) {
+    // SectionMember model allows for null ids, so need to add this check
+    if (element.id == null) {
+      this.onError(
+        new HttpErrorResponse({
+          error: 'SectionMember not found',
+          status: 404
+        })
+      );
+    } else {
+      // Build a partial with the Member's id and the target new role
+      const member: SectionMemberPartial = {
+        id: element.id,
+        member_role: role
+      };
+      // Pass partial into updateMemberRole service method
+      this.officeHoursService
+        .updateMemberRole(member, this.sectionId)
+        .subscribe({
+          next: () => this.onSuccess(),
+          error: (err) => this.onError(err)
+        });
+    }
   }
 
   formatEnum(role: string) {
@@ -53,6 +81,20 @@ export class PeopleTableComponent implements OnInit {
       return 0;
     } else if (role === 'UTA') {
       return 1;
+    } else if (role === 'GTA') {
+      return 2;
     } else return 3;
+  }
+
+  private onError(err: HttpErrorResponse): void {
+    this.snackBar.open('Error occurred when trying to update member role', '', {
+      duration: 5000
+    });
+  }
+
+  private onSuccess(): void {
+    this.snackBar.open('Member role has been updated!', '', {
+      duration: 4000
+    });
   }
 }
