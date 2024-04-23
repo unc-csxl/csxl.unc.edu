@@ -23,10 +23,13 @@ export enum TicketType {
 export enum OfficeHoursEventType {
   OFFICE_HOURS,
   TUTORING,
-  REVIEW_SESSION,
-  VIRTUAL_OFFICE_HOURS,
-  VIRTUAL_TUTORING,
-  VIRTUAL_REVIEW_SESSION
+  REVIEW_SESSION
+}
+
+export enum OfficeHoursEventModeType {
+  IN_PERSON,
+  VIRTUAL_YOUR_LINK,
+  VIRTUAL_OUR_LINK
 }
 
 export interface Ticket {
@@ -107,6 +110,7 @@ export interface OfficeHoursEventDraft {
   oh_section: OfficeHoursSectionPartial;
   room: RoomPartial; // should this be a room or room partial?
   type: OfficeHoursEventType;
+  mode: OfficeHoursEventModeType;
   description: string;
   location_description: string;
   event_date: string;

@@ -29,7 +29,8 @@ import {
   OfficeHoursEventStatus,
   StudentOfficeHoursEventStatus,
   OfficeHoursSection,
-  OfficeHoursSectionTrailingWeekData
+  OfficeHoursSectionTrailingWeekData,
+  OfficeHoursEventModeType
 } from './office-hours.models';
 import {
   Section,
@@ -158,12 +159,18 @@ export class OfficeHoursService {
       return 'Tutoring';
     } else if (typeNum === OfficeHoursEventType.REVIEW_SESSION) {
       return 'Review Session';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_OFFICE_HOURS) {
-      return 'Virtual Office Hours';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_TUTORING) {
-      return 'Virtual Tutoring';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_REVIEW_SESSION) {
-      return 'Virtual Review Session';
+    } else {
+      return 'error';
+    }
+  }
+
+  formatEventModeType(typeNum: number) {
+    if (typeNum === OfficeHoursEventModeType.IN_PERSON) {
+      return 'In-Person';
+    } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_OUR_LINK) {
+      return 'Virtual - Our Link';
+    } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_YOUR_LINK) {
+      return 'Vritual - Your Link';
     } else {
       return 'error';
     }

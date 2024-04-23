@@ -66,12 +66,6 @@ export class TicketHistoryWidget implements OnInit {
       return 'Tutoring';
     } else if (typeNum === OfficeHoursEventType.REVIEW_SESSION) {
       return 'Review Session';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_OFFICE_HOURS) {
-      return 'Virtual Office Hours';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_TUTORING) {
-      return 'Virtual Tutoring';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_REVIEW_SESSION) {
-      return 'Virtual Review Session';
     } else {
       return 'error';
     }

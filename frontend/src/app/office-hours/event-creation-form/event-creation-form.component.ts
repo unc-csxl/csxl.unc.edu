@@ -11,6 +11,7 @@ import { OfficeHoursService } from '../office-hours.service';
 import { FormBuilder } from '@angular/forms';
 import {
   OfficeHoursEventDraft,
+  OfficeHoursEventModeType,
   OfficeHoursEventType,
   OfficeHoursSectionDetails
 } from '../office-hours.models';
@@ -69,6 +70,7 @@ export class EventCreationFormComponent implements OnInit {
   /* EventForm contains data pertaining to event that is being created/modified */
   public eventForm = this.formBuilder.group({
     event_type: '',
+    event_mode: '',
     description: '',
     start_time: '',
     end_time: '',
@@ -95,23 +97,29 @@ export class EventCreationFormComponent implements OnInit {
       case 'office_hours':
         event_type = OfficeHoursEventType.OFFICE_HOURS;
         break;
-      case 'office_hours_virtual':
-        event_type = OfficeHoursEventType.VIRTUAL_OFFICE_HOURS;
-        break;
       case 'tutoring':
         event_type = OfficeHoursEventType.TUTORING;
-        break;
-      case 'virtual_tutoring':
-        event_type = OfficeHoursEventType.VIRTUAL_TUTORING;
         break;
       case 'review_session':
         event_type = OfficeHoursEventType.REVIEW_SESSION;
         break;
-      case 'review_session_virtual':
-        event_type = OfficeHoursEventType.VIRTUAL_REVIEW_SESSION;
-        break;
       default:
         event_type = OfficeHoursEventType.OFFICE_HOURS;
+    }
+
+    let event_mode: OfficeHoursEventModeType;
+    switch (this.eventForm.value.event_mode) {
+      case 'in_person':
+        event_mode = OfficeHoursEventModeType.IN_PERSON;
+        break;
+      case 'virtual_our_link':
+        event_mode = OfficeHoursEventModeType.VIRTUAL_OUR_LINK;
+        break;
+      case 'virtual_your_link':
+        event_mode = OfficeHoursEventModeType.VIRTUAL_YOUR_LINK;
+        break;
+      default:
+        event_mode = OfficeHoursEventModeType.IN_PERSON;
     }
 
     // Ensure start and end times aren't none
@@ -129,6 +137,7 @@ export class EventCreationFormComponent implements OnInit {
         oh_section: this.section,
         room: { id: this.eventForm.value.location ?? '' },
         type: event_type,
+        mode: event_mode,
         description: this.eventForm.value.description ?? '',
         location_description: this.eventForm.value.location_description ?? '',
         event_date: this.eventForm.value.start_time.slice(0, 10),
