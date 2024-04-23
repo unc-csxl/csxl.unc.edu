@@ -14,6 +14,7 @@ import { OfficeHoursService } from '../office-hours.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   OfficeHoursEvent,
+  OfficeHoursEventType,
   OfficeHoursSection,
   Ticket
 } from '../office-hours.models';
@@ -25,7 +26,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './current-ticket-page.component.html',
   styleUrls: ['./current-ticket-page.component.css']
 })
-export class CurrentTicketPageComponent implements OnInit {
+export class CurrentTicketPageComponent implements OnInit, OnDestroy {
   // TODO: Un-hardcode 'spring-2024'
   public static Route = {
     path: 'spring-2024/:id/:event_id/ticket/:ticket_id',
@@ -43,6 +44,11 @@ export class CurrentTicketPageComponent implements OnInit {
   ticket!: Ticket;
   refresh: Subscription | undefined;
 
+  /* Ticket queue stats */
+  queued_tickets: number | null;
+  called_tickets: number | null;
+  queue_spot: number | null;
+
   constructor(
     private officeHoursService: OfficeHoursService,
     private route: ActivatedRoute,
@@ -54,10 +60,15 @@ export class CurrentTicketPageComponent implements OnInit {
     this.eventId = this.route.snapshot.params['event_id'];
     this.ticketId = this.route.snapshot.params['ticket_id'];
 
+    // Initialize queue stats
+    this.queued_tickets = null;
+    this.called_tickets = null;
+    this.queue_spot = null;
+
     // Subscribe to observable every 10 seconds and get tickets + stats
     this.refresh = interval(10000).subscribe(() => {
       this.getTicketInfo();
-      console.log('here');
+      this.getTicketStats();
     });
   }
 
@@ -66,12 +77,19 @@ export class CurrentTicketPageComponent implements OnInit {
     this.getTicketInfo();
   }
 
+  /* On destruction, unsubscribe from refresh observable */
+  ngOnDestroy(): void {
+    this.unsubscribeObservables();
+  }
+
   /* Gets ticket information including the associated event and section */
   getTicketInfo() {
     this.officeHoursService.getTicket(this.ticketId).subscribe((ticket) => {
       this.ticket = ticket;
       this.event = ticket.oh_event;
       this.section = ticket.oh_event.oh_section;
+
+      this.getTicketStats();
 
       if (this.formatTicketState(this.ticket.state) === 'Closed') {
         this.displayClosedMessage();
@@ -115,5 +133,27 @@ export class CurrentTicketPageComponent implements OnInit {
     this.snackBar.open('This ticket has been closed.', '', {
       duration: 2000
     });
+  }
+
+  /* Helper function that formats event type enum as string */
+  formatEventType(eventType: OfficeHoursEventType) {
+    return this.officeHoursService.formatEventType(eventType);
+  }
+
+  /* Helper function that gets ticket queue stats */
+  getTicketStats() {
+    this.officeHoursService
+      .getQueueStatsForStudent(this.event.id, this.ticket.id)
+      .subscribe((stats) => {
+        this.called_tickets = stats.open_tickets_count;
+        this.queued_tickets = stats.queued_tickets_count;
+        this.queue_spot = stats.ticket_position;
+      });
+  }
+
+  unsubscribeObservables() {
+    if (this.refresh) {
+      this.refresh.unsubscribe();
+    }
   }
 }

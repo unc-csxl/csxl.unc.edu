@@ -17,11 +17,6 @@
     column-gap: 1rem;
 }
 
-mat-card {
-    width: 500px;
-    height: 250px;
-}
-
 .button-row {
     display: flex;
     flex: 1;
