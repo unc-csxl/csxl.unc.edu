@@ -3,8 +3,10 @@
   <mat-tab-group color="accent">
     <mat-tab label="Events">
       <h3>Events</h3>
-      <div *ngIf="currentEvents && currentEvents.length > 0">
-        <div *ngFor="let event of currentEvents">
+      <div
+        *ngIf="currentEvents && currentEvents.length > 0"
+        class="inline-block">
+        <div *ngFor="let event of currentEvents" class="inline-block">
           <event-card-widget
             [event]="event"
             [rosterRole]="rosterRole"></event-card-widget>
@@ -22,10 +24,11 @@
       <p>People Feature Coming Soon!</p>
     </mat-tab>
   </mat-tab-group>
-  <button mat-fab color="accent" class="add-button" [matMenuTriggerFor]="menu">
-    <mat-icon>settings</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="navToCreateForm()">Create Event</button>
-  </mat-menu>
 </div>
+
+<button mat-fab color="accent" class="add-button" [matMenuTriggerFor]="menu">
+  <mat-icon>settings</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="navToCreateForm()">Create Event</button>
+</mat-menu>

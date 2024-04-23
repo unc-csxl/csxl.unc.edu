@@ -3,7 +3,7 @@
     <mat-tab label="Events">
       <h3>Events</h3>
       <div *ngIf="currentEvents && currentEvents.length > 0">
-        <div *ngFor="let event of currentEvents">
+        <div *ngFor="let event of currentEvents" class="inline-block">
           <event-card-widget
             [event]="event"
             [rosterRole]="rosterRole"></event-card-widget>

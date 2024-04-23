@@ -6,8 +6,13 @@
     position: fixed;
     bottom: 2rem;
     right: 2rem;
+    z-index: 9999;
 }
 
 .add-button mat-icon {
     color: white;
+}
+
+.inline-block {
+    display: inline-block;
 }

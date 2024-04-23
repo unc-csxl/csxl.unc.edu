@@ -1,4 +1,4 @@
-<mat-card appearance="outlined">
+<mat-card appearance="outlined" class="card-size">
   <div class="header-row">
     <div class="location">
       <mat-card-title>{{ formatEventType(event.type) }}</mat-card-title>
@@ -25,6 +25,12 @@
   <mat-divider></mat-divider>
   <div class="card-container">
     <mat-card-content>
+      <p *ngIf="event.description">
+        Event Description: {{ event.description }}
+      </p>
+      <p *ngIf="event.location_description">
+        Location Description: {{ event.location_description }}
+      </p>
       <div class="queue-row">
         <div class="queued">
           <span class="number-badge">{{ this.queued_tickets }}</span>Queued
