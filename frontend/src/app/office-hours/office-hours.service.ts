@@ -169,7 +169,7 @@ export class OfficeHoursService {
       return 'In-Person';
     } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_OUR_LINK) {
       return 'Virtual - Our Link';
-    } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_YOUR_LINK) {
+    } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK) {
       return 'Vritual - Your Link';
     } else {
       return 'error';

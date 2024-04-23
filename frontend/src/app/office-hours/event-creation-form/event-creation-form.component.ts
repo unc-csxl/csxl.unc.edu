@@ -115,8 +115,8 @@ export class EventCreationFormComponent implements OnInit {
       case 'virtual_our_link':
         event_mode = OfficeHoursEventModeType.VIRTUAL_OUR_LINK;
         break;
-      case 'virtual_your_link':
-        event_mode = OfficeHoursEventModeType.VIRTUAL_YOUR_LINK;
+      case 'virtual_student_link':
+        event_mode = OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK;
         break;
       default:
         event_mode = OfficeHoursEventModeType.IN_PERSON;

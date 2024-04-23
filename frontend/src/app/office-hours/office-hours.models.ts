@@ -28,7 +28,7 @@ export enum OfficeHoursEventType {
 
 export enum OfficeHoursEventModeType {
   IN_PERSON,
-  VIRTUAL_YOUR_LINK,
+  VIRTUAL_STUDENT_LINK,
   VIRTUAL_OUR_LINK
 }
 

@@ -23,5 +23,5 @@ class OfficeHoursEventModeType(Enum):
     """
 
     IN_PERSON = 0
-    YOUR_ZOOM = 1
-    OUR_ZOOM = 2
+    VIRTUAL_STUDENT_LINK = 1
+    VIRTUAL_OUR_LINK = 2
