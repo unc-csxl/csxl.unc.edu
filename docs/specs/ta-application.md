@@ -13,8 +13,8 @@ All logged-in users to the CSXL page are able to access the _Fall 2024 UTA Appli
 - [Frontend Features](#FrontendFeatures)
   - [User Features](#UserFeatures)
     - [Academics Home](#AcademicsHome)
-    - [Course Catalog](#CourseCatalog)
-    - [Section Offerings](#SectionOfferings)
+    - [UTA Application](#UTAApplication)
+    - [Application Home](#ApplicationHome)
   - [Admin Features](#AdminFeatures)
   - [Conclusion](#Conclusion)
 - [Backend Design and Implementation](#BackendDesignandImplementation)
@@ -26,35 +26,35 @@ All logged-in users to the CSXL page are able to access the _Fall 2024 UTA Appli
 
 ## Frontend Features<a name='FrontendFeatures'></a>
 
-The frontend features add _3_ new Angular components, all at the `/academics` route.
+The frontend features add _3_ new Angular components, with _2_ of them at the `/ta-application` route.
 
 ### User Features<a name='UserFeatures'></a>
 
-The following pages have been added and are available for all users of the CSXL site. These pages are ultimately powered by new Angular service functions connected to new backend APIs.
+The following pages have been added/updated and are available for all users of the CSXL site. These pages are ultimately powered by new Angular service functions connected to new backend APIs, just like all other features across the CSXL.
 
 #### Academics Home<a name='AcademicsHome'></a>
 
-![Academics home page](../images/specs/academics/academics-home.png)
+![Academics home page](../images/specs/ta-application/academics-home.png)
 
-The home page for the new Academics feature is available on the side navigation toolbar at `/academics`. The home page contains links to both the _course catalog_ and the _section offerings_ page.
+The home page for the Academics feature now has a card for accessing the _Fall 2024 UTA Application_. When a user clicks 'Apply', the following notice pops up:
 
-In the future, this page will be heavily extended to add personalized academics features for users of the CSXL web app. For now, this page will remain static and exist merely for informational and navigational purposes.
+![Academics home page](../images/specs/ta-application/uta-notice.png)
 
-#### Course Catalog<a name='CourseCatalog'></a>
+From here, users can then click 'Apply now' to be redirected to the application. Currently, the UTA Notice is its own component with hardcoded information. Ultimately, future developers may want to create a widget for TA Application notices - programatically filling in the HTML based on term data and application periods!
 
-![Course catalog](../images/specs/academics/course-catalog.png)
+#### UTA Application<a name='UTAApplication'></a>
 
-The course catalog page serves as the main hub for students to learn more about COMP courses at UNC. The page exists at the `/academics/catalog` route. The course page shows the courses available in the backend. Right now, the course page shows this data in a simple table. Users can click on courses to see a dropdown to learn more about a course's _credit hours_ and _description_.
+![UTA Application](../images/specs/ta-application/uta-application.png)
 
-In the future, when more courses outside of just COMP courses are added here, this page will include a dropdown in the top right that allows users to switch the course subject they look for courses on.
+The UTA application page serves as the portal for the _Fall 2024 UTA Application_. This page contains the bulk of the new TA Application feature, which introduces new frontend elements to the CSXL.
 
-#### Section Offerings<a name='SectionOfferings'></a>
+#### Application Home<a name='ApplicationHome'></a>
 
-![Section offerings](../images/specs/academics/section-offerings.png)
+![Application Home](../images/specs/ta-application/application-home.png)
 
-The section offerings page serves as the main hub for students to view offerings of COMP courses by semester / term. The page exists at the `/academics/offerings` route. The section page shows this data in a table. Users can click on courses to see a dropdown to learn more about a course. There is also a dropdown in the top right that allows users to view course offerings based on all of the semesters / terms saved in the database.
+This is the landing page after completing the _Fall 2024 UTA Application_, and is the root route for 'ta-application'.
 
-In the future, when more courses outside of just COMP courses are added here, this page will include another dropdown in the top right that allows users to switch the course subject they look for courses on.
+In the future, when more features related to applications are added, this page will become the home for all things "applications." Currently, this is not the case as admin features and the GTA Application are not implemented.
 
 ### Admin Features<a name='AdminFeatures'></a>
 
@@ -64,20 +64,11 @@ Admin Features are currently not available for the Fall 2024 application period.
 
 In total, the following components have been added:
 
-| Name                     | Route                         | Description                                              |
-| ------------------------ | ----------------------------- | -------------------------------------------------------- |
-| **Academics Home**       | `/academics`                  | Main home page for the academics feature.                |
-| **Course Catalog**       | `/academics/catalog`          | Displays all COMP courses and their details.             |
-| **Section Offerings**    | `/academics/offerings`        | Displays offerings for COMP courses by term.             |
-| **Academics Admin Home** | `/academics/admin`            | Exposes the academics admin features.                    |
-| **Term Admin**           | `/academics/admin/term`       | Shows all term data and exposes CRUD functionality.      |
-| **Course Admin**         | `/academics/admin/course`     | Shows all course data and exposes CRUD functionality.    |
-| **Section Admin**        | `/academics/admin/section`    | Shows all section data and exposes CRUD functionality.   |
-| **Room Admin**           | `/academics/admin/room`       | Shows all room data and exposes CRUD functionality.      |
-| **Term Editor**          | `/academics/term/edit/:id`    | Form to show when terms are to be created and edited.    |
-| **Course Editor**        | `/academics/course/edit/:id`  | Form to show when courses are to be created and edited.  |
-| **Section Editor**       | `/academics/section/edit/:id` | Form to show when sections are to be created and edited. |
-| **Room Editor**          | `/academics/room/edit/:id`    | Form to show when room are to be created and edited.     |
+| Name                 | Route                             | Description                                                              |
+| -------------------- | --------------------------------- | ------------------------------------------------------------------------ |
+| **Application Home** | `/ta-application`                 | Main home page for the applications feature.                             |
+| **UTA Application**  | `/ta-application/uta-application` | The UTA Application portal                                               |
+| **UTA Notice**       | N/A                               | The pop-up before applying to be a UTA. Will eventually become a widget. |
 
 ## Backend Design and Implementation<a name='BackendDesignandImplementation'></a>
 
@@ -87,13 +78,10 @@ The academics feature ultimately adds _5_ new database tables and _25_ new API r
 
 The Academics Feature adds five new database tables and entities. They are as follows:
 
-| Table Name                | Entity              | Description                                                |
-| ------------------------- | ------------------- | ---------------------------------------------------------- |
-| `academics__term`         | `TermEntity`        | Stores terms / semesters.                                  |
-| `academics__courses`      | `CourseEntity`      | Stores courses.                                            |
-| `academics__sections`     | `SectionEntity`     | Stores section offerings for a given course.               |
-| `academics__section_user` | `SectionUserEntity` | Stores instructors, TAs, and students of a course section. |
-| `academics__section_room` | `SectionRoomEntity` | Stores lecture and office hours rooms of a course section. |
+| Table Name            | Entity              | Description                                                           |
+| --------------------- | ------------------- | --------------------------------------------------------------------- |
+| `application`         | `ApplicationEntity` | Stores applications.                                                  |
+| `section_application` | N/A                 | Stores sections, section preferences, and the associated application. |
 
 The fields and relationships between these entities are shown below:
 
