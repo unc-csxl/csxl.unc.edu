@@ -30,17 +30,17 @@ The frontend features add _3_ new Angular components, with _2_ of them at the `/
 
 ### User Features<a name='UserFeatures'></a>
 
-The following pages have been added/updated and are available for all users of the CSXL site. These pages are ultimately powered by new Angular service functions connected to new backend APIs, just like all other features across the CSXL.
+The following pages have been added/updated and are available for all logged-in users of the CSXL site. These pages are ultimately powered by new Angular service functions connected to new backend APIs, just like all other features across the CSXL.
 
 #### Academics Home<a name='AcademicsHome'></a>
 
 ![Academics home page](../images/specs/ta-application/academics-home.png)
 
-The home page for the Academics feature now has a card for accessing the _Fall 2024 UTA Application_. When a user clicks 'Apply', the following notice pops up:
+The home page for the Academics feature now has a card for accessing the _Fall 2024 UTA Application_. When a user clicks 'Apply Now', the following notice pops up:
 
 ![Academics home page](../images/specs/ta-application/uta-notice.png)
 
-From here, users can then click 'Apply now' to be redirected to the application. Currently, the UTA Notice is its own component with hardcoded information. Ultimately, future developers may want to create a widget for TA Application notices - programatically filling in the HTML based on term data and application periods!
+From here, users can then click 'Apply' to be redirected to the application. Currently, the UTA Notice is its own component with hardcoded information. Ultimately, future developers may want to create a widget for TA Application notices - programatically filling in the HTML based on term data and application periods!
 
 #### UTA Application<a name='UTAApplication'></a>
 
@@ -50,7 +50,7 @@ The UTA application page serves as the portal for the _Fall 2024 UTA Application
 
 #### Application Home<a name='ApplicationHome'></a>
 
-![Application Home](../images/specs/ta-application/application-home.png)
+![Application Home](../images/specs/ta-application/applications-home.png)
 
 This is the landing page after completing the _Fall 2024 UTA Application_, and is the root route for 'ta-application'.
 
@@ -72,11 +72,11 @@ In total, the following components have been added:
 
 ## Backend Design and Implementation<a name='BackendDesignandImplementation'></a>
 
-The academics feature ultimately adds _5_ new database tables and _25_ new API routes.
+The TA Application feature ultimately adds _2_ new database tables and _5_ new API routes.
 
 ### Entity Design<a name='EntityDesign'></a>
 
-The Academics Feature adds five new database tables and entities. They are as follows:
+The TA Application feature adds five new database tables and entities. They are as follows:
 
 | Table Name            | Entity              | Description                                                           |
 | --------------------- | ------------------- | --------------------------------------------------------------------- |
@@ -85,7 +85,7 @@ The Academics Feature adds five new database tables and entities. They are as fo
 
 The fields and relationships between these entities are shown below:
 
-![Entity Design](../images/specs/academics/backend-entity.png)
+![Entity Design](../images/specs/academics/entity-relationships.png)
 
 As you can see, the two association tables defined by `SectionUserEntity` and `SectionRoomEntity` relate to (and therefore add relationship fields to) the existing `user` and `room` tables.
 
