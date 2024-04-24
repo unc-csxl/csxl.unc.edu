@@ -440,7 +440,7 @@ class OfficeHoursEventService:
 
     def check_student_in_queue_status(
         self, subject: User, oh_event: OfficeHoursEvent
-    ) -> OfficeHoursTicket:
+    ) -> StudentQueuedTicketStatus:
         """
         Retrieve the ticket a student currently has in the queue, if there is one.
 
