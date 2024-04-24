@@ -402,7 +402,7 @@ class OfficeHoursSectionService:
             entity.to_model() for entity in section_member_entity.created_tickets
         ]
 
-        # Order so lastest is first
+        # Order so latest is first
         created_tickets.sort(key=lambda x: x.created_at, reverse=True)
         return created_tickets
 

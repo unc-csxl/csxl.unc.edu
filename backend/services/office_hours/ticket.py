@@ -633,7 +633,7 @@ class OfficeHoursTicketService:
             != None
         ):
             raise PermissionError(
-                "Cannot create another ticket while student already has one ticket queued."
+                "Cannot create another ticket while currently in the queue."
             )
 
         # If the student's ticket was called less than 1 hr ago, don't allow new ticket creation yet
@@ -644,9 +644,14 @@ class OfficeHoursTicketService:
             if ticket.oh_event_id == oh_event.id
         ]
 
+        # Order so latest ticket is first
+        created_tickets_in_event.sort(key=lambda x: x.created_at, reverse=True)
+
+        # Communicate when the student can create another ticket
         for ticket in created_tickets_in_event:
             if ticket.called_at != None:
                 if ticket.called_at > datetime.now() - timedelta(hours=1):
+                    time_can_create_again = ticket.called_at + timedelta(hours=1)
                     raise PermissionError(
-                        "Cannot create another ticket within an hour of previous one."
+                        f"Cannot create another ticket within an hour of the previous one. You may try again at {time_can_create_again.strftime('%I:%M %p')}."
                     )
