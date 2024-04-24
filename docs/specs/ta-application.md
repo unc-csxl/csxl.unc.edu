@@ -85,7 +85,7 @@ The TA Application feature adds five new database tables and entities. They are 
 
 The fields and relationships between these entities are shown below:
 
-![Entity Design](../images/specs/academics/entity-relationships.png)
+![Entity Design](../images/specs/ta-application/entity-relationships.png)
 
 As you can see, the two association tables defined by `SectionUserEntity` and `SectionRoomEntity` relate to (and therefore add relationship fields to) the existing `user` and `room` tables.
 
@@ -127,17 +127,13 @@ The user relation is also stripped down to just `staff`, which contains only *in
 
 ### API Implementation<a name='APIImplementation'></a>
 
-The Academics feature adds 25 new API routes to handle CRUD operations on terms, courses, sections, and room data.
+The TA Application feature adds 5 new API routes to handle CRUD operations on applications.
 
 Here is a summary of the APIs added:
 
-#### Room APIs:
+#### Applications APIs:
 
-![Room APIs](../images/specs/academics/room-api.png)
-
-#### Academics APIs:
-
-![Academics APIs](../images/specs/academics/academics-api.png)
+![Applications APIs](../images/specs/ta-application/api.png)
 
 ### Permission Summary<a name='PermissionSummary'></a>
 
