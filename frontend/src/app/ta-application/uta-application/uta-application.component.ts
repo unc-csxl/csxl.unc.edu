@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   FormArray,
@@ -10,17 +10,7 @@ import {
 import { ApplicationsService } from '../ta-application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  Observable,
-  Subject,
-  filter,
-  map,
-  of,
-  startWith,
-  switchMap,
-  take,
-  takeUntil
-} from 'rxjs';
+import { Observable, Subject, of, startWith, switchMap } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Section } from 'src/app/academics/academics.models';
@@ -159,7 +149,8 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationsService,
     private router: Router,
     protected snackBar: MatSnackBar,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private el: ElementRef
   ) {
     const data = route.snapshot.data as {
       sections: Section[];
@@ -229,6 +220,10 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  // ngAfterViewInit() {
+  //   this.el.nativeElement.parentElement.removeAttribute('aria-owns');
+  // }
 
   setPreferredSections(sections: Section[]): void {
     const sectionFormGroups = sections.map((section) => {
