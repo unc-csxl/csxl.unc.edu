@@ -15,6 +15,8 @@ import {
   TicketState
 } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
+import { RosterRole } from 'src/app/academics/academics.models';
+import { AcademicsService } from 'src/app/academics/academics.service';
 
 @Component({
   selector: 'ticket-history-widget',
@@ -23,9 +25,11 @@ import { OfficeHoursService } from '../../office-hours.service';
 })
 export class TicketHistoryWidget implements OnInit {
   @Input() sectionId!: number;
+  /* Roster role in the course */
+  rosterRole: RosterRole | null;
   public createdTickets: Ticket[] = [];
   public calledTickets: TicketDetails[] = [];
-  public allTickets: TicketDetails[] = [];
+  public allSectionTickets: TicketDetails[] = [];
   public displayedStudentColumns: string[] = [
     'date',
     'event-type',
@@ -40,43 +44,69 @@ export class TicketHistoryWidget implements OnInit {
     'notes',
     'concerns'
   ];
-  constructor(private officeHoursService: OfficeHoursService) {}
+  constructor(
+    private officeHoursService: OfficeHoursService,
+    private academicsService: AcademicsService
+  ) {
+    this.rosterRole = null;
+  }
 
   ngOnInit(): void {
-    this.getUserTickets();
-    // Add check for role here
+    this.initializeData();
+  }
+
+  initializeData(): void {
+    this.checkRosterRole().then(() => {
+      // RosterRole is retrieved, so good to go on other actions
+      this.getUserTickets();
+    });
+  }
+
+  checkRosterRole(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.academicsService.getMembershipBySection(this.sectionId).subscribe(
+        (section_member) => {
+          console.log(section_member.member_role);
+          this.rosterRole = section_member.member_role;
+          console.log(this.rosterRole);
+          resolve(); // Resolve the Promise when the roster role is set
+        },
+        (error) => {
+          reject(error); // Reject the Promise if there's an error
+        }
+      );
+    });
   }
 
   getUserTickets() {
-    this.officeHoursService
-      .getUserSectionCreatedTickets(this.sectionId)
-      .subscribe((tickets) => {
-        this.createdTickets = tickets;
-        console.log(tickets);
-      });
-    this.officeHoursService
-      .getUserSectionCalledTickets(this.sectionId)
-      .subscribe((tickets) => {
-        this.calledTickets = tickets;
-        console.log(tickets);
-      });
-    this.officeHoursService
-      .getAllSectionTickets(this.sectionId)
-      .subscribe((tickets) => {
-        this.allTickets = tickets;
-        console.log(tickets);
-      });
+    // Get called tickets for anyone other than students
+    if (this.rosterRole != RosterRole.STUDENT) {
+      this.officeHoursService
+        .getUserSectionCalledTickets(this.sectionId)
+        .subscribe((tickets) => {
+          this.calledTickets = tickets;
+        });
+    }
+    // If user a GTA or Instructor, also fetch all tickets in the Section
+    if (
+      this.rosterRole == RosterRole.INSTRUCTOR ||
+      this.rosterRole == RosterRole.GTA
+    ) {
+      this.officeHoursService
+        .getAllSectionTickets(this.sectionId)
+        .subscribe((tickets) => {
+          this.allSectionTickets = tickets;
+        });
+    }
+    // Populate only created tickets if the user is a student
+    else {
+      this.officeHoursService
+        .getUserSectionCreatedTickets(this.sectionId)
+        .subscribe((tickets) => {
+          this.createdTickets = tickets;
+        });
+    }
   }
-
-  // TODO: Add a method similar to the below to check if the user is a GTA or instructor
-  // in the given section. Add this method to the ngOnInit, and populate the
-  // allTickets field if the user is one of those roles
-  /* Checks instructorship by seeing if user has any Instructor Courses */
-  // checkInstructorship() {
-  //   this.academicsService.checkInstructorship().subscribe((section_members) => {
-  //     this.instructorCourses = section_members;
-  //   });
-  // }
 
   formatEventType(typeNum: number) {
     if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {

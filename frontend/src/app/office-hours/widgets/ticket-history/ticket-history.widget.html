@@ -138,7 +138,12 @@
 </div>
 
 <div>
-  <table *ngIf="allTickets.length > 0" mat-table [dataSource]="allTickets">
+  <table
+    *ngIf="
+      allSectionTickets.length > 0 && (rosterRole === 2 || rosterRole === 3)
+    "
+    mat-table
+    [dataSource]="allSectionTickets">
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef>
         <div class="header">Date</div>
@@ -212,6 +217,10 @@
 
 <div
   class="no-tickets"
-  *ngIf="createdTickets.length === 0 && calledTickets.length === 0">
+  *ngIf="
+    createdTickets.length === 0 &&
+    calledTickets.length === 0 &&
+    allSectionTickets.length === 0
+  ">
   <p>You do not have any past tickets for this course.</p>
 </div>
