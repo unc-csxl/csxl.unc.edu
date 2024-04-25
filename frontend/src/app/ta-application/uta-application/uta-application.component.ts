@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   FormArray,
@@ -40,7 +46,9 @@ interface OptionSelect {
   templateUrl: 'uta-application.component.html',
   styleUrls: ['uta-application.component.css']
 })
-export class UndergradApplicationComponent implements OnInit, OnDestroy {
+export class UndergradApplicationComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   public static Route = {
     path: 'uta-application',
     component: UndergradApplicationComponent,
@@ -159,7 +167,8 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationsService,
     private router: Router,
     protected snackBar: MatSnackBar,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private el: ElementRef
   ) {
     const data = route.snapshot.data as {
       sections: Section[];
@@ -228,6 +237,10 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  ngAfterViewInit() {
+    this.el.nativeElement.parentElement.removeAttribute('aria-owns');
   }
 
   setPreferredSections(sections: Section[]): void {
