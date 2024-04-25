@@ -61,6 +61,7 @@
   </div>
 
   <div>
+    <h3>Called Tickets</h3>
     <table
       *ngIf="calledTickets.length > 0"
       mat-table
@@ -134,87 +135,85 @@
       <tr mat-header-row *matHeaderRowDef="displayedUTAColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedUTAColumns"></tr>
     </table>
+    <p class="newline"></p>
+    <h3>All Tickets</h3>
+    <table
+      *ngIf="
+        allSectionTickets.length > 0 && (rosterRole === 2 || rosterRole === 3)
+      "
+      mat-table
+      [dataSource]="allSectionTickets">
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Date</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p>
+              {{ element.oh_event.event_date | date: 'EEEE M/d/YYYY' }} {{
+              element.created_at | date: 'h:mma' | lowercase }}
+            </p>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="event-type">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Event Type</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p>{{ formatEventType(element.oh_event.type) }}</p>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="student">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Student</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p *ngFor="let student of element.creators">
+              {{ student?.first_name ?? '' }} {{ student?.last_name ?? '' }}
+            </p>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Description</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p class="newline">{{ element.description }}</p>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="notes">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Notes</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p class="newline">{{ element.caller_notes }}</p>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="concerns">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Concerns?</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p class="newline" *ngIf="element.have_concerns === false">No</p>
+            <p class="newline" *ngIf="element.have_concerns === true">Yes</p>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedUTAColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedUTAColumns"></tr>
+    </table>
   </div>
-</div>
-
-<div>
-  <table
-    *ngIf="
-      allSectionTickets.length > 0 && (rosterRole === 2 || rosterRole === 3)
-    "
-    mat-table
-    [dataSource]="allSectionTickets">
-    <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef>
-        <div class="header">Date</div>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div class="row">
-          <p>
-            {{ element.oh_event.event_date | date: 'EEEE M/d/YYYY' }} {{
-            element.created_at | date: 'h:mma' | lowercase }}
-          </p>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="event-type">
-      <th mat-header-cell *matHeaderCellDef>
-        <div class="header">Event Type</div>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div class="row">
-          <p>{{ formatEventType(element.oh_event.type) }}</p>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="student">
-      <th mat-header-cell *matHeaderCellDef>
-        <div class="header">Student</div>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div class="row">
-          <p *ngFor="let student of element.creators">
-            {{ student?.first_name ?? '' }} {{ student?.last_name ?? '' }}
-          </p>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef>
-        <div class="header">Description</div>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div class="row">
-          <p class="newline">{{ element.description }}</p>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="notes">
-      <th mat-header-cell *matHeaderCellDef>
-        <div class="header">Notes</div>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div class="row">
-          <p class="newline">{{ element.caller_notes }}</p>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="concerns">
-      <th mat-header-cell *matHeaderCellDef>
-        <div class="header">Concerns?</div>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <div class="row">
-          <p class="newline" *ngIf="element.have_concerns === false">No</p>
-          <p class="newline" *ngIf="element.have_concerns === true">Yes</p>
-        </div>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedUTAColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedUTAColumns"></tr>
-  </table>
-</div>
-
+</div> 
 <div
   class="no-tickets"
   *ngIf="
