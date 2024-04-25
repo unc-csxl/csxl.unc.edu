@@ -87,10 +87,10 @@ The fields and relationships between these entities are shown below:
 
 ![Entity Design](../images/specs/ta-application/entity-relationships.png)
 
-Black = Current Design
-Blue = to-Many relationship
-Red = to-One relationship
-Green = Not yet implemented
+- [Black]: Current Design
+- [Blue]: to-Many relationship
+- [Red]: to-One relationship
+- [Green]: Not yet implemented
 
 <!-- ### Inheritance Mapping<a name='InheritanceMapping'></a> -->
 
