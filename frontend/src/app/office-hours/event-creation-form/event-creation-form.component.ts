@@ -50,6 +50,9 @@ export class EventCreationFormComponent implements OnInit {
 
   /* Holds Information About Virtual Room */
   virtualRoom: Room | undefined;
+
+  /* Section that the Office Hours event is being held for */
+  isVirtualOurLink: boolean = false;
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
@@ -95,6 +98,8 @@ export class EventCreationFormComponent implements OnInit {
     ) {
       (this.eventForm.get('location') as FormControl).setValue(null);
     }
+
+    this.isVirtualOurLink = event.value.includes('our_link');
   }
 
   getRooms() {
