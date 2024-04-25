@@ -94,41 +94,7 @@ The fields and relationships between these entities are shown below:
 
 <!-- ### Inheritance Mapping<a name='InheritanceMapping'></a> -->
 
-<!-- ### Pydantic Model Implementation<a name='PydanticModelImplementation'></a>
-
-The Pydantic models for terms and courses are nearly one-to-one with their entity counterparts. However, sections utilize a more custom model structure, as shown below:
-
-<table>
-<tr><th width="520">`Section` and `SectionDetail` Models</th></tr>
-<tr>
-<td>
-
-```py
-# Both models are slightly simplified for better
-# comprehensibility here.
-class Section(BaseModel):
-    id: int | None
-    course_id: str
-    number: str
-    term_id: str
-    meeting_pattern: str
-    staff: list[SectionMember]
-    lecture_room: Room | None
-    office_hour_rooms: list[Room]
-
-class SectionDetails(Section):
-course: Course
-term: Term
-
-```
-
-</td>
-</tr>
-</table>
-
-As you can see, the room relation is split up into `lecture_room` and `office_hour_rooms` respectively. This helps to simplify frontend logic and prevent numerous filtering calls having to be made. The data is automatically updated in the API.
-
-The user relation is also stripped down to just `staff`, which contains only *instructors* and *TAs* and excludes students. This is done for security purposes. The public GET API should not expose entire student rosters. -->
+<!-- ### Pydantic Model Implementation<a name='PydanticModelImplementation'></a> -->
 
 ### API Implementation<a name='APIImplementation'></a>
 
@@ -148,10 +114,4 @@ All of these API routes call on **backend service functions** to perform these o
 | ----------------------- | --------------------- | ----------------------------------------------------------------- |
 | `"applications.create"` | `"applications/{id}"` | Gives the user permission to create applications in the database. |
 
-<!-- ## Future Considerations<a name='FutureConsiderations'></a>
-
-* If we begin to add more course types to the page, I would love to switch the input select for course subject codes to use the material chip components.
-* We can now implement the gear icon for other admin features and refactor the folder structure - notably, for organizations.
-* We may want a separate `Academics` page specifically for unauthenticated users.
-* We can consider creating detail pages for courses and terms. At the moment though, it does not seem necessary.
-``` -->
+<!-- ## Future Considerations<a name='FutureConsiderations'></a> -->
