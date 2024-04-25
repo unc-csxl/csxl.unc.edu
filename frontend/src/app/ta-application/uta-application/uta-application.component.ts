@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   FormArray,
@@ -16,17 +10,7 @@ import {
 import { ApplicationsService } from '../ta-application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  Observable,
-  Subject,
-  filter,
-  map,
-  of,
-  startWith,
-  switchMap,
-  take,
-  takeUntil
-} from 'rxjs';
+import { Observable, Subject, of, startWith, switchMap } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Section } from 'src/app/academics/academics.models';
@@ -46,9 +30,7 @@ interface OptionSelect {
   templateUrl: 'uta-application.component.html',
   styleUrls: ['uta-application.component.css']
 })
-export class UndergradApplicationComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+export class UndergradApplicationComponent implements OnInit, OnDestroy {
   public static Route = {
     path: 'uta-application',
     component: UndergradApplicationComponent,
@@ -239,9 +221,9 @@ export class UndergradApplicationComponent
     this.destroy$.complete();
   }
 
-  ngAfterViewInit() {
-    this.el.nativeElement.parentElement.removeAttribute('aria-owns');
-  }
+  // ngAfterViewInit() {
+  //   this.el.nativeElement.parentElement.removeAttribute('aria-owns');
+  // }
 
   setPreferredSections(sections: Section[]): void {
     const sectionFormGroups = sections.map((section) => {
