@@ -12,6 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { StudentSectionHomeComponent } from './student-section-home/student-section-home.component';
 import { EventCard } from './widgets/event-card/event-card-widget';
 import { ScheduleCard } from './widgets/schedule-card/schedule-card-widget';
@@ -42,6 +45,8 @@ import { DeleteEventDialog } from './widgets/delete-event-dialog/delete-event-di
 import { DeleteTicketDialog } from './widgets/delete-ticket-dialog/delete-ticket-dialog.widget';
 import { SectionData } from './widgets/section-data/section-data-widget';
 import { ConcernTicketsWidget } from './widgets/concern-tickets/concern-tickets-widget';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -91,7 +96,12 @@ import { ConcernTicketsWidget } from './widgets/concern-tickets/concern-tickets-
     MatIconModule,
     MatDialogModule,
     MatMenuModule,
-    MatTableModule
+    MatTableModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatButtonToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ]
 })
 export class OfficeHoursModule {}

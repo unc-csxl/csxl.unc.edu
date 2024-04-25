@@ -25,3 +25,16 @@ mat-card {
 .button {
     margin: 0.25rem;
 }
+
+.date-picker-container {
+    display: flex; /* Use flexbox layout */
+    align-items: flex-start; /* Align items at the start of the flex container */
+  }
+  
+  .mat-form-field {
+    flex: 1; /* Distribute available space equally among the form fields */
+  }
+
+  .example-form-field {
+    margin-right: 10px; /* Adjust the right margin to create a gap between form fields */
+  }

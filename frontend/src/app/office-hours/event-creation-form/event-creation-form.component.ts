@@ -19,6 +19,7 @@ import { AcademicsService } from 'src/app/academics/academics.service';
 import { Room } from 'src/app/academics/academics.models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Frequency, Options, RRule } from 'rrule';
 
 @Component({
   selector: 'app-event-creation-form',
@@ -43,7 +44,9 @@ export class EventCreationFormComponent implements OnInit {
 
   /* List of available rooms to hold Office Hours event */
   rooms: Room[] = [];
+  Frequency = Frequency;
 
+  frequencyOptions = ['One Time', 'Daily', 'Weekly'];
   /* Section that the Office Hours event is being held for */
   sectionId: number;
   section: OfficeHoursSectionDetails | undefined;
@@ -66,6 +69,8 @@ export class EventCreationFormComponent implements OnInit {
     this.getSection();
   }
 
+  // user selects Monday and Sunday
+
   /* EventForm contains data pertaining to event that is being created/modified */
   public eventForm = this.formBuilder.group({
     event_type: '',
@@ -73,10 +78,17 @@ export class EventCreationFormComponent implements OnInit {
     description: '',
     start_time: '',
     end_time: '',
+    startDate: '',
+    endDate: '',
+    frequency: '',
+    onWeekday: [],
     location: '',
     location_description: ''
   });
 
+  onFrequencyChange(event: any) {
+    console.log(event.value);
+  }
   getRooms() {
     this.academicsService.getRooms().subscribe((rooms) => {
       this.rooms = rooms;
@@ -129,6 +141,7 @@ export class EventCreationFormComponent implements OnInit {
       this.eventForm.value.end_time = '';
     }
 
+    // IF ONE TIME
     // Ensure that section must not be null to create/edit event
     if (this.section) {
       // Create event draft model from form values

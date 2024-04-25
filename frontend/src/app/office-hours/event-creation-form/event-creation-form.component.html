@@ -30,24 +30,75 @@
         <mat-label>Description of Event</mat-label>
         <textarea matInput formControlName="description"> </textarea>
       </mat-form-field>
+
+      <p>Frequency:</p>
+      <mat-radio-group formControlName="frequency">
+        <mat-radio-button
+          *ngFor="let frequency of frequencyOptions"
+          [value]="frequency">
+          {{ frequency }}</mat-radio-button
+        >
+      </mat-radio-group>
+      <div *ngIf="eventForm.value.frequency === 'One Time'">
+        <p>Date:</p>
+        <mat-form-field class="example-form-field ml-2">
+          <input
+            matInput
+            placeholder="Event Date"
+            type="date"
+            formControlName="endDate" />
+          <mat-datepicker #endDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div
+        *ngIf="
+          eventForm.value.frequency === 'Weekly' ||
+          eventForm.value.frequency === 'Daily'
+        ">
+        <p>Date Range:</p>
+        <div class="date-picker-container">
+          <mat-form-field class="example-form-field">
+            <input
+              matInput
+              placeholder="Start Date"
+              type="date"
+              formControlName="startDate" />
+            <mat-datepicker #startDatePicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field class="example-form-field ml-2">
+            <input
+              matInput
+              placeholder="End Date"
+              type="date"
+              formControlName="endDate" />
+            <mat-datepicker #endDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <!-- If Frequency Is Not ONE TIME -->
+      <div *ngIf="eventForm.value.frequency === 'Weekly'">
+        <p>Repeat On:</p>
+        <mat-button-toggle-group formControlName="onWeekday" multiple>
+          <mat-button-toggle value="0">Mon</mat-button-toggle>
+          <mat-button-toggle value="1">Tue</mat-button-toggle>
+          <mat-button-toggle value="2">Wed</mat-button-toggle>
+          <mat-button-toggle value="3">Thu</mat-button-toggle>
+          <mat-button-toggle value="4">Fri</mat-button-toggle>
+          <mat-button-toggle value="5">Sat</mat-button-toggle>
+          <mat-button-toggle value="6">Sun</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
       <p>Start Time:</p>
       <mat-form-field>
         <mat-label>Select Time:</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          required
-          formControlName="start_time" />
+        <input matInput type="time" required formControlName="start_time" />
       </mat-form-field>
       <p>End Time:</p>
       <mat-form-field>
         <mat-label>Select Time:</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          required
-          formControlName="end_time" />
+        <input matInput type="time" required formControlName="end_time" />
       </mat-form-field>
+
       <p>Location:</p>
       <mat-form-field>
         <mat-label>Select a Room!</mat-label>
