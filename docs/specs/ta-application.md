@@ -6,7 +6,7 @@ This document contains the technical specifications for the TA Application featu
 
 The TA Application allows us to retrieve data on COMP UTA's via the CSXL web application. The web application can now store data on UNC COMP UTA's, with the eventual implementation of Graduate TA's on the horizon.
 
-All logged-in users to the CSXL page are able to access the _Fall 2024 UTA Application_ to apply to be a UTA. UTA Applications are unique per _term_, and are editable upon completion until the end of the application period. Application review is currently not implemented and performed directly via the PostgreSQL database.
+All logged-in users to the CSXL page are able to access the _Fall 2024 UTA Application_ to apply to be a UTA. UTA Applications will inevitably be unique per _term_, and are editable upon completion until the end of the application period. Application review is currently not implemented and performed directly via the PostgreSQL database.
 
 ## Table of Contents
 
@@ -19,10 +19,10 @@ All logged-in users to the CSXL page are able to access the _Fall 2024 UTA Appli
   - [Conclusion](#Conclusion)
 - [Backend Design and Implementation](#BackendDesignandImplementation)
   - [Entity Design](#EntityDesign)
-  - [Pydantic Model Implementation](#PydanticModelImplementation)
+  <!-- - [Inheritance Mapping](#InheritanceMapping)
+  - [Pydantic Model Implementation](#PydanticModelImplementation) -->
   - [API Implementation](#APIImplementation)
   - [Permission Summary](#PermissionSummary)
-  - [Testing](#Testing)
 
 ## Frontend Features<a name='FrontendFeatures'></a>
 
@@ -87,9 +87,14 @@ The fields and relationships between these entities are shown below:
 
 ![Entity Design](../images/specs/ta-application/entity-relationships.png)
 
-As you can see, the two association tables defined by `SectionUserEntity` and `SectionRoomEntity` relate to (and therefore add relationship fields to) the existing `user` and `room` tables.
+Black = Current Design
+Blue = to-Many relationship
+Red = to-One relationship
+Green = Not yet implemented
 
-### Pydantic Model Implementation<a name='PydanticModelImplementation'></a>
+<!-- ### Inheritance Mapping<a name='InheritanceMapping'></a> -->
+
+<!-- ### Pydantic Model Implementation<a name='PydanticModelImplementation'></a>
 
 The Pydantic models for terms and courses are nearly one-to-one with their entity counterparts. However, sections utilize a more custom model structure, as shown below:
 
@@ -97,7 +102,7 @@ The Pydantic models for terms and courses are nearly one-to-one with their entit
 <tr><th width="520">`Section` and `SectionDetail` Models</th></tr>
 <tr>
 <td>
- 
+
 ```py
 # Both models are slightly simplified for better
 # comprehensibility here.
@@ -123,7 +128,7 @@ term: Term
 
 As you can see, the room relation is split up into `lecture_room` and `office_hour_rooms` respectively. This helps to simplify frontend logic and prevent numerous filtering calls having to be made. The data is automatically updated in the API.
 
-The user relation is also stripped down to just `staff`, which contains only *instructors* and *TAs* and excludes students. This is done for security purposes. The public GET API should not expose entire student rosters.
+The user relation is also stripped down to just `staff`, which contains only *instructors* and *TAs* and excludes students. This is done for security purposes. The public GET API should not expose entire student rosters. -->
 
 ### API Implementation<a name='APIImplementation'></a>
 
@@ -139,29 +144,14 @@ Here is a summary of the APIs added:
 
 All of these API routes call on **backend service functions** to perform these operations. These backend services are protected by permissions. Here is a summary of the permissions that this feature added:
 
-| Action | Resource | Description |
-| ---- | ---- | -------- |
-| `"academics.term.create"` | `"term"` | Gives the user permission to create terms in the database. |
-| `"academics.term.update"` | `"term/{id}"` | Gives the user permission to update a term in the database. |
-| `"academics.term.delete"` | `"term/{id}"` | Gives the user permission to delete a term in the database. |
-| `"academics.course.create"` | `"course"` | Gives the user permission to create courses in the database. |
-| `"academics.course.update"` | `"course/{id}"` | Gives the user permission to update a course in the database. |
-| `"academics.course.delete"` | `"course/{id}"` | Gives the user permission to delete a course in the database. |
-| `"academics.section.create"` | `"section"` | Gives the user permission to create sections in the database. |
-| `"academics.section.update"` | `"section/{id}"` | Gives the user permission to update a section in the database. |
-| `"academics.section.delete"` | `"section/{id}"` | Gives the user permission to delete a section in the database. |
-| `"room.create"` | `"room"` | Gives the user permission to create rooms in the database. |
-| `"room.update"` | `"room/{id}"` | Gives the user permission to update a room in the database. |
-| `"room.delete"` | `"room/{id}"` | Gives the user permission to delete a room in the database. |
+| Action                  | Resource              | Description                                                       |
+| ----------------------- | --------------------- | ----------------------------------------------------------------- |
+| `"applications.create"` | `"applications/{id}"` | Gives the user permission to create applications in the database. |
 
-### Testing<a name='Testing'></a>
-
-The Academics feature adds full, thorough testing to every new service function added in the course, section, term, and room services. All tests pass, and all services created or modified have 100% test coverage.
-
-## Future Considerations<a name='FutureConsiderations'></a>
+<!-- ## Future Considerations<a name='FutureConsiderations'></a>
 
 * If we begin to add more course types to the page, I would love to switch the input select for course subject codes to use the material chip components.
 * We can now implement the gear icon for other admin features and refactor the folder structure - notably, for organizations.
 * We may want a separate `Academics` page specifically for unauthenticated users.
 * We can consider creating detail pages for courses and terms. At the moment though, it does not seem necessary.
-```
+``` -->
