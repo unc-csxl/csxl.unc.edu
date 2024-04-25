@@ -8,7 +8,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import {
   OfficeHoursEventDraft,
   OfficeHoursEventModeType,
@@ -48,6 +48,8 @@ export class EventCreationFormComponent implements OnInit {
   sectionId: number;
   section: OfficeHoursSectionDetails | undefined;
 
+  /* Holds Information About Virtual Room */
+  virtualRoom: Room | undefined;
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
@@ -77,9 +79,28 @@ export class EventCreationFormComponent implements OnInit {
     location_description: ''
   });
 
+  // Handles Room Location Value According to Event Mode Selection Changes
+  onEventModeChange(event: any) {
+    // CASE: If Event Mode is Virtual, Will Set Default Room Location to Virtual
+    if (event.value.includes('virtual')) {
+      if (this.virtualRoom) {
+        (this.eventForm.get('location') as FormControl).setValue(
+          this.virtualRoom.id
+        );
+      }
+      // CASE: If Location has been selected but switch to In-Person, will reset selection for Room Location
+    } else if (
+      event.value.includes('in_person') &&
+      this.eventForm.value.location !== ''
+    ) {
+      (this.eventForm.get('location') as FormControl).setValue(null);
+    }
+  }
+
   getRooms() {
     this.academicsService.getRooms().subscribe((rooms) => {
       this.rooms = rooms;
+      this.virtualRoom = rooms.find((room) => room.id === 'Virtual');
     });
   }
 

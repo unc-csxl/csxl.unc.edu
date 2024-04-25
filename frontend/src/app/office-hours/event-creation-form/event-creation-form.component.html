@@ -17,7 +17,10 @@
       <p>Event Mode:</p>
       <mat-form-field>
         <mat-label>Select Type</mat-label>
-        <mat-select required formControlName="event_mode">
+        <mat-select
+          required
+          formControlName="event_mode"
+          (selectionChange)="onEventModeChange($event)">
           <mat-option value="in_person"> In-Person </mat-option>
           <mat-option value="virtual_student_link">
             Virtual - Student Link
