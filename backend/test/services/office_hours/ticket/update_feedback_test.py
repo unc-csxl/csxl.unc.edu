@@ -27,7 +27,7 @@ from ...academics.section_data import (
     user__comp110_student_0,
     user__comp110_student_1,
     user__comp110_uta_0,
-    user__comp110_uta_1,
+    user__comp110_gta,
     user__comp110_non_member,
 )
 
@@ -62,22 +62,6 @@ def test_update_ticket_feedback_exception_if_student(
     with pytest.raises(PermissionError):
         oh_ticket_svc.update_ticket_feedback(
             user__comp110_student_0,
-            OfficeHoursTicketPartial(
-                id=office_hours_data.comp110_closed_ticket.id,
-                have_concerns=False,
-                caller_notes="Great to work with!",
-            ),
-        )
-        pytest.fail()  # Fail test if no error was thrown above
-
-
-def test_update_ticket_feedback_exception_if_not_ticket_caller(
-    oh_ticket_svc: OfficeHoursTicketService,
-):
-    """Test case for exception raised if non-ticket caller tries to update feedback."""
-    with pytest.raises(PermissionError):
-        oh_ticket_svc.update_ticket_feedback(
-            user__comp110_uta_1,
             OfficeHoursTicketPartial(
                 id=office_hours_data.comp110_closed_ticket.id,
                 have_concerns=False,

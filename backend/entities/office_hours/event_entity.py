@@ -7,7 +7,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
 from ...models.office_hours.event_details import OfficeHoursEventDetails
 
-from ...models.office_hours.event_type import OfficeHoursEventType
+from ...models.office_hours.event_type import (
+    OfficeHoursEventModeType,
+    OfficeHoursEventType,
+)
 from ...models.office_hours.section import OfficeHoursSectionPartial
 from ...models.room import RoomPartial
 
@@ -32,6 +35,12 @@ class OfficeHoursEventEntity(EntityBase):
     type: Mapped[OfficeHoursEventType] = mapped_column(
         SQLAlchemyEnum(OfficeHoursEventType), nullable=False
     )
+
+    # Mode of event
+    mode: Mapped[OfficeHoursEventModeType] = mapped_column(
+        SQLAlchemyEnum(OfficeHoursEventModeType), nullable=False
+    )
+
     # Description of event
     description: Mapped[str] = mapped_column(String, default="", nullable=False)
     # Description of the location; allows for instructors to write note about attending office hours
@@ -77,6 +86,7 @@ class OfficeHoursEventEntity(EntityBase):
             office_hours_section_id=model.oh_section.id,
             room_id=model.room.id,
             type=model.type,
+            mode=model.mode,
             description=model.description,
             location_description=model.location_description,
             date=model.event_date,
@@ -98,6 +108,7 @@ class OfficeHoursEventEntity(EntityBase):
             office_hours_section_id=model.oh_section.id,
             room_id=model.room.id,
             type=model.type,
+            mode=model.mode,
             description=model.description,
             location_description=model.location_description,
             date=model.event_date,
@@ -115,6 +126,7 @@ class OfficeHoursEventEntity(EntityBase):
         return OfficeHoursEvent(
             id=self.id,
             type=self.type,
+            mode=self.mode,
             description=self.description,
             location_description=self.location_description,
             event_date=self.date,
@@ -134,6 +146,7 @@ class OfficeHoursEventEntity(EntityBase):
         return OfficeHoursEventDetails(
             id=self.id,
             type=self.type,
+            mode=self.mode,
             description=self.description,
             location_description=self.location_description,
             event_date=self.date,

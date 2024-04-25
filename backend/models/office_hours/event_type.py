@@ -15,6 +15,13 @@ class OfficeHoursEventType(Enum):
     OFFICE_HOURS = 0
     TUTORING = 1
     REVIEW_SESSION = 2
-    VIRTUAL_OFFICE_HOURS = 3
-    VIRTUAL_TUTORING = 4
-    VIRTUAL_REVIEW_SESSION = 5
+
+
+class OfficeHoursEventModeType(Enum):
+    """
+    Determines the office hours event mode.
+    """
+
+    IN_PERSON = 0
+    VIRTUAL_STUDENT_LINK = 1
+    VIRTUAL_OUR_LINK = 2

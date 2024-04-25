@@ -27,7 +27,10 @@ import {
   TicketPartial,
   Ticket,
   OfficeHoursEventStatus,
-  StudentOfficeHoursEventStatus
+  StudentOfficeHoursEventStatus,
+  OfficeHoursSection,
+  OfficeHoursSectionTrailingWeekData,
+  OfficeHoursEventModeType
 } from './office-hours.models';
 import {
   Section,
@@ -75,15 +78,21 @@ export class OfficeHoursService {
     );
   }
 
+  getUserSectionsNotEnrolledByTerm(
+    term_id: string
+  ): Observable<OfficeHoursSection[]> {
+    return this.http.get<OfficeHoursSection[]>(
+      '/api/office-hours/section/user/not-enrolled/term/' + term_id
+    );
+  }
+
   getSectionsByTerm(term_id: String): Observable<OfficeHoursSectionDetails[]> {
     return this.http.get<OfficeHoursSectionDetails[]>(
       '/api/office-hours/section/term/' + term_id
     );
   }
 
-  joinSection(
-    oh_sections: OfficeHoursSectionDetails[]
-  ): Observable<SectionMember[]> {
+  joinSection(oh_sections: OfficeHoursSection[]): Observable<SectionMember[]> {
     return this.http.post<SectionMember[]>(
       '/api/academics/section-member',
       oh_sections
@@ -150,12 +159,18 @@ export class OfficeHoursService {
       return 'Tutoring';
     } else if (typeNum === OfficeHoursEventType.REVIEW_SESSION) {
       return 'Review Session';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_OFFICE_HOURS) {
-      return 'Virtual Office Hours';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_TUTORING) {
-      return 'Virtual Tutoring';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_REVIEW_SESSION) {
-      return 'Virtual Review Session';
+    } else {
+      return 'error';
+    }
+  }
+
+  formatEventModeType(typeNum: number) {
+    if (typeNum === OfficeHoursEventModeType.IN_PERSON) {
+      return 'In-Person';
+    } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_OUR_LINK) {
+      return 'Virtual - Our Link';
+    } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK) {
+      return 'Vritual - Your Link';
     } else {
       return 'error';
     }
@@ -265,6 +280,22 @@ export class OfficeHoursService {
         oh_event_id +
         '/student-queue-stats/' +
         ticket_id
+    );
+  }
+
+  getSectionData(
+    oh_section_id: number
+  ): Observable<OfficeHoursSectionTrailingWeekData> {
+    return this.http.get<OfficeHoursSectionTrailingWeekData>(
+      'api/office-hours/section/' + oh_section_id + '/data/statistics'
+    );
+  }
+
+  getSectionTicketsWithConcern(
+    oh_section_id: number
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/data/concerns'
     );
   }
 

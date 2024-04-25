@@ -10,15 +10,19 @@
         <mat-label>Select Type</mat-label>
         <mat-select required formControlName="event_type">
           <mat-option value="office_hours"> Office Hours </mat-option>
-          <mat-option value="office_hour_virtual">
-            Virtual Office Hours
-          </mat-option>
           <mat-option value="tutoring"> Tutoring </mat-option>
-          <mat-option value="virtual_tutoring"> Virtual Tutoring </mat-option>
           <mat-option value="review_session"> Review Session </mat-option>
-          <mat-option value="review_session_virtual">
-            Virtual Review Session
+        </mat-select>
+      </mat-form-field>
+      <p>Event Mode:</p>
+      <mat-form-field>
+        <mat-label>Select Type</mat-label>
+        <mat-select required formControlName="event_mode">
+          <mat-option value="in_person"> In-Person </mat-option>
+          <mat-option value="virtual_student_link">
+            Virtual - Student Link
           </mat-option>
+          <mat-option value="virtual_our_link"> Virtual - Our Link </mat-option>
         </mat-select>
       </mat-form-field>
       <p>Description:</p>

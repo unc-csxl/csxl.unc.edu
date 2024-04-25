@@ -81,7 +81,17 @@ edited_xl = RoomDetails(
     seats=[],
 )
 
-rooms = [the_xl, group_a, group_b, group_c, pair_a]
+virtual = RoomDetails(
+    id="Virtual",
+    building="Virtual",
+    room="Virtual",
+    nickname="Virtual CSXL",
+    capacity=999,
+    reservable=False,
+    seats=[],
+)
+
+rooms = [the_xl, group_a, group_b, group_c, pair_a, virtual]
 
 
 def insert_fake_data(session: Session):

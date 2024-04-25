@@ -1,17 +1,14 @@
 from datetime import datetime, timedelta
 import statistics
 from fastapi import Depends
-from sqlalchemy import and_, not_, select, select, outerjoin, and_, not_
-from sqlalchemy import select, not_, and_, union
-from sqlalchemy.orm import aliased
+
+from sqlalchemy import select, not_
 from sqlalchemy.orm import Session
 
 from ...models.office_hours.ticket import OfficeHoursTicket
 from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
-from ...models.academics.section_member_details import SectionMemberDetails
-from ...entities.office_hours.event_entity import OfficeHoursEventEntity
-from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+
 from ...entities.academics.section_member_entity import SectionMemberEntity
 
 from ...models.roster_role import RosterRole
@@ -55,40 +52,41 @@ class OfficeHoursSectionService:
         """Creates a new office hours section.
 
         Args:
-            subject: a valid User model representing the currently logged in User
-            oh_section: OfficeHoursSection to add to table
-
+            subject (User): a valid User model representing the currently logged in User
+            oh_section (OfficeHoursSectionDraft): OfficeHoursSection Draft to add to table
+            academic_ids (list[int]): List of academic section IDs to create an OH Section for
         Returns:
             OfficeHoursSectionDetails: Object added to table
         """
 
         # PERMISSIONS
 
-        # 1. Checks If User Has Proper Role to Create and If is a Member in a Section
-        section_member_entity = self._check_membership_and_edit_permissions(
-            subject.id, academic_ids
-        )
-
-        if section_member_entity.member_role != RosterRole.INSTRUCTOR:
-            raise PermissionError(
-                f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
-            )
-        # 2. Check If Give Academic Sections Already Have an Office Hours Event
-        # Query and Execution to Update All Academic Section With New OH Section ID
+        # 1. Check If Give Academic Sections IDs Are Valid
         query = select(SectionEntity).where(SectionEntity.id.in_(academic_ids))
         academic_section_entities = self._session.scalars(query).all()
 
-        for entity in academic_section_entities:
-            if entity.office_hours_id is not None:
-                raise Exception("Office Hours Section Already Exists!")
-
-        # Check If All Academic Sections Were Queried
         if len(academic_section_entities) != len(academic_ids):
             raise ResourceNotFoundException(
                 f"Unable to Fetch All Academic Sections. Only {len(academic_section_entities)} out of {len(academic_ids)} was found."
             )
 
-        # Create new object
+        # 2. Check if Already Have an Office Hours Event
+        for entity in academic_section_entities:
+            if entity.office_hours_id is not None:
+                raise Exception("Office Hours Section Already Exists!")
+
+        # 3. Check If User is a Member in a Section and Has Proper Role to Create
+        for academic_id in academic_ids:
+            section_member_entity = self._check_membership_by_user_id_section_id(
+                subject.id, academic_id
+            )
+
+            if section_member_entity.member_role != RosterRole.INSTRUCTOR:
+                raise PermissionError(
+                    f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
+                )
+
+        # Query and Execution to Update All Academic Section With New OH Section ID
         oh_section_entity = OfficeHoursSectionEntity.from_draft_model(oh_section)
 
         # Add new object to table and commit changes
@@ -404,7 +402,7 @@ class OfficeHoursSectionService:
             entity.to_model() for entity in section_member_entity.created_tickets
         ]
 
-        # Order so lastest is first
+        # Order so latest is first
         created_tickets.sort(key=lambda x: x.created_at, reverse=True)
         return created_tickets
 
@@ -454,10 +452,8 @@ class OfficeHoursSectionService:
             subject.id, oh_section.id
         )
 
-        if (
-            section_member_entity.member_role != RosterRole.INSTRUCTOR
-            and section_member_entity.member_role != RosterRole.GTA
-        ):
+        roles_with_permissions = [RosterRole.INSTRUCTOR, RosterRole.GTA]
+        if section_member_entity.member_role not in roles_with_permissions:
             raise PermissionError(
                 f"Section Member is not an Instructor or GTA. User Does Not Have Permision to get concerning tickets in section with id {oh_section.id}."
             )
@@ -478,6 +474,9 @@ class OfficeHoursSectionService:
         ticket_details_models = [
             entity.to_details_model() for entity in ticket_entities
         ]
+
+        # Order the tickets so the most recent one is on top
+        ticket_details_models.sort(key=lambda x: x.created_at, reverse=True)
 
         # Return ticket details models where have_concerns is True
         return [ticket for ticket in ticket_details_models if ticket.have_concerns]
@@ -589,11 +588,24 @@ class OfficeHoursSectionService:
         Returns:
             list[SectionMemberDetails]: List of all `SectionMemberDetails` in an OHsection
         """
+
+        # Select OH Section by id
+        query = select(OfficeHoursSectionEntity).where(
+            OfficeHoursSectionEntity.id == oh_section.id
+        )
+
+        oh_section_entity = self._session.scalars(query).one_or_none()
+
+        if oh_section_entity is None:
+            raise ResourceNotFoundException(
+                f"Unable to find section with id {oh_section.id}"
+            )
+
         # PERMISSIONS
 
         # Throws exception if user is not a member
         section_member_entity = self._check_user_section_membership(
-            subject.id, oh_section.id
+            subject.id, oh_section_entity.id
         )
 
         # Raises PermissionError if user trying to fetch all members is a Student
@@ -602,16 +614,11 @@ class OfficeHoursSectionService:
                 f"Section Member is a Student. User Does Not Have Permission to Get Section Members."
             )
 
-        # Select OH Section by id
-        query = select(OfficeHoursSectionEntity).where(
-            OfficeHoursSectionEntity.id == oh_section.id
-        )
-
-        entity = self._session.scalars(query).one_or_none()
-
         # Get the members that are linked to the academic sections which are linked to the OH section
         member_entities = [
-            member for section in entity.sections for member in section.members
+            member
+            for section in oh_section_entity.sections
+            for member in section.members
         ]
 
         # Return the model version of those members
@@ -643,7 +650,7 @@ class OfficeHoursSectionService:
             or subject_section_member_entity.member_role == RosterRole.UTA
         ):
             raise PermissionError(
-                f"Section Member is not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
+                f"Section Member Role is {subject_section_member_entity.member_role} and not an Instructor or GTA. User Does Not Have Permision to change member roles in OH section {oh_section_id}."
             )
 
         # Do not allow changing roles to instructor so that students cannot create courses
@@ -658,7 +665,7 @@ class OfficeHoursSectionService:
         )
         section_member_entity = self._session.scalars(query).one_or_none()
         if section_member_entity is None:
-            raise ResourceNotFoundException(
+            raise PermissionError(
                 f"SectionMember with id {user_to_modify.id} not found."
             )
 
@@ -699,34 +706,33 @@ class OfficeHoursSectionService:
         """
         # TODO
 
-    def _check_membership_and_edit_permissions(
+    def _check_membership_by_user_id_section_id(
         self,
         user_id: int,
-        section_ids: list[int],
+        section_id: int,
     ) -> SectionMemberEntity:
         """Checks if a given user is a member in academic sections and has oh section edit permissions. A UTA/GTA/Instructor has this permission.
         Note: An Office Hours section can have multiple academic sections assoicated with it.
         Args:
             user_id: The id of given User of interest
-            section_ids: List of ids of academic section.
+            section_id: ID of academic section.
         Returns:
             SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
         Raises:
-            ResourceNotFoundException if user is not a member in given academic section.
             PermissionError if user creating event is not a Instructor
         """
         # Select SectionMembers where the user id and section id match the given ones
         query = (
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user_id)
-            .where(SectionMemberEntity.section_id.in_(section_ids))
+            .where(SectionMemberEntity.section_id == section_id)
         )
         # Find User Academic Section Entity
         section_member_entity = self._session.scalars(query).one_or_none()
 
         if section_member_entity is None:
             raise PermissionError(
-                f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_ids}"
+                f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_id}"
             )
 
         # Return entity

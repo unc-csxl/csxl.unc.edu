@@ -1,6 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import Depends
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
+
+from backend.models.office_hours.event import OfficeHoursEvent
+
+from ...services.office_hours.event import OfficeHoursEventService
 
 from ...database import db_session
 
@@ -31,7 +36,6 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-# TODO: Add Comments
 class OfficeHoursTicketService:
     """Service that performs all of the actions on the `OfficeHoursTicket` table"""
 
@@ -39,10 +43,12 @@ class OfficeHoursTicketService:
         self,
         session: Session = Depends(db_session),
         permission_svc: PermissionService = Depends(),
+        oh_event_svc: OfficeHoursEventService = Depends(),
     ):
         """Initializes the database session."""
         self._session = session
         self._permission_svc = permission_svc
+        self._oh_event_svc = oh_event_svc
 
     def create(
         self, subject: User, oh_ticket: OfficeHoursTicketDraft
@@ -91,6 +97,11 @@ class OfficeHoursTicketService:
                     creator.id, oh_section.id
                 )
                 section_member_entities.append(section_member_entity)
+
+        # Raises PermissionError if students have a current queued or recently called ticket(s)
+        self._check_ticket_creation_time_permissions(
+            subject, oh_ticket.oh_event, section_member_entities
+        )
 
         # CREATE TICKET AND ASSOCIATIONS
 
@@ -363,7 +374,7 @@ class OfficeHoursTicketService:
             raise ResourceNotFoundException(f"Cannot Find Ticket id={oh_ticket.id}")
 
         if ticket_entity.state != TicketState.CALLED:
-            raise Exception("Ticket is Not Queued - Cannot Cancel Ticket!")
+            raise Exception("Ticket is Not Called - Cannot Close Ticket!")
 
         # Fetch Office Hours Section - Needed To Determine if User Membership
         oh_section_entity = self._get_office_hours_section_by_oh_event_id(
@@ -407,7 +418,6 @@ class OfficeHoursTicketService:
         Raises:
             Exception: If `have_concerns` or `caller_notes` fields of `oh_ticket` are None.
             ResourceNotFoundException: If the ticket with the specified ID (`oh_ticket.id`) is not found.
-            PermissionError: If the ticket is not closed or if the logged-in user is not the caller of the ticket.
         """
 
         # Check Feedback Fields Are Not None
@@ -425,22 +435,23 @@ class OfficeHoursTicketService:
             ticket_entity.oh_event_id
         )
 
-        # Case: Current User
+        # Ensure subject is a member of the section
         current_user_section_member_entity = self._check_user_section_membership(
             subject.id, oh_section_entity.id
         )
 
-        # PERMISSIONS:
-        # 1. Check if Ticket Is Closed
+        # PERMISSIONS
+
+        # 1. If student, cannot leave feedback. Any staff member can close and leave feedback on any ticket.
+        if current_user_section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Student's Do Not Have Permission to Give Feedback for Ticket id={oh_ticket.id}"
+            )
+
+        # 2. Check if Ticket Is Closed
         if ticket_entity.state != TicketState.CLOSED:
             raise PermissionError(
                 f"Ticket is Not Closed. Cannot Give Feedback for Ticket id={oh_ticket.id}"
-            )
-
-        # 2. CASE: Only Caller of Ticket Can Update
-        if ticket_entity.caller_id != current_user_section_member_entity.id:
-            raise PermissionError(
-                f"Section member id={current_user_section_member_entity.id} is not caller of ticket and do not have permssion to give feedback."
             )
 
         # Update fields and commit changed entity
@@ -572,13 +583,13 @@ class OfficeHoursTicketService:
            Note: An Office Hours section can have multiple academic sections assoicated with it.
 
         Args:
-            oh_event_id: The id of Office Hours Section of interest
+            oh_event_id: The id of Office Hours Event of interest
 
         Returns:
             OfficeHoursSection: `OfficeHoursSection` associated with a given event.
 
         Raises:
-            ResourceNotFoundException if cannot office hours event or section for given office hours event.
+            ResourceNotFoundException if cannot find office hours event or section for given office hours event.
         """
 
         # Fetch Office Hours Event
@@ -597,3 +608,50 @@ class OfficeHoursTicketService:
 
         # Return section model
         return oh_section
+
+    def _check_ticket_creation_time_permissions(
+        self,
+        subject: User,
+        oh_event: OfficeHoursEvent,
+        creators: list[SectionMemberEntity],
+    ) -> None:
+        """Checks if a given user currently has a queued ticket, or has had a called ticket in the past hour.
+        This check will be used to determine whether a student can create a new ticket.
+
+        Args:
+            oh_event: The Office Hours Event of interest
+
+        Raises:
+            PermissionError if student cannot create a ticket right now.
+        """
+
+        # If the student currently has a queued ticket, don't allow new ticket creation
+        if (
+            self._oh_event_svc.check_student_in_queue_status(
+                subject, oh_event
+            ).ticket_id
+            != None
+        ):
+            raise PermissionError(
+                "Cannot create another ticket while currently in the queue."
+            )
+
+        # If the student's ticket was called less than 1 hr ago, don't allow new ticket creation yet
+        created_tickets_in_event = [
+            ticket
+            for section_member in creators
+            for ticket in section_member.created_tickets
+            if ticket.oh_event_id == oh_event.id
+        ]
+
+        # Order so latest ticket is first
+        created_tickets_in_event.sort(key=lambda x: x.created_at, reverse=True)
+
+        # Communicate when the student can create another ticket
+        for ticket in created_tickets_in_event:
+            if ticket.called_at != None:
+                if ticket.called_at > datetime.now() - timedelta(hours=1):
+                    time_can_create_again = ticket.called_at + timedelta(hours=1)
+                    raise PermissionError(
+                        f"Cannot create another ticket within an hour of the previous one. You may try again at {time_can_create_again.strftime('%I:%M %p')}."
+                    )

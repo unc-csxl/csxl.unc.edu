@@ -3,7 +3,7 @@
 import pytest
 
 from .....models.office_hours.ticket import OfficeHoursTicketPartial
-from .....models.office_hours.ticket_details import OfficeHoursTicketDetails
+from .....models.office_hours.ticket_details import OfficeHoursTicket
 
 from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.ticket import OfficeHoursTicketService
@@ -26,7 +26,7 @@ from ...academics.section_data import (
     user__comp110_student_0,
     user__comp110_student_1,
     user__comp110_uta_0,
-    user__comp110_uta_1,
+    user__comp110_gta,
     user__comp110_non_member,
 )
 
@@ -54,7 +54,7 @@ def test_update_ticket_description(oh_ticket_svc: OfficeHoursTicketService):
         user__comp110_student_0, delta
     )
 
-    assert isinstance(updated_ticket, OfficeHoursTicketDetails)
+    assert isinstance(updated_ticket, OfficeHoursTicket)
     assert updated_ticket.description == updated_description
 
     # Verify

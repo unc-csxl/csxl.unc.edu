@@ -42,6 +42,7 @@ export class EventCard implements OnInit {
 
   ngOnInit(): void {
     this.getTicketStats();
+    console.log(this.event);
   }
 
   /* Helper function that formats event type */
@@ -52,12 +53,6 @@ export class EventCard implements OnInit {
       return 'Tutoring';
     } else if (typeNum === OfficeHoursEventType.REVIEW_SESSION) {
       return 'Review Session';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_OFFICE_HOURS) {
-      return 'Virtual Office Hours';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_TUTORING) {
-      return 'Virtual Tutoring';
-    } else if (typeNum === OfficeHoursEventType.VIRTUAL_REVIEW_SESSION) {
-      return 'Virtual Review Session';
     } else {
       return 'error';
     }

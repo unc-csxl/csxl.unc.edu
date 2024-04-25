@@ -6,11 +6,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
 
 from ...models.academics.section_member import SectionMember
-from ...models.office_hours.section import OfficeHoursSectionPartial
-from ...models.office_hours.section_details import OfficeHoursSectionDetails
+from ...models.office_hours.section import OfficeHoursSection
 from ...models import User
 
-from ...services.academics import SectionMembershipService
+from ...services.academics import SectionMemberService
 
 __authors__ = ["Meghan Sun"]
 __copyright__ = "Copyright 2024"
@@ -26,12 +25,12 @@ openapi_tags = {
 
 @api.get("/{id}", response_model=SectionMember, tags=["Academics"])
 def get_section_member_by_id(
-    id: int, section_member_svc: SectionMembershipService = Depends()
+    id: int, section_member_svc: SectionMemberService = Depends()
 ) -> SectionMember:
     """
     Args:
         id (int): The unique identifier of the SectionMember.
-        section_member_svc (SectionMembershipService): Service dependency to interact with Section Membership data.
+        section_member_svc (SectionMemberService): Service dependency to interact with Section Membership data.
 
     Returns:
         SectionMember: The SectionMember corresponding to the provided ID.
@@ -49,7 +48,7 @@ def get_section_member_by_id(
 def get_membership_by_user_and_oh_section_id(
     section_id: int,
     subject: User = Depends(registered_user),
-    section_member_svc: SectionMembershipService = Depends(),
+    section_member_svc: SectionMemberService = Depends(),
 ) -> SectionMember:
     """
     Retrieves a SectionMember's membership in an Office Hours section by section ID.
@@ -57,7 +56,7 @@ def get_membership_by_user_and_oh_section_id(
     Args:
         section_id (int): The ID of the Office Hours section.
         subject (User): The currently logged-in user.
-        section_member_svc (SectionMembershipService): Service dependency to interact with Section Membership data.
+        section_member_svc (SectionMemberService): Service dependency to interact with Section Membership data.
 
     Returns:
         SectionMember: The SectionMember's membership in the specified Office Hours section.
@@ -75,17 +74,17 @@ def get_membership_by_user_and_oh_section_id(
 
 @api.post("", response_model=list[SectionMember], tags=["Academics"])
 def add_user_memberships(
-    oh_sections: list[OfficeHoursSectionDetails],
+    oh_sections: list[OfficeHoursSection],
     subject: User = Depends(registered_user),
-    section_member_svc: SectionMembershipService = Depends(),
+    section_member_svc: SectionMemberService = Depends(),
 ) -> list[SectionMember]:
     """
     Adds memberships for a user given a list of Office Hours sections.
 
     Args:
-        oh_sections (list[OfficeHoursSectionDetails]): List of Office Hours sections to enroll the user into.
+        oh_sections (list[OfficeHoursSection]): List of Office Hours sections to enroll the user into.
         subject (User): The currently logged-in user.
-        section_membership (SectionMembershipService): Service dependency to manage Section Membership data.
+        section_membership (SectionMemberService): Service dependency to manage Section Membership data.
 
     Returns:
         list[SectionMember]: List of newly created SectionMember memberships for the user.
@@ -94,7 +93,9 @@ def add_user_memberships(
         HTTPException(404): When there was an issue adding the memberships.
     """
     try:
-        return section_member_svc.add_user_oh_memberships(subject, oh_sections)
+        return section_member_svc.add_user_section_memberships_by_oh_sections(
+            subject, oh_sections
+        )
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -104,14 +105,14 @@ def add_user_memberships(
 )
 def check_instructor_memberships(
     subject: User = Depends(registered_user),
-    section_member_svc: SectionMembershipService = Depends(),
+    section_member_svc: SectionMemberService = Depends(),
 ) -> list[SectionMember]:
     """
     Main indicator if User is an instructor. Searches all instructor memberships for a given user.
 
     Args:
         subject (User): The user object representing the user to find memberships.
-        section_member_svc (SectionMembershipService): An instance of SectionMembershipService.
+        section_member_svc (SectionMemberService): An instance of SectionMembershipService.
 
     Returns:
         List[SectionMember]: A list of SectionMember objects representing all instructor memberships of the given user. If not instructor, returns an empty list.

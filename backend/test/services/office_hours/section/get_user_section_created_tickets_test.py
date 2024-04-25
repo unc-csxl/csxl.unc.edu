@@ -2,12 +2,8 @@
 
 import pytest
 
-from backend.models.office_hours.event import OfficeHoursEvent
-from backend.models.office_hours.section_details import OfficeHoursSectionDetails
-from backend.models.office_hours.ticket_details import OfficeHoursTicketDetails
-from backend.services.academics.section import SectionService
+from .....models.office_hours.ticket import OfficeHoursTicket
 
-from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -40,6 +36,7 @@ __license__ = "MIT"
 def test_get_user_section_created_ticket_by_student(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to get user section created tickets by a student."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_section.id
     )
@@ -47,13 +44,14 @@ def test_get_user_section_created_ticket_by_student(
         user__comp110_student_0, oh_section
     )
 
-    assert isinstance(created_tickets[0], OfficeHoursTicketDetails)
+    assert isinstance(created_tickets[0], OfficeHoursTicket)
     assert len(created_tickets) == len(office_hours_data.comp110_tickets)
 
 
 def test_get_user_section_created_ticket_by_student_no_tickets(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to check if a student has no created tickets."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_student_1, office_hours_data.comp_110_oh_section.id
     )
@@ -67,6 +65,7 @@ def test_get_user_section_created_ticket_by_student_no_tickets(
 def test_get_user_section_created_ticket_by_uta(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to check if a UTA has no created tickets."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_uta_0, office_hours_data.comp_110_oh_section.id
     )
@@ -80,12 +79,12 @@ def test_get_user_section_created_ticket_by_uta(
 def test_get_user_section_created_ticket_exception_if_non_member(
     oh_section_svc: OfficeHoursSectionService,
 ):
+    """Test to check if getting created tickets by a non-member raises an exception."""
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_non_member, office_hours_data.comp_110_oh_section.id
     )
 
     with pytest.raises(PermissionError):
-
         oh_section_svc.get_user_section_created_tickets(
             user__comp110_non_member, oh_section
         )

@@ -24,7 +24,10 @@ from ....models.office_hours.event import (
     OfficeHoursEventDraft,
     OfficeHoursEventPartial,
 )
-from ....models.office_hours.event_type import OfficeHoursEventType
+from ....models.office_hours.event_type import (
+    OfficeHoursEventModeType,
+    OfficeHoursEventType,
+)
 from ....models.office_hours.section import (
     OfficeHoursSection,
     OfficeHoursSectionDraft,
@@ -62,7 +65,7 @@ oh_sections = [
 
 # For Test
 f23_oh_sections = [comp_110_oh_section_f23]
-s24_oh_sections = [comp_110_oh_section, comp_523_oh_section]
+current_term_oh_sections = [comp_110_oh_section, comp_523_oh_section]
 
 oh_section_draft = OfficeHoursSectionDraft(title="Draft OH Section")
 # Office Hours Event Data
@@ -71,8 +74,8 @@ comp_110_current_oh_event = OfficeHoursEvent(
     oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
     description="Office Hours",
-    location_description="In Person",
     event_date=date.today(),
     start_time=datetime.now() - timedelta(hours=1),
     end_time=datetime.now() + timedelta(hours=1),
@@ -83,8 +86,8 @@ comp_110_upcoming_oh_event = OfficeHoursEvent(
     oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
     description="Office Hours",
-    location_description="In Person",
     event_date=date.today(),
     start_time=datetime.now() + timedelta(days=1),
     end_time=datetime.now() + timedelta(days=1, hours=3),
@@ -96,8 +99,8 @@ comp_110_past_oh_event_0 = OfficeHoursEvent(
     oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
     description="Office Hours",
-    location_description="In Person",
     event_date=date.today(),
     start_time=datetime.now() - timedelta(days=1, hours=3),
     end_time=datetime.now() - timedelta(days=1),
@@ -108,8 +111,8 @@ comp_110_past_oh_event_1 = OfficeHoursEvent(
     oh_section=comp_110_oh_section,
     room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
     description="Office Hours",
-    location_description="In Person",
     event_date=date.today(),
     start_time=datetime.now() - timedelta(days=1, hours=3),
     end_time=datetime.now() - timedelta(days=1),
@@ -120,8 +123,8 @@ comp_523_current_oh_event = OfficeHoursEvent(
     oh_section=comp_523_oh_section,
     room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
     description="Office Hours",
-    location_description="In Person",
     event_date=date.today(),
     start_time=datetime.now() - timedelta(days=2, hours=3),
     end_time=datetime.now() - timedelta(days=2),
@@ -143,6 +146,7 @@ comp110_event_draft = OfficeHoursEventDraft(
     oh_section=OfficeHoursSectionPartial(id=comp_110_oh_section.id),
     room=RoomPartial(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
     description="COMP 110 OH",
     location_description="In Sitterson",
     event_date=date.today(),
@@ -177,10 +181,7 @@ comp110_closed_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
-    created_at=datetime.now() - timedelta(minutes=10),
-    closed_at=datetime.now() - timedelta(minutes=1),
-    have_concerns=False,
-    caller_notes="Forgot to Return Function.",
+    created_at=datetime.now() - timedelta(minutes=20),
 )
 
 
@@ -301,12 +302,20 @@ def insert_fake_data(session: Session):
     # Fetch a Student and UTA
     student = (
         session.query(SectionMemberEntity)
-        .where(SectionMemberEntity.member_role == RosterRole.STUDENT)
+        .where(
+            SectionMemberEntity.user_id == section_data.user__comp110_student_0.id,
+            SectionMemberEntity.section_id == section_data.comp_110_001_current_term.id,
+            SectionMemberEntity.member_role == RosterRole.STUDENT,
+        )
         .first()
     )
     uta = (
         session.query(SectionMemberEntity)
-        .where(SectionMemberEntity.member_role == RosterRole.UTA)
+        .where(
+            SectionMemberEntity.user_id == section_data.user__comp110_uta_0.id,
+            SectionMemberEntity.section_id == section_data.comp_110_001_current_term.id,
+            SectionMemberEntity.member_role == RosterRole.UTA,
+        )
         .first()
     )
 
@@ -331,7 +340,19 @@ def insert_fake_data(session: Session):
         OfficeHoursTicketEntity.id.in_(
             [comp110_called_ticket.id, comp110_closed_ticket.id]
         )
-    ).update({"caller_id": uta.id, "called_at": datetime.now()})
+    ).update({"caller_id": uta.id, "called_at": datetime.now() - timedelta(minutes=2)})
+
+    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
+    session.query(OfficeHoursTicketEntity).filter(
+        OfficeHoursTicketEntity.id.in_([comp110_closed_ticket.id])
+    ).update(
+        {
+            "have_concerns": True,
+            "called_at": datetime.now() - timedelta(minutes=10),
+            "closed_at": datetime.now() - timedelta(minutes=1),
+            "caller_notes": "Great to work with!",
+        }
+    )
 
     reset_table_id_seq(
         session,

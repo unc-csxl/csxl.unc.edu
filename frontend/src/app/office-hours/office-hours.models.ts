@@ -23,10 +23,13 @@ export enum TicketType {
 export enum OfficeHoursEventType {
   OFFICE_HOURS,
   TUTORING,
-  REVIEW_SESSION,
-  VIRTUAL_OFFICE_HOURS,
-  VIRTUAL_TUTORING,
-  VIRTUAL_REVIEW_SESSION
+  REVIEW_SESSION
+}
+
+export enum OfficeHoursEventModeType {
+  IN_PERSON,
+  VIRTUAL_STUDENT_LINK,
+  VIRTUAL_OUR_LINK
 }
 
 export interface Ticket {
@@ -107,6 +110,7 @@ export interface OfficeHoursEventDraft {
   oh_section: OfficeHoursSectionPartial;
   room: RoomPartial; // should this be a room or room partial?
   type: OfficeHoursEventType;
+  mode: OfficeHoursEventModeType;
   description: string;
   location_description: string;
   event_date: string;
@@ -161,4 +165,13 @@ export interface StudentOfficeHoursEventStatus {
   open_tickets_count: number;
   queued_tickets_count: number;
   ticket_position: number;
+}
+
+export interface OfficeHoursSectionTrailingWeekData {
+  number_of_tickets: number;
+  number_of_students: number;
+  average_wait_time: number;
+  standard_deviation_wait_time: number;
+  average_ticket_duration: number;
+  standard_deviation_ticket_duration: number;
 }

@@ -27,7 +27,7 @@ from ...academics.section_data import (
     user__comp110_student_0,
     user__comp110_student_1,
     user__comp110_uta_0,
-    user__comp110_uta_1,
+    user__comp110_gta,
     user__comp110_non_member,
 )
 

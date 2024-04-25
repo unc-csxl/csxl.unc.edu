@@ -9,7 +9,7 @@
     <mat-tab label="Events">
       <h3>Events</h3>
       <div *ngIf="currentEvents && currentEvents.length > 0">
-        <div *ngFor="let event of currentEvents">
+        <div *ngFor="let event of currentEvents" class="inline-block">
           <event-card-widget
             [event]="event"
             [rosterRole]="rosterRole"></event-card-widget>
@@ -24,7 +24,8 @@
       <p>History Feature Coming Soon!</p>
     </mat-tab>
     <mat-tab label="Data">
-      <p>Data Feature Coming Soon!</p>
+      <section-data-widget [sectionId]="sectionId"></section-data-widget>
+      <concern-tickets-widget [sectionId]="sectionId"></concern-tickets-widget>
     </mat-tab>
     <mat-tab label="People">
       <people-table [sectionId]="sectionId"></people-table>

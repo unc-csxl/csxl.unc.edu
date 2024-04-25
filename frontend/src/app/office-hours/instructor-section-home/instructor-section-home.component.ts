@@ -34,8 +34,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 })
 export class InstructorSectionHomeComponent implements OnInit {
   public static Route = {
-    // TODO: replace spring-2024 in this route!
-    path: 'instructor/spring-2024/:id',
+    path: 'instructor/:id',
     component: InstructorSectionHomeComponent,
     canActivate: [],
     resolve: { section: sectionResolver },
@@ -103,9 +102,8 @@ export class InstructorSectionHomeComponent implements OnInit {
 
   /* Fuction that navigates to Event Editor component */
   navToCreateForm() {
-    // TODO: Unhard code this later
     this.router.navigate([
-      '/office-hours/instructor/spring-2024/',
+      '/office-hours/instructor/',
       this.sectionId,
       'create-new-event'
     ]);

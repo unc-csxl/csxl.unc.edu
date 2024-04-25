@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from backend.entities.academics.section_room_entity import SectionRoomEntity
 from backend.entities.academics.course_entity import CourseEntity
 from backend.entities.room_entity import RoomEntity
-from backend.models.academics.section_member import SectionMemberDraft
+from backend.models.academics.section_member import SectionMember, SectionMemberDraft
 from backend.models.room_assignment_type import RoomAssignmentType
 
 from ....models.room import Room
@@ -182,7 +182,7 @@ comp_301_001_current_term = Section(
 # Variables To Help Associate User Data to Section Members
 user__comp110_instructor = user_data.instructor
 user__comp110_uta_0 = user_data.uta
-user__comp110_uta_1 = user_data.ambassador
+user__comp110_gta = user_data.ambassador
 user__comp110_student_0 = user_data.user
 user__comp110_student_1 = user_data.student
 
@@ -193,72 +193,101 @@ user__comp301_instructor = user_data.instructor
 user__comp301_uta = user_data.ambassador
 user__comp301_student = user_data.student
 
-# F23 Section Memberships
-comp110_f23_instructor = SectionMemberDraft(
-    user_id=user__comp110_instructor.id,
-    section_id=comp_101_001.id,
-    member_role=RosterRole.INSTRUCTOR,
-)
+user__comp523_instructor = user_data.instructor
 
-comp110_f23_uta = SectionMemberDraft(
-    user_id=user__comp110_uta_0.id,
-    section_id=comp_101_001.id,
-    member_role=RosterRole.UTA,
-)
-
-comp110_f23_student = SectionMemberDraft(
-    user_id=user__comp110_student_0.id,
-    section_id=comp_101_001.id,
-    member_role=RosterRole.STUDENT,
-)
+user__comp210_instructor = user_data.instructor
 
 # CURRENT TERM MEMBERSHIPS
 comp110_instructor = SectionMemberDraft(
+    id=1,
     user_id=user__comp110_instructor.id,
     section_id=comp_110_001_current_term.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
 comp110_uta = SectionMemberDraft(
+    id=2,
     user_id=user__comp110_uta_0.id,
     section_id=comp_110_001_current_term.id,
     member_role=RosterRole.UTA,
 )
 
-comp110_uta_1 = SectionMemberDraft(
-    user_id=user__comp110_uta_1.id,
+comp110_gta = SectionMemberDraft(
+    id=3,
+    user_id=user__comp110_gta.id,
     section_id=comp_110_001_current_term.id,
-    member_role=RosterRole.UTA,
+    member_role=RosterRole.GTA,
 )
 
 
 comp110_student_0 = SectionMemberDraft(
+    id=4,
     user_id=user__comp110_student_0.id,
     section_id=comp_110_001_current_term.id,
     member_role=RosterRole.STUDENT,
 )
 
 comp110_student_1 = SectionMemberDraft(
+    id=5,
     user_id=user__comp110_student_1.id,
     section_id=comp_110_001_current_term.id,
     member_role=RosterRole.STUDENT,
 )
 
 comp301_instructor = SectionMemberDraft(
+    id=6,
     user_id=user__comp301_instructor.id,
     section_id=comp_301_001_current_term.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
 comp_301_uta = SectionMemberDraft(
+    id=7,
     user_id=user__comp301_uta.id,
     section_id=comp_301_001_current_term.id,
     member_role=RosterRole.UTA,
 )
 
 comp_301_student = SectionMemberDraft(
+    id=8,
     user_id=user__comp301_student.id,
     section_id=comp_301_001_current_term.id,
+    member_role=RosterRole.STUDENT,
+)
+
+comp_523_instructor = SectionMemberDraft(
+    id=9,
+    user_id=user__comp523_instructor.id,
+    section_id=comp_523_001_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+comp_210_instructor = SectionMemberDraft(
+    id=10,
+    user_id=user__comp210_instructor.id,
+    section_id=comp_210_001_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+# F23 Section Memberships
+comp110_f23_instructor = SectionMemberDraft(
+    id=11,
+    user_id=user__comp110_instructor.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+comp110_f23_uta = SectionMemberDraft(
+    id=12,
+    user_id=user__comp110_uta_0.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.UTA,
+)
+
+comp110_f23_student = SectionMemberDraft(
+    id=13,
+    user_id=user__comp110_student_0.id,
+    section_id=comp_101_001.id,
     member_role=RosterRole.STUDENT,
 )
 
@@ -270,10 +299,20 @@ section_members = [
     comp110_student_0,
     comp110_student_1,
     comp110_uta,
-    comp110_uta_1,
+    comp110_gta,
     comp301_instructor,
     comp_301_uta,
     comp_301_student,
+    comp_523_instructor,
+    comp_210_instructor,
+]
+
+comp110_members = [
+    comp110_instructor,
+    comp110_student_0,
+    comp110_student_1,
+    comp110_uta,
+    comp110_gta,
 ]
 
 

@@ -39,7 +39,7 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class SectionMembershipService:
+class SectionMemberService:
     """Service that performs all of the actions on the `Section` table"""
 
     def __init__(
@@ -101,16 +101,16 @@ class SectionMembershipService:
 
         return entity.to_flat_model()
 
-    def add_user_oh_memberships(
+    def add_user_section_memberships_by_oh_sections(
         self,
         subject: User,
-        oh_sections: list[OfficeHoursSectionDetails],
+        oh_sections: list[OfficeHoursSection],
     ) -> list[SectionMember]:
         """Add section memberships for a user to multiple office hours sections.
 
         Args:
             subject (User): The user for whom to add section memberships.
-            oh_sections (list[OfficeHoursSectionDetails]): List of office hours sections to enroll the user into.
+            oh_sections (list[OfficeHoursSection]): List of office hours sections to enroll the user into.
 
         Returns:
             list[SectionMember]: List of newly created SectionMember objects representing the user's memberships.
@@ -121,6 +121,22 @@ class SectionMembershipService:
 
         section_memberships: list[SectionMemberEntity] = []
         for oh_section in oh_sections:
+
+            # Check If Membership Exists
+            membership = (
+                self._session.query(SectionMemberEntity)
+                .where(SectionMemberEntity.user_id == subject.id)
+                .where(SectionEntity.office_hours_id == oh_section.id)
+                .where(SectionMemberEntity.section_id == SectionEntity.id)
+                .one_or_none()
+            )
+
+            if membership is not None:
+                raise Exception(
+                    f"User is already a member of office hours section id={oh_section.id}"
+                )
+
+        for oh_section in oh_sections:
             academic_sections = (
                 self._session.query(SectionEntity)
                 .filter(SectionEntity.office_hours_id == oh_section.id)
@@ -129,6 +145,7 @@ class SectionMembershipService:
 
             if len(academic_sections) == 0:
                 raise ResourceNotFoundException("No Academic Section Found")
+
             draft = SectionMemberDraft(
                 user_id=subject.id, section_id=academic_sections[0].id
             )

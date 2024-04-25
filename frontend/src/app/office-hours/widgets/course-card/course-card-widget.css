@@ -35,3 +35,7 @@
     justify-self: right;
     text-align: right;
 }
+
+.card-size {
+    width: 50vw;
+}

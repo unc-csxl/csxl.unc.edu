@@ -17,6 +17,8 @@ import {
 import { ChangeDetectorRef } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'ticket-creation-form',
@@ -25,8 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class TicketCreationFormComponent implements OnInit {
   public static Route = {
-    // TODO: un-hardcode this route
-    path: 'spring-2024/:id/:event_id/create-new-ticket',
+    path: ':id/:event_id/create-new-ticket',
     title: 'COMP 110: Intro to Programming',
     component: TicketCreationFormComponent,
     canActivate: []
@@ -46,7 +47,8 @@ export class TicketCreationFormComponent implements OnInit {
     protected formBuilder: FormBuilder,
     protected cdr: ChangeDetectorRef,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected snackBar: MatSnackBar
   ) {
     /* Gets section and event IDs from route parameters */
     this.sectionId = this.route.snapshot.params['id'];
@@ -113,15 +115,24 @@ export class TicketCreationFormComponent implements OnInit {
         // TODO: if adding multiple creators (group tickets), would add users here
         creators: []
       };
-      this.officeHoursService.createTicket(ticket_draft).subscribe((ticket) => {
-        this.router.navigate([
-          'office-hours/spring-2024/',
-          this.sectionId,
-          this.eventId,
-          'ticket',
-          ticket.id
-        ]);
-      });
+      this.officeHoursService.createTicket(ticket_draft).subscribe(
+        (ticket) => {
+          this.router.navigate([
+            'office-hours/',
+            this.sectionId,
+            this.eventId,
+            'ticket',
+            ticket.id
+          ]);
+        },
+        (err) => this.onError(err)
+      );
     }
+  }
+
+  private onError(err: HttpErrorResponse): void {
+    this.snackBar.open(err.error.detail, '', {
+      duration: 5000
+    });
   }
 }
