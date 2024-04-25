@@ -35,6 +35,10 @@ mat-card {
     flex: 1; /* Distribute available space equally among the form fields */
   }
 
+  .item{
+    flex:1;
+  }
+
   .example-form-field {
     margin-right: 10px; /* Adjust the right margin to create a gap between form fields */
   }

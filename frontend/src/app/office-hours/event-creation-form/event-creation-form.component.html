@@ -42,12 +42,12 @@
       <div *ngIf="eventForm.value.frequency === 'One Time'">
         <p>Date:</p>
         <mat-form-field class="example-form-field ml-2">
+          <mat-label>Select Date:</mat-label>
           <input
             matInput
             placeholder="Event Date"
             type="date"
-            formControlName="endDate" />
-          <mat-datepicker #endDatePicker></mat-datepicker>
+            formControlName="event_date" />
         </mat-form-field>
       </div>
       <div
@@ -57,21 +57,20 @@
         ">
         <p>Date Range:</p>
         <div class="date-picker-container">
-          <mat-form-field class="example-form-field">
+          <mat-form-field class="example-form-field" appearance="fill">
+         
             <input
               matInput
               placeholder="Start Date"
               type="date"
-              formControlName="startDate" />
-            <mat-datepicker #startDatePicker></mat-datepicker>
+              formControlName="recurringStartDate" />
           </mat-form-field>
           <mat-form-field class="example-form-field ml-2">
             <input
               matInput
               placeholder="End Date"
               type="date"
-              formControlName="endDate" />
-            <mat-datepicker #endDatePicker></mat-datepicker>
+              formControlName="recurringEndDate" />
           </mat-form-field>
         </div>
       </div>
@@ -91,12 +90,12 @@
       <p>Start Time:</p>
       <mat-form-field>
         <mat-label>Select Time:</mat-label>
-        <input matInput type="time" required formControlName="start_time" />
+        <input matInput type="time" formControlName="start_time" required />
       </mat-form-field>
       <p>End Time:</p>
       <mat-form-field>
         <mat-label>Select Time:</mat-label>
-        <input matInput type="time" required formControlName="end_time" />
+        <input matInput type="time" formControlName="end_time" required />
       </mat-form-field>
 
       <p>Location:</p>
@@ -124,7 +123,7 @@
           color="primary"
           class="button"
           type="submit"
-          [disabled]="!eventForm.valid">
+        >
           Submit
         </button>
       </div>

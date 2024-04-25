@@ -8,7 +8,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   OfficeHoursEventDraft,
   OfficeHoursEventModeType,
@@ -50,6 +50,7 @@ export class EventCreationFormComponent implements OnInit {
   /* Section that the Office Hours event is being held for */
   sectionId: number;
   section: OfficeHoursSectionDetails | undefined;
+  eventForm: FormGroup;
 
   constructor(
     public officeHoursService: OfficeHoursService,
@@ -61,6 +62,20 @@ export class EventCreationFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {
     this.sectionId = this.route.snapshot.params['id'];
+    this.eventForm = this.formBuilder.group({
+      event_type: '',
+      event_mode: '',
+      description: '',
+      event_date: '',
+      start_time: '',
+      end_time: '',
+      recurringStartDate: '',
+      recurringEndDate: '',
+      onWeekday: [],
+      frequency: 'One Time',
+      location: '',
+      location_description: ''
+    });
   }
 
   /* Get rooms and associated section upon initialization */
@@ -72,19 +87,6 @@ export class EventCreationFormComponent implements OnInit {
   // user selects Monday and Sunday
 
   /* EventForm contains data pertaining to event that is being created/modified */
-  public eventForm = this.formBuilder.group({
-    event_type: '',
-    event_mode: '',
-    description: '',
-    start_time: '',
-    end_time: '',
-    startDate: '',
-    endDate: '',
-    frequency: '',
-    onWeekday: [],
-    location: '',
-    location_description: ''
-  });
 
   onFrequencyChange(event: any) {
     console.log(event.value);
@@ -140,10 +142,13 @@ export class EventCreationFormComponent implements OnInit {
     if (!this.eventForm.value.end_time) {
       this.eventForm.value.end_time = '';
     }
-
+    console.log(this.eventForm);
     // IF ONE TIME
     // Ensure that section must not be null to create/edit event
     if (this.section) {
+      console.log(this.eventForm.value.event_date);
+      console.log(this.eventForm.value.start_time);
+      console.log(this.eventForm.value.end_time);
       // Create event draft model from form values
       let event_draft: OfficeHoursEventDraft = {
         oh_section: this.section,
@@ -152,7 +157,7 @@ export class EventCreationFormComponent implements OnInit {
         mode: event_mode,
         description: this.eventForm.value.description ?? '',
         location_description: this.eventForm.value.location_description ?? '',
-        event_date: this.eventForm.value.start_time.slice(0, 10),
+        event_date: this.eventForm.value.event_date,
         start_time: this.eventForm.value.start_time,
         end_time: this.eventForm.value.end_time
       };
