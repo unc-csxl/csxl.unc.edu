@@ -115,10 +115,10 @@ The TA Application feature ultimately adds _2_ new database tables and _5_ new A
 ### Entity Design<a name='EntityDesign'></a>
 
 The TA Application feature adds five new database tables and entities. They are as follows:
-| Table Name            | Entity              | Description                                                           |
+| Table Name | Entity | Description |
 | --------------------- | ------------------- | --------------------------------------------------------------------- |
-| `application`         | `ApplicationEntity` | Stores applications.                                                  |
-| `section_application` | N/A                 | Stores sections, section preferences, and the associated application. |
+| `application` | `ApplicationEntity` | Stores applications. |
+| `section_application` | N/A | Stores sections, section preferences, and the associated application. |
 
 The fields and relationships between these entities are shown below:
 
@@ -210,5 +210,6 @@ Here is a list of considerations for future developers, with decresing urgency b
 
 * Refactor `Application` to have a relationship with `Term`. This will be key for delineating between different applications from the same user.
 * Create an admin view for Application selection.
-* Move all TA Application features to the new route under `ta-application`. Consider adding a new route to the side-nav. 
+* Move all TA Application features to the new route under `ta-application`. Consider adding a new route to the side-nav.
 * Create the schema, models, and frontend form for Graduate TA's
+```
