@@ -23,6 +23,7 @@ All logged-in users to the CSXL page are able to access the _Fall 2024 UTA Appli
   - [Pydantic Model Implementation](#PydanticModelImplementation)
   - [API Implementation](#APIImplementation)
   - [Permission Summary](#PermissionSummary)
+  - [Future Considerations](#FutureConsiderations)
 
 ## Frontend Features<a name='FrontendFeatures'></a>
 
@@ -202,8 +203,6 @@ All of these API routes call on **backend service functions** to perform these o
 | Action                  | Resource              | Description                                                       |
 | ----------------------- | --------------------- | ----------------------------------------------------------------- |
 | `"applications.create"` | `"applications/{id}"` | Gives the user permission to create applications in the database. |
-
-## Future Considerations<a name='FutureConsiderations'></a>
 
 ## Future Considerations<a name='FutureConsiderations'></a>
 
