@@ -221,10 +221,6 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ngAfterViewInit() {
-  //   this.el.nativeElement.parentElement.removeAttribute('aria-owns');
-  // }
-
   setPreferredSections(sections: Section[]): void {
     const sectionFormGroups = sections.map((section) => {
       return new FormGroup({

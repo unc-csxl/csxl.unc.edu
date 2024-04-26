@@ -1,6 +1,6 @@
 # TA Application Technical Specification
 
-> Written by [Ben Goulet](https://github.com/bwgoulet) for the CSXL Web Application.<br> _Last Updated: 4/24/2024_
+> Written by [Ben Goulet](https://github.com/bwgoulet) for the CSXL Web Application.<br> _Last Updated: 4/26/2024_
 
 This document contains the technical specifications for the TA Application feature of the CSXL web application. This feature adds _2_ new database tables, _5_ new API routes, and _3_ new frontend components to the application.
 
@@ -46,7 +46,44 @@ From here, users can then click 'Apply' to be redirected to the application. Cur
 
 ![UTA Application](../images/specs/ta-application/uta-application.png)
 
-The UTA application page serves as the portal for the _Fall 2024 UTA Application_. This page contains the bulk of the new TA Application feature, which introduces new frontend elements to the CSXL.
+The UTA application page serves as the portal for the _Fall 2024 UTA Application_. This page contains the bulk of the new TA Application feature, which introduces new frontend elements to the CSXL. Most notably, the entire application is wrapped in a `mat-stepper`, taking the form, of a _form_! For an example of how we set up this form (either with existing data or no data), check out this method for populating the form:
+
+```ts
+  populateForm(application: Application | null): void {
+    if (application) {
+      this.firstFormGroup.patchValue({
+        intro_video_url: application.intro_video_url
+      });
+      this.secondFormGroup.patchValue({
+        prior_experience: application.prior_experience,
+        service_experience: application.service_experience,
+        additional_experience: application.additional_experience
+      });
+      this.thirdFormGroup.patchValue({
+        academic_hours: application.academic_hours,
+        extracurriculars: application.extracurriculars,
+        expected_graduation: application.expected_graduation,
+        program_pursued: application.program_pursued,
+        other_programs: application.other_programs
+      });
+      this.fourthFormGroup.patchValue({
+        gpa: application.gpa,
+        comp_gpa: application.comp_gpa
+      });
+      this.fifthFormGroup.patchValue({
+        comp_227: application.comp_227
+      });
+
+      this.setPreferredSections(application.preferred_sections || []);
+      this.selectedSections = application.preferred_sections || [];
+    } else {
+      this.resetForm();
+    }
+  }
+
+```
+
+Most of the frontend logic for the TA Application revolves around the process of acquiring this form data, then sending it to our schema in the form that it desires.
 
 #### Application Home<a name='ApplicationHome'></a>
 
@@ -87,10 +124,10 @@ The fields and relationships between these entities are shown below:
 
 ![Entity Design](../images/specs/ta-application/entity-relationships.png)
 
-- <span style="color: black;">Black</span>: Current Design
-- <span style="color: blue;">Blue</span>: to-Many relationship
-- <span style="color: red;">Red</span>: to-One relationship
-- <span style="color: green;">Green</span>: Not yet implemented
+- [Black]: Current Design
+- [Blue]: to-Many relationship
+- [Red]: to-One relationship
+- [Green]: Not yet implemented
 
 ### Inheritance Mapping<a name='InheritanceMapping'></a>
 
@@ -103,6 +140,51 @@ Eventually, this will represent the full tree for the TA Applciation. Currently,
 As for the _type_ of inheritance mapping the TA Application employs, we're using a **single-table inheritance** structure. This just means that _all classes in a hierarchy are mapped to a single database table_ - `application`.
 
 ### Pydantic Model Implementation<a name='PydanticModelImplementation'></a>
+
+The Pydantic models for applications are nearly one-to-one with their entity counterparts, reflecting the inheritance structure from the schema. However, certain application fields require a more custom model structure for handling circular imports, as shown below:
+
+<table>
+<tr><th width="520">`Application` and `ApplicationDetails` Models, and their associated children.</th></tr>
+<tr>
+<td>
+ 
+```py
+class Application(BaseModel):
+    id: int | None = None
+    user_id: int
+
+class UTAApplication(Application):
+    academic_hours: int
+    extracurriculars: str
+    expected_graduation: str
+    program_pursued: str
+    other_programs: str
+    gpa: float
+    comp_gpa: float
+    comp_227: Comp227
+
+class NewUTAApplication(UTAApplication):
+    intro_video_url: str
+    prior_experience: str
+    service_experience: str
+    additional_experience: str
+
+class ReturningUTAApplication(UTAApplication):
+    ta_experience: str
+    best_moment: str
+    desired_improvement: str
+
+class ApplicationDetails(Application):  
+    user: User
+
+class UTAApplicationDetails(UTAApplication, ApplicationDetails):
+    preferred_sections: list[Section]
+
+```
+
+</td>
+</tr>
+</table>
 
 ### API Implementation<a name='APIImplementation'></a>
 
@@ -123,3 +205,4 @@ All of these API routes call on **backend service functions** to perform these o
 | `"applications.create"` | `"applications/{id}"` | Gives the user permission to create applications in the database. |
 
 <!-- ## Future Considerations<a name='FutureConsiderations'></a> -->
+```
