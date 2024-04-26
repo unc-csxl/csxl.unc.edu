@@ -19,8 +19,8 @@ All logged-in users to the CSXL page are able to access the _Fall 2024 UTA Appli
   - [Conclusion](#Conclusion)
 - [Backend Design and Implementation](#BackendDesignandImplementation)
   - [Entity Design](#EntityDesign)
-  <!-- - [Inheritance Mapping](#InheritanceMapping)
-  - [Pydantic Model Implementation](#PydanticModelImplementation) -->
+  - [Inheritance Mapping](#InheritanceMapping)
+  - [Pydantic Model Implementation](#PydanticModelImplementation)
   - [API Implementation](#APIImplementation)
   - [Permission Summary](#PermissionSummary)
 
@@ -87,14 +87,22 @@ The fields and relationships between these entities are shown below:
 
 ![Entity Design](../images/specs/ta-application/entity-relationships.png)
 
-- [Black]: Current Design
-- [Blue]: to-Many relationship
-- [Red]: to-One relationship
-- [Green]: Not yet implemented
+- <span style="color: black;">Black</span>: Current Design
+- <span style="color: blue;">Blue</span>: to-Many relationship
+- <span style="color: red;">Red</span>: to-One relationship
+- <span style="color: green;">Green</span>: Not yet implemented
 
-<!-- ### Inheritance Mapping<a name='InheritanceMapping'></a> -->
+### Inheritance Mapping<a name='InheritanceMapping'></a>
 
-<!-- ### Pydantic Model Implementation<a name='PydanticModelImplementation'></a> -->
+The TA Application is the first feature of the CSXL to utilize a new technique for representing object-oriented hierarchies in our schema - inheritance mapping! This new technique allows us to create a schema that ultimately reflects the hierarchical nature of the TA Application. The inheritance tree for the TA Application is shown below:
+
+![Inheritance Mapping](../images/specs/ta-application/application-inheritance.png)
+
+Eventually, this will represent the full tree for the TA Applciation. Currently, `Application`, `UTA`, and `New_UTA` have been implemented for the _Fall 2024 UTA Application_. `Returning_UTA` is currently a part of the schema, but there is no use for the subclass this upcoming Fall. This subclass will eventually represent the many returning UTA's in the spring of '25. Finally, everything in green has not yet been implemented - but this half of the tree will represent all Graduate TA's.
+
+As for the _type_ of inheritance mapping the TA Application employs, we're using a **single-table inheritance** structure. This just means that _all classes in a hierarchy are mapped to a single database table_ - `application`.
+
+### Pydantic Model Implementation<a name='PydanticModelImplementation'></a>
 
 ### API Implementation<a name='APIImplementation'></a>
 
