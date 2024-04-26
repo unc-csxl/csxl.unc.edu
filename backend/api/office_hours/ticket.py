@@ -39,7 +39,12 @@ def new_oh_ticket(
     Returns:
         OfficeHoursTicketDetails: OH Ticket created
     """
-    return oh_ticket_service.create(subject, oh_ticket)
+    try:
+        return oh_ticket_service.create(subject, oh_ticket)
+    except PermissionError as p:
+        raise HTTPException(status_code=403, detail=str(p))
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.get(

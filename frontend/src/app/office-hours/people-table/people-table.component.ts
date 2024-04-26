@@ -10,11 +10,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import {
+  RosterRole,
   SectionMember,
   SectionMemberPartial
 } from 'src/app/academics/academics.models';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AcademicsService } from 'src/app/academics/academics.service';
 
 @Component({
   selector: 'people-table',
@@ -31,14 +33,42 @@ export class PeopleTableComponent implements OnInit {
   ];
   roles: string[] = ['Student', 'UTA', 'GTA', 'Instructor'];
   sectionMembers: SectionMember[] = [];
+  rosterRole: RosterRole | null;
 
   constructor(
     private officeHoursService: OfficeHoursService,
+    private academicsService: AcademicsService,
     protected snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.rosterRole = null;
+  }
 
   ngOnInit(): void {
-    this.getSectionMembers();
+    this.initializeData();
+  }
+
+  initializeData(): void {
+    this.checkRosterRole().then(() => {
+      // RosterRole is retrieved, so good to go on other actions
+      this.getSectionMembers();
+    });
+  }
+
+  // Check RosterRole of subject so that correct table can be displayed
+  checkRosterRole(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.academicsService.getMembershipBySection(this.sectionId).subscribe(
+        (section_member) => {
+          console.log(section_member.member_role);
+          this.rosterRole = section_member.member_role;
+          console.log(this.rosterRole);
+          resolve(); // Resolve the Promise when the roster role is set
+        },
+        (error) => {
+          reject(error); // Reject the Promise if there's an error
+        }
+      );
+    });
   }
 
   getSectionMembers() {
