@@ -91,7 +91,7 @@ Most of the frontend logic for the TA Application revolves around the process of
 
 This is the landing page after completing the _Fall 2024 UTA Application_, and is the root route for 'ta-application'.
 
-In the future, when more features related to applications are added, this page will become the home for all things "applications." Currently, this is not the case as admin features and the GTA Application are not implemented.
+In the future, when more features related to applications are added, this page will become the home for all things "applications." Currently, this is not the case as admin features and the GTA Application are not yet implemented.
 
 ### Admin Features<a name='AdminFeatures'></a>
 
@@ -114,7 +114,6 @@ The TA Application feature ultimately adds _2_ new database tables and _5_ new A
 ### Entity Design<a name='EntityDesign'></a>
 
 The TA Application feature adds five new database tables and entities. They are as follows:
-
 | Table Name            | Entity              | Description                                                           |
 | --------------------- | ------------------- | --------------------------------------------------------------------- |
 | `application`         | `ApplicationEntity` | Stores applications.                                                  |
@@ -204,5 +203,13 @@ All of these API routes call on **backend service functions** to perform these o
 | ----------------------- | --------------------- | ----------------------------------------------------------------- |
 | `"applications.create"` | `"applications/{id}"` | Gives the user permission to create applications in the database. |
 
-<!-- ## Future Considerations<a name='FutureConsiderations'></a> -->
-```
+## Future Considerations<a name='FutureConsiderations'></a>
+
+## Future Considerations<a name='FutureConsiderations'></a>
+
+Here is a list of considerations for future developers, with decresing urgency based on needs for the application.
+
+* Refactor `Application` to have a relationship with `Term`. This will be key for delineating between different applications from the same user.
+* Create an admin view for Application selection.
+* Move all TA Application features to the new route under `ta-application`. Consider adding a new route to the side-nav. 
+* Create the schema, models, and frontend form for Graduate TA's

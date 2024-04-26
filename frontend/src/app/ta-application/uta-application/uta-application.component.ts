@@ -353,7 +353,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
     if (this.validateForm()) {
       const formData = this.collectFormData(this.profile);
       this.applicationService.submitApplication(formData).subscribe({
-        next: (application) => this.onSuccess(application),
+        next: () => this.onSuccess(),
         error: (err) => this.onError(err)
       });
     } else {
@@ -433,7 +433,7 @@ export class UndergradApplicationComponent implements OnInit, OnDestroy {
   /** Opens a confirmation snackbar when an application is successfully submitted.
    * @returns {void}
    */
-  private onSuccess(application: Application): void {
+  private onSuccess(): void {
     this.router.navigate(['/ta-application/']);
     this.snackBar.open('Application Submitted!', '', { duration: 2000 });
   }
