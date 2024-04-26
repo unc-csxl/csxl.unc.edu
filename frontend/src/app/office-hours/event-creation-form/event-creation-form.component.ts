@@ -10,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
+  OfficeHoursEventDailyRecurringDraft,
   OfficeHoursEventDraft,
   OfficeHoursEventModeType,
   OfficeHoursEventType,
@@ -184,7 +185,41 @@ export class EventCreationFormComponent implements OnInit {
           break;
 
         case 'Daily':
-        //
+          var start_time =
+            this.eventForm.value.recurringStartDate +
+            'T' +
+            this.eventForm.value.start_time;
+
+          var end_time =
+            this.eventForm.value.recurringStartDate +
+            'T' +
+            this.eventForm.value.end_time;
+          //
+          let event_draft_0: OfficeHoursEventDraft = {
+            oh_section: this.section,
+            room: { id: this.eventForm.value.location ?? '' },
+            type: event_type,
+            mode: event_mode,
+            description: this.eventForm.value.description ?? '',
+            location_description:
+              this.eventForm.value.location_description ?? '',
+            event_date: this.eventForm.value.recurringStartDate,
+            start_time: start_time,
+            end_time: end_time
+          };
+
+          let daily: OfficeHoursEventDailyRecurringDraft = {
+            draft: event_draft_0,
+            recurring_start_date: this.eventForm.value.recurringStartDate,
+            recurring_end_date: this.eventForm.value.recurringEndDate
+          };
+
+          console.log(daily);
+          this.officeHoursService.createEventsDaily(daily).subscribe({
+            next: () => this.onSuccess(),
+            error: (err) => this.onError(err)
+          });
+          break;
         default:
       }
     }

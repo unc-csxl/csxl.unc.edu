@@ -1,8 +1,11 @@
+import copy
 from operator import or_
+import string
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import String, select
 from sqlalchemy.orm import Session
 
+from datetime import date, datetime, timedelta
 from ...models.office_hours.ticket import OfficeHoursTicket
 
 from ...entities.academics.section_entity import SectionEntity
@@ -27,6 +30,7 @@ from ...database import db_session
 from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.event import (
     OfficeHoursEvent,
+    OfficeHoursEventDailyRecurringDraft,
     OfficeHoursEventDraft,
     OfficeHoursEventPartial,
 )
@@ -88,6 +92,74 @@ class OfficeHoursEventService:
 
         # Return added object
         return oh_event_entity.to_model()
+
+    def create_daily(
+        self,
+        subject: User,
+        oh_event: OfficeHoursEventDailyRecurringDraft,
+    ) -> list[OfficeHoursEvent]:
+        """Creates a new office hours event.
+
+        Args:
+            subject (User): a valid User model representing the currently logged in User
+            oh_event (OfficeHoursEventDraft): Event draft to add to table
+
+        Returns:
+            OfficeHoursEvent: Object added to table
+
+        Raises:
+            PermissionError: Raised if the authenticated user (`subject`) is not a member of
+            the office hours section associated with the event (`oh_event`) or is a Student in section.
+        """
+        # Permissions - Raises Exception if Permission Fails
+        section_member_entity = self._check_user_section_membership(
+            subject.id, oh_event.draft.oh_section.id
+        )
+
+        if section_member_entity.member_role == RosterRole.STUDENT:
+            raise PermissionError(
+                f"Section Member is a Student. User does not have permision to create event"
+            )
+
+        delta = timedelta(days=1)
+        event_entity_drafts = []
+        current_date = oh_event.recurring_start_date
+        while current_date <= oh_event.recurring_end_date:
+            oh_event_temp = oh_event.draft
+            oh_event_temp.event_date = current_date
+
+            oh_event_temp.start_time = self._transformDate(
+                oh_event_temp.start_time, current_date
+            )
+            oh_event_temp.end_time = self._transformDate(
+                oh_event_temp.end_time, current_date
+            )
+
+            oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event_temp)
+            event_entity_drafts.append(oh_event_entity)
+            current_date += delta
+        # Create new object
+
+        # Add new object to table and commit changes
+        self._session.add_all(event_entity_drafts)
+        self._session.commit()
+
+        # Return added object
+        return [oh_event_entity.to_model() for oh_event_entity in event_entity_drafts]
+
+    def _transformDate(self, orginal_date: datetime, new_event_date: date) -> datetime:
+
+        # Extract time components from the original datetime
+        hour = orginal_date.hour
+        minute = orginal_date.minute
+
+        # Combine the new date with the time components
+        new_datetime = datetime.combine(new_event_date, datetime.min.time())
+
+        # Set the time components to the new datetime
+        new_datetime = new_datetime.replace(hour=hour, minute=minute)
+
+        return new_datetime
 
     def update(
         self, subject: User, oh_event_delta: OfficeHoursEventPartial

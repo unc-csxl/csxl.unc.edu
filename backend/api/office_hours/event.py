@@ -2,8 +2,9 @@
 
 This API is used to access OH Event data."""
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import Date, String
 
 from ...models.office_hours.event_status import (
     OfficeHoursEventStatus,
@@ -16,6 +17,7 @@ from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.event import (
     OfficeHoursEvent,
+    OfficeHoursEventDailyRecurringDraft,
     OfficeHoursEventDraft,
     OfficeHoursEventPartial,
 )
@@ -52,6 +54,20 @@ def new_oh_event(
     """
     try:
         return oh_event_service.create(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.post(
+    "/recurring/daily/", response_model=list[OfficeHoursEvent], tags=["Office Hours"]
+)
+def new_oh_event(
+    oh_event: OfficeHoursEventDailyRecurringDraft,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> list[OfficeHoursEvent]:
+    try:
+        return oh_event_service.create_daily(subject, oh_event)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

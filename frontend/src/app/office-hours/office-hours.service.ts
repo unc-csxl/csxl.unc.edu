@@ -30,7 +30,8 @@ import {
   StudentOfficeHoursEventStatus,
   OfficeHoursSection,
   OfficeHoursSectionTrailingWeekData,
-  OfficeHoursEventModeType
+  OfficeHoursEventModeType,
+  OfficeHoursEventDailyRecurringDraft
 } from './office-hours.models';
 import {
   Section,
@@ -104,6 +105,15 @@ export class OfficeHoursService {
   ): Observable<OfficeHoursEventDetails> {
     return this.http.post<OfficeHoursEventDetails>(
       '/api/office-hours/event',
+      event_draft
+    );
+  }
+
+  createEventsDaily(
+    event_draft: OfficeHoursEventDailyRecurringDraft
+  ): Observable<OfficeHoursEvent[]> {
+    return this.http.post<OfficeHoursEvent[]>(
+      '/api/office-hours/event/recurring/daily/',
       event_draft
     );
   }

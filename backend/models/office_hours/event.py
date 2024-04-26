@@ -29,6 +29,19 @@ class OfficeHoursEventDraft(BaseModel):
     end_time: datetime
 
 
+class OfficeHoursEventDailyRecurringDraft(BaseModel):
+    """
+    Pydantic model to represent an `OfficeHoursEvent` that has not been created yet.
+
+    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
+    of the `OfficeHoursEvent` database in the PostgreSQL database
+    """
+
+    draft: OfficeHoursEventDraft
+    recurring_start_date: date
+    recurring_end_date: date
+
+
 class OfficeHoursEvent(OfficeHoursEventDraft):
     """
     Pydantic model to represent an `OfficeHoursEvent`.

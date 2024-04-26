@@ -118,6 +118,12 @@ export interface OfficeHoursEventDraft {
   end_time: string;
 }
 
+export interface OfficeHoursEventDailyRecurringDraft {
+  draft: OfficeHoursEventDraft;
+  recurring_start_date: string;
+  recurring_end_date: string;
+}
+
 export interface RoomPartial {
   id: string;
 }
