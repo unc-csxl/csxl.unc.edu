@@ -58,19 +58,12 @@
         <p>Date Range:</p>
         <div class="date-picker-container">
           <mat-form-field class="example-form-field" appearance="fill">
-         
-            <input
-              matInput
-              placeholder="Start Date"
-              type="date"
-              formControlName="recurringStartDate" />
+            <mat-label>Start Date</mat-label>
+            <input matInput type="date" formControlName="recurringStartDate" />
           </mat-form-field>
           <mat-form-field class="example-form-field ml-2">
-            <input
-              matInput
-              placeholder="End Date"
-              type="date"
-              formControlName="recurringEndDate" />
+            <mat-label>End Date</mat-label>
+            <input matInput type="date" formControlName="recurringEndDate" />
           </mat-form-field>
         </div>
       </div>
@@ -123,7 +116,7 @@
           color="primary"
           class="button"
           type="submit"
-        >
+          [disabled]="!eventForm.valid">
           Submit
         </button>
       </div>

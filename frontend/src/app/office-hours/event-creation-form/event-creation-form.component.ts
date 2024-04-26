@@ -82,6 +82,15 @@ export class EventCreationFormComponent implements OnInit {
   ngOnInit() {
     this.getRooms();
     this.getSection();
+
+    // Prevent Chrome From Crashing In Form Dropdown
+    document.addEventListener('DOMNodeInserted', function () {
+      const elements = document.querySelectorAll('[aria-owns]');
+
+      elements.forEach((element) => {
+        element.removeAttribute('aria-owns');
+      });
+    });
   }
 
   // user selects Monday and Sunday
@@ -142,29 +151,42 @@ export class EventCreationFormComponent implements OnInit {
     if (!this.eventForm.value.end_time) {
       this.eventForm.value.end_time = '';
     }
-    console.log(this.eventForm);
+
+    var start_time =
+      this.eventForm.value.event_date + 'T' + this.eventForm.value.start_time;
+
+    var end_time =
+      this.eventForm.value.event_date + 'T' + this.eventForm.value.end_time;
+
     // IF ONE TIME
     // Ensure that section must not be null to create/edit event
     if (this.section) {
-      console.log(this.eventForm.value.event_date);
-      console.log(this.eventForm.value.start_time);
-      console.log(this.eventForm.value.end_time);
-      // Create event draft model from form values
-      let event_draft: OfficeHoursEventDraft = {
-        oh_section: this.section,
-        room: { id: this.eventForm.value.location ?? '' },
-        type: event_type,
-        mode: event_mode,
-        description: this.eventForm.value.description ?? '',
-        location_description: this.eventForm.value.location_description ?? '',
-        event_date: this.eventForm.value.event_date,
-        start_time: this.eventForm.value.start_time,
-        end_time: this.eventForm.value.end_time
-      };
-      this.officeHoursService.createEvent(event_draft).subscribe({
-        next: () => this.onSuccess(),
-        error: (err) => this.onError(err)
-      });
+      switch (this.eventForm.value.frequency) {
+        case 'One Time':
+          let event_draft: OfficeHoursEventDraft = {
+            oh_section: this.section,
+            room: { id: this.eventForm.value.location ?? '' },
+            type: event_type,
+            mode: event_mode,
+            description: this.eventForm.value.description ?? '',
+            location_description:
+              this.eventForm.value.location_description ?? '',
+            event_date: this.eventForm.value.event_date,
+            start_time: start_time,
+            end_time: end_time
+          };
+
+          console.log(event_draft);
+          this.officeHoursService.createEvent(event_draft).subscribe({
+            next: () => this.onSuccess(),
+            error: (err) => this.onError(err)
+          });
+          break;
+
+        case 'Daily':
+        //
+        default:
+      }
     }
   }
 
