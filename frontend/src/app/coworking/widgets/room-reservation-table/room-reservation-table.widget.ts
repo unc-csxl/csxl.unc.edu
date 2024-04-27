@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -19,7 +19,7 @@ import { GroupReservation } from '../group-reservation-card/group-reservation-ca
 import { Profile } from 'src/app/models.module';
 import { MatDialog } from '@angular/material/dialog';
 import { PublicProfile } from 'src/app/profile/profile.service';
-
+import { ProfileService } from 'src/app/profile/profile.service';
 import { RoomCapacityDialogComponent } from '../room-dialogue/room-dialogue.component';
 
 @Component({
@@ -53,7 +53,8 @@ export class RoomReservationWidgetComponent {
   };
   dialog: MatDialog;
   reservation: any;
-  selectedUsers: PublicProfile[] = [];
+  selectedUsers: (PublicProfile | Profile)[] = [];
+  private subscriptionLoggedIn: Subscription;
   updateReservationsList: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
@@ -61,7 +62,8 @@ export class RoomReservationWidgetComponent {
     private router: Router,
     private roomReservationService: RoomReservationService,
     protected snackBar: MatSnackBar,
-    dialog: MatDialog
+    dialog: MatDialog,
+    public profileService: ProfileService
   ) {
     this.dialog = dialog;
     this.reservationTableService.setSelectedDate(
@@ -77,6 +79,14 @@ export class RoomReservationWidgetComponent {
     this.reservationTableService.getRoomInformation().subscribe((result) => {
       this.roomDetailsArray = result;
     });
+
+    this.subscriptionLoggedIn = this.profileService.profile$.subscribe(
+      (profile) => {
+        if (profile) {
+          this.selectedUsers.push(profile);
+        }
+      }
+    );
   }
 
   getReservationsByDate(date: Date) {
@@ -208,7 +218,7 @@ export class RoomReservationWidgetComponent {
     const dialogRef = this.dialog.open(GroupReservation, {
       autoFocus: 'dialog',
       width: '500px',
-      height: '280px',
+      height: '400px',
       panelClass: 'custom-dialog-container',
       data: { selectedUsers: this.selectedUsers }
     });

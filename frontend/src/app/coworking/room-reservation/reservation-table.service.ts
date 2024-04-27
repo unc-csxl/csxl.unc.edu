@@ -103,7 +103,7 @@ export class ReservationTableService {
   draftReservation(
     reservationsMap: Record<string, number[]>,
     operationStart: Date,
-    users: PublicProfile[]
+    users: (PublicProfile | Profile)[]
   ) {
     return this.publicToProfile(users).pipe(
       switchMap((detailedUsers: Profile[]) => {
@@ -149,7 +149,7 @@ export class ReservationTableService {
     );
   }
 
-  publicToProfile(users: PublicProfile[]): Observable<Profile[]> {
+  publicToProfile(users: (PublicProfile | Profile)[]): Observable<Profile[]> {
     //Converts publicProfiles to Profiles to send into backend
     const userRequests = users.map((user) =>
       this.http.get<Profile>(`/api/profile/users/${user.id}`)
