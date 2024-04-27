@@ -10,6 +10,8 @@ import {
   BehaviorSubject,
   Observable,
   Subscription,
+  catchError,
+  filter,
   forkJoin,
   map,
   switchMap,
@@ -102,7 +104,7 @@ export class ReservationTableService {
     reservationsMap: Record<string, number[]>,
     operationStart: Date,
     users: PublicProfile[]
-  ): Observable<Reservation> {
+  ) {
     return this.publicToProfile(users).pipe(
       switchMap((detailedUsers: Profile[]) => {
         const selectedRoom = this._findSelectedRoom(reservationsMap);
@@ -110,14 +112,29 @@ export class ReservationTableService {
           return throwError(() => new Error('No room selected'));
         }
 
-        const reservationRequest: ReservationRequest =
-          this._makeReservationRequest(
-            selectedRoom,
-            operationStart,
-            detailedUsers
-          );
-
-        return this.makeDraftReservation(reservationRequest);
+        return this.getRoomInformation().pipe(
+          map((rooms) => {
+            const room = rooms.find((room) => room.id === selectedRoom.room);
+            if (!room) {
+              throw new Error('Room not found');
+            }
+            if (users.length < room.capacity) {
+              throw new Error('Not enough people to reserve');
+            }
+            const reservationRequest = this._makeReservationRequest(
+              selectedRoom,
+              operationStart,
+              detailedUsers
+            );
+            return reservationRequest;
+          }),
+          switchMap((reservationRequest) =>
+            this.makeDraftReservation(reservationRequest)
+          ),
+          catchError((err) =>
+            throwError(() => new Error('Not enough people to reserve!'))
+          )
+        );
       })
     );
   }

@@ -172,9 +172,14 @@ export class RoomReservationWidgetComponent {
       },
 
       (error) => {
-        // Handle errors here
-        console.error('Error drafting reservation', error);
-        this.snackBar.open(error.error.message, 'Close', this.snackBarOptions);
+        let errorMessage = 'Unknown error';
+        try {
+          const errorObj = JSON.parse(error.message);
+          errorMessage = errorObj.error.message;
+        } catch (e) {
+          errorMessage = error.message || 'Error occurred';
+        }
+        this.snackBar.open(errorMessage, 'Close', this.snackBarOptions);
       }
     );
   }
