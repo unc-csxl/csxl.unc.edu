@@ -77,6 +77,7 @@ export class RoomEditorComponent {
   roomName = new FormControl('', [Validators.required]);
   capacity = new FormControl(0, [Validators.required]);
   reservable = new FormControl(false, [Validators.required]);
+  description = new FormControl('', [Validators.required]);
 
   /** Room Editor Form */
   public roomForm = this.formBuilder.group({
@@ -85,7 +86,8 @@ export class RoomEditorComponent {
     building: this.building,
     room: this.roomName,
     capacity: this.capacity,
-    reservable: this.reservable
+    reservable: this.reservable,
+    description: this.description
   });
 
   /** Constructs the room editor component */
@@ -115,7 +117,8 @@ export class RoomEditorComponent {
       building: this.room.building,
       room: this.room.room,
       capacity: this.room.capacity,
-      reservable: this.room.reservable
+      reservable: this.room.reservable,
+      description: this.room.description
     });
   }
 

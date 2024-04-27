@@ -116,6 +116,7 @@ class RoomService:
         room_entity.room = room.room
         room_entity.capacity = room.capacity
         room_entity.reservable = room.reservable
+        room_entity.description = room.description
 
         # Commit changes
         self._session.commit()

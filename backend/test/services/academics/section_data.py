@@ -37,6 +37,7 @@ virtual_room = RoomDetails(
     room="Virtual",
     capacity=999,
     reservable=False,
+    description="",
     seats=[],
 )
 

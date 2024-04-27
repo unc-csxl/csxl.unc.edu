@@ -34,6 +34,7 @@ import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/l
 import { GroupReservation } from './widgets/group-reservation-card/group-reservation-card.widget';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
+import { RoomCapacityDialogComponent } from './widgets/room-dialogue/room-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { MatChipsModule } from '@angular/material/chips';
     NewReservationPageComponent,
     DateSelector,
     OperatingHoursDialog,
-    GroupReservation
+    GroupReservation,
+    RoomCapacityDialogComponent
   ],
   imports: [
     CommonModule,

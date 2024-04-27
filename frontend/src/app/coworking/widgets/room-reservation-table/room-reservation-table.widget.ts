@@ -8,13 +8,19 @@ import { Component, EventEmitter } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Reservation, TableCell } from 'src/app/coworking/coworking.models';
+import {
+  Reservation,
+  TableCell,
+  RoomDetails
+} from 'src/app/coworking/coworking.models';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GroupReservation } from '../group-reservation-card/group-reservation-card.widget';
 import { Profile } from 'src/app/models.module';
 import { MatDialog } from '@angular/material/dialog';
 import { PublicProfile } from 'src/app/profile/profile.service';
+
+import { RoomCapacityDialogComponent } from '../room-dialogue/room-dialogue.component';
 
 @Component({
   selector: 'room-reservation-table',
@@ -26,6 +32,9 @@ export class RoomReservationWidgetComponent {
 
   //- Reservations Map
   reservationsMap: Record<string, number[]> = {};
+
+  //- Room Details
+  roomDetailsArray: RoomDetails[] = [];
 
   //- Select Button enabled
   selectButton: boolean = false;
@@ -64,6 +73,10 @@ export class RoomReservationWidgetComponent {
         this.getReservationsByDate(new Date(selectedDate));
       }
     );
+
+    this.reservationTableService.getRoomInformation().subscribe((result) => {
+      this.roomDetailsArray = result;
+    });
   }
 
   getReservationsByDate(date: Date) {
@@ -210,5 +223,24 @@ export class RoomReservationWidgetComponent {
     return users
       .map((user) => `${user.first_name} ${user.last_name}`)
       .join(', ');
+  }
+
+  openDialog(roomId: string) {
+    const room = this.roomDetailsArray.find((r) => r.id === roomId);
+    if (room) {
+      this.dialog.open(RoomCapacityDialogComponent, {
+        width: '250px',
+        data: {
+          id: room.id,
+          capacity: room.capacity,
+          description: room.description
+        }
+      });
+    }
+  }
+
+  getRoomCapacity(roomId: string): number | null {
+    const room = this.roomDetailsArray.find((r) => r.id === roomId);
+    return room ? room.capacity : null;
   }
 }

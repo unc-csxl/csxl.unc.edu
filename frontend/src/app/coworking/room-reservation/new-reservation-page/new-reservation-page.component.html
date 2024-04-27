@@ -1,15 +1,16 @@
 <mat-card appearance="outlined">
-  <mat-card-header>
+  <mat-card-header class="compact-header">
     <mat-card-title>Reserve a Room</mat-card-title>
     <mat-card-subtitle
-      >Total Hours Remaining:
-      {{ numHoursStudyRoomReservations$ | async }}</mat-card-subtitle
-    >
+      >Total Hours Remaining: {{ numHoursStudyRoomReservations$ | async }}
+    </mat-card-subtitle>
     <div class="date-selector">
       <date-selector></date-selector>
     </div>
   </mat-card-header>
-
+  <mat-card-header class="compact-header"
+    ><mat-card-subtitle>Click on the rooms for more info!</mat-card-subtitle>
+  </mat-card-header>
   <mat-card-content>
     <room-reservation-table class="horizontal-scroll"></room-reservation-table>
 

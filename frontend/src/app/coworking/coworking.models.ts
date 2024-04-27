@@ -38,6 +38,17 @@ export interface Room {
   nickname: string;
 }
 
+export interface RoomDetails {
+  id: string | null;
+  nickname: string;
+  building: string;
+  room: string;
+  capacity: number;
+  reservable: boolean;
+  description: string;
+  seats: Seat[];
+}
+
 export interface ReservationJSON extends TimeRangeJSON {
   id: number;
   users: Profile[];

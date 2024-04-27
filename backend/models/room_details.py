@@ -16,6 +16,7 @@ class RoomDetails(Room):
     room: str
     capacity: int
     reservable: bool
+    description: str
     seats: list[Seat] = []
 
     def to_room(self) -> Room:
@@ -24,3 +25,6 @@ class RoomDetails(Room):
         Returns:
             Room: The model representation of the entity."""
         return Room(id=self.id, nickname=self.nickname)
+
+    def __hash__(self):
+        return hash(self.id)

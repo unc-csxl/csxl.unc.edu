@@ -75,3 +75,14 @@
     align-items: baseline;
   }
 }
+
+/* Styles for reducing spacing in mat-card-header */
+.compact-header {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 0; /* Reduces space between consecutive card headers */
+}
+
+.mat-card-header:first-child {
+  margin-bottom: 0; /* Specifically targets the first header if you only want to change spacing after the first one */
+}

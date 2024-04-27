@@ -7,6 +7,7 @@ from typing import Sequence
 from datetime import datetime
 
 from backend.models.room import Room
+from backend.models.room_details import RoomDetails
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationException, ReservationService
 from ...models import User
@@ -15,7 +16,7 @@ from ...models.coworking import (
     ReservationRequest,
     ReservationPartial,
     ReservationState,
-    ReservationMapDetails
+    ReservationMapDetails,
 )
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
@@ -105,3 +106,10 @@ def get_total_hours_study_room_reservations(
 ) -> str:
     """Allows a user to know how many hours they have reserved in all study rooms (Excludes CSXL)."""
     return reservation_svc._get_total_time_user_reservations(subject)
+
+
+@api.get("/rooms/", tags=["Coworking"])
+def get_reservable_rooms(
+    reservation_svc: ReservationService = Depends(),
+) -> Sequence[RoomDetails]:
+    return reservation_svc._get_reservable_rooms()

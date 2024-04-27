@@ -19,6 +19,7 @@ import {
   Reservation,
   ReservationMapDetails,
   ReservationRequest,
+  RoomDetails,
   TableCell,
   TablePropertyMap
 } from '../coworking.models';
@@ -91,6 +92,10 @@ export class ReservationTableService {
       `/api/coworking/room-reservation/`,
       { params }
     );
+  }
+
+  getRoomInformation(): Observable<RoomDetails[]> {
+    return this.http.get<RoomDetails[]>(`/api/coworking/rooms/`);
   }
 
   draftReservation(

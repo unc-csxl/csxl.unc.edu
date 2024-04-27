@@ -7,7 +7,13 @@
       </ng-container>
     </tr>
     <tr *ngFor="let record of reservationsMap | keyvalue">
-      <th>{{ record.key }}</th>
+      <th (click)="openDialog(record.key)" style="cursor: pointer">
+        <span class="room-id">{{ record.key }}</span
+        ><br />
+        <span class="capacity-text"
+          >Capacity: {{ getRoomCapacity(record.key) || 'N/A' }}</span
+        >
+      </th>
       <td
         *ngFor="let timeSlot of record.value; let j = index"
         [style.background]="cellPropertyMap[timeSlot].backgroundColor"
@@ -18,6 +24,7 @@
     </tr>
   </table>
 </div>
+
 <div class="divider">
   <button
     mat-stroked-button

@@ -26,6 +26,7 @@ class RoomEntity(EntityBase):
     room: Mapped[str] = mapped_column(String)
     nickname: Mapped[str] = mapped_column(String)
     reservable: Mapped[bool] = mapped_column(Boolean)
+    description: Mapped[str] = mapped_column(String)
 
     seats: Mapped[list["SeatEntity"]] = relationship(  # type: ignore
         "SeatEntity", back_populates="room"
@@ -54,6 +55,7 @@ class RoomEntity(EntityBase):
             room=self.room,
             capacity=self.capacity,
             reservable=self.reservable,
+            description=self.description,
             seats=[seat.to_model() for seat in self.seats],
         )
 
@@ -73,4 +75,5 @@ class RoomEntity(EntityBase):
             room=model.room,
             capacity=model.capacity,
             reservable=model.reservable,
+            description=model.description,
         )
