@@ -123,26 +123,28 @@ class OfficeHoursEventService:
                 f"Section Member is a Student. User does not have permision to create event"
             )
 
-        delta = timedelta(days=1)
         event_entity_drafts = []
         current_date = oh_event.recurring_start_date
         while current_date <= oh_event.recurring_end_date:
             oh_event_temp = oh_event.draft
+            # Set Event Date
             oh_event_temp.event_date = current_date
 
+            # Set Start Time (Includes Date)
             oh_event_temp.start_time = self._transformDate(
                 oh_event_temp.start_time, current_date
             )
+            # Set End Time (Includes Date)
             oh_event_temp.end_time = self._transformDate(
                 oh_event_temp.end_time, current_date
             )
 
             oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event_temp)
             event_entity_drafts.append(oh_event_entity)
-            current_date += delta
-        # Create new object
 
-        # Add new object to table and commit changes
+            current_date += timedelta(days=1)
+
+        # Add new objects to table and commit changes
         self._session.add_all(event_entity_drafts)
         self._session.commit()
 
@@ -178,10 +180,10 @@ class OfficeHoursEventService:
             )
 
         # Check Selected Dates Are Not None
-        if oh_event.selected_week_days == []:
+        if len(oh_event.selected_week_days) == 0:
             raise Exception()
 
-        event_dates = self.get_recurring_weekday_dates(
+        event_dates = self._get_recurring_weekday_dates(
             oh_event.recurring_start_date,
             oh_event.recurring_end_date,
             oh_event.selected_week_days,
@@ -189,29 +191,25 @@ class OfficeHoursEventService:
         event_entity_drafts = []
 
         for event_date in event_dates:
-            oh_event_temp = oh_event.draft
-            oh_event_temp.event_date = event_date
+            event_draft = oh_event.draft
+            event_draft.event_date = event_date
 
-            oh_event_temp.start_time = self._transformDate(
-                oh_event_temp.start_time, event_date
+            event_draft.start_time = self._transformDate(
+                event_draft.start_time, event_date
             )
-            oh_event_temp.end_time = self._transformDate(
-                oh_event_temp.end_time, event_date
-            )
+            event_draft.end_time = self._transformDate(event_draft.end_time, event_date)
 
-            oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event_temp)
+            oh_event_entity = OfficeHoursEventEntity.from_draft_model(event_draft)
             event_entity_drafts.append(oh_event_entity)
 
-        # Create new object
-
-        # Add new object to table and commit changes
+        # Add new objects to table and commit changes
         self._session.add_all(event_entity_drafts)
         self._session.commit()
 
         # Return added object
         return [oh_event_entity.to_model() for oh_event_entity in event_entity_drafts]
 
-    def get_recurring_weekday_dates(
+    def _get_recurring_weekday_dates(
         self, start_date: date, end_date: date, weekdays: list[Weekday]
     ) -> list[date]:
         dates_in_range = []

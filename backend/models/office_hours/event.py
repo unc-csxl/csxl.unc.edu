@@ -44,12 +44,6 @@ class Weekday(Enum):
 
 
 class OfficeHoursEventDailyRecurringDraft(BaseModel):
-    """
-    Pydantic model to represent an `OfficeHoursEvent` that has not been created yet.
-
-    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
-    of the `OfficeHoursEvent` database in the PostgreSQL database
-    """
 
     draft: OfficeHoursEventDraft
     recurring_start_date: date
@@ -57,12 +51,6 @@ class OfficeHoursEventDailyRecurringDraft(BaseModel):
 
 
 class OfficeHoursEventWeeklyRecurringDraft(OfficeHoursEventDailyRecurringDraft):
-    """
-    Pydantic model to represent an `OfficeHoursEvent` that has not been created yet.
-
-    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
-    of the `OfficeHoursEvent` database in the PostgreSQL database
-    """
 
     selected_week_days: list[Weekday]
 

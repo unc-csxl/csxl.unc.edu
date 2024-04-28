@@ -8,7 +8,15 @@
 
 import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import {
   OfficeHoursEventDraft,
   OfficeHoursEventModeType,
@@ -42,7 +50,6 @@ export class EventCreationFormComponent implements OnInit {
     }
   ];
 
-  selected = [];
   /* List of available rooms to hold Office Hours event */
   rooms: Room[] = [];
 
@@ -66,6 +73,92 @@ export class EventCreationFormComponent implements OnInit {
 
   /* Section that the Office Hours event is being held for */
   isVirtualOurLink: boolean = false;
+
+  isStartAndEndDateFilledIn() {
+    return (
+      this.eventForm.value.recurring_start_date !== '' &&
+      this.eventForm.value.recurring_end_date !== ''
+    );
+  }
+
+  onFrequencyChange(event: any) {
+    if (this.isFrequencyWeekly()) {
+      // Set Validators
+      this.eventForm.controls['event_date'].setValidators([]);
+      this.eventForm.controls['recurring_start_date'].setValidators([
+        Validators.required
+      ]);
+      this.eventForm.controls['recurring_end_date'].setValidators([
+        Validators.required
+      ]);
+
+      this.eventForm.controls['selected_week_days'].setValidators([
+        Validators.required
+      ]);
+    } else if (this.isFrequencyDaily()) {
+      this.eventForm.controls['event_date'].setValidators([]);
+      this.eventForm.controls['selected_week_days'].setValidators([]);
+
+      // Set Validators
+      this.eventForm.controls['recurring_start_date'].setValidators([
+        Validators.required
+      ]);
+      this.eventForm.controls['recurring_end_date'].setValidators([
+        Validators.required
+      ]);
+    } else {
+      this.eventForm.controls['selected_week_days'].setValidators([]);
+
+      this.eventForm.controls['recurring_start_date'].setValidators([]);
+
+      this.eventForm.controls['recurring_end_date'].setValidators([]);
+
+      this.eventForm.controls['event_date'].setValidators([
+        Validators.required
+      ]);
+    }
+    console.log(this.eventForm);
+    this.eventForm.controls['selected_week_days'].updateValueAndValidity();
+    this.eventForm.controls['recurring_start_date'].updateValueAndValidity();
+    this.eventForm.controls['recurring_end_date'].updateValueAndValidity();
+    this.eventForm.controls['event_date'].updateValueAndValidity();
+  }
+
+  // TODO: Check for Date Range of Greater than 4 monthss
+  isValidDateRange() {
+    const parsedTime1 = new Date(this.eventForm.value.recurring_start_date);
+    const parsedTime2 = new Date(this.eventForm.value.recurring_end_date);
+
+    // Compare the parsed times
+    return parsedTime1 <= parsedTime2;
+  }
+
+  isDateRangeWithinFourMonths(): boolean {
+    const startDate = new Date(this.eventForm.value.recurring_start_date);
+    const endDate = new Date(this.eventForm.value.recurring_end_date);
+    // Calculate the difference in milliseconds
+    const differenceMs = Math.abs(endDate.getTime() - startDate.getTime());
+
+    // Convert the difference to weeks
+    const differenceWeeks = differenceMs / (1000 * 60 * 60 * 24 * 7);
+
+    // Check if the difference is less than 16 weeks
+    if (differenceWeeks > 16) {
+      // Return validation error if the range is more than 16 weeks
+      return false;
+    }
+
+    // Return null if validation passes
+    return true;
+  }
+
+  isFormValid() {
+    return (
+      this.eventForm.valid &&
+      this.isValidDateRange() &&
+      this.isDateRangeWithinFourMonths()
+    );
+  }
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
@@ -77,17 +170,17 @@ export class EventCreationFormComponent implements OnInit {
   ) {
     this.sectionId = this.route.snapshot.params['id'];
     this.eventForm = this.formBuilder.group({
-      event_type: '',
-      event_mode: '',
+      event_type: ['', Validators.required],
+      event_mode: ['', Validators.required],
       description: '',
-      event_date: '',
-      start_time: '',
-      end_time: '',
-      recurring_start_date: '',
+      event_date: ['', Validators.required],
+      start_time: ['', Validators.required],
+      end_time: ['', Validators.required],
+      recurring_start_date: [''],
       recurring_end_date: '',
       selected_week_days: [],
-      frequency: 'One Time',
-      location: '',
+      frequency: ['One Time', Validators.required],
+      location: ['', Validators.required],
       location_description: ''
     });
   }
@@ -108,6 +201,18 @@ export class EventCreationFormComponent implements OnInit {
   }
 
   // user selects Monday and Sunday
+
+  isFrequencyWeekly(): boolean {
+    return this.eventForm.value.frequency === 'Weekly';
+  }
+
+  isFrequencyDaily(): boolean {
+    return this.eventForm.value.frequency === 'Daily';
+  }
+
+  isFrequencyOneTime(): boolean {
+    return this.eventForm.value.frequency === 'One Time';
+  }
 
   getAbbreviatedName(day: Weekday): string {
     switch (day) {
@@ -164,7 +269,7 @@ export class EventCreationFormComponent implements OnInit {
   }
 
   onSubmit() {
-    // Logic for assigning the correct OfficeHoursEventType enum
+    // Logic for assigning the correct OfficeHoursEventType and OfficeHoursEventMode enum
     let event_type: OfficeHoursEventType = this.mapEventType(
       this.eventForm.value.event_type
     );
@@ -248,7 +353,7 @@ export class EventCreationFormComponent implements OnInit {
       }
     }
   }
-  mapEventType(eventType: string): OfficeHoursEventType {
+  private mapEventType(eventType: string): OfficeHoursEventType {
     switch (eventType) {
       case 'office_hours':
         return OfficeHoursEventType.OFFICE_HOURS;
@@ -261,7 +366,7 @@ export class EventCreationFormComponent implements OnInit {
     }
   }
 
-  mapEventMode(eventMode: string): OfficeHoursEventModeType {
+  private mapEventMode(eventMode: string): OfficeHoursEventModeType {
     switch (eventMode) {
       case 'in_person':
         return OfficeHoursEventModeType.IN_PERSON;
@@ -274,7 +379,7 @@ export class EventCreationFormComponent implements OnInit {
     }
   }
 
-  buildStartTime(frequency_type: string): string {
+  private buildStartTime(frequency_type: string): string {
     return (
       (frequency_type === 'One Time'
         ? this.eventForm.value.event_date
@@ -284,7 +389,7 @@ export class EventCreationFormComponent implements OnInit {
     );
   }
 
-  buildEndTime(frequency_type: string): string {
+  private buildEndTime(frequency_type: string): string {
     return (
       (frequency_type === 'One Time'
         ? this.eventForm.value.event_date
