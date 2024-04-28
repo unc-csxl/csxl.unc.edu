@@ -17,7 +17,10 @@
       <p>Event Mode:</p>
       <mat-form-field>
         <mat-label>Select Type</mat-label>
-        <mat-select required formControlName="event_mode">
+        <mat-select
+          required
+          formControlName="event_mode"
+          (selectionChange)="onEventModeChange($event)">
           <mat-option value="in_person"> In-Person </mat-option>
           <mat-option value="virtual_student_link">
             Virtual - Student Link
@@ -99,11 +102,22 @@
           }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <p>Location Description:</p>
-      <mat-form-field>
-        <mat-label>Ex. It's the room across from...</mat-label>
-        <input matInput formControlName="location_description" />
-      </mat-form-field>
+      <!-- If Providng Virtual Link -->
+      <div *ngIf="isVirtualOurLink">
+        <p>Virtual Link:</p>
+        <mat-form-field>
+          <mat-label>Please Provide Virtual Link For Users To Join </mat-label>
+          <input matInput required formControlName="location_description" />
+        </mat-form-field>
+      </div>
+      <!-- Otherwise -->
+      <div *ngIf="!isVirtualOurLink">
+        <p>Location Description:</p>
+        <mat-form-field>
+          <mat-label>Ex. It's the room across from...</mat-label>
+          <input matInput formControlName="location_description" />
+        </mat-form-field>
+      </div>
       <div class="buttons">
         <a [routerLink]="['..']">
           <button mat-stroked-button class="button" type="button">
