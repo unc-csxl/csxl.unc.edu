@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime, date
+from enum import Enum
 
 from ..room import Room, RoomPartial
 from .section import OfficeHoursSection, OfficeHoursSectionPartial
@@ -29,6 +30,19 @@ class OfficeHoursEventDraft(BaseModel):
     end_time: datetime
 
 
+class Weekday(Enum):
+    Monday = 0
+    Tuesday = 1
+    Wednesday = 2
+    Thursday = 3
+    Friday = 4
+    Saturday = 5
+    Sunday = 6
+
+    def __str__(self):
+        return "%s" % self.value
+
+
 class OfficeHoursEventDailyRecurringDraft(BaseModel):
     """
     Pydantic model to represent an `OfficeHoursEvent` that has not been created yet.
@@ -40,6 +54,17 @@ class OfficeHoursEventDailyRecurringDraft(BaseModel):
     draft: OfficeHoursEventDraft
     recurring_start_date: date
     recurring_end_date: date
+
+
+class OfficeHoursEventWeeklyRecurringDraft(OfficeHoursEventDailyRecurringDraft):
+    """
+    Pydantic model to represent an `OfficeHoursEvent` that has not been created yet.
+
+    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
+    of the `OfficeHoursEvent` database in the PostgreSQL database
+    """
+
+    selected_week_days: list[Weekday]
 
 
 class OfficeHoursEvent(OfficeHoursEventDraft):

@@ -31,7 +31,7 @@ import {
   OfficeHoursSection,
   OfficeHoursSectionTrailingWeekData,
   OfficeHoursEventModeType,
-  OfficeHoursEventDailyRecurringDraft
+  Weekday
 } from './office-hours.models';
 import {
   Section,
@@ -110,11 +110,37 @@ export class OfficeHoursService {
   }
 
   createEventsDaily(
-    event_draft: OfficeHoursEventDailyRecurringDraft
+    event_draft: OfficeHoursEventDraft,
+    start_date: string,
+    end_date: string
   ): Observable<OfficeHoursEvent[]> {
+    const eventsRequestBody = {
+      draft: event_draft,
+      recurring_start_date: start_date,
+      recurring_end_date: end_date
+    };
+
     return this.http.post<OfficeHoursEvent[]>(
       '/api/office-hours/event/recurring/daily/',
-      event_draft
+      eventsRequestBody
+    );
+  }
+
+  createEventsWeekly(
+    event_draft: OfficeHoursEventDraft,
+    start_date: string,
+    end_date: string,
+    selected_days: Weekday[]
+  ): Observable<OfficeHoursEvent[]> {
+    const eventsRequestBody = {
+      draft: event_draft,
+      recurring_start_date: start_date,
+      recurring_end_date: end_date,
+      selected_week_days: selected_days
+    };
+    return this.http.post<OfficeHoursEvent[]>(
+      '/api/office-hours/event/recurring/weekly/',
+      eventsRequestBody
     );
   }
 

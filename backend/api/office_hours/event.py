@@ -20,6 +20,7 @@ from ...models.office_hours.event import (
     OfficeHoursEventDailyRecurringDraft,
     OfficeHoursEventDraft,
     OfficeHoursEventPartial,
+    OfficeHoursEventWeeklyRecurringDraft,
 )
 from ...models.office_hours.event_details import OfficeHoursEventDetails
 from ...services.office_hours.event import OfficeHoursEventService
@@ -68,6 +69,20 @@ def new_oh_event(
 ) -> list[OfficeHoursEvent]:
     try:
         return oh_event_service.create_daily(subject, oh_event)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.post(
+    "/recurring/weekly/", response_model=list[OfficeHoursEvent], tags=["Office Hours"]
+)
+def new_oh_event(
+    oh_event: OfficeHoursEventWeeklyRecurringDraft,
+    subject: User = Depends(registered_user),
+    oh_event_service: OfficeHoursEventService = Depends(),
+) -> list[OfficeHoursEvent]:
+    try:
+        return oh_event_service.create_weekly(subject, oh_event)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

@@ -10,17 +10,16 @@ import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
-  OfficeHoursEventDailyRecurringDraft,
   OfficeHoursEventDraft,
   OfficeHoursEventModeType,
   OfficeHoursEventType,
-  OfficeHoursSectionDetails
+  OfficeHoursSectionDetails,
+  Weekday
 } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Room } from 'src/app/academics/academics.models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Frequency, Options, RRule } from 'rrule';
 
 @Component({
   selector: 'app-event-creation-form',
@@ -43,10 +42,19 @@ export class EventCreationFormComponent implements OnInit {
     }
   ];
 
+  selected = [];
   /* List of available rooms to hold Office Hours event */
   rooms: Room[] = [];
-  Frequency = Frequency;
 
+  weekdays = [
+    Weekday.Monday,
+    Weekday.Tuesday,
+    Weekday.Wednesday,
+    Weekday.Thursday,
+    Weekday.Friday,
+    Weekday.Saturday,
+    Weekday.Sunday
+  ];
   frequencyOptions = ['One Time', 'Daily', 'Weekly'];
   /* Section that the Office Hours event is being held for */
   sectionId: number;
@@ -70,9 +78,9 @@ export class EventCreationFormComponent implements OnInit {
       event_date: '',
       start_time: '',
       end_time: '',
-      recurringStartDate: '',
-      recurringEndDate: '',
-      onWeekday: [],
+      recurring_start_date: '',
+      recurring_end_date: '',
+      selected_week_days: [],
       frequency: 'One Time',
       location: '',
       location_description: ''
@@ -96,11 +104,28 @@ export class EventCreationFormComponent implements OnInit {
 
   // user selects Monday and Sunday
 
+  getAbbreviatedName(day: Weekday): string {
+    switch (day) {
+      case Weekday.Monday:
+        return 'Mon';
+      case Weekday.Tuesday:
+        return 'Tue';
+      case Weekday.Wednesday:
+        return 'Wed';
+      case Weekday.Thursday:
+        return 'Thu';
+      case Weekday.Friday:
+        return 'Fri';
+      case Weekday.Saturday:
+        return 'Sat';
+      case Weekday.Sunday:
+        return 'Sun';
+      default:
+        return '';
+    }
+  }
   /* EventForm contains data pertaining to event that is being created/modified */
 
-  onFrequencyChange(event: any) {
-    console.log(event.value);
-  }
   getRooms() {
     this.academicsService.getRooms().subscribe((rooms) => {
       this.rooms = rooms;
@@ -115,35 +140,13 @@ export class EventCreationFormComponent implements OnInit {
 
   onSubmit() {
     // Logic for assigning the correct OfficeHoursEventType enum
-    let event_type: OfficeHoursEventType;
-    switch (this.eventForm.value.event_type) {
-      case 'office_hours':
-        event_type = OfficeHoursEventType.OFFICE_HOURS;
-        break;
-      case 'tutoring':
-        event_type = OfficeHoursEventType.TUTORING;
-        break;
-      case 'review_session':
-        event_type = OfficeHoursEventType.REVIEW_SESSION;
-        break;
-      default:
-        event_type = OfficeHoursEventType.OFFICE_HOURS;
-    }
+    let event_type: OfficeHoursEventType = this.mapEventType(
+      this.eventForm.value.event_type
+    );
 
-    let event_mode: OfficeHoursEventModeType;
-    switch (this.eventForm.value.event_mode) {
-      case 'in_person':
-        event_mode = OfficeHoursEventModeType.IN_PERSON;
-        break;
-      case 'virtual_our_link':
-        event_mode = OfficeHoursEventModeType.VIRTUAL_OUR_LINK;
-        break;
-      case 'virtual_student_link':
-        event_mode = OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK;
-        break;
-      default:
-        event_mode = OfficeHoursEventModeType.IN_PERSON;
-    }
+    let event_mode: OfficeHoursEventModeType = this.mapEventMode(
+      this.eventForm.value.event_mode
+    );
 
     // Ensure start and end times aren't none
     if (!this.eventForm.value.start_time) {
@@ -153,31 +156,30 @@ export class EventCreationFormComponent implements OnInit {
       this.eventForm.value.end_time = '';
     }
 
-    var start_time =
-      this.eventForm.value.event_date + 'T' + this.eventForm.value.start_time;
-
-    var end_time =
-      this.eventForm.value.event_date + 'T' + this.eventForm.value.end_time;
-
-    // IF ONE TIME
     // Ensure that section must not be null to create/edit event
     if (this.section) {
+      let start_time = this.buildStartTime(this.eventForm.value.frequency);
+      let end_time = this.buildEndTime(this.eventForm.value.frequency);
+
+      var event_draft: OfficeHoursEventDraft = {
+        oh_section: this.section,
+        room: { id: this.eventForm.value.location ?? '' },
+        type: event_type,
+        mode: event_mode,
+        description: this.eventForm.value.description ?? '',
+        location_description: this.eventForm.value.location_description ?? '',
+        event_date: this.eventForm.value.event_date,
+        start_time: start_time,
+        end_time: end_time
+      };
+
+      // Recurring Event Variable Indicators
+      let recurring_start_date = this.eventForm.value.recurring_start_date;
+      let recurring_end_date = this.eventForm.value.recurring_end_date;
+      let selected_week_days = this.eventForm.value.selected_week_days;
+
       switch (this.eventForm.value.frequency) {
         case 'One Time':
-          let event_draft: OfficeHoursEventDraft = {
-            oh_section: this.section,
-            room: { id: this.eventForm.value.location ?? '' },
-            type: event_type,
-            mode: event_mode,
-            description: this.eventForm.value.description ?? '',
-            location_description:
-              this.eventForm.value.location_description ?? '',
-            event_date: this.eventForm.value.event_date,
-            start_time: start_time,
-            end_time: end_time
-          };
-
-          console.log(event_draft);
           this.officeHoursService.createEvent(event_draft).subscribe({
             next: () => this.onSuccess(),
             error: (err) => this.onError(err)
@@ -185,44 +187,86 @@ export class EventCreationFormComponent implements OnInit {
           break;
 
         case 'Daily':
-          var start_time =
-            this.eventForm.value.recurringStartDate +
-            'T' +
-            this.eventForm.value.start_time;
+          // Set Event Date to First Start Date
+          event_draft.event_date = recurring_start_date;
 
-          var end_time =
-            this.eventForm.value.recurringStartDate +
-            'T' +
-            this.eventForm.value.end_time;
-          //
-          let event_draft_0: OfficeHoursEventDraft = {
-            oh_section: this.section,
-            room: { id: this.eventForm.value.location ?? '' },
-            type: event_type,
-            mode: event_mode,
-            description: this.eventForm.value.description ?? '',
-            location_description:
-              this.eventForm.value.location_description ?? '',
-            event_date: this.eventForm.value.recurringStartDate,
-            start_time: start_time,
-            end_time: end_time
-          };
-
-          let daily: OfficeHoursEventDailyRecurringDraft = {
-            draft: event_draft_0,
-            recurring_start_date: this.eventForm.value.recurringStartDate,
-            recurring_end_date: this.eventForm.value.recurringEndDate
-          };
-
-          console.log(daily);
-          this.officeHoursService.createEventsDaily(daily).subscribe({
-            next: () => this.onSuccess(),
-            error: (err) => this.onError(err)
-          });
+          this.officeHoursService
+            .createEventsDaily(
+              event_draft,
+              recurring_start_date,
+              recurring_end_date
+            )
+            .subscribe({
+              next: () => this.onSuccess(),
+              error: (err) => this.onError(err)
+            });
           break;
+
+        case 'Weekly':
+          // Set Event Date to First Start Date
+          event_draft.event_date = recurring_start_date;
+
+          this.officeHoursService
+            .createEventsWeekly(
+              event_draft,
+              recurring_start_date,
+              recurring_end_date,
+              selected_week_days
+            )
+            .subscribe({
+              next: () => this.onSuccess(),
+              error: (err) => this.onError(err)
+            });
+          break;
+
         default:
       }
     }
+  }
+  mapEventType(eventType: string): OfficeHoursEventType {
+    switch (eventType) {
+      case 'office_hours':
+        return OfficeHoursEventType.OFFICE_HOURS;
+      case 'tutoring':
+        return OfficeHoursEventType.TUTORING;
+      case 'review_session':
+        return OfficeHoursEventType.REVIEW_SESSION;
+      default:
+        return OfficeHoursEventType.OFFICE_HOURS;
+    }
+  }
+
+  mapEventMode(eventMode: string): OfficeHoursEventModeType {
+    switch (eventMode) {
+      case 'in_person':
+        return OfficeHoursEventModeType.IN_PERSON;
+      case 'virtual_our_link':
+        return OfficeHoursEventModeType.VIRTUAL_OUR_LINK;
+      case 'virtual_student_link':
+        return OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK;
+      default:
+        return OfficeHoursEventModeType.IN_PERSON;
+    }
+  }
+
+  buildStartTime(frequency_type: string): string {
+    return (
+      (frequency_type === 'One Time'
+        ? this.eventForm.value.event_date
+        : this.eventForm.value.recurring_start_date) +
+      'T' +
+      this.eventForm.value.start_time
+    );
+  }
+
+  buildEndTime(frequency_type: string): string {
+    return (
+      (frequency_type === 'One Time'
+        ? this.eventForm.value.event_date
+        : this.eventForm.value.recurring_start_date) +
+      'T' +
+      this.eventForm.value.end_time
+    );
   }
 
   /* On successful event creation, navigate back to section home */
@@ -239,5 +283,6 @@ export class EventCreationFormComponent implements OnInit {
     this.snackBar.open('Error: Unable to create event', '', {
       duration: 2000
     });
+    console.log(err.description);
   }
 }

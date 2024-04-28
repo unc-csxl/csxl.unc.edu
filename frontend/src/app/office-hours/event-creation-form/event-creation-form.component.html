@@ -59,25 +59,24 @@
         <div class="date-picker-container">
           <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Start Date</mat-label>
-            <input matInput type="date" formControlName="recurringStartDate" />
+            <input
+              matInput
+              type="date"
+              formControlName="recurring_start_date" />
           </mat-form-field>
           <mat-form-field class="example-form-field ml-2">
             <mat-label>End Date</mat-label>
-            <input matInput type="date" formControlName="recurringEndDate" />
+            <input matInput type="date" formControlName="recurring_end_date" />
           </mat-form-field>
         </div>
       </div>
       <!-- If Frequency Is Not ONE TIME -->
       <div *ngIf="eventForm.value.frequency === 'Weekly'">
         <p>Repeat On:</p>
-        <mat-button-toggle-group formControlName="onWeekday" multiple>
-          <mat-button-toggle value="0">Mon</mat-button-toggle>
-          <mat-button-toggle value="1">Tue</mat-button-toggle>
-          <mat-button-toggle value="2">Wed</mat-button-toggle>
-          <mat-button-toggle value="3">Thu</mat-button-toggle>
-          <mat-button-toggle value="4">Fri</mat-button-toggle>
-          <mat-button-toggle value="5">Sat</mat-button-toggle>
-          <mat-button-toggle value="6">Sun</mat-button-toggle>
+        <mat-button-toggle-group formControlName="selected_week_days" multiple>
+          <mat-button-toggle *ngFor="let day of weekdays" [value]="day">
+            {{ getAbbreviatedName(day) }}
+          </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
       <p>Start Time:</p>
