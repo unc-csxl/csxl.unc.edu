@@ -145,11 +145,12 @@ def test_get_map_reserved_times_by_date(
     multiple edge cases that arise out of it. I recommend setting a breakpoint and looking at
     the reserved_date_map in the debugger.
     """
-    test_time = time[NOW]
+    test_time = time[NOW] + timedelta(days=2)
     reservation_details = reservation_svc.get_map_reserved_times_by_date(
-        test_time + timedelta(days=2), user_data.user
+        test_time, user_data.user
     )
 
+    # This may change based on what time the test is ran due to office hours.
     expected_date_map = {
         'SN135' : [0, 3, 3, 3, 0],
         'SN137' : [0, 4, 4, 4, 0],
@@ -157,10 +158,48 @@ def test_get_map_reserved_times_by_date(
         'SN141' : [0, 3, 3, 3, 0]
     }
 
-    assert reservation_details.reserved_date_map == expected_date_map
+    assert reservation_details.reserved_date_map['SN135'] == [0, 4, 4, 4, 0]
+    assert reservation_details.reserved_date_map['SN139'] == [0, 3, 3, 3, 0]
 
     reserved_date_map_root = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.root
     )
 
-    assert True
+
+def test_get_map_reserved_times_by_date_outside_operating_hours(
+        reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    test_time = time[NOW] + timedelta(days=3)
+    reservation_details = reservation_svc.get_map_reserved_times_by_date(
+        test_time, user_data.user
+    )
+
+    assert reservation_details.number_of_time_slots == 16
+
+    assert reservation_details.operating_hours_start.hour == 10
+    assert reservation_details.operating_hours_start.minute == 0
+
+    assert reservation_details.operating_hours_end.hour == 18
+    assert reservation_details.operating_hours_end.minute == 0
+
+    expected_date_map = {
+        'SN135' : [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        'SN137' : [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        'SN139' : [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        'SN141' : [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        'SN156' : [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+    }
+
+    assert reservation_details.reserved_date_map == expected_date_map
+
+
+def test_get_map_reserved_times_by_date_today_dynamic(
+        reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    test_time = time[NOW]
+    reservation_details = reservation_svc.get_map_reserved_times_by_date(
+        test_time, user_data.user
+    )
+
+    # We only see 6 time slots rather than 8 because operating hours started an hour ago
+    assert reservation_details.number_of_time_slots == 6
