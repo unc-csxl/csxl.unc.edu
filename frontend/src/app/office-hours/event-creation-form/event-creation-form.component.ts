@@ -86,7 +86,10 @@ export class EventCreationFormComponent implements OnInit {
     Weekday.Saturday,
     Weekday.Sunday
   ];
-  frequencyOptions = ['One Time', 'Daily', 'Weekly'];
+
+  /* Frequency Options for Event Creation */
+  frequencyOptions = ['One Time', 'Weekly'];
+
   /* Section that the Office Hours event is being held for */
   sectionId: number;
   section: OfficeHoursSectionDetails | undefined;
@@ -122,29 +125,15 @@ export class EventCreationFormComponent implements OnInit {
       this.eventForm.controls['selected_week_days'].setValidators([
         Validators.required
       ]);
-    } else if (this.isFrequencyDaily()) {
-      this.eventForm.controls['event_date'].setValidators([]);
-      this.eventForm.controls['selected_week_days'].setValidators([]);
-
-      // Set Validators
-      this.eventForm.controls['recurring_start_date'].setValidators([
-        Validators.required
-      ]);
-      this.eventForm.controls['recurring_end_date'].setValidators([
-        Validators.required
-      ]);
     } else {
       this.eventForm.controls['selected_week_days'].setValidators([]);
-
       this.eventForm.controls['recurring_start_date'].setValidators([]);
-
       this.eventForm.controls['recurring_end_date'].setValidators([]);
-
       this.eventForm.controls['event_date'].setValidators([
         Validators.required
       ]);
     }
-    console.log(this.eventForm);
+
     this.eventForm.controls['selected_week_days'].updateValueAndValidity();
     this.eventForm.controls['recurring_start_date'].updateValueAndValidity();
     this.eventForm.controls['recurring_end_date'].updateValueAndValidity();
@@ -268,10 +257,6 @@ export class EventCreationFormComponent implements OnInit {
     return this.eventForm.value.frequency === 'Weekly';
   }
 
-  isFrequencyDaily(): boolean {
-    return this.eventForm.value.frequency === 'Daily';
-  }
-
   isFrequencyOneTime(): boolean {
     return this.eventForm.value.frequency === 'One Time';
   }
@@ -383,22 +368,6 @@ export class EventCreationFormComponent implements OnInit {
             next: () => this.onSuccess(),
             error: (err) => this.onError(err)
           });
-          break;
-
-        case 'Daily':
-          // Set Event Date to First Start Date
-          event_draft.event_date = recurring_start_date;
-
-          this.officeHoursService
-            .createEventsDaily(
-              event_draft,
-              recurring_start_date,
-              recurring_end_date
-            )
-            .subscribe({
-              next: () => this.onSuccess(),
-              error: (err) => this.onError(err)
-            });
           break;
 
         case 'Weekly':
