@@ -213,7 +213,7 @@ class ReservationService:
             return False
         return True
 
-    def _get_total_time_user_reservations(self, user: UserIdentity) -> str:
+    def get_total_time_user_reservations(self, user: UserIdentity) -> str:
         """Calculate the total duration (in hours) of study room reservations for the given user.
         Args:
             user (UserIdentity): The user for whom to calculate the total reservation time.
