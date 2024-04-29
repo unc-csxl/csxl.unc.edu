@@ -33,7 +33,7 @@ from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
 __authors__ = ["Kris Jordan", "Matt Vu", "Yuvraj Jain"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 
