@@ -141,22 +141,11 @@ def instantiate_global_models(time: dict[str, datetime]):
         seats=[]
     )
 
-    reservation_8 = Reservation(
-        id=8,
-        start=time[NOW],
-        end=time[IN_ONE_HOUR],
-        created_at=time[NOW],
-        updated_at=time[NOW],
-        walkin=False,
-        room=room_data.group_a,
-        state=ReservationState.CONFIRMED,
-        users=[user_data.user],
-        seats=[]
-    )
 
     active_reservations = [reservation_1]
     confirmed_reservations = [reservation_4]
     draft_reservations = [reservation_5]
+    room_reservations = [reservation_6, reservation_7]
     reservations = [
         reservation_1,
         reservation_2,
