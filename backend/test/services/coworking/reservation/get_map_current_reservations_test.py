@@ -116,12 +116,12 @@ def test_query_confirmed_reservations_by_date_and_room(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """Test getting all reservations for a particular date."""
-    reservations = reservation_svc._query_confirmed_reservations_by_date_and_room(time[NOW], None)
-    assert True
-    #TODO: Add in better assert statements here. 
+    reservations = reservation_svc._query_confirmed_reservations_by_date_and_room(time[NOW] + timedelta(days=2), 'SN137')
+    assert len(reservations) == 1
+    assert reservations[0].id == 6
+    assert reservations[0].room.id == 'SN137'
 
 def test_get_reservable_rooms(reservation_svc: ReservationService):
-    # Hardcoded for now, and this might change depending on which rooms are labeled as reservable.
     rooms = reservation_svc._get_reservable_rooms()
     assert rooms[0].id == 'SN135' and rooms[0].reservable is True
     assert rooms[1].id == 'SN137' and rooms[1].reservable is True
