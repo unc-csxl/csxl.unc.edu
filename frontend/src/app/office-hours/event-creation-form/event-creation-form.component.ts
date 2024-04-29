@@ -124,6 +124,44 @@ export class EventCreationFormComponent implements OnInit {
     this.eventForm.controls['event_date'].updateValueAndValidity();
   }
 
+  dateRangeValidator(): ValidatorFn {
+    return (form: AbstractControl): ValidationErrors | null => {
+      // If One Time, Ignore this Validator
+      const frequency = form.root.get('frequency')?.value;
+      if (frequency == 'One Time') {
+        return null;
+      }
+      const startDateValue = form.root.get('recurring_start_date')?.value;
+      const endDateValue = form.root.get('recurring_end_date')?.value;
+
+      // Check if either start date or end date is null
+      if (
+        startDateValue === '' ||
+        endDateValue === '' ||
+        !startDateValue ||
+        !endDateValue
+      ) {
+        return null; // Return null if one of the dates is not set
+      }
+
+      const startDate = new Date(startDateValue);
+      const endDate = new Date(endDateValue);
+
+      // Check If Start Date is Before End Date
+      if (startDate > endDate) {
+        return { invalidDateRange: true };
+      }
+      // Calculate the difference in milliseconds
+      const differenceMs = Math.abs(endDate.getTime() - startDate.getTime());
+
+      // Convert the difference to weeks
+      const differenceWeeks = differenceMs / (1000 * 60 * 60 * 24 * 7);
+
+      // Check if the difference is less than or equal to 16 weeks
+      return differenceWeeks <= 16 ? null : { rangeExceedsLimit: true };
+    };
+  }
+
   // TODO: Check for Date Range of Greater than 4 monthss
   isValidDateRange() {
     const parsedTime1 = new Date(this.eventForm.value.recurring_start_date);
@@ -152,13 +190,6 @@ export class EventCreationFormComponent implements OnInit {
     return true;
   }
 
-  isFormValid() {
-    return (
-      this.eventForm.valid &&
-      this.isValidDateRange() &&
-      this.isDateRangeWithinFourMonths()
-    );
-  }
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
@@ -169,20 +200,23 @@ export class EventCreationFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {
     this.sectionId = this.route.snapshot.params['id'];
-    this.eventForm = this.formBuilder.group({
-      event_type: ['', Validators.required],
-      event_mode: ['', Validators.required],
-      description: '',
-      event_date: ['', Validators.required],
-      start_time: ['', Validators.required],
-      end_time: ['', Validators.required],
-      recurring_start_date: [''],
-      recurring_end_date: '',
-      selected_week_days: [],
-      frequency: ['One Time', Validators.required],
-      location: ['', Validators.required],
-      location_description: ''
-    });
+    this.eventForm = this.formBuilder.group(
+      {
+        event_type: ['', Validators.required],
+        event_mode: ['', Validators.required],
+        description: '',
+        event_date: ['', Validators.required],
+        start_time: ['', Validators.required],
+        end_time: ['', Validators.required],
+        recurring_start_date: [''],
+        recurring_end_date: '',
+        selected_week_days: [],
+        frequency: ['One Time', Validators.required],
+        location: ['', Validators.required],
+        location_description: ''
+      },
+      { validators: [this.dateRangeValidator()] }
+    );
   }
 
   /* Get rooms and associated section upon initialization */
