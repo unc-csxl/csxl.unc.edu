@@ -118,6 +118,40 @@ export interface OfficeHoursEventDraft {
   end_time: string;
 }
 
+export enum Weekday {
+  Monday = 0,
+  Tuesday = 1,
+  Wednesday = 2,
+  Thursday = 3,
+  Friday = 4,
+  Saturday = 5,
+  Sunday = 6
+}
+
+// Method to get the abbreviated name of the weekday
+export namespace Weekday {
+  export function getAbbreviatedName(day: Weekday): string {
+    switch (day) {
+      case Weekday.Monday:
+        return 'Mon';
+      case Weekday.Tuesday:
+        return 'Tue';
+      case Weekday.Wednesday:
+        return 'Wed';
+      case Weekday.Thursday:
+        return 'Thu';
+      case Weekday.Friday:
+        return 'Fri';
+      case Weekday.Saturday:
+        return 'Sat';
+      case Weekday.Sunday:
+        return 'Sun';
+      default:
+        return '';
+    }
+  }
+}
+
 export interface RoomPartial {
   id: string;
 }

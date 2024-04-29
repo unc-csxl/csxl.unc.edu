@@ -25,3 +25,9 @@ mat-card {
 .button {
     margin: 0.25rem;
 }
+
+.two-column {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
