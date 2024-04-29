@@ -75,7 +75,7 @@ new_course = Course(
 )
 
 
-courses = [comp_110, comp_210, comp_211, comp_301, comp_311, new_course]
+courses = [comp_110, comp_210, comp_211, comp_301, comp_311]
 
 
 def insert_fake_data(session: Session):

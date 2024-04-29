@@ -134,7 +134,7 @@ edited_comp_301_with_room = Section(
 
 new_section = Section(
     id=7,
-    course_id=course_data.new_course.id,
+    course_id=course_data.comp_110.id,
     number="003",
     term_id=term_data.f_23.id,
     meeting_pattern="MW 1:30PM - 2:45PM",
@@ -143,7 +143,7 @@ new_section = Section(
 )
 
 new_section_with_lecture_room = Section(
-    id=4,
+    id=8,
     course_id=course_data.comp_110.id,
     number="003",
     term_id=term_data.f_23.id,
@@ -208,7 +208,6 @@ sections = [
     comp_211_001,
     comp_301_001,
     comp_311_001,
-    new_section,
 ]
 assignments = [
     room_assignment_110_001,
@@ -217,7 +216,6 @@ assignments = [
     room_assignment_211_001,
     room_assignment_301_001,
     room_assignment_311_001,
-    room_assignment_423_001,
 ]
 comp_110_sections = [comp_101_001, comp_101_002]
 
