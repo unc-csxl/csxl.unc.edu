@@ -112,6 +112,16 @@ def test_round_idx_calculation(reservation_svc: ReservationService):
     assert rounded_time3.hour == 10 and rounded_time3.minute == 30
     assert rounded_time4.hour == 18 and rounded_time4.minute == 0 
 
+
+def test_round_idx_calculation_2(reservation_svc: ReservationService):
+    time = datetime.now().replace(hour=10, minute=44)
+    rounded_up = reservation_svc._round_to_closest_half_hour(time, True)
+    rounded_down = reservation_svc._round_to_closest_half_hour(time, False)
+
+    assert rounded_up.hour == 11 and rounded_up.minute == 0
+    assert rounded_down.hour == 10 and rounded_down.minute == 30
+
+
 def test_query_confirmed_reservations_by_date_and_room(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
