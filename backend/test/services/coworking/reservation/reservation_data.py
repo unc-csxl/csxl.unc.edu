@@ -115,10 +115,10 @@ def instantiate_global_models(time: dict[str, datetime]):
     # Confirm Room Reservation
     reservation_6 = Reservation(
         id=6,
-        start=operating_hours_data.tomorrow.start.replace(hour=12, minute=0)
+        start=operating_hours_data.tomorrow.start
         + timedelta(hours=24),
-        end=operating_hours_data.tomorrow.end.replace(hour=14, minute=30)
-        + timedelta(hours=24),
+        end=operating_hours_data.tomorrow.start
+        + timedelta(hours=26),
         created_at=time[NOW],
         updated_at=time[NOW],
         walkin=False,
