@@ -8,7 +8,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import {
   OfficeHoursEventDraft,
   OfficeHoursEventModeType,
@@ -75,6 +75,11 @@ export class EventCreationFormComponent implements OnInit {
   // RosterRole to determine if user can view this routed component
   rosterRole: RosterRole | undefined;
 
+  /* Holds Information About Virtual Room */
+  virtualRoom: Room | undefined;
+
+  /* Section that the Office Hours event is being held for */
+  isVirtualOurLink: boolean = false;
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
@@ -111,9 +116,30 @@ export class EventCreationFormComponent implements OnInit {
       .subscribe((role) => (this.rosterRole = role.member_role));
   }
 
+  // Handles Room Location Value According to Event Mode Selection Changes
+  onEventModeChange(event: any) {
+    // CASE: If Event Mode is Virtual, Will Set Default Room Location to Virtual
+    if (event.value.includes('virtual')) {
+      if (this.virtualRoom) {
+        (this.eventForm.get('location') as FormControl).setValue(
+          this.virtualRoom.id
+        );
+      }
+      // CASE: If Location has been selected but switch to In-Person, will reset selection for Room Location
+    } else if (
+      event.value.includes('in_person') &&
+      this.eventForm.value.location !== ''
+    ) {
+      (this.eventForm.get('location') as FormControl).setValue(null);
+    }
+
+    this.isVirtualOurLink = event.value.includes('our_link');
+  }
+
   getRooms() {
     this.academicsService.getRooms().subscribe((rooms) => {
       this.rooms = rooms;
+      this.virtualRoom = rooms.find((room) => room.id === 'Virtual');
     });
   }
 

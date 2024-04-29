@@ -36,7 +36,8 @@
       </th>
       <td mat-cell *matCellDef="let element">
         <div class="row">
-          <mat-form-field>
+          <!--If user is instructor, show drop down for modifying roles-->
+          <mat-form-field *ngIf="rosterRole === 3">
             <mat-label>{{ formatRosterRole(element.member_role) }}</mat-label>
             <mat-select (selectionChange)="onRoleChange(element, $event.value)">
               <mat-option *ngFor="let role of roles" [value]="formatEnum(role)">
@@ -44,6 +45,10 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+          <!--If user is not instructor, show static role type-->
+          <p *ngIf="rosterRole !== 3">
+            {{ formatRosterRole(element.member_role) }}
+          </p>
         </div>
       </td>
     </ng-container>
