@@ -7,7 +7,13 @@
  * @license MIT
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {
   TicketDetails,
   OfficeHoursEventDetails,
@@ -35,6 +41,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   styleUrls: ['./ticket-queue-page.component.css']
 })
 export class TicketQueuePageComponent implements OnInit, OnDestroy {
+  @ViewChild('officeHoursNotif') audioPlayerRef: ElementRef | undefined;
   public static Routes = [
     {
       path: 'ta/:id/:event_id/queue',
@@ -158,10 +165,9 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
   }
 
   playQueueNotifSound() {
-    let audio = new Audio();
-    audio.src = '/../assets/office-hours-notif.wav';
-    audio.load();
-    audio.play();
+    if (this.audioPlayerRef) {
+      this.audioPlayerRef.nativeElement.play();
+    }
   }
 
   getRosterRole() {
