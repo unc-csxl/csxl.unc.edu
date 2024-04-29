@@ -16,7 +16,7 @@ import {
   OfficeHoursSectionDetails
 } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import { Room } from 'src/app/academics/academics.models';
+import { Room, RosterRole } from 'src/app/academics/academics.models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -48,6 +48,9 @@ export class EventCreationFormComponent implements OnInit {
   sectionId: number;
   section: OfficeHoursSectionDetails | undefined;
 
+  // RosterRole to determine if user can view this routed component
+  rosterRole: RosterRole | undefined;
+
   constructor(
     public officeHoursService: OfficeHoursService,
     protected formBuilder: FormBuilder,
@@ -58,6 +61,7 @@ export class EventCreationFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {
     this.sectionId = this.route.snapshot.params['id'];
+    this.getRosterRole();
   }
 
   /* Get rooms and associated section upon initialization */
@@ -76,6 +80,12 @@ export class EventCreationFormComponent implements OnInit {
     location: '',
     location_description: ''
   });
+
+  getRosterRole() {
+    this.academicsService
+      .getMembershipBySection(this.sectionId)
+      .subscribe((role) => (this.rosterRole = role.member_role));
+  }
 
   getRooms() {
     this.academicsService.getRooms().subscribe((rooms) => {

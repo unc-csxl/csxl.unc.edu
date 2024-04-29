@@ -1,4 +1,11 @@
-<form class="page-container" [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+<div class="page-container" *ngIf="rosterRole === 0">
+  <p>You are not authorized to view this page.</p>
+</div>
+<form
+  class="page-container"
+  [formGroup]="eventForm"
+  (ngSubmit)="onSubmit()"
+  *ngIf="rosterRole !== 0">
   <mat-card appearance="outlined">
     <div class="card-container">
       <mat-card-title>Create Event</mat-card-title>
@@ -52,9 +59,9 @@
       <mat-form-field>
         <mat-label>Select a Room!</mat-label>
         <mat-select required formControlName="location">
-          <mat-option *ngFor="let room of rooms" [value]="room.id">{{
-            room.id
-          }}</mat-option>
+          <mat-option *ngFor="let room of rooms" [value]="room.id"
+            >{{ room.id }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
       <p>Location Description:</p>

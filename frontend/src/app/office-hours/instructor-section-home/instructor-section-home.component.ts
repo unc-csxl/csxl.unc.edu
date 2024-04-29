@@ -68,6 +68,8 @@ export class InstructorSectionHomeComponent implements OnInit {
     // Assign section ID to route parameter
     this.sectionId = this.route.snapshot.params['id'];
     this.rosterRole = null;
+    // Check RosterRole
+    this.checkRosterRole();
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
       section: OfficeHoursSectionDetails;
@@ -78,7 +80,6 @@ export class InstructorSectionHomeComponent implements OnInit {
   /* On initialization, get section's events and checks user's roster role */
   ngOnInit(): void {
     this.getCurrentEvents();
-    this.checkRosterRole();
   }
 
   /* Gets ongoing events for the section being viewed */

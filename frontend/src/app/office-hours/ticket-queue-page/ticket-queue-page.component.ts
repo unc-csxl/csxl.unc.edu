@@ -22,6 +22,8 @@ import {
 import { Subscription, interval } from 'rxjs';
 import { sectionResolver } from '../office-hours.resolver';
 import { Title } from '@angular/platform-browser';
+import { RosterRole } from 'src/app/academics/academics.models';
+import { AcademicsService } from 'src/app/academics/academics.service';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['section']?.title ?? 'Section Not Found';
@@ -87,8 +89,12 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
   /* Highest ticket ID in most recent refresh */
   prevHighestTicketId: number = Number.MAX_VALUE;
 
+  // Stores the user's RosterRole (to determine if they should be allowed to view the queue page)
+  rosterRole: RosterRole | undefined;
+
   constructor(
     private officeHoursService: OfficeHoursService,
+    private academicsService: AcademicsService,
     private route: ActivatedRoute,
     protected tabTitle: Title
   ) {
@@ -97,6 +103,9 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
     this.sectionId = this.route.snapshot.params['id'];
     this.queued_tickets = null;
     this.called_tickets = null;
+
+    // checks rosterRole
+    this.getRosterRole();
 
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
@@ -145,6 +154,12 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubscribeObservables();
+  }
+
+  getRosterRole() {
+    this.academicsService
+      .getMembershipBySection(this.sectionId)
+      .subscribe((role) => (this.rosterRole = role.member_role));
   }
 
   /* Gets current tickets that are in the queue */
