@@ -24,6 +24,18 @@
         </div>
       </td>
     </ng-container>
+    <ng-container matColumnDef="staff">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">Staff</div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <p>
+            {{ element.caller.first_name + ' ' + element.caller.last_name }}
+          </p>
+        </div>
+      </td>
+    </ng-container>
     <ng-container matColumnDef="student">
       <th mat-header-cell *matHeaderCellDef>
         <div class="header">Student</div>
