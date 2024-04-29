@@ -6,8 +6,8 @@ from datetime import timedelta, datetime, time
 from ...database import db_session
 from ...models import User
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 MONDAY = 0
