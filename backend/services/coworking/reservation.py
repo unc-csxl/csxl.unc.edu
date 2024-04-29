@@ -265,10 +265,7 @@ class ReservationService:
 
         Note:
             This method assumes individual user reservations. Group reservations require adjustments to
-            the implementation.
-
-            Future reservations are shown up to the current time, with past slots marked as unavailable
-            for today's date.
+            the implementation. Future reservations are shown up to the current time.
         """
         reserved_date_map: dict[str, list[int]] = {}
 
