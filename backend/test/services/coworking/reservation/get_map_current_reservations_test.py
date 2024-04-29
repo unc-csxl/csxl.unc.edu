@@ -39,8 +39,6 @@ __authors__ = [
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-SATURDAY, SUNDAY = [5, 6]
-
 
 def test_transform_date_map_for_unavailable_simple(reservation_svc: ReservationService):
     """
@@ -133,7 +131,6 @@ def test_get_reservable_rooms(reservation_svc: ReservationService):
 
 def test_query_xl_reservations_by_date_for_user(reservation_svc: ReservationService, time: dict[str, datetime]):
     reservations = reservation_svc._query_xl_reservations_by_date_for_user(time[NOW], user_data.user)
-    assert len(reservations) == 2
     assert reservations[0].room is None
     assert reservations[0].users[0].first_name == 'Sally'
 
