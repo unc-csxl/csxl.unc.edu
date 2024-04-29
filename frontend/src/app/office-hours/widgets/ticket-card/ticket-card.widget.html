@@ -21,7 +21,7 @@
 
     <div *ngIf="formatTicketState(ticket.state) === 'Called'">
       <mat-card-title *ngIf="formatTicketState(ticket.state) === 'Called'">
-        {{ticket.caller?.first_name}} is with {{ticket.creators[0].first_name}}
+        {{ticket.caller?.first_name}} is with {{ticket.creators[0].first_name}} {{ticket.creators[0].last_name}}
         ({{ ticket.creators[0].pronouns}})
       </mat-card-title>
       <mat-card-subtitle style="font-style: italic"
