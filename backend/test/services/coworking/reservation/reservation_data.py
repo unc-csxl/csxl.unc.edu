@@ -32,6 +32,8 @@ reservation_4: Reservation
 reservation_5: Reservation
 # Future room reservation
 reservation_6: Reservation
+# Current room reservation
+reservation_7: Reservation
 
 # Lists used for access
 active_reservations: list[Reservation]
@@ -42,7 +44,7 @@ reservations: list[Reservation]
 
 
 def instantiate_global_models(time: dict[str, datetime]):
-    global reservation_1, reservation_2, reservation_3, reservation_4, reservation_5, reservation_6
+    global reservation_1, reservation_2, reservation_3, reservation_4, reservation_5, reservation_6, reservation_7
     global active_reservations, reservations, draft_reservations, confirmed_reservations, room_reservations
     reservation_1 = Reservation(
         id=1,
