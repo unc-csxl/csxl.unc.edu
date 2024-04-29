@@ -376,6 +376,9 @@ class OfficeHoursSectionService:
             ticket for event in entity.events for ticket in event.tickets
         ]
 
+        # Order so latest is first
+        ticket_entities.sort(key=lambda x: x.created_at, reverse=True)
+
         # Return the details model of those tickets
         return [entity.to_details_model() for entity in ticket_entities]
 

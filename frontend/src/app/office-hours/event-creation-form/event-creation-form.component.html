@@ -40,33 +40,83 @@
         <mat-label>Description of Event</mat-label>
         <textarea matInput formControlName="description"> </textarea>
       </mat-form-field>
-      <p>Start Time:</p>
-      <mat-form-field>
-        <mat-label>Select Time:</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          required
-          formControlName="start_time" />
-      </mat-form-field>
-      <p>End Time:</p>
-      <mat-form-field>
-        <mat-label>Select Time:</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          required
-          formControlName="end_time" />
-      </mat-form-field>
+
+      <p>Frequency:</p>
+      <mat-radio-group
+        formControlName="frequency"
+        (change)="onFrequencyChange($event)">
+        <mat-radio-button
+          *ngFor="let frequency of frequencyOptions"
+          [value]="frequency">
+          {{ frequency }}</mat-radio-button
+        >
+      </mat-radio-group>
+      <div *ngIf="isFrequencyOneTime()">
+        <p>Date:</p>
+        <mat-form-field>
+          <mat-label>Select Date:</mat-label>
+          <input
+            matInput
+            placeholder="Event Date"
+            type="date"
+            formControlName="event_date" />
+        </mat-form-field>
+      </div>
+      <div *ngIf="isFrequencyDaily() || isFrequencyWeekly()">
+        <p>Date Range:</p>
+        <div class="two-column">
+          <mat-form-field>
+            <mat-label>Start Date</mat-label>
+            <input
+              matInput
+              type="date"
+              formControlName="recurring_start_date" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>End Date</mat-label>
+            <input matInput type="date" formControlName="recurring_end_date" />
+          </mat-form-field>
+        </div>
+        <div *ngIf="isStartAndEndDateFilledIn() && !isValidDateRange()">
+          <mat-error>
+            Invalid Date Range - Start Date Must Be Before End Date</mat-error
+          >
+        </div>
+        <div
+          *ngIf="isStartAndEndDateFilledIn() && !isDateRangeWithinFourMonths()">
+          <mat-error> Dates Must Be Within 16 weeks of each other</mat-error>
+        </div>
+      </div>
+      <!-- If Frequency Is Not ONE TIME -->
+      <div *ngIf="isFrequencyWeekly()">
+        <p>Repeat On:</p>
+        <mat-button-toggle-group formControlName="selected_week_days" multiple>
+          <mat-button-toggle *ngFor="let day of weekdays" [value]="day">
+            {{ getAbbreviatedName(day) }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <p>Time:</p>
+      <div class="two-column">
+        <mat-form-field>
+          <mat-label>Start Time:</mat-label>
+          <input matInput type="time" formControlName="start_time" required />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>End Time:</mat-label>
+          <input matInput type="time" formControlName="end_time" required />
+        </mat-form-field>
+      </div>
       <p>Location:</p>
       <mat-form-field>
-        <mat-label>Select a Room!</mat-label>
+        <mat-label>Select a Room:</mat-label>
         <mat-select required formControlName="location">
           <mat-option *ngFor="let room of rooms" [value]="room.id"
             >{{ room.id }}</mat-option
           >
         </mat-select>
       </mat-form-field>
+
       <!-- If Providng Virtual Link -->
       <div *ngIf="isVirtualOurLink">
         <p>Virtual Link:</p>
