@@ -122,7 +122,7 @@ def instantiate_global_models(time: dict[str, datetime]):
         created_at=time[NOW],
         updated_at=time[NOW],
         walkin=False,
-        room=room_data.group_b,
+        room=room_data.group_a,
         state=ReservationState.CONFIRMED,
         users=[user_data.user],
         seats=[],
