@@ -116,10 +116,10 @@ def test_query_confirmed_reservations_by_date_and_room(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     """Test getting all reservations for a particular date."""
-    reservations = reservation_svc._query_confirmed_reservations_by_date_and_room(time[NOW] + timedelta(days=2), 'SN137')
+    reservations = reservation_svc._query_confirmed_reservations_by_date_and_room(time[NOW] + timedelta(days=2), 'SN135')
     assert len(reservations) == 1
     assert reservations[0].id == 6
-    assert reservations[0].room.id == 'SN137'
+    assert reservations[0].room.id == 'SN135'
 
 def test_get_reservable_rooms(reservation_svc: ReservationService):
     rooms = reservation_svc._get_reservable_rooms()

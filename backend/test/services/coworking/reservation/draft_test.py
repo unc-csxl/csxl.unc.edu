@@ -332,7 +332,7 @@ def test_draft_reservation_room_time_conflict(
     end = reservation_data.reservation_6.start + timedelta(minutes=30)
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_b,
+        room=room_data.group_a,
         start=start,
         end=end,
         users=[user_data.ambassador],
@@ -405,7 +405,7 @@ def test_draft_reservation_different_room_time_conflict(
     end = reservation_data.reservation_6.end
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_a,  # Existing test reservation is group_b
+        room=room_data.group_b,  # Existing test reservation is group_a
         start=start,
         end=end,
         users=[user_data.ambassador],
