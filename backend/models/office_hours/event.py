@@ -30,6 +30,7 @@ class OfficeHoursEventDraft(BaseModel):
     end_time: datetime
 
 
+# TODO: Figure Out Better Place For These
 class Weekday(Enum):
     Monday = 0
     Tuesday = 1

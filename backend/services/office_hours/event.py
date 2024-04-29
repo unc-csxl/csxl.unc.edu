@@ -94,24 +94,12 @@ class OfficeHoursEventService:
         # Return added object
         return oh_event_entity.to_model()
 
+    # TODO: Comments
     def create_weekly_events(
         self,
         subject: User,
         oh_event: OfficeHoursEventRecurringDraft,
     ) -> list[OfficeHoursEvent]:
-        """Creates a new office hours event.
-
-        Args:
-            subject (User): a valid User model representing the currently logged in User
-            oh_event (OfficeHoursEventDraft): Event draft to add to table
-
-        Returns:
-            OfficeHoursEvent: Object added to table
-
-        Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-            the office hours section associated with the event (`oh_event`) or is a Student in section.
-        """
         # Permissions - Raises Exception if Permission Fails
         section_member_entity = self._check_user_section_membership(
             subject.id, oh_event.draft.oh_section.id
