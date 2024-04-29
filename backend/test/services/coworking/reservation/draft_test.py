@@ -414,3 +414,45 @@ def test_draft_reservation_different_room_time_conflict(
         user_data.ambassador, conflict_draft
     )
     assert reservation.id is not None
+
+
+def test_draft_reservation_crosses_weekly_limit(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    # Make filler reservations to reach weekly limit
+    temp_draft_1 = ReservationRequest(
+        seats=[],
+        room=room_data.group_a,
+        start=operating_hours_data.three_days_from_today.start,
+        end=operating_hours_data.three_days_from_today.start + timedelta(hours=2),
+        users=[user_data.user],
+    )
+
+    reservation_svc.draft_reservation(
+        user_data.user, temp_draft_1
+    )
+
+    temp_draft_2 = ReservationRequest(
+        seats=[],
+        room=room_data.group_a,
+        start=operating_hours_data.three_days_from_today.start + timedelta(hours=2),
+        end=operating_hours_data.three_days_from_today.start + timedelta(hours=4),
+        users=[user_data.user],
+    )
+
+    reservation_svc.draft_reservation(
+        user_data.user, temp_draft_2
+    )
+
+    exceed_limit_draft = ReservationRequest(
+        seats=[],
+        room=room_data.group_a,
+        start=operating_hours_data.three_days_from_today.start + timedelta(hours=4),
+        end=operating_hours_data.three_days_from_today.start + timedelta(hours=6),
+        users=[user_data.user],
+    )
+
+    with pytest.raises(ReservationException):
+        reservation_svc.draft_reservation(
+            user_data.user, exceed_limit_draft
+        )

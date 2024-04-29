@@ -179,7 +179,7 @@ def test_get_map_reserved_times_by_date(
 def test_get_map_reserved_times_by_date_outside_operating_hours(
         reservation_svc: ReservationService, time: dict[str, datetime]
 ):
-    test_time = time[NOW] + timedelta(days=3)
+    test_time = time[NOW] + timedelta(days=69)
     reservation_details = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.user
     )
