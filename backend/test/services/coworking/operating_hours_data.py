@@ -63,5 +63,5 @@ def fake_data_fixture(session: Session, time: dict[str, datetime]):
     yield
 
 
-def delete_all(session):
+def delete_all(session: Session):
     session.execute(delete(OperatingHoursEntity))
