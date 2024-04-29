@@ -50,12 +50,65 @@ export class OfficeHoursService {
     protected snackBar: MatSnackBar
   ) {}
 
+  /* Ticket-Related Methods: */
+
   createTicket(ticket_draft: TicketDraft): Observable<TicketDetails> {
     return this.http.post<TicketDetails>(
       '/api/office-hours/ticket',
       ticket_draft
     );
   }
+
+  callTicket(oh_ticket: Ticket): Observable<TicketDetails> {
+    return this.http.put<TicketDetails>(
+      '/api/office-hours/ticket/call',
+      oh_ticket
+    );
+  }
+
+  closeTicket(oh_ticket: Ticket): Observable<TicketDetails> {
+    return this.http.put<TicketDetails>(
+      '/api/office-hours/ticket/close',
+      oh_ticket
+    );
+  }
+
+  cancelTicket(oh_ticket: Ticket): Observable<Ticket> {
+    return this.http.put<Ticket>('/api/office-hours/ticket/cancel', oh_ticket);
+  }
+
+  getTicket(oh_ticket_id: number): Observable<Ticket> {
+    return this.http.get<Ticket>('/api/office-hours/ticket/' + oh_ticket_id);
+  }
+
+  addFeedback(oh_ticket: TicketPartial): Observable<TicketDetails> {
+    return this.http.put<TicketDetails>(
+      '/api/office-hours/ticket/feedback',
+      oh_ticket
+    );
+  }
+
+  formatTicketType(typeNum: number) {
+    if (typeNum === TicketType.ASSIGNMENT_HELP) {
+      return 'Assignment Help';
+    } else return 'Conceptual Help';
+  }
+
+  formatTicketState(typeNum: number) {
+    if (typeNum === TicketState.CALLED) {
+      return 'Called';
+    } else if (typeNum === TicketState.CANCELED) {
+      return 'Canceled';
+    } else if (typeNum === TicketState.CLOSED) {
+      return 'Closed';
+    } else if (typeNum === TicketState.QUEUED) {
+      return 'Queued';
+    } else {
+      return 'error';
+    }
+  }
+
+  /* Section-Related Methods: */
 
   createSection(
     section_draft: OfficeHoursSectionDraft,
@@ -99,6 +152,72 @@ export class OfficeHoursService {
       oh_sections
     );
   }
+
+  getUpcomingEventsBySection(
+    oh_section_id: number
+  ): Observable<OfficeHoursEvent[]> {
+    return this.http.get<OfficeHoursEvent[]>(
+      'api/office-hours/section/' + oh_section_id + '/events/upcoming'
+    );
+  }
+
+  getCurrentEventsBySection(
+    oh_section_id: number
+  ): Observable<OfficeHoursEvent[]> {
+    return this.http.get<OfficeHoursEvent[]>(
+      'api/office-hours/section/' + oh_section_id + '/events/current'
+    );
+  }
+
+  getSection(oh_section_id: number): Observable<OfficeHoursSectionDetails> {
+    return this.http.get<OfficeHoursSectionDetails>(
+      'api/office-hours/section/' + oh_section_id
+    );
+  }
+
+  getAllSectionTickets(oh_section_id: number): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/tickets'
+    );
+  }
+
+  getUserSectionCreatedTickets(oh_section_id: number): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>(
+      'api/office-hours/section/' + oh_section_id + '/user/created_tickets'
+    );
+  }
+
+  getUserSectionCalledTickets(
+    oh_section_id: number
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/user/called_tickets'
+    );
+  }
+
+  getSectionData(
+    oh_section_id: number
+  ): Observable<OfficeHoursSectionTrailingWeekData> {
+    return this.http.get<OfficeHoursSectionTrailingWeekData>(
+      'api/office-hours/section/' + oh_section_id + '/data/statistics'
+    );
+  }
+
+  getSectionTicketsWithConcern(
+    oh_section_id: number
+  ): Observable<TicketDetails[]> {
+    return this.http.get<TicketDetails[]>(
+      'api/office-hours/section/' + oh_section_id + '/data/concerns'
+    );
+  }
+
+  getSectionMembers(oh_section_id: number): Observable<SectionMember[]> {
+    return this.http.get<SectionMember[]>(
+      'api/office-hours/section/' + oh_section_id + '/people'
+    );
+  }
+
+  /* Event-Related Methods: */
 
   createEvent(
     event_draft: OfficeHoursEventDraft
@@ -160,32 +279,34 @@ export class OfficeHoursService {
     );
   }
 
-  getUpcomingEventsBySection(
-    oh_section_id: number
-  ): Observable<OfficeHoursEvent[]> {
-    return this.http.get<OfficeHoursEvent[]>(
-      'api/office-hours/section/' + oh_section_id + '/events/upcoming'
-    );
-  }
-
-  getCurrentEventsBySection(
-    oh_section_id: number
-  ): Observable<OfficeHoursEvent[]> {
-    return this.http.get<OfficeHoursEvent[]>(
-      'api/office-hours/section/' + oh_section_id + '/events/current'
-    );
-  }
-
   getEvent(oh_event_id: number): Observable<OfficeHoursEventDetails> {
     return this.http.get<OfficeHoursEventDetails>(
       'api/office-hours/event/' + oh_event_id
     );
   }
 
-  getSection(oh_section_id: number): Observable<OfficeHoursSectionDetails> {
-    return this.http.get<OfficeHoursSectionDetails>(
-      'api/office-hours/section/' + oh_section_id
+  getQueuedAndCalledTicketCount(
+    oh_event_id: number
+  ): Observable<OfficeHoursEventStatus> {
+    return this.http.get<OfficeHoursEventStatus>(
+      'api/office-hours/event/' + oh_event_id + '/queue-stats'
     );
+  }
+
+  getQueueStatsForStudent(
+    oh_event_id: number,
+    ticket_id: number
+  ): Observable<StudentOfficeHoursEventStatus> {
+    return this.http.get<StudentOfficeHoursEventStatus>(
+      'api/office-hours/event/' +
+        oh_event_id +
+        '/student-queue-stats/' +
+        ticket_id
+    );
+  }
+
+  deleteOfficeHoursEvent(id: number) {
+    return this.http.delete('api/office-hours/event/' + id);
   }
 
   formatEventType(typeNum: number) {
@@ -212,24 +333,16 @@ export class OfficeHoursService {
     }
   }
 
-  formatTicketType(typeNum: number) {
-    if (typeNum === TicketType.ASSIGNMENT_HELP) {
-      return 'Assignment Help';
-    } else return 'Conceptual Help';
-  }
+  /* RosterRole-Related Methods: */
 
-  formatTicketState(typeNum: number) {
-    if (typeNum === TicketState.CALLED) {
-      return 'Called';
-    } else if (typeNum === TicketState.CANCELED) {
-      return 'Canceled';
-    } else if (typeNum === TicketState.CLOSED) {
-      return 'Closed';
-    } else if (typeNum === TicketState.QUEUED) {
-      return 'Queued';
-    } else {
-      return 'error';
-    }
+  updateMemberRole(
+    user_to_modify: SectionMemberPartial,
+    oh_section_id: number
+  ): Observable<SectionMember> {
+    return this.http.put<SectionMember>(
+      'api/office-hours/section/' + oh_section_id + '/update-role',
+      user_to_modify
+    );
   }
 
   formatRosterRole(typeNum: number) {
@@ -244,108 +357,5 @@ export class OfficeHoursService {
     } else {
       return 'error';
     }
-  }
-
-  // id
-  callTicket(oh_ticket: Ticket): Observable<TicketDetails> {
-    return this.http.put<TicketDetails>(
-      '/api/office-hours/ticket/call',
-      oh_ticket
-    );
-  }
-
-  // id
-  closeTicket(oh_ticket: Ticket): Observable<TicketDetails> {
-    return this.http.put<TicketDetails>(
-      '/api/office-hours/ticket/close',
-      oh_ticket
-    );
-  }
-
-  // id
-  cancelTicket(oh_ticket: Ticket): Observable<Ticket> {
-    return this.http.put<Ticket>('/api/office-hours/ticket/cancel', oh_ticket);
-  }
-
-  // id, have_concerns, caller_notes
-  addFeedback(oh_ticket: TicketPartial): Observable<TicketDetails> {
-    return this.http.put<TicketDetails>(
-      '/api/office-hours/ticket/feedback',
-      oh_ticket
-    );
-  }
-
-  getTicket(oh_ticket_id: number): Observable<Ticket> {
-    return this.http.get<Ticket>('/api/office-hours/ticket/' + oh_ticket_id);
-  }
-
-  getUserSectionCreatedTickets(oh_section_id: number): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(
-      'api/office-hours/section/' + oh_section_id + '/user/created_tickets'
-    );
-  }
-
-  getUserSectionCalledTickets(
-    oh_section_id: number
-  ): Observable<TicketDetails[]> {
-    return this.http.get<TicketDetails[]>(
-      'api/office-hours/section/' + oh_section_id + '/user/called_tickets'
-    );
-  }
-
-  getQueuedAndCalledTicketCount(
-    oh_event_id: number
-  ): Observable<OfficeHoursEventStatus> {
-    return this.http.get<OfficeHoursEventStatus>(
-      'api/office-hours/event/' + oh_event_id + '/queue-stats'
-    );
-  }
-
-  getQueueStatsForStudent(
-    oh_event_id: number,
-    ticket_id: number
-  ): Observable<StudentOfficeHoursEventStatus> {
-    return this.http.get<StudentOfficeHoursEventStatus>(
-      'api/office-hours/event/' +
-        oh_event_id +
-        '/student-queue-stats/' +
-        ticket_id
-    );
-  }
-
-  getSectionData(
-    oh_section_id: number
-  ): Observable<OfficeHoursSectionTrailingWeekData> {
-    return this.http.get<OfficeHoursSectionTrailingWeekData>(
-      'api/office-hours/section/' + oh_section_id + '/data/statistics'
-    );
-  }
-
-  getSectionTicketsWithConcern(
-    oh_section_id: number
-  ): Observable<TicketDetails[]> {
-    return this.http.get<TicketDetails[]>(
-      'api/office-hours/section/' + oh_section_id + '/data/concerns'
-    );
-  }
-
-  getSectionMembers(oh_section_id: number): Observable<SectionMember[]> {
-    return this.http.get<SectionMember[]>(
-      'api/office-hours/section/' + oh_section_id + '/people'
-    );
-  }
-
-  updateMemberRole(
-    user_to_modify: SectionMemberPartial,
-    oh_section_id: number
-  ): Observable<SectionMember> {
-    return this.http.put<SectionMember>(
-      'api/office-hours/section/' + oh_section_id + '/update-role',
-      user_to_modify
-    );
-  }
-
-  deleteOfficeHoursEvent(id: number) {
-    return this.http.delete('api/office-hours/event/' + id);
   }
 }

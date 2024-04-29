@@ -1,5 +1,8 @@
 <!-- eslint-disable prettier/prettier -->
-<div class="page-container">
+<div class="page-container" *ngIf="rosterRole === 0">
+  <p>You are not authorized to view this page.</p>
+</div>
+<div class="page-container" *ngIf="rosterRole !== 0">
   <mat-card class="card-container" appearance="outlined">
     <div class="header-row">
       <div class="location">

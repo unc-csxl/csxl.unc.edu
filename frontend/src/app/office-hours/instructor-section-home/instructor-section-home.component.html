@@ -1,10 +1,7 @@
-<p *ngIf="rosterRole !== 2 && rosterRole !== 3">
+<p *ngIf="rosterRole === 0 || rosterRole === 1">
   You are not authorized to view this page.
 </p>
-<p *ngIf="rosterRole !== 2 && rosterRole !== 3">
-  You are not authorized to view this page.
-</p>
-<div class="page-container">
+<div class="page-container" *ngIf="rosterRole === 2 || rosterRole === 3">
   <mat-tab-group color="accent">
     <mat-tab label="Events">
       <h3>Events</h3>
@@ -21,7 +18,7 @@
         [rosterRole]="rosterRole"></schedule-card-widget>
     </mat-tab>
     <mat-tab label="History">
-      <p>History Feature Coming Soon!</p>
+      <ticket-history-widget [sectionId]="sectionId"></ticket-history-widget>
     </mat-tab>
     <mat-tab label="Data">
       <section-data-widget [sectionId]="sectionId"></section-data-widget>

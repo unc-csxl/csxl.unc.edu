@@ -25,9 +25,19 @@ import {
   Weekday
 } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import { Room } from 'src/app/academics/academics.models';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Room, RosterRole } from 'src/app/academics/academics.models';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Router
+} from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'app-event-creation-form',
@@ -38,15 +48,29 @@ export class EventCreationFormComponent implements OnInit {
   public static Routes = [
     {
       path: 'ta/:id/create-new-event',
-      title: 'COMP 110: Intro to Programming',
       component: EventCreationFormComponent,
-      canActivate: []
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: EventCreationFormComponent
+        }
+      ]
     },
     {
       path: 'instructor/:id/create-new-event',
-      title: 'COMP 110: Intro to Programming',
       component: EventCreationFormComponent,
-      canActivate: []
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: EventCreationFormComponent
+        }
+      ]
     }
   ];
 
@@ -66,6 +90,9 @@ export class EventCreationFormComponent implements OnInit {
   /* Section that the Office Hours event is being held for */
   sectionId: number;
   section: OfficeHoursSectionDetails | undefined;
+
+  // RosterRole to determine if user can view this routed component
+  rosterRole: RosterRole | undefined;
   eventForm: FormGroup;
 
   /* Holds Information About Virtual Room */
@@ -200,6 +227,7 @@ export class EventCreationFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {
     this.sectionId = this.route.snapshot.params['id'];
+    this.getRosterRole();
     this.eventForm = this.formBuilder.group(
       {
         event_type: ['', Validators.required],
@@ -269,6 +297,13 @@ export class EventCreationFormComponent implements OnInit {
     }
   }
   /* EventForm contains data pertaining to event that is being created/modified */
+
+  getRosterRole() {
+    this.academicsService
+      .getMembershipBySection(this.sectionId)
+      .subscribe((role) => (this.rosterRole = role.member_role));
+  }
+
   // Handles Room Location Value According to Event Mode Selection Changes
   onEventModeChange(event: any) {
     // CASE: If Event Mode is Virtual, Will Set Default Room Location to Virtual

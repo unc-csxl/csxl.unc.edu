@@ -11,7 +11,12 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Router
+} from '@angular/router';
 import {
   OfficeHoursEvent,
   OfficeHoursEventType,
@@ -20,6 +25,11 @@ import {
 } from '../office-hours.models';
 import { Subscription, interval } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'app-current-ticket-page',
@@ -29,9 +39,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class CurrentTicketPageComponent implements OnInit, OnDestroy {
   public static Route = {
     path: ':id/:event_id/ticket/:ticket_id',
-    title: 'COMP 110: Intro to Programming',
     component: CurrentTicketPageComponent,
-    canActivate: []
+    canActivate: [],
+    resolve: { section: sectionResolver },
+    children: [
+      {
+        path: '',
+        title: titleResolver,
+        component: CurrentTicketPageComponent
+      }
+    ]
   };
 
   /* IDs and data relating to a student's current ticket, including the OH section and event */

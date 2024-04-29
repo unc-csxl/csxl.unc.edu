@@ -1,4 +1,4 @@
-<p *ngIf="rosterRole === 0">You are not authorized to view this page.</p>
+<p *ngIf="rosterRole !== 1">You are not authorized to view this page.</p>
 <div class="page-container" *ngIf="rosterRole === 1">
   <mat-tab-group color="accent">
     <mat-tab label="Events">
