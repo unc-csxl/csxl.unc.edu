@@ -16,9 +16,19 @@ import {
 } from '../office-hours.models';
 import { ChangeDetectorRef } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Router
+} from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'ticket-creation-form',
@@ -28,9 +38,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class TicketCreationFormComponent implements OnInit {
   public static Route = {
     path: ':id/:event_id/create-new-ticket',
-    title: 'COMP 110: Intro to Programming',
     component: TicketCreationFormComponent,
-    canActivate: []
+    canActivate: [],
+    resolve: { section: sectionResolver },
+    children: [
+      {
+        path: '',
+        title: titleResolver,
+        component: TicketCreationFormComponent
+      }
+    ]
   };
   /* Stores the AssignmentType chosen in the first part of stepper */
   assignmentType: String = '';

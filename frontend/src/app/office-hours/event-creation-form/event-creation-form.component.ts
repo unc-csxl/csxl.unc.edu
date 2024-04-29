@@ -17,8 +17,18 @@ import {
 } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Room, RosterRole } from 'src/app/academics/academics.models';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Router
+} from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { sectionResolver } from '../office-hours.resolver';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
 
 @Component({
   selector: 'app-event-creation-form',
@@ -29,15 +39,29 @@ export class EventCreationFormComponent implements OnInit {
   public static Routes = [
     {
       path: 'ta/:id/create-new-event',
-      title: 'COMP 110: Intro to Programming',
       component: EventCreationFormComponent,
-      canActivate: []
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: EventCreationFormComponent
+        }
+      ]
     },
     {
       path: 'instructor/:id/create-new-event',
-      title: 'COMP 110: Intro to Programming',
       component: EventCreationFormComponent,
-      canActivate: []
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: EventCreationFormComponent
+        }
+      ]
     }
   ];
 
