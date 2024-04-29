@@ -79,19 +79,13 @@ export class TicketHistoryWidget implements OnInit {
   }
 
   getUserTickets() {
-    // Get called tickets for anyone other than students
+    // Get called tickets + all tickets for anyone other than students
     if (this.rosterRole != RosterRole.STUDENT) {
       this.officeHoursService
         .getUserSectionCalledTickets(this.sectionId)
         .subscribe((tickets) => {
           this.calledTickets = tickets;
         });
-    }
-    // If user a GTA or Instructor, also fetch all tickets in the Section
-    if (
-      this.rosterRole == RosterRole.INSTRUCTOR ||
-      this.rosterRole == RosterRole.GTA
-    ) {
       this.officeHoursService
         .getAllSectionTickets(this.sectionId)
         .subscribe((tickets) => {
