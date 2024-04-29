@@ -154,10 +154,10 @@ def test_get_map_reserved_times_by_date(
     )
 
     expected_date_map = {
-        'SN135' : [3, 3, 3, 3, 3],
-        'SN137' : [4, 4, 4, 4, 3],
-        'SN139' : [3, 3, 3, 3, 3],
-        'SN141' : [3, 3, 3, 3, 3]
+        'SN135' : [0, 3, 3, 3, 0],
+        'SN137' : [0, 4, 4, 4, 0],
+        'SN139' : [0, 3, 3, 3, 0],
+        'SN141' : [0, 3, 3, 3, 0]
     }
 
     assert reservation_details.reserved_date_map == expected_date_map

@@ -116,9 +116,9 @@ def instantiate_global_models(time: dict[str, datetime]):
     reservation_6 = Reservation(
         id=6,
         start=operating_hours_data.tomorrow.start
-        + timedelta(hours=24),
+        + timedelta(hours=25),
         end=operating_hours_data.tomorrow.start
-        + timedelta(hours=26),
+        + timedelta(hours=26, minutes=30),
         created_at=time[NOW],
         updated_at=time[NOW],
         walkin=False,
