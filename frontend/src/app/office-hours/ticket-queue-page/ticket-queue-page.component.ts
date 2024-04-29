@@ -129,6 +129,7 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
 
       // If there are new tickets in the queue, change tab title on an interval
       if (this.getHighestTicketId() > this.prevHighestTicketId) {
+        this.playQueueNotifSound();
         this.titleNotif = interval(1500).subscribe((tick) => {
           if (tick % 2 === 0) {
             this.tabTitle.setTitle('• New Ticket •');
@@ -154,6 +155,13 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubscribeObservables();
+  }
+
+  playQueueNotifSound() {
+    let audio = new Audio();
+    audio.src = '/../assets/office-hours-notif.wav';
+    audio.load();
+    audio.play();
   }
 
   getRosterRole() {
