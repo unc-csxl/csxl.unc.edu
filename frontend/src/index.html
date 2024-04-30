@@ -5,6 +5,16 @@
     <title>CS Experience Labs @ UNC - Gain Experience. Build Community.</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- The following script tag code fixes an issue with 'mat-select' on Angular version 15 or lower. 
+    For more information, here is the stack overflow thread for the issue: https://github.com/angular/components/issues/28905 -->
+    <script>
+      document.addEventListener('DOMNodeInserted', function () {
+        const elements = document.querySelectorAll('[aria-owns]');
+        elements.forEach((element) => {
+          element.removeAttribute('aria-owns');
+        });
+      });
+    </script>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.png" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link

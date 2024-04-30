@@ -27,3 +27,34 @@
     </button>
   </mat-card-actions>
 </mat-card>
+
+<div
+  *ngIf="
+    applicationService.user_application$ | async as application;
+    else noApplication
+  ">
+  <mat-card class="content" appearance="outlined">
+    <mat-card-content>
+      <mat-card-title>Become a TA!</mat-card-title>
+      <p>
+        You have filled out the form to become a UTA! You may edit your
+        application.
+      </p>
+      <button mat-stroked-button (click)="onUTAClick(application)">
+        Edit Application
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>
+<ng-template #noApplication>
+  <mat-card class="content" appearance="outlined">
+    <mat-card-content>
+      <mat-card-subtitle>Become a TA!</mat-card-subtitle>
+      <p>
+        Fill out the form below to apply for UTA positions for the upcoming
+        semester!
+      </p>
+      <button mat-stroked-button (click)="onUTAClick(null)">Apply Now</button>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

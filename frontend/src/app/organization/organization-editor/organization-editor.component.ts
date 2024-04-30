@@ -22,8 +22,11 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { Organization } from '../organization.model';
 import { OrganizationService } from '../organization.service';
+import { RoleAdminService } from 'src/app/admin/roles/role-admin.service';
 import { Profile } from 'src/app/profile/profile.service';
 import { organizationDetailResolver } from '../organization.resolver';
+import { Role } from 'src/app/role';
+import { NavigationService } from 'src/app/navigation/navigation.service';
 
 const canActivateEditor: CanActivateFn = (
   route: ActivatedRouteSnapshot,
@@ -114,12 +117,15 @@ export class OrganizationEditorComponent {
     private router: Router,
     protected formBuilder: FormBuilder,
     protected snackBar: MatSnackBar,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private roleService: RoleAdminService,
+    private navService: NavigationService
   ) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
       profile: Profile;
       organization: Organization;
+      role: Role;
     };
     this.profile = data.profile;
     this.organization = data.organization;
@@ -153,6 +159,9 @@ export class OrganizationEditorComponent {
     if (this.organizationForm.valid) {
       Object.assign(this.organization, this.organizationForm.value);
       if (this.organization_slug == 'new') {
+        this.roleService.create(this.organization.slug).subscribe({
+          error: (err) => this.navService.error(err)
+        });
         this.organizationService
           .createOrganization(this.organization)
           .subscribe({
