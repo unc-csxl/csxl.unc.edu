@@ -30,10 +30,9 @@ from ...database import db_session
 from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.event import (
     OfficeHoursEvent,
-    OfficeHoursEventDailyRecurringDraft,
     OfficeHoursEventDraft,
     OfficeHoursEventPartial,
-    OfficeHoursEventWeeklyRecurringDraft,
+    OfficeHoursEventRecurringDraft,
     Weekday,
 )
 from ...models.office_hours.event_details import OfficeHoursEventDetails
@@ -95,80 +94,12 @@ class OfficeHoursEventService:
         # Return added object
         return oh_event_entity.to_model()
 
-    def create_daily(
+    # TODO: Comments
+    def create_weekly_events(
         self,
         subject: User,
-        oh_event: OfficeHoursEventDailyRecurringDraft,
+        oh_event: OfficeHoursEventRecurringDraft,
     ) -> list[OfficeHoursEvent]:
-        """Creates a new office hours event.
-
-        Args:
-            subject (User): a valid User model representing the currently logged in User
-            oh_event (OfficeHoursEventDraft): Event draft to add to table
-
-        Returns:
-            OfficeHoursEvent: Object added to table
-
-        Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-            the office hours section associated with the event (`oh_event`) or is a Student in section.
-        """
-        # Permissions - Raises Exception if Permission Fails
-        section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.draft.oh_section.id
-        )
-
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                f"Section Member is a Student. User does not have permision to create event"
-            )
-
-        event_entity_drafts = []
-        current_date = oh_event.recurring_start_date
-        while current_date <= oh_event.recurring_end_date:
-            oh_event_temp = oh_event.draft
-            # Set Event Date
-            oh_event_temp.event_date = current_date
-
-            # Set Start Time (Includes Date)
-            oh_event_temp.start_time = self._transformDate(
-                oh_event_temp.start_time, current_date
-            )
-            # Set End Time (Includes Date)
-            oh_event_temp.end_time = self._transformDate(
-                oh_event_temp.end_time, current_date
-            )
-
-            oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event_temp)
-            event_entity_drafts.append(oh_event_entity)
-
-            current_date += timedelta(days=1)
-
-        # Add new objects to table and commit changes
-        self._session.add_all(event_entity_drafts)
-        self._session.commit()
-
-        # Return added object
-        return [oh_event_entity.to_model() for oh_event_entity in event_entity_drafts]
-
-    def create_weekly(
-        self,
-        subject: User,
-        oh_event: OfficeHoursEventWeeklyRecurringDraft,
-    ) -> list[OfficeHoursEvent]:
-        """Creates a new office hours event.
-
-        Args:
-            subject (User): a valid User model representing the currently logged in User
-            oh_event (OfficeHoursEventDraft): Event draft to add to table
-
-        Returns:
-            OfficeHoursEvent: Object added to table
-
-        Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-            the office hours section associated with the event (`oh_event`) or is a Student in section.
-        """
         # Permissions - Raises Exception if Permission Fails
         section_member_entity = self._check_user_section_membership(
             subject.id, oh_event.draft.oh_section.id
@@ -181,8 +112,17 @@ class OfficeHoursEventService:
 
         # Check Selected Dates Are Not None
         if len(oh_event.selected_week_days) == 0:
-            raise Exception()
+            raise Exception("There are no selected week days")
 
+        if oh_event.recurring_end_date < oh_event.recurring_start_date:
+            raise Exception("End Date Is Before Start Date!")
+
+        days_range = (oh_event.recurring_end_date - oh_event.recurring_start_date).days
+
+        if days_range > (16 * 7):
+            raise Exception("Range Greater Than 16 Weeks!")
+
+        # Get All Recurring Event Dates
         event_dates = self._get_recurring_weekday_dates(
             oh_event.recurring_start_date,
             oh_event.recurring_end_date,
@@ -192,11 +132,16 @@ class OfficeHoursEventService:
 
         for event_date in event_dates:
             event_draft = oh_event.draft
+
+            # Update Event Date
             event_draft.event_date = event_date
 
+            # Update Event Start Time
             event_draft.start_time = self._transformDate(
                 event_draft.start_time, event_date
             )
+
+            # Update Event End Time
             event_draft.end_time = self._transformDate(event_draft.end_time, event_date)
 
             oh_event_entity = OfficeHoursEventEntity.from_draft_model(event_draft)

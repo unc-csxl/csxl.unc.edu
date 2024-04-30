@@ -62,7 +62,7 @@
             formControlName="event_date" />
         </mat-form-field>
       </div>
-      <div *ngIf="isFrequencyDaily() || isFrequencyWeekly()">
+      <div *ngIf="isFrequencyWeekly()">
         <p>Date Range:</p>
         <div class="two-column">
           <mat-form-field>
@@ -84,7 +84,7 @@
         </div>
         <div
           *ngIf="isStartAndEndDateFilledIn() && !isDateRangeWithinFourMonths()">
-          <mat-error> Dates Must Be Within 16 weeks of each other</mat-error>
+          <mat-error> Dates Must Be Within Weeks of Each Other</mat-error>
         </div>
       </div>
       <!-- If Frequency Is Not ONE TIME -->
@@ -111,9 +111,9 @@
       <mat-form-field>
         <mat-label>Select a Room:</mat-label>
         <mat-select required formControlName="location">
-          <mat-option *ngFor="let room of rooms" [value]="room.id"
-            >{{ room.id }}</mat-option
-          >
+          <mat-option *ngFor="let room of rooms" [value]="room.id">{{
+            room.id
+          }}</mat-option>
         </mat-select>
       </mat-form-field>
 

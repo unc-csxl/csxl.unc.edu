@@ -30,6 +30,7 @@ class OfficeHoursEventDraft(BaseModel):
     end_time: datetime
 
 
+# TODO: Figure Out Better Place For These
 class Weekday(Enum):
     Monday = 0
     Tuesday = 1
@@ -43,15 +44,11 @@ class Weekday(Enum):
         return "%s" % self.value
 
 
-class OfficeHoursEventDailyRecurringDraft(BaseModel):
+class OfficeHoursEventRecurringDraft(BaseModel):
 
     draft: OfficeHoursEventDraft
     recurring_start_date: date
     recurring_end_date: date
-
-
-class OfficeHoursEventWeeklyRecurringDraft(OfficeHoursEventDailyRecurringDraft):
-
     selected_week_days: list[Weekday]
 
 
