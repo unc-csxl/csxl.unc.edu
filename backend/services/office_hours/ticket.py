@@ -98,9 +98,12 @@ class OfficeHoursTicketService:
                 )
                 section_member_entities.append(section_member_entity)
 
+        oh_event = self._session.get(
+            OfficeHoursEventEntity, oh_ticket.oh_event.id
+        ).to_model()
         # Raises PermissionError if students have a current queued or recently called ticket(s)
         self._check_ticket_creation_time_permissions(
-            subject, oh_ticket.oh_event, section_member_entities
+            subject, oh_event, section_member_entities
         )
 
         # CREATE TICKET AND ASSOCIATIONS

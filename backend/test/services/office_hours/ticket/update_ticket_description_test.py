@@ -9,7 +9,7 @@ from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.ticket import OfficeHoursTicketService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
-from ..fixtures import permission_svc, oh_ticket_svc
+from ..fixtures import permission_svc, oh_ticket_svc, oh_event_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from ...core_data import setup_insert_data_fixture as insert_order_0

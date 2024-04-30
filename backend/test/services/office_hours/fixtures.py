@@ -22,15 +22,19 @@ def permission_svc(session: Session):
 
 
 @pytest.fixture()
-def oh_ticket_svc(session: Session, permission_svc: PermissionService):
-    """OfficeHoursEventService fixture."""
-    return OfficeHoursTicketService(session, permission_svc)
-
-
-@pytest.fixture()
 def oh_event_svc(session: Session, permission_svc: PermissionService):
     """OfficeHoursEventService fixture."""
     return OfficeHoursEventService(session, permission_svc)
+
+
+@pytest.fixture()
+def oh_ticket_svc(
+    session: Session,
+    permission_svc: PermissionService,
+    oh_event_svc: OfficeHoursEventService,
+):
+    """OfficeHoursEventService fixture."""
+    return OfficeHoursTicketService(session, permission_svc, oh_event_svc)
 
 
 @pytest.fixture()
