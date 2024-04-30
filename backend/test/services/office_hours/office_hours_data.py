@@ -181,7 +181,7 @@ comp110_f23_closed_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
-    created_at=datetime.now() - timedelta(minutes=20),
+    created_at=datetime.now() - timedelta(minutes=30),
 )
 
 
@@ -324,6 +324,16 @@ def insert_fake_data(session: Session):
         .first()
     )
 
+    uta = (
+        session.query(SectionMemberEntity)
+        .where(
+            SectionMemberEntity.user_id == section_data.user__comp110_uta_0.id,
+            SectionMemberEntity.section_id == section_data.comp_110_001_current_term.id,
+            SectionMemberEntity.member_role == RosterRole.UTA,
+        )
+        .first()
+    )
+
     f23_student = (
         session.query(SectionMemberEntity)
         .where(
@@ -360,6 +370,18 @@ def insert_fake_data(session: Session):
             )
         )
 
+    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
+    session.query(OfficeHoursTicketEntity).filter(
+        OfficeHoursTicketEntity.id.in_([comp110_closed_ticket.id])
+    ).update(
+        {
+            "caller_id": uta.id,
+            "called_at": datetime.now() - timedelta(minutes=2),
+            "have_concerns": True,
+            "closed_at": datetime.now() - timedelta(minutes=1),
+            "caller_notes": "Got Stuck In an Infinte Loop",
+        }
+    )
     # Add F23 Tickets
     for ticket in comp110_f23_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)

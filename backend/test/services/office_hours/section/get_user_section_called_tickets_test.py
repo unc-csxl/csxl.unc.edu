@@ -38,7 +38,7 @@ def test_get_user_section_called_ticket_by_uta(
 ):
     """Test to get called tickets for a UTA in a section."""
     oh_section = oh_section_svc.get_section_by_id(
-        user__comp110_uta_0, office_hours_data.comp_110_oh_section.id
+        user__comp110_uta_0, office_hours_data.comp_110_oh_section_f23.id
     )
     called_tickets = oh_section_svc.get_user_section_called_tickets(
         user__comp110_uta_0, oh_section
@@ -56,7 +56,7 @@ def test_get_user_section_called_ticket_by_student(
 ):
     """Test to get called tickets for a student in a section."""
     oh_section = oh_section_svc.get_section_by_id(
-        user__comp110_student_1, office_hours_data.comp_110_oh_section.id
+        user__comp110_student_1, office_hours_data.comp_110_oh_section_f23.id
     )
     called_tickets = oh_section_svc.get_user_section_called_tickets(
         user__comp110_student_1, oh_section
@@ -70,7 +70,7 @@ def test_get_user_section_called_ticket_exception_if_non_member(
 ):
     """Test to check if getting called tickets by a non-member raises an exception."""
     oh_section = oh_section_svc.get_section_by_id(
-        user__comp110_non_member, office_hours_data.comp_110_oh_section.id
+        user__comp110_non_member, office_hours_data.comp_110_oh_section_f23.id
     )
 
     with pytest.raises(PermissionError):

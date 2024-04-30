@@ -69,6 +69,7 @@ def test_create_ticket_exception_if_already_created_ticket_in_cooldown_period(
 
     with pytest.raises(PermissionError):
         oh_ticket_svc.create(user__comp110_student_0, office_hours_data.ticket_draft)
+        pytest.fail()
 
 
 def test_create_ticket_exception_for_non_section_member(

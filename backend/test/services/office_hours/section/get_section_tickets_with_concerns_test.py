@@ -51,7 +51,7 @@ def test_get_sections_tickets_with_concerns_no_ticket_concerns(
     oh_section_svc: OfficeHoursSectionService,
 ):
     oh_section = oh_section_svc.get_section_by_id(
-        user__comp110_instructor, office_hours_data.comp_110_oh_section_f23.id
+        user__comp110_instructor, office_hours_data.comp_523_oh_section.id
     )
     tickets = oh_section_svc.get_section_tickets_with_concerns(
         user__comp110_instructor, oh_section
