@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OfficeHoursPageComponent } from './office-hours-page/office-hours-page.component';
 import { OfficeHoursRoutingModule } from './office-hours-routing.module';
-import { EventCreationFormComponent } from './event/event-creation-form/event-creation-form.component';
+import { CreateEventFormComponent } from './event/create-event-form/create-event-form.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
@@ -47,6 +47,7 @@ import { SectionData } from './widgets/section/section-data/section-data-widget'
 import { ConcernTicketsWidget } from './widgets/ticket/concern-tickets/concern-tickets-widget';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { EditEventFormComponent } from './event/edit-event-form/edit-event-form.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     EventCard,
     ScheduleCard,
     TicketCreationFormComponent,
-    EventCreationFormComponent,
+    CreateEventFormComponent,
     CourseCard,
     SectionCreationDialog,
     OpenEventHoursCard,
@@ -77,7 +78,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     DeleteEventDialog,
     DeleteTicketDialog,
     SectionData,
-    ConcernTicketsWidget
+    ConcernTicketsWidget,
+    EditEventFormComponent
   ],
   imports: [
     CommonModule,
