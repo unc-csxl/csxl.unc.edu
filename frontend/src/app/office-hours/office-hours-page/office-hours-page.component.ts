@@ -10,8 +10,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SectionCreationDialog } from '../widgets/section-creation-dialog/section-creation-dialog.widget';
-import { JoinSectionDialog } from '../widgets/join-section-dialog/join-section-dialog.widget';
+import { SectionCreationDialog } from '../widgets/section/section-creation-dialog/section-creation-dialog.widget';
+import { JoinSectionDialog } from '../widgets/section/join-section-dialog/join-section-dialog.widget';
 import { OfficeHoursSectionDetails } from '../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { SectionMember, Term } from 'src/app/academics/academics.models';
