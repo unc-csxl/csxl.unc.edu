@@ -136,6 +136,7 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
 
       // If there are new tickets in the queue, change tab title on an interval
       if (this.getHighestTicketId() > this.prevHighestTicketId) {
+        // Play the notif sound if a new ticket has been added to the queue
         this.playQueueNotifSound();
         this.titleNotif = interval(1500).subscribe((tick) => {
           if (tick % 2 === 0) {
@@ -164,6 +165,7 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
     this.unsubscribeObservables();
   }
 
+  /* Helper function that plays the audio from the officeHoursNotif html element */
   playQueueNotifSound() {
     if (this.audioPlayerRef) {
       this.audioPlayerRef.nativeElement.play();

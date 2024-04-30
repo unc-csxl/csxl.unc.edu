@@ -67,7 +67,7 @@ export class CurrentTicketPageComponent implements OnInit, OnDestroy {
   event!: OfficeHoursEvent;
   ticket!: Ticket;
   refresh: Subscription | undefined;
-  called: boolean = false;
+  called: boolean = false; // used to track when to play a notif sound
 
   /* Ticket queue stats */
   queued_tickets: number | null;
@@ -140,6 +140,7 @@ export class CurrentTicketPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  /* Helper function that plays the audio from the officeHoursNotif html element */
   playQueueNotifSound() {
     if (this.audioPlayerRef) {
       this.audioPlayerRef.nativeElement.play();
