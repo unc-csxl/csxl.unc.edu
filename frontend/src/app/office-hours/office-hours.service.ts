@@ -310,7 +310,7 @@ export class OfficeHoursService {
     } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_OUR_LINK) {
       return 'Virtual - Our Link';
     } else if (typeNum === OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK) {
-      return 'Vritual - Your Link';
+      return 'Virtual - Your Link';
     } else {
       return 'error';
     }

@@ -89,7 +89,9 @@ export class TicketCreationFormComponent implements OnInit {
     assignmentQ2: '',
     assignmentQ3: '',
     assignmentQ4: '',
-    conceptualQ1: ''
+    assignmentQ5: '',
+    conceptualQ1: '',
+    conceptualQ2: ''
   });
 
   /** Checks for assignment type in the form (accounts for user clicking back button and changing again)
@@ -108,6 +110,12 @@ export class TicketCreationFormComponent implements OnInit {
     if (this.assignmentType === 'conceptual_help') {
       form_description =
         'Conceptual: ' + (this.ticketForm.value.conceptualQ1 ?? '');
+      if (this.event?.mode === 1) {
+        form_description =
+          form_description +
+          ' \nLink: ' +
+          (this.ticketForm.value.conceptualQ2 ?? '');
+      }
       form_type = TicketType.CONCEPTUAL_HELP;
     } else {
       // Concatenates form description together and adds in new line characters
@@ -120,6 +128,13 @@ export class TicketCreationFormComponent implements OnInit {
         (this.ticketForm.value.assignmentQ3 ?? '') +
         ' \nTried: ' +
         (this.ticketForm.value.assignmentQ4 ?? '');
+
+      if (this.event?.mode === 1) {
+        form_description =
+          form_description +
+          ' \nLink: ' +
+          (this.ticketForm.value.assignmentQ5 ?? '');
+      }
 
       form_type = TicketType.ASSIGNMENT_HELP;
     }
@@ -151,5 +166,9 @@ export class TicketCreationFormComponent implements OnInit {
     this.snackBar.open(err.error.detail, '', {
       duration: 5000
     });
+  }
+
+  formatEventModeType(typeNum: number) {
+    return this.officeHoursService.formatEventModeType(typeNum);
   }
 }

@@ -42,7 +42,10 @@
         ticketForm.get('assignmentQ1')?.valid &&
         ticketForm.get('assignmentQ2')?.valid &&
         ticketForm.get('assignmentQ3')?.valid &&
-        ticketForm.get('assignmentQ4')?.valid
+        ticketForm.get('assignmentQ4')?.valid &&
+        ticketForm.get('assignmentQ5')?.valid &&
+        ticketForm.get('conceptualQ1')?.valid &&
+        ticketForm.get('conceptualQ2')?.valid 
       ">
       <div class="page-container">
         <mat-card appearance="outlined">
@@ -76,12 +79,32 @@
                 <mat-label>Ex. I have already tried...</mat-label>
                 <textarea matInput required formControlName="assignmentQ4"></textarea>
               </mat-form-field>
+              <p *ngIf="event?.mode === 1">
+                5. Please provide a Zoom link for the staff member to join.
+              </p>
+              <mat-form-field *ngIf="event?.mode === 1">
+                <mat-label>Ex. https://unc.zoom.us/...</mat-label>
+                <textarea
+                  matInput
+                  required
+                  formControlName="assignmentQ5"></textarea>
+              </mat-form-field>
             </div>
             <div *ngIf="assignmentType === 'conceptual_help'">
               <p>1. What questions or topics do you want to talk through?</p>
               <mat-form-field>
                 <mat-label></mat-label>
                 <textarea matInput required formControlName="conceptualQ1"></textarea>
+              </mat-form-field>
+              <p *ngIf="event?.mode === 1">
+                5. Please provide a Zoom link for the staff member to join.
+              </p>
+              <mat-form-field *ngIf="event?.mode === 1">
+                <mat-label>Ex. https://unc.zoom.us/...</mat-label>
+                <textarea
+                  matInput
+                  required
+                  formControlName="conceptualQ2"></textarea>
               </mat-form-field>
             </div>
             <div>

@@ -11,6 +11,9 @@
       <div class="title">
         <mat-card-title> {{ formatEventType(event.type) }}</mat-card-title>
         <mat-card-subtitle> Location: {{ event.room.id }} </mat-card-subtitle>
+        <mat-card-subtitle>
+          {{ event.location_description }}
+        </mat-card-subtitle>
       </div>
     </div>
     <mat-divider></mat-divider>
