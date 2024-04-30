@@ -36,9 +36,18 @@ export class TicketHistoryWidget implements OnInit {
     'TA',
     'description'
   ];
-  public displayedUTAColumns: string[] = [
+  public displayedCalledColumns: string[] = [
     'date',
     'event-type',
+    'student',
+    'description',
+    'notes',
+    'concerns'
+  ];
+  public displayedAllColumns: string[] = [
+    'date',
+    'event-type',
+    'staff',
     'student',
     'description',
     'notes',
@@ -66,9 +75,7 @@ export class TicketHistoryWidget implements OnInit {
     return new Promise((resolve, reject) => {
       this.academicsService.getMembershipBySection(this.sectionId).subscribe(
         (section_member) => {
-          console.log(section_member.member_role);
           this.rosterRole = section_member.member_role;
-          console.log(this.rosterRole);
           resolve(); // Resolve the Promise when the roster role is set
         },
         (error) => {

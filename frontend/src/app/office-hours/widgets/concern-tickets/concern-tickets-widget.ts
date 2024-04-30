@@ -23,6 +23,7 @@ export class ConcernTicketsWidget implements OnInit {
   public displayedColumns: string[] = [
     'date',
     'event-type',
+    'staff',
     'student',
     'description',
     'notes',

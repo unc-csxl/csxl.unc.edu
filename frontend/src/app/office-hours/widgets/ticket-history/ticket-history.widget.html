@@ -76,8 +76,8 @@
         <td mat-cell *matCellDef="let element">
           <div class="row">
             <p>
-              {{ element.oh_event.event_date | date: 'EEEE M/d/YYYY' }} {{
-              element.created_at | date: 'h:mma' | lowercase }}
+              {{ element.oh_event.event_date | date: 'EEEE M/d/YYYY' }}
+              {{ element.created_at | date: 'h:mma' | lowercase }}
             </p>
           </div>
         </td>
@@ -89,6 +89,24 @@
         <td mat-cell *matCellDef="let element">
           <div class="row">
             <p>{{ formatEventType(element.oh_event.type) }}</p>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="staff">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Staff</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p>
+              {{
+                element.caller
+                  ? (element.caller.first_name ?? '') +
+                    ' ' +
+                    (element.caller.last_name ?? 'N/A')
+                  : 'N/A, ' + formatTicketState(element.state)
+              }}
+            </p>
           </div>
         </td>
       </ng-container>
@@ -135,8 +153,8 @@
           </div>
         </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedUTAColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedUTAColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedCalledColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedCalledColumns"></tr>
     </table>
     <p class="newline"></p>
     <h3>All Tickets: {{ allSectionTickets.length }} total</h3>
@@ -167,6 +185,24 @@
           </div>
         </td>
       </ng-container>
+      <ng-container matColumnDef="staff">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">Staff</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p>
+              {{
+                element.caller
+                  ? (element.caller.first_name ?? '') +
+                    ' ' +
+                    (element.caller.last_name ?? 'N/A')
+                  : 'N/A, ' + formatTicketState(element.state)
+              }}
+            </p>
+          </div>
+        </td>
+      </ng-container>
       <ng-container matColumnDef="student">
         <th mat-header-cell *matHeaderCellDef>
           <div class="header">Student</div>
@@ -210,8 +246,8 @@
           </div>
         </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedUTAColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedUTAColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedAllColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedAllColumns"></tr>
     </table>
   </div>
 </div> 
