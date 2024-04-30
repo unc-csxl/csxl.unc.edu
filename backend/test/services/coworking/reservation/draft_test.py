@@ -419,6 +419,8 @@ def test_draft_reservation_different_room_time_conflict(
 def test_draft_reservation_crosses_weekly_limit(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
+    user_data.user.accepted_community_agreement = True
+    
     # Make filler reservations to reach weekly limit
     temp_draft_1 = ReservationRequest(
         seats=[],
