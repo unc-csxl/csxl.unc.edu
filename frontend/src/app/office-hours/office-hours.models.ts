@@ -87,6 +87,7 @@ export interface OfficeHoursEvent {
   oh_section: OfficeHoursSection;
   room: Room;
   type: OfficeHoursEventType;
+  mode: OfficeHoursEventModeType;
   description: string;
   location_description: string;
   event_date: string;
@@ -99,6 +100,7 @@ export interface OfficeHoursEventPartial {
   oh_section: OfficeHoursSection | null;
   room: Room | null;
   type: OfficeHoursEventType | null;
+  mode: OfficeHoursEventModeType | null;
   description: string | null;
   location_description: string | null;
   event_date: string | null;
@@ -161,6 +163,7 @@ export interface OfficeHoursEventDetails {
   oh_section: OfficeHoursSection;
   room: Room;
   type: OfficeHoursEventType;
+  mode: OfficeHoursEventModeType;
   description: string;
   location_description: string;
   event_date: string;
