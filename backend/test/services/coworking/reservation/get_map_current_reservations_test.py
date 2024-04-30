@@ -85,6 +85,25 @@ def test_transform_date_map_for_unavailable_complex(reservation_svc: Reservation
     assert expected_transformed_date_map_2 == sample_date_map_2
 
 
+def test_transform_date_map_for_office_hours(reservation_svc: ReservationService):
+    date = datetime(year=2024, month=5, day=1)
+    start = datetime(year=2024, month=5, day=1, hour=10, minute=0)
+    reserved_date_map = {
+        'SN135': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        'SN137': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        'SN141': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+
+    expected_transformed_date_map = {
+        'SN135': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        'SN137': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0],
+        'SN141': [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0]
+    }
+
+    reservation_svc._transform_date_map_for_officehours(date, reserved_date_map, start, 16)
+    assert reserved_date_map == expected_transformed_date_map
+
+
 def test_idx_calculation(reservation_svc: ReservationService):
     time_1 = datetime.now().replace(hour=10, minute=12)
     oh_start = datetime.now().replace(hour=10, minute=0)
