@@ -24,6 +24,18 @@
         </div>
       </td>
     </ng-container>
+    <ng-container matColumnDef="staff">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">Staff</div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <p>
+            {{ element.caller.first_name + ' ' + element.caller.last_name }}
+          </p>
+        </div>
+      </td>
+    </ng-container>
     <ng-container matColumnDef="student">
       <th mat-header-cell *matHeaderCellDef>
         <div class="header">Student</div>
@@ -70,5 +82,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-  <div *ngIf="tickets.length === 0">No tickets have been marked for concern.</div>
+  <div *ngIf="tickets.length === 0">
+    No tickets have been marked for concern.
+  </div>
 </div>

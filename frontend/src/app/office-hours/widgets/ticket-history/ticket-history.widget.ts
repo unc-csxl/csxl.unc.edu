@@ -11,9 +11,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   OfficeHoursEventType,
   Ticket,
-  TicketDetails
+  TicketDetails,
+  TicketState
 } from '../../office-hours.models';
 import { OfficeHoursService } from '../../office-hours.service';
+import { RosterRole } from 'src/app/academics/academics.models';
+import { AcademicsService } from 'src/app/academics/academics.service';
 
 @Component({
   selector: 'ticket-history-widget',
@@ -22,15 +25,18 @@ import { OfficeHoursService } from '../../office-hours.service';
 })
 export class TicketHistoryWidget implements OnInit {
   @Input() sectionId!: number;
+  /* Roster role in the course */
+  rosterRole: RosterRole | null;
   public createdTickets: Ticket[] = [];
   public calledTickets: TicketDetails[] = [];
+  public allSectionTickets: TicketDetails[] = [];
   public displayedStudentColumns: string[] = [
     'date',
     'event-type',
     'TA',
     'description'
   ];
-  public displayedUTAColumns: string[] = [
+  public displayedCalledColumns: string[] = [
     'date',
     'event-type',
     'student',
@@ -38,25 +44,69 @@ export class TicketHistoryWidget implements OnInit {
     'notes',
     'concerns'
   ];
-  constructor(private officeHoursService: OfficeHoursService) {}
+  public displayedAllColumns: string[] = [
+    'date',
+    'event-type',
+    'staff',
+    'student',
+    'description',
+    'notes',
+    'concerns'
+  ];
+  constructor(
+    private officeHoursService: OfficeHoursService,
+    private academicsService: AcademicsService
+  ) {
+    this.rosterRole = null;
+  }
 
   ngOnInit(): void {
-    this.getUserTickets();
+    this.initializeData();
+  }
+
+  initializeData(): void {
+    this.checkRosterRole().then(() => {
+      // RosterRole is retrieved, so good to go on other actions
+      this.getUserTickets();
+    });
+  }
+
+  checkRosterRole(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.academicsService.getMembershipBySection(this.sectionId).subscribe(
+        (section_member) => {
+          this.rosterRole = section_member.member_role;
+          resolve(); // Resolve the Promise when the roster role is set
+        },
+        (error) => {
+          reject(error); // Reject the Promise if there's an error
+        }
+      );
+    });
   }
 
   getUserTickets() {
-    this.officeHoursService
-      .getUserSectionCreatedTickets(this.sectionId)
-      .subscribe((tickets) => {
-        this.createdTickets = tickets;
-        console.log(tickets);
-      });
-    this.officeHoursService
-      .getUserSectionCalledTickets(this.sectionId)
-      .subscribe((tickets) => {
-        this.calledTickets = tickets;
-        console.log(tickets);
-      });
+    // Get called tickets + all tickets for anyone other than students
+    if (this.rosterRole != RosterRole.STUDENT) {
+      this.officeHoursService
+        .getUserSectionCalledTickets(this.sectionId)
+        .subscribe((tickets) => {
+          this.calledTickets = tickets;
+        });
+      this.officeHoursService
+        .getAllSectionTickets(this.sectionId)
+        .subscribe((tickets) => {
+          this.allSectionTickets = tickets;
+        });
+    }
+    // Populate only created tickets if the user is a student
+    else {
+      this.officeHoursService
+        .getUserSectionCreatedTickets(this.sectionId)
+        .subscribe((tickets) => {
+          this.createdTickets = tickets;
+        });
+    }
   }
 
   formatEventType(typeNum: number) {
@@ -66,6 +116,20 @@ export class TicketHistoryWidget implements OnInit {
       return 'Tutoring';
     } else if (typeNum === OfficeHoursEventType.REVIEW_SESSION) {
       return 'Review Session';
+    } else {
+      return 'error';
+    }
+  }
+
+  formatTicketState(typeNum: number) {
+    if (typeNum === TicketState.QUEUED) {
+      return 'Queued';
+    } else if (typeNum === TicketState.CALLED) {
+      return 'Called';
+    } else if (typeNum === TicketState.CANCELED) {
+      return 'Canceled';
+    } else if (typeNum === TicketState.CLOSED) {
+      return 'Closed';
     } else {
       return 'error';
     }

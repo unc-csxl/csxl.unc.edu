@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime, date
+from enum import Enum
 
 from ..room import Room, RoomPartial
 from .section import OfficeHoursSection, OfficeHoursSectionPartial
@@ -27,6 +28,31 @@ class OfficeHoursEventDraft(BaseModel):
     event_date: date
     start_time: datetime
     end_time: datetime
+
+
+class Weekday(Enum):
+    Monday = 0
+    Tuesday = 1
+    Wednesday = 2
+    Thursday = 3
+    Friday = 4
+    Saturday = 5
+    Sunday = 6
+
+    def __str__(self):
+        return "%s" % self.value
+
+
+class OfficeHoursEventDailyRecurringDraft(BaseModel):
+
+    draft: OfficeHoursEventDraft
+    recurring_start_date: date
+    recurring_end_date: date
+
+
+class OfficeHoursEventWeeklyRecurringDraft(OfficeHoursEventDailyRecurringDraft):
+
+    selected_week_days: list[Weekday]
 
 
 class OfficeHoursEvent(OfficeHoursEventDraft):
