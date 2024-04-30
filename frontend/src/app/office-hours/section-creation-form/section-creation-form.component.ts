@@ -77,7 +77,6 @@ export class SectionCreationFormComponent implements OnInit {
   }
 
   private onSuccess(section: OfficeHoursSectionDetails): void {
-    console.log(section);
     this.snackBar.open('New Office Hours Section Has Been Created!', '', {
       duration: 4000
     });

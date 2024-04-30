@@ -41,7 +41,6 @@ export class TicketFeedbackFormComponent {
     // If TicketFeedbackForm is valid, add feedback to ticket's data
     if (this.ticketFeedbackForm.valid) {
       if (this.ticketFeedbackForm.value.have_concerns === 'Yes') {
-        console.log('concerns');
         this.ticket.have_concerns = true;
       }
       if (
@@ -50,7 +49,6 @@ export class TicketFeedbackFormComponent {
       ) {
         this.ticket.caller_notes = this.ticketFeedbackForm.value.notes;
       }
-      console.log(this.ticket);
       this.officeHoursService.closeTicket(this.ticket).subscribe(() =>
         this.officeHoursService.addFeedback(this.ticket).subscribe((ticket) => {
           this.ticketFeedbackForm.reset();

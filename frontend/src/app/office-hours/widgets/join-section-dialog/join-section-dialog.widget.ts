@@ -57,12 +57,10 @@ export class JoinSectionDialog implements OnInit {
       .getUserSectionsNotEnrolledByTerm(this.displayTerm.id)
       .subscribe((oh_sections) => {
         this.officeHoursSections = oh_sections;
-        console.log('here');
       });
   }
 
   onSubmit() {
-    console.log(this.joinSectionForm.value.oh_section);
     if (this.joinSectionForm.valid) {
       let oh_sections: OfficeHoursSection[] =
         this.joinSectionForm.value.oh_section ?? [];

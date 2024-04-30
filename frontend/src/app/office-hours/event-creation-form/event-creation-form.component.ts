@@ -144,7 +144,6 @@ export class EventCreationFormComponent implements OnInit {
         Validators.required
       ]);
     }
-    console.log(this.eventForm);
     this.eventForm.controls['selected_week_days'].updateValueAndValidity();
     this.eventForm.controls['recurring_start_date'].updateValueAndValidity();
     this.eventForm.controls['recurring_end_date'].updateValueAndValidity();

@@ -42,7 +42,6 @@ export class EventCard implements OnInit {
 
   ngOnInit(): void {
     this.getTicketStats();
-    console.log(this.event);
   }
 
   /* Helper function that formats event type */

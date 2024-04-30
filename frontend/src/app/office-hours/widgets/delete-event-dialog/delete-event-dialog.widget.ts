@@ -18,9 +18,7 @@ export class DeleteEventDialog {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<DeleteEventDialog>
-  ) {
-    console.log(data);
-  }
+  ) {}
 
   /* Close dialog after clicking off */
   onNoClick(): void {

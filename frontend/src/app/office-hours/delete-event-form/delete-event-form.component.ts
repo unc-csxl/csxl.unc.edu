@@ -39,7 +39,6 @@ export class DeleteEventFormComponent {
   }
 
   deleteCurrentEvent() {
-    console.log(this.events[0]);
     this.officeHoursService
       .deleteOfficeHoursEvent(this.events[0].id)
       .subscribe({

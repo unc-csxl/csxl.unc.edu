@@ -59,9 +59,7 @@ export class PeopleTableComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.academicsService.getMembershipBySection(this.sectionId).subscribe(
         (section_member) => {
-          console.log(section_member.member_role);
           this.rosterRole = section_member.member_role;
-          console.log(this.rosterRole);
           resolve(); // Resolve the Promise when the roster role is set
         },
         (error) => {
