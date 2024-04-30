@@ -18,6 +18,71 @@ FRIDAY = 4
 SATURDAY = 5
 SUNDAY = 6
 
+OH_HOURS = {
+    MONDAY : {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [],
+        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+        "SN144": [],
+        "SN146": [],
+        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+    },
+    TUESDAY : {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [],
+        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+        "SN144": [],
+        "SN146": [],
+        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+    },
+    WEDNESDAY : {
+        "SN135": [],
+        "SN137": [(time(hour=15), time(hour=16))],  # Johnathan Leong
+        "SN139": [],
+        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+        "SN144": [],
+        "SN146": [],
+        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+    },
+    THURSDAY : {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [],
+        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+        "SN144": [],
+        "SN146": [],
+        "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
+    },
+    FRIDAY : {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [],
+        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
+        "SN144": [],
+        "SN146": [],
+        "SN147": [],
+    },
+    SATURDAY : {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [],
+        "SN141": [],
+        "SN144": [],
+        "SN146": [],
+        "SN147": [],
+    },
+    SUNDAY : {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [],
+        "SN141": [],
+        "SN144": [],
+        "SN146": [],
+        "SN147": [],
+    }
+}
 
 class PolicyService:
     """RoleService is the access layer to the role data model, its members, and permissions.
@@ -66,60 +131,19 @@ class PolicyService:
         """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
         return timedelta(hours=6)
 
-    def non_reservable_rooms(self) -> list[str]:
-        return ["404"]
-
     def office_hours(self, date: datetime):
         day = date.weekday()
         if day == MONDAY:
-            return {
-                "SN135": [],
-                "SN137": [],
-                "SN139": [],
-                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-                "SN144": [],
-                "SN146": [],
-                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
-            }
+            return OH_HOURS[MONDAY]
         elif day == TUESDAY:
-            return {
-                "SN135": [],
-                "SN137": [],
-                "SN139": [],
-                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-                "SN144": [],
-                "SN146": [],
-                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
-            }
+            return OH_HOURS[TUESDAY]
         elif day == WEDNESDAY:
-            return {
-                "SN135": [],
-                "SN137": [(time(hour=15), time(hour=16))],  # Johnathan Leong
-                "SN139": [],
-                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-                "SN144": [],
-                "SN146": [],
-                "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
-            }
+            return OH_HOURS[WEDNESDAY]
         elif day == THURSDAY:
-            return {
-                "SN135": [],
-                "SN137": [],
-                "SN139": [],
-                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-                "SN144": [],
-                "SN146": [],
-                "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
-            }
+            return OH_HOURS[THURSDAY]
         elif day == FRIDAY:
-            return {
-                "SN135": [],
-                "SN137": [],
-                "SN139": [],
-                "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-                "SN144": [],
-                "SN146": [],
-                "SN147": [],
-            }
+            return OH_HOURS[FRIDAY]
+        elif day == SATURDAY:
+            return OH_HOURS[SATURDAY]
         else:
-            return {}
+            return OH_HOURS[SUNDAY]
