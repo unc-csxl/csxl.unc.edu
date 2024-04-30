@@ -1,0 +1,120 @@
+<div class="page-container" *ngIf="rosterRole === 0">
+  <p>You are not authorized to view this page.</p>
+</div>
+<form
+  class="page-container"
+  [formGroup]="eventForm"
+  (ngSubmit)="onSubmit()"
+  *ngIf="rosterRole !== 0">
+  <mat-card appearance="outlined">
+    <div class="card-container">
+      <mat-card-title>Edit Event</mat-card-title>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-card-content class="card-container">
+      <p>Event:</p>
+      <mat-form-field>
+        <mat-label></mat-label>
+        <mat-select required formControlName="event_title">
+          <mat-option
+            *ngFor="let eventOption of events"
+            [value]="eventOption.id">
+            {{ formatEventType(eventOption.type) }} - {{ eventOption.event_date
+            | date: 'EEEE MM/dd' }}, {{ eventOption.start_time | date: 'h:mma'}}
+            - {{ eventOption.end_time | date: 'h:mma' }}, {{ eventOption.room.id
+            }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p>Event Type:</p>
+      <mat-form-field>
+        <mat-label>Select Type</mat-label>
+        <mat-select required formControlName="event_type">
+          <mat-option value="office_hours"> Office Hours </mat-option>
+          <mat-option value="tutoring"> Tutoring </mat-option>
+          <mat-option value="review_session"> Review Session </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p>Event Mode:</p>
+      <mat-form-field>
+        <mat-label>Select Type</mat-label>
+        <mat-select
+          required
+          formControlName="event_mode"
+          (selectionChange)="onEventModeChange($event)">
+          <mat-option value="in_person"> In-Person </mat-option>
+          <mat-option value="virtual_student_link">
+            Virtual - Student Link
+          </mat-option>
+          <mat-option value="virtual_our_link"> Virtual - Our Link </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p>Description:</p>
+      <mat-form-field>
+        <mat-label>Description of Event</mat-label>
+        <textarea matInput formControlName="description"> </textarea>
+      </mat-form-field>
+      <p>Date:</p>
+      <mat-form-field>
+        <mat-label>Select Date:</mat-label>
+        <input
+          matInput
+          placeholder="Event Date"
+          type="date"
+          formControlName="event_date" />
+      </mat-form-field>
+      <p>Time:</p>
+      <div class="two-column">
+        <mat-form-field>
+          <mat-label>Start Time:</mat-label>
+          <input matInput type="time" formControlName="start_time" required />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>End Time:</mat-label>
+          <input matInput type="time" formControlName="end_time" required />
+        </mat-form-field>
+      </div>
+      <p>Location:</p>
+      <mat-form-field>
+        <mat-label>Select a Room:</mat-label>
+        <mat-select required formControlName="location">
+          <mat-option *ngFor="let room of rooms" [value]="room.id">
+            {{ room.id }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- If Providng Virtual Link -->
+      <div *ngIf="isVirtualOurLink">
+        <p>Virtual Link:</p>
+        <mat-form-field>
+          <mat-label>Please Provide Virtual Link For Users To Join </mat-label>
+          <input matInput required formControlName="location_description" />
+        </mat-form-field>
+      </div>
+      <!-- Otherwise -->
+      <div *ngIf="!isVirtualOurLink">
+        <p>Location Description:</p>
+        <mat-form-field>
+          <mat-label>Ex. It's the room across from...</mat-label>
+          <input matInput formControlName="location_description" />
+        </mat-form-field>
+      </div>
+      <div class="buttons">
+        <a [routerLink]="['..']">
+          <button mat-stroked-button class="button" type="button">
+            Cancel
+          </button>
+        </a>
+        <button
+          mat-flat-button
+          color="primary"
+          class="button"
+          type="submit"
+          [disabled]="!eventForm.valid">
+          Submit
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

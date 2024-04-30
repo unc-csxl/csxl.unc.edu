@@ -1,0 +1,311 @@
+import { Component, OnInit } from '@angular/core';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Router
+} from '@angular/router';
+import { sectionResolver } from '../../office-hours.resolver';
+import { OfficeHoursService } from '../../office-hours.service';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  OfficeHoursEvent,
+  OfficeHoursEventDetails,
+  OfficeHoursEventDraft,
+  OfficeHoursEventModeType,
+  OfficeHoursEventType,
+  OfficeHoursSectionDetails
+} from '../../office-hours.models';
+import { Room, RosterRole } from 'src/app/academics/academics.models';
+
+let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+  return route.parent!.data['section']?.title ?? 'Section Not Found';
+};
+
+@Component({
+  selector: 'app-edit-event-form',
+  templateUrl: './edit-event-form.component.html',
+  styleUrls: ['./edit-event-form.component.css']
+})
+export class EditEventFormComponent implements OnInit {
+  public static Routes = [
+    {
+      path: 'ta/:id/edit-event/:eventId',
+      component: EditEventFormComponent,
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: EditEventFormComponent
+        }
+      ]
+    },
+    {
+      path: 'instructor/:id/edit-event:eventId',
+      component: EditEventFormComponent,
+      canActivate: [],
+      resolve: { section: sectionResolver },
+      children: [
+        {
+          path: '',
+          title: titleResolver,
+          component: EditEventFormComponent
+        }
+      ]
+    }
+  ];
+
+  /* List of available rooms to hold Office Hours event */
+  rooms: Room[] = [];
+
+  /* Section that the Office Hours event is being held for */
+  sectionId: number;
+  section: OfficeHoursSectionDetails | undefined;
+
+  /* Event ID */
+  eventId: string = 'upcoming';
+  event: OfficeHoursEventDetails | undefined;
+
+  /* Upcoming event list */
+  events: OfficeHoursEvent[] = [];
+
+  // RosterRole to determine if user can view this routed component
+  rosterRole: RosterRole | undefined;
+  eventForm: FormGroup = this.formBuilder.group({
+    event_title: ['', Validators.required],
+    event_type: ['', Validators.required],
+    event_mode: ['', Validators.required],
+    description: '',
+    event_date: ['', Validators.required],
+    start_time: ['', Validators.required],
+    end_time: ['', Validators.required],
+    location: ['', Validators.required],
+    location_description: ''
+  });
+
+  /* Holds Information About Virtual Room */
+  virtualRoom: Room | undefined;
+
+  /* Section that the Office Hours event is being held for */
+  isVirtualOurLink: boolean = false;
+
+  constructor(
+    public officeHoursService: OfficeHoursService,
+    protected formBuilder: FormBuilder,
+    public academicsService: AcademicsService,
+    private route: ActivatedRoute,
+    protected snackBar: MatSnackBar,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.sectionId = this.route.snapshot.params['id'];
+    this.getRosterRole();
+  }
+
+  /* Get rooms and associated section upon initialization */
+  ngOnInit() {
+    this.getRooms();
+    this.getSection();
+    this.eventId = this.route.snapshot.params['eventId'];
+
+    this.getEventDetails();
+
+    // Prevent Chrome From Crashing In Form Dropdown
+    document.addEventListener('DOMNodeInserted', function () {
+      const elements = document.querySelectorAll('[aria-owns]');
+
+      elements.forEach((element) => {
+        element.removeAttribute('aria-owns');
+      });
+    });
+  }
+
+  /* EventForm contains data pertaining to event that is being created/modified */
+  getRosterRole() {
+    this.academicsService
+      .getMembershipBySection(this.sectionId)
+      .subscribe((role) => (this.rosterRole = role.member_role));
+  }
+
+  getRooms() {
+    this.academicsService.getRooms().subscribe((rooms) => {
+      this.rooms = rooms;
+      this.virtualRoom = rooms.find((room) => room.id === 'Virtual');
+    });
+  }
+
+  getSection() {
+    this.officeHoursService.getSection(this.sectionId).subscribe((section) => {
+      this.section = section;
+      this.getUpcomingEvents();
+    });
+  }
+
+  getUpcomingEvents() {
+    this.officeHoursService
+      .getUpcomingEventsBySection(this.sectionId)
+      .subscribe((events) => {
+        this.events = events;
+      });
+  }
+
+  getEventDetails() {
+    if (this.eventId !== 'upcoming') {
+      let eventIdNum = Number(this.eventId);
+      this.officeHoursService.getEvent(eventIdNum).subscribe((event) => {
+        this.event = event;
+
+        let eventText =
+          this.officeHoursService.formatEventType(event.type) +
+          ', ' +
+          event.event_date +
+          ', ' +
+          event.start_time +
+          ' - ' +
+          event.end_time;
+
+        console.log(this.event.description);
+
+        this.eventForm.setValue({
+          event_title: event.id,
+          event_type: this.reverseMapEventType(event.type),
+          event_mode: '',
+          description: event.description,
+          event_date: event.event_date,
+          start_time: event.start_time.split('T')[1],
+          end_time: event.end_time.split('T')[1],
+          location: event.room.id,
+          location_description: event.location_description
+        });
+      });
+    }
+  }
+
+  // Handles Room Location Value According to Event Mode Selection Changes
+  onEventModeChange(event: any) {
+    // CASE: If Event Mode is Virtual, Will Set Default Room Location to Virtual
+    if (event.value.includes('virtual')) {
+      if (this.virtualRoom) {
+        (this.eventForm.get('location') as FormControl).setValue(
+          this.virtualRoom.id
+        );
+      }
+      // CASE: If Location has been selected but switch to In-Person, will reset selection for Room Location
+    } else if (
+      event.value.includes('in_person') &&
+      this.eventForm.value.location !== ''
+    ) {
+      (this.eventForm.get('location') as FormControl).setValue(null);
+    }
+
+    this.isVirtualOurLink = event.value.includes('our_link');
+  }
+
+  onSubmit() {
+    // Logic for assigning the correct OfficeHoursEventType and OfficeHoursEventMode enum
+    let event_type: OfficeHoursEventType = this.mapEventType(
+      this.eventForm.value.event_type
+    );
+
+    let event_mode: OfficeHoursEventModeType = this.mapEventMode(
+      this.eventForm.value.event_mode
+    );
+
+    // Ensure start and end times aren't none
+    if (!this.eventForm.value.start_time) {
+      this.eventForm.value.start_time = '';
+    }
+    if (!this.eventForm.value.end_time) {
+      this.eventForm.value.end_time = '';
+    }
+
+    // Ensure that section must not be null to create/edit event
+    if (this.section) {
+      var event_draft: OfficeHoursEventDraft = {
+        oh_section: this.section,
+        room: { id: this.eventForm.value.location ?? '' },
+        type: event_type,
+        mode: event_mode,
+        description: this.eventForm.value.description ?? '',
+        location_description: this.eventForm.value.location_description ?? '',
+        event_date: this.eventForm.value.event_date,
+        start_time: this.eventForm.value.start_time ?? '',
+        end_time: this.eventForm.value.end_time ?? ''
+      };
+
+      // this.officeHoursService.updateEvent(event_draft).subscribe({
+      //   next: () => this.onSuccess(),
+      //   error: (err) => this.onError(err)
+      // });
+    }
+  }
+
+  private mapEventType(eventType: string): OfficeHoursEventType {
+    switch (eventType) {
+      case 'office_hours':
+        return OfficeHoursEventType.OFFICE_HOURS;
+      case 'tutoring':
+        return OfficeHoursEventType.TUTORING;
+      case 'review_session':
+        return OfficeHoursEventType.REVIEW_SESSION;
+      default:
+        return OfficeHoursEventType.OFFICE_HOURS;
+    }
+  }
+
+  private reverseMapEventType(eventType: OfficeHoursEventType): string {
+    switch (eventType) {
+      case OfficeHoursEventType.OFFICE_HOURS:
+        return 'office_hours';
+      case OfficeHoursEventType.TUTORING:
+        return 'tutoring';
+      case OfficeHoursEventType.REVIEW_SESSION:
+        return 'review_session';
+      default:
+        return 'office_hours';
+    }
+  }
+
+  private mapEventMode(eventMode: string): OfficeHoursEventModeType {
+    switch (eventMode) {
+      case 'in_person':
+        return OfficeHoursEventModeType.IN_PERSON;
+      case 'virtual_our_link':
+        return OfficeHoursEventModeType.VIRTUAL_OUR_LINK;
+      case 'virtual_student_link':
+        return OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK;
+      default:
+        return OfficeHoursEventModeType.IN_PERSON;
+    }
+  }
+
+  public formatEventType(type: OfficeHoursEventType) {
+    return this.officeHoursService.formatEventType(type);
+  }
+
+  /* On successful event creation, navigate back to section home */
+  private onSuccess(): void {
+    this.snackBar.open('You have created a new event!', '', {
+      duration: 3000
+    });
+    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+    this.eventForm.reset();
+  }
+
+  /* On error, display message informing user */
+  private onError(err: any): void {
+    this.snackBar.open('Error: Unable to create event', '', {
+      duration: 2000
+    });
+    console.log(err.description);
+  }
+}
