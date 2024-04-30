@@ -29,30 +29,12 @@ comp_210 = Course(
     credit_hours=3,
 )
 
-comp_211 = Course(
-    id="comp211",
-    subject_code="COMP",
-    number="211",
-    title="Systems Fundamentals",
-    description="This is 211",
-    credit_hours=3,
-)
-
 comp_301 = Course(
     id="comp301",
     subject_code="COMP",
     number="301",
     title="Foundations of Programming",
     description="Students will learn how to reason about how their code is structured, identify whether a given structure is effective in a given context, and look at ways of organizing units of code that support larger programs. In a nutshell, the primary goal of the course is to equip students with tools and techniques that will help them not only in later courses in the major but also in their careers afterwards.",
-    credit_hours=3,
-)
-
-comp_311 = Course(
-    id="comp311",
-    subject_code="COMP",
-    number="311",
-    title="Computer Organization",
-    description="This is 311",
     credit_hours=3,
 )
 
@@ -74,8 +56,7 @@ new_course = Course(
     credit_hours=3,
 )
 
-
-courses = [comp_110, comp_210, comp_211, comp_301, comp_311]
+courses = [comp_110, comp_210, comp_301]
 
 
 def insert_fake_data(session: Session):
