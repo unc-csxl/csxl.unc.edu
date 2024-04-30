@@ -246,7 +246,7 @@ ticket_draft_invalid_event = OfficeHoursTicketDraft(
 )
 
 group_ticket_draft = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=1),
+    oh_event=OfficeHoursEventPartial(id=3),
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
     creators=[

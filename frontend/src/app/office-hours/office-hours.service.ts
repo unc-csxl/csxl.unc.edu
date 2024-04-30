@@ -228,23 +228,6 @@ export class OfficeHoursService {
     );
   }
 
-  createEventsDaily(
-    event_draft: OfficeHoursEventDraft,
-    start_date: string,
-    end_date: string
-  ): Observable<OfficeHoursEvent[]> {
-    const eventsRequestBody = {
-      draft: event_draft,
-      recurring_start_date: start_date,
-      recurring_end_date: end_date
-    };
-
-    return this.http.post<OfficeHoursEvent[]>(
-      '/api/office-hours/event/recurring/daily/',
-      eventsRequestBody
-    );
-  }
-
   createEventsWeekly(
     event_draft: OfficeHoursEventDraft,
     start_date: string,
