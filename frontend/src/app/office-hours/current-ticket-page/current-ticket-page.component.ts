@@ -9,7 +9,13 @@
  * @license MIT
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { OfficeHoursService } from '../office-hours.service';
 import {
   ActivatedRoute,
@@ -21,7 +27,8 @@ import {
   OfficeHoursEvent,
   OfficeHoursEventType,
   OfficeHoursSection,
-  Ticket
+  Ticket,
+  TicketState
 } from '../office-hours.models';
 import { Subscription, interval } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -37,6 +44,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   styleUrls: ['./current-ticket-page.component.css']
 })
 export class CurrentTicketPageComponent implements OnInit, OnDestroy {
+  @ViewChild('officeHoursNotif') audioPlayerRef: ElementRef | undefined;
   public static Route = {
     path: ':id/:event_id/ticket/:ticket_id',
     component: CurrentTicketPageComponent,
@@ -59,6 +67,7 @@ export class CurrentTicketPageComponent implements OnInit, OnDestroy {
   event!: OfficeHoursEvent;
   ticket!: Ticket;
   refresh: Subscription | undefined;
+  called: boolean = false;
 
   /* Ticket queue stats */
   queued_tickets: number | null;
@@ -107,6 +116,12 @@ export class CurrentTicketPageComponent implements OnInit, OnDestroy {
 
       this.getTicketStats();
 
+      // Checks if the ticket state has been changed to called -> plays notif sound
+      if (!this.called && this.ticket.state === TicketState.CALLED) {
+        this.called = true;
+        this.playQueueNotifSound();
+      }
+
       if (this.formatTicketState(this.ticket.state) === 'Closed') {
         this.displayClosedMessage();
         this.navToHome();
@@ -123,6 +138,12 @@ export class CurrentTicketPageComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  playQueueNotifSound() {
+    if (this.audioPlayerRef) {
+      this.audioPlayerRef.nativeElement.play();
+    }
   }
 
   formatTicketState(state: number) {
