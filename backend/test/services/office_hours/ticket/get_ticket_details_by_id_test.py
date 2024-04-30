@@ -42,11 +42,11 @@ __license__ = "MIT"
 def test_get_ticket_details_by_id_by_uta(oh_ticket_svc: OfficeHoursTicketService):
     """Test to get ticket details by ID as a UTA."""
     ticket = oh_ticket_svc.get_ticket_details_by_id(
-        user__comp110_uta_0, office_hours_data.comp110_called_ticket.id
+        user__comp110_uta_0, office_hours_data.comp110_f23_called_ticket.id
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
-    assert ticket.id == office_hours_data.comp110_called_ticket.id
-    assert ticket.state == office_hours_data.comp110_called_ticket.state
+    assert ticket.id == office_hours_data.comp110_f23_called_ticket.id
+    assert ticket.state == office_hours_data.comp110_f23_called_ticket.state
 
 
 def test_get_ticket_details_by_id_by_instructor(
@@ -54,21 +54,21 @@ def test_get_ticket_details_by_id_by_instructor(
 ):
     """Test to get ticket details by ID as an instructor."""
     ticket = oh_ticket_svc.get_ticket_details_by_id(
-        user__comp110_instructor, office_hours_data.comp110_called_ticket.id
+        user__comp110_instructor, office_hours_data.comp110_closed_ticket.id
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
-    assert ticket.id == office_hours_data.comp110_called_ticket.id
-    assert ticket.state == office_hours_data.comp110_called_ticket.state
+    assert ticket.id == office_hours_data.comp110_closed_ticket.id
+    assert ticket.state == office_hours_data.comp110_closed_ticket.state
 
 
 def test_get_ticket_details_by_id_by_gta(oh_ticket_svc: OfficeHoursTicketService):
     """Test to get ticket details by ID as a GTA."""
     ticket = oh_ticket_svc.get_ticket_details_by_id(
-        user__comp110_gta, office_hours_data.comp110_called_ticket.id
+        user__comp110_gta, office_hours_data.comp110_closed_ticket.id
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
-    assert ticket.id == office_hours_data.comp110_called_ticket.id
-    assert ticket.state == office_hours_data.comp110_called_ticket.state
+    assert ticket.id == office_hours_data.comp110_closed_ticket.id
+    assert ticket.state == office_hours_data.comp110_closed_ticket.state
 
 
 def test_get_ticket_details_by_id_exception_if_student(
@@ -77,7 +77,7 @@ def test_get_ticket_details_by_id_exception_if_student(
     """Test to check if getting ticket details by ID as a student raises an exception."""
     with pytest.raises(PermissionError):
         oh_ticket_svc.get_ticket_details_by_id(
-            user__comp110_student_0, office_hours_data.comp110_called_ticket.id
+            user__comp110_student_0, office_hours_data.comp110_closed_ticket.id
         )
         pytest.fail()
 

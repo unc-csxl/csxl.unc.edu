@@ -41,7 +41,7 @@ def test_call_ticket(oh_ticket_svc: OfficeHoursTicketService):
     ticket = oh_ticket_svc.call_ticket(
         subject=user__comp110_uta_0,
         oh_ticket=OfficeHoursTicketPartial(
-            id=office_hours_data.comp110_queued_ticket.id,
+            id=office_hours_data.comp110_f23_queued_ticket.id,
         ),
     )
 
@@ -57,7 +57,7 @@ def test_call_ticket_exception_if_student_calls(
         oh_ticket_svc.call_ticket(
             subject=user__comp110_student_0,
             oh_ticket=OfficeHoursTicketPartial(
-                id=office_hours_data.comp110_queued_ticket.id,
+                id=office_hours_data.comp110_f23_queued_ticket.id,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -71,7 +71,7 @@ def test_call_ticket_exception_if_ticket_has_caller_already(
         oh_ticket_svc.call_ticket(
             subject=user__comp110_uta_0,
             oh_ticket=OfficeHoursTicketPartial(
-                id=office_hours_data.comp110_called_ticket.id,
+                id=office_hours_data.comp110_f23_called_ticket.id,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above
@@ -99,7 +99,7 @@ def test_call_ticket_exception_if_ticket_is_not_queued(
         oh_ticket_svc.call_ticket(
             subject=user__comp110_uta_0,
             oh_ticket=OfficeHoursTicketPartial(
-                id=office_hours_data.comp110_called_ticket.id,
+                id=office_hours_data.comp110_f23_called_ticket.id,
             ),
         )
         pytest.fail()  # Fail test if no error was thrown above

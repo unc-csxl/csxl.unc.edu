@@ -34,14 +34,14 @@ __license__ = "MIT"
 def test_check_student_in_queue_status(oh_event_svc: OfficeHoursEventService):
     """Test case to check the student queue status for an ongoing event with an active ticket."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_student_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_student_0, office_hours_data.comp_110_f23_oh_event.id
     )
     status = oh_event_svc.check_student_in_queue_status(
         user__comp110_student_0, oh_event
     )
 
     assert isinstance(status, StudentQueuedTicketStatus)
-    assert status.ticket_id == office_hours_data.comp110_queued_ticket.id
+    assert status.ticket_id == office_hours_data.comp110_f23_queued_ticket.id
 
 
 def test_check_student_in_queue_status_no_active_ticket(

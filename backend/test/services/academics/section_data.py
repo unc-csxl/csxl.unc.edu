@@ -284,16 +284,23 @@ comp110_f23_uta = SectionMemberDraft(
     member_role=RosterRole.UTA,
 )
 
-comp110_f23_student = SectionMemberDraft(
+comp110_f23_student_0 = SectionMemberDraft(
     id=13,
     user_id=user__comp110_student_0.id,
+    section_id=comp_101_001.id,
+    member_role=RosterRole.STUDENT,
+)
+comp110_f23_student_1 = SectionMemberDraft(
+    id=14,
+    user_id=user__comp110_student_1.id,
     section_id=comp_101_001.id,
     member_role=RosterRole.STUDENT,
 )
 
 section_members = [
     comp110_f23_instructor,
-    comp110_f23_student,
+    comp110_f23_student_0,
+    comp110_f23_student_1,
     comp110_f23_uta,
     comp110_instructor,
     comp110_student_0,

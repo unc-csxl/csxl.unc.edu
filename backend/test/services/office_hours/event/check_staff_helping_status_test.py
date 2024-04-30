@@ -23,6 +23,7 @@ from ...academics.section_data import (
     user__comp110_uta_0,
     user__comp110_gta,
     user__comp110_non_member,
+    user__comp110_instructor,
 )
 
 __authors__ = ["Meghan Sun"]
@@ -33,12 +34,12 @@ __license__ = "MIT"
 def test_check_staff_helping_status(oh_event_svc: OfficeHoursEventService):
     """Test case to check the staff helping status for an ongoing event."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_uta_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_uta_0, office_hours_data.comp_110_f23_oh_event.id
     )
     status = oh_event_svc.check_staff_helping_status(user__comp110_uta_0, oh_event)
 
     assert isinstance(status, StaffHelpingStatus)
-    assert status.ticket_id == office_hours_data.comp110_called_ticket.id
+    assert status.ticket_id == office_hours_data.comp110_f23_called_ticket.id
 
 
 def test_check_staff_helping_status_not_currently_helping(
@@ -46,9 +47,9 @@ def test_check_staff_helping_status_not_currently_helping(
 ):
     """Test case to check the staff helping status when not currently helping."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_gta, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_gta, office_hours_data.comp_110_f23_oh_event.id
     )
-    status = oh_event_svc.check_staff_helping_status(user__comp110_gta, oh_event)
+    status = oh_event_svc.check_staff_helping_status(user__comp110_instructor, oh_event)
 
     assert isinstance(status, StaffHelpingStatus)
     assert status.ticket_id is None
@@ -59,7 +60,7 @@ def test_check_staff_helping_status_exception_if_non_member(
 ):
     """Test case to check an expection is raised if a non member."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_gta, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_gta, office_hours_data.comp_110_f23_oh_event.id
     )
 
     with pytest.raises(PermissionError):

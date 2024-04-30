@@ -38,7 +38,7 @@ def test_get_section_tickets_by_uta(oh_section_svc: OfficeHoursSectionService):
     )
     tickets = oh_section_svc.get_section_tickets(user__comp110_uta_0, oh_section)
 
-    assert len(tickets) == len(office_hours_data.comp110_tickets)
+    assert len(tickets) == len(office_hours_data.comp110_current_term_tickets)
     assert isinstance(tickets[0], OfficeHoursTicketDetails)
 
 
@@ -48,7 +48,7 @@ def test_get_section_tickets_by_instructor(oh_section_svc: OfficeHoursSectionSer
     )
     tickets = oh_section_svc.get_section_tickets(user__comp110_instructor, oh_section)
 
-    assert len(tickets) == len(office_hours_data.comp110_tickets)
+    assert len(tickets) == len(office_hours_data.comp110_current_term_tickets)
     assert isinstance(tickets[0], OfficeHoursTicketDetails)
 
 

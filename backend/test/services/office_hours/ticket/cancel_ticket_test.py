@@ -40,7 +40,7 @@ def test_cancel_ticket_for_uta(oh_ticket_svc: OfficeHoursTicketService):
     """Test case for cancellation of ticket by a UTA."""
     cancelled_ticket = oh_ticket_svc.cancel_ticket(
         user__comp110_uta_0,
-        OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
+        OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_queued_ticket.id),
     )
 
     assert isinstance(cancelled_ticket, OfficeHoursTicket)
@@ -53,7 +53,7 @@ def test_cancel_ticket_for_student(
     """Test case for cancellation of ticket by a student."""
     cancelled_ticket = oh_ticket_svc.cancel_ticket(
         user__comp110_student_0,
-        OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
+        OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_queued_ticket.id),
     )
 
     assert isinstance(cancelled_ticket, OfficeHoursTicket)
@@ -67,7 +67,7 @@ def test_cancel_ticket_exception_for_non_student_creator(
     with pytest.raises(PermissionError):
         oh_ticket_svc.cancel_ticket(
             user__comp110_student_1,
-            OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_queued_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -79,7 +79,7 @@ def test_cancel_ticket_exception_for_non_section_member(
     with pytest.raises(PermissionError):
         oh_ticket_svc.cancel_ticket(
             user__comp110_non_member,
-            OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_queued_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -102,6 +102,6 @@ def test_cancel_ticket_exception_when_ticket_not_queued(
     with pytest.raises(Exception):
         oh_ticket_svc.cancel_ticket(
             user__comp110_student_0,
-            OfficeHoursTicketPartial(id=office_hours_data.comp110_called_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_called_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above

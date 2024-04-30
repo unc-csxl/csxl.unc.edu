@@ -37,7 +37,7 @@ def test_get_event_queue_stats_by_student(
 ):
     """Test case to ensure queued and called OfficeHoursTickets can be retrieved by event for a student."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_student_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_student_0, office_hours_data.comp_110_f23_oh_event.id
     )
     status: OfficeHoursEventStatus = oh_event_svc.get_event_queue_stats(
         user__comp110_student_0, oh_event
@@ -52,7 +52,7 @@ def test_get_event_queue_stats_by_uta(
 ):
     """Test case to ensure an office hours event ticket stats can be retrieved by an UTA."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_uta_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_uta_0, office_hours_data.comp_110_f23_oh_event.id
     )
     status: OfficeHoursEventStatus = oh_event_svc.get_event_queue_stats(
         user__comp110_uta_0, oh_event
@@ -67,7 +67,7 @@ def test_get_event_queue_stats_by_instructor(
 ):
     """Test case to ensure an office hours event ticket stats can be retrieved by an instructor."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_instructor, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_instructor, office_hours_data.comp_110_f23_oh_event.id
     )
     status: OfficeHoursEventStatus = oh_event_svc.get_event_queue_stats(
         user__comp110_instructor, oh_event
@@ -82,7 +82,7 @@ def test_get_event_queue_stats_exception_for_non_member(
 ):
     """Test case to ensure an exception is raised when non-member tries to retrieve an OH event queue stats."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_non_member, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_non_member, office_hours_data.comp_110_f23_oh_event.id
     )
     with pytest.raises(PermissionError):
         oh_event_svc.get_event_queue_stats(user__comp110_non_member, oh_event)

@@ -41,7 +41,7 @@ def test_get_event_tickets_by_uta(oh_event_svc: OfficeHoursEventService):
     event_tickets = oh_event_svc.get_event_tickets(user__comp110_uta_0, oh_event)
 
     assert isinstance(event_tickets[0], OfficeHoursTicketDetails)
-    assert len(event_tickets) == 4
+    assert len(event_tickets) == len(office_hours_data.comp110_current_term_tickets)
 
 
 def test_get_event_tickets_by_instructor(oh_event_svc: OfficeHoursEventService):
@@ -52,7 +52,7 @@ def test_get_event_tickets_by_instructor(oh_event_svc: OfficeHoursEventService):
     event_tickets = oh_event_svc.get_event_tickets(user__comp110_instructor, oh_event)
 
     assert isinstance(event_tickets[0], OfficeHoursTicketDetails)
-    assert len(event_tickets) == 4
+    assert len(event_tickets) == len(office_hours_data.comp110_current_term_tickets)
 
 
 def test_get_event_tickets_exception_if_student(oh_event_svc: OfficeHoursEventService):

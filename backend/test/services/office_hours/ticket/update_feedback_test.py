@@ -79,7 +79,7 @@ def test_update_ticket_feedback_exception_if_ticket_not_closed(
         oh_ticket_svc.update_ticket_feedback(
             user__comp110_uta_0,
             OfficeHoursTicketPartial(
-                id=office_hours_data.comp110_queued_ticket.id,
+                id=office_hours_data.comp110_f23_queued_ticket.id,
                 have_concerns=False,
                 caller_notes="Great to work with!",
             ),

@@ -41,12 +41,12 @@ def test_get_queued_helped_stats_by_oh_event_for_student(
 ):
     """Test case to ensure fetching queued and helped stats for an event by a student."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_student_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_student_0, office_hours_data.comp_110_f23_oh_event.id
     )
     student_ticket_status = oh_event_svc.get_event_queue_stats_for_student_with_ticket(
         user__comp110_student_0,
         oh_event,
-        office_hours_data.comp110_queued_ticket.id,
+        office_hours_data.comp110_f23_queued_ticket.id,
     )
 
     assert isinstance(student_ticket_status, StudentOfficeHoursEventStatus)
@@ -59,7 +59,7 @@ def test_get_queued_helped_stats_by_oh_event_for_student_exception_invalid_ticke
 ):
     """Test case to ensure a ResourceNotFoundException is raised for an invalid ticket ID."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_student_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_student_0, office_hours_data.comp_110_f23_oh_event.id
     )
 
     with pytest.raises(ResourceNotFoundException):
@@ -81,7 +81,7 @@ def test_get_queued_helped_stats_by_oh_event_for_student_exception_ticket_not_in
         oh_event_svc.get_event_queue_stats_for_student_with_ticket(
             user__comp110_student_0,
             oh_event,
-            office_hours_data.comp110_queued_ticket.id,
+            office_hours_data.comp110_f23_queued_ticket.id,
         )
         pytest.fail()
 
@@ -91,14 +91,14 @@ def test_get_queued_helped_stats_by_oh_event_for_student_exception_ticket_not_qu
 ):
     """Test case to ensure an exception is raised when attempting to get stats for a ticket not in the queued state."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_student_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_student_0, office_hours_data.comp_110_f23_oh_event.id
     )
 
     with pytest.raises(Exception):
         oh_event_svc.get_event_queue_stats_for_student_with_ticket(
             user__comp110_student_0,
             oh_event,
-            office_hours_data.comp110_called_ticket.id,
+            office_hours_data.comp110_f23_called_ticket.id,
         )
         pytest.fail()
 
@@ -108,13 +108,13 @@ def test_get_queued_helped_stats_by_oh_event_for_student_exception_if_not_ticket
 ):
     """Test case to ensure an exception is raised if a student attemps to view for a student ticket queue stats for a ticket_id did not create."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_student_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_student_0, office_hours_data.comp_110_f23_oh_event.id
     )
 
     with pytest.raises(PermissionError):
         oh_event_svc.get_event_queue_stats_for_student_with_ticket(
             user__comp110_student_1,
             oh_event,
-            office_hours_data.comp110_called_ticket.id,
+            office_hours_data.comp110_f23_called_ticket.id,
         )
         pytest.fail()

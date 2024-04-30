@@ -106,16 +106,16 @@ comp_110_past_oh_event_0 = OfficeHoursEvent(
     end_time=datetime.now() - timedelta(days=1),
 )
 
-comp_110_past_oh_event_1 = OfficeHoursEvent(
+comp_110_f23_oh_event = OfficeHoursEvent(
     id=4,
-    oh_section=comp_110_oh_section,
+    oh_section=comp_110_oh_section_f23,
     room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
     mode=OfficeHoursEventModeType.IN_PERSON,
     description="",
     event_date=date.today(),
-    start_time=datetime.now() - timedelta(days=1, hours=3),
-    end_time=datetime.now() - timedelta(days=1),
+    start_time=datetime.now() - timedelta(hours=1),
+    end_time=datetime.now() + timedelta(hours=3),
 )
 
 comp_523_current_oh_event = OfficeHoursEvent(
@@ -134,11 +134,11 @@ oh_events = [
     comp_110_current_oh_event,
     comp_110_upcoming_oh_event,
     comp_110_past_oh_event_0,
-    comp_110_past_oh_event_1,
+    comp_110_f23_oh_event,
     comp_523_current_oh_event,
 ]
 
-comp110_oh_past_events = [comp_110_past_oh_event_0, comp_110_past_oh_event_1]
+comp110_oh_past_events = [comp_110_past_oh_event_0]
 comp110_oh_current_events = [comp_110_current_oh_event]
 comp110_oh_upcoming_events = [comp_110_upcoming_oh_event]
 
@@ -156,27 +156,37 @@ comp110_event_draft = OfficeHoursEventDraft(
 
 
 # Ticket For An Event
-comp110_queued_ticket = OfficeHoursTicket(
+comp110_f23_queued_ticket = OfficeHoursTicket(
     id=1,
-    oh_event=comp_110_current_oh_event,
+    oh_event=comp_110_f23_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.QUEUED,
     created_at=datetime.now(),
 )
 
-comp110_called_ticket = OfficeHoursTicket(
+comp110_f23_called_ticket = OfficeHoursTicket(
     id=2,
-    oh_event=comp_110_current_oh_event,
+    oh_event=comp_110_f23_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CALLED,
-    created_at=datetime.now() - timedelta(minutes=2),
+    created_at=datetime.now() - timedelta(minutes=20),
     called_at=datetime.now(),
 )
 
-comp110_closed_ticket = OfficeHoursTicket(
+comp110_f23_closed_ticket = OfficeHoursTicket(
     id=3,
+    oh_event=comp_110_f23_oh_event,
+    description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
+    type=TicketType.ASSIGNMENT_HELP,
+    state=TicketState.CLOSED,
+    created_at=datetime.now() - timedelta(minutes=20),
+)
+
+
+comp110_closed_ticket = OfficeHoursTicket(
+    id=4,
     oh_event=comp_110_current_oh_event,
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
@@ -186,7 +196,7 @@ comp110_closed_ticket = OfficeHoursTicket(
 
 
 comp110_cancelled_ticket = OfficeHoursTicket(
-    id=4,
+    id=5,
     oh_event=comp_110_current_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
@@ -195,7 +205,7 @@ comp110_cancelled_ticket = OfficeHoursTicket(
 )
 
 comp_523_pending_ticket = OfficeHoursTicket(
-    id=5,
+    id=6,
     oh_event=comp_523_current_oh_event,
     description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
     type=TicketType.ASSIGNMENT_HELP,
@@ -203,16 +213,20 @@ comp_523_pending_ticket = OfficeHoursTicket(
     created_at=datetime.now(),
 )
 tickets = [
-    comp110_queued_ticket,
-    comp110_called_ticket,
+    comp110_f23_queued_ticket,
+    comp110_f23_called_ticket,
+    comp110_f23_closed_ticket,
     comp110_closed_ticket,
     comp110_cancelled_ticket,
     comp_523_pending_ticket,
 ]
 
-comp110_tickets = [
-    comp110_queued_ticket,
-    comp110_called_ticket,
+comp110_f23_tickets = [
+    comp110_f23_queued_ticket,
+    comp110_f23_called_ticket,
+    comp110_f23_closed_ticket,
+]
+comp110_current_term_tickets = [
     comp110_closed_ticket,
     comp110_cancelled_ticket,
 ]
@@ -309,18 +323,29 @@ def insert_fake_data(session: Session):
         )
         .first()
     )
-    uta = (
+
+    f23_student = (
+        session.query(SectionMemberEntity)
+        .where(
+            SectionMemberEntity.user_id == section_data.user__comp110_student_0.id,
+            SectionMemberEntity.section_id == section_data.comp_101_001.id,
+            SectionMemberEntity.member_role == RosterRole.STUDENT,
+        )
+        .first()
+    )
+
+    f23_uta = (
         session.query(SectionMemberEntity)
         .where(
             SectionMemberEntity.user_id == section_data.user__comp110_uta_0.id,
-            SectionMemberEntity.section_id == section_data.comp_110_001_current_term.id,
+            SectionMemberEntity.section_id == section_data.comp_101_001.id,
             SectionMemberEntity.member_role == RosterRole.UTA,
         )
         .first()
     )
 
-    # Add User Created Tickets
-    for ticket in comp110_tickets:
+    # Add User Created Tickets - Current Term
+    for ticket in comp110_current_term_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
         session.add(ticket_entity)
         session.commit()
@@ -335,22 +360,39 @@ def insert_fake_data(session: Session):
             )
         )
 
-    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
-    session.query(OfficeHoursTicketEntity).filter(
-        OfficeHoursTicketEntity.id.in_(
-            [comp110_called_ticket.id, comp110_closed_ticket.id]
+    # Add F23 Tickets
+    for ticket in comp110_f23_tickets:
+        ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
+        session.add(ticket_entity)
+        session.commit()
+
+        # Associate with Ticket and User Create Tickets
+        session.execute(
+            user_created_tickets_table.insert().values(
+                {
+                    "ticket_id": ticket_entity.id,
+                    "member_id": f23_student.id,
+                }
+            )
         )
-    ).update({"caller_id": uta.id, "called_at": datetime.now() - timedelta(minutes=2)})
 
     # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
     session.query(OfficeHoursTicketEntity).filter(
-        OfficeHoursTicketEntity.id.in_([comp110_closed_ticket.id])
+        OfficeHoursTicketEntity.id.in_(
+            [comp110_f23_called_ticket.id, comp110_f23_closed_ticket.id]
+        )
+    ).update(
+        {"caller_id": f23_uta.id, "called_at": datetime.now() - timedelta(minutes=2)}
+    )
+
+    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
+    session.query(OfficeHoursTicketEntity).filter(
+        OfficeHoursTicketEntity.id.in_([comp110_f23_closed_ticket.id])
     ).update(
         {
             "have_concerns": True,
-            "called_at": datetime.now() - timedelta(minutes=10),
             "closed_at": datetime.now() - timedelta(minutes=1),
-            "caller_notes": "Great to work with!",
+            "caller_notes": "Got Stuck In an Infinte Loop",
         }
     )
 

@@ -37,7 +37,7 @@ def test_get_queued_and_called_tickets_by_event_by_uta(
 ):
     """Test case to ensure correct ordering and length of queued and called tickets for an event if called by UTA."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_uta_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_uta_0, office_hours_data.comp_110_f23_oh_event.id
     )
     event_tickets = oh_event_svc.get_queued_and_called_tickets_by_event(
         user__comp110_uta_0, oh_event
@@ -53,7 +53,7 @@ def test_get_queued_and_called_tickets_by_event_by_instructor(
 ):
     """Test case to ensure correct ordering and length of queued and called tickets for an event if called by instructor."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_uta_0, office_hours_data.comp_110_current_oh_event.id
+        user__comp110_uta_0, office_hours_data.comp_110_f23_oh_event.id
     )
     event_tickets = oh_event_svc.get_queued_and_called_tickets_by_event(
         user__comp110_instructor, oh_event

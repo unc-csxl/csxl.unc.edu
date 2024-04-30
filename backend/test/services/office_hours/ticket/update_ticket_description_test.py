@@ -38,7 +38,7 @@ __license__ = "MIT"
 def test_update_ticket_description(oh_ticket_svc: OfficeHoursTicketService):
     """Test case to update the description of an office hours ticket."""
     updated_description = "New Description"
-    target_ticket = office_hours_data.comp110_queued_ticket
+    target_ticket = office_hours_data.comp110_f23_queued_ticket
 
     delta = OfficeHoursTicketPartial(
         id=target_ticket.id, description=updated_description
@@ -68,7 +68,7 @@ def test_update_ticket_description_exception_not_creator(
 ):
     """Test case to check if updating a ticket description raises an exception when attempted by a non-creator."""
     updated_description = "New Description"
-    target_ticket = office_hours_data.comp110_queued_ticket
+    target_ticket = office_hours_data.comp110_f23_queued_ticket
 
     delta = OfficeHoursTicketPartial(
         id=target_ticket.id, description=updated_description
@@ -84,7 +84,7 @@ def test_update_ticket_description_exception_if_ticket_not_queued(
 ):
     """Test case to check if updating a ticket description raises an exception when the ticket is not in the queued state."""
     updated_description = "New Description"
-    target_ticket = office_hours_data.comp110_called_ticket
+    target_ticket = office_hours_data.comp110_f23_called_ticket
 
     delta = OfficeHoursTicketPartial(
         id=target_ticket.id, description=updated_description

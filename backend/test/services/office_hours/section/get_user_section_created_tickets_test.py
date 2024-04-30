@@ -45,7 +45,7 @@ def test_get_user_section_created_ticket_by_student(
     )
 
     assert isinstance(created_tickets[0], OfficeHoursTicket)
-    assert len(created_tickets) == len(office_hours_data.comp110_tickets)
+    assert len(created_tickets) == len(office_hours_data.comp110_current_term_tickets)
 
 
 def test_get_user_section_created_ticket_by_student_no_tickets(

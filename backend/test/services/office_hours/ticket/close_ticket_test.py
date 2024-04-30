@@ -42,7 +42,7 @@ def test_close_ticket(
     """Test case for closing a ticket by a UTA."""
     closed_ticket = oh_ticket_svc.close_ticket(
         user__comp110_uta_0,
-        OfficeHoursTicketPartial(id=office_hours_data.comp110_called_ticket.id),
+        OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_called_ticket.id),
     )
 
     assert isinstance(closed_ticket, OfficeHoursTicketDetails)
@@ -57,7 +57,7 @@ def test_close_ticket_exception_when_student_closes(
     with pytest.raises(PermissionError):
         oh_ticket_svc.close_ticket(
             user__comp110_student_0,
-            OfficeHoursTicketPartial(id=office_hours_data.comp110_called_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_called_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
@@ -69,7 +69,7 @@ def test_close_ticket_exception_if_ticket_not_called(
     with pytest.raises(Exception):
         oh_ticket_svc.close_ticket(
             user__comp110_student_0,
-            OfficeHoursTicketPartial(id=office_hours_data.comp110_queued_ticket.id),
+            OfficeHoursTicketPartial(id=office_hours_data.comp110_f23_queued_ticket.id),
         )
         pytest.fail()  # Fail test if no error was thrown above
 
