@@ -21,7 +21,6 @@ __license__ = "MIT"
 
 
 class OfficeHoursTicketEntity(EntityBase):
-    # TODO: write description
     """Serves as the database model schema defining the shape of the `OfficeHoursTicket` table"""
 
     # Name for the events table in the PostgreSQL database
@@ -54,7 +53,7 @@ class OfficeHoursTicketEntity(EntityBase):
     # Notes from TA
     caller_notes: Mapped[str] = mapped_column(String, default="", nullable=False)
 
-    # One-to-one relationship to event that the ticket was created in
+    # One-to-many relationship to event that the ticket was created in
     oh_event_id: Mapped[int] = mapped_column(
         ForeignKey("office_hours__event.id"), nullable=False
     )
@@ -70,7 +69,7 @@ class OfficeHoursTicketEntity(EntityBase):
         ForeignKey("academics__user_section.id"), nullable=True
     )
     caller: Mapped["SectionMemberEntity"] = relationship(
-        back_populates="called_tickets"
+        back_populates="called_oh_tickets"
     )
 
     @classmethod

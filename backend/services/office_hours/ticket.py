@@ -10,7 +10,7 @@ from ...services.office_hours.event import OfficeHoursEventService
 from ...database import db_session
 
 from ...entities.academics.section_entity import SectionEntity
-from ...entities.office_hours.event_entity import OfficeHoursEventEntity
+from ...entities.office_hours.oh_event_entity import OfficeHoursEventEntity
 from ...entities.office_hours import user_created_tickets_table
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
@@ -508,7 +508,7 @@ class OfficeHoursTicketService:
 
         # 2. CASE: Only Creator(s) of Ticket Can Update
         section_user_created_tickets: list[OfficeHoursTicketEntity] = (
-            current_user_section_member_entity.created_tickets
+            current_user_section_member_entity.created_oh_tickets
         )
 
         # True if Current Ticket Exists In User's Created Ticket List
@@ -643,7 +643,7 @@ class OfficeHoursTicketService:
         created_tickets_in_event = [
             ticket
             for section_member in creators
-            for ticket in section_member.created_tickets
+            for ticket in section_member.created_oh_tickets
             if ticket.oh_event_id == oh_event.id
         ]
 

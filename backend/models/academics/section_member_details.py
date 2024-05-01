@@ -19,5 +19,5 @@ class SectionMemberDetails(SectionMember):
 
     user: User
     section: Section
-    created_tickets: list[OfficeHoursTicket]
-    called_ticket: list[OfficeHoursTicket]
+    created_oh_tickets: list[OfficeHoursTicket]
+    called_oh_tickets: list[OfficeHoursTicket]

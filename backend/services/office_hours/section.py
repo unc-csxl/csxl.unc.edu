@@ -402,7 +402,7 @@ class OfficeHoursSectionService:
 
         # Take Created Ticket Relationship From SectionMemberEntity
         created_tickets = [
-            entity.to_model() for entity in section_member_entity.created_tickets
+            entity.to_model() for entity in section_member_entity.created_oh_tickets
         ]
 
         # Order so latest is first
@@ -430,7 +430,7 @@ class OfficeHoursSectionService:
         # Selects tickets from a certain section with the subject's id as the caller
         called_tickets = [
             entity.to_details_model()
-            for entity in section_member_entity.called_tickets
+            for entity in section_member_entity.called_oh_tickets
             if entity.called_at is not None
         ]
 

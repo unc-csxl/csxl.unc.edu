@@ -56,12 +56,12 @@ class SectionMemberEntity(EntityBase):
     member_role: Mapped[RosterRole] = mapped_column(SQLAlchemyEnum(RosterRole))
 
     # Tickets that have been created by the user
-    created_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
+    created_oh_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
         secondary=user_created_tickets_table
     )
 
     # Tickets that have been called by the user
-    called_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
+    called_oh_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
         back_populates="caller", cascade="all, delete"
     )
 
@@ -85,7 +85,7 @@ class SectionMemberEntity(EntityBase):
         # Draft Model Usually Will Not Have ID - Auto Generated.
         # ID will not be None ONLY For Testing Purpose
         return cls(
-            id=model.id if model.id else None,
+            id=model.id,  # If model's id is None, set entity's id to None too
             section_id=model.section_id,
             user_id=model.user_id,
             member_role=model.member_role,
@@ -124,6 +124,8 @@ class SectionMemberEntity(EntityBase):
             member_role=self.member_role,
             user=self.user.to_model(),
             section=self.section.to_model(),
-            created_tickets=[ticket.to_model() for ticket in self.created_tickets],
-            called_tickets=[ticket.to_model() for ticket in self.called_tickets],
+            created_oh_tickets=[
+                ticket.to_model() for ticket in self.created_oh_tickets
+            ],
+            called_oh_tickets=[ticket.to_model() for ticket in self.called_oh_tickets],
         )

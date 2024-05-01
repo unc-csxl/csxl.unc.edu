@@ -15,8 +15,8 @@ from ...services.reset_table_id_seq import reset_table_id_seq
 from ..academics import section_data
 
 from ....entities.office_hours import user_created_tickets_table
-from ....entities.office_hours.event_entity import OfficeHoursEventEntity
-from ....entities.office_hours.section_entity import OfficeHoursSectionEntity
+from ....entities.office_hours.oh_event_entity import OfficeHoursEventEntity
+from ....entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
 from ....models.office_hours.event import (
