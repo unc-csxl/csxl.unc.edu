@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 from fastapi import Depends
-from sqlalchemy import or_, select
+from sqlalchemy import not_, or_, select
 from sqlalchemy.orm import Session
 
 from backend.entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
+from backend.entities.user_entity import UserEntity
 from backend.models.office_hours.event import OfficeHoursEvent
 
 from ...services.office_hours.event import OfficeHoursEventService
@@ -52,7 +53,7 @@ class OfficeHoursTicketService:
         self._oh_event_svc = oh_event_svc
 
     def create(
-        self, subject: User, oh_ticket: OfficeHoursTicketDraft
+        self, subject: User, oh_ticket_draft: OfficeHoursTicketDraft
     ) -> OfficeHoursTicketDetails:
         """
         Creates a new office hours ticket.
@@ -70,56 +71,24 @@ class OfficeHoursTicketService:
         """
         # PERMISSIONS
 
-        # Fetch Office Hours Section - Needed To Determine if User Membership
-        oh_section: OfficeHoursSection = self._get_office_hours_section_by_oh_event_id(
-            oh_ticket.oh_event.id
+        # 1. Check if Subject and Ticket Creators Are Members of OH Section - Raise PermissionError If Not
+        creator_section_member_entities = self._check_ticket_creators_permissions(
+            subject, oh_ticket_draft
         )
-
-        # Check If Current Users and Creators Are Section Members and thus have permission to create a ticket.
-        ticket_creator_ids = [subject.id] + [
-            creator.id for creator in oh_ticket.creators if creator.id != subject.id
-        ]
-
-        creator_section_member_entities = (
-            self._session.query(SectionMemberEntity)
-            .filter(
-                OfficeHoursSectionEntity.id == oh_section.id,
-            )
-            .filter(SectionEntity.office_hours_id == OfficeHoursSectionEntity.id)
-            .filter(
-                SectionMemberEntity.section_id == SectionEntity.id,
-                SectionMemberEntity.member_role == RosterRole.STUDENT,
-                SectionMemberEntity.user_id.in_(ticket_creator_ids),
-            )
-            .distinct()
-            .all()
-        )
-
-        # Raise PermissionError if not all creators are in section
-        if len(creator_section_member_entities) != len(ticket_creator_ids):
-            non_existing_ids = [
-                member_id
-                for member_id in ticket_creator_ids
-                if member_id
-                not in [creator.id for creator in creator_section_member_entities]
-            ]
-            raise PermissionError(
-                f"Creators with ids={non_existing_ids} Are Not Members In Current OH Section id={oh_section.id}"
-            )
 
         oh_event = self._session.get(
-            OfficeHoursEventEntity, oh_ticket.oh_event.id
+            OfficeHoursEventEntity, oh_ticket_draft.oh_event.id
         ).to_model()
 
-        # Raises PermissionError if students have a current queued or recently called ticket(s)
+        # 2. Raises PermissionError if students have a current queued or recently called ticket(s)
         self._check_ticket_creation_time_permissions(
             subject, oh_event, creator_section_member_entities
         )
 
         # CREATE TICKET AND ASSOCIATIONS
 
-        # Good To Go - Now Tranform Draft Model To Ticket Entity
-        oh_ticket_entity = OfficeHoursTicketEntity.from_draft_model(oh_ticket)
+        # Good To Go - Now Transform Draft Model To Ticket Entity
+        oh_ticket_entity = OfficeHoursTicketEntity.from_draft_model(oh_ticket_draft)
 
         # Add new object to table and commit changes
         self._session.add(oh_ticket_entity)
@@ -621,6 +590,64 @@ class OfficeHoursTicketService:
 
         # Return section model
         return oh_section
+
+    def _check_ticket_creators_permissions(
+        self, subject: User, oh_ticket: OfficeHoursTicketDraft
+    ) -> list[SectionMemberEntity]:
+        """
+        Check permissions for ticket creators in the context of an office hours ticket.
+
+        Args:
+            subject (User): The user initiating the action.
+            oh_ticket (OfficeHoursTicketDraft): The office hours ticket draft.
+
+        Returns:
+            list[SectionMemberEntity]: A list of section member entities representing
+                the creators of the ticket who have permissions.
+
+        Raises:
+            PermissionError: If not all creators of the ticket are members of the current
+                office hours section.
+        """
+
+        # OH Section Needed To Fetch Section Member
+        oh_section: OfficeHoursSection = self._get_office_hours_section_by_oh_event_id(
+            oh_ticket.oh_event.id
+        )
+
+        # Build List of Creator IDs - Subject and Creators List (For Group)
+        ticket_creator_ids = [subject.id] + [
+            creator.id for creator in oh_ticket.creators if creator.id != subject.id
+        ]
+
+        creator_section_member_entities = (
+            self._session.query(SectionMemberEntity)
+            .filter(
+                OfficeHoursSectionEntity.id == oh_section.id,
+            )
+            .filter(SectionEntity.office_hours_id == OfficeHoursSectionEntity.id)
+            .filter(
+                SectionMemberEntity.section_id == SectionEntity.id,
+                SectionMemberEntity.member_role == RosterRole.STUDENT,
+                SectionMemberEntity.user_id.in_(ticket_creator_ids),
+            )
+            .distinct()
+            .all()
+        )
+
+        # Raise PermissionError if not all creators are in section
+        if len(creator_section_member_entities) != len(ticket_creator_ids):
+            section_member_user_id = [
+                creator.user_id for creator in creator_section_member_entities
+            ]
+            non_existing_ids = [
+                id for id in ticket_creator_ids if id not in section_member_user_id
+            ]
+            raise PermissionError(
+                f"Creators with ids={non_existing_ids} Are Not Members In Current OH Section id={oh_section.id}"
+            )
+
+        return creator_section_member_entities
 
     def _check_ticket_creation_time_permissions(
         self,
