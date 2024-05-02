@@ -297,7 +297,7 @@ class OfficeHoursSectionService:
             list[OfficeHoursSection]: List of all `OfficeHoursSection` the user is not enrolled in.
 
         """
-        # TODO: add more comments here
+
         user_oh_sections_ids_query = (
             select(OfficeHoursSectionEntity.id)
             .where(SectionMemberEntity.user_id == subject.id)
