@@ -1,12 +1,9 @@
-import copy
 from operator import or_
-import string
 from fastapi import Depends
-from sqlalchemy import String, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from datetime import date, datetime, timedelta
-from ...models.office_hours.ticket import OfficeHoursTicket
 
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -27,7 +24,6 @@ from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 
 from ...database import db_session
 
-from ...models.coworking.time_range import TimeRange
 from ...models.office_hours.event import (
     OfficeHoursEvent,
     OfficeHoursEventDraft,
@@ -72,18 +68,11 @@ class OfficeHoursEventService:
             OfficeHoursEvent: Object added to table
 
         Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-            the office hours section associated with the event (`oh_event`) or is a Student in section.
+            PermissionError: If subject not a member or is a student.
         """
         # Permissions - Raises Exception if Permission Fails
-        section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.oh_section.id
-        )
+        self._check_user_section_permissions(subject.id, oh_event.oh_section.id)
 
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                f"Section Member is a Student. User does not have permision to create event"
-            )
         # Create new object
         oh_event_entity = OfficeHoursEventEntity.from_draft_model(oh_event)
 
@@ -94,25 +83,26 @@ class OfficeHoursEventService:
         # Return added object
         return oh_event_entity.to_model()
 
-    # TODO: Comments
     def create_weekly_events(
         self,
         subject: User,
         oh_event: OfficeHoursEventRecurringDraft,
     ) -> list[OfficeHoursEvent]:
+        """
+        Create weekly recurring office hours events.
+
+        Args:
+            subject (User): The user initiating the event creation.
+            oh_event (OfficeHoursEventRecurringDraft): The recurring draft event.
+
+        Returns:
+            list[OfficeHoursEvent]: A list of created office hours events.
+        Raises:
+            PermissionError: If the subject is not a member of OH Section or is a student.
+            Exception: If the end date is before the start date or the range exceeds 16 weeks.
+        """
         # Permissions - Raises Exception if Permission Fails
-        section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.draft.oh_section.id
-        )
-
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                f"Section Member is a Student. User does not have permision to create event"
-            )
-
-        # Check Selected Dates Are Not None
-        if len(oh_event.selected_week_days) == 0:
-            raise Exception("There are no selected week days")
+        self._check_user_section_permissions(subject.id, oh_event.draft.oh_section.id)
 
         if oh_event.recurring_end_date < oh_event.recurring_start_date:
             raise Exception("End Date Is Before Start Date!")
@@ -137,12 +127,14 @@ class OfficeHoursEventService:
             event_draft.event_date = event_date
 
             # Update Event Start Time
-            event_draft.start_time = self._transformDate(
+            event_draft.start_time = self._transform_date(
                 event_draft.start_time, event_date
             )
 
             # Update Event End Time
-            event_draft.end_time = self._transformDate(event_draft.end_time, event_date)
+            event_draft.end_time = self._transform_date(
+                event_draft.end_time, event_date
+            )
 
             oh_event_entity = OfficeHoursEventEntity.from_draft_model(event_draft)
             event_entity_drafts.append(oh_event_entity)
@@ -151,39 +143,8 @@ class OfficeHoursEventService:
         self._session.add_all(event_entity_drafts)
         self._session.commit()
 
-        # Return added object
+        # Return added objects
         return [oh_event_entity.to_model() for oh_event_entity in event_entity_drafts]
-
-    def _get_recurring_weekday_dates(
-        self, start_date: date, end_date: date, weekdays: list[Weekday]
-    ) -> list[date]:
-        dates_in_range = []
-        current_date = start_date
-
-        weekday_names: list[str] = [weekday.name.lower() for weekday in weekdays]
-        # Iterate through each date in the range
-        while current_date <= end_date:
-            # Check if the current date falls on any of the desired weekdays
-            if current_date.strftime("%A").lower() in weekday_names:
-                dates_in_range.append(current_date)
-            # Move to the next day
-            current_date += timedelta(days=1)
-
-        return dates_in_range
-
-    def _transformDate(self, orginal_date: datetime, new_event_date: date) -> datetime:
-
-        # Extract time components from the original datetime
-        hour = orginal_date.hour
-        minute = orginal_date.minute
-
-        # Combine the new date with the time components
-        new_datetime = datetime.combine(new_event_date, datetime.min.time())
-
-        # Set the time components to the new datetime
-        new_datetime = new_datetime.replace(hour=hour, minute=minute)
-
-        return new_datetime
 
     def update(
         self, subject: User, oh_event_delta: OfficeHoursEventPartial
@@ -198,7 +159,7 @@ class OfficeHoursEventService:
             OfficeHoursEvent: Updated object in table
 
         Raises:
-            PermissionError: If the user attempting to update the event is a student.
+            PermissionError: If subject is not a member of OH Section or is a student.
 
         """
         oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event_delta.id)
@@ -208,14 +169,9 @@ class OfficeHoursEventService:
                 f"Could not find Office Hours event with id={oh_event_delta.id}"
             )
 
-        section_member_entity = self._check_user_section_membership(
+        self._check_user_section_permissions(
             subject.id, oh_event_entity.office_hours_section_id
         )
-
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                "User is a Student. Do not have permission to update an event."
-            )
 
         # Update Delta Fields
         if oh_event_delta.event_date is not None:
@@ -239,7 +195,10 @@ class OfficeHoursEventService:
         if oh_event_delta.room is not None:
             oh_event_entity.room_id = oh_event_delta.room.id
 
-        if oh_event_delta.oh_section is not None:
+        if (
+            oh_event_delta.oh_section is not None
+            and oh_event_delta.oh_section.id != oh_event_entity.office_hours_section_id
+        ):
             raise Exception("Updating Office Hours Event OH Section is Not Allowed.")
 
         self._session.commit()
@@ -258,18 +217,11 @@ class OfficeHoursEventService:
             None
 
         Raises:
-            PermissionError: If the user attempting to delete the event is a student.
+            PermissionError: If the user attempting to delete the event is a student or not a member of OH Section.
             ResourceNotFoundException: If the specified office hours event does not exist.
 
         """
-        section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.oh_section.id
-        )
-
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                "User is a Student. Do not have permission to delete an office hours event."
-            )
+        self._check_user_section_permissions(subject.id, oh_event.oh_section.id)
 
         oh_event_entity = self._session.get(OfficeHoursEventEntity, oh_event.id)
 
@@ -280,8 +232,6 @@ class OfficeHoursEventService:
 
         self._session.delete(oh_event_entity)
         self._session.commit()
-
-        return None
 
     def get_event_by_id(self, subject: User, oh_event_id: int) -> OfficeHoursEvent:
         """Gets an office hour event based on OH event id.
@@ -295,8 +245,10 @@ class OfficeHoursEventService:
 
         Raises:
             ResourceNotFoundException: If office hours event is not found given `oh_event_id`.
+            PermissionError: If subject is not a member of OH Section.
         """
-        # Select all entries in the `Course` table and sort by end date
+
+        # Get Entity in the `OfficeHoursEventEntity` table with event id
         query = select(OfficeHoursEventEntity).filter(
             OfficeHoursEventEntity.id == oh_event_id
         )
@@ -324,17 +276,10 @@ class OfficeHoursEventService:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
 
         Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-            the office hours section associated with the event (`oh_event`) or is a Student in section.
+            PermissionError: If subject is not a member of OH Section or is a student.
         """
 
-        section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.oh_section.id
-        )
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                f"Section Member is a Student. User does not have permision to get queue tickets"
-            )
+        self._check_user_section_permissions(subject.id, oh_event.oh_section.id)
 
         query = (
             select(OfficeHoursTicketEntity)
@@ -366,17 +311,10 @@ class OfficeHoursEventService:
             list[OfficeHoursTicketDetails]: List of all `OfficeHoursTicketDetails` in an OHEvent
 
         Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-            the office hours section associated with the event (`oh_event`) or is a Student in section.
+            PermissionError: If subject is not a member of OH Section or is a student.
         """
 
-        section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.oh_section.id
-        )
-        if section_member_entity.member_role == RosterRole.STUDENT:
-            raise PermissionError(
-                f"Section Member is a Student. User does not have permision to get all tickets"
-            )
+        self._check_user_section_permissions(subject.id, oh_event.oh_section.id)
 
         query = (
             select(OfficeHoursTicketEntity)
@@ -403,11 +341,12 @@ class OfficeHoursEventService:
                 (queued and called ticket counts) for the specified office hours event.
 
         Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-                the office hours section associated with the event (`oh_event`).
+            PermissionError: If subject is not a member of OH Section.
         """
         # PERMISSIONS: Check If User is an OH Section Member - Exception If Not.
-        self._check_user_section_membership(subject.id, oh_event.oh_section.id)
+        self._check_user_section_permissions(
+            subject.id, oh_event.oh_section.id, student_acess=True
+        )
 
         # Queued Tickets
         queued_ticket_entities = self._get_queued_tickets_by_oh_event(oh_event.id)
@@ -429,7 +368,7 @@ class OfficeHoursEventService:
     def get_event_queue_stats_for_student_with_ticket(
         self, subject: User, oh_event: OfficeHoursEvent, ticket_id: int
     ) -> StudentOfficeHoursEventStatus:
-        """Retrieve queued and called ticket statistics for a specific office hours event.
+        """Retrieve student ticket position, queued and called ticket statistics for a specific office hours event.
 
         Args:
             subject (User): The user object representing the authenticated user making the request.
@@ -440,14 +379,13 @@ class OfficeHoursEventService:
                 (queued and called ticket counts) for the specified office hours event.
 
         Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-                the office hours section associated with the event (`oh_event`).
+             PermissionError: If subject is not a member of OH Section.
         """
         # PERMISSIONS:
 
         # 1. Check If User is an OH Section Member - Exception If Not.
-        current_user_section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.oh_section.id
+        current_user_section_member_entity = self._check_user_section_permissions(
+            subject.id, oh_event.oh_section.id, student_acess=True
         )
 
         # 2. Check Ticket Exists in Office Hours Event
@@ -463,12 +401,11 @@ class OfficeHoursEventService:
 
         # 3. Check if User is Creator of Ticket
         ticket_creators = ticket_entity.to_details_model().creators
-        is_creator = False
 
-        for creator in ticket_creators:
-            if creator.id == current_user_section_member_entity.id:
-                is_creator = True
-
+        # True if Current Section Mement Exists In Ticket Creators List
+        is_creator: bool = current_user_section_member_entity.id in [
+            creator.id for creator in ticket_creators
+        ]
         if not is_creator:
             raise PermissionError(
                 f"User Doesn't Have Permission to View Queue Stats for Ticket id={ticket_entity.id}"
@@ -515,11 +452,10 @@ class OfficeHoursEventService:
             StaffHelpingStatus: A `StaffHelpingStatus` object representing the ticket a staff member is working on.
 
         Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-                the office hours section associated with the event with id (`oh_event`).
+            PermissionError: If subject is not a member of OH Section or is a student.
         """
         # Throws PermissionError if user is not a SectionMember of the given OH section
-        section_member_entity = self._check_user_section_membership(
+        section_member_entity = self._check_user_section_permissions(
             subject.id, oh_event.oh_section.id
         )
 
@@ -547,13 +483,12 @@ class OfficeHoursEventService:
             StudentQueuedTicketStatus: A `StudentQueuedTicketStatus` object representing the ticket a student has queued up.
 
         Raises:
-            PermissionError: Raised if the authenticated user (`subject`) is not a member of
-                the office hours section associated with the event with id (`oh_event`).
+            PermissionError: If subject is not a member of OH Section.
         """
 
         # Throws PermissionError if user is not a SectionMember of the given OH section
-        section_member_entity = self._check_user_section_membership(
-            subject.id, oh_event.oh_section.id
+        section_member_entity = self._check_user_section_permissions(
+            subject.id, oh_event.oh_section.id, student_acess=True
         )
 
         queued_event_ticket_entities = self._get_queued_tickets_by_oh_event(oh_event.id)
@@ -633,12 +568,44 @@ class OfficeHoursEventService:
         # Return the entities
         return queued_ticket_entities
 
+    def _check_user_section_permissions(
+        self, user_id: int, oh_section_id: int, student_acess: bool = False
+    ) -> SectionMemberEntity:
+        """
+        Check user permissions for a specific office hours section.
+
+        Args:
+            user_id (int): The ID of the user whose permissions are being checked.
+            oh_section_id (int): The ID of the office hours section to check permissions for.
+            student_access (bool, optional): Flag indicating whether student access is allowed.
+                Defaults to False.
+
+        Returns:
+            SectionMemberEntity: An entity representing the user's membership status in the section.
+
+        Raises:
+            PermissionError: If subject is not a member or student access is not allowed and the user is a student.
+        """
+
+        section_member_entity = self._check_user_section_membership(
+            user_id, oh_section_id
+        )
+
+        if (
+            not student_acess
+            and section_member_entity.member_role == RosterRole.STUDENT
+        ):
+            raise PermissionError(
+                f"Section Member is a Student. User does not have permision for this action."
+            )
+        return section_member_entity
+
     def _check_user_section_membership(
         self,
         user_id: int,
         oh_section_id: int,
     ) -> SectionMemberEntity:
-        """Checks if a given user is a member in tue academic section associate with given office hours section ID.
+        """Checks if a given user is a member in the academic section associate with given office hours section ID.
 
         Note: An Office Hours section can have multiple academic sections assoicated with it.
 
@@ -649,8 +616,7 @@ class OfficeHoursEventService:
             SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
 
         Raises:
-            ResourceNotFoundException if cannot user is not a member in given academic section.
-            PermissionError if user creating event is not a UTA/GTA/Instructor
+            PermissionError: If cannot find user in given academic section.
         """
 
         # Find Academic Section and Their IDs
@@ -677,3 +643,57 @@ class OfficeHoursEventService:
 
         # Return the entity
         return section_member_entity
+
+    def _get_recurring_weekday_dates(
+        self, start_date: date, end_date: date, weekdays: list[Weekday]
+    ) -> list[date]:
+        """
+        Get recurring weekday dates within a specified date range.
+
+        Args:
+            start_date (date): The start date of the date range.
+            end_date (date): The end date of the date range.
+            weekdays (list[Weekday]): A list of Weekday enum values representing
+                the weekdays to include.
+
+        Returns:
+            list[date]: A list of date objects representing the recurring
+                weekday dates within the specified range.
+        """
+        dates_in_range = []
+        current_date = start_date
+
+        weekday_names: list[str] = [weekday.name.lower() for weekday in weekdays]
+        # Iterate through each date in the range
+        while current_date <= end_date:
+            # Check if the current date falls on any of the desired weekdays
+            if current_date.strftime("%A").lower() in weekday_names:
+                dates_in_range.append(current_date)
+            # Move to the next day
+            current_date += timedelta(days=1)
+
+        return dates_in_range
+
+    def _transform_date(self, orginal_date: datetime, new_event_date: date) -> datetime:
+        """
+        Transform a datetime object to a new date while preserving time components.
+
+        Args:
+            orginal_date (datetime): The original datetime object to transform.
+            new_event_date (date): The new date to set while preserving time components.
+
+        Returns:
+            datetime: A new datetime object with the date components from new_event_date
+                and the time components from orginal_date.
+        """
+        # Extract time components from the original datetime
+        hour = orginal_date.hour
+        minute = orginal_date.minute
+
+        # Combine the new date with the time components
+        new_datetime = datetime.combine(new_event_date, datetime.min.time())
+
+        # Set the time components to the new datetime
+        new_datetime = new_datetime.replace(hour=hour, minute=minute)
+
+        return new_datetime

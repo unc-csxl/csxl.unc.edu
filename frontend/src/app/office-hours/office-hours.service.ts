@@ -112,11 +112,11 @@ export class OfficeHoursService {
 
   createSection(
     section_draft: OfficeHoursSectionDraft,
-    academic_ids: number[]
+    academic_section_ids: number[]
   ): Observable<OfficeHoursSectionDetails> {
     const requestBody = {
       oh_section: section_draft,
-      academic_ids: academic_ids
+      academic_section_ids: academic_section_ids
     };
     return this.http.post<OfficeHoursSectionDetails>(
       '/api/office-hours/section',

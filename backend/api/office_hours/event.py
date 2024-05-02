@@ -58,20 +58,6 @@ def new_oh_event(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-# @api.post(
-#     "/recurring/daily/", response_model=list[OfficeHoursEvent], tags=["Office Hours"]
-# )
-# def new_oh_event(
-#     oh_event: OfficeHoursEventDailyRecurringDraft,
-#     subject: User = Depends(registered_user),
-#     oh_event_service: OfficeHoursEventService = Depends(),
-# ) -> list[OfficeHoursEvent]:
-#     try:
-#         return oh_event_service.create_daily(subject, oh_event)
-#     except Exception as e:
-#         raise HTTPException(status_code=404, detail=str(e))
-
-
 @api.post(
     "/recurring/weekly/", response_model=list[OfficeHoursEvent], tags=["Office Hours"]
 )
@@ -80,6 +66,12 @@ def new_oh_event(
     subject: User = Depends(registered_user),
     oh_event_service: OfficeHoursEventService = Depends(),
 ) -> list[OfficeHoursEvent]:
+    """
+    Adds a new weekly recurring OH event to the database.
+
+    Returns:
+        list[OfficeHoursEvent]: OH Events created
+    """
     try:
         return oh_event_service.create_weekly_events(subject, oh_event)
     except Exception as e:
@@ -135,7 +127,7 @@ def get_oh_event_by_id(
         OfficeHoursEvent: The OH event with the given OH event id
     """
     try:
-        return oh_event_service.get_event_by_id(subject, oh_event_id)
+        return oh_event_service.get_event_by_id(oh_event_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

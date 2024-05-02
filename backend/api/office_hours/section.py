@@ -38,7 +38,7 @@ openapi_tags = {
 @api.post("", response_model=OfficeHoursSectionDetails, tags=["Office Hours"])
 def new_oh_section(
     oh_section: OfficeHoursSectionDraft,
-    academic_ids: list[int],
+    academic_section_ids: list[int],
     subject: User = Depends(registered_user),
     oh_section_service: OfficeHoursSectionService = Depends(),
 ) -> OfficeHoursSectionDetails:
@@ -49,7 +49,7 @@ def new_oh_section(
         OfficeHoursSectionDetails: OH Section created
     """
     try:
-        return oh_section_service.create(subject, oh_section, academic_ids)
+        return oh_section_service.create(subject, oh_section, academic_section_ids)
     except PermissionError as e:
         raise HTTPException(status_code=403, detail=str(e))
     except Exception as e:

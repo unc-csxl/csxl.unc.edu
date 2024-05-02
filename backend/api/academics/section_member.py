@@ -25,11 +25,14 @@ openapi_tags = {
 
 @api.get("/{id}", response_model=SectionMember, tags=["Academics"])
 def get_section_member_by_id(
-    id: int, section_member_svc: SectionMemberService = Depends()
+    id: int,
+    subject: User = Depends(registered_user),
+    section_member_svc: SectionMemberService = Depends(),
 ) -> SectionMember:
     """
     Args:
         id (int): The unique identifier of the SectionMember.
+        subject (User): The currently logged-in user.
         section_member_svc (SectionMemberService): Service dependency to interact with Section Membership data.
 
     Returns:

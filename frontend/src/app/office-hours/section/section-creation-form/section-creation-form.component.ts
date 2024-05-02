@@ -60,9 +60,9 @@ export class SectionCreationFormComponent implements OnInit {
     if (this.sectionForm.valid) {
       let oh_title = this.sectionForm.value.section_name ?? '';
       let oh_section: OfficeHoursSectionDraft = { title: oh_title };
-      let academic_ids = this.sectionForm.value.academic_sections ?? [];
+      let academic_section_ids = this.sectionForm.value.academic_sections ?? [];
       this.officeHoursService
-        .createSection(oh_section, academic_ids)
+        .createSection(oh_section, academic_section_ids)
         .subscribe({
           next: (section) => this.onSuccess(section),
           error: (err) => this.onError(err)

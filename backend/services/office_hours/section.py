@@ -47,14 +47,14 @@ class OfficeHoursSectionService:
         self,
         subject: User,
         oh_section: OfficeHoursSectionDraft,
-        academic_ids: list[int],
+        academic_section_ids: list[int],
     ) -> OfficeHoursSectionDetails:
         """Creates a new office hours section.
 
         Args:
             subject (User): a valid User model representing the currently logged in User
             oh_section (OfficeHoursSectionDraft): OfficeHoursSection Draft to add to table
-            academic_ids (list[int]): List of academic section IDs to create an OH Section for
+            academic_section_ids (list[int]): List of academic section IDs to create an OH Section for
         Returns:
             OfficeHoursSectionDetails: Object added to table
         """
@@ -62,12 +62,12 @@ class OfficeHoursSectionService:
         # PERMISSIONS
 
         # 1. Check If Give Academic Sections IDs Are Valid
-        query = select(SectionEntity).where(SectionEntity.id.in_(academic_ids))
+        query = select(SectionEntity).where(SectionEntity.id.in_(academic_section_ids))
         academic_section_entities = self._session.scalars(query).all()
 
-        if len(academic_section_entities) != len(academic_ids):
+        if len(academic_section_entities) != len(academic_section_ids):
             raise ResourceNotFoundException(
-                f"Unable to Fetch All Academic Sections. Only {len(academic_section_entities)} out of {len(academic_ids)} was found."
+                f"Unable to Fetch All Academic Sections. Only {len(academic_section_entities)} out of {len(academic_section_ids)} was found."
             )
 
         # 2. Check if Already Have an Office Hours Event
@@ -76,7 +76,7 @@ class OfficeHoursSectionService:
                 raise Exception("Office Hours Section Already Exists!")
 
         # 3. Check If User is a Member in a Section and Has Proper Role to Create
-        for academic_id in academic_ids:
+        for academic_id in academic_section_ids:
             section_member_entity = self._check_membership_by_user_id_section_id(
                 subject.id, academic_id
             )

@@ -47,7 +47,7 @@ def test_check_staff_helping_status_not_currently_helping(
 ):
     """Test case to check the staff helping status when not currently helping."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_gta, office_hours_data.comp_110_f23_oh_event.id
+        user__comp110_uta_0, office_hours_data.comp_110_f23_oh_event.id
     )
     status = oh_event_svc.check_staff_helping_status(user__comp110_instructor, oh_event)
 
@@ -60,7 +60,7 @@ def test_check_staff_helping_status_exception_if_non_member(
 ):
     """Test case to check an expection is raised if a non member."""
     oh_event = oh_event_svc.get_event_by_id(
-        user__comp110_gta, office_hours_data.comp_110_f23_oh_event.id
+        user__comp110_uta_0, office_hours_data.comp_110_f23_oh_event.id
     )
 
     with pytest.raises(PermissionError):
