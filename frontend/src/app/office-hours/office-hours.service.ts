@@ -89,6 +89,8 @@ export class OfficeHoursService {
     );
   }
 
+  /* Ticket Helper Methods: */
+
   formatTicketType(typeNum: number) {
     if (typeNum === TicketType.ASSIGNMENT_HELP) {
       return 'Assignment Help';
@@ -310,6 +312,7 @@ export class OfficeHoursService {
     return this.http.delete('api/office-hours/event/' + id);
   }
 
+  /* Event Helper Methods: */
   formatEventType(typeNum: number) {
     if (typeNum === OfficeHoursEventType.OFFICE_HOURS) {
       return 'Office Hours';
@@ -345,6 +348,8 @@ export class OfficeHoursService {
       user_to_modify
     );
   }
+
+  /* Roster Role Helper Method: */
 
   formatRosterRole(typeNum: number) {
     if (typeNum === 0) {

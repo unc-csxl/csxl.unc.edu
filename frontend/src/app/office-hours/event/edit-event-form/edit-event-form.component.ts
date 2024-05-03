@@ -142,6 +142,7 @@ export class EditEventFormComponent implements OnInit {
       .subscribe((role) => (this.rosterRole = role.member_role));
   }
 
+  /* Get list of available Rooms to hold office hours event in */
   getRooms() {
     this.academicsService.getRooms().subscribe((rooms) => {
       this.rooms = rooms;
@@ -149,10 +150,12 @@ export class EditEventFormComponent implements OnInit {
     });
   }
 
-  getSelectedRoom() {
+  /* Get room that has been selected from list of options */
+  getSelectedRoom(): Room | undefined {
     return this.rooms.find((room) => room.id === this.eventForm.value.location);
   }
 
+  /* Gets OfficeHoursSection that event belongs to */
   getSection() {
     this.officeHoursService.getSection(this.sectionId).subscribe((section) => {
       this.section = section;
@@ -160,6 +163,7 @@ export class EditEventFormComponent implements OnInit {
     });
   }
 
+  /* Gets all upcoming events for the Office Hours Section */
   getUpcomingEvents() {
     this.officeHoursService
       .getAllUpcomingEventsBySection(this.sectionId)
@@ -168,13 +172,12 @@ export class EditEventFormComponent implements OnInit {
       });
   }
 
+  /* Get OfficeHoursEventDetails for selected event and populate form with its data */
   getEventDetails() {
     if (this.eventId !== 'upcoming') {
       let eventIdNum = Number(this.eventId);
       this.officeHoursService.getEvent(eventIdNum).subscribe((event) => {
         this.event = event;
-
-        console.log(event.start_time);
 
         this.eventForm.setValue({
           event_title: event.id,
@@ -211,6 +214,7 @@ export class EditEventFormComponent implements OnInit {
     this.isVirtualOurLink = event.value.includes('our_link');
   }
 
+  /* On changing selected event, re-populate form with newly selected data */
   onEventChange(event: any) {
     this.eventId = event.value;
     this.getEventDetails();
@@ -255,8 +259,6 @@ export class EditEventFormComponent implements OnInit {
             this.eventForm.value.end_time ?? ''
       };
 
-      console.log(event_draft);
-
       this.officeHoursService.updateEvent(event_draft).subscribe({
         next: () => this.onSuccess(),
         error: (err) => this.onError(err)
@@ -264,6 +266,7 @@ export class EditEventFormComponent implements OnInit {
     }
   }
 
+  /* Maps event type string to OfficeHoursEventType enum */
   private mapEventType(eventType: string): OfficeHoursEventType {
     switch (eventType) {
       case 'office_hours':
@@ -277,6 +280,7 @@ export class EditEventFormComponent implements OnInit {
     }
   }
 
+  /* Maps OfficeHoursEventType enum to string */
   private reverseMapEventType(eventType: OfficeHoursEventType): string {
     switch (eventType) {
       case OfficeHoursEventType.OFFICE_HOURS:
@@ -290,6 +294,7 @@ export class EditEventFormComponent implements OnInit {
     }
   }
 
+  /* Maps event mode string to OfficeHoursEventModeType enum */
   private mapEventMode(eventMode: string): OfficeHoursEventModeType {
     switch (eventMode) {
       case 'in_person':
@@ -303,6 +308,7 @@ export class EditEventFormComponent implements OnInit {
     }
   }
 
+  /* Maps OfficeHoursEventModeType enum to string */
   private reverseMapEventMode(eventMode: OfficeHoursEventModeType): string {
     switch (eventMode) {
       case OfficeHoursEventModeType.IN_PERSON:
@@ -314,10 +320,6 @@ export class EditEventFormComponent implements OnInit {
       default:
         return 'in_person';
     }
-  }
-
-  public formatEventType(type: OfficeHoursEventType) {
-    return this.officeHoursService.formatEventType(type);
   }
 
   /* On successful event creation, navigate back to section home */
@@ -335,5 +337,10 @@ export class EditEventFormComponent implements OnInit {
       duration: 2000
     });
     console.log(err.description);
+  }
+
+  /* Helper function to format event type */
+  public formatEventType(type: OfficeHoursEventType) {
+    return this.officeHoursService.formatEventType(type);
   }
 }
