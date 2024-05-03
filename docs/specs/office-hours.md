@@ -38,7 +38,7 @@ The frontend features add _13_ new Angular components and _16_ new frontend widg
 ### Office Hours Home Page <a name='OfficeHoursHomePage'></a>
 
 The following page has been added as the home page of our Office Hours Feature.
-![Office Hours Home Page](../images/specs/office-hours/oh-home.png)
+![Office Hours Home Page](../images/specs/office-hours/office-hours-home.png)
 
 The home page for the new Office Hours feature is available on the side navigation toolbar at `/office-hours`. The home page contains a list of a user's Office Hours sections viewable by term.
 
