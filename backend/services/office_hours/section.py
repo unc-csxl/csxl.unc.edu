@@ -6,7 +6,7 @@ from sqlalchemy import select, not_
 from sqlalchemy.orm import Session
 
 from ...models.office_hours.ticket import OfficeHoursTicket
-from ...models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
+from ...models.office_hours.section_data import OfficeHoursSectionTrailingData
 from ...models.academics.section_member import SectionMember, SectionMemberPartial
 
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -271,7 +271,6 @@ class OfficeHoursSectionService:
         Returns:
             list[OfficeHoursSectionDetails]: List of all `OfficeHoursSectionDetails`
         """
-        # TODO: Permission
 
         # Select OH Section entities the user is a part of in the given term
         query = (
@@ -484,15 +483,18 @@ class OfficeHoursSectionService:
         # Return ticket details models where have_concerns is True
         return [ticket for ticket in ticket_details_models if ticket.have_concerns]
 
-    def get_section_trailing_week_data(
-        self, subject: User, oh_section: OfficeHoursSectionDetails
-    ) -> OfficeHoursSectionTrailingWeekData:
-        """Retrieves all trailing week statistics in a section from the table.
+    def get_section_trailing_data(
+        self,
+        subject: User,
+        oh_section: OfficeHoursSectionDetails,
+        time_range: TimeRange,
+    ) -> OfficeHoursSectionTrailingData:
+        """Retrieves all trailing statistics from a given time range in a section from the table.
         Args:
             subject: a valid User model representing the currently logged in User
             oh_section: the OfficeHoursSectionDetails to query by.
         Returns:
-            OfficeHoursSectionTrailingWeekData: Model of all trailing week statistics for the given OH section
+            OfficeHoursSectionTrailingData: Model of all trailing statistics for the given OH section
         """
 
         # PERMISSIONS
@@ -518,12 +520,15 @@ class OfficeHoursSectionService:
 
         entity = self._session.scalars(query).one_or_none()
 
-        # Get the tickets from the past week that are linked to the events which are linked to the section
+        # Get the tickets from the time range that are linked to the events which are linked to the section
         filtered_ticket_entities = [
             ticket
             for event in entity.events
             for ticket in event.tickets
-            if ticket.created_at > datetime.now() - timedelta(days=7)
+            if (
+                ticket.created_at >= time_range.start
+                and ticket.created_at <= time_range.end
+            )
         ]
 
         # Get unique creators
@@ -572,7 +577,7 @@ class OfficeHoursSectionService:
             std_dev_duration_time = 0.0
 
         # --- Round floats to two decimal places, construct the model and return it ---
-        return OfficeHoursSectionTrailingWeekData(
+        return OfficeHoursSectionTrailingData(
             number_of_tickets=len(filtered_ticket_entities),
             number_of_students=len(unique_ticket_creators),
             average_wait_time=round(avg_wait_time, 2),
@@ -593,22 +598,22 @@ class OfficeHoursSectionService:
         """
 
         # Select OH Section by id
-        query = select(OfficeHoursSectionEntity).where(
-            OfficeHoursSectionEntity.id == oh_section.id
+        query = select(SectionEntity).where(
+            SectionEntity.office_hours_id == oh_section.id
         )
 
-        oh_section_entity = self._session.scalars(query).one_or_none()
+        academic_section_entities = self._session.scalars(query).all()
 
-        if oh_section_entity is None:
+        if len(academic_section_entities) == 0:
             raise ResourceNotFoundException(
-                f"Unable to find section with id {oh_section.id}"
+                f"Unable to find section(s) with OH id {oh_section.id}"
             )
 
         # PERMISSIONS
 
         # Throws exception if user is not a member
         section_member_entity = self._check_user_section_membership(
-            subject.id, oh_section_entity.id
+            subject.id, academic_section_entities[0].office_hours_id
         )
 
         # Raises PermissionError if user trying to fetch all members is a Student
@@ -617,12 +622,10 @@ class OfficeHoursSectionService:
                 f"Section Member is a Student. User Does Not Have Permission to Get Section Members."
             )
 
-        # Get the members that are linked to the academic sections which are linked to the OH section
-        member_entities = [
-            member
-            for section in oh_section_entity.sections
-            for member in section.members
-        ]
+        # Get the members from each academic section which is linked to the OH section
+        member_entities = []
+        for section in academic_section_entities:
+            member_entities += section.members
 
         # Return the model version of those members
         return [entity.to_flat_model() for entity in member_entities]

@@ -25,3 +25,4 @@ class SectionDetails(Section):
     course: Course
     term: Term
     office_hours_section: OfficeHoursSection | None
+    members: list[SectionMember]

@@ -11,7 +11,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { OfficeHoursService } from '../../../office-hours.service';
 import {
   OfficeHoursEventType,
-  OfficeHoursSectionTrailingWeekData
+  OfficeHoursSectionTrailingData
 } from '../../../office-hours.models';
 import { RosterRole } from 'src/app/academics/academics.models';
 
@@ -22,7 +22,7 @@ import { RosterRole } from 'src/app/academics/academics.models';
 })
 export class SectionData implements OnInit {
   @Input() sectionId!: number;
-  data: OfficeHoursSectionTrailingWeekData | null = null;
+  data: OfficeHoursSectionTrailingData | null = null;
 
   constructor(private officeHoursService: OfficeHoursService) {}
 

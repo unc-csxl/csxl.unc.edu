@@ -2,7 +2,7 @@
 
 import pytest
 
-from .....models.office_hours.section_data import OfficeHoursSectionTrailingWeekData
+from .....models.office_hours.section_data import OfficeHoursSectionTrailingData
 
 from .....services.office_hours.section import OfficeHoursSectionService
 
@@ -42,7 +42,7 @@ def test_get_section_trailing_week_data(oh_section_svc: OfficeHoursSectionServic
     )
 
     # Future TODO: Calculate Actual Stats From Demo Data
-    assert isinstance(data, OfficeHoursSectionTrailingWeekData)
+    assert isinstance(data, OfficeHoursSectionTrailingData)
     assert data.number_of_students == 1
     assert data.number_of_tickets == len(office_hours_data.comp110_current_term_tickets)
     assert data.average_wait_time is not None
@@ -63,7 +63,7 @@ def test_get_section_trailing_week_data_no_ticket_info(
         user__comp110_instructor, oh_section
     )
 
-    assert isinstance(data, OfficeHoursSectionTrailingWeekData)
+    assert isinstance(data, OfficeHoursSectionTrailingData)
     assert data.number_of_students == 0
     assert data.number_of_tickets == 0
     assert data.average_wait_time == 0

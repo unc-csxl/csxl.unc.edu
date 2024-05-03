@@ -5,7 +5,7 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class OfficeHoursSectionTrailingWeekData(BaseModel):
+class OfficeHoursSectionTrailingData(BaseModel):
     """
     Pydantic model to represent the trailing week data gathered for an office hours section's data page.
     Time statistics will be computed in minutes.

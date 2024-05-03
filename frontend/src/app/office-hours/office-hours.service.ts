@@ -29,7 +29,7 @@ import {
   OfficeHoursEventStatus,
   StudentOfficeHoursEventStatus,
   OfficeHoursSection,
-  OfficeHoursSectionTrailingWeekData,
+  OfficeHoursSectionTrailingData,
   OfficeHoursEventModeType,
   Weekday,
   OfficeHoursEventPartial
@@ -206,8 +206,8 @@ export class OfficeHoursService {
 
   getSectionData(
     oh_section_id: number
-  ): Observable<OfficeHoursSectionTrailingWeekData> {
-    return this.http.get<OfficeHoursSectionTrailingWeekData>(
+  ): Observable<OfficeHoursSectionTrailingData> {
+    return this.http.get<OfficeHoursSectionTrailingData>(
       'api/office-hours/section/' + oh_section_id + '/data/statistics'
     );
   }

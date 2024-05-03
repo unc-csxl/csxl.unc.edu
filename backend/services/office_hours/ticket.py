@@ -143,17 +143,13 @@ class OfficeHoursTicketService:
             subject.id, oh_section_entity.id
         )
 
-        # If current user is student, check if they are creator of ticket
+        # If current user is student, check if they are one of the creators of ticket
         # Raise Exception if Not Creator!
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
-            is_creator = False
             ticket_creators = ticket_entity.to_details_model().creators
-
-            for creator in ticket_creators:
-                if creator.id == current_user_section_member_entity.id:
-                    is_creator = True
-
-            if not is_creator:
+            if current_user_section_member_entity.id not in [
+                creator.id for creator in ticket_creators
+            ]:
                 raise PermissionError(
                     f"User Doesn't Have Permission to Get Ticket id={ticket_entity.id}"
                 )
@@ -311,15 +307,11 @@ class OfficeHoursTicketService:
 
         # 2. If Student, Can Only Cancel Their Own Ticket; Otherwise, other roles are fine to cancel.
         if current_user_section_member_entity.member_role == RosterRole.STUDENT:
-
             ticket_creators = ticket_entity.to_details_model().creators
             # Check If Current User is in Creator List, if not, raise Error
-            is_creator = False
-            for creator in ticket_creators:
-                if creator.id == current_user_section_member_entity.id:
-                    is_creator = True
-
-            if not is_creator:
+            if current_user_section_member_entity.id not in [
+                creator.id for creator in ticket_creators
+            ]:
                 raise PermissionError(
                     f"User Doesn't Have Permission to Cancel Ticket id={oh_ticket.id}"
                 )

@@ -148,6 +148,7 @@ class SectionEntity(EntityBase):
             meeting_pattern=self.meeting_pattern,
             lecture_room=section.lecture_room,
             office_hour_rooms=section.office_hour_rooms,
+            members=[member.to_model() for member in self.members],
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,

@@ -204,7 +204,7 @@ export interface StudentOfficeHoursEventStatus {
   ticket_position: number;
 }
 
-export interface OfficeHoursSectionTrailingWeekData {
+export interface OfficeHoursSectionTrailingData {
   number_of_tickets: number;
   number_of_students: number;
   average_wait_time: number;
