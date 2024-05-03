@@ -162,7 +162,7 @@ export class EditEventFormComponent implements OnInit {
 
   getUpcomingEvents() {
     this.officeHoursService
-      .getUpcomingEventsBySection(this.sectionId)
+      .getAllUpcomingEventsBySection(this.sectionId)
       .subscribe((events) => {
         this.events = events;
       });

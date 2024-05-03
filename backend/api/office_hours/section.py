@@ -152,6 +152,37 @@ def get_upcoming_oh_section_events(
 
 
 @api.get(
+    "/{oh_section_id}/events/upcoming/all",
+    response_model=list[OfficeHoursEvent],
+    tags=["Office Hours"],
+)
+def get_all_semester_upcoming_oh_section_events(
+    oh_section_id: int,
+    subject: User = Depends(registered_user),
+    oh_section_service: OfficeHoursSectionService = Depends(),
+    start: datetime = datetime.now(),
+    end: datetime = datetime.now() + timedelta(weeks=17),
+) -> list[OfficeHoursEvent]:
+    """
+    Gets a list of upcoming OH events within a semester (17 weeks).
+
+    Returns:
+        list[OfficeHoursEvent]: OH events associated with a given section in the time range
+    """
+
+    try:
+        time_range = TimeRange(start=start, end=end)
+        oh_section: OfficeHoursSectionDetails = oh_section_service.get_section_by_id(
+            subject, oh_section_id
+        )
+        return oh_section_service.get_upcoming_events_by_section(
+            subject, oh_section, time_range
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get(
     "/{oh_section_id}/events/current",
     response_model=list[OfficeHoursEvent],
     tags=["Office Hours"],

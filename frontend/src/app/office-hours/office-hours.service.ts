@@ -162,6 +162,14 @@ export class OfficeHoursService {
     );
   }
 
+  getAllUpcomingEventsBySection(
+    oh_section_id: number
+  ): Observable<OfficeHoursEvent[]> {
+    return this.http.get<OfficeHoursEvent[]>(
+      'api/office-hours/section/' + oh_section_id + '/events/upcoming/all'
+    );
+  }
+
   getCurrentEventsBySection(
     oh_section_id: number
   ): Observable<OfficeHoursEvent[]> {
