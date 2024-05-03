@@ -62,14 +62,12 @@
           <mat-divider></mat-divider>
           <mat-card-content class="card-container">
             <div *ngIf="assignmentType === 'assignment_help'">
-              <p>1. What section of the assignment do you need help with?</p>
+              <p>What section of the assignment do you need help with?</p>
               <mat-form-field>
                 <mat-label>Ex. EX01, Part 2</mat-label>
                 <input matInput required formControlName="assignmentQ1" />
               </mat-form-field>
-              <p>
-                2. Describe in English what you are trying to express in code.
-              </p>
+              <p>Describe in English what you are trying to express in code.</p>
               <mat-form-field>
                 <mat-label>Ex. I am trying to...</mat-label>
                 <textarea
@@ -77,7 +75,7 @@
                   required
                   formControlName="assignmentQ2"></textarea>
               </mat-form-field>
-              <p>3. What concepts do you need to use to solve this problem?</p>
+              <p>What concepts do you need to use to solve this problem?</p>
               <mat-form-field>
                 <mat-label>
                   Ex. Languages, class concepts, technologies involved
@@ -87,7 +85,7 @@
                   required
                   formControlName="assignmentQ3"></textarea>
               </mat-form-field>
-              <p>4. What have you tried? Why do you suspect it didn't work?</p>
+              <p>What have you tried? Why do you suspect it didn't work?</p>
               <mat-form-field>
                 <mat-label>Ex. I have already tried...</mat-label>
                 <textarea
@@ -96,7 +94,7 @@
                   formControlName="assignmentQ4"></textarea>
               </mat-form-field>
               <p *ngIf="event?.mode === 1">
-                5. Please provide a Zoom link for the staff member to join.
+                Please provide a Zoom link for the staff member to join.
               </p>
               <mat-form-field *ngIf="event?.mode === 1">
                 <mat-label>Ex. https://unc.zoom.us/...</mat-label>
@@ -107,7 +105,7 @@
               </mat-form-field>
             </div>
             <div *ngIf="assignmentType === 'conceptual_help'">
-              <p>1. What questions or topics do you want to talk through?</p>
+              <p>What questions or topics do you want to talk through?</p>
               <mat-form-field>
                 <mat-label></mat-label>
                 <textarea
@@ -116,7 +114,7 @@
                   formControlName="conceptualQ1"></textarea>
               </mat-form-field>
               <p *ngIf="event?.mode === 1">
-                5. Please provide a Zoom link for the staff member to join.
+                Please provide a Zoom link for the staff member to join.
               </p>
               <mat-form-field *ngIf="event?.mode === 1">
                 <mat-label>Ex. https://unc.zoom.us/...</mat-label>
