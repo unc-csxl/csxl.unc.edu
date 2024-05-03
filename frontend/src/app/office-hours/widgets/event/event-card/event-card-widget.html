@@ -19,7 +19,11 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>Edit Event</button>
+      <a>
+        <button [routerLink]="['edit-event/' + event.id]" mat-menu-item>
+          Edit Event
+        </button>
+      </a>
       <button mat-menu-item (click)="openDeleteEventDialog()">
         Delete Event
       </button>

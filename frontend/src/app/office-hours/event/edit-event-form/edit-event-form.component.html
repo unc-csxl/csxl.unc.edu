@@ -1,3 +1,4 @@
+<!-- eslint-disable prettier/prettier -->
 <div class="page-container" *ngIf="rosterRole === 0">
   <p>You are not authorized to view this page.</p>
 </div>
@@ -9,23 +10,35 @@
   <mat-card appearance="outlined">
     <div class="card-container">
       <mat-card-title>Edit Event</mat-card-title>
+      <div *ngIf="!isUpcoming">
+        <mat-card-subtitle *ngIf="event">
+          {{ formatEventType(event.type) }} - {{ event.event_date | date: 'EEEE
+          MM/dd'}}, {{ event.start_time | date: 'h:mma' }} - {{ event.end_time |
+          date: 'h:mma' }}, {{ event.room.id }}
+        </mat-card-subtitle>
+      </div>
     </div>
     <mat-divider></mat-divider>
     <mat-card-content class="card-container">
-      <p>Event:</p>
-      <mat-form-field>
-        <mat-label></mat-label>
-        <mat-select required formControlName="event_title">
-          <mat-option
-            *ngFor="let eventOption of events"
-            [value]="eventOption.id">
-            {{ formatEventType(eventOption.type) }} - {{ eventOption.event_date
-            | date: 'EEEE MM/dd' }}, {{ eventOption.start_time | date: 'h:mma'}}
-            - {{ eventOption.end_time | date: 'h:mma' }}, {{ eventOption.room.id
-            }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div *ngIf="isUpcoming">
+        <p>Event:</p>
+        <mat-form-field>
+          <mat-label></mat-label>
+          <mat-select
+            required
+            formControlName="event_title"
+            (selectionChange)="onEventChange($event)">
+            <mat-option
+              *ngFor="let eventOption of events"
+              [value]="eventOption.id">
+              {{ formatEventType(eventOption.type) }} - {{
+              eventOption.event_date | date: 'EEEE MM/dd' }}, {{
+              eventOption.start_time | date: 'h:mma'}} - {{ eventOption.end_time
+              | date: 'h:mma' }}, {{ eventOption.room.id }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
       <p>Event Type:</p>
       <mat-form-field>
         <mat-label>Select Type</mat-label>
@@ -101,7 +114,7 @@
         </mat-form-field>
       </div>
       <div class="buttons">
-        <a [routerLink]="['..']">
+        <a [routerLink]="['../..']">
           <button mat-stroked-button class="button" type="button">
             Cancel
           </button>

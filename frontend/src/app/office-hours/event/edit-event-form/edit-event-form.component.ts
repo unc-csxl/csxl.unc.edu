@@ -20,6 +20,7 @@ import {
   OfficeHoursEventDetails,
   OfficeHoursEventDraft,
   OfficeHoursEventModeType,
+  OfficeHoursEventPartial,
   OfficeHoursEventType,
   OfficeHoursSectionDetails
 } from '../../office-hours.models';
@@ -50,7 +51,7 @@ export class EditEventFormComponent implements OnInit {
       ]
     },
     {
-      path: 'instructor/:id/edit-event:eventId',
+      path: 'instructor/:id/edit-event/:eventId',
       component: EditEventFormComponent,
       canActivate: [],
       resolve: { section: sectionResolver },
@@ -78,10 +79,12 @@ export class EditEventFormComponent implements OnInit {
   /* Upcoming event list */
   events: OfficeHoursEvent[] = [];
 
+  isUpcoming: boolean = false;
+
   // RosterRole to determine if user can view this routed component
   rosterRole: RosterRole | undefined;
   eventForm: FormGroup = this.formBuilder.group({
-    event_title: ['', Validators.required],
+    event_title: [''],
     event_type: ['', Validators.required],
     event_mode: ['', Validators.required],
     description: '',
@@ -116,6 +119,9 @@ export class EditEventFormComponent implements OnInit {
     this.getRooms();
     this.getSection();
     this.eventId = this.route.snapshot.params['eventId'];
+    if (this.eventId === 'upcoming') {
+      this.isUpcoming = true;
+    }
 
     this.getEventDetails();
 
@@ -143,6 +149,10 @@ export class EditEventFormComponent implements OnInit {
     });
   }
 
+  getSelectedRoom() {
+    return this.rooms.find((room) => room.id === this.eventForm.value.location);
+  }
+
   getSection() {
     this.officeHoursService.getSection(this.sectionId).subscribe((section) => {
       this.section = section;
@@ -164,21 +174,12 @@ export class EditEventFormComponent implements OnInit {
       this.officeHoursService.getEvent(eventIdNum).subscribe((event) => {
         this.event = event;
 
-        let eventText =
-          this.officeHoursService.formatEventType(event.type) +
-          ', ' +
-          event.event_date +
-          ', ' +
-          event.start_time +
-          ' - ' +
-          event.end_time;
-
-        console.log(this.event.description);
+        console.log(event.start_time);
 
         this.eventForm.setValue({
           event_title: event.id,
           event_type: this.reverseMapEventType(event.type),
-          event_mode: '',
+          event_mode: this.reverseMapEventMode(event.mode),
           description: event.description,
           event_date: event.event_date,
           start_time: event.start_time.split('T')[1],
@@ -210,6 +211,11 @@ export class EditEventFormComponent implements OnInit {
     this.isVirtualOurLink = event.value.includes('our_link');
   }
 
+  onEventChange(event: any) {
+    this.eventId = event.value;
+    this.getEventDetails();
+  }
+
   onSubmit() {
     // Logic for assigning the correct OfficeHoursEventType and OfficeHoursEventMode enum
     let event_type: OfficeHoursEventType = this.mapEventType(
@@ -230,22 +236,31 @@ export class EditEventFormComponent implements OnInit {
 
     // Ensure that section must not be null to create/edit event
     if (this.section) {
-      var event_draft: OfficeHoursEventDraft = {
+      var event_draft: OfficeHoursEventPartial = {
+        id: this.event?.id ?? -1,
         oh_section: this.section,
-        room: { id: this.eventForm.value.location ?? '' },
+        room: this.getSelectedRoom() ?? null,
         type: event_type,
         mode: event_mode,
         description: this.eventForm.value.description ?? '',
         location_description: this.eventForm.value.location_description ?? '',
         event_date: this.eventForm.value.event_date,
-        start_time: this.eventForm.value.start_time ?? '',
-        end_time: this.eventForm.value.end_time ?? ''
+        start_time:
+          this.eventForm.value.event_date +
+            'T' +
+            this.eventForm.value.start_time ?? '',
+        end_time:
+          this.eventForm.value.event_date +
+            'T' +
+            this.eventForm.value.end_time ?? ''
       };
 
-      // this.officeHoursService.updateEvent(event_draft).subscribe({
-      //   next: () => this.onSuccess(),
-      //   error: (err) => this.onError(err)
-      // });
+      console.log(event_draft);
+
+      this.officeHoursService.updateEvent(event_draft).subscribe({
+        next: () => this.onSuccess(),
+        error: (err) => this.onError(err)
+      });
     }
   }
 
@@ -288,22 +303,35 @@ export class EditEventFormComponent implements OnInit {
     }
   }
 
+  private reverseMapEventMode(eventMode: OfficeHoursEventModeType): string {
+    switch (eventMode) {
+      case OfficeHoursEventModeType.IN_PERSON:
+        return 'in_person';
+      case OfficeHoursEventModeType.VIRTUAL_OUR_LINK:
+        return 'virtual_our_link';
+      case OfficeHoursEventModeType.VIRTUAL_STUDENT_LINK:
+        return 'virtual_student_link';
+      default:
+        return 'in_person';
+    }
+  }
+
   public formatEventType(type: OfficeHoursEventType) {
     return this.officeHoursService.formatEventType(type);
   }
 
   /* On successful event creation, navigate back to section home */
   private onSuccess(): void {
-    this.snackBar.open('You have created a new event!', '', {
+    this.snackBar.open('You have updated your event!', '', {
       duration: 3000
     });
-    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['../../'], { relativeTo: this.activatedRoute });
     this.eventForm.reset();
   }
 
   /* On error, display message informing user */
   private onError(err: any): void {
-    this.snackBar.open('Error: Unable to create event', '', {
+    this.snackBar.open('Error: Unable to update event', '', {
       duration: 2000
     });
     console.log(err.description);

@@ -127,7 +127,7 @@ def get_oh_event_by_id(
         OfficeHoursEvent: The OH event with the given OH event id
     """
     try:
-        return oh_event_service.get_event_by_id(oh_event_id)
+        return oh_event_service.get_event_by_id(subject, oh_event_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

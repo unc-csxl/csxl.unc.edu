@@ -12,7 +12,9 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>Edit Event</button>
+        <button [routerLink]="['edit-event/upcoming']" mat-menu-item>
+          Edit Event
+        </button>
         <button mat-menu-item (click)="openDeleteEventDialog()">
           Delete Event
         </button>

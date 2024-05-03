@@ -31,7 +31,8 @@ import {
   OfficeHoursSection,
   OfficeHoursSectionTrailingWeekData,
   OfficeHoursEventModeType,
-  Weekday
+  Weekday,
+  OfficeHoursEventPartial
 } from './office-hours.models';
 import {
   Section,
@@ -265,6 +266,15 @@ export class OfficeHoursService {
   getEvent(oh_event_id: number): Observable<OfficeHoursEventDetails> {
     return this.http.get<OfficeHoursEventDetails>(
       'api/office-hours/event/' + oh_event_id
+    );
+  }
+
+  updateEvent(
+    oh_event: OfficeHoursEventPartial
+  ): Observable<OfficeHoursEventDetails> {
+    return this.http.put<OfficeHoursEventDetails>(
+      'api/office-hours/event',
+      oh_event
     );
   }
 
