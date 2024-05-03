@@ -1,6 +1,8 @@
 <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
   <mat-vertical-stepper [linear]="true" color="accent">
-    <mat-step label="Select Ticket Type" [completed]="
+    <mat-step
+      label="Select Ticket Type"
+      [completed]="
         ticketForm.get('assignment_type')?.valid &&
         ticketForm.get('assignment_type')?.touched
       ">
@@ -14,7 +16,9 @@
             <p>What do you need help on?</p>
             <mat-form-field>
               <mat-label>Select one</mat-label>
-              <mat-select required formControlName="assignment_type"
+              <mat-select
+                required
+                formControlName="assignment_type"
                 (selectionChange)="onAssignmentTypeChange($event.value)">
                 <mat-option value="assignment_help">
                   Assignment Help
@@ -36,7 +40,10 @@
         </mat-card>
       </div>
     </mat-step>
-    <mat-step label="Ticket Information" label="Ticket Information" [completed]="
+    <mat-step
+      label="Ticket Information"
+      label="Ticket Information"
+      [completed]="
         ticketForm.get('assignment_type')?.valid &&
         ticketForm.get('assignment_type')?.touched &&
         ticketForm.get('assignmentQ1')?.valid &&
@@ -65,19 +72,28 @@
               </p>
               <mat-form-field>
                 <mat-label>Ex. I am trying to...</mat-label>
-                <textarea matInput required formControlName="assignmentQ2"></textarea>
+                <textarea
+                  matInput
+                  required
+                  formControlName="assignmentQ2"></textarea>
               </mat-form-field>
               <p>3. What concepts do you need to use to solve this problem?</p>
               <mat-form-field>
                 <mat-label>
                   Ex. Languages, class concepts, technologies involved
                 </mat-label>
-                <textarea matInput required formControlName="assignmentQ3"></textarea>
+                <textarea
+                  matInput
+                  required
+                  formControlName="assignmentQ3"></textarea>
               </mat-form-field>
               <p>4. What have you tried? Why do you suspect it didn't work?</p>
               <mat-form-field>
                 <mat-label>Ex. I have already tried...</mat-label>
-                <textarea matInput required formControlName="assignmentQ4"></textarea>
+                <textarea
+                  matInput
+                  required
+                  formControlName="assignmentQ4"></textarea>
               </mat-form-field>
               <p *ngIf="event?.mode === 1">
                 5. Please provide a Zoom link for the staff member to join.
@@ -94,7 +110,10 @@
               <p>1. What questions or topics do you want to talk through?</p>
               <mat-form-field>
                 <mat-label></mat-label>
-                <textarea matInput required formControlName="conceptualQ1"></textarea>
+                <textarea
+                  matInput
+                  required
+                  formControlName="conceptualQ1"></textarea>
               </mat-form-field>
               <p *ngIf="event?.mode === 1">
                 5. Please provide a Zoom link for the staff member to join.
@@ -108,11 +127,16 @@
               </mat-form-field>
             </div>
             <div>
-              <button mat-flat-button type="submit" class="button" color="primary" [disabled]="ticketForm.invalid">
+              <button
+                mat-flat-button
+                type="submit"
+                class="button"
+                color="primary"
+                [disabled]="ticketForm.invalid">
                 Submit
               </button>
             </div>
-            <a [routerLink]="['..']">
+            <a [routerLink]="['../..']">
               <button mat-stroked-button class="button" type="button">
                 Cancel
               </button>
