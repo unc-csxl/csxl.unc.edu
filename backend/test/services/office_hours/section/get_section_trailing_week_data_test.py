@@ -1,9 +1,10 @@
-"""Tests for `get_section_trailing_week_data()` in Office Hours Section Service."""
+"""Tests for `get_section_trailing_data()` in Office Hours Section Service."""
 
+from datetime import datetime, timedelta
 import pytest
 
+from .....models.coworking.time_range import TimeRange
 from .....models.office_hours.section_data import OfficeHoursSectionTrailingData
-
 from .....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -33,12 +34,13 @@ __license__ = "MIT"
 
 def test_get_section_trailing_week_data(oh_section_svc: OfficeHoursSectionService):
     """Test to get trailing week data for a section."""
+    time_range = TimeRange(start=datetime.now() - timedelta(days=7), end=datetime.now())
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_instructor, office_hours_data.comp_110_oh_section.id
     )
 
-    data = oh_section_svc.get_section_trailing_week_data(
-        user__comp110_instructor, oh_section
+    data = oh_section_svc.get_section_trailing_data(
+        user__comp110_instructor, oh_section, time_range
     )
 
     # Future TODO: Calculate Actual Stats From Demo Data
@@ -55,12 +57,13 @@ def test_get_section_trailing_week_data_no_ticket_info(
     oh_section_svc: OfficeHoursSectionService,
 ):
     """Test to get trailing week data for a section with no ticket info."""
+    time_range = TimeRange(start=datetime.now() - timedelta(days=7), end=datetime.now())
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_instructor, office_hours_data.comp_523_oh_section.id
     )
 
-    data = oh_section_svc.get_section_trailing_week_data(
-        user__comp110_instructor, oh_section
+    data = oh_section_svc.get_section_trailing_data(
+        user__comp110_instructor, oh_section, time_range
     )
 
     assert isinstance(data, OfficeHoursSectionTrailingData)
@@ -76,13 +79,14 @@ def test_get_section_trailing_week_data_exception_by_student(
     oh_section_svc: OfficeHoursSectionService,
 ):
     """Test to check if getting trailing week data by a student raises an exception."""
+    time_range = TimeRange(start=datetime.now() - timedelta(days=7), end=datetime.now())
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_student_0, office_hours_data.comp_110_oh_section.id
     )
 
     with pytest.raises(PermissionError):
-        oh_section_svc.get_section_trailing_week_data(
-            user__comp110_student_0, oh_section
+        oh_section_svc.get_section_trailing_data(
+            user__comp110_student_0, oh_section, time_range
         )
 
 
@@ -90,23 +94,27 @@ def test_get_section_trailing_week_data_exception_by_uta(
     oh_section_svc: OfficeHoursSectionService,
 ):
     """Test to check if getting trailing week data by a UTA raises an exception."""
+    time_range = TimeRange(start=datetime.now() - timedelta(days=7), end=datetime.now())
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_uta_0, office_hours_data.comp_110_oh_section.id
     )
 
     with pytest.raises(PermissionError):
-        oh_section_svc.get_section_trailing_week_data(user__comp110_uta_0, oh_section)
+        oh_section_svc.get_section_trailing_data(
+            user__comp110_uta_0, oh_section, time_range
+        )
 
 
 def test_get_section_trailing_week_data_exception_by_non_member(
     oh_section_svc: OfficeHoursSectionService,
 ):
     """Test to check if getting trailing week data by a non-member raises an exception."""
+    time_range = TimeRange(start=datetime.now() - timedelta(days=7), end=datetime.now())
     oh_section = oh_section_svc.get_section_by_id(
         user__comp110_non_member, office_hours_data.comp_110_oh_section.id
     )
 
     with pytest.raises(PermissionError):
-        oh_section_svc.get_section_trailing_week_data(
-            user__comp110_non_member, oh_section
+        oh_section_svc.get_section_trailing_data(
+            user__comp110_non_member, oh_section, time_range
         )
