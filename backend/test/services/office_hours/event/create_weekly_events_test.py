@@ -38,6 +38,7 @@ __license__ = "MIT"
 
 
 def test_create_weekly_events(oh_event_svc: OfficeHoursEventService):
+    """Test creation of weekly events."""
     start_date = date(2024, 4, 29)
     end_date = date(2024, 5, 12)
 
@@ -53,8 +54,20 @@ def test_create_weekly_events(oh_event_svc: OfficeHoursEventService):
     assert len(events) == 2
     assert isinstance(events[0], OfficeHoursEvent)
 
+    assert events[0].start_time.hour == events[1].start_time.hour
+    assert events[0].start_time.minute == events[1].start_time.minute
+
+    assert events[0].end_time.hour == events[1].end_time.hour
+    assert events[0].end_time.minute == events[1].end_time.minute
+
+    assert events[0].event_date != events[1].event_date
+
+    for event in events:
+        assert event.event_date.strftime("%A").lower() == Weekday.Monday.name.lower()
+
 
 def test_create_weekly_events_multiple_days(oh_event_svc: OfficeHoursEventService):
+    """Test creation of weekly events on multiple days."""
     start_date = date(2024, 4, 29)
     end_date = date(2024, 5, 12)
 
@@ -70,10 +83,28 @@ def test_create_weekly_events_multiple_days(oh_event_svc: OfficeHoursEventServic
     assert len(events) == 6
     assert isinstance(events[0], OfficeHoursEvent)
 
+    assert events[0].start_time.hour == events[1].start_time.hour
+    assert events[0].start_time.minute == events[1].start_time.minute
+
+    assert events[0].end_time.hour == events[1].end_time.hour
+    assert events[0].end_time.minute == events[1].end_time.minute
+
+    assert events[0].event_date != events[1].event_date
+
+    for event in events:
+        assert event.event_date.strftime("%A").lower() in (
+            [
+                Weekday.Monday.name.lower(),
+                Weekday.Tuesday.name.lower(),
+                Weekday.Friday.name.lower(),
+            ]
+        )
+
 
 def test_create_weekly_events_exception_if_student(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test exception if a student tries to create weekly events."""
     start_date = date(2024, 4, 29)
     end_date = date(2024, 5, 12)
 
@@ -92,6 +123,7 @@ def test_create_weekly_events_exception_if_student(
 def test_create_weekly_events_exception_if_end_date_before_start_date(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test exception if end date is before start date."""
     start_date = date(2024, 4, 29)
     end_date = date(2024, 5, 12)
 
@@ -110,6 +142,7 @@ def test_create_weekly_events_exception_if_end_date_before_start_date(
 def test_create_weekly_events_exception_if_date_range_more_sixteen_weeks(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test exception if date range is more than sixteen weeks."""
     start_date = date(2024, 4, 29)
     end_date = date(2025, 5, 12)
 
@@ -128,6 +161,7 @@ def test_create_weekly_events_exception_if_date_range_more_sixteen_weeks(
 def test_create_weekly_events_exception_if_no_selected_days(
     oh_event_svc: OfficeHoursEventService,
 ):
+    """Test exception if no selected days."""
     start_date = date(2024, 4, 29)
     end_date = date(2025, 5, 12)
 
@@ -140,4 +174,23 @@ def test_create_weekly_events_exception_if_no_selected_days(
 
     with pytest.raises(Exception):
         oh_event_svc.create_weekly_events(user__comp110_instructor, draft)
+        pytest.fail()
+
+
+def test_create_weekly_events_exception_if_non_member(
+    oh_event_svc: OfficeHoursEventService,
+):
+    """Test exception if non-member tries to create weekly events."""
+    start_date = date(2024, 4, 29)
+    end_date = date(2025, 5, 12)
+
+    draft = OfficeHoursEventRecurringDraft(
+        draft=office_hours_data.comp110_event_draft,
+        recurring_start_date=start_date,
+        recurring_end_date=end_date,
+        selected_week_days=[],
+    )
+
+    with pytest.raises(PermissionError):
+        oh_event_svc.create_weekly_events(user__comp110_non_member, draft)
         pytest.fail()

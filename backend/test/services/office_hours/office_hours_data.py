@@ -77,7 +77,7 @@ comp_110_current_oh_event = OfficeHoursEvent(
     mode=OfficeHoursEventModeType.IN_PERSON,
     description="",
     event_date=date.today(),
-    start_time=datetime.now() - timedelta(hours=1),
+    start_time=datetime.now() - timedelta(hours=2),
     end_time=datetime.now() + timedelta(hours=1),
 )
 
@@ -114,7 +114,7 @@ comp_110_f23_oh_event = OfficeHoursEvent(
     mode=OfficeHoursEventModeType.IN_PERSON,
     description="",
     event_date=date.today(),
-    start_time=datetime.now() - timedelta(hours=1),
+    start_time=datetime.now() - timedelta(hours=2),
     end_time=datetime.now() + timedelta(hours=3),
 )
 
@@ -181,9 +181,8 @@ comp110_f23_closed_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
-    created_at=datetime.now() - timedelta(minutes=30),
+    created_at=datetime.now() - timedelta(minutes=25),
 )
-
 
 comp110_closed_ticket = OfficeHoursTicket(
     id=4,
@@ -191,7 +190,7 @@ comp110_closed_ticket = OfficeHoursTicket(
     description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CLOSED,
-    created_at=datetime.now() - timedelta(minutes=20),
+    created_at=datetime.now() - timedelta(hours=2),
 )
 
 
@@ -204,21 +203,13 @@ comp110_cancelled_ticket = OfficeHoursTicket(
     created_at=datetime.now() - timedelta(minutes=5),
 )
 
-comp_523_pending_ticket = OfficeHoursTicket(
-    id=6,
-    oh_event=comp_523_current_oh_event,
-    description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
-    type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.QUEUED,
-    created_at=datetime.now(),
-)
+
 tickets = [
     comp110_f23_queued_ticket,
     comp110_f23_called_ticket,
     comp110_f23_closed_ticket,
     comp110_closed_ticket,
     comp110_cancelled_ticket,
-    comp_523_pending_ticket,
 ]
 
 comp110_f23_tickets = [
@@ -233,8 +224,8 @@ comp110_current_term_tickets = [
 
 
 # Ticket Variations For Unit Test Purposes
-ticket_draft = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=1),
+ticket_draft_f23 = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=comp_110_f23_oh_event.id),
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
 )
@@ -245,8 +236,24 @@ ticket_draft_invalid_event = OfficeHoursTicketDraft(
     type=TicketType.ASSIGNMENT_HELP,
 )
 
+ticket_draft_current_term_comp110 = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=comp_110_current_oh_event.id),
+    description="I need help",
+    type=TicketType.ASSIGNMENT_HELP,
+)
+
 group_ticket_draft = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=3),
+    oh_event=OfficeHoursEventPartial(id=comp_110_current_oh_event.id),
+    description="I need help",
+    type=TicketType.ASSIGNMENT_HELP,
+    creators=[
+        UserIdentity(id=section_data.comp110_student_0.user_id),
+        UserIdentity(id=section_data.comp110_student_1.user_id),
+    ],
+)
+
+group_ticket_draft_comp_110_f23 = OfficeHoursTicketDraft(
+    oh_event=OfficeHoursEventPartial(id=comp_110_f23_oh_event.id),
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
     creators=[
@@ -256,7 +263,7 @@ group_ticket_draft = OfficeHoursTicketDraft(
 )
 
 group_ticket_draft_non_member = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=1),
+    oh_event=OfficeHoursEventPartial(id=comp_110_current_oh_event.id),
     description="I need help",
     type=TicketType.ASSIGNMENT_HELP,
     creators=[
@@ -334,27 +341,7 @@ def insert_fake_data(session: Session):
         .first()
     )
 
-    f23_student = (
-        session.query(SectionMemberEntity)
-        .where(
-            SectionMemberEntity.user_id == section_data.user__comp110_student_0.id,
-            SectionMemberEntity.section_id == section_data.comp_101_001.id,
-            SectionMemberEntity.member_role == RosterRole.STUDENT,
-        )
-        .first()
-    )
-
-    f23_uta = (
-        session.query(SectionMemberEntity)
-        .where(
-            SectionMemberEntity.user_id == section_data.user__comp110_uta_0.id,
-            SectionMemberEntity.section_id == section_data.comp_101_001.id,
-            SectionMemberEntity.member_role == RosterRole.UTA,
-        )
-        .first()
-    )
-
-    # Add User Created Tickets - Current Term
+    # Add User Created Tickets - Current Term COMP 110
     for ticket in comp110_current_term_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
         session.add(ticket_entity)
@@ -376,24 +363,62 @@ def insert_fake_data(session: Session):
     ).update(
         {
             "caller_id": uta.id,
-            "called_at": datetime.now() - timedelta(minutes=2),
+            "called_at": datetime.now() - timedelta(hours=1, minutes=50),
             "have_concerns": True,
-            "closed_at": datetime.now() - timedelta(minutes=1),
+            "closed_at": datetime.now() - timedelta(hours=1, minutes=40),
             "caller_notes": "Got Stuck In an Infinte Loop",
         }
     )
-    # Add F23 Tickets
+
+    f23_student_0 = (
+        session.query(SectionMemberEntity)
+        .where(
+            SectionMemberEntity.user_id == section_data.user__comp110_student_0.id,
+            SectionMemberEntity.section_id == section_data.comp_101_001.id,
+            SectionMemberEntity.member_role == RosterRole.STUDENT,
+        )
+        .first()
+    )
+
+    f23_student_1 = (
+        session.query(SectionMemberEntity)
+        .where(
+            SectionMemberEntity.user_id == section_data.user__comp110_student_1.id,
+            SectionMemberEntity.section_id == section_data.comp_101_001.id,
+            SectionMemberEntity.member_role == RosterRole.STUDENT,
+        )
+        .first()
+    )
+
+    f23_uta = (
+        session.query(SectionMemberEntity)
+        .where(
+            SectionMemberEntity.user_id == section_data.user__comp110_uta_0.id,
+            SectionMemberEntity.section_id == section_data.comp_101_001.id,
+            SectionMemberEntity.member_role == RosterRole.UTA,
+        )
+        .first()
+    )
+
+    # F23 COMP 110 Tickets
     for ticket in comp110_f23_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
         session.add(ticket_entity)
         session.commit()
+
+        # Assign Student 1 To Closed Ticket
+        student = (
+            f23_student_0
+            if ticket_entity.state != TicketState.CLOSED
+            else f23_student_1
+        )
 
         # Associate with Ticket and User Create Tickets
         session.execute(
             user_created_tickets_table.insert().values(
                 {
                     "ticket_id": ticket_entity.id,
-                    "member_id": f23_student.id,
+                    "member_id": student.id,
                 }
             )
         )
@@ -404,7 +429,7 @@ def insert_fake_data(session: Session):
             [comp110_f23_called_ticket.id, comp110_f23_closed_ticket.id]
         )
     ).update(
-        {"caller_id": f23_uta.id, "called_at": datetime.now() - timedelta(minutes=2)}
+        {"caller_id": f23_uta.id, "called_at": datetime.now() - timedelta(minutes=20)}
     )
 
     # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
@@ -413,7 +438,7 @@ def insert_fake_data(session: Session):
     ).update(
         {
             "have_concerns": True,
-            "closed_at": datetime.now() - timedelta(minutes=1),
+            "closed_at": datetime.now() - timedelta(minutes=10),
             "caller_notes": "Got Stuck In an Infinte Loop",
         }
     )

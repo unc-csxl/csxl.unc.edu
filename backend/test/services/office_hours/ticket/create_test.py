@@ -41,7 +41,7 @@ __license__ = "MIT"
 def test_create_ticket(oh_ticket_svc: OfficeHoursTicketService):
     """Test case to ensure a ticket is successfully created and is in QUEUED state."""
     ticket = oh_ticket_svc.create(
-        user__comp110_student_1, office_hours_data.ticket_draft
+        user__comp110_student_0, office_hours_data.ticket_draft_current_term_comp110
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
     assert ticket.state == TicketState.QUEUED
@@ -54,7 +54,8 @@ def test_create_ticket_group(
 ):
     """Test case to ensure a group ticket (ticket with list of creators) is successfully created and is in QUEUED state."""
     ticket = oh_ticket_svc.create(
-        user__comp110_student_0, office_hours_data.group_ticket_draft
+        user__comp110_student_0,
+        office_hours_data.group_ticket_draft,
     )
     assert isinstance(ticket, OfficeHoursTicketDetails)
     assert ticket.state == TicketState.QUEUED
@@ -68,7 +69,9 @@ def test_create_ticket_exception_if_already_created_ticket_in_cooldown_period(
     """Test case to ensure an exception if thrown if student calls a ticket in past hour."""
 
     with pytest.raises(PermissionError):
-        oh_ticket_svc.create(user__comp110_student_0, office_hours_data.ticket_draft)
+        oh_ticket_svc.create(
+            user__comp110_student_1, office_hours_data.ticket_draft_f23
+        )
         pytest.fail()
 
 
@@ -77,7 +80,9 @@ def test_create_ticket_exception_for_non_section_member(
 ):
     """Test case to validate that creating a ticket by a non-section member raises PermissionError."""
     with pytest.raises(PermissionError):
-        oh_ticket_svc.create(user__comp110_non_member, office_hours_data.ticket_draft)
+        oh_ticket_svc.create(
+            user__comp110_non_member, office_hours_data.ticket_draft_f23
+        )
         pytest.fail()  # Fail test if no error was thrown above
 
 
@@ -97,7 +102,7 @@ def test_create_ticket_exception_if_not_student(
 ):
     """Test case to validate that creating a ticket by a section member UTA raises PermissionError."""
     with pytest.raises(PermissionError):
-        oh_ticket_svc.create(user__comp110_uta_0, office_hours_data.ticket_draft)
+        oh_ticket_svc.create(user__comp110_uta_0, office_hours_data.ticket_draft_f23)
         pytest.fail()  # Fail test if no error was thrown above
 
 
@@ -108,5 +113,28 @@ def test_create_ticket_exception_invalid_event(
     with pytest.raises(ResourceNotFoundException):
         oh_ticket_svc.create(
             user__comp110_non_member, office_hours_data.ticket_draft_invalid_event
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_create_ticket_exception_if_queued_ticket_already(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    """Test case to validate that a student with a queued ticket attempting to creating a ticket raises PermissionError."""
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.create(
+            user__comp110_student_0, office_hours_data.ticket_draft_f23
+        )
+        pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_create_ticket_exception_if_queued_ticket_already_group(
+    oh_ticket_svc: OfficeHoursTicketService,
+):
+    """Test case to validate that a student in a ticket group with a queued ticket attempting to creating a ticket raises PermissionError."""
+    with pytest.raises(PermissionError):
+        oh_ticket_svc.create(
+            user__comp110_student_0,
+            office_hours_data.group_ticket_draft_comp_110_f23,
         )
         pytest.fail()  # Fail test if no error was thrown above
