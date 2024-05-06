@@ -6,7 +6,7 @@
 
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { Router } from '@angular/router';
 import {
   Reservation,
@@ -53,7 +53,7 @@ export class RoomReservationWidgetComponent {
   };
   dialog: MatDialog;
   reservation: any;
-  selectedUsers: (PublicProfile | Profile)[] = [];
+  selectedUsers: PublicProfile[] = [];
   private subscriptionLoggedIn: Subscription;
   updateReservationsList: EventEmitter<any> = new EventEmitter<any>();
 
@@ -80,13 +80,24 @@ export class RoomReservationWidgetComponent {
       this.roomDetailsArray = result;
     });
 
-    this.subscriptionLoggedIn = this.profileService.profile$.subscribe(
-      (profile) => {
-        if (profile) {
-          this.selectedUsers.push(profile);
-        }
-      }
-    );
+    this.subscriptionLoggedIn = this.profileService.profile$
+      .pipe(
+        filter(
+          (profile): profile is Profile =>
+            profile !== undefined && profile.id !== null
+        )
+      )
+      .subscribe((profile) => {
+        const publicProfile: PublicProfile = {
+          id: profile.id as number,
+          first_name: profile.first_name ?? '',
+          last_name: profile.last_name ?? '',
+          pronouns: profile.pronouns ?? '',
+          email: profile.email ?? '',
+          github_avatar: profile.github_avatar
+        };
+        this.selectedUsers.push(publicProfile);
+      });
   }
 
   getReservationsByDate(date: Date) {

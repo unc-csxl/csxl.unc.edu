@@ -1,5 +1,12 @@
 <!-- group-reservation-card.widget.html -->
-<div style="padding: 8px; box-sizing: border-box">
+<div
+  style="
+    padding: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  ">
   <h2 class="add-users-heading" style="margin: 8px">
     Add Users to Reservation
   </h2>
@@ -16,9 +23,9 @@
         [removable]="user.id !== loggedInUser?.id"
         (removed)="removeUser(user)">
         {{ user.first_name }} {{ user.last_name }}
-        <mat-icon matChipRemove *ngIf="user.id !== loggedInUser?.id"
-          >cancel</mat-icon
-        >
+        <mat-icon matChipRemove *ngIf="user.id !== loggedInUser?.id">
+          cancel
+        </mat-icon>
       </mat-chip>
     </mat-chip-listbox>
   </div>
@@ -30,16 +37,18 @@
       justify-content: space-between;
       margin: 12px 8px 45px;
       box-sizing: border-box;
+      margin-top: auto;
     ">
     <!-- Add Users Button -->
     <button
-      mat-button
+      mat-stroked-button
       color="primary"
       style="
         flex: 1;
         margin-right: 4px;
         background-color: rgb(61, 129, 184);
         color: white;
+        border: 1px solid rgba(25, 118, 210, 0.5);
       "
       (click)="addUsers()">
       Update
@@ -47,12 +56,13 @@
 
     <!-- Cancel Button -->
     <button
-      mat-button
+      mat-stroked-button
       style="
         flex: 1;
         margin-left: 4px;
         background-color: rgb(204, 204, 204);
         color: black;
+        border: 1px solid rgba(0, 0, 0, 0.12);
       "
       (click)="closeDialog()">
       Cancel

@@ -11,8 +11,6 @@ import {
   Observable,
   Subscription,
   catchError,
-  filter,
-  forkJoin,
   map,
   switchMap,
   throwError
@@ -103,39 +101,35 @@ export class ReservationTableService {
   draftReservation(
     reservationsMap: Record<string, number[]>,
     operationStart: Date,
-    users: (PublicProfile | Profile)[]
+    users: PublicProfile[]
   ) {
-    return this.publicToProfile(users).pipe(
-      switchMap((detailedUsers: Profile[]) => {
-        const selectedRoom = this._findSelectedRoom(reservationsMap);
-        if (!selectedRoom) {
-          return throwError(() => new Error('No room selected'));
-        }
+    const selectedRoom = this._findSelectedRoom(reservationsMap);
+    if (!selectedRoom) {
+      return throwError(() => new Error('No room selected'));
+    }
 
-        return this.getRoomInformation().pipe(
-          map((rooms) => {
-            const room = rooms.find((room) => room.id === selectedRoom.room);
-            if (!room) {
-              throw new Error('Room not found');
-            }
-            if (users.length < room.capacity) {
-              throw new Error('Not enough people to reserve');
-            }
-            const reservationRequest = this._makeReservationRequest(
-              selectedRoom,
-              operationStart,
-              detailedUsers
-            );
-            return reservationRequest;
-          }),
-          switchMap((reservationRequest) =>
-            this.makeDraftReservation(reservationRequest)
-          ),
-          catchError((err) =>
-            throwError(() => new Error('Not enough people to reserve!'))
-          )
+    return this.getRoomInformation().pipe(
+      map((rooms) => {
+        const room = rooms.find((room) => room.id === selectedRoom.room);
+        if (!room) {
+          throw new Error('Room not found');
+        }
+        if (users.length < room.capacity) {
+          throw new Error('Not enough people to reserve');
+        }
+        const reservationRequest = this._makeReservationRequest(
+          selectedRoom,
+          operationStart,
+          users
         );
-      })
+        return reservationRequest;
+      }),
+      switchMap((reservationRequest) =>
+        this.makeDraftReservation(reservationRequest)
+      ),
+      catchError((err) =>
+        throwError(() => new Error('Not enough people to reserve!'))
+      )
     );
   }
 
@@ -149,18 +143,6 @@ export class ReservationTableService {
     );
   }
 
-  publicToProfile(users: (PublicProfile | Profile)[]): Observable<Profile[]> {
-    //Converts publicProfiles to Profiles to send into backend
-    const userRequests = users.map((user) =>
-      this.http.get<Profile>(`/api/profile/users/${user.id}`)
-    );
-
-    return forkJoin(userRequests).pipe(
-      map((userResponses) => {
-        return userResponses;
-      })
-    );
-  }
   /**
    * Deselects a cell in the reservations map and updates selected cells.
    *
@@ -248,7 +230,7 @@ export class ReservationTableService {
   _makeReservationRequest(
     selectedRoom: { room: string; availability: number[] },
     operationStart: Date,
-    users: Profile[]
+    users: PublicProfile[]
   ): ReservationRequest {
     const minIndex = selectedRoom?.availability.indexOf(
       ReservationTableService.CellEnum.RESERVING

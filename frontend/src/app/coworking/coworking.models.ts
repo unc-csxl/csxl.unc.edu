@@ -1,4 +1,5 @@
 import { Profile } from '../models.module';
+import { PublicProfile } from '../profile/profile.service';
 import { TimeRangeJSON, TimeRange } from '../time-range';
 
 export interface OperatingHoursJSON extends TimeRangeJSON {
@@ -117,7 +118,7 @@ export const parseCoworkingStatusJSON = (
 };
 
 export interface ReservationRequest extends TimeRange {
-  users: Profile[] | null;
+  users: PublicProfile[] | null;
   seats: Seat[] | null;
   room: { id: string };
 }

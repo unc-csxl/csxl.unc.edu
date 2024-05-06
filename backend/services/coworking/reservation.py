@@ -758,9 +758,6 @@ class ReservationService:
                 * Limit users and seats counts to policy
             * Clean-up / Refactor Implementation
         """
-        # For the time being, reservations are limited to one user. As soon as
-        # possible, we'd like to add multi-user reservations so that pairs and teams
-        # can be simplified.
 
         # Enforce Reservation Draft Permissions
         if subject.id not in [user.id for user in request.users]:

@@ -55,8 +55,8 @@ export interface SectionMember {
 
 /** Defines a Room */
 export interface Room {
-  description: string;
   id: string;
+  description: string;
   nickname: string;
   building: string | null;
   room: string | null;

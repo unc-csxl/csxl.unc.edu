@@ -40,24 +40,6 @@ def read_profile(
         return UnregisteredUser(pid=pid, onyen=onyen)
 
 
-@api.get(
-    "/users/{user_id}", response_model=UserDetails | UnregisteredUser, tags=["Profile"]
-)
-def get_profile_by_id(
-    user_id: int,
-    user_svc: UserService = Depends(),
-):
-    """
-    Retrieve a user's profile by ID.
-    If the user does not exist, return a placeholder for unregistered user
-    """
-    user = user_svc.get_by_id(user_id)
-    if user:
-        return user
-    else:
-        return UnregisteredUser(id=user_id)
-
-
 @api.put("", response_model=UserDetails, tags=["Profile"])
 def update_profile(
     profile: ProfileForm,
