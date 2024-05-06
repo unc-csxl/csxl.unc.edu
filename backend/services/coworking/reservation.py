@@ -348,7 +348,7 @@ class ReservationService:
                     start_idx = max(current_time_idx, start_idx)
 
                 for idx in range(start_idx, end_idx):
-                    flag = True
+                    flag = False
                     for user in reservation.users:
                         if user.id == subject.id:
                             time_slots_for_room[idx] = RoomState.SUBJECT_RESERVED.value
