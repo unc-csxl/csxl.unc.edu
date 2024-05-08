@@ -19,7 +19,7 @@ export class ShowcaseService {
   constructor(protected http: HttpClient) {}
 
   /** Returns all of the projects using the backend HTTP get request.
-   * @returns {Observable<Organization[]>}
+   * @returns {Observable<ShowcaseProject[]>}
    */
   getProjects(): Observable<ShowcaseProject[]> {
     return this.http.get<ShowcaseProject[]>('/api/showcase');
