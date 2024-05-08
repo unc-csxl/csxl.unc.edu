@@ -30,6 +30,7 @@ from .event_registration import (
     NewEventRegistration,
 )
 from .registration_type import RegistrationType
+from .showcase_project import *
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
