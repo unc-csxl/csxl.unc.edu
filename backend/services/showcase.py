@@ -28,7 +28,7 @@ class ShowcaseService:
         session: Session = Depends(db_session),
         permission: PermissionService = Depends(),
     ):
-        """Initializes the `OrganizationService` session, and `PermissionService`"""
+        """Initializes the session and `PermissionService`"""
         self._session = session
         self._permission = permission
 
