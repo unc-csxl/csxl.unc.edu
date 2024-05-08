@@ -1,0 +1,72 @@
+<mat-card class="content" appearance="outlined">
+  <mat-card-content>
+    <mat-card-subtitle
+      >Welcome to the COMP 423 Project Showcase!</mat-card-subtitle
+    >
+    <p>
+      This page is dedicated to celebrating the amazing projects and
+      accomplishments of the students in
+      <strong>COMP 423: Foundations of Software Engineering</strong> this
+      semester (Spring 2024).
+    </p>
+    <p>
+      Students' final projects were to add new features to the
+      <strong>CSXL site</strong> -
+      <em>the same one you are using right now!</em> This was an ambitious goal.
+      Throughout the entire semester, students learned full-stack software
+      engineering from the ground up, learning frontend tools like Angular, REST
+      APIs, persisting data in databases, deploying projects to the Cloud, and
+      perhaps most importantly, working in teams.
+    </p>
+    <p>
+      This showcase page groups projects based on their chosen topic! Scroll to
+      browse through the amazing work students completed. Kris and the entire
+      COMP 423 UTA Team are extremely proud of the work these students completed
+      this semester.
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<mat-card
+  class="content"
+  appearance="outlined"
+  *ngFor="let type of projects.keys()">
+  <mat-card-header>
+    <mat-card-title>{{ type }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <!-- Table -->
+    <table mat-table [dataSource]="projects.get(type) ?? []">
+      <ng-container matColumnDef="Team">
+        <th mat-header-cell *matHeaderCellDef>Team</th>
+        <td mat-cell *matCellDef="let element">{{ element.team_name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Members">
+        <th mat-header-cell *matHeaderCellDef>Members</th>
+        <td mat-cell *matCellDef="let element">
+          {{ convertListToText(element.members) }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Links">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <div class="link-buttons">
+              <a [href]="element.video_url" target="_blank">
+                <button mat-stroked-button>Demo</button>
+              </a>
+              <a
+                [href]="element.deployment_url"
+                target="_blank"
+                id="deploy-button">
+                <button mat-stroked-button>Deployment</button>
+              </a>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

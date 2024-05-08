@@ -7,7 +7,6 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..database import db_session
-from ..models.showcase_project import ProjectType
 from ..models.showcase_project import ShowcaseProject
 from ..models import User
 from .permission import PermissionService
@@ -40,4 +39,5 @@ class ShowcaseService:
         Returns:
             list[ShowcaseProject]: List of all `ShowcaseProject`s
         """
+
         return projects

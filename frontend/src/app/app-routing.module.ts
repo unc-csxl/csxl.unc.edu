@@ -5,11 +5,13 @@ import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { AboutComponent } from './about/about.component';
+import { ShowcaseComponent } from './showcase/showcase.component';
 
 const routes: Routes = [
   HomeComponent.Route,
   AboutComponent.Route,
   GateComponent.Route,
+  ShowcaseComponent.Route,
   {
     path: 'coworking',
     title: 'Cowork in the XL',

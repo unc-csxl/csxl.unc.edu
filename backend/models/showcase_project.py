@@ -8,15 +8,9 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class ProjectType(Enum):
-    NEWS_FEED = "XL News Feed / Announcements"
-    STUDENT_ORGS = "Student Organization Memberships / Members-only Features"
-    SEATING = "Interactive Seating Chart / Map Widget"
-    XL_DISPLAY = "XL Digital Display System"
-    OTHER = "Other"
-
-
 class ShowcaseProject(BaseModel):
     team_name: str
-    type: ProjectType
+    type: str
     members: list[str]
+    video_url: str
+    deployment_url: str

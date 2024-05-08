@@ -26,6 +26,8 @@
           </picture>
         </a>
         <div *ngIf="profile$ | async as profile; else unauthenticated">
+          <a mat-list-item routerLink="/showcase">COMP 423 Showcase</a>
+          <mat-divider></mat-divider>
           <a mat-list-item routerLink="/coworking">Coworking</a>
           <a mat-list-item routerLink="/events">Events</a>
           <a mat-list-item routerLink="/organizations">Organizations</a>

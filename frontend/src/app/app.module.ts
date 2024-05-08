@@ -30,6 +30,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -42,6 +43,8 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { SharedModule } from './shared/shared.module';
+import { ShowcaseComponent } from './showcase/showcase.component';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,8 @@ import { SharedModule } from './shared/shared.module';
     ErrorDialogComponent,
     HomeComponent,
     AboutComponent,
-    GateComponent
+    GateComponent,
+    ShowcaseComponent
   ],
   imports: [
     /* Angular */
@@ -80,6 +84,8 @@ import { SharedModule } from './shared/shared.module';
     MatToolbarModule,
     MatTooltipModule,
     MatCheckboxModule,
+    MatChipsModule,
+    MatTableModule,
     FormsModule,
     RouterModule,
     SharedModule,
