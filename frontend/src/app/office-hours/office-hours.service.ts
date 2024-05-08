@@ -499,8 +499,7 @@ export class OfficeHoursService {
 
   /* Roster Role Helper Method: */
 
-  /**
-   * Formats RosterRole enum value as a string
+  /** Formats RosterRole enum value as a string
    * @param typeNum: Numerical representation of RosterRole enum value
    * @returns {string}
    */
