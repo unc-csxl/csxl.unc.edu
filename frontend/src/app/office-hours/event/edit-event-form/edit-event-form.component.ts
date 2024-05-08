@@ -5,7 +5,7 @@ import {
   ResolveFn,
   Router
 } from '@angular/router';
-import { sectionResolver } from '../../office-hours.resolver';
+import { ohSectionResolver } from '../../office-hours.resolver';
 import { OfficeHoursService } from '../../office-hours.service';
 import {
   FormBuilder,
@@ -41,7 +41,7 @@ export class EditEventFormComponent implements OnInit {
       path: 'ta/:id/edit-event/:eventId',
       component: EditEventFormComponent,
       canActivate: [],
-      resolve: { section: sectionResolver },
+      resolve: { section: ohSectionResolver },
       children: [
         {
           path: '',
@@ -54,7 +54,7 @@ export class EditEventFormComponent implements OnInit {
       path: 'instructor/:id/edit-event/:eventId',
       component: EditEventFormComponent,
       canActivate: [],
-      resolve: { section: sectionResolver },
+      resolve: { section: ohSectionResolver },
       children: [
         {
           path: '',

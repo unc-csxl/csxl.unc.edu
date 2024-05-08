@@ -14,7 +14,7 @@
           <mat-divider></mat-divider>
           <mat-card-content class="card-container">
             <p>What do you need help on?</p>
-            <mat-form-field>
+            <mat-form-field appearance="outline">
               <mat-label>Select one</mat-label>
               <mat-select
                 required
@@ -52,7 +52,7 @@
         ticketForm.get('assignmentQ4')?.valid &&
         ticketForm.get('assignmentQ5')?.valid &&
         ticketForm.get('conceptualQ1')?.valid &&
-        ticketForm.get('conceptualQ2')?.valid 
+        ticketForm.get('conceptualQ2')?.valid
       ">
       <div class="page-container">
         <mat-card appearance="outlined">
@@ -63,12 +63,12 @@
           <mat-card-content class="card-container">
             <div *ngIf="assignmentType === 'assignment_help'">
               <p>What section of the assignment do you need help with?</p>
-              <mat-form-field>
+              <mat-form-field appearance="outline">
                 <mat-label>Ex. EX01, Part 2</mat-label>
                 <input matInput required formControlName="assignmentQ1" />
               </mat-form-field>
               <p>Describe in English what you are trying to express in code.</p>
-              <mat-form-field>
+              <mat-form-field appearance="outline">
                 <mat-label>Ex. I am trying to...</mat-label>
                 <textarea
                   matInput
@@ -76,7 +76,7 @@
                   formControlName="assignmentQ2"></textarea>
               </mat-form-field>
               <p>What concepts do you need to use to solve this problem?</p>
-              <mat-form-field>
+              <mat-form-field appearance="outline">
                 <mat-label>
                   Ex. Languages, class concepts, technologies involved
                 </mat-label>
@@ -86,7 +86,7 @@
                   formControlName="assignmentQ3"></textarea>
               </mat-form-field>
               <p>What have you tried? Why do you suspect it didn't work?</p>
-              <mat-form-field>
+              <mat-form-field appearance="outline">
                 <mat-label>Ex. I have already tried...</mat-label>
                 <textarea
                   matInput
@@ -96,7 +96,7 @@
               <p *ngIf="event?.mode === 1">
                 Please provide a Zoom link for the staff member to join.
               </p>
-              <mat-form-field *ngIf="event?.mode === 1">
+              <mat-form-field appearance="outline" *ngIf="event?.mode === 1">
                 <mat-label>Ex. https://unc.zoom.us/...</mat-label>
                 <textarea
                   matInput
@@ -106,7 +106,7 @@
             </div>
             <div *ngIf="assignmentType === 'conceptual_help'">
               <p>What questions or topics do you want to talk through?</p>
-              <mat-form-field>
+              <mat-form-field appearance="outline">
                 <mat-label></mat-label>
                 <textarea
                   matInput
@@ -116,7 +116,7 @@
               <p *ngIf="event?.mode === 1">
                 Please provide a Zoom link for the staff member to join.
               </p>
-              <mat-form-field *ngIf="event?.mode === 1">
+              <mat-form-field appearance="outline" *ngIf="event?.mode === 1">
                 <mat-label>Ex. https://unc.zoom.us/...</mat-label>
                 <textarea
                   matInput

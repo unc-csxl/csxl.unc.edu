@@ -26,7 +26,7 @@ import {
   ResolveFn
 } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
-import { sectionResolver } from '../../office-hours.resolver';
+import { ohSectionResolver } from '../../office-hours.resolver';
 import { Title } from '@angular/platform-browser';
 import { RosterRole } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
@@ -47,7 +47,7 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
       path: 'ta/:id/:event_id/queue',
       component: TicketQueuePageComponent,
       canActivate: [],
-      resolve: { section: sectionResolver },
+      resolve: { section: ohSectionResolver },
       children: [
         {
           path: '',
@@ -60,7 +60,7 @@ export class TicketQueuePageComponent implements OnInit, OnDestroy {
       path: 'instructor/:id/:event_id/queue',
       component: TicketQueuePageComponent,
       canActivate: [],
-      resolve: { section: sectionResolver },
+      resolve: { section: ohSectionResolver },
       children: [
         {
           path: '',

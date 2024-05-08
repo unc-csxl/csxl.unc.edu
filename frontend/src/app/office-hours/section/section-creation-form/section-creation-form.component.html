@@ -12,18 +12,21 @@
     </mat-card-subtitle>
     <mat-card-content class="card-container">
       <p>Course Name:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Ex. COMP 110: Introduction to Programming</mat-label>
         <input matInput required formControlName="section_name" />
       </mat-form-field>
       <p>Course Section(s):</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Select all courses:</mat-label>
         <mat-select formControlName="academic_sections" multiple required>
           <mat-option
             *ngFor="let section of academicSections"
             [value]="section.id">
-            {{ section.course_id }}-{{ section.number }}
+            <!-- eslint-disable-next-line prettier/prettier -->
+            {{ section.course?.subject_code }}
+            <!-- eslint-disable-next-line prettier/prettier -->
+            {{ section.course?.number }}-{{ section.number }}
           </mat-option>
         </mat-select>
       </mat-form-field>

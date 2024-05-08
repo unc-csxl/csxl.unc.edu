@@ -13,7 +13,7 @@
     <mat-divider></mat-divider>
     <mat-card-content class="card-container">
       <p>Do you have concerns over this student's performance in the course?</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Select One</mat-label>
         <mat-select required formControlName="have_concerns" matNativeControl>
           <mat-option value="No">No</mat-option>
@@ -21,7 +21,7 @@
         </mat-select>
       </mat-form-field>
       <p>Notes:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Ex. I have concerns about this student because...</mat-label>
         <textarea matInput formControlName="notes"></textarea>
       </mat-form-field>

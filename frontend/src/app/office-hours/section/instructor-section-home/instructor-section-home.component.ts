@@ -21,7 +21,7 @@ import {
 } from '@angular/router';
 import { OfficeHoursService } from '../../office-hours.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import { sectionResolver } from '../../office-hours.resolver';
+import { ohSectionResolver } from '../../office-hours.resolver';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['section']?.title ?? 'Section Not Found';
@@ -37,7 +37,7 @@ export class InstructorSectionHomeComponent implements OnInit {
     path: 'instructor/:id',
     component: InstructorSectionHomeComponent,
     canActivate: [],
-    resolve: { section: sectionResolver },
+    resolve: { section: ohSectionResolver },
     children: [
       {
         path: '',

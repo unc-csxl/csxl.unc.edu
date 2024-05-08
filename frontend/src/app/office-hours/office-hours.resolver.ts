@@ -12,11 +12,9 @@ import { ResolveFn } from '@angular/router';
 import { OfficeHoursSectionDetails } from './office-hours.models';
 import { OfficeHoursService } from './office-hours.service';
 import { catchError, of } from 'rxjs';
-import { Term } from '../academics/academics.models';
-import { AcademicsService } from '../academics/academics.service';
 
 /** This resolver injects a section into the Office Hours Section component. */
-export const sectionResolver: ResolveFn<
+export const ohSectionResolver: ResolveFn<
   OfficeHoursSectionDetails | undefined
 > = (route) => {
   return inject(OfficeHoursService)

@@ -6,8 +6,8 @@
 
 import { Section, SectionMember } from '../academics/academics.models';
 import { Room } from '../coworking/coworking.models';
-import { UserSummary } from '../models.module';
 
+/* Defines the state of an Office Hours Ticket */
 export enum TicketState {
   QUEUED,
   CALLED,
@@ -15,17 +15,20 @@ export enum TicketState {
   CANCELED
 }
 
+/* Defines Ticket Type as Assingment or Conceptual */
 export enum TicketType {
   CONCEPTUAL_HELP,
   ASSIGNMENT_HELP
 }
 
+/* Defines the type of an Office Hours Event */
 export enum OfficeHoursEventType {
   OFFICE_HOURS,
   TUTORING,
   REVIEW_SESSION
 }
 
+/* Defines the mode of an Office Hours Event */
 export enum OfficeHoursEventModeType {
   IN_PERSON,
   VIRTUAL_STUDENT_LINK,

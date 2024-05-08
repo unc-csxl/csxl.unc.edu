@@ -21,7 +21,7 @@ import {
 } from '../../office-hours.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { RosterRole } from 'src/app/academics/academics.models';
-import { sectionResolver } from '../../office-hours.resolver';
+import { ohSectionResolver } from '../../office-hours.resolver';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['section']?.title ?? 'Section Not Found';
@@ -37,7 +37,7 @@ export class TaSectionHomeComponent implements OnInit {
     path: 'ta/:id',
     component: TaSectionHomeComponent,
     canActivate: [],
-    resolve: { section: sectionResolver },
+    resolve: { section: ohSectionResolver },
     children: [
       {
         path: '',

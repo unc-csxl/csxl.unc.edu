@@ -22,7 +22,7 @@
     <mat-card-content class="card-container">
       <div *ngIf="isUpcoming">
         <p>Event:</p>
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label></mat-label>
           <mat-select
             required
@@ -40,7 +40,7 @@
         </mat-form-field>
       </div>
       <p>Event Type:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Select Type</mat-label>
         <mat-select required formControlName="event_type">
           <mat-option value="office_hours"> Office Hours </mat-option>
@@ -49,7 +49,7 @@
         </mat-select>
       </mat-form-field>
       <p>Event Mode:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Select Type</mat-label>
         <mat-select
           required
@@ -63,12 +63,12 @@
         </mat-select>
       </mat-form-field>
       <p>Description:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Description of Event</mat-label>
         <textarea matInput formControlName="description"> </textarea>
       </mat-form-field>
       <p>Date:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Select Date:</mat-label>
         <input
           matInput
@@ -78,17 +78,17 @@
       </mat-form-field>
       <p>Time:</p>
       <div class="two-column">
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Start Time:</mat-label>
           <input matInput type="time" formControlName="start_time" required />
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>End Time:</mat-label>
           <input matInput type="time" formControlName="end_time" required />
         </mat-form-field>
       </div>
       <p>Location:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Select a Room:</mat-label>
         <mat-select required formControlName="location">
           <mat-option *ngFor="let room of rooms" [value]="room.id">
@@ -100,7 +100,7 @@
       <!-- If Providng Virtual Link -->
       <div *ngIf="isVirtualOurLink">
         <p>Virtual Link:</p>
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Please Provide Virtual Link For Users To Join </mat-label>
           <input matInput required formControlName="location_description" />
         </mat-form-field>
@@ -108,7 +108,7 @@
       <!-- Otherwise -->
       <div *ngIf="!isVirtualOurLink">
         <p>Location Description:</p>
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Ex. It's the room across from...</mat-label>
           <input matInput formControlName="location_description" />
         </mat-form-field>

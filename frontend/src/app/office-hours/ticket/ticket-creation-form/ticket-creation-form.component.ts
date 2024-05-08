@@ -24,7 +24,7 @@ import {
 } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { sectionResolver } from '../../office-hours.resolver';
+import { ohSectionResolver } from '../../office-hours.resolver';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['section']?.title ?? 'Section Not Found';
@@ -40,7 +40,7 @@ export class TicketCreationFormComponent implements OnInit {
     path: ':id/:event_id/create-new-ticket',
     component: TicketCreationFormComponent,
     canActivate: [],
-    resolve: { section: sectionResolver },
+    resolve: { section: ohSectionResolver },
     children: [
       {
         path: '',

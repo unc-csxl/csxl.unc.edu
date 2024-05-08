@@ -21,7 +21,7 @@ import {
 import { OfficeHoursService } from '../../office-hours.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { RosterRole } from 'src/app/academics/academics.models';
-import { sectionResolver } from '../../office-hours.resolver';
+import { ohSectionResolver } from '../../office-hours.resolver';
 
 /* Resolves title to display Section as the page header */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -38,7 +38,7 @@ export class StudentSectionHomeComponent implements OnInit {
     path: ':id',
     component: StudentSectionHomeComponent,
     canActivate: [],
-    resolve: { section: sectionResolver },
+    resolve: { section: ohSectionResolver },
     children: [
       {
         path: '',

@@ -33,7 +33,7 @@ import {
   Router
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { sectionResolver } from '../../office-hours.resolver';
+import { ohSectionResolver } from '../../office-hours.resolver';
 
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   return route.parent!.data['section']?.title ?? 'Section Not Found';
@@ -50,7 +50,7 @@ export class CreateEventFormComponent implements OnInit {
       path: 'ta/:id/create-new-event',
       component: CreateEventFormComponent,
       canActivate: [],
-      resolve: { section: sectionResolver },
+      resolve: { section: ohSectionResolver },
       children: [
         {
           path: '',
@@ -63,7 +63,7 @@ export class CreateEventFormComponent implements OnInit {
       path: 'instructor/:id/create-new-event',
       component: CreateEventFormComponent,
       canActivate: [],
-      resolve: { section: sectionResolver },
+      resolve: { section: ohSectionResolver },
       children: [
         {
           path: '',

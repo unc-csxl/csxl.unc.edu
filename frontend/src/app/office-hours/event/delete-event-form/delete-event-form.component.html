@@ -11,10 +11,16 @@
   <mat-card-content>
     <ul>
       <li>
-        {{ events[0].start_time | date: 'EEEE M/d' }}, {{
-        formatEventType(events[0].type) }}, from {{ events[0].start_time | date:
-        'h:mma' | lowercase}} to {{ events[0].end_time | date: 'h:mma' |
-        lowercase}}, {{ events[0].room.id }}
+        <!-- eslint-disable-next-line prettier/prettier -->
+        {{ events[0].start_time | date: 'EEEE M/d' }},
+        <!-- eslint-disable-next-line prettier/prettier -->
+        {{ formatEventType(events[0].type) }},
+        <!-- eslint-disable-next-line prettier/prettier -->
+        from {{ events[0].start_time | date: 'h:mma' | lowercase}}
+        <!-- eslint-disable-next-line prettier/prettier -->
+        to {{ events[0].end_time | date: 'h:mma' |lowercase}},
+        <!-- eslint-disable-next-line prettier/prettier -->
+        {{ events[0].room.id }}
       </li>
     </ul>
     <div class="buttons">
@@ -43,15 +49,21 @@
     <mat-divider></mat-divider>
     <mat-card-content>
       <p>Event to Delete:</p>
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Select:</mat-label>
         <mat-select formControlName="event" required>
           <mat-option *ngFor="let event of events" [value]="event.id">
-            {{ event.start_time | date: 'EEEE M/d' }}, {{
-            formatEventType(event.type) }}, from {{ event.start_time | date:
-            'h:mma' | lowercase}} to {{ event.end_time | date: 'h:mma' |
-            lowercase}}, {{ event.room.id }}</mat-option
-          >
+            <!-- eslint-disable-next-line prettier/prettier -->
+            {{ event.start_time | date: 'EEEE M/d' }},
+            <!-- eslint-disable-next-line prettier/prettier -->
+            {{ formatEventType(event.type) }},
+            <!-- eslint-disable-next-line prettier/prettier -->
+            from {{ event.start_time | date: 'h:mma' | lowercase}}
+            <!-- eslint-disable-next-line prettier/prettier -->
+            to {{ event.end_time | date: 'h:mma' | lowercase}},
+            <!-- eslint-disable-next-line prettier/prettier -->
+            {{ event.room.id }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <div class="buttons">
