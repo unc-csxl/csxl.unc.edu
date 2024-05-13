@@ -126,7 +126,7 @@ edited_comp_110_with_room = Section(
 )
 
 edited_comp_301_with_room = Section(
-    id=3,
+    id=5,
     course_id=course_data.comp_301.id,
     number="001",
     term_id=term_data.f_23.id,
@@ -160,7 +160,7 @@ new_section_with_lecture_room = Section(
 
 # Starting Here, Current Term Sections (SP'24). If term change, modify `current_term` assignment in `term_data.py`
 comp_523_001_current_term = Section(
-    id=5,
+    id=9,
     course_id=course_data.comp_523.id,
     number="001",
     term_id=term_data.current_term.id,
@@ -170,7 +170,7 @@ comp_523_001_current_term = Section(
 )
 
 comp_210_001_current_term = Section(
-    id=6,
+    id=10,
     course_id=course_data.comp_210.id,
     number="001",
     term_id=term_data.current_term.id,
@@ -181,7 +181,7 @@ comp_210_001_current_term = Section(
 
 
 comp_110_001_current_term = Section(
-    id=7,
+    id=11,
     course_id=course_data.comp_110.id,
     number="001",
     term_id=term_data.current_term.id,
@@ -191,7 +191,7 @@ comp_110_001_current_term = Section(
 )
 
 comp_110_002_current_term = Section(
-    id=8,
+    id=12,
     course_id=course_data.comp_110.id,
     number="002",
     term_id=term_data.current_term.id,
@@ -201,7 +201,7 @@ comp_110_002_current_term = Section(
 )
 
 comp_301_001_current_term = Section(
-    id=9,
+    id=13,
     course_id=course_data.comp_301.id,
     number="001",
     term_id=term_data.current_term.id,
