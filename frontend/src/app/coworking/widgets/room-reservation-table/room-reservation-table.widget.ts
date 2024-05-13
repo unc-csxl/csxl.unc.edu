@@ -195,8 +195,7 @@ export class RoomReservationWidgetComponent {
       (error) => {
         let errorMessage = 'Unknown error';
         try {
-          const errorObj = JSON.parse(error.message);
-          errorMessage = errorObj.error.message;
+          errorMessage = JSON.parse(error.message).error.message;
         } catch (e) {
           errorMessage = error.message || 'Error occurred';
         }
