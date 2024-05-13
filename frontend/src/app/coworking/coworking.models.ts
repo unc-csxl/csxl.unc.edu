@@ -38,16 +38,13 @@ export interface Room {
   id: string | null;
   nickname: string;
 }
-
-export interface RoomDetails {
-  id: string | null;
-  nickname: string;
+export interface RoomDetails extends Room {
   building: string;
   room: string;
   capacity: number;
   reservable: boolean;
   description: string;
-  seats: Seat[];
+  seats: Seat[]; // Assuming `Seat` is another interface defined elsewhere
 }
 
 export interface ReservationJSON extends TimeRangeJSON {
