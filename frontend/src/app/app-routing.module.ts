@@ -9,13 +9,18 @@ import { AboutComponent } from './about/about.component';
 const routes: Routes = [
   HomeComponent.Route,
   AboutComponent.Route,
-  ProfileEditorComponent.Route,
   GateComponent.Route,
   {
     path: 'coworking',
     title: 'Cowork in the XL',
     loadChildren: () =>
       import('./coworking/coworking.module').then((m) => m.CoworkingModule)
+  },
+  {
+    path: 'profile',
+    title: 'Profile',
+    loadChildren: () =>
+      import('./profile/profile.module').then((m) => m.ProfileModule)
   },
   {
     path: 'academics',
@@ -49,6 +54,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('./office-hours/office-hours.module').then(
         (m) => m.OfficeHoursModule
+      )
+  },
+  {
+    path: 'ta-application',
+    title: 'TA Applications',
+    loadChildren: () =>
+      import('./ta-application/ta-application.module').then(
+        (m) => m.ApplicationsModule
       )
   }
 ];

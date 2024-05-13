@@ -2,8 +2,10 @@
 
 from pydantic import BaseModel
 
+from backend.models.room import Room
+
 from .seat import Seat
-from .. import Room
+
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

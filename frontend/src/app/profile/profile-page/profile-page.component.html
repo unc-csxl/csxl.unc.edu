@@ -1,0 +1,74 @@
+<!-- HTML Structure of Profile Page -->
+
+<div class="container">
+  <div class="profile-grid">
+    <!-- Profile Information Card -->
+    <div class="left-column">
+      <div class="profile-card-container">
+        <profile-about-card [profile]="profile" />
+        <mat-card class="profile-management">
+          <mat-card-header>
+            <mat-card-title>Profile Actions</mat-card-title>
+          </mat-card-header>
+          <mat-card-actions class="profile-management-actions">
+            <div class="action-section">
+              <p class="section-title">Github</p>
+              <div class="action-buttons">
+                <div *ngIf="profile.github !== ''; else associate_github">
+                  <button
+                    class="action-button"
+                    mat-stroked-button
+                    (click)="unlinkGitHub()">
+                    Unlink GitHub
+                  </button>
+                </div>
+                <ng-template #associate_github>
+                  <button
+                    class="action-button"
+                    mat-stroked-button
+                    (click)="linkWithGitHub()">
+                    Link with GitHub
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+            <div class="action-section">
+              <p class="section-title">Community Agreement</p>
+              <div class="action-buttons">
+                <button
+                  class="action-button"
+                  mat-stroked-button
+                  type="button"
+                  (click)="openAgreementDialog()">
+                  View Community Agreement
+                </button>
+              </div>
+            </div>
+            <div class="action-section">
+              <p class="section-title">Auth Bearer Token</p>
+              <div class="action-buttons">
+                <button
+                  class="action-button"
+                  mat-stroked-button
+                  type="submit"
+                  (click)="displayToken()">
+                  {{ showToken ? 'Hide Bearer Token' : 'Display Bearer Token' }}
+                </button>
+                <button
+                  class="action-button"
+                  mat-stroked-button
+                  type="submit"
+                  (click)="copyToken()">
+                  Copy Bearer Token
+                </button>
+              </div>
+              <p class="token-text" *ngIf="showToken && token">
+                <code>{{ token }}</code>
+              </p>
+            </div>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

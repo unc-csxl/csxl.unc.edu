@@ -116,7 +116,7 @@ def test_create_with_lecture_room(section_svc: SectionService):
         user_data.root, "academics.section.create", "section/"
     )
     assert isinstance(section, SectionDetails)
-    assert section.id == section_data.new_section.id
+    assert section.id == section_data.new_section_with_lecture_room.id
 
 
 def test_create_as_user(section_svc: SectionService):

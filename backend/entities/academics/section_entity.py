@@ -1,11 +1,10 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course Sections."""
 
 from typing import Self
-from sqlalchemy import Integer, String, DateTime, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-
 from ..entity_base import EntityBase
+from ..section_application_table import section_application_table
 from ...models.academics import Section
 from ...models.academics import SectionDetails
 
@@ -83,6 +82,12 @@ class SectionEntity(EntityBase):
         back_populates="sections"
     )
 
+    # All applicants where section is preferred
+    # NOTE: This field establishes a many-to-many relationship between the sections and applications table.
+    preferred_applicants: Mapped[list["UTAApplicationEntity"]] = relationship(
+        secondary=section_application_table, back_populates="preferred_sections"
+    )
+
     @classmethod
     def from_model(cls, model: Section) -> Self:
         """
@@ -157,4 +162,7 @@ class SectionEntity(EntityBase):
                 if self.office_hours_section is not None
                 else None
             ),
+            preferred_applicants=[
+                applicant.to_model() for applicant in self.preferred_applicants
+            ],
         )

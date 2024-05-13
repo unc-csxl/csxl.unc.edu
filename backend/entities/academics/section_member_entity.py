@@ -65,6 +65,10 @@ class SectionMemberEntity(EntityBase):
         back_populates="caller", cascade="all, delete"
     )
 
+    application_id: Mapped[int] = mapped_column(
+        ForeignKey("application.id"), nullable=True
+    )
+
     def to_flat_model(self) -> SectionMember:
         """
         Converts a `SectionEntity` object into a `SectionMember` model object

@@ -4,6 +4,7 @@ from fastapi import Depends
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
+from sqlalchemy import or_, and_
 from sqlalchemy.orm import Session, joinedload
 from backend.entities.room_entity import RoomEntity
 
@@ -31,7 +32,7 @@ from .policy import PolicyService
 from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
-__authors__ = ["Kris Jordan", "Matt Vu","Yuvraj Jain"]
+__authors__ = ["Kris Jordan", "Matt Vu", "Yuvraj Jain"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -271,8 +272,7 @@ class ReservationService:
         """
         reserved_date_map: dict[str, list[int]] = {}
 
-        # Query DB to get reservable rooms. You can change coworking policy to change
-        # which rooms are reservable. SN156 should not go in coworking policy.
+        # Query DB to get reservable rooms.
         rooms = self._get_reservable_rooms()
 
         # Generate a 1 day time range to get operating hours on date.
@@ -298,8 +298,11 @@ class ReservationService:
             )
 
         # Extract the start time and end time for operating hours rounded to the closest half hour
-        operating_hours_start = self._round_to_closest_half_hour(
-            operating_hours_on_date.start, round_up=True
+        operating_hours_start = max(
+            self._round_to_closest_half_hour(
+                operating_hours_on_date.start, round_up=True
+            ),
+            self._round_to_closest_half_hour(datetime.now(), round_up=False),
         )
         operating_hours_end = self._round_to_closest_half_hour(
             operating_hours_on_date.end, round_up=False
@@ -313,32 +316,32 @@ class ReservationService:
 
         # Need current time to gray out slots in the past on that day.
         current_time = datetime.now()
-        current_time_idx = (
-            self._idx_calculation(current_time, operating_hours_start) + 1
-        )
+        current_time_idx = self._idx_calculation(current_time, operating_hours_start)
 
         for room in rooms:
             time_slots_for_room = [0] * operating_hours_duration
 
-            # Making slots up till current time gray
-            if date.date() == current_time.date():
-                for i in range(0, current_time_idx):
-                    time_slots_for_room[i] = RoomState.UNAVAILABLE.value
+            # # Making slots up till current time gray
+            # This code no longer required, but may be required in the future.
+            # Please keep this here for now.
+            # if date.date() == current_time.date():
+            #     for i in range(0, current_time_idx):
+            #         time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
-            room_id = room.id if room else "SN156"
-            reservations = self._query_confirmed_reservations_by_date_and_room(
-                date, room_id
-            )
+            if room.id == "SN156":
+                reservations = self._query_xl_reservations_by_date_for_user(
+                    date, subject
+                )
+            else:
+                reservations = self._query_confirmed_reservations_by_date_and_room(
+                    date, room.id
+                )
             for reservation in reservations:
                 start_idx = self._idx_calculation(
                     reservation.start, operating_hours_start
                 )
                 end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
-                if start_idx < 0 or end_idx > operating_hours_duration:
-                    continue
-
-                # Gray out previous time slots for today only
                 if date.date() == current_time.date():
                     if end_idx < current_time_idx:
                         continue
@@ -384,13 +387,15 @@ class ReservationService:
         minutes = dt.minute
 
         if round_up:
-            if minutes < 30:
+            if minutes == 0:
+                to_add = timedelta(minutes=0)
+            elif minutes < 30:
                 to_add = timedelta(minutes=(30 - minutes))
             else:
                 to_add = timedelta(minutes=(60 - minutes))
             rounded_dt = dt + to_add
         else:
-            if minutes > 30:
+            if minutes >= 30:
                 to_subtract = timedelta(minutes=(minutes - 30))
             else:
                 to_subtract = timedelta(minutes=minutes)
@@ -459,6 +464,8 @@ class ReservationService:
         """
         office_hours = self._policy_svc.office_hours(date=date)
         for room_id, hours in office_hours.items():
+            if room_id not in reserved_date_map:
+                continue
             for start, end in hours:
                 start_idx = max(self._idx_calculation(start, operating_hours_start), 0)
                 end_idx = min(
@@ -507,6 +514,28 @@ class ReservationService:
 
         return [reservation.to_model() for reservation in reservations]
 
+    def _query_xl_reservations_by_date_for_user(
+        self, date: datetime, subject: User
+    ) -> Sequence[Reservation]:
+        start = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start < start + timedelta(hours=24),
+                ReservationEntity.end > start,
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
+                ),
+                ReservationEntity.room == None,
+                UserEntity.id == subject.id,
+            )
+            .order_by(ReservationEntity.start)
+            .all()
+        )
+
+        return [reservation.to_model() for reservation in reservations]
+
     def _get_reservable_rooms(self) -> Sequence[RoomDetails]:
         """
         Retrieves a list of all reservable rooms.
@@ -519,10 +548,9 @@ class ReservationService:
         Returns:
             Sequence[RoomDetails]: A sequence of RoomDetails models representing all the reservable rooms, excluding room 'SN156'.
         """
-
         rooms = (
             self._session.query(RoomEntity)
-            .where(RoomEntity.reservable == True)
+            .where(or_(RoomEntity.reservable == True, RoomEntity.id == "SN156"))
             .order_by(RoomEntity.id)
             .all()
         )
@@ -808,7 +836,7 @@ class ReservationService:
         #             )
 
         # Look at the seats - match bounds of assigned seat's availability
-        # TODO: Fetch all seats
+        seat_entities = []
         if request.room is None:
             seats: list[Seat] = SeatEntity.get_models_from_identities(
                 self._session, request.seats
@@ -832,9 +860,10 @@ class ReservationService:
             seat_entities = [self._session.get(SeatEntity, seat_availability[0].id)]
             bounds = seat_availability[0].availability[0]
         else:
-            seat_entities = []
-
-        room_id = request.room.id if request.room else None
+            # Prevent double booking a room
+            conflicts = self._fetch_conflicting_room_reservations(request)
+            if len(conflicts) > 0:
+                raise ReservationException("The requested room is no longer available.")
 
         draft = ReservationEntity(
             state=ReservationState.DRAFT,
@@ -842,7 +871,7 @@ class ReservationService:
             end=bounds.end,
             users=user_entities,
             walkin=is_walkin,
-            room_id=room_id,
+            room_id=request.room.id if request.room else None,
             seats=seat_entities,
         )
 
@@ -1009,7 +1038,7 @@ class ReservationService:
             self._session.query(ReservationEntity)
             .join(ReservationEntity.users)
             .filter(
-                ReservationEntity.start >= now - timedelta(minutes=10),
+                ReservationEntity.end > now,
                 ReservationEntity.state.in_(
                     (
                         ReservationState.CONFIRMED,
@@ -1119,3 +1148,26 @@ class ReservationService:
             if len(seat.availability) > 0:
                 available_seats.append(seat)
         return available_seats
+
+    def _fetch_conflicting_room_reservations(
+        self, request: ReservationRequest
+    ) -> list[ReservationEntity]:
+        """Given a ReservationRequest, return a list of conflicting reservation entities, if any."""
+        return (
+            self._session.query(ReservationEntity)
+            .filter(
+                and_(
+                    ReservationEntity.start < request.end,
+                    ReservationEntity.end > request.start,
+                ),
+                ReservationEntity.state.in_(
+                    (
+                        ReservationState.DRAFT,
+                        ReservationState.CONFIRMED,
+                        ReservationState.CHECKED_IN,
+                    )
+                ),
+                ReservationEntity.room_id == request.room.id,
+            )
+            .all()
+        )

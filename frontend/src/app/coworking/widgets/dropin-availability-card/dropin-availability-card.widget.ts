@@ -6,7 +6,7 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { Seat, SeatAvailability } from 'src/app/coworking/coworking.models';
+import { SeatAvailability } from 'src/app/coworking/coworking.models';
 
 class SeatCategory {
   public title: string;
@@ -116,7 +116,7 @@ export class CoworkingDropInCard implements OnChanges {
     return [
       new SeatCategory('Sitting Desk with Monitor'),
       new SeatCategory('Standing Desk with Monitor'),
-      new SeatCategory('Communal Area Seat')
+      new SeatCategory('Communal Area')
     ];
   }
 }

@@ -1,12 +1,14 @@
 from pydantic import BaseModel
 
+from ...models.academics.section_member import SectionMember
 from ...models.office_hours.section import OfficeHoursSection
 
 from ..room import Room
+from backend.models.application import UTAApplication
+
 from .course import Course
 from .term import Term
 from .section import Section
-from .section_member import SectionMember
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -26,3 +28,4 @@ class SectionDetails(Section):
     term: Term
     office_hours_section: OfficeHoursSection | None
     members: list[SectionMember]
+    preferred_applicants: list[UTAApplication]
