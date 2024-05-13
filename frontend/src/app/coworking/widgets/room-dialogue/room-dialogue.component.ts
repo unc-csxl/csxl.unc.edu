@@ -15,7 +15,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       <div class="dialog-content" mat-dialog-content>
         <p>Room: {{ data.id }}</p>
         <p>Capacity: {{ data.capacity }}</p>
-        <p>Description: {{ data.description }}</p>
+        <div *ngIf="data.description">
+          <p><strong>Description:</strong></p>
+          <p>{{ data.description }}</p>
+        </div>
       </div>
     </div>
   `,
