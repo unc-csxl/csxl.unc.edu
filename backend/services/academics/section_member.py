@@ -101,6 +101,36 @@ class SectionMemberService:
 
         return entity.to_flat_model()
 
+    def add_section_member(
+        self, subject: User, section_id: int, user_id: int, member_role: RosterRole
+    ) -> SectionMemberDetails:
+        """Add one member to a section
+
+        Args:
+            subject (User): The user for whom to add section memberships.
+            section_id (int): ID of the section to add a member to.
+            user_id (int): ID of the user to add a member to.
+
+        Returns:
+            SectionMember: Newly created section member.
+
+        Raises:
+            ResourceNotFoundException: If no academic section is found for any of the specified office hours sections.
+        """
+        self._permission_svc.enforce(
+            subject, "academics.section_member.create", f"section/{section_id}"
+        )
+
+        draft = SectionMemberDraft(
+            user_id=user_id, section_id=section_id, member_role=member_role
+        )
+        section_membership = SectionMemberEntity.from_draft_model(draft)
+
+        self._session.add(section_membership)
+        self._session.commit()
+
+        return section_membership.to_details_model()
+
     def add_user_section_memberships_by_oh_sections(
         self,
         subject: User,
