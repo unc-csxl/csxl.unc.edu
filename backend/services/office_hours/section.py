@@ -26,6 +26,7 @@ from ...models.office_hours.section import (
 from ...models.office_hours.section_details import OfficeHoursSectionDetails
 from ...models.user import User
 from ..exceptions import ResourceNotFoundException
+from ...services.permission import PermissionService
 
 
 __authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]
@@ -39,9 +40,11 @@ class OfficeHoursSectionService:
     def __init__(
         self,
         session: Session = Depends(db_session),
+        permission_svc: PermissionService = Depends(),
     ):
         """Initializes the database session."""
         self._session = session
+        self._permission_svc = permission_svc
 
     def create(
         self,
@@ -60,6 +63,7 @@ class OfficeHoursSectionService:
         """
 
         # PERMISSIONS
+        self._permission_svc.enforce(subject, "oh_service.create", "*")
 
         # 1. Check If Give Academic Sections IDs Are Valid
         query = select(SectionEntity).where(SectionEntity.id.in_(academic_section_ids))
@@ -74,17 +78,6 @@ class OfficeHoursSectionService:
         for entity in academic_section_entities:
             if entity.office_hours_id is not None:
                 raise Exception("Office Hours Section Already Exists!")
-
-        # 3. Check If User is a Member in a Section and Has Proper Role to Create
-        for academic_id in academic_section_ids:
-            section_member_entity = self._check_membership_by_user_id_section_id(
-                subject.id, academic_id
-            )
-
-            if section_member_entity.member_role != RosterRole.INSTRUCTOR:
-                raise PermissionError(
-                    f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
-                )
 
         # Query and Execution to Update All Academic Section With New OH Section ID
         oh_section_entity = OfficeHoursSectionEntity.from_draft_model(oh_section)
