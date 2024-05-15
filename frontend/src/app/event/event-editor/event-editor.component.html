@@ -3,7 +3,7 @@
   [formGroup]="eventForm"
   (ngSubmit)="onSubmit()"
   *ngIf="(enabled$ | async) || this.event.is_organizer; else unauthenticated">
-  <mat-card>
+  <mat-card appearance="outlined">
     <!-- Header -->
     <mat-card-header>
       <mat-card-title *ngIf="event.id === null">Create Event</mat-card-title>

@@ -1,5 +1,5 @@
 <div class="user-chips">
-  <mat-chip class="user-chip" *ngFor="let user of users">
+  <mat-chip-option class="user-chip" *ngFor="let user of users">
     <img *ngIf="user.github_avatar" matChipAvatar [src]="user.github_avatar" />
     <a
       *ngIf="enableMailTo; else disableMailTo"
@@ -10,5 +10,5 @@
     <ng-template #disableMailTo>
       {{ user.first_name + ' ' + user.last_name }}
     </ng-template>
-  </mat-chip>
+  </mat-chip-option>
 </div>

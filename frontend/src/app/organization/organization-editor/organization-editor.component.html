@@ -3,7 +3,7 @@
 <!-- Update Organization Form -->
 <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()">
   <!-- Update Organization Card -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title *ngIf="this.organization_slug === 'new'; else update">
         Create Organization
