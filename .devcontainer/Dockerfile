@@ -30,10 +30,6 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --de
     && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list \
     && apt update \
     && apt install caddy
-# RUN wget https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz \
-#     && tar -xf caddy_2.7.6_linux_amd64.tar.gz \
-#     && mv caddy /usr/bin \
-#     && rm caddy_2.7.6_linux_amd64.tar.gz
 
 # Install Node.js 18 from https://github.com/nodesource
 ENV NODE_MAJOR 18
