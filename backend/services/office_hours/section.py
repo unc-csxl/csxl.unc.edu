@@ -63,7 +63,6 @@ class OfficeHoursSectionService:
         """
 
         # PERMISSIONS
-        self._permission_svc.enforce(subject, "oh_service.create", "*")
 
         # 1. Check If Give Academic Sections IDs Are Valid
         query = select(SectionEntity).where(SectionEntity.id.in_(academic_section_ids))
@@ -78,6 +77,20 @@ class OfficeHoursSectionService:
         for entity in academic_section_entities:
             if entity.office_hours_id is not None:
                 raise Exception("Office Hours Section Already Exists!")
+
+        has_permissions = self._permission_svc.check(subject, "oh_service.create", "*")
+
+        # 3. Check If User is a Member in a Section and Has Proper Role to Create
+        if not has_permissions:
+            for academic_id in academic_section_ids:
+                section_member_entity = self._check_membership_by_user_id_section_id(
+                    subject.id, academic_id
+                )
+
+                if section_member_entity.member_role != RosterRole.INSTRUCTOR:
+                    raise PermissionError(
+                        f"Section Member is not an Instructor. User Does Not Have Permisions Create an Office Hours Section."
+                    )
 
         # Query and Execution to Update All Academic Section With New OH Section ID
         oh_section_entity = OfficeHoursSectionEntity.from_draft_model(oh_section)
@@ -704,6 +717,38 @@ class OfficeHoursSectionService:
             oh_section: OfficeHoursSectionDetails to delete
         """
         # TODO
+
+    def _check_membership_by_user_id_section_id(
+        self,
+        user_id: int,
+        section_id: int,
+    ) -> SectionMemberEntity:
+        """Checks if a given user is a member in academic sections and has oh section edit permissions. A UTA/GTA/Instructor has this permission.
+        Note: An Office Hours section can have multiple academic sections assoicated with it.
+        Args:
+            user_id: The id of given User of interest
+            section_id: ID of academic section.
+        Returns:
+            SectionMemberEntity: `SectionMemberEntity` associated with a given user and academic section
+        Raises:
+            PermissionError if user creating event is not a Instructor
+        """
+        # Select SectionMembers where the user id and section id match the given ones
+        query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user_id)
+            .where(SectionMemberEntity.section_id == section_id)
+        )
+        # Find User Academic Section Entity
+        section_member_entity = self._session.scalars(query).one_or_none()
+
+        if section_member_entity is None:
+            raise PermissionError(
+                f"User has to be a Section Member to Create OH Section. Unable To Find Section Member Entity for User with id: {user_id} in the following Academic Sections of ids: {section_id}"
+            )
+
+        # Return entity
+        return section_member_entity
 
     def _check_user_section_membership(
         self,
