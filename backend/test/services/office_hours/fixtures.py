@@ -38,6 +38,6 @@ def oh_ticket_svc(
 
 
 @pytest.fixture()
-def oh_section_svc(session: Session):
+def oh_section_svc(session: Session, permission_svc: PermissionService):
     """OfficeHoursSectionService fixture."""
-    return OfficeHoursSectionService(session)
+    return OfficeHoursSectionService(session, permission_svc)
