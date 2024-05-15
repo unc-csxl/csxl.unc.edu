@@ -1,0 +1,47 @@
+<current-ticket-card-widget
+  class="full-width-card"
+  *ngIf="ticket && event"
+  [ticket]="ticket"
+  [event]="event"></current-ticket-card-widget>
+<mat-card
+  appearance="outlined"
+  *ngIf="ticket && formatTicketState(ticket.state) === 'Queued'">
+  <div class="card-container">
+    <div class="header-row">
+      <div class="title">
+        <mat-card-title> {{ formatEventType(event.type) }}</mat-card-title>
+        <mat-card-subtitle> Location: {{ event.room.id }} </mat-card-subtitle>
+        <mat-card-subtitle>
+          {{ event.location_description }}
+        </mat-card-subtitle>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="queue-row">
+      <div class="position">
+        You're Number
+        <span class="number-badge" style="background: #4786c6">
+          {{ this.queue_spot }}
+        </span>
+        in the Queue
+      </div>
+    </div>
+    <mat-card-content>
+      <div class="queue-row">
+        <div class="queued">
+          <span class="number-badge"> {{ this.queued_tickets }} </span>
+          Queued
+        </div>
+        <div class="helped">
+          <span class="number-badge"> {{ this.called_tickets }} </span>
+          Being Helped
+        </div>
+      </div>
+    </mat-card-content>
+  </div>
+</mat-card>
+<schedule-card-widget [sectionId]="sectionId"></schedule-card-widget>
+
+<audio #officeHoursNotif>
+  <source src="/../assets/office-hours-notif.wav" type="audio/wav" />
+</audio>

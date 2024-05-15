@@ -47,6 +47,15 @@ comp_301 = Course(
     credit_hours=3,
 )
 
+comp_523 = Course(
+    id="comp523",
+    subject_code="COMP",
+    number="523",
+    title="Software Engineering Laboratory",
+    description="Organization and scheduling of software engineering projects, structured programming, and design. Each team designs, codes, and debugs program components and synthesizes them into a tested, documented program product.",
+    credit_hours=4,
+)
+
 comp_311 = Course(
     id="comp311",
     subject_code="COMP",
@@ -74,8 +83,7 @@ new_course = Course(
     credit_hours=3,
 )
 
-
-courses = [comp_110, comp_210, comp_211, comp_301, comp_311]
+courses = [comp_110, comp_210, comp_211, comp_301, comp_311, comp_523]
 
 
 def insert_fake_data(session: Session):

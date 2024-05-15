@@ -9,7 +9,7 @@ from ..models import Room, RoomDetails
 from typing import Self
 
 __authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 

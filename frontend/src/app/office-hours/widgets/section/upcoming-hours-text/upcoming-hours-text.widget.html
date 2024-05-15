@@ -1,0 +1,12 @@
+<div *ngIf="upcomingHours && upcomingHours.length > 0; else noHours">
+  <ul *ngFor="let hour of upcomingHours">
+    <li>
+      {{ hour.start_time | date: 'EEEE M/d' }}, {{ formatEventType(hour.type)
+      }}, from {{ hour.start_time | date: 'h:mma' | lowercase}} to {{
+      hour.end_time | date: 'h:mma' | lowercase}}, {{ hour.room.id }}
+    </li>
+  </ul>
+</div>
+<ng-template #noHours>
+  There are no upcoming events scheduled at this time. Please check again later.
+</ng-template>

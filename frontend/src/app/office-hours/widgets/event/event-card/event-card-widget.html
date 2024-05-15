@@ -1,0 +1,61 @@
+<mat-card appearance="outlined" class="card-size">
+  <div class="header-row">
+    <div class="location">
+      <mat-card-title>{{ formatEventType(event.type) }}</mat-card-title>
+      <mat-card-subtitle>Location: {{ event.room.id }}</mat-card-subtitle>
+      <mat-card-subtitle *ngIf="event.location_description"
+        >{{ event.location_description }}</mat-card-subtitle
+      >
+    </div>
+    <div class="open operating-hours">
+      <span class="badge">Open</span>until {{ event.end_time | date: 'h:mma' |
+      lowercase }}
+    </div>
+    <button
+      mat-icon-button
+      style="margin: 0.5rem"
+      [matMenuTriggerFor]="menu"
+      *ngIf="rosterRole !== 0">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <a>
+        <button [routerLink]="['edit-event/' + event.id]" mat-menu-item>
+          Edit Event
+        </button>
+      </a>
+      <button mat-menu-item (click)="openDeleteEventDialog()">
+        Delete Event
+      </button>
+    </mat-menu>
+  </div>
+  <mat-divider></mat-divider>
+  <div *ngIf="event.description">
+    <p class="card-container"><b>Description: </b>{{ event.description }}</p>
+    <mat-divider></mat-divider>
+  </div>
+  <div class="card-container">
+    <mat-card-content>
+      <!-- <p *ngIf="event.description">Notes: {{ event.description }}</p> -->
+      <div class="queue-row">
+        <div class="queued">
+          <span class="number-badge">{{ this.queued_tickets }}</span>Queued
+        </div>
+        <div class="helped">
+          <span class="number-badge">{{ this.called_tickets }}</span>Being
+          Helped
+        </div>
+      </div>
+      <div class="button-row" *ngIf="rosterRole === 0">
+        <a [routerLink]="[event.id + '/create-new-ticket']">
+          <button mat-stroked-button>Get Help</button>
+        </a>
+      </div>
+      <div class="button-row" *ngIf="rosterRole !== 0">
+        <a [routerLink]="[event.id + '/queue']">
+          <button mat-stroked-button>Check In</button>
+        </a>
+      </div>
+    </mat-card-content>
+  </div>
+</mat-card>

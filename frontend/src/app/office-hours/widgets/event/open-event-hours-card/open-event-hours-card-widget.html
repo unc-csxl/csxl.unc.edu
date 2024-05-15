@@ -1,0 +1,20 @@
+<mat-card appearance="outlined">
+  <div class="card-container">
+    <div class="row-one">
+      <div class="event-type">
+        <p>{{ formatEventType(event.type) }}</p>
+      </div>
+      <div class="hours">
+        <p>
+          {{event.start_time | date: 'h:mma' | lowercase}} to {{ event.end_time
+          | date: 'h:mma' | lowercase}}
+        </p>
+      </div>
+    </div>
+    <div class="row-two">
+      <div class="location">
+        <p>{{ event.room.id }}</p>
+      </div>
+    </div>
+  </div>
+</mat-card>
