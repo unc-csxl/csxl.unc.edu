@@ -19,7 +19,15 @@ import {
   Reservation,
   SeatAvailability
 } from '../coworking.models';
-import { Observable, Subscription, map, mergeMap, of, timer, catchError } from 'rxjs';
+import {
+  Observable,
+  Subscription,
+  map,
+  mergeMap,
+  of,
+  timer,
+  catchError
+} from 'rxjs';
 import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { ReservationService } from '../reservation/reservation.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -69,7 +77,6 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
     this.upcomingReservations$ = this.initUpcomingReservations();
-
   }
 
   /**
@@ -143,25 +150,33 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   initUpcomingReservations(): Observable<Reservation[]> {
-    const isUpcomingRoomReservation = (r: Reservation) =>
-      !this.coworkingService.findActiveReservationPredicate(r) && !!r && !!r.room
-      && r.state == 'CONFIRMED';
-  
-    return this.status$
-      .pipe(
-        map((status) => {
-          let reservations = status.my_reservations;
-          return reservations.filter((r) => isUpcomingRoomReservation(r));
-        }),
-        catchError((err: Error) => {
-          const message = 'Error while fetching upcoming reservations.';
-          this.snackBar.open(message, '', { duration: 8000 });
-          console.error(err);
-          return of([]);
-        })
-      );
+    const isUpcomingRoomReservation = (reservation: Reservation) => {
+      if (!this.coworkingService.findActiveReservationPredicate(reservation)) {
+        if (
+          reservation &&
+          reservation.room &&
+          reservation.state === 'CONFIRMED'
+        ) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    return this.status$.pipe(
+      map((status) => {
+        let reservations = status.my_reservations;
+        return reservations.filter(isUpcomingRoomReservation);
+      }),
+      catchError((err: Error) => {
+        const message = 'Error while fetching upcoming reservations.';
+        this.snackBar.open(message, '', { duration: 8000 });
+        console.error(err);
+        return of([]);
+      })
+    );
   }
-  
+
   navigateToNewReservation() {
     this.router.navigateByUrl('/coworking/new-reservation');
   }
