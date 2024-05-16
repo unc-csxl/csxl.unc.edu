@@ -38,7 +38,7 @@ __authors__ = [
     "Aarjav Jain",
     "John Schachte",
 ]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 

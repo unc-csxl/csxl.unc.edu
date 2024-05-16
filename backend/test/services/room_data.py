@@ -6,8 +6,8 @@ from ...entities import RoomEntity
 from ...models import RoomDetails
 from .reset_table_id_seq import reset_table_id_seq
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 

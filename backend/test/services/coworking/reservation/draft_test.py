@@ -38,8 +38,8 @@ from .. import seat_data
 from ... import room_data
 from . import reservation_data
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 
@@ -332,7 +332,7 @@ def test_draft_reservation_room_time_conflict(
     end = reservation_data.reservation_6.start + timedelta(minutes=30)
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_b,
+        room=room_data.group_a,
         start=start,
         end=end,
         users=[user_data.ambassador],
@@ -405,7 +405,7 @@ def test_draft_reservation_different_room_time_conflict(
     end = reservation_data.reservation_6.end
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_a,  # Existing test reservation is group_b
+        room=room_data.group_b,  # Existing test reservation is group_a
         start=start,
         end=end,
         users=[user_data.ambassador],
@@ -414,3 +414,47 @@ def test_draft_reservation_different_room_time_conflict(
         user_data.ambassador, conflict_draft
     )
     assert reservation.id is not None
+
+
+def test_draft_reservation_crosses_weekly_limit(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    user_data.user.accepted_community_agreement = True
+    
+    # Make filler reservations to reach weekly limit
+    temp_draft_1 = ReservationRequest(
+        seats=[],
+        room=room_data.group_a,
+        start=operating_hours_data.three_days_from_today.start,
+        end=operating_hours_data.three_days_from_today.start + timedelta(hours=2),
+        users=[user_data.user],
+    )
+
+    reservation_svc.draft_reservation(
+        user_data.user, temp_draft_1
+    )
+
+    temp_draft_2 = ReservationRequest(
+        seats=[],
+        room=room_data.group_a,
+        start=operating_hours_data.three_days_from_today.start + timedelta(hours=2),
+        end=operating_hours_data.three_days_from_today.start + timedelta(hours=4),
+        users=[user_data.user],
+    )
+
+    reservation_svc.draft_reservation(
+        user_data.user, temp_draft_2
+    )
+
+    exceed_limit_draft = ReservationRequest(
+        seats=[],
+        room=room_data.group_a,
+        start=operating_hours_data.three_days_from_today.start + timedelta(hours=4),
+        end=operating_hours_data.three_days_from_today.start + timedelta(hours=6),
+        users=[user_data.user],
+    )
+
+    with pytest.raises(ReservationException):
+        reservation_svc.draft_reservation(
+            user_data.user, exceed_limit_draft
+        )

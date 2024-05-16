@@ -104,4 +104,4 @@ def get_total_hours_study_room_reservations(
     reservation_svc: ReservationService = Depends(),
 ) -> str:
     """Allows a user to know how many hours they have reserved in all study rooms (Excludes CSXL)."""
-    return reservation_svc._get_total_time_user_reservations(subject)
+    return reservation_svc.get_total_time_user_reservations(subject)
