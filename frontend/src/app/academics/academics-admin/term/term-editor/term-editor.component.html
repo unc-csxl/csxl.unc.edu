@@ -1,7 +1,7 @@
 <!-- Update Term Form -->
 <form [formGroup]="termForm" (ngSubmit)="onSubmit()">
   <!-- Update Term Card -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title *ngIf="this.termId === 'new'; else update">
         Create Term
