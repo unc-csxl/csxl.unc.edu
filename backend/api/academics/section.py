@@ -53,6 +53,23 @@ def get_section_by_term_id(
     return section_service.get_by_term(term_id)
 
 
+@api.get(
+    "/term/{term_id}/no-office-hours",
+    response_model=list[SectionDetails],
+    tags=["Academics"],
+)
+def get_section_by_term_id(
+    term_id: str, section_service: SectionService = Depends()
+) -> list[SectionDetails]:
+    """
+    Gets list of sections by term ID that doesn't have an OH Section.
+
+    Returns:
+        list[SectionDetails]: Sections with the given term
+    """
+    return section_service.get_sections_with_no_office_hours_by_term(term_id)
+
+
 @api.get("/subject/{subject}", response_model=list[SectionDetails], tags=["Academics"])
 def get_section_by_subject(
     subject: str, section_service: SectionService = Depends()

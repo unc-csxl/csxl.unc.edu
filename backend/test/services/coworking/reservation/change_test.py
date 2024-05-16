@@ -11,7 +11,7 @@ from .....services.exceptions import ResourceNotFoundException
 
 from .....models.user import UserIdentity
 from .....models.coworking.seat import SeatIdentity
-from .....models.coworking.reservation import ReservationPartial
+from .....models.coworking.reservation import Reservation, ReservationPartial
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 # Dependent fixtures (seat_svc) are required to be imported in the testing module.
@@ -32,9 +32,10 @@ from ...core_data import user_data
 from .. import operating_hours_data
 from .. import seat_data
 from . import reservation_data
+from backend.test.services.room_data import group_a
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 
@@ -134,6 +135,24 @@ def test_change_reservation_checkout_confirmed_noop(
         ReservationPartial(id=4, state=ReservationState.CHECKED_OUT),
     )
     assert ReservationState.CONFIRMED == reservation.state
+
+
+def test_change_reservation_confirmed_checkin_room(
+    reservation_svc: ReservationService, time: dict[str, datetime]
+):
+    reservation = Reservation(
+        id=8,
+        start=time[NOW],
+        end=time[IN_ONE_HOUR],
+        created_at=time[NOW],
+        updated_at=time[NOW],
+        walkin=False,
+        room=group_a,
+        state=ReservationState.CONFIRMED,
+        users=[user_data.user],
+        seats=[]
+    )
+    assert True == reservation_svc._change_state(reservation, delta=ReservationState.CHECKED_IN)
 
 
 def test_change_reservation_change_seats_not_implemented(

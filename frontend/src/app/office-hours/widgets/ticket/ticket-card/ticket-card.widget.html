@@ -1,0 +1,42 @@
+<!-- eslint-disable prettier/prettier -->
+<mat-card appearance="outlined">
+  <div class="card-container">
+    <div *ngIf="formatTicketState(ticket.state) === 'Queued'">
+      <mat-card-title> {{formatTicketType(ticket.type)}} </mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-card-content class="newline"
+        >{{ticket.description}}</mat-card-content
+      >
+      <div class="button-row">
+        <button mat-stroked-button (click)="cancelTicket()">Cancel</button>
+        <button
+          *ngIf="queuePosition < 2"
+          mat-flat-button
+          color="accent"
+          (click)="callTicket()">
+          Call
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="formatTicketState(ticket.state) === 'Called'">
+      <mat-card-title *ngIf="formatTicketState(ticket.state) === 'Called'">
+        {{ticket.caller?.first_name}} is with {{ticket.creators[0].first_name}} {{ticket.creators[0].last_name}}
+        ({{ ticket.creators[0].pronouns}})
+      </mat-card-title>
+      <mat-card-subtitle style="font-style: italic"
+        >called at {{ticket.called_at | date: 'h:mma' |
+        lowercase}}</mat-card-subtitle
+      >
+      <mat-divider></mat-divider>
+      <mat-card-content class="newline"
+        >{{ticket.description}}</mat-card-content
+      >
+      <div class="button-row">
+        <button mat-stroked-button (click)="openTicketFeedbackFormDialog()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-card>

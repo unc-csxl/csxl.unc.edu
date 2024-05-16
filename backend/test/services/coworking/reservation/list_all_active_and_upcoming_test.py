@@ -2,6 +2,8 @@
 
 from unittest.mock import create_autospec
 
+from backend.services.exceptions import UserPermissionException
+
 from .....services import PermissionService
 from .....services.coworking import ReservationService
 
@@ -46,3 +48,14 @@ def test_list_all_active_and_upcoming_permission(reservation_svc: ReservationSer
         "coworking.reservation.read",
         f"user/*",
     )
+
+
+def test_list_all_active_and_upcoming_for_rooms_user(reservation_svc: ReservationService):
+    with pytest.raises(UserPermissionException):
+        all = reservation_svc.list_all_active_and_upcoming_for_rooms(user_data.user)
+
+
+
+def test_list_all_active_and_upcoming_for_rooms_ambassador(reservation_svc: ReservationService):
+    all = reservation_svc.list_all_active_and_upcoming_for_rooms(user_data.ambassador)
+    assert len(all) == len(reservation_data.room_reservations)

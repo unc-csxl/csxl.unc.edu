@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { Course, Room, Section, Term } from './academics.models';
+import { Course, Room, Section, SectionMember, Term } from './academics.models';
 
 @Injectable({
   providedIn: 'root'
@@ -117,6 +117,23 @@ export class AcademicsService {
     return this.http.get<Section[]>(`/api/academics/section/term/${term.id}`);
   }
 
+  /** Returns all section entries by a term at which an office hours section doesn't exist.
+   * @param term Term to get sections by
+   * @returns {Observable<Section[]>}
+   */
+  getSectionsWithNoOfficeHoursByTerm(term: Term): Observable<Section[]> {
+    return this.http.get<Section[]>(
+      `/api/academics/section/term/${term.id}/no-office-hours`
+    );
+  }
+
+  /** Returns all section entries by a term.
+   * @returns {Observable<Section[]>}
+   */
+  getSectionsByTerm24F(): Observable<Section[]> {
+    return this.http.get<Section[]>(`/api/academics/section/term/24F`);
+  }
+
   /** Returns one section from the backend database.
    * @param id ID of the section to look up
    * @returns {Observable<Section>}
@@ -186,5 +203,21 @@ export class AcademicsService {
    */
   deleteRoom(room: Room) {
     return this.http.delete(`/api/academics/room/${room.id}`);
+  }
+
+  /** Retrieve's a SectionMember's membership in an Office Hours section by section ID.
+   * @param section_id: section_id to find
+   * @returns {SectionMember}
+   */
+  getMembershipBySection(section_id: number): Observable<SectionMember> {
+    return this.http.get<SectionMember>(
+      `/api/academics/section-member/oh-section/${section_id}`
+    );
+  }
+
+  checkInstructorship(): Observable<SectionMember[]> {
+    return this.http.get<SectionMember[]>(
+      'api/academics/section-member/instructor-memberships/'
+    );
   }
 }

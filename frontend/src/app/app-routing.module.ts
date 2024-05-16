@@ -47,6 +47,22 @@ const routes: Routes = [
     title: 'Experimental',
     loadChildren: () =>
       import('./event/event.module').then((m) => m.EventModule)
+  },
+  {
+    path: 'office-hours',
+    title: 'Office Hours',
+    loadChildren: () =>
+      import('./office-hours/office-hours.module').then(
+        (m) => m.OfficeHoursModule
+      )
+  },
+  {
+    path: 'ta-application',
+    title: 'TA Applications',
+    loadChildren: () =>
+      import('./ta-application/ta-application.module').then(
+        (m) => m.ApplicationsModule
+      )
   }
 ];
 

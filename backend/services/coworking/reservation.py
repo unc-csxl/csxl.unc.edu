@@ -33,7 +33,7 @@ from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
 __authors__ = ["Kris Jordan", "Matt Vu", "Yuvraj Jain"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 
@@ -213,7 +213,7 @@ class ReservationService:
             return False
         return True
 
-    def _get_total_time_user_reservations(self, user: UserIdentity) -> str:
+    def get_total_time_user_reservations(self, user: UserIdentity) -> str:
         """Calculate the total duration (in hours) of study room reservations for the given user.
         Args:
             user (UserIdentity): The user for whom to calculate the total reservation time.
@@ -265,10 +265,7 @@ class ReservationService:
 
         Note:
             This method assumes individual user reservations. Group reservations require adjustments to
-            the implementation.
-
-            Future reservations are shown up to the current time, with past slots marked as unavailable
-            for today's date.
+            the implementation. Future reservations are shown up to the current time.
         """
         reserved_date_map: dict[str, list[int]] = {}
 

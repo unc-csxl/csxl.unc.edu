@@ -28,6 +28,7 @@ import { RouterModule } from '@angular/router';
 import { EventList } from './event-list/event-list.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
 import { CommunityAgreement } from './community-agreement/community-agreement.widget';
+import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
@@ -40,6 +41,7 @@ import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget
     EventList,
     UserLookup,
     UserChipList,
+    SlackInviteBox,
     CommunityAgreement,
     ProfileAboutCard
   ],

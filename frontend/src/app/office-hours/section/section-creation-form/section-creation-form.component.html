@@ -1,0 +1,46 @@
+<form class="page-container" [formGroup]="sectionForm" (ngSubmit)="onSubmit()">
+  <mat-card appearance="outlined">
+    <div class="card-container">
+      <mat-card-title>Create Office Hours Section</mat-card-title>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-card-subtitle class="card-container">
+      Office Hours Sections allow for students to check into office hours for
+      your courses. 'Course Name' is what will appear to students in your
+      classe(s). Select all course sections you wish to use this Office Hours
+      section for.
+    </mat-card-subtitle>
+    <mat-card-content class="card-container">
+      <p>Course Name:</p>
+      <mat-form-field appearance="outline">
+        <mat-label>Ex. COMP 110: Introduction to Programming</mat-label>
+        <input matInput required formControlName="section_name" />
+      </mat-form-field>
+      <p>Course Section(s):</p>
+      <mat-form-field appearance="outline">
+        <mat-label>Select all courses:</mat-label>
+        <mat-select formControlName="academic_sections" multiple required>
+          <mat-option
+            *ngFor="let section of academicSections"
+            [value]="section.id">
+            <!-- eslint-disable-next-line prettier/prettier -->
+            {{ section.course?.subject_code }}
+            <!-- eslint-disable-next-line prettier/prettier -->
+            {{ section.course?.number }}-{{ section.number }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="buttons">
+        <button
+          mat-flat-button
+          color="primary"
+          class="button"
+          type="reset"
+          [disabled]="!sectionForm.valid"
+          (click)="onSubmit()">
+          Submit
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

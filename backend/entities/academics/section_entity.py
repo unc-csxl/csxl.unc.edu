@@ -1,17 +1,12 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course Sections."""
 
 from typing import Self
-from sqlalchemy import Integer, String, DateTime, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from ...models.room_assignment_type import RoomAssignmentType
-
 from ..entity_base import EntityBase
-from datetime import datetime
+from ..section_application_table import section_application_table
 from ...models.academics import Section
 from ...models.academics import SectionDetails
-from ...models.academics.section_member import SectionMember
-from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -69,7 +64,7 @@ class SectionEntity(EntityBase):
 
     # Members of the course
     members: Mapped[list["SectionMemberEntity"]] = relationship(
-        back_populates="section",
+        back_populates="section", cascade="delete"
     )
 
     # Relationship subset of members queries for non-students
@@ -77,6 +72,20 @@ class SectionEntity(EntityBase):
         back_populates="section",
         viewonly=True,
         primaryjoin="and_(SectionEntity.id==SectionMemberEntity.section_id, SectionMemberEntity.member_role!='STUDENT')",
+    )
+
+    # Optional office hours section ID
+    office_hours_id: Mapped[int] = mapped_column(
+        ForeignKey("office_hours__section.id"), nullable=True
+    )
+    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(
+        back_populates="sections"
+    )
+
+    # All applicants where section is preferred
+    # NOTE: This field establishes a many-to-many relationship between the sections and applications table.
+    preferred_applicants: Mapped[list["UTAApplicationEntity"]] = relationship(
+        secondary=section_application_table, back_populates="preferred_sections"
     )
 
     @classmethod
@@ -144,7 +153,16 @@ class SectionEntity(EntityBase):
             meeting_pattern=self.meeting_pattern,
             lecture_room=section.lecture_room,
             office_hour_rooms=section.office_hour_rooms,
+            members=[member.to_flat_model() for member in self.members],
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,
+            office_hours_section=(
+                self.office_hours_section.to_model()
+                if self.office_hours_section is not None
+                else None
+            ),
+            preferred_applicants=[
+                applicant.to_model() for applicant in self.preferred_applicants
+            ],
         )

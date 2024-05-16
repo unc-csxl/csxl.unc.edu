@@ -8,9 +8,12 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
-import { PermissionService } from 'src/app/permission.service';
+import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
+import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
+import { Router } from '@angular/router';
+import { Application } from 'src/app/ta-application/application.model';
 
 @Component({
   selector: 'app-academics-home',
@@ -26,7 +29,12 @@ export class AcademicsHomeComponent implements OnInit {
     canActivate: []
   };
 
-  constructor(private gearService: NagivationAdminGearService) {}
+  constructor(
+    private gearService: NagivationAdminGearService,
+    protected dialog: MatDialog,
+    public applicationService: ApplicationsService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.gearService.showAdminGear(
@@ -35,5 +43,19 @@ export class AcademicsHomeComponent implements OnInit {
       '',
       'academics/admin/section'
     );
+  }
+
+  onUTAClick(application: Application | null): void {
+    if (application) {
+      this.router.navigate(['/ta-application/uta-application/']);
+    } else {
+      const dialogRef = this.dialog.open(UTANoticeComponent, {
+        width: '1000px',
+        autoFocus: false,
+        data: { application }
+      });
+
+      dialogRef.afterClosed().subscribe();
+    }
   }
 }

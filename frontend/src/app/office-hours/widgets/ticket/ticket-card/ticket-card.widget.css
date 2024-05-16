@@ -1,0 +1,19 @@
+.card-container {
+    padding: 1rem;
+}
+
+.newline {
+    white-space: pre-line;
+    padding: 0.5rem;
+}
+
+.button-row {
+    display: flex;
+    padding: 0.5rem;
+    justify-content: right;
+    align-items: right;
+}
+
+button {
+    margin: 0.5rem;
+}

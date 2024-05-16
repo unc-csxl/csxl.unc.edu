@@ -32,17 +32,20 @@ reservation_4: Reservation
 reservation_5: Reservation
 # Future room reservation
 reservation_6: Reservation
+# Current room reservation
+reservation_7: Reservation
 
 # Lists used for access
 active_reservations: list[Reservation]
 draft_reservations: list[Reservation]
 confirmed_reservations: list[Reservation]
+room_reservations: list[Reservation]
 reservations: list[Reservation]
 
 
 def instantiate_global_models(time: dict[str, datetime]):
-    global reservation_1, reservation_2, reservation_3, reservation_4, reservation_5, reservation_6
-    global active_reservations, reservations, draft_reservations, confirmed_reservations
+    global reservation_1, reservation_2, reservation_3, reservation_4, reservation_5, reservation_6, reservation_7
+    global active_reservations, reservations, draft_reservations, confirmed_reservations, room_reservations
     reservation_1 = Reservation(
         id=1,
         start=time[THIRTY_MINUTES_AGO],
@@ -115,22 +118,37 @@ def instantiate_global_models(time: dict[str, datetime]):
     # Confirm Room Reservation
     reservation_6 = Reservation(
         id=6,
-        start=operating_hours_data.tomorrow.start.replace(hour=12, minute=0)
-        + timedelta(hours=24),
-        end=operating_hours_data.tomorrow.end.replace(hour=14, minute=30)
-        + timedelta(hours=24),
+        start=operating_hours_data.tomorrow.start
+        + timedelta(hours=25),
+        end=operating_hours_data.tomorrow.start
+        + timedelta(hours=26, minutes=30),
         created_at=time[NOW],
         updated_at=time[NOW],
         walkin=False,
-        room=room_data.group_b,
+        room=room_data.group_a,
         state=ReservationState.CONFIRMED,
         users=[user_data.user],
         seats=[],
     )
 
+    reservation_7 = Reservation(
+        id=7,
+        start=operating_hours_data.today.start,
+        end=operating_hours_data.today.start + timedelta(minutes=30),
+        created_at=operating_hours_data.today.start,
+        updated_at=operating_hours_data.today.start,
+        walkin=False,
+        room=room_data.group_a,
+        state=ReservationState.CONFIRMED,
+        users=[user_data.root],
+        seats=[]
+    )
+
+
     active_reservations = [reservation_1]
     confirmed_reservations = [reservation_4]
     draft_reservations = [reservation_5]
+    room_reservations = [reservation_6]
     reservations = [
         reservation_1,
         reservation_2,
@@ -138,6 +156,7 @@ def instantiate_global_models(time: dict[str, datetime]):
         reservation_4,
         reservation_5,
         reservation_6,
+        reservation_7,
     ]
 
 

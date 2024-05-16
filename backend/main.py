@@ -1,6 +1,5 @@
 """Entrypoint of backend API exposing the FastAPI `app` to be served by an application server such as uvicorn."""
 
-
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -18,11 +17,13 @@ from .api import (
     authentication,
     user,
     room,
+    application,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
-from .api.academics import term, course, section
+from .api.academics import section_member, term, course, section
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
+from .api.office_hours import ticket, section as oh_section, event
 from .services.exceptions import (
     EventRegistrationException,
     UserPermissionException,
@@ -47,12 +48,17 @@ app = FastAPI(
         user.openapi_tags,
         organizations.openapi_tags,
         events.openapi_tags,
+        application.openapi_tags,
         reservation.openapi_tags,
         room.openapi_tags,
         course.openapi_tags,
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
+        ticket.openapi_tags,
+        oh_section.openapi_tags,
+        section_member.openapi_tags,
+        event.openapi_tags,
     ],
 )
 
@@ -77,6 +83,11 @@ feature_apis = [
     course,
     section,
     room,
+    event,
+    ticket,
+    oh_section,
+    section_member,
+    application,
 ]
 
 for feature_api in feature_apis:

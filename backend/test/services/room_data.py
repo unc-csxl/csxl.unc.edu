@@ -6,8 +6,8 @@ from ...entities import RoomEntity
 from ...models import RoomDetails
 from .reset_table_id_seq import reset_table_id_seq
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan, Yuvraj Jain"]
+__copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 
@@ -81,7 +81,17 @@ edited_xl = RoomDetails(
     seats=[],
 )
 
-rooms = [the_xl, group_a, group_b, group_c, pair_a]
+virtual = RoomDetails(
+    id="Virtual",
+    building="Virtual",
+    room="Virtual",
+    nickname="Virtual CSXL",
+    capacity=999,
+    reservable=False,
+    seats=[],
+)
+
+rooms = [the_xl, group_a, group_b, group_c, pair_a, virtual]
 
 
 def insert_fake_data(session: Session):

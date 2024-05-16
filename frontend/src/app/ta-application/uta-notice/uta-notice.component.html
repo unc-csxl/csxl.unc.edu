@@ -1,0 +1,47 @@
+<mat-card class="uta-dialog" #dialogContainer>
+  <mat-card-content class="content-container">
+    <h1>Computer Science UTA Application - Fall 2024</h1>
+    <div *ngIf="profile$ | async as profile; else unauthenticated">
+      <p>
+        This form is for all students, including those who
+        <strong>were</strong> Undergraduate Teaching Assistants (UTAs) in the
+        Spring of 2024.
+      </p>
+      <p>
+        Application Deadline: May 10th at 11:59pm <br />
+        Notification of Selection by August 20th
+      </p>
+      <p>
+        Thank you for your interest in joining a Computer Science course's
+        teaching team as a Undergraduate Teaching Assistant (UTA). Our goal is
+        to make the instructional support around computer science courses the
+        best we humanly can. A significant factor toward achieving that goal is
+        the positive energy, empathy, helpfulness, and passion UTAs bring to
+        serving
+        <em>every</em> student enrolled.
+      </p>
+      <p>
+        This is a paid <em>job</em>, not a fellowship, scholarship, or volunteer
+        role. If the exact dollar amount above minimum wage will make or break
+        your interest in this role, it's probably not for you. Computer Science
+        UTAs are typically hired at a rate of $2,000 per semester for an
+        expected 10-12 hour commitment per week. New COMP110 UTAs are hired at a
+        rate of $1,000 per semester for an expected 5-6 hour commitment per
+        week.
+      </p>
+      <p>
+        To be eligible to apply as a UTA you must have completed the course(s)
+        you are applying for, with a B+ or better, by the end of the Spring
+        semester. If you believe you are on track to complete a course this
+        Spring with a B+ you are welcomed to apply for it.
+      </p>
+      <!-- Link to UTA Application Page -->
+      <a [routerLink]="['/ta-application/uta-application']">
+        <button mat-stroked-button [mat-dialog-close]="">Apply</button>
+      </a>
+    </div>
+    <ng-template #unauthenticated>
+      <p>To join the CSXL Slack, please sign in.</p>
+    </ng-template>
+  </mat-card-content>
+</mat-card>

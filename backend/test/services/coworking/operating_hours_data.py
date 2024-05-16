@@ -24,6 +24,7 @@ __license__ = "MIT"
 today: OperatingHours
 tomorrow: OperatingHours
 future: OperatingHours
+three_days_from_today: OperatingHours
 all: list[OperatingHours] = []
 
 
@@ -32,7 +33,7 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
 
     # We're definining these values here so that they can depend on times generated per
     # test run.
-    global today, future, tomorrow, all
+    global today, future, tomorrow, three_days_from_today, all
 
     today = OperatingHours(id=1, start=time[AN_HOUR_AGO], end=time[IN_THREE_HOURS])
 
@@ -45,7 +46,13 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
     tomorrow = OperatingHours(
         id=3, start=time[AN_HOUR_AGO] + ONE_DAY, end=time[IN_TWO_HOURS] + ONE_DAY
     )
-    all = [today, future, tomorrow]
+
+    three_days_from_today = OperatingHours(
+        id=4, start=time[AN_HOUR_AGO] + 3 * ONE_DAY, end=time[IN_EIGHT_HOURS] + 3 * ONE_DAY
+    )
+
+    all = [today, future, tomorrow, three_days_from_today]
+
 
     for operating_hours in all:
         entity = OperatingHoursEntity.from_model(operating_hours)
@@ -63,5 +70,5 @@ def fake_data_fixture(session: Session, time: dict[str, datetime]):
     yield
 
 
-def delete_all(session):
+def delete_all(session: Session):
     session.execute(delete(OperatingHoursEntity))

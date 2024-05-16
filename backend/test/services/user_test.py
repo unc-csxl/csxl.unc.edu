@@ -115,11 +115,13 @@ def test_search_by_pid_does_not_exist(user_svc: UserService):
     users = user_svc.search(ambassador, "123")
     assert len(users) == 0
 
+
 def test_search_by_pid_rhonda(user_svc: UserService):
     """Test searching for a partial PID that does exist."""
     users = user_svc.search(ambassador, "999")
     assert len(users) == 1
     assert users[0] == root
+
 
 def test_list(user_svc: UserService):
     """Test that a paginated list of users can be produced."""
@@ -134,13 +136,13 @@ def test_list_second_page(user_svc: UserService):
     """Test that subsequent pages of users are produced."""
     pagination_params = PaginationParams(page=1, page_size=2, order_by="id", filter="")
     users = user_svc.list(ambassador, pagination_params)
-    assert len(users.items) == len(user_data.users) - 2
+    assert len(users.items) == 2
     assert users.items[0].id == user.id
 
 
 def test_list_beyond(user_svc: UserService):
     """Test that no users are produced when the end of the list is reached."""
-    pagination_params = PaginationParams(page=2, page_size=2, order_by="id", filter="")
+    pagination_params = PaginationParams(page=3, page_size=2, order_by="id", filter="")
     users = user_svc.list(ambassador, pagination_params)
     assert len(users.items) == 0
 

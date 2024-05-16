@@ -1,0 +1,60 @@
+<div class="people-table">
+  <table mat-table [dataSource]="sectionMembers">
+    <ng-container matColumnDef="first-name">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">First Name</div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <p>{{ element.first_name }}</p>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="last-name">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">Last Name</div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <p>{{ element.last_name }}</p>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="pronouns">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">Pronouns</div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <p>{{ element.pronouns }}</p>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="header">Role</div>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="row">
+          <!--If user is instructor or GTA, show drop down for modifying roles-->
+          <mat-form-field
+            *ngIf="rosterRole === 3 || rosterRole === 2"
+            appearance="outline">
+            <mat-label>{{ formatRosterRole(element.member_role) }}</mat-label>
+            <mat-select (selectionChange)="onRoleChange(element, $event.value)">
+              <mat-option *ngFor="let role of roles" [value]="formatEnum(role)">
+                {{ role }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!--If user is not instructor or GTA, show static role type-->
+          <p *ngIf="rosterRole !== 3 && rosterRole !== 2">
+            {{ formatRosterRole(element.member_role) }}
+          </p>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedPeopleColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedPeopleColumns"></tr>
+  </table>
+</div>

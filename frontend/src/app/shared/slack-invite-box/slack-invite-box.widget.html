@@ -1,0 +1,29 @@
+<mat-card class="slack-dialog" #dialogContainer>
+  <mat-card-content class="content-container">
+    <h1>Undergraduate Computer Science Experience Labs (XL) Slack Agreement</h1>
+    <div *ngIf="profile$ | async as profile; else unauthenticated">
+      <h3>
+        By accepting the below invite and joining the CSXL Slack, you are
+        agreeing to the following:
+      </h3>
+      <p>
+        I will abide by the rules and standards detailed in the CSXL Community
+        Standards Agreement.
+      </p>
+      <p>
+        In addition, upon joining the CSXL Slack, I will complete my Slack
+        profile by adding my real name and an appropriate profile picture of
+        myself.
+      </p>
+      <button
+        mat-stroked-button
+        onclick="window.open('https://join.slack.com/t/csxl/shared_invite/zt-1mvfaiqme-fXXw9cKjaXOfhXVBfgXVCA','_blank')"
+        type="button">
+        Join the Slack!
+      </button>
+    </div>
+    <ng-template #unauthenticated>
+      <p>To join the CSXL Slack, please sign in.</p>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
