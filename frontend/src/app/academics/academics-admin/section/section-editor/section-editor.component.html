@@ -1,7 +1,7 @@
 <!-- Update Section Form -->
 <form [formGroup]="sectionForm" (ngSubmit)="onSubmit()">
   <!-- Update Section Card -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title *ngIf="this.sectionIdString === 'new'; else update">
         Create Section

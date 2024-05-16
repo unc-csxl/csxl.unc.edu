@@ -1,7 +1,7 @@
 <!-- Update Room Form -->
 <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
   <!-- Update Room Card -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title *ngIf="this.roomId === 'new'; else update">
         Create Room

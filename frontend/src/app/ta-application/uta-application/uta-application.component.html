@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
     <mat-step [stepControl]="firstFormGroup">
       <form [formGroup]="firstFormGroup">
@@ -249,7 +249,7 @@
             <mat-chip-listbox
               #preferredSections
               aria-label="Section Preferences selection">
-              <mat-chip
+              <mat-chip-option
                 *ngFor="let section of selectedSections; let i = index"
                 (removed)="removeSection(i)">
                 {{ capitalizedCourseId(section) }} - {{ section.number }}
@@ -260,7 +260,7 @@
                   [attr.aria-label]="'remove ' + section.course_id">
                   <mat-icon>cancel</mat-icon>
                 </button>
-              </mat-chip>
+              </mat-chip-option>
             </mat-chip-listbox>
             <mat-autocomplete
               #autoPreference="matAutocomplete"

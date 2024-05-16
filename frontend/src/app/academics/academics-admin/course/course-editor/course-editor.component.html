@@ -1,7 +1,7 @@
 <!-- Update Course Form -->
 <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
   <!-- Update Course Card -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title *ngIf="this.courseId === 'new'; else update">
         Create Course
