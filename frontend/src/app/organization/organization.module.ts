@@ -34,7 +34,7 @@ import { OrganizationRoutingModule } from './organization-routing.module';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 import { OrganizationListAdminComponent } from './organization-admin/list/organization-list-admin.component';
 
-import { OrganizationFilterPipe } from './organization-filter/organization-filter.pipe';
+import { OrganizationFilterPipe } from './pipes/organization-filter.pipe';
 
 /* UI Widgets */
 import { OrganizationCard } from './widgets/organization-card/organization-card.widget';

@@ -31,40 +31,40 @@
       </div>
 
       <!-- Organization Description -->
-      <p
-        class="organization-description"
-        *ngIf="organization!.long_description; else short_description">
-        {{ organization!.long_description }}
+      <p class="organization-description">
+        {{
+          organization!.long_description
+            ? organization!.long_description
+            : organization!.short_description
+        }}
       </p>
-      <ng-template #short_description>
-        {{ organization!.short_description }}
-      </ng-template>
 
       <!-- Organization Icons (Phones)-->
       <div
         class="organization-icons-section"
         [ngStyle]="{ 'flex-direction': 'row' }">
         <div class="link-icons">
+          @if (organization!.website !== '') {
           <social-media-icon
             [fontIcon]="'link'"
-            [href]="organization!.website"
-            *ngIf="organization!.website !== ''" />
+            [href]="organization.website" />
+          } @if (organization!.email !== '') {
           <social-media-icon
             [fontIcon]="'mail'"
-            [href]="'mailto:' + organization!.email"
-            *ngIf="organization!.email !== ''" />
+            [href]="'mailto:' + organization.email" />
+          } @if(organization!.instagram !== '') {
           <social-media-icon
             [svgIcon]="'instagram'"
-            [href]="organization!.instagram"
-            *ngIf="organization!.instagram !== ''" />
+            [href]="organization.instagram" />
+          } @if(organization!.linked_in !== '') {
           <social-media-icon
             [svgIcon]="'linkedin'"
-            [href]="organization!.linked_in"
-            *ngIf="organization!.linked_in !== ''" />
+            [href]="organization.linked_in" />
+          } @if(organization!.youtube !== '') {
           <social-media-icon
             [svgIcon]="'youtube'"
-            [href]="organization!.youtube"
-            *ngIf="organization!.youtube !== ''" />
+            [href]="organization.youtube" />
+          }
         </div>
       </div>
     </div>
