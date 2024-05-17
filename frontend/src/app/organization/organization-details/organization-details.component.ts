@@ -70,7 +70,7 @@ export class OrganizationDetailsComponent {
   public profile: Profile;
 
   /** The organization to show */
-  public organization: Signal<Organization | undefined> = signal(undefined);
+  public organization: Organization | undefined;
 
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
@@ -88,21 +88,17 @@ export class OrganizationDetailsComponent {
     private permission: PermissionService
   ) {
     this.profile = this.profileService.profile()!;
-    let slug = route.snapshot.paramMap.get('slug');
-    if (slug && slug !== 'new') {
-      this.organization = toSignal(
-        this.organizationService.getOrganization(slug)
-      );
-    }
 
-    // TODO: Refactor to remove dependence on resolver.
     const data = this.route.snapshot.data as {
+      organization: Organization;
       events: Event[];
     };
+
+    this.organization = data.organization;
     this.eventsPerDay = eventService.groupEventsByDate(data.events ?? []);
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
-      `organization/${this.organization()?.slug ?? '*'}`
+      `organization/${this.organization?.slug ?? '*'}`
     );
   }
 }
