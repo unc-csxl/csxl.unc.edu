@@ -13,7 +13,10 @@ import { profileResolver } from '/workspace/frontend/src/app/profile/profile.res
 import { Organization } from '../organization.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import {
+  Profile,
+  ProfileService
+} from '/workspace/frontend/src/app/profile/profile.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { NewOrganizationService } from '../new-organization.service';
 
@@ -41,17 +44,12 @@ export class OrganizationPageComponent implements OnInit {
   public organizations: Signal<Organization[]>;
 
   constructor(
-    private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
     private organizationService: NewOrganizationService,
+    private profileService: ProfileService,
     private gearService: NagivationAdminGearService
   ) {
-    /** Initialize data from resolvers. */
-    const data = this.route.snapshot.data as {
-      profile: Profile;
-    };
-
-    this.profile = data.profile;
+    this.profile = this.profileService.profile()!;
     this.organizations = this.organizationService.organizations;
   }
 

@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, Signal, signal } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -17,15 +17,16 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import {
-  organizationDetailResolver,
-  organizationEventsResolver
-} from '../organization.resolver';
+  Profile,
+  ProfileService
+} from '/workspace/frontend/src/app/profile/profile.service';
+import { organizationEventsResolver } from '../organization.resolver';
 import { EventService } from 'src/app/event/event.service';
 import { Event } from 'src/app/event/event.model';
 import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
+import { NewOrganizationService } from '../new-organization.service';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -44,7 +45,6 @@ export class OrganizationDetailsComponent {
     component: OrganizationDetailsComponent,
     resolve: {
       profile: profileResolver,
-      organization: organizationDetailResolver,
       events: organizationEventsResolver
     },
     children: [
@@ -60,7 +60,7 @@ export class OrganizationDetailsComponent {
   public profile: Profile;
 
   /** The organization to show */
-  public organization: Organization;
+  public organization: Signal<Organization | undefined> = signal(undefined);
 
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
@@ -72,21 +72,25 @@ export class OrganizationDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
+    private profileService: ProfileService,
+    private organizationService: NewOrganizationService,
     protected eventService: EventService,
     private permission: PermissionService
   ) {
-    /** Initialize data from resolvers. */
+    this.profile = this.profileService.profile()!;
+    let slug = route.snapshot.paramMap.get('slug');
+    if (slug && slug !== 'new') {
+      this.organization = this.organizationService.getOrganization(slug);
+    }
+
+    // TODO: Refactor to remove dependence on resolver.
     const data = this.route.snapshot.data as {
-      profile: Profile;
-      organization: Organization;
       events: Event[];
     };
-    this.profile = data.profile;
-    this.organization = data.organization;
     this.eventsPerDay = eventService.groupEventsByDate(data.events ?? []);
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
-      `organization/${this.organization.slug}`
+      `organization/${this.organization()?.slug ?? '*'}`
     );
   }
 }
