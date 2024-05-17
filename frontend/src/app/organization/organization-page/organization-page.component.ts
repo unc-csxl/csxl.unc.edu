@@ -14,10 +14,8 @@ import { Organization } from '../organization.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
-import { organizationResolver } from '../organization.resolver';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { NewOrganizationService } from '../new-organization.service';
-import { PermissionService } from 'src/app/permission.service';
 
 @Component({
   selector: 'app-organization-page',
