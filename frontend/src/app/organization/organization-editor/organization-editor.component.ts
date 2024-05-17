@@ -23,7 +23,7 @@ import { PermissionService } from 'src/app/permission.service';
 import { Organization } from '../organization.model';
 import { RoleAdminService } from 'src/app/admin/roles/role-admin.service';
 import { Profile } from 'src/app/profile/profile.service';
-import { organizationDetailResolver } from '../organization.resolver';
+import { organizationResolver } from '../organization.resolver';
 import { Role } from 'src/app/role';
 import { NavigationService } from 'src/app/navigation/navigation.service';
 import { OrganizationService } from '../organization.service';
@@ -62,7 +62,7 @@ export class OrganizationEditorComponent {
     canActivate: [canActivateEditor],
     resolve: {
       profile: profileResolver,
-      organization: organizationDetailResolver
+      organization: organizationResolver
     }
   };
 

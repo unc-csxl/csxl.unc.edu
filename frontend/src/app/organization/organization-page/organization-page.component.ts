@@ -11,7 +11,6 @@
 import { Component, OnInit, Signal } from '@angular/core';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
-import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   Profile,

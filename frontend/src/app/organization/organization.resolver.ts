@@ -16,7 +16,7 @@ import { catchError, map, of, pipe } from 'rxjs';
 import { OrganizationService } from './organization.service';
 
 /** This resolver injects an organization into the organization detail component. */
-export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
+export const organizationResolver: ResolveFn<Organization | undefined> = (
   route,
   _state
 ) => {
