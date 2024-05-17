@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Signal } from '@angular/core';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
 import { ActivatedRoute } from '@angular/router';
@@ -16,6 +16,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
 import { organizationResolver } from '../organization.resolver';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { NewOrganizationService } from '../new-organization.service';
+import { PermissionService } from 'src/app/permission.service';
 
 @Component({
   selector: 'app-organization-page',
@@ -29,11 +31,8 @@ export class OrganizationPageComponent implements OnInit {
     title: 'CS Organizations',
     component: OrganizationPageComponent,
     canActivate: [],
-    resolve: { profile: profileResolver, organizations: organizationResolver }
+    resolve: { profile: profileResolver }
   };
-
-  /** Store Observable list of Organizations */
-  public organizations: Organization[];
 
   /** Store searchBarQuery */
   public searchBarQuery = '';
@@ -41,53 +40,30 @@ export class OrganizationPageComponent implements OnInit {
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
-  /** Stores the user permission value for current organization. */
-  public permValues: Map<number, number> = new Map();
+  public organizations: Signal<Organization[]>;
 
   constructor(
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
+    private organizationService: NewOrganizationService,
     private gearService: NagivationAdminGearService
   ) {
     /** Initialize data from resolvers. */
     const data = this.route.snapshot.data as {
       profile: Profile;
-      organizations: Organization[];
     };
+
     this.profile = data.profile;
-    this.organizations = data.organizations;
+    this.organizations = this.organizationService.organizations;
   }
 
   ngOnInit() {
-    /** Ensure there is a currently signed in user before testing permissions */
-    if (this.profile !== undefined) {
-      let userPermissions = this.profile.permissions;
-      /** Ensure that the signed in user has permissions before looking at the resource */
-      if (userPermissions.length !== 0) {
-        /** Admin user, no need to check further */
-        if (userPermissions[0].resource === '*') {
-          this.gearService.showAdminGear(
-            'organizations.*',
-            '*',
-            '',
-            'organizations/admin'
-          );
-        } else {
-          /** Find if the signed in user has any organization permissions */
-          let organizationPermissions = userPermissions.filter((element) =>
-            element.resource.includes('organization')
-          );
-          /** If they do, show admin gear */
-          if (organizationPermissions.length !== 0) {
-            this.gearService.showAdminGear(
-              'organizations.*',
-              organizationPermissions[0].resource,
-              '',
-              'organizations/admin'
-            );
-          }
-        }
-      }
-    }
+    // Check for admin permissions
+    this.gearService.showAdminGear(
+      'organizations.*',
+      '*',
+      '',
+      'organizations/admin'
+    );
   }
 }

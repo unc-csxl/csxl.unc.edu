@@ -21,8 +21,6 @@ export class OrganizationCard {
   @Input() organization!: Organization;
   /** The profile of the currently signed in user */
   @Input() profile?: Profile;
-  /** @deprecated Stores the permission values for a profile */
-  @Input() profilePermissions!: Map<number, number>;
 
   /**
    * Determines whether or not the tooltip on the card is disabled

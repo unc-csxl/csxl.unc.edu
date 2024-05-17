@@ -20,7 +20,7 @@ import { Role } from '../role';
 @Injectable({
   providedIn: 'root'
 })
-export class NewOrganizationsService {
+export class NewOrganizationService {
   /** Organizations signal */
   private organizationsSignal: WritableSignal<Organization[]> = signal([]);
   organizations = this.organizationsSignal.asReadonly();
