@@ -22,14 +22,5 @@ export class OrganizationCard {
   /** The profile of the currently signed in user */
   @Input() profile?: Profile;
 
-  /**
-   * Determines whether or not the tooltip on the card is disabled
-   * @param element: The HTML element
-   * @returns {boolean}
-   */
-  isTooltipDisabled(element: HTMLElement): boolean {
-    return element.scrollHeight <= element.clientHeight;
-  }
-
   constructor() {}
 }

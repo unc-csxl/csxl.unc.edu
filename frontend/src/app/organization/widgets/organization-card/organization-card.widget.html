@@ -21,10 +21,7 @@
 
   <!-- Organization Description -->
   <mat-card-content class="description">
-    <p
-      [matTooltip]="organization.short_description"
-      [matTooltipDisabled]="isTooltipDisabled(organizationDescription)"
-      #organizationDescription>
+    <p>
       {{ organization.short_description }}
     </p>
   </mat-card-content>
@@ -53,7 +50,7 @@
       @if(organization.youtube !== '') {
         <social-media-icon [svgIcon]="'youtube'" [href]="organization.youtube" />
       }
-      
+
     </div>
     <!-- Link to Individual Organization Page -->
     <a
