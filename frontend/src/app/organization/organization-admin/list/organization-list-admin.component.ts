@@ -19,7 +19,6 @@ import {
   Profile
 } from '/workspace/frontend/src/app/profile/profile.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { organizationResolver } from '../../organization.resolver';
 
 @Component({
   selector: 'app-organization-list-admin',
@@ -42,7 +41,7 @@ export class OrganizationListAdminComponent implements OnInit {
     component: OrganizationListAdminComponent,
     title: 'Organization Administration',
     canActivate: [OrganizationAdminPermissionGuard()],
-    resolve: { profile: profileResolver, organizations: organizationResolver }
+    resolve: { profile: profileResolver }
   };
 
   constructor(

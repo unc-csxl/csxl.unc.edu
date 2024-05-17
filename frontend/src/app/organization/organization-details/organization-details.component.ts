@@ -28,16 +28,14 @@ import {
 } from '/workspace/frontend/src/app/profile/profile.service';
 import {
   organizationDetailResolver,
-  organizationEventsResolver,
-  organizationResolver
+  organizationEventsResolver
 } from '../organization.resolver';
 import { EventService } from 'src/app/event/event.service';
 import { Event } from 'src/app/event/event.model';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
-import { NewOrganizationService } from '../new-organization.service';
 import { NavigationService } from 'src/app/navigation/navigation.service';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { OrganizationService } from '../organization.service';
 
 /** Injects the organization's name to adjust the title. */
@@ -85,14 +83,16 @@ export class OrganizationDetailsComponent {
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
     private profileService: ProfileService,
-    private organizationService: NewOrganizationService,
+    private organizationService: OrganizationService,
     protected eventService: EventService,
     private permission: PermissionService
   ) {
     this.profile = this.profileService.profile()!;
     let slug = route.snapshot.paramMap.get('slug');
     if (slug && slug !== 'new') {
-      this.organization = this.organizationService.getOrganization(slug);
+      this.organization = toSignal(
+        this.organizationService.getOrganization(slug)
+      );
     }
 
     // TODO: Refactor to remove dependence on resolver.

@@ -18,7 +18,7 @@ import {
   ProfileService
 } from '/workspace/frontend/src/app/profile/profile.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
-import { NewOrganizationService } from '../new-organization.service';
+import { OrganizationService } from '../organization.service';
 
 @Component({
   selector: 'app-organization-page',
@@ -45,7 +45,7 @@ export class OrganizationPageComponent implements OnInit {
 
   constructor(
     protected snackBar: MatSnackBar,
-    private organizationService: NewOrganizationService,
+    private organizationService: OrganizationService,
     private profileService: ProfileService,
     private gearService: NagivationAdminGearService
   ) {

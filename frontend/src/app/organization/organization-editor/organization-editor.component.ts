@@ -21,12 +21,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { PermissionService } from 'src/app/permission.service';
 import { Organization } from '../organization.model';
-import { OrganizationService } from '../organization.service';
 import { RoleAdminService } from 'src/app/admin/roles/role-admin.service';
 import { Profile } from 'src/app/profile/profile.service';
 import { organizationDetailResolver } from '../organization.resolver';
 import { Role } from 'src/app/role';
 import { NavigationService } from 'src/app/navigation/navigation.service';
+import { OrganizationService } from '../organization.service';
 
 const canActivateEditor: CanActivateFn = (
   route: ActivatedRouteSnapshot,

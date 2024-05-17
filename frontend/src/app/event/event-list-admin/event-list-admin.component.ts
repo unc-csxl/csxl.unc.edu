@@ -11,7 +11,6 @@ import {
 import { Organization } from 'src/app/organization/organization.model';
 import { Event } from 'src/app/event/event.model';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { organizationResolver } from 'src/app/organization/organization.resolver';
 import { EventService } from 'src/app/event/event.service';
 import { eventResolver } from '../event.resolver';
 
@@ -37,7 +36,6 @@ export class EventListAdminComponent implements OnInit {
     canActivate: [OrganizationAdminPermissionGuard()],
     resolve: {
       profile: profileResolver,
-      organizations: organizationResolver,
       events: eventResolver
     }
   };
