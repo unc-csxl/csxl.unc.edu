@@ -8,12 +8,12 @@
  */
 
 import { inject } from '@angular/core';
-import { ResolveFn } from '@angular/router';
+import { Resolve, ResolveFn } from '@angular/router';
 import { Organization } from './organization.model';
 import { OrganizationService } from './organization.service';
 import { EventService } from '../event/event.service';
 import { Event } from '../event/event.model';
-import { catchError, map, of } from 'rxjs';
+import { catchError, map, of, pipe } from 'rxjs';
 
 /** This resolver injects the list of organizations into the organization component. */
 export const organizationResolver: ResolveFn<Organization[] | undefined> = (

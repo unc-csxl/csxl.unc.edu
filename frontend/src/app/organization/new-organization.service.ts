@@ -7,15 +7,22 @@
  * @license MIT
  */
 
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import {
+  Injectable,
+  Signal,
+  WritableSignal,
+  inject,
+  signal
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, tap } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { Organization } from './organization.model';
 import { Role } from '../role';
+import { ResolveFn } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'

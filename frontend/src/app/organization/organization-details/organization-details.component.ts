@@ -7,7 +7,13 @@
  * @license MIT
  */
 
-import { Component, Signal, signal } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Signal,
+  inject,
+  signal
+} from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -20,12 +26,19 @@ import {
   Profile,
   ProfileService
 } from '/workspace/frontend/src/app/profile/profile.service';
-import { organizationEventsResolver } from '../organization.resolver';
+import {
+  organizationDetailResolver,
+  organizationEventsResolver,
+  organizationResolver
+} from '../organization.resolver';
 import { EventService } from 'src/app/event/event.service';
 import { Event } from 'src/app/event/event.model';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { NewOrganizationService } from '../new-organization.service';
+import { NavigationService } from 'src/app/navigation/navigation.service';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { OrganizationService } from '../organization.service';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -43,6 +56,7 @@ export class OrganizationDetailsComponent {
     path: ':slug',
     component: OrganizationDetailsComponent,
     resolve: {
+      organization: organizationDetailResolver,
       events: organizationEventsResolver
     },
     children: [

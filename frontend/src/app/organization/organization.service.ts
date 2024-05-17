@@ -7,13 +7,14 @@
  * @license MIT
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Organization } from './organization.model';
 import { Role } from '../role';
+import { ResolveFn } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'

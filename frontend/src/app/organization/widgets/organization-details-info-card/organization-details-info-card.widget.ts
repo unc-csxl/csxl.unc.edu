@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,7 +24,7 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 })
 export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
   /** The organization to show */
-  @Input() organization?: Organization;
+  organization = input<Organization>();
   /** The currently logged in user */
   @Input() profile?: Profile;
 
@@ -46,7 +46,7 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
   checkPermissions(): Observable<boolean> {
     return this.permission.check(
       'organization.update',
-      `organization/${this.organization?.slug}`
+      `organization/${this.organization()?.slug}`
     );
   }
 
@@ -56,9 +56,9 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
     this.isTabletSubscription = this.initTablet();
     this.gearService.showAdminGear(
       'organization.*',
-      `organization/${this.organization?.slug}`,
+      `organization/${this.organization()?.slug}`,
       '',
-      `organizations/${this.organization?.slug}/edit`
+      `organizations/${this.organization()?.slug}/edit`
     );
   }
 
