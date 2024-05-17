@@ -15,7 +15,6 @@ import {
   Route
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
 import {
   Profile,
@@ -44,7 +43,6 @@ export class OrganizationDetailsComponent {
     path: ':slug',
     component: OrganizationDetailsComponent,
     resolve: {
-      profile: profileResolver,
       events: organizationEventsResolver
     },
     children: [
