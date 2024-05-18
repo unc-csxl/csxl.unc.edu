@@ -16,11 +16,10 @@ export class PermissionService {
   }
 
   checkSignal(action: string, resource: string): boolean {
-    if (this.profile() === undefined) {
-      return false;
-    } else {
-      return this.hasPermission(this.profile()!.permissions, action, resource);
-    }
+    return (
+      this.profile &&
+      this.hasPermission(this.profile()!.permissions, action, resource)
+    );
   }
 
   check(action: string, resource: string): Observable<boolean> {

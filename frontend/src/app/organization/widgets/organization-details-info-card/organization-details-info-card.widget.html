@@ -4,24 +4,27 @@
   appearance="outlined">
   <!-- Organization Card Header (Image, Name, Description) -->
   <mat-card-header class="organization-header">
-    <div class="left-header-info" *ngIf="!isTablet && !isHandset">
+    @if (!isTablet && !isHandset) {
+    <div class="left-header-info">
       <!-- Organization Logo (Laptops/Monitors) -->
       <img mat-card-image src="{{ organization.logo }}" class="logo" />
     </div>
+    }
     <div class="right-header-info">
       <!-- Organization Name, Logo, and Social Media -->
       <div class="organization-top-header-group">
         <!-- Organization Logo (Tablets/Phones) -->
+        @if (isTablet || isHandset) {
         <img
           mat-card-image
           src="{{ organization.logo }}"
           class="logo"
-          *ngIf="isTablet || isHandset"
           [ngStyle]="{
             width: '32px',
             height: '32px',
             'margin-right': '16px'
           }" />
+        }
         <!-- Organization Name -->
         <div class="organization-name-section">
           <mat-card-title class="user-name">
@@ -32,11 +35,7 @@
 
       <!-- Organization Description -->
       <p class="organization-description">
-        {{
-          organization.long_description
-            ? organization.long_description
-            : organization.short_description
-        }}
+        {{ organization.long_description || organization.short_description }}
       </p>
 
       <!-- Organization Icons (Phones)-->
