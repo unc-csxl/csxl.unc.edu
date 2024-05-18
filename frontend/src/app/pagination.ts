@@ -104,7 +104,7 @@ class Paginator<T, Params extends Record<string, string>> {
    *
    * Usage:
    * ```
-   * Paginator<Organization, OrganizationPaginationParams> paginator = new Paginator<>('api/organization');
+   * let paginator: Paginator<Organization, OrganizationPaginationParams> = new Paginator<>('api/organization');
    * paginator.loadPage<>(params);
    * paginator.page(); // Returns the loaded page.
    * ```
@@ -116,7 +116,7 @@ class Paginator<T, Params extends Record<string, string>> {
    *
    * Usage:
    * ```
-   * Paginator<Event, EventPaginationParams> paginator = new Paginator<>('/api/event');
+   * let paginator: Paginator<Event, EventPaginationParams> = new Paginator<>('/api/event');
    * paginator.loadPage<EventJson>(params, eventJsonToEventOperatorFunction);
    * paginator.page(); // Returns the loaded page, in type `Paginated<T>`
    * ```
