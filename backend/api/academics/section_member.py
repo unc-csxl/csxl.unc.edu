@@ -6,7 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
 
 from ...models.academics.section_member import SectionMember
+from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.office_hours.section import OfficeHoursSection
+from ...models.roster_role import RosterRole
 from ...models import User
 
 from ...services.academics import SectionMemberService
@@ -122,3 +124,25 @@ def check_instructor_memberships(
     """
 
     return section_member_svc.search_instructor_memberships(subject)
+
+
+@api.post(
+    "/instructor/{section_id}/{user_id}",
+    response_model=SectionMember,
+    tags=["Academics"],
+)
+def add_instructor(
+    section_id: int,
+    user_id: int,
+    subject: User = Depends(registered_user),
+    section_member_svc: SectionMemberService = Depends(),
+) -> SectionMemberDetails:
+    """
+    Gets one section by its id
+
+    Returns:
+        SectionDetails: Section with the given ID
+    """
+    return section_member_svc.add_section_member(
+        subject, section_id, user_id, RosterRole.INSTRUCTOR
+    )

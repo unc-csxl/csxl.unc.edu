@@ -2,16 +2,17 @@
 
 from unittest.mock import create_autospec
 import pytest
+from backend.models.roster_role import RosterRole
 from backend.services.exceptions import (
     ResourceNotFoundException,
     UserPermissionException,
 )
 from backend.services.permission import PermissionService
-from ....services.academics import SectionService
+from ....services.academics import SectionService, SectionMemberService
 from ....models.academics import SectionDetails
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
-from .fixtures import permission_svc, section_svc
+from .fixtures import permission_svc, section_svc, section_member_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from ..core_data import setup_insert_data_fixture as insert_order_0
@@ -231,3 +232,25 @@ def test_get_sections_with_no_office_hours_by_term(section_svc: SectionService):
 
     assert len(sections_with_no_oh) > 0
     assert isinstance(sections_with_no_oh[0], SectionDetails)
+
+
+def test_root_add_section_member(section_member_svc: SectionMemberService):
+    membership = section_member_svc.add_section_member(
+        subject=user_data.root,
+        section_id=section_data.comp_101_001.id,
+        user_id=user_data.root.id,
+        member_role=RosterRole.INSTRUCTOR,
+    )
+    assert membership is not None
+
+
+def test_user_add_section_member(section_member_svc: SectionMemberService):
+
+    with pytest.raises(UserPermissionException):
+        section_member_svc.add_section_member(
+            subject=user_data.student,
+            section_id=section_data.comp_101_001.id,
+            user_id=user_data.root.id,
+            member_role=RosterRole.INSTRUCTOR,
+        )
+        pytest.fail()
