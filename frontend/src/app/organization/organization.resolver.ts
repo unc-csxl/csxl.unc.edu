@@ -12,9 +12,10 @@ import { Resolve, ResolveFn } from '@angular/router';
 import { Organization } from './organization.model';
 import { EventService } from '../event/event.service';
 import { Event } from '../event/event.model';
-import { catchError, map, of, pipe } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { OrganizationService } from './organization.service';
 
+// TODO: Explore if this can be replaced by a signal.
 /** This resolver injects an organization into the organization detail component. */
 export const organizationResolver: ResolveFn<Organization | undefined> = (
   route,
@@ -53,6 +54,7 @@ export const organizationResolver: ResolveFn<Organization | undefined> = (
     );
 };
 
+// TODO: Refactor once the event feature is refactored.
 /** This resolver injects the events for a given organization into the organization component. */
 export const organizationEventsResolver: ResolveFn<Event[] | undefined> = (
   route,

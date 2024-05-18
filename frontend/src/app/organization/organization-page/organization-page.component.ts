@@ -4,11 +4,11 @@
  * based on interests, and access social media pages of organizations to stay up-to-date.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
-import { Component, OnInit, Signal, effect } from '@angular/core';
+import { Component, Signal, effect } from '@angular/core';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -34,12 +34,13 @@ export class OrganizationPageComponent {
     resolve: { profile: profileResolver }
   };
 
-  /** Store searchBarQuery */
+  /** Current search bar query on the organization page. */
   public searchBarQuery = '';
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
+  /** Stores a reactive organizations list. */
   public organizations: Signal<Organization[]>;
 
   constructor(
@@ -59,6 +60,6 @@ export class OrganizationPageComponent {
         this.gearService.showAdminGear('', 'organizations/admin');
       }
     },
-    { allowSignalWrites: true }
+    { allowSignalWrites: true } // Needed to update the gear signal.
   );
 }

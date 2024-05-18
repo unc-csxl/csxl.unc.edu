@@ -3,7 +3,7 @@
  * about their organization which is publically displayed on the organizations page.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -34,7 +34,7 @@ export class OrganizationEditorComponent {
     }
   };
 
-  /** Store the organization.  */
+  /** Stores the organization.  */
   public organization: Organization;
 
   /** Store the currently-logged-in user's profile.  */
@@ -142,19 +142,25 @@ export class OrganizationEditorComponent {
     }
   }
 
-  /** Retreives an error message if an email is invalid */
+  /** Retreives an error message if an email is invalid
+   * @returns {string}
+   */
   getEmailErrorMessage() {
     return this.organizationForm.controls['email'].hasError('email')
       ? 'Not a valid email'
       : '';
   }
 
-  /** Shorthand for whether an organization is new or not. */
+  /** Shorthand for whether an organization is new or not.
+   * @returns {boolean}
+   */
   isNew(): boolean {
     return this.organization.slug === 'new';
   }
 
-  /** Shorthand for determining the action being performed on the organization. */
+  /** Shorthand for determining the action being performed on the organization.
+   * @returns {string}
+   */
   action(): string {
     return this.isNew() ? 'Created' : 'Updated';
   }

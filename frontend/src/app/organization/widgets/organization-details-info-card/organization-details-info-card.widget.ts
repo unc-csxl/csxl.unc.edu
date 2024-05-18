@@ -13,8 +13,6 @@ import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Organization } from '../../organization.model';
 import { Profile } from 'src/app/profile/profile.service';
-import { PermissionService } from 'src/app/permission.service';
-import { Observable } from 'rxjs';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({

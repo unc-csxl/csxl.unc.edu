@@ -3,7 +3,7 @@
  * UNC CS organizations.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -63,9 +63,11 @@ export class OrganizationDetailsComponent {
   /** The organization to show */
   public organization: Organization | undefined;
 
+  // TODO: Refactor once the event feature is refactored.
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
 
+  // TODO: Refactor once the event feature is refactored.
   /** Whether or not the user has permission to update events. */
   public eventCreationPermission$: Observable<boolean>;
 

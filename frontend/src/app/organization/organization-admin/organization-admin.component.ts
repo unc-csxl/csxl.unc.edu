@@ -3,7 +3,7 @@
  * CS organizations and provides functionality to create/delete them.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -57,14 +57,15 @@ export class OrganizationAdminComponent {
     this.profile = data.profile;
   }
 
-  /** Resposible for generating delete and create buttons in HTML code when admin signed in */
+  /** Resposible for generating delete and create buttons in HTML code when admin signed in.
+   * @returns {Observable<boolean>}
+   */
   adminPermissions(): Observable<boolean> {
     return this.permissionService.check('organization.create', '*');
   }
 
   /** Event handler to open Organization Editor for the selected organization.
    * @param organization: organization to be edited
-   * @returns void
    */
   editOrganization(organization: Organization): void {
     this.router.navigate(['organizations', organization.slug, 'edit']);
@@ -78,7 +79,6 @@ export class OrganizationAdminComponent {
 
   /** Delete an organization object from the backend database table using the backend HTTP post request.
    * @param organization_id: unique number representing the updated organization
-   * @returns void
    */
   deleteOrganization(organization: Organization): void {
     let confirmDelete = this.snackBar.open(

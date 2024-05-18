@@ -3,28 +3,17 @@
  * from the components.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
-import {
-  Injectable,
-  Signal,
-  WritableSignal,
-  computed,
-  inject,
-  signal
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Organization } from './organization.model';
-import { Role } from '../role';
-import { ResolveFn } from '@angular/router';
-import { ProfileService } from '../profile/profile.service';
 import { PermissionService } from '../permission.service';
 
 @Injectable({
@@ -53,7 +42,7 @@ export class OrganizationService {
     this.getOrganizations();
   }
 
-  /** Refreshes the organization data emitted by the .organizations signal. */
+  /** Refreshes the organization data emitted by the organizations signal. */
   getOrganizations() {
     this.http
       .get<Organization[]>('/api/organizations')
@@ -62,7 +51,7 @@ export class OrganizationService {
       });
   }
 
-  /** Returns the organization object from the backend database table using the backend HTTP get request.
+  /** Gets an organization based on its slug.
    * @param slug: String representing the organization slug
    * @returns {Observable<Organization | undefined>}
    */
@@ -73,7 +62,7 @@ export class OrganizationService {
   /** Returns the new organization object from the backend database table using the backend HTTP post request
    *  and updates the organizations signal to include the new organization.
    * @param organization: Organization to add
-   * @returns {Signal<Organization | undefined>}
+   * @returns {Observable<Organization>}
    */
   createOrganization(organization: Organization): Observable<Organization> {
     return this.http
@@ -91,7 +80,7 @@ export class OrganizationService {
   /** Returns the updated organization object from the backend database table using the backend HTTP put request
    *  and update the organizations signal to include the updated organization.
    * @param organization: Represents the updated organization
-   * @returns {Signal<Organization | undefined>}
+   * @returns {Observable<Organization>}
    */
   updateOrganization(organization: Organization): Observable<Organization> {
     return this.http
@@ -109,7 +98,7 @@ export class OrganizationService {
   /** Returns the deleted organization object from the backend database table using the backend HTTP put request
    *  and updates the organizations signal to exclude the deleted organization.
    * @param organization: Represents the deleted organization
-   * @returns {Signal<Organization | undefined>}
+   * @returns {Observable<Organization>}
    */
   deleteOrganization(organization: Organization): Observable<Organization> {
     return this.http
@@ -121,13 +110,5 @@ export class OrganizationService {
           );
         })
       );
-  }
-
-  /** Returns the new role object from the backend database table using the backend HTTP post request.
-   * @param role: Role representing the new role
-   * @returns {Observable<Role>}
-   */
-  createRole(role: Role): Observable<Role> {
-    return this.http.post<Role>('/api/admin/roles', role);
   }
 }
