@@ -9,7 +9,6 @@
 
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
-import { map } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 
 /** Determines whether the user can access the organization editor.
