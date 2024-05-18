@@ -9,7 +9,7 @@
 
 import { Component, Input } from '@angular/core';
 import { Organization } from '../../organization.model';
-import { Profile } from '..../profile/profile.service';
+import { Profile } from '../../../profile/profile.service';
 
 @Component({
   selector: 'organization-card',

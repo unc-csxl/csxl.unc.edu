@@ -12,7 +12,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Organization } from '../organization.model';
-import { Profile, ProfileService } from 'src/app/profile/profile.service';
+import { Profile, ProfileService } from '../../profile/profile.service';
 import { organizationResolver } from '../organization.resolver';
 import { OrganizationService } from '../organization.service';
 import { organizationEditorGuard } from './organization-editor.guard';

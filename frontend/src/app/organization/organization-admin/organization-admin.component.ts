@@ -12,10 +12,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Organization } from '../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { Profile } from '.../profile/profile.service';
-import { profileResolver } from '.../profile/profile.resolver';
+import { Profile } from '../../profile/profile.service';
+import { profileResolver } from '../../profile/profile.resolver';
 import { OrganizationService } from '../organization.service';
-import { PermissionService } from '.../permission.service';
+import { PermissionService } from '../../permission.service';
 
 @Component({
   selector: 'app-organization-admin',
