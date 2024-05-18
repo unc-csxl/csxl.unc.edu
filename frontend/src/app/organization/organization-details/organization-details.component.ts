@@ -3,7 +3,7 @@
  * UNC CS organizations.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -15,17 +15,16 @@ import {
   Route
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import { Profile, ProfileService } from '../../profile/profile.service';
 import {
-  organizationDetailResolver,
+  organizationResolver,
   organizationEventsResolver
 } from '../organization.resolver';
-import { EventService } from 'src/app/event/event.service';
-import { Event } from 'src/app/event/event.model';
+import { EventService } from '../../event/event.service';
+import { Event } from '../../event/event.model';
 import { Observable } from 'rxjs';
-import { PermissionService } from 'src/app/permission.service';
+import { PermissionService } from '../../permission.service';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -43,8 +42,7 @@ export class OrganizationDetailsComponent {
     path: ':slug',
     component: OrganizationDetailsComponent,
     resolve: {
-      profile: profileResolver,
-      organization: organizationDetailResolver,
+      organization: organizationResolver,
       events: organizationEventsResolver
     },
     children: [
@@ -60,11 +58,13 @@ export class OrganizationDetailsComponent {
   public profile: Profile;
 
   /** The organization to show */
-  public organization: Organization;
+  public organization: Organization | undefined;
 
+  // TODO: Refactor once the event feature is refactored.
   /** Store a map of days to a list of events for that day */
   public eventsPerDay: [string, Event[]][];
 
+  // TODO: Refactor once the event feature is refactored.
   /** Whether or not the user has permission to update events. */
   public eventCreationPermission$: Observable<boolean>;
 
@@ -72,21 +72,22 @@ export class OrganizationDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
+    private profileService: ProfileService,
     protected eventService: EventService,
     private permission: PermissionService
   ) {
-    /** Initialize data from resolvers. */
+    this.profile = this.profileService.profile()!;
+
     const data = this.route.snapshot.data as {
-      profile: Profile;
       organization: Organization;
       events: Event[];
     };
-    this.profile = data.profile;
+
     this.organization = data.organization;
     this.eventsPerDay = eventService.groupEventsByDate(data.events ?? []);
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
-      `organization/${this.organization.slug}`
+      `organization/${this.organization?.slug ?? '*'}`
     );
   }
 }

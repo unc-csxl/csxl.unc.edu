@@ -24,7 +24,7 @@ export class EventList {
   @Input() eventsPerDay: [string, Event[]][] = [];
 
   /** The organization associated with the Event List for the Organization Details Page */
-  @Input() organization: Organization | null = null;
+  @Input() organization: Organization | undefined = undefined;
 
   /** Store the selected Event */
   @Input() selectedEvent: Event | null = null;

@@ -12,10 +12,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { OrganizationPageComponent } from './organization-page/organization-page.component';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 import { OrganizationEditorComponent } from './organization-editor/organization-editor.component';
-import { OrganizationListAdminComponent } from './organization-admin/list/organization-list-admin.component';
+import { OrganizationAdminComponent } from './organization-admin/organization-admin.component';
 
 const routes: Routes = [
-  OrganizationListAdminComponent.Route,
+  OrganizationAdminComponent.Route,
   OrganizationPageComponent.Route,
   OrganizationDetailsComponent.Route,
   OrganizationEditorComponent.Route

@@ -4,67 +4,66 @@
   appearance="outlined">
   <!-- Organization Card Header (Image, Name, Description) -->
   <mat-card-header class="organization-header">
-    <div class="left-header-info" *ngIf="!isTablet && !isHandset">
+    @if (!isTablet && !isHandset) {
+    <div class="left-header-info">
       <!-- Organization Logo (Laptops/Monitors) -->
-      <img mat-card-image src="{{ organization!.logo }}" class="logo" />
+      <img mat-card-image src="{{ organization.logo }}" class="logo" />
     </div>
+    }
     <div class="right-header-info">
       <!-- Organization Name, Logo, and Social Media -->
       <div class="organization-top-header-group">
         <!-- Organization Logo (Tablets/Phones) -->
+        @if (isTablet || isHandset) {
         <img
           mat-card-image
-          src="{{ organization!.logo }}"
+          src="{{ organization.logo }}"
           class="logo"
-          *ngIf="isTablet || isHandset"
           [ngStyle]="{
             width: '32px',
             height: '32px',
             'margin-right': '16px'
           }" />
+        }
         <!-- Organization Name -->
         <div class="organization-name-section">
           <mat-card-title class="user-name">
-            {{ organization!.name }}
+            {{ organization.name }}
           </mat-card-title>
         </div>
       </div>
 
       <!-- Organization Description -->
-      <p
-        class="organization-description"
-        *ngIf="organization!.long_description; else short_description">
-        {{ organization!.long_description }}
+      <p class="organization-description">
+        {{ organization.long_description || organization.short_description }}
       </p>
-      <ng-template #short_description>
-        {{ organization!.short_description }}
-      </ng-template>
 
       <!-- Organization Icons (Phones)-->
       <div
         class="organization-icons-section"
         [ngStyle]="{ 'flex-direction': 'row' }">
         <div class="link-icons">
+          @if(organization) { @if (organization.website !== '') {
           <social-media-icon
             [fontIcon]="'link'"
-            [href]="organization!.website"
-            *ngIf="organization!.website !== ''" />
+            [href]="organization!.website" />
+          } @if (organization.email !== '') {
           <social-media-icon
             [fontIcon]="'mail'"
-            [href]="'mailto:' + organization!.email"
-            *ngIf="organization!.email !== ''" />
+            [href]="'mailto:' + organization.email" />
+          } @if(organization.instagram !== '') {
           <social-media-icon
             [svgIcon]="'instagram'"
-            [href]="organization!.instagram"
-            *ngIf="organization!.instagram !== ''" />
+            [href]="organization!.instagram" />
+          } @if(organization.linked_in !== '') {
           <social-media-icon
             [svgIcon]="'linkedin'"
-            [href]="organization!.linked_in"
-            *ngIf="organization!.linked_in !== ''" />
+            [href]="organization!.linked_in" />
+          } @if(organization.youtube !== '') {
           <social-media-icon
             [svgIcon]="'youtube'"
-            [href]="organization!.youtube"
-            *ngIf="organization!.youtube !== ''" />
+            [href]="organization!.youtube" />
+          } }
         </div>
       </div>
     </div>

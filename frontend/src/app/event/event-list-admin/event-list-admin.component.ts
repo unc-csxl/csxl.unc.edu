@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrganizationAdminPermissionGuard } from 'src/app/organization/organization-admin/organization-admin-permission.guard';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { OrganizationAdminService } from 'src/app/organization/organization-admin/organization-admin.service';
 import { Observable, map, of } from 'rxjs';
 import {
   Permission,
@@ -11,9 +9,9 @@ import {
 import { Organization } from 'src/app/organization/organization.model';
 import { Event } from 'src/app/event/event.model';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { organizationResolver } from 'src/app/organization/organization.resolver';
 import { EventService } from 'src/app/event/event.service';
 import { eventResolver } from '../event.resolver';
+import { OrganizationService } from 'src/app/organization/organization.service';
 
 @Component({
   selector: 'app-event-list-admin',
@@ -34,10 +32,8 @@ export class EventListAdminComponent implements OnInit {
     path: 'admin',
     component: EventListAdminComponent,
     title: 'Event Administration',
-    canActivate: [OrganizationAdminPermissionGuard()],
     resolve: {
       profile: profileResolver,
-      organizations: organizationResolver,
       events: eventResolver
     }
   };
@@ -46,7 +42,7 @@ export class EventListAdminComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-    private organizationAdminService: OrganizationAdminService,
+    private organizationAdminService: OrganizationService,
     private eventService: EventService
   ) {
     this.displayedEvents$ = eventService.getEvents();

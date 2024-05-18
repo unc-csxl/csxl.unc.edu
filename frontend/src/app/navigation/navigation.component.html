@@ -85,18 +85,16 @@
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
         <p>{{ navigationService.title$ | async }}</p>
+
+        @if(navigationAdminGearService.adminSettingsData()) {
         <button
           id="gear-icon"
           type="button"
           mat-icon-button
-          [routerLink]="
-            (navigationAdminGearService.adminSettingsData$ | async)!.url
-          "
-          *ngIf="
-            (navigationAdminGearService.adminSettingsData$ | async) !== null
-          ">
+          [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
           <mat-icon aria-label="Admin icon">settings</mat-icon>
         </button>
+        }
       </div>
     </mat-toolbar>
     <mat-progress-bar

@@ -1,28 +1,19 @@
 <!-- HTML Structure of Organization Details Page -->
 
-<!-- <div class="organization-grid">
+@if (organization === undefined) {
+<organization-not-found-card />
+} @else {
+<organization-details-info-card
+  [organization]="organization"
+  [profile]="profile" />
 
-    Organization Information Card
-<div class="organization-card-container">
-
+<div class="event-listing-container">
+  <!-- <event-list
+    [eventsPerDay]="eventsPerDay"
+    [organization]="organization()"
+    [selectedEvent]="null"
+    [disableLinks]="false"
+    [showHeader]="true"
+    [showCreateButton]="(eventCreationPermission$ | async)!" /> -->
 </div>
-</div> -->
-
-<organization-not-found-card
-  *ngIf="organization === undefined; else eventDetails" />
-
-<ng-template #eventDetails>
-  <organization-details-info-card
-    [organization]="organization"
-    [profile]="profile" />
-
-  <div class="event-listing-container">
-    <event-list
-      [eventsPerDay]="eventsPerDay"
-      [organization]="organization"
-      [selectedEvent]="null"
-      [disableLinks]="false"
-      [showHeader]="true"
-      [showCreateButton]="(eventCreationPermission$ | async)!" />
-  </div>
-</ng-template>
+}

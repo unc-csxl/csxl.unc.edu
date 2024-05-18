@@ -5,12 +5,9 @@
   <!-- Update Organization Card -->
   <mat-card appearance="outlined">
     <mat-card-header>
-      <mat-card-title *ngIf="this.organization_slug === 'new'; else update">
-        Create Organization
+      <mat-card-title>
+        {{ this.isNew() ? 'Create' : 'Update' }} Organization
       </mat-card-title>
-      <ng-template #update>
-        <mat-card-title> Update Organization </mat-card-title>
-      </ng-template>
     </mat-card-header>
     <mat-card-content>
       <!-- Organization Name Field -->
@@ -86,9 +83,11 @@
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Email</mat-label>
         <input matInput placeholder="" formControlName="email" name="email" />
-        <mat-error *ngIf="email.invalid">
+        @if (organizationForm.controls['email'].invalid) {
+        <mat-error>
           {{ getEmailErrorMessage() }}
         </mat-error>
+        }
       </mat-form-field>
       <!-- Instagram Field -->
       <mat-form-field appearance="outline" color="accent">

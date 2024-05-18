@@ -70,7 +70,7 @@ export class CoursesHomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.gearService.showAdminGear(
+    this.gearService.showAdminGearByPermissionCheck(
       'academics.*',
       '*',
       '',

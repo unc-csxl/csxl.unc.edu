@@ -5,7 +5,7 @@
  * in the application.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -32,9 +32,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { OrganizationPageComponent } from './organization-page/organization-page.component';
 import { OrganizationRoutingModule } from './organization-routing.module';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
-import { OrganizationListAdminComponent } from './organization-admin/list/organization-list-admin.component';
+import { OrganizationAdminComponent } from './organization-admin/organization-admin.component';
 
-import { OrganizationFilterPipe } from './organization-filter/organization-filter.pipe';
+import { OrganizationFilterPipe } from './pipes/organization-filter.pipe';
 
 /* UI Widgets */
 import { OrganizationCard } from './widgets/organization-card/organization-card.widget';
@@ -43,15 +43,13 @@ import { SharedModule } from '../shared/shared.module';
 import { OrganizationDetailsInfoCard } from './widgets/organization-details-info-card/organization-details-info-card.widget';
 import { OrganizationEditorComponent } from '/workspace/frontend/src/app/organization/organization-editor/organization-editor.component';
 import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/organization-not-found-card.widget';
-import { OrganizationAdminComponent } from './organization-admin/organization-admin.component';
 
 @NgModule({
   declarations: [
     OrganizationPageComponent,
-    OrganizationAdminComponent,
     OrganizationDetailsComponent,
     OrganizationEditorComponent,
-    OrganizationListAdminComponent,
+    OrganizationAdminComponent,
 
     // Pipes
     OrganizationFilterPipe,
