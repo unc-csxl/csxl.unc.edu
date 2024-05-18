@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-import { Component, OnInit, Signal } from '@angular/core';
+import { Component, OnInit, Signal, effect } from '@angular/core';
 import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
 import { Organization } from '../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,7 +24,7 @@ import { OrganizationService } from '../organization.service';
   templateUrl: './organization-page.component.html',
   styleUrls: ['./organization-page.component.css']
 })
-export class OrganizationPageComponent implements OnInit {
+export class OrganizationPageComponent {
   /** Route information to be used in Organization Routing Module */
   public static Route = {
     path: '',
@@ -52,13 +52,13 @@ export class OrganizationPageComponent implements OnInit {
     this.organizations = this.organizationService.organizations;
   }
 
-  ngOnInit() {
-    // Check for admin permissions
-    this.gearService.showAdminGear(
-      'organizations.*',
-      '*',
-      '',
-      'organizations/admin'
-    );
-  }
+  /** Effect that shows the organization admin gear if the user is an admin for at least one organization.*/
+  organizationGearEffect = effect(
+    () => {
+      if (this.organizationService.adminOrganizations().length > 0) {
+        this.gearService.showAdminGear('', 'organizations/admin');
+      }
+    },
+    { allowSignalWrites: true }
+  );
 }

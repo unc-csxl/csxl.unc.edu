@@ -133,7 +133,7 @@ export class EventPageComponent implements OnInit, OnDestroy {
       if (userPermissions.length !== 0) {
         /** Admin user, no need to check further */
         if (userPermissions[0].resource === '*') {
-          this.gearService.showAdminGear(
+          this.gearService.showAdminGearByPermissionCheck(
             'organizations.*',
             '*',
             '',
@@ -146,7 +146,7 @@ export class EventPageComponent implements OnInit, OnDestroy {
           );
           /** If they do, show admin gear */
           if (organizationPermissions.length !== 0) {
-            this.gearService.showAdminGear(
+            this.gearService.showAdminGearByPermissionCheck(
               'organizations.*',
               organizationPermissions[0].resource,
               '',

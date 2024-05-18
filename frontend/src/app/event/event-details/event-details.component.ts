@@ -74,7 +74,7 @@ export class EventDetailsComponent {
   }
 
   ngOnInit() {
-    this.gearService.showAdminGear(
+    this.gearService.showAdminGearByPermissionCheck(
       'events.*',
       '*',
       '',

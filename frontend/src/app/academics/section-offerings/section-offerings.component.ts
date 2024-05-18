@@ -102,7 +102,7 @@ export class SectionOfferingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.gearService.showAdminGear(
+    this.gearService.showAdminGearByPermissionCheck(
       'academics.*',
       '*',
       '',

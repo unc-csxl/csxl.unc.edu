@@ -11,6 +11,7 @@ import {
   Injectable,
   Signal,
   WritableSignal,
+  computed,
   inject,
   signal
 } from '@angular/core';
@@ -23,6 +24,8 @@ import { Observable, map, tap } from 'rxjs';
 import { Organization } from './organization.model';
 import { Role } from '../role';
 import { ResolveFn } from '@angular/router';
+import { ProfileService } from '../profile/profile.service';
+import { PermissionService } from '../permission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,12 +34,21 @@ export class OrganizationService {
   /** Organizations signal */
   private organizationsSignal: WritableSignal<Organization[]> = signal([]);
   organizations = this.organizationsSignal.asReadonly();
+  adminOrganizations = computed(() => {
+    return this.organizations().filter((organization) => {
+      return this.permissionService.checkSignal(
+        'organization.*',
+        'organization/' + organization.slug
+      );
+    });
+  });
 
   /** Constructor */
   constructor(
     protected http: HttpClient,
     protected auth: AuthenticationService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected permissionService: PermissionService
   ) {
     this.getOrganizations();
   }

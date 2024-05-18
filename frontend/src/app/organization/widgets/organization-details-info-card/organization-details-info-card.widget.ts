@@ -39,22 +39,14 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
   /** Constructs the organization detail info card widget */
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private permission: PermissionService,
     private gearService: NagivationAdminGearService
   ) {}
-
-  checkPermissions(): Observable<boolean> {
-    return this.permission.check(
-      'organization.update',
-      `organization/${this.organization?.slug}`
-    );
-  }
 
   /** Runs whenever the view is rendered initally on the screen */
   ngOnInit(): void {
     this.isHandsetSubscription = this.initHandset();
     this.isTabletSubscription = this.initTablet();
-    this.gearService.showAdminGear(
+    this.gearService.showAdminGearByPermissionCheck(
       'organization.*',
       `organization/${this.organization?.slug}`,
       '',

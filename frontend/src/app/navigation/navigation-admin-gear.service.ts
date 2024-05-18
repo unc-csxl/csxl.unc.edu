@@ -25,7 +25,7 @@ export class NagivationAdminGearService {
    * @param tooltip Tooltip to display when hovering over the settings gear icon.
    * @param targetUrl URL for the admin page for the button to redirect to.
    */
-  public showAdminGear(
+  public showAdminGearByPermissionCheck(
     permissionAction: string,
     permissionResource: string,
     tooltip: string,
@@ -48,6 +48,21 @@ export class NagivationAdminGearService {
           this.adminSettingsData.set(null);
         }
       });
+  }
+
+  /**
+   * This function updates an internal reactive object setup to manage when to show the admin
+   * page gear icon or not.
+   *
+   * @param conditionFunction Function that must return true for the gear to appear.
+   * @param tooltip Tooltip to display when hovering over the settings gear icon.
+   * @param targetUrl URL for the admin page for the button to redirect to.
+   */
+  public showAdminGear(tooltip: string, targetUrl: string) {
+    this.adminSettingsData.set({
+      tooltip: tooltip,
+      url: targetUrl
+    });
   }
 
   public resetAdminSettingsNavigation() {
