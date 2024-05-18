@@ -4,7 +4,7 @@ import { Profile } from 'src/app/profile/profile.service';
 import { UserAdminService } from 'src/app/admin/users/user-admin.service';
 import { permissionGuard } from 'src/app/permission.guard';
 
-import { Paginated } from 'src/app/pagination';
+import { Paginated, PaginationParams } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
@@ -13,7 +13,7 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: []
 })
 export class AdminUsersListComponent {
-  public page: Paginated<Profile>;
+  public page: Paginated<Profile, PaginationParams>;
 
   public displayedColumns: string[] = [
     'first_name',
@@ -45,7 +45,9 @@ export class AdminUsersListComponent {
     private router: Router,
     route: ActivatedRoute
   ) {
-    let data = route.snapshot.data as { page: Paginated<Profile> };
+    let data = route.snapshot.data as {
+      page: Paginated<Profile, PaginationParams>;
+    };
     this.page = data.page;
   }
 

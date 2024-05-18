@@ -22,7 +22,7 @@ import { DatePipe } from '@angular/common';
 import { EventService } from '../event.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
-import { PaginatedEvent } from 'src/app/pagination';
+import { EventPaginationParams, Paginated } from 'src/app/pagination';
 import {
   Subject,
   Subscription,
@@ -38,7 +38,7 @@ import {
   styleUrls: ['./event-page.component.css']
 })
 export class EventPageComponent implements OnInit, OnDestroy {
-  public page: PaginatedEvent<Event>;
+  public page: Paginated<Event, EventPaginationParams>;
   public startDate = new Date();
   public endDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
   public today: boolean = true;
@@ -99,7 +99,7 @@ export class EventPageComponent implements OnInit, OnDestroy {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
       profile: Profile;
-      page: PaginatedEvent<Event>;
+      page: Paginated<Event, EventPaginationParams>;
     };
     this.profile = data.profile;
     this.page = data.page;

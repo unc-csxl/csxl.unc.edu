@@ -9,7 +9,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { Paginated } from 'src/app/pagination';
+import { Paginated, PaginationParams } from 'src/app/pagination';
 import { Profile } from 'src/app/models.module';
 import { EventService } from '../../event.service';
 import { Event } from '../../event.model';
@@ -21,7 +21,7 @@ import { Event } from '../../event.model';
 })
 export class EventUsersList implements OnInit {
   @Input() event!: Event;
-  page!: Paginated<Profile>;
+  page!: Paginated<Profile, PaginationParams>;
 
   public displayedColumns: string[] = ['name', 'pronouns', 'email'];
 
