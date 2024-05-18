@@ -3,7 +3,6 @@ import { CanActivateFn, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { PermissionService } from './permission.service';
 
-// TODO: #4 Allow resource patterns such as role/{id} and replace {id} with _route fragment
 export const permissionGuard = (
   action: string,
   resource: string
