@@ -12,8 +12,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Organization } from '../../organization.model';
-import { Profile } from 'src/app/profile/profile.service';
-import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { Profile } from '..../profile/profile.service';
+import { NagivationAdminGearService } from '..../navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'organization-details-info-card',

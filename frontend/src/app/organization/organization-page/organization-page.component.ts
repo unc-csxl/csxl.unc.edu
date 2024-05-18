@@ -9,14 +9,11 @@
  */
 
 import { Component, Signal, effect } from '@angular/core';
-import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
+import { profileResolver } from '.../profile/profile.resolver';
 import { Organization } from '../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  Profile,
-  ProfileService
-} from '/workspace/frontend/src/app/profile/profile.service';
-import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { Profile, ProfileService } from '.../profile/profile.service';
+import { NagivationAdminGearService } from '.../navigation/navigation-admin-gear.service';
 import { OrganizationService } from '../organization.service';
 
 @Component({

@@ -16,18 +16,15 @@ import {
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Organization } from '../organization.model';
-import {
-  Profile,
-  ProfileService
-} from '/workspace/frontend/src/app/profile/profile.service';
+import { Profile, ProfileService } from '.../profile/profile.service';
 import {
   organizationResolver,
   organizationEventsResolver
 } from '../organization.resolver';
-import { EventService } from 'src/app/event/event.service';
-import { Event } from 'src/app/event/event.model';
+import { EventService } from '.../event/event.service';
+import { Event } from '...app/event/event.model';
 import { Observable } from 'rxjs';
-import { PermissionService } from 'src/app/permission.service';
+import { PermissionService } from '.../permission.service';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
