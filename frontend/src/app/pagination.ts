@@ -12,7 +12,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { WritableSignal, signal } from '@angular/core';
-import { OperatorFunction, tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 /** Defines the general model for the pagination parameters expected by the backend. */
 export interface PaginationParams {
@@ -42,26 +42,6 @@ export interface Paginated<T, ParamType> {
   length: number;
   params: ParamType;
 }
-
-/**
- * Type alias for a pagination operator function that converts a paginated object of type `APIType`
- * to a paginated object of type `T`. This is useful when the result of a pagination API call is not
- * in the same format as the final data type expected.
- *
- * For example, the event API calls return objects in the `EventJSON` format, however we use the
- * `Event` type ultimately (the types for dates in `EventJSON` are strings, but the type for dates
- * in `Event` are `datetime`s). So, we can define a `PaginationOperatorFunction` to convert from the
- * `EventJSON` format to the `Event` format in our paginator with the finalized type of
- * `PaginationOperatorFunction<EventJSON, Event, EventPaginationParams>`.
- *
- * @template APIType: The API HTTP Response type.
- * @template T: The resulting type after the conversion.
- * @template Params: The type of the pagination params.
- */
-export type PaginationOperatorFunction<APIType, T, Params> = OperatorFunction<
-  Paginated<APIType, Params>,
-  Paginated<T, Params>
->;
 
 /**
  * This class abstracts the functionality of pagination to be significantly easier to work with across the
@@ -109,7 +89,7 @@ class Paginator<T, Params extends Record<string, string>> {
    * paginator.page(); // Returns the loaded page.
    * ```
    *
-   * This method also supports a pagination operator function in the case that the API endpoint returns
+   * This method also supports a  operator function in the case that the API endpoint returns
    * a model that is different than the provided type `T` for the paginator. This is to be most commonly
    * used with converting `Json` repsonse models to the regular typed response models. To support this,
    * the .loadPage method supports a optional generic type for the API response type.
@@ -117,17 +97,17 @@ class Paginator<T, Params extends Record<string, string>> {
    * Usage:
    * ```
    * let paginator: Paginator<Event, EventPaginationParams> = new Paginator<>('/api/event');
-   * paginator.loadPage<EventJson>(params, eventJsonToEventOperatorFunction);
+   * paginator.loadPage<EventJson>(params, parseEventJson);
    * paginator.page(); // Returns the loaded page, in type `Paginated<T>`
    * ```
    *
    * @template APIType: (Optional) Response model from the API call, if it is different than `T`.
    * @param paramStrings: Pagination parameters.
-   * @param operator: (Optional) Operator to convert data from `Paginated<APIType>` to `Paginated<T>`.
+   * @param operator: (Optional) Function to convert data from `Paginated<APIType>` to `Paginated<T>`.
    */
   loadPage<APIType = T>(
     paramStrings: Params,
-    operator?: PaginationOperatorFunction<APIType, T, Params> | null
+    operator?: ((_: APIType) => T) | null
   ) {
     // Stpres the previous pagination parameters used
     this.previousParams = paramStrings;
@@ -140,7 +120,14 @@ class Paginator<T, Params extends Record<string, string>> {
     if (operator) {
       // If so, call the API, pipe it through the operator, and update the signal.
       this.http.get<Paginated<APIType, Params>>(route).pipe(
-        operator,
+        map((paginatedResponse) => {
+          let paginated: Paginated<T, Params> = {
+            items: paginatedResponse.items.map(operator),
+            length: paginatedResponse.length,
+            params: paginatedResponse.params
+          };
+          return paginated;
+        }),
         tap((pageData) => this.pageSignal.set(pageData))
       );
     } else {
