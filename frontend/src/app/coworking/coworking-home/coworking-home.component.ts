@@ -19,7 +19,15 @@ import {
   Reservation,
   SeatAvailability
 } from '../coworking.models';
-import { Observable, Subscription, map, mergeMap, of, timer } from 'rxjs';
+import {
+  Observable,
+  Subscription,
+  map,
+  mergeMap,
+  of,
+  timer,
+  catchError
+} from 'rxjs';
 import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { ReservationService } from '../reservation/reservation.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -37,6 +45,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   public isOpen$: Observable<boolean>;
 
   public activeReservation$: Observable<Reservation | undefined>;
+
+  public upcomingReservations$: Observable<Reservation[] | undefined>;
 
   private timerSubscription!: Subscription;
 
@@ -63,11 +73,10 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     this.status$ = coworkingService.status$;
-    this.upcomingRoomReservation$ =
-      roomReservationService.upcomingReservations$;
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
+    this.upcomingReservations$ = this.initUpcomingReservations();
   }
 
   /**
@@ -85,7 +94,6 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.activeReservation$ = this.initActiveReservation();
     this.timerSubscription = timer(0, 10000).subscribe(() => {
       this.coworkingService.pollStatus();
-      this.roomReservationService.pollUpcomingRoomReservation(this.snackBar);
     });
   }
 
@@ -129,9 +137,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     return this.status$.pipe(
       map((status) => {
         let reservations = status.my_reservations;
-        let now = new Date();
         return reservations.find(
-          this.roomReservationService.findActiveReservationPredicate
+          this.coworkingService.findActiveReservationPredicate
         );
       }),
       mergeMap((reservation) =>
@@ -139,6 +146,34 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
           ? this.reservationService.get(reservation.id)
           : of(undefined)
       )
+    );
+  }
+
+  initUpcomingReservations(): Observable<Reservation[]> {
+    const isUpcomingRoomReservation = (reservation: Reservation) => {
+      if (!this.coworkingService.findActiveReservationPredicate(reservation)) {
+        if (
+          reservation &&
+          reservation.room &&
+          reservation.state === 'CONFIRMED'
+        ) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    return this.status$.pipe(
+      map((status) => {
+        let reservations = status.my_reservations;
+        return reservations.filter(isUpcomingRoomReservation);
+      }),
+      catchError((err: Error) => {
+        const message = 'Error while fetching upcoming reservations.';
+        this.snackBar.open(message, '', { duration: 8000 });
+        console.error(err);
+        return of([]);
+      })
     );
   }
 

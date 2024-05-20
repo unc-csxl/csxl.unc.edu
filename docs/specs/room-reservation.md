@@ -172,29 +172,7 @@ def _query_confirmed_reservations_by_date(
 
 If you want a deeper understanding of how these functions works, we recommened reading [this section.](#future-developers)
 
-## 3. Route to get all upcoming reservations for a user
-
-We added the following code into the backend API layer:
-
-```py3
-@api.get("/room-reservations/", tags=["Coworking"])
-def get_all_reservations_by_state(
-    state: ReservationState,
-    subject: User = Depends(registered_user),
-    reservation_svc: ReservationService = Depends(),
-) -> Sequence[Reservation]:
-    try:
-        return reservation_svc.get_current_reservations_for_user(
-            subject=subject, focus=subject, state=state
-        )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
-```
-
-We needed a way to view all upcoming reservations for a given user so that we can display this information. So we added the following API route into the codebase.
-
-## 4. Route to get timeslots of all reservations for all users
+## 3. Route to get timeslots of all reservations for all users
 
 We needed this endpoint because we needed a way for the user to know which timeslots and rooms have already been booked, so that they could make their selection accordingly. We make sure that we only get the time slots and not any private information like names of users who made the reservations. This is the route we added in the `backend/api/coworking/reservation.py` file.
 
@@ -319,7 +297,7 @@ This preexisting widget is the method by which reservations are displayed to the
 
 For this feature, the backend primarily focuses on identifying available and reserved rooms, and also displays users' reservations. To understand the backend functionality, it's recommended to follow the outlined path where we move top-down i.e, we start at the API layer and move down to the queries that interact with the persistent storage.
 
-### 1. API Layer
+### 1. API Layer (deprecated)
 
 We recommend by checking out the code present in `backend/api/coworking/reservation.py`. Since this is the first layer that interacts with the frontend, it is the best to understand how the code is working. In this file we added the following routes:
 

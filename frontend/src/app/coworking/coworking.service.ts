@@ -13,7 +13,8 @@ import {
   ReservationJSON,
   SeatAvailability,
   parseCoworkingStatusJSON,
-  parseReservationJSON
+  parseReservationJSON,
+  Reservation
 } from './coworking.models';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
@@ -32,6 +33,17 @@ export class CoworkingService implements OnDestroy {
   private profileSubscription!: Subscription;
 
   isCancelExpanded = new BehaviorSubject<boolean>(false);
+
+  public findActiveReservationPredicate: (r: Reservation) => boolean = (
+    r: Reservation
+  ) => {
+    let now = new Date();
+    let soon = new Date(
+      Date.now() + 10 /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */
+    );
+    const activeStates = ['DRAFT', 'CONFIRMED', 'CHECKED_IN'];
+    return r.start <= soon && r.end > now && activeStates.includes(r.state);
+  };
 
   public constructor(
     protected http: HttpClient,
