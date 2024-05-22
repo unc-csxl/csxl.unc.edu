@@ -52,9 +52,6 @@ export interface Paginated<T, ParamType> {
  *
  * @template T: Type of data stored in the paginator's pages.
  * @template Params: Type of the pagination params used by the type of object being paginated.
- *
- * Sample Type:
- * `Paginator<Event, EventPaginationParams>`: Paginates `Event` models using params defined in `EventPaginationParams`.
  */
 abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
   /** Stores the previously used parameters for reference. */
@@ -84,7 +81,6 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
    *
    * Usage:
    * ```
-   * let paginator: Paginator<Organization, OrganizationPaginationParams> = new Paginator<>('api/organization');
    * paginator.loadPage<>(params);
    * paginator.page(); // Returns the loaded page.
    * ```
@@ -96,7 +92,6 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
    *
    * Usage:
    * ```
-   * let paginator: Paginator<Event, EventPaginationParams> = new Paginator<>('/api/event');
    * paginator.loadPage<EventJson>(params, parseEventJson);
    * paginator.page(); // Returns the loaded page, in type `Paginated<T>`
    * ```
