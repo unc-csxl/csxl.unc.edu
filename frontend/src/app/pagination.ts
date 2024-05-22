@@ -12,7 +12,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { WritableSignal, signal } from '@angular/core';
-import { map, tap } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 
 /** Defines the general model for the pagination parameters expected by the backend. */
 export interface PaginationParams extends URLSearchParams {
@@ -103,7 +103,7 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
   loadPage<APIType = T>(
     paramStrings: Params,
     operator?: ((_: APIType) => T) | null
-  ) {
+  ): Observable<Paginated<T, Params>> {
     // Stpres the previous pagination parameters used
     this.previousParams = paramStrings;
 
@@ -114,7 +114,7 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
     // Determine if an operator function is necessary
     if (operator) {
       // If so, call the API, pipe it through the operator, and update the signal.
-      this.http.get<Paginated<APIType, Params>>(route).pipe(
+      return this.http.get<Paginated<APIType, Params>>(route).pipe(
         map((paginatedResponse) => {
           let paginated: Paginated<T, Params> = {
             items: paginatedResponse.items.map(operator),
@@ -127,7 +127,7 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
       );
     } else {
       // Otherwise, just call the API and update the signal.
-      this.http
+      return this.http
         .get<Paginated<T, Params>>(route)
         .pipe(tap((pageData) => this.pageSignal.set(pageData)));
     }
