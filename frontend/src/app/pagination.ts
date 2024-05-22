@@ -99,6 +99,7 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
    * @template APIType: (Optional) Response model from the API call, if it is different than `T`.
    * @param paramStrings: Pagination parameters.
    * @param operator: (Optional) Function to convert data from `Paginated<APIType>` to `Paginated<T>`.
+   * @returns {Observable<Paginated<T, Params>>}
    */
   loadPage<APIType = T>(
     paramStrings: Params,
