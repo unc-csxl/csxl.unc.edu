@@ -82,7 +82,6 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
    * Usage:
    * ```
    * paginator.loadPage<>(params);
-   * paginator.page(); // Returns the loaded page.
    * ```
    *
    * This method also supports a  operator function in the case that the API endpoint returns
@@ -93,7 +92,6 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
    * Usage:
    * ```
    * paginator.loadPage<EventJson>(params, parseEventJson);
-   * paginator.page(); // Returns the loaded page, in type `Paginated<T>`
    * ```
    *
    * @template APIType: (Optional) Response model from the API call, if it is different than `T`.
