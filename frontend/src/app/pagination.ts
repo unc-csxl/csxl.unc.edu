@@ -15,15 +15,15 @@ import { WritableSignal, signal } from '@angular/core';
 import { map, tap } from 'rxjs';
 
 /** Defines the general model for the pagination parameters expected by the backend. */
-export interface PaginationParams {
+export interface PaginationParams extends URLSearchParams {
   page: number;
   page_size: number;
   order_by: string;
   filter: string;
 }
 
-/** Defines the model for the pagination parameters expected by the events feature backend. */
-export interface EventPaginationParams {
+/** Defines the general model for the time range pagination parameters expected by the backend. */
+export interface TimeRangePaginationParams extends URLSearchParams {
   order_by: string;
   ascending: string;
   filter: string;
@@ -56,7 +56,7 @@ export interface Paginated<T, ParamType> {
  * Sample Type:
  * `Paginator<Event, EventPaginationParams>`: Paginates `Event` models using params defined in `EventPaginationParams`.
  */
-class Paginator<T, Params extends Record<string, string>> {
+abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
   /** Stores the previously used parameters for reference. */
   previousParams: Params | null = null;
 
@@ -138,3 +138,10 @@ class Paginator<T, Params extends Record<string, string>> {
     }
   }
 }
+
+export class Paginator<T> extends PaginatorAbstraction<T, PaginationParams> {}
+
+export class TimeRangePaginator<T> extends PaginatorAbstraction<
+  T,
+  TimeRangePaginationParams
+> {}
