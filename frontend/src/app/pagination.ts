@@ -139,8 +139,10 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
   }
 }
 
+/** Default paginator implementation. */
 export class Paginator<T> extends PaginatorAbstraction<T, PaginationParams> {}
 
+/** Paginator implementation for working with time ranges. */
 export class TimeRangePaginator<T> extends PaginatorAbstraction<
   T,
   TimeRangePaginationParams
