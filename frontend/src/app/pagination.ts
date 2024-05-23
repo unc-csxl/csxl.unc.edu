@@ -11,7 +11,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { WritableSignal, signal } from '@angular/core';
+import { WritableSignal, inject, signal } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
 
 /** Defines the general model for the pagination parameters expected by the backend. */
@@ -70,7 +70,7 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
    */
   constructor(
     protected api: string,
-    protected http: HttpClient
+    protected http: HttpClient = inject(HttpClient)
   ) {
     this.api = api;
   }
@@ -101,7 +101,7 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
    */
   loadPage<APIType = T>(
     paramStrings: Params,
-    operator?: ((_: APIType) => T) | null
+    operator?: ((responseModel: APIType) => T) | null
   ): Observable<Paginated<T, Params>> {
     // Stpres the previous pagination parameters used
     this.previousParams = paramStrings;

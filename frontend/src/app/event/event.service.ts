@@ -24,6 +24,7 @@ import {
   TimeRangePaginationParams
 } from '../pagination';
 import { RxEvent } from './rx-event';
+import { GroupEventsPipe } from './pipes/group-events.pipe';
 
 @Injectable({
   providedIn: 'root'
@@ -164,29 +165,29 @@ export class EventService {
    * @param event_id: number representing the Event ID
    * @returns Observable<EventRegistration>
    */
-  getEventRegistrationOfUser(event_id: number): Observable<EventRegistration> {
-    return this.http.get<EventRegistration>(
-      `/api/events/${event_id}/registration`
-    );
-  }
+  // getEventRegistrationOfUser(event_id: number): Observable<EventRegistration> {
+  //   return this.http.get<EventRegistration>(
+  //     `/api/events/${event_id}/registration`
+  //   );
+  // }
 
-  /** Return all event registrations an event using the backend HTTP get request.
-   * @param event_id: number representing the Event ID
-   * @returns Observable<EventRegistration[]>
-   */
-  getEventRegistrations(event_id: number): Observable<EventRegistration[]> {
-    return this.http.get<EventRegistration[]>(
-      `/api/events/${event_id}/registrations`
-    );
-  }
+  // /** Return all event registrations an event using the backend HTTP get request.
+  //  * @param event_id: number representing the Event ID
+  //  * @returns Observable<EventRegistration[]>
+  //  */
+  // getEventRegistrations(event_id: number): Observable<EventRegistration[]> {
+  //   return this.http.get<EventRegistration[]>(
+  //     `/api/events/${event_id}/registrations`
+  //   );
+  // }
 
   /** Return number of event registrations for an event
    * @param event_id: number representing the Event ID
    * @returns Observable<number>
    */
-  getEventRegistrationCount(event_id: number): Observable<number> {
-    return this.http.get<number>(`/api/events/${event_id}/registration/count`);
-  }
+  // getEventRegistrationCount(event_id: number): Observable<number> {
+  //   return this.http.get<number>(`/api/events/${event_id}/registration/count`);
+  // }
 
   /** Create a new registration for an event using the backend HTTP create request.
    * @param event_id: number representing the Event ID

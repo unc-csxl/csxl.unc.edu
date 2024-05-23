@@ -23,6 +23,8 @@ export class OrganizationService {
   /** Organizations signal */
   private organizationsSignal: WritableSignal<Organization[]> = signal([]);
   organizations = this.organizationsSignal.asReadonly();
+
+  /** Computed organization signals */
   adminOrganizations = computed(() => {
     return this.organizations().filter((organization) => {
       return this.permissionService.checkSignal(
@@ -95,7 +97,7 @@ export class OrganizationService {
       );
   }
 
-  /** Returns the deleted organization object from the backend database table using the backend HTTP put request
+  /** Returns the deleted organization object from the backend database table using the backend HTTP delete request
    *  and updates the organizations signal to exclude the deleted organization.
    * @param organization: Represents the deleted organization
    * @returns {Observable<Organization>}
