@@ -17,9 +17,12 @@ import {
   parseEventJson
 } from './event.model';
 import { DatePipe } from '@angular/common';
-import { EventPaginationParams, PaginatedEvent } from 'src/app/pagination';
 import { Profile, ProfileService } from '../profile/profile.service';
-import { Paginated, PaginationParams } from '../pagination';
+import {
+  Paginated,
+  PaginationParams,
+  TimeRangePaginationParams
+} from '../pagination';
 import { RxEvent } from './rx-event';
 
 @Injectable({
@@ -53,7 +56,7 @@ export class EventService {
       filter: params.filter
     };
     let query = new URLSearchParams(paramStrings);
-    return this.http.get<Paginated<Profile>>(
+    return this.http.get<Paginated<Profile, PaginationParams>>(
       `/api/events/${event_id}/registrations/users?` + query.toString()
     );
   }
@@ -214,7 +217,7 @@ export class EventService {
     );
   }
 
-  list(params: EventPaginationParams) {
+  list(params: TimeRangePaginationParams) {
     let paramStrings = {
       order_by: params.order_by,
       ascending: params.ascending,
@@ -225,7 +228,7 @@ export class EventService {
     let query = new URLSearchParams(paramStrings);
     if (this.profile) {
       return this.http
-        .get<PaginatedEvent<EventJson>>(
+        .get<Paginated<EventJson, TimeRangePaginationParams>>(
           '/api/events/paginate?' + query.toString()
         )
         .pipe(
@@ -237,7 +240,7 @@ export class EventService {
     } else {
       // if a user isn't logged in, return the normal endpoint without registration statuses
       return this.http
-        .get<PaginatedEvent<EventJson>>(
+        .get<Paginated<EventJson, TimeRangePaginationParams>>(
           '/api/events/paginate/unauthenticated?' + query.toString()
         )
         .pipe(
