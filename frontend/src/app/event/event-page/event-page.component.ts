@@ -9,19 +9,22 @@
 
 import {
   Component,
-  OnInit,
   Signal,
   signal,
   effect,
   WritableSignal,
   computed
 } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 
-import { Paginated, TimeRangePaginationParams } from 'src/app/pagination';
+import {
+  DEFAULT_TIME_RANGE_PARAMS,
+  Paginated,
+  TimeRangePaginationParams
+} from 'src/app/pagination';
 import { NewEventService } from '../new-event.service';
 import { GroupEventsPipe } from '../pipes/group-events.pipe';
 
@@ -43,6 +46,7 @@ export class EventPageComponent {
   public page: WritableSignal<
     Paginated<Event, TimeRangePaginationParams> | undefined
   > = signal(undefined);
+  private previousParams: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS;
 
   /** Stores a reactive mapping of days to events on the active page. */
   protected eventsByDate: Signal<[string, Event[]][]> = computed(() => {
@@ -50,10 +54,11 @@ export class EventPageComponent {
   });
 
   /** Stores reactive date signals for the bounds of pagination. */
-  public startDate: Date = new Date();
-  public endDate: Date = new Date(
-    new Date().setMonth(new Date().getMonth() + 1)
+  public startDate: WritableSignal<Date> = signal(new Date());
+  public endDate: WritableSignal<Date> = signal(
+    new Date(new Date().setMonth(new Date().getMonth() + 1))
   );
+  public filterQuery: WritableSignal<string> = signal('');
 
   /** Store the content of the search bar */
   public searchBarQuery = '';
@@ -71,67 +76,47 @@ export class EventPageComponent {
     protected groupEventsPipe: GroupEventsPipe
   ) {
     this.profile = this.profileService.profile()!;
-    this.eventService
-      .getEvents({
-        order_by: 'time',
-        ascending: 'true',
-        filter: '',
-        range_start: new Date().toLocaleString('en-GB'),
-        range_end: new Date(
-          new Date().setMonth(new Date().getMonth() + 1)
-        ).toLocaleString('en-GB')
-      } as TimeRangePaginationParams)
-      .subscribe((events) => {
-        this.page.set(events);
-      });
   }
 
-  // /** Runs when the frontend UI loads */
-  // ngOnInit() {
-  //   // Subscribe to the active route's query parameters, and update the
-  //   // internal start date and end date signals when these parameters
-  //   // change in the route.
-  //   //
-  //   // This will trigger the `paginationTimeRangeEffect` effect and reload
-  //   // the event pagination data.
-  //   this.route.queryParams.subscribe((params: Params): void => {
-  //     let newStartDate = params['start_date']
-  //       ? new Date(Date.parse(params['start_date']))
-  //       : new Date();
-  //     let newEndDate = params['end_date']
-  //       ? new Date(Date.parse(params['end_date']))
-  //       : new Date(new Date().setMonth(new Date().getMonth() + 1));
-
-  //     if (this.startDate !== newStartDate || this.endDate !== newEndDate) {
-  //       this.reloadQueryParams(newStartDate, newEndDate);
-  //     }
-  //   });
-  // }
-
-  /** Effect that refreshes the event pagination when the time range changes. */
-  // paginationTimeRangeEffect = effect(() => {
-  //   let params = this.page()!.params;
-  //   params.range_start = this.startDate.toLocaleString('en-GB');
-  //   params.range_end = this.endDate.toLocaleString('en-GB');
-  //   this.eventService.getEvents(params);
-  // });
+  /**
+   * Effect that refreshes the event pagination when the time range changes. This effect
+   * is also called when the page initially loads.
+   *
+   * This effect also reloads the query parameters in the URL so that the URL in the
+   * browser reflects the newly changed start and end date ranges.
+   */
+  paginationTimeRangeEffect = effect(() => {
+    // Update the parameters with the new date range
+    let params = this.previousParams;
+    params.range_start = this.startDate().toLocaleString('en-GB');
+    params.range_end = this.endDate().toLocaleString('en-GB');
+    params.filter = this.filterQuery();
+    // Refresh the data
+    this.eventService.getEvents(params).subscribe((events) => {
+      this.page.set(events);
+      this.previousParams = events.params;
+      this.reloadQueryParams();
+    });
+  });
 
   /** Reloads the page and its query parameters to adjust to the next month. */
   nextPage() {
-    let newStart = new Date(
-      this.startDate.setMonth(this.startDate.getMonth() + 1)
+    this.startDate.set(
+      new Date(this.startDate().setMonth(this.startDate().getMonth() + 1))
     );
-    let newEnd = new Date(this.endDate.setMonth(this.endDate.getMonth() + 1));
-    this.reloadQueryParams(newStart, newEnd);
+    this.endDate.set(
+      new Date(this.endDate().setMonth(this.endDate().getMonth() + 1))
+    );
   }
 
   /** Reloads the page and its query parameters to adjust to the previous month. */
   previousPage() {
-    let newStart = new Date(
-      this.startDate.setMonth(this.startDate.getMonth() - 1)
+    this.startDate.set(
+      new Date(this.startDate().setMonth(this.startDate().getMonth() - 1))
     );
-    let newEnd = new Date(this.endDate.setMonth(this.endDate.getMonth() - 1));
-    this.reloadQueryParams(newStart, newEnd);
+    this.endDate.set(
+      new Date(this.endDate().setMonth(this.endDate().getMonth() - 1))
+    );
   }
 
   /**
@@ -141,22 +126,14 @@ export class EventPageComponent {
    * @param startDate: The new start date
    * @param endDate: The new end date
    */
-  reloadQueryParams(startDate: Date, endDate: Date) {
+  reloadQueryParams() {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        start_date: startDate.toISOString(),
-        end_date: endDate.toISOString()
+        start_date: this.startDate().toISOString(),
+        end_date: this.endDate().toISOString()
       },
       queryParamsHandling: 'merge'
-    });
-
-    let newParams = this.page()!.params;
-    newParams.range_start = startDate.toLocaleString('en-GB');
-    newParams.range_end = endDate.toLocaleString('en-GB');
-
-    this.eventService.getEvents(newParams).subscribe((events) => {
-      this.page.set(events);
     });
   }
 
@@ -166,20 +143,16 @@ export class EventPageComponent {
    * @param query: Search bar query to filter the items
    */
   onSearchBarQueryChange(query: string) {
-    let newParams = this.page()!.params;
-    if (query == '') {
-      newParams.range_start = this.startDate.toLocaleString('en-GB');
-      newParams.range_end = this.endDate.toLocaleString('en-GB');
-    } else {
-      newParams.range_start = new Date(
-        new Date().setFullYear(new Date().getFullYear() - 100)
-      ).toLocaleString('en-GB');
-      newParams.range_end = new Date(
-        new Date().setFullYear(new Date().getFullYear() + 100)
-      ).toLocaleString('en-GB');
-      newParams.filter = query;
-    }
-
-    this.eventService.getEvents(newParams);
+    this.startDate.set(
+      query === ''
+        ? new Date()
+        : new Date(new Date().setMonth(new Date().getMonth() + 1))
+    );
+    this.endDate.set(
+      query === ''
+        ? new Date()
+        : new Date(new Date().setMonth(new Date().getMonth() + 1))
+    );
+    this.filterQuery.set(query);
   }
 }

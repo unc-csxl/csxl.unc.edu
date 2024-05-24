@@ -6,6 +6,7 @@ import {
   signal
 } from '@angular/core';
 import {
+  DEFAULT_TIME_RANGE_PARAMS,
   Paginated,
   PaginationParams,
   Paginator,
@@ -42,7 +43,7 @@ export class NewEventService {
    * @param params: Pagination parameters.
    * @returns {Observable<Paginated<Event, TimeRangePaginationParams>>}
    */
-  getEvents(params: TimeRangePaginationParams) {
+  getEvents(params: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS) {
     return this.eventsPaginator.loadPage(params, parseEventJson);
   }
 
