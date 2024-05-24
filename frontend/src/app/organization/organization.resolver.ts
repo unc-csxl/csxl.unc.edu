@@ -8,11 +8,10 @@
  */
 
 import { inject } from '@angular/core';
-import { Resolve, ResolveFn } from '@angular/router';
+import { ResolveFn } from '@angular/router';
 import { Organization } from './organization.model';
-import { EventService } from '../event/event.service';
 import { Event } from '../event/event.model';
-import { catchError, of } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { OrganizationService } from './organization.service';
 
 // TODO: Explore if this can be replaced by a signal.
@@ -60,7 +59,7 @@ export const organizationEventsResolver: ResolveFn<Event[] | undefined> = (
   route,
   _state
 ) => {
-  return inject(EventService).getEventsByOrganization(
-    route.paramMap.get('slug')!
-  );
+  return inject(OrganizationService)
+    .getOrganization(route.paramMap.get('slug')!)
+    .pipe(map((organization) => organization?.events ?? []));
 };

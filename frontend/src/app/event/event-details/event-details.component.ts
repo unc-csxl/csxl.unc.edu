@@ -9,7 +9,7 @@
 
 import { Component, OnInit, inject } from '@angular/core';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { eventDetailResolver } from '../event.resolver';
+import { eventResolver } from '../event.resolver';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
 import {
   ActivatedRoute,
@@ -38,7 +38,7 @@ export class EventDetailsComponent implements OnInit {
     title: 'Event Details',
     component: EventDetailsComponent,
     resolve: {
-      event: eventDetailResolver
+      event: eventResolver
     },
     children: [
       { path: '', title: titleResolver, component: EventDetailsComponent }

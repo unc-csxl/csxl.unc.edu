@@ -25,7 +25,7 @@ import {
   Paginated,
   TimeRangePaginationParams
 } from 'src/app/pagination';
-import { NewEventService } from '../new-event.service';
+import { EventService } from '../event.service';
 import { GroupEventsPipe } from '../pipes/group-events.pipe';
 
 @Component({
@@ -71,7 +71,7 @@ export class EventPageComponent {
     private route: ActivatedRoute,
     private router: Router,
     public datePipe: DatePipe,
-    public eventService: NewEventService,
+    public eventService: EventService,
     private profileService: ProfileService,
     protected groupEventsPipe: GroupEventsPipe
   ) {

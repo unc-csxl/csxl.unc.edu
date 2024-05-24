@@ -17,7 +17,7 @@ import {
   ProfileService,
   PublicProfile
 } from '../../profile/profile.service';
-import { eventDetailResolver } from '../event.resolver';
+import { eventResolver } from '../event.resolver';
 import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { OrganizationService } from 'src/app/organization/organization.service';
@@ -36,7 +36,7 @@ export class EventEditorComponent {
     title: 'Event Editor',
     canActivate: [eventEditorGuard],
     resolve: {
-      event: eventDetailResolver
+      event: eventResolver
     }
   };
 

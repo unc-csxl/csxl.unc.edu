@@ -37,7 +37,7 @@ export class EventUsersList implements OnInit {
   ngOnInit() {
     this.eventService
       .getRegisteredUsersForEvent(
-        this.event.id!,
+        this.event,
         EventUsersList.PaginationParams as PaginationParams
       )
       .subscribe((page) => (this.page = page));
@@ -48,7 +48,7 @@ export class EventUsersList implements OnInit {
     paginationParams.page = e.pageIndex;
     paginationParams.page_size = e.pageSize;
     this.eventService
-      .getRegisteredUsersForEvent(this.event.id!, paginationParams)
+      .getRegisteredUsersForEvent(this.event, paginationParams)
       .subscribe((page) => (this.page = page));
   }
 }

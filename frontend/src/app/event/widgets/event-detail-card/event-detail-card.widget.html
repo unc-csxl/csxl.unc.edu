@@ -82,13 +82,13 @@
     <mat-divider class="padded-divider" />
     <p>
       <strong>Seats Remaining:</strong>
-      {{ event.registration_limit - event.registration_count }} / {{
-      event.registration_limit }}
+      {{ event.registration_limit - event.registration_count }} /
+      {{ event.registration_limit }}
     </p>
     <button
       mat-stroked-button
       [disabled]="event.is_organizer"
-      (click)="unregisterForEvent(event.id!)"
+      (click)="unregisterForEvent()"
       *ngIf="event.is_attendee || event.is_organizer; else register">
       Unregister
     </button>
@@ -96,7 +96,7 @@
       <button
         mat-stroked-button
         [disabled]="event.registration_count === event.registration_limit"
-        (click)="registerForEvent(event.id!)">
+        (click)="registerForEvent()">
         Register
       </button>
     </ng-template>

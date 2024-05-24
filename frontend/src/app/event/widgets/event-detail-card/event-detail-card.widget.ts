@@ -78,13 +78,13 @@ export class EventDetailCard implements OnInit {
   /** Registers a user for the given event
    * @param event_id: number representing the id of the Event to register the User for
    */
-  registerForEvent(event_id: number) {
+  registerForEvent() {
     let confirmRegistration = this.snackBar.open(
       'Are you sure you want to register for this event?',
       'Register'
     );
     confirmRegistration.onAction().subscribe(() => {
-      this.eventService.registerForEvent(event_id).subscribe({
+      this.eventService.registerForEvent(this.event).subscribe({
         next: (event_registration) => this.onSuccess(event_registration),
         error: (err) => this.onError(err)
       });
@@ -94,22 +94,20 @@ export class EventDetailCard implements OnInit {
   /** Registers a user for the given event
    * @param event_id: number representing the id of the Event to register the User for
    */
-  unregisterForEvent(event_registration_id: number) {
+  unregisterForEvent() {
     let confirmUnregistration = this.snackBar.open(
       'Are you sure you want to unregister for this event?',
       'Unregister',
       { duration: 15000 }
     );
     confirmUnregistration.onAction().subscribe(() => {
-      this.eventService
-        .unregisterForEvent(event_registration_id)
-        .subscribe(() => {
-          this.event.is_attendee = false;
-          this.event.registration_count -= 1;
-          this.snackBar.open('Successfully Unregistered!', '', {
-            duration: 2000
-          });
+      this.eventService.unregisterForEvent(this.event).subscribe(() => {
+        this.event.is_attendee = false;
+        this.event.registration_count -= 1;
+        this.snackBar.open('Successfully Unregistered!', '', {
+          duration: 2000
         });
+      });
     });
   }
 
