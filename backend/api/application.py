@@ -14,6 +14,7 @@ from backend.services.application import ApplicationService
 
 from ..api.authentication import registered_user
 from ..models.user import User
+from ..models.application import SectionApplicant
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
@@ -45,6 +46,30 @@ def get_applications(
 
     # Return all applications
     return application_service.list(user)
+
+
+@api.get(
+    "/section/{section_id}",
+    response_model=list[SectionApplicant],
+    tags=["Applications"],
+)
+def get_applications_for_section(
+    section_id: int,
+    user: User = Depends(registered_user),
+    application_service: ApplicationService = Depends(),
+) -> list[SectionApplicant]:
+    """
+    Get all applications
+
+    Parameters:
+        application_service: a valid ApplicationService
+
+    Returns:
+        list[Application]: All `Application`s in the `Application` database table
+    """
+
+    # Return all applications
+    return application_service.get_applications_for_section(section_id, user)
 
 
 @api.get("/user", response_model=NewUTAApplicationDetails | None, tags=["Applications"])
