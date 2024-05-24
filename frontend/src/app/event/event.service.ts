@@ -1,10 +1,13 @@
-import {
-  Injectable,
-  Signal,
-  WritableSignal,
-  computed,
-  signal
-} from '@angular/core';
+/**
+ * The Event Service abstracts HTTP requests to the backend
+ * from the components.
+ *
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
+ * @copyright 2024
+ * @license MIT
+ */
+
+import { Injectable } from '@angular/core';
 import {
   DEFAULT_TIME_RANGE_PARAMS,
   Paginated,
@@ -19,11 +22,9 @@ import {
   EventRegistration,
   parseEventJson
 } from './event.model';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Profile } from '../models.module';
-import { GroupEventsPipe } from './pipes/group-events.pipe';
-import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'

@@ -4,7 +4,7 @@
  * application and decouples this feature from other features in the application.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 

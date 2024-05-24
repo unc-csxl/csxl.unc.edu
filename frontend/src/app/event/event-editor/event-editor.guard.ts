@@ -1,3 +1,12 @@
+/**
+ * The Event Editor Guard ensures that the page can open if the user has
+ * the correct permissions.
+ *
+ * @author Ajay Gandecha
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { PermissionService } from 'src/app/permission.service';

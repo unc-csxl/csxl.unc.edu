@@ -3,12 +3,12 @@
  * detail event card from the whole event page.
  *
  * @author Ajay Gandecha, Jade Keegan
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Event, EventRegistration } from '../../event.model';
+import { Event } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
 import { Observable } from 'rxjs';
@@ -84,7 +84,7 @@ export class EventDetailCard implements OnInit {
     confirmRegistration.onAction().subscribe(() => {
       this.eventService.registerForEvent(this.event).subscribe({
         next: () => this.onSuccess(),
-        error: (err) => this.onError()
+        error: () => this.onError()
       });
     });
   }

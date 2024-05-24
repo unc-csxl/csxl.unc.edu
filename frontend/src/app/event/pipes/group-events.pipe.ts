@@ -1,3 +1,10 @@
+/**
+ * This is the pipe used to group events in a page by day.
+ * @author Ajay Gandecha
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { DatePipe } from '@angular/common';
 import { Pipe, PipeTransform, inject } from '@angular/core';
 import { Event } from '../event.model';

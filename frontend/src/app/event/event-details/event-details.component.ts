@@ -3,12 +3,11 @@
  * any given event.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
-import { Component, OnInit, inject } from '@angular/core';
-import { profileResolver } from 'src/app/profile/profile.resolver';
+import { Component, OnInit } from '@angular/core';
 import { eventResolver } from '../event.resolver';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
 import {
