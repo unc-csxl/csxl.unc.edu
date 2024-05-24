@@ -12,7 +12,11 @@ from backend.entities.application_entity import (
 )
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.user_entity import UserEntity
+
 from backend.models.academics.section import Section
+from backend.models.application import SectionApplicant
+
 from backend.models.application_details import (
     UTAApplicationDetails,
     NewUTAApplicationDetails,
@@ -48,23 +52,6 @@ class ApplicationService:
         """
         self._session = session
         self._permission_svc = permission_svc
-
-    def list(self, subject: User) -> list[UTAApplicationDetails]:
-        """Returns all TA applications.
-
-        Returns:
-            list[New_UTA]: List of all current and previously submitted applications.
-        """
-
-        self._permission_svc.enforce(
-            subject,
-            "applications.get",
-            f"applications/",
-        )
-
-        entities = self._session.query(ApplicationEntity).all()
-
-        return [entity.to_details_model() for entity in entities]
 
     def get_application(self, subject: User) -> NewUTAApplicationDetails:
         """Returns an application for a specific user during a specific term
@@ -111,6 +98,48 @@ class ApplicationService:
         application = application_entity.map_application_to_detail_model(section_dict)
 
         return application
+
+    def get_applications_for_section(
+        self, section_id: int, subject: User
+    ) -> list[SectionApplicant]:
+
+        self._permission_svc.enforce(
+            subject,
+            "applications.get",
+            f"applications/",
+        )
+        section_applicants = (
+            self._session.query(section_application_table)
+            .filter(section_application_table.c.section_id == section_id)
+            .order_by(section_application_table.c.preference)
+            .all()
+        )
+
+        applicants: list[SectionApplicant] = []
+
+        for applicant in section_applicants:
+            application = (
+                self._session.query(ApplicationEntity)
+                .filter(ApplicationEntity.id == applicant[2])
+                .first()
+            )
+            application_model = application = application.to_model()
+            user = (
+                self._session.query(UserEntity)
+                .filter(UserEntity.id == application_model.user_id)
+                .first()
+            )
+            applicants.append(
+                SectionApplicant(
+                    first_name=user.first_name,
+                    last_name=user.last_name,
+                    email=user.email,
+                    preference_rank=applicant[0],
+                    application=application_model,
+                )
+            )
+
+        return applicants
 
     def create_uta_application(
         self, subject: User, application: NewUTAApplicationDetails
@@ -242,3 +271,20 @@ class ApplicationService:
 
         self._session.delete(original_application)
         self._session.commit()
+
+    def list(self, subject: User) -> list[UTAApplicationDetails]:
+        """Returns all TA applications.
+
+        Returns:
+            list[New_UTA]: List of all current and previously submitted applications.
+        """
+
+        self._permission_svc.enforce(
+            subject,
+            "applications.get",
+            f"applications/",
+        )
+
+        entities = self._session.query(ApplicationEntity).all()
+
+        return [entity.to_details_model() for entity in entities]

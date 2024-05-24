@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from .comp_227 import Comp227
+from .user import User
 
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
@@ -62,3 +63,11 @@ class ReturningUTAApplication(UTAApplication):
     ta_experience: str
     best_moment: str
     desired_improvement: str
+
+
+class SectionApplicant(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    preference_rank: int
+    application: NewUTAApplication
