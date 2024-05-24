@@ -22,7 +22,6 @@ export const eventDetailResolver: ResolveFn<Event | undefined> = (
   route,
   state
 ) => {
-  console.log(route.paramMap);
   if (route.paramMap.get('id') != 'new') {
     return inject(EventService).getEvent(+route.paramMap.get('id')!);
   } else {

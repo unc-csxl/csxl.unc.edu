@@ -27,11 +27,11 @@ export interface Profile {
 }
 
 export interface PublicProfile {
-  id: number;
-  first_name: string;
-  last_name: string;
-  pronouns: string;
-  email: string;
+  id: number | null;
+  first_name: string | null;
+  last_name: string | null;
+  pronouns: string | null;
+  email: string | null;
   github_avatar: string | null;
 }
 
