@@ -30,7 +30,7 @@ import { GroupEventsPipe } from '../pipes/group-events.pipe';
   templateUrl: './event-page.component.html',
   styleUrls: ['./event-page.component.css']
 })
-export class EventPageComponent implements OnInit {
+export class EventPageComponent {
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: '',
@@ -86,27 +86,27 @@ export class EventPageComponent implements OnInit {
       });
   }
 
-  /** Runs when the frontend UI loads */
-  ngOnInit() {
-    // Subscribe to the active route's query parameters, and update the
-    // internal start date and end date signals when these parameters
-    // change in the route.
-    //
-    // This will trigger the `paginationTimeRangeEffect` effect and reload
-    // the event pagination data.
-    this.route.queryParams.subscribe((params: Params): void => {
-      let newStartDate = params['start_date']
-        ? new Date(Date.parse(params['start_date']))
-        : new Date();
-      let newEndDate = params['end_date']
-        ? new Date(Date.parse(params['end_date']))
-        : new Date(new Date().setMonth(new Date().getMonth() + 1));
+  // /** Runs when the frontend UI loads */
+  // ngOnInit() {
+  //   // Subscribe to the active route's query parameters, and update the
+  //   // internal start date and end date signals when these parameters
+  //   // change in the route.
+  //   //
+  //   // This will trigger the `paginationTimeRangeEffect` effect and reload
+  //   // the event pagination data.
+  //   this.route.queryParams.subscribe((params: Params): void => {
+  //     let newStartDate = params['start_date']
+  //       ? new Date(Date.parse(params['start_date']))
+  //       : new Date();
+  //     let newEndDate = params['end_date']
+  //       ? new Date(Date.parse(params['end_date']))
+  //       : new Date(new Date().setMonth(new Date().getMonth() + 1));
 
-      if (this.startDate !== newStartDate || this.endDate !== newEndDate) {
-        this.reloadQueryParams(newStartDate, newEndDate);
-      }
-    });
-  }
+  //     if (this.startDate !== newStartDate || this.endDate !== newEndDate) {
+  //       this.reloadQueryParams(newStartDate, newEndDate);
+  //     }
+  //   });
+  // }
 
   /** Effect that refreshes the event pagination when the time range changes. */
   // paginationTimeRangeEffect = effect(() => {
@@ -152,8 +152,8 @@ export class EventPageComponent implements OnInit {
     });
 
     let newParams = this.page()!.params;
-    newParams.range_start = startDate.toISOString();
-    newParams.range_end = startDate.toISOString();
+    newParams.range_start = startDate.toLocaleString('en-GB');
+    newParams.range_end = endDate.toLocaleString('en-GB');
 
     this.eventService.getEvents(newParams).subscribe((events) => {
       this.page.set(events);
