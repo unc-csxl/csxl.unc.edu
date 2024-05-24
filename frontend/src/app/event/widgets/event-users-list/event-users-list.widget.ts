@@ -38,7 +38,7 @@ export class EventUsersList implements OnInit {
     this.eventService
       .getRegisteredUsersForEvent(
         this.event.id!,
-        EventUsersList.PaginationParams
+        EventUsersList.PaginationParams as PaginationParams
       )
       .subscribe((page) => (this.page = page));
   }

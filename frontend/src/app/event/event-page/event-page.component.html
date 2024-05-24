@@ -3,7 +3,7 @@
     <search-bar
       class="search-bar"
       [searchBarQuery]="searchBarQuery"
-      (searchBarQueryChange)="this.searchUpdate.next($event)" />
+      (searchBarQueryChange)="onSearchBarQueryChange($event)" />
   </div>
 
   <div class="container">
@@ -12,10 +12,10 @@
         <!-- `eventsPerDay` is in the format of a list of tuples, where
                     eventGroup[0] is the date string and eventGroup[1] s a list of events -->
         <mat-card class="date-range" appearance="outlined">
-          <button mat-icon-button (click)="showEvents(true)">
+          <button mat-icon-button (click)="previousPage()">
             <mat-icon>keyboard_arrow_left</mat-icon>
           </button>
-          <p *ngIf="today; else not_today" class="date-range-text">
+          <p *ngIf="false" class="date-range-text">
             Today <code>&#8212;</code> {{ endDate | date: 'mediumDate' }}
           </p>
           <ng-template #not_today>
@@ -25,24 +25,23 @@
               {{ endDate | date: 'mediumDate' }}
             </p>
           </ng-template>
-          <button mat-icon-button (click)="showEvents(false)">
+          <button mat-icon-button (click)="nextPage()">
             <mat-icon>keyboard_arrow_right</mat-icon>
           </button>
         </mat-card>
         <event-list
-          [eventsPerDay]="eventsPerDay"
-          [selectedEvent]="selectedEvent"
-          [disableLinks]="innerWidth > 900"
-          (cardClicked)="onEventCardClicked($event)"
+          [eventsPerDay]="eventsByDate()"
+          [selectedEvent]="null"
+          [disableLinks]="false"
           [fullWidth]="true" />
       </div>
-
+      <!-- 
       <div class="details-column">
         <event-detail-card
           [event]="selectedEvent!"
           [profile]="this.profile"
           *ngIf="selectedEvent" />
-      </div>
+      </div> -->
     </div>
   </div>
 </div>

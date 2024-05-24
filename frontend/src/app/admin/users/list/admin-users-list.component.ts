@@ -36,7 +36,9 @@ export class AdminUsersListComponent {
     canActivate: [permissionGuard('user.list', 'user/')],
     resolve: {
       page: () =>
-        inject(UserAdminService).list(AdminUsersListComponent.PaginationParams)
+        inject(UserAdminService).list(
+          AdminUsersListComponent.PaginationParams as PaginationParams
+        )
     }
   };
 

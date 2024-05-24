@@ -3,8 +3,7 @@ import { Pipe, PipeTransform, inject } from '@angular/core';
 import { Event } from '../event.model';
 
 @Pipe({
-  name: 'groupEvents',
-  standalone: true
+  name: 'groupEvents'
 })
 export class GroupEventsPipe implements PipeTransform {
   datePipe = inject(DatePipe);

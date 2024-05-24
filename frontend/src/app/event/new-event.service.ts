@@ -22,51 +22,28 @@ import { Observable, map, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Profile } from '../models.module';
 import { GroupEventsPipe } from './pipes/group-events.pipe';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewEventService {
-  /** Events signal */
-  private eventsSignal: WritableSignal<
-    Paginated<Event, TimeRangePaginationParams> | undefined
-  > = signal(undefined);
-  events = this.eventsSignal.asReadonly();
-
-  /** Computed event signals */
-  eventsByDate: Signal<[string, Event[]][]> = computed(() => {
-    return this.groupEventsPipe.transform(this.events()?.items ?? []);
-  });
-
   /** Encapsulated paginators */
   private eventsPaginator: TimeRangePaginator<Event> =
     new TimeRangePaginator<Event>('/api/events/paginate');
 
   /** Constructor */
-  constructor(
-    protected http: HttpClient,
-    protected groupEventsPipe: GroupEventsPipe
-  ) {
-    this.getEvents({
-      order_by: 'time',
-      ascending: 'true',
-      filter: '',
-      range_start: new Date().toLocaleString('en-GB'),
-      range_end: new Date(
-        new Date().setMonth(new Date().getMonth() + 1)
-      ).toLocaleString('en-GB')
-    } as TimeRangePaginationParams);
-  }
+  constructor(protected http: HttpClient) {}
 
   // Methods for event data.
 
-  /** Refreshes the event data emitted by the events signal. */
+  /**
+   * Retrieves a page of events based on pagination parameters.
+   * @param params: Pagination parameters.
+   * @returns {Observable<Paginated<Event, TimeRangePaginationParams>>}
+   */
   getEvents(params: TimeRangePaginationParams) {
-    this.eventsPaginator
-      .loadPage(params, parseEventJson)
-      .subscribe((events) => {
-        this.eventsSignal.set(events);
-      });
+    return this.eventsPaginator.loadPage(params, parseEventJson);
   }
 
   /**
@@ -87,9 +64,7 @@ export class NewEventService {
    * @returns {Observable<Event>}
    */
   createEvent(event: Event): Observable<Event> {
-    return this.http
-      .post<Event>('/api/events', event)
-      .pipe(tap((_) => this.getEvents(this.eventsPaginator.previousParams!)));
+    return this.http.post<Event>('/api/events', event);
   }
 
   /**
@@ -99,9 +74,7 @@ export class NewEventService {
    * @returns {Observable<Event>}
    */
   updateEvent(event: Event): Observable<Event> {
-    return this.http
-      .put<Event>('/api/events', event)
-      .pipe(tap((_) => this.getEvents(this.eventsPaginator.previousParams!)));
+    return this.http.put<Event>('/api/events', event);
   }
 
   /**
@@ -111,9 +84,7 @@ export class NewEventService {
    * @returns {Observable<Event>}
    */
   deleteEvent(event: Event): Observable<Event> {
-    return this.http
-      .delete<Event>('/api/events/' + event.id)
-      .pipe(tap((_) => this.getEvents(this.eventsPaginator.previousParams!)));
+    return this.http.delete<Event>('/api/events/' + event.id);
   }
 
   // Methods for event registration data.

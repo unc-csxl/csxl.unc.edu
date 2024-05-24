@@ -42,6 +42,7 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { SharedModule } from './shared/shared.module';
+import { GroupEventsPipe } from './event/pipes/group-events.pipe';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { SharedModule } from './shared/shared.module';
       useClass: HttpRequestInterceptor,
       multi: true
     },
-    DatePipe
+    DatePipe,
+    GroupEventsPipe
   ],
   bootstrap: [AppComponent]
 })
