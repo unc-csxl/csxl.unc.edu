@@ -81,7 +81,7 @@ export class EventEditorComponent {
   ) {
     this.profile = this.profileService.profile()!;
 
-    const data = route.snapshot.data as {
+    const data = this.route.snapshot.data as {
       event: Event;
     };
     this.event = data.event;
