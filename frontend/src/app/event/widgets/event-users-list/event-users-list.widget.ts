@@ -14,6 +14,9 @@ import { Profile } from 'src/app/models.module';
 import { EventService } from '../../event.service';
 import { Event } from '../../event.model';
 
+// TODO: This component is to be deleted anyway, so it was
+// not included in the refactor.
+
 @Component({
   selector: 'event-users-list',
   templateUrl: './event-users-list.widget.html',

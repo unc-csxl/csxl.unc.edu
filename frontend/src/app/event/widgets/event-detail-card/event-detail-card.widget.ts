@@ -75,9 +75,7 @@ export class EventDetailCard implements OnInit {
     });
   }
 
-  /** Registers a user for the given event
-   * @param event_id: number representing the id of the Event to register the User for
-   */
+  /** Registers a user for the event. */
   registerForEvent() {
     let confirmRegistration = this.snackBar.open(
       'Are you sure you want to register for this event?',
@@ -85,15 +83,13 @@ export class EventDetailCard implements OnInit {
     );
     confirmRegistration.onAction().subscribe(() => {
       this.eventService.registerForEvent(this.event).subscribe({
-        next: (event_registration) => this.onSuccess(event_registration),
-        error: (err) => this.onError(err)
+        next: () => this.onSuccess(),
+        error: (err) => this.onError()
       });
     });
   }
 
-  /** Registers a user for the given event
-   * @param event_id: number representing the id of the Event to register the User for
-   */
+  /** Unregisters the user for the event. */
   unregisterForEvent() {
     let confirmUnregistration = this.snackBar.open(
       'Are you sure you want to unregister for this event?',
@@ -114,7 +110,7 @@ export class EventDetailCard implements OnInit {
   /** Opens a confirmation snackbar when an event is successfully created.
    * @returns {void}
    */
-  private onSuccess(event_registration: EventRegistration): void {
+  private onSuccess(): void {
     this.event.is_attendee = true;
     this.event.registration_count += 1;
     this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
@@ -123,7 +119,7 @@ export class EventDetailCard implements OnInit {
   /** Opens a confirmation snackbar when there is an error creating an event.
    * @returns {void}
    */
-  private onError(err: any): void {
+  private onError(): void {
     this.snackBar.open('Error: Event Not Registered For', '', {
       duration: 2000
     });
