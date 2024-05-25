@@ -8,12 +8,11 @@
  */
 
 import { Component, Signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Organization } from '../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { Profile } from '../../profile/profile.service';
-import { profileResolver } from '../../profile/profile.resolver';
+import { Profile, ProfileService } from '../../profile/profile.service';
 import { OrganizationService } from '../organization.service';
 import { PermissionService } from '../../permission.service';
 
@@ -36,25 +35,19 @@ export class OrganizationAdminComponent {
   public static Route = {
     path: 'admin',
     component: OrganizationAdminComponent,
-    title: 'Organization Administration',
-    resolve: { profile: profileResolver }
+    title: 'Organization Administration'
   };
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
+    private profileService: ProfileService,
     private organizationService: OrganizationService,
     private permissionService: PermissionService
   ) {
+    this.profile = this.profileService.profile()!;
     this.organizations = organizationService.organizations;
     this.displayedOrganizations = organizationService.adminOrganizations;
-
-    /** Get the profile data of the signed in user */
-    const data = this.route.snapshot.data as {
-      profile: Profile;
-    };
-    this.profile = data.profile;
   }
 
   /** Resposible for generating delete and create buttons in HTML code when admin signed in.

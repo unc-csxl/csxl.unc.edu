@@ -9,7 +9,6 @@
  */
 
 import { Component, Signal, effect } from '@angular/core';
-import { profileResolver } from '../../profile/profile.resolver';
 import { Organization } from '../organization.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile, ProfileService } from '../../profile/profile.service';
@@ -27,8 +26,7 @@ export class OrganizationPageComponent {
     path: '',
     title: 'CS Organizations',
     component: OrganizationPageComponent,
-    canActivate: [],
-    resolve: { profile: profileResolver }
+    canActivate: []
   };
 
   /** Current search bar query on the organization page. */
