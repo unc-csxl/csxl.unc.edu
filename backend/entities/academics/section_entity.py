@@ -162,7 +162,4 @@ class SectionEntity(EntityBase):
                 if self.office_hours_section is not None
                 else None
             ),
-            preferred_applicants=[
-                applicant.to_model() for applicant in self.preferred_applicants
-            ],
         )
