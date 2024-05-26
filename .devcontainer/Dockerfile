@@ -95,7 +95,7 @@ RUN arch="$(arch)"; \
         x86_64) export TARGET='' ;; \
         aarch64) export TARGET='arm64-' ;; \
     esac; \
-    wget -O /tmp/oc.tgz "https://github.com/okd-project/okd/releases/download/4.14.0-0.okd-2023-12-01-225814/openshift-client-linux-${TARGET}4.14.0-0.okd-2023-12-01-225814.tar.gz" && \
+    wget -O /tmp/oc.tgz "https://github.com/okd-project/okd/releases/download/4.15.0-0.okd-2024-03-10-010116/openshift-client-linux-${TARGET}4.15.0-0.okd-2024-03-10-010116.tar.gz" && \
     cd /tmp && \
     tar -xvzf oc.tgz && \
     sudo mv oc /usr/bin/oc && \
