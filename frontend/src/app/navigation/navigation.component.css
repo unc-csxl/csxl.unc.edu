@@ -22,11 +22,11 @@
 }
 
 .logo-icon {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%;
-  }
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
 
 .logo {
   margin: 0;
@@ -39,12 +39,11 @@
 }
 
 .bottom-button-container {
-    width: 100%;
-    margin-bottom: 6px;
-    margin-top: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  margin: auto 0 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidenav-container {
@@ -56,10 +55,10 @@
 }
 
 .inner-sidenav-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidenav .mat-toolbar {
@@ -87,10 +86,10 @@
 }
 
 .toolbar {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 #gear-icon {
