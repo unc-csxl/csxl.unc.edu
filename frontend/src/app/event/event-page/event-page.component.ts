@@ -88,8 +88,8 @@ export class EventPageComponent {
   paginationTimeRangeEffect = effect(() => {
     // Update the parameters with the new date range
     let params = this.previousParams;
-    params.range_start = this.startDate().toLocaleString('en-GB');
-    params.range_end = this.endDate().toLocaleString('en-GB');
+    params.range_start = this.startDate().toISOString();
+    params.range_end = this.endDate().toISOString();
     params.filter = this.filterQuery();
     // Refresh the data
     this.eventService.getEvents(params).subscribe((events) => {

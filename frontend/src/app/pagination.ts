@@ -35,10 +35,10 @@ export const DEFAULT_TIME_RANGE_PARAMS = {
   order_by: 'time',
   ascending: 'true',
   filter: '',
-  range_start: new Date().toLocaleString('en-GB'),
+  range_start: new Date().toISOString(),
   range_end: new Date(
     new Date().setMonth(new Date().getMonth() + 1)
-  ).toLocaleString('en-GB')
+  ).toISOString()
 } as TimeRangePaginationParams;
 
 /**

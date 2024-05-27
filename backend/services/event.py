@@ -77,9 +77,8 @@ class EventService:
             range_start = pagination_params.range_start
             range_end = pagination_params.range_end
             criteria = and_(
-                EventEntity.time
-                >= datetime.strptime(range_start, "%d/%m/%Y, %H:%M:%S"),
-                EventEntity.time <= datetime.strptime(range_end, "%d/%m/%Y, %H:%M:%S"),
+                EventEntity.time >= datetime.fromisoformat(range_start),
+                EventEntity.time <= datetime.fromisoformat(range_end),
             )
             statement = statement.where(criteria)
             length_statement = length_statement.where(criteria)
@@ -106,11 +105,13 @@ class EventService:
         limit = pagination_params.page_size
 
         if pagination_params.order_by != "":
-            statement = statement.order_by(
-                    getattr(EventEntity, pagination_params.order_by)
-                ) if pagination_params.ascending else statement.order_by(
+            statement = (
+                statement.order_by(getattr(EventEntity, pagination_params.order_by))
+                if pagination_params.ascending
+                else statement.order_by(
                     getattr(EventEntity, pagination_params.order_by).desc()
                 )
+            )
 
         statement = statement.offset(offset).limit(limit)
 
