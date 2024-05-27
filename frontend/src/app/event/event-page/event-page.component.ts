@@ -143,16 +143,19 @@ export class EventPageComponent {
    * @param query: Search bar query to filter the items
    */
   onSearchBarQueryChange(query: string) {
-    this.startDate.set(
-      query === ''
-        ? new Date()
-        : new Date(new Date().setMonth(new Date().getMonth() + 1))
-    );
-    this.endDate.set(
-      query === ''
-        ? new Date()
-        : new Date(new Date().setMonth(new Date().getMonth() + 1))
-    );
+    if (query === '') {
+      this.startDate.set(new Date());
+      this.endDate.set(
+        new Date(new Date().setMonth(new Date().getMonth() + 1))
+      );
+    } else {
+      this.startDate.set(
+        new Date(new Date().setMonth(new Date().getFullYear() - 100))
+      );
+      this.endDate.set(
+        new Date(new Date().setMonth(new Date().getFullYear() + 100))
+      );
+    }
     this.filterQuery.set(query);
   }
 }

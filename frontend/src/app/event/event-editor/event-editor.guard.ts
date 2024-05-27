@@ -32,20 +32,20 @@ export const eventEditorGuard: CanActivateFn = (route, _) => {
 
   // Checks if the user has permissions to update events for
   // the organization hosting this event
-  const permissionCheck = inject(PermissionService).check(
+  const permissionCheck$ = inject(PermissionService).check(
     'organization.events.update',
     `organization/${organizationId}`
   );
 
   // Checks if the user is the organizer for the event
-  const isOrganizerCheck = inject(EventService)
+  const isOrganizerCheck$ = inject(EventService)
     .getEvent(+eventId)
     .pipe(map((event) => event?.is_organizer ?? false));
 
   // Since only one check has to be true for the user to see the page,
   // we combine the results of these observables into a single
   // observable that returns true if either were true.
-  return combineLatest([permissionCheck, isOrganizerCheck]).pipe(
+  return combineLatest([permissionCheck$, isOrganizerCheck$]).pipe(
     map(([hasPermission, isOrganizer]) => hasPermission || isOrganizer)
   );
 };

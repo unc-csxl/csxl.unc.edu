@@ -25,8 +25,7 @@ export class OrganizationPageComponent {
   public static Route = {
     path: '',
     title: 'CS Organizations',
-    component: OrganizationPageComponent,
-    canActivate: []
+    component: OrganizationPageComponent
   };
 
   /** Current search bar query on the organization page. */

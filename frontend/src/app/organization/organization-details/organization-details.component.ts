@@ -25,7 +25,7 @@ import { EventService } from '../../event/event.service';
 import { Event } from '../../event/event.model';
 import { Observable } from 'rxjs';
 import { PermissionService } from '../../permission.service';
-import { GroupEventsPipe } from 'src/app/event/pipes/group-events.pipe';
+import { GroupEventsPipe } from '../../event/pipes/group-events.pipe';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
