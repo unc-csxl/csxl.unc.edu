@@ -70,6 +70,7 @@ import { GroupEventsPipe } from './pipes/group-events.pipe';
     RouterModule,
     SharedModule,
     EventRoutingModule
-  ]
+  ],
+  providers: [GroupEventsPipe]
 })
 export class EventModule {}
