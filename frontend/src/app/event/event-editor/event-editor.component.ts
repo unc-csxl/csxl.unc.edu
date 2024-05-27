@@ -101,7 +101,9 @@ export class EventEditorComponent {
 
     // Set the organizers
     // If no organizers already, set current user as organizer
-    this.organizers = this.isNew() ? [this.profile] : this.event.organizers;
+    this.organizers = this.isNew()
+      ? [this.profile as PublicProfile]
+      : this.event.organizers;
   }
 
   /** Event handler to handle submitting the event form.
