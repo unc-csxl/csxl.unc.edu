@@ -4,7 +4,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /* HTTP and Auth */
 import { RouterModule } from '@angular/router';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 import { HttpRequestInterceptor } from './navigation/http-request.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 
@@ -52,16 +56,15 @@ import { SharedModule } from './shared/shared.module';
     AboutComponent,
     GateComponent
   ],
+  bootstrap: [AppComponent],
   imports: [
     /* Angular */
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     NgForOf,
     AppRoutingModule,
     LayoutModule,
     ReactiveFormsModule,
-
     /* Material UI */
     MatButtonModule,
     MatCardModule,
@@ -96,8 +99,8 @@ import { SharedModule } from './shared/shared.module';
       useClass: HttpRequestInterceptor,
       multi: true
     },
-    DatePipe
-  ],
-  bootstrap: [AppComponent]
+    DatePipe,
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}
