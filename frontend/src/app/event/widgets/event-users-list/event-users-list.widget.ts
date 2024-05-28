@@ -9,10 +9,13 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { Paginated } from 'src/app/pagination';
+import { Paginated, PaginationParams } from 'src/app/pagination';
 import { Profile } from 'src/app/models.module';
 import { EventService } from '../../event.service';
 import { Event } from '../../event.model';
+
+// TODO: This component is to be deleted anyway, so it was
+// not included in the refactor.
 
 @Component({
   selector: 'event-users-list',
@@ -21,7 +24,7 @@ import { Event } from '../../event.model';
 })
 export class EventUsersList implements OnInit {
   @Input() event!: Event;
-  page!: Paginated<Profile>;
+  page!: Paginated<Profile, PaginationParams>;
 
   public displayedColumns: string[] = ['name', 'pronouns', 'email'];
 
@@ -37,8 +40,8 @@ export class EventUsersList implements OnInit {
   ngOnInit() {
     this.eventService
       .getRegisteredUsersForEvent(
-        this.event.id!,
-        EventUsersList.PaginationParams
+        this.event,
+        EventUsersList.PaginationParams as PaginationParams
       )
       .subscribe((page) => (this.page = page));
   }
@@ -48,7 +51,7 @@ export class EventUsersList implements OnInit {
     paginationParams.page = e.pageIndex;
     paginationParams.page_size = e.pageSize;
     this.eventService
-      .getRegisteredUsersForEvent(this.event.id!, paginationParams)
+      .getRegisteredUsersForEvent(this.event, paginationParams)
       .subscribe((page) => (this.page = page));
   }
 }

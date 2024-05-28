@@ -3,7 +3,7 @@
  * about events which are publically displayed on the Events page.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -12,16 +12,16 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../event.service';
-import { profileResolver } from '../../profile/profile.resolver';
-import { Profile, PublicProfile } from '../../profile/profile.service';
-import { OrganizationService } from '../../organization/organization.service';
-import { Observable, map } from 'rxjs';
-import { eventDetailResolver } from '../event.resolver';
-import { PermissionService } from 'src/app/permission.service';
-import { organizationDetailResolver } from 'src/app/organization/organization.resolver';
-import { Organization } from 'src/app/organization/organization.model';
-import { Event, RegistrationType } from '../event.model';
+import {
+  Profile,
+  ProfileService,
+  PublicProfile
+} from '../../profile/profile.service';
+import { eventResolver } from '../event.resolver';
+import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
+import { OrganizationService } from 'src/app/organization/organization.service';
+import { eventEditorGuard } from './event-editor.guard';
 
 @Component({
   selector: 'app-event-editor',
@@ -29,52 +29,43 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./event-editor.component.css']
 })
 export class EventEditorComponent {
+  /** Route information to be used in Event Routing Module */
   public static Route: Route = {
-    path: 'organizations/:slug/events/:id/edit',
+    path: ':orgid/:id/edit',
     component: EventEditorComponent,
     title: 'Event Editor',
+    canActivate: [eventEditorGuard],
     resolve: {
-      profile: profileResolver,
-      organization: organizationDetailResolver,
-      event: eventDetailResolver
+      event: eventResolver
     }
   };
 
-  /** Store the event to be edited or created */
+  /** Store the currently-logged-in user's profile.  */
+  public profile: Profile;
+
+  /** Stores the event.  */
   public event: Event;
-  public organization_slug: string;
-  public organization: Organization;
-
-  public profile: Profile | null = null;
-
-  /** Stores whether the user has admin permission over the current organization. */
-  public enabled$: Observable<boolean>;
 
   /** Store organizers */
-  public organizers: PublicProfile[] = [];
+  public organizers: PublicProfile[];
 
-  /** Add validators to the form */
-  name = new FormControl('', [Validators.required]);
-  time = new FormControl('', [Validators.required]);
-  location = new FormControl('', [Validators.required]);
-  description = new FormControl('', [
-    Validators.required,
-    Validators.maxLength(2000)
-  ]);
-  public = new FormControl('', [Validators.required]);
-  registration_limit = new FormControl(0, [
-    Validators.required,
-    Validators.min(0)
-  ]);
-
-  /** Create a form group */
+  /** Event Editor Form */
   public eventForm = this.formBuilder.group({
-    name: this.name,
-    time: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
-    location: this.location,
-    description: this.description,
-    public: this.public.value! == 'true',
-    registration_limit: this.registration_limit,
+    name: new FormControl('', [Validators.required]),
+    time: new FormControl(
+      this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+      [Validators.required]
+    ),
+    location: new FormControl('', [Validators.required]),
+    description: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(2000)
+    ]),
+    public: new FormControl(false, [Validators.required]),
+    registration_limit: new FormControl(0, [
+      Validators.required,
+      Validators.min(0)
+    ]),
     userLookup: ''
   });
 
@@ -85,89 +76,54 @@ export class EventEditorComponent {
     protected organizationService: OrganizationService,
     protected snackBar: MatSnackBar,
     private eventService: EventService,
-    private permission: PermissionService,
+    private profileService: ProfileService,
     private datePipe: DatePipe
   ) {
-    // Get currently-logged-in user
-    const data = route.snapshot.data as {
-      profile: Profile;
-      organization: Organization;
+    this.profile = this.profileService.profile()!;
+
+    const data = this.route.snapshot.data as {
       event: Event;
     };
-    this.profile = data.profile;
-
-    // Initialize event
-    this.organization = data.organization;
     this.event = data.event;
-    this.event.organization_id = this.organization.id;
-
-    // Get ids from the url
-    let organization_slug = this.route.snapshot.params['slug'];
-    this.organization_slug = organization_slug;
 
     // Set values for form group
-    this.eventForm.setValue({
-      name: this.event.name,
-      time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
-      location: this.event.location,
-      description: this.event.description,
-      public: this.event.public,
-      registration_limit: this.event.registration_limit,
-      userLookup: ''
-    });
+    this.eventForm.patchValue(
+      Object.assign({}, this.event, {
+        time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
+        userLookup: ''
+      })
+    );
 
     // Add validator for registration_limit
-    this.registration_limit.addValidators(
+    this.eventForm.controls['registration_limit'].addValidators(
       Validators.min(this.event.registration_count)
     );
 
-    this.enabled$ = this.permission
-      .check(
-        'organization.events.update',
-        `organization/${this.organization!.id}`
-      )
-      .pipe(map((permission) => permission || this.event.is_organizer));
-
     // Set the organizers
     // If no organizers already, set current user as organizer
-    if (this.event.id == null) {
-      let organizer: PublicProfile = {
-        id: this.profile.id!,
-        first_name: this.profile.first_name!,
-        last_name: this.profile.last_name!,
-        pronouns: this.profile.pronouns!,
-        email: this.profile.email!,
-        github_avatar: this.profile.github_avatar
-      };
-      this.organizers.push(organizer);
-    } else {
-      // Set organizers to current organizers
-      this.organizers = this.event.organizers;
-    }
+    this.organizers = this.isNew()
+      ? [this.profile as PublicProfile]
+      : this.event.organizers;
   }
 
-  /** Event handler to handle submitting the Create Event Form.
+  /** Event handler to handle submitting the event form.
    * @returns {void}
    */
   onSubmit() {
     if (this.eventForm.valid) {
       Object.assign(this.event, this.eventForm.value);
-
-      // Set fields not explicitly in form
       this.event.organizers = this.organizers;
 
-      if (this.event.id == null) {
-        this.eventService.createEvent(this.event).subscribe({
-          next: (event) => this.onSuccess(event),
-          error: (err) => this.onError(err)
-        });
-      } else {
-        this.eventService.updateEvent(this.event).subscribe({
-          next: (event) => this.onSuccess(event),
-          error: (err) => this.onError(err)
-        });
-      }
-      this.router.navigate(['/organizations/', this.organization_slug]);
+      let submittedEvent = this.isNew()
+        ? this.eventService.createEvent(this.event)
+        : this.eventService.updateEvent(this.event);
+
+      submittedEvent.subscribe({
+        next: (event) => this.onSuccess(event),
+        error: (err) => this.onError(err)
+      });
+
+      this.router.navigate(['/organizations/', this.event.organization?.slug]);
     }
   }
 
@@ -183,17 +139,29 @@ export class EventEditorComponent {
    */
   private onSuccess(event: Event): void {
     this.router.navigate(['/events/', event.id]);
-    if (this.event.id == null) {
-      this.snackBar.open('Event Created', '', { duration: 2000 });
-    } else {
-      this.snackBar.open('Event Edited', '', { duration: 2000 });
-    }
+    this.snackBar.open(`Event ${this.action()}`, '', { duration: 2000 });
   }
 
   /** Opens a confirmation snackbar when there is an error creating an event.
    * @returns {void}
    */
   private onError(err: any): void {
-    this.snackBar.open('Error: Event Not Created', '', { duration: 2000 });
+    this.snackBar.open(`Error: Event Not ${this.action()}`, '', {
+      duration: 2000
+    });
+  }
+
+  /** Shorthand for whether an event is new or not.
+   * @returns {boolean}
+   */
+  isNew(): boolean {
+    return this.event.id == null;
+  }
+
+  /** Shorthand for determining the action being performed on the event.
+   * @returns {string}
+   */
+  action(): string {
+    return this.isNew() ? 'Created' : 'Updated';
   }
 }

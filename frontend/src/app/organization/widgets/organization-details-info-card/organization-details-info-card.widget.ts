@@ -7,15 +7,13 @@
  * @license MIT
  */
 
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Organization } from '../../organization.model';
-import { Profile } from 'src/app/profile/profile.service';
-import { PermissionService } from 'src/app/permission.service';
-import { Observable } from 'rxjs';
-import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { Profile } from '../../../profile/profile.service';
+import { NagivationAdminGearService } from '../../../navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'organization-details-info-card',
@@ -24,7 +22,7 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 })
 export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
   /** The organization to show */
-  @Input() organization?: Organization;
+  @Input() organization: Organization | undefined;
   /** The currently logged in user */
   @Input() profile?: Profile;
 
@@ -39,22 +37,14 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
   /** Constructs the organization detail info card widget */
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private permission: PermissionService,
     private gearService: NagivationAdminGearService
   ) {}
-
-  checkPermissions(): Observable<boolean> {
-    return this.permission.check(
-      'organization.update',
-      `organization/${this.organization?.slug}`
-    );
-  }
 
   /** Runs whenever the view is rendered initally on the screen */
   ngOnInit(): void {
     this.isHandsetSubscription = this.initHandset();
     this.isTabletSubscription = this.initTablet();
-    this.gearService.showAdminGear(
+    this.gearService.showAdminGearByPermissionCheck(
       'organization.*',
       `organization/${this.organization?.slug}`,
       '',

@@ -10,23 +10,15 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { Organization } from './organization.model';
-import { OrganizationService } from './organization.service';
-import { EventService } from '../event/event.service';
 import { Event } from '../event/event.model';
 import { catchError, map, of } from 'rxjs';
+import { OrganizationService } from './organization.service';
 
-/** This resolver injects the list of organizations into the organization component. */
-export const organizationResolver: ResolveFn<Organization[] | undefined> = (
-  route,
-  state
-) => {
-  return inject(OrganizationService).getOrganizations();
-};
-
+// TODO: Explore if this can be replaced by a signal.
 /** This resolver injects an organization into the organization detail component. */
-export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
+export const organizationResolver: ResolveFn<Organization | undefined> = (
   route,
-  state
+  _state
 ) => {
   // If the organization is new, return a blank one
   if (route.paramMap.get('slug')! == 'new') {
@@ -61,12 +53,13 @@ export const organizationDetailResolver: ResolveFn<Organization | undefined> = (
     );
 };
 
+// TODO: Refactor once the event feature is refactored.
 /** This resolver injects the events for a given organization into the organization component. */
 export const organizationEventsResolver: ResolveFn<Event[] | undefined> = (
   route,
-  state
+  _state
 ) => {
-  return inject(EventService).getEventsByOrganization(
-    route.paramMap.get('slug')!
-  );
+  return inject(OrganizationService)
+    .getOrganization(route.paramMap.get('slug')!)
+    .pipe(map((organization) => organization?.events ?? []));
 };

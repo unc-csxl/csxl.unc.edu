@@ -15,7 +15,7 @@ export class UserAdminService {
       filter: params.filter
     };
     let query = new URLSearchParams(paramStrings);
-    return this.http.get<Paginated<Profile>>(
+    return this.http.get<Paginated<Profile, PaginationParams>>(
       '/api/admin/users?' + query.toString()
     );
   }

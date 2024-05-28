@@ -37,7 +37,7 @@ export class AcademicsHomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.gearService.showAdminGear(
+    this.gearService.showAdminGearByPermissionCheck(
       'academics.*',
       '*',
       '',

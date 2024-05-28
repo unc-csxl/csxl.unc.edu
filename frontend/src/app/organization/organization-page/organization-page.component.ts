@@ -4,90 +4,56 @@
  * based on interests, and access social media pages of organizations to stay up-to-date.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
-import { profileResolver } from '/workspace/frontend/src/app/profile/profile.resolver';
+import { Component, Signal, effect } from '@angular/core';
 import { Organization } from '../organization.model';
-import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
-import { organizationResolver } from '../organization.resolver';
-import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { Profile, ProfileService } from '../../profile/profile.service';
+import { NagivationAdminGearService } from '../../navigation/navigation-admin-gear.service';
+import { OrganizationService } from '../organization.service';
 
 @Component({
   selector: 'app-organization-page',
   templateUrl: './organization-page.component.html',
   styleUrls: ['./organization-page.component.css']
 })
-export class OrganizationPageComponent implements OnInit {
+export class OrganizationPageComponent {
   /** Route information to be used in Organization Routing Module */
   public static Route = {
     path: '',
     title: 'CS Organizations',
-    component: OrganizationPageComponent,
-    canActivate: [],
-    resolve: { profile: profileResolver, organizations: organizationResolver }
+    component: OrganizationPageComponent
   };
 
-  /** Store Observable list of Organizations */
-  public organizations: Organization[];
-
-  /** Store searchBarQuery */
+  /** Current search bar query on the organization page. */
   public searchBarQuery = '';
 
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
-  /** Stores the user permission value for current organization. */
-  public permValues: Map<number, number> = new Map();
+  /** Stores a reactive organizations list. */
+  public organizations: Signal<Organization[]>;
 
   constructor(
-    private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
+    private organizationService: OrganizationService,
+    private profileService: ProfileService,
     private gearService: NagivationAdminGearService
   ) {
-    /** Initialize data from resolvers. */
-    const data = this.route.snapshot.data as {
-      profile: Profile;
-      organizations: Organization[];
-    };
-    this.profile = data.profile;
-    this.organizations = data.organizations;
+    this.profile = this.profileService.profile()!;
+    this.organizations = this.organizationService.organizations;
   }
 
-  ngOnInit() {
-    /** Ensure there is a currently signed in user before testing permissions */
-    if (this.profile !== undefined) {
-      let userPermissions = this.profile.permissions;
-      /** Ensure that the signed in user has permissions before looking at the resource */
-      if (userPermissions.length !== 0) {
-        /** Admin user, no need to check further */
-        if (userPermissions[0].resource === '*') {
-          this.gearService.showAdminGear(
-            'organizations.*',
-            '*',
-            '',
-            'organizations/admin'
-          );
-        } else {
-          /** Find if the signed in user has any organization permissions */
-          let organizationPermissions = userPermissions.filter((element) =>
-            element.resource.includes('organization')
-          );
-          /** If they do, show admin gear */
-          if (organizationPermissions.length !== 0) {
-            this.gearService.showAdminGear(
-              'organizations.*',
-              organizationPermissions[0].resource,
-              '',
-              'organizations/admin'
-            );
-          }
-        }
+  /** Effect that shows the organization admin gear if the user is an admin for at least one organization.*/
+  organizationGearEffect = effect(
+    () => {
+      if (this.organizationService.adminOrganizations().length > 0) {
+        this.gearService.showAdminGear('', 'organizations/admin');
       }
-    }
-  }
+    },
+    { allowSignalWrites: true } // Needed to update the gear signal.
+  );
 }

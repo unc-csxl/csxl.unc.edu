@@ -4,7 +4,7 @@ Organization routes are used to create, retrieve, and update Organizations."""
 
 from fastapi import APIRouter, Depends
 
-from ..services import OrganizationService
+from ..services import OrganizationService, RoleService
 from ..models.organization import Organization
 from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
@@ -44,6 +44,7 @@ def new_organization(
     organization: Organization,
     subject: User = Depends(registered_user),
     organization_service: OrganizationService = Depends(),
+    role_service: RoleService = Depends(),
 ) -> Organization:
     """
     Create organization
@@ -60,7 +61,10 @@ def new_organization(
         HTTPException 422 if create() raises an Exception
     """
 
-    return organization_service.create(subject, organization)
+    new_organization = organization_service.create(subject, organization)
+    # Create a new role for the organization newly created
+    role_service.create(subject, new_organization.slug)
+    return new_organization
 
 
 @api.get(

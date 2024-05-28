@@ -11,19 +11,14 @@
 
     <!-- Buttons -->
     <div class="event-actions">
-      <button
-        mat-icon-button
-        *ngIf="this.adminPermission$ | async"
-        (click)="deleteEvent(event)">
+      @if (this.adminPermission$ | async) {
+      <button mat-icon-button (click)="deleteEvent(event)">
         <mat-icon>delete</mat-icon>
       </button>
+      }
       <button mat-icon-button (click)="onShareButtonClick()">
         <mat-icon>share</mat-icon>
       </button>
-      <!-- TODO: Implement Calendar File Download Button -->
-      <!-- <button mat-icon-button>
-                <mat-icon>calendar_today</mat-icon>
-            </button> -->
     </div>
   </div>
 
@@ -55,50 +50,43 @@
   </div>
 
   <!-- Organizers -->
-  <div
-    class="organizers-information"
-    *ngIf="profile && event.organizers.length > 0">
-    <ng-container
-      class="organizers-text"
-      *ngIf="event.organizers.length > 1; else singleOrganizer">
-      If you have any questions or concerns about this event, please contact one
-      of the organizers below:
-    </ng-container>
-    <ng-template #singleOrganizer>
+  @if (profile && event.organizers.length > 0) {
+  <div class="organizers-information">
+    <ng-container class="organizers-text">
       If you have any questions or concerns about this event, please contact the
-      organizer:
-    </ng-template>
+      organizer{{ event.organizers.length > 1 && 's' }} below:
+    </ng-container>
     <br />
-
     <user-chip-list
       [users]="event.organizers"
       [enableMailTo]="true"></user-chip-list>
   </div>
+  }
 
   <!-- Register Button -->
-  <div
-    class="registration-information"
-    *ngIf="profile && event.registration_limit > 0">
+  @if (profile && event.registration_limit > 0) {
+  <div class="registration-information">
     <mat-divider class="padded-divider" />
     <p>
       <strong>Seats Remaining:</strong>
-      {{ event.registration_limit - event.registration_count }} / {{
-      event.registration_limit }}
+      {{ event.registration_limit - event.registration_count }} /
+      {{ event.registration_limit }}
     </p>
+    @if (event.is_attendee || event.is_organizer) {
     <button
       mat-stroked-button
       [disabled]="event.is_organizer"
-      (click)="unregisterForEvent(event.id!)"
-      *ngIf="event.is_attendee || event.is_organizer; else register">
+      (click)="unregisterForEvent()">
       Unregister
     </button>
-    <ng-template #register>
-      <button
-        mat-stroked-button
-        [disabled]="event.registration_count === event.registration_limit"
-        (click)="registerForEvent(event.id!)">
-        Register
-      </button>
-    </ng-template>
+    } @else {
+    <button
+      mat-stroked-button
+      [disabled]="event.registration_count === event.registration_limit"
+      (click)="registerForEvent()">
+      Register
+    </button>
+    }
   </div>
+  }
 </mat-card>

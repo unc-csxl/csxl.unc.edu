@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
 import { Observable, ReplaySubject, Subject, tap } from 'rxjs';
 import { AuthenticationService } from '../authentication.service';
 
@@ -39,9 +39,14 @@ export interface PublicProfile {
   providedIn: 'root'
 })
 export class ProfileService {
-  private profile: Subject<Profile | undefined> = new ReplaySubject(1);
+  // TODO: Fully complete signal migration for profile service
+  private profileSignal: WritableSignal<Profile | undefined> =
+    signal(undefined);
+  public profile = this.profileSignal.asReadonly();
+
+  private profileSubject: Subject<Profile | undefined> = new ReplaySubject(1);
   public profile$: Observable<Profile | undefined> =
-    this.profile.asObservable();
+    this.profileSubject.asObservable();
 
   constructor(
     protected http: HttpClient,
@@ -55,18 +60,28 @@ export class ProfileService {
   private refreshProfile(isAuthenticated: boolean) {
     if (isAuthenticated) {
       this.http.get<Profile>('/api/profile').subscribe({
-        next: (profile) => this.profile.next(profile),
-        error: () => this.profile.next(undefined)
+        next: (profile) => {
+          this.profileSubject.next(profile);
+          this.profileSignal.set(profile);
+        },
+        error: () => {
+          this.profileSubject.next(undefined);
+          this.profileSignal.set(undefined);
+        }
       });
     } else {
-      this.profile.next(undefined);
+      this.profileSubject.next(undefined);
+      this.profileSignal.set(undefined);
     }
   }
 
   put(profile: Profile) {
-    return this.http
-      .put<Profile>('/api/profile', profile)
-      .pipe(tap((profile) => this.profile.next(profile)));
+    return this.http.put<Profile>('/api/profile', profile).pipe(
+      tap((profile) => {
+        this.profileSubject.next(profile);
+        this.profileSignal.set(profile);
+      })
+    );
   }
 
   search(query: string) {

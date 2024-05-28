@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 import { map, Observable, ReplaySubject } from 'rxjs';
 import { Profile, ProfileService, Permission } from './profile/profile.service';
 import { AdminSettingsNavigationData } from './navigation/navigation.service';
@@ -7,10 +7,19 @@ import { AdminSettingsNavigationData } from './navigation/navigation.service';
   providedIn: 'root'
 })
 export class PermissionService {
+  private profile: Signal<Profile | undefined> = signal(undefined);
   private profile$: Observable<Profile | undefined>;
 
   constructor(profileService: ProfileService) {
+    this.profile = profileService.profile;
     this.profile$ = profileService.profile$;
+  }
+
+  checkSignal(action: string, resource: string): boolean {
+    return (
+      this.profile &&
+      this.hasPermission(this.profile()!.permissions, action, resource)
+    );
   }
 
   check(action: string, resource: string): Observable<boolean> {

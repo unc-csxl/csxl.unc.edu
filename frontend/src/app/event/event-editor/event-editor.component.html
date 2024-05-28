@@ -1,13 +1,11 @@
 <!-- Show form if user is an admin or organizer of the event. -->
-<form
-  [formGroup]="eventForm"
-  (ngSubmit)="onSubmit()"
-  *ngIf="(enabled$ | async) || this.event.is_organizer; else unauthenticated">
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
   <mat-card appearance="outlined">
     <!-- Header -->
     <mat-card-header>
-      <mat-card-title *ngIf="event.id === null">Create Event</mat-card-title>
-      <mat-card-title *ngIf="event.id !== null">Update Event</mat-card-title>
+      <mat-card-title>
+        {{ this.isNew() ? 'Create' : 'Update' }} Event
+      </mat-card-title>
     </mat-card-header>
 
     <!-- Event Name -->
@@ -66,10 +64,7 @@
       </mat-form-field>
 
       <!-- User Selection / Organizers Form Control -->
-      <user-lookup
-        label="Organizers"
-        [users]="organizers"
-        [disabled]="(enabled$ | async) === false"></user-lookup>
+      <user-lookup label="Organizers" [users]="organizers"></user-lookup>
     </mat-card-content>
 
     <!-- Save Button -->
@@ -80,8 +75,3 @@
     </mat-card-actions>
   </mat-card>
 </form>
-
-<!-- Message for Non-Authenicated Users -->
-<ng-template #unauthenticated>
-  You do not have permission to view this page
-</ng-template>

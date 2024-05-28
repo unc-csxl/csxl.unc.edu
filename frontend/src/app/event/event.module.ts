@@ -4,7 +4,7 @@
  * application and decouples this feature from other features in the application.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -38,7 +38,7 @@ import { EventDetailsComponent } from './event-details/event-details.component';
 import { EventPageComponent } from './event-page/event-page.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 import { EventUsersList } from './widgets/event-users-list/event-users-list.widget';
-import { EventListAdminComponent } from './event-list-admin/event-list-admin.component';
+import { GroupEventsPipe } from './pipes/group-events.pipe';
 
 @NgModule({
   declarations: [
@@ -46,8 +46,8 @@ import { EventListAdminComponent } from './event-list-admin/event-list-admin.com
     EventDetailsComponent,
     EventPageComponent,
     EventEditorComponent,
-    EventListAdminComponent,
-    EventUsersList
+    EventUsersList,
+    GroupEventsPipe
   ],
   imports: [
     CommonModule,
@@ -70,6 +70,7 @@ import { EventListAdminComponent } from './event-list-admin/event-list-admin.com
     RouterModule,
     SharedModule,
     EventRoutingModule
-  ]
+  ],
+  providers: [GroupEventsPipe]
 })
 export class EventModule {}

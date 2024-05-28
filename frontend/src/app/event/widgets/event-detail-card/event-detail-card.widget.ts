@@ -3,12 +3,12 @@
  * detail event card from the whole event page.
  *
  * @author Ajay Gandecha, Jade Keegan
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Event, EventRegistration } from '../../event.model';
+import { Event } from '../../event.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../../event.service';
 import { Observable } from 'rxjs';
@@ -75,48 +75,42 @@ export class EventDetailCard implements OnInit {
     });
   }
 
-  /** Registers a user for the given event
-   * @param event_id: number representing the id of the Event to register the User for
-   */
-  registerForEvent(event_id: number) {
+  /** Registers a user for the event. */
+  registerForEvent() {
     let confirmRegistration = this.snackBar.open(
       'Are you sure you want to register for this event?',
       'Register'
     );
     confirmRegistration.onAction().subscribe(() => {
-      this.eventService.registerForEvent(event_id).subscribe({
-        next: (event_registration) => this.onSuccess(event_registration),
-        error: (err) => this.onError(err)
+      this.eventService.registerForEvent(this.event).subscribe({
+        next: () => this.onSuccess(),
+        error: () => this.onError()
       });
     });
   }
 
-  /** Registers a user for the given event
-   * @param event_id: number representing the id of the Event to register the User for
-   */
-  unregisterForEvent(event_registration_id: number) {
+  /** Unregisters the user for the event. */
+  unregisterForEvent() {
     let confirmUnregistration = this.snackBar.open(
       'Are you sure you want to unregister for this event?',
       'Unregister',
       { duration: 15000 }
     );
     confirmUnregistration.onAction().subscribe(() => {
-      this.eventService
-        .unregisterForEvent(event_registration_id)
-        .subscribe(() => {
-          this.event.is_attendee = false;
-          this.event.registration_count -= 1;
-          this.snackBar.open('Successfully Unregistered!', '', {
-            duration: 2000
-          });
+      this.eventService.unregisterForEvent(this.event).subscribe(() => {
+        this.event.is_attendee = false;
+        this.event.registration_count -= 1;
+        this.snackBar.open('Successfully Unregistered!', '', {
+          duration: 2000
         });
+      });
     });
   }
 
   /** Opens a confirmation snackbar when an event is successfully created.
    * @returns {void}
    */
-  private onSuccess(event_registration: EventRegistration): void {
+  private onSuccess(): void {
     this.event.is_attendee = true;
     this.event.registration_count += 1;
     this.snackBar.open('Thanks for registering!', '', { duration: 2000 });
@@ -125,7 +119,7 @@ export class EventDetailCard implements OnInit {
   /** Opens a confirmation snackbar when there is an error creating an event.
    * @returns {void}
    */
-  private onError(err: any): void {
+  private onError(): void {
     this.snackBar.open('Error: Event Not Registered For', '', {
       duration: 2000
     });

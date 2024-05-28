@@ -3,13 +3,13 @@
  * individual organization card from the whole organization page.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
 import { Component, Input } from '@angular/core';
 import { Organization } from '../../organization.model';
-import { Profile } from '/workspace/frontend/src/app/profile/profile.service';
+import { Profile } from '../../../profile/profile.service';
 
 @Component({
   selector: 'organization-card',
@@ -21,17 +21,6 @@ export class OrganizationCard {
   @Input() organization!: Organization;
   /** The profile of the currently signed in user */
   @Input() profile?: Profile;
-  /** @deprecated Stores the permission values for a profile */
-  @Input() profilePermissions!: Map<number, number>;
-
-  /**
-   * Determines whether or not the tooltip on the card is disabled
-   * @param element: The HTML element
-   * @returns {boolean}
-   */
-  isTooltipDisabled(element: HTMLElement): boolean {
-    return element.scrollHeight <= element.clientHeight;
-  }
 
   constructor() {}
 }
