@@ -25,6 +25,7 @@ import { EventService } from '../../event/event.service';
 import { Event } from '../../event/event.model';
 import { Observable } from 'rxjs';
 import { PermissionService } from '../../permission.service';
+import { GroupEventsPipe } from '../../event/pipes/group-events.pipe';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -74,6 +75,7 @@ export class OrganizationDetailsComponent {
     protected snackBar: MatSnackBar,
     private profileService: ProfileService,
     protected eventService: EventService,
+    protected groupEventsPipe: GroupEventsPipe,
     private permission: PermissionService
   ) {
     this.profile = this.profileService.profile()!;
@@ -84,7 +86,7 @@ export class OrganizationDetailsComponent {
     };
 
     this.organization = data.organization;
-    this.eventsPerDay = eventService.groupEventsByDate(data.events ?? []);
+    this.eventsPerDay = this.groupEventsPipe.transform(data.events ?? []);
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
       `organization/${this.organization?.slug ?? '*'}`

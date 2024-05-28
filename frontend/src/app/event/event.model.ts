@@ -3,7 +3,7 @@
  * the Event Service and the API.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -54,8 +54,10 @@ export interface EventJson {
  *  objects (such as `Date`s) as strings. We need to convert this to
  *  TypeScript objects ourselves.
  */
-export const parseEventJson = (eventJson: EventJson): Event => {
-  return Object.assign({}, eventJson, { time: new Date(eventJson.time) });
+export const parseEventJson = (responseModel: EventJson): Event => {
+  return Object.assign({}, responseModel, {
+    time: new Date(responseModel.time)
+  });
 };
 
 export enum RegistrationType {

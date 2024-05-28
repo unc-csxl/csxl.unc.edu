@@ -3,14 +3,13 @@
  * any given event.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
-import { Component, inject } from '@angular/core';
-import { profileResolver } from 'src/app/profile/profile.resolver';
-import { eventDetailResolver } from '../event.resolver';
-import { Profile } from 'src/app/profile/profile.service';
+import { Component, OnInit } from '@angular/core';
+import { eventResolver } from '../event.resolver';
+import { Profile, ProfileService } from 'src/app/profile/profile.service';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -31,46 +30,51 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   templateUrl: './event-details.component.html',
   styleUrls: ['./event-details.component.css']
 })
-export class EventDetailsComponent {
+export class EventDetailsComponent implements OnInit {
   /** Route information to be used in Event Routing Module */
   public static Route = {
     path: ':id',
     title: 'Event Details',
     component: EventDetailsComponent,
     resolve: {
-      profile: profileResolver,
-      event: eventDetailResolver
+      event: eventResolver
     },
     children: [
       { path: '', title: titleResolver, component: EventDetailsComponent }
     ]
   };
 
-  /** Store Event */
-  public event!: Event;
-
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
-  public adminPermission$: Observable<boolean>;
 
+  /** The event to show */
+  public event: Event | undefined;
+
+  /**
+   * Determines whether or not a user can view the event.
+   * @returns {Observable<boolean>}
+   */
+  canViewEvent(): Observable<boolean> {
+    return this.permissionService.check(
+      'organization.events.view',
+      `organization/${this.event?.organization!?.id ?? '*'}`
+    );
+  }
+
+  /** Constructs the Event Detail component. */
   constructor(
     private route: ActivatedRoute,
-    private permission: PermissionService,
+    private permissionService: PermissionService,
+    private profileService: ProfileService,
     private gearService: NagivationAdminGearService
   ) {
-    /** Initialize data from resolvers. */
+    this.profile = this.profileService.profile()!;
+
     const data = this.route.snapshot.data as {
-      profile: Profile;
       event: Event;
     };
-    this.profile = data.profile;
-    this.event = data.event;
 
-    // Admin Permission if has the actual permission or is event organizer
-    this.adminPermission$ = this.permission.check(
-      'organization.events.view',
-      `organization/${this.event.organization!.id}`
-    );
+    this.event = data.event;
   }
 
   ngOnInit() {
@@ -78,7 +82,7 @@ export class EventDetailsComponent {
       'events.*',
       '*',
       '',
-      `events/organizations/${this.event.organization?.slug}/events/${this.event.id}/edit`
+      `events/${this.event?.organization_id}/${this.event?.id}/edit`
     );
   }
 }

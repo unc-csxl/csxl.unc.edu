@@ -3,7 +3,7 @@
  * of components.
  *
  * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 
@@ -12,17 +12,8 @@ import { ResolveFn } from '@angular/router';
 import { Event } from './event.model';
 import { EventService } from './event.service';
 
-/** This resolver injects the list of events into the events component. */
-export const eventResolver: ResolveFn<Event[] | undefined> = (route, state) => {
-  return inject(EventService).getEvents();
-};
-
 /** This resolver injects an event into the events detail component. */
-export const eventDetailResolver: ResolveFn<Event | undefined> = (
-  route,
-  state
-) => {
-  console.log(route.paramMap);
+export const eventResolver: ResolveFn<Event | undefined> = (route, state) => {
   if (route.paramMap.get('id') != 'new') {
     return inject(EventService).getEvent(+route.paramMap.get('id')!);
   } else {
