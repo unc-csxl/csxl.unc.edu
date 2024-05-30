@@ -14,6 +14,7 @@ import { Profile, ProfileService } from '../profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
+import { AuthenticationService } from 'src/app/authentication.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -40,6 +41,7 @@ export class ProfilePageComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    public auth: AuthenticationService,
     protected profileService: ProfileService,
     protected snackBar: MatSnackBar,
     protected dialog: MatDialog

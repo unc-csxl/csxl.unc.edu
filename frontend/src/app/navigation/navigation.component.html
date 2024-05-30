@@ -170,6 +170,14 @@
                 }
                 {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
               </mat-chip>
+            } @else {
+              <a href="/auth?continue_to={{ router.url }}">
+                <mat-chip class="profile-chip">
+                  <mat-icon matChipAvatar>login</mat-icon>
+                  Sign In
+                </mat-chip>
+              </a>
+              
             }
           </mat-chip-set>
         </div>
