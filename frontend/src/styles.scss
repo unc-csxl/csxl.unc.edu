@@ -104,6 +104,10 @@ html {
             font: mat.get-theme-typography($light-theme, headline-medium, font);
             font-weight: 500;
         }
+
+        .mat-mdc-card-outlined {
+            background-color: mat.get-theme-color($light-theme, surface);
+        }
     }
 }
 
