@@ -45,6 +45,7 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { SharedModule } from './shared/shared.module';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { SharedModule } from './shared/shared.module';
     ReactiveFormsModule,
     /* Material UI */
     MatButtonModule,
+    MatChipsModule,
     MatCardModule,
     MatDialogModule,
     MatFormFieldModule,

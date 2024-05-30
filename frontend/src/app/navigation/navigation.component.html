@@ -149,6 +149,13 @@
         </button>
         <span>{{ navigationService.title$ | async }}</span>
 
+        <mat-chip-set>
+          <mat-chip appearance="outlined">
+            <img matChipAvatar src="https://material.angular.io/assets/img/examples/shiba1.jpg" alt="Photo of a Shiba Inu"/>
+            Dog one
+          </mat-chip>
+        </mat-chip-set>
+        
         @if(navigationAdminGearService.adminSettingsData()) {
         <button
           id="gear-icon"
