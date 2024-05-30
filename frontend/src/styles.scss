@@ -92,6 +92,64 @@ $light-theme: mat.define-theme((
 html {
     @include mat.all-component-themes($dark-theme);
 
+    
+    .mat-sidenav-container, .mat-sidenav, .mat-toolbar {
+        background-color: mat.get-theme-color($dark-theme, surface-container);
+    }
+
+    .mat-toolbar {
+        color: mat.get-theme-color($dark-theme, on-surface);
+        font: mat.get-theme-typography($dark-theme, headline-medium, font);
+        font-weight: 500;
+    }
+
+    .mdc-list-item__primary-text {
+        color: mat.get-theme-color($dark-theme, on-surface-variant);
+    }
+
+    .mat-mdc-subheader {
+        font: mat.get-theme-typography($dark-theme, title-small, font);
+        margin-left: 16px;
+    }
+
+    .mat-mdc-nav-list {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+    .mat-mdc-nav-list .mat-divider-horizontal {
+        margin-top: 16px;
+        margin-bottom: 29px; // 16px + 13 to make it look even (which is offset from label to end of button for listing above)
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    .mat-mdc-list-item-title {
+        font: mat.get-theme-typography($dark-theme, label-large, font);
+    }
+
+    .mdc-list-item {
+        .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 24
+        }
+    }
+    
+    .mat-mdc-card p {
+        color: mat.get-theme-color($dark-theme, on-surface-variant);
+    }
+
+    .mat-mdc-card-outlined {
+        background-color: mat.get-theme-color($dark-theme, surface);
+    }
+
+    .mat-mdc-card-title {
+        font: mat.get-theme-typography($dark-theme, title-large, font);
+        color: mat.get-theme-color($dark-theme, on-surface);
+    }
+
     @media (prefers-color-scheme: light) {
         @include mat.all-component-colors($light-theme);
 
