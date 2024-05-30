@@ -149,21 +149,30 @@
         </button>
         <span>{{ navigationService.title$ | async }}</span>
 
-        <mat-chip-set>
-          <mat-chip>
-            <img matChipAvatar src="https://material.angular.io/assets/img/examples/shiba1.jpg" alt="Photo of a Shiba Inu"/>
-            Dog one
-          </mat-chip>
-        </mat-chip-set>
-        
+        <div class="profile-chip-container">
+          <mat-chip-set>
+            @if(profile$ | async; as profile) {
+              <mat-chip class="profile-chip" routerLink="/profile">
+                @if(profile.github_avatar) {
+                  <img matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
+                } @else {
+                  <mat-icon matChipAvatar>account_circle</mat-icon>
+                }
+                {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
+              </mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+
+
         @if(navigationAdminGearService.adminSettingsData()) {
-        <button
-          id="gear-icon"
-          type="button"
-          mat-icon-button
-          [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
-          <mat-icon aria-label="Admin icon">settings</mat-icon>
-        </button>
+          <button
+            id="gear-icon"
+            type="button"
+            mat-icon-button
+            [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
+            <mat-icon aria-label="Admin icon">settings</mat-icon>
+          </button>
         }
       </div>
     </mat-toolbar>

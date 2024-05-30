@@ -100,3 +100,14 @@
 a {
   text-decoration: none;
 }
+
+.profile-chip-container {
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 16px;
+}
+/* Round the border for the profile image chip */
+.mat-mdc-standard-chip {
+  --mdc-chip-container-shape-radius: 16px;
+}
