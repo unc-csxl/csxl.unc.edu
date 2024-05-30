@@ -35,13 +35,13 @@
               <h3 matSubheader>Administration</h3>
             }
             @if (adminPermission$ | async) {
-              <mat-list-item routerLink="/admin/users">
+              <mat-list-item routerLink="/admin/users" [activated]="router.isActive('/admin', false)">
                   <mat-icon matListItemIcon>settings</mat-icon>
                   <div matListItemTitle>Admin</div>              
               </mat-list-item>
             } 
             @if (ambassadorPermission$ | async) {
-              <mat-list-item routerLink="/coworking/ambassador">
+              <mat-list-item routerLink="/coworking/ambassador" [activated]="router.isActive('/coworking/ambassador', false)">
                 <mat-icon matListItemIcon>handshake</mat-icon>
                 <div matListItemTitle>XL Ambassador</div>
               </mat-list-item>
@@ -53,15 +53,15 @@
           <!-- Main Section -->
           @if (profile$ | async; as profile) {
             <h3 matSubheader>Some Title Here</h3>
-            <mat-list-item routerLink="/coworking">
+            <mat-list-item routerLink="/coworking" [activated]="router.isActive('/coworking', true)">
               <mat-icon matListItemIcon>groups</mat-icon>
               <div matListItemTitle>Coworking</div>
             </mat-list-item>
-            <mat-list-item routerLink="/office-hours">
+            <mat-list-item routerLink="/office-hours" [activated]="router.isActive('/office-hours', true)">
               <mat-icon matListItemIcon>person_raised_hand</mat-icon>
               <div matListItemTitle>Office Hours</div>
             </mat-list-item>
-            <mat-list-item routerLink="/academics">
+            <mat-list-item routerLink="/academics" [activated]="router.isActive('/academics', true)">
               <mat-icon matListItemIcon>school</mat-icon>
               <div matListItemTitle>Academics</div>
             </mat-list-item>
@@ -69,18 +69,18 @@
           <mat-divider></mat-divider>
           <!-- Community -->
           <h3 matSubheader>Community</h3>
-          <mat-list-item routerLink="/events">
+          <mat-list-item routerLink="/events" [activated]="router.isActive('/events', true)">
             <mat-icon matListItemIcon>event</mat-icon>
             <div matListItemTitle>Events</div>
           </mat-list-item>
-          <mat-list-item routerLink="/organizations">
+          <mat-list-item routerLink="/organizations" [activated]="router.isActive('/organizations', true)">
             <mat-icon matListItemIcon>hub</mat-icon>
             <div matListItemTitle>Organizations</div>
           </mat-list-item>
           <mat-divider></mat-divider>
           <!-- Other-->
           <h3 matSubheader>Other</h3>
-          <mat-list-item routerLink="/about">
+          <mat-list-item routerLink="/about" [activated]="router.isActive('/about', true)">
             <mat-icon matListItemIcon>info</mat-icon>
             <div matListItemTitle>About the XL</div>
           </mat-list-item>
