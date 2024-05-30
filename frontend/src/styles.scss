@@ -139,8 +139,17 @@ html {
             }
         }
         
+        .mat-mdc-card p {
+            color: mat.get-theme-color($light-theme, on-surface-variant);
+        }
+
         .mat-mdc-card-outlined {
             background-color: mat.get-theme-color($light-theme, surface);
+        }
+
+        .mat-mdc-card-title {
+            font: mat.get-theme-typography($light-theme, title-large, font);
+            color: mat.get-theme-color($light-theme, on-surface);
         }
     }
 }

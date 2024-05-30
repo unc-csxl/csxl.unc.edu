@@ -149,6 +149,16 @@
         </button>
         <span>{{ navigationService.title$ | async }}</span>
 
+        @if(navigationAdminGearService.adminSettingsData()) {
+          <button
+            id="gear-icon"
+            type="button"
+            mat-icon-button
+            [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
+            <mat-icon aria-label="Admin icon">settings</mat-icon>
+          </button>
+        }
+        
         <div class="profile-chip-container">
           <mat-chip-set>
             @if(profile$ | async; as profile) {
@@ -163,17 +173,6 @@
             }
           </mat-chip-set>
         </div>
-
-
-        @if(navigationAdminGearService.adminSettingsData()) {
-          <button
-            id="gear-icon"
-            type="button"
-            mat-icon-button
-            [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
-            <mat-icon aria-label="Admin icon">settings</mat-icon>
-          </button>
-        }
       </div>
     </mat-toolbar>
     <mat-progress-bar
