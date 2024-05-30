@@ -87,12 +87,23 @@ $light-theme: mat.define-theme((
 //             ),
 //         ));
 
+
 // Apply the dark theme by default
 html {
     @include mat.all-component-themes($dark-theme);
 
     @media (prefers-color-scheme: light) {
         @include mat.all-component-colors($light-theme);
+
+        .mat-sidenav-container, .mat-sidenav, .mat-toolbar {
+            background-color: mat.get-theme-color($light-theme, surface-container);
+        }
+
+        .mat-toolbar {
+            color: mat.get-theme-color($light-theme, on-surface);
+            font: mat.get-theme-typography($light-theme, headline-medium, font);
+            font-weight: 500;
+        }
     }
 }
 

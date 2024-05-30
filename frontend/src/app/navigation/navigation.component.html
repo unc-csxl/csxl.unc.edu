@@ -84,7 +84,7 @@
           *ngIf="isHandset">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-        <p>{{ navigationService.title$ | async }}</p>
+        <span>{{ navigationService.title$ | async }}</span>
 
         @if(navigationAdminGearService.adminSettingsData()) {
         <button
