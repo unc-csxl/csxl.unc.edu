@@ -69,7 +69,7 @@
           <mat-divider></mat-divider>
           <!-- Community -->
           <h3 matSubheader>Community</h3>
-          <mat-list-item routerLink="/events" [activated]="router.isActive('/events', true)">
+          <mat-list-item routerLink="/events" [activated]="router.isActive('/events?', false)">
             <mat-icon matListItemIcon>event</mat-icon>
             <div matListItemTitle>Events</div>
           </mat-list-item>
