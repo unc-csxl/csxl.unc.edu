@@ -14,17 +14,17 @@
   padding: 0;
 }
 
-.logo-icon {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 90%;
+/* Left align the logo. */
+.logo-item {
+  text-align: left !important;
+  padding-left: 16px !important;
+  margin-bottom: 12px !important;
 }
 
 .logo-icon {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-left: auto;
+  margin-right: auto; */
   width: 90%;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .sidenav {
-  width: 200px;
+  width: 220px;
 }
 
 .inner-sidenav-container {
@@ -95,4 +95,8 @@
   margin-left: auto;
   margin-top: auto;
   margin-bottom: auto;
+}
+
+a {
+  text-decoration: none;
 }

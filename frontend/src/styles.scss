@@ -105,6 +105,40 @@ html {
             font-weight: 500;
         }
 
+        .mdc-list-item__primary-text {
+            color: mat.get-theme-color($light-theme, on-surface-variant);
+        }
+
+        .mat-mdc-subheader {
+            font: mat.get-theme-typography($light-theme, title-small, font);
+            margin-left: 16px;
+        }
+
+        .mat-mdc-nav-list {
+            margin-left: 12px;
+            margin-right: 12px;
+        }
+        .mat-mdc-nav-list .mat-divider-horizontal {
+            margin-top: 16px;
+            margin-bottom: 29px; // 16px + 13 to make it look even (which is offset from label to end of button for listing above)
+            margin-left: 16px;
+            margin-right: 16px;
+        }
+
+        .mat-mdc-list-item-title {
+            font: mat.get-theme-typography($light-theme, label-large, font);
+        }
+
+        .mdc-list-item {
+            .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 500,
+            'GRAD' 0,
+            'opsz' 24
+            }
+        }
+        
         .mat-mdc-card-outlined {
             background-color: mat.get-theme-color($light-theme, surface);
         }
