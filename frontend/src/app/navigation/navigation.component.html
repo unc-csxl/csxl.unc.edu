@@ -85,47 +85,6 @@
             <div matListItemTitle>About the XL</div>
           </mat-list-item>
         </div>
-        <!-- <div *ngIf="profile$ | async as profile; else unauthenticated">
-          <a mat-list-item routerLink="/coworking">Coworking</a>
-          <a mat-list-item routerLink="/events">Events</a>
-          <a mat-list-item routerLink="/organizations">Organizations</a>
-          <a mat-list-item routerLink="/academics">Academics</a>
-          <a mat-list-item routerLink="/office-hours">Office Hours</a>
-          <a mat-list-item routerLink="/about">About the XL</a>
-          <mat-divider></mat-divider>
-          <div *ngIf="ambassadorPermission$ | async">
-            <a mat-list-item routerLink="/coworking/ambassador">
-              XL Ambassador
-            </a>
-          </div>
-          <div *ngIf="adminPermission$ | async">
-            <a mat-list-item routerLink="/admin/users">User Admin</a>
-          </div>
-          <a
-            mat-list-item
-            routerLink="/profile"
-            *ngIf="profile.first_name !== ''; else new_user"
-            >{{ profile.first_name }} {{ profile.last_name }}</a
-          >
-          <ng-template #new_user>
-            <a mat-list-item routerLink="/profile">Profile</a>
-          </ng-template>
-          <a mat-list-item (click)="auth.signOut()">Sign out</a>
-        </div> -->
-        <!-- <ng-template #unauthenticated>
-          <mat-list-item>
-            <mat-icon matListItemIcon>folder</mat-icon>
-            <a matListItemTitle routerLink="/organizations">Organizations</a>
-          </mat-list-item>
-          <a mat-list-item routerLink="/organizations">Organizations</a>
-          <mat-list-item>
-            <mat-icon matListItemIcon>event</mat-icon>
-            <a matListItemTitle routerLink="/events">Events</a>
-          </mat-list-item>
-          <a mat-list-item routerLink="/events">Events</a>
-          <a mat-list-item routerLink="/about">About the XL</a>
-          <a mat-list-item href="/auth?continue_to={{ router.url }}">Sign in</a>
-        </ng-template> -->
       </mat-nav-list>
       <!-- <div
         mat-list-item
