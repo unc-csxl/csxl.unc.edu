@@ -3,11 +3,7 @@
 
 @include mat.core();
 
-/*
-Global CSS Styles 
-
-This defines any global CSS styles independent of the theme.
-*/
+/** Global CSS Styles */
 
 html, body {
     height: 100%;
@@ -15,6 +11,13 @@ html, body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+/** Custom Material Component Styling Mixins */
+// Note: These are sorted in alphabetical oder.
+
+/// Defines a mixin that applies custom styles to material card components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-card-styles($theme) {
 
     .mat-mdc-card {
@@ -41,6 +44,10 @@ html, body {
 
 }
 
+/// Defines a mixin that applies custom styles to material header components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-header-styles($theme) {
     .mat-mdc-subheader {
         font: mat.get-theme-typography($theme, title-small, font);
@@ -48,6 +55,10 @@ html, body {
     }
 }
 
+/// Defines a mixin that applies custom styles to material icon components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-icon-styles($theme) {
 
     .mat-icon,
@@ -70,6 +81,10 @@ html, body {
 
 }
 
+/// Defines a mixin that applies custom styles to material list components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-list-styles($theme) {
 
     .mat-mdc-list-item-title {
@@ -91,6 +106,11 @@ html, body {
     }
 }
 
+/// Defines a mixin that applies custom styles to material components
+/// that involve navigation (including the toolbar, sidebar, etc)
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-navigation-styles($theme) {
 
     .mat-toolbar {
@@ -120,6 +140,10 @@ html, body {
     }
 }
 
+/// Defines a mixin that applies custom styles to material text field components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-text-field-styles($theme) {
     .mdc-text-field__input::-webkit-calendar-picker-indicator {
         display: block !important;
@@ -132,6 +156,9 @@ html, body {
     border-right: none !important;
 }
 
+/// Defines a mixin that applies all of the custom style mixins declared above.
+/// This mixin is defined so that these @include lines are not duplicated between
+/// light and dark mode.
 @mixin apply-styles($theme) {
     @include mat-card-styles($theme);
     @include mat-navigation-styles($theme);
@@ -142,35 +169,8 @@ html, body {
 }
 
 
+/** Apply themes and custom styling to the site. */
 
-
-/* 
-Styles Mixin 
-
-This is an SCSS function that takes in a theme ($theme) and applies styles to
-elements based on properties of the theme. Since this site has both a light
-and dark mode theme, we can define our styles here, and then pass in the
-light and dark mode theme below. This way, we do not have duplicating code
-for both the light and dark themes.
-*/
-@mixin styles($theme) {
-
-
-
-
-
-
-
-    
-
-}
-
-/*
-Apply the themes to the site
-
-This section applies the themes and styles we created above to the site depending
-on whether or not the site is in light or dark mode.
-*/
 html {
 
     @include mat.all-component-themes(csxl-theme.$dark-theme);
