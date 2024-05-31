@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+
+/* 
+Create Global Material Themes
+
+This creates a dark and light mode theme respectively from Angular Material 3, using
+the supplied palette.
+*/
+$dark-theme: mat.define-theme((
+    color: (
+        theme-type: dark,
+        primary: mat.$violet-palette
+    )
+));
+
+$light-theme: mat.define-theme((
+    color: (
+        theme-type: light,
+        primary: mat.$violet-palette
+    )
+));

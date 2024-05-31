@@ -1,0 +1,183 @@
+@use '@angular/material' as mat;
+@use './theme.scss' as csxl-theme;
+
+@include mat.core();
+
+/*
+Global CSS Styles 
+
+This defines any global CSS styles independent of the theme.
+*/
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+@mixin mat-card-styles($theme) {
+
+    .mat-mdc-card {
+        max-width: 640px;
+        margin: 1em;
+    }
+
+    .mat-mdc-card-outlined {
+        background-color: mat.get-theme-color($theme, surface);
+    }
+
+    .mdc-card__actions {
+        min-height: 0px !important;
+    }
+
+    .mat-mdc-card-title {
+        font: mat.get-theme-typography($theme, title-large, font);
+        color: mat.get-theme-color($theme, on-surface);
+    }  
+
+    .mat-mdc-card p {
+        color: mat.get-theme-color($theme, on-surface-variant);
+    }
+
+}
+
+@mixin mat-header-styles($theme) {
+    .mat-mdc-subheader {
+        font: mat.get-theme-typography($theme, title-small, font);
+        margin-left: 16px;
+    }
+}
+
+@mixin mat-icon-styles($theme) {
+
+    .mat-icon,
+    .mat-icon svg {
+        color: white;
+        fill: white;
+    }
+
+
+
+    @media (prefers-color-scheme: light) {
+
+        .mat-icon,
+        .mat-icon svg {
+            color: black;
+            fill: black;
+        }
+    }
+
+
+}
+
+@mixin mat-list-styles($theme) {
+
+    .mat-mdc-list-item-title {
+        font: mat.get-theme-typography($theme, label-large, font);
+    }
+
+    .mdc-list-item {
+        .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 24
+        }
+    }
+
+    .mdc-list-item__primary-text {
+        color: mat.get-theme-color($theme, on-surface-variant);
+    }
+}
+
+@mixin mat-navigation-styles($theme) {
+
+    .mat-toolbar {
+        background-color: mat.get-theme-color($theme, surface-container);
+        color: mat.get-theme-color($theme, on-surface);
+        font: mat.get-theme-typography($theme, headline-medium, font);
+        font-weight: 500;
+    }
+
+    .mat-sidenav-container, .mat-sidenav {
+        background-color: mat.get-theme-color($theme, surface-container);
+    }
+    
+    .sidebar-button-tooltip-panel {
+        max-width: 150px;
+    }
+
+    .mat-mdc-nav-list {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+    .mat-mdc-nav-list .mat-divider-horizontal {
+        margin-top: 16px;
+        margin-bottom: 29px; // 16px + 13 to make it look even (which is offset from label to end of button for listing above)
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+}
+
+@mixin mat-text-field-styles($theme) {
+    .mdc-text-field__input::-webkit-calendar-picker-indicator {
+        display: block !important;
+        filter: invert(1);
+    }
+}
+
+.mdc-notched-outline__notch {
+    border-left: 1px solid rgba(0, 0, 0, 0);
+    border-right: none !important;
+}
+
+@mixin apply-styles($theme) {
+    @include mat-card-styles($theme);
+    @include mat-navigation-styles($theme);
+    @include mat-list-styles($theme);
+    @include mat-header-styles($theme);
+    @include mat-icon-styles($theme);
+    @include mat-text-field-styles($theme);
+}
+
+
+
+
+/* 
+Styles Mixin 
+
+This is an SCSS function that takes in a theme ($theme) and applies styles to
+elements based on properties of the theme. Since this site has both a light
+and dark mode theme, we can define our styles here, and then pass in the
+light and dark mode theme below. This way, we do not have duplicating code
+for both the light and dark themes.
+*/
+@mixin styles($theme) {
+
+
+
+
+
+
+
+    
+
+}
+
+/*
+Apply the themes to the site
+
+This section applies the themes and styles we created above to the site depending
+on whether or not the site is in light or dark mode.
+*/
+html {
+
+    @include mat.all-component-themes(csxl-theme.$dark-theme);
+    @include apply-styles(csxl-theme.$dark-theme);
+
+    @media (prefers-color-scheme: light) {
+        @include mat.all-component-colors(csxl-theme.$light-theme);
+        @include apply-styles(csxl-theme.$light-theme);
+    }
+}
