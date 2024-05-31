@@ -33,6 +33,7 @@ import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
 import { MatPaneComponent } from './pane/mat-pane/mat-pane.component';
+import { BannerCardComponent } from './banner-card/banner-card.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { MatPaneComponent } from './pane/mat-pane/mat-pane.component';
     SlackInviteBox,
     CommunityAgreement,
     ProfileAboutCard,
-    MatPaneComponent
+    MatPaneComponent,
+    BannerCardComponent
   ],
   imports: [
     CommonModule,
@@ -76,7 +78,8 @@ import { MatPaneComponent } from './pane/mat-pane/mat-pane.component';
     UserLookup,
     UserChipList,
     ProfileAboutCard,
-    MatPaneComponent
+    MatPaneComponent,
+    BannerCardComponent
   ]
 })
 export class SharedModule {}

@@ -52,7 +52,7 @@
           }
           <!-- Main Section -->
           @if (profile$ | async; as profile) {
-            <h3 matSubheader>Some Title Here</h3>
+            <h3 matSubheader>School</h3>
             <mat-list-item routerLink="/coworking" [activated]="router.isActive('/coworking', true)">
               <mat-icon matListItemIcon>groups</mat-icon>
               <div matListItemTitle>Coworking</div>
@@ -74,7 +74,7 @@
             <div matListItemTitle>Events</div>
           </mat-list-item>
           <mat-list-item routerLink="/organizations" [activated]="router.isActive('/organizations', true)">
-            <mat-icon matListItemIcon>hub</mat-icon>
+            <mat-icon matListItemIcon>interests</mat-icon>
             <div matListItemTitle>Organizations</div>
           </mat-list-item>
           <mat-divider></mat-divider>

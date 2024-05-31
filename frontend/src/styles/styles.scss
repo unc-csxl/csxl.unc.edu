@@ -14,6 +14,16 @@ html, body {
 /** Custom Material Component Styling Mixins */
 // Note: These are sorted in alphabetical oder.
 
+/// Defines a mixin that applies global styles using the M3 theme
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin global-styles($theme) {
+    p {
+        font: mat.get-theme-typography($theme, body-medium, font);
+    }
+}
+
 /// Defines a mixin that applies custom styles to material card components
 /// to better conform to Material 3 standards.
 /// 
@@ -151,6 +161,55 @@ html, body {
     }
 }
 
+/// Defines a mixin that applies custom widgets to material text field components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin widget-styles($theme) {
+    .mat-csxl-alert-card {
+
+        .mat-mdc-card-title {
+            font: mat.get-theme-typography($theme, title-small, font);
+        }
+
+    }
+
+    .mat-csxl-alert-card-info {
+        .mat-mdc-card-outlined {
+            background-color: mat.get-theme-color($theme, secondary-container) !important;
+        }
+
+        .mat-mdc-card-title {
+            color: mat.get-theme-color($theme, on-secondary-container);
+        }
+
+        .mat-icon {
+            color: mat.get-theme-color($theme, on-secondary-container);
+        }
+
+        p {
+            color: mat.get-theme-color($theme, on-secondary-fixed-variant);
+        }
+    }
+    
+    .mat-csxl-alert-card-alert {
+        .mat-mdc-card-outlined {
+            background-color: mat.get-theme-color($theme, tertiary-container) !important;
+        }
+
+        .mat-mdc-card-title {
+            color: mat.get-theme-color($theme, on-tertiary-container);
+        }
+
+        .mat-icon {
+            color: mat.get-theme-color($theme, on-tertiary-container);
+        }
+
+        p {
+            color: mat.get-theme-color($theme, on-tertiary-fixed-variant);
+        }
+    }
+}
 .mdc-notched-outline__notch {
     border-left: 1px solid rgba(0, 0, 0, 0);
     border-right: none !important;
@@ -160,12 +219,14 @@ html, body {
 /// This mixin is defined so that these @include lines are not duplicated between
 /// light and dark mode.
 @mixin apply-styles($theme) {
+    @include global-styles($theme);
     @include mat-card-styles($theme);
     @include mat-navigation-styles($theme);
     @include mat-list-styles($theme);
     @include mat-header-styles($theme);
     @include mat-icon-styles($theme);
     @include mat-text-field-styles($theme);
+    @include widget-styles($theme);
 }
 
 
