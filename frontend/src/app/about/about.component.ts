@@ -8,6 +8,7 @@ import { SlackInviteBox } from '../navigation/widgets/slack-invite-box/slack-inv
 export class AboutComponent {
   public static Route = {
     path: 'about',
+    title: 'About the XL',
     component: AboutComponent
   };
 

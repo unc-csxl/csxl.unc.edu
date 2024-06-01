@@ -1,6 +1,18 @@
-<mat-card class="content" appearance="outlined">
+<!-- switch to 'new_releases' icon after release -->
+<banner-card
+  type="info"
+  icon="mystery"
+  title="Welcome to The CSXL Web Application v2.0 Preview!"
+  body="The CSXL Web Application is undergoing a major update this summer, including adding new features, improving the site's performance, and undergoing a major redesign to reflect the modern design standards."
+  [bottomActionButton]="true"
+  actionButtonText="Learn More"
+  [linkAction]="true"
+  link="https://github.com/unc-csxl/csxl.unc.edu/wiki/Upgrade-to-CSXL-Web-Application-v2" />
+<mat-pane>
   <mat-card-content>
-    <mat-card-subtitle>Find us in Sitterson 156!</mat-card-subtitle>
+    <mat-card-title>Welcome to the CS Experience Labs!</mat-card-title>
+    <p>Find us in Sitterson 156</p>
+
     <p>
       <strong>CSXL</strong> is a technical
       <strong>experience accelerator</strong>, <strong>community hub</strong>,
@@ -20,22 +32,22 @@
     </p>
     <p>
       Our Coworking Space is found in Sitterson Hall and is available for
-      students to collaborate on side projects and course work when workshops
-      are not being held.
+      students to collaborate on side projects and course work.
     </p>
   </mat-card-content>
-</mat-card>
+</mat-pane>
 
-<mat-card class="content" appearance="outlined">
+<mat-pane class="content" appearance="outlined">
   <mat-card-content>
-    <mat-card-subtitle>Join us on Slack!</mat-card-subtitle>
+    <mat-card-title>Join the CSXL Slack</mat-card-title>
+
     <p>Interested in becoming a part of the the CSXL community?</p>
     <p>
       Join the CSXL Slack to get updates on the XL, learn about new
       opportunities for CS students, or meet your fellow CS majors!
     </p>
-    <button mat-stroked-button (click)="onSlackInviteClick()">
+    <button mat-flat-button color="primary" (click)="onSlackInviteClick()">
       Get Slack Invite
     </button>
   </mat-card-content>
-</mat-card>
+</mat-pane>

@@ -1,0 +1,25 @@
+
+.alert-body {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.alert-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 16px;
+}
+
+.content-section {
+    flex-direction: column;
+}
+
+.mat-mdc-card-content, .mat-mdc-card-actions {
+    padding-bottom: 0px !important;
+}
+
+.mat-mdc-card-actions {
+    margin-left: 48px;
+}

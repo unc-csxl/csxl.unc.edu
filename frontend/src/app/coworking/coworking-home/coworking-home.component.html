@@ -1,3 +1,8 @@
+<banner-card
+  type="info"
+  icon="construction"
+  title="Page Under Construction"
+  body="This page's styling has not yet been updated to conform to Material 3. Some features of the page may not work as expected." />
 <div class="coworking-home-top">
   <div class="coworking-reservations-grid">
     <ng-container *ngIf="status$ | async as status">
@@ -50,8 +55,7 @@
   <div class="coworking-reservations-grid">
     <div class="upcoming-card-container">
       <!-- Show upcoming room reservations -->
-      <ng-container
-        *ngIf="((upcomingReservations$ | async) ?? []).length > 0">
+      <ng-container *ngIf="((upcomingReservations$ | async) ?? []).length > 0">
         <div class="reservations-header">
           <h2 class="heading">Upcoming Reservations</h2>
         </div>
