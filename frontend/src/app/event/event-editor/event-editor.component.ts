@@ -111,20 +111,36 @@ export class EventEditorComponent {
    */
   onSubmit() {
     if (this.eventForm.valid) {
-      Object.assign(this.event, this.eventForm.value);
-      this.event.organizers = this.organizers;
+      let eventToSubmit = this.event;
+      Object.assign(eventToSubmit, this.eventForm.value);
+      eventToSubmit.organizers = this.organizers;
 
       let submittedEvent = this.isNew()
-        ? this.eventService.createEvent(this.event)
-        : this.eventService.updateEvent(this.event);
+        ? this.eventService.createEvent(eventToSubmit)
+        : this.eventService.updateEvent(eventToSubmit);
 
       submittedEvent.subscribe({
         next: (event) => this.onSuccess(event),
         error: (err) => this.onError(err)
       });
 
-      this.router.navigate(['/organizations/', this.event.organization?.slug]);
+      this.router.navigate([
+        '/organizations/',
+        eventToSubmit.organization?.slug
+      ]);
     }
+  }
+
+  /** Event handler to handle resetting the form.
+   * @returns {void}
+   */
+  onReset() {
+    this.eventForm.patchValue(
+      Object.assign({}, this.event, {
+        time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
+        userLookup: ''
+      })
+    );
   }
 
   /** Takes user back to events page without changing any event info.

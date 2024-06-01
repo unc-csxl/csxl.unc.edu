@@ -9,3 +9,8 @@
 @if ((this.canViewEvent() | async) || this.event?.is_organizer ?? false) {
 <!-- <event-users-list [event]="event!"></event-users-list> -->
 }
+
+<admin-fab
+  primaryIcon="edit"
+  primaryText="Edit"
+  secondaryIcon="calendar_add_on" />
