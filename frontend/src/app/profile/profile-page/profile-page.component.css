@@ -8,32 +8,6 @@
 *
 */
 
-.mat-mdc-card {
-  margin: 15px 0px !important;
-}
-
-.container {
-  padding: 24px;
-  -ms-overflow-style: none;
-  /* Internet Explorer 10+ */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-.container::-webkit-scrollbar {
-  display: none;
-  /* Safari and Chrome */
-}
-
-.profile-grid {
-  display: grid;
-  grid-template-columns: 480px auto;
-  margin-top: 4px;
-  row-gap: 15px;
-  column-gap: 24px;
-  width: inherit;
-}
-
 .profile-management-actions {
   display: flex;
   flex-direction: column;
@@ -67,24 +41,18 @@
   margin-bottom: 0;
 }
 
+.profile-edit-fab {
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-end;
+}
+
 @media (prefers-color-scheme: light) {
   #github_link {
     color: black;
-  }
-}
-
-/** Make cards display in one column, with the event card appearing last */
-@media only screen and (max-device-width: 750px) {
-  .profile-grid {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-@media only screen and (max-device-width: 450px) {
-  .action-buttons {
-    display: flex;
-    flex-direction: column;
-    row-gap: 12px;
   }
 }

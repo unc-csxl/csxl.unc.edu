@@ -1,4 +1,4 @@
-<mat-card appearance="outlined">
+<mat-pane>
   <!-- Profile Card Header (Avatar, Name, Edit) -->
   <mat-card-header class="profile-header">
     <div class="left-header-info">
@@ -19,13 +19,6 @@
         >{{ profile.first_name }} {{ profile.last_name }}</mat-card-title
       >
     </div>
-
-    <!-- Button to Open Profile Editor Page -->
-    <a routerLink="/profile/edit">
-      <button mat-icon-button color="basic">
-        <mat-icon>edit</mat-icon>
-      </button>
-    </a>
   </mat-card-header>
 
   <!-- Profile Personal Information -->
@@ -52,4 +45,4 @@
       </div>
     </div>
   </mat-card-content>
-</mat-card>
+</mat-pane>
