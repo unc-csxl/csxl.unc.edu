@@ -1,39 +1,22 @@
-.mat-mdc-card {
-  margin: 1em;
-  max-width: 640px;
-}
-
-.mat-mdc-form-field {
-  width: stretch;
-  /* margin-left: 1em; */
-}
-
-.mat-mdc-card-actions .mdc-button {
-  margin-left: 8px;
-  margin-bottom: 8px;
-}
-
-.mat-mdc-card-title a,
-.mat-mdc-card-title a:hover,
-.mat-mdc-card-title a:visited {
-  color: #fff;
-}
-
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 mat-card-content {
-  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
 }
 
-@media (prefers-color-scheme: light) {
-  #github_link {
-    color: black;
-  }
+mat-form-field {
+  width: 100%;
 }
 
-.display {
-  width: 35%;
+.horizontal-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
 }
 
-.token {
-  word-wrap: break-word;
+.mat-mdc-card-actions {
+  padding-bottom: 16px;
+  justify-content: end;
+  gap: 12px;
 }
