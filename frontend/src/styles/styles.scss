@@ -191,6 +191,19 @@ html, body {
         }
     }
 
+    // This is a special class definition for a search bar input.
+    // 
+    // Currently, the Angular Material framework does not expose a search bar input.
+    // Once Angular Material upgrades to include the M3 search bar, this can be refactored.
+    .mat-csxl-search-bar {
+        .mat-mdc-card-outlined {
+            background-color: mat.get-theme-color($theme, surface-container-high) !important;
+        }
+        .mat-icon {
+            color: mat.get-theme-color($theme, on-surface-variant); 
+        }
+    }
+
     .mat-csxl-alert-card {
 
         .mat-mdc-card-title {

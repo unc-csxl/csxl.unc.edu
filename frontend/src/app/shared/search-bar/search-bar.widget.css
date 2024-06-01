@@ -1,5 +1,22 @@
-.search-bar {
-  width: 100%;
+.mat-mdc-card {
+  max-width: 100% !important;
+  border-color: transparent !important;
+  border-radius: 9999px;
+}
+
+.mat-csxl-search-bar {
+  ::ng-deep * {
+    border-color: transparent !important;
+  }
+}
+
+.mat-mdc-form-field {
+  margin-bottom: -8px;
+}
+
+.search-bar-form-field {
+  width: 100% !important;
   border-radius: 100%;
   height: 65px;
+
 }
