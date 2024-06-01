@@ -39,6 +39,11 @@ html, body {
         background-color: mat.get-theme-color($theme, surface);
     }
 
+    .mat-mdc-card-actions {
+        padding-left: 16px;
+        padding-right: 16px;
+
+    }
     .mdc-card__actions {
         min-height: 0px !important;
     }
@@ -166,6 +171,26 @@ html, body {
 /// 
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin widget-styles($theme) {
+
+    // This is a special class definition for a stroked icon button.
+    // 
+    // Currently, the Angular Material framework does not expose a stroked icon button.
+    // So, this manually applies the same border to a regular icon button that the stroked
+    // button applies.
+    //
+    // Once Angular Material upgrades to include a stroked icon button, this can be refactored.
+    .mat-csxl-stroked-icon-button {
+        border: 1px solid mat.get-theme-color($theme, inverse-surface);
+        padding-top: 7px;
+        padding-left: 7px;
+        .mat-icon {
+            color: mat.get-theme-color($theme, surface-tint);
+        }
+        .mat-icon svg {
+            fill: mat.get-theme-color($theme, surface-tint);
+        }
+    }
+
     .mat-csxl-alert-card {
 
         .mat-mdc-card-title {

@@ -1,33 +1,22 @@
 
 /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-mat-card {
-    display: flex;
-    flex-direction: column;
-    width: 325px;
-    height: 175px;
-    padding: 0 1rem;
-    margin: 0;
-    justify-content: space-between;
-    align-items: center;
-    row-gap: 0.6rem;
+.card {
+    ::ng-deep .mat-mdc-card {
+        width: 360px !important;
+        height: 186px !important;
+        margin: 0 !important;
+        row-gap: 0.6rem !important;
+    }
 }
+
 
 .mdc-card__media:first-child {
     border-radius: 100%;
 }
 
-.header {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-}
-
 .left-container {
     display: flex;
-    width: 100%;
-    justify-content: flex-start;
-    align-items: center;
+    flex-direction: row;
 }
 
 .logo {
@@ -52,12 +41,12 @@ mat-card {
     -webkit-box-orient: vertical;
 }
 
-.description {
+/* .description {
     display: flex;
     width: 100%;
     align-items: center;
     text-align: center;
-}
+} */
 
 .description p {
     width: 100%;
@@ -71,12 +60,13 @@ mat-card {
     -webkit-box-orient: vertical;
 }
 
-.links {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    padding-bottom: 14px;
+#website-button {
+    margin-right: auto;
+}
+
+#events-button {
+    margin-left: auto;
+    margin-right: 8px;
 }
 
 .link-icons {
@@ -86,9 +76,9 @@ mat-card {
     display: -webkit-box;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-mat-card-actions {
-    padding: 0;
+.mat-mdc-card-actions {
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 /* Override Mat UI's preset z-index for button */
@@ -98,4 +88,5 @@ mat-card-actions {
 
 .details-link {
     text-decoration: none;
+    margin-right: 0px;
 }
