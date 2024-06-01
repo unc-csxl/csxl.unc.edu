@@ -150,10 +150,10 @@ export class EventPageComponent {
       );
     } else {
       this.startDate.set(
-        new Date(new Date().setMonth(new Date().getFullYear() - 100))
+        new Date(new Date().setFullYear(new Date().getFullYear() - 100))
       );
       this.endDate.set(
-        new Date(new Date().setMonth(new Date().getFullYear() + 100))
+        new Date(new Date().setFullYear(new Date().getFullYear() + 100))
       );
     }
     this.filterQuery.set(query);

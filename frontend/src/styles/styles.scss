@@ -24,6 +24,18 @@ html, body {
     }
 }
 
+/// Defines a mixin that applies custom styles to material button components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin mat-button-styles($theme) {
+    .mat-mdc-fab {
+        .mat-icon {
+            color: mat.get-theme-color($theme, on-primary);
+        }
+    }
+}
+
 /// Defines a mixin that applies custom styles to material card components
 /// to better conform to Material 3 standards.
 /// 
@@ -258,6 +270,7 @@ html, body {
 /// light and dark mode.
 @mixin apply-styles($theme) {
     @include global-styles($theme);
+    @include mat-button-styles($theme);
     @include mat-card-styles($theme);
     @include mat-navigation-styles($theme);
     @include mat-list-styles($theme);

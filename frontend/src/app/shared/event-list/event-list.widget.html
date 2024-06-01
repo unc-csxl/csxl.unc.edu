@@ -1,44 +1,24 @@
-<mat-card
-  class="events-section"
-  appearance="outlined"
-  [style]="
-    fullWidth
-      ? 'margin: 0 !important;max-width: 100%; padding: 16px; '
-      : 'padding: 16px; margin: 0px;'
-  ">
-  <div *ngIf="showHeader">
-    <div class="list-content">
-      <mat-card-title>Upcoming Events</mat-card-title>
-      <button
-        mat-icon-button
-        *ngIf="showCreateButton"
-        [routerLink]="[
-          'events',
-          'organizations',
-          organization!.slug,
-          'events',
-          'new',
-          'edit'
-        ]"
-        [relativeTo]="null">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
-    <mat-divider class="list-divider" />
-  </div>
+<mat-pane class="events-section">
+  @if (eventsPerDay.length === 0) {
+  <mat-card-header>
+    <p>No events found!</p>
+  </mat-card-header>
+  }
 
-  <p *ngIf="eventsPerDay.length === 0">No events found!</p>
-
-  <!-- `eventsPerDay` is in the format of a list of tuples, where
+  <mat-card-content>
+    <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] s a list of events -->
-  <div *ngFor="let eventGroup of eventsPerDay" style="padding-bottom: 16px">
-    <mat-card-title>{{ eventGroup[0] }}</mat-card-title>
-    <mat-divider class="list-event-group" />
-    <event-card
-      *ngFor="let event of eventGroup[1]"
-      [event]="event"
-      [disableLink]="disableLinks"
-      [selected]="event === selectedEvent"
-      (clicked)="cardClicked.emit(event)" />
-  </div>
-</mat-card>
+    @for (eventGroup of eventsPerDay; track eventGroup) {
+    <div class="event-group">
+      <mat-card-title>{{ eventGroup[0] }}</mat-card-title>
+      <mat-divider class="list-event-group" />
+      <event-card
+        *ngFor="let event of eventGroup[1]"
+        [event]="event"
+        [disableLink]="disableLinks"
+        [selected]="event === selectedEvent"
+        (clicked)="cardClicked.emit(event)" />
+    </div>
+    }
+  </mat-card-content>
+</mat-pane>
