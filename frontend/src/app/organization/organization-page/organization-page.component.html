@@ -1,23 +1,21 @@
 <!-- HTML Structure of Organizations Page -->
-<banner-card
-  type="info"
-  icon="construction"
-  title="Page Under Construction"
-  body="This page's styling has not yet been updated to conform to Material 3. Some features of the page may not work as expected." />
 
-<div class="page-container">
-  <!-- Search Bar -->
-  <search-bar [(searchBarQuery)]="searchBarQuery" />
+<!-- Search Bar -->
+<div class="search-bar-container">
+  <search-bar
+  class="organization-search-bar"
+  [(searchBarQuery)]="searchBarQuery" />
 
-  <!-- Organizations -->
-  <div class="organization-cards">
-    <!-- Display card for each organization, potentially filtered based on the search query. -->
-    @for (organization of organizations() | organizationFilter: searchBarQuery;
-    track organization.id) {
-    <organization-card
-      class="card"
-      [organization]="organization"
-      [profile]="profile" />
-    }
-  </div>
+</div>
+
+<!-- Organizations -->
+<div class="organization-cards">
+  <!-- Display card for each organization, potentially filtered based on the search query. -->
+  @for (organization of organizations() | organizationFilter: searchBarQuery;
+  track organization.id) {
+  <organization-card
+    class="card"
+    [organization]="organization"
+    [profile]="profile" />
+  }
 </div>

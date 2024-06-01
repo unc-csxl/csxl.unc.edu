@@ -24,7 +24,7 @@ export class OrganizationPageComponent {
   /** Route information to be used in Organization Routing Module */
   public static Route = {
     path: '',
-    title: 'CS Organizations',
+    title: 'Organizations',
     component: OrganizationPageComponent
   };
 
