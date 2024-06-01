@@ -24,12 +24,15 @@ export class NagivationAdminGearService {
    * @param permissionResource Permission resource that must pass for the admin settings to appear.
    * @param tooltip Tooltip to display when hovering over the settings gear icon.
    * @param targetUrl URL for the admin page for the button to redirect to.
+   * @param secondaryTargetUrl URL for a secondary page for a secondary button to redirect to.
+
    */
   public showAdminGearByPermissionCheck(
     permissionAction: string,
     permissionResource: string,
     tooltip: string,
-    targetUrl: string
+    targetUrl: string,
+    secondaryTargetUrl: string = ''
   ) {
     // First, check to see if the user has the permissions.
     this.permissionService
@@ -41,7 +44,8 @@ export class NagivationAdminGearService {
           // Update the settings data
           this.adminSettingsData.set({
             tooltip: tooltip,
-            url: targetUrl
+            url: targetUrl,
+            secondaryUrl: secondaryTargetUrl
           });
         } else {
           // Reset the settings data
@@ -57,11 +61,17 @@ export class NagivationAdminGearService {
    * @param conditionFunction Function that must return true for the gear to appear.
    * @param tooltip Tooltip to display when hovering over the settings gear icon.
    * @param targetUrl URL for the admin page for the button to redirect to.
+   * @param secondaryTargetUrl URL for a secondary page for a secondary button to redirect to.
    */
-  public showAdminGear(tooltip: string, targetUrl: string) {
+  public showAdminGear(
+    tooltip: string,
+    targetUrl: string,
+    secondaryTargetUrl: string = ''
+  ) {
     this.adminSettingsData.set({
       tooltip: tooltip,
-      url: targetUrl
+      url: targetUrl,
+      secondaryUrl: secondaryTargetUrl
     });
   }
 

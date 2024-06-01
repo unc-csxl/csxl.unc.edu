@@ -91,10 +91,13 @@
   align-items: center;
 }
 
+/* NOTE: This is temporary until the admin pages are refactored. */
 #gear-icon {
-  margin-left: auto;
-  margin-top: auto;
-  margin-bottom: auto;
+  width: 32px !important;
+  height: 32px !important;
+  padding-top: 3px;
+  padding-left: 3px;
+  margin-right: 12px;
 }
 
 a {
@@ -102,10 +105,12 @@ a {
 }
 
 .profile-chip-container {
-    margin-left: auto;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-right: 16px;
+  display: flex;
+  margin-left: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 16px;
+  align-items: center;
 }
 /* Round the border for the profile image chip */
 .mat-mdc-standard-chip {

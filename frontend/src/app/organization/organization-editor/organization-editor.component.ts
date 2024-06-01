@@ -91,17 +91,25 @@ export class OrganizationEditorComponent {
    */
   onSubmit(): void {
     if (this.organizationForm.valid) {
-      Object.assign(this.organization, this.organizationForm.value);
+      let organizationToSubmit = this.organization;
+      Object.assign(organizationToSubmit, this.organizationForm.value);
 
       let submittedOrganization = this.isNew()
-        ? this.organizationService.createOrganization(this.organization)
-        : this.organizationService.updateOrganization(this.organization);
+        ? this.organizationService.createOrganization(organizationToSubmit)
+        : this.organizationService.updateOrganization(organizationToSubmit);
 
       submittedOrganization.subscribe({
         next: (organization) => this.onSuccess(organization),
         error: (err) => this.onError(err)
       });
     }
+  }
+
+  /** Event handler to handle resetting the form.
+   * @returns {void}
+   */
+  onReset() {
+    this.organizationForm.patchValue(this.organization);
   }
 
   /** Event handler to handle cancelling the editor and going back to

@@ -1,22 +1,28 @@
-<mat-form-field class="search-bar" appearance="outline" color="accent">
-  <mat-label>Search</mat-label>
-  <input
-    matInput
-    type="text"
-    [(ngModel)]="searchBarQuery"
-    (ngModelChange)="onTextChanged()" />
-  <!-- Search/Clear Icon Logic -->
-  <button
-    *ngIf="searchBarQuery; else noSearch"
-    matSuffix
-    mat-icon-button
-    aria-label="Clear"
-    (click)="clearSearch()">
-    <!-- "Clear" appears if there is a search query. -->
-    <mat-icon>close</mat-icon>
-  </button>
-  <ng-template #noSearch>
-    <!-- "Search" appears if there is no search query. -->
-    <mat-icon matSuffix>search</mat-icon>
-  </ng-template>
-</mat-form-field>
+<mat-card class="mat-csxl-search-bar" appearance="outlined">
+  <mat-form-field
+    class="search-bar-form-field"
+    appearance="outline"
+    color="accent"
+    subscriptSizing="dynamic">
+    <input
+      matInput
+      type="text"
+      placeholder="Search"
+      [(ngModel)]="searchBarQuery"
+      (ngModelChange)="onTextChanged()" />
+    <!-- Search/Clear Icon Logic -->
+    <button
+      *ngIf="searchBarQuery; else noSearch"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="clearSearch()">
+      <!-- "Clear" appears if there is a search query. -->
+      <mat-icon>close</mat-icon>
+    </button>
+    <ng-template #noSearch>
+      <!-- "Search" appears if there is no search query. -->
+      <mat-icon matSuffix>search</mat-icon>
+    </ng-template>
+  </mat-form-field>
+</mat-card>

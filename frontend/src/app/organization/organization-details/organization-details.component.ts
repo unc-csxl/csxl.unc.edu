@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -26,6 +26,7 @@ import { Event } from '../../event/event.model';
 import { Observable } from 'rxjs';
 import { PermissionService } from '../../permission.service';
 import { GroupEventsPipe } from '../../event/pipes/group-events.pipe';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -37,7 +38,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   templateUrl: './organization-details.component.html',
   styleUrls: ['./organization-details.component.css']
 })
-export class OrganizationDetailsComponent {
+export class OrganizationDetailsComponent implements OnInit {
   /** Route information to be used in Organization Routing Module */
   public static Route: Route = {
     path: ':slug',
@@ -76,7 +77,8 @@ export class OrganizationDetailsComponent {
     private profileService: ProfileService,
     protected eventService: EventService,
     protected groupEventsPipe: GroupEventsPipe,
-    private permission: PermissionService
+    private permission: PermissionService,
+    private gearService: NagivationAdminGearService
   ) {
     this.profile = this.profileService.profile()!;
 
@@ -90,6 +92,16 @@ export class OrganizationDetailsComponent {
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
       `organization/${this.organization?.slug ?? '*'}`
+    );
+  }
+
+  ngOnInit(): void {
+    this.gearService.showAdminGearByPermissionCheck(
+      'organization.*',
+      `organization/${this.organization?.slug}`,
+      '',
+      `/organizations/${this.organization?.slug}/edit`,
+      `/events/${this.organization?.slug}/new/edit`
     );
   }
 }

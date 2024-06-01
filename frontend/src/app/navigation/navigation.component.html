@@ -113,17 +113,19 @@
         </button>
         <span>{{ navigationService.title$ | async }}</span>
 
-        @if(navigationAdminGearService.adminSettingsData()) {
-          <button
-            id="gear-icon"
-            type="button"
-            mat-icon-button
-            [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
-            <mat-icon aria-label="Admin icon">settings</mat-icon>
-          </button>
-        }
+
         
         <div class="profile-chip-container">
+          @if(navigationAdminGearService.adminSettingsData()) {
+            <button
+            class="mat-csxl-stroked-icon-button"
+              id="gear-icon"
+              type="button"
+              mat-icon-button
+              [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
+              <mat-icon aria-label="Admin icon" color="secondary">settings</mat-icon>
+            </button>
+          }
           <mat-chip-set>
             @if(profile$ | async; as profile) {
               <mat-chip class="profile-chip" routerLink="/profile">

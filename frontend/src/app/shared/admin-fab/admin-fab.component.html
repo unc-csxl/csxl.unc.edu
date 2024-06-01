@@ -1,0 +1,21 @@
+@if(navigationAdminGearService.adminSettingsData()) {
+<div class="fab-container">
+  @if (navigationAdminGearService.adminSettingsData()?.secondaryUrl) {
+  <button
+    mat-mini-fab
+    color="secondary"
+    [routerLink]="navigationAdminGearService.adminSettingsData()!.secondaryUrl">
+    <mat-icon>{{ secondaryIcon }}</mat-icon>
+  </button>
+  }
+
+  <button
+    mat-fab
+    extended
+    color="accent"
+    [routerLink]="navigationAdminGearService.adminSettingsData()!.url">
+    <mat-icon>{{ primaryIcon }}</mat-icon>
+    {{ primaryText }}
+  </button>
+</div>
+}
