@@ -34,6 +34,7 @@ import { UserChipList } from './user-chip-list/user-chip-list.widget';
 import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
 import { MatPaneComponent } from './mat/mat-pane/mat-pane.component';
 import { BannerCardComponent } from './banner-card/banner-card.component';
+import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { BannerCardComponent } from './banner-card/banner-card.component';
     ProfileAboutCard,
     MatPaneComponent,
     BannerCardComponent
-  ]
+  ],
+  providers: [GroupEventsPipe]
 })
 export class SharedModule {}
