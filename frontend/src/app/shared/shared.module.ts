@@ -35,6 +35,7 @@ import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget
 import { MatPaneComponent } from './mat/mat-pane/mat-pane.component';
 import { BannerCardComponent } from './banner-card/banner-card.component';
 import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
+import { AdminFabComponent } from './admin-fab/admin-fab.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
     CommunityAgreement,
     ProfileAboutCard,
     MatPaneComponent,
-    BannerCardComponent
+    BannerCardComponent,
+    AdminFabComponent
   ],
   imports: [
     CommonModule,
@@ -80,7 +82,8 @@ import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
     UserChipList,
     ProfileAboutCard,
     MatPaneComponent,
-    BannerCardComponent
+    BannerCardComponent,
+    AdminFabComponent
   ],
   providers: [GroupEventsPipe]
 })

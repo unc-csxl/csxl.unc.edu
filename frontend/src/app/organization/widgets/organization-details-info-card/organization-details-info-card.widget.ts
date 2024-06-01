@@ -44,12 +44,6 @@ export class OrganizationDetailsInfoCard implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isHandsetSubscription = this.initHandset();
     this.isTabletSubscription = this.initTablet();
-    this.gearService.showAdminGearByPermissionCheck(
-      'organization.*',
-      `organization/${this.organization?.slug}`,
-      '',
-      `organizations/${this.organization?.slug}/edit`
-    );
   }
 
   /** Unsubscribe from subscribers when the page is destroyed */
