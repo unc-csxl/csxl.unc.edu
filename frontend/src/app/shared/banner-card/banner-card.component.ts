@@ -20,6 +20,7 @@ export class BannerCardComponent {
   @Input() linkAction?: boolean;
   @Input() link?: string;
   @Output() actionButtonPressed = new EventEmitter();
+  @Input() wide: boolean = false;
 
   buttonPressed() {
     if (this.linkAction) {
@@ -35,9 +36,9 @@ export class BannerCardComponent {
   bannerClassName(): string {
     switch (this.type) {
       case BannerType.INFO:
-        return 'mat-csxl-alert-card-info';
+        return `mat-csxl-alert-card-info ${this.wide && ' wide-banner-card'}`;
       case BannerType.ALERT:
-        return 'mat-csxl-alert-card-alert';
+        return `mat-csxl-alert-card-alert ${this.wide && ' wide-banner-card'}`;
       default:
         return '';
     }

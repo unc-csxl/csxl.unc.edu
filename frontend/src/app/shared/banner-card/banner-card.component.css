@@ -1,7 +1,13 @@
+.wide-banner-card {
+    ::ng-deep .mat-mdc-card {
+        max-width: 100% !important;
+    }
+}
 
 .alert-body {
     display: flex;
     flex-direction: column;
+    margin-top: 16px;
     margin-bottom: 16px;
 }
 
@@ -14,6 +20,10 @@
 
 .content-section {
     flex-direction: column;
+}
+
+.mat-mdc-card-header {
+    padding-top: 0px;
 }
 
 .mat-mdc-card-content, .mat-mdc-card-actions {
