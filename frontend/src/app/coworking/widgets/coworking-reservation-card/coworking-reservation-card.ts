@@ -1,6 +1,6 @@
 /**
- * @author John Schachte
- * @copyright 2023
+ * @author Ajay Gandecha, John Schachte
+ * @copyright 2024
  * @license MIT
  */
 

@@ -1,10 +1,4 @@
 <!-- eslint-disable prettier/prettier -->
-<banner-card
-  type="info"
-  icon="construction"
-  title="Page Under Construction"
-  body="This page's styling has not yet been updated to conform to Material 3. Some features of the page may not work as expected." />
-
 @if (status$ | async; as status) {
   @if (openOperatingHours$ | async; as openOperatingHours) {
     <coworking-operating-hours-panel
