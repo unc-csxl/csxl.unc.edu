@@ -5,9 +5,17 @@
 }
 
 .mdc-list-item.mdc-list-item--with-trailing-meta .mdc-list-item__end {
-  height: 100%;
-  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 32px;
+  margin-top: auto;
+  margin-bottom: auto;
+  /* margin-top: auto;
+  margin-bottom: auto;
+  line-height: 32px;
+  font-size: 32px;
+  vertical-align: middle; */
 }
 
 .mdc-list-item__content {
