@@ -1,6 +1,6 @@
 /**
- * @author John Schachte
- * @copyright 2023
+ * @author Ajay Gandecha, John Schachte
+ * @copyright 2024
  * @license MIT
  */
 
@@ -19,6 +19,7 @@ import { CoworkingService } from '../../coworking.service';
 })
 export class CoworkingReservationCard implements OnInit {
   @Input() reservation!: Reservation;
+  @Input() isPane: boolean = true;
   @Output() updateReservationsList = new EventEmitter<void>();
   @Output() isConfirmed = new EventEmitter<boolean>();
   @Output() updateActiveReservation = new EventEmitter<void>();
@@ -50,7 +51,12 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   checkinDeadline(reservationStart: Date, reservationEnd: Date): Date {
-    return new Date(Math.min(reservationStart.getTime() + 10 * 60 * 1000, reservationEnd.getTime()));
+    return new Date(
+      Math.min(
+        reservationStart.getTime() + 10 * 60 * 1000,
+        reservationEnd.getTime()
+      )
+    );
   }
 
   cancel() {
@@ -163,22 +169,21 @@ export class CoworkingReservationCard implements OnInit {
 
   /**
    * Evaluates if the cancel operation is expanded or if check-in is allowed.
-   * 
+   *
    * Combines the observable `isCancelExpanded$` with the result of `checkCheckinAllowed()` to
    * determine the UI state. It uses RxJS's `map` to emit true if either condition is met: the
    * cancel operation is expanded (`isCancelExpanded$` is true) or check-in is allowed (`checkCheckinAllowed()`
    * returns true).
-   * 
+   *
    * @returns {Observable<boolean>} Observable that emits true if either condition is true, otherwise false.
-   * 
+   *
    * Usage:
    * Can be used in Angular templates with async pipe for conditional UI rendering:
    * `<ng-container *ngIf="isExpandedOrAllowCheckin() | async">...</ng-container>`
    */
   isExpandedOrAllowCheckin(): Observable<boolean> {
     return this.isCancelExpanded$.pipe(
-      map(isCancelExpanded => isCancelExpanded || this.checkCheckinAllowed())
+      map((isCancelExpanded) => isCancelExpanded || this.checkCheckinAllowed())
     );
   }
-  
 }

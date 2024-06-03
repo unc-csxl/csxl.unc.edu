@@ -131,6 +131,13 @@ html, body {
     .mdc-list-item__primary-text {
         color: mat.get-theme-color($theme, on-surface-variant);
     }
+
+    // NOTE: The following item should be refactored once the icon colors are working correctly.
+    .facts-list {
+        .mat-icon {
+            color: mat.get-theme-color($theme, primary) !important;
+        }
+    }
 }
 
 /// Defines a mixin that applies custom styles to material components

@@ -1,4 +1,4 @@
-<mat-card appearance="outlined">
+<mat-pane appearance="outlined">
   <mat-card-header class="header">
     <div class="header-row">
       <mat-card-title
@@ -13,7 +13,7 @@
         <mat-card-title class="hours-title closed">
           <span class="badge">Closed</span>
           <span *ngIf="operatingHours.length > 0"
-            >Open 
+            >Open
             {{
               operatingHours[0]!.start
                 | date: "EEE, MMM d 'at' h:mma"
@@ -27,4 +27,4 @@
       </button>
     </div>
   </mat-card-header>
-</mat-card>
+</mat-pane>
