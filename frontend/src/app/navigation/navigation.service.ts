@@ -62,4 +62,5 @@ export class NavigationService {
 export interface AdminSettingsNavigationData {
   tooltip: string;
   url: string;
+  secondaryUrl: string;
 }

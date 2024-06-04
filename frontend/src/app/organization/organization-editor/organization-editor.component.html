@@ -3,7 +3,7 @@
 <!-- Update Organization Form -->
 <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()">
   <!-- Update Organization Card -->
-  <mat-card appearance="outlined">
+  <mat-pane appearance="outlined">
     <mat-card-header>
       <mat-card-title>
         {{ this.isNew() ? 'Create' : 'Update' }} Organization
@@ -22,23 +22,25 @@
           required />
       </mat-form-field>
       <!-- Shorthand Field -->
-      <mat-form-field appearance="outline" color="accent">
-        <mat-label>Shorthand</mat-label>
-        <input
-          matInput
-          placeholder=""
-          formControlName="shorthand"
-          name="shorthand"
-          required />
-      </mat-form-field>
-      <!-- Slug Field -->
-      <mat-form-field
-        hintLabel="Lowercase letters, numbers, or dashes"
-        appearance="outline"
-        color="accent">
-        <mat-label>Slug</mat-label>
-        <input matInput placeholder="" formControlName="slug" name="slug" />
-      </mat-form-field>
+      <div class="horizontal-wrapper">
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Shorthand</mat-label>
+          <input
+            matInput
+            placeholder=""
+            formControlName="shorthand"
+            name="shorthand"
+            required />
+        </mat-form-field>
+        <!-- Slug Field -->
+        <mat-form-field
+          hintLabel="Lowercase letters, numbers, or dashes"
+          appearance="outline"
+          color="accent">
+          <mat-label>Slug</mat-label>
+          <input matInput placeholder="" formControlName="slug" name="slug" />
+        </mat-form-field>
+      </div>
       <!-- Logo Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Logo Link</mat-label>
@@ -46,7 +48,6 @@
       </mat-form-field>
       <!-- Short Description Field -->
       <mat-form-field
-        class="short-description"
         hintLabel="Max 150 characters"
         appearance="outline"
         color="accent">
@@ -59,7 +60,6 @@
       </mat-form-field>
       <!-- Long Description Field -->
       <mat-form-field
-        class="long-description"
         hintLabel="Max 2000 characters"
         appearance="outline"
         color="accent">
@@ -125,15 +125,22 @@
           formControlName="heel_life"
           name="heel_life" />
       </mat-form-field>
-      <!-- Submit Button -->
+    </mat-card-content>
+    <mat-card-actions>
       <button
         mat-stroked-button
-        type="submit"
-        [disabled]="organizationForm.invalid"
-        class="save-button">
-        SAVE
+        color="secondary"
+        type="button"
+        (click)="onReset()">
+        Reset
       </button>
-    </mat-card-content>
-    <mat-card-actions class="button-container"> </mat-card-actions>
-  </mat-card>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="organizationForm.invalid">
+        Save
+      </button>
+    </mat-card-actions>
+  </mat-pane>
 </form>

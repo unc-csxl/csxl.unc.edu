@@ -1,5 +1,5 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-  <mat-card appearance="outlined">
+  <mat-pane appearance="outlined">
     <mat-card-header *ngIf="profile.id; else registration">
       <mat-card-title>Update your Profile</mat-card-title>
     </mat-card-header>
@@ -60,9 +60,13 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button routerLink="/profile">Cancel</button>
-      <button mat-stroked-button type="submit" [disabled]="profileForm.invalid">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="profileForm.invalid">
         Save
       </button>
     </mat-card-actions>
-  </mat-card>
+  </mat-pane>
 </form>

@@ -14,17 +14,17 @@
   padding: 0;
 }
 
-.logo-icon {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 90%;
+/* Left align the logo. */
+.logo-item {
+  text-align: left !important;
+  padding-left: 16px !important;
+  margin-bottom: 12px !important;
 }
 
 .logo-icon {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-left: auto;
+  margin-right: auto; */
   width: 90%;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .sidenav {
-  width: 200px;
+  width: 220px;
 }
 
 .inner-sidenav-container {
@@ -70,7 +70,6 @@
   top: 0;
   z-index: 2;
   overflow: hidden;
-  background: #4786c6;
 }
 
 .example-spacer {
@@ -92,8 +91,28 @@
   align-items: center;
 }
 
+/* NOTE: This is temporary until the admin pages are refactored. */
 #gear-icon {
+  width: 32px !important;
+  height: 32px !important;
+  padding-top: 3px;
+  padding-left: 3px;
+  margin-right: 12px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.profile-chip-container {
+  display: flex;
   margin-left: auto;
   margin-top: auto;
   margin-bottom: auto;
+  margin-right: 16px;
+  align-items: center;
+}
+/* Round the border for the profile image chip */
+.mat-mdc-standard-chip {
+  --mdc-chip-container-shape-radius: 16px;
 }

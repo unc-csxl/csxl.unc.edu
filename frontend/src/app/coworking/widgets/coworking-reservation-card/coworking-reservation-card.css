@@ -1,53 +1,11 @@
-.mat-mdc-card {
-  max-width: 640px;
-  margin: 0;
-}
 
-.mat-mdc-card-header {
-  margin-bottom: 0px;
-  padding: 0px;
+/* NOTE: This is the only way to apply the pane style without duplicating a lot of code. */
+::ng-deep .pane {
+    border-color: transparent !important;
 }
 
 .mat-mdc-card-actions {
-  margin-top: 0px;
-  padding: 0px;
-}
-
-.mat-divider {
-  margin: 0.7em 0;
-  padding: 0px;
-}
-
-h3 {
-  font-size: 18px;
-  margin-bottom: 0px;
-  padding: 0px;
-  margin-top: 0px;
-}
-
-h3 > label {
-  width: 64px;
-  display: inline-block;
-  padding: 0px;
-}
-
-p {
-  margin-left: 64px;
-  padding: 0px;
-}
-
-.divider {
-  margin: 0.5em;
-}
-
-@media only screen and (max-device-width: 730px) {
-  h3 > * {
-    font-size: 0.8em;
-  }
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* This ensures vertical alignment if needed */
+    padding-bottom: 16px;
+    justify-content: end;
+    gap: 12px;
 }

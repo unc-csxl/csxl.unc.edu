@@ -1,4 +1,4 @@
-<mat-card appearance="outlined">
+<mat-pane>
   <mat-card-header>
     <mat-card-title> Computer Science Courses at UNC </mat-card-title>
   </mat-card-header>
@@ -14,47 +14,45 @@
   </mat-card-content>
   <mat-card-actions>
     <button
+      mat-flat-button
+      color="primary"
+      class="link-button"
+      routerLink="/academics/offerings">
+      Section Offerings
+    </button>
+    <button
       mat-stroked-button
       class="link-button"
       routerLink="/academics/catalog">
       Course Catalog
     </button>
-    <button
-      mat-stroked-button
-      class="link-button"
-      routerLink="/academics/offerings">
-      Section Offerings
-    </button>
   </mat-card-actions>
-</mat-card>
+</mat-pane>
 
-<div
-  *ngIf="
-    applicationService.user_application$ | async as application;
-    else noApplication
-  ">
-  <mat-card class="content" appearance="outlined">
-    <mat-card-content>
-      <mat-card-title>Become a TA!</mat-card-title>
-      <p>
-        You have filled out the form to become a UTA! You may edit your
-        application.
-      </p>
-      <button mat-stroked-button (click)="onUTAClick(application)">
-        Edit Application
-      </button>
-    </mat-card-content>
-  </mat-card>
-</div>
-<ng-template #noApplication>
-  <mat-card class="content" appearance="outlined">
-    <mat-card-content>
-      <mat-card-subtitle>Become a TA!</mat-card-subtitle>
-      <p>
-        Fill out the form below to apply for UTA positions for the upcoming
-        semester!
-      </p>
-      <button mat-stroked-button (click)="onUTAClick(null)">Apply Now</button>
-    </mat-card-content>
-  </mat-card>
-</ng-template>
+@if ((applicationService.user_application$ | async); as application) {
+<mat-pane class="content" appearance="outlined">
+  <mat-card-content>
+    <mat-card-title>Become a TA!</mat-card-title>
+    <p>
+      You have filled out the form to become a UTA! You may edit your
+      application.
+    </p>
+    <button mat-stroked-button (click)="onUTAClick(application)">
+      Edit Application
+    </button>
+  </mat-card-content>
+</mat-pane>
+} @else {
+<mat-pane class="content" appearance="outlined">
+  <mat-card-content>
+    <mat-card-subtitle>Become a TA!</mat-card-subtitle>
+    <p>
+      Fill out the form below to apply for UTA positions for the upcoming
+      semester!
+    </p>
+    <button mat-flat-button color="primary" (click)="onUTAClick(null)">
+      Apply Now
+    </button>
+  </mat-card-content>
+</mat-pane>
+}

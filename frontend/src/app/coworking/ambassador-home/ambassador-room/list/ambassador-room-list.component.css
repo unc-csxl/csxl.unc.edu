@@ -1,7 +1,8 @@
-.mat-mdc-card {
-    max-width: 100%;
-  }
-  
+
+::ng-deep .mat-mdc-card-outlined {
+  max-width: 100% !important;
+  margin-right: 32px !important;
+}
   .mat-mdc-card-header {
     margin-bottom: 16px;
   }

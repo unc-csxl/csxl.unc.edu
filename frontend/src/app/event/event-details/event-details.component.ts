@@ -82,7 +82,7 @@ export class EventDetailsComponent implements OnInit {
       'events.*',
       '*',
       '',
-      `events/${this.event?.organization_id}/${this.event?.id}/edit`
+      `/events/${this.event?.organization_id}/${this.event?.id}/edit`
     );
   }
 }

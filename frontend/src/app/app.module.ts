@@ -4,7 +4,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /* HTTP and Auth */
 import { RouterModule } from '@angular/router';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 import { HttpRequestInterceptor } from './navigation/http-request.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 
@@ -41,6 +45,7 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { SharedModule } from './shared/shared.module';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -52,18 +57,18 @@ import { SharedModule } from './shared/shared.module';
     AboutComponent,
     GateComponent
   ],
+  bootstrap: [AppComponent],
   imports: [
     /* Angular */
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     NgForOf,
     AppRoutingModule,
     LayoutModule,
     ReactiveFormsModule,
-
     /* Material UI */
     MatButtonModule,
+    MatChipsModule,
     MatCardModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -96,8 +101,8 @@ import { SharedModule } from './shared/shared.module';
       useClass: HttpRequestInterceptor,
       multi: true
     },
-    DatePipe
-  ],
-  bootstrap: [AppComponent]
+    DatePipe,
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}

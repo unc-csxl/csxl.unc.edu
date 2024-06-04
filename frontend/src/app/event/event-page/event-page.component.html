@@ -1,32 +1,26 @@
 <div>
-  <div class="parameter-bar">
-    <search-bar
-      class="search-bar"
-      [searchBarQuery]="searchBarQuery"
-      (searchBarQueryChange)="onSearchBarQueryChange($event)" />
-  </div>
+  <search-bar
+    class="mat-csxl-search-bar"
+    [searchBarQuery]="searchBarQuery"
+    (searchBarQueryChange)="onSearchBarQueryChange($event)" />
 
-  <div class="container">
-    <div class="events-grid">
-      <div class="events-column">
-        <mat-card class="date-range" appearance="outlined">
-          <button mat-icon-button (click)="previousPage()">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-          <p class="date-range-text">
-            {{ startDate() | date: 'mediumDate' }}
-            <code>&#8212;</code> {{ endDate() | date: 'mediumDate' }}
-          </p>
-          <button mat-icon-button (click)="nextPage()">
-            <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-        </mat-card>
-        <event-list
-          [eventsPerDay]="eventsByDate()"
-          [selectedEvent]="null"
-          [disableLinks]="false"
-          [fullWidth]="true" />
-      </div>
-    </div>
-  </div>
+  <mat-pane>
+    <mat-card-content class="date-range">
+      <button mat-icon-button (click)="previousPage()">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <p class="date-range-text">
+        {{ startDate() | date: 'mediumDate' }}
+        <code>&#8212;</code> {{ endDate() | date: 'mediumDate' }}
+      </p>
+      <button mat-icon-button (click)="nextPage()">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </mat-card-content>
+  </mat-pane>
+  <event-list
+    [eventsPerDay]="eventsByDate()"
+    [selectedEvent]="null"
+    [disableLinks]="false"
+    [fullWidth]="true" />
 </div>

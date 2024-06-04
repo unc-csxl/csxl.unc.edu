@@ -1,0 +1,57 @@
+<div class="facts-list">
+  <!-- Location Section -->
+  <div class="list-item">
+    <mat-icon>location_on</mat-icon>
+    <div class="list-item-text">
+      <p class="header-text">
+        <strong>{{
+          reservation.room
+            ? reservation.room.id
+            : 'The XL Colab in Sitterson 156'
+        }}</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- What Section -->
+  @if (reservation.seats.length > 0) {
+  <div class="list-item">
+    <mat-icon>chair_alt</mat-icon>
+    <div class="list-item-text">
+      <p class="header-text">
+        <strong>
+          {{ reservation.seats[0].title }}
+        </strong>
+      </p>
+    </div>
+  </div>
+
+  }
+
+  <!-- Time Section -->
+  <div class="list-item">
+    <mat-icon>schedule</mat-icon>
+
+    <div class="list-item-text">
+      <p class="header-text">
+        <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
+        <strong>{{ reservation.end | date: 'shortTime' }}</strong>
+        <strong>{{ ', ' }}</strong>
+        <strong class="date">{{
+          reservation.start | date: 'dd MMM yyyy'
+        }}</strong>
+      </p>
+
+      @if (reservation.state === 'CONFIRMED') {
+      <p>
+        Check-in between {{ reservation.start | date: 'shortTime' }} and
+        {{
+          checkinDeadline(reservation.start, reservation.end)
+            | date: 'shortTime'
+        }}
+        to avoid cancellation.
+      </p>
+      }
+    </div>
+  </div>
+</div>

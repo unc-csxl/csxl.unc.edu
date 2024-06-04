@@ -1,92 +1,90 @@
 <!-- Event Detail Card -->
-<mat-card class="event-detail-card" appearance="outlined">
-  <!-- Title Section -->
-  <div class="event-title-container">
-    <!-- Title -->
-    <div class="event-title">
-      <mat-card-title [routerLink]="[event.id]">
-        {{ event.name }}
-      </mat-card-title>
-    </div>
+<mat-pane class="event-detail-card">
+  <mat-card-header>
+    <mat-card-title [routerLink]="[event.id]">
+      {{ event.name }}
+    </mat-card-title>
 
-    <!-- Buttons -->
-    <div class="event-actions">
-      @if (this.adminPermission$ | async) {
-      <button mat-icon-button (click)="deleteEvent(event)">
-        <mat-icon>delete</mat-icon>
-      </button>
-      }
-      <button mat-icon-button (click)="onShareButtonClick()">
-        <mat-icon>share</mat-icon>
-      </button>
-    </div>
-  </div>
-
-  <mat-divider id="top-divider" />
-
-  <!-- Organization Section -->
-  <div
-    class="organization-section"
-    [routerLink]="'/organizations/' + event.organization!.slug">
-    <!-- Organization Icon -->
-    <img mat-card-image src="{{ event.organization!.logo }}" class="logo" />
-    <!-- Organization Name -->
-    <p id="organization-name">{{ event.organization!.shorthand }}</p>
-  </div>
-
-  <mat-divider class="padded-divider" />
-
-  <!-- Logistical Information -->
-  <div>
-    <p><strong>Starts At:</strong> {{ event.time | date: 'shortTime' }}</p>
-    <p><strong>Location:</strong> {{ event.location }}</p>
-  </div>
-
-  <mat-divider class="padded-divider" />
-
-  <!-- Description -->
-  <div class="event-description">
-    <p>{{ event.description }}</p>
-  </div>
-
-  <!-- Organizers -->
-  @if (profile && event.organizers.length > 0) {
-  <div class="organizers-information">
-    <ng-container class="organizers-text">
-      If you have any questions or concerns about this event, please contact the
-      organizer{{ event.organizers.length > 1 && 's' }} below:
-    </ng-container>
-    <br />
-    <user-chip-list
-      [users]="event.organizers"
-      [enableMailTo]="true"></user-chip-list>
-  </div>
-  }
-
-  <!-- Register Button -->
-  @if (profile && event.registration_limit > 0) {
-  <div class="registration-information">
-    <mat-divider class="padded-divider" />
-    <p>
-      <strong>Seats Remaining:</strong>
-      {{ event.registration_limit - event.registration_count }} /
-      {{ event.registration_limit }}
-    </p>
-    @if (event.is_attendee || event.is_organizer) {
+    @if (this.adminPermission$ | async) {
     <button
-      mat-stroked-button
-      [disabled]="event.is_organizer"
-      (click)="unregisterForEvent()">
-      Unregister
-    </button>
-    } @else {
-    <button
-      mat-stroked-button
-      [disabled]="event.registration_count === event.registration_limit"
-      (click)="registerForEvent()">
-      Register
+      mat-icon-button
+      class="mat-csxl-stroked-icon-button"
+      id="delete-button"
+      (click)="deleteEvent(event)">
+      <mat-icon>delete</mat-icon>
     </button>
     }
-  </div>
-  }
-</mat-card>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-divider />
+
+    <!-- Organization Section -->
+    <div
+      class="organization-section"
+      [routerLink]="'/organizations/' + event.organization!.slug">
+      <!-- Organization Icon -->
+      <img mat-card-image src="{{ event.organization!.logo }}" class="logo" />
+      <!-- Organization Name -->
+      <p id="organization-name">{{ event.organization!.shorthand }}</p>
+    </div>
+
+    <mat-divider class="padded-divider" />
+
+    <!-- Logistical Information -->
+    <div>
+      <p><strong>Starts At:</strong> {{ event.time | date: 'shortTime' }}</p>
+      <p><strong>Location:</strong> {{ event.location }}</p>
+    </div>
+
+    <mat-divider class="padded-divider" />
+
+    <!-- Description -->
+    <div class="event-description">
+      <p>{{ event.description }}</p>
+    </div>
+
+    <!-- Organizers -->
+    @if (profile && event.organizers.length > 0) {
+    <div class="organizers-information">
+      <ng-container class="organizers-text">
+        If you have any questions or concerns about this event, please contact
+        the organizer{{ event.organizers.length > 1 && 's' }} below:
+      </ng-container>
+      <br />
+      <user-chip-list
+        [users]="event.organizers"
+        [enableMailTo]="true"></user-chip-list>
+    </div>
+    }
+
+    <!-- Register Button -->
+    @if (profile && event.registration_limit > 0) {
+    <div class="registration-information">
+      <mat-divider class="padded-divider" />
+      <p>
+        <strong>Seats Remaining:</strong>
+        {{ event.registration_limit - event.registration_count }} /
+        {{ event.registration_limit }}
+      </p>
+      @if (event.is_attendee || event.is_organizer) {
+      <button
+        mat-flat-button
+        class="tertiary-button"
+        [disabled]="event.is_organizer"
+        (click)="unregisterForEvent()">
+        Unregister
+      </button>
+      } @else {
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="event.registration_count === event.registration_limit"
+        (click)="registerForEvent()">
+        Register
+      </button>
+      }
+    </div>
+    }
+  </mat-card-content>
+</mat-pane>

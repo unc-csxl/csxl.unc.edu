@@ -27,6 +27,7 @@ import { SectionEditorComponent } from './academics-admin/section/section-editor
 import { AdminRoomComponent } from './academics-admin/room/admin-room.component';
 import { RoomEditorComponent } from './academics-admin/room/room-editor/room-editor.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatTabsModule,
     MatInputModule,
     MatCheckboxModule,
-    AsyncPipe
+    AsyncPipe,
+    SharedModule
   ]
 })
 export class AcademicsModule {}

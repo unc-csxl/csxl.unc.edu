@@ -1,3 +1,5 @@
+<!-- eslint-disable prettier/prettier -->
+<!-- eslint-disable prettier/prettier -->
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav
     #drawer
@@ -25,41 +27,66 @@
               alt="Computer Science Experience Labs Logo" />
           </picture>
         </a>
-        <div *ngIf="profile$ | async as profile; else unauthenticated">
-          <a mat-list-item routerLink="/coworking">Coworking</a>
-          <a mat-list-item routerLink="/events">Events</a>
-          <a mat-list-item routerLink="/organizations">Organizations</a>
-          <a mat-list-item routerLink="/academics">Academics</a>
-          <a mat-list-item routerLink="/office-hours">Office Hours</a>
-          <a mat-list-item routerLink="/about">About the XL</a>
+        <div>
+          
+          <!-- Administration -->
+          @if (profile$ | async; as profile) {
+            @if ((adminPermission$ | async) || (ambassadorPermission$ | async)) {
+              <h3 matSubheader>Administration</h3>
+            }
+            @if (adminPermission$ | async) {
+              <mat-list-item routerLink="/admin/users" [activated]="router.isActive('/admin', false)">
+                  <mat-icon matListItemIcon>settings</mat-icon>
+                  <div matListItemTitle>Admin</div>              
+              </mat-list-item>
+            } 
+            @if (ambassadorPermission$ | async) {
+              <mat-list-item routerLink="/coworking/ambassador" [activated]="router.isActive('/coworking/ambassador', false)">
+                <mat-icon matListItemIcon>handshake</mat-icon>
+                <div matListItemTitle>XL Ambassador</div>
+              </mat-list-item>
+            }
+            @if ((adminPermission$ | async) || (ambassadorPermission$ | async)) {
+              <mat-divider></mat-divider>
+            }
+          }
+          <!-- Main Section -->
+          @if (profile$ | async; as profile) {
+            <h3 matSubheader>School</h3>
+            <mat-list-item routerLink="/coworking" [activated]="router.isActive('/coworking', true)">
+              <mat-icon matListItemIcon>groups</mat-icon>
+              <div matListItemTitle>Coworking</div>
+            </mat-list-item>
+            <mat-list-item routerLink="/office-hours" [activated]="router.isActive('/office-hours', true)">
+              <mat-icon matListItemIcon>person_raised_hand</mat-icon>
+              <div matListItemTitle>Office Hours</div>
+            </mat-list-item>
+            <mat-list-item routerLink="/academics" [activated]="router.isActive('/academics', true)">
+              <mat-icon matListItemIcon>school</mat-icon>
+              <div matListItemTitle>Academics</div>
+            </mat-list-item>
+          }
           <mat-divider></mat-divider>
-          <div *ngIf="ambassadorPermission$ | async">
-            <a mat-list-item routerLink="/coworking/ambassador">
-              XL Ambassador
-            </a>
-          </div>
-          <div *ngIf="adminPermission$ | async">
-            <a mat-list-item routerLink="/admin/users">User Admin</a>
-          </div>
-          <a
-            mat-list-item
-            routerLink="/profile"
-            *ngIf="profile.first_name !== ''; else new_user"
-            >{{ profile.first_name }} {{ profile.last_name }}</a
-          >
-          <ng-template #new_user>
-            <a mat-list-item routerLink="/profile">Profile</a>
-          </ng-template>
-          <a mat-list-item (click)="auth.signOut()">Sign out</a>
+          <!-- Community -->
+          <h3 matSubheader>Community</h3>
+          <mat-list-item routerLink="/events" [activated]="router.isActive('/events?', false)">
+            <mat-icon matListItemIcon>event</mat-icon>
+            <div matListItemTitle>Events</div>
+          </mat-list-item>
+          <mat-list-item routerLink="/organizations" [activated]="router.isActive('/organizations', true)">
+            <mat-icon matListItemIcon>interests</mat-icon>
+            <div matListItemTitle>Organizations</div>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <!-- Other-->
+          <h3 matSubheader>Other</h3>
+          <mat-list-item routerLink="/about" [activated]="router.isActive('/about', true)">
+            <mat-icon matListItemIcon>info</mat-icon>
+            <div matListItemTitle>About the XL</div>
+          </mat-list-item>
         </div>
-        <ng-template #unauthenticated>
-          <a mat-list-item routerLink="/organizations">Organizations</a>
-          <a mat-list-item routerLink="/events">Events</a>
-          <a mat-list-item routerLink="/about">About the XL</a>
-          <a mat-list-item href="/auth?continue_to={{ router.url }}">Sign in</a>
-        </ng-template>
       </mat-nav-list>
-      <div
+      <!-- <div
         mat-list-item
         class="bottom-button-container"
         *ngIf="profile$ | async as profile">
@@ -70,7 +97,7 @@
         <social-media-icon
           svgIcon="instagram"
           href="https://www.instagram.com/unc.csxl/" />
-      </div>
+      </div> -->
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -84,17 +111,42 @@
           *ngIf="isHandset">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-        <p>{{ navigationService.title$ | async }}</p>
+        <span>{{ navigationService.title$ | async }}</span>
 
-        @if(navigationAdminGearService.adminSettingsData()) {
-        <button
-          id="gear-icon"
-          type="button"
-          mat-icon-button
-          [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
-          <mat-icon aria-label="Admin icon">settings</mat-icon>
-        </button>
-        }
+
+        
+        <div class="profile-chip-container">
+          @if(navigationAdminGearService.adminSettingsData()) {
+            <button
+            class="mat-csxl-stroked-icon-button"
+              id="gear-icon"
+              type="button"
+              mat-icon-button
+              [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
+              <mat-icon aria-label="Admin icon" color="secondary">settings</mat-icon>
+            </button>
+          }
+          <mat-chip-set>
+            @if(profile$ | async; as profile) {
+              <mat-chip class="profile-chip" routerLink="/profile">
+                @if(profile.github_avatar) {
+                  <img matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
+                } @else {
+                  <mat-icon matChipAvatar>account_circle</mat-icon>
+                }
+                {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
+              </mat-chip>
+            } @else {
+              <a href="/auth?continue_to={{ router.url }}">
+                <mat-chip class="profile-chip">
+                  <mat-icon matChipAvatar>login</mat-icon>
+                  Sign In
+                </mat-chip>
+              </a>
+              
+            }
+          </mat-chip-set>
+        </div>
       </div>
     </mat-toolbar>
     <mat-progress-bar

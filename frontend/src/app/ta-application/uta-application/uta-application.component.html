@@ -1,4 +1,11 @@
-<mat-card appearance="outlined">
+<banner-card
+  [wide]="true"
+  type="info"
+  icon="construction"
+  title="Page Under Construction"
+  body="This page's styling has not yet been updated to conform to Material 3." />
+
+<mat-pane appearance="outlined">
   <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
     <mat-step [stepControl]="firstFormGroup">
       <form [formGroup]="firstFormGroup">
@@ -314,4 +321,4 @@
       </div>
     </mat-step>
   </mat-stepper>
-</mat-card>
+</mat-pane>

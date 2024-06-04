@@ -1,5 +1,6 @@
-.mat-mdc-card {
-  max-width: 100%;
+::ng-deep .mat-mdc-card-outlined {
+  max-width: 100% !important;
+  margin-right: 32px !important;
 }
 
 tr.example-detail-row {

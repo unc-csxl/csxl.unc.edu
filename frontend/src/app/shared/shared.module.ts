@@ -32,6 +32,10 @@ import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
+import { MatPaneComponent } from './mat/mat-pane/mat-pane.component';
+import { BannerCardComponent } from './banner-card/banner-card.component';
+import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
+import { AdminFabComponent } from './admin-fab/admin-fab.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +47,10 @@ import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget
     UserChipList,
     SlackInviteBox,
     CommunityAgreement,
-    ProfileAboutCard
+    ProfileAboutCard,
+    MatPaneComponent,
+    BannerCardComponent,
+    AdminFabComponent
   ],
   imports: [
     CommonModule,
@@ -73,7 +80,11 @@ import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget
     EventList,
     UserLookup,
     UserChipList,
-    ProfileAboutCard
-  ]
+    ProfileAboutCard,
+    MatPaneComponent,
+    BannerCardComponent,
+    AdminFabComponent
+  ],
+  providers: [GroupEventsPipe]
 })
 export class SharedModule {}

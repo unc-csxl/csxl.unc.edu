@@ -1,6 +1,6 @@
 <!-- eslint-disable prettier/prettier -->
 
-<mat-card class="card" appearance="outlined">
+<mat-pane class="card" appearance="outlined">
   <!-- Card Header Row (Logo, Name, Members) -->
   <mat-card-header class="header">
     <!-- Container for Logo and Name to allow for left alignment -->
@@ -26,37 +26,22 @@
     </p>
   </mat-card-content>
 
-  <!-- Organization Links & Details -->
-  <mat-card-actions class="links">
-    <!-- Icon only appears if the organization actually has a corresponding link -->
-    <div class="link-icons">
-
-      @if (organization.website !== '') {
-        <social-media-icon [fontIcon]="'link'" [href]="organization.website" />
-      }
-      
-      @if (organization.email !== '') {
-        <social-media-icon [fontIcon]="'mail'" [href]="'mailto:' + organization.email" />
-      }
-     
-      @if(organization.instagram !== '') {
-        <social-media-icon [svgIcon]="'instagram'" [href]="organization.instagram" />
-      }
-
-      @if(organization.linked_in !== '') {
-        <social-media-icon [svgIcon]="'linkedin'" [href]="organization.linked_in" />
-      }
-
-      @if(organization.youtube !== '') {
-        <social-media-icon [svgIcon]="'youtube'" [href]="organization.youtube" />
-      }
-
-    </div>
-    <!-- Link to Individual Organization Page -->
+  <mat-card-actions>
     <a
-      class="details-link"
-      [routerLink]="['/organizations', organization.slug]">
-      <button mat-stroked-button>Details</button>
-    </a>
+    class="details-link"
+    [routerLink]="['/organizations', organization.slug]">
+    <button mat-stroked-button>Details</button>
+  </a>
+  
+  <button mat-icon-button class="mat-csxl-stroked-icon-button" id="events-button" color="basic">
+    <mat-icon>event</mat-icon>
+  </button>
+
+  @if (organization.website !== '') {
+    <social-media-icon id="website-button" [fontIcon]="'link'" [href]="organization.website" />
+  }
+
+
+
   </mat-card-actions>
-</mat-card>
+</mat-pane>

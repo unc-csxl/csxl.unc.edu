@@ -1,0 +1,35 @@
+.facts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.header-text {
+    font-size: 18px;
+    margin: 0px;
+}
+
+p {
+    margin-bottom: 0px;
+}
+
+.list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.list-item-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 18px;
+}
+
+.mat-icon {
+    font-size: 34px;
+    width: 34px;
+    height: 34px;
+}

@@ -1,9 +1,10 @@
-<div class="container">
-  <div class="events-grid">
-    <event-detail-card [event]="event!" [profile]="this.profile" />
+<event-detail-card [event]="event!" [profile]="this.profile" />
 
-    @if ((this.canViewEvent() | async) || this.event?.is_organizer ?? false) {
-    <event-users-list [event]="event!"></event-users-list>
-    }
-  </div>
-</div>
+@if ((this.canViewEvent() | async) || this.event?.is_organizer ?? false) {
+<!-- <event-users-list [event]="event!"></event-users-list> -->
+}
+
+<admin-fab
+  primaryIcon="edit"
+  primaryText="Edit"
+  secondaryIcon="calendar_add_on" />

@@ -48,6 +48,7 @@ import { ConcernTicketsWidget } from './widgets/ticket/concern-tickets/concern-t
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { EditEventFormComponent } from './event/edit-event-form/edit-event-form.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -103,7 +104,8 @@ import { EditEventFormComponent } from './event/edit-event-form/edit-event-form.
     MatCheckboxModule,
     MatButtonToggleModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    SharedModule
   ]
 })
 export class OfficeHoursModule {}
