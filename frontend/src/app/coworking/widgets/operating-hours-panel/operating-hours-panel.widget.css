@@ -28,14 +28,6 @@
   align-items: center;
 }
 
-.open .badge {
-  background: #256123;
-}
-
-.closed .badge {
-  background: #612d23;
-}
-
 .mat-mdc-card {
   max-width: 640px;
   margin: 0;

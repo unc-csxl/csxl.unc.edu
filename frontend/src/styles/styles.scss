@@ -22,6 +22,48 @@ html, body {
     p {
         font: mat.get-theme-typography($theme, body-medium, font);
     }
+
+    .primary-background {
+        background: mat.get-theme-color($theme, primary) !important;
+        color: mat.get-theme-color($theme, on-primary) !important;
+    }
+
+    .primary-background-color {
+        background-color: mat.get-theme-color($theme, primary) !important;
+        color: mat.get-theme-color($theme, on-primary) !important;
+    }
+
+    .primary-color {
+        color: mat.get-theme-color($theme, primary) !important;
+    }
+
+    .secondary-background {
+        background: mat.get-theme-color($theme, secondary) !important;
+        color: mat.get-theme-color($theme, on-secondary) !important;
+    }
+
+    .secondary-background-color {
+        background-color: mat.get-theme-color($theme, secondary) !important;
+        color: mat.get-theme-color($theme, on-secondary) !important;
+    }
+
+    .secondary-color {
+        color: mat.get-theme-color($theme, secondary) !important;
+    }
+
+    .tertiary-background {
+        background: mat.get-theme-color($theme, tertiary) !important;
+        color: mat.get-theme-color($theme, on-tertiary) !important;
+    }
+
+    .tertiary-background-color {
+        background-color: mat.get-theme-color($theme, tertiary) !important;
+        color: mat.get-theme-color($theme, on-tertiary) !important;
+    }
+
+    .tertiary-color {
+        color: mat.get-theme-color($theme, tertiary) !important;
+    }
 }
 
 /// Defines a mixin that applies custom styles to material button components
@@ -34,6 +76,10 @@ html, body {
             color: mat.get-theme-color($theme, on-primary);
         }
     }
+
+    .tertiary-button {
+        @include mat.button-color($theme, $color-variant: tertiary);
+      }
 }
 
 /// Defines a mixin that applies custom styles to material card components

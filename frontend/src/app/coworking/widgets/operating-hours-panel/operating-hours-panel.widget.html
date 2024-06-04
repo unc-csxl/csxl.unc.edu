@@ -5,14 +5,17 @@
         class="hours-title open"
         *ngIf="openOperatingHours; else closed">
         <div class="header-row">
-          <span class="badge">Open</span>
-          until {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}
+          <span class="badge secondary-background">Open</span
+          ><span class="secondary-color"
+            >until
+            {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</span
+          >
         </div>
       </mat-card-title>
       <ng-template #closed>
         <mat-card-title class="hours-title closed">
-          <span class="badge">Closed</span>
-          <span *ngIf="operatingHours.length > 0"
+          <span class="badge tertiary-background">Closed</span>
+          <span class="tertiary-color" *ngIf="operatingHours.length > 0"
             >Open
             {{
               operatingHours[0]!.start
