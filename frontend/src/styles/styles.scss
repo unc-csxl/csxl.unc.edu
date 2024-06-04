@@ -335,6 +335,14 @@ html, body {
     @include widget-styles($theme);
 }
 
+/// Defines a mixin that applies any manual dark mode override styles.
+@mixin apply-overrided-dark-mode-styles($theme) {
+    .mat-csxl-alert-card-info {
+        p {
+            color: mat.get-theme-color(csxl-theme.$dark-theme, on-secondary-container) !important;
+        }
+    }
+}
 
 /** Apply themes and custom styling to the site. */
 
@@ -342,6 +350,7 @@ html {
 
     @include mat.all-component-themes(csxl-theme.$dark-theme);
     @include apply-styles(csxl-theme.$dark-theme);
+    @include apply-overrided-dark-mode-styles(csxl-theme.$dark-theme);
 
     @media (prefers-color-scheme: light) {
         @include mat.all-component-colors(csxl-theme.$light-theme);
