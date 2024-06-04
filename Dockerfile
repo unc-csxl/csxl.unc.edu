@@ -1,5 +1,5 @@
 # Front-end Build Steps
-FROM node:18 as build
+FROM node:22 as build
 COPY ./frontend/package.json /workspace/frontend/package.json
 COPY ./frontend/angular.json /workspace/frontend/angular.json
 WORKDIR /workspace/frontend
