@@ -43,6 +43,7 @@ html, body {
 @mixin mat-card-styles($theme) {
 
     .mat-mdc-card {
+        background-color: mat.get-theme-color($theme, surface);
         max-width: 640px;
         margin: 1em;
     }
@@ -62,7 +63,7 @@ html, body {
 
     .mat-mdc-card-title {
         font: mat.get-theme-typography($theme, title-large, font);
-        color: mat.get-theme-color($theme, on-surface);
+        color: mat.get-theme-color($theme, on-surface) !important;
     }  
 
     .mat-mdc-card p {
@@ -214,8 +215,9 @@ html, body {
     // 
     // Currently, the Angular Material framework does not expose a search bar input.
     // Once Angular Material upgrades to include the M3 search bar, this can be refactored.
+
     .mat-csxl-search-bar {
-        .mat-mdc-card-outlined {
+         .mat-mdc-card-outlined {
             background-color: mat.get-theme-color($theme, surface-container-high) !important;
         }
         .mat-icon {
@@ -245,7 +247,7 @@ html, body {
         }
 
         p {
-            color: mat.get-theme-color($theme, on-secondary-fixed-variant);
+            color: mat.get-theme-color($theme, on-secondary-fixed-variant) !important;
         }
     }
     
