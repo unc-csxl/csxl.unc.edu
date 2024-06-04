@@ -69,7 +69,8 @@
       </p>
       @if (event.is_attendee || event.is_organizer) {
       <button
-        mat-stroked-button
+        mat-flat-button
+        class="tertiary-button"
         [disabled]="event.is_organizer"
         (click)="unregisterForEvent()">
         Unregister

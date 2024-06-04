@@ -36,7 +36,13 @@
 
   <mat-card-actions>
     @switch (reservation.state) { @case ('DRAFT') {
-    <button mat-stroked-button type="submit" (click)="cancel()">Cancel</button>
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      type="submit"
+      (click)="cancel()">
+      Cancel
+    </button>
     <button
       mat-stroked-button
       type="submit"
@@ -47,9 +53,9 @@
     </button>
     } @case ('CONFIRMED') {
     <button
-      mat-stroked-button
+      mat-flat-button
+      class="tertiary-button"
       type="submit"
-      color="tertiary"
       (click)="cancel()">
       Cancel
     </button>
@@ -63,10 +69,10 @@
     </button>
     } @case ('CHECKED_IN') {
     <button
-      mat-stroked-button
+      mat-flat-button
+      class="tertiary-button"
       type="submit"
-      (click)="checkout()"
-      color="primary">
+      (click)="checkout()">
       Check Out
     </button>
     } @case ('CHECKED_OUT') {
