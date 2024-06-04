@@ -251,12 +251,10 @@ export class EditEventFormComponent implements OnInit {
         event_date: this.eventForm.value.event_date,
         start_time:
           this.eventForm.value.event_date +
-            'T' +
-            this.eventForm.value.start_time ?? '',
+          'T' +
+          this.eventForm.value.start_time,
         end_time:
-          this.eventForm.value.event_date +
-            'T' +
-            this.eventForm.value.end_time ?? ''
+          this.eventForm.value.event_date + 'T' + this.eventForm.value.end_time
       };
 
       this.officeHoursService.updateEvent(event_draft).subscribe({
