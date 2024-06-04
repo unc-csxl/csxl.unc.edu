@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
 	&& apt-get install --yes \
         apt-transport-https \
+        build-essential \
         ca-certificates \
 	    curl \
         debian-keyring \
@@ -44,17 +45,17 @@ RUN mkdir -p /etc/apt/keyrings \
 # Install Angular CLI Globally
 RUN npm install -g @angular/cli
 
-# Install Python 3.11
+# Install Python 3.12
 RUN add-apt-repository ppa:deadsnakes/ppa \
     && apt update \
     && apt install --yes \
-        python3.11 \
-        python3-pip \
+        python3.12 \
         libpq-dev \
-        python3.11-dev \
+        python3.12-venv \
+        python3.12-dev \
     && rm -rf /var/lib/apt/lists* \
     && unlink /usr/bin/python3 \
-    && ln -s /usr/bin/python3.11 /usr/bin/python3
+    && ln -s /usr/bin/python3.12 /usr/bin/python3
 
 # Use a non-root user per https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user
 ARG USERNAME=vscode
@@ -104,6 +105,7 @@ RUN arch="$(arch)"; \
 # Install Database Dependencies
 COPY backend/requirements.txt /workspace/backend/requirements.txt
 WORKDIR /workspace/backend
+RUN python3 -m ensurepip
 RUN python3 -m pip install -r requirements.txt
 
 

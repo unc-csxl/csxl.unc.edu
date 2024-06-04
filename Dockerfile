@@ -13,7 +13,7 @@ COPY ./frontend/*.json /workspace/frontend
 RUN ng build --optimization --output-path ../static
 
 # Back-end Build Steps
-FROM python:3.11
+FROM python:3.12
 RUN python3 -m pip install --upgrade pip
 COPY ./backend/requirements.txt /workspace/backend/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /workspace/backend/requirements.txt
