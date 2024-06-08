@@ -1,12 +1,12 @@
 """Definition of SQLAlchemy table-backed object mapping entity for the user - section association table."""
 
 from typing import Self
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer, Index
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.entities.office_hours import user_created_tickets_table
-from backend.models.academics.section_member_details import SectionMemberDetails
+from ..office_hours import user_created_tickets_table
+from ...models.academics.section_member_details import SectionMemberDetails
 
 from ...models.roster_role import RosterRole
 from ...models.academics.section_member import SectionMember, SectionMemberDraft
@@ -37,6 +37,22 @@ class SectionMemberEntity(EntityBase):
     # Name for the user section table in the PostgreSQL database
     __tablename__ = "academics__user_section"
 
+    # Add indexes to the database for fast, common lookup queries
+    __table_args__ = (
+        Index(
+            "ix_academics__user_section__by_user",
+            "user_id",
+            "section_id",
+            unique=True,
+        ),
+        Index(
+            "ix_academics__user_section__by_section",
+            "section_id",
+            "member_role",
+            unique=False,
+        ),
+    )
+
     # User Section properties (columns in the database table)
 
     # Unique ID for a user's membership in an academic section
@@ -63,10 +79,6 @@ class SectionMemberEntity(EntityBase):
     # Tickets that have been called by the user
     called_oh_tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
         back_populates="caller", cascade="all, delete"
-    )
-
-    application_id: Mapped[int] = mapped_column(
-        ForeignKey("application.id"), nullable=True
     )
 
     def to_flat_model(self) -> SectionMember:
