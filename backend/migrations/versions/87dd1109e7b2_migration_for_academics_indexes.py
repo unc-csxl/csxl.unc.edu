@@ -3,7 +3,7 @@
 Revision ID: 87dd1109e7b2
 Revises: eb379629af4f
 Create Date: 2024-06-08 07:17:36.113064
-
+Author: Kris Jordan
 """
 
 from alembic import op
@@ -45,27 +45,8 @@ def upgrade() -> None:
         unique=True,
     )
 
-    # Remove the foreign key to a TA application from UserSection. It will go somewhere else eventually.
-    op.drop_constraint(
-        "academics__user_section_application_id_fkey",
-        "academics__user_section",
-        type_="foreignkey",
-    )
-    op.drop_column("academics__user_section", "application_id")
-
 
 def downgrade() -> None:
-    op.add_column(
-        "academics__user_section",
-        sa.Column("application_id", sa.INTEGER(), autoincrement=False, nullable=True),
-    )
-    op.create_foreign_key(
-        "academics__user_section_application_id_fkey",
-        "academics__user_section",
-        "application",
-        ["application_id"],
-        ["id"],
-    )
     op.drop_index(
         "ix_academics__user_section__by_user", table_name="academics__user_section"
     )
