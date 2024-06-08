@@ -12,7 +12,7 @@ from ...models.academics.my_courses import (
     MyCourseItem,
     CourseOverview,
     SectionOverview,
-    TermOverview,
+    CourseOverview,
     MyCourseTerms,
 )
 from ...entities.academics.term_entity import TermEntity
@@ -57,7 +57,7 @@ class MyCoursesService:
 
     def _group_by_term(
         self, entities: list[SectionMemberEntity]
-    ) -> dict[str, TermOverview]:
+    ) -> dict[str, CourseOverview]:
         """
         Group a list of SectionMemberEntity by term.
 
@@ -69,7 +69,7 @@ class MyCoursesService:
         """
         terms = {}
         for term, sections in groupby(entities, lambda x: x.section.term):
-            terms[term.name] = TermOverview(
+            terms[term.name] = CourseOverview(
                 id=term.id,
                 name=term.name,
                 start=term.start,
@@ -119,7 +119,7 @@ class MyCoursesService:
                 description=entity.course.description,
             ),
             number=entity.number,
-            term=TermOverview(
+            term=CourseOverview(
                 id=entity.term.id,
                 name=entity.term.name,
                 start=entity.term.start,

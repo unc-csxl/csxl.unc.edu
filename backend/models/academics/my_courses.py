@@ -2,25 +2,24 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
+class SectionOverview(BaseModel):
+    id: int
+    meeting_pattern: str
+    override_title: str
+    override_description: str
+
+
 class CourseOverview(BaseModel):
     id: str
     subject_code: str
     number: str
     title: str
     description: str
-
-
-class SectionOverview(BaseModel):
-    id: int
-    course: CourseOverview
-    number: str
-    meeting_pattern: str
-    override_title: str
-    override_description: str
+    sections: list[SectionOverview]
 
 
 class MyCourseItem(BaseModel):
-    section: SectionOverview
+    course: CourseOverview
     role: str
 
 
