@@ -1,7 +1,7 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Course Sections."""
 
 from typing import Self
-from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from ..section_application_table import section_application_table
@@ -18,6 +18,22 @@ class SectionEntity(EntityBase):
 
     # Name for the course section table in the PostgreSQL database
     __tablename__ = "academics__section"
+
+    # Add indexes to the database for fast, common lookup queries
+    __table_args__ = (
+        Index(
+            "ix_academics__section__by_term",
+            "term_id",
+            "course_id",
+            unique=False,
+        ),
+        Index(
+            "ix_academics__section__by_course",
+            "course_id",
+            "term_id",
+            unique=False,
+        ),
+    )
 
     # Section properties (columns in the database table)
 
