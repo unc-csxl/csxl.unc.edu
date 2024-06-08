@@ -20,12 +20,11 @@ from .api import (
     application,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
-from .api.academics import section_member, term, course, section
+from .api.academics import section_member, term, course, section, my_courses
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 from .api.office_hours import ticket, section as oh_section, event
 from .services.exceptions import (
-    EventRegistrationException,
     UserPermissionException,
     ResourceNotFoundException,
 )
@@ -48,17 +47,17 @@ app = FastAPI(
         user.openapi_tags,
         organizations.openapi_tags,
         events.openapi_tags,
-        application.openapi_tags,
-        reservation.openapi_tags,
-        room.openapi_tags,
+        section_member.openapi_tags,
         course.openapi_tags,
-        health.openapi_tags,
-        admin_users.openapi_tags,
-        admin_roles.openapi_tags,
+        room.openapi_tags,
+        reservation.openapi_tags,
+        event.openapi_tags,
         ticket.openapi_tags,
         oh_section.openapi_tags,
-        section_member.openapi_tags,
-        event.openapi_tags,
+        application.openapi_tags,
+        admin_users.openapi_tags,
+        admin_roles.openapi_tags,
+        health.openapi_tags,
     ],
 )
 
@@ -72,13 +71,9 @@ feature_apis = [
     operating_hours,
     events,
     user,
-    profile,
     organizations,
-    health,
     ambassador,
-    authentication,
-    admin_users,
-    admin_roles,
+    my_courses,
     term,
     course,
     section,
@@ -87,7 +82,12 @@ feature_apis = [
     ticket,
     oh_section,
     section_member,
+    profile,
+    admin_users,
+    admin_roles,
     application,
+    authentication,
+    health,
 ]
 
 for feature_api in feature_apis:

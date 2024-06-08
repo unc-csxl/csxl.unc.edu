@@ -10,29 +10,19 @@ from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...models.academics.section_member import (
     SectionMember,
     SectionMemberDraft,
-    SectionMemberPartial,
 )
 from ...models.academics.section_member_details import SectionMemberDetails
 from ...models.office_hours.section import (
     OfficeHoursSection,
-    OfficeHoursSectionDraft,
-    OfficeHoursSectionPartial,
 )
-from ...models.office_hours.section_details import OfficeHoursSectionDetails
 from ...models.roster_role import RosterRole
 
 from ...database import db_session
-from ...models.academics import Section
-from ...models.academics import SectionDetails
-from ...models import User, Room
-from ...models.room_assignment_type import RoomAssignmentType
+from ...models import User
 from ...entities.academics import SectionEntity
-from ...entities.academics import CourseEntity
-from ...entities.academics import SectionRoomEntity
 from ..permission import PermissionService
 
 from ..exceptions import ResourceNotFoundException
-from datetime import datetime
 
 __authors__ = ["Meghan Sun, Sadie Amato"]
 __copyright__ = "Copyright 2024"
