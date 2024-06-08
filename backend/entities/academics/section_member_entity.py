@@ -48,8 +48,8 @@ class SectionMemberEntity(EntityBase):
         Index(
             "ix_academics__user_section__by_section",
             "section_id",
-            "user_id",
-            unique=True,
+            "member_role",
+            unique=False,
         ),
     )
 

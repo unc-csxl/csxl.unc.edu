@@ -35,8 +35,8 @@ def upgrade() -> None:
     op.create_index(
         "ix_academics__user_section__by_section",
         "academics__user_section",
-        ["section_id", "user_id"],
-        unique=True,
+        ["section_id", "member_role"],
+        unique=False,
     )
     op.create_index(
         "ix_academics__user_section__by_user",
