@@ -9,13 +9,11 @@ from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
 from ...models.academics.my_courses import (
-    MyCourseItem,
     CourseOverview,
     SectionOverview,
     CourseOverview,
-    MyCourseTerms,
+    TermOverview,
 )
-from ...entities.academics.term_entity import TermEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 
@@ -35,7 +33,7 @@ class MyCoursesService:
         """
         self._session = session
 
-    def get_user_courses(self, user: User) -> MyCourseTerms:
+    def get_user_courses(self, user: User) -> list[TermOverview]:
         """
         Get the courses for the current user.
 
@@ -53,11 +51,9 @@ class MyCoursesService:
             )
         )
         section_member_entities = self._session.scalars(query).all()
-        return MyCourseTerms(terms=self._group_by_term(section_member_entities))
+        return self._group_by_term(section_member_entities)
 
-    def _group_by_term(
-        self, entities: list[SectionMemberEntity]
-    ) -> dict[str, CourseOverview]:
+    def _group_by_term(self, entities: list[SectionMemberEntity]) -> list[TermOverview]:
         """
         Group a list of SectionMemberEntity by term.
 
@@ -67,65 +63,40 @@ class MyCoursesService:
         Returns:
             dict[str, TermOverview]: The grouped SectionMemberEntity.
         """
-        terms = {}
-        for term, sections in groupby(entities, lambda x: x.section.term):
-            terms[term.name] = CourseOverview(
-                id=term.id,
-                name=term.name,
-                start=term.start,
-                end=term.end,
-                courses=self._,
+        terms = []
+        for term, term_memberships in groupby(entities, lambda x: x.section.term):
+            courses = []
+            for course, course_memberships in groupby(
+                term_memberships, lambda membership: membership.section.course
+            ):
+                memberships = list(course_memberships)
+                courses.append(
+                    CourseOverview(
+                        id=course.id,
+                        subject_code=course.subject_code,
+                        number=course.number,
+                        title=memberships[0].section.override_title or course.title,
+                        role=memberships[0].member_role.name,
+                        sections=[
+                            self._to_section_overview(membership.section)
+                            for membership in memberships
+                        ],
+                    )
+                )
+
+            terms.append(
+                TermOverview(
+                    id=term.id,
+                    name=term.name,
+                    start=term.start,
+                    end=term.end,
+                    courses=courses,
+                )
             )
-            term_sections = list(sections)
-            term_overview = self._to_term_overview(term_sections[0].section.term)
-            term_overview.courses = [
-                self._to_my_course_item(section) for section in term_sections
-            ]
-            terms[term] = term_overview
         return terms
 
-    def _to_my_course_item(self, entity: SectionMemberEntity) -> MyCourseItem:
-        """
-        Convert a SectionEntity to a MyCourseItem.
-
-        Args:
-            entity (SectionEntity): The SectionEntity to convert.
-
-        Returns:
-            MyCourseItem: The converted MyCourseItem.
-        """
-        return MyCourseItem(
-            section=self._to_section_overview(entity.section),
-            role=entity.member_role.name,
-        )
-
-    def _to_section_overview(self, entity: SectionEntity) -> SectionOverview:
-        """
-        Convert a SectionEntity to a SectionOverview.
-
-        Args:
-            entity (SectionEntity): The SectionEntity to convert.
-
-        Returns:
-            SectionOverview: The converted SectionOverview.
-        """
+    def _to_section_overview(self, section: SectionEntity) -> SectionOverview:
         return SectionOverview(
-            id=entity.id,
-            course=CourseOverview(
-                id=entity.course.id,
-                subject_code=entity.course.subject_code,
-                number=entity.course.number,
-                title=entity.course.title,
-                description=entity.course.description,
-            ),
-            number=entity.number,
-            term=CourseOverview(
-                id=entity.term.id,
-                name=entity.term.name,
-                start=entity.term.start,
-                end=entity.term.end,
-            ),
-            meeting_pattern=entity.meeting_pattern,
-            override_title=entity.override_title,
-            override_description=entity.override_description,
+            number=section.number,
+            meeting_pattern=section.meeting_pattern,
         )
