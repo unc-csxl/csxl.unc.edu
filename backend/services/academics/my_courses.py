@@ -38,7 +38,7 @@ class MyCoursesService:
         Get the courses for the current user.
 
         Returns:
-            MyCourseTerms
+            list[TermOverview]
         """
         query = (
             select(SectionMemberEntity)
@@ -61,7 +61,7 @@ class MyCoursesService:
             entities (list[SectionMemberEntity]): The SectionMemberEntity to group.
 
         Returns:
-            dict[str, TermOverview]: The grouped SectionMemberEntity.
+            list[TermOverview]: The grouped SectionMemberEntity.
         """
         terms = []
         for term, term_memberships in groupby(entities, lambda x: x.section.term):
