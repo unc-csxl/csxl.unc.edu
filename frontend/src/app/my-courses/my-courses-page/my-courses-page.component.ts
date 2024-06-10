@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MyCoursesService } from '../my-courses.service';
 
 @Component({
   selector: 'app-my-courses-page',
@@ -12,4 +13,6 @@ export class MyCoursesPageComponent {
     title: 'My Courses',
     component: MyCoursesPageComponent
   };
+
+  constructor(public myCoursesService: MyCoursesService) {}
 }

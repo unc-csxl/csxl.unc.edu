@@ -12,7 +12,7 @@ __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
-api = APIRouter(prefix="/api/academics/my_courses")
+api = APIRouter(prefix="/api/academics/my-courses")
 
 
 @api.get("", tags=["Academics"])
