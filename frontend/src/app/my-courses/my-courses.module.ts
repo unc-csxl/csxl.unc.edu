@@ -14,9 +14,10 @@ import { CommonModule } from '@angular/common';
 import { MyCoursesRoutingModule } from './my-courses-routing.module';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
+import { MyCoursesPageComponent } from './my-courses-page/my-courses-page.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [MyCoursesPageComponent],
   imports: [CommonModule, MyCoursesRoutingModule, RouterModule, SharedModule]
 })
 export class MyCoursesModule {}
