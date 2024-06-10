@@ -57,6 +57,12 @@ const routes: Routes = [
       )
   },
   {
+    path: 'my-courses',
+    title: 'My Courses',
+    loadChildren: () =>
+      import('./my-courses/my-courses.module').then((m) => m.MyCoursesModule)
+  },
+  {
     path: 'ta-application',
     title: 'TA Applications',
     loadChildren: () =>
