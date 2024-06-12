@@ -13,6 +13,7 @@ import { MyCoursesPageComponent } from './my-courses-page/my-courses-page.compon
 import { CatalogComponent } from './catalog/catalog.component';
 import { AllCoursesComponent } from './catalog/course-catalog/course-catalog.component';
 import { SectionOfferingsComponent } from './catalog/section-offerings/section-offerings.component';
+import { CourseComponent } from './course/course.component';
 
 const routes: Routes = [
   MyCoursesPageComponent.Route,
@@ -20,7 +21,8 @@ const routes: Routes = [
     path: 'catalog',
     component: CatalogComponent,
     children: [AllCoursesComponent.Route, SectionOfferingsComponent.Route]
-  }
+  },
+  CourseComponent.Route
 ];
 
 @NgModule({

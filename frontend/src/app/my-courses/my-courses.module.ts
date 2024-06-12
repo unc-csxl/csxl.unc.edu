@@ -28,7 +28,8 @@ import { SectionOfferingsComponent } from './catalog/section-offerings/section-o
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CourseComponent } from './course/course.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     CatalogComponent,
     SectionOfferingsComponent,
     AllCoursesComponent,
+    CourseComponent,
     CourseCardWidget
   ],
   imports: [

@@ -24,8 +24,7 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [disabled]="!course.sections[0].oh_section_id"
-      [routerLink]="'/office-hours/' + course.sections[0].oh_section_id">
+      [routerLink]="'/course/0'">
       Get Help
     </button>
     } @else {
@@ -34,8 +33,7 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [disabled]="!course.sections[0].oh_section_id"
-      [routerLink]="'/office-hours/' + course.sections[0].oh_section_id">
+      [routerLink]="'/course/0'">
       Manage
     </button>
     }
