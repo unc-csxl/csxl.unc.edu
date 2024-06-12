@@ -1,10 +1,13 @@
+::ng-deep .mat-pane {
+    margin-right: 32px !important;
+}
+
 .container {
     height: 100%;
 
     ::ng-deep .mat-pane {
         max-width: 100% !important;
         min-height: calc(100vh - 112px);
-        margin-right: 32px !important;
         margin-bottom: 32px !important;
     }
 }
