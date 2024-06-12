@@ -10,8 +10,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MyCoursesPageComponent } from './my-courses-page/my-courses-page.component';
+import { CatalogComponent } from './catalog/catalog.component';
 
-const routes: Routes = [MyCoursesPageComponent.Route];
+const routes: Routes = [MyCoursesPageComponent.Route, CatalogComponent.Route];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

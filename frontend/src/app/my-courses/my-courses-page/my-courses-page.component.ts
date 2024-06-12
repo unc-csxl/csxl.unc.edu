@@ -9,7 +9,7 @@ import { MyCoursesService } from '../my-courses.service';
 export class MyCoursesPageComponent {
   /** Route information to be used in the routing module */
   public static Route = {
-    path: '',
+    path: 'my-courses',
     title: 'My Courses',
     component: MyCoursesPageComponent
   };

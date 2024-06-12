@@ -1,0 +1,12 @@
+.tab-card {
+    height: 64px;
+    border-radius: 32px;
+    max-width: 100%;
+}
+
+.tab-card-container {
+    display: flex;
+    flex-direction: row;
+    height: 64px;
+    width: 100%;
+}

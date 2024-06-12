@@ -20,9 +20,11 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CourseCardWidget } from './widgets/course-card/course-card.widget';
+import { CatalogComponent } from './catalog/catalog.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
-  declarations: [MyCoursesPageComponent, CourseCardWidget],
+  declarations: [MyCoursesPageComponent, CatalogComponent, CourseCardWidget],
   imports: [
     CommonModule,
     MyCoursesRoutingModule,
@@ -31,7 +33,8 @@ import { CourseCardWidget } from './widgets/course-card/course-card.widget';
     MatCardModule,
     MatDividerModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTabsModule
   ]
 })
 export class MyCoursesModule {}

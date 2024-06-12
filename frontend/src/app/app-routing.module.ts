@@ -57,7 +57,7 @@ const routes: Routes = [
       )
   },
   {
-    path: 'my-courses',
+    path: '',
     title: 'My Courses',
     loadChildren: () =>
       import('./my-courses/my-courses.module').then((m) => m.MyCoursesModule)
