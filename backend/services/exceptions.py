@@ -19,6 +19,13 @@ class UserPermissionException(Exception):
         super().__init__(f"Not authorized to perform `{action}` on `{resource}`")
 
 
+class CoursePermissionException(Exception):
+    """CoursePermissionException is raised when a user attempts to perform an action they are not authorized to perform."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")
+
+
 class EventRegistrationException(Exception):
     """EventRegistrationException is raised when a user attempts to register and cannot (i.e., when the event is full)."""
 

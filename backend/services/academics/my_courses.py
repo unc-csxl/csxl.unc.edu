@@ -8,14 +8,19 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
+from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
     CourseOverview,
     SectionOverview,
     CourseOverview,
     TermOverview,
+    CourseMemberOverview,
+    CourseRosterOverview,
 )
+from ...entities.academics.course_entity import CourseEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
+from ..exceptions import ResourceNotFoundException, CoursePermissionException
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -100,4 +105,65 @@ class MyCoursesService:
             number=section.number,
             meeting_pattern=section.meeting_pattern,
             oh_section_id=section.office_hours_id,
+        )
+
+    def get_course_roster(
+        self, user: User, term_id: str, course_id: str
+    ) -> CourseRosterOverview:
+        """
+        Get the courses for the current user.
+
+        Returns:
+            list[TermOverview]
+        """
+
+        course_entity = self._session.query(CourseEntity).get(course_id)
+
+        if course_entity is None:
+            raise ResourceNotFoundException(f"No course found for ID: {course_id}.")
+
+        member_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .where(
+                SectionEntity.term_id == term_id,
+                SectionEntity.course_id == course_id,
+            )
+            .options(joinedload(SectionMemberEntity.user))
+        )
+
+        section_member_entities = self._session.scalars(member_query).all()
+
+        user_member = [
+            entity for entity in section_member_entities if entity.user_id == user.id
+        ]
+
+        if len(user_member) == 0 or user_member[0].member_role == RosterRole.STUDENT:
+            raise CoursePermissionException(
+                "Not allowed to access the roster of a course you are not an instructor of."
+            )
+
+        return self._to_course_roster_overview(course_entity, section_member_entities)
+
+    def _to_course_member_overview(
+        self, section_member: SectionMemberEntity
+    ) -> CourseMemberOverview:
+        return CourseMemberOverview(
+            pid=section_member.user.pid,
+            first_name=section_member.user.first_name,
+            last_name=section_member.user.last_name,
+            email=section_member.user.email,
+            pronouns=section_member.user.pronouns,
+            role=section_member.member_role.name,
+        )
+
+    def _to_course_roster_overview(
+        self, course: CourseEntity, members: list[SectionMemberEntity]
+    ):
+        return CourseRosterOverview(
+            id=course.id,
+            subject_code=course.subject_code,
+            number=course.number,
+            title=course.title,
+            members=[self._to_course_member_overview(member) for member in members],
         )
