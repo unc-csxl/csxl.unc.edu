@@ -36,6 +36,7 @@ import { MatPaneComponent } from './mat/mat-pane/mat-pane.component';
 import { BannerCardComponent } from './banner-card/banner-card.component';
 import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
 import { AdminFabComponent } from './admin-fab/admin-fab.component';
+import { TabContainerWidget } from './tab-container/tab-container.widget';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { AdminFabComponent } from './admin-fab/admin-fab.component';
     ProfileAboutCard,
     MatPaneComponent,
     BannerCardComponent,
-    AdminFabComponent
+    AdminFabComponent,
+    TabContainerWidget
   ],
   imports: [
     CommonModule,
@@ -83,7 +85,8 @@ import { AdminFabComponent } from './admin-fab/admin-fab.component';
     ProfileAboutCard,
     MatPaneComponent,
     BannerCardComponent,
-    AdminFabComponent
+    AdminFabComponent,
+    TabContainerWidget
   ],
   providers: [GroupEventsPipe]
 })

@@ -1,0 +1,39 @@
+::ng-deep .mat-mdc-tab-links {
+    max-width: 100% !important;
+}
+
+::ng-deep .mat-mdc-tab-link-container {
+    border-bottom: none !important;
+}
+
+::ng-deep nav {
+    border-bottom: none !important;
+}
+
+::ng-deep .mat-mdc-tab-header {
+    border-bottom: none !important;
+}
+
+.tab-card {
+    height: 64px;
+    border-radius: 32px;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-right: 32px !important;
+    margin-top: 0px !important;
+    margin-bottom: 2px !important;
+
+}
+
+.tab-card-container {
+    display: flex;
+    flex-direction: row;
+    height: 64px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.tab-container-button {
+    flex-grow: 1;
+    height: 64px;
+}

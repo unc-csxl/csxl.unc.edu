@@ -1,12 +1,12 @@
 .container {
     height: 100%;
-}
 
-::ng-deep .mat-pane {
-    max-width: 100% !important;
-    min-height: calc(100vh - 112px);
-    margin-right: 32px !important;
-    margin-bottom: 16px !important;
+    ::ng-deep .mat-pane {
+        max-width: 100% !important;
+        min-height: calc(100vh - 112px);
+        margin-right: 32px !important;
+        margin-bottom: 32px !important;
+    }
 }
 
 #pane-header {

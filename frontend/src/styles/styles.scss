@@ -327,6 +327,14 @@ html, body {
             color: mat.get-theme-color($theme, on-tertiary-fixed-variant);
         }
     }
+
+    .tab-container-button {
+        color: mat.get-theme-color($theme, on-secondary-container) !important;
+    }
+    
+    .tab-enabled-container-button {
+        background-color: mat.get-theme-color($theme, secondary-container) !important;
+    }
 }
 .mdc-notched-outline__notch {
     border-left: 1px solid rgba(0, 0, 0, 0);

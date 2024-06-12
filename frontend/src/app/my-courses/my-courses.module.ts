@@ -22,9 +22,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { CourseCardWidget } from './widgets/course-card/course-card.widget';
 import { CatalogComponent } from './catalog/catalog.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { AllCoursesComponent } from './catalog/course-catalog/course-catalog.component';
+import { MatTableModule } from '@angular/material/table';
+import { SectionOfferingsComponent } from './catalog/section-offerings/section-offerings.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-  declarations: [MyCoursesPageComponent, CatalogComponent, CourseCardWidget],
+  declarations: [
+    MyCoursesPageComponent,
+    CatalogComponent,
+    SectionOfferingsComponent,
+    AllCoursesComponent,
+    CourseCardWidget
+  ],
   imports: [
     CommonModule,
     MyCoursesRoutingModule,
@@ -34,7 +47,13 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatDividerModule,
     MatButtonModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule
   ]
 })
 export class MyCoursesModule {}

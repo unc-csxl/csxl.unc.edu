@@ -1,10 +1,22 @@
 <!-- eslint-disable prettier/prettier -->
-<div class="container">
+<banner-card
+type="info"
+[wide]="true"
+icon="person_raised_hand"
+title="Apply to be a UTA Today!"
+body="We are now accepting UTA Applications for the Fall 2024 semester. Apply to be a UTA by clicking here."
+actionButtonText="Apply Now"
+[bottomActionButton]="true"
+[linkAction]="false"
+(actionButtonPressed)="onUTAClick()"
+link="https://github.com/unc-csxl/csxl.unc.edu/wiki/Upgrade-to-CSXL-Web-Application-v2" />
+
+<div class="container">  
   <mat-pane>
     <mat-card-header id="pane-header">
       <mat-card-title>My Courses</mat-card-title>
       <div class="header-buttons">
-        <button mat-stroked-button color="secondary">
+        <button mat-stroked-button color="secondary" routerLink="/catalog/offerings">
           <!-- <mat-icon>search</mat-icon> -->
           View Catalog
         </button>

@@ -12,16 +12,16 @@ import {
   coursesResolver,
   currentTermResolver,
   termsResolver
-} from '../academics.resolver';
+} from '../../../academics/academics.resolver';
 import {
   Course,
   RosterRole,
   Section,
   SectionMember,
   Term
-} from '../academics.models';
+} from '../../../academics/academics.models';
 import { ActivatedRoute } from '@angular/router';
-import { AcademicsService } from '../academics.service';
+import { AcademicsService } from '../../../academics/academics.service';
 import {
   animate,
   state,
@@ -51,7 +51,7 @@ export class SectionOfferingsComponent implements OnInit {
   /** Route information to be used in Course Routing Module */
   public static Route = {
     path: 'offerings',
-    title: 'Section Offerings',
+    title: 'Catalog',
     component: SectionOfferingsComponent,
     canActivate: [],
     resolve: {

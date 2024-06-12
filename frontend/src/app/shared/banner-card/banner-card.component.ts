@@ -19,7 +19,7 @@ export class BannerCardComponent {
   @Input() actionButtonText!: string;
   @Input() linkAction?: boolean;
   @Input() link?: string;
-  @Output() actionButtonPressed = new EventEmitter();
+  @Output() actionButtonPressed = new EventEmitter<void>();
   @Input() wide: boolean = false;
 
   buttonPressed() {

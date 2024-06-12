@@ -15,7 +15,11 @@ export class CatalogComponent {
 
   /** Links for the tab bar */
   public links = [
-    { label: 'Users', path: '/academics/catalog' },
-    { label: 'Roles', path: '/academics/offerings' }
+    {
+      label: 'Current Offerings',
+      path: '/catalog/offerings',
+      icon: 'overview'
+    },
+    { label: 'All Courses', path: '/catalog/all', icon: 'list_alt' }
   ];
 }
