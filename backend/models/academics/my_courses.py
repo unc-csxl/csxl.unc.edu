@@ -5,6 +5,7 @@ from datetime import datetime
 class SectionOverview(BaseModel):
     number: str
     meeting_pattern: str
+    oh_section_id: int | None
 
 
 class CourseOverview(BaseModel):

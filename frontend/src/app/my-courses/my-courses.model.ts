@@ -10,6 +10,7 @@
 export interface SectionOverview {
   number: string;
   meeting_pattern: string;
+  oh_section_id: number | null;
 }
 
 export interface CourseOverview {

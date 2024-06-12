@@ -46,7 +46,7 @@ link="https://github.com/unc-csxl/csxl.unc.edu/wiki/Upgrade-to-CSXL-Web-Applicat
           </div>
         }
         <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(false)">Hide Past Courses</button>
-      } @else {
+      } @else if (this.myCoursesService.pastTerms().length > 0) {
         <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(true)">View Past Courses</button>
       }
     </mat-card-content>

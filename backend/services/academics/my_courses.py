@@ -99,4 +99,5 @@ class MyCoursesService:
         return SectionOverview(
             number=section.number,
             meeting_pattern=section.meeting_pattern,
+            oh_section_id=section.office_hours_id,
         )

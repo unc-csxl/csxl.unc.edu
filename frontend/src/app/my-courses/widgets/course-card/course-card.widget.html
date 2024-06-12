@@ -19,11 +19,25 @@
   </mat-card-content>
   <mat-card-actions class="course-card-actions">
     @if (course.role === 'STUDENT') {
-    <button mat-stroked-button color="secondary" type="submit">Details</button>
-    <button mat-flat-button color="primary" type="submit">Get Help</button>
+    <!-- <button mat-stroked-button color="secondary" type="submit">Details</button> -->
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="!course.sections[0].oh_section_id"
+      [routerLink]="'/office-hours/' + course.sections[0].oh_section_id">
+      Get Help
+    </button>
     } @else {
-    <button mat-stroked-button color="secondary" type="submit">Staffing</button>
-    <button mat-flat-button color="primary" type="submit">Manage</button>
+    <!-- <button mat-stroked-button color="secondary" type="submit">Staffing</button> -->
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="!course.sections[0].oh_section_id"
+      [routerLink]="'/office-hours/' + course.sections[0].oh_section_id">
+      Manage
+    </button>
     }
   </mat-card-actions>
 </mat-card>
