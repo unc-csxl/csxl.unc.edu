@@ -33,7 +33,7 @@ sp_24 = Term(
 
 ss1_24 = Term(
     id="SSI24",
-    name="Sumer Session I 2024",
+    name="Summer Session I 2024",
     start=datetime(2024, 5, 13),
     end=datetime(2024, 6, 23),
 )

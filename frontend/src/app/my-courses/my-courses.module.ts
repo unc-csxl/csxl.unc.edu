@@ -15,9 +15,23 @@ import { MyCoursesRoutingModule } from './my-courses-routing.module';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { MyCoursesPageComponent } from './my-courses-page/my-courses-page.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { CourseCardWidget } from './widgets/course-card/course-card.widget';
 
 @NgModule({
-  declarations: [MyCoursesPageComponent],
-  imports: [CommonModule, MyCoursesRoutingModule, RouterModule, SharedModule]
+  declarations: [MyCoursesPageComponent, CourseCardWidget],
+  imports: [
+    CommonModule,
+    MyCoursesRoutingModule,
+    RouterModule,
+    SharedModule,
+    MatCardModule,
+    MatDividerModule,
+    MatButtonModule,
+    MatIconModule
+  ]
 })
 export class MyCoursesModule {}

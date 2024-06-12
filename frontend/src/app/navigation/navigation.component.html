@@ -61,6 +61,10 @@
               <mat-icon matListItemIcon>person_raised_hand</mat-icon>
               <div matListItemTitle>Office Hours</div>
             </mat-list-item>
+            <mat-list-item routerLink="/my-courses" [activated]="router.isActive('/my-courses', true)">
+              <mat-icon matListItemIcon>school</mat-icon>
+              <div matListItemTitle>My Courses</div>
+            </mat-list-item>
             <mat-list-item routerLink="/academics" [activated]="router.isActive('/academics', true)">
               <mat-icon matListItemIcon>school</mat-icon>
               <div matListItemTitle>Academics</div>

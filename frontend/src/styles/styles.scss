@@ -79,7 +79,7 @@ html, body {
 
     .tertiary-button {
         @include mat.button-color($theme, $color-variant: tertiary);
-      }
+    }
 }
 
 /// Defines a mixin that applies custom styles to material card components
@@ -116,6 +116,10 @@ html, body {
         color: mat.get-theme-color($theme, on-surface-variant);
     }
 
+    .surface-container-card {
+        background-color: mat.get-theme-color($theme, surface-container) !important;
+    }
+
 }
 
 /// Defines a mixin that applies custom styles to material header components
@@ -141,10 +145,7 @@ html, body {
         fill: white;
     }
 
-
-
     @media (prefers-color-scheme: light) {
-
         .mat-icon,
         .mat-icon svg {
             color: black;
@@ -229,6 +230,18 @@ html, body {
     .mdc-text-field__input::-webkit-calendar-picker-indicator {
         display: block !important;
         filter: invert(1);
+    }
+}
+
+/// Defines a mixim that applies custom styles for fonts based on Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin font-styles($theme) {
+    .title-medium {
+        font: mat.get-theme-typography($theme, title-medium, font);
+    }
+    .title-small {
+        font: mat.get-theme-typography($theme, title-small, font);
     }
 }
 
@@ -332,6 +345,7 @@ html, body {
     @include mat-header-styles($theme);
     @include mat-icon-styles($theme);
     @include mat-text-field-styles($theme);
+    @include font-styles($theme);
     @include widget-styles($theme);
 }
 

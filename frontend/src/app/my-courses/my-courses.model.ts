@@ -14,7 +14,7 @@ export interface SectionOverview {
 
 export interface CourseOverview {
   id: string;
-  subect_code: string;
+  subject_code: string;
   number: string;
   title: string;
   sections: SectionOverview[];

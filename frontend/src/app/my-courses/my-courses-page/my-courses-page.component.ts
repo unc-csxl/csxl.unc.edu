@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { MyCoursesService } from '../my-courses.service';
 
 @Component({
@@ -14,5 +14,8 @@ export class MyCoursesPageComponent {
     component: MyCoursesPageComponent
   };
 
-  constructor(public myCoursesService: MyCoursesService) {}
+  /** Whether or not to show the previous courses */
+  showPreviousCourses: WritableSignal<boolean> = signal(false);
+
+  constructor(protected myCoursesService: MyCoursesService) {}
 }

@@ -1,1 +1,42 @@
-<p>my-courses-page works!</p>
+<!-- eslint-disable prettier/prettier -->
+<div class="container">
+  <mat-pane>
+    <mat-card-header id="pane-header">
+      <mat-card-title>My Courses</mat-card-title>
+      <div class="header-buttons">
+        <button mat-stroked-button color="secondary">
+          <!-- <mat-icon>search</mat-icon> -->
+          View Catalog
+        </button>
+        <button mat-flat-button color="primary" [disabled]="true">
+          <!-- <mat-icon>add</mat-icon> -->
+          Join Course
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-divider />
+      @for (term of this.myCoursesService.currentTerms(); track term.id) {
+        <h3 class="title-medium term-header">{{ term.name }}</h3>
+        <div class="course-card-container">
+          @for (course of term.courses; track course.id) {
+            <course-card [course]="course" />
+          }
+        </div>
+      }
+      @if (showPreviousCourses()) {
+        @for (term of this.myCoursesService.pastTerms(); track term.id) {
+          <h3 class="title-medium term-header">{{ term.name }}</h3>
+          <div class="course-card-container">
+            @for (course of term.courses; track course.id) {
+              <course-card [course]="course" />
+            }
+          </div>
+        }
+        <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(false)">Hide Past Courses</button>
+      } @else {
+        <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(true)">View Past Courses</button>
+      }
+    </mat-card-content>
+  </mat-pane>
+</div>
