@@ -155,6 +155,7 @@ class MyCoursesService:
             email=section_member.user.email,
             pronouns=section_member.user.pronouns,
             role=section_member.member_role.name,
+            section_number=section_member.section.number,
         )
 
     def _to_course_roster_overview(

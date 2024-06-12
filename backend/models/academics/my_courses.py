@@ -31,6 +31,7 @@ class CourseMemberOverview(BaseModel):
     last_name: str
     email: str
     pronouns: str
+    section_number: str
     role: str
 
 
