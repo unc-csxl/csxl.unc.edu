@@ -41,4 +41,4 @@ class CourseRosterOverview(BaseModel):
     subject_code: str
     number: str
     title: str
-    members: Paginated[CourseMemberOverview]
+    members: Paginated

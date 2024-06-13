@@ -7,6 +7,7 @@ from ..authentication import registered_user
 from ...services.academics.my_courses import MyCoursesService
 from ...models.user import User
 from ...models.academics.my_courses import TermOverview, CourseRosterOverview
+from ...models.pagination import PaginationParams
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -33,6 +34,10 @@ def get_user_courses(
 def get_course_roster(
     term_id: str,
     course_id: str,
+    page: int = 0,
+    page_size: int = 10,
+    order_by: str = "",
+    filter: str = "",
     subject: User = Depends(registered_user),
     my_courses_svc: MyCoursesService = Depends(),
 ) -> CourseRosterOverview:
@@ -40,6 +45,11 @@ def get_course_roster(
     Get the roster overview for a course.
 
     Returns:
-        list[CourseRosterOverview]
+        CourseRosterOverview
     """
-    return my_courses_svc.get_course_roster(subject, term_id, course_id)
+    pagination_params = PaginationParams(
+        page=page, page_size=page_size, order_by=order_by, filter=filter
+    )
+    return my_courses_svc.get_course_roster(
+        subject, term_id, course_id, pagination_params
+    )

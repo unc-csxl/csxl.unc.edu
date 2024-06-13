@@ -119,7 +119,7 @@ class MyCoursesService:
         Get the courses for the current user.
 
         Returns:
-            list[TermOverview]
+            CourseRosterOverview
         """
 
         course_entity = self._session.query(CourseEntity).get(course_id)
@@ -137,18 +137,30 @@ class MyCoursesService:
             .options(joinedload(SectionMemberEntity.user))
         )
 
+        if pagination_params.order_by != "":
+            member_query = member_query.order_by(
+                getattr(SectionMemberEntity, pagination_params.order_by)
+            )
+
+        user_member_query = member_query.where(SectionMemberEntity.user_id == user.id)
+        user_members = self._session.scalars(user_member_query).all()
+
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        member_query = member_query.offset(offset).limit(limit)
+
         section_member_entities = self._session.scalars(member_query).all()
 
-        user_member = [
-            entity for entity in section_member_entities if entity.user_id == user.id
-        ]
-
-        if len(user_member) == 0 or user_member[0].member_role == RosterRole.STUDENT:
+        if len(user_members) == 0 or user_members[0].member_role == RosterRole.STUDENT:
             raise CoursePermissionException(
                 "Not allowed to access the roster of a course you are not an instructor of."
             )
 
-        return self._to_course_roster_overview(course_entity, section_member_entities)
+        roster_overview = self._to_course_roster_overview(
+            course_entity, section_member_entities, pagination_params
+        )
+
+        return roster_overview
 
     def _to_course_member_overview(
         self, section_member: SectionMemberEntity
@@ -164,12 +176,26 @@ class MyCoursesService:
         )
 
     def _to_course_roster_overview(
-        self, course: CourseEntity, members: list[SectionMemberEntity]
+        self,
+        course: CourseEntity,
+        members: list[SectionMemberEntity],
+        pagination_params: PaginationParams,
     ):
+        member_overviews: list[CourseMemberOverview] = [
+            self._to_course_member_overview(member) for member in members
+        ]
+        paginated: Paginated[CourseMemberOverview] = Paginated(
+            items=member_overviews,
+            length=len(member_overviews),
+            params=pagination_params,
+        )
+
+        t = type(paginated)
+
         return CourseRosterOverview(
             id=course.id,
             subject_code=course.subject_code,
             number=course.number,
             title=course.title,
-            members=[self._to_course_member_overview(member) for member in members],
+            members=paginated,
         )

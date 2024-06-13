@@ -6,15 +6,17 @@ from ....models.office_hours.section_details import OfficeHoursSectionDetails
 from ....models.office_hours.section_details import OfficeHoursSectionDetails
 from ....models.academics.section_member import SectionMember
 from ....models.roster_role import RosterRole
+from ....models.pagination import PaginationParams
 
 from ....services.academics.section_member import SectionMemberService
+from ....services.academics.my_courses import MyCoursesService
 from ....services.exceptions import (
     ResourceNotFoundException,
 )
 from ....services.office_hours.section import OfficeHoursSectionService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
-from .fixtures import permission_svc, section_member_svc
+from .fixtures import permission_svc, section_member_svc, my_courses_svc
 from ..office_hours.fixtures import oh_section_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
@@ -244,3 +246,9 @@ def test_add_user_section_memberships_by_oh_sections_exception_invalid_id(
             user_to_add, [comp_110_section_details]
         )
         pytest.raises()
+
+
+def test_get_roster(my_courses_svc: MyCoursesService):
+    my_courses_svc.get_course_roster(
+        user_data.ambassador, "SSI24", "comp301", PaginationParams()
+    )
