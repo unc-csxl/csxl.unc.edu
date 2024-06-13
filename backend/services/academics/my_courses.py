@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
+from ...models.pagination import PaginationParams, Paginated
 from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
     CourseOverview,
@@ -108,7 +109,11 @@ class MyCoursesService:
         )
 
     def get_course_roster(
-        self, user: User, term_id: str, course_id: str
+        self,
+        user: User,
+        term_id: str,
+        course_id: str,
+        pagination_params: PaginationParams,
     ) -> CourseRosterOverview:
         """
         Get the courses for the current user.

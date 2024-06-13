@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from ...models import Paginated
 
 
 class SectionOverview(BaseModel):
@@ -40,4 +41,4 @@ class CourseRosterOverview(BaseModel):
     subject_code: str
     number: str
     title: str
-    members: list[CourseMemberOverview]
+    members: Paginated[CourseMemberOverview]
