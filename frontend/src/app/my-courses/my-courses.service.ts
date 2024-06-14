@@ -12,11 +12,13 @@ import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
+  CourseMemberOverview,
   TermOverview,
   TermOverviewJson,
   parseTermOverviewJsonList
 } from './my-courses.model';
 import { map } from 'rxjs';
+import { Paginator } from '../pagination';
 
 @Injectable({
   providedIn: 'root'

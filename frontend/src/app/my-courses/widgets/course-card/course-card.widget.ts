@@ -16,6 +16,8 @@ import { CourseOverview } from '../../my-courses.model';
   styleUrls: ['./course-card.widget.scss']
 })
 export class CourseCardWidget {
+  /** Term for the course */
+  @Input() termId!: string;
   /** The course to show */
   @Input() course!: CourseOverview;
 

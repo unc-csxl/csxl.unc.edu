@@ -32,7 +32,7 @@ link="https://github.com/unc-csxl/csxl.unc.edu/wiki/Upgrade-to-CSXL-Web-Applicat
         <h3 class="title-medium term-header">{{ term.name }}</h3>
         <div class="course-card-container">
           @for (course of term.courses; track course.id) {
-            <course-card [course]="course" />
+            <course-card [termId]="term.id" [course]="course" />
           }
         </div>
       }

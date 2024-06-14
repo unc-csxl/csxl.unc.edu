@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-course',
@@ -6,13 +7,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./course.component.css']
 })
 export class CourseComponent {
-  /** Route information to be used in the routing module */
-  public static Route = {
-    path: 'course/:id',
-    title: 'Course',
-    component: CourseComponent
-  };
-
   /** Links for the tab bar */
   public links = [
     {
@@ -20,7 +14,13 @@ export class CourseComponent {
       path: '/course/:id/office-hours',
       icon: 'person_raised_hand'
     },
-    { label: 'Roster', path: '/course/:id/roster', icon: 'groups' },
+    {
+      label: 'Roster',
+      path: `/course/${this.route.snapshot.params['term_id']}/${this.route.snapshot.params['course_id']}/roster`,
+      icon: 'groups'
+    },
     { label: 'Settings', path: '/course/:id/settings', icon: 'settings' }
   ];
+
+  constructor(private route: ActivatedRoute) {}
 }

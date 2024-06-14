@@ -16,7 +16,6 @@ from ...models.academics.my_courses import (
     CourseOverview,
     TermOverview,
     CourseMemberOverview,
-    CourseRosterOverview,
 )
 from ...entities.academics.course_entity import CourseEntity
 from ...entities.academics.section_entity import SectionEntity
@@ -114,12 +113,12 @@ class MyCoursesService:
         term_id: str,
         course_id: str,
         pagination_params: PaginationParams,
-    ) -> CourseRosterOverview:
+    ) -> Paginated[CourseMemberOverview]:
         """
         Get the courses for the current user.
 
         Returns:
-            CourseRosterOverview
+            Paginated[CourseMemberOverview]
         """
 
         course_entity = self._session.query(CourseEntity).get(course_id)
@@ -156,11 +155,14 @@ class MyCoursesService:
                 "Not allowed to access the roster of a course you are not an instructor of."
             )
 
-        roster_overview = self._to_course_roster_overview(
-            course_entity, section_member_entities, pagination_params
+        return Paginated(
+            items=[
+                self._to_course_member_overview(member)
+                for member in section_member_entities
+            ],
+            length=len(section_member_entities),
+            params=pagination_params,
         )
-
-        return roster_overview
 
     def _to_course_member_overview(
         self, section_member: SectionMemberEntity
@@ -173,29 +175,4 @@ class MyCoursesService:
             pronouns=section_member.user.pronouns,
             role=section_member.member_role.name,
             section_number=section_member.section.number,
-        )
-
-    def _to_course_roster_overview(
-        self,
-        course: CourseEntity,
-        members: list[SectionMemberEntity],
-        pagination_params: PaginationParams,
-    ):
-        member_overviews: list[CourseMemberOverview] = [
-            self._to_course_member_overview(member) for member in members
-        ]
-        paginated: Paginated[CourseMemberOverview] = Paginated(
-            items=member_overviews,
-            length=len(member_overviews),
-            params=pagination_params,
-        )
-
-        t = type(paginated)
-
-        return CourseRosterOverview(
-            id=course.id,
-            subject_code=course.subject_code,
-            number=course.number,
-            title=course.title,
-            members=paginated,
         )

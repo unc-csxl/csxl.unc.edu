@@ -34,11 +34,3 @@ class CourseMemberOverview(BaseModel):
     pronouns: str
     section_number: str
     role: str
-
-
-class CourseRosterOverview(BaseModel):
-    id: str
-    subject_code: str
-    number: str
-    title: str
-    members: Paginated

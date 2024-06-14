@@ -7,6 +7,8 @@
  * @license MIT
  */
 
+import { Paginated, PaginationParams } from '../pagination';
+
 export interface SectionOverview {
   number: string;
   meeting_pattern: string;
@@ -36,6 +38,24 @@ export interface TermOverviewJson {
   start: string;
   end: string;
   courses: CourseOverview[];
+}
+
+export interface CourseMemberOverview {
+  pid: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  pronouns: string;
+  section_number: string;
+  role: string;
+}
+
+export interface CourseRosterOverview {
+  id: string;
+  subject_code: string;
+  number: string;
+  title: string;
+  members: Paginated<CourseMemberOverview, PaginationParams>;
 }
 
 /**

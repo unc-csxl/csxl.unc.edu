@@ -30,6 +30,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CourseComponent } from './course/course.component';
+import { RosterComponent } from './course/roster/roster.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { CourseComponent } from './course/course.component';
     SectionOfferingsComponent,
     AllCoursesComponent,
     CourseComponent,
+    RosterComponent,
     CourseCardWidget
   ],
   imports: [
@@ -55,7 +58,8 @@ import { CourseComponent } from './course/course.component';
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule
   ]
 })
 export class MyCoursesModule {}

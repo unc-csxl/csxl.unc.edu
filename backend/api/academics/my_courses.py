@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.academics.my_courses import MyCoursesService
 from ...models.user import User
-from ...models.academics.my_courses import TermOverview, CourseRosterOverview
-from ...models.pagination import PaginationParams
+from ...models.academics.my_courses import TermOverview, CourseMemberOverview
+from ...models.pagination import PaginationParams, Paginated
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -40,7 +40,7 @@ def get_course_roster(
     filter: str = "",
     subject: User = Depends(registered_user),
     my_courses_svc: MyCoursesService = Depends(),
-) -> CourseRosterOverview:
+) -> Paginated[CourseMemberOverview]:
     """
     Get the roster overview for a course.
 

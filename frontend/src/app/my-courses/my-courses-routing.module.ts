@@ -14,6 +14,7 @@ import { CatalogComponent } from './catalog/catalog.component';
 import { AllCoursesComponent } from './catalog/course-catalog/course-catalog.component';
 import { SectionOfferingsComponent } from './catalog/section-offerings/section-offerings.component';
 import { CourseComponent } from './course/course.component';
+import { RosterComponent } from './course/roster/roster.component';
 
 const routes: Routes = [
   MyCoursesPageComponent.Route,
@@ -22,7 +23,11 @@ const routes: Routes = [
     component: CatalogComponent,
     children: [AllCoursesComponent.Route, SectionOfferingsComponent.Route]
   },
-  CourseComponent.Route
+  {
+    path: 'course/:term_id/:course_id',
+    component: CourseComponent,
+    children: [RosterComponent.Route]
+  }
 ];
 
 @NgModule({
