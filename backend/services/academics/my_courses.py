@@ -145,10 +145,12 @@ class MyCoursesService:
         user_member_query = member_query.where(SectionMemberEntity.user_id == user.id)
         user_members = self._session.scalars(user_member_query).all()
 
-        if len(user_members) == 0 or user_members[0].member_role == RosterRole.STUDENT:
+        if len(user_members) == 0:
             raise CoursePermissionException(
-                "Not allowed to access the roster of a course you are not an instructor of."
+                "Not allowed to access the roster of a course you are not a member of."
             )
+
+        is_student = user_members[0].member_role == RosterRole.STUDENT
 
         section_ids = [member.section_id for member in user_members]
         member_query = member_query.where(SectionEntity.id.in_(section_ids))
@@ -177,7 +179,7 @@ class MyCoursesService:
 
         return Paginated(
             items=[
-                self._to_course_member_overview(member)
+                self._to_course_member_overview(member, is_student)
                 for member in section_member_entities
             ],
             length=length,
@@ -185,7 +187,7 @@ class MyCoursesService:
         )
 
     def _to_course_member_overview(
-        self, section_member: SectionMemberEntity
+        self, section_member: SectionMemberEntity, is_student: bool
     ) -> CourseMemberOverview:
         return CourseMemberOverview(
             pid=section_member.user.pid,
