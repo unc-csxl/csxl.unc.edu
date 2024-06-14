@@ -4,7 +4,7 @@ APIs for academics for users.
 
 from itertools import groupby
 from fastapi import Depends
-from sqlalchemy import select, or_
+from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
@@ -153,6 +153,10 @@ class MyCoursesService:
         section_ids = [member.section_id for member in user_members]
         member_query = member_query.where(SectionEntity.id.in_(section_ids))
 
+        # Count the number of rows before applying pagination and filter
+        count_query = select(func.count()).select_from(member_query.subquery())
+        length = self._session.scalar(count_query)
+
         # Pagination modifiers
         if pagination_params.filter != "":
             query = pagination_params.filter
@@ -174,7 +178,7 @@ class MyCoursesService:
                 self._to_course_member_overview(member)
                 for member in section_member_entities
             ],
-            length=len(section_member_entities),
+            length=length,
             params=pagination_params,
         )
 

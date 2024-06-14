@@ -35,12 +35,7 @@ export class RosterComponent {
   > = signal(undefined);
   private previousParams: PaginationParams = DEFAULT_PAGINATION_PARAMS;
 
-  public displayedColumns: string[] = [
-    'first_name',
-    'last_name',
-    'pronouns',
-    'email'
-  ];
+  public displayedColumns: string[] = ['section', 'name', 'pid', 'email'];
 
   /** Current search bar query */
   public searchBarQuery: WritableSignal<string> = signal('');

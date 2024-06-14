@@ -11,17 +11,22 @@
     </mat-card-header>
     <mat-card-content>
       <table mat-table [dataSource]="rosterPage()?.items ?? []">
-        <ng-container matColumnDef="first_name">
-          <th mat-header-cell *matHeaderCellDef>First Name</th>
-          <td mat-cell *matCellDef="let element">{{ element.first_name }}</td>
+        <ng-container matColumnDef="section">
+          <th mat-header-cell *matHeaderCellDef>Section</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.section_number }}
+          </td>
         </ng-container>
-        <ng-container matColumnDef="last_name">
-          <th mat-header-cell *matHeaderCellDef>Last Name</th>
-          <td mat-cell *matCellDef="let element">{{ element.last_name }}</td>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.first_name }} {{ element.last_name }}
+            <span class="pronoun-labels">({{ element.pronouns }})</span>
+          </td>
         </ng-container>
-        <ng-container matColumnDef="pronouns">
-          <th mat-header-cell *matHeaderCellDef>Pronouns</th>
-          <td mat-cell *matCellDef="let element">{{ element.pronouns }}</td>
+        <ng-container matColumnDef="pid">
+          <th mat-header-cell *matHeaderCellDef>PID</th>
+          <td mat-cell *matCellDef="let element">{{ element.pid }}</td>
         </ng-container>
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef>Email</th>
