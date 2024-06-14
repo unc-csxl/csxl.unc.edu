@@ -169,7 +169,9 @@ class MyCoursesService:
 
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
-        member_query = member_query.offset(offset).limit(limit)
+        member_query = (
+            member_query.offset(offset).limit(limit).order_by(SectionEntity.id)
+        )
 
         section_member_entities = self._session.scalars(member_query).all()
 
