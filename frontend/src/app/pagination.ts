@@ -22,6 +22,13 @@ export interface PaginationParams extends URLSearchParams {
   filter: string;
 }
 
+export const DEFAULT_PAGINATION_PARAMS = {
+  page: 0,
+  page_size: 25,
+  order_by: '',
+  filter: ''
+} as PaginationParams;
+
 /** Defines the general model for the time range pagination parameters expected by the backend. */
 export interface TimeRangePaginationParams extends URLSearchParams {
   order_by: string;

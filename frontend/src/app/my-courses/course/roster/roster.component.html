@@ -1,3 +1,9 @@
+<!-- Search Bar -->
+<search-bar
+  class="roster-search-bar mat-csxl-search-bar"
+  [searchBarQuery]="searchBarQuery()"
+  (searchBarQueryChange)="searchBarQuery.set($event)" />
+
 <div class="container">
   <mat-pane>
     <mat-card-header>

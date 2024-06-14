@@ -4,7 +4,7 @@ APIs for academics for users.
 
 from itertools import groupby
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
@@ -19,6 +19,7 @@ from ...models.academics.my_courses import (
 )
 from ...entities.academics.course_entity import CourseEntity
 from ...entities.academics.section_entity import SectionEntity
+from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import ResourceNotFoundException, CoursePermissionException
 
@@ -150,14 +151,21 @@ class MyCoursesService:
             )
 
         section_ids = [member.section_id for member in user_members]
+        member_query = member_query.where(SectionEntity.id.in_(section_ids))
+
+        # Pagination modifiers
+        if pagination_params.filter != "":
+            query = pagination_params.filter
+            criteria = or_(
+                UserEntity.first_name.ilike(f"%{query}%"),
+                UserEntity.last_name.ilike(f"%{query}%"),
+                UserEntity.onyen.ilike(f"%{query}%"),
+            )
+            member_query = member_query.join(UserEntity).where(criteria)
 
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
-        member_query = (
-            member_query.where(SectionEntity.id.in_(section_ids))
-            .offset(offset)
-            .limit(limit)
-        )
+        member_query = member_query.offset(offset).limit(limit)
 
         section_member_entities = self._session.scalars(member_query).all()
 
