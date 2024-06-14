@@ -130,6 +130,7 @@ class MyCoursesService:
         member_query = (
             select(SectionMemberEntity)
             .join(SectionEntity)
+            .join(UserEntity)
             .where(
                 SectionEntity.term_id == term_id,
                 SectionEntity.course_id == course_id,
@@ -167,12 +168,16 @@ class MyCoursesService:
                 UserEntity.last_name.ilike(f"%{query}%"),
                 UserEntity.onyen.ilike(f"%{query}%"),
             )
-            member_query = member_query.join(UserEntity).where(criteria)
+            member_query = member_query.where(criteria)
 
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
         member_query = (
-            member_query.offset(offset).limit(limit).order_by(SectionEntity.id)
+            member_query.offset(offset)
+            .limit(limit)
+            .order_by(SectionEntity.id)
+            .order_by(UserEntity.first_name)
+            .order_by(SectionMemberEntity.member_role)
         )
 
         section_member_entities = self._session.scalars(member_query).all()
