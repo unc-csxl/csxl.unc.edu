@@ -1,6 +1,9 @@
 <mat-card class="office-hours-event-card" appearance="outlined">
   <mat-card-header>
     <mat-card-subtitle>{{ event.type }}</mat-card-subtitle>
+    <mat-chip-set>
+      <mat-chip>{{ event.queued }} waiting</mat-chip>
+    </mat-chip-set>
   </mat-card-header>
   <mat-card-content>
     <p>

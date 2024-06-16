@@ -98,3 +98,28 @@ def get_future_oh_events(
     return my_courses_svc.get_future_office_hour_events(
         subject, term_id, course_id, pagination_params
     )
+
+
+@api.get("/{term_id}/{course_id}/oh-events/history", tags=["Academics"])
+def get_past_oh_events(
+    term_id: str,
+    course_id: str,
+    page: int = 0,
+    page_size: int = 10,
+    order_by: str = "",
+    filter: str = "",
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> Paginated[CourseOfficeHourEventOverview]:
+    """
+    Gets the past office hour event overviews for a given class.
+
+    Returns:
+        Paginated[CourseOfficeHourEventOverview]
+    """
+    pagination_params = PaginationParams(
+        page=page, page_size=page_size, order_by=order_by, filter=filter
+    )
+    return my_courses_svc.get_past_office_hour_events(
+        subject, term_id, course_id, pagination_params
+    )

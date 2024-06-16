@@ -35,6 +35,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { OfficeHoursPageComponent } from './course/office-hours/office-hours-page/office-hours-page.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { OfficeHourEventCardWidget } from './course/office-hours/widgets/office-hour-event-card/office-hour-event-card.widget';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { OfficeHourEventCardWidget } from './course/office-hours/widgets/office-
     ReactiveFormsModule,
     MatDialogModule,
     MatPaginatorModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatChipsModule
   ]
 })
 export class MyCoursesModule {}

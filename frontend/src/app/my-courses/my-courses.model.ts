@@ -67,6 +67,8 @@ export interface OfficeHourEventOverviewJson {
   location_description: string;
   start_time: string;
   end_time: string;
+  queued: number;
+  total_tickets: number;
 }
 
 export interface OfficeHourEventOverview {
@@ -78,6 +80,8 @@ export interface OfficeHourEventOverview {
   location_description: string;
   start_time: Date;
   end_time: Date;
+  queued: number;
+  total_tickets: number;
 }
 
 export interface OfficeHourEventsOverviewJson {

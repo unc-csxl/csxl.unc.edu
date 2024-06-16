@@ -45,3 +45,5 @@ class CourseOfficeHourEventOverview(BaseModel):
     location_description: str
     start_time: datetime
     end_time: datetime
+    queued: int
+    total_tickets: int

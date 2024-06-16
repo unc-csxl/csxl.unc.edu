@@ -19,8 +19,13 @@ from ...models.academics.my_courses import (
     CourseMemberOverview,
     CourseOfficeHourEventOverview,
 )
+from ...models.office_hours.ticket import TicketState, OfficeHoursTicket
 from ...entities.academics.section_entity import SectionEntity
-from ...entities.office_hours import OfficeHoursSectionEntity, OfficeHoursEventEntity
+from ...entities.office_hours import (
+    OfficeHoursSectionEntity,
+    OfficeHoursEventEntity,
+    OfficeHoursTicketEntity,
+)
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException
@@ -226,54 +231,12 @@ class MyCoursesService:
         """
 
         # Start building the query
-        event_query = (
-            select(OfficeHoursEventEntity)
-            .join(OfficeHoursSectionEntity)
-            .join(SectionEntity)
-            .join(SectionMemberEntity)
-            .where(
-                SectionEntity.term_id == term_id,
-                SectionEntity.course_id == course_id,
-            )
-            .options(joinedload(OfficeHoursEventEntity.room))
-            .options(
-                joinedload(OfficeHoursEventEntity.office_hours_section)
-                .joinedload(OfficeHoursSectionEntity.sections)
-                .joinedload(SectionEntity.members)
-            )
-        )
-
-        # Create query off of the member query for just the members matching
-        # with the current user (used to determine permissions)
-        user_member_query = (
-            select(SectionMemberEntity)
-            .join(SectionEntity)
-            .join(UserEntity)
-            .where(
-                SectionEntity.term_id == term_id,
-                SectionEntity.course_id == course_id,
-            )
-            .where(SectionMemberEntity.user_id == user.id)
-        )
-        user_members = self._session.scalars(user_member_query).unique().all()
-
-        # If the user is not a member of the looked up course, throw an error
-        if len(user_members) == 0:
-            raise CoursePermissionException(
-                "Not allowed to access the roster of a course you are not a member of."
-            )
-
-        # In the cases where sections are taught by different instructors, ensure that
-        # the roster data only includes sections that the user has permissions for.
-        section_ids = [member.section_id for member in user_members]
-        event_query = event_query.where(SectionEntity.id.in_(section_ids))
-
-        today = datetime.today()
+        event_query = self._create_oh_event_query(user, term_id, course_id)
 
         # Only load current events
         event_query = event_query.where(
-            OfficeHoursEventEntity.start_time < today,
-            today < OfficeHoursEventEntity.end_time,
+            OfficeHoursEventEntity.start_time < datetime.today(),
+            datetime.today() < OfficeHoursEventEntity.end_time,
         )
 
         # Load office hours data
@@ -298,52 +261,12 @@ class MyCoursesService:
         """
 
         # Start building the query
-        event_query = (
-            select(OfficeHoursEventEntity)
-            .join(OfficeHoursSectionEntity)
-            .join(SectionEntity)
-            .join(SectionMemberEntity)
-            .where(
-                SectionEntity.term_id == term_id,
-                SectionEntity.course_id == course_id,
-            )
-            .options(joinedload(OfficeHoursEventEntity.room))
-            .options(
-                joinedload(OfficeHoursEventEntity.office_hours_section)
-                .joinedload(OfficeHoursSectionEntity.sections)
-                .joinedload(SectionEntity.members)
-            )
-        )
-
-        # Create query off of the member query for just the members matching
-        # with the current user (used to determine permissions)
-        user_member_query = (
-            select(SectionMemberEntity)
-            .join(SectionEntity)
-            .join(UserEntity)
-            .where(
-                SectionEntity.term_id == term_id,
-                SectionEntity.course_id == course_id,
-            )
-            .where(SectionMemberEntity.user_id == user.id)
-        )
-        user_members = self._session.scalars(user_member_query).unique().all()
-
-        # If the user is not a member of the looked up course, throw an error
-        if len(user_members) == 0:
-            raise CoursePermissionException(
-                "Not allowed to access the roster of a course you are not a member of."
-            )
-
-        # In the cases where sections are taught by different instructors, ensure that
-        # the roster data only includes sections that the user has permissions for.
-        section_ids = [member.section_id for member in user_members]
-        event_query = event_query.where(SectionEntity.id.in_(section_ids))
-
-        today = datetime.today()
+        event_query = self._create_oh_event_query(user, term_id, course_id)
 
         # Only load future events
-        event_query = event_query.where(today < OfficeHoursEventEntity.start_time)
+        event_query = event_query.where(
+            datetime.today() < OfficeHoursEventEntity.start_time
+        )
 
         # Count the number of rows before applying pagination and filter
         count_query = select(func.count()).select_from(
@@ -373,6 +296,103 @@ class MyCoursesService:
             params=pagination_params,
         )
 
+    def get_past_office_hour_events(
+        self,
+        user: User,
+        term_id: str,
+        course_id: str,
+        pagination_params: PaginationParams,
+    ) -> Paginated[CourseOfficeHourEventOverview]:
+        """
+        Gets the past office hours events, paginated.
+
+        Returns:
+            Paginated[CourseOfficeHourEventOverview]
+        """
+
+        # Start building the query
+        event_query = self._create_oh_event_query(user, term_id, course_id)
+
+        # Only load future events
+        event_query = event_query.where(
+            OfficeHoursEventEntity.end_time < datetime.today()
+        )
+
+        # Count the number of rows before applying pagination and filter
+        count_query = select(func.count()).select_from(
+            event_query.distinct(OfficeHoursEventEntity.id).subquery()
+        )
+        length = self._session.scalar(count_query)
+
+        # Calculate offset and limit for pagination
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        event_query = (
+            event_query.offset(offset)
+            .limit(limit)
+            .order_by(OfficeHoursEventEntity.start_time)
+        )
+
+        # Load office hours data
+        office_hour_event_entities = self._session.scalars(event_query).unique().all()
+
+        # Create paginated representation of data and return
+        return Paginated(
+            items=[
+                self._to_oh_event_overview(event)
+                for event in office_hour_event_entities
+            ],
+            length=length,
+            params=pagination_params,
+        )
+
+    def _create_oh_event_query(self, user: User, term_id: str, course_id: str):
+        # Start building the query
+        event_query = (
+            select(OfficeHoursEventEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(SectionEntity)
+            .join(SectionMemberEntity)
+            .where(
+                SectionEntity.term_id == term_id,
+                SectionEntity.course_id == course_id,
+            )
+            .options(joinedload(OfficeHoursEventEntity.room))
+            .options(joinedload(OfficeHoursEventEntity.tickets))
+            .options(
+                joinedload(OfficeHoursEventEntity.office_hours_section)
+                .joinedload(OfficeHoursSectionEntity.sections)
+                .joinedload(SectionEntity.members)
+            )
+        )
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .join(UserEntity)
+            .where(
+                SectionEntity.term_id == term_id,
+                SectionEntity.course_id == course_id,
+            )
+            .where(SectionMemberEntity.user_id == user.id)
+        )
+        user_members = self._session.scalars(user_member_query).unique().all()
+
+        # If the user is not a member of the looked up course, throw an error
+        if len(user_members) == 0:
+            raise CoursePermissionException(
+                "Not allowed to access the roster of a course you are not a member of."
+            )
+
+        # In the cases where sections are taught by different instructors, ensure that
+        # the roster data only includes sections that the user has permissions for.
+        section_ids = [member.section_id for member in user_members]
+        event_query = event_query.where(SectionEntity.id.in_(section_ids))
+
+        return event_query
+
     def _to_oh_event_overview(
         self, oh_event: OfficeHoursEventEntity
     ) -> CourseOfficeHourEventOverview:
@@ -385,4 +405,12 @@ class MyCoursesService:
             location_description=oh_event.location_description,
             start_time=oh_event.start_time,
             end_time=oh_event.end_time,
+            queued=len(
+                [
+                    ticket
+                    for ticket in oh_event.tickets
+                    if ticket.state == TicketState.QUEUED
+                ]
+            ),
+            total_tickets=len(oh_event.tickets),
         )

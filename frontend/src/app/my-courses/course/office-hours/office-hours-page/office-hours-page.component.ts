@@ -48,6 +48,16 @@ export class OfficeHoursPageComponent {
 
   public futureOhDisplayedColumns: string[] = ['date', 'type'];
 
+  /** Encapsulated past events paginator and params */
+  private pastOfficeHourEventsPaginator: Paginator<OfficeHourEventOverview>;
+  pastOfficeHourEventsPage: WritableSignal<
+    Paginated<OfficeHourEventOverview, PaginationParams> | undefined
+  > = signal(undefined);
+  private previousPastOfficeHourEventParams: PaginationParams =
+    DEFAULT_PAGINATION_PARAMS;
+
+  public pastOhDisplayedColumns: string[] = ['date', 'type'];
+
   constructor(
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService
@@ -77,6 +87,20 @@ export class OfficeHoursPageComponent {
       .subscribe((page) => {
         this.futureOfficeHourEventsPage.set(page);
       });
+
+    // Load paginated past office hours data
+    this.pastOfficeHourEventsPaginator = new Paginator<OfficeHourEventOverview>(
+      `/api/academics/my-courses/${termId}/${courseId}/oh-events/history`
+    );
+
+    this.pastOfficeHourEventsPaginator
+      .loadPage<OfficeHourEventOverviewJson>(
+        this.previousPastOfficeHourEventParams,
+        parseOfficeHourEventOverviewJson
+      )
+      .subscribe((page) => {
+        this.pastOfficeHourEventsPage.set(page);
+      });
   }
 
   /** Handles a pagination event for the future office hours table */
@@ -92,6 +116,22 @@ export class OfficeHoursPageComponent {
       .subscribe((page) => {
         this.futureOfficeHourEventsPage.set(page);
         this.previousFutureOfficeHourEventParams = paginationParams;
+      });
+  }
+
+  /** Handles a pagination event for the past office hours table */
+  handlePastOfficeHoursPageEvent(e: PageEvent) {
+    let paginationParams = this.pastOfficeHourEventsPage()!.params;
+    paginationParams.page = e.pageIndex;
+    paginationParams.page_size = e.pageSize;
+    this.pastOfficeHourEventsPaginator
+      .loadPage<OfficeHourEventOverviewJson>(
+        paginationParams,
+        parseOfficeHourEventOverviewJson
+      )
+      .subscribe((page) => {
+        this.pastOfficeHourEventsPage.set(page);
+        this.previousPastOfficeHourEventParams = paginationParams;
       });
   }
 }

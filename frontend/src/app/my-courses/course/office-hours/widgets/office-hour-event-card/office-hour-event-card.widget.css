@@ -4,6 +4,20 @@
     margin: 0px !important;
 }
 
+.mat-mdc-card-header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+/* 
+.office-hours-event-card-header {
+    width: 100%;
+    display: flex;
+    flex-direction: flex;
+    align-items: center;
+} */
+
 .office-hours-event-card-actions {
     display: flex;
     flex-direction: row;
@@ -11,6 +25,18 @@
     justify-content: end;
     padding-top: 16px;
     padding-bottom: 16px;
+}
+
+.mat-mdc-chip-set {
+    height: 24px;
+    margin-left: auto;
+    margin-right: 16px;
+
+}
+.mat-mdc-chip {
+    height: 24px;
+    margin: 0;
+    margin-right: 16px;
 }
 
 p {
