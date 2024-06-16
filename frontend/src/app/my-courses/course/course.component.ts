@@ -11,7 +11,7 @@ export class CourseComponent {
   public links = [
     {
       label: 'Office Hours',
-      path: '/course/:id/office-hours',
+      path: `/course/${this.route.snapshot.params['term_id']}/${this.route.snapshot.params['course_id']}/office-hours`,
       icon: 'person_raised_hand'
     },
     {

@@ -15,6 +15,7 @@ import { AllCoursesComponent } from './catalog/course-catalog/course-catalog.com
 import { SectionOfferingsComponent } from './catalog/section-offerings/section-offerings.component';
 import { CourseComponent } from './course/course.component';
 import { RosterComponent } from './course/roster/roster.component';
+import { OfficeHoursPageComponent } from './course/office-hours/office-hours-page/office-hours-page.component';
 
 const routes: Routes = [
   MyCoursesPageComponent.Route,
@@ -26,7 +27,7 @@ const routes: Routes = [
   {
     path: 'course/:term_id/:course_id',
     component: CourseComponent,
-    children: [RosterComponent.Route]
+    children: [RosterComponent.Route, OfficeHoursPageComponent.Route]
   }
 ];
 

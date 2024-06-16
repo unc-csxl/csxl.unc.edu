@@ -32,6 +32,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CourseComponent } from './course/course.component';
 import { RosterComponent } from './course/roster/roster.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { OfficeHoursPageComponent } from './course/office-hours/office-hours-page/office-hours-page.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     AllCoursesComponent,
     CourseComponent,
     RosterComponent,
+    OfficeHoursPageComponent,
     CourseCardWidget
   ],
   imports: [
@@ -59,7 +62,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatButtonToggleModule
   ]
 })
 export class MyCoursesModule {}

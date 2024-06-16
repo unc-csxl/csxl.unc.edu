@@ -80,6 +80,10 @@ html, body {
     .tertiary-button {
         @include mat.button-color($theme, $color-variant: tertiary);
     }
+
+    .low-button-toggle-density {
+        @include mat.button-toggle-density(-3);       
+     }
 }
 
 /// Defines a mixin that applies custom styles to material card components
