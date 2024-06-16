@@ -63,6 +63,7 @@ export interface OfficeHourEventOverviewJson {
   type: string;
   mode: string;
   description: string;
+  location: string;
   location_description: string;
   start_time: string;
   end_time: string;
@@ -73,6 +74,7 @@ export interface OfficeHourEventOverview {
   type: string;
   mode: string;
   description: string;
+  location: string;
   location_description: string;
   start_time: Date;
   end_time: Date;

@@ -41,11 +41,7 @@ class CourseOfficeHourEventOverview(BaseModel):
     type: str
     mode: str
     description: str
+    location: str
     location_description: str
     start_time: datetime
     end_time: datetime
-
-
-class CourseOfficeHourEventsOverview(BaseModel):
-    current_events: list[CourseOfficeHourEventOverview]
-    future_events: list[CourseOfficeHourEventOverview]

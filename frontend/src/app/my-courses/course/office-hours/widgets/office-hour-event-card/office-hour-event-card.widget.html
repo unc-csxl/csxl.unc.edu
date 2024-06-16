@@ -7,7 +7,7 @@
       {{ event.start_time | date: 'shortTime' }} -
       {{ event.end_time | date: 'shortTime' }}
     </p>
-    <p>Sample Room</p>
+    <p>{{ event.location }}</p>
   </mat-card-content>
   <mat-card-actions class="office-hours-event-card-actions">
     <button mat-flat-button color="primary" type="submit" [routerLink]="">

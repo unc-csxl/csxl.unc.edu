@@ -18,7 +18,6 @@ from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
     CourseOfficeHourEventOverview,
-    CourseOfficeHourEventsOverview,
 )
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import OfficeHoursSectionEntity, OfficeHoursEventEntity
@@ -85,7 +84,7 @@ class MyCoursesService:
                         subject_code=course.subject_code,
                         number=course.number,
                         title=memberships[0].section.override_title or course.title,
-                        role=memberships[0].member_role.name,
+                        role=memberships[0].member_role.value,
                         sections=[
                             self._to_section_overview(membership.section)
                             for membership in memberships
@@ -212,7 +211,7 @@ class MyCoursesService:
             last_name=section_member.user.last_name,
             email=section_member.user.email,
             pronouns=section_member.user.pronouns,
-            role=section_member.member_role.name,
+            role=section_member.member_role.value,
             section_number=section_member.section.number,
         )
 
@@ -236,6 +235,7 @@ class MyCoursesService:
                 SectionEntity.term_id == term_id,
                 SectionEntity.course_id == course_id,
             )
+            .options(joinedload(OfficeHoursEventEntity.room))
             .options(
                 joinedload(OfficeHoursEventEntity.office_hours_section)
                 .joinedload(OfficeHoursSectionEntity.sections)
@@ -307,6 +307,7 @@ class MyCoursesService:
                 SectionEntity.term_id == term_id,
                 SectionEntity.course_id == course_id,
             )
+            .options(joinedload(OfficeHoursEventEntity.room))
             .options(
                 joinedload(OfficeHoursEventEntity.office_hours_section)
                 .joinedload(OfficeHoursSectionEntity.sections)
@@ -377,9 +378,10 @@ class MyCoursesService:
     ) -> CourseOfficeHourEventOverview:
         return CourseOfficeHourEventOverview(
             id=oh_event.id,
-            type=oh_event.type.name,
-            mode=oh_event.mode.name,
+            type=oh_event.type.value,
+            mode=oh_event.mode.value,
             description=oh_event.description,
+            location=f"{oh_event.room.building} {oh_event.room.room}",
             location_description=oh_event.location_description,
             start_time=oh_event.start_time,
             end_time=oh_event.end_time,

@@ -12,7 +12,7 @@ class TicketState(Enum):
     Determines the state of a ticket.
     """
 
-    QUEUED = 0
-    CALLED = 1
-    CLOSED = 2
-    CANCELED = 3
+    QUEUED = "Queued"
+    CALLED = "Called"
+    CLOSED = "Closed"
+    CANCELED = "Cancelled"

@@ -12,9 +12,9 @@ class OfficeHoursEventType(Enum):
     Determines the type of an office hours event.
     """
 
-    OFFICE_HOURS = 0
-    TUTORING = 1
-    REVIEW_SESSION = 2
+    OFFICE_HOURS = "Office Hours"
+    TUTORING = "Tutoring"
+    REVIEW_SESSION = "Review Session"
 
 
 class OfficeHoursEventModeType(Enum):
@@ -22,6 +22,6 @@ class OfficeHoursEventModeType(Enum):
     Determines the office hours event mode.
     """
 
-    IN_PERSON = 0
-    VIRTUAL_STUDENT_LINK = 1
-    VIRTUAL_OUR_LINK = 2
+    IN_PERSON = "In-Person"
+    VIRTUAL_STUDENT_LINK = "Virtual - Student Link"
+    VIRTUAL_OUR_LINK = "Virtual - Our Link"

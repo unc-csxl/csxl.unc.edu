@@ -12,5 +12,5 @@ class TicketType(Enum):
     Determines the type of a ticket.
     """
 
-    CONCEPTUAL_HELP = 0
-    ASSIGNMENT_HELP = 1
+    CONCEPTUAL_HELP = "Conceptual Help"
+    ASSIGNMENT_HELP = "Assignment Help"
