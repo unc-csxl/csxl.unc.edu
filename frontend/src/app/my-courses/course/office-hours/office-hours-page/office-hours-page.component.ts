@@ -1,6 +1,6 @@
 import { Component, WritableSignal, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { OfficeHourEventsOverview } from 'src/app/my-courses/my-courses.model';
+import { OfficeHourEventOverview } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 
 @Component({
@@ -16,11 +16,14 @@ export class OfficeHoursPageComponent {
     component: OfficeHoursPageComponent
   };
 
+  /** Stores the view state enum and view state. */
+  ViewState = OfficeHoursPageComponent.ViewState;
+  viewState = OfficeHoursPageComponent.ViewState.Scheduled;
+
   /** Signal to store the reactive office hour overview information */
-  officeHourEvents: WritableSignal<OfficeHourEventsOverview> = signal({
-    current_events: [],
-    future_events: []
-  });
+  currentOfficeHourEvents: WritableSignal<OfficeHourEventOverview[]> = signal(
+    []
+  );
 
   constructor(
     private route: ActivatedRoute,
@@ -32,9 +35,18 @@ export class OfficeHoursPageComponent {
 
     // Load office hour data
     this.myCoursesService
-      .getOfficeHourEventsOverview(termId, courseId)
+      .getCurrentOfficeHourEvents(termId, courseId)
       .subscribe((overview) => {
-        this.officeHourEvents.set(overview);
+        this.currentOfficeHourEvents.set(overview);
       });
+  }
+}
+
+export namespace OfficeHoursPageComponent {
+  /** Enumeration for the view states */
+  export enum ViewState {
+    Scheduled,
+    History,
+    Data
   }
 }

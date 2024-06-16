@@ -12,12 +12,11 @@ import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-  CourseMemberOverview,
-  OfficeHourEventsOverview,
-  OfficeHourEventsOverviewJson,
+  OfficeHourEventOverview,
+  OfficeHourEventOverviewJson,
   TermOverview,
   TermOverviewJson,
-  parseOfficeHourEventsOverviewJson,
+  parseOfficeHourEventOverviewJson,
   parseTermOverviewJsonList
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
@@ -68,16 +67,20 @@ export class MyCoursesService {
    *
    * @param termId: ID for the term of the course
    * @param courseId: ID for the course
-   * @returns { Observable<OfficeHourEventsOverview> }
+   * @returns { Observable<OfficeHourEventOverview[]> }
    */
-  getOfficeHourEventsOverview(
+  getCurrentOfficeHourEvents(
     termId: string,
     courseId: string
-  ): Observable<OfficeHourEventsOverview> {
+  ): Observable<OfficeHourEventOverview[]> {
     return this.http
-      .get<OfficeHourEventsOverviewJson>(
-        `/api/academics/my-courses/${termId}/${courseId}/oh-events/overview`
+      .get<OfficeHourEventOverviewJson[]>(
+        `/api/academics/my-courses/${termId}/${courseId}/oh-events/current`
       )
-      .pipe(map(parseOfficeHourEventsOverviewJson));
+      .pipe(
+        map((responseModel) => {
+          return responseModel.map(parseOfficeHourEventOverviewJson);
+        })
+      );
   }
 }

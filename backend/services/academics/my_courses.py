@@ -216,15 +216,14 @@ class MyCoursesService:
             section_number=section_member.section.number,
         )
 
-    def get_course_office_hour_event_overview(
+    def get_current_office_hour_events(
         self, user: User, term_id: str, course_id: str
-    ) -> CourseOfficeHourEventsOverview:
+    ) -> list[CourseOfficeHourEventOverview]:
         """
-        Get the overview for a course's office hour events, including
-        current and future events.
+        Get the overview for a course's currenet office hour events.
 
         Returns:
-            CourseOfficeHourEventsOverview
+            list[CourseOfficeHourEventOverview]
         """
 
         # Start building the query
@@ -271,27 +270,106 @@ class MyCoursesService:
 
         today = datetime.today()
 
-        # For performance, only load current and future events
-        event_query = event_query.where(today < OfficeHoursEventEntity.end_time)
+        # Only load current events
+        event_query = event_query.where(
+            OfficeHoursEventEntity.start_time < today,
+            today < OfficeHoursEventEntity.end_time,
+        )
 
         # Load office hours data
         office_hour_event_entities = self._session.scalars(event_query).unique().all()
 
-        # Find current and future events
-        current_events = [
-            self._to_oh_event_overview(event)
-            for event in office_hour_event_entities
-            if event.start_time < today and today < event.end_time
-        ]
-        future_events = [
-            self._to_oh_event_overview(event)
-            for event in office_hour_event_entities
-            if event.start_time > today
+        return [
+            self._to_oh_event_overview(event) for event in office_hour_event_entities
         ]
 
-        # Find current office hours events and return.
-        return CourseOfficeHourEventsOverview(
-            current_events=current_events, future_events=future_events
+    def get_future_office_hour_events(
+        self,
+        user: User,
+        term_id: str,
+        course_id: str,
+        pagination_params: PaginationParams,
+    ) -> Paginated[CourseOfficeHourEventOverview]:
+        """
+        Gets the future office hours events, paginated.
+
+        Returns:
+            Paginated[CourseOfficeHourEventOverview]
+        """
+
+        # Start building the query
+        event_query = (
+            select(OfficeHoursEventEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(SectionEntity)
+            .join(SectionMemberEntity)
+            .where(
+                SectionEntity.term_id == term_id,
+                SectionEntity.course_id == course_id,
+            )
+            .options(
+                joinedload(OfficeHoursEventEntity.office_hours_section)
+                .joinedload(OfficeHoursSectionEntity.sections)
+                .joinedload(SectionEntity.members)
+            )
+        )
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .join(UserEntity)
+            .where(
+                SectionEntity.term_id == term_id,
+                SectionEntity.course_id == course_id,
+            )
+            .where(SectionMemberEntity.user_id == user.id)
+        )
+        user_members = self._session.scalars(user_member_query).unique().all()
+
+        # If the user is not a member of the looked up course, throw an error
+        if len(user_members) == 0:
+            raise CoursePermissionException(
+                "Not allowed to access the roster of a course you are not a member of."
+            )
+
+        # In the cases where sections are taught by different instructors, ensure that
+        # the roster data only includes sections that the user has permissions for.
+        section_ids = [member.section_id for member in user_members]
+        event_query = event_query.where(SectionEntity.id.in_(section_ids))
+
+        today = datetime.today()
+
+        # Only load future events
+        event_query = event_query.where(today < OfficeHoursEventEntity.start_time)
+
+        # Count the number of rows before applying pagination and filter
+        count_query = select(func.count()).select_from(
+            event_query.distinct(OfficeHoursEventEntity.id).subquery()
+        )
+        length = self._session.scalar(count_query)
+
+        # Calculate offset and limit for pagination
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        event_query = (
+            event_query.offset(offset)
+            .limit(limit)
+            .order_by(OfficeHoursEventEntity.start_time)
+        )
+
+        # Load office hours data
+        office_hour_event_entities = self._session.scalars(event_query).unique().all()
+
+        # Create paginated representation of data and return
+        return Paginated(
+            items=[
+                self._to_oh_event_overview(event)
+                for event in office_hour_event_entities
+            ],
+            length=length,
+            params=pagination_params,
         )
 
     def _to_oh_event_overview(

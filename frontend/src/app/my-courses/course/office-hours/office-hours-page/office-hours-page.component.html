@@ -11,20 +11,34 @@
       </button>
     </div>
     <div class="header-horizontal-container low-button-toggle-density">
-      <mat-button-toggle-group name="view" class="view-toggle">
-        <mat-button-toggle value="scheduled">Scheduled</mat-button-toggle>
-        <mat-button-toggle value="history">History</mat-button-toggle>
-        <mat-button-toggle value="data">Data</mat-button-toggle>
+      <mat-button-toggle-group
+        [(ngModel)]="viewState"
+        name="view"
+        class="view-toggle">
+        <mat-button-toggle [value]="ViewState.Scheduled">
+          Scheduled
+        </mat-button-toggle>
+        <mat-button-toggle [value]="ViewState.History">
+          History
+        </mat-button-toggle>
+        <mat-button-toggle [value]="ViewState.Data">Data</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
     <mat-divider />
   </mat-card-header>
+  @if (viewState === ViewState.Scheduled) {
   <mat-card-content class="pane-content">
     <mat-card-subtitle>Current Events</mat-card-subtitle>
     <div class="card-container">
-      @for (event of officeHourEvents().current_events; track event.id) {
+      @if (currentOfficeHourEvents().length === 0) {
+      <p>Office hours are currently closed.</p>
+      } @for (event of currentOfficeHourEvents(); track event.id) {
       <office-hour-event-card [event]="event" />
       }
     </div>
+    <mat-card-subtitle class="future-schedule-header">
+      Future Schedule
+    </mat-card-subtitle>
   </mat-card-content>
+  }
 </mat-pane>
