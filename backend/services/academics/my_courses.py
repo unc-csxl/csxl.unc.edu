@@ -135,6 +135,7 @@ class MyCoursesService:
                 SectionEntity.term_id == term_id,
                 SectionEntity.course_id == course_id,
             )
+            .options(joinedload(SectionMemberEntity.section))
             .options(joinedload(SectionMemberEntity.user))
         )
 
