@@ -17,11 +17,10 @@ from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
 )
-from ...entities.academics.course_entity import CourseEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ..exceptions import ResourceNotFoundException, CoursePermissionException
+from ..exceptions import CoursePermissionException
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -116,17 +115,13 @@ class MyCoursesService:
         pagination_params: PaginationParams,
     ) -> Paginated[CourseMemberOverview]:
         """
-        Get the courses for the current user.
+        Get a paginated list of members for a course.
 
         Returns:
             Paginated[CourseMemberOverview]
         """
 
-        course_entity = self._session.query(CourseEntity).get(course_id)
-
-        if course_entity is None:
-            raise ResourceNotFoundException(f"No course found for ID: {course_id}.")
-
+        # Start building the query
         member_query = (
             select(SectionMemberEntity)
             .join(SectionEntity)
@@ -139,29 +134,38 @@ class MyCoursesService:
             .options(joinedload(SectionMemberEntity.user))
         )
 
+        # Add order by sort from pagination parameters
         if pagination_params.order_by != "":
             member_query = member_query.order_by(
                 getattr(SectionMemberEntity, pagination_params.order_by)
             )
 
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
         user_member_query = member_query.where(SectionMemberEntity.user_id == user.id)
         user_members = self._session.scalars(user_member_query).all()
 
+        # If the user is not a member of the looked up course, throw an error
         if len(user_members) == 0:
             raise CoursePermissionException(
                 "Not allowed to access the roster of a course you are not a member of."
             )
 
+        # Determines if a user is a student
+        # NOTE: This can be used to limit roster data a user can see compared to
+        # an instructor in the future.
         is_student = user_members[0].member_role == RosterRole.STUDENT
 
+        # In the cases where sections are taught by different instructors, ensure that
+        # the roster data only includes sections that the user has permissions for.
         section_ids = [member.section_id for member in user_members]
         member_query = member_query.where(SectionEntity.id.in_(section_ids))
 
-        # Count the number of rows before applying pagination and filter
+        # Count the number of rows before applying pagination and filter.
         count_query = select(func.count()).select_from(member_query.subquery())
         length = self._session.scalar(count_query)
 
-        # Pagination modifiers
+        # Add filtering by inputted pagination parameters
         if pagination_params.filter != "":
             query = pagination_params.filter
             criteria = or_(
@@ -171,6 +175,7 @@ class MyCoursesService:
             )
             member_query = member_query.where(criteria)
 
+        # Calculate offset and limit for pagination
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
         member_query = (
@@ -181,8 +186,10 @@ class MyCoursesService:
             .order_by(SectionMemberEntity.member_role)
         )
 
+        # Load the final query
         section_member_entities = self._session.scalars(member_query).all()
 
+        # Create paginated representation of data and return
         return Paginated(
             items=[
                 self._to_course_member_overview(member, is_student)
