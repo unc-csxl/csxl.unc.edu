@@ -37,3 +37,7 @@
 .future-schedule-header {
     margin-top: 24px;
 }
+
+.future-schedule-card {
+    margin-left: 0px !important;
+}

@@ -114,3 +114,10 @@ export const parseOfficeHourEventOverviewJson = (
     end_time: new Date(responseModel.end_time)
   });
 };
+
+export const parseOfficeHourEventOverviewJsonList = (
+  responseModel: OfficeHourEventOverviewJson[]
+): OfficeHourEventOverview[] => {
+  console.log(responseModel);
+  return responseModel.map((model) => parseOfficeHourEventOverviewJson(model));
+};

@@ -1,7 +1,20 @@
 import { Component, WritableSignal, signal } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-import { OfficeHourEventOverview } from 'src/app/my-courses/my-courses.model';
+import { map } from 'rxjs';
+import {
+  OfficeHourEventOverview,
+  OfficeHourEventOverviewJson,
+  parseOfficeHourEventOverviewJson,
+  parseOfficeHourEventOverviewJsonList
+} from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
+import {
+  DEFAULT_PAGINATION_PARAMS,
+  Paginated,
+  PaginationParams,
+  Paginator
+} from 'src/app/pagination';
 
 @Component({
   selector: 'app-course-office-hours-page',
@@ -25,6 +38,16 @@ export class OfficeHoursPageComponent {
     []
   );
 
+  /** Encapsulated future events paginator and params */
+  private futureOfficeHourEventsPaginator: Paginator<OfficeHourEventOverview>;
+  futureOfficeHourEventsPage: WritableSignal<
+    Paginated<OfficeHourEventOverview, PaginationParams> | undefined
+  > = signal(undefined);
+  private previousFutureOfficeHourEventParams: PaginationParams =
+    DEFAULT_PAGINATION_PARAMS;
+
+  public futureOhDisplayedColumns: string[] = ['date', 'type'];
+
   constructor(
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService
@@ -38,6 +61,37 @@ export class OfficeHoursPageComponent {
       .getCurrentOfficeHourEvents(termId, courseId)
       .subscribe((overview) => {
         this.currentOfficeHourEvents.set(overview);
+      });
+
+    // Load paginated future office hours data
+    this.futureOfficeHourEventsPaginator =
+      new Paginator<OfficeHourEventOverview>(
+        `/api/academics/my-courses/${termId}/${courseId}/oh-events/future`
+      );
+
+    this.futureOfficeHourEventsPaginator
+      .loadPage<OfficeHourEventOverviewJson>(
+        this.previousFutureOfficeHourEventParams,
+        parseOfficeHourEventOverviewJson
+      )
+      .subscribe((page) => {
+        this.futureOfficeHourEventsPage.set(page);
+      });
+  }
+
+  /** Handles a pagination event for the future office hours table */
+  handleFutureOfficeHoursPageEvent(e: PageEvent) {
+    let paginationParams = this.futureOfficeHourEventsPage()!.params;
+    paginationParams.page = e.pageIndex;
+    paginationParams.page_size = e.pageSize;
+    this.futureOfficeHourEventsPaginator
+      .loadPage<OfficeHourEventOverviewJson>(
+        paginationParams,
+        parseOfficeHourEventOverviewJson
+      )
+      .subscribe((page) => {
+        this.futureOfficeHourEventsPage.set(page);
+        this.previousFutureOfficeHourEventParams = paginationParams;
       });
   }
 }

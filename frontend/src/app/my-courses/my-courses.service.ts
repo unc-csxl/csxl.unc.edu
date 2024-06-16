@@ -17,9 +17,10 @@ import {
   TermOverview,
   TermOverviewJson,
   parseOfficeHourEventOverviewJson,
+  parseOfficeHourEventOverviewJsonList,
   parseTermOverviewJsonList
 } from './my-courses.model';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
 
 @Injectable({
@@ -77,10 +78,6 @@ export class MyCoursesService {
       .get<OfficeHourEventOverviewJson[]>(
         `/api/academics/my-courses/${termId}/${courseId}/oh-events/current`
       )
-      .pipe(
-        map((responseModel) => {
-          return responseModel.map(parseOfficeHourEventOverviewJson);
-        })
-      );
+      .pipe(map(parseOfficeHourEventOverviewJsonList));
   }
 }

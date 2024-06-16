@@ -39,6 +39,30 @@
     <mat-card-subtitle class="future-schedule-header">
       Future Schedule
     </mat-card-subtitle>
+    <mat-card class="future-schedule-card" appearance="outlined">
+      <mat-card-content>
+        <table
+          mat-table
+          [dataSource]="futureOfficeHourEventsPage()?.items ?? []">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.start_time }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.type }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="futureOhDisplayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: futureOhDisplayedColumns"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
   </mat-card-content>
   }
 </mat-pane>
