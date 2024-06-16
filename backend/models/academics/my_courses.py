@@ -34,3 +34,18 @@ class CourseMemberOverview(BaseModel):
     pronouns: str
     section_number: str
     role: str
+
+
+class CourseOfficeHourEventOverview(BaseModel):
+    id: int
+    type: str
+    mode: str
+    description: str
+    location_description: str
+    start_time: datetime
+    end_time: datetime
+
+
+class CourseOfficeHourEventsOverview(BaseModel):
+    current_events: list[CourseOfficeHourEventOverview]
+    future_events: list[CourseOfficeHourEventOverview]

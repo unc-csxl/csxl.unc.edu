@@ -6,7 +6,11 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.academics.my_courses import MyCoursesService
 from ...models.user import User
-from ...models.academics.my_courses import TermOverview, CourseMemberOverview
+from ...models.academics.my_courses import (
+    TermOverview,
+    CourseMemberOverview,
+    CourseOfficeHourEventsOverview,
+)
 from ...models.pagination import PaginationParams, Paginated
 
 __authors__ = ["Kris Jordan"]
@@ -52,4 +56,22 @@ def get_course_roster(
     )
     return my_courses_svc.get_course_roster(
         subject, term_id, course_id, pagination_params
+    )
+
+
+@api.get("/{term_id}/{course_id}/oh-events/overview", tags=["Academics"])
+def get_course_roster(
+    term_id: str,
+    course_id: str,
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> CourseOfficeHourEventsOverview:
+    """
+    Gets the current and future office hour event overviews for a given class.
+
+    Returns:
+        CourseOfficeHourEventsOverview
+    """
+    return my_courses_svc.get_course_office_hour_event_overview(
+        subject, term_id, course_id
     )
