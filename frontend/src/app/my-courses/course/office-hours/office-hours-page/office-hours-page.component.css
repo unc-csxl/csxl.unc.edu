@@ -32,6 +32,7 @@
     flex-wrap: wrap;
     row-gap: 24px;
     column-gap: 24px;
+    margin-top: 16px;
 }
 
 .future-schedule-header {
@@ -40,4 +41,12 @@
 
 .future-schedule-card {
     margin-left: 0px !important;
+}
+
+.future-schedule-card-content {
+    padding-top: 0;
+}
+
+.semibold {
+    font-weight: 500;
 }
