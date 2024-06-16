@@ -4,18 +4,23 @@ APIs for academics for users.
 
 from itertools import groupby
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
+from ...models.pagination import PaginationParams, Paginated
+from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
     CourseOverview,
     SectionOverview,
     CourseOverview,
     TermOverview,
+    CourseMemberOverview,
 )
 from ...entities.academics.section_entity import SectionEntity
+from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
+from ..exceptions import CoursePermissionException
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -99,4 +104,110 @@ class MyCoursesService:
         return SectionOverview(
             number=section.number,
             meeting_pattern=section.meeting_pattern,
+            oh_section_id=section.office_hours_id,
+        )
+
+    def get_course_roster(
+        self,
+        user: User,
+        term_id: str,
+        course_id: str,
+        pagination_params: PaginationParams,
+    ) -> Paginated[CourseMemberOverview]:
+        """
+        Get a paginated list of members for a course.
+
+        Returns:
+            Paginated[CourseMemberOverview]
+        """
+
+        # Start building the query
+        member_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .join(UserEntity)
+            .where(
+                SectionEntity.term_id == term_id,
+                SectionEntity.course_id == course_id,
+            )
+            .options(joinedload(SectionMemberEntity.section))
+            .options(joinedload(SectionMemberEntity.user))
+        )
+
+        # Add order by sort from pagination parameters
+        if pagination_params.order_by != "":
+            member_query = member_query.order_by(
+                getattr(SectionMemberEntity, pagination_params.order_by)
+            )
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = member_query.where(SectionMemberEntity.user_id == user.id)
+        user_members = self._session.scalars(user_member_query).all()
+
+        # If the user is not a member of the looked up course, throw an error
+        if len(user_members) == 0:
+            raise CoursePermissionException(
+                "Not allowed to access the roster of a course you are not a member of."
+            )
+
+        # Determines if a user is a student
+        # NOTE: This can be used to limit roster data a user can see compared to
+        # an instructor in the future.
+        is_student = user_members[0].member_role == RosterRole.STUDENT
+
+        # In the cases where sections are taught by different instructors, ensure that
+        # the roster data only includes sections that the user has permissions for.
+        section_ids = [member.section_id for member in user_members]
+        member_query = member_query.where(SectionEntity.id.in_(section_ids))
+
+        # Count the number of rows before applying pagination and filter.
+        count_query = select(func.count()).select_from(member_query.subquery())
+        length = self._session.scalar(count_query)
+
+        # Add filtering by inputted pagination parameters
+        if pagination_params.filter != "":
+            query = pagination_params.filter
+            criteria = or_(
+                UserEntity.first_name.ilike(f"%{query}%"),
+                UserEntity.last_name.ilike(f"%{query}%"),
+                UserEntity.onyen.ilike(f"%{query}%"),
+            )
+            member_query = member_query.where(criteria)
+
+        # Calculate offset and limit for pagination
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        member_query = (
+            member_query.offset(offset)
+            .limit(limit)
+            .order_by(SectionEntity.id)
+            .order_by(UserEntity.first_name)
+            .order_by(SectionMemberEntity.member_role)
+        )
+
+        # Load the final query
+        section_member_entities = self._session.scalars(member_query).all()
+
+        # Create paginated representation of data and return
+        return Paginated(
+            items=[
+                self._to_course_member_overview(member, is_student)
+                for member in section_member_entities
+            ],
+            length=length,
+            params=pagination_params,
+        )
+
+    def _to_course_member_overview(
+        self, section_member: SectionMemberEntity, is_student: bool
+    ) -> CourseMemberOverview:
+        return CourseMemberOverview(
+            pid=section_member.user.pid,
+            first_name=section_member.user.first_name,
+            last_name=section_member.user.last_name,
+            email=section_member.user.email,
+            pronouns=section_member.user.pronouns,
+            role=section_member.member_role.name,
+            section_number=section_member.section.number,
         )

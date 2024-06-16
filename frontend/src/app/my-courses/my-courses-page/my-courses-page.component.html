@@ -1,0 +1,54 @@
+<!-- eslint-disable prettier/prettier -->
+<banner-card
+type="info"
+[wide]="true"
+icon="person_raised_hand"
+title="Apply to be a UTA Today!"
+body="We are now accepting UTA Applications for the Fall 2024 semester. Apply to be a UTA by clicking here."
+actionButtonText="Apply Now"
+[bottomActionButton]="true"
+[linkAction]="false"
+(actionButtonPressed)="onUTAClick()"
+link="https://github.com/unc-csxl/csxl.unc.edu/wiki/Upgrade-to-CSXL-Web-Application-v2" />
+
+<div class="container">  
+  <mat-pane>
+    <mat-card-header id="pane-header">
+      <mat-card-title>My Courses</mat-card-title>
+      <div class="header-buttons">
+        <button mat-stroked-button color="secondary" routerLink="/catalog/offerings">
+          <!-- <mat-icon>search</mat-icon> -->
+          View Catalog
+        </button>
+        <button mat-flat-button color="primary" [disabled]="true">
+          <!-- <mat-icon>add</mat-icon> -->
+          Join Course
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-divider />
+      @for (term of this.myCoursesService.currentTerms(); track term.id) {
+        <h3 class="title-medium term-header">{{ term.name }}</h3>
+        <div class="course-card-container">
+          @for (course of term.courses; track course.id) {
+            <course-card [termId]="term.id" [course]="course" />
+          }
+        </div>
+      }
+      @if (showPreviousCourses()) {
+        @for (term of this.myCoursesService.pastTerms(); track term.id) {
+          <h3 class="title-medium term-header">{{ term.name }}</h3>
+          <div class="course-card-container">
+            @for (course of term.courses; track course.id) {
+              <course-card [course]="course" />
+            }
+          </div>
+        }
+        <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(false)">Hide Past Courses</button>
+      } @else if (this.myCoursesService.pastTerms().length > 0) {
+        <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(true)">View Past Courses</button>
+      }
+    </mat-card-content>
+  </mat-pane>
+</div>

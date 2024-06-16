@@ -1,0 +1,41 @@
+<mat-card
+  [class]="
+    'course-card ' + (course.role !== 'STUDENT' && 'surface-container-card')
+  "
+  appearance="outlined">
+  <mat-card-header>
+    <mat-card-title class="title-medium">
+      {{ course.subject_code }} {{ course.number
+      }}{{ course.role === 'STUDENT' ? '-' + course.sections[0].number : '' }}
+    </mat-card-title>
+    <mat-card-subtitle class="title-small course-title">{{
+      course.title
+    }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    @for (section of course.sections; track section.number) {
+    <p>{{ course.sections[0].meeting_pattern }}</p>
+    }
+  </mat-card-content>
+  <mat-card-actions class="course-card-actions">
+    @if (course.role === 'STUDENT') {
+    <!-- <button mat-stroked-button color="secondary" type="submit">Details</button> -->
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [routerLink]="'/course/' + termId + '/' + course.id">
+      Get Help
+    </button>
+    } @else {
+    <!-- <button mat-stroked-button color="secondary" type="submit">Staffing</button> -->
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [routerLink]="'/course/' + termId + '/' + course.id">
+      Manage
+    </button>
+    }
+  </mat-card-actions>
+</mat-card>

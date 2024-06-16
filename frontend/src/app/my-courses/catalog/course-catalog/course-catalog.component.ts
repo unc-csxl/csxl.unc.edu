@@ -7,10 +7,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { coursesResolver } from '../academics.resolver';
-import { Course } from '../academics.models';
+import { coursesResolver } from '../../../academics/academics.resolver';
+import { Course } from '../../../academics/academics.models';
 import { ActivatedRoute } from '@angular/router';
-import { AcademicsService } from '../academics.service';
+import { AcademicsService } from '../../../academics/academics.service';
 import {
   animate,
   state,
@@ -35,12 +35,12 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
     ])
   ]
 })
-export class CoursesHomeComponent implements OnInit {
+export class AllCoursesComponent implements OnInit {
   /** Route information to be used in Course Routing Module */
   public static Route = {
-    path: 'catalog',
-    title: 'Course Catalog',
-    component: CoursesHomeComponent,
+    path: 'all',
+    title: 'Catalog',
+    component: AllCoursesComponent,
     canActivate: [],
     resolve: { courses: coursesResolver }
   };

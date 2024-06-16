@@ -1,0 +1,42 @@
+::ng-deep .mat-pane {
+    margin-right: 32px !important;
+}
+
+.container {
+    height: 100%;
+
+    ::ng-deep .mat-pane {
+        max-width: 100% !important;
+        min-height: calc(100vh - 112px);
+        margin-bottom: 32px !important;
+    }
+}
+
+#pane-header {
+    align-items: center !important;
+    padding-bottom: 16px !important;
+}
+
+.header-buttons {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    gap: 12px;
+}
+
+.course-card-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 24px;
+    column-gap: 24px;
+}
+
+#more-courses-button {
+    margin-top: 12px;
+}
+
+.term-header {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}

@@ -27,6 +27,7 @@ from .api.office_hours import ticket, section as oh_section, event
 from .services.exceptions import (
     UserPermissionException,
     ResourceNotFoundException,
+    CoursePermissionException,
 )
 
 __authors__ = ["Kris Jordan"]
@@ -99,6 +100,11 @@ app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
 @app.exception_handler(UserPermissionException)
+def permission_exception_handler(request: Request, e: UserPermissionException):
+    return JSONResponse(status_code=403, content={"message": str(e)})
+
+
+@app.exception_handler(CoursePermissionException)
 def permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
