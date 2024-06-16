@@ -18,6 +18,8 @@ from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
     CourseOfficeHourEventOverview,
+    OfficeHourTicketOverview,
+    OfficeHourQueueOverview,
 )
 from ...models.office_hours.ticket import TicketState, OfficeHoursTicket
 from ...entities.academics.section_entity import SectionEntity
@@ -28,7 +30,7 @@ from ...entities.office_hours import (
 )
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ..exceptions import CoursePermissionException
+from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -413,4 +415,110 @@ class MyCoursesService:
                 ]
             ),
             total_tickets=len(oh_event.tickets),
+        )
+
+    def get_office_hour_queue(
+        self, user: User, oh_event_id: int
+    ) -> OfficeHourQueueOverview:
+        """
+        Loads all of the data relevant to an office hour queue.
+
+        Returns:
+            OfficeHourQueueOverview
+        """
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == oh_event_id)
+        )
+
+        user_members = self._session.scalars(user_member_query).unique().all()
+
+        # If the user is not a member of the looked up course, throw an error
+        if len(user_members) == 0 or user_members[0].member_role == RosterRole.STUDENT:
+            raise CoursePermissionException(
+                "Not allowed to access the queue of a course you are not a UTA, GTA, or instructor for."
+            )
+
+        # Start building the query
+        queue_query = (
+            select(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == oh_event_id)
+            .options(
+                joinedload(OfficeHoursEventEntity.tickets)
+                .joinedload(OfficeHoursTicketEntity.caller)
+                .joinedload(SectionMemberEntity.user)
+            )
+            .options(
+                joinedload(OfficeHoursEventEntity.tickets)
+                .joinedload(OfficeHoursTicketEntity.creators)
+                .joinedload(SectionMemberEntity.user)
+            )
+        )
+
+        # Load data
+        queue_entity = self._session.scalars(queue_query).unique().one_or_none()
+
+        if not queue_entity:
+            raise ResourceNotFoundException(
+                f"No office hours event for id: {oh_event_id}"
+            )
+
+        # Return data
+        return self._to_oh_queue_overview(user, queue_entity)
+
+    def _to_oh_ticket_overview(
+        self, ticket: OfficeHoursTicketEntity
+    ) -> OfficeHourTicketOverview:
+        return OfficeHourTicketOverview(
+            id=ticket.id,
+            created_at=ticket.created_at,
+            called_at=ticket.called_at,
+            state=ticket.state,
+            type=ticket.type,
+            description=ticket.description,
+            creators=[
+                f"{creator.user.first_name} {creator.user.last_name}"
+                for creator in ticket.creators
+            ],
+            caller=(
+                f"{ticket.caller.user.first_name} {ticket.caller.user.last_name}"
+                if ticket.caller
+                else None
+            ),
+        )
+
+    def _to_oh_queue_overview(
+        self, user: User, oh_event: OfficeHoursEventEntity
+    ) -> OfficeHourQueueOverview:
+        active_tickets = [
+            ticket
+            for ticket in oh_event.tickets
+            if ticket.caller and ticket.caller.user_id == user.id
+        ]
+        called_tickets = [
+            ticket for ticket in oh_event.tickets if ticket.state == TicketState.CALLED
+        ]
+        queued_tickets = [
+            ticket for ticket in oh_event.tickets if ticket.state == TicketState.QUEUED
+        ]
+        return OfficeHourQueueOverview(
+            id=oh_event.id,
+            type=oh_event.type.value,
+            start_time=oh_event.start_time,
+            end_time=oh_event.end_time,
+            active=(
+                self._to_oh_ticket_overview(active_tickets[0])
+                if len(active_tickets) > 0
+                else None
+            ),
+            other_called=[
+                self._to_oh_ticket_overview(ticket) for ticket in called_tickets
+            ],
+            queue=[self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
         )

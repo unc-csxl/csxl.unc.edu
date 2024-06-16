@@ -249,6 +249,4 @@ def test_add_user_section_memberships_by_oh_sections_exception_invalid_id(
 
 
 def test_get_roster(my_courses_svc: MyCoursesService):
-    my_courses_svc.get_course_office_hour_event_overview(
-        user_data.ambassador, "SSI24", "comp110"
-    )
+    my_courses_svc.get_office_hour_queue(user_data.ambassador, 1)

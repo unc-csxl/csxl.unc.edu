@@ -10,6 +10,7 @@ from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
     CourseOfficeHourEventOverview,
+    OfficeHourQueueOverview,
 )
 from ...models.pagination import PaginationParams, Paginated
 
@@ -123,3 +124,18 @@ def get_past_oh_events(
     return my_courses_svc.get_past_office_hour_events(
         subject, term_id, course_id, pagination_params
     )
+
+
+@api.get("/oh-events/{oh_event_id}/queue", tags=["Academics"])
+def get_oh_queue(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> OfficeHourQueueOverview:
+    """
+    Gets the queue overview for an office hour event.
+
+    Returns:
+        OfficeHourQueueOverview
+    """
+    return my_courses_svc.get_office_hour_queue(subject, oh_event_id)

@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
 from ...models import Paginated
+from ...models.office_hours.ticket_state import TicketState
+from ...models.office_hours.ticket_type import TicketType
 
 
 class SectionOverview(BaseModel):
@@ -47,3 +49,24 @@ class CourseOfficeHourEventOverview(BaseModel):
     end_time: datetime
     queued: int
     total_tickets: int
+
+
+class OfficeHourTicketOverview(BaseModel):
+    id: int
+    created_at: datetime
+    called_at: datetime | None
+    state: TicketState
+    type: TicketType
+    description: str
+    creators: list[str]
+    caller: str | None
+
+
+class OfficeHourQueueOverview(BaseModel):
+    id: int
+    type: str
+    start_time: datetime
+    end_time: datetime
+    active: OfficeHourTicketOverview | None
+    other_called: list[OfficeHourTicketOverview]
+    queue: list[OfficeHourTicketOverview]
