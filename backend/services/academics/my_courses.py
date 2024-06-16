@@ -502,7 +502,11 @@ class MyCoursesService:
             if ticket.caller and ticket.caller.user_id == user.id
         ]
         called_tickets = [
-            ticket for ticket in oh_event.tickets if ticket.state == TicketState.CALLED
+            ticket
+            for ticket in oh_event.tickets
+            if ticket.state == TicketState.CALLED
+            and ticket.caller
+            and ticket.caller.user_id != user.id
         ]
         queued_tickets = [
             ticket for ticket in oh_event.tickets if ticket.state == TicketState.QUEUED
