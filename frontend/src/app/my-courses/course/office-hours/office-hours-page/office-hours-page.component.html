@@ -19,7 +19,12 @@
     </div>
     <mat-divider />
   </mat-card-header>
-  <mat-card-content>
+  <mat-card-content class="pane-content">
     <mat-card-subtitle>Current Events</mat-card-subtitle>
+    <div class="card-container">
+      @for (event of officeHourEvents().current_events; track event.id) {
+      <office-hour-event-card [event]="event" />
+      }
+    </div>
   </mat-card-content>
 </mat-pane>

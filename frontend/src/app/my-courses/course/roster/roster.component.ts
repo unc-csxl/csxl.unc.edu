@@ -57,7 +57,6 @@ export class RosterComponent {
   });
 
   constructor(private route: ActivatedRoute) {
-    console.log(this.route.snapshot);
     let termId = this.route.parent!.snapshot.params['term_id'];
     let courseId = this.route.parent!.snapshot.params['course_id'];
 

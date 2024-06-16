@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OfficeHoursPageComponent } from './office-hours-page/office-hours-page.component';
+import { OldOfficeHoursPageComponent } from './office-hours-page/office-hours-page.component';
 import { OfficeHoursRoutingModule } from './office-hours-routing.module';
 import { CreateEventFormComponent } from './event/create-event-form/create-event-form.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -52,7 +52,7 @@ import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
-    OfficeHoursPageComponent,
+    OldOfficeHoursPageComponent,
     StudentSectionHomeComponent,
     EventCard,
     ScheduleCard,

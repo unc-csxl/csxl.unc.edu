@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { OfficeHoursPageComponent } from './office-hours-page/office-hours-page.component';
+import { OldOfficeHoursPageComponent } from './office-hours-page/office-hours-page.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateEventFormComponent } from './event/create-event-form/create-event-form.component';
 import { StudentSectionHomeComponent } from './section/student-section-home/student-section-home.component';
@@ -11,7 +11,7 @@ import { InstructorSectionHomeComponent } from './section/instructor-section-hom
 import { EditEventFormComponent } from './event/edit-event-form/edit-event-form.component';
 
 const routes: Routes = [
-  OfficeHoursPageComponent.Route,
+  OldOfficeHoursPageComponent.Route,
   CreateEventFormComponent.Routes[0],
   CreateEventFormComponent.Routes[1],
   StudentSectionHomeComponent.Route,

@@ -13,11 +13,14 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   CourseMemberOverview,
+  OfficeHourEventsOverview,
+  OfficeHourEventsOverviewJson,
   TermOverview,
   TermOverviewJson,
+  parseOfficeHourEventsOverviewJson,
   parseTermOverviewJsonList
 } from './my-courses.model';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Paginator } from '../pagination';
 
 @Injectable({
@@ -58,5 +61,23 @@ export class MyCoursesService {
       .subscribe((terms) => {
         this.termsSignal.set(terms);
       });
+  }
+
+  /**
+   * Returns the current and upcoming office hour events for a given course.
+   *
+   * @param termId: ID for the term of the course
+   * @param courseId: ID for the course
+   * @returns { Observable<OfficeHourEventsOverview> }
+   */
+  getOfficeHourEventsOverview(
+    termId: string,
+    courseId: string
+  ): Observable<OfficeHourEventsOverview> {
+    return this.http
+      .get<OfficeHourEventsOverviewJson>(
+        `/api/academics/my-courses/${termId}/${courseId}/oh-events/overview`
+      )
+      .pipe(map(parseOfficeHourEventsOverviewJson));
   }
 }

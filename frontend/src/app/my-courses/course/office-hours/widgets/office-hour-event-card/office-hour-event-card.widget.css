@@ -1,0 +1,14 @@
+::ng-deep .office-hours-event-card {
+    max-width: 380px !important;
+    width: 380px !important;
+    margin: 0px !important;
+}
+
+.office-hours-event-card-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: end;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}

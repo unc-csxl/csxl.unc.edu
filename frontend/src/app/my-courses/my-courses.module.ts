@@ -34,6 +34,7 @@ import { RosterComponent } from './course/roster/roster.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { OfficeHoursPageComponent } from './course/office-hours/office-hours-page/office-hours-page.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { OfficeHourEventCardWidget } from './course/office-hours/widgets/office-hour-event-card/office-hour-event-card.widget';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     CourseComponent,
     RosterComponent,
     OfficeHoursPageComponent,
-    CourseCardWidget
+    CourseCardWidget,
+    OfficeHourEventCardWidget
   ],
   imports: [
     CommonModule,

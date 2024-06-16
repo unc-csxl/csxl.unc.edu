@@ -28,11 +28,11 @@ import { OfficeHoursService } from '../office-hours.service';
   templateUrl: './office-hours-page.component.html',
   styleUrls: ['./office-hours-page.component.css']
 })
-export class OfficeHoursPageComponent implements OnInit {
+export class OldOfficeHoursPageComponent implements OnInit {
   public static Route = {
     path: '',
     title: 'Office Hours',
-    component: OfficeHoursPageComponent,
+    component: OldOfficeHoursPageComponent,
     canActivate: [],
     resolve: {
       currentTerm: currentTermResolver,

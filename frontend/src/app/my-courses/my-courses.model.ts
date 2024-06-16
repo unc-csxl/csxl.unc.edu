@@ -58,6 +58,36 @@ export interface CourseRosterOverview {
   members: Paginated<CourseMemberOverview, PaginationParams>;
 }
 
+export interface OfficeHourEventOverviewJson {
+  id: number;
+  type: string;
+  mode: string;
+  description: string;
+  location_description: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface OfficeHourEventOverview {
+  id: number;
+  type: string;
+  mode: string;
+  description: string;
+  location_description: string;
+  start_time: Date;
+  end_time: Date;
+}
+
+export interface OfficeHourEventsOverviewJson {
+  current_events: OfficeHourEventOverviewJson[];
+  future_events: OfficeHourEventOverviewJson[];
+}
+
+export interface OfficeHourEventsOverview {
+  current_events: OfficeHourEventOverview[];
+  future_events: OfficeHourEventOverview[];
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.
@@ -79,4 +109,26 @@ export const parseTermOverviewJsonList = (
   responseModels: TermOverviewJson[]
 ): TermOverview[] => {
   return responseModels.map(parseTermOverviewJson);
+};
+
+const parseOfficeHourEventOverviewJson = (
+  responseModel: OfficeHourEventOverviewJson
+): OfficeHourEventOverview => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time)
+  });
+};
+
+export const parseOfficeHourEventsOverviewJson = (
+  responseModel: OfficeHourEventsOverviewJson
+): OfficeHourEventsOverview => {
+  return {
+    current_events: responseModel.current_events.map(
+      parseOfficeHourEventOverviewJson
+    ),
+    future_events: responseModel.future_events.map(
+      parseOfficeHourEventOverviewJson
+    )
+  };
 };
