@@ -556,6 +556,7 @@ class MyCoursesService:
         # Return data
         return OfficeHourGetHelpOverview(
             event_type=queue_entity.type.value,
+            event_mode=queue_entity.mode.value,
             event_start_time=queue_entity.start_time,
             event_end_time=queue_entity.end_time,
             ticket=(

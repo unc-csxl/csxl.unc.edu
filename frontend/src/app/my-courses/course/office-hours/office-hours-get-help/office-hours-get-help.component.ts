@@ -43,7 +43,8 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     codeSection: new FormControl('', [Validators.required]),
     conceptsSection: new FormControl('', [Validators.required]),
     attemptSection: new FormControl('', [Validators.required]),
-    description: new FormControl('', [Validators.required])
+    description: new FormControl('', [Validators.required]),
+    link: new FormControl('', [Validators.required])
   });
 
   constructor(
@@ -77,12 +78,19 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   }
 
   isFormValid(): boolean {
-    return this.ticketForm.controls['type'].value === 'Assignment Help'
-      ? this.ticketForm.controls['assignmentSection'].value !== '' &&
+    let contentFieldsValid =
+      this.ticketForm.controls['type'].value === 'Assignment Help'
+        ? this.ticketForm.controls['assignmentSection'].value !== '' &&
           this.ticketForm.controls['codeSection'].value !== '' &&
           this.ticketForm.controls['conceptsSection'].value !== '' &&
           this.ticketForm.controls['attemptSection'].value !== ''
-      : this.ticketForm.controls['description'].value !== '';
+        : this.ticketForm.controls['description'].value !== '';
+
+    let linkFieldValid =
+      this.data()!.event_mode !== 'Virtual - Student Link' ||
+      this.ticketForm.controls['link'].value !== '';
+
+    return contentFieldsValid && linkFieldValid;
   }
   submitTicketForm() {}
 }

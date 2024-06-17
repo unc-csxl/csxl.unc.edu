@@ -132,6 +132,7 @@ export interface OfficeHourEventRoleOverview {
 
 export interface OfficeHourGetHelpOverviewJson {
   event_type: string;
+  event_mode: string;
   event_start_time: string;
   event_end_time: string;
   ticket: OfficeHourTicketOverviewJson | undefined;
@@ -140,6 +141,7 @@ export interface OfficeHourGetHelpOverviewJson {
 
 export interface OfficeHourGetHelpOverview {
   event_type: string;
+  event_mode: string;
   event_start_time: Date;
   event_end_time: Date;
   ticket: OfficeHourTicketOverview | undefined;
