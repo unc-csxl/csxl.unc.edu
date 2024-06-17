@@ -38,6 +38,7 @@ import { OfficeHourEventCardWidget } from './course/office-hours/widgets/office-
 import { MatChipsModule } from '@angular/material/chips';
 import { OfficeHoursQueueComponent } from './course/office-hours/office-hours-queue/office-hours-queue.component';
 import { CalledTicketCardWidget } from './course/office-hours/widgets/called-ticket-card/called-ticket-card.widget';
+import { QueuedTicketCardWidget } from './course/office-hours/widgets/queued-ticket-card/queued-ticket-card.widget';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { CalledTicketCardWidget } from './course/office-hours/widgets/called-tic
     OfficeHoursQueueComponent,
     CourseCardWidget,
     OfficeHourEventCardWidget,
-    CalledTicketCardWidget
+    CalledTicketCardWidget,
+    QueuedTicketCardWidget
   ],
   imports: [
     CommonModule,

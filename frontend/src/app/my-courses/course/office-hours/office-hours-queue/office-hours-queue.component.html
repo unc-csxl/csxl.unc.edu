@@ -23,6 +23,8 @@
     <mat-card-subtitle>Queue</mat-card-subtitle>
     @if (queue()!.queue.length === 0) {
     <p>There are no tickets in the queue.</p>
+    } @for(ticket of queue()!.queue; track ticket.id) {
+    <queued-ticket-card [ticket]="ticket" />
     }
   </mat-card-content>
 </mat-pane>
