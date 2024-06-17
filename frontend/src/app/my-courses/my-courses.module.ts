@@ -40,6 +40,7 @@ import { OfficeHoursQueueComponent } from './course/office-hours/office-hours-qu
 import { CalledTicketCardWidget } from './course/office-hours/widgets/called-ticket-card/called-ticket-card.widget';
 import { QueuedTicketCardWidget } from './course/office-hours/widgets/queued-ticket-card/queued-ticket-card.widget';
 import { OfficeHoursGetHelpComponent } from './course/office-hours/office-hours-get-help/office-hours-get-help.component';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { OfficeHoursGetHelpComponent } from './course/office-hours/office-hours-
     MatDialogModule,
     MatPaginatorModule,
     MatButtonToggleModule,
-    MatChipsModule
+    MatChipsModule,
+    MatInputModule
   ]
 })
 export class MyCoursesModule {}

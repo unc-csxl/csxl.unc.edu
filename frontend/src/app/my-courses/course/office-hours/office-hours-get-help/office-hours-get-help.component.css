@@ -31,3 +31,11 @@
     align-items: center;
     text-align: center;
 }
+
+mat-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card-actions {
+    justify-content: end;
+}

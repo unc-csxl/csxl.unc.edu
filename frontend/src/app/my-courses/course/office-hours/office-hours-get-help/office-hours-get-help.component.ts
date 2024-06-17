@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { OfficeHourGetHelpOverview } from 'src/app/my-courses/my-courses.model';
 import { Subscription, timer } from 'rxjs';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-office-hours-get-help',
@@ -35,8 +36,19 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   /** Stores subscription to the timer observable that refreshes data every 10s */
   timer!: Subscription;
 
+  /** Office Hour Ticket Editor Form */
+  public ticketForm = this.formBuilder.group({
+    type: new FormControl('Assignment Help', [Validators.required]),
+    assignmentSection: new FormControl('', [Validators.required]),
+    codeSection: new FormControl('', [Validators.required]),
+    conceptsSection: new FormControl('', [Validators.required]),
+    attemptSection: new FormControl('', [Validators.required]),
+    description: new FormControl('', [Validators.required])
+  });
+
   constructor(
     private route: ActivatedRoute,
+    protected formBuilder: FormBuilder,
     protected myCoursesService: MyCoursesService
   ) {
     // Load information from the parent route
@@ -63,4 +75,14 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
         this.data.set(getHelpData);
       });
   }
+
+  isFormValid(): boolean {
+    return this.ticketForm.controls['type'].value === 'Assignment Help'
+      ? this.ticketForm.controls['assignmentSection'].value !== '' &&
+          this.ticketForm.controls['codeSection'].value !== '' &&
+          this.ticketForm.controls['conceptsSection'].value !== '' &&
+          this.ticketForm.controls['attemptSection'].value !== ''
+      : this.ticketForm.controls['description'].value !== '';
+  }
+  submitTicketForm() {}
 }
