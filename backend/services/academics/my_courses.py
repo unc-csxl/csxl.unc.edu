@@ -20,6 +20,7 @@ from ...models.academics.my_courses import (
     CourseOfficeHourEventOverview,
     OfficeHourTicketOverview,
     OfficeHourQueueOverview,
+    OfficeHourEventRoleOverview,
 )
 from ...models.office_hours.ticket import TicketState, OfficeHoursTicket
 from ...entities.academics.section_entity import SectionEntity
@@ -668,3 +669,32 @@ class MyCoursesService:
 
         # Return the changed ticket
         return self._to_oh_ticket_overview(ticket_entity)
+
+    def get_oh_event_role(
+        self, user: User, oh_event_id: int
+    ) -> OfficeHourEventRoleOverview:
+        """
+        Returns the user's role for an event.
+
+        Returns:
+            OfficeHourEventRoleOverview
+        """
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == oh_event_id)
+        )
+
+        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+
+        if not user_member:
+            raise CoursePermissionException(
+                "User is not a member of the office hour event."
+            )
+
+        return OfficeHourEventRoleOverview(role=user_member.member_role.value)

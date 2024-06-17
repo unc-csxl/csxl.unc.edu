@@ -70,3 +70,7 @@ class OfficeHourQueueOverview(BaseModel):
     active: OfficeHourTicketOverview | None
     other_called: list[OfficeHourTicketOverview]
     queue: list[OfficeHourTicketOverview]
+
+
+class OfficeHourEventRoleOverview(BaseModel):
+    role: str

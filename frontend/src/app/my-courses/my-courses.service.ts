@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   OfficeHourEventOverview,
   OfficeHourEventOverviewJson,
+  OfficeHourEventRoleOverview,
   OfficeHourQueueOverview,
   OfficeHourQueueOverviewJson,
   OfficeHourTicketOverview,
@@ -143,5 +144,19 @@ export class MyCoursesService {
         {}
       )
       .pipe(map(parseOfficeHourTicketOverviewJson));
+  }
+
+  /**
+   * Returns the role for a given office hours event.
+   *
+   * @param officeHoursEventId: ID of the office hours event to get the queue for
+   * @returns { Observable<OfficeHourEventRoleOverview> }
+   */
+  getOfficeHoursRole(
+    officeHoursEventId: number
+  ): Observable<OfficeHourEventRoleOverview> {
+    return this.http.get<OfficeHourEventRoleOverview>(
+      `/api/academics/my-courses/oh-events/${officeHoursEventId}/role`
+    );
   }
 }

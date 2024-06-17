@@ -13,6 +13,7 @@ import {
   OfficeHourTicketOverview
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
+import { officeHourPageGuard } from '../office-hours.guard';
 
 @Component({
   selector: 'app-office-hours-queue',
@@ -24,7 +25,8 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   public static Route = {
     path: 'office-hours/:event_id/queue',
     title: 'Office Hours Queue',
-    component: OfficeHoursQueueComponent
+    component: OfficeHoursQueueComponent,
+    canActivate: [officeHourPageGuard(['UTA', 'GTA', 'INSTRUCTOR'])]
   };
 
   /** Office hour event ID to load the queue for */

@@ -126,6 +126,10 @@ export interface OfficeHourQueueOverview {
   queue: OfficeHourTicketOverview[];
 }
 
+export interface OfficeHourEventRoleOverview {
+  role: string;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.
