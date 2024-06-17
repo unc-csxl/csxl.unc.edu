@@ -143,7 +143,7 @@ export class TicketCreationFormComponent implements OnInit {
       let ticket_draft: TicketDraft = {
         oh_event: this.event,
         description: form_description,
-        type: form_type,
+        type: form_type.toString(),
         // TODO: if adding multiple creators (group tickets), would add users here
         creators: []
       };

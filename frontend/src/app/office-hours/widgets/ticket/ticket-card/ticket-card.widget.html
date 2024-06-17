@@ -2,7 +2,7 @@
 <mat-card appearance="outlined">
   <div class="card-container">
     <div *ngIf="formatTicketState(ticket.state) === 'Queued'">
-      <mat-card-title> {{formatTicketType(ticket.type)}} </mat-card-title>
+      <mat-card-title> {{formatTicketType(0)}} </mat-card-title>
       <mat-divider></mat-divider>
       <mat-card-content class="newline"
         >{{ticket.description}}</mat-card-content

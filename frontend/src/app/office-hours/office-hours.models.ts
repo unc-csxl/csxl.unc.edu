@@ -66,7 +66,7 @@ export interface TicketDetails {
 export interface TicketDraft {
   oh_event: OfficeHoursEventPartial;
   description: string;
-  type: TicketType;
+  type: string;
   creators: { id: number }[]; // check this type ?
 }
 
@@ -100,15 +100,15 @@ export interface OfficeHoursEvent {
 
 export interface OfficeHoursEventPartial {
   id: number;
-  oh_section: OfficeHoursSection | null;
-  room: Room | null;
-  type: OfficeHoursEventType | null;
-  mode: OfficeHoursEventModeType | null;
-  description: string | null;
-  location_description: string | null;
-  event_date: string | null;
-  start_time: string | null;
-  end_time: string | null;
+  oh_section?: OfficeHoursSection | null | undefined;
+  room?: Room | null | undefined;
+  type?: OfficeHoursEventType | null | undefined;
+  mode?: OfficeHoursEventModeType | null | undefined;
+  description?: string | null | undefined;
+  location_description?: string | null | undefined;
+  event_date?: string | null | undefined;
+  start_time?: string | null | undefined;
+  end_time?: string | null | undefined;
 }
 
 export interface OfficeHoursEventDraft {

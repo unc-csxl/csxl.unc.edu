@@ -11,6 +11,10 @@ import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { OfficeHourGetHelpOverview } from 'src/app/my-courses/my-courses.model';
 import { Subscription, timer } from 'rxjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  TicketDraft,
+  TicketType
+} from 'src/app/office-hours/office-hours.models';
 
 @Component({
   selector: 'app-office-hours-get-help',
@@ -92,5 +96,53 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
     return contentFieldsValid && linkFieldValid;
   }
-  submitTicketForm() {}
+
+  submitTicketForm() {
+    let form_description: string = '';
+    let form_type: string = this.ticketForm.controls['type'].value!;
+
+    /* Below is logic for checking form values and assigning the correct
+      TicketType and ticket description accordingly
+    */
+    if (this.ticketForm.controls['type'].value === 'Conceptual Help') {
+      form_description =
+        'Conceptual: ' + (this.ticketForm.controls['description'].value ?? '');
+    } else {
+      // Concatenates form description together and adds in new line characters
+      form_description =
+        'Assignment Part: ' +
+        (this.ticketForm.controls['assignmentSection'].value ?? '') +
+        ' \nGoal: ' +
+        (this.ticketForm.controls['codeSection'].value ?? '') +
+        ' \nConcepts: ' +
+        (this.ticketForm.controls['conceptsSection'].value ?? '') +
+        ' \nTried: ' +
+        (this.ticketForm.controls['attemptSection'].value ?? '');
+    }
+
+    if (this.data()!.event_mode === 'Virtual - Student Link') {
+      form_description =
+        form_description +
+        ' \nLink: ' +
+        (this.ticketForm.controls['link'].value ?? '');
+    }
+
+    // Create ticket draft from inputted ticket information
+    let ticketDraft: TicketDraft = {
+      oh_event: { id: this.ohEventId },
+      description: form_description,
+      type: form_type,
+      // TODO: if adding multiple creators (group tickets), would add users here
+      creators: []
+    };
+
+    this.myCoursesService.createTicket(ticketDraft).subscribe({
+      next: (_) => {
+        this.pollData();
+      },
+      error: (err) => {
+        /** */
+      }
+    });
+  }
 }

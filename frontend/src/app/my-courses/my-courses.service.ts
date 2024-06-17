@@ -32,6 +32,10 @@ import {
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
+import {
+  TicketDetails,
+  TicketDraft
+} from '../office-hours/office-hours.models';
 
 @Injectable({
   providedIn: 'root'
@@ -177,5 +181,16 @@ export class MyCoursesService {
         `/api/academics/my-courses/oh-events/${officeHoursEventId}/get-help`
       )
       .pipe(map(parseOfficeHourGetHelpOverviewJson));
+  }
+
+  /** Creates a new ticket
+   * @param ticketDraft: Drafted ticket object to create
+   * @returns {Observable<TicketDetails>}
+   */
+  createTicket(ticketDraft: TicketDraft): Observable<TicketDetails> {
+    return this.http.post<TicketDetails>(
+      '/api/office-hours/ticket',
+      ticketDraft
+    );
   }
 }
