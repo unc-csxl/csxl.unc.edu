@@ -55,8 +55,8 @@ class OfficeHourTicketOverview(BaseModel):
     id: int
     created_at: datetime
     called_at: datetime | None
-    state: TicketState
-    type: TicketType
+    state: str
+    type: str
     description: str
     creators: list[str]
     caller: str | None

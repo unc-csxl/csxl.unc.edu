@@ -14,10 +14,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   OfficeHourEventOverview,
   OfficeHourEventOverviewJson,
+  OfficeHourQueueOverview,
+  OfficeHourQueueOverviewJson,
   TermOverview,
   TermOverviewJson,
   parseOfficeHourEventOverviewJson,
   parseOfficeHourEventOverviewJsonList,
+  parseOfficeHourQueueOverview,
   parseTermOverviewJsonList
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
@@ -79,5 +82,21 @@ export class MyCoursesService {
         `/api/academics/my-courses/${termId}/${courseId}/oh-events/current`
       )
       .pipe(map(parseOfficeHourEventOverviewJsonList));
+  }
+
+  /**
+   * Returns the queue for a given office hours event.
+   *
+   * @param officeHoursEventId: ID of the office hours event to get the queue for
+   * @returns { Observable<OfficeHourQueueOverview> }
+   */
+  getOfficeHoursQueue(
+    officeHoursEventId: number
+  ): Observable<OfficeHourQueueOverview> {
+    return this.http
+      .get<OfficeHourQueueOverviewJson>(
+        `/api/academics/my-courses/oh-events/${officeHoursEventId}/queue`
+      )
+      .pipe(map(parseOfficeHourQueueOverview));
   }
 }

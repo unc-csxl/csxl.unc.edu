@@ -479,8 +479,8 @@ class MyCoursesService:
             id=ticket.id,
             created_at=ticket.created_at,
             called_at=ticket.called_at,
-            state=ticket.state,
-            type=ticket.type,
+            state=ticket.state.value,
+            type=ticket.type.value,
             description=ticket.description,
             creators=[
                 f"{creator.user.first_name} {creator.user.last_name}"

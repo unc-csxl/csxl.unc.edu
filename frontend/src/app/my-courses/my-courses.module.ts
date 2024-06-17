@@ -36,6 +36,7 @@ import { OfficeHoursPageComponent } from './course/office-hours/office-hours-pag
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { OfficeHourEventCardWidget } from './course/office-hours/widgets/office-hour-event-card/office-hour-event-card.widget';
 import { MatChipsModule } from '@angular/material/chips';
+import { OfficeHoursQueueComponent } from './course/office-hours/office-hours-queue/office-hours-queue.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { MatChipsModule } from '@angular/material/chips';
     CourseComponent,
     RosterComponent,
     OfficeHoursPageComponent,
+    OfficeHoursQueueComponent,
     CourseCardWidget,
     OfficeHourEventCardWidget
   ],

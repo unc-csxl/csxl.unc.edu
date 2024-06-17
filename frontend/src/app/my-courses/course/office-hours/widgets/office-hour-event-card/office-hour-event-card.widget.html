@@ -13,7 +13,11 @@
     <p>{{ event.location }}</p>
   </mat-card-content>
   <mat-card-actions class="office-hours-event-card-actions">
-    <button mat-flat-button color="primary" type="submit" [routerLink]="">
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [routerLink]="event.id + '/queue'">
       Check In
     </button>
   </mat-card-actions>

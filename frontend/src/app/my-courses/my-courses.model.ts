@@ -84,9 +84,46 @@ export interface OfficeHourEventOverview {
   total_tickets: number;
 }
 
-export interface OfficeHourEventsOverviewJson {
-  current_events: OfficeHourEventOverviewJson[];
-  future_events: OfficeHourEventOverviewJson[];
+export interface OfficeHourTicketOverviewJson {
+  id: number;
+  created_at: string;
+  called_at: string | undefined;
+  state: string;
+  type: string;
+  description: string;
+  creators: string[];
+  caller: string | undefined;
+}
+
+export interface OfficeHourTicketOverview {
+  id: number;
+  created_at: Date;
+  called_at: Date | undefined;
+  state: string;
+  type: string;
+  description: string;
+  creators: string[];
+  caller: string | undefined;
+}
+
+export interface OfficeHourQueueOverviewJson {
+  id: number;
+  type: string;
+  start_time: string;
+  end_time: string;
+  active: OfficeHourTicketOverviewJson | undefined;
+  other_called: OfficeHourTicketOverviewJson[];
+  queue: OfficeHourTicketOverviewJson[];
+}
+
+export interface OfficeHourQueueOverview {
+  id: number;
+  type: string;
+  start_time: Date;
+  end_time: Date;
+  active: OfficeHourTicketOverview | undefined;
+  other_called: OfficeHourTicketOverview[];
+  queue: OfficeHourTicketOverview[];
 }
 
 /**
@@ -124,6 +161,32 @@ export const parseOfficeHourEventOverviewJson = (
 export const parseOfficeHourEventOverviewJsonList = (
   responseModel: OfficeHourEventOverviewJson[]
 ): OfficeHourEventOverview[] => {
-  console.log(responseModel);
   return responseModel.map((model) => parseOfficeHourEventOverviewJson(model));
+};
+
+export const parseOfficeHourTicketOverviewJson = (
+  responseModel: OfficeHourTicketOverviewJson
+): OfficeHourTicketOverview => {
+  return Object.assign({}, responseModel, {
+    created_at: new Date(responseModel.created_at),
+    called_at: responseModel.called_at
+      ? new Date(responseModel.called_at)
+      : undefined
+  });
+};
+
+export const parseOfficeHourQueueOverview = (
+  responseModel: OfficeHourQueueOverviewJson
+): OfficeHourQueueOverview => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time),
+    active: responseModel.active
+      ? parseOfficeHourTicketOverviewJson(responseModel.active)
+      : undefined,
+    other_called: responseModel.other_called.map(
+      parseOfficeHourTicketOverviewJson
+    ),
+    queue: responseModel.queue.map(parseOfficeHourTicketOverviewJson)
+  });
 };
