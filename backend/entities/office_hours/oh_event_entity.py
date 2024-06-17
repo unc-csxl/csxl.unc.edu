@@ -4,16 +4,11 @@ from datetime import datetime, date
 from typing import Self
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from ...models.office_hours.event import OfficeHoursEvent, OfficeHoursEventDraft
-from ...models.office_hours.event_details import OfficeHoursEventDetails
 
-from ...models.office_hours.event_type import (
+from ...models.academics.my_courses import (
     OfficeHoursEventModeType,
     OfficeHoursEventType,
 )
-from ...models.office_hours.section import OfficeHoursSectionPartial
-from ...models.room import RoomPartial
-
 
 from ..entity_base import EntityBase
 from sqlalchemy import Enum as SQLAlchemyEnum
@@ -70,89 +65,3 @@ class OfficeHoursEventEntity(EntityBase):
     tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
         back_populates="oh_event", cascade="all, delete"
     )
-
-    @classmethod
-    def from_model(cls, model: OfficeHoursEvent) -> Self:
-        """
-        Class method that converts an `OfficeHoursEvent` model into a `OfficeHoursEventEntity`
-
-        Parameters:
-            - model (OfficeHoursEvent): Model to convert into an entity
-        Returns:
-            OfficeHoursEventEntity: Entity created from model
-        """
-        return cls(
-            id=model.id,
-            office_hours_section_id=model.oh_section.id,
-            room_id=model.room.id,
-            type=model.type,
-            mode=model.mode,
-            description=model.description,
-            location_description=model.location_description,
-            date=model.event_date,
-            start_time=model.start_time,
-            end_time=model.end_time,
-        )
-
-    @classmethod
-    def from_draft_model(cls, model: OfficeHoursEventDraft) -> Self:
-        """
-        Class method that converts an `OfficeHoursEventDraft` model into a `OfficeHoursEventEntity`
-
-        Parameters:
-            - model (OfficeHoursEventDraft): Draft model to convert into an entity
-        Returns:
-            OfficeHoursEventEntity: Entity created from model
-        """
-        return cls(
-            office_hours_section_id=model.oh_section.id,
-            room_id=model.room.id,
-            type=model.type,
-            mode=model.mode,
-            description=model.description,
-            location_description=model.location_description,
-            date=model.event_date,
-            start_time=model.start_time,
-            end_time=model.end_time,
-        )
-
-    def to_model(self) -> OfficeHoursEvent:
-        """
-        Converts a `OfficeHoursEventEntity` object into a `OfficeHoursEvent` model object
-
-        Returns:
-            OfficeHoursEvent: `OfficeHoursEvent` object from the entity
-        """
-        return OfficeHoursEvent(
-            id=self.id,
-            type=self.type,
-            mode=self.mode,
-            description=self.description,
-            location_description=self.location_description,
-            event_date=self.date,
-            start_time=self.start_time,
-            end_time=self.end_time,
-            oh_section=self.office_hours_section.to_model(),
-            room=self.room.to_model(),
-        )
-
-    def to_details_model(self) -> OfficeHoursEventDetails:
-        """
-        Converts a `OfficeHoursEventEntity` object into a `OfficeHoursEventDetails` model object
-
-        Returns:
-            OfficeHoursEventDetails: `OfficeHoursEventDetails` object from the entity
-        """
-        return OfficeHoursEventDetails(
-            id=self.id,
-            type=self.type,
-            mode=self.mode,
-            description=self.description,
-            location_description=self.location_description,
-            event_date=self.date,
-            start_time=self.start_time,
-            end_time=self.end_time,
-            oh_section=self.office_hours_section.to_model(),
-            room=self.room.to_model(),
-            tickets=[ticket.to_model() for ticket in self.tickets],
-        )

@@ -3,13 +3,6 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ...models.office_hours.section import (
-    OfficeHoursSection,
-    OfficeHoursSectionDraft,
-)
-from ...models.office_hours.section_details import OfficeHoursSectionDetails
-
-
 from ..entity_base import EntityBase
 from typing import Self
 from sqlalchemy import Enum as SQLAlchemyEnum
@@ -39,42 +32,3 @@ class OfficeHoursSectionEntity(EntityBase):
     events: Mapped[list["OfficeHoursEventEntity"]] = relationship(
         back_populates="office_hours_section", cascade="all, delete"
     )
-
-    @classmethod
-    def from_draft_model(cls, model: OfficeHoursSectionDraft) -> Self:
-        return cls(title=model.title)
-
-    @classmethod
-    def from_model(cls, model: OfficeHoursSection) -> Self:
-        """
-        Class method that converts an `OfficeHoursSection` model into a `OfficeHoursSectionEntity`
-
-        Parameters:
-            - model (OfficeHoursSection): Model to convert into an entity
-        Returns:
-            OfficeHoursSectionEntity: Entity created from model
-        """
-        return cls(id=model.id, title=model.title)
-
-    def to_model(self) -> OfficeHoursSection:
-        """
-        Converts a `OfficeHoursSectionEntity` object into a `OfficeHoursSection` model object
-
-        Returns:
-            OfficeHoursSection: `OfficeHoursSection` object from the entity
-        """
-        return OfficeHoursSection(id=self.id, title=self.title)
-
-    def to_details_model(self) -> OfficeHoursSectionDetails:
-        """
-        Converts a `OfficeHoursSectionEntity` object into a `OfficeHoursSectionDetails` model object
-
-        Returns:
-            OfficeHoursSectionDetails: `OfficeHoursSectionDetails` object from the entity
-        """
-        return OfficeHoursSectionDetails(
-            id=self.id,
-            title=self.title,
-            sections=[section.to_model() for section in self.sections],
-            events=[event.to_model() for event in self.events],
-        )

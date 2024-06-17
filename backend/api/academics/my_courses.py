@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.academics.my_courses import MyCoursesService
 from ...models.user import User
-from ...models.office_hours.ticket import OfficeHoursTicketDraft
+from ...models.academics.my_courses import OfficeHoursTicketDraft
 
 from ...models.academics.my_courses import (
     TermOverview,

@@ -12,9 +12,6 @@ from ...models.academics.section_member import (
     SectionMemberDraft,
 )
 from ...models.academics.section_member_details import SectionMemberDetails
-from ...models.office_hours.section import (
-    OfficeHoursSection,
-)
 from ...models.roster_role import RosterRole
 
 from ...database import db_session
@@ -120,66 +117,6 @@ class SectionMemberService:
         self._session.commit()
 
         return section_membership.to_details_model()
-
-    def add_user_section_memberships_by_oh_sections(
-        self,
-        subject: User,
-        oh_sections: list[OfficeHoursSection],
-    ) -> list[SectionMember]:
-        """Add section memberships for a user to multiple office hours sections.
-
-        Args:
-            subject (User): The user for whom to add section memberships.
-            oh_sections (list[OfficeHoursSection]): List of office hours sections to enroll the user into.
-
-        Returns:
-            list[SectionMember]: List of newly created SectionMember objects representing the user's memberships.
-
-        Raises:
-            ResourceNotFoundException: If no academic section is found for any of the specified office hours sections.
-        """
-
-        section_memberships: list[SectionMemberEntity] = []
-        for oh_section in oh_sections:
-
-            # Check If Membership Exists
-            membership = (
-                self._session.query(SectionMemberEntity)
-                .where(SectionMemberEntity.user_id == subject.id)
-                .where(SectionEntity.office_hours_id == oh_section.id)
-                .where(SectionMemberEntity.section_id == SectionEntity.id)
-                .one_or_none()
-            )
-
-            if membership is not None:
-                raise Exception(
-                    f"User is already a member of office hours section id={oh_section.id}"
-                )
-
-        for oh_section in oh_sections:
-            academic_sections = (
-                self._session.query(SectionEntity)
-                .filter(SectionEntity.office_hours_id == oh_section.id)
-                .all()
-            )
-
-            if len(academic_sections) == 0:
-                raise ResourceNotFoundException("No Academic Section Found")
-
-            draft = SectionMemberDraft(
-                user_id=subject.id, section_id=academic_sections[0].id
-            )
-            section_membership = SectionMemberEntity.from_draft_model(draft)
-
-            self._session.add(section_membership)
-            self._session.commit()
-
-            section_memberships.append(section_membership)
-
-        return [
-            section_membership.to_flat_model()
-            for section_membership in section_memberships
-        ]
 
     def search_instructor_memberships(self, subject: User) -> list[SectionMemberEntity]:
         """
