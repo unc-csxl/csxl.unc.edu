@@ -1,4 +1,4 @@
-@if (data() && data()!.ticket) { @if(data()!.ticket!.state === 'Queued') {
+@if(data()) { @if (data()!.ticket) { @if(data()!.ticket!.state === 'Queued') {
 <!-- Show the page for a ticket in the queue -->
 <mat-pane>
   <mat-card-header class="pane-header">
@@ -119,7 +119,7 @@
           formControlName="description"
           placeholder="Ex. I need help understanding adding to a binary tree"></textarea>
       </mat-form-field>
-      } @if (data()!.event_mode === 'Virtual - Student Link') {
+      <!-- } @if (data()!.event_mode === 'Virtual - Student Link') { -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Zoom Link</mat-label>
         <input
@@ -140,4 +140,4 @@
     </mat-card-actions>
   </mat-pane>
 </form>
-}
+} }
