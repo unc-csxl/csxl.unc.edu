@@ -526,3 +526,143 @@ class MyCoursesService:
             ],
             queue=[self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
         )
+
+    def call_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
+        """
+        Calls a ticket in an office hour queue.
+
+        Returns:
+            OfficeHourTicketOverview
+        """
+        # Attempt to access the ticket
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, ticket_id)
+
+        if not ticket_entity:
+            raise ResourceNotFoundException(f"Ticket not found with ID: {ticket_id}")
+
+        if ticket_entity.state != TicketState.QUEUED:
+            raise CoursePermissionException(
+                "Cannot call a ticket that is not in the queue."
+            )
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
+        )
+
+        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+
+        # If the user is not a member of the looked up course, throw an error
+        if not user_member or user_member.member_role == RosterRole.STUDENT:
+            raise CoursePermissionException(
+                "Not allowed to call if a ticket if you are not a UTA, GTA, or instructor for."
+            )
+
+        # Call the ticket
+        ticket_entity.caller_id = user_member.id
+        ticket_entity.called_at = datetime.now()
+        ticket_entity.state = TicketState.CALLED
+
+        # Save changes
+        self._session.commit()
+
+        # Return the changed ticket
+        return self._to_oh_ticket_overview(ticket_entity)
+
+    def cancel_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
+        """
+        Cancels a ticket in an office hour queue.
+
+        Returns:
+            OfficeHourTicketOverview
+        """
+        # Attempt to access the ticket
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, ticket_id)
+
+        if not ticket_entity:
+            raise ResourceNotFoundException(f"Ticket not found with ID: {ticket_id}")
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
+        )
+
+        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+
+        # If the user is not a member of the looked up course, throw an error
+        if not user_member or (
+            user_member.member_role == RosterRole.STUDENT
+            and user_member.user_id
+            not in [creator.id for creator in ticket_entity.creators]
+        ):
+            raise CoursePermissionException(
+                "Not allowed to cancel if a ticket if you are not a UTA, GTA, or instructor for it, or you did not open it."
+            )
+
+        # Cancel the ticket
+        ticket_entity.state = TicketState.CANCELED
+
+        # Save changes
+        self._session.commit()
+
+        # Return the changed ticket
+        return self._to_oh_ticket_overview(ticket_entity)
+
+    def close_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
+        """
+        Closes a ticket in an office hour queue.
+
+        Returns:
+            OfficeHourTicketOverview
+        """
+        # Attempt to access the ticket
+        ticket_entity = self._session.get(OfficeHoursTicketEntity, ticket_id)
+
+        if not ticket_entity:
+            raise ResourceNotFoundException(f"Ticket not found with ID: {ticket_id}")
+
+        if ticket_entity.state != TicketState.CALLED:
+            raise CoursePermissionException(
+                "Cannot close a ticket that has not been called."
+            )
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
+        )
+
+        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+
+        # If the user is not a member of the looked up course, throw an error
+        if not user_member or (user_member.member_role == RosterRole.STUDENT):
+            raise CoursePermissionException(
+                "Not allowed to call if a ticket if you are not a UTA, GTA, or instructor for."
+            )
+
+        # Close the ticket
+        ticket_entity.closed_at = datetime.now()
+        ticket_entity.state = TicketState.CLOSED
+
+        # Save changes
+        self._session.commit()
+
+        # Return the changed ticket
+        return self._to_oh_ticket_overview(ticket_entity)

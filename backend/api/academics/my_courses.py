@@ -11,6 +11,7 @@ from ...models.academics.my_courses import (
     CourseMemberOverview,
     CourseOfficeHourEventOverview,
     OfficeHourQueueOverview,
+    OfficeHourTicketOverview,
 )
 from ...models.pagination import PaginationParams, Paginated
 
@@ -139,3 +140,48 @@ def get_oh_queue(
         OfficeHourQueueOverview
     """
     return my_courses_svc.get_office_hour_queue(subject, oh_event_id)
+
+
+@api.put("/oh-events/ticket/{ticket_id}/call", tags=["Academics"])
+def call_ticket(
+    ticket_id: int,
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> OfficeHourTicketOverview:
+    """
+    Calls a ticket in an office hour queue.
+
+    Returns:
+        OfficeHourQueueOverview
+    """
+    return my_courses_svc.call_ticket(subject, ticket_id)
+
+
+@api.put("/oh-events/ticket/{ticket_id}/cancel", tags=["Academics"])
+def cancel_ticket(
+    ticket_id: int,
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> OfficeHourTicketOverview:
+    """
+    Cancels a ticket in an office hour queue.
+
+    Returns:
+        OfficeHourQueueOverview
+    """
+    return my_courses_svc.cancel_ticket(subject, ticket_id)
+
+
+@api.put("/oh-events/ticket/{ticket_id}/close", tags=["Academics"])
+def close_ticket(
+    ticket_id: int,
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> OfficeHourTicketOverview:
+    """
+    Closes a ticket in an office hour queue.
+
+    Returns:
+        OfficeHourQueueOverview
+    """
+    return my_courses_svc.close_ticket(subject, ticket_id)
