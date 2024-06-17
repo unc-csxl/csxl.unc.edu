@@ -535,7 +535,7 @@ class MyCoursesService:
             ticket
             for ticket in queue_entity.tickets
             if user_member.id in [creator.id for creator in ticket.creators]
-            and ticket.state == TicketState.QUEUED
+            and ticket.state in [TicketState.QUEUED, TicketState.CALLED]
         ]
 
         active_ticket = active_tickets[0] if len(active_tickets) > 0 else None
@@ -555,6 +555,9 @@ class MyCoursesService:
 
         # Return data
         return OfficeHourGetHelpOverview(
+            event_type=queue_entity.type.value,
+            event_start_time=queue_entity.start_time,
+            event_end_time=queue_entity.end_time,
             ticket=(
                 self._to_oh_ticket_overview(active_ticket) if active_ticket else None
             ),

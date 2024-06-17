@@ -131,11 +131,17 @@ export interface OfficeHourEventRoleOverview {
 }
 
 export interface OfficeHourGetHelpOverviewJson {
+  event_type: string;
+  event_start_time: string;
+  event_end_time: string;
   ticket: OfficeHourTicketOverviewJson | undefined;
   queue_position: number;
 }
 
 export interface OfficeHourGetHelpOverview {
+  event_type: string;
+  event_start_time: Date;
+  event_end_time: Date;
   ticket: OfficeHourTicketOverview | undefined;
   queue_position: number;
 }
@@ -211,6 +217,8 @@ export const parseOfficeHourGetHelpOverviewJson = (
   return Object.assign({}, responseModel, {
     ticket: responseModel.ticket
       ? parseOfficeHourTicketOverviewJson(responseModel.ticket)
-      : undefined
+      : undefined,
+    event_start_time: new Date(responseModel.event_start_time),
+    event_end_time: new Date(responseModel.event_end_time)
   });
 };

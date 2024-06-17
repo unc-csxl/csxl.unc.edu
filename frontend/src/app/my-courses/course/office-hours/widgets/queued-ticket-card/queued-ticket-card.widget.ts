@@ -17,9 +17,9 @@ import { OfficeHourTicketOverview } from '../../../../my-courses.model';
 })
 export class QueuedTicketCardWidget {
   @Input() ticket!: OfficeHourTicketOverview;
+  @Input() hideCallTicketButton: boolean = false;
   @Output() cancelButtonPressed = new EventEmitter<OfficeHourTicketOverview>();
   @Output() callButtonPressed = new EventEmitter<OfficeHourTicketOverview>();
-
   cancelButtonEvent() {
     this.cancelButtonPressed.emit(this.ticket);
   }

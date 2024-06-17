@@ -1,5 +1,49 @@
-@if (data() && data()!.ticket) {
-<p>There is a ticket.</p>
-} @else {
+@if (data() && data()!.ticket) { @if(data()!.ticket!.state === 'Queued') {
+<mat-pane>
+  <mat-card-header class="pane-header">
+    <mat-card-title>You're In The Queue!</mat-card-title>
+    <p>
+      {{ data()!.event_type }} Event:
+      {{ data()!.event_start_time | date: 'shortTime' }} -
+      {{ data()!.event_end_time | date: 'shortTime' }}
+    </p>
+    <div class="queue-text-container">
+      <p class="font-secondary queue-text">
+        You're number
+        <span class="queue-number secondary-background">{{
+          data()!.queue_position
+        }}</span>
+        in the Queue
+      </p>
+    </div>
+    <mat-divider id="pane-divider" />
+  </mat-card-header>
+  <mat-card-content class="pane-content">
+    <mat-card-subtitle>Ticket Summary</mat-card-subtitle>
+    <queued-ticket-card
+      [ticket]="data()!.ticket!"
+      [hideCallTicketButton]="true" />
+  </mat-card-content>
+</mat-pane>
+} @else if(data()!.ticket!.state === 'Called') {
+<mat-pane>
+  <mat-card-header class="pane-header">
+    <mat-card-title class="primary-color">
+      Your Ticket Has Been Called!
+    </mat-card-title>
+    <p>
+      {{ data()!.event_type }} Event:
+      {{ data()!.event_start_time | date: 'shortTime' }} -
+      {{ data()!.event_end_time | date: 'shortTime' }}
+    </p>
+    <div class="queue-text-container">
+      <p class="secondary-color">
+        <span class="bold-text">Your ticket has been called by: </span
+        >{{ data()!.ticket!.caller }}
+      </p>
+    </div>
+  </mat-card-header>
+</mat-pane>
+} } @else {
 <p>There is no ticket.</p>
 }

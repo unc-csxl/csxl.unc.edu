@@ -16,8 +16,10 @@
       (click)="cancelButtonEvent()">
       Cancel Ticket
     </button>
+    @if(!hideCallTicketButton) {
     <button mat-flat-button class="primary-button" (click)="callButtonEvent()">
       Call Ticket
     </button>
+    }
   </mat-card-actions>
 </mat-card>

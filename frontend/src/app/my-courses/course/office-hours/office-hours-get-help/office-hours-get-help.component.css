@@ -1,0 +1,33 @@
+.pane-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pane-content {
+    padding-top: 10px;
+}
+
+.queue-text-container {
+    align-items: center;
+}
+
+.queue-text {
+    font-weight: 500;
+    line-height: 28px;
+}
+
+.bold-text {
+    font-weight: 500;
+}
+
+.queue-number {
+    display: inline-block;
+    border-radius: 14px;
+    min-width: 28px;
+    height: 28px;
+    color: white;
+    width: fit-content;
+    align-items: center;
+    text-align: center;
+}

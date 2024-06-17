@@ -77,5 +77,8 @@ class OfficeHourEventRoleOverview(BaseModel):
 
 
 class OfficeHourGetHelpOverview(BaseModel):
+    event_type: str
+    event_start_time: datetime
+    event_end_time: datetime
     ticket: OfficeHourTicketOverview | None
     queue_position: int
