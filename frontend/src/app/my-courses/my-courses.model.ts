@@ -148,6 +148,17 @@ export interface OfficeHourGetHelpOverview {
   queue_position: number;
 }
 
+export interface TicketDraft {
+  oh_event: OfficeHoursEventPartial;
+  description: string;
+  type: string;
+  creators: { id: number }[]; // check this type ?
+}
+
+export interface OfficeHoursEventPartial {
+  id: number;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.

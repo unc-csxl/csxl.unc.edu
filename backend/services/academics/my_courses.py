@@ -23,7 +23,11 @@ from ...models.academics.my_courses import (
     OfficeHourEventRoleOverview,
     OfficeHourGetHelpOverview,
 )
-from ...models.office_hours.ticket import TicketState, OfficeHoursTicket
+from ...models.office_hours.ticket import (
+    TicketState,
+    OfficeHoursTicket,
+    OfficeHoursTicketDraft,
+)
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import (
     OfficeHoursSectionEntity,
@@ -33,6 +37,7 @@ from ...entities.office_hours import (
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
+from ...entities.office_hours import user_created_tickets_table
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -789,3 +794,70 @@ class MyCoursesService:
             )
 
         return OfficeHourEventRoleOverview(role=user_member.member_role.value)
+
+    def create_ticket(
+        self, user: User, oh_ticket_draft: OfficeHoursTicketDraft
+    ) -> OfficeHourTicketOverview:
+        """
+        Creates a new office hours ticket.
+
+        Args:
+            subject (User): A valid User model representing the currently logged-in user.
+            oh_ticket (OfficeHoursTicketDraft): OfficeHoursTicketDraft object to add to the table.
+
+        Returns:
+            OfficeHoursTicketDetails: The newly created OfficeHoursTicket object.
+
+        Raises:
+            PermissionError: If the logged-in user is not a section member student.
+
+        """
+        # Find the IDs of the creators of the ticket
+        creator_ids = list(
+            set([creator.id for creator in oh_ticket_draft.creators] + [user.id])
+        )
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id.in_(creator_ids))
+            .join(SectionEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == oh_ticket_draft.oh_event.id)
+        )
+
+        user_members = self._session.scalars(user_member_query).unique().all()
+
+        for user_member in user_members:
+            # If the user is not a member of the looked up course, throw an error
+            if not user_member or user_member.member_role != RosterRole.STUDENT:
+                raise CoursePermissionException(
+                    "Not allowed to cancel if a ticket if you are not a UTA, GTA, or instructor for it, or you did not open it."
+                )
+
+        # Create entity
+        oh_ticket_entity = OfficeHoursTicketEntity.from_draft_model(oh_ticket_draft)
+
+        # Add new object to table and commit changes
+        self._session.add(oh_ticket_entity)
+
+        # Commit so can get ticket id
+        self._session.commit()
+
+        # Now, Associate ticket with Creators
+        for section_member_entity in user_members:
+            self._session.execute(
+                user_created_tickets_table.insert().values(
+                    {
+                        "ticket_id": oh_ticket_entity.id,
+                        "member_id": section_member_entity.id,
+                    }
+                )
+            )
+
+        self._session.commit()
+
+        # Return details model
+        return self._to_oh_ticket_overview(oh_ticket_entity)

@@ -10,14 +10,11 @@ import { ActivatedRoute } from '@angular/router';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import {
   OfficeHourGetHelpOverview,
-  OfficeHourTicketOverview
+  OfficeHourTicketOverview,
+  TicketDraft
 } from 'src/app/my-courses/my-courses.model';
 import { Subscription, timer } from 'rxjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import {
-  TicketDraft,
-  TicketType
-} from 'src/app/office-hours/office-hours.models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

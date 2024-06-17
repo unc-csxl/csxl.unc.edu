@@ -6,6 +6,8 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.academics.my_courses import MyCoursesService
 from ...models.user import User
+from ...models.office_hours.ticket import OfficeHoursTicketDraft
+
 from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
@@ -217,3 +219,18 @@ def get_oh_help(
         OfficeHourGetHelpOverview
     """
     return my_courses_svc.get_office_hour_get_help_overview(subject, oh_event_id)
+
+
+@api.post("/oh-events/ticket/", tags=["Office Hours"])
+def new_oh_ticket(
+    oh_ticket: OfficeHoursTicketDraft,
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> OfficeHourTicketOverview:
+    """
+    Adds a new OH ticket to the database
+
+    Returns:
+        OfficeHoursTicketDetails: OH Ticket created
+    """
+    return my_courses_svc.create_ticket(subject, oh_ticket)

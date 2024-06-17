@@ -28,14 +28,11 @@ import {
   parseOfficeHourGetHelpOverviewJson,
   parseOfficeHourQueueOverview,
   parseOfficeHourTicketOverviewJson,
-  parseTermOverviewJsonList
+  parseTermOverviewJsonList,
+  TicketDraft
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
-import {
-  TicketDetails,
-  TicketDraft
-} from '../office-hours/office-hours.models';
 
 @Injectable({
   providedIn: 'root'
@@ -187,9 +184,9 @@ export class MyCoursesService {
    * @param ticketDraft: Drafted ticket object to create
    * @returns {Observable<TicketDetails>}
    */
-  createTicket(ticketDraft: TicketDraft): Observable<TicketDetails> {
-    return this.http.post<TicketDetails>(
-      '/api/office-hours/ticket',
+  createTicket(ticketDraft: TicketDraft): Observable<OfficeHourTicketOverview> {
+    return this.http.post<OfficeHourTicketOverview>(
+      'api/academics/my-courses/oh-events/ticket/',
       ticketDraft
     );
   }
