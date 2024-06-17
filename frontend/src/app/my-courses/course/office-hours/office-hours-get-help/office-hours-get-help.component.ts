@@ -8,13 +8,17 @@ import {
 import { officeHourPageGuard } from '../office-hours.guard';
 import { ActivatedRoute } from '@angular/router';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
-import { OfficeHourGetHelpOverview } from 'src/app/my-courses/my-courses.model';
+import {
+  OfficeHourGetHelpOverview,
+  OfficeHourTicketOverview
+} from 'src/app/my-courses/my-courses.model';
 import { Subscription, timer } from 'rxjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import {
   TicketDraft,
   TicketType
 } from 'src/app/office-hours/office-hours.models';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-office-hours-get-help',
@@ -54,6 +58,7 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     protected formBuilder: FormBuilder,
+    private snackBar: MatSnackBar,
     protected myCoursesService: MyCoursesService
   ) {
     // Load information from the parent route
@@ -95,6 +100,17 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       this.ticketForm.controls['link'].value !== '';
 
     return contentFieldsValid && linkFieldValid;
+  }
+
+  /** Cancels a ticket and reloads the queue data */
+  cancelTicket(ticket: OfficeHourTicketOverview): void {
+    this.myCoursesService.cancelTicket(ticket.id).subscribe({
+      next: (_) => {
+        this.pollData();
+        this.snackBar.open('Ticket cancelled', '', { duration: 5000 });
+      },
+      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    });
   }
 
   submitTicketForm() {

@@ -23,7 +23,8 @@
     <mat-card-subtitle>Ticket Summary</mat-card-subtitle>
     <queued-ticket-card
       [ticket]="data()!.ticket!"
-      [hideCallTicketButton]="true" />
+      [hideCallTicketButton]="true"
+      (cancelButtonPressed)="cancelTicket($event)" />
   </mat-card-content>
 </mat-pane>
 } @else if(data()!.ticket!.state === 'Called') {

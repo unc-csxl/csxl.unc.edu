@@ -699,8 +699,7 @@ class MyCoursesService:
         # If the user is not a member of the looked up course, throw an error
         if not user_member or (
             user_member.member_role == RosterRole.STUDENT
-            and user_member.user_id
-            not in [creator.id for creator in ticket_entity.creators]
+            and user_member.id not in [creator.id for creator in ticket_entity.creators]
         ):
             raise CoursePermissionException(
                 "Not allowed to cancel if a ticket if you are not a UTA, GTA, or instructor for it, or you did not open it."
