@@ -15,6 +15,8 @@ import {
   OfficeHourEventOverview,
   OfficeHourEventOverviewJson,
   OfficeHourEventRoleOverview,
+  OfficeHourGetHelpOverview,
+  OfficeHourGetHelpOverviewJson,
   OfficeHourQueueOverview,
   OfficeHourQueueOverviewJson,
   OfficeHourTicketOverview,
@@ -23,6 +25,7 @@ import {
   TermOverviewJson,
   parseOfficeHourEventOverviewJson,
   parseOfficeHourEventOverviewJsonList,
+  parseOfficeHourGetHelpOverviewJson,
   parseOfficeHourQueueOverview,
   parseOfficeHourTicketOverviewJson,
   parseTermOverviewJsonList
@@ -149,7 +152,7 @@ export class MyCoursesService {
   /**
    * Returns the role for a given office hours event.
    *
-   * @param officeHoursEventId: ID of the office hours event to get the queue for
+   * @param officeHoursEventId: ID of the office hours event to get the role for
    * @returns { Observable<OfficeHourEventRoleOverview> }
    */
   getOfficeHoursRole(
@@ -158,5 +161,21 @@ export class MyCoursesService {
     return this.http.get<OfficeHourEventRoleOverview>(
       `/api/academics/my-courses/oh-events/${officeHoursEventId}/role`
     );
+  }
+
+  /**
+   * Returns the summary with information for a user's tickets and queue position.
+   *
+   * @param officeHoursEventId: ID of the office hours event
+   * @returns { Observable<OfficeHourGetHelpOverview> }
+   */
+  getOfficeHoursHelpOverview(
+    officeHoursEventId: number
+  ): Observable<OfficeHourGetHelpOverview> {
+    return this.http
+      .get<OfficeHourGetHelpOverviewJson>(
+        `/api/academics/my-courses/oh-events/${officeHoursEventId}/get-help`
+      )
+      .pipe(map(parseOfficeHourGetHelpOverviewJson));
   }
 }

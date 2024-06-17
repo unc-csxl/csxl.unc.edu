@@ -17,8 +17,10 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [routerLink]="event.id + '/queue'">
-      Check In
+      [routerLink]="
+        event.id + ((role$ | async) === 'Student' ? '/get-help' : '/queue')
+      ">
+      {{ (role$ | async) === 'Student' ? 'Get Help' : 'Check In' }}
     </button>
   </mat-card-actions>
 </mat-card>

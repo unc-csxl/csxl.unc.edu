@@ -1,1 +1,5 @@
-<p>office-hours-get-help works!</p>
+@if (data() && data()!.ticket) {
+<p>There is a ticket.</p>
+} @else {
+<p>There is no ticket.</p>
+}

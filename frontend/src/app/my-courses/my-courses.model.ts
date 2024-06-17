@@ -130,6 +130,16 @@ export interface OfficeHourEventRoleOverview {
   role: string;
 }
 
+export interface OfficeHourGetHelpOverviewJson {
+  ticket: OfficeHourTicketOverviewJson | undefined;
+  queue_position: number;
+}
+
+export interface OfficeHourGetHelpOverview {
+  ticket: OfficeHourTicketOverview | undefined;
+  queue_position: number;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.
@@ -192,5 +202,15 @@ export const parseOfficeHourQueueOverview = (
       parseOfficeHourTicketOverviewJson
     ),
     queue: responseModel.queue.map(parseOfficeHourTicketOverviewJson)
+  });
+};
+
+export const parseOfficeHourGetHelpOverviewJson = (
+  responseModel: OfficeHourGetHelpOverviewJson
+): OfficeHourGetHelpOverview => {
+  return Object.assign({}, responseModel, {
+    ticket: responseModel.ticket
+      ? parseOfficeHourTicketOverviewJson(responseModel.ticket)
+      : undefined
   });
 };
