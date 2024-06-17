@@ -26,7 +26,7 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
     path: 'office-hours/:event_id/queue',
     title: 'Office Hours Queue',
     component: OfficeHoursQueueComponent,
-    canActivate: [officeHourPageGuard(['UTA', 'GTA', 'INSTRUCTOR'])]
+    canActivate: [officeHourPageGuard(['UTA', 'GTA', 'Instructor'])]
   };
 
   /** Office hour event ID to load the queue for */
