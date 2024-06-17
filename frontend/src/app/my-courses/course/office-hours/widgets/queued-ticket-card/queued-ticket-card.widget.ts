@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input, WritableSignal, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { OfficeHourTicketOverview } from '../../../../my-courses.model';
 
 @Component({
@@ -17,4 +17,14 @@ import { OfficeHourTicketOverview } from '../../../../my-courses.model';
 })
 export class QueuedTicketCardWidget {
   @Input() ticket!: OfficeHourTicketOverview;
+  @Output() cancelButtonPressed = new EventEmitter<OfficeHourTicketOverview>();
+  @Output() callButtonPressed = new EventEmitter<OfficeHourTicketOverview>();
+
+  cancelButtonEvent() {
+    this.cancelButtonPressed.emit(this.ticket);
+  }
+
+  callButtonEvent() {
+    this.callButtonPressed.emit(this.ticket);
+  }
 }

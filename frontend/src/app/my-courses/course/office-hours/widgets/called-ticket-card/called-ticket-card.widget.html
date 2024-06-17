@@ -29,7 +29,12 @@
     <p>{{ ticket.description }}</p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-flat-button class="tertiary-button">Close Ticket</button>
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      (click)="closeButtonEvent()">
+      Close Ticket
+    </button>
   </mat-card-actions>
   }
 </mat-card>

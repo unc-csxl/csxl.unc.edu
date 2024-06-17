@@ -7,7 +7,14 @@
  * @license MIT
  */
 
-import { Component, Input, WritableSignal, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  WritableSignal,
+  signal
+} from '@angular/core';
 import { OfficeHourTicketOverview } from '../../../../my-courses.model';
 
 @Component({
@@ -18,6 +25,7 @@ import { OfficeHourTicketOverview } from '../../../../my-courses.model';
 export class CalledTicketCardWidget {
   @Input() ticket!: OfficeHourTicketOverview;
   @Input() calledByUser: boolean = false;
+  @Output() closeButtonPressed = new EventEmitter<OfficeHourTicketOverview>();
 
   expanded: WritableSignal<boolean> = signal(false);
 
@@ -25,5 +33,9 @@ export class CalledTicketCardWidget {
 
   toggleExpanded() {
     this.expanded.set(!this.expanded());
+  }
+
+  closeButtonEvent() {
+    this.closeButtonPressed.emit(this.ticket);
   }
 }

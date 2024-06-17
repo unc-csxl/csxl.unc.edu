@@ -16,11 +16,14 @@ import {
   OfficeHourEventOverviewJson,
   OfficeHourQueueOverview,
   OfficeHourQueueOverviewJson,
+  OfficeHourTicketOverview,
+  OfficeHourTicketOverviewJson,
   TermOverview,
   TermOverviewJson,
   parseOfficeHourEventOverviewJson,
   parseOfficeHourEventOverviewJsonList,
   parseOfficeHourQueueOverview,
+  parseOfficeHourTicketOverviewJson,
   parseTermOverviewJsonList
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
@@ -98,5 +101,47 @@ export class MyCoursesService {
         `/api/academics/my-courses/oh-events/${officeHoursEventId}/queue`
       )
       .pipe(map(parseOfficeHourQueueOverview));
+  }
+
+  /**
+   * Calls a ticket.
+   * @param ticketId: ID of the ticket to call
+   * @returns { Observable<OfficeHourTicketOverview> }
+   */
+  callTicket(ticketId: number): Observable<OfficeHourTicketOverview> {
+    return this.http
+      .put<OfficeHourTicketOverviewJson>(
+        `/api/academics/my-courses/oh-events/ticket/${ticketId}/call`,
+        {}
+      )
+      .pipe(map(parseOfficeHourTicketOverviewJson));
+  }
+
+  /**
+   * Cancel a ticket.
+   * @param ticketId: ID of the ticket to cancel
+   * @returns { Observable<OfficeHourTicketOverview> }
+   */
+  cancelTicket(ticketId: number): Observable<OfficeHourTicketOverview> {
+    return this.http
+      .put<OfficeHourTicketOverviewJson>(
+        `/api/academics/my-courses/oh-events/ticket/${ticketId}/cancel`,
+        {}
+      )
+      .pipe(map(parseOfficeHourTicketOverviewJson));
+  }
+
+  /**
+   * Close a ticket.
+   * @param ticketId: ID of the ticket to close
+   * @returns { Observable<OfficeHourTicketOverview> }
+   */
+  closeTicket(ticketId: number): Observable<OfficeHourTicketOverview> {
+    return this.http
+      .put<OfficeHourTicketOverviewJson>(
+        `/api/academics/my-courses/oh-events/ticket/${ticketId}/close`,
+        {}
+      )
+      .pipe(map(parseOfficeHourTicketOverviewJson));
   }
 }

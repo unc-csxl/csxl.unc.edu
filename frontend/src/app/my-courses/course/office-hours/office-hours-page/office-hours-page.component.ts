@@ -1,12 +1,10 @@
 import { Component, WritableSignal, signal } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs';
 import {
   OfficeHourEventOverview,
   OfficeHourEventOverviewJson,
-  parseOfficeHourEventOverviewJson,
-  parseOfficeHourEventOverviewJsonList
+  parseOfficeHourEventOverviewJson
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import {

@@ -499,7 +499,9 @@ class MyCoursesService:
         active_tickets = [
             ticket
             for ticket in oh_event.tickets
-            if ticket.caller and ticket.caller.user_id == user.id
+            if ticket.state == TicketState.CALLED
+            and ticket.caller
+            and ticket.caller.user_id == user.id
         ]
         called_tickets = [
             ticket

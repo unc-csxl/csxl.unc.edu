@@ -10,7 +10,14 @@
     <p>{{ ticket.description }}</p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-stroked-button class="tertiary-button">Close Ticket</button>
-    <button mat-flat-button class="primary-button">Call Ticket</button>
+    <button
+      mat-stroked-button
+      class="tertiary-button"
+      (click)="cancelButtonEvent()">
+      Cancel Ticket
+    </button>
+    <button mat-flat-button class="primary-button" (click)="callButtonEvent()">
+      Call Ticket
+    </button>
   </mat-card-actions>
 </mat-card>
