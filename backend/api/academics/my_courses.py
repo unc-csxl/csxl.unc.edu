@@ -13,6 +13,7 @@ from ...models.academics.my_courses import (
     OfficeHourQueueOverview,
     OfficeHourTicketOverview,
     OfficeHourEventRoleOverview,
+    OfficeHourGetHelpOverview,
 )
 from ...models.pagination import PaginationParams, Paginated
 
@@ -189,7 +190,7 @@ def close_ticket(
 
 
 @api.get("/oh-events/{oh_event_id}/role", tags=["Academics"])
-def get_oh_queue(
+def get_oh_role(
     oh_event_id: int,
     subject: User = Depends(registered_user),
     my_courses_svc: MyCoursesService = Depends(),
@@ -201,3 +202,18 @@ def get_oh_queue(
         OfficeHourEventRoleOverview
     """
     return my_courses_svc.get_oh_event_role(subject, oh_event_id)
+
+
+@api.get("/oh-events/{oh_event_id}/get-help", tags=["Academics"])
+def get_oh_help(
+    oh_event_id: int,
+    subject: User = Depends(registered_user),
+    my_courses_svc: MyCoursesService = Depends(),
+) -> OfficeHourGetHelpOverview:
+    """
+    Gets information about getting help in office hours.
+
+    Returns:
+        OfficeHourGetHelpOverview
+    """
+    return my_courses_svc.get_office_hour_get_help_overview(subject, oh_event_id)

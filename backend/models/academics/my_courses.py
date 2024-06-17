@@ -74,3 +74,8 @@ class OfficeHourQueueOverview(BaseModel):
 
 class OfficeHourEventRoleOverview(BaseModel):
     role: str
+
+
+class OfficeHourGetHelpOverview(BaseModel):
+    ticket: OfficeHourTicketOverview | None
+    queue_position: int

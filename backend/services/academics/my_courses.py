@@ -21,6 +21,7 @@ from ...models.academics.my_courses import (
     OfficeHourTicketOverview,
     OfficeHourQueueOverview,
     OfficeHourEventRoleOverview,
+    OfficeHourGetHelpOverview,
 )
 from ...models.office_hours.ticket import TicketState, OfficeHoursTicket
 from ...entities.academics.section_entity import SectionEntity
@@ -472,6 +473,93 @@ class MyCoursesService:
 
         # Return data
         return self._to_oh_queue_overview(user, queue_entity)
+
+    def get_office_hour_get_help_overview(
+        self, user: User, oh_event_id: int
+    ) -> OfficeHourGetHelpOverview:
+        """
+        Loads all of the data relevant for getting help in office hours.
+
+        Returns:
+            OfficeHourGetHelpOverview
+        """
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .join(OfficeHoursSectionEntity)
+            .join(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == oh_event_id)
+            .options(joinedload(SectionMemberEntity.created_oh_tickets))
+        )
+
+        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+
+        # If the user is not a member of the looked up course, throw an error
+        if not user_member or user_member.member_role != RosterRole.STUDENT:
+            raise CoursePermissionException(
+                "You cannot access office hours for a class you are not enrolled in."
+            )
+
+        # Locate tickets
+        user_member.created_oh_tickets
+
+        # Start building the query
+        queue_query = (
+            select(OfficeHoursEventEntity)
+            .where(OfficeHoursEventEntity.id == oh_event_id)
+            .options(
+                joinedload(OfficeHoursEventEntity.tickets)
+                .joinedload(OfficeHoursTicketEntity.caller)
+                .joinedload(SectionMemberEntity.user)
+            )
+            .options(
+                joinedload(OfficeHoursEventEntity.tickets)
+                .joinedload(OfficeHoursTicketEntity.creators)
+                .joinedload(SectionMemberEntity.user)
+            )
+        )
+
+        # Load data
+        queue_entity = self._session.scalars(queue_query).unique().one_or_none()
+
+        if not queue_entity:
+            raise ResourceNotFoundException(
+                f"No office hours event for id: {oh_event_id}"
+            )
+
+        # Get ticket for user, if any
+        active_tickets = [
+            ticket
+            for ticket in queue_entity.tickets
+            if user_member.id in [creator.id for creator in ticket.creators]
+            and ticket.state == TicketState.QUEUED
+        ]
+
+        active_ticket = active_tickets[0] if len(active_tickets) > 0 else None
+
+        # Find queue position
+        queue_tickets = [
+            ticket
+            for ticket in queue_entity.tickets
+            if ticket.state == TicketState.QUEUED
+        ]
+
+        queue_position = (
+            queue_tickets.index(active_ticket) + 1
+            if active_ticket and active_ticket.state == TicketState.QUEUED
+            else -1
+        )
+
+        # Return data
+        return OfficeHourGetHelpOverview(
+            ticket=(
+                self._to_oh_ticket_overview(active_ticket) if active_ticket else None
+            ),
+            queue_position=queue_position,
+        )
 
     def _to_oh_ticket_overview(
         self, ticket: OfficeHoursTicketEntity
