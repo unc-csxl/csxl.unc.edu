@@ -23,7 +23,7 @@ from ...models.academics.my_courses import (
     OfficeHourEventRoleOverview,
     OfficeHourGetHelpOverview,
 )
-from ...models.academics.my_courses import (
+from ...models.office_hours.ticket import (
     TicketState,
     OfficeHoursTicket,
     OfficeHoursTicketDraft,

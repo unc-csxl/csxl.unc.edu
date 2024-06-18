@@ -7,6 +7,7 @@ from ..authentication import registered_user
 
 from ...models.academics.section_member import SectionMember
 from ...models.academics.section_member_details import SectionMemberDetails
+from ...models.office_hours.section import OfficeHoursSection
 from ...models.roster_role import RosterRole
 from ...models import User
 
@@ -71,6 +72,34 @@ def get_membership_by_user_and_oh_section_id(
     try:
         return section_member_svc.get_section_member_by_user_id_and_oh_section_id(
             subject, section_id
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.post("", response_model=list[SectionMember], tags=["Academics"])
+def add_user_memberships(
+    oh_sections: list[OfficeHoursSection],
+    subject: User = Depends(registered_user),
+    section_member_svc: SectionMemberService = Depends(),
+) -> list[SectionMember]:
+    """
+    Adds memberships for a user given a list of Office Hours sections.
+
+    Args:
+        oh_sections (list[OfficeHoursSection]): List of Office Hours sections to enroll the user into.
+        subject (User): The currently logged-in user.
+        section_membership (SectionMemberService): Service dependency to manage Section Membership data.
+
+    Returns:
+        list[SectionMember]: List of newly created SectionMember memberships for the user.
+
+    Raises:
+        HTTPException(404): When there was an issue adding the memberships.
+    """
+    try:
+        return section_member_svc.add_user_section_memberships_by_oh_sections(
+            subject, oh_sections
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

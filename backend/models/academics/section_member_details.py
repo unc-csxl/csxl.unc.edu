@@ -1,6 +1,6 @@
 from ...models.academics.section import Section
 from ...models.academics.section_member import SectionMember
-from ...models.academics.my_courses import OfficeHoursTicket
+from ...models.office_hours.ticket import OfficeHoursTicket
 from ...models.user import User
 
 __authors__ = ["Sadie Amato", "Madelyn Andrews", "Bailey DeSouza", "Meghan Sun"]

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from ...models.academics.section_member import SectionMember
+from ...models.office_hours.section import OfficeHoursSection
 
 from .course import Course
 from .term import Term
@@ -22,4 +23,5 @@ class SectionDetails(Section):
 
     course: Course
     term: Term
+    office_hours_section: OfficeHoursSection | None
     members: list[SectionMember]
