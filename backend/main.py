@@ -23,7 +23,6 @@ from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import section_member, term, course, section, my_courses
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
-from .api.office_hours import ticket, section as oh_section, event
 from .services.exceptions import (
     UserPermissionException,
     ResourceNotFoundException,
@@ -52,9 +51,6 @@ app = FastAPI(
         course.openapi_tags,
         room.openapi_tags,
         reservation.openapi_tags,
-        event.openapi_tags,
-        ticket.openapi_tags,
-        oh_section.openapi_tags,
         application.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
@@ -79,9 +75,6 @@ feature_apis = [
     course,
     section,
     room,
-    event,
-    ticket,
-    oh_section,
     section_member,
     profile,
     admin_users,
