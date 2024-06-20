@@ -77,27 +77,6 @@ def add_user_memberships(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@api.get(
-    "/instructor-memberships/", response_model=list[SectionMember], tags=["Academics"]
-)
-def check_instructor_memberships(
-    subject: User = Depends(registered_user),
-    section_member_svc: SectionMemberService = Depends(),
-) -> list[SectionMember]:
-    """
-    Main indicator if User is an instructor. Searches all instructor memberships for a given user.
-
-    Args:
-        subject (User): The user object representing the user to find memberships.
-        section_member_svc (SectionMemberService): An instance of SectionMembershipService.
-
-    Returns:
-        List[SectionMember]: A list of SectionMember objects representing all instructor memberships of the given user. If not instructor, returns an empty list.
-    """
-
-    return section_member_svc.search_instructor_memberships(subject)
-
-
 @api.post(
     "/instructor/{section_id}/{user_id}",
     response_model=SectionMember,

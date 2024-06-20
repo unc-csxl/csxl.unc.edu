@@ -61,36 +61,6 @@ class SectionMemberService:
 
         return entity.to_flat_model()
 
-    def get_section_member_by_user_id_and_oh_section_id(
-        self, subject: User, oh_section_id: int
-    ) -> SectionMember:
-        """Retrieve a section membership by user ID and office hours section ID.
-
-        Args:
-            subject (User): The user for whom to retrieve the section membership.
-            oh_section_id (int): The ID of the office hours section.
-
-        Returns:
-            SectionMember: The SectionMember object corresponding to the provided user ID and section ID.
-
-        Raises:
-            ResourceNotFoundException: If no section membership is found for the user and office hours section.
-        """
-        query = (
-            select(SectionMemberEntity)
-            .filter(SectionEntity.office_hours_id == oh_section_id)
-            .filter(SectionEntity.id == SectionMemberEntity.section_id)
-            .filter(SectionMemberEntity.user_id == subject.id)
-        )
-        entity = self._session.scalars(query).one_or_none()
-
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"Section Membership Not Found for User (id={subject.id}) and Office Hours Section (id={oh_section_id})"
-            )
-
-        return entity.to_flat_model()
-
     def add_section_member(
         self, subject: User, section_id: int, user_id: int, member_role: RosterRole
     ) -> SectionMemberDetails:
@@ -180,26 +150,3 @@ class SectionMemberService:
             section_membership.to_flat_model()
             for section_membership in section_memberships
         ]
-
-    def search_instructor_memberships(self, subject: User) -> list[SectionMemberEntity]:
-        """
-        Find all instructor memberships for a given user. If not an instructor, returns empty list.
-
-        Args:
-            subject (User): The user object representing the user for whom to find memberships.
-
-        Returns:
-            List[SectionMemberEntity]: A list of SectionMemberEntity objects representing
-                all instructor memberships of the given user.
-        """
-
-        query = (
-            select(SectionMemberEntity)
-            .filter(SectionMemberEntity.user_id == subject.id)
-            .filter(SectionMemberEntity.member_role == RosterRole.INSTRUCTOR)
-        )
-        entities = self._session.scalars(query).all()
-
-        section_memberships = [entity.to_flat_model() for entity in entities]
-
-        return section_memberships

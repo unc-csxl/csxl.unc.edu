@@ -26,7 +26,7 @@ __license__ = "MIT"
 api = APIRouter(prefix="/api/academics/my-courses")
 
 
-@api.get("", tags=["Academics"])
+@api.get("", tags=["My Courses"])
 def get_user_courses(
     subject: User = Depends(registered_user),
     my_courses_svc: MyCoursesService = Depends(),
@@ -40,7 +40,7 @@ def get_user_courses(
     return my_courses_svc.get_user_courses(subject)
 
 
-@api.get("/{term_id}/{course_id}/roster", tags=["Academics"])
+@api.get("/{term_id}/{course_id}/roster", tags=["My Courses"])
 def get_course_roster(
     term_id: str,
     course_id: str,
@@ -65,7 +65,7 @@ def get_course_roster(
     )
 
 
-@api.get("/{term_id}/{course_id}/oh-events/current", tags=["Academics"])
+@api.get("/{term_id}/{course_id}/oh-events/current", tags=["My Courses"])
 def get_current_oh_events(
     term_id: str,
     course_id: str,
@@ -81,7 +81,7 @@ def get_current_oh_events(
     return my_courses_svc.get_current_office_hour_events(subject, term_id, course_id)
 
 
-@api.get("/{term_id}/{course_id}/oh-events/future", tags=["Academics"])
+@api.get("/{term_id}/{course_id}/oh-events/future", tags=["My Courses"])
 def get_future_oh_events(
     term_id: str,
     course_id: str,
@@ -106,7 +106,7 @@ def get_future_oh_events(
     )
 
 
-@api.get("/{term_id}/{course_id}/oh-events/history", tags=["Academics"])
+@api.get("/{term_id}/{course_id}/oh-events/history", tags=["My Courses"])
 def get_past_oh_events(
     term_id: str,
     course_id: str,
@@ -131,7 +131,7 @@ def get_past_oh_events(
     )
 
 
-@api.get("/oh-events/{oh_event_id}/queue", tags=["Academics"])
+@api.get("/oh-events/{oh_event_id}/queue", tags=["Office Hours"])
 def get_oh_queue(
     oh_event_id: int,
     subject: User = Depends(registered_user),
@@ -146,7 +146,7 @@ def get_oh_queue(
     return my_courses_svc.get_office_hour_queue(subject, oh_event_id)
 
 
-@api.put("/oh-events/ticket/{ticket_id}/call", tags=["Academics"])
+@api.put("/oh-events/ticket/{ticket_id}/call", tags=["Office Hours"])
 def call_ticket(
     ticket_id: int,
     subject: User = Depends(registered_user),
@@ -161,7 +161,7 @@ def call_ticket(
     return my_courses_svc.call_ticket(subject, ticket_id)
 
 
-@api.put("/oh-events/ticket/{ticket_id}/cancel", tags=["Academics"])
+@api.put("/oh-events/ticket/{ticket_id}/cancel", tags=["Office Hours"])
 def cancel_ticket(
     ticket_id: int,
     subject: User = Depends(registered_user),
@@ -176,7 +176,7 @@ def cancel_ticket(
     return my_courses_svc.cancel_ticket(subject, ticket_id)
 
 
-@api.put("/oh-events/ticket/{ticket_id}/close", tags=["Academics"])
+@api.put("/oh-events/ticket/{ticket_id}/close", tags=["Office Hours"])
 def close_ticket(
     ticket_id: int,
     subject: User = Depends(registered_user),
@@ -191,7 +191,7 @@ def close_ticket(
     return my_courses_svc.close_ticket(subject, ticket_id)
 
 
-@api.get("/oh-events/{oh_event_id}/role", tags=["Academics"])
+@api.get("/oh-events/{oh_event_id}/role", tags=["Office Hours"])
 def get_oh_role(
     oh_event_id: int,
     subject: User = Depends(registered_user),
@@ -206,7 +206,7 @@ def get_oh_role(
     return my_courses_svc.get_oh_event_role(subject, oh_event_id)
 
 
-@api.get("/oh-events/{oh_event_id}/get-help", tags=["Academics"])
+@api.get("/oh-events/{oh_event_id}/get-help", tags=["Office Hours"])
 def get_oh_help(
     oh_event_id: int,
     subject: User = Depends(registered_user),
