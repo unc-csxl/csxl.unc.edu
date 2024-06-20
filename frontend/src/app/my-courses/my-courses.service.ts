@@ -67,7 +67,7 @@ export class MyCoursesService {
   /** Refreshes the my courses data emitted by the signals. */
   getTermOverviews() {
     this.http
-      .get<TermOverviewJson[]>('/api/academics/my-courses')
+      .get<TermOverviewJson[]>('/api/my-courses')
       .pipe(map(parseTermOverviewJsonList))
       .subscribe((terms) => {
         this.termsSignal.set(terms);
@@ -87,7 +87,7 @@ export class MyCoursesService {
   ): Observable<OfficeHourEventOverview[]> {
     return this.http
       .get<OfficeHourEventOverviewJson[]>(
-        `/api/academics/my-courses/${termId}/${courseId}/oh-events/current`
+        `/api/my-courses/${termId}/${courseId}/oh-events/current`
       )
       .pipe(map(parseOfficeHourEventOverviewJsonList));
   }
@@ -103,7 +103,7 @@ export class MyCoursesService {
   ): Observable<OfficeHourQueueOverview> {
     return this.http
       .get<OfficeHourQueueOverviewJson>(
-        `/api/academics/my-courses/oh-events/${officeHoursEventId}/queue`
+        `/api/office-hours/event/${officeHoursEventId}/queue`
       )
       .pipe(map(parseOfficeHourQueueOverview));
   }
@@ -116,7 +116,7 @@ export class MyCoursesService {
   callTicket(ticketId: number): Observable<OfficeHourTicketOverview> {
     return this.http
       .put<OfficeHourTicketOverviewJson>(
-        `/api/academics/my-courses/oh-events/ticket/${ticketId}/call`,
+        `/api/office-hours/ticket/${ticketId}/call`,
         {}
       )
       .pipe(map(parseOfficeHourTicketOverviewJson));
@@ -130,7 +130,7 @@ export class MyCoursesService {
   cancelTicket(ticketId: number): Observable<OfficeHourTicketOverview> {
     return this.http
       .put<OfficeHourTicketOverviewJson>(
-        `/api/academics/my-courses/oh-events/ticket/${ticketId}/cancel`,
+        `/api/office-hours/ticket/${ticketId}/cancel`,
         {}
       )
       .pipe(map(parseOfficeHourTicketOverviewJson));
@@ -144,7 +144,7 @@ export class MyCoursesService {
   closeTicket(ticketId: number): Observable<OfficeHourTicketOverview> {
     return this.http
       .put<OfficeHourTicketOverviewJson>(
-        `/api/academics/my-courses/oh-events/ticket/${ticketId}/close`,
+        `/api/office-hours/ticket/${ticketId}/close`,
         {}
       )
       .pipe(map(parseOfficeHourTicketOverviewJson));
@@ -160,7 +160,7 @@ export class MyCoursesService {
     officeHoursEventId: number
   ): Observable<OfficeHourEventRoleOverview> {
     return this.http.get<OfficeHourEventRoleOverview>(
-      `/api/academics/my-courses/oh-events/${officeHoursEventId}/role`
+      `/api/office-hours/event/${officeHoursEventId}/role`
     );
   }
 
@@ -175,7 +175,7 @@ export class MyCoursesService {
   ): Observable<OfficeHourGetHelpOverview> {
     return this.http
       .get<OfficeHourGetHelpOverviewJson>(
-        `/api/academics/my-courses/oh-events/${officeHoursEventId}/get-help`
+        `/api/office-hours/event/${officeHoursEventId}/get-help`
       )
       .pipe(map(parseOfficeHourGetHelpOverviewJson));
   }
@@ -186,7 +186,7 @@ export class MyCoursesService {
    */
   createTicket(ticketDraft: TicketDraft): Observable<OfficeHourTicketOverview> {
     return this.http.post<OfficeHourTicketOverview>(
-      'api/academics/my-courses/oh-events/ticket/',
+      'api/office-hours/ticket/',
       ticketDraft
     );
   }

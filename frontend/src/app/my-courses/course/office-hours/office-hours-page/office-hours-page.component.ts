@@ -74,7 +74,7 @@ export class OfficeHoursPageComponent {
     // Load paginated future office hours data
     this.futureOfficeHourEventsPaginator =
       new Paginator<OfficeHourEventOverview>(
-        `/api/academics/my-courses/${termId}/${courseId}/oh-events/future`
+        `/api/my-courses/${termId}/${courseId}/oh-events/future`
       );
 
     this.futureOfficeHourEventsPaginator
@@ -88,7 +88,7 @@ export class OfficeHoursPageComponent {
 
     // Load paginated past office hours data
     this.pastOfficeHourEventsPaginator = new Paginator<OfficeHourEventOverview>(
-      `/api/academics/my-courses/${termId}/${courseId}/oh-events/history`
+      `/api/my-courses/${termId}/${courseId}/oh-events/history`
     );
 
     this.pastOfficeHourEventsPaginator
