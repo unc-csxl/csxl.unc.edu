@@ -5,7 +5,7 @@ APIs handling office hours.
 
 from fastapi import APIRouter, Depends
 from ..authentication import registered_user
-from ...services.academics.my_courses import MyCoursesService
+from ...services.office_hours.ticket import OfficeHourTicketService
 from ...models.user import User
 from ...models.office_hours.ticket import OfficeHoursTicketDraft
 
@@ -22,7 +22,7 @@ api = APIRouter(prefix="/api/office-hours/ticket")
 def call_ticket(
     id: int,
     subject: User = Depends(registered_user),
-    my_courses_svc: MyCoursesService = Depends(),
+    oh_ticket_svc: OfficeHourTicketService = Depends(),
 ) -> OfficeHourTicketOverview:
     """
     Calls a ticket in an office hour queue.
@@ -30,14 +30,14 @@ def call_ticket(
     Returns:
         OfficeHourQueueOverview
     """
-    return my_courses_svc.call_ticket(subject, id)
+    return oh_ticket_svc.call_ticket(subject, id)
 
 
 @api.put("/{id}/cancel", tags=["Office Hours"])
 def cancel_ticket(
     id: int,
     subject: User = Depends(registered_user),
-    my_courses_svc: MyCoursesService = Depends(),
+    oh_ticket_svc: OfficeHourTicketService = Depends(),
 ) -> OfficeHourTicketOverview:
     """
     Cancels a ticket in an office hour queue.
@@ -45,14 +45,14 @@ def cancel_ticket(
     Returns:
         OfficeHourQueueOverview
     """
-    return my_courses_svc.cancel_ticket(subject, id)
+    return oh_ticket_svc.cancel_ticket(subject, id)
 
 
 @api.put("/{id}/close", tags=["Office Hours"])
 def close_ticket(
     id: int,
     subject: User = Depends(registered_user),
-    my_courses_svc: MyCoursesService = Depends(),
+    oh_ticket_svc: OfficeHourTicketService = Depends(),
 ) -> OfficeHourTicketOverview:
     """
     Closes a ticket in an office hour queue.
@@ -60,14 +60,14 @@ def close_ticket(
     Returns:
         OfficeHourQueueOverview
     """
-    return my_courses_svc.close_ticket(subject, id)
+    return oh_ticket_svc.close_ticket(subject, id)
 
 
 @api.post("/", tags=["Office Hours"])
 def new_oh_ticket(
     oh_ticket: OfficeHoursTicketDraft,
     subject: User = Depends(registered_user),
-    my_courses_svc: MyCoursesService = Depends(),
+    oh_ticket_svc: OfficeHourTicketService = Depends(),
 ) -> OfficeHourTicketOverview:
     """
     Adds a new OH ticket to the database
@@ -75,4 +75,4 @@ def new_oh_ticket(
     Returns:
         OfficeHoursTicketDetails: OH Ticket created
     """
-    return my_courses_svc.create_ticket(subject, oh_ticket)
+    return oh_ticket_svc.create_ticket(subject, oh_ticket)
