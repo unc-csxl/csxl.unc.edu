@@ -12,7 +12,7 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
     Pydantic model to represent an `OfficeHoursSection`, including back-populated
     relationship fields.
 
-    This model is based on the `OfficeHoursSectionEntity` model, which defines the shape
+    This model is based on the `CourseSiteEntity` model, which defines the shape
     of the `OfficeHoursSection` database in the PostgreSQL database.
     """
 

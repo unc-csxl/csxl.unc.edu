@@ -21,7 +21,7 @@ from ...models.academics.my_courses import (
     TicketState,
 )
 from ...entities.academics.section_entity import SectionEntity
-from ...entities.office_hours import OfficeHoursEventEntity, OfficeHoursSectionEntity
+from ...entities.office_hours import OfficeHoursEventEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException
@@ -346,7 +346,7 @@ class MyCoursesService:
         # Start building the query
         event_query = (
             select(OfficeHoursEventEntity)
-            .join(OfficeHoursSectionEntity)
+            .join(CourseSiteEntity)
             .join(SectionEntity)
             .join(SectionMemberEntity)
             .where(
@@ -357,7 +357,7 @@ class MyCoursesService:
             .options(joinedload(OfficeHoursEventEntity.tickets))
             .options(
                 joinedload(OfficeHoursEventEntity.office_hours_section)
-                .joinedload(OfficeHoursSectionEntity.sections)
+                .joinedload(CourseSiteEntity.sections)
                 .joinedload(SectionEntity.members)
             )
         )

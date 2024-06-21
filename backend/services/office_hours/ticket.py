@@ -18,7 +18,7 @@ from ...models.office_hours.ticket import (
 )
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import (
-    OfficeHoursSectionEntity,
+    CourseSiteEntity,
     OfficeHoursEventEntity,
     OfficeHoursTicketEntity,
 )
@@ -87,7 +87,7 @@ class OfficeHourTicketService:
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
-            .join(OfficeHoursSectionEntity)
+            .join(CourseSiteEntity)
             .join(OfficeHoursEventEntity)
             .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
         )
@@ -130,7 +130,7 @@ class OfficeHourTicketService:
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
-            .join(OfficeHoursSectionEntity)
+            .join(CourseSiteEntity)
             .join(OfficeHoursEventEntity)
             .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
         )
@@ -179,7 +179,7 @@ class OfficeHourTicketService:
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
-            .join(OfficeHoursSectionEntity)
+            .join(CourseSiteEntity)
             .join(OfficeHoursEventEntity)
             .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
         )
@@ -230,7 +230,7 @@ class OfficeHourTicketService:
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id.in_(creator_ids))
             .join(SectionEntity)
-            .join(OfficeHoursSectionEntity)
+            .join(CourseSiteEntity)
             .join(OfficeHoursEventEntity)
             .where(OfficeHoursEventEntity.id == oh_ticket_draft.oh_event.id)
         )

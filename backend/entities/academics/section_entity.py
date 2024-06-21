@@ -92,9 +92,9 @@ class SectionEntity(EntityBase):
 
     # Optional office hours section ID
     office_hours_id: Mapped[int] = mapped_column(
-        ForeignKey("office_hours__section.id"), nullable=True
+        ForeignKey("course_site.id"), nullable=True
     )
-    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(
+    office_hours_section: Mapped["CourseSiteEntity"] = relationship(
         back_populates="sections"
     )
 

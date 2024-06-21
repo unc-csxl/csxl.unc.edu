@@ -48,7 +48,7 @@ def upgrade() -> None:
     )
 
     op.create_table(
-        "office_hours__section",
+        "course_site",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("title", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
@@ -86,7 +86,7 @@ def upgrade() -> None:
         sa.Column("room_id", sa.String(), nullable=False),
         sa.ForeignKeyConstraint(
             ["office_hours_section_id"],
-            ["office_hours__section.id"],
+            ["course_site.id"],
         ),
         sa.ForeignKeyConstraint(
             ["room_id"],
@@ -153,7 +153,7 @@ def upgrade() -> None:
     op.create_foreign_key(
         "academics_to_office_hours_fk",
         "academics__section",
-        "office_hours__section",
+        "course_site",
         ["office_hours_id"],
         ["id"],
     )
@@ -173,7 +173,7 @@ def downgrade() -> None:
 
     # Drop the event/section tables
     op.drop_table("office_hours__event")
-    op.drop_table("office_hours__section")
+    op.drop_table("course_site")
 
     # Clean-up the enum types
     op.execute("DROP TYPE office_hours__event__type")

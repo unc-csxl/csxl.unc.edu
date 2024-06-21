@@ -56,9 +56,9 @@ class OfficeHoursEventEntity(EntityBase):
 
     # NOTE: Many-to-one relationship of OfficeHoursEvents to OH section
     office_hours_section_id: Mapped[int] = mapped_column(
-        ForeignKey("office_hours__section.id"), nullable=False
+        ForeignKey("course_site.id"), nullable=False
     )
-    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(
+    office_hours_section: Mapped["CourseSiteEntity"] = relationship(
         back_populates="events"
     )
 

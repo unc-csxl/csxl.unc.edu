@@ -13,10 +13,11 @@ from ....entities.academics.section_entity import SectionEntity
 from ...services.reset_table_id_seq import reset_table_id_seq
 
 from ..academics import section_data
+from ..academics import term_data
 
 from ....entities.office_hours import user_created_tickets_table
 from ....entities.office_hours.oh_event_entity import OfficeHoursEventEntity
-from ....entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
+from ....entities.office_hours.course_site_entity import CourseSiteEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
 from ....models.office_hours.event import (
@@ -46,15 +47,17 @@ __license__ = "MIT"
 
 # Office Hours Section Data
 comp_110_oh_section_f23 = OfficeHoursSection(
-    id=1, title="COMP 110: Introduction to Programming Fall 23"
+    id=1,
+    title="COMP 110: Introduction to Programming Fall 23",
+    term_id=term_data.f_23.id,
 )
 
 comp_523_oh_section = OfficeHoursSection(
-    id=2, title="COMP 523: Software Engineering Lab"
+    id=2, title="COMP 523: Software Engineering Lab", term_id=term_data.ss1_24.id
 )
 
 comp_110_oh_section = OfficeHoursSection(
-    id=3, title="COMP 110: Introduction to Programming"
+    id=3, title="COMP 110: Introduction to Programming", term_id=term_data.ss1_24.id
 )
 
 oh_sections = [
@@ -143,7 +146,9 @@ comp110_oh_current_events = [comp_110_current_oh_event]
 comp110_oh_upcoming_events = [comp_110_upcoming_oh_event]
 
 comp110_event_draft = OfficeHoursEventDraft(
-    oh_section=OfficeHoursSectionPartial(id=comp_110_oh_section.id),
+    oh_section=OfficeHoursSectionPartial(
+        id=comp_110_oh_section.id, term_id=term_data.ss1_24.id
+    ),
     room=RoomPartial(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
     mode=OfficeHoursEventModeType.IN_PERSON,
@@ -277,13 +282,13 @@ def insert_fake_data(session: Session):
 
     # Add Office Hours Sections
     for oh_section in oh_sections:
-        entity = OfficeHoursSectionEntity.from_model(model=oh_section)
+        entity = CourseSiteEntity.from_model(model=oh_section)
         session.add(entity)
 
     reset_table_id_seq(
         session,
-        OfficeHoursSectionEntity,
-        OfficeHoursSectionEntity.id,
+        CourseSiteEntity,
+        CourseSiteEntity.id,
         len(oh_sections) + 1,
     )
 
