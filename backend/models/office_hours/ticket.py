@@ -28,8 +28,8 @@ class OfficeHoursTicket(BaseModel):
     type: TicketType
     state: TicketState
     created_at: datetime
-    called_at: datetime
-    closed_at: datetime
+    called_at: datetime | None
+    closed_at: datetime | None
     have_concerns: bool
     caller_notes: str
     office_hours_id: int

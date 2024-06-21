@@ -47,4 +47,4 @@ class OfficeHours(BaseModel):
     start_time: datetime
     end_time: datetime
     course_site_id: int
-    room_id: int
+    room_id: str
