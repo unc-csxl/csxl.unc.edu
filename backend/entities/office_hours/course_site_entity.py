@@ -3,11 +3,8 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ...models.office_hours.section import (
-    OfficeHoursSection,
-    OfficeHoursSectionDraft,
-)
-from ...models.office_hours.section_details import OfficeHoursSectionDetails
+from ...models.office_hours.course_site import CourseSite
+from ...models.office_hours.course_site_details import CourseSiteDetails
 
 
 from ..entity_base import EntityBase
@@ -47,43 +44,39 @@ class CourseSiteEntity(EntityBase):
     )
 
     # NOTE: One-to-many relationship of OfficeHoursSection to events
-    events: Mapped[list["OfficeHoursEntity"]] = relationship(
-        back_populates="office_hours_section", cascade="all, delete"
+    office_hours: Mapped[list["OfficeHoursEntity"]] = relationship(
+        back_populates="course_site", cascade="all, delete"
     )
 
     @classmethod
-    def from_draft_model(cls, model: OfficeHoursSectionDraft) -> Self:
-        return cls(title=model.title)
-
-    @classmethod
-    def from_model(cls, model: OfficeHoursSection) -> Self:
+    def from_model(cls, model: CourseSite) -> Self:
         """
-        Class method that converts an `OfficeHoursSection` model into a `CourseSiteEntity`
+        Class method that converts an `CourseSite` model into a `CourseSiteEntity`
 
         Parameters:
-            - model (OfficeHoursSection): Model to convert into an entity
+            - model (CourseSite): Model to convert into an entity
         Returns:
             CourseSiteEntity: Entity created from model
         """
         return cls(id=model.id, title=model.title, term_id=model.term_id)
 
-    def to_model(self) -> OfficeHoursSection:
+    def to_model(self) -> CourseSite:
         """
-        Converts a `CourseSiteEntity` object into a `OfficeHoursSection` model object
+        Converts a `CourseSiteEntity` object into a `CourseSite` model object
 
         Returns:
-            OfficeHoursSection: `OfficeHoursSection` object from the entity
+            CourseSite: `CourseSite` object from the entity
         """
-        return OfficeHoursSection(id=self.id, title=self.title, term_id=self.term_id)
+        return CourseSite(id=self.id, title=self.title, term_id=self.term_id)
 
-    def to_details_model(self) -> OfficeHoursSectionDetails:
+    def to_details_model(self) -> CourseSiteDetails:
         """
-        Converts a `CourseSiteEntity` object into a `OfficeHoursSectionDetails` model object
+        Converts a `CourseSiteEntity` object into a `CourseSiteDetails` model object
 
         Returns:
-            OfficeHoursSectionDetails: `OfficeHoursSectionDetails` object from the entity
+            CourseSiteDetails: `CourseSiteDetails` object from the entity
         """
-        return OfficeHoursSectionDetails(
+        return CourseSiteDetails(
             id=self.id,
             title=self.title,
             term_id=self.term_id,

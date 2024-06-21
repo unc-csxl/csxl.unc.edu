@@ -2,7 +2,7 @@
 
 import pytest
 
-from .....models.office_hours.section_details import OfficeHoursSectionDetails
+from .....models.office_hours.course_site_details import OfficeHoursSectionDetails
 from .....services.academics.section import SectionService
 from .....services.permission import PermissionService
 from .....services.exceptions import ResourceNotFoundException

@@ -2,7 +2,7 @@
 
 import pytest
 
-from .....models.office_hours.event import OfficeHoursEvent
+from .....models.office_hours.office_hours import OfficeHoursEvent
 
 from .....services.office_hours.section import OfficeHoursSectionService
 

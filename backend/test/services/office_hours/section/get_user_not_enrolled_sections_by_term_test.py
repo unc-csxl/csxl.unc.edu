@@ -2,7 +2,7 @@
 
 import pytest
 
-from .....models.office_hours.section import OfficeHoursSection
+from .....models.office_hours.course_site import OfficeHoursSection
 
 from .....services.office_hours.section import OfficeHoursSectionService
 

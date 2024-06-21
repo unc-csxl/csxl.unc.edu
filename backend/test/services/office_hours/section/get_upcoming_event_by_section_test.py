@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import pytest
 
 from .....models.coworking.time_range import TimeRange
-from .....models.office_hours.event import OfficeHoursEvent
+from .....models.office_hours.office_hours import OfficeHoursEvent
 
 from .....services.office_hours.section import OfficeHoursSectionService
 

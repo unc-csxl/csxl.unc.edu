@@ -2,10 +2,10 @@
 
 import pytest
 
-from .....models.office_hours.event import OfficeHoursEvent
+from .....models.office_hours.office_hours import OfficeHoursEvent
 
 from .....services.exceptions import ResourceNotFoundException
-from .....services.office_hours.event import OfficeHoursEventService
+from .....services.office_hours.office_hours import OfficeHoursEventService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from ..fixtures import permission_svc, oh_event_svc

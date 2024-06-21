@@ -20,7 +20,7 @@ from ....entities.office_hours.office_hours_entity import OfficeHoursEntity
 from ....entities.office_hours.course_site_entity import CourseSiteEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
-from ....models.office_hours.event import (
+from ....models.office_hours.office_hours import (
     OfficeHoursEvent,
     OfficeHoursEventDraft,
     OfficeHoursEventPartial,
@@ -29,7 +29,7 @@ from ....models.office_hours.event_type import (
     OfficeHoursEventModeType,
     OfficeHoursEventType,
 )
-from ....models.office_hours.section import (
+from ....models.office_hours.course_site import (
     OfficeHoursSection,
     OfficeHoursSectionDraft,
     OfficeHoursSectionPartial,

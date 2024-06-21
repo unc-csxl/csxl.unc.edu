@@ -2,8 +2,8 @@
 
 import pytest
 
-from ....models.office_hours.section_details import OfficeHoursSectionDetails
-from ....models.office_hours.section_details import OfficeHoursSectionDetails
+from ....models.office_hours.course_site_details import OfficeHoursSectionDetails
+from ....models.office_hours.course_site_details import OfficeHoursSectionDetails
 from ....models.academics.section_member import SectionMember
 from ....models.roster_role import RosterRole
 from ....models.pagination import PaginationParams

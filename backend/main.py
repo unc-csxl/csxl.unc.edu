@@ -21,7 +21,10 @@ from .api import (
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import section_member, term, course, section, my_courses
-from .api.office_hours import event as office_hours_event, ticket as office_hours_ticket
+from .api.office_hours import (
+    office_hours as office_hours_event,
+    ticket as office_hours_ticket,
+)
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 from .services.exceptions import (

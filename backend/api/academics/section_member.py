@@ -7,7 +7,7 @@ from ..authentication import registered_user
 
 from ...models.academics.section_member import SectionMember
 from ...models.academics.section_member_details import SectionMemberDetails
-from ...models.office_hours.section import OfficeHoursSection
+from ...models.office_hours.course_site import OfficeHoursSection
 from ...models.roster_role import RosterRole
 from ...models import User
 

@@ -2,7 +2,7 @@
 
 import pytest
 
-from backend.services.office_hours.event import OfficeHoursEventService
+from backend.services.office_hours.office_hours import OfficeHoursEventService
 
 from .....models.office_hours.ticket import OfficeHoursTicketPartial
 from .....models.office_hours.ticket_details import OfficeHoursTicketDetails

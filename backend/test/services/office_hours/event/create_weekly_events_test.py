@@ -3,13 +3,13 @@
 import pytest
 from datetime import datetime, date
 
-from .....models.office_hours.event import (
+from .....models.office_hours.office_hours import (
     OfficeHoursEvent,
     OfficeHoursEventRecurringDraft,
     Weekday,
 )
 
-from .....services.office_hours.event import OfficeHoursEventService
+from .....services.office_hours.office_hours import OfficeHoursEventService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from ..fixtures import permission_svc, oh_event_svc

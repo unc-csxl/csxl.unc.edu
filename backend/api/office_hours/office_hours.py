@@ -5,7 +5,7 @@ APIs handling office hours.
 
 from fastapi import APIRouter, Depends
 from ..authentication import registered_user
-from ...services.office_hours.event import OfficeHourEventService
+from ...services.office_hours.office_hours import OfficeHourEventService
 from ...models.user import User
 
 from ...models.academics.my_courses import (

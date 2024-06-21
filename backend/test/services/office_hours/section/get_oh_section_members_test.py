@@ -3,7 +3,7 @@
 import pytest
 
 from .....models.academics.section_member import SectionMember
-from .....models.office_hours.section import OfficeHoursSectionPartial
+from .....models.office_hours.course_site import OfficeHoursSectionPartial
 
 from .....services.exceptions import ResourceNotFoundException
 from .....services.office_hours.section import OfficeHoursSectionService

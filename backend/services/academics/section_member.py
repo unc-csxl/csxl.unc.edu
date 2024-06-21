@@ -12,7 +12,7 @@ from ...models.academics.section_member import (
     SectionMemberDraft,
 )
 from ...models.academics.section_member_details import SectionMemberDetails
-from ...models.office_hours.section import (
+from ...models.office_hours.course_site import (
     OfficeHoursSection,
 )
 from ...models.roster_role import RosterRole
