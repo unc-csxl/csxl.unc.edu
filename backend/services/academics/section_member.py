@@ -12,9 +12,7 @@ from ...models.academics.section_member import (
     SectionMemberDraft,
 )
 from ...models.academics.section_member_details import SectionMemberDetails
-from ...models.office_hours.course_site import (
-    OfficeHoursSection,
-)
+from ...models.office_hours.course_site import CourseSite
 from ...models.roster_role import RosterRole
 
 from ...database import db_session
@@ -94,13 +92,13 @@ class SectionMemberService:
     def add_user_section_memberships_by_oh_sections(
         self,
         subject: User,
-        oh_sections: list[OfficeHoursSection],
+        oh_sections: list[CourseSite],
     ) -> list[SectionMember]:
         """Add section memberships for a user to multiple office hours sections.
 
         Args:
             subject (User): The user for whom to add section memberships.
-            oh_sections (list[OfficeHoursSection]): List of office hours sections to enroll the user into.
+            oh_sections (list[CourseSite]): List of office hours sections to enroll the user into.
 
         Returns:
             list[SectionMember]: List of newly created SectionMember objects representing the user's memberships.
