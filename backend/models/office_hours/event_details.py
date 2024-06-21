@@ -12,7 +12,7 @@ class OfficeHoursEventDetails(OfficeHoursEvent):
     Pydantic model to represent an `OfficeHoursEvent`, including back-populated
     relationship fields.
 
-    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
+    This model is based on the `OfficeHoursEntity` model, which defines the shape
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
 

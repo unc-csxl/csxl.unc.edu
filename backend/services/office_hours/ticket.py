@@ -19,7 +19,7 @@ from ...models.office_hours.ticket import (
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import (
     CourseSiteEntity,
-    OfficeHoursEventEntity,
+    OfficeHoursEntity,
     OfficeHoursTicketEntity,
 )
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -88,8 +88,8 @@ class OfficeHourTicketService:
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
             .join(CourseSiteEntity)
-            .join(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == ticket_entity.oh_event_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()
@@ -131,8 +131,8 @@ class OfficeHourTicketService:
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
             .join(CourseSiteEntity)
-            .join(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == ticket_entity.oh_event_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()
@@ -180,8 +180,8 @@ class OfficeHourTicketService:
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
             .join(CourseSiteEntity)
-            .join(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == ticket_entity.oh_event_id)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == ticket_entity.oh_event_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()
@@ -231,8 +231,8 @@ class OfficeHourTicketService:
             .where(SectionMemberEntity.user_id.in_(creator_ids))
             .join(SectionEntity)
             .join(CourseSiteEntity)
-            .join(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == oh_ticket_draft.oh_event.id)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == oh_ticket_draft.oh_event.id)
         )
 
         user_members = self._session.scalars(user_member_query).unique().all()

@@ -21,7 +21,7 @@ from ...models.academics.my_courses import (
     TicketState,
 )
 from ...entities.academics.section_entity import SectionEntity
-from ...entities.office_hours import OfficeHoursEventEntity, CourseSiteEntity
+from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException
@@ -231,8 +231,8 @@ class MyCoursesService:
 
         # Only load current events
         event_query = event_query.where(
-            OfficeHoursEventEntity.start_time < datetime.today(),
-            datetime.today() < OfficeHoursEventEntity.end_time,
+            OfficeHoursEntity.start_time < datetime.today(),
+            datetime.today() < OfficeHoursEntity.end_time,
         )
 
         # Load office hours data
@@ -260,13 +260,11 @@ class MyCoursesService:
         event_query = self._create_oh_event_query(user, term_id, course_id)
 
         # Only load future events
-        event_query = event_query.where(
-            datetime.today() < OfficeHoursEventEntity.start_time
-        )
+        event_query = event_query.where(datetime.today() < OfficeHoursEntity.start_time)
 
         # Count the number of rows before applying pagination and filter
         count_query = select(func.count()).select_from(
-            event_query.distinct(OfficeHoursEventEntity.id).subquery()
+            event_query.distinct(OfficeHoursEntity.id).subquery()
         )
         length = self._session.scalar(count_query)
 
@@ -276,7 +274,7 @@ class MyCoursesService:
         event_query = (
             event_query.offset(offset)
             .limit(limit)
-            .order_by(OfficeHoursEventEntity.start_time)
+            .order_by(OfficeHoursEntity.start_time)
         )
 
         # Load office hours data
@@ -310,13 +308,11 @@ class MyCoursesService:
         event_query = self._create_oh_event_query(user, term_id, course_id)
 
         # Only load future events
-        event_query = event_query.where(
-            OfficeHoursEventEntity.end_time < datetime.today()
-        )
+        event_query = event_query.where(OfficeHoursEntity.end_time < datetime.today())
 
         # Count the number of rows before applying pagination and filter
         count_query = select(func.count()).select_from(
-            event_query.distinct(OfficeHoursEventEntity.id).subquery()
+            event_query.distinct(OfficeHoursEntity.id).subquery()
         )
         length = self._session.scalar(count_query)
 
@@ -326,7 +322,7 @@ class MyCoursesService:
         event_query = (
             event_query.offset(offset)
             .limit(limit)
-            .order_by(OfficeHoursEventEntity.start_time)
+            .order_by(OfficeHoursEntity.start_time)
         )
 
         # Load office hours data
@@ -345,7 +341,7 @@ class MyCoursesService:
     def _create_oh_event_query(self, user: User, term_id: str, course_id: str):
         # Start building the query
         event_query = (
-            select(OfficeHoursEventEntity)
+            select(OfficeHoursEntity)
             .join(CourseSiteEntity)
             .join(SectionEntity)
             .join(SectionMemberEntity)
@@ -353,10 +349,10 @@ class MyCoursesService:
                 SectionEntity.term_id == term_id,
                 SectionEntity.course_id == course_id,
             )
-            .options(joinedload(OfficeHoursEventEntity.room))
-            .options(joinedload(OfficeHoursEventEntity.tickets))
+            .options(joinedload(OfficeHoursEntity.room))
+            .options(joinedload(OfficeHoursEntity.tickets))
             .options(
-                joinedload(OfficeHoursEventEntity.office_hours_section)
+                joinedload(OfficeHoursEntity.office_hours_section)
                 .joinedload(CourseSiteEntity.sections)
                 .joinedload(SectionEntity.members)
             )
@@ -390,7 +386,7 @@ class MyCoursesService:
         return event_query
 
     def _to_oh_event_overview(
-        self, oh_event: OfficeHoursEventEntity
+        self, oh_event: OfficeHoursEntity
     ) -> CourseOfficeHourEventOverview:
         return CourseOfficeHourEventOverview(
             id=oh_event.id,

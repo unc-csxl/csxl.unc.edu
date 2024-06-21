@@ -55,9 +55,9 @@ class OfficeHoursTicketEntity(EntityBase):
 
     # One-to-many relationship to event that the ticket was created in
     oh_event_id: Mapped[int] = mapped_column(
-        ForeignKey("office_hours__event.id"), nullable=False
+        ForeignKey("office_hours.id"), nullable=False
     )
-    oh_event: Mapped["OfficeHoursEventEntity"] = relationship(back_populates="tickets")
+    oh_event: Mapped["OfficeHoursEntity"] = relationship(back_populates="tickets")
 
     # One-to-many relationship of OfficeHoursTicket to section member(s)
     creators: Mapped[list["SectionMemberEntity"]] = relationship(

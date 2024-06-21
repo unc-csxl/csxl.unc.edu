@@ -1,4 +1,4 @@
-"""Definition of SQLAlchemy table-backed object mapping entity for Office Hour Sections."""
+"""Definition of SQLAlchemy table-backed object mapping entity for Office Hours."""
 
 from datetime import datetime, date
 from typing import Self
@@ -18,16 +18,22 @@ from ...models.room import RoomPartial
 from ..entity_base import EntityBase
 from sqlalchemy import Enum as SQLAlchemyEnum
 
-__authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
+__authors__ = [
+    "Ajay Gandecha",
+    "Madelyn Andrews",
+    "Sadie Amato",
+    "Bailey DeSouza",
+    "Meghan Sun",
+]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class OfficeHoursEventEntity(EntityBase):
-    """Serves as the database model schema defining the shape of the `OfficeHoursEvent` table"""
+class OfficeHoursEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the `OfficeHours` table"""
 
     # Name for the events table in the PostgreSQL database
-    __tablename__ = "office_hours__event"
+    __tablename__ = "office_hours"
 
     # Unique id for OfficeHoursEvent
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -74,12 +80,12 @@ class OfficeHoursEventEntity(EntityBase):
     @classmethod
     def from_model(cls, model: OfficeHoursEvent) -> Self:
         """
-        Class method that converts an `OfficeHoursEvent` model into a `OfficeHoursEventEntity`
+        Class method that converts an `OfficeHoursEvent` model into a `OfficeHoursEntity`
 
         Parameters:
             - model (OfficeHoursEvent): Model to convert into an entity
         Returns:
-            OfficeHoursEventEntity: Entity created from model
+            OfficeHoursEntity: Entity created from model
         """
         return cls(
             id=model.id,
@@ -97,12 +103,12 @@ class OfficeHoursEventEntity(EntityBase):
     @classmethod
     def from_draft_model(cls, model: OfficeHoursEventDraft) -> Self:
         """
-        Class method that converts an `OfficeHoursEventDraft` model into a `OfficeHoursEventEntity`
+        Class method that converts an `OfficeHoursEventDraft` model into a `OfficeHoursEntity`
 
         Parameters:
             - model (OfficeHoursEventDraft): Draft model to convert into an entity
         Returns:
-            OfficeHoursEventEntity: Entity created from model
+            OfficeHoursEntity: Entity created from model
         """
         return cls(
             office_hours_section_id=model.oh_section.id,
@@ -118,7 +124,7 @@ class OfficeHoursEventEntity(EntityBase):
 
     def to_model(self) -> OfficeHoursEvent:
         """
-        Converts a `OfficeHoursEventEntity` object into a `OfficeHoursEvent` model object
+        Converts a `OfficeHoursEntity` object into a `OfficeHoursEvent` model object
 
         Returns:
             OfficeHoursEvent: `OfficeHoursEvent` object from the entity
@@ -138,7 +144,7 @@ class OfficeHoursEventEntity(EntityBase):
 
     def to_details_model(self) -> OfficeHoursEventDetails:
         """
-        Converts a `OfficeHoursEventEntity` object into a `OfficeHoursEventDetails` model object
+        Converts a `OfficeHoursEntity` object into a `OfficeHoursEventDetails` model object
 
         Returns:
             OfficeHoursEventDetails: `OfficeHoursEventDetails` object from the entity

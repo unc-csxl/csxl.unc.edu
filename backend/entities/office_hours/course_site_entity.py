@@ -47,7 +47,7 @@ class CourseSiteEntity(EntityBase):
     )
 
     # NOTE: One-to-many relationship of OfficeHoursSection to events
-    events: Mapped[list["OfficeHoursEventEntity"]] = relationship(
+    events: Mapped[list["OfficeHoursEntity"]] = relationship(
         back_populates="office_hours_section", cascade="all, delete"
     )
 

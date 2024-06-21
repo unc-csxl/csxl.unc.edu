@@ -19,7 +19,7 @@ from ...models.office_hours.ticket import TicketState
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import (
     CourseSiteEntity,
-    OfficeHoursEventEntity,
+    OfficeHoursEntity,
     OfficeHoursTicketEntity,
 )
 from ...entities.user_entity import UserEntity
@@ -58,8 +58,8 @@ class OfficeHourEventService:
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
             .join(CourseSiteEntity)
-            .join(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == oh_event_id)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == oh_event_id)
         )
 
         user_members = self._session.scalars(user_member_query).unique().all()
@@ -72,15 +72,15 @@ class OfficeHourEventService:
 
         # Start building the query
         queue_query = (
-            select(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == oh_event_id)
+            select(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == oh_event_id)
             .options(
-                joinedload(OfficeHoursEventEntity.tickets)
+                joinedload(OfficeHoursEntity.tickets)
                 .joinedload(OfficeHoursTicketEntity.caller)
                 .joinedload(SectionMemberEntity.user)
             )
             .options(
-                joinedload(OfficeHoursEventEntity.tickets)
+                joinedload(OfficeHoursEntity.tickets)
                 .joinedload(OfficeHoursTicketEntity.creators)
                 .joinedload(SectionMemberEntity.user)
             )
@@ -113,8 +113,8 @@ class OfficeHourEventService:
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
             .join(CourseSiteEntity)
-            .join(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == oh_event_id)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == oh_event_id)
             .options(joinedload(SectionMemberEntity.created_oh_tickets))
         )
 
@@ -131,15 +131,15 @@ class OfficeHourEventService:
 
         # Start building the query
         queue_query = (
-            select(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == oh_event_id)
+            select(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == oh_event_id)
             .options(
-                joinedload(OfficeHoursEventEntity.tickets)
+                joinedload(OfficeHoursEntity.tickets)
                 .joinedload(OfficeHoursTicketEntity.caller)
                 .joinedload(SectionMemberEntity.user)
             )
             .options(
-                joinedload(OfficeHoursEventEntity.tickets)
+                joinedload(OfficeHoursEntity.tickets)
                 .joinedload(OfficeHoursTicketEntity.creators)
                 .joinedload(SectionMemberEntity.user)
             )
@@ -210,7 +210,7 @@ class OfficeHourEventService:
         )
 
     def _to_oh_queue_overview(
-        self, user: User, oh_event: OfficeHoursEventEntity
+        self, user: User, oh_event: OfficeHoursEntity
     ) -> OfficeHourQueueOverview:
         active_tickets = [
             ticket
@@ -261,8 +261,8 @@ class OfficeHourEventService:
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
             .join(CourseSiteEntity)
-            .join(OfficeHoursEventEntity)
-            .where(OfficeHoursEventEntity.id == oh_event_id)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == oh_event_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()

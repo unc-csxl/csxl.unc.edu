@@ -16,7 +16,7 @@ from ..academics import section_data
 from ..academics import term_data
 
 from ....entities.office_hours import user_created_tickets_table
-from ....entities.office_hours.oh_event_entity import OfficeHoursEventEntity
+from ....entities.office_hours.office_hours_entity import OfficeHoursEntity
 from ....entities.office_hours.course_site_entity import CourseSiteEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 
@@ -313,13 +313,13 @@ def insert_fake_data(session: Session):
 
     # Add Office Hours Event
     for event in oh_events:
-        event_entity = OfficeHoursEventEntity.from_model(event)
+        event_entity = OfficeHoursEntity.from_model(event)
         session.add(event_entity)
 
     reset_table_id_seq(
         session,
-        OfficeHoursEventEntity,
-        OfficeHoursEventEntity.id,
+        OfficeHoursEntity,
+        OfficeHoursEntity.id,
         len(oh_events) + 1,
     )
 

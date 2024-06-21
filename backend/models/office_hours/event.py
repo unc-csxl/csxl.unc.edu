@@ -15,7 +15,7 @@ class OfficeHoursEventDraft(BaseModel):
     """
     Pydantic model to represent an `OfficeHoursEvent` that has not been created yet.
 
-    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
+    This model is based on the `OfficeHoursEntity` model, which defines the shape
     of the `OfficeHoursEvent` database in the PostgreSQL database
     """
 
@@ -56,7 +56,7 @@ class OfficeHoursEvent(OfficeHoursEventDraft):
     """
     Pydantic model to represent an `OfficeHoursEvent`.
 
-    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
+    This model is based on the `OfficeHoursEntity` model, which defines the shape
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
 
@@ -69,7 +69,7 @@ class OfficeHoursEventPartial(OfficeHoursEvent):
     """
     Pydantic model to represent a partial `OfficeHoursEvent`.
 
-    This model is based on the `OfficeHoursEventEntity` model, which defines the shape
+    This model is based on the `OfficeHoursEntity` model, which defines the shape
     of the `OfficeHoursEvent` database in the PostgreSQL database.
     """
 
