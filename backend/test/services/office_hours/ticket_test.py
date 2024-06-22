@@ -42,12 +42,18 @@ def test_call_ticket(oh_ticket_svc: OfficeHourTicketService):
     assert called.caller == name
 
 
-def test_call_ticket_not_queued(oh_ticket_svc: OfficeHourTicketService):
-    """Ensures that only queued tickets can be called."""
+def test_call_ticket_already_called(oh_ticket_svc: OfficeHourTicketService):
+    """Ensures an error is thrown when a ticket has already been called."""
     with pytest.raises(CoursePermissionException):
         oh_ticket_svc.call_ticket(
             user_data.instructor, office_hours_data.comp_110_called_ticket.id
         )
+        pytest.fail()
+
+
+def test_call_ticket_not_queued(oh_ticket_svc: OfficeHourTicketService):
+    """Ensures that only queued tickets can be called."""
+    with pytest.raises(CoursePermissionException):
         oh_ticket_svc.call_ticket(
             user_data.instructor, office_hours_data.comp_110_closed_ticket.id
         )
@@ -170,12 +176,17 @@ def test_close_ticket_not_staff(oh_ticket_svc: OfficeHourTicketService):
 
 def test_create_ticket(oh_ticket_svc: OfficeHourTicketService):
     """Ensurs that students can create new tickets."""
-    created = oh_ticket_svc.create_ticket(
-        user_data.student, office_hours_data.new_ticket
-    )
+    created = oh_ticket_svc.create_ticket(user_data.user, office_hours_data.new_ticket)
     assert created is not None
     assert isinstance(created, OfficeHourTicketOverview)
     assert created.state == TicketState.QUEUED.to_string()
+
+
+def test_create_ticket_with_one_in_queue(oh_ticket_svc: OfficeHourTicketService):
+    """Ensures that users can only create one ticket at a time."""
+    with pytest.raises(CoursePermissionException):
+        oh_ticket_svc.create_ticket(user_data.student, office_hours_data.new_ticket)
+        pytest.fail()
 
 
 def test_create_ticket_not_member(oh_ticket_svc: OfficeHourTicketService):

@@ -257,6 +257,23 @@ class OfficeHourTicketService:
                     "Not allowed to create a ticket if you are not a student."
                 )
 
+        # Check if the user already has a ticket in a queue
+        queued_query = (
+            select(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(user_created_tickets_table)
+            .join(SectionMemberEntity)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.QUEUED)
+            .where(SectionMemberEntity.user_id == user.id)
+        )
+        queued_tickets_entities = self._session.scalars(queued_query).all()
+
+        if len(queued_tickets_entities) > 0:
+            raise CoursePermissionException(
+                "You cannot create multiple tickets at once."
+            )
+
         # Create entity
         oh_ticket_entity = OfficeHoursTicketEntity.from_new_model(ticket)
 
