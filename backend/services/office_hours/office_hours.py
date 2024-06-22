@@ -22,9 +22,8 @@ from ...entities.office_hours import (
     OfficeHoursEntity,
     OfficeHoursTicketEntity,
 )
-from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ..exceptions import CoursePermissionException, ResourceNotFoundException
+from ..exceptions import CoursePermissionException
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -168,8 +167,8 @@ class OfficeHoursService:
 
         # Return data
         return OfficeHourGetHelpOverview(
-            event_type=queue_entity.type.value,
-            event_mode=queue_entity.mode.value,
+            event_type=queue_entity.type.to_string(),
+            event_mode=queue_entity.mode.to_string(),
             event_start_time=queue_entity.start_time,
             event_end_time=queue_entity.end_time,
             ticket=(
@@ -198,7 +197,7 @@ class OfficeHoursService:
         ]
         return OfficeHourQueueOverview(
             id=oh_event.id,
-            type=oh_event.type.value,
+            type=oh_event.type.to_string(),
             start_time=oh_event.start_time,
             end_time=oh_event.end_time,
             active=(
@@ -248,8 +247,8 @@ class OfficeHoursService:
             id=ticket.id,
             created_at=ticket.created_at,
             called_at=ticket.called_at,
-            state=ticket.state.value,
-            type=ticket.type.value,
+            state=ticket.state.to_string(),
+            type=ticket.type.to_string(),
             description=ticket.description,
             creators=[
                 f"{creator.user.first_name} {creator.user.last_name}"

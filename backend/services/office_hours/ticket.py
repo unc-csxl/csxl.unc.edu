@@ -51,8 +51,8 @@ class OfficeHourTicketService:
             id=ticket.id,
             created_at=ticket.created_at,
             called_at=ticket.called_at,
-            state=ticket.state.value,
-            type=ticket.type.value,
+            state=ticket.state.to_string(),
+            type=ticket.type.to_string(),
             description=ticket.description,
             creators=[
                 f"{creator.user.first_name} {creator.user.last_name}"

@@ -37,7 +37,7 @@ def test_call_ticket(oh_ticket_svc: OfficeHourTicketService):
     called = oh_ticket_svc.call_ticket(
         user_data.instructor, office_hours_data.comp_110_queued_ticket.id
     )
-    assert called.state == TicketState.CALLED.value
+    assert called.state == TicketState.CALLED.to_string()
     name = user_data.instructor.first_name + " " + user_data.instructor.last_name
     assert called.caller == name
 
@@ -90,7 +90,7 @@ def test_cancel_ticket(oh_ticket_svc: OfficeHourTicketService):
     called = oh_ticket_svc.cancel_ticket(
         user_data.instructor, office_hours_data.comp_110_queued_ticket.id
     )
-    assert called.state == TicketState.CANCELED.value
+    assert called.state == TicketState.CANCELED.to_string()
 
 
 def test_cancel_ticket_not_found(oh_ticket_svc: OfficeHourTicketService):
@@ -114,7 +114,7 @@ def test_cancel_ticket_student(oh_ticket_svc: OfficeHourTicketService):
     called = oh_ticket_svc.cancel_ticket(
         user_data.student, office_hours_data.comp_110_queued_ticket.id
     )
-    assert called.state == TicketState.CANCELED.value
+    assert called.state == TicketState.CANCELED.to_string()
 
 
 # Close Ticket Tests
@@ -125,7 +125,7 @@ def test_close_ticket(oh_ticket_svc: OfficeHourTicketService):
     called = oh_ticket_svc.close_ticket(
         user_data.instructor, office_hours_data.comp_110_called_ticket.id
     )
-    assert called.state == TicketState.CLOSED.value
+    assert called.state == TicketState.CLOSED.to_string()
 
 
 def test_close_ticket_not_called(oh_ticket_svc: OfficeHourTicketService):
@@ -175,7 +175,7 @@ def test_create_ticket(oh_ticket_svc: OfficeHourTicketService):
     )
     assert created is not None
     assert isinstance(created, OfficeHourTicketOverview)
-    assert created.state == TicketState.QUEUED.value
+    assert created.state == TicketState.QUEUED.to_string()
 
 
 def test_create_ticket_not_member(oh_ticket_svc: OfficeHourTicketService):

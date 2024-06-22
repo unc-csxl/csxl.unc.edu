@@ -13,9 +13,7 @@ from ...models.pagination import PaginationParams, Paginated
 from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
     CourseSiteOverview,
-    CourseOverview,
     SectionOverview,
-    CourseOverview,
     TermOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
@@ -385,8 +383,8 @@ class CourseSiteService:
     def _to_oh_event_overview(self, oh_event: OfficeHoursEntity) -> OfficeHoursOverview:
         return OfficeHoursOverview(
             id=oh_event.id,
-            type=oh_event.type.value,
-            mode=oh_event.mode.value,
+            type=oh_event.type.to_string(),
+            mode=oh_event.mode.to_string(),
             description=oh_event.description,
             location=f"{oh_event.room.building} {oh_event.room.room}",
             location_description=oh_event.location_description,
