@@ -82,12 +82,11 @@ export class MyCoursesService {
    * @returns { Observable<OfficeHourEventOverview[]> }
    */
   getCurrentOfficeHourEvents(
-    termId: string,
-    courseId: string
+    courseSiteId: string
   ): Observable<OfficeHourEventOverview[]> {
     return this.http
       .get<OfficeHourEventOverviewJson[]>(
-        `/api/my-courses/${termId}/${courseId}/oh-events/current`
+        `/api/my-courses/${courseSiteId}/oh-events/current`
       )
       .pipe(map(parseOfficeHourEventOverviewJsonList));
   }

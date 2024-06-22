@@ -27,7 +27,7 @@ const routes: Routes = [
     children: [AllCoursesComponent.Route, SectionOfferingsComponent.Route]
   },
   {
-    path: 'course/:term_id/:course_id',
+    path: 'course/:course_site_id',
     component: CourseComponent,
     children: [
       RosterComponent.Route,

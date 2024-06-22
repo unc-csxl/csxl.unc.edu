@@ -61,12 +61,11 @@ export class OfficeHoursPageComponent {
     protected myCoursesService: MyCoursesService
   ) {
     // Load information from the parent route
-    let termId = this.route.parent!.snapshot.params['term_id'];
-    let courseId = this.route.parent!.snapshot.params['course_id'];
+    let courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
 
     // Load office hour data
     this.myCoursesService
-      .getCurrentOfficeHourEvents(termId, courseId)
+      .getCurrentOfficeHourEvents(courseSiteId)
       .subscribe((overview) => {
         this.currentOfficeHourEvents.set(overview);
       });
@@ -74,7 +73,7 @@ export class OfficeHoursPageComponent {
     // Load paginated future office hours data
     this.futureOfficeHourEventsPaginator =
       new Paginator<OfficeHourEventOverview>(
-        `/api/my-courses/${termId}/${courseId}/oh-events/future`
+        `/api/my-courses/${courseSiteId}/oh-events/future`
       );
 
     this.futureOfficeHourEventsPaginator
@@ -88,7 +87,7 @@ export class OfficeHoursPageComponent {
 
     // Load paginated past office hours data
     this.pastOfficeHourEventsPaginator = new Paginator<OfficeHourEventOverview>(
-      `/api/my-courses/${termId}/${courseId}/oh-events/history`
+      `/api/my-courses/${courseSiteId}/oh-events/history`
     );
 
     this.pastOfficeHourEventsPaginator

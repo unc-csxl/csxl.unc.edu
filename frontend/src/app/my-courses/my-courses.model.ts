@@ -29,7 +29,7 @@ export interface TermOverview {
   name: string;
   start: Date;
   end: Date;
-  courses: CourseOverview[];
+  sites: CourseSiteOverview[];
 }
 
 export interface TermOverviewJson {
@@ -37,7 +37,7 @@ export interface TermOverviewJson {
   name: string;
   start: string;
   end: string;
-  courses: CourseOverview[];
+  sites: CourseSiteOverview[];
 }
 
 export interface CourseMemberOverview {
@@ -152,6 +152,15 @@ export interface TicketDraft {
   office_hours_id: number;
   description: string;
   type: string;
+}
+
+export interface CourseSiteOverview {
+  id: number;
+  subject_code: string;
+  number: string;
+  title: string;
+  role: string;
+  sections: SectionOverview[];
 }
 
 /**
