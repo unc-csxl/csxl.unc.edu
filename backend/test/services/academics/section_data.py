@@ -212,7 +212,6 @@ comp_301_001_current_term = Section(
 # Variables To Help Associate User Data to Section Members
 user__comp110_instructor = user_data.instructor
 user__comp110_uta_0 = user_data.uta
-user__comp110_gta = user_data.ambassador
 user__comp110_student_0 = user_data.user
 user__comp110_student_1 = user_data.student
 
@@ -240,13 +239,6 @@ comp110_uta = SectionMemberDraft(
     user_id=user__comp110_uta_0.id,
     section_id=comp_110_001_current_term.id,
     member_role=RosterRole.UTA,
-)
-
-comp110_gta = SectionMemberDraft(
-    id=3,
-    user_id=user__comp110_gta.id,
-    section_id=comp_110_001_current_term.id,
-    member_role=RosterRole.GTA,
 )
 
 
@@ -336,7 +328,6 @@ section_members = [
     comp110_student_0,
     comp110_student_1,
     comp110_uta,
-    comp110_gta,
     comp301_instructor,
     comp_301_uta,
     comp_301_student,
@@ -349,7 +340,6 @@ comp110_members = [
     comp110_student_0,
     comp110_student_1,
     comp110_uta,
-    comp110_gta,
 ]
 
 
@@ -406,7 +396,7 @@ def insert_fake_data(session: Session):
         session.commit()
 
     reset_table_id_seq(
-        session, SectionMemberEntity, SectionMemberEntity.id, len(section_members) + 1
+        session, SectionMemberEntity, SectionMemberEntity.id, len(section_members) + 2
     )
 
     session.commit()

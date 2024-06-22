@@ -149,7 +149,7 @@ class CourseSiteService:
         # Add order by sort from pagination parameters
         if pagination_params.order_by != "":
             member_query = member_query.order_by(
-                getattr(SectionMemberEntity, pagination_params.order_by)
+                getattr(UserEntity, pagination_params.order_by)
             )
 
         # Create query off of the member query for just the members matching
@@ -173,10 +173,6 @@ class CourseSiteService:
         section_ids = [member.section_id for member in user_members]
         member_query = member_query.where(SectionEntity.id.in_(section_ids))
 
-        # Count the number of rows before applying pagination and filter.
-        count_query = select(func.count()).select_from(member_query.subquery())
-        length = self._session.scalar(count_query)
-
         # Add filtering by inputted pagination parameters
         if pagination_params.filter != "":
             query = pagination_params.filter
@@ -186,6 +182,10 @@ class CourseSiteService:
                 UserEntity.onyen.ilike(f"%{query}%"),
             )
             member_query = member_query.where(criteria)
+
+        # Count the number of rows before applying pagination and filter.
+        count_query = select(func.count()).select_from(member_query.subquery())
+        length = self._session.scalar(count_query)
 
         # Calculate offset and limit for pagination
         offset = pagination_params.page * pagination_params.page_size

@@ -8,13 +8,12 @@ from ....models.roster_role import RosterRole
 from ....models.pagination import PaginationParams
 
 from ....services.academics.section_member import SectionMemberService
-from ....services.academics.my_courses import MyCoursesService
 from ....services.exceptions import (
     ResourceNotFoundException,
 )
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
-from .fixtures import permission_svc, section_member_svc, my_courses_svc
+from .fixtures import permission_svc, section_member_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from ..core_data import setup_insert_data_fixture as insert_order_0
