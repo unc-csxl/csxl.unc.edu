@@ -48,14 +48,14 @@ def upgrade() -> None:
     )
 
     op.create_table(
-        "course_site",
+        "office_hours__section",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("title", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
 
     op.create_table(
-        "office_hours",
+        "office_hours__event",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column(
             "type",
@@ -63,7 +63,7 @@ def upgrade() -> None:
                 "OFFICE_HOURS",
                 "TUTORING",
                 "REVIEW_SESSION",
-                name="office_hours__type",
+                name="office_hours__event__type",
             ),
             nullable=False,
         ),
@@ -73,7 +73,7 @@ def upgrade() -> None:
                 "IN_PERSON",
                 "VIRTUAL_STUDENT_LINK",
                 "VIRTUAL_OUR_LINK",
-                name="office_hours__mode",
+                name="office_hours__event__mode",
             ),
             nullable=False,
         ),
@@ -86,7 +86,7 @@ def upgrade() -> None:
         sa.Column("room_id", sa.String(), nullable=False),
         sa.ForeignKeyConstraint(
             ["office_hours_section_id"],
-            ["course_site.id"],
+            ["office_hours__section.id"],
         ),
         sa.ForeignKeyConstraint(
             ["room_id"],
@@ -130,7 +130,7 @@ def upgrade() -> None:
         ),
         sa.ForeignKeyConstraint(
             ["oh_event_id"],
-            ["office_hours.id"],
+            ["office_hours__event.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -153,7 +153,7 @@ def upgrade() -> None:
     op.create_foreign_key(
         "academics_to_office_hours_fk",
         "academics__section",
-        "course_site",
+        "office_hours__section",
         ["office_hours_id"],
         ["id"],
     )
@@ -172,11 +172,11 @@ def downgrade() -> None:
     op.execute("DROP SEQUENCE academics__user_section_id_seq")
 
     # Drop the event/section tables
-    op.drop_table("office_hours")
-    op.drop_table("course_site")
+    op.drop_table("office_hours__event")
+    op.drop_table("office_hours__section")
 
     # Clean-up the enum types
-    op.execute("DROP TYPE office_hours__type")
-    op.execute("DROP TYPE office_hours__mode")
+    op.execute("DROP TYPE office_hours__event__type")
+    op.execute("DROP TYPE office_hours__event__mode")
     op.execute("DROP TYPE office_hours__ticket__type")
     op.execute("DROP TYPE office_hours__ticket__state")
