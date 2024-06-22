@@ -17,7 +17,11 @@
       Cancel Ticket
     </button>
     @if(!hideCallTicketButton) {
-    <button mat-flat-button class="primary-button" (click)="callButtonEvent()">
+    <button
+      mat-flat-button
+      class="primary-button"
+      (click)="callButtonEvent()"
+      [disabled]="disableCallTicketButton">
       Call Ticket
     </button>
     }
