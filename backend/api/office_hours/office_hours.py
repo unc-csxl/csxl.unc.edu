@@ -18,7 +18,7 @@ __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
-api = APIRouter(prefix="/api/office-hours/event")
+api = APIRouter(prefix="/api/office-hours")
 
 
 @api.get("/{id}/queue", tags=["Office Hours"])

@@ -102,7 +102,7 @@ export class MyCoursesService {
   ): Observable<OfficeHourQueueOverview> {
     return this.http
       .get<OfficeHourQueueOverviewJson>(
-        `/api/office-hours/event/${officeHoursEventId}/queue`
+        `/api/office-hours/${officeHoursEventId}/queue`
       )
       .pipe(map(parseOfficeHourQueueOverview));
   }
@@ -159,7 +159,7 @@ export class MyCoursesService {
     officeHoursEventId: number
   ): Observable<OfficeHourEventRoleOverview> {
     return this.http.get<OfficeHourEventRoleOverview>(
-      `/api/office-hours/event/${officeHoursEventId}/role`
+      `/api/office-hours/${officeHoursEventId}/role`
     );
   }
 
@@ -174,7 +174,7 @@ export class MyCoursesService {
   ): Observable<OfficeHourGetHelpOverview> {
     return this.http
       .get<OfficeHourGetHelpOverviewJson>(
-        `/api/office-hours/event/${officeHoursEventId}/get-help`
+        `/api/office-hours/${officeHoursEventId}/get-help`
       )
       .pipe(map(parseOfficeHourGetHelpOverviewJson));
   }
