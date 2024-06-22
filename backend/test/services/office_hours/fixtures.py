@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
 from ....services import PermissionService
-from ....services.office_hours import OfficeHourTicketService, OfficeHourEventService
+from ....services.office_hours import OfficeHourTicketService, OfficeHoursService
 
 __authors__ = ["Meghan Sun"]
 __copyright__ = "Copyright 2024"
@@ -20,14 +20,14 @@ def permission_svc(session: Session):
 @pytest.fixture()
 def oh_event_svc(session: Session, permission_svc: PermissionService):
     """OfficeHoursEventService fixture."""
-    return OfficeHourEventService(session, permission_svc)
+    return OfficeHoursService(session, permission_svc)
 
 
 @pytest.fixture()
 def oh_ticket_svc(
     session: Session,
     permission_svc: PermissionService,
-    oh_event_svc: OfficeHourEventService,
+    oh_event_svc: OfficeHoursService,
 ):
     """OfficeHoursEventService fixture."""
     return OfficeHourTicketService(session, permission_svc, oh_event_svc)

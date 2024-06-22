@@ -5,7 +5,7 @@ APIs handling office hours.
 
 from fastapi import APIRouter, Depends
 from ..authentication import registered_user
-from ...services.office_hours.office_hours import OfficeHourEventService
+from ...services.office_hours.office_hours import OfficeHoursService
 from ...models.user import User
 
 from ...models.academics.my_courses import (
@@ -25,7 +25,7 @@ api = APIRouter(prefix="/api/office-hours/event")
 def get_oh_queue(
     id: int,
     subject: User = Depends(registered_user),
-    oh_event_svc: OfficeHourEventService = Depends(),
+    oh_event_svc: OfficeHoursService = Depends(),
 ) -> OfficeHourQueueOverview:
     """
     Gets the queue overview for an office hour event.
@@ -40,7 +40,7 @@ def get_oh_queue(
 def get_oh_role(
     id: int,
     subject: User = Depends(registered_user),
-    oh_event_svc: OfficeHourEventService = Depends(),
+    oh_event_svc: OfficeHoursService = Depends(),
 ) -> OfficeHourEventRoleOverview:
     """
     Gets a user's role for a given office hour event.
@@ -55,7 +55,7 @@ def get_oh_role(
 def get_oh_help(
     id: int,
     subject: User = Depends(registered_user),
-    oh_event_svc: OfficeHourEventService = Depends(),
+    oh_event_svc: OfficeHoursService = Depends(),
 ) -> OfficeHourGetHelpOverview:
     """
     Gets information about getting help in office hours.

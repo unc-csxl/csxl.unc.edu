@@ -31,7 +31,7 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class OfficeHourEventService:
+class OfficeHoursService:
     """
     Service that performs all actions for office hour events.
     """
