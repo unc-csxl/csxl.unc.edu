@@ -142,11 +142,9 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
     // Create ticket draft from inputted ticket information
     let ticketDraft: TicketDraft = {
-      oh_event: { id: this.ohEventId },
+      office_hours_id: this.ohEventId,
       description: form_description,
-      type: form_type,
-      // TODO: if adding multiple creators (group tickets), would add users here
-      creators: []
+      type: form_type
     };
 
     this.myCoursesService.createTicket(ticketDraft).subscribe({

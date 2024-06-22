@@ -8,7 +8,7 @@ from ...models.office_hours.ticket_type import TicketType
 class SectionOverview(BaseModel):
     number: str
     meeting_pattern: str
-    oh_section_id: int | None
+    course_site_id: int | None
 
 
 class CourseOverview(BaseModel):

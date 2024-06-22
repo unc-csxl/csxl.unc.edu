@@ -12,7 +12,7 @@ import { Paginated, PaginationParams } from '../pagination';
 export interface SectionOverview {
   number: string;
   meeting_pattern: string;
-  oh_section_id: number | null;
+  course_site_id: number | null;
 }
 
 export interface CourseOverview {
@@ -149,14 +149,9 @@ export interface OfficeHourGetHelpOverview {
 }
 
 export interface TicketDraft {
-  oh_event: OfficeHoursEventPartial;
+  office_hours_id: number;
   description: string;
   type: string;
-  creators: { id: number }[]; // check this type ?
-}
-
-export interface OfficeHoursEventPartial {
-  id: number;
 }
 
 /**

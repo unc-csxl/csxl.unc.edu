@@ -43,7 +43,7 @@ class OfficeHourEventService:
         self._session = session
 
     def get_office_hour_queue(
-        self, user: User, oh_event_id: int
+        self, user: User, office_hours_id: int
     ) -> OfficeHourQueueOverview:
         """
         Loads all of the data relevant to an office hour queue.
@@ -59,7 +59,7 @@ class OfficeHourEventService:
             .join(SectionEntity)
             .join(CourseSiteEntity)
             .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == oh_event_id)
+            .where(OfficeHoursEntity.id == office_hours_id)
         )
 
         user_members = self._session.scalars(user_member_query).unique().all()
@@ -73,7 +73,7 @@ class OfficeHourEventService:
         # Start building the query
         queue_query = (
             select(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == oh_event_id)
+            .where(OfficeHoursEntity.id == office_hours_id)
             .options(
                 joinedload(OfficeHoursEntity.tickets)
                 .joinedload(OfficeHoursTicketEntity.caller)
@@ -91,14 +91,14 @@ class OfficeHourEventService:
 
         if not queue_entity:
             raise ResourceNotFoundException(
-                f"No office hours event for id: {oh_event_id}"
+                f"No office hours event for id: {office_hours_id}"
             )
 
         # Return data
         return self._to_oh_queue_overview(user, queue_entity)
 
     def get_office_hour_get_help_overview(
-        self, user: User, oh_event_id: int
+        self, user: User, office_hours_id: int
     ) -> OfficeHourGetHelpOverview:
         """
         Loads all of the data relevant for getting help in office hours.
@@ -114,7 +114,7 @@ class OfficeHourEventService:
             .join(SectionEntity)
             .join(CourseSiteEntity)
             .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == oh_event_id)
+            .where(OfficeHoursEntity.id == office_hours_id)
             .options(joinedload(SectionMemberEntity.created_oh_tickets))
         )
 
@@ -132,7 +132,7 @@ class OfficeHourEventService:
         # Start building the query
         queue_query = (
             select(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == oh_event_id)
+            .where(OfficeHoursEntity.id == office_hours_id)
             .options(
                 joinedload(OfficeHoursEntity.tickets)
                 .joinedload(OfficeHoursTicketEntity.caller)
@@ -150,7 +150,7 @@ class OfficeHourEventService:
 
         if not queue_entity:
             raise ResourceNotFoundException(
-                f"No office hours event for id: {oh_event_id}"
+                f"No office hours event for id: {office_hours_id}"
             )
 
         # Get ticket for user, if any
@@ -246,7 +246,7 @@ class OfficeHourEventService:
         )
 
     def get_oh_event_role(
-        self, user: User, oh_event_id: int
+        self, user: User, office_hours_id: int
     ) -> OfficeHourEventRoleOverview:
         """
         Returns the user's role for an event.
@@ -262,7 +262,7 @@ class OfficeHourEventService:
             .join(SectionEntity)
             .join(CourseSiteEntity)
             .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == oh_event_id)
+            .where(OfficeHoursEntity.id == office_hours_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()

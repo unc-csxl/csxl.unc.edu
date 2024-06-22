@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...models.office_hours.ticket_state import TicketState
 from ...models.office_hours.ticket_type import TicketType
-from ...models.office_hours.ticket import OfficeHoursTicket
+from ...models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from .user_created_tickets_table import user_created_tickets_table
 
@@ -77,6 +77,22 @@ class OfficeHoursTicketEntity(EntityBase):
     caller: Mapped["SectionMemberEntity"] = relationship(
         back_populates="called_oh_tickets"
     )
+
+    @classmethod
+    def from_new_model(cls, model: NewOfficeHoursTicket) -> Self:
+        """
+        Class method that converts an `NewOfficeHoursTicket` model into a `OfficeHoursTicketEntity`
+
+        Parameters:
+            - model (NewOfficeHoursTicket): Model to convert into an entity
+        Returns:
+            OfficeHoursTicketEntity: Entity created from model
+        """
+        return cls(
+            description=model.description,
+            type=model.type,
+            office_hours_id=model.office_hours_id,
+        )
 
     @classmethod
     def from_model(cls, model: OfficeHoursTicket) -> Self:

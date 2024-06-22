@@ -108,7 +108,7 @@ class MyCoursesService:
         return SectionOverview(
             number=section.number,
             meeting_pattern=section.meeting_pattern,
-            oh_section_id=section.office_hours_id,
+            course_site_id=section.course_site_id,
         )
 
     def get_course_roster(
@@ -352,7 +352,7 @@ class MyCoursesService:
             .options(joinedload(OfficeHoursEntity.room))
             .options(joinedload(OfficeHoursEntity.tickets))
             .options(
-                joinedload(OfficeHoursEntity.office_hours_section)
+                joinedload(OfficeHoursEntity.course_site)
                 .joinedload(CourseSiteEntity.sections)
                 .joinedload(SectionEntity.members)
             )

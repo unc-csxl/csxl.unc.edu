@@ -14,8 +14,10 @@ from ...models.academics.my_courses import (
 )
 from ...models.office_hours.ticket import (
     TicketState,
-    OfficeHoursTicketDraft,
+    NewOfficeHoursTicket,
+    OfficeHoursTicket,
 )
+
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import (
     CourseSiteEntity,
@@ -89,7 +91,7 @@ class OfficeHourTicketService:
             .join(SectionEntity)
             .join(CourseSiteEntity)
             .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == ticket_entity.oh_event_id)
+            .where(OfficeHoursEntity.id == ticket_entity.office_hours_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()
@@ -132,7 +134,7 @@ class OfficeHourTicketService:
             .join(SectionEntity)
             .join(CourseSiteEntity)
             .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == ticket_entity.oh_event_id)
+            .where(OfficeHoursEntity.id == ticket_entity.office_hours_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()
@@ -181,7 +183,7 @@ class OfficeHourTicketService:
             .join(SectionEntity)
             .join(CourseSiteEntity)
             .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == ticket_entity.oh_event_id)
+            .where(OfficeHoursEntity.id == ticket_entity.office_hours_id)
         )
 
         user_member = self._session.scalars(user_member_query).unique().one_or_none()
@@ -203,14 +205,14 @@ class OfficeHourTicketService:
         return self._to_oh_ticket_overview(ticket_entity)
 
     def create_ticket(
-        self, user: User, oh_ticket_draft: OfficeHoursTicketDraft
+        self, user: User, ticket: NewOfficeHoursTicket
     ) -> OfficeHourTicketOverview:
         """
         Creates a new office hours ticket.
 
         Args:
             subject (User): A valid User model representing the currently logged-in user.
-            oh_ticket (OfficeHoursTicketDraft): OfficeHoursTicketDraft object to add to the table.
+            ticket (OfficeHoursTicket): OfficeHoursTicket object to add to the table.
 
         Returns:
             OfficeHoursTicketDetails: The newly created OfficeHoursTicket object.
@@ -220,9 +222,9 @@ class OfficeHourTicketService:
 
         """
         # Find the IDs of the creators of the ticket
-        creator_ids = list(
-            set([creator.id for creator in oh_ticket_draft.creators] + [user.id])
-        )
+        creator_ids = [user.id]
+        # TODO: Reimplement group tickets
+        # list(set([creator.id for creator in oh_ticket_draft.creators] + [user.id]))
 
         # Create query off of the member query for just the members matching
         # with the current user (used to determine permissions)
@@ -232,7 +234,7 @@ class OfficeHourTicketService:
             .join(SectionEntity)
             .join(CourseSiteEntity)
             .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == oh_ticket_draft.oh_event.id)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
         )
 
         user_members = self._session.scalars(user_member_query).unique().all()
@@ -245,7 +247,7 @@ class OfficeHourTicketService:
                 )
 
         # Create entity
-        oh_ticket_entity = OfficeHoursTicketEntity.from_draft_model(oh_ticket_draft)
+        oh_ticket_entity = OfficeHoursTicketEntity.from_new_model(ticket)
 
         # Add new object to table and commit changes
         self._session.add(oh_ticket_entity)

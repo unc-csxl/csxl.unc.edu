@@ -7,7 +7,7 @@ from ..authentication import registered_user
 
 from ...models.academics.section_member import SectionMember
 from ...models.academics.section_member_details import SectionMemberDetails
-from ...models.office_hours.course_site import OfficeHoursSection
+from ...models.office_hours.course_site import CourseSite
 from ...models.roster_role import RosterRole
 from ...models import User
 
@@ -51,7 +51,7 @@ def get_section_member_by_id(
 
 @api.post("", response_model=list[SectionMember], tags=["Academics"])
 def add_user_memberships(
-    oh_sections: list[OfficeHoursSection],
+    oh_sections: list[CourseSite],
     subject: User = Depends(registered_user),
     section_member_svc: SectionMemberService = Depends(),
 ) -> list[SectionMember]:
@@ -59,7 +59,7 @@ def add_user_memberships(
     Adds memberships for a user given a list of Office Hours sections.
 
     Args:
-        oh_sections (list[OfficeHoursSection]): List of Office Hours sections to enroll the user into.
+        oh_sections (list[CourseSite]): List of Office Hours sections to enroll the user into.
         subject (User): The currently logged-in user.
         section_membership (SectionMemberService): Service dependency to manage Section Membership data.
 

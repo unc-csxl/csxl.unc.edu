@@ -7,11 +7,17 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.office_hours.ticket import OfficeHourTicketService
 from ...models.user import User
-from ...models.office_hours.ticket import OfficeHoursTicketDraft
+from ...models.office_hours.ticket import NewOfficeHoursTicket
 
 from ...models.academics.my_courses import OfficeHourTicketOverview
 
-__authors__ = ["Ajay Gandecha"]
+__authors__ = [
+    "Ajay Gandecha",
+    "Sadie Amato",
+    "Bailey DeSouza",
+    "Meghan Sun",
+    "Maddy Andrews",
+]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -65,7 +71,7 @@ def close_ticket(
 
 @api.post("/", tags=["Office Hours"])
 def new_oh_ticket(
-    oh_ticket: OfficeHoursTicketDraft,
+    ticket: NewOfficeHoursTicket,
     subject: User = Depends(registered_user),
     oh_ticket_svc: OfficeHourTicketService = Depends(),
 ) -> OfficeHourTicketOverview:
@@ -75,4 +81,4 @@ def new_oh_ticket(
     Returns:
         OfficeHoursTicketDetails: OH Ticket created
     """
-    return oh_ticket_svc.create_ticket(subject, oh_ticket)
+    return oh_ticket_svc.create_ticket(subject, ticket)
