@@ -78,6 +78,9 @@ class OfficeHourTicketService:
         if not ticket_entity:
             raise ResourceNotFoundException(f"Ticket not found with ID: {ticket_id}")
 
+        if ticket_entity.state == TicketState.CALLED:
+            raise CoursePermissionException("This ticket was already called!")
+
         if ticket_entity.state != TicketState.QUEUED:
             raise CoursePermissionException(
                 "Cannot call a ticket that is not in the queue."
