@@ -9,7 +9,7 @@ from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
-    CourseOfficeHourEventOverview,
+    OfficeHoursOverview,
     OfficeHourTicketOverview,
     OfficeHourQueueOverview,
     OfficeHourEventRoleOverview,

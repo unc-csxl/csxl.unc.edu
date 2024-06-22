@@ -20,12 +20,21 @@ class CourseOverview(BaseModel):
     role: str
 
 
+class CourseSiteOverview(BaseModel):
+    id: int
+    subject_code: str
+    number: str
+    title: str
+    role: str
+    sections: list[SectionOverview]
+
+
 class TermOverview(BaseModel):
     id: str
     name: str
     start: datetime
     end: datetime
-    courses: list[CourseOverview]
+    sites: list[CourseSiteOverview]
 
 
 class CourseMemberOverview(BaseModel):
@@ -38,7 +47,7 @@ class CourseMemberOverview(BaseModel):
     role: str
 
 
-class CourseOfficeHourEventOverview(BaseModel):
+class OfficeHoursOverview(BaseModel):
     id: int
     type: str
     mode: str

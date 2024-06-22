@@ -1,5 +1,5 @@
 """
-APIs for academics for users.
+APIs for working with course sites.
 """
 
 from datetime import datetime
@@ -12,12 +12,13 @@ from ...models.user import User
 from ...models.pagination import PaginationParams, Paginated
 from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
+    CourseSiteOverview,
     CourseOverview,
     SectionOverview,
     CourseOverview,
     TermOverview,
     CourseMemberOverview,
-    CourseOfficeHourEventOverview,
+    OfficeHoursOverview,
     TicketState,
 )
 from ...entities.academics.section_entity import SectionEntity
@@ -26,12 +27,12 @@ from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Ajay Gandecha", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class MyCoursesService:
+class CourseSiteService:
     """
     Service that performs all of the actions on the `Section` table
     """
@@ -42,9 +43,9 @@ class MyCoursesService:
         """
         self._session = session
 
-    def get_user_courses(self, user: User) -> list[TermOverview]:
+    def get_user_course_sites(self, user: User) -> list[TermOverview]:
         """
-        Get the courses for the current user.
+        Get the course sites for the current user.
 
         Returns:
             list[TermOverview]
@@ -52,11 +53,16 @@ class MyCoursesService:
         query = (
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .where(SectionEntity.course_site_id != None)
             .options(
+                joinedload(SectionMemberEntity.section).joinedload(
+                    SectionEntity.course_site
+                ),
+                joinedload(SectionMemberEntity.section).joinedload(SectionEntity.term),
                 joinedload(SectionMemberEntity.section).joinedload(
                     SectionEntity.course
                 ),
-                joinedload(SectionMemberEntity.section).joinedload(SectionEntity.term),
             )
         )
         section_member_entities = self._session.scalars(query).all()
@@ -74,14 +80,20 @@ class MyCoursesService:
         """
         terms = []
         for term, term_memberships in groupby(entities, lambda x: x.section.term):
-            courses = []
-            for course, course_memberships in groupby(
-                term_memberships, lambda membership: membership.section.course
+
+            course_sites = []
+
+            for (course_site, course), course_memberships in groupby(
+                term_memberships,
+                lambda membership: (
+                    membership.section.course_site,
+                    membership.section.course,
+                ),
             ):
                 memberships = list(course_memberships)
-                courses.append(
-                    CourseOverview(
-                        id=course.id,
+                course_sites.append(
+                    CourseSiteOverview(
+                        id=course_site.id,
                         subject_code=course.subject_code,
                         number=course.number,
                         title=memberships[0].section.override_title or course.title,
@@ -99,7 +111,7 @@ class MyCoursesService:
                     name=term.name,
                     start=term.start,
                     end=term.end,
-                    courses=courses,
+                    sites=course_sites,
                 )
             )
         return terms
@@ -111,11 +123,10 @@ class MyCoursesService:
             course_site_id=section.course_site_id,
         )
 
-    def get_course_roster(
+    def get_course_site_roster(
         self,
         user: User,
-        term_id: str,
-        course_id: str,
+        site_id: int,
         pagination_params: PaginationParams,
     ) -> Paginated[CourseMemberOverview]:
         """
@@ -130,10 +141,7 @@ class MyCoursesService:
             select(SectionMemberEntity)
             .join(SectionEntity)
             .join(UserEntity)
-            .where(
-                SectionEntity.term_id == term_id,
-                SectionEntity.course_id == course_id,
-            )
+            .where(SectionEntity.course_site_id == site_id)
             .options(joinedload(SectionMemberEntity.section))
             .options(joinedload(SectionMemberEntity.user))
         )
@@ -217,17 +225,17 @@ class MyCoursesService:
         )
 
     def get_current_office_hour_events(
-        self, user: User, term_id: str, course_id: str
-    ) -> list[CourseOfficeHourEventOverview]:
+        self, user: User, site_id: int
+    ) -> list[OfficeHoursOverview]:
         """
         Get the overview for a course's currenet office hour events.
 
         Returns:
-            list[CourseOfficeHourEventOverview]
+            list[OfficeHoursOverview]
         """
 
         # Start building the query
-        event_query = self._create_oh_event_query(user, term_id, course_id)
+        event_query = self._create_oh_event_query(user, site_id)
 
         # Only load current events
         event_query = event_query.where(
@@ -245,19 +253,18 @@ class MyCoursesService:
     def get_future_office_hour_events(
         self,
         user: User,
-        term_id: str,
-        course_id: str,
+        site_id: int,
         pagination_params: PaginationParams,
-    ) -> Paginated[CourseOfficeHourEventOverview]:
+    ) -> Paginated[OfficeHoursOverview]:
         """
         Gets the future office hours events, paginated.
 
         Returns:
-            Paginated[CourseOfficeHourEventOverview]
+            Paginated[OfficeHoursOverview]
         """
 
         # Start building the query
-        event_query = self._create_oh_event_query(user, term_id, course_id)
+        event_query = self._create_oh_event_query(user, site_id)
 
         # Only load future events
         event_query = event_query.where(datetime.today() < OfficeHoursEntity.start_time)
@@ -293,19 +300,18 @@ class MyCoursesService:
     def get_past_office_hour_events(
         self,
         user: User,
-        term_id: str,
-        course_id: str,
+        site_id: int,
         pagination_params: PaginationParams,
-    ) -> Paginated[CourseOfficeHourEventOverview]:
+    ) -> Paginated[OfficeHoursOverview]:
         """
         Gets the past office hours events, paginated.
 
         Returns:
-            Paginated[CourseOfficeHourEventOverview]
+            Paginated[OfficeHoursOverview]
         """
 
         # Start building the query
-        event_query = self._create_oh_event_query(user, term_id, course_id)
+        event_query = self._create_oh_event_query(user, site_id)
 
         # Only load future events
         event_query = event_query.where(OfficeHoursEntity.end_time < datetime.today())
@@ -338,17 +344,11 @@ class MyCoursesService:
             params=pagination_params,
         )
 
-    def _create_oh_event_query(self, user: User, term_id: str, course_id: str):
+    def _create_oh_event_query(self, user: User, site_id: int):
         # Start building the query
         event_query = (
             select(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .join(SectionEntity)
-            .join(SectionMemberEntity)
-            .where(
-                SectionEntity.term_id == term_id,
-                SectionEntity.course_id == course_id,
-            )
+            .where(OfficeHoursEntity.course_site_id == site_id)
             .options(joinedload(OfficeHoursEntity.room))
             .options(joinedload(OfficeHoursEntity.tickets))
             .options(
@@ -364,10 +364,7 @@ class MyCoursesService:
             select(SectionMemberEntity)
             .join(SectionEntity)
             .join(UserEntity)
-            .where(
-                SectionEntity.term_id == term_id,
-                SectionEntity.course_id == course_id,
-            )
+            .where(SectionEntity.course_site_id == site_id)
             .where(SectionMemberEntity.user_id == user.id)
         )
         user_members = self._session.scalars(user_member_query).unique().all()
@@ -385,10 +382,8 @@ class MyCoursesService:
 
         return event_query
 
-    def _to_oh_event_overview(
-        self, oh_event: OfficeHoursEntity
-    ) -> CourseOfficeHourEventOverview:
-        return CourseOfficeHourEventOverview(
+    def _to_oh_event_overview(self, oh_event: OfficeHoursEntity) -> OfficeHoursOverview:
+        return OfficeHoursOverview(
             id=oh_event.id,
             type=oh_event.type.value,
             mode=oh_event.mode.value,
