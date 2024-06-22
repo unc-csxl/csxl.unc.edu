@@ -5,16 +5,14 @@ import pytest
 from ....models.pagination import PaginationParams, Paginated
 from ....models.academics.my_courses import (
     TermOverview,
-    CourseSiteOverview,
-    SectionOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
 )
 from ....services.academics.course_site import CourseSiteService
-from ....services.exceptions import ResourceNotFoundException, CoursePermissionException
+from ....services.exceptions import CoursePermissionException
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
-from .fixtures import permission_svc, course_site_svc
+from .fixtures import course_site_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from ..core_data import setup_insert_data_fixture as insert_order_0
@@ -25,7 +23,6 @@ from ..room_data import fake_data_fixture as insert_order_4
 from ..office_hours.office_hours_data import fake_data_fixture as insert_order_5
 
 # Import the fake model data in a namespace for test assertions
-from . import section_data
 from .. import user_data
 from ..academics import term_data
 from ..office_hours import office_hours_data
@@ -36,7 +33,7 @@ __license__ = "MIT"
 
 
 def test_get_user_course_sites(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that users are able to access term overviews."""
     term_overview = course_site_svc.get_user_course_sites(user_data.instructor)
     assert isinstance(term_overview, list)
     assert isinstance(term_overview[0], TermOverview)
@@ -46,7 +43,7 @@ def test_get_user_course_sites(course_site_svc: CourseSiteService):
 
 
 def test_get_course_site_roster(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that instructors can access their course rosters."""
     pagination_params = PaginationParams()
     roster = course_site_svc.get_course_site_roster(
         user_data.instructor, office_hours_data.comp_110_site.id, pagination_params
@@ -57,7 +54,7 @@ def test_get_course_site_roster(course_site_svc: CourseSiteService):
 
 
 def test_get_course_site_roster_order_by(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that course roster ordering works with pagination."""
     pagination_params = PaginationParams(order_by="last_name")
     roster = course_site_svc.get_course_site_roster(
         user_data.instructor, office_hours_data.comp_110_site.id, pagination_params
@@ -71,7 +68,7 @@ def test_get_course_site_roster_order_by(course_site_svc: CourseSiteService):
 
 
 def test_get_course_site_roster_filter(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that course roster filtering works with pagination."""
     filter = "Student"
     pagination_params = PaginationParams(filter=filter)
     roster = course_site_svc.get_course_site_roster(
@@ -86,7 +83,7 @@ def test_get_course_site_roster_filter(course_site_svc: CourseSiteService):
 
 
 def test_get_course_site_roster_not_member(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that non-members are unable to access course rosters."""
     pagination_params = PaginationParams()
     with pytest.raises(CoursePermissionException):
         course_site_svc.get_course_site_roster(
@@ -96,7 +93,7 @@ def test_get_course_site_roster_not_member(course_site_svc: CourseSiteService):
 
 
 def test_get_current_office_hour_events(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that members are able to access current office hour events."""
     office_hours = course_site_svc.get_current_office_hour_events(
         user_data.instructor, office_hours_data.comp_110_site.id
     )
@@ -106,7 +103,7 @@ def test_get_current_office_hour_events(course_site_svc: CourseSiteService):
 
 
 def test_get_current_office_hour_events_not_member(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that non-members cannot access current office hour events."""
     with pytest.raises(CoursePermissionException):
         course_site_svc.get_current_office_hour_events(
             user_data.ambassador, office_hours_data.comp_110_site.id
@@ -115,7 +112,7 @@ def test_get_current_office_hour_events_not_member(course_site_svc: CourseSiteSe
 
 
 def test_get_future_office_hour_events(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that members are able to access future office hour events."""
     pagination_params = PaginationParams()
     office_hours = course_site_svc.get_future_office_hour_events(
         user_data.instructor, office_hours_data.comp_110_site.id, pagination_params
@@ -127,7 +124,7 @@ def test_get_future_office_hour_events(course_site_svc: CourseSiteService):
 
 
 def test_get_future_office_hour_events_not_member(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that non-members cannot access future office hour events."""
     pagination_params = PaginationParams()
     with pytest.raises(CoursePermissionException):
         course_site_svc.get_future_office_hour_events(
@@ -137,7 +134,7 @@ def test_get_future_office_hour_events_not_member(course_site_svc: CourseSiteSer
 
 
 def test_get_past_office_hour_events(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that members are able to access past office hour events."""
     pagination_params = PaginationParams()
     office_hours = course_site_svc.get_past_office_hour_events(
         user_data.instructor, office_hours_data.comp_110_site.id, pagination_params
@@ -149,7 +146,7 @@ def test_get_past_office_hour_events(course_site_svc: CourseSiteService):
 
 
 def test_get_past_office_hour_events_not_member(course_site_svc: CourseSiteService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that non-members cannot access past office hour events."""
     pagination_params = PaginationParams()
     with pytest.raises(CoursePermissionException):
         course_site_svc.get_past_office_hour_events(

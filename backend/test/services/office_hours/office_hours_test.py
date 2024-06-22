@@ -11,7 +11,7 @@ from ....services.office_hours import OfficeHoursService
 from ....services.exceptions import CoursePermissionException
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
-from .fixtures import permission_svc, oh_svc, oh_ticket_svc
+from .fixtures import oh_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from ..core_data import setup_insert_data_fixture as insert_order_0
@@ -32,7 +32,7 @@ __license__ = "MIT"
 
 
 def test_get_office_hour_queue(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures instructors can access the office hour queue."""
     queue = oh_svc.get_office_hour_queue(
         user_data.instructor, office_hours_data.comp_110_current_office_hours.id
     )
@@ -44,7 +44,7 @@ def test_get_office_hour_queue(oh_svc: OfficeHoursService):
 
 
 def test_get_office_hour_queue_not_member(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that non-members of the course cannot access the office hour queue."""
     with pytest.raises(CoursePermissionException):
         oh_svc.get_office_hour_queue(
             user_data.ambassador, office_hours_data.comp_110_current_office_hours.id
@@ -53,7 +53,7 @@ def test_get_office_hour_queue_not_member(oh_svc: OfficeHoursService):
 
 
 def test_get_office_hour_queue_not_staff(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that students of the course cannot access the office hour queue."""
     with pytest.raises(CoursePermissionException):
         oh_svc.get_office_hour_queue(
             user_data.student, office_hours_data.comp_110_current_office_hours.id
@@ -62,7 +62,7 @@ def test_get_office_hour_queue_not_staff(oh_svc: OfficeHoursService):
 
 
 def test_get_help_overview(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures students can access the get help overview information."""
     overview = oh_svc.get_office_hour_get_help_overview(
         user_data.student, office_hours_data.comp_110_current_office_hours.id
     )
@@ -73,7 +73,7 @@ def test_get_help_overview(oh_svc: OfficeHoursService):
 
 
 def test_get_help_overview_not_member(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures non-members cannot access the get help overview information."""
     with pytest.raises(CoursePermissionException):
         oh_svc.get_office_hour_get_help_overview(
             user_data.ambassador, office_hours_data.comp_110_current_office_hours.id
@@ -82,7 +82,7 @@ def test_get_help_overview_not_member(oh_svc: OfficeHoursService):
 
 
 def test_get_help_overview_not_student(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures non-students cannot access the get help overview information."""
     with pytest.raises(CoursePermissionException):
         oh_svc.get_office_hour_get_help_overview(
             user_data.instructor, office_hours_data.comp_110_current_office_hours.id
@@ -91,7 +91,7 @@ def test_get_help_overview_not_student(oh_svc: OfficeHoursService):
 
 
 def test_get_oh_event_role(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that the instructor can access their office hour role"""
     role = oh_svc.get_oh_event_role(
         user_data.instructor, office_hours_data.comp_110_current_office_hours.id
     )
@@ -100,7 +100,7 @@ def test_get_oh_event_role(oh_svc: OfficeHoursService):
 
 
 def test_get_oh_event_role_student(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that students can access their office hour role"""
     role = oh_svc.get_oh_event_role(
         user_data.student, office_hours_data.comp_110_current_office_hours.id
     )
@@ -109,7 +109,7 @@ def test_get_oh_event_role_student(oh_svc: OfficeHoursService):
 
 
 def test_get_oh_event_role_not_member(oh_svc: OfficeHoursService):
-    """Test case to retrieve a section member by ID."""
+    """Ensures that non-members cannot access their office hour role"""
     with pytest.raises(CoursePermissionException):
         oh_svc.get_oh_event_role(
             user_data.ambassador, office_hours_data.comp_110_current_office_hours.id
