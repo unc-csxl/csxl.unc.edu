@@ -22,7 +22,7 @@ from ....models.office_hours.event_type import (
     OfficeHoursEventType,
 )
 from ....models.office_hours.course_site import CourseSite
-from ....models.office_hours.ticket import OfficeHoursTicket
+from ....models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
 
@@ -242,3 +242,12 @@ def fake_data_fixture(session: Session):
     insert_fake_data(session)
     session.commit()
     yield
+
+
+# Data objects for testing purposes
+
+new_ticket = NewOfficeHoursTicket(
+    description="Help me!",
+    type=TicketType.ASSIGNMENT_HELP,
+    office_hours_id=comp_110_current_office_hours.id,
+)

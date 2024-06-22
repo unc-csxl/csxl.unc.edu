@@ -239,11 +239,19 @@ class OfficeHourTicketService:
 
         user_members = self._session.scalars(user_member_query).unique().all()
 
+        user_member_ids = [user_member.user_id for user_member in user_members]
+
+        for creator_id in creator_ids:
+            if creator_id not in user_member_ids:
+                raise CoursePermissionException(
+                    "Not allowed to create a ticket if you are not in the course."
+                )
+
         for user_member in user_members:
             # If the user is not a member of the looked up course, throw an error
             if not user_member or user_member.member_role != RosterRole.STUDENT:
                 raise CoursePermissionException(
-                    "Not allowed to cancel if a ticket if you are not a UTA, GTA, or instructor for it, or you did not open it."
+                    "Not allowed to create a ticket if you are not a student."
                 )
 
         # Create entity
