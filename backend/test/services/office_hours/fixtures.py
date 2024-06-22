@@ -18,9 +18,9 @@ def permission_svc(session: Session):
 
 
 @pytest.fixture()
-def oh_event_svc(session: Session, permission_svc: PermissionService):
+def oh_svc(session: Session):
     """OfficeHoursEventService fixture."""
-    return OfficeHoursService(session, permission_svc)
+    return OfficeHoursService(session)
 
 
 @pytest.fixture()

@@ -89,11 +89,6 @@ class OfficeHoursService:
         # Load data
         queue_entity = self._session.scalars(queue_query).unique().one_or_none()
 
-        if not queue_entity:
-            raise ResourceNotFoundException(
-                f"No office hours event for id: {office_hours_id}"
-            )
-
         # Return data
         return self._to_oh_queue_overview(user, queue_entity)
 
@@ -148,11 +143,6 @@ class OfficeHoursService:
         # Load data
         queue_entity = self._session.scalars(queue_query).unique().one_or_none()
 
-        if not queue_entity:
-            raise ResourceNotFoundException(
-                f"No office hours event for id: {office_hours_id}"
-            )
-
         # Get ticket for user, if any
         active_tickets = [
             ticket
@@ -188,36 +178,13 @@ class OfficeHoursService:
             queue_position=queue_position,
         )
 
-    def _to_oh_ticket_overview(
-        self, ticket: OfficeHoursTicketEntity
-    ) -> OfficeHourTicketOverview:
-        return OfficeHourTicketOverview(
-            id=ticket.id,
-            created_at=ticket.created_at,
-            called_at=ticket.called_at,
-            state=ticket.state.value,
-            type=ticket.type.value,
-            description=ticket.description,
-            creators=[
-                f"{creator.user.first_name} {creator.user.last_name}"
-                for creator in ticket.creators
-            ],
-            caller=(
-                f"{ticket.caller.user.first_name} {ticket.caller.user.last_name}"
-                if ticket.caller
-                else None
-            ),
-        )
-
     def _to_oh_queue_overview(
         self, user: User, oh_event: OfficeHoursEntity
     ) -> OfficeHourQueueOverview:
         active_tickets = [
             ticket
             for ticket in oh_event.tickets
-            if ticket.state == TicketState.CALLED
-            and ticket.caller
-            and ticket.caller.user_id == user.id
+            if ticket.state == TicketState.CALLED and ticket.caller.user_id == user.id
         ]
         called_tickets = [
             ticket

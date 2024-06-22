@@ -125,7 +125,7 @@ comp_110_called_ticket = OfficeHoursTicket(
     have_concerns=False,
     caller_notes="",
     office_hours_id=comp_110_current_office_hours.id,
-    caller_id=user_data.instructor.id,
+    caller_id=section_data.comp110_instructor.id,
 )
 comp_110_closed_ticket = OfficeHoursTicket(
     id=4,
@@ -138,13 +138,13 @@ comp_110_closed_ticket = OfficeHoursTicket(
     have_concerns=True,
     caller_notes="Student could not find the power button on their laptop.",
     office_hours_id=comp_110_current_office_hours.id,
-    caller_id=user_data.instructor.id,
+    caller_id=section_data.comp110_instructor.id,
 )
 comp_110_ticket_creators = [
-    (comp_110_queued_ticket, [user_data.student.id]),
-    (comp_110_cancelled_ticket, [user_data.student.id]),
-    (comp_110_called_ticket, [user_data.student.id]),
-    (comp_110_closed_ticket, [user_data.student.id]),
+    (comp_110_queued_ticket, [section_data.comp110_student_1.id]),
+    (comp_110_cancelled_ticket, [section_data.comp110_student_1.id]),
+    (comp_110_called_ticket, [section_data.comp110_student_1.id]),
+    (comp_110_closed_ticket, [section_data.comp110_student_1.id]),
 ]
 
 # All
