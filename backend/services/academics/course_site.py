@@ -19,6 +19,8 @@ from ...models.academics.my_courses import (
     OfficeHoursOverview,
     TicketState,
 )
+from ...models.office_hours.course_site import CourseSite, NewCourseSite
+from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
@@ -399,3 +401,59 @@ class CourseSiteService:
             ),
             total_tickets=len(oh_event.tickets),
         )
+
+    def create_course_site(
+        self, user: User, new_site: NewCourseSite
+    ) -> CourseSiteDetails:
+        """
+        Creates a course site for an instructor with sections.
+        """
+
+        # Find all the user's section memberships for the term and sections inputted
+        membership_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(SectionMemberEntity.section_id.in_(new_site.section_ids))
+            .where(SectionEntity.term_id == new_site.term_id)
+            .options(joinedload(SectionMemberEntity.section))
+        )
+
+        membership_entities = self._session.scalars(membership_query).all()
+        section_entities = [membership.section for membership in membership_entities]
+
+        # This check fails the creation of a course site if the sections inputted are either not in the term, or if
+        # a user is not a member of the course.
+        if len(membership_entities) != len(new_site.section_ids):
+            raise CoursePermissionException(
+                "You cannot add sections to a course site that you are not an instructor for, or sections in different terms."
+            )
+
+        # This check ensures that the user is an instructor for every section inputted.
+        for membership in membership_entities:
+            if membership.member_role != RosterRole.INSTRUCTOR:
+                raise CoursePermissionException(
+                    "You cannot add sections to a course site that you are not an instructor for."
+                )
+
+        # Ensure that sections provided are not already in a course site.
+        for section in section_entities:
+            if section.course_site_id != None:
+                raise CoursePermissionException(
+                    f"Section with ID: { section.id} is already in another course site."
+                )
+
+        # Create the course site, add, and save so the id field populates.
+        course_site_entity = CourseSiteEntity.from_new_model(new_site)
+        self._session.add(course_site_entity)
+        self._session.commit()
+
+        # Update the sections to add to the course site.
+        for section_entity in section_entities:
+            section_entity.course_site_id = course_site_entity.id
+
+        # Save changes
+        self._session.commit()
+
+        # Return the model
+        return course_site_entity.to_details_model()

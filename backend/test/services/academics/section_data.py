@@ -209,6 +209,37 @@ comp_301_001_current_term = Section(
     override_title="",
     override_description="",
 )
+
+comp_301_002_current_term = Section(
+    id=14,
+    course_id=course_data.comp_301.id,
+    number="002",
+    term_id=term_data.current_term.id,
+    meeting_pattern="TTh 5:00PM - 6:15PM",
+    override_title="",
+    override_description="",
+)
+
+comp_311_001_current_term = Section(
+    id=15,
+    course_id=course_data.comp_311.id,
+    number="001",
+    term_id=term_data.current_term.id,
+    meeting_pattern="TTh 5:00PM - 6:15PM",
+    override_title="",
+    override_description="",
+)
+
+comp_311_002_current_term = Section(
+    id=16,
+    course_id=course_data.comp_311.id,
+    number="002",
+    term_id=term_data.current_term.id,
+    meeting_pattern="TTh 5:00PM - 6:15PM",
+    override_title="",
+    override_description="",
+)
+
 # Variables To Help Associate User Data to Section Members
 user__comp110_instructor = user_data.instructor
 user__comp110_uta_0 = user_data.uta
@@ -225,6 +256,8 @@ user__comp301_student = user_data.student
 user__comp523_instructor = user_data.instructor
 
 user__comp210_instructor = user_data.instructor
+
+user__comp311_instructor = user_data.root
 
 # CURRENT TERM MEMBERSHIPS
 comp110_instructor = SectionMemberDraft(
@@ -263,6 +296,13 @@ comp301_instructor = SectionMemberDraft(
     member_role=RosterRole.INSTRUCTOR,
 )
 
+comp301_instructor_2 = SectionMemberDraft(
+    id=15,
+    user_id=user__comp301_instructor.id,
+    section_id=comp_301_002_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
 comp_301_uta = SectionMemberDraft(
     id=7,
     user_id=user__comp301_uta.id,
@@ -289,6 +329,20 @@ comp_210_instructor = SectionMemberDraft(
     user_id=user__comp210_instructor.id,
     section_id=comp_210_001_current_term.id,
     member_role=RosterRole.INSTRUCTOR,
+)
+
+comp311_instructor = SectionMemberDraft(
+    id=16,
+    user_id=user__comp311_instructor.id,
+    section_id=comp_311_001_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+comp311_uta = SectionMemberDraft(
+    id=17,
+    user_id=user_data.instructor.id,
+    section_id=comp_311_001_current_term.id,
+    member_role=RosterRole.UTA,
 )
 
 # F23 Section Memberships
@@ -329,10 +383,13 @@ section_members = [
     comp110_student_1,
     comp110_uta,
     comp301_instructor,
+    comp301_instructor_2,
     comp_301_uta,
     comp_301_student,
     comp_523_instructor,
     comp_210_instructor,
+    comp311_instructor,
+    comp311_uta,
 ]
 
 comp110_members = [
@@ -364,6 +421,9 @@ sections = [
     comp_110_001_current_term,
     comp_110_002_current_term,
     comp_301_001_current_term,
+    comp_301_002_current_term,
+    comp_311_001_current_term,
+    comp_311_002_current_term,
 ]
 
 f23_sections = [comp_101_001, comp_101_002, comp_301_001]
@@ -373,6 +433,9 @@ current_term_sections = [
     comp_110_001_current_term,
     comp_110_002_current_term,
     comp_301_001_current_term,
+    comp_301_002_current_term,
+    comp_311_001_current_term,
+    comp_311_002_current_term,
 ]
 
 assignments = [room_assignment_110_001, room_assignment_110_002]

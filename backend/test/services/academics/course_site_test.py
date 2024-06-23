@@ -8,6 +8,7 @@ from ....models.academics.my_courses import (
     CourseMemberOverview,
     OfficeHoursOverview,
 )
+from ....models.office_hours.course_site_details import CourseSiteDetails
 from ....services.academics.course_site import CourseSiteService
 from ....services.exceptions import CoursePermissionException
 
@@ -24,7 +25,7 @@ from ..office_hours.office_hours_data import fake_data_fixture as insert_order_5
 
 # Import the fake model data in a namespace for test assertions
 from .. import user_data
-from ..academics import term_data
+from ..academics import term_data, section_data
 from ..office_hours import office_hours_data
 
 __authors__ = ["Ajay Gandecha"]
@@ -151,5 +152,52 @@ def test_get_past_office_hour_events_not_member(course_site_svc: CourseSiteServi
     with pytest.raises(CoursePermissionException):
         course_site_svc.get_past_office_hour_events(
             user_data.ambassador, office_hours_data.comp_110_site.id, pagination_params
+        )
+        pytest.fail()
+
+
+def test_create_course_site(course_site_svc: CourseSiteService):
+    """Ensures that instructors can create course sites."""
+    course_site = course_site_svc.create_course_site(
+        user_data.instructor, office_hours_data.new_course_site
+    )
+    assert course_site is not None
+    assert isinstance(course_site, CourseSiteDetails)
+    assert course_site.term_id == office_hours_data.new_course_site.term_id
+    assert len(course_site.sections) == 2
+
+
+def test_create_course_site_term_mismatch(course_site_svc: CourseSiteService):
+    """Ensures that a course site cannot be made with sections of different terms."""
+    with pytest.raises(CoursePermissionException):
+        course_site_svc.create_course_site(
+            user_data.instructor, office_hours_data.new_course_site_term_mismatch
+        )
+        pytest.fail()
+
+
+def test_create_course_site_term_nonmember(course_site_svc: CourseSiteService):
+    """Ensures that a course site cannot be made when user is not a member of a section."""
+    with pytest.raises(CoursePermissionException):
+        course_site_svc.create_course_site(
+            user_data.instructor, office_hours_data.new_course_site_term_nonmember
+        )
+        pytest.fail()
+
+
+def test_create_course_site_term_noninstructor(course_site_svc: CourseSiteService):
+    """Ensures that a course site cannot be made when user is not an instructor of a section."""
+    with pytest.raises(CoursePermissionException):
+        course_site_svc.create_course_site(
+            user_data.instructor, office_hours_data.new_course_site_term_noninstructor
+        )
+        pytest.fail()
+
+
+def test_create_course_site_term_already_in_site(course_site_svc: CourseSiteService):
+    """Ensures that a course site cannot be made when a section is already in another site."""
+    with pytest.raises(CoursePermissionException):
+        course_site_svc.create_course_site(
+            user_data.instructor, office_hours_data.new_course_site_term_already_in_site
         )
         pytest.fail()

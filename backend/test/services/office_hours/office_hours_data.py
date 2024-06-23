@@ -21,7 +21,7 @@ from ....models.office_hours.event_type import (
     OfficeHoursEventModeType,
     OfficeHoursEventType,
 )
-from ....models.office_hours.course_site import CourseSite
+from ....models.office_hours.course_site import CourseSite, NewCourseSite
 from ....models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
@@ -250,4 +250,50 @@ new_ticket = NewOfficeHoursTicket(
     description="Help me!",
     type=TicketType.ASSIGNMENT_HELP,
     office_hours_id=comp_110_current_office_hours.id,
+)
+
+new_course_site = NewCourseSite(
+    title="Ina's COMP 301",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
+    ],
+)
+
+new_course_site_term_mismatch = NewCourseSite(
+    title="Ina's COMP 301",
+    term_id=term_data.f_23.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
+    ],
+)
+
+
+new_course_site_term_nonmember = NewCourseSite(
+    title="Ina's COMP 3x1",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_311_001_current_term.id,
+    ],
+)
+new_course_site_term_noninstructor = NewCourseSite(
+    title="Ina's COMP 3x1",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+
+new_course_site_term_already_in_site = NewCourseSite(
+    title="Ina's COMP courses",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_110_001_current_term.id,
+    ],
 )

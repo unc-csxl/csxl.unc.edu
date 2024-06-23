@@ -11,6 +11,16 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
+class NewCourseSite(BaseModel):
+    """
+    Pydantic model to represent a new course site.
+    """
+
+    title: str
+    term_id: str
+    section_ids: list[int]
+
+
 class CourseSite(BaseModel):
     """
     Pydantic model to represent a `CourseSite`.

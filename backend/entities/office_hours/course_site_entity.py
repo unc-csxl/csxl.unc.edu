@@ -3,7 +3,7 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ...models.office_hours.course_site import CourseSite
+from ...models.office_hours.course_site import CourseSite, NewCourseSite
 from ...models.office_hours.course_site_details import CourseSiteDetails
 
 
@@ -49,6 +49,18 @@ class CourseSiteEntity(EntityBase):
     )
 
     @classmethod
+    def from_new_model(cls, model: NewCourseSite) -> Self:
+        """
+        Class method that converts an `NewCourseSite` model into a `CourseSiteEntity`
+
+        Parameters:
+            - model (NewCourseSite): Model to convert into an entity
+        Returns:
+            CourseSiteEntity: Entity created from model
+        """
+        return cls(title=model.title, term_id=model.term_id)
+
+    @classmethod
     def from_model(cls, model: CourseSite) -> Self:
         """
         Class method that converts an `CourseSite` model into a `CourseSiteEntity`
@@ -81,5 +93,5 @@ class CourseSiteEntity(EntityBase):
             title=self.title,
             term_id=self.term_id,
             sections=[section.to_model() for section in self.sections],
-            events=[event.to_model() for event in self.events],
+            office_hours=[event.to_model() for event in self.office_hours],
         )
