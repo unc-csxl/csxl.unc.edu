@@ -43,7 +43,7 @@ class TermOverview(BaseModel):
     start: datetime
     end: datetime
     sites: list[CourseSiteOverview]
-    teaching: list[TeachingSectionOverview]
+    teaching_no_site: list[TeachingSectionOverview]
 
 
 class CourseMemberOverview(BaseModel):

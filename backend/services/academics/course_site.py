@@ -87,10 +87,11 @@ class CourseSiteService:
             memberships = list(term_memberships)
 
             course_sites = []
-            teaching = [
+            teaching_no_site = [
                 self._to_teaching_section_overview(membership.section)
                 for membership in memberships
                 if membership.member_role == RosterRole.INSTRUCTOR
+                and membership.section.course_site_id == None
             ]
 
             for (course_site, course), course_memberships in groupby(
@@ -123,7 +124,7 @@ class CourseSiteService:
                     start=term.start,
                     end=term.end,
                     sites=course_sites,
-                    teaching=teaching,
+                    teaching_no_site=teaching_no_site,
                 )
             )
         return terms

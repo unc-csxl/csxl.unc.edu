@@ -38,7 +38,7 @@ export interface TermOverview {
   start: Date;
   end: Date;
   sites: CourseSiteOverview[];
-  teaching: TeachingSectionOverview[];
+  teaching_no_site: TeachingSectionOverview[];
 }
 
 export interface TermOverviewJson {
@@ -47,7 +47,7 @@ export interface TermOverviewJson {
   start: string;
   end: string;
   sites: CourseSiteOverview[];
-  teaching: TeachingSectionOverview[];
+  teaching_no_site: TeachingSectionOverview[];
 }
 
 export interface CourseMemberOverview {

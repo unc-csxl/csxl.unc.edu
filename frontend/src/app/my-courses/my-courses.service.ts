@@ -56,6 +56,12 @@ export class MyCoursesService {
     });
   });
 
+  teachingCoursesWithNoSite = computed(() => {
+    return this.termsSignal()
+      .flatMap((term) => term.teaching_no_site.length > 0)
+      .includes(true);
+  });
+
   /** Constructor */
   constructor(
     protected http: HttpClient,
