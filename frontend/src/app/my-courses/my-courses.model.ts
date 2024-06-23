@@ -24,12 +24,21 @@ export interface CourseOverview {
   role: string;
 }
 
+export interface TeachingSectionOverview {
+  id: number;
+  subject_code: string;
+  course_number: string;
+  section_number: string;
+  title: string;
+}
+
 export interface TermOverview {
   id: string;
   name: string;
   start: Date;
   end: Date;
   sites: CourseSiteOverview[];
+  teaching: TeachingSectionOverview[];
 }
 
 export interface TermOverviewJson {
@@ -38,6 +47,7 @@ export interface TermOverviewJson {
   start: string;
   end: string;
   sites: CourseSiteOverview[];
+  teaching: TeachingSectionOverview[];
 }
 
 export interface CourseMemberOverview {

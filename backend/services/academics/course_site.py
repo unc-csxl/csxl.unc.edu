@@ -18,6 +18,7 @@ from ...models.academics.my_courses import (
     CourseMemberOverview,
     OfficeHoursOverview,
     TicketState,
+    TeachingSectionOverview,
 )
 from ...models.office_hours.course_site import CourseSite, NewCourseSite
 from ...models.office_hours.course_site_details import CourseSiteDetails
@@ -54,7 +55,6 @@ class CourseSiteService:
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
-            .where(SectionEntity.course_site_id != None)
             .options(
                 joinedload(SectionMemberEntity.section).joinedload(
                     SectionEntity.course_site
@@ -81,29 +81,40 @@ class CourseSiteService:
         terms = []
         for term, term_memberships in groupby(entities, lambda x: x.section.term):
 
+            # Since the output `term_memberships` is an iterator, we cannot iterate over the list
+            # more than once, which we need to do below. So, this copies the original iterator
+            # into a standard list so that we can iterate over it twice.
+            memberships = list(term_memberships)
+
             course_sites = []
+            teaching = [
+                self._to_teaching_section_overview(membership.section)
+                for membership in memberships
+                if membership.member_role == RosterRole.INSTRUCTOR
+            ]
 
             for (course_site, course), course_memberships in groupby(
-                term_memberships,
+                memberships,
                 lambda membership: (
                     membership.section.course_site,
                     membership.section.course,
                 ),
             ):
-                memberships = list(course_memberships)
-                course_sites.append(
-                    CourseSiteOverview(
-                        id=course_site.id,
-                        subject_code=course.subject_code,
-                        number=course.number,
-                        title=memberships[0].section.override_title or course.title,
-                        role=memberships[0].member_role.value,
-                        sections=[
-                            self._to_section_overview(membership.section)
-                            for membership in memberships
-                        ],
+                if course_site:
+                    memberships = list(course_memberships)
+                    course_sites.append(
+                        CourseSiteOverview(
+                            id=course_site.id,
+                            subject_code=course.subject_code,
+                            number=course.number,
+                            title=memberships[0].section.override_title or course.title,
+                            role=memberships[0].member_role.value,
+                            sections=[
+                                self._to_section_overview(membership.section)
+                                for membership in memberships
+                            ],
+                        )
                     )
-                )
 
             terms.append(
                 TermOverview(
@@ -112,6 +123,7 @@ class CourseSiteService:
                     start=term.start,
                     end=term.end,
                     sites=course_sites,
+                    teaching=teaching,
                 )
             )
         return terms
@@ -121,6 +133,17 @@ class CourseSiteService:
             number=section.number,
             meeting_pattern=section.meeting_pattern,
             course_site_id=section.course_site_id,
+        )
+
+    def _to_teaching_section_overview(
+        self, section: SectionEntity
+    ) -> TeachingSectionOverview:
+        return TeachingSectionOverview(
+            id=section.id,
+            subject_code=section.course.subject_code,
+            course_number=section.course.number,
+            section_number=section.number,
+            title=section.override_description or section.course.title,
         )
 
     def get_course_site_roster(

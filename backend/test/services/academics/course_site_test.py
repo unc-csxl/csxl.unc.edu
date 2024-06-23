@@ -38,9 +38,9 @@ def test_get_user_course_sites(course_site_svc: CourseSiteService):
     term_overview = course_site_svc.get_user_course_sites(user_data.instructor)
     assert isinstance(term_overview, list)
     assert isinstance(term_overview[0], TermOverview)
-    assert len(term_overview) == 1
-    assert term_overview[0].id == term_data.current_term.id
-    assert len(term_overview[0].sites) == 1
+    assert len(term_overview) == 2
+    assert term_overview[-1].id == term_data.current_term.id
+    assert len(term_overview[-1].sites) == 1
 
 
 def test_get_course_site_roster(course_site_svc: CourseSiteService):
