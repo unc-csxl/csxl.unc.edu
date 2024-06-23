@@ -12,7 +12,7 @@ import { Paginated, PaginationParams } from '../pagination';
 export interface SectionOverview {
   number: string;
   meeting_pattern: string;
-  oh_section_id: number | null;
+  course_site_id: number | null;
 }
 
 export interface CourseOverview {
@@ -29,7 +29,7 @@ export interface TermOverview {
   name: string;
   start: Date;
   end: Date;
-  courses: CourseOverview[];
+  sites: CourseSiteOverview[];
 }
 
 export interface TermOverviewJson {
@@ -37,7 +37,7 @@ export interface TermOverviewJson {
   name: string;
   start: string;
   end: string;
-  courses: CourseOverview[];
+  sites: CourseSiteOverview[];
 }
 
 export interface CourseMemberOverview {
@@ -56,6 +56,111 @@ export interface CourseRosterOverview {
   number: string;
   title: string;
   members: Paginated<CourseMemberOverview, PaginationParams>;
+}
+
+export interface OfficeHourEventOverviewJson {
+  id: number;
+  type: string;
+  mode: string;
+  description: string;
+  location: string;
+  location_description: string;
+  start_time: string;
+  end_time: string;
+  queued: number;
+  total_tickets: number;
+}
+
+export interface OfficeHourEventOverview {
+  id: number;
+  type: string;
+  mode: string;
+  description: string;
+  location: string;
+  location_description: string;
+  start_time: Date;
+  end_time: Date;
+  queued: number;
+  total_tickets: number;
+}
+
+export interface OfficeHourTicketOverviewJson {
+  id: number;
+  created_at: string;
+  called_at: string | undefined;
+  state: string;
+  type: string;
+  description: string;
+  creators: string[];
+  caller: string | undefined;
+}
+
+export interface OfficeHourTicketOverview {
+  id: number;
+  created_at: Date;
+  called_at: Date | undefined;
+  state: string;
+  type: string;
+  description: string;
+  creators: string[];
+  caller: string | undefined;
+}
+
+export interface OfficeHourQueueOverviewJson {
+  id: number;
+  type: string;
+  start_time: string;
+  end_time: string;
+  active: OfficeHourTicketOverviewJson | undefined;
+  other_called: OfficeHourTicketOverviewJson[];
+  queue: OfficeHourTicketOverviewJson[];
+}
+
+export interface OfficeHourQueueOverview {
+  id: number;
+  type: string;
+  start_time: Date;
+  end_time: Date;
+  active: OfficeHourTicketOverview | undefined;
+  other_called: OfficeHourTicketOverview[];
+  queue: OfficeHourTicketOverview[];
+}
+
+export interface OfficeHourEventRoleOverview {
+  role: string;
+}
+
+export interface OfficeHourGetHelpOverviewJson {
+  event_type: string;
+  event_mode: string;
+  event_start_time: string;
+  event_end_time: string;
+  ticket: OfficeHourTicketOverviewJson | undefined;
+  queue_position: number;
+}
+
+export interface OfficeHourGetHelpOverview {
+  event_type: string;
+  event_mode: string;
+  event_start_time: Date;
+  event_end_time: Date;
+  ticket: OfficeHourTicketOverview | undefined;
+  queue_position: number;
+}
+
+export interface TicketDraft {
+  office_hours_id: number;
+  description: string;
+  type: string;
+}
+
+export interface CourseSiteOverview {
+  id: number;
+  subject_code: string;
+  number: string;
+  title: string;
+  role: string;
+  sections: SectionOverview[];
 }
 
 /**
@@ -79,4 +184,58 @@ export const parseTermOverviewJsonList = (
   responseModels: TermOverviewJson[]
 ): TermOverview[] => {
   return responseModels.map(parseTermOverviewJson);
+};
+
+export const parseOfficeHourEventOverviewJson = (
+  responseModel: OfficeHourEventOverviewJson
+): OfficeHourEventOverview => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time)
+  });
+};
+
+export const parseOfficeHourEventOverviewJsonList = (
+  responseModel: OfficeHourEventOverviewJson[]
+): OfficeHourEventOverview[] => {
+  return responseModel.map((model) => parseOfficeHourEventOverviewJson(model));
+};
+
+export const parseOfficeHourTicketOverviewJson = (
+  responseModel: OfficeHourTicketOverviewJson
+): OfficeHourTicketOverview => {
+  return Object.assign({}, responseModel, {
+    created_at: new Date(responseModel.created_at),
+    called_at: responseModel.called_at
+      ? new Date(responseModel.called_at)
+      : undefined
+  });
+};
+
+export const parseOfficeHourQueueOverview = (
+  responseModel: OfficeHourQueueOverviewJson
+): OfficeHourQueueOverview => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time),
+    active: responseModel.active
+      ? parseOfficeHourTicketOverviewJson(responseModel.active)
+      : undefined,
+    other_called: responseModel.other_called.map(
+      parseOfficeHourTicketOverviewJson
+    ),
+    queue: responseModel.queue.map(parseOfficeHourTicketOverviewJson)
+  });
+};
+
+export const parseOfficeHourGetHelpOverviewJson = (
+  responseModel: OfficeHourGetHelpOverviewJson
+): OfficeHourGetHelpOverview => {
+  return Object.assign({}, responseModel, {
+    ticket: responseModel.ticket
+      ? parseOfficeHourTicketOverviewJson(responseModel.ticket)
+      : undefined,
+    event_start_time: new Date(responseModel.event_start_time),
+    event_end_time: new Date(responseModel.event_end_time)
+  });
 };

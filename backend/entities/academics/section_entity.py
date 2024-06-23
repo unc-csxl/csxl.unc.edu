@@ -91,12 +91,10 @@ class SectionEntity(EntityBase):
     )
 
     # Optional office hours section ID
-    office_hours_id: Mapped[int] = mapped_column(
-        ForeignKey("office_hours__section.id"), nullable=True
+    course_site_id: Mapped[int] = mapped_column(
+        ForeignKey("course_site.id"), nullable=True
     )
-    office_hours_section: Mapped["OfficeHoursSectionEntity"] = relationship(
-        back_populates="sections"
-    )
+    course_site: Mapped["CourseSiteEntity"] = relationship(back_populates="sections")
 
     # All applicants where section is preferred
     # NOTE: This field establishes a many-to-many relationship between the sections and applications table.
@@ -173,9 +171,7 @@ class SectionEntity(EntityBase):
             staff=section.staff,
             override_title=self.override_title,
             override_description=self.override_description,
-            office_hours_section=(
-                self.office_hours_section.to_model()
-                if self.office_hours_section is not None
-                else None
+            course_site=(
+                self.course_site.to_model() if self.course_site is not None else None
             ),
         )

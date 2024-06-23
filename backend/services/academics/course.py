@@ -66,30 +66,6 @@ class CourseService:
         # Return the model
         return entity.to_details_model()
 
-    def get(self, subject_code: str, number: str) -> CourseDetails:
-        """Gets a course based on its subject code and course number.
-
-        Args:
-            subject_code: Subject code to query by (ex. COMP)
-            number: Course number to query by (ex. 110 in COMP 110)
-        Returns:
-            CourseDetails: Course for the parameters.
-        """
-        # Select all entries in the `Course` table that contains this date.
-        query = select(CourseEntity).where(
-            CourseEntity.subject_code == subject_code, CourseEntity.number == number
-        )
-        entity = self._session.scalars(query).one_or_none()
-
-        # Rause an error if no entity was found.
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"No course found for the given subject and number: {subject_code} {number}."
-            )
-
-        # Return the model
-        return entity.to_details_model()
-
     def create(self, subject: User, course: Course) -> CourseDetails:
         """Creates a new course.
 

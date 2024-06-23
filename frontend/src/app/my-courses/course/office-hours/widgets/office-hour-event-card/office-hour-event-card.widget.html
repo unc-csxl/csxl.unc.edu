@@ -1,0 +1,26 @@
+<mat-card class="office-hours-event-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-subtitle>{{ event.type }}</mat-card-subtitle>
+    <mat-chip-set>
+      <mat-chip>{{ event.queued }} waiting</mat-chip>
+    </mat-chip-set>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      {{ event.start_time | date: 'shortTime' }} -
+      {{ event.end_time | date: 'shortTime' }}
+    </p>
+    <p>{{ event.location }}</p>
+  </mat-card-content>
+  <mat-card-actions class="office-hours-event-card-actions">
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [routerLink]="
+        event.id + ((role$ | async) === 'Student' ? '/get-help' : '/queue')
+      ">
+      {{ (role$ | async) === 'Student' ? 'Get Help' : 'Check In' }}
+    </button>
+  </mat-card-actions>
+</mat-card>

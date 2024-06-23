@@ -24,7 +24,7 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [routerLink]="'/course/' + termId + '/' + course.id">
+      [routerLink]="'/course/' + course.id">
       Get Help
     </button>
     } @else {
@@ -33,7 +33,7 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [routerLink]="'/course/' + termId + '/' + course.id">
+      [routerLink]="'/course/' + course.id + '/office-hours'">
       Manage
     </button>
     }

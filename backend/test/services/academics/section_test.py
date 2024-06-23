@@ -224,16 +224,6 @@ def test_delete_as_user(section_svc: SectionService):
         pytest.fail()
 
 
-def test_get_sections_with_no_office_hours_by_term(section_svc: SectionService):
-
-    sections_with_no_oh = section_svc.get_sections_with_no_office_hours_by_term(
-        term_data.current_term.id
-    )
-
-    assert len(sections_with_no_oh) > 0
-    assert isinstance(sections_with_no_oh[0], SectionDetails)
-
-
 def test_root_add_section_member(section_member_svc: SectionMemberService):
     membership = section_member_svc.add_section_member(
         subject=user_data.root,

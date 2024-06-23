@@ -1,0 +1,116 @@
+<mat-pane>
+  <mat-card-header>
+    <div class="header-horizontal-container">
+      <mat-card-title>Office Hours</mat-card-title>
+      <button
+        mat-flat-button
+        class="create-event-button"
+        color="primary"
+        [disabled]="true">
+        Create Event
+      </button>
+    </div>
+    <div class="header-horizontal-container low-button-toggle-density">
+      <mat-button-toggle-group
+        [(ngModel)]="viewState"
+        name="view"
+        class="view-toggle">
+        <mat-button-toggle [value]="ViewState.Scheduled">
+          Scheduled
+        </mat-button-toggle>
+        <mat-button-toggle [value]="ViewState.History">
+          History
+        </mat-button-toggle>
+        <mat-button-toggle [value]="ViewState.Data">Data</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <mat-divider />
+  </mat-card-header>
+  @if (viewState === ViewState.Scheduled) {
+  <mat-card-content class="pane-content">
+    <mat-card-subtitle>Current Events</mat-card-subtitle>
+    <div class="card-container">
+      @if (currentOfficeHourEvents().length === 0) {
+      <p>Office hours are currently closed.</p>
+      } @for (event of currentOfficeHourEvents(); track event.id) {
+      <office-hour-event-card [event]="event" />
+      }
+    </div>
+    <mat-card-subtitle class="schedule-header">
+      Future Schedule
+    </mat-card-subtitle>
+    <mat-card class="schedule-card" appearance="outlined">
+      <mat-card-content class="schedule-card-content">
+        <table
+          mat-table
+          [dataSource]="futureOfficeHourEventsPage()?.items ?? []">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.start_time | date: 'EEEE, M/d' }}<br />
+              {{ element.start_time | date: 'shortTime' }} -
+              {{ element.end_time | date: 'shortTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let element">
+              <span class="semibold">{{ element.type }}</span>
+              <br />
+              {{ element.location }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="futureOhDisplayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: futureOhDisplayedColumns"></tr>
+        </table>
+        <mat-paginator
+          [length]="futureOfficeHourEventsPage()?.length ?? 0"
+          [pageSize]="futureOfficeHourEventsPage()?.params?.page_size ?? 0"
+          [pageIndex]="futureOfficeHourEventsPage()?.params?.page ?? 0"
+          (page)="handleFutureOfficeHoursPageEvent($event)"></mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+  } @if (viewState === ViewState.History) {
+  <mat-card-content class="pane-content">
+    <mat-card-subtitle>History</mat-card-subtitle>
+    <mat-card class="schedule-card" appearance="outlined">
+      <mat-card-content class="schedule-card-content">
+        <table mat-table [dataSource]="pastOfficeHourEventsPage()?.items ?? []">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.start_time | date: 'EEEE, M/d' }}<br />
+              {{ element.start_time | date: 'shortTime' }} -
+              {{ element.end_time | date: 'shortTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let element">
+              <span class="semibold">{{ element.type }}</span>
+              <br />
+              {{ element.location }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="pastOhDisplayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: pastOhDisplayedColumns"></tr>
+        </table>
+        <mat-paginator
+          [length]="pastOfficeHourEventsPage()?.length ?? 0"
+          [pageSize]="pastOfficeHourEventsPage()?.params?.page_size ?? 0"
+          [pageIndex]="pastOfficeHourEventsPage()?.params?.page ?? 0"
+          (page)="handlePastOfficeHoursPageEvent($event)"></mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+  } @if (viewState === ViewState.Data) {
+  <mat-card-content class="pane-content">
+    <mat-card-subtitle>More data coming soon!</mat-card-subtitle>
+  </mat-card-content>
+  }
+</mat-pane>

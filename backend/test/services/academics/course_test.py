@@ -45,19 +45,6 @@ def test_get_by_id_not_found(course_svc: CourseService):
         pytest.fail()  # Fail test if no error was thrown above
 
 
-def test_get(course_svc: CourseService):
-    course = course_svc.get("COMP", "110")
-
-    assert isinstance(course, CourseDetails)
-    assert course.id == course_data.comp_110.id
-
-
-def test_get_not_found(course_svc: CourseService):
-    with pytest.raises(ResourceNotFoundException):
-        course = course_svc.get("COMP", "888")
-        pytest.fail()  # Fail test if no error was thrown above
-
-
 def test_create_as_root(course_svc: CourseService):
     permission_svc = create_autospec(PermissionService)
     course_svc._permission_svc = permission_svc

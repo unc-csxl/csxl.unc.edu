@@ -1,0 +1,29 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <div class="column-view">
+      <mat-card-subtitle>Ticket - {{ ticket.type }}</mat-card-subtitle>
+      <p>Created at {{ ticket.created_at | date: 'shortTime' }}</p>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <p><span class="semibold-text">Description:</span></p>
+    <p>{{ ticket.description }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-stroked-button
+      class="tertiary-button"
+      (click)="cancelButtonEvent()">
+      Cancel Ticket
+    </button>
+    @if(!hideCallTicketButton) {
+    <button
+      mat-flat-button
+      class="primary-button"
+      (click)="callButtonEvent()"
+      [disabled]="disableCallTicketButton">
+      Call Ticket
+    </button>
+    }
+  </mat-card-actions>
+</mat-card>

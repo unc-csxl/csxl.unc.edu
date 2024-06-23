@@ -1,0 +1,22 @@
+
+.pane-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#pane-divider {
+    margin-top: 8px;
+}
+
+.pane-content {
+    padding-top: 8px;
+}
+.mat-mdc-chip-set {
+    height: 24px;
+    margin-top: 0px;
+}
+.mat-mdc-chip {
+    height: 24px;
+    margin-top: 0px;
+}

@@ -8,7 +8,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { CourseOverview } from '../../my-courses.model';
+import { CourseOverview, CourseSiteOverview } from '../../my-courses.model';
 
 @Component({
   selector: 'course-card',
@@ -19,7 +19,7 @@ export class CourseCardWidget {
   /** Term for the course */
   @Input() termId!: string;
   /** The course to show */
-  @Input() course!: CourseOverview;
+  @Input() course!: CourseSiteOverview;
 
   constructor() {}
 }

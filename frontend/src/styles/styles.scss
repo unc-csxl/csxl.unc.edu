@@ -80,6 +80,10 @@ html, body {
     .tertiary-button {
         @include mat.button-color($theme, $color-variant: tertiary);
     }
+
+    .low-button-toggle-density {
+        @include mat.button-toggle-density(-3);       
+     }
 }
 
 /// Defines a mixin that applies custom styles to material card components
@@ -243,6 +247,10 @@ html, body {
     .title-small {
         font: mat.get-theme-typography($theme, title-small, font);
     }
+
+    .font-secondary {
+        color: mat.get-theme-color($theme, secondary) !important;
+    }
 }
 
 /// Defines a mixin that applies custom widgets to material text field components
@@ -345,7 +353,6 @@ html, body {
 /// This mixin is defined so that these @include lines are not duplicated between
 /// light and dark mode.
 @mixin apply-styles($theme) {
-    @include global-styles($theme);
     @include mat-button-styles($theme);
     @include mat-card-styles($theme);
     @include mat-navigation-styles($theme);
@@ -355,6 +362,7 @@ html, body {
     @include mat-text-field-styles($theme);
     @include font-styles($theme);
     @include widget-styles($theme);
+    @include global-styles($theme);
 }
 
 /// Defines a mixin that applies any manual dark mode override styles.

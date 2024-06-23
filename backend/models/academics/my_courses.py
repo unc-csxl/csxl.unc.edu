@@ -1,12 +1,14 @@
 from pydantic import BaseModel
 from datetime import datetime
 from ...models import Paginated
+from ...models.office_hours.ticket_state import TicketState
+from ...models.office_hours.ticket_type import TicketType
 
 
 class SectionOverview(BaseModel):
     number: str
     meeting_pattern: str
-    oh_section_id: int | None
+    course_site_id: int | None
 
 
 class CourseOverview(BaseModel):
@@ -18,12 +20,21 @@ class CourseOverview(BaseModel):
     role: str
 
 
+class CourseSiteOverview(BaseModel):
+    id: int
+    subject_code: str
+    number: str
+    title: str
+    role: str
+    sections: list[SectionOverview]
+
+
 class TermOverview(BaseModel):
     id: str
     name: str
     start: datetime
     end: datetime
-    courses: list[CourseOverview]
+    sites: list[CourseSiteOverview]
 
 
 class CourseMemberOverview(BaseModel):
@@ -34,3 +45,50 @@ class CourseMemberOverview(BaseModel):
     pronouns: str
     section_number: str
     role: str
+
+
+class OfficeHoursOverview(BaseModel):
+    id: int
+    type: str
+    mode: str
+    description: str
+    location: str
+    location_description: str
+    start_time: datetime
+    end_time: datetime
+    queued: int
+    total_tickets: int
+
+
+class OfficeHourTicketOverview(BaseModel):
+    id: int
+    created_at: datetime
+    called_at: datetime | None
+    state: str
+    type: str
+    description: str
+    creators: list[str]
+    caller: str | None
+
+
+class OfficeHourQueueOverview(BaseModel):
+    id: int
+    type: str
+    start_time: datetime
+    end_time: datetime
+    active: OfficeHourTicketOverview | None
+    other_called: list[OfficeHourTicketOverview]
+    queue: list[OfficeHourTicketOverview]
+
+
+class OfficeHourEventRoleOverview(BaseModel):
+    role: str
+
+
+class OfficeHourGetHelpOverview(BaseModel):
+    event_type: str
+    event_mode: str
+    event_start_time: datetime
+    event_end_time: datetime
+    ticket: OfficeHourTicketOverview | None
+    queue_position: int

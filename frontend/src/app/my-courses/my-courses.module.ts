@@ -32,6 +32,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CourseComponent } from './course/course.component';
 import { RosterComponent } from './course/roster/roster.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { OfficeHoursPageComponent } from './course/office-hours/office-hours-page/office-hours-page.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { OfficeHourEventCardWidget } from './course/office-hours/widgets/office-hour-event-card/office-hour-event-card.widget';
+import { MatChipsModule } from '@angular/material/chips';
+import { OfficeHoursQueueComponent } from './course/office-hours/office-hours-queue/office-hours-queue.component';
+import { CalledTicketCardWidget } from './course/office-hours/widgets/called-ticket-card/called-ticket-card.widget';
+import { QueuedTicketCardWidget } from './course/office-hours/widgets/queued-ticket-card/queued-ticket-card.widget';
+import { OfficeHoursGetHelpComponent } from './course/office-hours/office-hours-get-help/office-hours-get-help.component';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -41,7 +50,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     AllCoursesComponent,
     CourseComponent,
     RosterComponent,
-    CourseCardWidget
+    OfficeHoursPageComponent,
+    OfficeHoursQueueComponent,
+    OfficeHoursGetHelpComponent,
+    CourseCardWidget,
+    OfficeHourEventCardWidget,
+    CalledTicketCardWidget,
+    QueuedTicketCardWidget
   ],
   imports: [
     CommonModule,
@@ -59,7 +74,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatButtonToggleModule,
+    MatChipsModule,
+    MatInputModule
   ]
 })
 export class MyCoursesModule {}

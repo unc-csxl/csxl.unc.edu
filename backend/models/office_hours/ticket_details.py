@@ -1,5 +1,5 @@
 from ..academics.section_member import SectionMember
-from .event import OfficeHoursEvent
+from .office_hours import OfficeHours
 from .ticket import OfficeHoursTicket
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
@@ -12,9 +12,10 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
     Pydantic model to represent an `OfficeHoursSection`, including back-populated
     relationship fields.
 
-    This model is based on the `OfficeHoursSectionEntity` model, which defines the shape
+    This model is based on the `CourseSiteEntity` model, which defines the shape
     of the `OfficeHoursSection` database in the PostgreSQL database.
     """
 
-    have_concerns: bool = False
-    caller_notes: str = ""
+    office_hours: OfficeHours
+    creators: list[SectionMember]
+    caller: SectionMember

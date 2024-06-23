@@ -14,3 +14,16 @@ class TicketType(Enum):
 
     CONCEPTUAL_HELP = 0
     ASSIGNMENT_HELP = 1
+
+    @classmethod
+    def from_string(cls, str: str):
+        if str == "Conceptual Help":
+            return TicketType.CONCEPTUAL_HELP
+        if str == "Assignment Help":
+            return TicketType.ASSIGNMENT_HELP
+
+    def to_string(self) -> str:
+        if self == TicketType.CONCEPTUAL_HELP:
+            return "Conceptual Help"
+        if self == TicketType.ASSIGNMENT_HELP:
+            return "Assignment Help"
