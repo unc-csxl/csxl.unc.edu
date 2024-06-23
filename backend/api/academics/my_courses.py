@@ -13,6 +13,8 @@ from ...models.academics.my_courses import (
     CourseMemberOverview,
     OfficeHoursOverview,
 )
+from ...models.office_hours.course_site import NewCourseSite, CourseSite
+from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...models.pagination import PaginationParams, Paginated
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
@@ -125,3 +127,18 @@ def get_past_oh_events(
     return course_site_svc.get_past_office_hour_events(
         subject, course_site_id, pagination_params
     )
+
+
+@api.post("/new", tags=["My Courses"])
+def create_course_site(
+    course_site: NewCourseSite,
+    subject: User = Depends(registered_user),
+    course_site_svc: CourseSiteService = Depends(),
+) -> CourseSiteDetails:
+    """
+    Adds a new course site to the database
+
+    Returns:
+        CourseSiteDetails: Course created
+    """
+    return course_site_svc.create(subject, course_site)

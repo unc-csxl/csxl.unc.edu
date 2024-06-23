@@ -57,11 +57,10 @@ export class RosterComponent {
   });
 
   constructor(private route: ActivatedRoute) {
-    let termId = this.route.parent!.snapshot.params['term_id'];
-    let courseId = this.route.parent!.snapshot.params['course_id'];
+    let courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
 
     this.rosterPaginator = new Paginator<CourseMemberOverview>(
-      `/api/my-courses/${termId}/${courseId}/roster`
+      `/api/my-courses/${courseSiteId}/roster`
     );
 
     this.rosterPaginator.loadPage(this.previousParams).subscribe((page) => {

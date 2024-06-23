@@ -402,9 +402,7 @@ class CourseSiteService:
             total_tickets=len(oh_event.tickets),
         )
 
-    def create_course_site(
-        self, user: User, new_site: NewCourseSite
-    ) -> CourseSiteDetails:
+    def create(self, user: User, new_site: NewCourseSite) -> CourseSiteDetails:
         """
         Creates a course site for an instructor with sections.
         """
