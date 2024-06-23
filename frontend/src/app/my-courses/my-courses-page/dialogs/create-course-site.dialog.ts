@@ -32,7 +32,7 @@ export class CreateCourseSiteDialog {
   currentSectionInput = signal('');
 
   constructor(
-    private dialogRef: MatDialogRef<CreateCourseSiteDialog>,
+    protected dialogRef: MatDialogRef<CreateCourseSiteDialog>,
     @Inject(MAT_DIALOG_DATA) public data: TermOverview[],
     protected myCoursesService: MyCoursesService,
     private router: Router,
