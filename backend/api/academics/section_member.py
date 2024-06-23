@@ -13,7 +13,7 @@ from ...models import User
 
 from ...services.academics import SectionMemberService
 
-__authors__ = ["Meghan Sun"]
+__authors__ = ["Meghan Sun", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -97,3 +97,15 @@ def add_instructor(
     return section_member_svc.add_section_member(
         subject, section_id, user_id, RosterRole.INSTRUCTOR
     )
+
+
+@api.get("/is-instructor/{term_id}", tags=["Academics"])
+def is_instructor(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    section_member_svc: SectionMemberService = Depends(),
+) -> bool:
+    """
+    Determines if a user is an instructor for at least one course in the term.
+    """
+    return section_member_svc.is_instructor(subject, term_id)

@@ -22,7 +22,7 @@ from ..permission import PermissionService
 
 from ..exceptions import ResourceNotFoundException
 
-__authors__ = ["Meghan Sun, Sadie Amato"]
+__authors__ = ["Meghan Sun, Sadie Amato", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -148,3 +148,19 @@ class SectionMemberService:
             section_membership.to_flat_model()
             for section_membership in section_memberships
         ]
+
+    def is_instructor(self, user: User, term_id: str) -> bool:
+        """
+        Determines if the user is an instructor for any course in a term.
+        """
+        membership_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(SectionMemberEntity.member_role == RosterRole.INSTRUCTOR)
+            .where(SectionEntity.term_id == term_id)
+        )
+
+        membership_entities = self._session.scalars(membership_query).all()
+
+        return len(membership_entities) > 0
