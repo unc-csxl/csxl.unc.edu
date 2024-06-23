@@ -7,6 +7,7 @@
  * @license MIT
  */
 
+import { Section } from '../academics/academics.models';
 import { Paginated, PaginationParams } from '../pagination';
 
 export interface SectionOverview {
@@ -171,6 +172,18 @@ export interface CourseSiteOverview {
   title: string;
   role: string;
   sections: SectionOverview[];
+}
+
+export interface NewCourseSite {
+  title: string;
+  term_id: string;
+  section_ids: number[];
+}
+
+export interface CourseSite {
+  id: string;
+  title: string;
+  term_id: string;
 }
 
 /**

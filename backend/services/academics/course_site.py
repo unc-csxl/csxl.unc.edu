@@ -426,7 +426,7 @@ class CourseSiteService:
             total_tickets=len(oh_event.tickets),
         )
 
-    def create(self, user: User, new_site: NewCourseSite) -> CourseSiteDetails:
+    def create(self, user: User, new_site: NewCourseSite) -> CourseSite:
         """
         Creates a course site for an instructor with sections.
         """
@@ -478,4 +478,4 @@ class CourseSiteService:
         self._session.commit()
 
         # Return the model
-        return course_site_entity.to_details_model()
+        return course_site_entity.to_model()

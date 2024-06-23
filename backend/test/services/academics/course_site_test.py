@@ -8,7 +8,7 @@ from ....models.academics.my_courses import (
     CourseMemberOverview,
     OfficeHoursOverview,
 )
-from ....models.office_hours.course_site_details import CourseSiteDetails
+from ....models.office_hours.course_site import CourseSite
 from ....services.academics.course_site import CourseSiteService
 from ....services.exceptions import CoursePermissionException
 
@@ -162,9 +162,8 @@ def test_create(course_site_svc: CourseSiteService):
         user_data.instructor, office_hours_data.new_course_site
     )
     assert course_site is not None
-    assert isinstance(course_site, CourseSiteDetails)
+    assert isinstance(course_site, CourseSite)
     assert course_site.term_id == office_hours_data.new_course_site.term_id
-    assert len(course_site.sections) == 2
 
 
 def test_create_term_mismatch(course_site_svc: CourseSiteService):

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
 import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
+import { CreateCourseSiteDialog } from './dialogs/create-course-site.dialog';
 
 @Component({
   selector: 'app-my-courses-page',
@@ -46,5 +47,14 @@ export class MyCoursesPageComponent {
       });
       dialogRef.afterClosed().subscribe();
     }
+  }
+
+  /** Opens the dialog for creating a course site */
+  createCourseSite(): void {
+    this.dialog.open(CreateCourseSiteDialog, {
+      height: '560px',
+      width: '620px',
+      data: this.myCoursesService.allTerms()
+    });
   }
 }

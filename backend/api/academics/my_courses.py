@@ -134,7 +134,7 @@ def create_course_site(
     course_site: NewCourseSite,
     subject: User = Depends(registered_user),
     course_site_svc: CourseSiteService = Depends(),
-) -> CourseSiteDetails:
+) -> CourseSite:
     """
     Adds a new course site to the database
 

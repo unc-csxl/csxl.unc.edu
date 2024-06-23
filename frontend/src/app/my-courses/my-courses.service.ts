@@ -29,7 +29,9 @@ import {
   parseOfficeHourQueueOverview,
   parseOfficeHourTicketOverviewJson,
   parseTermOverviewJsonList,
-  TicketDraft
+  TicketDraft,
+  NewCourseSite,
+  CourseSite
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
@@ -54,6 +56,10 @@ export class MyCoursesService {
       let currentDate = new Date();
       return term.end < currentDate;
     });
+  });
+
+  allTerms = computed(() => {
+    return this.termsSignal();
   });
 
   teachingCoursesWithNoSite = computed(() => {
@@ -194,5 +200,14 @@ export class MyCoursesService {
       'api/office-hours/ticket/',
       ticketDraft
     );
+  }
+
+  /**
+   * Creates a new course site.
+   * @param newCourseSite New course site to create
+   * @returns {Observable<CourseSite>}
+   */
+  createCourseSite(newCourseSite: NewCourseSite): Observable<CourseSite> {
+    return this.http.post<CourseSite>(`/api/my-courses/new`, newCourseSite);
   }
 }
