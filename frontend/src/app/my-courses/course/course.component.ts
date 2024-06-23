@@ -19,7 +19,11 @@ export class CourseComponent {
       path: `/course/${this.route.snapshot.params['course_site_id']}/roster`,
       icon: 'groups'
     },
-    { label: 'Settings', path: '/course/:id/settings', icon: 'settings' }
+    {
+      label: 'Settings',
+      path: `/course/${this.route.snapshot.params['course_site_id']}/settings`,
+      icon: 'settings'
+    }
   ];
 
   constructor(private route: ActivatedRoute) {}
