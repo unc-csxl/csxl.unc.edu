@@ -73,6 +73,20 @@ export class OfficeHoursEditorComponent {
     this.officeHours = data.officeHours;
     this.rooms = data.rooms;
     this.virtualRoom = this.rooms.find((room) => room.id === 'Virtual');
+
+    /** Set form data */
+    this.officeHoursForm.patchValue(
+      Object.assign({}, this.officeHours, {
+        start_time: this.datePipe.transform(
+          this.officeHours.start_time,
+          'yyyy-MM-ddTHH:mm'
+        ),
+        end_time: this.datePipe.transform(
+          this.officeHours.end_time,
+          'yyyy-MM-ddTHH:mm'
+        )
+      })
+    );
   }
 
   /** Shorthand for whether office hours is new or not.

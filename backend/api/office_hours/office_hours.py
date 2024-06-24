@@ -85,7 +85,7 @@ def create_office_hours(
 @api.put("/{site_id}", tags=["Office Hours"])
 def update_office_hours(
     site_id: int,
-    oh: NewOfficeHours,
+    oh: OfficeHours,
     subject: User = Depends(registered_user),
     oh_event_svc: OfficeHoursService = Depends(),
 ) -> OfficeHours:
@@ -117,8 +117,8 @@ def get_office_hours(
     oh_id: int,
     subject: User = Depends(registered_user),
     oh_event_svc: OfficeHoursService = Depends(),
-):
+) -> OfficeHours:
     """
-    Deletes office hours.
+    Gets office hours.
     """
-    oh_event_svc.get(subject, site_id, oh_id)
+    return oh_event_svc.get(subject, site_id, oh_id)

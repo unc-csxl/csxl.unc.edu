@@ -44,7 +44,7 @@ export class OfficeHoursPageComponent {
   private previousFutureOfficeHourEventParams: PaginationParams =
     DEFAULT_PAGINATION_PARAMS;
 
-  public futureOhDisplayedColumns: string[] = ['date', 'type'];
+  public futureOhDisplayedColumns: string[] = ['date', 'type', 'actions'];
 
   /** Encapsulated past events paginator and params */
   private pastOfficeHourEventsPaginator: Paginator<OfficeHourEventOverview>;

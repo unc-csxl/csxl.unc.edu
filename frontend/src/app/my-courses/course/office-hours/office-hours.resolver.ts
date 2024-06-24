@@ -37,7 +37,7 @@ export const officeHoursResolver: ResolveFn<OfficeHours | undefined> = (
   // If there is an error, return undefined
   return inject(MyCoursesService)
     .getOfficeHours(
-      +route.paramMap.get('course_site_id')!,
+      +route.parent!.paramMap.get('course_site_id')!,
       +route.paramMap.get('event_id')!
     )
     .pipe(
