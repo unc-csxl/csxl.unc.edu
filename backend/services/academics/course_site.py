@@ -135,6 +135,7 @@ class CourseSiteService:
 
     def _to_section_overview(self, section: SectionEntity) -> SectionOverview:
         return SectionOverview(
+            id=section.id,
             number=section.number,
             meeting_pattern=section.meeting_pattern,
             course_site_id=section.course_site_id,

@@ -14,6 +14,7 @@ class TeachingSectionOverview(BaseModel):
 
 
 class SectionOverview(BaseModel):
+    id: int
     number: str
     meeting_pattern: str
     course_site_id: int | None

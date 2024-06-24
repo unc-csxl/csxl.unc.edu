@@ -11,6 +11,7 @@ import { Section } from '../academics/academics.models';
 import { Paginated, PaginationParams } from '../pagination';
 
 export interface SectionOverview {
+  id: number;
   number: string;
   meeting_pattern: string;
   course_site_id: number | null;

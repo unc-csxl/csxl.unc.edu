@@ -68,6 +68,12 @@ export class MyCoursesService {
       .includes(true);
   });
 
+  courseOverview(id: number) {
+    return this.termsSignal()
+      .flatMap((term) => term.sites)
+      .find((site) => site.id == id);
+  }
+
   /** Constructor */
   constructor(
     protected http: HttpClient,

@@ -6,6 +6,17 @@
       Canvas's Students tab.
     </p>
 
+    <mat-form-field appearance="outline">
+      <mat-label>Select Section to Import Into</mat-label>
+      <mat-select
+        [formControl]="selectedSection"
+        (selectionChange)="clearFile()">
+        @for(section of data.sections; track section.number) {
+        <mat-option [value]="section">Section {{ section.number }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
     <input
       id="file-input"
       #csvInput
@@ -28,5 +39,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-stroked-button color="secondary" (click)="close()">Cancel</button>
-  <button mat-flat-button color="primary" [disabled]="!file">Import</button>
+  <button mat-flat-button color="primary" [disabled]="!file" (click)="submit()">
+    Import
+  </button>
 </mat-dialog-actions>

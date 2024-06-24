@@ -87,10 +87,17 @@ export class RosterComponent {
 
   /** Opens the dialog for importing the roster */
   importFromCanvas(): void {
-    this.dialog.open(ImportRosterDialog, {
-      height: '340px',
+    let dialogRef = this.dialog.open(ImportRosterDialog, {
+      height: '400px',
       width: '600px',
-      data: this.myCoursesService.allTerms()
+      data: this.myCoursesService.courseOverview(
+        this.route.parent!.snapshot.params['course_site_id']
+      )
+    });
+    dialogRef.afterClosed().subscribe((_) => {
+      this.rosterPaginator.loadPage(this.previousParams).subscribe((page) => {
+        this.rosterPage.set(page);
+      });
     });
   }
 }
