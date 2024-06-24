@@ -35,7 +35,9 @@
       @if (currentOfficeHourEvents().length === 0) {
       <p>Office hours are currently closed.</p>
       } @for (event of currentOfficeHourEvents(); track event.id) {
-      <office-hour-event-card [event]="event" />
+      <office-hour-event-card
+        [event]="event"
+        [editRoute]="event.id + '/edit'" />
       }
     </div>
     <mat-card-subtitle class="schedule-header">
