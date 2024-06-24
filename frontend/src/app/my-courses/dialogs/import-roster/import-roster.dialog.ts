@@ -63,8 +63,8 @@ export class ImportRosterDialog {
           .importRosterFromCanvasCSV(this.selectedSection.value!.id, csvData)
           .subscribe({
             next: (count) => {
-              this.snackBar.open(`Imported ${count} students.`, '', {
-                duration: 2000
+              this.snackBar.open(`Imported ${count.uploaded} students.`, '', {
+                duration: 5000
               });
               // Close the dialog
               this.close();
