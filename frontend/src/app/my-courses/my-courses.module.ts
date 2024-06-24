@@ -44,6 +44,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CreateCourseSiteDialog } from './dialogs/create-course-site/create-course-site.dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SettingsComponent } from './course/settings/settings.component';
+import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { SettingsComponent } from './course/settings/settings.component';
     OfficeHourEventCardWidget,
     CalledTicketCardWidget,
     QueuedTicketCardWidget,
-    CreateCourseSiteDialog
+    CreateCourseSiteDialog,
+    ImportRosterDialog
   ],
   imports: [
     CommonModule,

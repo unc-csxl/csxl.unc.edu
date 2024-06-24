@@ -14,6 +14,9 @@ import {
 import { CourseMemberOverview } from '../../my-courses.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { ImportRosterDialog } from '../../dialogs/import-roster/import-roster.dialog';
+import { MyCoursesService } from '../../my-courses.service';
 
 @Component({
   selector: 'app-roster',
@@ -56,7 +59,11 @@ export class RosterComponent {
     });
   });
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    protected dialog: MatDialog,
+    protected myCoursesService: MyCoursesService
+  ) {
     let courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
 
     this.rosterPaginator = new Paginator<CourseMemberOverview>(
@@ -75,6 +82,15 @@ export class RosterComponent {
     this.rosterPaginator.loadPage(paginationParams).subscribe((page) => {
       this.rosterPage.set(page);
       this.previousParams = paginationParams;
+    });
+  }
+
+  /** Opens the dialog for importing the roster */
+  importFromCanvas(): void {
+    this.dialog.open(ImportRosterDialog, {
+      height: '340px',
+      width: '600px',
+      data: this.myCoursesService.allTerms()
     });
   }
 }

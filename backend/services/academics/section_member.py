@@ -242,7 +242,7 @@ class SectionMemberService:
                 onyen=student.onyen,
                 first_name=first_name,
                 last_name=last_name,
-                email=f"{student.onyen}@ad.unc.edu",
+                email=f"{student.onyen}@email.unc.edu",
             )
             new_student_entity = UserEntity.from_model(new_student)
             new_student_entities.append(new_student_entity)

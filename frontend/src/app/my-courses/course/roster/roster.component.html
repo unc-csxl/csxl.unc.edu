@@ -6,8 +6,13 @@
 
 <div class="container">
   <mat-pane>
-    <mat-card-header>
+    <mat-card-header id="pane-header">
       <mat-card-title>Course Roster</mat-card-title>
+      <div class="header-buttons">
+        <button mat-stroked-button color="primary" (click)="importFromCanvas()">
+          Import From Canvas
+        </button>
+      </div>
     </mat-card-header>
     <mat-card-content>
       <table mat-table [dataSource]="rosterPage()?.items ?? []">

@@ -1,0 +1,27 @@
+
+mat-form-field {
+    width: 100%;
+    margin-top: 8px;
+}
+
+#file-input {
+    display: none;
+}
+
+.file-input-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    padding-left: 16px;
+    margin-top: 16px;
+
+    p {
+        margin-bottom: 0;
+    }
+}
+
+#choose-file-button {
+    margin-left: auto;
+    margin-right: 16px;
+}

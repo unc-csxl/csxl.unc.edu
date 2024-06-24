@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Import From Canvas</h2>
+<mat-dialog-content>
+  <form>
+    <p>
+      Add students to a course section by importng the CSV file exported from
+      Canvas's Students tab.
+    </p>
+
+    <input
+      id="file-input"
+      #csvInput
+      placeholder="Enter the title for the course site."
+      type="file"
+      accept=".csv"
+      (change)="uploadFile($event)" />
+
+    <div class="file-input-container">
+      <p>{{ file ? file.name : 'No file selected.' }}</p>
+      <button
+        id="choose-file-button"
+        mat-flat-button
+        color="primary"
+        (click)="csvInput.click()">
+        Select File
+      </button>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="secondary" (click)="close()">Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="!file">Import</button>
+</mat-dialog-actions>
