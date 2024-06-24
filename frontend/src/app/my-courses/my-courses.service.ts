@@ -31,7 +31,11 @@ import {
   parseTermOverviewJsonList,
   TicketDraft,
   NewCourseSite,
-  CourseSite
+  CourseSite,
+  OfficeHours,
+  OfficeHoursJson,
+  parseOfficeHoursJson,
+  NewOfficeHours
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
@@ -231,5 +235,50 @@ export class MyCoursesService {
         csv_data: csvData
       }
     );
+  }
+
+  /**
+   * Retrieve office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHoursId: ID of the office hours.
+   * @returns {Observable<OfficeHours>}
+   */
+  getOfficeHours(
+    siteId: number,
+    officeHoursId: number
+  ): Observable<OfficeHours> {
+    return this.http
+      .get<OfficeHoursJson>(`/api/office-hours/${siteId}/${officeHoursId}`)
+      .pipe(map(parseOfficeHoursJson));
+  }
+
+  /**
+   * Create office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to create.
+   * @returns {Observable<OfficeHours>}
+   */
+  createOfficeHours(
+    siteId: number,
+    officeHours: NewOfficeHours
+  ): Observable<OfficeHours> {
+    return this.http
+      .post<OfficeHoursJson>(`/api/office-hours/${siteId}`, officeHours)
+      .pipe(map(parseOfficeHoursJson));
+  }
+
+  /**
+   * Update office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to update.
+   * @returns {Observable<OfficeHours>}
+   */
+  updateOfficeHours(
+    siteId: number,
+    officeHours: OfficeHours
+  ): Observable<OfficeHours> {
+    return this.http
+      .put<OfficeHoursJson>(`/api/office-hours/${siteId}`, officeHours)
+      .pipe(map(parseOfficeHoursJson));
   }
 }

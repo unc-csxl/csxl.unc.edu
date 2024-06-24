@@ -328,6 +328,23 @@ class OfficeHoursService:
         self._session.delete(office_hours_entity)
         self._session.commit()
 
+    def get(self, user: User, site_id: int, event_id: int) -> OfficeHours:
+        """
+        Gets an existing office hours event.
+        """
+        # Find existing event
+        office_hours_entity = self._session.get(OfficeHoursEntity, event_id)
+
+        if office_hours_entity is None:
+            raise ResourceNotFoundException(
+                "Office hours event with id: {event_id} does not exist."
+            )
+
+        # Check permissions
+        self._check_site_permissions(user, site_id)
+
+        return office_hours_entity.to_model()
+
     def _check_site_permissions(self, user: User, site_id: int):
         # Get the course site
         course_site_query = (

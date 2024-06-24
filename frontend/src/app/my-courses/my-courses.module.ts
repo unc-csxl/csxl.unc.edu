@@ -45,6 +45,7 @@ import { CreateCourseSiteDialog } from './dialogs/create-course-site/create-cour
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SettingsComponent } from './course/settings/settings.component';
 import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog';
+import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog
     OfficeHoursPageComponent,
     OfficeHoursQueueComponent,
     OfficeHoursGetHelpComponent,
+    OfficeHoursEditorComponent,
     SettingsComponent,
     CourseCardWidget,
     OfficeHourEventCardWidget,

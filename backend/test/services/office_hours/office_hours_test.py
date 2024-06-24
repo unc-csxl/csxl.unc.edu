@@ -237,3 +237,45 @@ def test_delete_oh_event_event_not_found(oh_svc: OfficeHoursService):
             404,
         )
         pytest.fail()
+
+
+def test_get_oh_event_instructor(oh_svc: OfficeHoursService):
+    """Ensures that instructors can get office hour events."""
+    oh_svc.get(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        office_hours_data.comp_110_current_office_hours.id,
+    )
+
+
+def test_get_oh_event_course_not_found(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be fetched on sites that do not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.get(
+            user_data.instructor,
+            404,
+            office_hours_data.comp_110_current_office_hours.id,
+        )
+        pytest.fail()
+
+
+def test_get_oh_event_not_authenticated(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be fetched on sites that do not exist."""
+    with pytest.raises(CoursePermissionException):
+        oh_svc.get(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.comp_110_current_office_hours.id,
+        )
+        pytest.fail()
+
+
+def test_get_oh_event_event_not_found(oh_svc: OfficeHoursService):
+    """Ensures that office hour events that do not exist cannot be fetched."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.get(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            404,
+        )
+        pytest.fail()

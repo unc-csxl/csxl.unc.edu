@@ -187,6 +187,52 @@ export interface CourseSite {
   term_id: string;
 }
 
+export interface NewOfficeHoursJson {
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: string;
+  end_time: string;
+  course_site_id: number;
+  room_id: string;
+}
+
+export interface NewOfficeHours {
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: Date;
+  end_time: Date;
+  course_site_id: number;
+  room_id: string;
+}
+
+export interface OfficeHoursJson {
+  id: number;
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: string;
+  end_time: string;
+  course_site_id: number;
+  room_id: string;
+}
+
+export interface OfficeHours {
+  id: number;
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: Date;
+  end_time: Date;
+  course_site_id: number;
+  room_id: string;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.
@@ -261,5 +307,23 @@ export const parseOfficeHourGetHelpOverviewJson = (
       : undefined,
     event_start_time: new Date(responseModel.event_start_time),
     event_end_time: new Date(responseModel.event_end_time)
+  });
+};
+
+export const parseNewOfficeHoursJson = (
+  responseModel: NewOfficeHoursJson
+): NewOfficeHoursJson => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time)
+  });
+};
+
+export const parseOfficeHoursJson = (
+  responseModel: OfficeHoursJson
+): OfficeHours => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time)
   });
 };

@@ -2,13 +2,15 @@
   <mat-card-header>
     <div class="header-horizontal-container">
       <mat-card-title>Office Hours</mat-card-title>
+      @if(myCoursesService.courseOverview(+courseSiteId)?.role !== 'Student') {
       <button
         mat-flat-button
         class="create-event-button"
         color="primary"
-        [disabled]="true">
+        routerLink="new/edit">
         Create Event
       </button>
+      }
     </div>
     <div class="header-horizontal-container low-button-toggle-density">
       <mat-button-toggle-group

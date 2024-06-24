@@ -98,7 +98,7 @@ def update_office_hours(
     return oh_event_svc.update(subject, site_id, oh)
 
 
-@api.delete("/{site_id}", tags=["Office Hours"])
+@api.delete("/{site_id}/{oh_id}", tags=["Office Hours"])
 def delete_office_hours(
     site_id: int,
     oh_id: int,
@@ -109,3 +109,16 @@ def delete_office_hours(
     Deletes office hours.
     """
     oh_event_svc.delete(subject, site_id, oh_id)
+
+
+@api.get("/{site_id}/{oh_id}", tags=["Office Hours"])
+def get_office_hours(
+    site_id: int,
+    oh_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_svc: OfficeHoursService = Depends(),
+):
+    """
+    Deletes office hours.
+    """
+    oh_event_svc.get(subject, site_id, oh_id)

@@ -26,3 +26,19 @@ export const officeHourPageGuard = (roles: string[]): CanActivateFn => {
       .pipe(catchError((_) => of(false)));
   };
 };
+
+/** Determines whether the user has the right role to access a course site page.
+ * @param route Active route when the user enters the component.
+ * @returns {CanActivateFn}
+ */
+export const courseSitePageGuard = (roles: string[]): CanActivateFn => {
+  return (route, _) => {
+    let courseSiteId = +route.parent!.params['course_site_id'];
+
+    let hasPermission = roles.includes(
+      inject(MyCoursesService).courseOverview(courseSiteId)?.role ?? ''
+    );
+
+    return of(hasPermission);
+  };
+};
