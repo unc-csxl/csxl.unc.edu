@@ -281,4 +281,13 @@ export class MyCoursesService {
       .put<OfficeHoursJson>(`/api/office-hours/${siteId}`, officeHours)
       .pipe(map(parseOfficeHoursJson));
   }
+
+  /**
+   * Delete office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHoursId: ID of the office hours.
+   */
+  deleteOfficeHours(siteId: number, officeHoursId: number) {
+    return this.http.delete(`/api/office-hours/${siteId}/${officeHoursId}`);
+  }
 }

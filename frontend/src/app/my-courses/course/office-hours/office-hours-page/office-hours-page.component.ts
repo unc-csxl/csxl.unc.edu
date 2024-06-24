@@ -1,9 +1,11 @@
 import { Component, WritableSignal, signal } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import {
   OfficeHourEventOverview,
   OfficeHourEventOverviewJson,
+  OfficeHours,
   parseOfficeHourEventOverviewJson
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
@@ -60,7 +62,8 @@ export class OfficeHoursPageComponent {
 
   constructor(
     private route: ActivatedRoute,
-    protected myCoursesService: MyCoursesService
+    protected myCoursesService: MyCoursesService,
+    private snackBar: MatSnackBar
   ) {
     // Load information from the parent route
     this.courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
@@ -132,6 +135,31 @@ export class OfficeHoursPageComponent {
         this.pastOfficeHourEventsPage.set(page);
         this.previousPastOfficeHourEventParams = paginationParams;
       });
+  }
+
+  deleteOfficeHours(officeHours: OfficeHourEventOverview) {
+    let confirmDelete = this.snackBar.open(
+      'Are you sure you want to delete this office hours event?',
+      'Delete',
+      { duration: 15000 }
+    );
+    confirmDelete.onAction().subscribe(() => {
+      this.myCoursesService
+        .deleteOfficeHours(+this.courseSiteId, officeHours.id)
+        .subscribe(() => {
+          this.futureOfficeHourEventsPaginator
+            .loadPage<OfficeHourEventOverviewJson>(
+              this.previousFutureOfficeHourEventParams,
+              parseOfficeHourEventOverviewJson
+            )
+            .subscribe((page) => {
+              this.futureOfficeHourEventsPage.set(page);
+            });
+          this.snackBar.open('The office hours has been deleted.', '', {
+            duration: 2000
+          });
+        });
+    });
   }
 }
 

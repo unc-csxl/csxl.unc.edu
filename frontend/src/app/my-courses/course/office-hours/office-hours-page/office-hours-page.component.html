@@ -68,6 +68,9 @@
               <button mat-icon-button [routerLink]="element.id + '/edit'">
                 <mat-icon>edit</mat-icon>
               </button>
+              <button mat-icon-button (click)="deleteOfficeHours(element)">
+                <mat-icon>delete</mat-icon>
+              </button>
             </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="futureOhDisplayedColumns"></tr>
