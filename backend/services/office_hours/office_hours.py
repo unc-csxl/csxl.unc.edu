@@ -15,6 +15,7 @@ from ...models.academics.my_courses import (
     OfficeHourEventRoleOverview,
     OfficeHourGetHelpOverview,
 )
+from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.ticket import TicketState
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import (
@@ -23,7 +24,7 @@ from ...entities.office_hours import (
     OfficeHoursTicketEntity,
 )
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ..exceptions import CoursePermissionException
+from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -263,3 +264,101 @@ class OfficeHoursService:
                 else None
             ),
         )
+
+    def create(self, user: User, site_id: int, event: NewOfficeHours) -> OfficeHours:
+        """
+        Creates a new office hours event.
+        """
+        # Check permissions
+        self._check_site_permissions(user, site_id)
+
+        # Create office hours event
+        office_hours_entity = OfficeHoursEntity.from_new_model(event)
+        self._session.add(office_hours_entity)
+        self._session.commit()
+
+        # Return model
+        return office_hours_entity.to_model()
+
+    def update(self, user: User, site_id: int, event: OfficeHours) -> OfficeHours:
+        """
+        Updates an existing office hours event.
+        """
+        # Find existing event
+        office_hours_entity = self._session.get(OfficeHoursEntity, event.id)
+
+        if office_hours_entity is None:
+            raise ResourceNotFoundException(
+                "Office hours event with id: {event.id} does not exist."
+            )
+
+        # Check permissions
+        self._check_site_permissions(user, site_id)
+
+        # Update
+        office_hours_entity.type = event.type
+        office_hours_entity.mode = event.mode
+        office_hours_entity.description = event.description
+        office_hours_entity.location_description = event.location_description
+        office_hours_entity.start_time = event.start_time
+        office_hours_entity.end_time = event.end_time
+        office_hours_entity.course_site_id = event.course_site_id
+        office_hours_entity.room_id = event.room_id
+
+        self._session.commit()
+
+        # Return model
+        return office_hours_entity.to_model()
+
+    def delete(self, user: User, site_id: int, event_id: int):
+        """
+        Deletes an existing office hours event.
+        """
+        # Find existing event
+        office_hours_entity = self._session.get(OfficeHoursEntity, event_id)
+
+        if office_hours_entity is None:
+            raise ResourceNotFoundException(
+                "Office hours event with id: {event_id} does not exist."
+            )
+
+        # Check permissions
+        self._check_site_permissions(user, site_id)
+
+        self._session.delete(office_hours_entity)
+        self._session.commit()
+
+    def _check_site_permissions(self, user: User, site_id: int):
+        # Get the course site
+        course_site_query = (
+            select(CourseSiteEntity)
+            .join(SectionEntity)
+            .join(SectionMemberEntity)
+            .where(CourseSiteEntity.id == site_id)
+            .options(
+                joinedload(CourseSiteEntity.sections),
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.members),
+            )
+        )
+        course_site_entity = (
+            self._session.scalars(course_site_query).unique().one_or_none()
+        )
+
+        # Complete error handling
+        if course_site_entity is None:
+            raise ResourceNotFoundException(
+                f"Course site with ID: {site_id} not found."
+            )
+
+        section_entities = [section for section in course_site_entity.sections]
+        for section in section_entities:
+            members = [
+                member
+                for member in section.members
+                if member.user_id == user.id
+                and member.member_role != RosterRole.STUDENT
+            ]
+            if len(members) == 0:
+                raise CoursePermissionException(
+                    "Cannot modify a course page containing a section you are not an instructor for."
+                )

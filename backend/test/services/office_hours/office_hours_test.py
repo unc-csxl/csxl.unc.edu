@@ -7,8 +7,9 @@ from ....models.academics.my_courses import (
     OfficeHourGetHelpOverview,
     OfficeHourEventRoleOverview,
 )
+from ....models.office_hours.office_hours import NewOfficeHours, OfficeHours
 from ....services.office_hours import OfficeHoursService
-from ....services.exceptions import CoursePermissionException
+from ....services.exceptions import CoursePermissionException, ResourceNotFoundException
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import oh_svc
@@ -113,5 +114,126 @@ def test_get_oh_event_role_not_member(oh_svc: OfficeHoursService):
     with pytest.raises(CoursePermissionException):
         oh_svc.get_oh_event_role(
             user_data.ambassador, office_hours_data.comp_110_current_office_hours.id
+        )
+        pytest.fail()
+
+
+def test_create_oh_event_instructor(oh_svc: OfficeHoursService):
+    """Ensures that instructors can create office hour events."""
+    new_event = oh_svc.create(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        office_hours_data.new_event,
+    )
+    assert new_event is not None
+    assert isinstance(new_event, OfficeHours)
+    assert new_event.id is not None
+
+
+def test_create_oh_event_course_not_found(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be created on sites that do not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.create(
+            user_data.instructor,
+            404,
+            office_hours_data.new_event_site_not_found,
+        )
+        pytest.fail()
+
+
+def test_create_oh_event_not_authenticated(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be created on sites that do not exist."""
+    with pytest.raises(CoursePermissionException):
+        oh_svc.create(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.new_event_site_not_found,
+        )
+        pytest.fail()
+
+
+def test_update_oh_event_instructor(oh_svc: OfficeHoursService):
+    """Ensures that instructors can update office hour events."""
+    new_event = oh_svc.update(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        office_hours_data.updated_future_event,
+    )
+    assert new_event is not None
+    assert isinstance(new_event, OfficeHours)
+    assert new_event.id == office_hours_data.updated_future_event.id
+
+
+def test_update_oh_event_course_not_found(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be updated on sites that do not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.update(
+            user_data.instructor,
+            404,
+            office_hours_data.updated_future_event,
+        )
+        pytest.fail()
+
+
+def test_update_oh_event_not_authenticated(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be updated on sites that do not exist."""
+    with pytest.raises(CoursePermissionException):
+        oh_svc.update(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.updated_future_event,
+        )
+        pytest.fail()
+
+
+def test_update_oh_event_event_not_found(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be updated that do not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.update(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.nonexistent_event,
+        )
+        pytest.fail()
+
+
+def test_delete_oh_event_instructor(oh_svc: OfficeHoursService):
+    """Ensures that instructors can delete office hour events."""
+    oh_svc.delete(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        office_hours_data.comp_110_current_office_hours.id,
+    )
+
+
+def test_delete_oh_event_course_not_found(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be deleted on sites that do not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.delete(
+            user_data.instructor,
+            404,
+            office_hours_data.comp_110_current_office_hours.id,
+        )
+        pytest.fail()
+
+
+def test_delete_oh_event_not_authenticated(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be deleted on sites that do not exist."""
+    with pytest.raises(CoursePermissionException):
+        oh_svc.delete(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.comp_110_current_office_hours.id,
+        )
+        pytest.fail()
+
+
+def test_delete_oh_event_event_not_found(oh_svc: OfficeHoursService):
+    """Ensures that office hour events cannot be deleted that do not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.delete(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            404,
         )
         pytest.fail()

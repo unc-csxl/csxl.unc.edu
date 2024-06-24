@@ -16,7 +16,7 @@ from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ....entities.academics.section_entity import SectionEntity
 
 
-from ....models.office_hours.office_hours import OfficeHours
+from ....models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ....models.office_hours.event_type import (
     OfficeHoursEventModeType,
     OfficeHoursEventType,
@@ -363,4 +363,50 @@ new_site_other_user = NewCourseSite(
     title="Rhonda",
     term_id=term_data.current_term.id,
     section_ids=[section_data.comp_311_001_current_term.id],
+)
+
+new_event = NewOfficeHours(
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+)
+
+new_event_site_not_found = NewOfficeHours(
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=404,
+    room_id=room_data.group_a.id,
+)
+
+updated_future_event = OfficeHours(
+    id=2,
+    type=OfficeHoursEventType.REVIEW_SESSION,
+    mode=OfficeHoursEventModeType.VIRTUAL_OUR_LINK,
+    description="Future CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=1),
+    end_time=datetime.now() + timedelta(days=1, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+)
+
+nonexistent_event = OfficeHours(
+    id=404,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
 )
