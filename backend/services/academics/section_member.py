@@ -261,6 +261,10 @@ class SectionMemberService:
         self._session.commit()
 
 
+class CSVModel(BaseModel):
+    csv_data: str
+
+
 class StudentMemberJson(BaseModel):
     name: str
     pid: int

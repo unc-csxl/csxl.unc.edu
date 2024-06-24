@@ -12,6 +12,7 @@ from ...models.roster_role import RosterRole
 from ...models import User
 
 from ...services.academics import SectionMemberService
+from ...services.academics.section_member import CSVModel
 
 __authors__ = ["Meghan Sun", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -97,3 +98,16 @@ def add_instructor(
     return section_member_svc.add_section_member(
         subject, section_id, user_id, RosterRole.INSTRUCTOR
     )
+
+
+@api.post("/import-from-canvas/{section_id}", tags=["Academics"])
+def import_roster_from_csv(
+    section_id: int,
+    csv: CSVModel,
+    subject: User = Depends(registered_user),
+    section_member_svc: SectionMemberService = Depends(),
+):
+    """
+    Creates user roles from a Canvas section roster CSV file.
+    """
+    return section_member_svc.import_users_from_csv(subject, section_id, csv.csv_data)
