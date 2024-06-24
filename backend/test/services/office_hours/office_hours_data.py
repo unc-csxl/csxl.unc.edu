@@ -21,7 +21,11 @@ from ....models.office_hours.event_type import (
     OfficeHoursEventModeType,
     OfficeHoursEventType,
 )
-from ....models.office_hours.course_site import CourseSite, NewCourseSite
+from ....models.office_hours.course_site import (
+    CourseSite,
+    NewCourseSite,
+    UpdatedCourseSite,
+)
 from ....models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
@@ -296,4 +300,67 @@ new_course_site_term_already_in_site = NewCourseSite(
         section_data.comp_301_001_current_term.id,
         section_data.comp_110_001_current_term.id,
     ],
+)
+
+updated_comp_110_site = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_110_001_current_term.id],
+)
+
+updated_comp_110_site_term_mismatch = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_101_001.id,
+    ],
+)
+
+updated_course_site_term_nonmember = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_311_001_current_term.id,
+    ],
+)
+
+updated_course_does_not_exist = UpdatedCourseSite(
+    id=404,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+updated_course_site_term_noninstructor = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_311_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+updated_course_site_term_already_in_site = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_110_001_current_term.id,
+    ],
+)
+
+new_site_other_user = NewCourseSite(
+    title="Rhonda",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_311_001_current_term.id],
 )

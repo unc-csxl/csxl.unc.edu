@@ -97,16 +97,18 @@ class OfficeHourTicketService:
             .where(OfficeHoursEntity.id == ticket_entity.office_hours_id)
         )
 
-        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+        user_members = self._session.scalars(user_member_query).unique().all()
 
         # If the user is not a member of the looked up course, throw an error
-        if not user_member or user_member.member_role == RosterRole.STUDENT:
+        if len(user_members) == 0 or RosterRole.STUDENT in [
+            member.member_role for member in user_members
+        ]:
             raise CoursePermissionException(
                 "Not allowed to call if a ticket if you are not a UTA, GTA, or instructor for."
             )
 
         # Call the ticket
-        ticket_entity.caller_id = user_member.id
+        ticket_entity.caller_id = user_members[0].id
         ticket_entity.called_at = datetime.now()
         ticket_entity.state = TicketState.CALLED
 
@@ -140,7 +142,8 @@ class OfficeHourTicketService:
             .where(OfficeHoursEntity.id == ticket_entity.office_hours_id)
         )
 
-        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+        user_members = self._session.scalars(user_member_query).unique().all()
+        user_member = user_members[0] if len(user_members) > 0 else None
 
         # If the user is not a member of the looked up course, throw an error
         if not user_member or (
@@ -189,10 +192,12 @@ class OfficeHourTicketService:
             .where(OfficeHoursEntity.id == ticket_entity.office_hours_id)
         )
 
-        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+        user_members = self._session.scalars(user_member_query).unique().all()
 
         # If the user is not a member of the looked up course, throw an error
-        if not user_member or (user_member.member_role == RosterRole.STUDENT):
+        if len(user_members) == 0 or RosterRole.STUDENT in [
+            member.member_role for member in user_members
+        ]:
             raise CoursePermissionException(
                 "Not allowed to call if a ticket if you are not a UTA, GTA, or instructor for."
             )

@@ -267,6 +267,13 @@ comp110_instructor = SectionMemberDraft(
     member_role=RosterRole.INSTRUCTOR,
 )
 
+comp110_instructor_2 = SectionMemberDraft(
+    id=18,
+    user_id=user__comp110_instructor.id,
+    section_id=comp_110_002_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
 comp110_uta = SectionMemberDraft(
     id=2,
     user_id=user__comp110_uta_0.id,
@@ -390,6 +397,7 @@ section_members = [
     comp_210_instructor,
     comp311_instructor,
     comp311_uta,
+    comp110_instructor_2,
 ]
 
 comp110_members = [

@@ -112,16 +112,19 @@ class OfficeHoursService:
             .options(joinedload(SectionMemberEntity.created_oh_tickets))
         )
 
-        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+        user_members = self._session.scalars(user_member_query).unique().all()
 
         # If the user is not a member of the looked up course, throw an error
-        if not user_member or user_member.member_role != RosterRole.STUDENT:
+        if len(user_members) == 0:
             raise CoursePermissionException(
                 "You cannot access office hours for a class you are not enrolled in."
             )
 
-        # Locate tickets
-        user_member.created_oh_tickets
+        for user_member in user_members:
+            if user_member.member_role != RosterRole.STUDENT:
+                raise CoursePermissionException(
+                    "You cannot access office hours for a class you are not enrolled in."
+                )
 
         # Start building the query
         queue_query = (
@@ -231,14 +234,14 @@ class OfficeHoursService:
             .where(OfficeHoursEntity.id == office_hours_id)
         )
 
-        user_member = self._session.scalars(user_member_query).unique().one_or_none()
+        user_members = self._session.scalars(user_member_query).unique().all()
 
-        if not user_member:
+        if len(user_members) == 0:
             raise CoursePermissionException(
                 "User is not a member of the office hour event."
             )
 
-        return OfficeHourEventRoleOverview(role=user_member.member_role.value)
+        return OfficeHourEventRoleOverview(role=user_members[0].member_role.value)
 
     def _to_oh_ticket_overview(
         self, ticket: OfficeHoursTicketEntity

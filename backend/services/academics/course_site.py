@@ -20,13 +20,17 @@ from ...models.academics.my_courses import (
     TicketState,
     TeachingSectionOverview,
 )
-from ...models.office_hours.course_site import CourseSite, NewCourseSite
+from ...models.office_hours.course_site import (
+    CourseSite,
+    NewCourseSite,
+    UpdatedCourseSite,
+)
 from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ..exceptions import CoursePermissionException
+from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
 __authors__ = ["Ajay Gandecha", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -478,4 +482,92 @@ class CourseSiteService:
         self._session.commit()
 
         # Return the model
+        return course_site_entity.to_model()
+
+    def update(self, user: User, updated_site: UpdatedCourseSite) -> CourseSite:
+        """
+        Update a course site.
+        """
+        # Get the site entity
+        course_site_query = (
+            select(CourseSiteEntity)
+            .join(SectionEntity)
+            .join(SectionMemberEntity)
+            .where(CourseSiteEntity.id == updated_site.id)
+            .options(
+                joinedload(CourseSiteEntity.sections),
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.members),
+            )
+        )
+        course_site_entity = (
+            self._session.scalars(course_site_query).unique().one_or_none()
+        )
+
+        # Complete error handling
+        if course_site_entity is None:
+            raise ResourceNotFoundException(
+                f"Course site with ID: {updated_site.id} not found."
+            )
+
+        # Compelete error handling for existing sections
+        old_section_entities = [section for section in course_site_entity.sections]
+        for section in old_section_entities:
+            members = [
+                member
+                for member in section.members
+                if member.user_id == user.id
+                and member.member_role == RosterRole.INSTRUCTOR
+            ]
+            if len(members) == 0:
+                raise CoursePermissionException(
+                    "Cannot modify a course page containing a section you are not an instructor for."
+                )
+
+        # Find all the user's section memberships for the term and sections inputted
+        membership_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(SectionMemberEntity.section_id.in_(updated_site.section_ids))
+            .where(SectionEntity.term_id == updated_site.term_id)
+            .options(joinedload(SectionMemberEntity.section))
+        )
+
+        membership_entities = self._session.scalars(membership_query).all()
+        new_section_entities = [
+            membership.section for membership in membership_entities
+        ]
+
+        # This check fails the creation of a course site if the sections inputted are either not in the term, or if
+        # a user is not a member of the course.
+        if len(membership_entities) != len(updated_site.section_ids):
+            raise CoursePermissionException(
+                "You cannot add sections to a course site that you are not an instructor for, or sections in different terms."
+            )
+
+        # This check ensures that the user is an instructor for every section inputted.
+        for membership in membership_entities:
+            if membership.member_role != RosterRole.INSTRUCTOR:
+                raise CoursePermissionException(
+                    "You cannot add sections to a course site that you are not an instructor for."
+                )
+
+        # Complete the updates
+        course_site_entity.title = updated_site.title
+
+        for section in old_section_entities:
+            section.course_site_id = None
+
+        for section in new_section_entities:
+            if section.course_site_id:
+                raise CoursePermissionException(
+                    f"Section with ID: { section.id} is already in another course site."
+                )
+
+            section.course_site_id = updated_site.id
+
+        # Save all changes in one commit
+        self._session.commit()
+
+        # Return updated site
         return course_site_entity.to_model()
