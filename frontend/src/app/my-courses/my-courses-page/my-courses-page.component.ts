@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { UTANoticeComponent } from 'src/app/ta-application/uta-notice/uta-notice.component';
 import { ApplicationsService } from 'src/app/ta-application/ta-application.service';
-import { CreateCourseSiteDialog } from './dialogs/create-course-site.dialog';
+import { CreateCourseSiteDialog } from '../dialogs/create-course-site/create-course-site.dialog';
 
 @Component({
   selector: 'app-my-courses-page',
