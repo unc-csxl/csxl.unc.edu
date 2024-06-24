@@ -12,7 +12,7 @@ from ...models.roster_role import RosterRole
 from ...models import User
 
 from ...services.academics import SectionMemberService
-from ...services.academics.section_member import CSVModel
+from ...services.academics.section_member import CSVModel, UploadResponse
 
 __authors__ = ["Meghan Sun", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -106,7 +106,7 @@ def import_roster_from_csv(
     csv: CSVModel,
     subject: User = Depends(registered_user),
     section_member_svc: SectionMemberService = Depends(),
-):
+) -> UploadResponse:
     """
     Creates user roles from a Canvas section roster CSV file.
     """

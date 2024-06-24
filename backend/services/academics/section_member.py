@@ -260,6 +260,9 @@ class SectionMemberService:
         # Commit changes a final time
         self._session.commit()
 
+        # Return number added
+        return UploadResponse(uploaded=len(student_pids))
+
 
 class CSVModel(BaseModel):
     csv_data: str
@@ -269,3 +272,7 @@ class StudentMemberJson(BaseModel):
     name: str
     pid: int
     onyen: str
+
+
+class UploadResponse(BaseModel):
+    uploaded: int

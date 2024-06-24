@@ -210,4 +210,20 @@ export class MyCoursesService {
   createCourseSite(newCourseSite: NewCourseSite): Observable<CourseSite> {
     return this.http.post<CourseSite>(`/api/my-courses/new`, newCourseSite);
   }
+
+  /**
+   * Imports a roster for from a Canvas CSV File
+   * @returns {Observable<{ uploaded: number }>}
+   */
+  importRosterFromCanvasCSV(
+    section_id: number,
+    csvData: string
+  ): Observable<{ uploaded: number }> {
+    return this.http.post<{ uploaded: number }>(
+      `/api/academics/section-member/import-from-canvas/${section_id}`,
+      {
+        csv_data: csvData
+      }
+    );
+  }
 }
