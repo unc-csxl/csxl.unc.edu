@@ -7,6 +7,7 @@ from ....models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
+    CourseSiteOverview,
 )
 from ....models.office_hours.course_site import CourseSite, UpdatedCourseSite
 from ....services.academics.course_site import CourseSiteService
@@ -266,4 +267,21 @@ def test_update_term_already_in_site(course_site_svc: CourseSiteService):
             user_data.instructor,
             office_hours_data.updated_course_site_term_already_in_site,
         )
+        pytest.fail()
+
+
+def test_get(course_site_svc: CourseSiteService):
+    """Ensures that a member can access the overview of a course site."""
+    overview = course_site_svc.get(
+        user_data.instructor, office_hours_data.comp_110_site.id
+    )
+    assert overview is not None
+    assert isinstance(overview, CourseSiteOverview)
+    assert overview.id == office_hours_data.comp_110_site.id
+
+
+def test_get_no_access(course_site_svc: CourseSiteService):
+    """Ensures that a member can access the overview of a course site."""
+    with pytest.raises(CoursePermissionException):
+        course_site_svc.get(user_data.root, office_hours_data.comp_110_site.id)
         pytest.fail()

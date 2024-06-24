@@ -571,3 +571,67 @@ class CourseSiteService:
 
         # Return updated site
         return course_site_entity.to_model()
+
+    def get(self, user: User, site_id: int) -> CourseSiteOverview:
+        """
+        Returns a course site overview.
+        """
+        # Get the site entity
+        course_site_query = (
+            select(CourseSiteEntity)
+            .join(SectionEntity)
+            .join(SectionMemberEntity)
+            .where(CourseSiteEntity.id == site_id)
+            .where(SectionMemberEntity.user_id == user.id)
+            .options(
+                joinedload(CourseSiteEntity.sections),
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.course),
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.members),
+            )
+        )
+
+        course_site_entity = (
+            self._session.scalars(course_site_query).unique().one_or_none()
+        )
+
+        # Complete error handling
+        if course_site_entity is None:
+            raise CoursePermissionException(f"Cannot access course with ID: {site_id}")
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .where(SectionEntity.course_site_id == site_id)
+        )
+        user_members = self._session.scalars(user_member_query).unique().all()
+
+        # Return overview
+        return CourseSiteOverview(
+            id=course_site_entity.id,
+            subject_code=(
+                course_site_entity.sections[0].course.subject_code
+                if len(course_site_entity.sections) > 0
+                else ""
+            ),
+            number=(
+                course_site_entity.sections[0].course.number
+                if len(course_site_entity.sections) > 0
+                else ""
+            ),
+            title=(
+                (
+                    course_site_entity.sections[0].override_title
+                    or course_site_entity.sections[0].course.title
+                )
+                if len(course_site_entity.sections) > 0
+                else ""
+            ),
+            role=user_members[0].member_role.value,
+            sections=[
+                self._to_section_overview(section)
+                for section in course_site_entity.sections
+            ],
+        )
