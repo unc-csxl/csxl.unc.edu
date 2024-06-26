@@ -102,6 +102,11 @@ class SectionEntity(EntityBase):
         secondary=section_application_table, back_populates="preferred_sections"
     )
 
+    # Stores the number of students enrolled
+    enrolled: Mapped[int] = mapped_column(Integer, default=0)
+    # Stores the total number of seats
+    total_seats: Mapped[int] = mapped_column(Integer, default=0)
+
     @classmethod
     def from_model(cls, model: Section) -> Self:
         """

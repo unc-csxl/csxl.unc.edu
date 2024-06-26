@@ -182,9 +182,19 @@ class SectionMemberService:
         # Parse each row
         students: list[StudentMemberJson] = []
 
+        unique_sections = set()
+
         try:
             for row in reader:
                 if reader.line_num != 2:
+
+                    # Ensure that the uploaded CSV only contains one section
+                    unique_sections.add(row["Section"])
+                    if len(unique_sections) > 1:
+                        raise HTTPException(
+                            status_code=422, detail="CSV includes multiple sections."
+                        )
+
                     name = row["Student"]
                     pid = int(row["SIS User ID"])
                     onyen = row["SIS Login ID"]

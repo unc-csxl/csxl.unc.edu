@@ -27,6 +27,17 @@ def get_sections(section_service: SectionService = Depends()) -> list[SectionDet
     return section_service.all()
 
 
+@api.get("/update-enrollments", response_model=None, tags=["Academics"])
+def update_enrollments(
+    subject: User = Depends(registered_user),
+    section_service: SectionService = Depends(),
+):
+    """
+    Updates the enrollment numbers for COMP sections.
+    """
+    return section_service.update_enrollment_totals(subject)
+
+
 @api.get("/{id}", response_model=SectionDetails, tags=["Academics"])
 def get_section_by_id(
     id: int, section_service: SectionService = Depends()
