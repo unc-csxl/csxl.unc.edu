@@ -52,6 +52,8 @@ comp_101_001 = Section(
     meeting_pattern="TTh 12:00PM - 1:15PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_101_002 = Section(
@@ -62,6 +64,8 @@ comp_101_002 = Section(
     meeting_pattern="TTh 1:30PM - 2:45PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_210_001 = Section(
@@ -72,6 +76,8 @@ comp_210_001 = Section(
     meeting_pattern="TTh 8:00AM - 9:15AM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_211_001 = Section(
@@ -82,6 +88,8 @@ comp_211_001 = Section(
     meeting_pattern="TTh 8:00AM - 9:15AM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_301_001 = Section(
@@ -92,6 +100,8 @@ comp_301_001 = Section(
     meeting_pattern="TTh 8:00AM - 9:15AM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_311_001 = Section(
@@ -102,6 +112,8 @@ comp_311_001 = Section(
     meeting_pattern="TTh 8:00AM - 9:15AM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 edited_comp_110 = Section(
@@ -112,6 +124,8 @@ edited_comp_110 = Section(
     meeting_pattern="MW 1:30PM - 2:45PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 edited_comp_110_with_room = Section(
@@ -123,6 +137,8 @@ edited_comp_110_with_room = Section(
     override_title="",
     override_description="",
     lecture_room=virtual_room,
+    enrolled=100,
+    total_seats=200,
 )
 
 edited_comp_301_with_room = Section(
@@ -134,6 +150,8 @@ edited_comp_301_with_room = Section(
     override_title="",
     override_description="",
     lecture_room=virtual_room,
+    enrolled=100,
+    total_seats=200,
 )
 
 new_section = Section(
@@ -144,6 +162,8 @@ new_section = Section(
     meeting_pattern="MW 1:30PM - 2:45PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 new_section_with_lecture_room = Section(
@@ -155,6 +175,8 @@ new_section_with_lecture_room = Section(
     override_title="",
     override_description="",
     lecture_room=virtual_room,
+    enrolled=100,
+    total_seats=200,
 )
 
 
@@ -167,6 +189,8 @@ comp_523_001_current_term = Section(
     meeting_pattern="TTh 2:00PM - 3:15PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_210_001_current_term = Section(
@@ -177,6 +201,8 @@ comp_210_001_current_term = Section(
     meeting_pattern="TTh 9:00AM - 10:15AM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 
@@ -188,6 +214,8 @@ comp_110_001_current_term = Section(
     meeting_pattern="TTh 12:00PM - 1:15PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_110_002_current_term = Section(
@@ -198,6 +226,8 @@ comp_110_002_current_term = Section(
     meeting_pattern="TTh 1:30PM - 2:45PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_301_001_current_term = Section(
@@ -208,6 +238,8 @@ comp_301_001_current_term = Section(
     meeting_pattern="TTh 8:00AM - 9:15AM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_301_002_current_term = Section(
@@ -218,6 +250,8 @@ comp_301_002_current_term = Section(
     meeting_pattern="TTh 5:00PM - 6:15PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_311_001_current_term = Section(
@@ -228,6 +262,8 @@ comp_311_001_current_term = Section(
     meeting_pattern="TTh 5:00PM - 6:15PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 comp_311_002_current_term = Section(
@@ -238,6 +274,8 @@ comp_311_002_current_term = Section(
     meeting_pattern="TTh 5:00PM - 6:15PM",
     override_title="",
     override_description="",
+    enrolled=100,
+    total_seats=200,
 )
 
 # Variables To Help Associate User Data to Section Members
