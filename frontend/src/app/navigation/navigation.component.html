@@ -134,7 +134,7 @@
             @if(profile$ | async; as profile) {
               <mat-chip class="profile-chip" routerLink="/profile">
                 @if(profile.github_avatar) {
-                  <img matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
+                  <img id="profile-icon" matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
                 } @else {
                   <mat-icon matChipAvatar>account_circle</mat-icon>
                 }
