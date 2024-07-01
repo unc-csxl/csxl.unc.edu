@@ -75,7 +75,8 @@ export class SectionOfferingsComponent implements OnInit {
     'title',
     //'instructor',
     'meetingpattern',
-    'room'
+    'room',
+    'enrollment'
   ];
   /** Store the columns to display when extended */
   public columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];

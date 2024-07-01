@@ -35,6 +35,8 @@ export interface Section {
   office_hour_rooms: Room[] | null;
   override_title: string;
   override_description: string;
+  enrolled: number;
+  total_seats: number;
 }
 
 /** Defines a Term */

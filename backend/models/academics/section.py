@@ -26,3 +26,5 @@ class Section(BaseModel):
     office_hour_rooms: list[Room] = []
     override_title: str
     override_description: str
+    enrolled: int
+    total_seats: int
