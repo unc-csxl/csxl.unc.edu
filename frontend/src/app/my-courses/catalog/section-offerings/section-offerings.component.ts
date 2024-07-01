@@ -73,9 +73,10 @@ export class SectionOfferingsComponent implements OnInit {
   public displayedColumns: string[] = [
     'code',
     'title',
-    //'instructor',
+    'instructor',
     'meetingpattern',
-    'room'
+    'room',
+    'enrollment'
   ];
   /** Store the columns to display when extended */
   public columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
@@ -128,7 +129,7 @@ export class SectionOfferingsComponent implements OnInit {
   instructorNameForSection(section: Section): string {
     // Find all staff with the instructor role
     let staffFilter = section.staff?.filter(
-      (s) => s.member_role == RosterRole.INSTRUCTOR
+      (s) => s.member_role == 'Instructor'
     );
     // Find the instructor
     let instructor = staffFilter?.length ?? 0 > 0 ? staffFilter![0] : null;
