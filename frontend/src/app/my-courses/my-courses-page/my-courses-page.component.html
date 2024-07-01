@@ -20,10 +20,6 @@ link="https://github.com/unc-csxl/csxl.unc.edu/wiki/Upgrade-to-CSXL-Web-Applicat
           <!-- <mat-icon>search</mat-icon> -->
           View Catalog
         </button>
-        <button mat-flat-button color="primary" [disabled]="true">
-          <!-- <mat-icon>add</mat-icon> -->
-          Join Course
-        </button>
         @if (this.myCoursesService.teachingCoursesWithNoSite()) {
           <button mat-flat-button color="tertiary" (click)="createCourseSite()">
             <!-- <mat-icon>add</mat-icon> -->
