@@ -3,7 +3,7 @@
  * will have to sign. It is currently used on the coworking home page and the 'About the
  * XL' page. It also checks whether or not users have accepted.
  *
- * @author Matt Vu
+ * @author Matt Vu, Ajay Gandecha
  * @copyright 2024
  * @license MIT
  */
@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./community-agreement.widget.css']
 })
 export class CommunityAgreement {
-  public has_user_agreed: boolean | undefined = false;
+  public hasUserAgreed: boolean | undefined = false;
   public agreementSectionsAccepted: boolean[];
   public loggedInUser: Profile | undefined;
   private subscription: Subscription;
@@ -35,26 +35,22 @@ export class CommunityAgreement {
     this.agreementSectionsAccepted = new Array(12).fill(false);
     this.subscription = this.profileService.profile$.subscribe((profile) => {
       this.loggedInUser = profile;
-      this.has_user_agreed = this.loggedInUser?.accepted_community_agreement;
+      this.hasUserAgreed = this.loggedInUser?.accepted_community_agreement;
     });
   }
 
   onButtonClick() {
-    if (this.has_user_agreed) {
+    if (this.hasUserAgreed) {
       this.onCloseClick();
     } else {
-      if (this.allSectionsAccepted()) {
-        this.onAcceptClick();
-        this.snackBar.open('Successfully Accepted Community Agreement', '', {
+      this.onAcceptClick();
+      this.snackBar.open(
+        'Thank you for accepting the CSXL Community Agreement!',
+        '',
+        {
           duration: 2000
-        });
-      } else {
-        this.snackBar.open(
-          'Please Accept All Terms in the Community Agreement',
-          '',
-          { duration: 2000 }
-        );
-      }
+        }
+      );
     }
   }
 

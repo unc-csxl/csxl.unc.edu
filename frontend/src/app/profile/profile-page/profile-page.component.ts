@@ -89,7 +89,8 @@ export class ProfilePageComponent {
   /** Open Community Agreement Dialog */
   openAgreementDialog(): void {
     const dialogRef = this.dialog.open(CommunityAgreement, {
-      autoFocus: 'dialog'
+      width: '1000px',
+      height: '800px'
     });
     this.profileService.profile$.subscribe();
     dialogRef.afterClosed().subscribe();

@@ -1,284 +1,311 @@
-<mat-card-content class="content-container">
-  <mat-card-header>
-    <mat-card-title *ngIf="!has_user_agreed">
-      Please read and accept the community agreement below to continue to the
-      CSXL web page.
-    </mat-card-title>
-  </mat-card-header>
+@if(!hasUserAgreed) {
+<banner-card
+  type="alert"
+  icon="error"
+  title="Action Required"
+  body="Please read and accept the community agreement below to continue to the
+    CSXL web page." />
+}
 
-  <mat-card-header>
-    <h1>
-      Undergraduate Computer Science Experience Labs (XL) Community Standards
-      Agreement
-    </h1>
-  </mat-card-header>
-  <mat-card-content>
-    <p>
-      The Undergraduate Experience Labs (XL) community serves the Computer
-      Science Undergraduate Community at UNC-Chapel Hill.
-    </p>
-    <p>
-      The XL is dedicated to providing a harassment-free and inclusive
-      experience for everyone regardless of gender identity and expression,
-      sexual orientation, disabilities, neurodiversity, physical appearance,
-      body size, ethnicity, nationality, race, religion, or other protected
-      category. These policies are inspired by and almost entirely replicate
-      <a
-        href="https://developers.google.com/community-guidelines"
-        target="_blank"
-        style="color: rgb(67, 140, 200)"
-        >Google's Developer Community Guidelines.</a
-      >
-    </p>
-    <p>
-      We do not tolerate harassment of XL community members in any form. We take
-      violations of our policy seriously and will respond appropriately.
-    </p>
-    <p>
-      All participants of the XL in-person and on-line communities, XL
-      ambassadors, XL staff, speakers, faculty, and participants otherwise, must
-      agree to and abide by the following policies in order to access XL's
-      events, online communities, and facilities.
-    </p>
-    <h3>I agree to be respectful to everyone in the XL community.</h3>
-    <p>
-      I agree to treat everyone with respect. I will participate while
-      acknowledging everyone deserves to be here - and every one has the right
-      to enjoy their experience without fear of harassment, discrimination, or
-      condescension, whether blatant or micro-aggressions. All forms of
-      communication should not demean others. Consider what you are saying and
-      how it would feel if it were said to you or about you.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[0]"
-      (change)="updateSectionAcceptance(0, $event.checked)">
-      <p>I agree</p></mat-checkbox
+<h2 mat-dialog-title>CSXL Community Standards Agreement</h2>
+
+<mat-dialog-content>
+  <p>
+    The Undergraduate Experience Labs (XL) community serves the Computer Science
+    Undergraduate Community at UNC-Chapel Hill.
+  </p>
+  <p>
+    The XL is dedicated to providing a harassment-free and inclusive experience
+    for everyone regardless of gender identity and expression, sexual
+    orientation, disabilities, neurodiversity, physical appearance, body size,
+    ethnicity, nationality, race, religion, or other protected category. These
+    policies are inspired by and almost entirely replicate
+    <a
+      href="https://developers.google.com/community-guidelines"
+      target="_blank"
+      style="color: rgb(67, 140, 200)"
+      >Google's Developer Community Guidelines.</a
     >
-    <h3>I agree to speak up if I see or hear something amiss.</h3>
-    <p>
-      Harassment is not tolerated, and you are empowered to politely engage when
-      you or others are disrespected. The person making you feel uncomfortable
-      may not be aware of what they are doing, and politely bringing their
-      behavior to their attention is encouraged.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[1]"
-      (change)="updateSectionAcceptance(1, $event.checked)">
-      <p>I agree</p></mat-checkbox
+  </p>
+  <p>
+    We do not tolerate harassment of XL community members in any form. We take
+    violations of our policy seriously and will respond appropriately.
+  </p>
+  <p>
+    All participants of the XL in-person and on-line communities, XL
+    ambassadors, XL staff, speakers, faculty, and participants otherwise, must
+    agree to and abide by the following policies in order to access XL's events,
+    online communities, and facilities.
+  </p>
+  <mat-divider />
+  <mat-card-subtitle>
+    I agree to be respectful to everyone in the XL community.
+  </mat-card-subtitle>
+  <p>
+    I agree to treat everyone with respect. I will participate while
+    acknowledging everyone deserves to be here - and every one has the right to
+    enjoy their experience without fear of harassment, discrimination, or
+    condescension, whether blatant or micro-aggressions. All forms of
+    communication should not demean others. Consider what you are saying and how
+    it would feel if it were said to you or about you.
+  </p>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[0]"
+    (change)="updateSectionAcceptance(0, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I agree to speak up if I see or hear something amiss.
+  </mat-card-subtitle>
+  <p>
+    Harassment is not tolerated, and you are empowered to politely engage when
+    you or others are disrespected. The person making you feel uncomfortable may
+    not be aware of what they are doing, and politely bringing their behavior to
+    their attention is encouraged.
+  </p>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[1]"
+    (change)="updateSectionAcceptance(1, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I agree to abide by the XL Community's ZERO TOLERANCE POLICY for in-person
+    or online harassment of any kind.
+  </mat-card-subtitle>
+  <p>Forms of potential harassment include, but are not limited to:</p>
+  <ul>
+    <li>Stalking / Following</li>
+    <li>Deliberate intimidation</li>
+    <li>Harassing photography or recording</li>
+    <li>Sustained disruption of talks or other events</li>
+    <li>Offensive verbal language</li>
+    <li>Verbal language that reinforces social structures of domination</li>
+    <li>Sexual imagery and language in public spaces</li>
+    <li>Inappropriate physical contact</li>
+    <li>Unwelcome sexual or physical attention</li>
+    <li>Physical or cyber threats</li>
+  </ul>
+
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[2]"
+    (change)="updateSectionAcceptance(2, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I understand the above policies are in relation to, but not limited to:
+  </mat-card-subtitle>
+  <ul>
+    <li>Neurodiversity</li>
+    <li>Race</li>
+    <li>Color</li>
+    <li>National origin</li>
+    <li>Gender identity</li>
+    <li>Gender expression</li>
+    <li>Sexual orientation</li>
+    <li>Age</li>
+    <li>Body size</li>
+    <li>Disabilities</li>
+    <li>Appearance</li>
+    <li>Religion</li>
+    <li>Pregnancy</li>
+    <li>Military status</li>
+    <li>Social demographic</li>
+  </ul>
+
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[3]"
+    (change)="updateSectionAcceptance(3, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    When asked to stop any harassing behavior, I will comply immediately.
+  </mat-card-subtitle>
+  <p>
+    Participants asked to stop any harassing behavior are expected to comply
+    immediately. Our zero tolerance policy means that we will look into and
+    review every allegation of violation of our Event Community Guidelines and
+    Anti-Harassment Policy and respond appropriately.
+  </p>
+
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[4]"
+    (change)="updateSectionAcceptance(4, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I will report any behavior that makes me or others feel uncomfortable.
+  </mat-card-subtitle>
+  <p>
+    To report any behavior that makes you or others feel uncomfortable, please
+    email
+    <a style="color: rgb(67, 140, 200)" href="mailto:kris%40cs.unc.edu"
+      >kris&#64;cs.unc.edu</a
     >
-    <h3>
-      I agree to abide by the XL Community's ZERO TOLERANCE POLICY for in-person
-      or online harassment of any kind.
-    </h3>
-    <p>Forms of potential harassment include, but are not limited to:</p>
-    <ul>
-      <li>Stalking / Following</li>
-      <li>Deliberate intimidation</li>
-      <li>Harassing photography or recording</li>
-      <li>Sustained disruption of talks or other events</li>
-      <li>Offensive verbal language</li>
-      <li>Verbal language that reinforces social structures of domination</li>
-      <li>Sexual imagery and language in public spaces</li>
-      <li>Inappropriate physical contact</li>
-      <li>Unwelcome sexual or physical attention</li>
-      <li>Physical or cyber threats</li>
-    </ul>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[2]"
-      (change)="updateSectionAcceptance(2, $event.checked)">
-      <p>I agree</p></mat-checkbox
+    to file a report.
+  </p>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[5]"
+    (change)="updateSectionAcceptance(5, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I understand this policy extends to all XL activities.
+  </mat-card-subtitle>
+  <p>
+    This policy extends to talks, forums, workshops, codelabs, social media, all
+    attendees, partners, sponsors, volunteers, staff, etc. You catch our drift.
+    The XL reserves the right to refuse admittance to, or remove any person
+    from, any XL hosted event (including future XL events) at any time in its
+    sole discretion.
+  </p>
+  <p>
+    This includes, but is not limited to, attendees behaving in a disorderly
+    manner or failing to comply with this policy, and the terms and conditions
+    herein. If a participant engages in harassing or uncomfortable behavior, the
+    XL staff may take any action they deem appropriate, including warning or
+    expelling the offender from the event or space.
+  </p>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[6]"
+    (change)="updateSectionAcceptance(6, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I agree to take care of the XL spaces and equipment and to leave everything
+    as clean, or cleaner, as before my usage.
+  </mat-card-subtitle>
+  <p>
+    Our community expects a high degree of cleanliness and tidiness in its
+    spaces such that everyone in our community can expect a fresh, welcoming,
+    and productive environment at all times.
+  </p>
+  <p>This includes:</p>
+  <ul>
+    <li>Promptly and fully cleaning up any spills or accidents</li>
+    <li>Properly disposing of all trash and recyclables</li>
+    <li>Pushing chairs in after usage</li>
+    <li>
+      Resetting the room to its starting point after any temporary changes
+    </li>
+    <li>Erasing whiteboards</li>
+    <li>Not doing anything destructive</li>
+  </ul>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[7]"
+    (change)="updateSectionAcceptance(7, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I understand for this space to remain open to undergraduate students, I need
+    to prove to faculty and administration I will take care of it.
+  </mat-card-subtitle>
+  <p>
+    Some faculty do not believe our undergraduate community is capable of taking
+    care of a space with top-of-the-line chairs, monitors, desks, and so on. The
+    XL staff, ambassadors, and Professor Jordan know our community are capable,
+    but it's on you and everyone to prove it.
+  </p>
+  <p>
+    Over $80,000 of furniture was bought new for the space this year, please
+    treat it like you bought it.
+  </p>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[8]"
+    (change)="updateSectionAcceptance(8, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    Eat in the Lounge Area (SN142 or SN Lobby)
+  </mat-card-subtitle>
+  <p>
+    In order to keep the equipment and facilities of the XL as clean as
+    possible, and avoid the disruptive smells of delicious food while others are
+    working, if you bring food to eat in Sitterson please eat in the lounge area
+    just outside of the XL (SN142) or in the Sitterson Lobby.
+  </p>
+  <p>
+    Do not eat food or have open drinking containers in the workstation spaces
+    with 2nd monitors in the XL.
+  </p>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[9]"
+    (change)="updateSectionAcceptance(9, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    The XL is Not for Gaming - Please Use the Craige E-Sports Arena
+  </mat-card-subtitle>
+  <p>
+    The purpose of the XL is to serve as a community coworking, productivity,
+    and professional development space for the CS Community. If you would like
+    to play games with groups of friends, please do so in the
+    <a
+      href="https://carolinagaming.unc.edu/directions-parking/"
+      target="_blank"
+      style="color: rgb(67, 140, 200)"
+      >Craige Gaming Arena</a
     >
-    <h3>
-      I understand the above policies are in relation to, but not limited to:
-    </h3>
-    <ul>
-      <li>Neurodiversity</li>
-      <li>Race</li>
-      <li>Color</li>
-      <li>National origin</li>
-      <li>Gender identity</li>
-      <li>Gender expression</li>
-      <li>Sexual orientation</li>
-      <li>Age</li>
-      <li>Body size</li>
-      <li>Disabilities</li>
-      <li>Appearance</li>
-      <li>Religion</li>
-      <li>Pregnancy</li>
-      <li>Military status</li>
-      <li>Social demographic</li>
-    </ul>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[3]"
-      (change)="updateSectionAcceptance(3, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>
-      When asked to stop any harassing behavior, I will comply immediately.
-    </h3>
-    <p>
-      Participants asked to stop any harassing behavior are expected to comply
-      immediately. Our zero tolerance policy means that we will look into and
-      review every allegation of violation of our Event Community Guidelines and
-      Anti-Harassment Policy and respond appropriately.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[4]"
-      (change)="updateSectionAcceptance(4, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>
-      I will report any behavior that makes me or others feel uncomfortable.
-    </h3>
-    <p>
-      To report any behavior that makes you or others feel uncomfortable, please
-      email
-      <a style="color: rgb(67, 140, 200)" href="mailto:kris%40cs.unc.edu"
-        >kris&#64;cs.unc.edu</a
-      >
-      to file a report.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[5]"
-      (change)="updateSectionAcceptance(5, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>I understand this policy extends to all XL activities.</h3>
-    <p>
-      This policy extends to talks, forums, workshops, codelabs, social media,
-      all attendees, partners, sponsors, volunteers, staff, etc. You catch our
-      drift. The XL reserves the right to refuse admittance to, or remove any
-      person from, any XL hosted event (including future XL events) at any time
-      in its sole discretion.
-    </p>
-    <p>
-      This includes, but is not limited to, attendees behaving in a disorderly
-      manner or failing to comply with this policy, and the terms and conditions
-      herein. If a participant engages in harassing or uncomfortable behavior,
-      the XL staff may take any action they deem appropriate, including warning
-      or expelling the offender from the event or space.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[6]"
-      (change)="updateSectionAcceptance(6, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>
-      I agree to take care of the XL spaces and equipment and to leave
-      everything as clean, or cleaner, as before my usage.
-    </h3>
-    <p>
-      Our community expects a high degree of cleanliness and tidiness in its
-      spaces such that everyone in our community can expect a fresh, welcoming,
-      and productive environment at all times.
-    </p>
-    <p>This includes:</p>
-    <ul>
-      <li>Promptly and fully cleaning up any spills or accidents</li>
-      <li>Properly disposing of all trash and recyclables</li>
-      <li>Pushing chairs in after usage</li>
-      <li>
-        Resetting the room to its starting point after any temporary changes
-      </li>
-      <li>Erasing whiteboards</li>
-      <li>Not doing anything destructive</li>
-    </ul>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[7]"
-      (change)="updateSectionAcceptance(7, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>
-      I understand for this space to remain open to undergraduate students, I
-      need to prove to faculty and administration I will take care of it.
-    </h3>
-    <p>
-      Some faculty do not believe our undergraduate community is capable of
-      taking care of a space with top-of-the-line chairs, monitors, desks, and
-      so on. The XL staff, ambassadors, and Professor Jordan know our community
-      are capable, but it's on you and everyone to prove it.
-    </p>
-    <p>
-      Over $80,000 of furniture was bought new for the space this year, please
-      treat it like you bought it.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[8]"
-      (change)="updateSectionAcceptance(8, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>Eat in the Lounge Area (SN142 or SN Lobby)</h3>
-    <p>
-      In order to keep the equipment and facilities of the XL as clean as
-      possible, and avoid the disruptive smells of delicious food while others
-      are working, if you bring food to eat in Sitterson please eat in the
-      lounge area just outside of the XL (SN142) or in the Sitterson Lobby.
-    </p>
-    <p>
-      Do not eat food or have open drinking containers in the workstation spaces
-      with 2nd monitors in the XL.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[9]"
-      (change)="updateSectionAcceptance(9, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>The XL is Not for Gaming - Please Use the Craige E-Sports Arena</h3>
-    <p>
-      The purpose of the XL is to serve as a community coworking, productivity,
-      and professional development space for the CS Community. If you would like
-      to play games with groups of friends, please do so in the
-      <a
-        href="https://carolinagaming.unc.edu/directions-parking/"
-        target="_blank"
-        style="color: rgb(67, 140, 200)"
-        >Craige Gaming Arena</a
-      >
-      or elsewhere on campus. If you are playing games in the workstation
-      monitor space, you will be asked to stop and/or take the gameplay
-      elsewhere.
-    </p>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[10]"
-      (change)="updateSectionAcceptance(10, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-    <h3>
-      I understand my access to the XL will be suspended if I leave messes
-      behind, eat in the XL, fail to clean up after myself, destroy, damage
-      property of the XL, or otherwise act outside the community's standards.
-    </h3>
-    <mat-checkbox
-      *ngIf="!has_user_agreed"
-      [(ngModel)]="agreementSectionsAccepted[11]"
-      (change)="updateSectionAcceptance(11, $event.checked)">
-      <p>I agree</p></mat-checkbox
-    >
-  </mat-card-content>
-  <mat-card-actions class="actions">
-    <button
-      mat-button
-      color="primary"
-      style="
-        background-color: rgb(61, 129, 184);
-        color: white;
-        margin-left: 8px;
-        margin-top: 12px;
-        margin-bottom: 45px;
-      "
-      (click)="onButtonClick()">
-      {{ has_user_agreed ? 'Close' : 'Accept' }}
-    </button>
-  </mat-card-actions>
-</mat-card-content>
+    or elsewhere on campus. If you are playing games in the workstation monitor
+    space, you will be asked to stop and/or take the gameplay elsewhere.
+  </p>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[10]"
+    (change)="updateSectionAcceptance(10, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+  <mat-divider />
+  <mat-card-subtitle>
+    I understand my access to the XL will be suspended if I leave messes behind,
+    eat in the XL, fail to clean up after myself, destroy, damage property of
+    the XL, or otherwise act outside the community's standards.
+  </mat-card-subtitle>
+  @if(!hasUserAgreed) {
+  <mat-slide-toggle
+    [(ngModel)]="agreementSectionsAccepted[11]"
+    (change)="updateSectionAcceptance(11, $event.checked)">
+    I agree
+  </mat-slide-toggle>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onButtonClick()"
+    [disabled]="!hasUserAgreed && !this.allSectionsAccepted()">
+    {{ hasUserAgreed ? 'Close' : 'Accept' }}
+  </button>
+</mat-dialog-actions>

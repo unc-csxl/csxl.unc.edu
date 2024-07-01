@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
@@ -73,6 +74,7 @@ import { TabContainerWidget } from './tab-container/tab-container.widget';
     ReactiveFormsModule,
     MatIconModule,
     MatTooltipModule,
+    MatSlideToggleModule,
     RouterModule
   ],
   exports: [

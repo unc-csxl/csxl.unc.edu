@@ -14,7 +14,7 @@
   </mat-card-header>
   <mat-card-content>
     @for (section of course.sections; track section.number) {
-    <p>{{ course.sections[0].meeting_pattern }}</p>
+    <p>{{ section.meeting_pattern }}</p>
     }
   </mat-card-content>
   <mat-card-actions class="course-card-actions">
