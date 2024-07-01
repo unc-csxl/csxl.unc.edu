@@ -74,8 +74,8 @@ export interface Room {
 
 /** Defines a Roster Role */
 export enum RosterRole {
-  STUDENT = 0,
-  UTA = 1,
-  GTA = 2,
-  INSTRUCTOR = 3
+  STUDENT = 'Student',
+  UTA = 'UTA',
+  GTA = 'GTA',
+  INSTRUCTOR = 'Instructor'
 }
