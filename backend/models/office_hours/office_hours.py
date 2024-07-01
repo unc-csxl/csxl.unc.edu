@@ -31,15 +31,14 @@ class Weekday(Enum):
         return "%s" % self.value
 
 
-class OfficeHours(BaseModel):
+class NewOfficeHours(BaseModel):
     """
-    Pydantic model to represent an `OfficeHours`.
+    Pydantic model to represent new office hours.
 
     This model is based on the `OfficeHoursEntity` model, which defines the shape
-    of the `OfficeHours` database in the PostgreSQL database.
+    of the office hours database in the PostgreSQL database.
     """
 
-    id: int
     type: OfficeHoursEventType
     mode: OfficeHoursEventModeType
     description: str
@@ -48,3 +47,14 @@ class OfficeHours(BaseModel):
     end_time: datetime
     course_site_id: int
     room_id: str
+
+
+class OfficeHours(NewOfficeHours):
+    """
+    Pydantic model to represent an `OfficeHours`.
+
+    This model is based on the `OfficeHoursEntity` model, which defines the shape
+    of the `OfficeHours` database in the PostgreSQL database.
+    """
+
+    id: int

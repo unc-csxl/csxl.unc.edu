@@ -41,6 +41,11 @@ import { CalledTicketCardWidget } from './course/office-hours/widgets/called-tic
 import { QueuedTicketCardWidget } from './course/office-hours/widgets/queued-ticket-card/queued-ticket-card.widget';
 import { OfficeHoursGetHelpComponent } from './course/office-hours/office-hours-get-help/office-hours-get-help.component';
 import { MatInputModule } from '@angular/material/input';
+import { CreateCourseSiteDialog } from './dialogs/create-course-site/create-course-site.dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SettingsComponent } from './course/settings/settings.component';
+import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog';
+import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
 
 @NgModule({
   declarations: [
@@ -53,10 +58,14 @@ import { MatInputModule } from '@angular/material/input';
     OfficeHoursPageComponent,
     OfficeHoursQueueComponent,
     OfficeHoursGetHelpComponent,
+    OfficeHoursEditorComponent,
+    SettingsComponent,
     CourseCardWidget,
     OfficeHourEventCardWidget,
     CalledTicketCardWidget,
-    QueuedTicketCardWidget
+    QueuedTicketCardWidget,
+    CreateCourseSiteDialog,
+    ImportRosterDialog
   ],
   imports: [
     CommonModule,
@@ -77,7 +86,8 @@ import { MatInputModule } from '@angular/material/input';
     MatPaginatorModule,
     MatButtonToggleModule,
     MatChipsModule,
-    MatInputModule
+    MatInputModule,
+    MatAutocompleteModule
   ]
 })
 export class MyCoursesModule {}

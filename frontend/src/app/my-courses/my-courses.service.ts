@@ -29,7 +29,13 @@ import {
   parseOfficeHourQueueOverview,
   parseOfficeHourTicketOverviewJson,
   parseTermOverviewJsonList,
-  TicketDraft
+  TicketDraft,
+  NewCourseSite,
+  CourseSite,
+  OfficeHours,
+  OfficeHoursJson,
+  parseOfficeHoursJson,
+  NewOfficeHours
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
@@ -55,6 +61,22 @@ export class MyCoursesService {
       return term.end < currentDate;
     });
   });
+
+  allTerms = computed(() => {
+    return this.termsSignal();
+  });
+
+  teachingCoursesWithNoSite = computed(() => {
+    return this.termsSignal()
+      .flatMap((term) => term.teaching_no_site.length > 0)
+      .includes(true);
+  });
+
+  courseOverview(id: number) {
+    return this.termsSignal()
+      .flatMap((term) => term.sites)
+      .find((site) => site.id == id);
+  }
 
   /** Constructor */
   constructor(
@@ -188,5 +210,84 @@ export class MyCoursesService {
       'api/office-hours/ticket/',
       ticketDraft
     );
+  }
+
+  /**
+   * Creates a new course site.
+   * @param newCourseSite New course site to create
+   * @returns {Observable<CourseSite>}
+   */
+  createCourseSite(newCourseSite: NewCourseSite): Observable<CourseSite> {
+    return this.http.post<CourseSite>(`/api/my-courses/new`, newCourseSite);
+  }
+
+  /**
+   * Imports a roster for from a Canvas CSV File
+   * @returns {Observable<{ uploaded: number }>}
+   */
+  importRosterFromCanvasCSV(
+    section_id: number,
+    csvData: string
+  ): Observable<{ uploaded: number }> {
+    return this.http.post<{ uploaded: number }>(
+      `/api/academics/section-member/import-from-canvas/${section_id}`,
+      {
+        csv_data: csvData
+      }
+    );
+  }
+
+  /**
+   * Retrieve office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHoursId: ID of the office hours.
+   * @returns {Observable<OfficeHours>}
+   */
+  getOfficeHours(
+    siteId: number,
+    officeHoursId: number
+  ): Observable<OfficeHours> {
+    return this.http
+      .get<OfficeHoursJson>(`/api/office-hours/${siteId}/${officeHoursId}`)
+      .pipe(map(parseOfficeHoursJson));
+  }
+
+  /**
+   * Create office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to create.
+   * @returns {Observable<OfficeHours>}
+   */
+  createOfficeHours(
+    siteId: number,
+    officeHours: NewOfficeHours
+  ): Observable<OfficeHours> {
+    return this.http
+      .post<OfficeHoursJson>(`/api/office-hours/${siteId}`, officeHours)
+      .pipe(map(parseOfficeHoursJson));
+  }
+
+  /**
+   * Update office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to update.
+   * @returns {Observable<OfficeHours>}
+   */
+  updateOfficeHours(
+    siteId: number,
+    officeHours: OfficeHours
+  ): Observable<OfficeHours> {
+    return this.http
+      .put<OfficeHoursJson>(`/api/office-hours/${siteId}`, officeHours)
+      .pipe(map(parseOfficeHoursJson));
+  }
+
+  /**
+   * Delete office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHoursId: ID of the office hours.
+   */
+  deleteOfficeHours(siteId: number, officeHoursId: number) {
+    return this.http.delete(`/api/office-hours/${siteId}/${officeHoursId}`);
   }
 }

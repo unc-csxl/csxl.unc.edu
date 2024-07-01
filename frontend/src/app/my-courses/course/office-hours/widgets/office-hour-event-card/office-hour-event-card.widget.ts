@@ -23,7 +23,7 @@ import { Observable, map, of } from 'rxjs';
 export class OfficeHourEventCardWidget implements OnInit {
   /** The event to show */
   @Input() event!: OfficeHourEventOverview;
-
+  @Input() editRoute: string = '';
   /** Role for the event */
   role$: Observable<string> = of('');
 

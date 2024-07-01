@@ -1,9 +1,11 @@
 import { Component, WritableSignal, signal } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import {
   OfficeHourEventOverview,
   OfficeHourEventOverviewJson,
+  OfficeHours,
   parseOfficeHourEventOverviewJson
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
@@ -44,7 +46,7 @@ export class OfficeHoursPageComponent {
   private previousFutureOfficeHourEventParams: PaginationParams =
     DEFAULT_PAGINATION_PARAMS;
 
-  public futureOhDisplayedColumns: string[] = ['date', 'type'];
+  public futureOhDisplayedColumns: string[] = ['date', 'type', 'actions'];
 
   /** Encapsulated past events paginator and params */
   private pastOfficeHourEventsPaginator: Paginator<OfficeHourEventOverview>;
@@ -56,16 +58,19 @@ export class OfficeHoursPageComponent {
 
   public pastOhDisplayedColumns: string[] = ['date', 'type'];
 
+  courseSiteId: string;
+
   constructor(
     private route: ActivatedRoute,
-    protected myCoursesService: MyCoursesService
+    protected myCoursesService: MyCoursesService,
+    private snackBar: MatSnackBar
   ) {
     // Load information from the parent route
-    let courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
+    this.courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
 
     // Load office hour data
     this.myCoursesService
-      .getCurrentOfficeHourEvents(courseSiteId)
+      .getCurrentOfficeHourEvents(this.courseSiteId)
       .subscribe((overview) => {
         this.currentOfficeHourEvents.set(overview);
       });
@@ -73,7 +78,7 @@ export class OfficeHoursPageComponent {
     // Load paginated future office hours data
     this.futureOfficeHourEventsPaginator =
       new Paginator<OfficeHourEventOverview>(
-        `/api/my-courses/${courseSiteId}/oh-events/future`
+        `/api/my-courses/${this.courseSiteId}/oh-events/future`
       );
 
     this.futureOfficeHourEventsPaginator
@@ -87,7 +92,7 @@ export class OfficeHoursPageComponent {
 
     // Load paginated past office hours data
     this.pastOfficeHourEventsPaginator = new Paginator<OfficeHourEventOverview>(
-      `/api/my-courses/${courseSiteId}/oh-events/history`
+      `/api/my-courses/${this.courseSiteId}/oh-events/history`
     );
 
     this.pastOfficeHourEventsPaginator
@@ -130,6 +135,31 @@ export class OfficeHoursPageComponent {
         this.pastOfficeHourEventsPage.set(page);
         this.previousPastOfficeHourEventParams = paginationParams;
       });
+  }
+
+  deleteOfficeHours(officeHours: OfficeHourEventOverview) {
+    let confirmDelete = this.snackBar.open(
+      'Are you sure you want to delete this office hours event?',
+      'Delete',
+      { duration: 15000 }
+    );
+    confirmDelete.onAction().subscribe(() => {
+      this.myCoursesService
+        .deleteOfficeHours(+this.courseSiteId, officeHours.id)
+        .subscribe(() => {
+          this.futureOfficeHourEventsPaginator
+            .loadPage<OfficeHourEventOverviewJson>(
+              this.previousFutureOfficeHourEventParams,
+              parseOfficeHourEventOverviewJson
+            )
+            .subscribe((page) => {
+              this.futureOfficeHourEventsPage.set(page);
+            });
+          this.snackBar.open('The office hours has been deleted.', '', {
+            duration: 2000
+          });
+        });
+    });
   }
 }
 

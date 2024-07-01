@@ -5,7 +5,16 @@ from ...models.office_hours.ticket_state import TicketState
 from ...models.office_hours.ticket_type import TicketType
 
 
+class TeachingSectionOverview(BaseModel):
+    id: int
+    subject_code: str
+    course_number: str
+    section_number: str
+    title: str
+
+
 class SectionOverview(BaseModel):
+    id: int
     number: str
     meeting_pattern: str
     course_site_id: int | None
@@ -35,6 +44,7 @@ class TermOverview(BaseModel):
     start: datetime
     end: datetime
     sites: list[CourseSiteOverview]
+    teaching_no_site: list[TeachingSectionOverview]
 
 
 class CourseMemberOverview(BaseModel):

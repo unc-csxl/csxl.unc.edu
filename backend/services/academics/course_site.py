@@ -18,12 +18,19 @@ from ...models.academics.my_courses import (
     CourseMemberOverview,
     OfficeHoursOverview,
     TicketState,
+    TeachingSectionOverview,
 )
+from ...models.office_hours.course_site import (
+    CourseSite,
+    NewCourseSite,
+    UpdatedCourseSite,
+)
+from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
-from ..exceptions import CoursePermissionException
+from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
 __authors__ = ["Ajay Gandecha", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -52,7 +59,6 @@ class CourseSiteService:
             select(SectionMemberEntity)
             .where(SectionMemberEntity.user_id == user.id)
             .join(SectionEntity)
-            .where(SectionEntity.course_site_id != None)
             .options(
                 joinedload(SectionMemberEntity.section).joinedload(
                     SectionEntity.course_site
@@ -79,29 +85,41 @@ class CourseSiteService:
         terms = []
         for term, term_memberships in groupby(entities, lambda x: x.section.term):
 
+            # Since the output `term_memberships` is an iterator, we cannot iterate over the list
+            # more than once, which we need to do below. So, this copies the original iterator
+            # into a standard list so that we can iterate over it twice.
+            memberships = list(term_memberships)
+
             course_sites = []
+            teaching_no_site = [
+                self._to_teaching_section_overview(membership.section)
+                for membership in memberships
+                if membership.member_role == RosterRole.INSTRUCTOR
+                and membership.section.course_site_id == None
+            ]
 
             for (course_site, course), course_memberships in groupby(
-                term_memberships,
+                memberships,
                 lambda membership: (
                     membership.section.course_site,
                     membership.section.course,
                 ),
             ):
-                memberships = list(course_memberships)
-                course_sites.append(
-                    CourseSiteOverview(
-                        id=course_site.id,
-                        subject_code=course.subject_code,
-                        number=course.number,
-                        title=memberships[0].section.override_title or course.title,
-                        role=memberships[0].member_role.value,
-                        sections=[
-                            self._to_section_overview(membership.section)
-                            for membership in memberships
-                        ],
+                if course_site:
+                    memberships = list(course_memberships)
+                    course_sites.append(
+                        CourseSiteOverview(
+                            id=course_site.id,
+                            subject_code=course.subject_code,
+                            number=course.number,
+                            title=memberships[0].section.override_title or course.title,
+                            role=memberships[0].member_role.value,
+                            sections=[
+                                self._to_section_overview(membership.section)
+                                for membership in memberships
+                            ],
+                        )
                     )
-                )
 
             terms.append(
                 TermOverview(
@@ -110,15 +128,28 @@ class CourseSiteService:
                     start=term.start,
                     end=term.end,
                     sites=course_sites,
+                    teaching_no_site=teaching_no_site,
                 )
             )
         return terms
 
     def _to_section_overview(self, section: SectionEntity) -> SectionOverview:
         return SectionOverview(
+            id=section.id,
             number=section.number,
             meeting_pattern=section.meeting_pattern,
             course_site_id=section.course_site_id,
+        )
+
+    def _to_teaching_section_overview(
+        self, section: SectionEntity
+    ) -> TeachingSectionOverview:
+        return TeachingSectionOverview(
+            id=section.id,
+            subject_code=section.course.subject_code,
+            course_number=section.course.number,
+            section_number=section.number,
+            title=section.override_description or section.course.title,
         )
 
     def get_course_site_roster(
@@ -398,4 +429,210 @@ class CourseSiteService:
                 ]
             ),
             total_tickets=len(oh_event.tickets),
+        )
+
+    def create(self, user: User, new_site: NewCourseSite) -> CourseSite:
+        """
+        Creates a course site for an instructor with sections.
+        """
+
+        # Find all the user's section memberships for the term and sections inputted
+        membership_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(SectionMemberEntity.section_id.in_(new_site.section_ids))
+            .where(SectionEntity.term_id == new_site.term_id)
+            .options(joinedload(SectionMemberEntity.section))
+        )
+
+        membership_entities = self._session.scalars(membership_query).all()
+        section_entities = [membership.section for membership in membership_entities]
+
+        # This check fails the creation of a course site if the sections inputted are either not in the term, or if
+        # a user is not a member of the course.
+        if len(membership_entities) != len(new_site.section_ids):
+            raise CoursePermissionException(
+                "You cannot add sections to a course site that you are not an instructor for, or sections in different terms."
+            )
+
+        # This check ensures that the user is an instructor for every section inputted.
+        for membership in membership_entities:
+            if membership.member_role != RosterRole.INSTRUCTOR:
+                raise CoursePermissionException(
+                    "You cannot add sections to a course site that you are not an instructor for."
+                )
+
+        # Ensure that sections provided are not already in a course site.
+        for section in section_entities:
+            if section.course_site_id != None:
+                raise CoursePermissionException(
+                    f"Section with ID: { section.id} is already in another course site."
+                )
+
+        # Create the course site, add, and save so the id field populates.
+        course_site_entity = CourseSiteEntity.from_new_model(new_site)
+        self._session.add(course_site_entity)
+        self._session.commit()
+
+        # Update the sections to add to the course site.
+        for section_entity in section_entities:
+            section_entity.course_site_id = course_site_entity.id
+
+        # Save changes
+        self._session.commit()
+
+        # Return the model
+        return course_site_entity.to_model()
+
+    def update(self, user: User, updated_site: UpdatedCourseSite) -> CourseSite:
+        """
+        Update a course site.
+        """
+        # Get the site entity
+        course_site_query = (
+            select(CourseSiteEntity)
+            .join(SectionEntity)
+            .join(SectionMemberEntity)
+            .where(CourseSiteEntity.id == updated_site.id)
+            .options(
+                joinedload(CourseSiteEntity.sections),
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.members),
+            )
+        )
+        course_site_entity = (
+            self._session.scalars(course_site_query).unique().one_or_none()
+        )
+
+        # Complete error handling
+        if course_site_entity is None:
+            raise ResourceNotFoundException(
+                f"Course site with ID: {updated_site.id} not found."
+            )
+
+        # Compelete error handling for existing sections
+        old_section_entities = [section for section in course_site_entity.sections]
+        for section in old_section_entities:
+            members = [
+                member
+                for member in section.members
+                if member.user_id == user.id
+                and member.member_role == RosterRole.INSTRUCTOR
+            ]
+            if len(members) == 0:
+                raise CoursePermissionException(
+                    "Cannot modify a course page containing a section you are not an instructor for."
+                )
+
+        # Find all the user's section memberships for the term and sections inputted
+        membership_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(SectionMemberEntity.section_id.in_(updated_site.section_ids))
+            .where(SectionEntity.term_id == updated_site.term_id)
+            .options(joinedload(SectionMemberEntity.section))
+        )
+
+        membership_entities = self._session.scalars(membership_query).all()
+        new_section_entities = [
+            membership.section for membership in membership_entities
+        ]
+
+        # This check fails the creation of a course site if the sections inputted are either not in the term, or if
+        # a user is not a member of the course.
+        if len(membership_entities) != len(updated_site.section_ids):
+            raise CoursePermissionException(
+                "You cannot add sections to a course site that you are not an instructor for, or sections in different terms."
+            )
+
+        # This check ensures that the user is an instructor for every section inputted.
+        for membership in membership_entities:
+            if membership.member_role != RosterRole.INSTRUCTOR:
+                raise CoursePermissionException(
+                    "You cannot add sections to a course site that you are not an instructor for."
+                )
+
+        # Complete the updates
+        course_site_entity.title = updated_site.title
+
+        for section in old_section_entities:
+            section.course_site_id = None
+
+        for section in new_section_entities:
+            if section.course_site_id:
+                raise CoursePermissionException(
+                    f"Section with ID: { section.id} is already in another course site."
+                )
+
+            section.course_site_id = updated_site.id
+
+        # Save all changes in one commit
+        self._session.commit()
+
+        # Return updated site
+        return course_site_entity.to_model()
+
+    def get(self, user: User, site_id: int) -> CourseSiteOverview:
+        """
+        Returns a course site overview.
+        """
+        # Get the site entity
+        course_site_query = (
+            select(CourseSiteEntity)
+            .join(SectionEntity)
+            .join(SectionMemberEntity)
+            .where(CourseSiteEntity.id == site_id)
+            .where(SectionMemberEntity.user_id == user.id)
+            .options(
+                joinedload(CourseSiteEntity.sections),
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.course),
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.members),
+            )
+        )
+
+        course_site_entity = (
+            self._session.scalars(course_site_query).unique().one_or_none()
+        )
+
+        # Complete error handling
+        if course_site_entity is None:
+            raise CoursePermissionException(f"Cannot access course with ID: {site_id}")
+
+        # Create query off of the member query for just the members matching
+        # with the current user (used to determine permissions)
+        user_member_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == user.id)
+            .join(SectionEntity)
+            .where(SectionEntity.course_site_id == site_id)
+        )
+        user_members = self._session.scalars(user_member_query).unique().all()
+
+        # Return overview
+        return CourseSiteOverview(
+            id=course_site_entity.id,
+            subject_code=(
+                course_site_entity.sections[0].course.subject_code
+                if len(course_site_entity.sections) > 0
+                else ""
+            ),
+            number=(
+                course_site_entity.sections[0].course.number
+                if len(course_site_entity.sections) > 0
+                else ""
+            ),
+            title=(
+                (
+                    course_site_entity.sections[0].override_title
+                    or course_site_entity.sections[0].course.title
+                )
+                if len(course_site_entity.sections) > 0
+                else ""
+            ),
+            role=user_members[0].member_role.value,
+            sections=[
+                self._to_section_overview(section)
+                for section in course_site_entity.sections
+            ],
         )

@@ -24,6 +24,12 @@ link="https://github.com/unc-csxl/csxl.unc.edu/wiki/Upgrade-to-CSXL-Web-Applicat
           <!-- <mat-icon>add</mat-icon> -->
           Join Course
         </button>
+        @if (this.myCoursesService.teachingCoursesWithNoSite()) {
+          <button mat-flat-button color="tertiary" (click)="createCourseSite()">
+            <!-- <mat-icon>add</mat-icon> -->
+            Create Course Site
+          </button>
+        }
       </div>
     </mat-card-header>
     <mat-card-content>

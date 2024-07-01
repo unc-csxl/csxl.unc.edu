@@ -32,19 +32,26 @@ sp_24 = Term(
 )
 
 ss1_24 = Term(
-    id="SSI24",
+    id="SuI24",
     name="Summer Session I 2024",
     start=datetime(2024, 5, 13),
     end=datetime(2024, 6, 23),
+)
+
+ss2_24 = Term(
+    id="SuII24",
+    name="Summer Session II 2024",
+    start=datetime(2024, 6, 23),
+    end=datetime(2024, 7, 30),
 )
 
 new_term = Term(
     id="F24", name="Fall 2024", start=datetime(2024, 8, 20), end=datetime(2024, 12, 15)
 )
 
-terms = [sp_23, f_23, sp_24, ss1_24]
+terms = [sp_23, f_23, sp_24, ss1_24, ss2_24]
 
-current_term = ss1_24
+current_term = ss2_24
 
 today = datetime(2023, 12, 1)
 bad_day = datetime(3000, 1, 1)

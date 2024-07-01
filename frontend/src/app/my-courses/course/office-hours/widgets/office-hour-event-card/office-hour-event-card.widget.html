@@ -13,6 +13,11 @@
     <p>{{ event.location }}</p>
   </mat-card-content>
   <mat-card-actions class="office-hours-event-card-actions">
+    @if ((role$ | async) !== 'Student') {
+    <button mat-stroked-button color="secondary" [routerLink]="editRoute">
+      Edit
+    </button>
+    }
     <button
       mat-flat-button
       color="primary"

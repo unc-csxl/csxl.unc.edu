@@ -31,6 +31,7 @@ from .services.exceptions import (
     UserPermissionException,
     ResourceNotFoundException,
     CoursePermissionException,
+    CourseDataScrapingException,
 )
 
 __authors__ = ["Kris Jordan"]
@@ -114,6 +115,13 @@ def resource_not_found_exception_handler(
     request: Request, e: ResourceNotFoundException
 ):
     return JSONResponse(status_code=404, content={"message": str(e)})
+
+
+@app.exception_handler(CourseDataScrapingException)
+def resource_not_found_exception_handler(
+    request: Request, e: CourseDataScrapingException
+):
+    return JSONResponse(status_code=500, content={"message": str(e)})
 
 
 # Add feature-specific exception handling middleware

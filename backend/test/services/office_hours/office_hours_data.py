@@ -16,12 +16,16 @@ from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ....entities.academics.section_entity import SectionEntity
 
 
-from ....models.office_hours.office_hours import OfficeHours
+from ....models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ....models.office_hours.event_type import (
     OfficeHoursEventModeType,
     OfficeHoursEventType,
 )
-from ....models.office_hours.course_site import CourseSite
+from ....models.office_hours.course_site import (
+    CourseSite,
+    NewCourseSite,
+    UpdatedCourseSite,
+)
 from ....models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
@@ -250,4 +254,159 @@ new_ticket = NewOfficeHoursTicket(
     description="Help me!",
     type=TicketType.ASSIGNMENT_HELP,
     office_hours_id=comp_110_current_office_hours.id,
+)
+
+new_course_site = NewCourseSite(
+    title="Ina's COMP 301",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
+    ],
+)
+
+new_course_site_term_mismatch = NewCourseSite(
+    title="Ina's COMP 301",
+    term_id=term_data.f_23.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
+    ],
+)
+
+
+new_course_site_term_nonmember = NewCourseSite(
+    title="Ina's COMP 3x1",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_311_001_current_term.id,
+    ],
+)
+new_course_site_term_noninstructor = NewCourseSite(
+    title="Ina's COMP 3x1",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+
+new_course_site_term_already_in_site = NewCourseSite(
+    title="Ina's COMP courses",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_110_001_current_term.id,
+    ],
+)
+
+updated_comp_110_site = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_110_001_current_term.id],
+)
+
+updated_comp_110_site_term_mismatch = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_101_001.id,
+    ],
+)
+
+updated_course_site_term_nonmember = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_311_001_current_term.id,
+    ],
+)
+
+updated_course_does_not_exist = UpdatedCourseSite(
+    id=404,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+updated_course_site_term_noninstructor = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_311_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+updated_course_site_term_already_in_site = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_110_001_current_term.id,
+    ],
+)
+
+new_site_other_user = NewCourseSite(
+    title="Rhonda",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_311_001_current_term.id],
+)
+
+new_event = NewOfficeHours(
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+)
+
+new_event_site_not_found = NewOfficeHours(
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=404,
+    room_id=room_data.group_a.id,
+)
+
+updated_future_event = OfficeHours(
+    id=2,
+    type=OfficeHoursEventType.REVIEW_SESSION,
+    mode=OfficeHoursEventModeType.VIRTUAL_OUR_LINK,
+    description="Future CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=1),
+    end_time=datetime.now() + timedelta(days=1, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+)
+
+nonexistent_event = OfficeHours(
+    id=404,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
 )

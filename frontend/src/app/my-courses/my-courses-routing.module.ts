@@ -18,6 +18,8 @@ import { RosterComponent } from './course/roster/roster.component';
 import { OfficeHoursPageComponent } from './course/office-hours/office-hours-page/office-hours-page.component';
 import { OfficeHoursQueueComponent } from './course/office-hours/office-hours-queue/office-hours-queue.component';
 import { OfficeHoursGetHelpComponent } from './course/office-hours/office-hours-get-help/office-hours-get-help.component';
+import { SettingsComponent } from './course/settings/settings.component';
+import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
 
 const routes: Routes = [
   MyCoursesPageComponent.Route,
@@ -31,9 +33,11 @@ const routes: Routes = [
     component: CourseComponent,
     children: [
       RosterComponent.Route,
+      SettingsComponent.Route,
       OfficeHoursPageComponent.Route,
       OfficeHoursQueueComponent.Route,
-      OfficeHoursGetHelpComponent.Route
+      OfficeHoursGetHelpComponent.Route,
+      OfficeHoursEditorComponent.Route
     ]
   }
 ];

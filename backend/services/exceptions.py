@@ -31,3 +31,10 @@ class EventRegistrationException(Exception):
 
     def __init__(self, event_id: int):
         super().__init__(f"Unable to register user for the event with id: {event_id}")
+
+
+class CourseDataScrapingException(Exception):
+    """CourseDataScrapingException is raised when an unexpected error occurs when scraping UNC course data."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")

@@ -4,7 +4,7 @@ from datetime import datetime, date
 from typing import Self
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from ...models.office_hours.office_hours import OfficeHours
+from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.office_hours_details import OfficeHoursDetails
 
 from ...models.office_hours.event_type import (
@@ -71,6 +71,27 @@ class OfficeHoursEntity(EntityBase):
     tickets: Mapped[list["OfficeHoursTicketEntity"]] = relationship(
         back_populates="office_hours", cascade="all, delete"
     )
+
+    @classmethod
+    def from_new_model(cls, model: NewOfficeHours) -> Self:
+        """
+        Class method that converts an `NewOfficeHours` model into a `OfficeHoursEntity`
+
+        Parameters:
+            - model (NewOfficeHours): Model to convert into an entity
+        Returns:
+            OfficeHoursEntity: Entity created from model
+        """
+        return cls(
+            type=model.type,
+            mode=model.mode,
+            description=model.description,
+            location_description=model.location_description,
+            start_time=model.start_time,
+            end_time=model.end_time,
+            course_site_id=model.course_site_id,
+            room_id=model.room_id,
+        )
 
     @classmethod
     def from_model(cls, model: OfficeHours) -> Self:

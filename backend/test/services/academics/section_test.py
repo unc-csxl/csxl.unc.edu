@@ -244,3 +244,7 @@ def test_user_add_section_member(section_member_svc: SectionMemberService):
             member_role=RosterRole.INSTRUCTOR,
         )
         pytest.fail()
+
+
+def test_update_enrollments(section_svc: SectionService):
+    section_svc.update_enrollment_totals(user_data.root)

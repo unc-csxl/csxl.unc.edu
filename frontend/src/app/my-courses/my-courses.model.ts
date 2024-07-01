@@ -7,9 +7,11 @@
  * @license MIT
  */
 
+import { Section } from '../academics/academics.models';
 import { Paginated, PaginationParams } from '../pagination';
 
 export interface SectionOverview {
+  id: number;
   number: string;
   meeting_pattern: string;
   course_site_id: number | null;
@@ -24,12 +26,21 @@ export interface CourseOverview {
   role: string;
 }
 
+export interface TeachingSectionOverview {
+  id: number;
+  subject_code: string;
+  course_number: string;
+  section_number: string;
+  title: string;
+}
+
 export interface TermOverview {
   id: string;
   name: string;
   start: Date;
   end: Date;
   sites: CourseSiteOverview[];
+  teaching_no_site: TeachingSectionOverview[];
 }
 
 export interface TermOverviewJson {
@@ -38,6 +49,7 @@ export interface TermOverviewJson {
   start: string;
   end: string;
   sites: CourseSiteOverview[];
+  teaching_no_site: TeachingSectionOverview[];
 }
 
 export interface CourseMemberOverview {
@@ -163,6 +175,64 @@ export interface CourseSiteOverview {
   sections: SectionOverview[];
 }
 
+export interface NewCourseSite {
+  title: string;
+  term_id: string;
+  section_ids: number[];
+}
+
+export interface CourseSite {
+  id: string;
+  title: string;
+  term_id: string;
+}
+
+export interface NewOfficeHoursJson {
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: string;
+  end_time: string;
+  course_site_id: number;
+  room_id: string;
+}
+
+export interface NewOfficeHours {
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: Date;
+  end_time: Date;
+  course_site_id: number;
+  room_id: string;
+}
+
+export interface OfficeHoursJson {
+  id: number;
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: string;
+  end_time: string;
+  course_site_id: number;
+  room_id: string;
+}
+
+export interface OfficeHours {
+  id: number;
+  type: number;
+  mode: number;
+  description: string;
+  location_description: string;
+  start_time: Date;
+  end_time: Date;
+  course_site_id: number;
+  room_id: string;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.
@@ -237,5 +307,23 @@ export const parseOfficeHourGetHelpOverviewJson = (
       : undefined,
     event_start_time: new Date(responseModel.event_start_time),
     event_end_time: new Date(responseModel.event_end_time)
+  });
+};
+
+export const parseNewOfficeHoursJson = (
+  responseModel: NewOfficeHoursJson
+): NewOfficeHoursJson => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time)
+  });
+};
+
+export const parseOfficeHoursJson = (
+  responseModel: OfficeHoursJson
+): OfficeHours => {
+  return Object.assign({}, responseModel, {
+    start_time: new Date(responseModel.start_time),
+    end_time: new Date(responseModel.end_time)
   });
 };
