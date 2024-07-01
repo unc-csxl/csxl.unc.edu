@@ -14,7 +14,10 @@
   </mat-card-header>
   <mat-card-content>
     @for (section of course.sections; track section.number) {
-    <p>{{ course.sections[0].meeting_pattern }}</p>
+    <p class="meeting-pattern-text">
+      {{ course.sections.length > 1 ? 'Sec ' + section.number + ': ' : ''
+      }}{{ course.sections[0].meeting_pattern }}
+    </p>
     }
   </mat-card-content>
   <mat-card-actions class="course-card-actions">
