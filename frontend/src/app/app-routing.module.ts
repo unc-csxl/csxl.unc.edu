@@ -49,12 +49,16 @@ const routes: Routes = [
       import('./event/event.module').then((m) => m.EventModule)
   },
   {
-    path: 'office-hours',
-    title: 'Office Hours',
+    path: '',
+    title: 'My Courses',
     loadChildren: () =>
-      import('./office-hours/office-hours.module').then(
-        (m) => m.OfficeHoursModule
-      )
+      import('./my-courses/my-courses.module').then((m) => m.MyCoursesModule)
+  },
+  {
+    path: '',
+    title: 'My Courses',
+    loadChildren: () =>
+      import('./my-courses/my-courses.module').then((m) => m.MyCoursesModule)
   },
   {
     path: 'ta-application',

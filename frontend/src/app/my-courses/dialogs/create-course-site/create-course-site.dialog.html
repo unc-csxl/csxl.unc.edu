@@ -1,0 +1,78 @@
+<h2 mat-dialog-title>Create Course Site</h2>
+<mat-dialog-content>
+  <form>
+    <p>
+      Creating a course site for your course section will allow you to manage
+      your office hours, rosters, and more. Office hours are shared for all
+      course sections within the same site. You may only add a section to one
+      course page at a time. You can add and remove sections later, but you
+      cannot change the term of a course site later.
+    </p>
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        placeholder="Enter the title for the course site."
+        [formControl]="title"
+        required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Select Term</mat-label>
+      <mat-select
+        [formControl]="selectedTerm"
+        (selectionChange)="resetSections()">
+        @for(term of myCoursesService.allTerms(); track term.id) {
+        <mat-option [value]="term">{{ term.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if(selectedTerm.value) {
+    <mat-form-field appearance="outline">
+      <mat-label>Select Course Sections</mat-label>
+      <mat-chip-grid #chipGrid>
+        @for (section of selectedSections(); track section.id) {
+        <mat-chip-row (removed)="remove(section)">
+          {{ section.subject_code }} {{ section.course_number }}-{{
+            section.section_number
+          }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input
+        name="currentSection"
+        placeholder="Add Sections..."
+        #sectionInput
+        [(ngModel)]="currentSectionInput"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto" />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event)">
+        @for (section of selectedTerm.value!.teaching_no_site; track section.id)
+        { @if (!selectedSections().includes(section)) {
+        <mat-option [value]="section"
+          >{{ section.subject_code }} {{ section.course_number }}-{{
+            section.section_number
+          }}</mat-option
+        >
+        } }
+      </mat-autocomplete>
+    </mat-form-field>
+    }
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="secondary" (click)="close()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="!formIsValid()"
+    (click)="submit()">
+    Create
+  </button>
+</mat-dialog-actions>

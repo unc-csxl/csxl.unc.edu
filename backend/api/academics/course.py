@@ -44,19 +44,6 @@ def get_course_by_id(
     return course_service.get_by_id(id)
 
 
-@api.get("/{subject_code}/{number}", response_model=CourseDetails, tags=["Academics"])
-def get_course_by_subject_code(
-    subject_code: str, number: str, course_service: CourseService = Depends()
-) -> CourseDetails:
-    """
-    Gets one course by its properties
-
-    Returns:
-        CourseDetails: Course with the given ID
-    """
-    return course_service.get(subject_code, number)
-
-
 @api.post("", response_model=CourseDetails, tags=["Academics"])
 def new_course(
     course: Course,

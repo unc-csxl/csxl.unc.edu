@@ -40,6 +40,11 @@ class TermEntity(EntityBase):
         order_by="SectionEntity.course_id + SectionEntity.number",
     )
 
+    # NOTE: This field establishes a one-to-many relationship between the term and course sites tables.
+    course_sites: Mapped[list["CourseSiteEntity"]] = relationship(
+        back_populates="term", cascade="all,delete"
+    )
+
     @classmethod
     def from_model(cls, model: Term) -> Self:
         """

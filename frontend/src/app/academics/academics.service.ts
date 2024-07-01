@@ -204,20 +204,4 @@ export class AcademicsService {
   deleteRoom(room: Room) {
     return this.http.delete(`/api/academics/room/${room.id}`);
   }
-
-  /** Retrieve's a SectionMember's membership in an Office Hours section by section ID.
-   * @param section_id: section_id to find
-   * @returns {SectionMember}
-   */
-  getMembershipBySection(section_id: number): Observable<SectionMember> {
-    return this.http.get<SectionMember>(
-      `/api/academics/section-member/oh-section/${section_id}`
-    );
-  }
-
-  checkInstructorship(): Observable<SectionMember[]> {
-    return this.http.get<SectionMember[]>(
-      'api/academics/section-member/instructor-memberships/'
-    );
-  }
 }

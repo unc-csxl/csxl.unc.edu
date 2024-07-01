@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CoursesHomeComponent } from './course-catalog/course-catalog.component';
-import { SectionOfferingsComponent } from './section-offerings/section-offerings.component';
 import { AcademicsHomeComponent } from './academics-home/academics-home.component';
 import { AcademicsAdminComponent } from './academics-admin/academics-admin.component';
 import { AdminTermComponent } from './academics-admin/term/admin-term.component';
@@ -25,8 +23,6 @@ const routes: Routes = [
     ]
   },
   AcademicsHomeComponent.Route,
-  CoursesHomeComponent.Route,
-  SectionOfferingsComponent.Route,
   CourseEditorComponent.Route,
   TermEditorComponent.Route,
   SectionEditorComponent.Route,

@@ -1,0 +1,40 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <div class="column-view">
+      <mat-card-subtitle>Ticket - {{ ticket.type }}</mat-card-subtitle>
+      @if (calledByUser) {
+      <p>
+        <span class="semibold-text">You</span> called this ticket at
+        {{ ticket.called_at | date: 'shortTime' }}
+      </p>
+      } @else {
+      <p>
+        Called by <span class="semibold-text">{{ ticket.caller }}</span> at
+        {{ ticket.called_at | date: 'shortTime' }}
+      </p>
+      }
+    </div>
+    <button
+      class="view-button"
+      mat-stroked-button
+      color="secondary"
+      (click)="toggleExpanded()">
+      {{ expanded() ? 'Hide Details' : 'Show Details' }}
+    </button>
+  </mat-card-header>
+  @if(expanded()) {
+  <mat-card-content>
+    <p><span class="semibold-text">Helping:</span> {{ ticket.creators }}</p>
+    <p><span class="semibold-text">Description:</span></p>
+    <p>{{ ticket.description }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      (click)="closeButtonEvent()">
+      Close Ticket
+    </button>
+  </mat-card-actions>
+  }
+</mat-card>

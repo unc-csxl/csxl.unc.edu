@@ -2,9 +2,13 @@
 The Section Service allows the API to manipulate sections data in the database.
 """
 
+import requests
+from bs4 import BeautifulSoup
+
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 from ...database import db_session
 from ...models.academics import Section
@@ -16,7 +20,10 @@ from ...entities.academics import CourseEntity
 from ...entities.academics import SectionRoomEntity
 from ..permission import PermissionService
 
-from ...services.exceptions import ResourceNotFoundException
+from ...services.exceptions import (
+    ResourceNotFoundException,
+    CourseDataScrapingException,
+)
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
@@ -107,29 +114,6 @@ class SectionService:
 
         # Return the model
         return entity.to_details_model()
-
-    def get_sections_with_no_office_hours_by_term(
-        self, term_id: int
-    ) -> list[SectionDetails]:
-        """Retrieves all sections from the table by term and that don't an OH Section associated to it.
-
-        Args:
-            term_id: term to be query.
-        Returns:
-            list[SectionDetails]: List of all `SectionDetails`
-        """
-
-        # Select all entries in the `Section` table
-        query = (
-            select(SectionEntity)
-            .where(SectionEntity.term_id == term_id)
-            .where(SectionEntity.office_hours_id.is_(None))
-            .order_by(SectionEntity.course_id, SectionEntity.number)
-        )
-        entities = self._session.scalars(query).all()
-
-        # Return the model
-        return [entity.to_details_model() for entity in entities]
 
     def get(
         self, subject_code: str, course_number: str, section_number: str
@@ -287,3 +271,90 @@ class SectionService:
         # Delete and commit changes
         self._session.delete(section_entity)
         self._session.commit()
+
+    def update_enrollment_totals(self, subject: User):
+        """
+        Updates the enrollment totals for COMP course sections in the database.
+        """
+        # Currently active terms.
+        # This is hard-coded based on the availability and representation
+        # of course enrollment data from UNC's course database.
+        AVAILABLE_TERMS = {"2024+Summer+II": "SuII24", "2024+Fall": "F24"}
+
+        # Store updates to make.
+        updates: dict[tuple[str, str], SectionEnrollmentData] = {}
+
+        # Update enrolllment totals for every available term.
+        for term in list(AVAILABLE_TERMS.keys()):
+            try:
+                # Retrieve the data from the UNC Reports site
+                html = requests.get(
+                    f"https://reports.unc.edu/class-search/tiled/?subject=COMP&term={term}"
+                ).content
+
+                # Create HTML parser
+                soup = BeautifulSoup(html, "html.parser")
+
+                # Find cards
+                cards = soup.find_all("div", class_="card")
+
+                # Iterate over all course cards
+                for card in cards:
+                    # Find the course code and section number from title <h2>
+                    title_components = card.find("h2").text.split(" ")
+                    subject_code = title_components[0]
+                    course_number = title_components[2]
+                    section_number = title_components[3]
+
+                    # Find the available seats
+                    seat_status = (
+                        card.find("p", class_="card-available-seats")
+                        .text.strip()
+                        .split(" ")[0]
+                        .split("/")
+                    )
+                    remaining_seats = seat_status[0]
+                    total_seats = seat_status[1]
+
+                    # Find section to update
+                    course_id = subject_code.lower() + course_number
+
+                    # Add items to list to update
+                    updates[(course_id, section_number)] = SectionEnrollmentData(
+                        enrolled=int(total_seats) - int(remaining_seats),
+                        total_seats=int(total_seats),
+                    )
+
+                # Make updates for the term
+                course_ids = list(set([update[0] for update in list(updates.keys())]))
+                section_numbers = list(
+                    set([update[1] for update in list(updates.keys())])
+                )
+                sections_query = select(SectionEntity).where(
+                    SectionEntity.term_id == AVAILABLE_TERMS[term],
+                    SectionEntity.course_id.in_(course_ids),
+                    SectionEntity.number.in_(section_numbers),
+                )
+
+                section_entities = self._session.scalars(sections_query).all()
+
+                # For every section, update the data
+                for section_entity in section_entities:
+                    if (section_entity.course_id, section_entity.number) in updates:
+                        new_enrollment_data = updates[
+                            (section_entity.course_id, section_entity.number)
+                        ]
+                        section_entity.enrolled = new_enrollment_data.enrolled
+                        section_entity.total_seats = new_enrollment_data.total_seats
+
+                # Save changes
+                self._session.commit()
+            except:
+                raise CourseDataScrapingException(
+                    f"Error reading COMP data from UNC's database for term: {term}"
+                )
+
+
+class SectionEnrollmentData(BaseModel):
+    enrolled: int
+    total_seats: int

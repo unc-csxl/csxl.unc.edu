@@ -19,8 +19,22 @@ class UserPermissionException(Exception):
         super().__init__(f"Not authorized to perform `{action}` on `{resource}`")
 
 
+class CoursePermissionException(Exception):
+    """CoursePermissionException is raised when a user attempts to perform an action they are not authorized to perform."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")
+
+
 class EventRegistrationException(Exception):
     """EventRegistrationException is raised when a user attempts to register and cannot (i.e., when the event is full)."""
 
     def __init__(self, event_id: int):
         super().__init__(f"Unable to register user for the event with id: {event_id}")
+
+
+class CourseDataScrapingException(Exception):
+    """CourseDataScrapingException is raised when an unexpected error occurs when scraping UNC course data."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")

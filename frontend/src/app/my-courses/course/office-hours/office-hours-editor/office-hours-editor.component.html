@@ -1,0 +1,102 @@
+<!-- Update Organization Form -->
+<form [formGroup]="officeHoursForm" (ngSubmit)="onSubmit()">
+  <!-- Update Organization Card -->
+  <mat-pane appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>
+        {{ this.isNew() ? 'Create' : 'Update' }} Office Hours
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Type Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          @for(type of [0, 1, 2]; track type) {
+          <mat-option [value]="type">{{ numberToType(type) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <!-- Mode Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Mode</mat-label>
+        <mat-select formControlName="mode" (selectionChange)="modeChanged()">
+          @for(mode of [0, 1, 2]; track mode) {
+          <mat-option [value]="mode">{{ numberToMode(mode) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (officeHoursForm.controls['mode'].value === 0) {
+      <!-- Room -->
+      <mat-form-field appearance="outline">
+        <mat-label>Room</mat-label>
+        <mat-select formControlName="room_id">
+          @for(room of rooms; track room.id) {
+          <mat-option [value]="room.id">{{ room.id }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      }
+
+      <!-- Location Description Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Location Description or Zoom Link</mat-label>
+        <input
+          matInput
+          placeholder="Descibe where the office hours room is here."
+          formControlName="location_description"
+          name="location_description" />
+      </mat-form-field>
+
+      <!-- Long Description Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Office Hours Description</mat-label>
+        <textarea
+          matInput
+          placeholder="Enter description here."
+          formControlName="description"
+          name="description"></textarea>
+      </mat-form-field>
+
+      <!-- Start Time -->
+      <mat-form-field appearance="outline" color="accent">
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="Start Time"
+          formControlName="end_time"
+          name="end_time"
+          required />
+      </mat-form-field>
+
+      <!-- End Time -->
+      <mat-form-field appearance="outline" color="accent">
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="End Time"
+          formControlName="end_time"
+          name="end_time"
+          required />
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        color="secondary"
+        type="button"
+        (click)="onReset()">
+        Reset
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="officeHoursForm.invalid">
+        Save
+      </button>
+    </mat-card-actions>
+  </mat-pane>
+</form>

@@ -3,452 +3,240 @@
 import pytest
 from datetime import datetime, date, timedelta
 from sqlalchemy.orm import Session
-
-from ....entities.academics.section_member_entity import SectionMemberEntity
-from ....models.roster_role import RosterRole
-from ....models.user import UserIdentity
-from ....test.services import user_data
-
-from ....entities.academics.section_entity import SectionEntity
 from ...services.reset_table_id_seq import reset_table_id_seq
 
+from ....test.services import user_data, room_data
 from ..academics import section_data
+from ..academics import term_data
 
 from ....entities.office_hours import user_created_tickets_table
-from ....entities.office_hours.oh_event_entity import OfficeHoursEventEntity
-from ....entities.office_hours.oh_section_entity import OfficeHoursSectionEntity
+from ....entities.office_hours.office_hours_entity import OfficeHoursEntity
+from ....entities.office_hours.course_site_entity import CourseSiteEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+from ....entities.academics.section_entity import SectionEntity
 
-from ....models.office_hours.event import (
-    OfficeHoursEvent,
-    OfficeHoursEventDraft,
-    OfficeHoursEventPartial,
-)
+
+from ....models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ....models.office_hours.event_type import (
     OfficeHoursEventModeType,
     OfficeHoursEventType,
 )
-from ....models.office_hours.section import (
-    OfficeHoursSection,
-    OfficeHoursSectionDraft,
-    OfficeHoursSectionPartial,
+from ....models.office_hours.course_site import (
+    CourseSite,
+    NewCourseSite,
+    UpdatedCourseSite,
 )
-from ....models.office_hours.ticket import OfficeHoursTicket, OfficeHoursTicketDraft
+from ....models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
-from ....models.room import Room, RoomPartial
 
-
-__authors__ = ["Madelyn Andrews", "Sadie Amato", "Bailey DeSouza", "Meghan Sun"]
+__authors__ = [
+    "Ajay Gandecha",
+    "Madelyn Andrews",
+    "Sadie Amato",
+    "Bailey DeSouza",
+    "Meghan Sun",
+]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
+# Course Site Data
 
-# Office Hours Section Data
-comp_110_oh_section_f23 = OfficeHoursSection(
-    id=1, title="COMP 110: Introduction to Programming Fall 23"
+# COMP 110:
+
+# Site
+comp_110_site = CourseSite(id=1, title="COMP 110", term_id=term_data.current_term.id)
+
+# Sections
+comp_110_sections = (
+    [
+        section_data.comp_110_001_current_term,
+        section_data.comp_110_002_current_term,
+    ],
+    comp_110_site.id,
 )
 
-comp_523_oh_section = OfficeHoursSection(
-    id=2, title="COMP 523: Software Engineering Lab"
-)
-
-comp_110_oh_section = OfficeHoursSection(
-    id=3, title="COMP 110: Introduction to Programming"
-)
-
-oh_sections = [
-    comp_110_oh_section_f23,
-    comp_523_oh_section,
-    comp_110_oh_section,
-]
-
-# For Test
-f23_oh_sections = [comp_110_oh_section_f23]
-current_term_oh_sections = [comp_110_oh_section, comp_523_oh_section]
-
-oh_section_draft = OfficeHoursSectionDraft(title="Draft OH Section")
-# Office Hours Event Data
-comp_110_current_oh_event = OfficeHoursEvent(
+# Office Hours
+comp_110_current_office_hours = OfficeHours(
     id=1,
-    oh_section=comp_110_oh_section,
-    room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
     mode=OfficeHoursEventModeType.IN_PERSON,
-    description="",
-    event_date=date.today(),
+    description="Current CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
     start_time=datetime.now() - timedelta(hours=2),
     end_time=datetime.now() + timedelta(hours=1),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
 )
-
-comp_110_upcoming_oh_event = OfficeHoursEvent(
+comp_110_future_office_hours = OfficeHours(
     id=2,
-    oh_section=comp_110_oh_section,
-    room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
     mode=OfficeHoursEventModeType.IN_PERSON,
-    description="",
-    event_date=date.today(),
+    description="Future CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
     start_time=datetime.now() + timedelta(days=1),
     end_time=datetime.now() + timedelta(days=1, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
 )
-
-# Events to Be Inserted Into Demo
-comp_110_past_oh_event_0 = OfficeHoursEvent(
+comp_110_past_office_hours = OfficeHours(
     id=3,
-    oh_section=comp_110_oh_section,
-    room=Room(id="SN156"),
     type=OfficeHoursEventType.OFFICE_HOURS,
     mode=OfficeHoursEventModeType.IN_PERSON,
-    description="",
-    event_date=date.today(),
+    description="Past CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
     start_time=datetime.now() - timedelta(days=1, hours=3),
     end_time=datetime.now() - timedelta(days=1),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
 )
 
-comp_110_f23_oh_event = OfficeHoursEvent(
-    id=4,
-    oh_section=comp_110_oh_section_f23,
-    room=Room(id="SN156"),
-    type=OfficeHoursEventType.OFFICE_HOURS,
-    mode=OfficeHoursEventModeType.IN_PERSON,
-    description="",
-    event_date=date.today(),
-    start_time=datetime.now() - timedelta(hours=2),
-    end_time=datetime.now() + timedelta(hours=3),
-)
-
-comp_523_current_oh_event = OfficeHoursEvent(
-    id=5,
-    oh_section=comp_523_oh_section,
-    room=Room(id="SN156"),
-    type=OfficeHoursEventType.OFFICE_HOURS,
-    mode=OfficeHoursEventModeType.IN_PERSON,
-    description="",
-    event_date=date.today(),
-    start_time=datetime.now() - timedelta(days=2, hours=3),
-    end_time=datetime.now() - timedelta(days=2),
-)
-
-oh_events = [
-    comp_110_current_oh_event,
-    comp_110_upcoming_oh_event,
-    comp_110_past_oh_event_0,
-    comp_110_f23_oh_event,
-    comp_523_current_oh_event,
-]
-
-comp110_oh_past_events = [comp_110_past_oh_event_0]
-comp110_oh_current_events = [comp_110_current_oh_event]
-comp110_oh_upcoming_events = [comp_110_upcoming_oh_event]
-
-comp110_event_draft = OfficeHoursEventDraft(
-    oh_section=OfficeHoursSectionPartial(id=comp_110_oh_section.id),
-    room=RoomPartial(id="SN156"),
-    type=OfficeHoursEventType.OFFICE_HOURS,
-    mode=OfficeHoursEventModeType.IN_PERSON,
-    description="",
-    location_description="",
-    event_date=date.today(),
-    start_time=datetime.now(),
-    end_time=datetime.now(),
-)
-
-
-# Ticket For An Event
-comp110_f23_queued_ticket = OfficeHoursTicket(
+# Tickets
+comp_110_queued_ticket = OfficeHoursTicket(
     id=1,
-    oh_event=comp_110_f23_oh_event,
-    description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
+    description="My Docker container is crashing!! Pls help me I beg you..",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.QUEUED,
     created_at=datetime.now(),
+    called_at=None,
+    closed_at=None,
+    have_concerns=False,
+    caller_notes="",
+    office_hours_id=comp_110_current_office_hours.id,
+    caller_id=None,
 )
-
-comp110_f23_called_ticket = OfficeHoursTicket(
+comp_110_cancelled_ticket = OfficeHoursTicket(
     id=2,
-    oh_event=comp_110_f23_oh_event,
-    description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
+    description="I don't need help, but I want to visit my friend.",
+    type=TicketType.CONCEPTUAL_HELP,
+    state=TicketState.CANCELED,
+    created_at=datetime.now(),
+    called_at=None,
+    closed_at=None,
+    have_concerns=False,
+    caller_notes="",
+    office_hours_id=comp_110_current_office_hours.id,
+    caller_id=None,
+)
+comp_110_called_ticket = OfficeHoursTicket(
+    id=3,
+    description="I do not know how to exit vim. Do I need to burn my PC?",
     type=TicketType.ASSIGNMENT_HELP,
     state=TicketState.CALLED,
-    created_at=datetime.now() - timedelta(minutes=20),
+    created_at=datetime.now() - timedelta(minutes=1),
     called_at=datetime.now(),
+    closed_at=None,
+    have_concerns=False,
+    caller_notes="",
+    office_hours_id=comp_110_current_office_hours.id,
+    caller_id=section_data.comp110_instructor.id,
 )
-
-comp110_f23_closed_ticket = OfficeHoursTicket(
-    id=3,
-    oh_event=comp_110_f23_oh_event,
-    description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
-    type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CLOSED,
-    created_at=datetime.now() - timedelta(minutes=25),
-)
-
-comp110_closed_ticket = OfficeHoursTicket(
+comp_110_closed_ticket = OfficeHoursTicket(
     id=4,
-    oh_event=comp_110_current_oh_event,
-    description="Assignment Part: ex04 Wordle \nGoal: I'm running into an infinite loop. My game will never end. \nConcepts: Loops and input function. \nTried: I tried using Trailhead to debug my function call but it is also stuck in an infitnite loop.",
-    type=TicketType.ASSIGNMENT_HELP,
+    description="How do I turn on my computer?",
+    type=TicketType.CONCEPTUAL_HELP,
     state=TicketState.CLOSED,
-    created_at=datetime.now() - timedelta(hours=2),
+    created_at=datetime.now() - timedelta(minutes=2),
+    called_at=datetime.now() - timedelta(minutes=1),
+    closed_at=datetime.now(),
+    have_concerns=True,
+    caller_notes="Student could not find the power button on their laptop.",
+    office_hours_id=comp_110_current_office_hours.id,
+    caller_id=section_data.comp110_instructor.id,
 )
-
-
-comp110_cancelled_ticket = OfficeHoursTicket(
-    id=5,
-    oh_event=comp_110_current_oh_event,
-    description="Assignment Part: ex04\nGoal: finishing up wordle!\nConcepts: reading Gradescope errors\nTried: I tried submitting what I thought was right based on my tests",
-    type=TicketType.ASSIGNMENT_HELP,
-    state=TicketState.CANCELED,
-    created_at=datetime.now() - timedelta(minutes=5),
-)
-
-
-tickets = [
-    comp110_f23_queued_ticket,
-    comp110_f23_called_ticket,
-    comp110_f23_closed_ticket,
-    comp110_closed_ticket,
-    comp110_cancelled_ticket,
+comp_110_ticket_creators = [
+    (comp_110_queued_ticket, [section_data.comp110_student_1.id]),
+    (comp_110_cancelled_ticket, [section_data.comp110_student_1.id]),
+    (comp_110_called_ticket, [section_data.comp110_student_1.id]),
+    (comp_110_closed_ticket, [section_data.comp110_student_1.id]),
 ]
 
-comp110_f23_tickets = [
-    comp110_f23_queued_ticket,
-    comp110_f23_called_ticket,
-    comp110_f23_closed_ticket,
+# All
+sites = [comp_110_site]
+section_pairings = [comp_110_sections]
+
+office_hours = [
+    comp_110_current_office_hours,
+    comp_110_future_office_hours,
+    comp_110_past_office_hours,
 ]
-comp110_current_term_tickets = [
-    comp110_closed_ticket,
-    comp110_cancelled_ticket,
+
+oh_tickets = [
+    comp_110_queued_ticket,
+    comp_110_cancelled_ticket,
+    comp_110_called_ticket,
+    comp_110_closed_ticket,
 ]
-
-
-# Ticket Variations For Unit Test Purposes
-ticket_draft_f23 = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=comp_110_f23_oh_event.id),
-    description="I need help",
-    type=TicketType.ASSIGNMENT_HELP,
-)
-
-ticket_draft_invalid_event = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=10),
-    description="I need help",
-    type=TicketType.ASSIGNMENT_HELP,
-)
-
-ticket_draft_current_term_comp110 = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=comp_110_current_oh_event.id),
-    description="I need help",
-    type=TicketType.ASSIGNMENT_HELP,
-)
-
-group_ticket_draft = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=comp_110_current_oh_event.id),
-    description="I need help",
-    type=TicketType.ASSIGNMENT_HELP,
-    creators=[
-        UserIdentity(id=section_data.comp110_student_0.user_id),
-        UserIdentity(id=section_data.comp110_student_1.user_id),
-    ],
-)
-
-group_ticket_draft_comp_110_f23 = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=comp_110_f23_oh_event.id),
-    description="I need help",
-    type=TicketType.ASSIGNMENT_HELP,
-    creators=[
-        UserIdentity(id=section_data.comp110_student_0.user_id),
-        UserIdentity(id=section_data.comp110_student_1.user_id),
-    ],
-)
-
-group_ticket_draft_non_member = OfficeHoursTicketDraft(
-    oh_event=OfficeHoursEventPartial(id=comp_110_current_oh_event.id),
-    description="I need help",
-    type=TicketType.ASSIGNMENT_HELP,
-    creators=[
-        UserIdentity(id=section_data.user__comp110_student_0.id),
-        UserIdentity(id=section_data.user__comp110_non_member.id),
-    ],
-)
+ticket_user_pairings = [comp_110_ticket_creators]
 
 
 def insert_fake_data(session: Session):
 
-    # Add Office Hours Sections
-    for oh_section in oh_sections:
-        entity = OfficeHoursSectionEntity.from_model(model=oh_section)
+    # Step 1: Add sites to database
+
+    for site in sites:
+        entity = CourseSiteEntity.from_model(site)
         session.add(entity)
 
     reset_table_id_seq(
         session,
-        OfficeHoursSectionEntity,
-        OfficeHoursSectionEntity.id,
-        len(oh_sections) + 1,
+        CourseSiteEntity,
+        CourseSiteEntity.id,
+        len(sites) + 1,
     )
 
     session.commit()
 
-    # Associate Office Hours Section with Academic Section
-    for comp_110_section in section_data.comp_110_sections_current:
-        section = session.get(SectionEntity, comp_110_section.id)
-        section.office_hours_id = comp_110_oh_section.id
+    # Step 2: Add sections to course sites
+    for sections, site_id in section_pairings:
+        for section in sections:
+            section_entity = session.get(SectionEntity, section.id)
+            section_entity.course_site_id = site_id
 
-    # Link 523 OH Section
-    comp_523_section_entity = session.get(
-        SectionEntity, section_data.comp_523_001_current_term.id
-    )
-    comp_523_section_entity.office_hours_id = comp_523_oh_section.id
+    session.commit()
 
-    # Link COMP 110 Past Semester OH Section
-    comp_110_f23_section_entity = session.get(
-        SectionEntity, section_data.comp_101_001.id
-    )
-    comp_110_f23_section_entity.office_hours_id = comp_110_oh_section_f23.id
+    # Step 3: Add office hours to database
 
-    # Add Office Hours Event
-    for event in oh_events:
-        event_entity = OfficeHoursEventEntity.from_model(event)
-        session.add(event_entity)
+    for oh in office_hours:
+        office_hours_entity = OfficeHoursEntity.from_model(oh)
+        session.add(office_hours_entity)
 
     reset_table_id_seq(
         session,
-        OfficeHoursEventEntity,
-        OfficeHoursEventEntity.id,
-        len(oh_events) + 1,
+        OfficeHoursEntity,
+        OfficeHoursEntity.id,
+        len(office_hours) + 1,
     )
 
     session.commit()
 
-    # Fetch a Student and UTA
-    student = (
-        session.query(SectionMemberEntity)
-        .where(
-            SectionMemberEntity.user_id == section_data.user__comp110_student_0.id,
-            SectionMemberEntity.section_id == section_data.comp_110_001_current_term.id,
-            SectionMemberEntity.member_role == RosterRole.STUDENT,
-        )
-        .first()
-    )
+    # Step 4: Add tickets to database
 
-    uta = (
-        session.query(SectionMemberEntity)
-        .where(
-            SectionMemberEntity.user_id == section_data.user__comp110_uta_0.id,
-            SectionMemberEntity.section_id == section_data.comp_110_001_current_term.id,
-            SectionMemberEntity.member_role == RosterRole.UTA,
-        )
-        .first()
-    )
-
-    # Add User Created Tickets - Current Term COMP 110
-    for ticket in comp110_current_term_tickets:
+    for ticket in oh_tickets:
         ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
         session.add(ticket_entity)
-        session.commit()
-
-        # Associate with Ticket and User Create Tickets
-        session.execute(
-            user_created_tickets_table.insert().values(
-                {
-                    "ticket_id": ticket_entity.id,
-                    "member_id": student.id,
-                }
-            )
-        )
-
-    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
-    session.query(OfficeHoursTicketEntity).filter(
-        OfficeHoursTicketEntity.id.in_([comp110_closed_ticket.id])
-    ).update(
-        {
-            "caller_id": uta.id,
-            "called_at": datetime.now() - timedelta(hours=1, minutes=50),
-            "have_concerns": True,
-            "closed_at": datetime.now() - timedelta(hours=1, minutes=40),
-            "caller_notes": "Got Stuck In an Infinte Loop",
-        }
-    )
-
-    f23_student_0 = (
-        session.query(SectionMemberEntity)
-        .where(
-            SectionMemberEntity.user_id == section_data.user__comp110_student_0.id,
-            SectionMemberEntity.section_id == section_data.comp_101_001.id,
-            SectionMemberEntity.member_role == RosterRole.STUDENT,
-        )
-        .first()
-    )
-
-    f23_student_1 = (
-        session.query(SectionMemberEntity)
-        .where(
-            SectionMemberEntity.user_id == section_data.user__comp110_student_1.id,
-            SectionMemberEntity.section_id == section_data.comp_101_001.id,
-            SectionMemberEntity.member_role == RosterRole.STUDENT,
-        )
-        .first()
-    )
-
-    f23_uta = (
-        session.query(SectionMemberEntity)
-        .where(
-            SectionMemberEntity.user_id == section_data.user__comp110_uta_0.id,
-            SectionMemberEntity.section_id == section_data.comp_101_001.id,
-            SectionMemberEntity.member_role == RosterRole.UTA,
-        )
-        .first()
-    )
-
-    # F23 COMP 110 Tickets
-    for ticket in comp110_f23_tickets:
-        ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
-        session.add(ticket_entity)
-        session.commit()
-
-        # Assign Student 1 To Closed Ticket
-        student = (
-            f23_student_0
-            if ticket_entity.state != TicketState.CLOSED
-            else f23_student_1
-        )
-
-        # Associate with Ticket and User Create Tickets
-        session.execute(
-            user_created_tickets_table.insert().values(
-                {
-                    "ticket_id": ticket_entity.id,
-                    "member_id": student.id,
-                }
-            )
-        )
-
-    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
-    session.query(OfficeHoursTicketEntity).filter(
-        OfficeHoursTicketEntity.id.in_(
-            [comp110_f23_called_ticket.id, comp110_f23_closed_ticket.id]
-        )
-    ).update(
-        {"caller_id": f23_uta.id, "called_at": datetime.now() - timedelta(minutes=20)}
-    )
-
-    # Update when Caller/UTA calls a ticket - Called and Closed Ticket Would have caller!
-    session.query(OfficeHoursTicketEntity).filter(
-        OfficeHoursTicketEntity.id.in_([comp110_f23_closed_ticket.id])
-    ).update(
-        {
-            "have_concerns": True,
-            "closed_at": datetime.now() - timedelta(minutes=10),
-            "caller_notes": "Got Stuck In an Infinte Loop",
-        }
-    )
 
     reset_table_id_seq(
         session,
         OfficeHoursTicketEntity,
         OfficeHoursTicketEntity.id,
-        len(tickets) + 1,
+        len(oh_tickets) + 1,
     )
+
+    session.commit()
+
+    # Step 5: Add users as ticket creators
+    for pairing in ticket_user_pairings:
+        for ticket, user_ids in pairing:
+            for user_id in user_ids:
+                session.execute(
+                    user_created_tickets_table.insert().values(
+                        {
+                            "ticket_id": ticket.id,
+                            "member_id": user_id,
+                        }
+                    )
+                )
 
     session.commit()
 
@@ -458,3 +246,167 @@ def fake_data_fixture(session: Session):
     insert_fake_data(session)
     session.commit()
     yield
+
+
+# Data objects for testing purposes
+
+new_ticket = NewOfficeHoursTicket(
+    description="Help me!",
+    type=TicketType.ASSIGNMENT_HELP,
+    office_hours_id=comp_110_current_office_hours.id,
+)
+
+new_course_site = NewCourseSite(
+    title="Ina's COMP 301",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
+    ],
+)
+
+new_course_site_term_mismatch = NewCourseSite(
+    title="Ina's COMP 301",
+    term_id=term_data.f_23.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
+    ],
+)
+
+
+new_course_site_term_nonmember = NewCourseSite(
+    title="Ina's COMP 3x1",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_311_001_current_term.id,
+    ],
+)
+new_course_site_term_noninstructor = NewCourseSite(
+    title="Ina's COMP 3x1",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+
+new_course_site_term_already_in_site = NewCourseSite(
+    title="Ina's COMP courses",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_110_001_current_term.id,
+    ],
+)
+
+updated_comp_110_site = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_110_001_current_term.id],
+)
+
+updated_comp_110_site_term_mismatch = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_101_001.id,
+    ],
+)
+
+updated_course_site_term_nonmember = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_311_001_current_term.id,
+    ],
+)
+
+updated_course_does_not_exist = UpdatedCourseSite(
+    id=404,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+updated_course_site_term_noninstructor = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_311_001_current_term.id,
+        section_data.comp_311_002_current_term.id,
+    ],
+)
+
+updated_course_site_term_already_in_site = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[
+        section_data.comp_301_001_current_term.id,
+        section_data.comp_110_001_current_term.id,
+    ],
+)
+
+new_site_other_user = NewCourseSite(
+    title="Rhonda",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_311_001_current_term.id],
+)
+
+new_event = NewOfficeHours(
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+)
+
+new_event_site_not_found = NewOfficeHours(
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=404,
+    room_id=room_data.group_a.id,
+)
+
+updated_future_event = OfficeHours(
+    id=2,
+    type=OfficeHoursEventType.REVIEW_SESSION,
+    mode=OfficeHoursEventModeType.VIRTUAL_OUR_LINK,
+    description="Future CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=1),
+    end_time=datetime.now() + timedelta(days=1, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+)
+
+nonexistent_event = OfficeHours(
+    id=404,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="Sample",
+    location_description="Sample",
+    start_time=datetime.now(),
+    end_time=datetime.now(),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+)

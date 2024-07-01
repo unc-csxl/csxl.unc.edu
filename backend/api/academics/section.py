@@ -27,6 +27,17 @@ def get_sections(section_service: SectionService = Depends()) -> list[SectionDet
     return section_service.all()
 
 
+@api.get("/update-enrollments", response_model=None, tags=["Academics"])
+def update_enrollments(
+    subject: User = Depends(registered_user),
+    section_service: SectionService = Depends(),
+):
+    """
+    Updates the enrollment numbers for COMP sections.
+    """
+    return section_service.update_enrollment_totals(subject)
+
+
 @api.get("/{id}", response_model=SectionDetails, tags=["Academics"])
 def get_section_by_id(
     id: int, section_service: SectionService = Depends()
@@ -51,36 +62,6 @@ def get_section_by_term_id(
         list[SectionDetails]: Sections with the given term
     """
     return section_service.get_by_term(term_id)
-
-
-@api.get(
-    "/term/{term_id}/no-office-hours",
-    response_model=list[SectionDetails],
-    tags=["Academics"],
-)
-def get_section_by_term_id(
-    term_id: str, section_service: SectionService = Depends()
-) -> list[SectionDetails]:
-    """
-    Gets list of sections by term ID that doesn't have an OH Section.
-
-    Returns:
-        list[SectionDetails]: Sections with the given term
-    """
-    return section_service.get_sections_with_no_office_hours_by_term(term_id)
-
-
-@api.get("/subject/{subject}", response_model=list[SectionDetails], tags=["Academics"])
-def get_section_by_subject(
-    subject: str, section_service: SectionService = Depends()
-) -> list[SectionDetails]:
-    """
-    Gets a list of sections by a subject
-
-    Returns:
-        list[SectionDetails]: Sections with the given section
-    """
-    return section_service.get_by_subject(subject)
 
 
 @api.get(

@@ -8,7 +8,7 @@ __license__ = "MIT"
 
 
 class RosterRole(Enum):
-    STUDENT = 0
-    UTA = 1
-    GTA = 2
-    INSTRUCTOR = 3
+    STUDENT = "Student"
+    UTA = "UTA"
+    GTA = "GTA"
+    INSTRUCTOR = "Instructor"

@@ -79,7 +79,11 @@ html, body {
 
     .tertiary-button {
         @include mat.button-color($theme, $color-variant: tertiary);
-      }
+    }
+
+    .low-button-toggle-density {
+        @include mat.button-toggle-density(-3);       
+     }
 }
 
 /// Defines a mixin that applies custom styles to material card components
@@ -116,6 +120,10 @@ html, body {
         color: mat.get-theme-color($theme, on-surface-variant);
     }
 
+    .surface-container-card {
+        background-color: mat.get-theme-color($theme, surface-container) !important;
+    }
+
 }
 
 /// Defines a mixin that applies custom styles to material header components
@@ -141,10 +149,7 @@ html, body {
         fill: white;
     }
 
-
-
     @media (prefers-color-scheme: light) {
-
         .mat-icon,
         .mat-icon svg {
             color: black;
@@ -232,6 +237,22 @@ html, body {
     }
 }
 
+/// Defines a mixim that applies custom styles for fonts based on Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin font-styles($theme) {
+    .title-medium {
+        font: mat.get-theme-typography($theme, title-medium, font);
+    }
+    .title-small {
+        font: mat.get-theme-typography($theme, title-small, font);
+    }
+
+    .font-secondary {
+        color: mat.get-theme-color($theme, secondary) !important;
+    }
+}
+
 /// Defines a mixin that applies custom widgets to material text field components
 /// to better conform to Material 3 standards.
 /// 
@@ -314,6 +335,14 @@ html, body {
             color: mat.get-theme-color($theme, on-tertiary-fixed-variant);
         }
     }
+
+    .tab-container-button {
+        color: mat.get-theme-color($theme, on-secondary-container) !important;
+    }
+    
+    .tab-enabled-container-button {
+        background-color: mat.get-theme-color($theme, secondary-container) !important;
+    }
 }
 .mdc-notched-outline__notch {
     border-left: 1px solid rgba(0, 0, 0, 0);
@@ -324,7 +353,6 @@ html, body {
 /// This mixin is defined so that these @include lines are not duplicated between
 /// light and dark mode.
 @mixin apply-styles($theme) {
-    @include global-styles($theme);
     @include mat-button-styles($theme);
     @include mat-card-styles($theme);
     @include mat-navigation-styles($theme);
@@ -332,7 +360,9 @@ html, body {
     @include mat-header-styles($theme);
     @include mat-icon-styles($theme);
     @include mat-text-field-styles($theme);
+    @include font-styles($theme);
     @include widget-styles($theme);
+    @include global-styles($theme);
 }
 
 /// Defines a mixin that applies any manual dark mode override styles.

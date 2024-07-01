@@ -209,10 +209,40 @@ comp_301_001_current_term = Section(
     override_title="",
     override_description="",
 )
+
+comp_301_002_current_term = Section(
+    id=14,
+    course_id=course_data.comp_301.id,
+    number="002",
+    term_id=term_data.current_term.id,
+    meeting_pattern="TTh 5:00PM - 6:15PM",
+    override_title="",
+    override_description="",
+)
+
+comp_311_001_current_term = Section(
+    id=15,
+    course_id=course_data.comp_311.id,
+    number="001",
+    term_id=term_data.current_term.id,
+    meeting_pattern="TTh 5:00PM - 6:15PM",
+    override_title="",
+    override_description="",
+)
+
+comp_311_002_current_term = Section(
+    id=16,
+    course_id=course_data.comp_311.id,
+    number="002",
+    term_id=term_data.current_term.id,
+    meeting_pattern="TTh 5:00PM - 6:15PM",
+    override_title="",
+    override_description="",
+)
+
 # Variables To Help Associate User Data to Section Members
 user__comp110_instructor = user_data.instructor
 user__comp110_uta_0 = user_data.uta
-user__comp110_gta = user_data.ambassador
 user__comp110_student_0 = user_data.user
 user__comp110_student_1 = user_data.student
 
@@ -227,6 +257,8 @@ user__comp523_instructor = user_data.instructor
 
 user__comp210_instructor = user_data.instructor
 
+user__comp311_instructor = user_data.root
+
 # CURRENT TERM MEMBERSHIPS
 comp110_instructor = SectionMemberDraft(
     id=1,
@@ -235,18 +267,18 @@ comp110_instructor = SectionMemberDraft(
     member_role=RosterRole.INSTRUCTOR,
 )
 
+comp110_instructor_2 = SectionMemberDraft(
+    id=18,
+    user_id=user__comp110_instructor.id,
+    section_id=comp_110_002_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
 comp110_uta = SectionMemberDraft(
     id=2,
     user_id=user__comp110_uta_0.id,
     section_id=comp_110_001_current_term.id,
     member_role=RosterRole.UTA,
-)
-
-comp110_gta = SectionMemberDraft(
-    id=3,
-    user_id=user__comp110_gta.id,
-    section_id=comp_110_001_current_term.id,
-    member_role=RosterRole.GTA,
 )
 
 
@@ -268,6 +300,13 @@ comp301_instructor = SectionMemberDraft(
     id=6,
     user_id=user__comp301_instructor.id,
     section_id=comp_301_001_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+comp301_instructor_2 = SectionMemberDraft(
+    id=15,
+    user_id=user__comp301_instructor.id,
+    section_id=comp_301_002_current_term.id,
     member_role=RosterRole.INSTRUCTOR,
 )
 
@@ -297,6 +336,20 @@ comp_210_instructor = SectionMemberDraft(
     user_id=user__comp210_instructor.id,
     section_id=comp_210_001_current_term.id,
     member_role=RosterRole.INSTRUCTOR,
+)
+
+comp311_instructor = SectionMemberDraft(
+    id=16,
+    user_id=user__comp311_instructor.id,
+    section_id=comp_311_001_current_term.id,
+    member_role=RosterRole.INSTRUCTOR,
+)
+
+comp311_uta = SectionMemberDraft(
+    id=17,
+    user_id=user_data.instructor.id,
+    section_id=comp_311_001_current_term.id,
+    member_role=RosterRole.UTA,
 )
 
 # F23 Section Memberships
@@ -336,12 +389,15 @@ section_members = [
     comp110_student_0,
     comp110_student_1,
     comp110_uta,
-    comp110_gta,
     comp301_instructor,
+    comp301_instructor_2,
     comp_301_uta,
     comp_301_student,
     comp_523_instructor,
     comp_210_instructor,
+    comp311_instructor,
+    comp311_uta,
+    comp110_instructor_2,
 ]
 
 comp110_members = [
@@ -349,7 +405,6 @@ comp110_members = [
     comp110_student_0,
     comp110_student_1,
     comp110_uta,
-    comp110_gta,
 ]
 
 
@@ -374,6 +429,9 @@ sections = [
     comp_110_001_current_term,
     comp_110_002_current_term,
     comp_301_001_current_term,
+    comp_301_002_current_term,
+    comp_311_001_current_term,
+    comp_311_002_current_term,
 ]
 
 f23_sections = [comp_101_001, comp_101_002, comp_301_001]
@@ -383,6 +441,9 @@ current_term_sections = [
     comp_110_001_current_term,
     comp_110_002_current_term,
     comp_301_001_current_term,
+    comp_301_002_current_term,
+    comp_311_001_current_term,
+    comp_311_002_current_term,
 ]
 
 assignments = [room_assignment_110_001, room_assignment_110_002]
@@ -406,7 +467,7 @@ def insert_fake_data(session: Session):
         session.commit()
 
     reset_table_id_seq(
-        session, SectionMemberEntity, SectionMemberEntity.id, len(section_members) + 1
+        session, SectionMemberEntity, SectionMemberEntity.id, len(section_members) + 2
     )
 
     session.commit()
@@ -427,3 +488,18 @@ def insert_fake_data(session: Session):
 def fake_data_fixture(session: Session):
     insert_fake_data(session)
     session.commit()
+
+
+roster_csv = """Student,ID,SIS User ID,SIS Login ID,Section,Assignments Current Points,Assignments Final Points,Assignments Current Score,Assignments Unposted Current Score,Assignments Final Score,Assignments Unposted Final Score,Current Points,Final Points,Current Score,Unposted Current Score,Final Score,Unposted Final Score,Current Grade,Unposted Current Grade,Final Grade,Unposted Final Grade
+Points Possible,,,,,(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only)
+"Root, Rhonda",0,999999999,rroot,COMP301.001.S224,,,,,,,,,,,,,,,,
+"Student, Sally",0,111111111,sstudent,COMP301.001.S224,,,,,,,,,,,,,,,,
+"Student, New",0,345345345,nstudent,COMP301.001.S224,,,,,,,,,,,,,,,,
+"Jordan, Kris",0,89898989,kjordan,COMP301.001.S224,,,,,,,,,,,,,,,,"""
+
+bad_roster_csv = """Student,Assignments Current Points,Assignments Final Points,Assignments Current Score,Assignments Unposted Current Score,Assignments Final Score,Assignments Unposted Final Score,Current Points,Final Points,Current Score,Unposted Current Score,Final Score,Unposted Final Score,Current Grade,Unposted Current Grade,Final Grade,Unposted Final Grade
+Points Possible,,,,,(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only)
+"Root, Rhonda",0,999999999,,,,,,,,,,,,,,,
+"Student, Sally",0,sstudent,COMP301.001.S224,,,,,,,,,,,,,,,,
+"Student, New",0,345345345,nstudent,COMP301.001.S224,,,,,,,,,,,,,,,,
+"Jordan, Kris",0,89898989,kjordan,COMP301.001.S224,,,,,,,,,,,,,,,,"""

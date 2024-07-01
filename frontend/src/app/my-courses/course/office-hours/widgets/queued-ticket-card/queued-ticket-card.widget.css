@@ -1,0 +1,39 @@
+
+.mat-mdc-card-outlined {
+    margin: 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.mat-mdc-card-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 16px;
+}
+
+.column-view {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.view-button {
+    margin-left: auto;
+}
+
+p {
+    margin: 0;
+}
+
+.semibold-text {
+    font-weight: 500;
+}
+
+.mat-mdc-card-actions {
+    padding-top: 12px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: end;
+}

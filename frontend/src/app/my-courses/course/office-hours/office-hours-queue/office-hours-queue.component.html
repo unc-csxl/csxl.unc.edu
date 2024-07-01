@@ -1,0 +1,40 @@
+@if (queue()) {
+<mat-pane>
+  <mat-card-header class="pane-header">
+    <mat-card-title>{{ queue()!.type }} Event</mat-card-title>
+    <p>
+      {{ queue()!.start_time | date: 'shortTime' }} -
+      {{ queue()!.end_time | date: 'shortTime' }}
+    </p>
+    <mat-chip-set>
+      <mat-chip>{{ queue()!.queue.length }} waiting</mat-chip>
+    </mat-chip-set>
+    <mat-divider id="pane-divider" />
+  </mat-card-header>
+  <mat-card-content class="pane-content">
+    <mat-card-subtitle>Called Tickets</mat-card-subtitle>
+    @if (!queue()!.active && queue()!.other_called.length === 0) {
+    <p>Nobody is being helped right now.</p>
+    } @if(queue()!.active) {
+    <called-ticket-card
+      [ticket]="queue()!.active!"
+      [calledByUser]="true"
+      (closeButtonPressed)="closeTicket($event)" />
+    } @for(ticket of queue()!.other_called; track ticket.id) {
+    <called-ticket-card
+      [ticket]="ticket"
+      (closeButtonPressed)="closeTicket($event)" />
+    }
+    <mat-card-subtitle>Queue</mat-card-subtitle>
+    @if (queue()!.queue.length === 0) {
+    <p>There are no tickets in the queue.</p>
+    } @for(ticket of queue()!.queue; track ticket.id) {
+    <queued-ticket-card
+      [ticket]="ticket"
+      [disableCallTicketButton]="queue()!.active !== undefined"
+      (callButtonPressed)="callTicket($event)"
+      (cancelButtonPressed)="cancelTicket($event)" />
+    }
+  </mat-card-content>
+</mat-pane>
+}

@@ -1,0 +1,144 @@
+@if(data()) { @if (data()!.ticket) { @if(data()!.ticket!.state === 'Queued') {
+<!-- Show the page for a ticket in the queue -->
+<mat-pane>
+  <mat-card-header class="pane-header">
+    <mat-card-title>You're In The Queue!</mat-card-title>
+    <p>
+      {{ data()!.event_type }} Event:
+      {{ data()!.event_start_time | date: 'shortTime' }} -
+      {{ data()!.event_end_time | date: 'shortTime' }}
+    </p>
+    <div class="queue-text-container">
+      <p class="font-secondary queue-text">
+        You're number
+        <span class="queue-number secondary-background">{{
+          data()!.queue_position
+        }}</span>
+        in the Queue
+      </p>
+    </div>
+    <mat-divider id="pane-divider" />
+  </mat-card-header>
+  <mat-card-content class="pane-content">
+    <mat-card-subtitle>Ticket Summary</mat-card-subtitle>
+    <queued-ticket-card
+      [ticket]="data()!.ticket!"
+      [hideCallTicketButton]="true"
+      (cancelButtonPressed)="cancelTicket($event)" />
+  </mat-card-content>
+</mat-pane>
+} @else if(data()!.ticket!.state === 'Called') {
+<!-- Show a page for a called ticket -->
+<mat-pane>
+  <mat-card-header class="pane-header">
+    <mat-card-title class="primary-color">
+      Your Ticket Has Been Called!
+    </mat-card-title>
+    <p>
+      {{ data()!.event_type }} Event:
+      {{ data()!.event_start_time | date: 'shortTime' }} -
+      {{ data()!.event_end_time | date: 'shortTime' }}
+    </p>
+    <div class="queue-text-container">
+      <p class="secondary-color">
+        <span class="bold-text">Your ticket has been called by: </span
+        >{{ data()!.ticket!.caller }}
+      </p>
+    </div>
+  </mat-card-header>
+</mat-pane>
+} } @else {
+<!-- Show the ticket creation form -->
+<form [formGroup]="ticketForm" (ngSubmit)="submitTicketForm()">
+  <mat-pane>
+    <mat-card-header class="pane-header">
+      <mat-card-title>Create a Ticket</mat-card-title>
+      <p>
+        {{ data()!.event_type }} Event:
+        {{ data()!.event_start_time | date: 'shortTime' }} -
+        {{ data()!.event_end_time | date: 'shortTime' }}
+      </p>
+      <mat-divider id="pane-divider" />
+    </mat-card-header>
+    <mat-card-content class="pane-content">
+      <mat-form-field appearance="outline">
+        <mat-label>Ticket Type</mat-label>
+        <mat-select formControlName="type" required>
+          <mat-option value="Assignment Help">Assignment Help</mat-option>
+          <mat-option value="Conceptual Help">Conceptual Help</mat-option>
+        </mat-select>
+      </mat-form-field>
+      @if (ticketForm.controls['type'].value === 'Assignment Help') {
+      <mat-form-field appearance="outline">
+        <mat-label>
+          What section of the assignment do you need help with?
+        </mat-label>
+        <textarea
+          matInput
+          required
+          formControlName="assignmentSection"
+          placeholder="Ex. Assignment 01, Part 2"></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Describe in English what you are trying to express in code.
+        </mat-label>
+        <textarea
+          matInput
+          required
+          formControlName="codeSection"
+          placeholder="Ex. I am trying to..."></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          What concepts do you need to use to solve this problem?
+        </mat-label>
+        <textarea
+          matInput
+          required
+          formControlName="conceptsSection"
+          placeholder="Ex. Languages, class concepts, technologies involved"></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          What have you tried? Why do you suspect it didn't work?
+        </mat-label>
+        <textarea
+          matInput
+          required
+          formControlName="attemptSection"
+          placeholder="Ex. I have already tried..."></textarea>
+      </mat-form-field>
+      } @else {
+      <mat-form-field appearance="outline">
+        <mat-label>
+          What questions or topics do you want to talk through?
+        </mat-label>
+        <textarea
+          matInput
+          required
+          formControlName="description"
+          placeholder="Ex. I need help understanding adding to a binary tree"></textarea>
+      </mat-form-field>
+      } @if (data()!.event_mode === 'Virtual - Student Link') {
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Zoom Link</mat-label>
+        <input
+          matInput
+          placeholder="Ex: https://zoom.us/,,,"
+          formControlName="link" />
+      </mat-form-field>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="!isFormValid()">
+        Create Ticket
+      </button>
+    </mat-card-actions>
+  </mat-pane>
+</form>
+} }

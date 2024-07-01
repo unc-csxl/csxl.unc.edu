@@ -20,14 +20,18 @@ from .api import (
     application,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
-from .api.academics import section_member, term, course, section
+from .api.academics import section_member, term, course, section, my_courses
+from .api.office_hours import (
+    office_hours as office_hours_event,
+    ticket as office_hours_ticket,
+)
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
-from .api.office_hours import ticket, section as oh_section, event
 from .services.exceptions import (
-    EventRegistrationException,
     UserPermissionException,
     ResourceNotFoundException,
+    CoursePermissionException,
+    CourseDataScrapingException,
 )
 
 __authors__ = ["Kris Jordan"]
@@ -48,17 +52,15 @@ app = FastAPI(
         user.openapi_tags,
         organizations.openapi_tags,
         events.openapi_tags,
-        application.openapi_tags,
-        reservation.openapi_tags,
-        room.openapi_tags,
+        section_member.openapi_tags,
         course.openapi_tags,
-        health.openapi_tags,
+        room.openapi_tags,
+        reservation.openapi_tags,
+        application.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
-        ticket.openapi_tags,
-        oh_section.openapi_tags,
-        section_member.openapi_tags,
-        event.openapi_tags,
+        health.openapi_tags,
+        my_courses.openapi_tags,
     ],
 )
 
@@ -72,22 +74,22 @@ feature_apis = [
     operating_hours,
     events,
     user,
-    profile,
     organizations,
-    health,
     ambassador,
-    authentication,
-    admin_users,
-    admin_roles,
+    my_courses,
     term,
     course,
     section,
     room,
-    event,
-    ticket,
-    oh_section,
     section_member,
+    profile,
+    admin_users,
+    admin_roles,
     application,
+    authentication,
+    health,
+    office_hours_event,
+    office_hours_ticket,
 ]
 
 for feature_api in feature_apis:
@@ -103,11 +105,23 @@ def permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 
+@app.exception_handler(CoursePermissionException)
+def permission_exception_handler(request: Request, e: UserPermissionException):
+    return JSONResponse(status_code=403, content={"message": str(e)})
+
+
 @app.exception_handler(ResourceNotFoundException)
 def resource_not_found_exception_handler(
     request: Request, e: ResourceNotFoundException
 ):
     return JSONResponse(status_code=404, content={"message": str(e)})
+
+
+@app.exception_handler(CourseDataScrapingException)
+def resource_not_found_exception_handler(
+    request: Request, e: CourseDataScrapingException
+):
+    return JSONResponse(status_code=500, content={"message": str(e)})
 
 
 # Add feature-specific exception handling middleware
