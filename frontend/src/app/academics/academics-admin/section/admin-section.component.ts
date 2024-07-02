@@ -7,10 +7,10 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Course, Section, Term } from '../../academics.models';
+import { CatalogSection, Course, Section, Term } from '../../academics.models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from '../../academics.service';
@@ -41,14 +41,11 @@ export class AdminSectionComponent {
   };
 
   /** Store list of sections */
-  public sections$: Observable<Section[]>;
+  public sections: WritableSignal<CatalogSection[]> = signal([]);
 
   /** Store list of Terms  */
   public terms: RxTermList = new RxTermList();
   public terms$: Observable<Term[]> = this.terms.value$;
-
-  /** Store list of Courses  */
-  public courses: Course[];
 
   /** Store the currently selected term from the form */
   public displayTerm: FormControl<Term> = new FormControl();
@@ -65,19 +62,18 @@ export class AdminSectionComponent {
     const data = this.route.snapshot.data as {
       terms: Term[];
       currentTerm: Term | undefined;
-      courses: Course[];
     };
 
     this.terms.set(data.terms);
-    this.courses = data.courses;
 
     if (data.currentTerm) {
       this.displayTerm.setValue(data.currentTerm);
-      this.sections$ = academicsService.getSectionsByTerm(
-        this.displayTerm.value
-      );
-    } else {
-      this.sections$ = new Observable<Section[]>();
+
+      this.academicsService
+        .getSectionsByTerm(data.currentTerm!)
+        .subscribe((sections) => {
+          this.sections.set(sections);
+        });
     }
   }
 
@@ -109,25 +105,14 @@ export class AdminSectionComponent {
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteSection(section).subscribe(() => {
         let termToUpdate = this.displayTerm.value;
-        termToUpdate.course_sections =
-          termToUpdate.course_sections?.filter((s) => s.id !== section.id) ??
-          [];
+        this.sections.update((sections) =>
+          sections.filter((s) => s.id !== section.id)
+        );
         this.terms.updateTerm(termToUpdate);
         this.snackBar.open('This Section has been deleted.', '', {
           duration: 2000
         });
       });
     });
-  }
-
-  /** Helper function that returns the course object from the list with the given ID.
-   * @param id ID of the course to look up.
-   * @returns Course for the ID, if it exists.
-   */
-  courseFromId(id: string): Course | null {
-    // Find the course for the given ID
-    let coursesFilter = this.courses.filter((c) => c.id === id);
-    // Return either the course if it exists, or null.
-    return coursesFilter.length > 0 ? coursesFilter[0] : null;
   }
 }

@@ -8,6 +8,7 @@
  */
 
 import { Seat } from '../coworking/coworking.models';
+import { PublicProfile } from '../profile/profile.service';
 import { TimeRange } from '../time-range';
 
 /** Defines a Course */
@@ -39,16 +40,45 @@ export interface Section {
   total_seats: number;
 }
 
+export interface CatalogSection {
+  id: number | null;
+  subject_code: string;
+  course_number: string;
+  section_number: string;
+  title: string;
+  meeting_pattern: string;
+  description: string;
+  lecture_room: Room | null;
+  instructors: PublicProfile[];
+  enrolled: number;
+  total_seats: number;
+}
+
+/** Defines a Course Section */
+export interface EditedSection {
+  id: number | null;
+  course_id: string;
+  number: string;
+  term_id: string;
+  meeting_pattern: string;
+  lecture_room: Room | null;
+  override_title: string;
+  override_description: string;
+  enrolled: number;
+  total_seats: number;
+  instructors: PublicProfile[];
+}
+
 /** Defines a Term */
 export interface Term extends TimeRange {
   id: string;
   name: string;
-  course_sections: Section[] | null;
 }
 
 /** Defines a Section Member */
 export interface SectionMember {
   id: number | null;
+  user_id: number | null;
   first_name: string;
   last_name: string;
   pronouns: string;

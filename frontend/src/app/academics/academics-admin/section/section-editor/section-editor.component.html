@@ -1,7 +1,7 @@
 <!-- Update Section Form -->
 <form [formGroup]="sectionForm" (ngSubmit)="onSubmit()">
   <!-- Update Section Card -->
-  <mat-card appearance="outlined">
+  <mat-pane appearance="outlined">
     <mat-card-header>
       <mat-card-title *ngIf="this.sectionIdString === 'new'; else update">
         Create Section
@@ -60,12 +60,13 @@
         </mat-select>
       </mat-form-field>
 
+      <!-- User Selection / Instructors Form Control -->
+      <user-lookup label="Instructors" [users]="instructors"></user-lookup>
+
       <!-- Override Title and Description -->
-      <p class="checkbox">
-        <mat-checkbox [formControl]="override"
-          >Override Course Name and Description?</mat-checkbox
-        >
-      </p>
+      <mat-slide-toggle [formControl]="override">
+        Override Course Name and Description?
+      </mat-slide-toggle>
       <mat-form-field
         appearance="outline"
         color="accent"
@@ -98,5 +99,5 @@
         Save
       </button>
     </mat-card-actions>
-  </mat-card>
+  </mat-pane>
 </form>

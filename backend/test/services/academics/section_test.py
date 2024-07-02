@@ -9,7 +9,7 @@ from backend.services.exceptions import (
 )
 from backend.services.permission import PermissionService
 from ....services.academics import SectionService, SectionMemberService
-from ....models.academics import SectionDetails
+from ....models.academics import SectionDetails, CatalogSection
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, section_svc, section_member_svc
@@ -30,35 +30,15 @@ __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-def test_all(section_svc: SectionService):
-    sections = section_svc.all()
-
-    assert len(sections) == len(section_data.sections)
-    assert isinstance(sections[0], SectionDetails)
-
-
 def test_get_by_term(section_svc: SectionService):
     sections = section_svc.get_by_term(term_data.current_term.id)
 
     assert len(sections) == len(section_data.current_term_sections)
-    assert isinstance(sections[0], SectionDetails)
+    assert isinstance(sections[0], CatalogSection)
 
 
 def test_get_by_term_not_found(section_svc: SectionService):
     sections = section_svc.get_by_term(term_data.sp_23.id)
-
-    assert len(sections) == 0
-
-
-def test_get_by_subject(section_svc: SectionService):
-    sections = section_svc.get_by_subject("COMP")
-
-    assert len(sections) == len(section_data.sections)
-    assert isinstance(sections[0], SectionDetails)
-
-
-def test_get_by_subject_not_found(section_svc: SectionService):
-    sections = section_svc.get_by_subject("INLS")
 
     assert len(sections) == 0
 
@@ -69,7 +49,7 @@ def test_get_by_id(section_svc: SectionService):
 
     section = section_svc.get_by_id(section_data.comp_110_001_current_term.id)
 
-    assert isinstance(section, SectionDetails)
+    assert isinstance(section, CatalogSection)
     assert section.id == section_data.comp_110_001_current_term.id
 
 
@@ -82,7 +62,7 @@ def test_get_by_id_not_found(section_svc: SectionService):
 def test_get(section_svc: SectionService):
     section = section_svc.get("COMP", "210", "001")
 
-    assert isinstance(section, SectionDetails)
+    assert isinstance(section, CatalogSection)
     assert section.id == section_data.comp_210_001_current_term.id
 
 
@@ -196,9 +176,6 @@ def test_delete_as_root(section_svc: SectionService):
         "academics.section.delete",
         f"section/{section_data.comp_110_001_current_term.id}",
     )
-
-    sections = section_svc.all()
-    assert len(sections) == len(section_data.sections) - 1
 
 
 def test_delete_as_root_not_found(section_svc: SectionService):

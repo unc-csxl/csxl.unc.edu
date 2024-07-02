@@ -1,7 +1,7 @@
 <!-- Update Room Form -->
 <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
   <!-- Update Room Card -->
-  <mat-card appearance="outlined">
+  <mat-pane appearance="outlined">
     <mat-card-header>
       <mat-card-title *ngIf="this.roomId === 'new'; else update">
         Create Room
@@ -66,9 +66,9 @@
           required />
       </mat-form-field>
       <!-- Room Reservable Field -->
-      <p class="checkbox">
-        <mat-checkbox formControlName="reservable">Reservable?</mat-checkbox>
-      </p>
+      <mat-slide-toggle formControlName="reservable">
+        Reservable?
+      </mat-slide-toggle>
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button routerLink="/academics/admin/room">
@@ -78,5 +78,5 @@
         Save
       </button>
     </mat-card-actions>
-  </mat-card>
+  </mat-pane>
 </form>

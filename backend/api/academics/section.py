@@ -6,7 +6,8 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.academics import SectionService
 from ...models import User
-from ...models.academics import Section, SectionDetails
+from ...models.academics import Section, SectionDetails, CatalogSection
+from ...models.academics.section import EditedSection
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -16,18 +17,7 @@ __license__ = "MIT"
 api = APIRouter(prefix="/api/academics/section")
 
 
-@api.get("", response_model=list[SectionDetails], tags=["Academics"])
-def get_sections(section_service: SectionService = Depends()) -> list[SectionDetails]:
-    """
-    Get all sections
-
-    Returns:
-        list[SectionDetails]: All `Section`s in the `Section` database table
-    """
-    return section_service.all()
-
-
-@api.get("/update-enrollments", response_model=None, tags=["Academics"])
+@api.get("/update-enrollments", tags=["Academics"])
 def update_enrollments(
     subject: User = Depends(registered_user),
     section_service: SectionService = Depends(),
@@ -38,35 +28,32 @@ def update_enrollments(
     return section_service.update_enrollment_totals(subject)
 
 
-@api.get("/{id}", response_model=SectionDetails, tags=["Academics"])
-def get_section_by_id(
-    id: int, section_service: SectionService = Depends()
-) -> SectionDetails:
+@api.get("/{id}", tags=["Academics"])
+def get_section_by_id(id: int, section_service: SectionService = Depends()) -> Section:
     """
     Gets one section by its id
 
     Returns:
-        SectionDetails: Section with the given ID
+        Section: Section with the given ID
     """
     return section_service.get_by_id(id)
 
 
-@api.get("/term/{term_id}", response_model=list[SectionDetails], tags=["Academics"])
+@api.get("/term/{term_id}", tags=["Academics"])
 def get_section_by_term_id(
     term_id: str, section_service: SectionService = Depends()
-) -> list[SectionDetails]:
+) -> list[CatalogSection]:
     """
     Gets list of sections by term ID
 
     Returns:
-        list[SectionDetails]: Sections with the given term
+        list[CatalogSection]: Sections with the given term
     """
     return section_service.get_by_term(term_id)
 
 
 @api.get(
     "/{subject_code}/{course_number}/{section_number}",
-    response_model=SectionDetails,
     tags=["Academics"],
 )
 def get_section_by_subject_code(
@@ -74,19 +61,19 @@ def get_section_by_subject_code(
     course_number: str,
     section_number: str,
     section_service: SectionService = Depends(),
-) -> SectionDetails:
+) -> CatalogSection:
     """
     Gets one section by its properties
 
     Returns:
-        SectionDetails: Course with the given properties
+        CatalogSection: Course with the given properties
     """
     return section_service.get(subject_code, course_number, section_number)
 
 
 @api.post("", response_model=SectionDetails, tags=["Academics"])
 def new_section(
-    section: Section,
+    section: EditedSection,
     subject: User = Depends(registered_user),
     section_service: SectionService = Depends(),
 ) -> SectionDetails:
@@ -101,7 +88,7 @@ def new_section(
 
 @api.put("", response_model=SectionDetails, tags=["Academics"])
 def update_section(
-    section: Section,
+    section: EditedSection,
     subject: User = Depends(registered_user),
     section_service: SectionService = Depends(),
 ) -> SectionDetails:

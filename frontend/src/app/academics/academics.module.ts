@@ -26,6 +26,7 @@ import { AdminRoomComponent } from './academics-admin/room/admin-room.component'
 import { RoomEditorComponent } from './academics-admin/room/room-editor/room-editor.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SharedModule } from '../shared/shared.module';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { SharedModule } from '../shared/shared.module';
     MatTabsModule,
     MatInputModule,
     MatCheckboxModule,
+    MatSlideToggleModule,
     AsyncPipe,
     SharedModule
   ]

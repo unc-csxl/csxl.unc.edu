@@ -6,10 +6,14 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from ..section_application_table import section_application_table
 from ...models.academics import Section
+from ...models.academics.section import EditedSection
+from ...models.academics import Section, CatalogSection
 from ...models.academics import SectionDetails
+from ...models.public_user import PublicUser
+from ...models.roster_role import RosterRole
 
 __authors__ = ["Ajay Gandecha"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -129,6 +133,28 @@ class SectionEntity(EntityBase):
             total_seats=model.total_seats,
         )
 
+    @classmethod
+    def from_edited_model(cls, model: EditedSection) -> Self:
+        """
+        Class method that converts a `EditedSection` model into a `SectionEntity`
+
+        Parameters:
+            - model (Section): Model to convert into an entity
+        Returns:
+            SectionEntity: Entity created from model
+        """
+        return cls(
+            id=model.id,
+            course_id=model.course_id,
+            number=model.number,
+            term_id=model.term_id,
+            meeting_pattern=model.meeting_pattern,
+            override_title=model.override_title,
+            override_description=model.override_description,
+            enrolled=model.enrolled,
+            total_seats=model.total_seats,
+        )
+
     def to_model(self) -> Section:
         """
         Converts a `SectionEntity` object into a `Section` model object
@@ -183,6 +209,44 @@ class SectionEntity(EntityBase):
             course_site=(
                 self.course_site.to_model() if self.course_site is not None else None
             ),
+            enrolled=self.enrolled,
+            total_seats=self.total_seats,
+        )
+
+    def to_catalog_model(self) -> CatalogSection:
+        """
+        Converts a `SectionEntity` object into a `CatalogSection` model object
+
+        Returns:
+            Section: `CatalogSection` object from the entity
+        """
+
+        return CatalogSection(
+            id=self.id,
+            subject_code=self.course.subject_code,
+            course_number=self.course.number,
+            section_number=self.number,
+            title=(
+                self.override_title
+                if len(self.override_title) > 0
+                else self.course.title
+            ),
+            meeting_pattern=self.meeting_pattern,
+            description=(
+                self.override_description
+                if len(self.override_description) > 0
+                else self.course.description
+            ),
+            lecture_room=(
+                self.lecture_rooms[0].room.to_model()
+                if len(self.lecture_rooms) > 0
+                else None
+            ),
+            instructors=[
+                member.user.to_public_model()
+                for member in self.members
+                if member.member_role == RosterRole.INSTRUCTOR
+            ],
             enrolled=self.enrolled,
             total_seats=self.total_seats,
         )
