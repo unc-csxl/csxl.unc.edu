@@ -125,6 +125,8 @@ class SectionEntity(EntityBase):
             meeting_pattern=model.meeting_pattern,
             override_title=model.override_title,
             override_description=model.override_description,
+            enrolled=model.enrolled,
+            total_seats=model.total_seats,
         )
 
     def to_model(self) -> Section:
@@ -150,6 +152,8 @@ class SectionEntity(EntityBase):
             staff=[members.to_flat_model() for members in self.staff],
             override_title=self.override_title,
             override_description=self.override_description,
+            enrolled=self.enrolled,
+            total_seats=self.total_seats,
         )
 
     def to_details_model(self) -> SectionDetails:
@@ -179,4 +183,6 @@ class SectionEntity(EntityBase):
             course_site=(
                 self.course_site.to_model() if self.course_site is not None else None
             ),
+            enrolled=self.enrolled,
+            total_seats=self.total_seats,
         )

@@ -64,8 +64,8 @@
       <mat-form-field appearance="outline">
         <mat-label>Ticket Type</mat-label>
         <mat-select formControlName="type" required>
-          <mat-option value="Assignment Help">Assignment Help</mat-option>
-          <mat-option value="Conceptual Help">Conceptual Help</mat-option>
+          <mat-option [value]="0">Assignment Help</mat-option>
+          <mat-option [value]="1">Conceptual Help</mat-option>
         </mat-select>
       </mat-form-field>
       @if (ticketForm.controls['type'].value === 'Assignment Help') {

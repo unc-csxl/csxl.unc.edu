@@ -115,7 +115,9 @@ export const sectionResolver: ResolveFn<Section | undefined> = (
       lecture_room: null,
       office_hour_rooms: [],
       override_title: '',
-      override_description: ''
+      override_description: '',
+      enrolled: 0,
+      total_seats: 0
     };
   }
 
