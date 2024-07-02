@@ -1,3 +1,11 @@
+/**
+ * Tab navigation controller for courses.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
