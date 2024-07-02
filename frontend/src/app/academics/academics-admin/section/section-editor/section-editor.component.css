@@ -3,8 +3,15 @@
     max-width: 640px;
 }
   
-.mat-mdc-form-field {
-  width: stretch;
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+mat-form-field {
+  width: 100%;
 }
 
 .mat-mdc-card-actions .mdc-button {
@@ -17,6 +24,6 @@ mat-card-content {
   margin-top: 8px;
 }
 
-.checkbox {
-  margin-top: 0px;
+mat-slide-toggle {
+  padding-bottom: 16px;
 }
