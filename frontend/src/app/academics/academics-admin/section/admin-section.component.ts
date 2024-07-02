@@ -44,11 +44,13 @@ export class AdminSectionComponent {
   public sections: WritableSignal<CatalogSection[]> = signal([]);
 
   /** Store list of Terms  */
-  public terms: RxTermList = new RxTermList();
-  public terms$: Observable<Term[]> = this.terms.value$;
+  public terms: Term[];
 
   /** Store the currently selected term from the form */
-  public displayTerm: FormControl<Term> = new FormControl();
+  // NOTE: Separating these fields into an ID and a selected term was required
+  // for Angular to correctly show the correct term in the initial drop down.
+  public displayTermId: string | null;
+  public displayTerm: WritableSignal<Term | undefined>;
 
   public displayedColumns: string[] = ['name'];
 
@@ -64,17 +66,13 @@ export class AdminSectionComponent {
       currentTerm: Term | undefined;
     };
 
-    this.terms.set(data.terms);
+    this.terms = data.terms;
 
-    if (data.currentTerm) {
-      this.displayTerm.setValue(data.currentTerm);
-
-      this.academicsService
-        .getSectionsByTerm(data.currentTerm!)
-        .subscribe((sections) => {
-          this.sections.set(sections);
-        });
-    }
+    // Set initial display term
+    this.displayTermId = data.currentTerm?.id ?? null;
+    this.displayTerm = signal(this.selectedTerm());
+    // Initialize the sections list
+    this.resetSections();
   }
 
   /** Event handler to open the Section Editor to create a new term */
@@ -104,15 +102,29 @@ export class AdminSectionComponent {
     );
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteSection(section).subscribe(() => {
-        let termToUpdate = this.displayTerm.value;
         this.sections.update((sections) =>
           sections.filter((s) => s.id !== section.id)
         );
-        this.terms.updateTerm(termToUpdate);
         this.snackBar.open('This Section has been deleted.', '', {
           duration: 2000
         });
       });
     });
+  }
+
+  selectedTerm() {
+    return this.terms.find((term) => term.id == this.displayTermId);
+  }
+
+  /** Resets the section data based on the selected term. */
+  resetSections() {
+    this.displayTerm.set(this.selectedTerm());
+    if (this.displayTerm()) {
+      this.academicsService
+        .getSectionsByTerm(this.displayTerm()!)
+        .subscribe((sections) => {
+          this.sections.set(sections);
+        });
+    }
   }
 }

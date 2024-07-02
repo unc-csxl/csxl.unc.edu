@@ -1,20 +1,23 @@
 <!-- HTML Structure of Admin Terms List -->
-<div class="content" *ngIf="displayTerm.value && sections(); else noTerm">
+<div class="content" *ngIf="displayTerm() && sections(); else noTerm">
   <table mat-table [dataSource]="sections()">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <div class="header">
           Sections
-          <mat-form-field appearance="outline" style="margin-left: auto">
-            <mat-label>Select Term</mat-label>
-            <mat-select [formControl]="displayTerm">
-              <mat-option *ngFor="let term of terms$ | async" [value]="term">{{
-                term.name
-              }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <button mat-stroked-button (click)="createSection()">Create</button>
+          <div class="right-header-container">
+            <mat-form-field class="term-selector" appearance="outline">
+              <mat-label>Select Term</mat-label>
+              <mat-select
+                [(ngModel)]="displayTermId"
+                (selectionChange)="resetSections()">
+                @for(term of terms; track term.id) {
+                <mat-option [value]="term.id">{{ term.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button mat-stroked-button (click)="createSection()">Create</button>
+          </div>
         </div>
       </th>
       <td mat-cell *matCellDef="let element">

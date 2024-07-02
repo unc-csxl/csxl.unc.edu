@@ -11,7 +11,8 @@
 .header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    padding-top: 16px;
+    padding-bottom: 16px;
 }
 
 .row {
@@ -29,3 +30,17 @@
 #edit-button {
     margin-right: 8px;
 }
+
+.right-header-container {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.term-selector {
+    width: 260px;
+    margin-bottom: -1.25em;
+  }
+  

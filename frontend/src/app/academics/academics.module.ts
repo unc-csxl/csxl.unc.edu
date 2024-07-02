@@ -11,7 +11,7 @@ import { AcademicsRoutingModule } from './academics-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AcademicsHomeComponent } from './academics-home/academics-home.component';
 import { AcademicsAdminComponent } from './academics-admin/academics-admin.component';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -52,6 +52,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatTableModule,
     MatIconModule,
     MatFormFieldModule,
+    FormsModule,
     MatSelectModule,
     ReactiveFormsModule,
     MatTabsModule,
