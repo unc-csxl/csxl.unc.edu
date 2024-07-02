@@ -1,0 +1,88 @@
+<div class="container">
+  <mat-pane>
+    <mat-card-header>
+      <div class="row">
+        <mat-card-title>Not Preferred</mat-card-title>
+        <div class="icon tertiary-background">0</div>
+      </div>
+      <p class="card-header-text">
+        Place applicants that you prefer not to select in this column.
+      </p>
+      <mat-divider />
+    </mat-card-header>
+    <mat-card-content>
+      <div
+        cdkDropList
+        #notPreferredList="cdkDropList"
+        [cdkDropListData]="notPreferred"
+        [cdkDropListConnectedTo]="[notProcessedList, preferredList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (item of notPreferred; track item) {
+        <application-card [item]="item" />
+        }
+      </div>
+    </mat-card-content>
+  </mat-pane>
+  <mat-pane>
+    <mat-card-header>
+      <div class="row">
+        <mat-card-title>Not Processed</mat-card-title>
+        <div class="icon tertiary-background">0</div>
+      </div>
+      <p class="card-header-text">
+        Place applicants you have not yet decided on in this column.
+      </p>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-divider />
+      <div
+        cdkDropList
+        #notProcessedList="cdkDropList"
+        [cdkDropListData]="notProcessed"
+        [cdkDropListConnectedTo]="[notPreferredList, preferredList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (item of notProcessed; track item) {
+        <application-card [item]="item" />
+        }
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="actions-container">
+        <mat-divider />
+        <div class="actions-button-container">
+          <button mat-flat-button class="tertiary-button">
+            Pass on 1st Choice Applicants
+          </button>
+        </div>
+      </div>
+    </mat-card-actions>
+  </mat-pane>
+  <mat-pane>
+    <mat-card-header>
+      <div class="row">
+        <mat-card-title>Preferred</mat-card-title>
+        <div class="icon tertiary-background">0</div>
+      </div>
+      <p class="card-header-text">
+        Place applicants that you would like to hire in this column, ordering
+        them based on preference.
+      </p>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-divider />
+      <div
+        cdkDropList
+        #preferredList="cdkDropList"
+        [cdkDropListData]="preferred"
+        [cdkDropListConnectedTo]="[notPreferredList, notProcessedList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (item of preferred; track item) {
+        <application-card [item]="item" />
+        }
+      </div>
+    </mat-card-content>
+  </mat-pane>
+</div>

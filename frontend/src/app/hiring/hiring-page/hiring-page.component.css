@@ -1,0 +1,90 @@
+
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    height: 100%;
+
+    ::ng-deep .mat-pane {
+        width: 22vw !important;
+        height: calc(100vh - 112px);
+        /* margin-bottom: 32px !important; */
+        margin: 0px !important;
+    }
+}
+
+.mat-mdc-card-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.mat-mdc-card-content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+}
+
+.icon {
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: 8px;
+    padding-bottom: 0;
+    line-height: 28px;
+    border-radius: 100%;
+    color: white;
+  }
+
+  
+  .cdk-drag-preview {
+    box-sizing: border-box;
+  }
+  
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+  
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .text-badge {
+    font-size: 10px;
+    height: 22px;
+    width: 32px;
+    text-align: center;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 11px;
+    line-height: 22px;
+    color: white;
+  }
+
+.mat-divider {
+    padding-bottom: 8px;
+}
+
+.mat-mdc-card-actions {
+    width: 100%;
+    height: 64px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+}
+
+.actions-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+}

@@ -61,6 +61,12 @@ const routes: Routes = [
       import('./my-courses/my-courses.module').then((m) => m.MyCoursesModule)
   },
   {
+    path: 'hiring',
+    title: 'Hiring',
+    loadChildren: () =>
+      import('./hiring/hiring.module').then((m) => m.HiringModule)
+  },
+  {
     path: 'ta-application',
     title: 'TA Applications',
     loadChildren: () =>

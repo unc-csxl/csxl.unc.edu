@@ -260,7 +260,9 @@ html, body {
     .title-small {
         font: mat.get-theme-typography($theme, title-small, font);
     }
-
+    .font-primary {
+        color: mat.get-theme-color($theme, primary) !important;
+    }
     .font-secondary {
         color: mat.get-theme-color($theme, secondary) !important;
     }
