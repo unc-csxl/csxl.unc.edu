@@ -121,15 +121,14 @@ export class SectionOfferingsComponent implements OnInit {
    * @returns Name of the section's instructor, or 'Unknown' if no instructor is set.
    */
   instructorNameForSection(section: CatalogSection): string {
-    // Find the instructor
-    let instructor =
-      section.instructors?.length ?? 0 > 0 ? section.instructors![0] : null;
-    // Return the name for the instructor
-    // If instructor exists: <First Name> <Last Name>
-    // Otherwise: 'Unknown'
-    return instructor
-      ? instructor.first_name + ' ' + instructor.last_name
-      : 'Unknown';
+    if (!section.instructors) return 'Unknown';
+    let instructorText = '';
+
+    for (let instructor of section.instructors) {
+      instructorText +=
+        instructor.first_name + ' ' + instructor.last_name + ', ';
+    }
+    return instructorText.substring(0, instructorText.length - 2);
   }
 
   selectedTerm() {
