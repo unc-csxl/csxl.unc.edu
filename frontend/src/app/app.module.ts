@@ -34,6 +34,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -84,6 +85,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatToolbarModule,
     MatTooltipModule,
     MatCheckboxModule,
+    MatSlideToggleModule,
     FormsModule,
     RouterModule,
     SharedModule,

@@ -1,3 +1,11 @@
+/**
+ * Office hours queue for instructors.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import {
   Component,
   OnDestroy,

@@ -2,7 +2,7 @@
  * The Course Catalog enables users to view all COMP courses at UNC.
  *
  * @author Ajay Gandecha <agandecha@unc.edu>
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 

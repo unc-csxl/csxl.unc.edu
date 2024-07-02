@@ -1,3 +1,11 @@
+/**
+ * The Roster Component enables instructors to view the roster of their courses.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import {
   Component,
   Signal,

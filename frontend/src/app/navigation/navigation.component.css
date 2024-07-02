@@ -116,3 +116,7 @@ a {
 .mat-mdc-standard-chip {
   --mdc-chip-container-shape-radius: 16px;
 }
+
+::ng-deep #profile-icon {
+  border-radius: 9px !important;
+}

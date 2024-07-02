@@ -226,6 +226,19 @@ html, body {
     }
 }
 
+/// Defines a mixin that applies custom styles to material switch components
+/// to better conform to Material 3 standards.
+/// 
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin mat-switch-styles($theme) {
+    .mat-mdc-slide-toggle {
+        label {
+            padding-left: 8px;
+            color: mat.get-theme-color($theme, on-surface) !important;
+        }
+    }
+}
+
 /// Defines a mixin that applies custom styles to material text field components
 /// to better conform to Material 3 standards.
 /// 
@@ -359,6 +372,7 @@ html, body {
     @include mat-list-styles($theme);
     @include mat-header-styles($theme);
     @include mat-icon-styles($theme);
+    @include mat-switch-styles($theme);
     @include mat-text-field-styles($theme);
     @include font-styles($theme);
     @include widget-styles($theme);

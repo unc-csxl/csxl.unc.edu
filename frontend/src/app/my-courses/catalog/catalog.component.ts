@@ -1,3 +1,9 @@
+/**
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023
+ * @license MIT
+ */
+
 import { Component } from '@angular/core';
 
 @Component({
