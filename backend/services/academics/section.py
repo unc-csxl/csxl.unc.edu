@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 
 from ...database import db_session
@@ -62,8 +62,13 @@ class SectionService:
             select(SectionEntity)
             .where(SectionEntity.term_id == term_id)
             .order_by(SectionEntity.course_id, SectionEntity.number)
+            .options(
+                joinedload(SectionEntity.members),
+                joinedload(SectionEntity.members).joinedload(SectionMemberEntity.user),
+                joinedload(SectionEntity.rooms),
+            )
         )
-        entities = self._session.scalars(query).all()
+        entities = self._session.scalars(query).unique().all()
 
         # Return the model
         return [entity.to_catalog_model() for entity in entities]

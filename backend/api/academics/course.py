@@ -20,13 +20,13 @@ openapi_tags = {
 }
 
 
-@api.get("", response_model=list[CourseDetails], tags=["Academics"])
-def get_courses(course_service: CourseService = Depends()) -> list[CourseDetails]:
+@api.get("", tags=["Academics"])
+def get_courses(course_service: CourseService = Depends()) -> list[Course]:
     """
     Get all courses
 
     Returns:
-        list[CourseDetails]: All `Course`s in the `Course` database table
+        list[Course]: All `Course`s in the `Course` database table
     """
     return course_service.all()
 

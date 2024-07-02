@@ -33,7 +33,7 @@ class CourseService:
         self._session = session
         self._permission_svc = permission_svc
 
-    def all(self) -> list[CourseDetails]:
+    def all(self) -> list[Course]:
         """Retrieves all courses from the table
 
         Returns:
@@ -45,7 +45,7 @@ class CourseService:
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return
-        return [entity.to_details_model() for entity in entities]
+        return [entity.to_model() for entity in entities]
 
     def get_by_id(self, id: str) -> CourseDetails:
         """Gets the course from the table for an id.

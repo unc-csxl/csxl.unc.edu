@@ -8,7 +8,7 @@ from backend.services.exceptions import (
 )
 from backend.services.permission import PermissionService
 from ....services.academics import CourseService
-from ....models.academics import CourseDetails
+from ....models.academics import Course, CourseDetails
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, course_svc
@@ -29,7 +29,7 @@ def test_all(course_svc: CourseService):
     courses = course_svc.all()
 
     assert len(courses) == len(course_data.courses)
-    assert isinstance(courses[0], CourseDetails)
+    assert isinstance(courses[0], Course)
 
 
 def test_get_by_id(course_svc: CourseService):
