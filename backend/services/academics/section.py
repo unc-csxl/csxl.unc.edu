@@ -64,7 +64,9 @@ class SectionService:
             .order_by(SectionEntity.course_id, SectionEntity.number)
             .options(
                 joinedload(SectionEntity.members).joinedload(SectionMemberEntity.user),
-                joinedload(SectionEntity.rooms).joinedload(SectionRoomEntity.room),
+                joinedload(SectionEntity.lecture_rooms).joinedload(
+                    SectionRoomEntity.room
+                ),
                 joinedload(SectionEntity.course),
             )
         )
