@@ -8,7 +8,7 @@ from backend.entities.academics.section_member_entity import SectionMemberEntity
 from backend.models.academics.section_member import SectionMember
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
-from ..models import User
+from ..models import User, PublicUser
 
 __authors__ = ["Kris Jordan", "Matt Vu"]
 __copyright__ = "Copyright 2023 - 2024"
@@ -133,3 +133,13 @@ class UserEntity(EntityBase):
         self.github_id = model.github_id or None
         self.github_avatar = model.github_avatar or ""
         self.accepted_community_agreement = model.accepted_community_agreement
+
+    def to_public_model(self) -> PublicUser:
+        return PublicUser(
+            id=self.id,
+            first_name=self.first_name,
+            last_name=self.last_name,
+            pronouns=self.pronouns,
+            email=self.email,
+            github_avatar=self.github_avatar,
+        )

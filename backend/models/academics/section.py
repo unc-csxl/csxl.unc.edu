@@ -50,3 +50,21 @@ class EditedSection(BaseModel):
     enrolled: int
     total_seats: int
     instructors: list[PublicUser]
+
+
+class CatalogSection(BaseModel):
+    """
+    Pydantic model that represents a section for the catalog page.
+    """
+
+    id: int | None = None
+    subject_code: str
+    course_number: str
+    section_number: str
+    title: str
+    meeting_pattern: str
+    description: str
+    lecture_room: Room | None = None
+    instructors: list[PublicUser]
+    enrolled: int
+    total_seats: int
