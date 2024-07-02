@@ -1,6 +1,13 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Applications."""
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as SQLAlchemyEnum
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    ForeignKey,
+    Enum as SQLAlchemyEnum,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.section_application_table import section_application_table
@@ -43,6 +50,12 @@ class ApplicationEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the user and application tables.
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["UserEntity"] = relationship(back_populates="applications")
+
+    # Review associated with the application
+    # NOTE: This field establishes a one-to-many relationship between the review and application tables.
+    reviews: Mapped[list["ApplicationReviewEntity"]] = relationship(
+        back_populates="application", cascade="all,delete"
+    )
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     type = Column(String(50))
