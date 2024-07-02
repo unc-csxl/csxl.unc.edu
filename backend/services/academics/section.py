@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 
 from ...database import db_session
@@ -62,8 +62,15 @@ class SectionService:
             select(SectionEntity)
             .where(SectionEntity.term_id == term_id)
             .order_by(SectionEntity.course_id, SectionEntity.number)
+            .options(
+                joinedload(SectionEntity.members).joinedload(SectionMemberEntity.user),
+                joinedload(SectionEntity.lecture_rooms).joinedload(
+                    SectionRoomEntity.room
+                ),
+                joinedload(SectionEntity.course),
+            )
         )
-        entities = self._session.scalars(query).all()
+        entities = self._session.scalars(query).unique().all()
 
         # Return the model
         return [entity.to_catalog_model() for entity in entities]
@@ -276,7 +283,7 @@ class SectionService:
         # Currently active terms.
         # This is hard-coded based on the availability and representation
         # of course enrollment data from UNC's course database.
-        AVAILABLE_TERMS = {"2024+Summer+II": "SuII24", "2024+Fall": "F24"}
+        AVAILABLE_TERMS = {"2024+Summer+II": "24SSII", "2024+Fall": "24F"}
 
         # Store updates to make.
         updates: dict[tuple[str, str], SectionEnrollmentData] = {}
