@@ -12,7 +12,14 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { Course, Room, Section, SectionMember, Term } from './academics.models';
+import {
+  Course,
+  EditedSection,
+  Room,
+  Section,
+  SectionMember,
+  Term
+} from './academics.models';
 
 @Injectable({
   providedIn: 'root'
@@ -146,7 +153,7 @@ export class AcademicsService {
    * @param section: Section to create
    * @returns {Observable<Section>}
    */
-  createSection(section: Section): Observable<Section> {
+  createSection(section: EditedSection): Observable<Section> {
     return this.http.post<Section>('/api/academics/section', section);
   }
 
@@ -154,7 +161,7 @@ export class AcademicsService {
    * @param section: Section to update
    * @returns {Observable<Section>}
    */
-  updateSection(section: Section): Observable<Section> {
+  updateSection(section: EditedSection): Observable<Section> {
     return this.http.put<Section>('/api/academics/section', section);
   }
 

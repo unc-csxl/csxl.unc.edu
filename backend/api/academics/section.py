@@ -7,6 +7,7 @@ from ..authentication import registered_user
 from ...services.academics import SectionService
 from ...models import User
 from ...models.academics import Section, SectionDetails
+from ...models.academics.section import EditedSection
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -86,7 +87,7 @@ def get_section_by_subject_code(
 
 @api.post("", response_model=SectionDetails, tags=["Academics"])
 def new_section(
-    section: Section,
+    section: EditedSection,
     subject: User = Depends(registered_user),
     section_service: SectionService = Depends(),
 ) -> SectionDetails:
@@ -101,7 +102,7 @@ def new_section(
 
 @api.put("", response_model=SectionDetails, tags=["Academics"])
 def update_section(
-    section: Section,
+    section: EditedSection,
     subject: User = Depends(registered_user),
     section_service: SectionService = Depends(),
 ) -> SectionDetails:

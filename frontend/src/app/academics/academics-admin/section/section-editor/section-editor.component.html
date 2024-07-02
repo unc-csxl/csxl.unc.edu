@@ -60,6 +60,9 @@
         </mat-select>
       </mat-form-field>
 
+      <!-- User Selection / Instructors Form Control -->
+      <user-lookup label="Instructors" [users]="instructors"></user-lookup>
+
       <!-- Override Title and Description -->
       <mat-slide-toggle [formControl]="override">
         Override Course Name and Description?

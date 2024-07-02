@@ -28,7 +28,9 @@ import {
 } from 'src/app/academics/academics.resolver';
 import {
   Course,
+  EditedSection,
   Room,
+  RosterRole,
   Section,
   Term
 } from 'src/app/academics/academics.models';
@@ -37,6 +39,7 @@ import { AcademicsService } from 'src/app/academics/academics.service';
 import { Profile } from 'src/app/models.module';
 import { DatePipe } from '@angular/common';
 import { ReplaySubject } from 'rxjs';
+import { PublicProfile } from 'src/app/profile/profile.service';
 
 const canActivateEditor: CanActivateFn = (
   route: ActivatedRouteSnapshot,
@@ -112,6 +115,9 @@ export class SectionEditorComponent {
   public room: FormControl<Room | null> = new FormControl(null, [
     Validators.required
   ]);
+
+  /** Store instructors */
+  public instructors: PublicProfile[] = [];
 
   public override = new FormControl(false, [Validators.required]);
 
@@ -190,6 +196,20 @@ export class SectionEditorComponent {
     this.term.setValue(termFilter.length > 0 ? termFilter[0] : null);
     this.course.setValue(courseFilter.length > 0 ? courseFilter[0] : null);
     this.room.setValue(roomFilter.length > 0 ? roomFilter[0] : null);
+
+    this.instructors =
+      this.section.staff
+        ?.filter((staff) => staff.member_role == RosterRole.INSTRUCTOR)
+        .map((staff) => {
+          return {
+            id: staff.user_id!,
+            first_name: staff.first_name,
+            last_name: staff.last_name,
+            pronouns: '',
+            email: '',
+            github_avatar: ''
+          };
+        }) ?? [];
   }
 
   /** Event handler to handle submitting the Update Section Form.
@@ -210,13 +230,18 @@ export class SectionEditorComponent {
       this.section.override_description =
         this.sectionForm.value.override_description ?? '';
 
+      let sectionToSubmit: EditedSection = {
+        ...this.section,
+        instructors: this.instructors
+      };
+
       if (this.sectionIdString == 'new') {
-        this.academicsService.createSection(this.section).subscribe({
+        this.academicsService.createSection(sectionToSubmit).subscribe({
           next: (section) => this.onSuccess(section),
           error: (err) => this.onError(err)
         });
       } else {
-        this.academicsService.updateSection(this.section).subscribe({
+        this.academicsService.updateSection(sectionToSubmit).subscribe({
           next: (section) => this.onSuccess(section),
           error: (err) => this.onError(err)
         });

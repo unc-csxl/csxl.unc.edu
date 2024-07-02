@@ -13,6 +13,7 @@ from ....models.room_details import RoomDetails
 from ....entities.academics import SectionEntity
 from ....entities.academics import SectionMemberEntity
 from ....models.academics import Section
+from ....models.academics.section import EditedSection
 from ....models.roster_role import RosterRole
 
 from ..reset_table_id_seq import reset_table_id_seq
@@ -116,7 +117,7 @@ comp_311_001 = Section(
     total_seats=200,
 )
 
-edited_comp_110 = Section(
+edited_comp_110 = EditedSection(
     id=2,
     course_id=course_data.comp_110.id,
     number="002",
@@ -126,9 +127,10 @@ edited_comp_110 = Section(
     override_description="",
     enrolled=100,
     total_seats=200,
+    instructors=[],
 )
 
-edited_comp_110_with_room = Section(
+edited_comp_110_with_room = EditedSection(
     id=2,
     course_id=course_data.comp_110.id,
     number="002",
@@ -139,9 +141,10 @@ edited_comp_110_with_room = Section(
     lecture_room=virtual_room,
     enrolled=100,
     total_seats=200,
+    instructors=[],
 )
 
-edited_comp_301_with_room = Section(
+edited_comp_301_with_room = EditedSection(
     id=5,
     course_id=course_data.comp_301.id,
     number="001",
@@ -152,9 +155,10 @@ edited_comp_301_with_room = Section(
     lecture_room=virtual_room,
     enrolled=100,
     total_seats=200,
+    instructors=[],
 )
 
-new_section = Section(
+new_section = EditedSection(
     id=7,
     course_id=course_data.comp_110.id,
     number="003",
@@ -164,9 +168,10 @@ new_section = Section(
     override_description="",
     enrolled=100,
     total_seats=200,
+    instructors=[],
 )
 
-new_section_with_lecture_room = Section(
+new_section_with_lecture_room = EditedSection(
     id=8,
     course_id=course_data.comp_110.id,
     number="003",
@@ -177,6 +182,7 @@ new_section_with_lecture_room = Section(
     lecture_room=virtual_room,
     enrolled=100,
     total_seats=200,
+    instructors=[],
 )
 
 

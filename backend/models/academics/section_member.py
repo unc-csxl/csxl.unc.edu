@@ -17,6 +17,7 @@ class SectionMember(BaseModel):
     """
 
     id: int | None = None
+    user_id: int | None = None
     first_name: str
     last_name: str
     pronouns: str

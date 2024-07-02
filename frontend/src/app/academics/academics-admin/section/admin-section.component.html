@@ -7,7 +7,7 @@
       <th mat-header-cell *matHeaderCellDef>
         <div class="header">
           Sections
-          <mat-form-field style="margin-left: auto">
+          <mat-form-field appearance="outline" style="margin-left: auto">
             <mat-label>Select Term</mat-label>
             <mat-select [formControl]="displayTerm">
               <mat-option *ngFor="let term of terms$ | async" [value]="term">{{

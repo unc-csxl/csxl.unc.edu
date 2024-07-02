@@ -13,12 +13,16 @@ from pydantic import BaseModel
 from ...database import db_session
 from ...models.academics import Section
 from ...models.academics import SectionDetails
+from ...models.academics.section import EditedSection
+from ...models.roster_role import RosterRole
 from ...models import User, Room
 from ...models.room_assignment_type import RoomAssignmentType
-from ...entities.academics import SectionEntity
+from ...entities.academics import SectionEntity, SectionMemberEntity
 from ...entities.academics import CourseEntity
 from ...entities.academics import SectionRoomEntity
 from ..permission import PermissionService
+
+from ...services.academics.section_member import SectionMemberService
 
 from ...services.exceptions import (
     ResourceNotFoundException,
@@ -38,10 +42,12 @@ class SectionService:
         self,
         session: Session = Depends(db_session),
         permission_svc: PermissionService = Depends(),
+        section_member_svc: SectionMemberService = Depends(),
     ):
         """Initializes the database session."""
         self._session = session
         self._permission_svc = permission_svc
+        self._section_member_svc = section_member_svc
 
     def all(self) -> list[SectionDetails]:
         """Retrieves all sections from the table
@@ -148,7 +154,7 @@ class SectionService:
         # Return the model
         return entity.to_details_model()
 
-    def create(self, subject: User, section: Section) -> SectionDetails:
+    def create(self, subject: User, section: EditedSection) -> SectionDetails:
         """Creates a new section.
 
         Args:
@@ -163,7 +169,7 @@ class SectionService:
         self._permission_svc.enforce(subject, "academics.section.create", f"section/")
 
         # Create new object
-        section_entity = SectionEntity.from_model(section)
+        section_entity = SectionEntity.from_edited_model(section)
 
         # Add new object to table and commit changes
         self._session.add(section_entity)
@@ -189,10 +195,16 @@ class SectionService:
             self._session.add(section_room_entity)
             self._session.commit()
 
+        # Add the instructors.
+        for instructor in section.instructors:
+            self._section_member_svc.add_section_member(
+                subject, section.id, instructor.id, RosterRole.INSTRUCTOR
+            )
+
         # Now, refresh the data and return.
         return self._session.get(SectionEntity, added_section.id).to_details_model()
 
-    def update(self, subject: User, section: Section) -> SectionDetails:
+    def update(self, subject: User, section: EditedSection) -> SectionDetails:
         """Updates a section.
 
         Args:
@@ -241,6 +253,25 @@ class SectionService:
                     assignment_type=RoomAssignmentType.LECTURE_ROOM,
                 )
                 self._session.add(section_room_entity)
+
+        # Change instructors
+        instructors_query = select(SectionMemberEntity).where(
+            SectionMemberEntity.section_id == section.id,
+            SectionMemberEntity.member_role == RosterRole.INSTRUCTOR,
+        )
+
+        existing_instructors = self._session.scalars(instructors_query).all()
+
+        for instructor in existing_instructors:
+            self._session.delete(instructor)
+
+        for new_instructor in section.instructors:
+            self._section_member_svc.add_section_member(
+                subject,
+                section.id,
+                new_instructor.id,
+                member_role=RosterRole.INSTRUCTOR,
+            )
 
         # Commit changes
         self._session.commit()

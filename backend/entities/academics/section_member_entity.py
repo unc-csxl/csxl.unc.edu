@@ -90,6 +90,7 @@ class SectionMemberEntity(EntityBase):
         """
         return SectionMember(
             id=self.id,
+            user_id=self.user_id,
             first_name=self.user.first_name,
             last_name=self.user.last_name,
             pronouns=self.user.pronouns,
