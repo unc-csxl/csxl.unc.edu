@@ -33,11 +33,11 @@ class TermService:
         self._session = session
         self._permission_svc = permission_svc
 
-    def all(self) -> list[TermDetails]:
+    def all(self) -> list[Term]:
         """Retrieves all terms from the table
 
         Returns:
-            list[TermDetails]: List of all `TermDetails`
+            list[Term]: List of all `TermDetails`
         """
         # Select all entries in `Term` table
         query = select(TermEntity).order_by(TermEntity.start)
@@ -45,15 +45,15 @@ class TermService:
         entities = self._session.scalars(query).all()
 
         # Convert entries to a model and return
-        return [entity.to_details_model() for entity in entities]
+        return [entity.to_model() for entity in entities]
 
-    def get_by_id(self, id: str) -> TermDetails:
+    def get_by_id(self, id: str) -> Term:
         """Gets the term from the table for an id.
 
         Args:
             id: ID of the term to retrieve.
         Returns:
-            TermDetails: Term based on the id.
+            Term: Term based on the id.
         """
         # Select all entries in the `Term` table and sort by end date
         query = select(TermEntity).filter(TermEntity.id == id).limit(1)
@@ -64,15 +64,15 @@ class TermService:
             raise ResourceNotFoundException(f"Term with id: {id} does not exist.")
 
         # Return the model
-        return entity.to_details_model()
+        return entity.to_model()
 
-    def get_by_date(self, date: datetime) -> TermDetails:
+    def get_by_date(self, date: datetime) -> Term:
         """Gets the active term for a given date, if it exists.
 
         Args:
             date: Date to query the active term for.
         Returns:
-            TermDetails: Term based on the provided date.
+            Term: Term based on the provided date.
         """
         # Select all entries in the `Term` table that contains this date.
         # This query either selects the most current term, or the upcoming term if there
@@ -89,7 +89,7 @@ class TermService:
             )
 
         # Return the model
-        return entity.to_details_model()
+        return entity.to_model()
 
     def create(self, subject: User, term: Term) -> TermDetails:
         """Creates a new term.

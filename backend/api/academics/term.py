@@ -17,35 +17,35 @@ __license__ = "MIT"
 api = APIRouter(prefix="/api/academics/term")
 
 
-@api.get("", response_model=list[TermDetails], tags=["Academics"])
-def get_terms(term_service: TermService = Depends()) -> list[TermDetails]:
+@api.get("", tags=["Academics"])
+def get_terms(term_service: TermService = Depends()) -> list[Term]:
     """
     Get all terms
 
     Returns:
-        list[TermDetails]: All `Term`s in the `Term` database table
+        list[Term]: All `Term`s in the `Term` database table
     """
     return term_service.all()
 
 
-@api.get("/current", response_model=TermDetails, tags=["Academics"])
-def get_current_term(term_service: TermService = Depends()) -> TermDetails:
+@api.get("/current", tags=["Academics"])
+def get_current_term(term_service: TermService = Depends()) -> Term:
     """
     Gets the current term based on the current date
 
     Returns:
-        TermDetails: Currently active term
+        Term: Currently active term
     """
     return term_service.get_by_date(datetime.today())
 
 
-@api.get("/{id}", response_model=TermDetails, tags=["Academics"])
-def get_term_by_id(id: str, term_service: TermService = Depends()) -> TermDetails:
+@api.get("/{id}", tags=["Academics"])
+def get_term_by_id(id: str, term_service: TermService = Depends()) -> Term:
     """
     Gets one term by its id
 
     Returns:
-        TermDetails: Term with the given ID
+        Term: Term with the given ID
     """
     return term_service.get_by_id(id)
 

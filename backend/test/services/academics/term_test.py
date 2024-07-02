@@ -8,7 +8,7 @@ from backend.services.exceptions import (
 )
 from backend.services.permission import PermissionService
 from ....services.academics import TermService
-from ....models.academics import TermDetails
+from ....models.academics import TermDetails, Term
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import permission_svc, term_svc
@@ -29,13 +29,13 @@ def test_all(term_svc: TermService):
     terms = term_svc.all()
 
     assert len(terms) == len(term_data.terms)
-    assert isinstance(terms[0], TermDetails)
+    assert isinstance(terms[0], Term)
 
 
 def test_get_by_id(term_svc: TermService):
     term = term_svc.get_by_id(term_data.sp_23.id)
 
-    assert isinstance(term, TermDetails)
+    assert isinstance(term, Term)
     assert term.id == term_data.sp_23.id
 
 
@@ -48,7 +48,7 @@ def test_get_by_id_not_found(term_svc: TermService):
 def test_get_by_date(term_svc: TermService):
     term = term_svc.get_by_date(term_data.today)
 
-    assert isinstance(term, TermDetails)
+    assert isinstance(term, Term)
     assert term.id == term_data.f_23.id
 
 
