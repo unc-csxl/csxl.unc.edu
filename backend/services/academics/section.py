@@ -63,7 +63,6 @@ class SectionService:
             .where(SectionEntity.term_id == term_id)
             .order_by(SectionEntity.course_id, SectionEntity.number)
             .options(
-                joinedload(SectionEntity.members),
                 joinedload(SectionEntity.members).joinedload(SectionMemberEntity.user),
                 joinedload(SectionEntity.rooms),
             )
