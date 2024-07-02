@@ -68,7 +68,7 @@ class SectionService:
         # Return the model
         return [entity.to_catalog_model() for entity in entities]
 
-    def get_by_id(self, id: int) -> CatalogSection:
+    def get_by_id(self, id: int) -> Section:
         """Gets the section from the table for an id.
 
         Args:
@@ -85,7 +85,7 @@ class SectionService:
             raise ResourceNotFoundException(f"Section with id: {id} does not exist.")
 
         # Return the model
-        return entity.to_catalog_model()
+        return entity.to_model()
 
     def get(
         self, subject_code: str, course_number: str, section_number: str

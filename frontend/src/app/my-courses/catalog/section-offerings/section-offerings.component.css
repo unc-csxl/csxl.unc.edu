@@ -16,3 +16,14 @@ tr.example-detail-row {
   overflow: hidden;
   display: flex;
 }
+
+.term-selector {
+  margin-left: auto;
+  width: 260px;
+  margin-bottom: -1.25em;
+
+}
+
+.mat-mdc-card-header {
+  align-items: center;
+}

@@ -1,8 +1,6 @@
 <!-- HTML Structure of Admin Terms List -->
-<div
-  class="content"
-  *ngIf="displayTerm.value && displayTerm.value.course_sections; else noTerm">
-  <table mat-table [dataSource]="displayTerm.value.course_sections">
+<div class="content" *ngIf="displayTerm.value && sections(); else noTerm">
+  <table mat-table [dataSource]="sections()">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <div class="header">
@@ -22,14 +20,9 @@
       <td mat-cell *matCellDef="let element">
         <div class="row" (click)="updateSection(element)">
           <p>
-            {{ courseFromId(element.course_id)?.subject_code }}
-            {{ courseFromId(element.course_id)?.number }} -
-            {{ element.number }}:
-            {{
-              element.override_title !== ''
-                ? element.override_title
-                : courseFromId(element.course_id)?.title
-            }}
+            {{ element.subject_code }}
+            {{ element.course_number }} - {{ element.section_number }}:
+            {{ element.title }}
           </p>
           <div clas="modify-buttons">
             <button mat-stroked-button (click)="deleteSection(element, $event)">

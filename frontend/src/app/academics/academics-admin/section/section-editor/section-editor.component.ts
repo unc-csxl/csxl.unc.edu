@@ -3,7 +3,7 @@
  * sections.
  *
  * @author Ajay Gandecha <agandecha@unc.edu>
- * @copyright 2023
+ * @copyright 2024
  * @license MIT
  */
 

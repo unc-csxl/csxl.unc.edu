@@ -40,6 +40,20 @@ export interface Section {
   total_seats: number;
 }
 
+export interface CatalogSection {
+  id: number | null;
+  subject_code: string;
+  course_number: string;
+  section_number: string;
+  title: string;
+  meeting_pattern: string;
+  description: string;
+  lecture_room: Room | null;
+  instructors: PublicProfile[];
+  enrolled: number;
+  total_seats: number;
+}
+
 /** Defines a Course Section */
 export interface EditedSection {
   id: number | null;
@@ -59,7 +73,6 @@ export interface EditedSection {
 export interface Term extends TimeRange {
   id: string;
   name: string;
-  course_sections: Section[] | null;
 }
 
 /** Defines a Section Member */

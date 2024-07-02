@@ -7,13 +7,14 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import {
   coursesResolver,
   currentTermResolver,
   termsResolver
 } from '../../../academics/academics.resolver';
 import {
+  CatalogSection,
   Course,
   RosterRole,
   Section,
@@ -56,18 +57,21 @@ export class SectionOfferingsComponent implements OnInit {
     canActivate: [],
     resolve: {
       terms: termsResolver,
-      courses: coursesResolver,
       currentTerm: currentTermResolver
     }
   };
 
-  /** Store list of Courses */
-  public courses: Course[];
+  /** Signal to store the list of sections for a term. */
+  public sections: WritableSignal<CatalogSection[]> = signal([]);
+
   /** Store list of Terms  */
   public terms: Term[];
 
   /** Store the currently selected term from the form */
-  public displayTerm: FormControl<Term> = new FormControl();
+  // NOTE: Separating these fields into an ID and a selected term was required
+  // for Angular to correctly show the correct term in the initial drop down.
+  public displayTermId: string | null;
+  public displayTerm: WritableSignal<Term | undefined>;
 
   /** Store the columns to display in the table */
   public displayedColumns: string[] = [
@@ -86,20 +90,21 @@ export class SectionOfferingsComponent implements OnInit {
   /** Constructor for the course catalog page. */
   constructor(
     private route: ActivatedRoute,
-    public coursesService: AcademicsService,
+    public academicsService: AcademicsService,
     private gearService: NagivationAdminGearService
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
-      courses: Course[];
       terms: Term[];
       currentTerm: Term;
     };
-    this.courses = data.courses;
     this.terms = data.terms;
 
     // Set initial display term
-    this.displayTerm.setValue(data.currentTerm);
+    this.displayTermId = data.currentTerm.id ?? null;
+    this.displayTerm = signal(this.selectedTerm());
+    // Initialize the sections list
+    this.resetSections();
   }
 
   ngOnInit() {
@@ -111,33 +116,35 @@ export class SectionOfferingsComponent implements OnInit {
     );
   }
 
-  /** Helper function that returns the course object from the list with the given ID.
-   * @param id ID of the course to look up.
-   * @returns Course for the ID, if it exists.
-   */
-  courseFromId(id: string): Course | null {
-    // Find the course for the given ID
-    let coursesFilter = this.courses.filter((c) => c.id === id);
-    // Return either the course if it exists, or null.
-    return coursesFilter.length > 0 ? coursesFilter[0] : null;
-  }
-
   /** Helper function that generates an instructor's name for a given section.
    * @param section Section to create the instructor name for.
    * @returns Name of the section's instructor, or 'Unknown' if no instructor is set.
    */
-  instructorNameForSection(section: Section): string {
-    // Find all staff with the instructor role
-    let staffFilter = section.staff?.filter(
-      (s) => s.member_role == 'Instructor'
-    );
+  instructorNameForSection(section: CatalogSection): string {
     // Find the instructor
-    let instructor = staffFilter?.length ?? 0 > 0 ? staffFilter![0] : null;
+    let instructor =
+      section.instructors?.length ?? 0 > 0 ? section.instructors![0] : null;
     // Return the name for the instructor
     // If instructor exists: <First Name> <Last Name>
     // Otherwise: 'Unknown'
     return instructor
       ? instructor.first_name + ' ' + instructor.last_name
       : 'Unknown';
+  }
+
+  selectedTerm() {
+    return this.terms.find((term) => term.id == this.displayTermId);
+  }
+
+  /** Resets the section data based on the selected term. */
+  resetSections() {
+    this.displayTerm.set(this.selectedTerm());
+    if (this.displayTerm()) {
+      this.academicsService
+        .getSectionsByTerm(this.displayTerm()!)
+        .subscribe((sections) => {
+          this.sections.set(sections);
+        });
+    }
   }
 }

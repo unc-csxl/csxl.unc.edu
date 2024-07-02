@@ -29,14 +29,12 @@ def update_enrollments(
 
 
 @api.get("/{id}", tags=["Academics"])
-def get_section_by_id(
-    id: int, section_service: SectionService = Depends()
-) -> CatalogSection:
+def get_section_by_id(id: int, section_service: SectionService = Depends()) -> Section:
     """
     Gets one section by its id
 
     Returns:
-        CatalogSection: Section with the given ID
+        Section: Section with the given ID
     """
     return section_service.get_by_id(id)
 

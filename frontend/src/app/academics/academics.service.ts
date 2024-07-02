@@ -13,6 +13,7 @@ import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import {
+  CatalogSection,
   Course,
   EditedSection,
   Room,
@@ -118,19 +119,11 @@ export class AcademicsService {
 
   /** Returns all section entries by a term.
    * @param term Term to get sections by
-   * @returns {Observable<Section[]>}
+   * @returns {Observable<CatalogSection[]>}
    */
-  getSectionsByTerm(term: Term): Observable<Section[]> {
-    return this.http.get<Section[]>(`/api/academics/section/term/${term.id}`);
-  }
-
-  /** Returns all section entries by a term at which an office hours section doesn't exist.
-   * @param term Term to get sections by
-   * @returns {Observable<Section[]>}
-   */
-  getSectionsWithNoOfficeHoursByTerm(term: Term): Observable<Section[]> {
-    return this.http.get<Section[]>(
-      `/api/academics/section/term/${term.id}/no-office-hours`
+  getSectionsByTerm(term: Term): Observable<CatalogSection[]> {
+    return this.http.get<CatalogSection[]>(
+      `/api/academics/section/term/${term.id}`
     );
   }
 
@@ -143,7 +136,7 @@ export class AcademicsService {
 
   /** Returns one section from the backend database.
    * @param id ID of the section to look up
-   * @returns {Observable<Section>}
+   * @returns {Observable<CatalogSection>}
    */
   getSection(id: number): Observable<Section> {
     return this.http.get<Section>(`/api/academics/section/${id}`);
