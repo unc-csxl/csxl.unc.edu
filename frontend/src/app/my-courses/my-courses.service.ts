@@ -51,7 +51,7 @@ export class MyCoursesService {
   currentTerms = computed(() => {
     return this.termsSignal().filter((term) => {
       let currentDate = new Date();
-      return term.start <= currentDate && currentDate <= term.end;
+      return currentDate <= term.end;
     });
   });
 

@@ -16,7 +16,7 @@
     @for (section of course.sections; track section.number) {
     <p class="meeting-pattern-text">
       {{ course.sections.length > 1 ? 'Sec ' + section.number + ': ' : ''
-      }}{{ course.sections[0].meeting_pattern }}
+      }}{{ section.meeting_pattern }}
     </p>
     }
   </mat-card-content>
