@@ -1,3 +1,11 @@
+/**
+ * Office hours page for students that enables them to create tickets and get help.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import {
   Component,
   OnDestroy,

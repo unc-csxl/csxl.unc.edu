@@ -1,3 +1,11 @@
+/**
+ * Office hours page that shows events.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, WritableSignal, signal } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
