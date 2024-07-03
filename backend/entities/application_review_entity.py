@@ -1,13 +1,9 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Application Reviews."""
 
-from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from ..models.event_details import EventDetails
 from .entity_base import EntityBase
 from typing import Self
-from ..models.event import DraftEvent, Event
-from ..models.registration_type import RegistrationType
-from ..models.user import User
 from sqlalchemy import Enum as SQLAlchemyEnum
 
 from ..models.application_review import (
@@ -15,8 +11,6 @@ from ..models.application_review import (
     ApplicationReview,
     ApplicationReviewOverview,
 )
-
-from datetime import datetime
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"

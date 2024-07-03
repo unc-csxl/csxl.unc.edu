@@ -8,22 +8,8 @@ from sqlalchemy.orm import Session, joinedload
 from ..database import db_session
 from ..models.user import User
 from ..models.academics.section_member import RosterRole
-from ..models.academics.my_courses import (
-    OfficeHoursOverview,
-    OfficeHourTicketOverview,
-    OfficeHourQueueOverview,
-    OfficeHourEventRoleOverview,
-    OfficeHourGetHelpOverview,
-)
-from ..models.office_hours.office_hours import OfficeHours, NewOfficeHours
-from ..models.office_hours.ticket import TicketState
-from ..entities import UserEntity
 from ..entities.academics.section_entity import SectionEntity
-from ..entities.office_hours import (
-    CourseSiteEntity,
-    OfficeHoursEntity,
-    OfficeHoursTicketEntity,
-)
+from ..entities.office_hours import CourseSiteEntity
 from ..entities.application_entity import UTAApplicationEntity
 from ..entities.academics.section_member_entity import SectionMemberEntity
 from ..entities.application_review_entity import ApplicationReviewEntity
@@ -32,7 +18,6 @@ from .exceptions import CoursePermissionException, ResourceNotFoundException
 from ..models.application_review import (
     HiringStatus,
     ApplicationReview,
-    ApplicationOverview,
     ApplicationReviewOverview,
     ApplicationReviewStatus,
 )

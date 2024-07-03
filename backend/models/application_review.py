@@ -56,7 +56,7 @@ class ApplicationOverview(BaseModel):
 
 
 class ApplicationReviewOverview(ApplicationReview):
-    id: int
+    id: int | None = None
     application_id: int
     application: ApplicationOverview
     status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
