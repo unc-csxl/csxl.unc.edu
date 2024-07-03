@@ -109,9 +109,7 @@ class ApplicationEntity(EntityBase):
         on child object types. This may cause errors in the future.
         """
         return ApplicationOverview(
-            id=self.id,
-            user_id=self.user_id,
-            user=self.user.to_public_model(),
+            applicant_name=f"{self.user.first_name} {self.user.last_name}",
             academic_hours=(
                 self.academic_hours if isinstance(self, UTAApplicationEntity) else None
             ),

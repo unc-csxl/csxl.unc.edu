@@ -38,9 +38,7 @@ class ApplicationOverview(BaseModel):
     of the `Application` database in the PostgreSQL database.
     """
 
-    id: int | None = None
-    user_id: int
-    user: PublicUser
+    applicant_name: str
     academic_hours: int | None
     extracurriculars: str | None
     expected_graduation: str | None
