@@ -22,9 +22,10 @@ class ApplicationReview(BaseModel):
     This model is based on the `ApplicationReviewEntity`.
     """
 
-    id: int
+    id: int | None = None
     application_id: int
-    state: ApplicationReviewStatus
+    course_site_id: int
+    status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
     preference: int
     notes: str
 
@@ -58,7 +59,7 @@ class ApplicationReviewOverview(ApplicationReview):
     id: int
     application_id: int
     application: ApplicationOverview
-    state: ApplicationReviewStatus
+    status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
     preference: int
     notes: str
 
