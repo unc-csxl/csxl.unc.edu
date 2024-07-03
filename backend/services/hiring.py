@@ -4,13 +4,13 @@ Service for hiring.
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
 from ..database import db_session
 from ..models.user import User
 from ..models.academics.section_member import RosterRole
 from ..entities.academics.section_entity import SectionEntity
 from ..entities.office_hours import CourseSiteEntity
-from ..entities.application_entity import UTAApplicationEntity
+from ..entities.application_entity import UTAApplicationEntity, NewUTAApplicationEntity
 from ..entities.academics.section_member_entity import SectionMemberEntity
 from ..entities.application_review_entity import ApplicationReviewEntity
 from .exceptions import CoursePermissionException, ResourceNotFoundException
@@ -170,10 +170,21 @@ class HiringService:
             .where(CourseSiteEntity.id == course_site_id)
             .join(ApplicationReviewEntity)
             .options(
-                joinedload(CourseSiteEntity.sections)
-                .joinedload(SectionEntity.preferred_applicants)
-                .joinedload(UTAApplicationEntity.user),
-                joinedload(CourseSiteEntity.application_reviews),
+                selectinload(CourseSiteEntity.sections)
+                .selectinload(SectionEntity.preferred_applicants)
+                .selectin_polymorphic([NewUTAApplicationEntity]),
+                selectinload(CourseSiteEntity.sections)
+                .selectinload(
+                    SectionEntity.preferred_applicants.of_type(NewUTAApplicationEntity)
+                )
+                .selectinload(NewUTAApplicationEntity.user),
+                # .joinedload(UTAApplicationEntity.user),
+                # joinedload(CourseSiteEntity.sections).joinedload(
+                #     SectionEntity.preferred_applicants.of_type(
+                #         with_polymorphic(UTAApplicationEntity, "*", flat=True)
+                #     )
+                # ),
+                selectinload(CourseSiteEntity.application_reviews),
             )
         )
 
