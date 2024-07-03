@@ -11,7 +11,11 @@ from backend.services.exceptions import (
 )
 
 # Tested Dependencies
-from ....models.application_review import HiringStatus, ApplicationReviewOverview
+from ....models.application_review import (
+    HiringStatus,
+    ApplicationReviewOverview,
+    ApplicationReviewStatus,
+)
 from ....services import HiringService
 
 # Injected Service Fixtures
@@ -76,4 +80,58 @@ def test_get_status_site_not_instructor(hiring_svc: HiringService):
         pytest.fail()
     with pytest.raises(CoursePermissionException):
         hiring_svc.get_status(user_data.root, office_hours_data.comp_110_site.id)
+        pytest.fail()
+
+
+def test_update_status(hiring_svc: HiringService):
+    """Test that an instructor can update the hiring status."""
+    status = hiring_svc.get_status(
+        user_data.instructor, office_hours_data.comp_110_site.id
+    )
+
+    status.not_preferred[0].status = ApplicationReviewStatus.PREFERRED
+    status.not_preferred[0].preference = 1
+    status.preferred[0].notes = "Updated notes!"
+    status.not_processed[0].preference = 1
+    status.not_processed[1].preference = 0
+
+    new_status = hiring_svc.update_status(
+        user_data.instructor, office_hours_data.comp_110_site.id, status
+    )
+
+    assert len(new_status.not_preferred) == 0
+    assert len(new_status.preferred) == 2
+    assert new_status.preferred[0].application_id == hiring_data.application_two.id
+    assert new_status.preferred[0].notes == "Updated notes!"
+    assert new_status.preferred[1].application_id == hiring_data.application_one.id
+    assert new_status.not_processed[0].application_id == hiring_data.application_four.id
+    assert (
+        new_status.not_processed[1].application_id == hiring_data.application_three.id
+    )
+
+
+def test_update_status_site_not_found(hiring_svc: HiringService):
+    """Ensures that updating hiring is not possible if a course site does not exist."""
+    status = hiring_svc.get_status(
+        user_data.instructor, office_hours_data.comp_110_site.id
+    )
+    with pytest.raises(ResourceNotFoundException):
+        hiring_svc.update_status(user_data.instructor, 404, status)
+        pytest.fail()
+
+
+def test_update_status_site_not_instructor(hiring_svc: HiringService):
+    """Ensures that updating hiring information can only be viwed by instructors."""
+    status = hiring_svc.get_status(
+        user_data.instructor, office_hours_data.comp_110_site.id
+    )
+    with pytest.raises(CoursePermissionException):
+        hiring_svc.update_status(
+            user_data.ambassador, office_hours_data.comp_110_site.id, status
+        )
+        pytest.fail()
+    with pytest.raises(CoursePermissionException):
+        hiring_svc.update_status(
+            user_data.root, office_hours_data.comp_110_site.id, status
+        )
         pytest.fail()

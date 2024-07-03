@@ -109,13 +109,48 @@ class HiringService:
 
         # Step 6: Create hiring status object and return
         hiring_status = HiringStatus(
-            not_preferred=not_preferred_overviews,
-            not_processed=not_processed_overviews,
-            preferred=preferred_overviews,
+            not_preferred=sorted(not_preferred_overviews, key=lambda o: o.preference),
+            not_processed=sorted(not_processed_overviews, key=lambda o: o.preference),
+            preferred=sorted(preferred_overviews, key=lambda o: o.preference),
         )
 
         # Step 7: Return
         return hiring_status
+
+    def update_status(
+        self, subject: User, course_site_id: int, hiring_status: HiringStatus
+    ) -> HiringStatus:
+        """
+        Updates the status of hiring for a course site based on the object passed in.
+
+        Returns:
+            HiringStatus
+        """
+        # Step 1: Ensure that a user can access a course site's hiring.
+        site_entity = self._load_instructor_course_site(subject, course_site_id)
+
+        # Step 2: Update the values for all reviews.
+
+        # Retrieve all reviews, indexed by ID for efficient searching.
+        hiring_status_reviews_by_id: dict[int, ApplicationReviewOverview] = {}
+        for review_overview in hiring_status.not_preferred:
+            hiring_status_reviews_by_id[review_overview.id] = review_overview
+        for review_overview in hiring_status.not_processed:
+            hiring_status_reviews_by_id[review_overview.id] = review_overview
+        for review_overview in hiring_status.preferred:
+            hiring_status_reviews_by_id[review_overview.id] = review_overview
+
+        # Update every application associated with the site.
+        for review in site_entity.application_reviews:
+            new_review = hiring_status_reviews_by_id[review.id]
+            review.status = new_review.status
+            review.preference = new_review.preference
+            review.notes = new_review.notes
+
+        self._session.commit()
+
+        # Reload the data and return the hiring status.
+        return self.get_status(subject, course_site_id)
 
     def _load_instructor_course_site(
         self, subject: User, course_site_id: int
@@ -133,6 +168,7 @@ class HiringService:
         site_query = (
             select(CourseSiteEntity)
             .where(CourseSiteEntity.id == course_site_id)
+            .join(ApplicationReviewEntity)
             .options(
                 joinedload(CourseSiteEntity.sections)
                 .joinedload(SectionEntity.preferred_applicants)
