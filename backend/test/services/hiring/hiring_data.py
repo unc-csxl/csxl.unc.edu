@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy.orm import Session
 from ...services.reset_table_id_seq import reset_table_id_seq
 
-from ....entities.application_entity import UTAApplicationEntity
+from ....entities.application_entity import NewUTAApplicationEntity, ApplicationEntity
 from ....entities.section_application_table import section_application_table
 from ....entities.application_review_entity import ApplicationReviewEntity
 
@@ -133,13 +133,13 @@ reviews = [review_one, review_two, review_three]
 
 def insert_fake_data(session: Session):
     for application in applications:
-        entity = UTAApplicationEntity.from_model(application)
+        entity = NewUTAApplicationEntity.from_model(application)
         session.add(entity)
 
     reset_table_id_seq(
         session,
-        UTAApplicationEntity,
-        UTAApplicationEntity.id,
+        ApplicationEntity,
+        ApplicationEntity.id,
         len(applications) + 1,
     )
 
