@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ApplicationReviewOverview } from '../../hiring.models';
 
 @Component({
   selector: 'application-card',
@@ -6,5 +7,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './application-card.widget.css'
 })
 export class ApplicationCardWidget {
-  @Input() item!: string;
+  @Input() item!: ApplicationReviewOverview;
 }

@@ -7,15 +7,6 @@
  * @license MIT
  */
 
-export interface ApplicationReview {
-  id: number | null;
-  application_id: number;
-  course_site_id: number;
-  status: string;
-  preference: number;
-  notes: string;
-}
-
 export interface ApplicationOverview {
   applicant_name: string;
   academic_hours: number | null;
@@ -36,7 +27,7 @@ export interface ApplicationReviewOverview {
   id: number | null;
   application_id: number;
   application: ApplicationOverview;
-  status: string;
+  status: ApplicationReviewStatus;
   preference: number;
   notes: string;
 }
@@ -45,4 +36,10 @@ export interface HiringStatus {
   not_preferred: ApplicationReviewOverview[];
   not_processed: ApplicationReviewOverview[];
   preferred: ApplicationReviewOverview[];
+}
+
+export enum ApplicationReviewStatus {
+  NOT_PREFERRED = 'Not Preferred',
+  NOT_PROCESSED = 'Not Processed',
+  PREFERRED = 'Preferred'
 }
