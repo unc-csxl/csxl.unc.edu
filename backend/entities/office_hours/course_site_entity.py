@@ -48,6 +48,11 @@ class CourseSiteEntity(EntityBase):
         back_populates="course_site", cascade="all, delete"
     )
 
+    # NOTE: One-to-many relationship of OfficeHoursSection to application reviews
+    application_reviews: Mapped[list["ApplicationReviewEntity"]] = relationship(
+        back_populates="course_site", cascade="all, delete"
+    )
+
     @classmethod
     def from_new_model(cls, model: NewCourseSite) -> Self:
         """
