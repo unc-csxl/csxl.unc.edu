@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from enum import Enum
 
-from .application import Comp227
-from .public_user import PublicUser
+from ...application import Comp227
+from ...public_user import PublicUser
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"

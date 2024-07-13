@@ -2,11 +2,11 @@
 
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from .entity_base import EntityBase
 from typing import Self
 from sqlalchemy import Enum as SQLAlchemyEnum
 
-from ..models.application_review import (
+from ...entity_base import EntityBase
+from ....models.academics.hiring.application_review import (
     ApplicationReviewStatus,
     ApplicationReview,
     ApplicationReviewOverview,

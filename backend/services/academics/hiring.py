@@ -5,17 +5,19 @@ Service for hiring.
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
-from ..database import db_session
-from ..models.user import User
-from ..models.academics.section_member import RosterRole
-from ..entities.academics.section_entity import SectionEntity
-from ..entities.office_hours import CourseSiteEntity
-from ..entities.application_entity import UTAApplicationEntity, NewUTAApplicationEntity
-from ..entities.academics.section_member_entity import SectionMemberEntity
-from ..entities.application_review_entity import ApplicationReviewEntity
-from .exceptions import CoursePermissionException, ResourceNotFoundException
+from ...database import db_session
+from ...models.user import User
+from ...models.academics.section_member import RosterRole
+from ...entities.academics.section_entity import SectionEntity
+from ...entities.office_hours import CourseSiteEntity
+from ...entities.application_entity import UTAApplicationEntity, NewUTAApplicationEntity
+from ...entities.academics.section_member_entity import SectionMemberEntity
+from ...entities.academics.hiring.application_review_entity import (
+    ApplicationReviewEntity,
+)
+from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
-from ..models.application_review import (
+from ...models.academics.hiring.application_review import (
     HiringStatus,
     ApplicationReview,
     ApplicationReviewOverview,

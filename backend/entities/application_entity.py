@@ -32,7 +32,7 @@ from ..models.application_details import UTAApplicationDetails
 
 from ..models.comp_227 import Comp227
 
-from ..models.application_review import ApplicationOverview
+from ..models.academics.hiring.application_review import ApplicationOverview
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"

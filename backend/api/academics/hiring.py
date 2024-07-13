@@ -4,12 +4,12 @@ Hiring routes are used for hiring based on TA Applications."""
 
 from fastapi import APIRouter, Depends
 
-from ..services import HiringService
+from ...services.academics import HiringService
 
-from ..models.application_review import HiringStatus
+from ...models.academics.hiring.application_review import HiringStatus
 
-from ..api.authentication import registered_user
-from ..models.user import User
+from ...api.authentication import registered_user
+from ...models.user import User
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"

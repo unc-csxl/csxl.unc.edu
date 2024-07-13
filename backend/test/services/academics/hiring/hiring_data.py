@@ -1,18 +1,23 @@
 import pytest
 from sqlalchemy.orm import Session
-from ...services.reset_table_id_seq import reset_table_id_seq
+from ....services.reset_table_id_seq import reset_table_id_seq
 
-from ....entities.application_entity import NewUTAApplicationEntity, ApplicationEntity
-from ....entities.section_application_table import section_application_table
-from ....entities.application_review_entity import ApplicationReviewEntity
+from .....entities.application_entity import NewUTAApplicationEntity, ApplicationEntity
+from .....entities.section_application_table import section_application_table
+from .....entities.academics.hiring.application_review_entity import (
+    ApplicationReviewEntity,
+)
 
-from ....models.application import Comp227
-from ....models.application_details import NewUTAApplicationDetails
-from ....models.application_review import ApplicationReview, ApplicationReviewStatus
+from .....models.application import Comp227
+from .....models.application_details import NewUTAApplicationDetails
+from .....models.academics.hiring.application_review import (
+    ApplicationReview,
+    ApplicationReviewStatus,
+)
 
-from .. import user_data
-from ..academics import section_data
-from ..office_hours import office_hours_data
+from ... import user_data
+from ...academics import section_data
+from ...office_hours import office_hours_data
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
