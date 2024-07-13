@@ -59,14 +59,6 @@ const routes: Routes = [
     title: 'My Courses',
     loadChildren: () =>
       import('./my-courses/my-courses.module').then((m) => m.MyCoursesModule)
-  },
-  {
-    path: 'ta-application',
-    title: 'TA Applications',
-    loadChildren: () =>
-      import('./ta-application/ta-application.module').then(
-        (m) => m.ApplicationsModule
-      )
   }
 ];
 
