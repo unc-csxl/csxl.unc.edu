@@ -1,17 +1,15 @@
-<mat-card cdkDrag appearance="outlined">
+<mat-card
+  cdkDrag
+  appearance="outlined"
+  [matTooltip]="item.notes"
+  matTooltipPosition="after">
   <mat-card-header>
-    <mat-card-subtitle>{{ item.application.applicant_name }}</mat-card-subtitle>
-    <!-- <p>
-      Ranked this course as their
-      <span class="text-badge primary-background">#1</span>
-      choice.
-    </p> -->
+    <mat-card-subtitle>
+      <span class="preference">{{ item.preference + 1 }}. </span>
+      <span>{{ item.application.applicant_name }}</span>
+      @if (item.notes.length > 0) {
+      <mat-icon class="notes" matListItemIcon>tooltip</mat-icon>
+      }
+    </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content>
-    <mat-divider />
-    <p><span class="semibold">Your Notes:</span></p>
-    <p>
-      {{ item.notes.length > 0 ? item.notes : 'None' }}
-    </p>
-  </mat-card-content>
 </mat-card>

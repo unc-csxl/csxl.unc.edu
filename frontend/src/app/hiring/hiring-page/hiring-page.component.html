@@ -18,7 +18,7 @@
         [cdkDropListConnectedTo]="[notProcessedList, preferredList]"
         class="drop-list"
         (cdkDropListDropped)="drop($event)">
-        @for (item of notPreferred; track item) {
+        @for (item of notPreferred; track item.id) {
         <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
@@ -51,7 +51,7 @@
         [cdkDropListConnectedTo]="[notPreferredList, preferredList]"
         class="drop-list"
         (cdkDropListDropped)="drop($event)">
-        @for (item of notProcessed; track item) {
+        @for (item of notProcessed; track item.id) {
         <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
@@ -83,8 +83,7 @@
         </div>
       </div>
       <p class="card-header-text">
-        Place applicants that you would like to hire in this column, ordering
-        them based on preference.
+        Order preferred applicants based on preference in this column.
       </p>
     </mat-card-header>
     <mat-card-content>
@@ -96,7 +95,7 @@
         [cdkDropListConnectedTo]="[notPreferredList, notProcessedList]"
         class="drop-list"
         (cdkDropListDropped)="drop($event)">
-        @for (item of preferred; track item) {
+        @for (item of preferred; track item.id) {
         <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
