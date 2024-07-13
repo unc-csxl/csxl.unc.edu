@@ -36,11 +36,13 @@ import {
   CdkDropList
 } from '@angular/cdk/drag-drop';
 import { ApplicationCardWidget } from './widgets/application-card/application-card.widget';
+import { ApplicationDialog } from './dialogs/application-dialog/application-dialog.dialog';
+import { YouTubePlayerModule } from '@angular/youtube-player';
 
 /* UI Widgets */
 
 @NgModule({
-  declarations: [HiringPageComponent, ApplicationCardWidget],
+  declarations: [HiringPageComponent, ApplicationCardWidget, ApplicationDialog],
   imports: [
     CommonModule,
     MatTabsModule,
@@ -63,7 +65,8 @@ import { ApplicationCardWidget } from './widgets/application-card/application-ca
     SharedModule,
     CdkDrag,
     CdkDropList,
-    CdkDragPlaceholder
+    CdkDragPlaceholder,
+    YouTubePlayerModule
   ]
 })
 export class HiringModule {}

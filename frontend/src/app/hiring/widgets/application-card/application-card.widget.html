@@ -9,10 +9,9 @@
   </mat-card-header>
   <mat-card-content>
     <mat-divider />
-    <p>Your Notes:</p>
+    <p><span class="semibold">Your Notes:</span></p>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua.
+      {{ item.notes.length > 0 ? item.notes : 'None' }}
     </p>
   </mat-card-content>
 </mat-card>

@@ -1,0 +1,28 @@
+mat-form-field {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.semibold {
+    font-weight: 500;
+}
+
+.mat-divider {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+
+::ng-deep youtube-player > *,
+::ng-deep youtube-player iframe {
+  max-width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.end-align {
+  margin-left: auto;
+}

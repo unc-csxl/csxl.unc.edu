@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ApplicationReviewOverview } from '../../hiring.models';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'application-card',
@@ -8,4 +9,6 @@ import { ApplicationReviewOverview } from '../../hiring.models';
 })
 export class ApplicationCardWidget {
   @Input() item!: ApplicationReviewOverview;
+
+  constructor(protected dialog: MatDialog) {}
 }

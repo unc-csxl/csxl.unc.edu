@@ -93,3 +93,7 @@
   min-height: 200px;
   padding-bottom: 60px;
 }
+
+application-card {
+  cursor: pointer;  
+}
