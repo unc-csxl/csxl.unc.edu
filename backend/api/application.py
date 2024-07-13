@@ -29,25 +29,6 @@ openapi_tags = {
 api = APIRouter(prefix="/api/applications/ta")
 
 
-@api.get("", response_model=list[NewUTAApplicationDetails], tags=["Applications"])
-def get_applications(
-    user: User = Depends(registered_user),
-    application_service: ApplicationService = Depends(),
-) -> list[UTAApplicationDetails]:
-    """
-    Get all applications
-
-    Parameters:
-        application_service: a valid ApplicationService
-
-    Returns:
-        list[Application]: All `Application`s in the `Application` database table
-    """
-
-    # Return all applications
-    return application_service.list(user)
-
-
 @api.get(
     "/section/{section_id}",
     response_model=list[SectionApplicant],

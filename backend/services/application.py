@@ -271,20 +271,3 @@ class ApplicationService:
 
         self._session.delete(original_application)
         self._session.commit()
-
-    def list(self, subject: User) -> list[UTAApplicationDetails]:
-        """Returns all TA applications.
-
-        Returns:
-            list[New_UTA]: List of all current and previously submitted applications.
-        """
-
-        self._permission_svc.enforce(
-            subject,
-            "applications.get",
-            f"applications/",
-        )
-
-        entities = self._session.query(ApplicationEntity).all()
-
-        return [entity.to_details_model() for entity in entities]
