@@ -16,7 +16,7 @@
         #notPreferredList="cdkDropList"
         [cdkDropListData]="notPreferred"
         [cdkDropListConnectedTo]="[notProcessedList, preferredList]"
-        class="example-list"
+        class="drop-list"
         (cdkDropListDropped)="drop($event)">
         @for (item of notPreferred; track item) {
         <application-card [item]="item" />
@@ -41,7 +41,7 @@
         #notProcessedList="cdkDropList"
         [cdkDropListData]="notProcessed"
         [cdkDropListConnectedTo]="[notPreferredList, preferredList]"
-        class="example-list"
+        class="drop-list"
         (cdkDropListDropped)="drop($event)">
         @for (item of notProcessed; track item) {
         <application-card [item]="item" />
@@ -77,7 +77,7 @@
         #preferredList="cdkDropList"
         [cdkDropListData]="preferred"
         [cdkDropListConnectedTo]="[notPreferredList, notProcessedList]"
-        class="example-list"
+        class="drop-list"
         (cdkDropListDropped)="drop($event)">
         @for (item of preferred; track item) {
         <application-card [item]="item" />

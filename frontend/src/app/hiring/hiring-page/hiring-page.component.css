@@ -88,3 +88,8 @@
     width: 100%;
     gap: 8px;
 }
+
+.drop-list {
+  min-height: 200px;
+  padding-bottom: 60px;
+}
