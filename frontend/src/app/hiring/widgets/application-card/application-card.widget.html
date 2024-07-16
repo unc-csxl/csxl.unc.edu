@@ -1,0 +1,15 @@
+<mat-card
+  cdkDrag
+  appearance="outlined"
+  [matTooltip]="item.notes"
+  matTooltipPosition="after">
+  <mat-card-header>
+    <mat-card-subtitle>
+      <span class="preference">{{ item.preference + 1 }}. </span>
+      <span>{{ item.application.applicant_name }}</span>
+      @if (item.notes.length > 0) {
+      <mat-icon class="notes" matListItemIcon>tooltip</mat-icon>
+      }
+    </mat-card-subtitle>
+  </mat-card-header>
+</mat-card>
