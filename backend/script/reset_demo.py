@@ -25,7 +25,7 @@ from ..test.services.coworking import seat_data, operating_hours_data, time
 from ..test.services.coworking.reservation import reservation_data
 from ..test.services.academics import course_data, term_data, section_data
 from ..test.services.office_hours import office_hours_data
-from ..test.services.hiring import hiring_data
+from ..test.services.academics.hiring import hiring_data
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

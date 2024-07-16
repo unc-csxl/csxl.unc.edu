@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Application Reviews."""
 
-from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from sqlalchemy import Enum as SQLAlchemyEnum
@@ -21,7 +21,16 @@ class ApplicationReviewEntity(EntityBase):
     """Serves as the database model schema defining the shape of the `ApplicationReview` table"""
 
     # Name for the review table in the PostgreSQL database
-    __tablename__ = "application_review"
+    __tablename__ = "academics__hiring__application_review"
+
+    __table_args__ = (
+        Index(
+            "academics__hiring__application_review_course_idx",
+            "course_site_id",
+            "status",
+            "preference",
+        ),
+    )
 
     # Properties (columns in the database table)
 
