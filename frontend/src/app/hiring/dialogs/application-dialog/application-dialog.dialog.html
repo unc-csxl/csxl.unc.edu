@@ -69,6 +69,18 @@
 
   <mat-divider />
 
+  <p mat-card-subtitle>Applicant Preferences</p>
+
+  <p>
+    {{ data.review.application.applicant_name }} ranked this course as their
+    <span class="text-badge primary-background"
+      >#{{ data.review.applicant_course_ranking }}</span
+    >
+    choice.
+  </p>
+
+  <mat-divider />
+
   <div class="row">
     <p mat-card-subtitle>Your Notes</p>
     <!-- <p class="end-align"><em>Changes saved.</em></p> -->
