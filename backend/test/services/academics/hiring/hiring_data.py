@@ -107,6 +107,7 @@ application_associations = [
     (application_two, section_data.comp_110_001_current_term, 0),
     (application_three, section_data.comp_110_001_current_term, 0),
     (application_four, section_data.comp_110_001_current_term, 0),
+    (application_one, section_data.comp_301_001_current_term, 1),
 ]
 
 review_one = ApplicationReview(

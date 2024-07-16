@@ -10,8 +10,8 @@ from ...services import (
     OrganizationService,
     EventService,
     RoomService,
-    HiringService,
 )
+from ...services.academics import HiringService
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

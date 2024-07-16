@@ -46,6 +46,7 @@ __license__ = "MIT"
 
 # Site
 comp_110_site = CourseSite(id=1, title="COMP 110", term_id=term_data.current_term.id)
+comp_301_site = CourseSite(id=2, title="COMP 301", term_id=term_data.current_term.id)
 
 # Sections
 comp_110_sections = (
@@ -55,6 +56,11 @@ comp_110_sections = (
     ],
     comp_110_site.id,
 )
+comp_301_sections = (
+    [section_data.comp_301_001_current_term],
+    comp_301_site.id,
+)
+
 
 # Office Hours
 comp_110_current_office_hours = OfficeHours(
@@ -152,8 +158,8 @@ comp_110_ticket_creators = [
 ]
 
 # All
-sites = [comp_110_site]
-section_pairings = [comp_110_sections]
+sites = [comp_110_site, comp_301_site]
+section_pairings = [comp_110_sections, comp_301_sections]
 
 office_hours = [
     comp_110_current_office_hours,
