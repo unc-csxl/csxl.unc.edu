@@ -39,6 +39,8 @@ import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
 import { AdminFabComponent } from './admin-fab/admin-fab.component';
 import { TabContainerWidget } from './tab-container/tab-container.widget';
 
+import { YouTubePlayer } from '@angular/youtube-player';
+
 @NgModule({
   declarations: [
     SocialMediaIcon,
@@ -75,7 +77,8 @@ import { TabContainerWidget } from './tab-container/tab-container.widget';
     MatIconModule,
     MatTooltipModule,
     MatSlideToggleModule,
-    RouterModule
+    RouterModule,
+    YouTubePlayer
   ],
   exports: [
     SocialMediaIcon,

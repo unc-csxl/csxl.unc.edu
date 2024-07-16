@@ -3,7 +3,7 @@
     <mat-card-header>
       <div class="row">
         <mat-card-title>Not Preferred</mat-card-title>
-        <div class="icon tertiary-background">0</div>
+        <div class="icon primary-background">{{ notPreferred.length }}</div>
       </div>
       <p class="card-header-text">
         Place applicants that you prefer not to select in this column.
@@ -16,10 +16,10 @@
         #notPreferredList="cdkDropList"
         [cdkDropListData]="notPreferred"
         [cdkDropListConnectedTo]="[notProcessedList, preferredList]"
-        class="example-list"
+        class="drop-list"
         (cdkDropListDropped)="drop($event)">
-        @for (item of notPreferred; track item) {
-        <application-card [item]="item" />
+        @for (item of notPreferred; track item.id) {
+        <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
     </mat-card-content>
@@ -28,7 +28,15 @@
     <mat-card-header>
       <div class="row">
         <mat-card-title>Not Processed</mat-card-title>
-        <div class="icon tertiary-background">0</div>
+        <div
+          [class]="
+            'icon ' +
+            (notProcessed.length === 0
+              ? 'primary-background'
+              : 'tertiary-background')
+          ">
+          {{ notProcessed.length }}
+        </div>
       </div>
       <p class="card-header-text">
         Place applicants you have not yet decided on in this column.
@@ -41,14 +49,15 @@
         #notProcessedList="cdkDropList"
         [cdkDropListData]="notProcessed"
         [cdkDropListConnectedTo]="[notPreferredList, preferredList]"
-        class="example-list"
+        class="drop-list"
         (cdkDropListDropped)="drop($event)">
-        @for (item of notProcessed; track item) {
-        <application-card [item]="item" />
+        @for (item of notProcessed; track item.id) {
+        <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
     </mat-card-content>
-    <mat-card-actions>
+    <!-- NOTE: Feature disabled while rank is inaccurate. -->
+    <!-- <mat-card-actions>
       <div class="actions-container">
         <mat-divider />
         <div class="actions-button-container">
@@ -57,17 +66,24 @@
           </button>
         </div>
       </div>
-    </mat-card-actions>
+    </mat-card-actions> -->
   </mat-pane>
   <mat-pane>
     <mat-card-header>
       <div class="row">
         <mat-card-title>Preferred</mat-card-title>
-        <div class="icon tertiary-background">0</div>
+        <div
+          [class]="
+            'icon ' +
+            (preferred.length === 0
+              ? 'tertiary-background'
+              : 'primary-background')
+          ">
+          {{ preferred.length }}
+        </div>
       </div>
       <p class="card-header-text">
-        Place applicants that you would like to hire in this column, ordering
-        them based on preference.
+        Order preferred applicants based on preference in this column.
       </p>
     </mat-card-header>
     <mat-card-content>
@@ -77,10 +93,10 @@
         #preferredList="cdkDropList"
         [cdkDropListData]="preferred"
         [cdkDropListConnectedTo]="[notPreferredList, notProcessedList]"
-        class="example-list"
+        class="drop-list"
         (cdkDropListDropped)="drop($event)">
-        @for (item of preferred; track item) {
-        <application-card [item]="item" />
+        @for (item of preferred; track item.id) {
+        <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
     </mat-card-content>

@@ -11,30 +11,30 @@ from backend.services.exceptions import (
 )
 
 # Tested Dependencies
-from ....models.application_review import (
+from .....models.academics.hiring.application_review import (
     HiringStatus,
     ApplicationReviewOverview,
     ApplicationReviewStatus,
 )
-from ....services import HiringService
+from .....services.academics import HiringService
 
 # Injected Service Fixtures
-from ..fixtures import hiring_svc
+from .fixtures import hiring_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
-from ..core_data import setup_insert_data_fixture as insert_order_0
-from ..academics.term_data import fake_data_fixture as insert_order_1
-from ..academics.course_data import fake_data_fixture as insert_order_2
-from ..academics.section_data import fake_data_fixture as insert_order_3
-from ..room_data import fake_data_fixture as insert_order_4
-from ..office_hours.office_hours_data import fake_data_fixture as insert_order_5
+from ...core_data import setup_insert_data_fixture as insert_order_0
+from ...academics.term_data import fake_data_fixture as insert_order_1
+from ...academics.course_data import fake_data_fixture as insert_order_2
+from ...academics.section_data import fake_data_fixture as insert_order_3
+from ...room_data import fake_data_fixture as insert_order_4
+from ...office_hours.office_hours_data import fake_data_fixture as insert_order_5
 from .hiring_data import fake_data_fixture as insert_order_6
 
 
 # Test data
-from .. import user_data
-from ..academics import section_data
-from ..office_hours import office_hours_data
+from ... import user_data
+from ...academics import section_data
+from ...office_hours import office_hours_data
 from . import hiring_data
 
 __authors__ = ["Ajay Gandecha"]
