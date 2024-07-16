@@ -74,7 +74,10 @@ class HiringService:
 
         for application in applications:
             # Check if the application is missing reviews
-            if len(application.reviews) == 0:
+            reviews_course_site_ids = [
+                review.course_site_id for review in application.reviews
+            ]
+            if course_site_id not in reviews_course_site_ids:
                 applications_missing_review.append(application)
 
         # Step 4: Create reviews for applications missing reviews, if any.
