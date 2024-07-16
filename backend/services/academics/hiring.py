@@ -168,26 +168,25 @@ class HiringService:
             CourseSiteEntity
         """
         site_query = (
-            select(CourseSiteEntity)
-            .where(CourseSiteEntity.id == course_site_id)
-            .join(ApplicationReviewEntity)
-            .options(
-                selectinload(CourseSiteEntity.sections)
-                .selectinload(SectionEntity.preferred_applicants)
-                .selectin_polymorphic([NewUTAApplicationEntity]),
-                selectinload(CourseSiteEntity.sections)
-                .selectinload(
-                    SectionEntity.preferred_applicants.of_type(NewUTAApplicationEntity)
-                )
-                .selectinload(NewUTAApplicationEntity.user),
-                # .joinedload(UTAApplicationEntity.user),
-                # joinedload(CourseSiteEntity.sections).joinedload(
-                #     SectionEntity.preferred_applicants.of_type(
-                #         with_polymorphic(UTAApplicationEntity, "*", flat=True)
-                #     )
-                # ),
-                selectinload(CourseSiteEntity.application_reviews),
-            )
+            select(CourseSiteEntity).where(CourseSiteEntity.id == course_site_id)
+            # .join(ApplicationReviewEntity)
+            # .options(
+            #     selectinload(CourseSiteEntity.sections)
+            #     .selectinload(SectionEntity.preferred_applicants)
+            #     .selectin_polymorphic([NewUTAApplicationEntity]),
+            #     selectinload(CourseSiteEntity.sections)
+            #     .selectinload(
+            #         SectionEntity.preferred_applicants.of_type(NewUTAApplicationEntity)
+            #     )
+            #     .selectinload(NewUTAApplicationEntity.user),
+            #     # .joinedload(UTAApplicationEntity.user),
+            #     # joinedload(CourseSiteEntity.sections).joinedload(
+            #     #     SectionEntity.preferred_applicants.of_type(
+            #     #         with_polymorphic(UTAApplicationEntity, "*", flat=True)
+            #     #     )
+            #     # ),
+            #     selectinload(CourseSiteEntity.application_reviews),
+            # )
         )
 
         # Attempt to load a site.
