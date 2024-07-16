@@ -10,6 +10,7 @@ from ...services import (
     OrganizationService,
     EventService,
     RoomService,
+    HiringService,
 )
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]

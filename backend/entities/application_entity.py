@@ -1,6 +1,13 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Applications."""
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as SQLAlchemyEnum
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    ForeignKey,
+    Enum as SQLAlchemyEnum,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.section_application_table import section_application_table
@@ -25,6 +32,8 @@ from ..models.application_details import UTAApplicationDetails
 
 from ..models.comp_227 import Comp227
 
+from ..models.academics.hiring.application_review import ApplicationOverview
+
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -43,6 +52,12 @@ class ApplicationEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the user and application tables.
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["UserEntity"] = relationship(back_populates="applications")
+
+    # Review associated with the application
+    # NOTE: This field establishes a one-to-many relationship between the review and application tables.
+    reviews: Mapped[list["ApplicationReviewEntity"]] = relationship(
+        back_populates="application", cascade="all,delete"
+    )
 
     # Set up for single-table inheritance (assign unique polymorphic identity)
     type = Column(String(50))
@@ -84,6 +99,59 @@ class ApplicationEntity(EntityBase):
         """
         return ApplicationDetails(
             id=self.id, user_id=self.user_id, user=self.user.to_model()
+        )
+
+    def to_overview_model(self) -> ApplicationOverview:
+        """
+        This method converts an application into an application overview.
+
+        NOTE: This attempts to convert to an overview model that includes fields based
+        on child object types. This may cause errors in the future.
+        """
+        return ApplicationOverview(
+            applicant_name=f"{self.user.first_name} {self.user.last_name}",
+            academic_hours=(
+                self.academic_hours if isinstance(self, UTAApplicationEntity) else None
+            ),
+            extracurriculars=(
+                self.extracurriculars
+                if isinstance(self, UTAApplicationEntity)
+                else None
+            ),
+            expected_graduation=(
+                self.expected_graduation
+                if isinstance(self, UTAApplicationEntity)
+                else None
+            ),
+            program_pursued=(
+                self.program_pursued if isinstance(self, UTAApplicationEntity) else None
+            ),
+            other_programs=(
+                self.other_programs if isinstance(self, UTAApplicationEntity) else None
+            ),
+            gpa=self.gpa if isinstance(self, UTAApplicationEntity) else None,
+            comp_gpa=self.comp_gpa if isinstance(self, UTAApplicationEntity) else None,
+            comp_227=self.comp_227 if isinstance(self, UTAApplicationEntity) else None,
+            intro_video_url=(
+                self.intro_video_url
+                if isinstance(self, NewUTAApplicationEntity)
+                else None
+            ),
+            prior_experience=(
+                self.prior_experience
+                if isinstance(self, NewUTAApplicationEntity)
+                else None
+            ),
+            service_experience=(
+                self.service_experience
+                if isinstance(self, NewUTAApplicationEntity)
+                else None
+            ),
+            additional_experience=(
+                self.additional_experience
+                if isinstance(self, NewUTAApplicationEntity)
+                else None
+            ),
         )
 
 
@@ -231,7 +299,7 @@ class NewUTAApplicationEntity(UTAApplicationEntity):
     # Application properties (columns in the database table) specific to First-Time UTA Applications
 
     # Intro video explaining why they want to be a TA
-    intro_video_url: Mapped[str] = mapped_column(String, nullable=False)
+    intro_video_url: Mapped[str] = mapped_column(String, nullable=True)
 
     # Prior experience in the workforce
     prior_experience: Mapped[str] = mapped_column(String, nullable=True)
@@ -249,7 +317,7 @@ class NewUTAApplicationEntity(UTAApplicationEntity):
     }
 
     @classmethod
-    def from_model(cls, model: NewUTAApplication) -> Self:
+    def from_model(cls, model: NewUTAApplicationDetails) -> Self:
         """
         Class method that converts an `Application` model into a `ApplicationEntity`
 

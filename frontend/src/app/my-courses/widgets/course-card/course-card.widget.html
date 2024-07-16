@@ -30,8 +30,15 @@
       [routerLink]="'/course/' + course.id">
       Get Help
     </button>
-    } @else {
-    <!-- <button mat-stroked-button color="secondary" type="submit">Staffing</button> -->
+    } @else { @if (course.role === 'Instructor') {
+    <button
+      mat-stroked-button
+      color="primary"
+      type="submit"
+      [routerLink]="'/hiring/' + course.id">
+      Hiring
+    </button>
+    }
     <button
       mat-flat-button
       color="primary"
