@@ -266,7 +266,6 @@ new_course_site = NewCourseSite(
     title="Ina's COMP 301",
     term_id=term_data.current_term.id,
     section_ids=[
-        section_data.comp_301_001_current_term.id,
         section_data.comp_301_002_current_term.id,
     ],
 )
@@ -275,7 +274,6 @@ new_course_site_term_mismatch = NewCourseSite(
     title="Ina's COMP 301",
     term_id=term_data.f_23.id,
     section_ids=[
-        section_data.comp_301_001_current_term.id,
         section_data.comp_301_002_current_term.id,
     ],
 )
@@ -285,7 +283,7 @@ new_course_site_term_nonmember = NewCourseSite(
     title="Ina's COMP 3x1",
     term_id=term_data.current_term.id,
     section_ids=[
-        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
         section_data.comp_311_001_current_term.id,
     ],
 )
@@ -293,7 +291,7 @@ new_course_site_term_noninstructor = NewCourseSite(
     title="Ina's COMP 3x1",
     term_id=term_data.current_term.id,
     section_ids=[
-        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
         section_data.comp_311_002_current_term.id,
     ],
 )
@@ -303,7 +301,7 @@ new_course_site_term_already_in_site = NewCourseSite(
     title="Ina's COMP courses",
     term_id=term_data.current_term.id,
     section_ids=[
-        section_data.comp_301_001_current_term.id,
+        section_data.comp_301_002_current_term.id,
         section_data.comp_110_001_current_term.id,
     ],
 )

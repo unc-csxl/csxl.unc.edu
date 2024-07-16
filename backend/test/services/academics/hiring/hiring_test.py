@@ -47,7 +47,7 @@ __license__ = "MIT"
 def test_get_status(hiring_svc: HiringService):
     """Test that an instructor can get status on hiring."""
     hiring_status = hiring_svc.get_status(
-        user_data.instructor, office_hours_data.comp_301_site.id
+        user_data.instructor, office_hours_data.comp_110_site.id
     )
     assert isinstance(hiring_status, HiringStatus)
     assert len(hiring_status.not_preferred) == 1
