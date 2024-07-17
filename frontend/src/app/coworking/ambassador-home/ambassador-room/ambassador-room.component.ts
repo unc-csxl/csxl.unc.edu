@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed } from '@angular/core';
 import { Route } from '@angular/router';
-import { Observable, Subscription, map, timer, tap } from 'rxjs';
-import { Reservation } from 'src/app/coworking/coworking.models';
+import { Subscription, timer, tap } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
 import { AmbassadorRoomService } from './ambassador-room.service';
 
@@ -19,25 +18,23 @@ export class AmbassadorRoomComponent implements OnInit, OnDestroy {
     resolve: {}
   };
 
-  reservations$: Observable<Reservation[]>;
-  upcomingReservations$: Observable<Reservation[]>;
-  activeReservations$: Observable<Reservation[]>;
+  upcomingReservations = computed(() => {
+    return this.ambassadorService.reservations().filter((r) => {
+      return r.state == 'CONFIRMED';
+    });
+  });
+
+  activeReservations = computed(() => {
+    return this.ambassadorService.reservations().filter((r) => {
+      return r.state == 'CHECKED_IN';
+    });
+  });
 
   columnsToDisplay = ['id', 'name', 'room', 'date', 'start', 'end', 'actions'];
 
   private refreshSubscription!: Subscription;
 
-  constructor(public ambassadorService: AmbassadorRoomService) {
-    this.reservations$ = this.ambassadorService.reservations$;
-    this.upcomingReservations$ = this.reservations$.pipe(
-      map((reservations) => reservations.filter((r) => r.state === 'CONFIRMED'))
-    );
-    this.activeReservations$ = this.reservations$.pipe(
-      map((reservations) =>
-        reservations.filter((r) => r.state === 'CHECKED_IN')
-      )
-    );
-  }
+  constructor(public ambassadorService: AmbassadorRoomService) {}
 
   ngOnInit(): void {
     this.refreshSubscription = timer(0, 5000)
