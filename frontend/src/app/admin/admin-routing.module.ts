@@ -5,12 +5,14 @@ import { AdminRoleDetailsComponent } from './accounts/roles/details/admin-role-d
 import { AdminRolesListComponent } from './accounts/roles/list/admin-roles-list.component';
 import { AdminUsersListComponent } from './accounts/users/admin-users.component';
 import { AdminComponent } from './admin.component';
+import { permissionGuard } from '../permission.guard';
 
 const routes: Routes = [
   {
     path: '',
     title: 'Site Administration',
-    component: AdminComponent
+    component: AdminComponent,
+    canActivate: [permissionGuard('*', '*')]
   },
   {
     path: 'accounts',
