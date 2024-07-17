@@ -1,12 +1,12 @@
 /**
  * This component is the primary screen for ambassadors at the check-in desk.
  *
- * @author Kris Jordan <kris@cs.unc.edu>
+ * @author Kris Jordan <kris@cs.unc.edu>, Ajay Gandecha <agandecha@unc.edu>
  * @copyright 2023 - 2024
  * @license MIT
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({

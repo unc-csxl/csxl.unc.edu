@@ -18,7 +18,7 @@ import {
   Reservation,
   SeatAvailability
 } from '../coworking.models';
-import { Observable, Subscription, timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { ReservationService } from '../reservation/reservation.service';
 import { MatDialog } from '@angular/material/dialog';

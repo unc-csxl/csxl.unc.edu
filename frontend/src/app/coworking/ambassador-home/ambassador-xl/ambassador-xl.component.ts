@@ -1,21 +1,14 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  Signal,
-  WritableSignal,
-  computed,
-  signal
-} from '@angular/core';
+/**
+ * @author Kris Jordan <kris@cs.unc.edu>, Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023 - 2024
+ * @license MIT
+ */
+
+import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, Subscription, map, tap, timer } from 'rxjs';
-import {
-  CoworkingStatus,
-  Reservation,
-  SeatAvailability
-} from '../../coworking.models';
+import { Subscription, timer } from 'rxjs';
+import { CoworkingStatus, SeatAvailability } from '../../coworking.models';
 import { AmbassadorXlService } from './ambassador-xl.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { CoworkingService } from '../../coworking.service';

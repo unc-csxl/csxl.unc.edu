@@ -1,3 +1,9 @@
+/**
+ * @author Kris Jordan <kris@cs.unc.edu>, Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023 - 2024
+ * @license MIT
+ */
+
 import { Component, OnDestroy, OnInit, computed } from '@angular/core';
 import { Route } from '@angular/router';
 import { Subscription, timer, tap } from 'rxjs';

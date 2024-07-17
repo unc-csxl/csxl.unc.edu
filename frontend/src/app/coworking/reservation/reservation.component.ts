@@ -2,7 +2,7 @@
  * The Reservation Page Component shows the details of an individual reservation and handles its operations.
  *
  * @author Kris Jordan, Ajay Gandecha
- * @copyright 202
+ * @copyright 2024
  * @license MIT
  */
 
