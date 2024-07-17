@@ -30,5 +30,41 @@
       }
     </mat-select>
   </mat-form-field>
+  } @if (field.fieldType === fieldType.COURSE_PREFERENCE) {
+  <mat-form-field appearance="outline">
+    <mat-label>Select Course Sections</mat-label>
+    <mat-chip-grid #chipGrid>
+      @for (section of selectedSections(); track section.id) {
+      <mat-chip-row (removed)="removeSection(section)">
+        {{ section.subject_code }} {{ section.course_number }}-{{
+          section.section_number
+        }}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+      }
+    </mat-chip-grid>
+    <input
+      name="currentSection"
+      placeholder="Add Sections..."
+      #sectionInput
+      [(ngModel)]="currentSectionInput"
+      [matChipInputFor]="chipGrid"
+      [matAutocomplete]="auto" />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="selectedSection($event)">
+      @for (section of applicationsService.eligibleSections(); track section.id)
+      { @if (!selectedSections().includes(section)) {
+      <mat-option [value]="section"
+        >{{ section.subject_code }} {{ section.course_number }}-{{
+          section.section_number
+        }}</mat-option
+      >
+      } }
+    </mat-autocomplete>
+  </mat-form-field>
+
   }
 </div>

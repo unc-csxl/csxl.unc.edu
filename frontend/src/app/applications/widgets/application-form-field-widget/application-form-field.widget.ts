@@ -1,9 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, WritableSignal, signal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   ApplicationFormField,
   FormFieldType
 } from '../../form/application-forms';
+import { ApplicationsService } from '../../applications.service';
+import { ApplicationSectionChoice } from '../../applications.model';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'application-form-field',
@@ -14,4 +17,40 @@ export class ApplicationFormFieldWidget {
   fieldType = FormFieldType;
 
   @Input() field!: ApplicationFormField;
+
+  selectedSections: WritableSignal<ApplicationSectionChoice[]> = signal([]);
+  currentSectionInput = signal('');
+
+  constructor(protected applicationsService: ApplicationsService) {}
+
+  /**
+   * Handles the selection of items from the autocomplete dropdown for sections.
+   *
+   * Logic from the dialog example on the Angular Material docs:
+   * https://material.angular.io/components/chips/examples#chips-autocomplete
+   */
+  selectedSection(event: MatAutocompleteSelectedEvent): void {
+    let section = event.option.value as ApplicationSectionChoice;
+    this.selectedSections.update((sections) => [...sections, section]);
+    this.currentSectionInput.set('');
+    event.option.deselect();
+  }
+
+  /**
+   * Handles the removal of items from the autocomplete dropdown for sections.
+   *
+   * Logic from the dialog example on the Angular Material docs:
+   * https://material.angular.io/components/chips/examples#chips-autocomplete
+   */
+  removeSection(setion: ApplicationSectionChoice): void {
+    this.selectedSections.update((sections) => {
+      let index = sections.indexOf(setion);
+      if (index < 0) {
+        return sections;
+      }
+
+      sections.splice(index, 1);
+      return [...sections];
+    });
+  }
 }
