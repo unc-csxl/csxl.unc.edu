@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, WritableSignal, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Course } from '../../academics.models';
@@ -30,8 +30,7 @@ export class AdminCourseComponent {
   };
 
   /** Courses List */
-  public courses: RxCourseList = new RxCourseList();
-  public courses$: Observable<Course[]> = this.courses.value$;
+  courses: WritableSignal<Course[]> = signal([]);
 
   public displayedColumns: string[] = ['name'];
 
@@ -73,7 +72,10 @@ export class AdminCourseComponent {
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteCourse(course).subscribe({
         next: () => {
-          this.courses.removeCourse(course);
+          this.courses.update((courses) => {
+            let newCourses = courses.filter((c) => c.id !== course.id);
+            return [...newCourses];
+          });
           this.snackBar.open('This course has been deleted.', '', {
             duration: 2000
           });

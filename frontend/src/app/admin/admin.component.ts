@@ -1,21 +1,33 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Profile, ProfileService } from '../profile/profile.service';
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  styleUrl: './admin.component.css'
 })
 export class AdminComponent {
-  public profile$: Observable<Profile | undefined>;
+  /** Route information to be used in the routing module */
+  public static Route = {
+    path: 'admin',
+    title: 'Admin',
+    component: AdminComponent
+  };
 
-  public links = [
-    { label: 'Users', path: '/admin/users' },
-    { label: 'Roles', path: '/admin/roles' }
-  ];
+  facts$: Observable<AdminFacts>;
 
-  constructor(public profileService: ProfileService) {
-    this.profile$ = profileService.profile$;
+  constructor(protected http: HttpClient) {
+    this.facts$ = this.http.get<AdminFacts>('/api/admin/facts');
   }
+}
+
+interface AdminFacts {
+  users: number;
+  roles: number;
+  terms: number;
+  courses: number;
+  sections: number;
+  rooms: number;
+  organizations: number;
 }

@@ -35,7 +35,7 @@
               <h3 matSubheader>Administration</h3>
             }
             @if (adminPermission$ | async) {
-              <mat-list-item routerLink="/admin/users" [activated]="router.isActive('/admin', false)">
+              <mat-list-item routerLink="/admin" [activated]="router.isActive('/admin', false)">
                   <mat-icon matListItemIcon>settings</mat-icon>
                   <div matListItemTitle>Admin</div>              
               </mat-list-item>

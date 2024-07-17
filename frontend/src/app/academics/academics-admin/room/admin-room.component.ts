@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
@@ -30,8 +30,7 @@ export class AdminRoomComponent {
   };
 
   /** Rooms List */
-  public rooms: RxRoomList = new RxRoomList();
-  public rooms$: Observable<Room[]> = this.rooms.value$;
+  rooms: WritableSignal<Room[]> = signal([]);
 
   public displayedColumns: string[] = ['name'];
 
@@ -73,7 +72,10 @@ export class AdminRoomComponent {
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteRoom(room).subscribe({
         next: () => {
-          this.rooms.removeRoom(room);
+          this.rooms.update((rooms) => {
+            let newRooms = rooms.filter((r) => r.id !== room.id);
+            return [...newRooms];
+          });
           this.snackBar.open('This room has been deleted.', '', {
             duration: 2000
           });
