@@ -1,8 +1,9 @@
 <!-- HTML Structure of Admin Course List -->
 <mat-pane>
   <mat-card-content>
-    <div class="content" *ngIf="courses$ | async as courses">
-      <table mat-table [dataSource]="courses">
+    @if (courses()) {
+    <div class="content">
+      <table mat-table [dataSource]="courses()">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">
@@ -33,5 +34,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
+    }
   </mat-card-content>
 </mat-pane>

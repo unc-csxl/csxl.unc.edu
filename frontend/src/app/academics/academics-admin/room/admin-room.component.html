@@ -1,8 +1,9 @@
 <!-- HTML Structure of Admin Rooms List -->
 <mat-pane>
   <mat-card-content>
-    <div class="content" *ngIf="rooms$ | async as rooms">
-      <table mat-table [dataSource]="rooms">
+    @if(rooms()) {
+    <div class="content">
+      <table mat-table [dataSource]="rooms()">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">
@@ -30,5 +31,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
+    }
   </mat-card-content>
 </mat-pane>

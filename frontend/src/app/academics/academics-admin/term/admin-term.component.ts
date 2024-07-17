@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Term } from '../../academics.models';
@@ -30,8 +30,7 @@ export class AdminTermComponent {
   };
 
   /** Terms List */
-  public terms: RxTermList = new RxTermList();
-  public terms$: Observable<Term[]> = this.terms.value$;
+  terms: WritableSignal<Term[]> = signal([]);
 
   public displayedColumns: string[] = ['name'];
 
@@ -72,7 +71,10 @@ export class AdminTermComponent {
     );
     confirmDelete.onAction().subscribe(() => {
       this.academicsService.deleteTerm(term).subscribe(() => {
-        this.terms.removeTerm(term);
+        this.terms.update((terms) => {
+          let newTerms = terms.filter((t) => t.id !== term.id);
+          return [...newTerms];
+        });
         this.snackBar.open('This term has been deleted.', '', {
           duration: 2000
         });
