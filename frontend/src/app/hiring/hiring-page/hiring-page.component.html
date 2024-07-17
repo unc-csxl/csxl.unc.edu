@@ -56,17 +56,20 @@
         }
       </div>
     </mat-card-content>
-    <!-- NOTE: Feature disabled while rank is inaccurate. -->
-    <!-- <mat-card-actions>
+    <mat-card-actions>
       <div class="actions-container">
         <mat-divider />
         <div class="actions-button-container">
-          <button mat-flat-button class="tertiary-button">
-            Pass on 1st Choice Applicants
+          <button
+            mat-flat-button
+            class="tertiary-button"
+            (click)="passOnNonFirstChoiceApplicants()">
+            <mat-icon>steps</mat-icon>
+            Pass on Applicants Preferring Other Courses
           </button>
         </div>
       </div>
-    </mat-card-actions> -->
+    </mat-card-actions>
   </mat-pane>
   <mat-pane>
     <mat-card-header>
