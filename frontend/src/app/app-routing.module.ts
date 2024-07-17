@@ -65,6 +65,14 @@ const routes: Routes = [
     title: 'Hiring',
     loadChildren: () =>
       import('./hiring/hiring.module').then((m) => m.HiringModule)
+  },
+  {
+    path: 'apply',
+    title: 'Applications',
+    loadChildren: () =>
+      import('./applications/applications.module').then(
+        (m) => m.ApplicationsModule
+      )
   }
 ];
 
