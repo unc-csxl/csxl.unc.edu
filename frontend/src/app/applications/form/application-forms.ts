@@ -26,7 +26,7 @@ export interface ApplicationFormField {
   required: boolean;
 }
 
-const GTAApplicationForm: ApplicationFormField[] = [
+export const GTA_APPLICATION_FORM: ApplicationFormField[] = [
   {
     name: 'program',
     title: 'Which program are you enrolled in?',
@@ -84,14 +84,3 @@ Please add a link to your *UNLISTED* (NOT PRIVATE!) YouTube video below. Be sure
     required: true
   }
 ];
-
-const gtaApplicationFormGroup = () => {
-  let formGroup = new FormGroup({});
-  for (let field of GTAApplicationForm) {
-    formGroup.addControl(
-      field.name,
-      new FormControl('', field.required ? [Validators.required] : [])
-    );
-  }
-  return formGroup;
-};
