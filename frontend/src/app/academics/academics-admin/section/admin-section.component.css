@@ -44,3 +44,9 @@
     margin-bottom: -1.25em;
   }
   
+
+::ng-deep .mat-mdc-card-outlined {
+    max-width: 100% !important;
+    margin-right: 32px !important;
+}
+  
