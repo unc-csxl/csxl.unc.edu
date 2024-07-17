@@ -24,9 +24,9 @@ export class ApplicationFormComponent {
 
   constructor(
     private route: ActivatedRoute,
-    protected applicationssService: ApplicationsService
+    protected applicationsService: ApplicationsService
   ) {
     let type = this.route.snapshot.params['type'];
-    [this.formGroup, this.fields] = applicationssService.getForm(type);
+    [this.formGroup, this.fields] = applicationsService.getForm(type);
   }
 }

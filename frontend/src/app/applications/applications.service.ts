@@ -7,17 +7,41 @@
  * @license MIT
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   ApplicationFormField,
   GTA_APPLICATION_FORM
 } from './form/application-forms';
+import { HttpClient } from '@angular/common/http';
+import { ApplicationSectionChoice } from './applications.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApplicationsService {
+  /** Signal to store the sections that a student can rank their preference for.*/
+  private eligibleSectionsSignal: WritableSignal<ApplicationSectionChoice[]> =
+    signal([]);
+  eligibleSections = this.eligibleSectionsSignal.asReadonly();
+
+  /** Constructor */
+  constructor(protected http: HttpClient) {
+    this.getEligibleSections();
+  }
+
+  /**
+   * Retrieves the list of eligible sections that a student can apply to for the
+   * active application period.
+   */
+  getEligibleSections() {
+    this.http
+      .get<ApplicationSectionChoice[]>('/api/applications/ta/eligible-sections')
+      .subscribe((sections) => {
+        this.eligibleSectionsSignal.set(sections);
+      });
+  }
+
   /**
    * Generates an application form based on the type of application.
    * @param type: Type of application ('uta' | 'gta')
