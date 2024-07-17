@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-admin',
@@ -13,5 +15,19 @@ export class AdminComponent {
     component: AdminComponent
   };
 
-  constructor() {}
+  facts$: Observable<AdminFacts>;
+
+  constructor(protected http: HttpClient) {
+    this.facts$ = this.http.get<AdminFacts>('/api/admin/facts');
+  }
+}
+
+interface AdminFacts {
+  users: number;
+  roles: number;
+  terms: number;
+  courses: number;
+  sections: number;
+  rooms: number;
+  organizations: number;
 }

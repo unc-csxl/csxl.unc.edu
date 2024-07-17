@@ -27,6 +27,8 @@ from .api.office_hours import (
 )
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
+from .api.admin import facts as admin_facts
+
 from .services.exceptions import (
     UserPermissionException,
     ResourceNotFoundException,
@@ -62,6 +64,7 @@ app = FastAPI(
         health.openapi_tags,
         my_courses.openapi_tags,
         hiring.openapi_tags,
+        admin_facts.openapi_tags,
     ],
 )
 
@@ -92,6 +95,7 @@ feature_apis = [
     office_hours_event,
     office_hours_ticket,
     hiring,
+    admin_facts,
 ]
 
 for feature_api in feature_apis:
