@@ -2,7 +2,7 @@
 
 from typing import List
 from fastapi import Depends
-from sqlalchemy import update, delete
+from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from typing import Dict
 from backend.entities import section_application_table
@@ -12,9 +12,10 @@ from backend.entities.application_entity import (
 )
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.academics.term_entity import TermEntity
 from backend.entities.user_entity import UserEntity
 
-from backend.models.academics.section import Section
+from backend.models.academics.section import Section, CatalogSectionIdentity
 from backend.models.application import SectionApplicant
 
 from backend.models.application_details import (
@@ -31,8 +32,9 @@ from backend.services.exceptions import (
 from .permission import PermissionService
 
 from ..database import db_session
+from datetime import datetime
 
-__authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
+__authors__ = ["Ben Goulet, Abdulaziz Al-Shayef", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -271,3 +273,23 @@ class ApplicationService:
 
         self._session.delete(original_application)
         self._session.commit()
+
+    # New
+
+    def eligible_sections(self) -> list[CatalogSectionIdentity]:
+        """
+        Returns the eligible sections for the current active application term.
+        """
+        term_query = select(TermEntity).where(
+            TermEntity.applications_open <= datetime.now(),
+            datetime.now() <= TermEntity.applications_close,
+        )
+        term_entities = self._session.scalars(term_query).all()
+        return (
+            [
+                section.to_catalog_identity_model()
+                for section in term_entities[0].course_sections
+            ]
+            if len(term_entities) > 0
+            else []
+        )

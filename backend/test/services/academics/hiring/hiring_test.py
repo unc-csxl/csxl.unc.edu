@@ -17,9 +17,10 @@ from .....models.academics.hiring.application_review import (
     ApplicationReviewStatus,
 )
 from .....services.academics import HiringService
+from .....services.application import ApplicationService
 
 # Injected Service Fixtures
-from .fixtures import hiring_svc
+from .fixtures import hiring_svc, applications_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from ...core_data import setup_insert_data_fixture as insert_order_0

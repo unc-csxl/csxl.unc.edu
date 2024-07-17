@@ -15,6 +15,7 @@ from backend.services.application import ApplicationService
 from ..api.authentication import registered_user
 from ..models.user import User
 from ..models.application import SectionApplicant
+from ..models.academics import CatalogSectionIdentity
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
@@ -137,3 +138,22 @@ def delete_application(
     """
 
     return application_service.delete_application(user)
+
+
+@api.get(
+    "/eligible-sections",
+    response_model=list[CatalogSectionIdentity],
+    tags=["Applications"],
+)
+def get_eligible_sections(
+    application_service: ApplicationService = Depends(),
+) -> list[CatalogSectionIdentity]:
+    """
+    Get sections that an applicant can apply to.
+
+    Returns:
+        list[CatalogSectionIdentity]: All sections.
+    """
+
+    # Return all applications
+    return application_service.eligible_sections()

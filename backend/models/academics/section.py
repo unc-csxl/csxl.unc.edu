@@ -52,15 +52,18 @@ class EditedSection(BaseModel):
     instructors: list[PublicUser]
 
 
-class CatalogSection(BaseModel):
-    """
-    Pydantic model that represents a section for the catalog page.
-    """
-
+class CatalogSectionIdentity(BaseModel):
     id: int | None = None
     subject_code: str
     course_number: str
     section_number: str
+
+
+class CatalogSection(CatalogSectionIdentity):
+    """
+    Pydantic model that represents a section for the catalog page.
+    """
+
     title: str
     meeting_pattern: str
     description: str

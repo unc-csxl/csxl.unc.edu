@@ -43,6 +43,8 @@ ss2_24 = Term(
     name="Summer Session II 2024",
     start=datetime(2024, 6, 23),
     end=datetime(2024, 7, 30),
+    applications_open=datetime(2024, 6, 30),
+    applications_close=datetime(2024, 8, 30),
 )
 
 new_term = Term(

@@ -7,7 +7,7 @@ from ..entity_base import EntityBase
 from ..section_application_table import section_application_table
 from ...models.academics import Section
 from ...models.academics.section import EditedSection
-from ...models.academics import Section, CatalogSection
+from ...models.academics import Section, CatalogSection, CatalogSectionIdentity
 from ...models.academics import SectionDetails
 from ...models.public_user import PublicUser
 from ...models.roster_role import RosterRole
@@ -211,6 +211,21 @@ class SectionEntity(EntityBase):
             ),
             enrolled=self.enrolled,
             total_seats=self.total_seats,
+        )
+
+    def to_catalog_identity_model(self) -> CatalogSectionIdentity:
+        """
+        Converts a `SectionEntity` object into a `CatalogSectionIdentity` model object
+
+        Returns:
+            Section: `CatalogSectionIdentity` object from the entity
+        """
+
+        return CatalogSectionIdentity(
+            id=self.id,
+            subject_code=self.course.subject_code,
+            course_number=self.course.number,
+            section_number=self.number,
         )
 
     def to_catalog_model(self) -> CatalogSection:
