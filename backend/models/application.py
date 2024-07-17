@@ -18,6 +18,7 @@ class Application(BaseModel):
 
     id: int | None = None
     user_id: int
+    term_id: str
 
 
 class UTAApplication(Application):

@@ -53,6 +53,11 @@ class ApplicationEntity(EntityBase):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["UserEntity"] = relationship(back_populates="applications")
 
+    # The term associated with the application
+    # NOTE: This field establishes a one-to-many relationship between the term and application tables.
+    term_id: Mapped[str] = mapped_column(ForeignKey("academics__term.id"))
+    term: Mapped["TermEntity"] = relationship(back_populates="applications")
+
     # Review associated with the application
     # NOTE: This field establishes a one-to-many relationship between the review and application tables.
     reviews: Mapped[list["ApplicationReviewEntity"]] = relationship(
@@ -73,10 +78,7 @@ class ApplicationEntity(EntityBase):
         Returns:
             ApplicationEntity: Entity created from model
         """
-        return cls(
-            id=model.id,
-            user_id=model.user_id,
-        )
+        return cls(id=model.id, user_id=model.user_id, term_id=model.term_id)
 
     def to_model(self) -> Application:
         """

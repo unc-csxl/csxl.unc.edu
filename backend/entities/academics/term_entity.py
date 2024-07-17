@@ -32,6 +32,10 @@ class TermEntity(EntityBase):
     start: Mapped[datetime] = mapped_column(DateTime)
     # Ending date for the term
     end: Mapped[datetime] = mapped_column(DateTime)
+    # Starting date for the application period
+    applications_open: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    # Ending date for the application period
+    applications_close: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
     # NOTE: This field establishes a one-to-many relationship between the term and section tables.
     course_sections: Mapped[list["SectionEntity"]] = relationship(
@@ -42,6 +46,11 @@ class TermEntity(EntityBase):
 
     # NOTE: This field establishes a one-to-many relationship between the term and course sites tables.
     course_sites: Mapped[list["CourseSiteEntity"]] = relationship(
+        back_populates="term", cascade="all,delete"
+    )
+
+    # NOTE: This field establishes a one-to-many relationship between the term and applications tables.
+    applications: Mapped[list["ApplicationEntity"]] = relationship(
         back_populates="term", cascade="all,delete"
     )
 

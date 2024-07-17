@@ -16,7 +16,7 @@ from .....models.academics.hiring.application_review import (
 )
 
 from ... import user_data
-from ...academics import section_data
+from ...academics import section_data, term_data
 from ...office_hours import office_hours_data
 
 __authors__ = ["Ajay Gandecha"]
@@ -40,6 +40,7 @@ application_one = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
 )
 
 application_two = NewUTAApplicationDetails(
@@ -59,6 +60,7 @@ application_two = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
 )
 
 application_three = NewUTAApplicationDetails(
@@ -78,6 +80,7 @@ application_three = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
 )
 
 application_four = NewUTAApplicationDetails(
@@ -97,6 +100,7 @@ application_four = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
 )
 
 
