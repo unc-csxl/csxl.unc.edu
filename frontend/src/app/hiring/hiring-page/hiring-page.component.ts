@@ -136,4 +136,19 @@ export class HiringPageComponent {
         });
     });
   }
+
+  /**
+   * Moves non-first choice applicants from not processed to the
+   * not preferred column.
+   */
+  passOnNonFirstChoiceApplicants() {
+    let notFirstChoice = this.notProcessed.filter(
+      (a) => a.applicant_course_ranking > 1
+    );
+    this.notProcessed = this.notProcessed.filter(
+      (a) => a.applicant_course_ranking === 1
+    );
+    this.notPreferred = this.notPreferred.concat(notFirstChoice);
+    this.updateHiringStatus();
+  }
 }

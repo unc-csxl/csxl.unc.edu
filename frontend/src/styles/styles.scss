@@ -71,6 +71,7 @@ html, body {
 /// 
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-button-styles($theme) {
+
     .mat-mdc-fab {
         .mat-icon {
             color: mat.get-theme-color($theme, on-primary);
@@ -78,6 +79,9 @@ html, body {
     }
 
     .tertiary-button {
+        .mat-icon {
+            color: white !important;
+        }
         @include mat.button-color($theme, $color-variant: tertiary);
     }
 
