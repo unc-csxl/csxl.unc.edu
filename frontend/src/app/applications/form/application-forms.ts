@@ -8,7 +8,6 @@ export interface ApplicationForm {
 export enum FormFieldType {
   SHORT_TEXT,
   LONG_TEXT,
-  DATETIME,
   DROP_DOWN,
   COURSE_PREFERENCE
 }

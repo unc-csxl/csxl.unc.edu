@@ -29,9 +29,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ApplicationsRoutingModule } from './applications-routing.module';
 import { ApplicationFormComponent } from './form/application-form.component';
+import { ApplicationFormFieldWidget } from './widgets/application-form-field-widget/application-form-field.widget';
 
 @NgModule({
-  declarations: [ApplicationFormComponent],
+  declarations: [ApplicationFormComponent, ApplicationFormFieldWidget],
   imports: [
     CommonModule,
     ApplicationsRoutingModule,
