@@ -1,32 +1,34 @@
-<p>{{ field.title }}</p>
-@if (field.description.length > 0) {
-<p>{{ field.description }}</p>
-}
-<!-- Account for the different types of fields -->
-@if (field.fieldType === fieldType.SHORT_TEXT) {
-<mat-form-field appearance="outline">
-  <input
-    matInput
-    placeholder=""
-    formControlName="field.name"
-    name="name"
-    [required]="field.required" />
-</mat-form-field>
-} @if (field.fieldType === fieldType.LONG_TEXT) {
-<mat-form-field appearance="outline">
-  <textarea
-    matInput
-    placeholder=""
-    [formControlName]="field.name"
-    [name]="field.name"
-    [required]="field.required"></textarea>
-</mat-form-field>
-} @if (field.fieldType === fieldType.DROP_DOWN) {
-<mat-form-field appearance="outline">
-  <mat-select [formControlName]="field.name">
-    @for(option of field.dropdownItems; track option) {
-    <mat-option [value]="option">{{ option }}</mat-option>
-    }
-  </mat-select>
-</mat-form-field>
-}
+<div class="container">
+  <mat-card-subtitle>{{ field.title }}</mat-card-subtitle>
+  @if (field.description.length > 0) {
+  <p>{{ field.description }}</p>
+  }
+  <!-- Account for the different types of fields -->
+  @if (field.fieldType === fieldType.SHORT_TEXT) {
+  <mat-form-field appearance="outline">
+    <input
+      matInput
+      placeholder=""
+      formControlName="field.name"
+      name="name"
+      [required]="field.required" />
+  </mat-form-field>
+  } @if (field.fieldType === fieldType.LONG_TEXT) {
+  <mat-form-field appearance="outline">
+    <textarea
+      matInput
+      placeholder=""
+      [formControlName]="field.name"
+      [name]="field.name"
+      [required]="field.required"></textarea>
+  </mat-form-field>
+  } @if (field.fieldType === fieldType.DROP_DOWN) {
+  <mat-form-field appearance="outline">
+    <mat-select [formControlName]="field.name">
+      @for(option of field.dropdownItems; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  }
+</div>

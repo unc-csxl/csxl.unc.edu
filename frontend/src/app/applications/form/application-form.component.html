@@ -1,1 +1,10 @@
-<p>form works!</p>
+<mat-pane>
+  <mat-card-header>
+    <mat-card-title>Application Form</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @for(field of fields; track field.name) {
+    <application-form-field [field]="field" />
+    }
+  </mat-card-content>
+</mat-pane>

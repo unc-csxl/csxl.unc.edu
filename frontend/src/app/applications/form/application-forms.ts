@@ -79,7 +79,7 @@ Please address:
 
 Please add a link to your *UNLISTED* (NOT PRIVATE!) YouTube video below. Be sure that you can view this link in an Incognito Window or have a friend ensure they were able to view it from their machine. Videos uploaded such that we cannot view them will disqualify your application.
     `,
-    fieldType: FormFieldType.LONG_TEXT,
+    fieldType: FormFieldType.SHORT_TEXT,
     dropdownItems: undefined,
     required: true
   }

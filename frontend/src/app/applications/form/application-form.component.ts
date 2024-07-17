@@ -28,8 +28,5 @@ export class ApplicationFormComponent {
   ) {
     let type = this.route.snapshot.params['type'];
     [this.formGroup, this.fields] = applicationssService.getForm(type);
-
-    console.log(this.formGroup);
-    console.log(this.fields);
   }
 }
