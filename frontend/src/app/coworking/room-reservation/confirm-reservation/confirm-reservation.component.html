@@ -1,7 +1,8 @@
 <div class="card-container">
+  @if(reservation) {
   <coworking-reservation-card
-    *ngIf="reservation"
     [reservation]="reservation"
     (isConfirmed)="setConfirmation($event)">
   </coworking-reservation-card>
+  }
 </div>

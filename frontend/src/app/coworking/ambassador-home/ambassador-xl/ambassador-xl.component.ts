@@ -1,40 +1,49 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+/**
+ * @author Kris Jordan <kris@cs.unc.edu>, Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023 - 2024
+ * @license MIT
+ */
+
+import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { profileResolver } from 'src/app/profile/profile.resolver';
-import { Observable, Subscription, map, tap, timer } from 'rxjs';
-import {
-  CoworkingStatus,
-  Reservation,
-  SeatAvailability
-} from '../../../coworking.models';
-import { AmbassadorXlService } from '../ambassador-xl.service';
+import { Subscription, timer } from 'rxjs';
+import { CoworkingStatus, SeatAvailability } from '../../coworking.models';
+import { AmbassadorXlService } from './ambassador-xl.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
-import { CoworkingService } from '../../../coworking.service';
+import { CoworkingService } from '../../coworking.service';
 
 const FIVE_SECONDS = 5 * 1000;
 
 @Component({
-  selector: 'app-ambassador-xl-list',
-  templateUrl: './ambassador-xl-list.component.html',
-  styleUrls: ['./ambassador-xl-list.component.css']
+  selector: 'app-ambassador-xl',
+  templateUrl: './ambassador-xl.component.html',
+  styleUrls: ['./ambassador-xl.component.css']
 })
-export class AmbassadorXlListComponent implements OnDestroy, OnInit {
+export class AmbassadorXLComponent implements OnDestroy, OnInit {
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
     path: 'xl',
-    component: AmbassadorXlListComponent,
+    component: AmbassadorXLComponent,
     title: 'XL Reservations',
     canActivate: [permissionGuard('coworking.reservation.*', '*')],
     resolve: {}
   };
 
-  reservations$: Observable<Reservation[]>;
-  upcomingReservations$: Observable<Reservation[]>;
-  activeReservations$: Observable<Reservation[]>;
+  upcomingReservations = computed(() => {
+    return this.ambassadorService.reservations().filter((r) => {
+      return r.state == 'CONFIRMED';
+    });
+  });
+
+  activeReservations = computed(() => {
+    return this.ambassadorService.reservations().filter((r) => {
+      return r.state == 'CHECKED_IN';
+    });
+  });
 
   welcomeDeskReservationSelection: PublicProfile[] = [];
-  status$: Observable<CoworkingStatus>;
+  status: Signal<CoworkingStatus>;
 
   columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
 
@@ -44,26 +53,16 @@ export class AmbassadorXlListComponent implements OnDestroy, OnInit {
     public ambassadorService: AmbassadorXlService,
     public coworkingService: CoworkingService
   ) {
-    this.reservations$ = this.ambassadorService.reservations$;
-    this.upcomingReservations$ = this.reservations$.pipe(
-      map((reservations) => reservations.filter((r) => r.state === 'CONFIRMED'))
-    );
-    this.activeReservations$ = this.reservations$.pipe(
-      map((reservations) =>
-        reservations.filter((r) => r.state === 'CHECKED_IN')
-      )
-    );
-
-    this.status$ = coworkingService.status$;
+    this.status = coworkingService.status;
   }
 
   beginReservationRefresh(): void {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
-    this.refreshSubscription = timer(0, FIVE_SECONDS)
-      .pipe(tap((_) => this.ambassadorService.fetchReservations()))
-      .subscribe();
+    this.refreshSubscription = timer(0, FIVE_SECONDS).subscribe((_) => {
+      this.ambassadorService.fetchReservations();
+    });
   }
 
   ngOnInit(): void {

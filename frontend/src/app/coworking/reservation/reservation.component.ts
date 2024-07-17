@@ -1,8 +1,8 @@
 /**
  * The Reservation Page Component shows the details of an individual reservation and handles its operations.
  *
- * @author Kris Jordan
- * @copyright 2023
+ * @author Kris Jordan, Ajay Gandecha
+ * @copyright 2024
  * @license MIT
  */
 
@@ -29,7 +29,7 @@ const titleResolver: ResolveFn<string> = (
     // of this application when the fix for this bug lands: https://github.com/angular/angular/issues/51401
   };
   return reservationService
-    .get(parseInt(route.params['id']))
+    .getReservationObservable(parseInt(route.params['id']))
     .pipe(map(reservationTitle));
 };
 
@@ -47,15 +47,12 @@ export class ReservationComponent {
     resolve: { profile: profileResolver }
   };
 
-  public id: number;
-  public reservation$: Observable<Reservation>;
-
   constructor(
     public route: ActivatedRoute,
     public reservationService: ReservationService,
     public router: Router
   ) {
-    this.id = parseInt(route.snapshot.params['id']);
-    this.reservation$ = reservationService.get(this.id);
+    let id = parseInt(route.snapshot.params['id']);
+    reservationService.getReservation(id);
   }
 }

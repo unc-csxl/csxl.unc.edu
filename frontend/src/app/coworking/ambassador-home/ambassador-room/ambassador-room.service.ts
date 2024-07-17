@@ -1,19 +1,23 @@
+/**
+ * @author Kris Jordan <kris@cs.unc.edu>, Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023 - 2024
+ * @license MIT
+ */
+
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import {
   Reservation,
   ReservationJSON,
   parseReservationJSON
 } from '../../coworking.models';
-import { RxReservations } from '../rx-reservations';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AmbassadorRoomService {
-  private reservations: RxReservations = new RxReservations();
-  public reservations$: Observable<Reservation[]> = this.reservations.value$;
+  private reservationsSignal: WritableSignal<Reservation[]> = signal([]);
+  public reservations = this.reservationsSignal.asReadonly();
 
   constructor(private http: HttpClient) {}
 
@@ -21,7 +25,7 @@ export class AmbassadorRoomService {
     this.http
       .get<ReservationJSON[]>('/api/coworking/ambassador/rooms')
       .subscribe((reservations) => {
-        this.reservations.set(reservations.map(parseReservationJSON));
+        this.reservationsSignal.set(reservations.map(parseReservationJSON));
       });
   }
 
@@ -37,10 +41,8 @@ export class AmbassadorRoomService {
         id: reservation.id,
         state: 'CHECKED_IN'
       })
-      .subscribe((reservationJson) => {
-        this.reservations.updateReservation(
-          parseReservationJSON(reservationJson)
-        );
+      .subscribe((_) => {
+        this.fetchReservations();
       });
   }
 
@@ -50,10 +52,8 @@ export class AmbassadorRoomService {
         id: reservation.id,
         state: 'CHECKED_OUT'
       })
-      .subscribe((reservationJson) => {
-        this.reservations.updateReservation(
-          parseReservationJSON(reservationJson)
-        );
+      .subscribe((_) => {
+        this.fetchReservations();
       });
   }
 
@@ -65,7 +65,7 @@ export class AmbassadorRoomService {
       })
       .subscribe({
         next: (_) => {
-          this.reservations.remove(reservation);
+          this.fetchReservations();
         },
         error: (err) => {
           alert(err);

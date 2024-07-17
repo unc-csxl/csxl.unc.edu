@@ -1,13 +1,18 @@
+/**
+ * @author Kris Jordan <kris@cs.unc.edu>, Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2023 - 2024
+ * @license MIT
+ */
+
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Injectable, WritableSignal, signal } from '@angular/core';
+import { map } from 'rxjs';
 import {
   Reservation,
   ReservationJSON,
   SeatAvailability,
   parseReservationJSON
 } from '../../coworking.models';
-import { RxReservations } from '../rx-reservations';
 import { PublicProfile } from 'src/app/profile/profile.service';
 
 const ONE_HOUR = 60 * 60 * 1000;
@@ -16,8 +21,8 @@ const ONE_HOUR = 60 * 60 * 1000;
   providedIn: 'root'
 })
 export class AmbassadorXlService {
-  private reservations: RxReservations = new RxReservations();
-  public reservations$: Observable<Reservation[]> = this.reservations.value$;
+  private reservationsSignal: WritableSignal<Reservation[]> = signal([]);
+  public reservations = this.reservationsSignal.asReadonly();
 
   constructor(private http: HttpClient) {}
 
@@ -25,7 +30,7 @@ export class AmbassadorXlService {
     this.http
       .get<ReservationJSON[]>('/api/coworking/ambassador/xl')
       .subscribe((reservations) => {
-        this.reservations.set(reservations.map(parseReservationJSON));
+        this.reservationsSignal.set(reservations.map(parseReservationJSON));
       });
   }
 
@@ -35,10 +40,8 @@ export class AmbassadorXlService {
         id: reservation.id,
         state: 'CHECKED_IN'
       })
-      .subscribe((reservationJson) => {
-        this.reservations.updateReservation(
-          parseReservationJSON(reservationJson)
-        );
+      .subscribe((_) => {
+        this.fetchReservations();
       });
   }
 
@@ -48,10 +51,8 @@ export class AmbassadorXlService {
         id: reservation.id,
         state: 'CHECKED_OUT'
       })
-      .subscribe((reservationJson) => {
-        this.reservations.updateReservation(
-          parseReservationJSON(reservationJson)
-        );
+      .subscribe((_) => {
+        this.fetchReservations();
       });
   }
 
@@ -63,7 +64,7 @@ export class AmbassadorXlService {
       })
       .subscribe({
         next: (_) => {
-          this.reservations.remove(reservation);
+          this.fetchReservations();
         },
         error: (err) => {
           alert(err);

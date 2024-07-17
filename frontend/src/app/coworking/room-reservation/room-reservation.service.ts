@@ -21,7 +21,6 @@ import { ReservationService } from '../reservation/reservation.service';
   providedIn: 'root'
 })
 export class RoomReservationService extends ReservationService {
-
   constructor(http: HttpClient) {
     super(http);
   }

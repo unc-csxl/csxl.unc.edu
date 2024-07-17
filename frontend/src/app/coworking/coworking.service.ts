@@ -1,12 +1,12 @@
 /**
- * @author Kris Jordan, John Schachte
- * @copyright 2023
+ * @author Kris Jordan, Ajay Gandecha, John Schachte
+ * @copyright 2024
  * @license MIT
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, Subscription, map, BehaviorSubject } from 'rxjs';
+import { Injectable, OnDestroy, WritableSignal, signal } from '@angular/core';
+import { Subscription, map, BehaviorSubject } from 'rxjs';
 import {
   CoworkingStatus,
   CoworkingStatusJSON,
@@ -14,11 +14,11 @@ import {
   SeatAvailability,
   parseCoworkingStatusJSON,
   parseReservationJSON,
-  Reservation
+  Reservation,
+  EMPTY_COWORKING_STATUS
 } from './coworking.models';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
-import { RxCoworkingStatus } from './rx-coworking-status';
 
 const ONE_HOUR = 60 * 60 * 1000;
 
@@ -26,8 +26,10 @@ const ONE_HOUR = 60 * 60 * 1000;
   providedIn: 'root'
 })
 export class CoworkingService implements OnDestroy {
-  private status: RxCoworkingStatus = new RxCoworkingStatus();
-  public status$: Observable<CoworkingStatus> = this.status.value$;
+  private statusSignal: WritableSignal<CoworkingStatus> = signal(
+    EMPTY_COWORKING_STATUS
+  );
+  public status = this.statusSignal.asReadonly();
 
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
@@ -62,7 +64,7 @@ export class CoworkingService implements OnDestroy {
     this.http
       .get<CoworkingStatusJSON>('/api/coworking/status')
       .pipe(map(parseCoworkingStatusJSON))
-      .subscribe((status) => this.status.set(status));
+      .subscribe((status) => this.statusSignal.set(status));
   }
 
   draftReservation(seatSelection: SeatAvailability[]) {

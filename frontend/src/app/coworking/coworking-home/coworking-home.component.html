@@ -1,21 +1,20 @@
 <!-- eslint-disable prettier/prettier -->
-@if (status$ | async; as status) {
-  @if (openOperatingHours$ | async; as openOperatingHours) {
+@if (status()) {
+  @if (openOperatingHours()) {
     <coworking-operating-hours-panel
-      [operatingHours]="status.operating_hours"
-      [openOperatingHours]="openOperatingHours" />
+      [operatingHours]="status().operating_hours"
+      [openOperatingHours]="openOperatingHours()" />
   } @else {
-    <coworking-operating-hours-panel [operatingHours]="status.operating_hours" />
+    <coworking-operating-hours-panel [operatingHours]="status().operating_hours" />
   }
   
-  @if (activeReservation$ | async; as activeReservation) {
+  @if (activeReservation()) {
     <coworking-reservation-card
-      (updateActiveReservation)="setActiveReservation()"
       (reloadCoworkingHome)="ngOnInit()"
-      [reservation]="activeReservation"></coworking-reservation-card>
+      [reservation]="activeReservation()!"></coworking-reservation-card>
   } @else {
     <coworking-dropin-availability-card
-      [seat_availability]="status.seat_availability"
+      [seat_availability]="status().seat_availability"
       (seatsSelected)="reserve($event)" />
   }
 
@@ -37,13 +36,13 @@
   </mat-pane>
 }
 
-@if (((upcomingReservations$ | async) ?? []).length > 0) {
+@if (upcomingReservations().length > 0) {
   <mat-pane>
     <mat-card-header>
       <mat-card-title>Upcoming Room Reservations</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      @for (reservation of upcomingReservations$ | async; track reservation) {
+      @for (reservation of upcomingReservations(); track reservation) {
         <coworking-reservation-card
           [reservation]="reservation"
           [isPane]="false"
