@@ -34,14 +34,15 @@ export class AdminRolesListComponent {
   }
 
   onClick(role: Role) {
-    this.router.navigate(['admin', 'roles', role.id]);
+    this.router.navigate(['admin', 'accounts', 'roles', role.id]);
   }
 
   onClickAddRole() {
     let name = window.prompt('What is the name of the role?');
     if (name) {
       this.roleService.create(name).subscribe({
-        next: (role) => this.router.navigate(['admin', 'roles', role.id]),
+        next: (role) =>
+          this.router.navigate(['admin', 'accounts', 'roles', role.id]),
         error: (err) => this.navService.error(err)
       });
     }
