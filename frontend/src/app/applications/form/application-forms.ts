@@ -1,4 +1,9 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  Validators
+} from '@angular/forms';
 
 export interface ApplicationForm {
   groups: FormGroup[];
@@ -79,3 +84,14 @@ Please add a link to your *UNLISTED* (NOT PRIVATE!) YouTube video below. Be sure
     required: true
   }
 ];
+
+const gtaApplicationFormGroup = () => {
+  let formGroup = new FormGroup({});
+  for (let field of GTAApplicationForm) {
+    formGroup.addControl(
+      field.name,
+      new FormControl('', field.required ? [Validators.required] : [])
+    );
+  }
+  return formGroup;
+};
