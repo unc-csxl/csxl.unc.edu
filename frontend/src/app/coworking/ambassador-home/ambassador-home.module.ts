@@ -15,8 +15,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-// import { AmbassadorXlListComponent } from './ambassador-xl/list/ambassador-xl-list.component';
-// import { AmbassadorRoomListComponent } from './ambassador-room/list/ambassador-room-list.component';
+// import { AmbassadorXLComponent } from './ambassador-xl/list/ambassador-xl-list.component';
+// import { AmbassadorRoomComponent } from './ambassador-room/list/ambassador-room-list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({

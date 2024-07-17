@@ -6,14 +6,14 @@ import { permissionGuard } from 'src/app/permission.guard';
 import { AmbassadorRoomService } from './ambassador-room.service';
 
 @Component({
-  selector: 'app-ambassador-room-list',
-  templateUrl: './ambassador-room-list.component.html',
-  styleUrls: ['./ambassador-room-list.component.css']
+  selector: 'app-ambassador-room',
+  templateUrl: './ambassador-room.component.html',
+  styleUrls: ['./ambassador-room.component.css']
 })
-export class AmbassadorRoomListComponent implements OnInit, OnDestroy {
+export class AmbassadorRoomComponent implements OnInit, OnDestroy {
   public static Route: Route = {
     path: 'room',
-    component: AmbassadorRoomListComponent,
+    component: AmbassadorRoomComponent,
     title: 'Room Reservations',
     canActivate: [permissionGuard('coworking.reservation.*', '*')],
     resolve: {}

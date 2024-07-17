@@ -1,17 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AmbassadorXlListComponent } from './ambassador-xl/ambassador-xl-list.component';
+import { AmbassadorXLComponent } from './ambassador-xl/ambassador-xl.component';
 import { AmbassadorPageComponent } from './ambassador-home.component';
-import { AmbassadorRoomListComponent } from './ambassador-room/ambassador-room-list.component';
+import { AmbassadorRoomComponent } from './ambassador-room/ambassador-room.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AmbassadorPageComponent,
-    children: [
-      AmbassadorXlListComponent.Route,
-      AmbassadorRoomListComponent.Route
-    ]
+    children: [AmbassadorXLComponent.Route, AmbassadorRoomComponent.Route]
   }
 ];
 

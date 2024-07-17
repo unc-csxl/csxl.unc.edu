@@ -15,15 +15,15 @@ import { CoworkingService } from '../../coworking.service';
 const FIVE_SECONDS = 5 * 1000;
 
 @Component({
-  selector: 'app-ambassador-xl-list',
-  templateUrl: './ambassador-xl-list.component.html',
-  styleUrls: ['./ambassador-xl-list.component.css']
+  selector: 'app-ambassador-xl',
+  templateUrl: './ambassador-xl.component.html',
+  styleUrls: ['./ambassador-xl.component.css']
 })
-export class AmbassadorXlListComponent implements OnDestroy, OnInit {
+export class AmbassadorXLComponent implements OnDestroy, OnInit {
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
     path: 'xl',
-    component: AmbassadorXlListComponent,
+    component: AmbassadorXLComponent,
     title: 'XL Reservations',
     canActivate: [permissionGuard('coworking.reservation.*', '*')],
     resolve: {}
