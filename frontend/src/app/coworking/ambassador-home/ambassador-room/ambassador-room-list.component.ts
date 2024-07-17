@@ -3,7 +3,7 @@ import { Route } from '@angular/router';
 import { Observable, Subscription, map, timer, tap } from 'rxjs';
 import { Reservation } from 'src/app/coworking/coworking.models';
 import { permissionGuard } from 'src/app/permission.guard';
-import { AmbassadorRoomService } from '../ambassador-room.service';
+import { AmbassadorRoomService } from './ambassador-room.service';
 
 @Component({
   selector: 'app-ambassador-room-list',

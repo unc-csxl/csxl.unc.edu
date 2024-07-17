@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AmbassadorXlListComponent } from './ambassador-xl/list/ambassador-xl-list.component';
+import { AmbassadorXlListComponent } from './ambassador-xl/ambassador-xl-list.component';
 import { AmbassadorPageComponent } from './ambassador-home.component';
-import { AmbassadorRoomListComponent } from './ambassador-room/list/ambassador-room-list.component';
+import { AmbassadorRoomListComponent } from './ambassador-room/ambassador-room-list.component';
 
 const routes: Routes = [
   {

@@ -19,18 +19,19 @@ export class AmbassadorPageComponent implements OnInit {
     {
       label: 'XL Reservations',
       path: '/coworking/ambassador/xl',
-      default: true
+      icon: 'chair_alt'
     },
-    { label: 'Room Reservations', path: '/coworking/ambassador/room' }
+    {
+      label: 'Room Reservations',
+      path: '/coworking/ambassador/room',
+      icon: 'meeting_room'
+    }
   ];
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     // Find the default link and navigate to it
-    const defaultLink = this.links.find((link) => link.default);
-    if (defaultLink) {
-      this.router.navigate([defaultLink.path]);
-    }
+    this.router.navigate(['/coworking/ambassador/xl']);
   }
 }

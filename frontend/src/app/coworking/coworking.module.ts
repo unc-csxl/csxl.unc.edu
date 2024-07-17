@@ -32,8 +32,8 @@ import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from '../shared/shared.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AmbassadorXlListComponent } from './ambassador-home/ambassador-xl/list/ambassador-xl-list.component';
-import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/list/ambassador-room-list.component';
+import { AmbassadorXlListComponent } from './ambassador-home/ambassador-xl/ambassador-xl-list.component';
+import { AmbassadorRoomListComponent } from './ambassador-home/ambassador-room/ambassador-room-list.component';
 import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-facts.widget';
 
 @NgModule({

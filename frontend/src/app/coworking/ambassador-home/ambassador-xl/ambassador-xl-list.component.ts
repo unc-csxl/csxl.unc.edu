@@ -7,10 +7,10 @@ import {
   CoworkingStatus,
   Reservation,
   SeatAvailability
-} from '../../../coworking.models';
-import { AmbassadorXlService } from '../ambassador-xl.service';
+} from '../../coworking.models';
+import { AmbassadorXlService } from './ambassador-xl.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
-import { CoworkingService } from '../../../coworking.service';
+import { CoworkingService } from '../../coworking.service';
 
 const FIVE_SECONDS = 5 * 1000;
 
