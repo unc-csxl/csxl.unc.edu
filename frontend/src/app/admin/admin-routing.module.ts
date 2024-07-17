@@ -1,14 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminUsersRolesComponent } from './users-and-roles/admin-users-roles.component';
+import { AdminRoleDetailsComponent } from './users-and-roles/roles/details/admin-role-details.component';
+import { AdminRolesListComponent } from './users-and-roles/roles/list/admin-roles-list.component';
+import { AdminUsersListComponent } from './users-and-roles/users/admin-users.component';
 import { AdminComponent } from './admin.component';
-import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.component';
-import { AdminRolesListComponent } from './roles/list/admin-roles-list.component';
-import { AdminUsersListComponent } from './users/list/admin-users-list.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AdminComponent,
+    component: AdminComponent
+  },
+  {
+    path: 'accounts',
+    component: AdminUsersRolesComponent,
     children: [
       AdminUsersListComponent.Route,
       AdminRolesListComponent.Route,
