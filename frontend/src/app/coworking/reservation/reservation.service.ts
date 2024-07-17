@@ -1,26 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, map, shareReplay, tap } from 'rxjs';
+import { Injectable, WritableSignal, signal } from '@angular/core';
+import { Observable, map, tap } from 'rxjs';
 import {
   Reservation,
   ReservationJSON,
   parseReservationJSON
 } from '../coworking.models';
-import { RxReservation } from './rx-reservation';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
-  private reservations: Map<number, RxReservation> = new Map();
+  private reservationSignal: WritableSignal<Reservation | undefined> =
+    signal(undefined);
+  reservation = this.reservationSignal.asReadonly();
 
   constructor(protected http: HttpClient) {}
-
-  get(id: number): Observable<Reservation> {
-    let reservation = this.getRxReservation(id);
-    reservation.load();
-    return reservation.value$;
-  }
 
   cancel(reservation: Reservation) {
     let endpoint = `/api/coworking/reservation/${reservation.id}`;
@@ -28,8 +23,7 @@ export class ReservationService {
     return this.http.put<ReservationJSON>(endpoint, payload).pipe(
       map(parseReservationJSON),
       tap((reservation) => {
-        let rxReservation = this.getRxReservation(reservation.id);
-        rxReservation.set(reservation);
+        this.reservationSignal.set(reservation);
       })
     );
   }
@@ -40,8 +34,7 @@ export class ReservationService {
     return this.http.put<ReservationJSON>(endpoint, payload).pipe(
       map(parseReservationJSON),
       tap((reservation) => {
-        let rxReservation = this.getRxReservation(reservation.id);
-        rxReservation.set(reservation);
+        this.reservationSignal.set(reservation);
       })
     );
   }
@@ -52,8 +45,7 @@ export class ReservationService {
     return this.http.put<ReservationJSON>(endpoint, payload).pipe(
       map(parseReservationJSON),
       tap((reservation) => {
-        let rxReservation = this.getRxReservation(reservation.id);
-        rxReservation.set(reservation);
+        this.reservationSignal.set(reservation);
       })
     );
   }
@@ -64,24 +56,23 @@ export class ReservationService {
     return this.http.put<ReservationJSON>(endpoint, payload).pipe(
       map(parseReservationJSON),
       tap((reservation) => {
-        let rxReservation = this.getRxReservation(reservation.id);
-        rxReservation.set(reservation);
+        this.reservationSignal.set(reservation);
       })
     );
   }
 
-  private getRxReservation(id: number): RxReservation {
-    let reservation = this.reservations.get(id);
-    if (reservation === undefined) {
-      let loader = this.http
-        .get<ReservationJSON>(`/api/coworking/reservation/${id}`)
-        .pipe(
-          map(parseReservationJSON),
-          shareReplay({ windowTime: 1000, refCount: true })
-        );
-      reservation = new RxReservation(loader);
-      this.reservations.set(id, reservation);
-    }
-    return reservation;
+  getReservation(id: number) {
+    return this.http
+      .get<ReservationJSON>(`/api/coworking/reservation/${id}`)
+      .pipe(map(parseReservationJSON))
+      .subscribe((reservation) => {
+        this.reservationSignal.set(reservation);
+      });
+  }
+
+  getReservationObservable(id: number): Observable<Reservation> {
+    return this.http
+      .get<ReservationJSON>(`/api/coworking/reservation/${id}`)
+      .pipe(map(parseReservationJSON));
   }
 }

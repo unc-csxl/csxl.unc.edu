@@ -1,6 +1,8 @@
 <div class="card-container">
-  <ng-container *ngIf="reservation$ | async as reservation">
-    <coworking-reservation-card
-      [reservation]="reservation"></coworking-reservation-card>
-  </ng-container>
+  @if(reservationService.reservation()) {
+  <coworking-reservation-card
+    [reservation]="
+      reservationService.reservation()!
+    "></coworking-reservation-card>
+  }
 </div>

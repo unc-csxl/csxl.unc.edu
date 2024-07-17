@@ -55,7 +55,7 @@ export class ConfirmReservationComponent implements OnInit, OnDestroy {
    * @returns {void} - This method does not return a value.
    */
   ngOnInit() {
-    this.roomReservationService.get(this.id).subscribe({
+    this.roomReservationService.getReservationObservable(this.id).subscribe({
       next: (response) => (this.reservation = response), // Assume only one draft per user
       error: (error) => {
         this.snackBar.open('Error while fetching draft reservation.', '', {
