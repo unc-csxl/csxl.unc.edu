@@ -17,10 +17,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { MatCardModule } from '@angular/material/card';
 import { AdminComponent } from './admin.component';
-import { AdminUsersRolesComponent } from './users-and-roles/admin-users-roles.component';
-import { AdminUsersListComponent } from './users-and-roles/users/admin-users.component';
-import { AdminRolesListComponent } from './users-and-roles/roles/list/admin-roles-list.component';
-import { AdminRoleDetailsComponent } from './users-and-roles/roles/details/admin-role-details.component';
+import { AdminUsersRolesComponent } from './accounts/admin-accounts.component';
+import { AdminUsersListComponent } from './accounts/users/admin-users.component';
+import { AdminRolesListComponent } from './accounts/roles/list/admin-roles-list.component';
+import { AdminRoleDetailsComponent } from './accounts/roles/details/admin-role-details.component';
 
 @NgModule({
   declarations: [

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile } from 'src/app/profile/profile.service';
-import { UserAdminService } from 'src/app/admin/users-and-roles/users/user-admin.service';
+import { UserAdminService } from 'src/app/admin/accounts/users/user-admin.service';
 import { permissionGuard } from 'src/app/permission.guard';
 
 import { Paginated, PaginationParams } from 'src/app/pagination';
