@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, WritableSignal, effect, signal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationFormField } from './application-forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApplicationsService } from '../applications.service';
+import { ApplicationSectionChoice } from '../applications.model';
 
 @Component({
   selector: 'app-application-form',
@@ -21,6 +22,7 @@ export class ApplicationFormComponent {
   /** Form */
   formGroup: FormGroup;
   fields: ApplicationFormField[];
+  selectedSections: WritableSignal<ApplicationSectionChoice[]> = signal([]);
 
   constructor(
     private route: ActivatedRoute,

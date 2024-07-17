@@ -3,8 +3,12 @@
     <mat-card-title>Application Form</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    @for(field of fields; track field.name) {
-    <application-form-field [field]="field" />
-    }
+    <form [formGroup]="formGroup">
+      @for(field of fields; track field.name) {
+      <application-form-field
+        [field]="field"
+        [selectedSections]="selectedSections" />
+      }
+    </form>
   </mat-card-content>
 </mat-pane>

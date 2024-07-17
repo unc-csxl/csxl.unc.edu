@@ -9,7 +9,7 @@
     <input
       matInput
       placeholder=""
-      formControlName="field.name"
+      [formControlName]="field.name"
       name="name"
       [required]="field.required" />
   </mat-form-field>
@@ -50,6 +50,7 @@
       placeholder="Add Sections..."
       #sectionInput
       [(ngModel)]="currentSectionInput"
+      [ngModelOptions]="{ standalone: true }"
       [matChipInputFor]="chipGrid"
       [matAutocomplete]="auto" />
     <mat-autocomplete

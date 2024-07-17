@@ -1,5 +1,9 @@
 import { Component, Input, WritableSignal, signal } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {
+  ControlContainer,
+  FormGroup,
+  FormGroupDirective
+} from '@angular/forms';
 import {
   ApplicationFormField,
   FormFieldType
@@ -11,14 +15,20 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 @Component({
   selector: 'application-form-field',
   templateUrl: './application-form-field.widget.html',
-  styleUrl: './application-form-field.widget.css'
+  styleUrl: './application-form-field.widget.css',
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      useExisting: FormGroupDirective
+    }
+  ]
 })
 export class ApplicationFormFieldWidget {
   fieldType = FormFieldType;
 
   @Input() field!: ApplicationFormField;
-
-  selectedSections: WritableSignal<ApplicationSectionChoice[]> = signal([]);
+  @Input() selectedSections: WritableSignal<ApplicationSectionChoice[]> =
+    signal([]);
   currentSectionInput = signal('');
 
   constructor(protected applicationsService: ApplicationsService) {}
