@@ -1,4 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  Signal,
+  WritableSignal,
+  computed,
+  signal
+} from '@angular/core';
 import { Route } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
@@ -29,12 +37,20 @@ export class AmbassadorXLComponent implements OnDestroy, OnInit {
     resolve: {}
   };
 
-  reservations$: Observable<Reservation[]>;
-  upcomingReservations$: Observable<Reservation[]>;
-  activeReservations$: Observable<Reservation[]>;
+  upcomingReservations = computed(() => {
+    return this.ambassadorService.reservations().filter((r) => {
+      return r.state == 'CONFIRMED';
+    });
+  });
+
+  activeReservations = computed(() => {
+    return this.ambassadorService.reservations().filter((r) => {
+      return r.state == 'CHECKED_IN';
+    });
+  });
 
   welcomeDeskReservationSelection: PublicProfile[] = [];
-  status$: Observable<CoworkingStatus>;
+  status: Signal<CoworkingStatus>;
 
   columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
 
@@ -44,26 +60,16 @@ export class AmbassadorXLComponent implements OnDestroy, OnInit {
     public ambassadorService: AmbassadorXlService,
     public coworkingService: CoworkingService
   ) {
-    this.reservations$ = this.ambassadorService.reservations$;
-    this.upcomingReservations$ = this.reservations$.pipe(
-      map((reservations) => reservations.filter((r) => r.state === 'CONFIRMED'))
-    );
-    this.activeReservations$ = this.reservations$.pipe(
-      map((reservations) =>
-        reservations.filter((r) => r.state === 'CHECKED_IN')
-      )
-    );
-
-    this.status$ = coworkingService.status$;
+    this.status = coworkingService.status;
   }
 
   beginReservationRefresh(): void {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
-    this.refreshSubscription = timer(0, FIVE_SECONDS)
-      .pipe(tap((_) => this.ambassadorService.fetchReservations()))
-      .subscribe();
+    this.refreshSubscription = timer(0, FIVE_SECONDS).subscribe((_) => {
+      this.ambassadorService.fetchReservations();
+    });
   }
 
   ngOnInit(): void {

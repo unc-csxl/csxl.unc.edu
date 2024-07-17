@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import {
   Reservation,
@@ -16,8 +16,8 @@ const ONE_HOUR = 60 * 60 * 1000;
   providedIn: 'root'
 })
 export class AmbassadorXlService {
-  private reservations: RxReservations = new RxReservations();
-  public reservations$: Observable<Reservation[]> = this.reservations.value$;
+  private reservationsSignal: WritableSignal<Reservation[]> = signal([]);
+  public reservations = this.reservationsSignal.asReadonly();
 
   constructor(private http: HttpClient) {}
 
@@ -25,7 +25,7 @@ export class AmbassadorXlService {
     this.http
       .get<ReservationJSON[]>('/api/coworking/ambassador/xl')
       .subscribe((reservations) => {
-        this.reservations.set(reservations.map(parseReservationJSON));
+        this.reservationsSignal.set(reservations.map(parseReservationJSON));
       });
   }
 
@@ -35,10 +35,8 @@ export class AmbassadorXlService {
         id: reservation.id,
         state: 'CHECKED_IN'
       })
-      .subscribe((reservationJson) => {
-        this.reservations.updateReservation(
-          parseReservationJSON(reservationJson)
-        );
+      .subscribe((_) => {
+        this.fetchReservations();
       });
   }
 
@@ -48,10 +46,8 @@ export class AmbassadorXlService {
         id: reservation.id,
         state: 'CHECKED_OUT'
       })
-      .subscribe((reservationJson) => {
-        this.reservations.updateReservation(
-          parseReservationJSON(reservationJson)
-        );
+      .subscribe((_) => {
+        this.fetchReservations();
       });
   }
 
@@ -63,7 +59,7 @@ export class AmbassadorXlService {
       })
       .subscribe({
         next: (_) => {
-          this.reservations.remove(reservation);
+          this.fetchReservations();
         },
         error: (err) => {
           alert(err);

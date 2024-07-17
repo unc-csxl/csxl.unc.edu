@@ -95,6 +95,12 @@ export interface CoworkingStatus {
   operating_hours: OperatingHours[];
 }
 
+export const EMPTY_COWORKING_STATUS = {
+  my_reservations: [],
+  seat_availability: [],
+  operating_hours: []
+};
+
 export const parseCoworkingStatusJSON = (
   json: CoworkingStatusJSON
 ): CoworkingStatus => {
