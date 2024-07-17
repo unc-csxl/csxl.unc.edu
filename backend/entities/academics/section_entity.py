@@ -102,7 +102,7 @@ class SectionEntity(EntityBase):
 
     # All applicants where section is preferred
     # NOTE: This field establishes a many-to-many relationship between the sections and applications table.
-    preferred_applicants: Mapped[list["UTAApplicationEntity"]] = relationship(
+    preferred_applicants: Mapped[list["ApplicationEntity"]] = relationship(
         secondary=section_application_table, back_populates="preferred_sections"
     )
 
