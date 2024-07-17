@@ -30,6 +30,7 @@ export interface ApplicationReviewOverview {
   status: ApplicationReviewStatus;
   preference: number;
   notes: string;
+  applicant_course_ranking: number;
 }
 
 export interface HiringStatus {

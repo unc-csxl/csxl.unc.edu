@@ -60,6 +60,7 @@ class ApplicationReviewOverview(ApplicationReview):
     status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
     preference: int
     notes: str
+    applicant_course_ranking: int
 
 
 class HiringStatus(BaseModel):

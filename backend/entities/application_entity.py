@@ -189,6 +189,7 @@ class UTAApplicationEntity(ApplicationEntity):
         "SectionEntity",
         secondary=section_application_table,
         back_populates="preferred_applicants",
+        order_by=section_application_table.c.preference,
     )
 
     # Any row in the main Application table that is an instance of UTAApplicationEntity will override

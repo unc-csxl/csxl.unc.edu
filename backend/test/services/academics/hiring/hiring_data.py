@@ -103,7 +103,9 @@ application_four = NewUTAApplicationDetails(
 applications = [application_one, application_two, application_three, application_four]
 
 application_associations = [
-    (application_one, section_data.comp_110_001_current_term, 0),
+    (application_one, section_data.comp_301_001_current_term, 0),
+    (application_one, section_data.comp_110_001_current_term, 1),
+    (application_one, section_data.comp_110_002_current_term, 2),
     (application_two, section_data.comp_110_001_current_term, 0),
     (application_three, section_data.comp_110_001_current_term, 0),
     (application_four, section_data.comp_110_001_current_term, 0),
@@ -160,7 +162,7 @@ def insert_fake_data(session: Session):
                 }
             )
         )
-    session.commit()
+        session.commit()
 
     for review in reviews:
         entity = ApplicationReviewEntity.from_model(review)
