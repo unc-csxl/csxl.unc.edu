@@ -58,15 +58,15 @@
       (click)="cancel()">
       Cancel
     </button>
+    @if (checkCheckinAllowed() && reservation.room) {
     <button
-      *ngIf="checkCheckinAllowed() && reservation.room"
       mat-stroked-button
       type="submit"
       color="primary"
       (click)="checkin()">
       Check In
     </button>
-    } @case ('CHECKED_IN') {
+    } } @case ('CHECKED_IN') {
     <button
       mat-flat-button
       class="tertiary-button"
