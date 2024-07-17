@@ -266,6 +266,9 @@ html, body {
     .font-secondary {
         color: mat.get-theme-color($theme, secondary) !important;
     }
+    .font-variant {
+        color: mat.get-theme-color($theme, on-surface-variant) !important;
+    }
 }
 
 /// Defines a mixin that applies custom widgets to material text field components

@@ -71,3 +71,20 @@
 .semibold {
   font-weight: 500;
 }
+
+.mat-mdc-card-subtitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 96%;
+}
+
+.accessories {
+  margin-left: auto;
+
+  p {
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 10px;
+  }
+}

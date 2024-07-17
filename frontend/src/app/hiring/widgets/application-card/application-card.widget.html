@@ -6,17 +6,24 @@
   <mat-card-header>
     <mat-card-subtitle>
       <span class="preference">{{ item.preference + 1 }}. </span>
-      <span>{{ item.application.applicant_name }}</span>
+      <span> {{ item.application.applicant_name }}</span>
       @if (item.notes.length > 0) {
       <mat-icon class="notes" matListItemIcon>tooltip</mat-icon>
       }
+      <div class="accessories">
+        <p class="font-variant">
+          Course rank:
+          <span
+            [class]="
+              'text-badge ' +
+              (item.applicant_course_ranking === 1
+                ? 'primary-background'
+                : 'secondary-background')
+            "
+            >#{{ item.applicant_course_ranking }}</span
+          >
+        </p>
+      </div>
     </mat-card-subtitle>
-    <p>
-      Ranked this course as their
-      <span class="text-badge primary-background"
-        >#{{ item.applicant_course_ranking }}</span
-      >
-      choice.
-    </p>
   </mat-card-header>
 </mat-card>
