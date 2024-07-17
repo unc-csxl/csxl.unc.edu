@@ -7,7 +7,6 @@ import {
   SeatAvailability,
   parseReservationJSON
 } from '../../coworking.models';
-import { RxReservations } from '../rx-reservations';
 import { PublicProfile } from 'src/app/profile/profile.service';
 
 const ONE_HOUR = 60 * 60 * 1000;

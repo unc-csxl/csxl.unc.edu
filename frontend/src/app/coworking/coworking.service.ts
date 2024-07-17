@@ -1,12 +1,12 @@
 /**
- * @author Kris Jordan, John Schachte
- * @copyright 2023
+ * @author Kris Jordan, Ajay Gandecha, John Schachte
+ * @copyright 2024
  * @license MIT
  */
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy, WritableSignal, signal } from '@angular/core';
-import { Observable, Subscription, map, BehaviorSubject } from 'rxjs';
+import { Subscription, map, BehaviorSubject } from 'rxjs';
 import {
   CoworkingStatus,
   CoworkingStatusJSON,
@@ -19,7 +19,6 @@ import {
 } from './coworking.models';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
-import { RxCoworkingStatus } from './rx-coworking-status';
 
 const ONE_HOUR = 60 * 60 * 1000;
 
@@ -31,9 +30,6 @@ export class CoworkingService implements OnDestroy {
     EMPTY_COWORKING_STATUS
   );
   public status = this.statusSignal.asReadonly();
-
-  //private status: RxCoworkingStatus = new RxCoworkingStatus();
-  //public status$: Observable<CoworkingStatus> = this.status.value$;
 
   private profile: Profile | undefined;
   private profileSubscription!: Subscription;
