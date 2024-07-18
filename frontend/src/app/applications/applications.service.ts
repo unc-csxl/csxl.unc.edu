@@ -11,10 +11,12 @@ import { Injectable, WritableSignal, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   ApplicationFormField,
+  FormFieldType,
   GTA_APPLICATION_FORM
 } from './form/application-forms';
 import { HttpClient } from '@angular/common/http';
-import { ApplicationSectionChoice } from './applications.model';
+import { Application, ApplicationSectionChoice } from './applications.model';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,27 @@ export class ApplicationsService {
   /** Constructor */
   constructor(protected http: HttpClient) {
     this.getEligibleSections();
+  }
+
+  /**
+   * Get the application for the user based on a given term.
+   * @param termId: Term ID to get an application of
+   * @returns the user's application
+   */
+  getApplication(termId: string): Observable<Application | null> {
+    return this.http.get<Application | null>(
+      `/api/applications/ta/user/${termId}`
+    );
+  }
+
+  /** Creates an application and returns the result. */
+  createApplication(application: Application): Observable<Application> {
+    return this.http.post<Application>(`/api/applications/ta`, application);
+  }
+
+  /** Updates an application and returns the result. */
+  updateApplication(application: Application): Observable<Application> {
+    return this.http.put<Application>(`/api/applications/ta`, application);
   }
 
   /**
@@ -52,10 +75,12 @@ export class ApplicationsService {
     let fields: ApplicationFormField[] = [];
     if (type == 'gta') {
       for (let field of GTA_APPLICATION_FORM) {
-        formGroup.addControl(
-          field.name,
-          new FormControl('', field.required ? [Validators.required] : [])
-        );
+        if (field.fieldType != FormFieldType.COURSE_PREFERENCE) {
+          formGroup.addControl(
+            field.name,
+            new FormControl('', field.required ? [Validators.required] : [])
+          );
+        }
       }
       fields = GTA_APPLICATION_FORM;
     }

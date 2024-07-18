@@ -55,7 +55,7 @@ class ApplicationService:
         )
         application_entity = self._session.scalars(application_query).first()
 
-        return application_entity.to_model()
+        return application_entity.to_model() if application_entity else None
 
     def create(self, subject: User, application: Application) -> Application:
         """Creates a new application"""

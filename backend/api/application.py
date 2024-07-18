@@ -26,7 +26,7 @@ openapi_tags = {
 api = APIRouter(prefix="/api/applications/ta")
 
 
-@api.get("/user/:term_id", tags=["Applications"])
+@api.get("/user/{term_id}", tags=["Applications"])
 def get_application(
     term_id: str,
     user: User = Depends(registered_user),

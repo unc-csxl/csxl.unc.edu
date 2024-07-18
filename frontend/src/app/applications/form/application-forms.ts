@@ -28,7 +28,7 @@ export interface ApplicationFormField {
 
 export const GTA_APPLICATION_FORM: ApplicationFormField[] = [
   {
-    name: 'program',
+    name: 'program_pursued',
     title: 'Which program are you enrolled in?',
     description:
       'PhD students who have completed all requirements except for dissertation defense, please select PhD (ABD).',
@@ -54,7 +54,7 @@ export const GTA_APPLICATION_FORM: ApplicationFormField[] = [
     required: true
   },
   {
-    name: 'prior-ta-experience',
+    name: 'prior_experience',
     title: 'Prior TA/LA Experience?',
     description: '',
     fieldType: FormFieldType.LONG_TEXT,
@@ -62,7 +62,7 @@ export const GTA_APPLICATION_FORM: ApplicationFormField[] = [
     required: true
   },
   {
-    name: 'video-url',
+    name: 'intro_video_url',
     title: 'Introductory Video for TAship Eligibility',
     description: `
 Record a video up to 5-minutes long using your laptop or phone's video recording functionality. Please do not go beyond 5-minutes!

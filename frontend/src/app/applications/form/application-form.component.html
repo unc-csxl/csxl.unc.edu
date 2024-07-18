@@ -1,19 +1,19 @@
-<mat-pane>
-  <mat-card-header>
-    <mat-card-title>Application Form</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <form [formGroup]="formGroup">
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <mat-pane>
+    <mat-card-header>
+      <mat-card-title>Application Form</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
       @for(field of fields; track field.name) {
       <application-form-field
         [field]="field"
         [selectedSections]="selectedSections" />
       }
-    </form>
-  </mat-card-content>
-  <mat-card-actions>
-    <button class="submit-button" mat-flat-button color="primary">
-      Submit Application
-    </button>
-  </mat-card-actions>
-</mat-pane>
+    </mat-card-content>
+    <mat-card-actions>
+      <button class="submit-button" mat-flat-button color="primary">
+        Submit Application
+      </button>
+    </mat-card-actions>
+  </mat-pane>
+</form>

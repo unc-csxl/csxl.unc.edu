@@ -13,26 +13,26 @@ __license__ = "MIT"
 
 
 sp_23 = Term(
-    id="S23", name="Spring 2023", start=datetime(2023, 1, 10), end=datetime(2023, 5, 10)
+    id="23S", name="Spring 2023", start=datetime(2023, 1, 10), end=datetime(2023, 5, 10)
 )
 
 f_23 = Term(
-    id="F23", name="Fall 2023", start=datetime(2023, 8, 20), end=datetime(2023, 12, 15)
+    id="23F", name="Fall 2023", start=datetime(2023, 8, 20), end=datetime(2023, 12, 15)
 )
 
 edited_f_23 = Term(
-    id="F23",
+    id="23F",
     name="Best Semester Ever",
     start=datetime(2023, 8, 20),
     end=datetime(2023, 12, 15),
 )
 
 sp_24 = Term(
-    id="S24", name="Spring 2024", start=datetime(2024, 1, 10), end=datetime(2024, 5, 10)
+    id="24S", name="Spring 2024", start=datetime(2024, 1, 10), end=datetime(2024, 5, 10)
 )
 
 ss1_24 = Term(
-    id="SuI24",
+    id="24SuI",
     name="Summer Session I 2024",
     start=datetime(2024, 5, 13),
     end=datetime(2024, 6, 23),
@@ -48,7 +48,7 @@ ss2_24 = Term(
 )
 
 new_term = Term(
-    id="F24", name="Fall 2024", start=datetime(2024, 8, 20), end=datetime(2024, 12, 15)
+    id="24F", name="Fall 2024", start=datetime(2024, 8, 20), end=datetime(2024, 12, 15)
 )
 
 terms = [sp_23, f_23, sp_24, ss1_24, ss2_24]
