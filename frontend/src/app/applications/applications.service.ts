@@ -12,7 +12,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   ApplicationFormField,
   FormFieldType,
-  GTA_APPLICATION_FORM
+  GTA_APPLICATION_FORM,
+  UTA_APPLICATION_FORM
 } from './form/application-forms';
 import { HttpClient } from '@angular/common/http';
 import { Application, ApplicationSectionChoice } from './applications.model';
@@ -83,6 +84,24 @@ export class ApplicationsService {
         }
       }
       fields = GTA_APPLICATION_FORM;
+    }
+    if (type == 'new_uta') {
+      for (let field of UTA_APPLICATION_FORM) {
+        if (field.fieldType != FormFieldType.COURSE_PREFERENCE) {
+          if (field.fieldType == FormFieldType.NUMBER) {
+            formGroup.addControl(
+              field.name,
+              new FormControl(0, field.required ? [Validators.required] : [])
+            );
+          } else {
+            formGroup.addControl(
+              field.name,
+              new FormControl('', field.required ? [Validators.required] : [])
+            );
+          }
+        }
+      }
+      fields = UTA_APPLICATION_FORM;
     }
     return [formGroup, fields];
   }

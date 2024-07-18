@@ -30,6 +30,16 @@
       }
     </mat-select>
   </mat-form-field>
+  } @if (field.fieldType === fieldType.NUMBER) {
+  <mat-form-field appearance="outline" color="accent">
+    <input
+      type="number"
+      matInput
+      placeholder=""
+      [formControlName]="field.name"
+      [name]="field.name"
+      required />
+  </mat-form-field>
   } @if (field.fieldType === fieldType.COURSE_PREFERENCE) {
   <mat-form-field appearance="outline">
     <mat-label>Select Course Sections</mat-label>
