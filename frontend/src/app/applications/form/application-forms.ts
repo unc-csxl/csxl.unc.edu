@@ -1,15 +1,8 @@
-import {
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  Validators
-} from '@angular/forms';
-
-export interface ApplicationForm {
-  groups: FormGroup[];
-}
+import { FormGroup } from '@angular/forms';
 
 // GTA Application Forms
+
+/** Encapsulates the different possible types of form fields. */
 export enum FormFieldType {
   SHORT_TEXT,
   LONG_TEXT,
@@ -18,6 +11,7 @@ export enum FormFieldType {
   NUMBER
 }
 
+/** Represents an application form field. */
 export interface ApplicationFormField {
   name: string;
   title: string;
@@ -26,6 +20,8 @@ export interface ApplicationFormField {
   dropdownItems: string[] | undefined;
   required: boolean;
 }
+
+// All application forms:
 
 export const GTA_APPLICATION_FORM: ApplicationFormField[] = [
   {

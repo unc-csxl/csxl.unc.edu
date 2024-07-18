@@ -1,3 +1,12 @@
+/**
+ * The Application Form Component enables students to submit
+ * and edit applications.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, WritableSignal, effect, signal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationFormField } from './application-forms';
