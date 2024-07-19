@@ -68,13 +68,18 @@
       Details
     </button>
     @if(event.user_registration_type === registrationType.ATTENDEE) {
-    <button mat-flat-button class="tertiary-button">Unregister</button>
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      (click)="unregisterForEvent()">
+      Unregister
+    </button>
     } @else if(event.user_registration_type === registrationType.ORGANIZER) {
     <button mat-flat-button [disabled]="true">Manage</button>
     } @else if(event.registration_limit === event.number_registered) {
     <button mat-flat-button [disabled]="true">Filled</button>
     } @else {
-    <button mat-flat-button>Register</button>
+    <button mat-flat-button (click)="registerForEvent()">Register</button>
     }
   </mat-card-actions>
 </mat-card>

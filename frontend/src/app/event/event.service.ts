@@ -116,9 +116,9 @@ export class EventService {
    * @param event: Event to register to.
    * @returns {Observable<EventRegistration>}
    */
-  registerForEvent(event: Event): Observable<EventRegistration> {
+  registerForEvent(eventId: number): Observable<EventRegistration> {
     return this.http.post<EventRegistration>(
-      `/api/events/${event.id}/registration`,
+      `/api/events/${eventId}/registration`,
       {}
     );
   }
@@ -128,9 +128,9 @@ export class EventService {
    * @param event: Event to unregister from.
    * @returns {Observable<EventRegistration>}
    */
-  unregisterForEvent(event: Event): Observable<EventRegistration> {
+  unregisterForEvent(eventId: number): Observable<EventRegistration> {
     return this.http.delete<EventRegistration>(
-      `/api/events/${event.id}/registration`
+      `/api/events/${eventId}/registration`
     );
   }
 }

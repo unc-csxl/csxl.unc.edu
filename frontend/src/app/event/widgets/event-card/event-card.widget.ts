@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EventOverview, RegistrationType } from '../../event.model';
+import { EventService } from '../../event.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'new-event-card',
@@ -9,4 +11,52 @@ import { EventOverview, RegistrationType } from '../../event.model';
 export class EventCardWidget {
   registrationType = RegistrationType;
   @Input() event!: EventOverview;
+  @Output() registrationChange = new EventEmitter<boolean>();
+
+  constructor(
+    protected eventService: EventService,
+    protected snackBar: MatSnackBar
+  ) {}
+
+  /** Registers a user for an event. */
+  registerForEvent() {
+    this.eventService.registerForEvent(this.event.id!).subscribe({
+      next: () => {
+        this.registrationChange.emit(true);
+        this.snackBar.open(
+          `Successfully registered for ${this.event.name}!`,
+          'Close',
+          { duration: 15000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          `Error: Could not register. Please try again.`,
+          'Close',
+          { duration: 15000 }
+        );
+      }
+    });
+  }
+
+  /** Unregisters a user from an evenet. */
+  unregisterForEvent() {
+    this.eventService.unregisterForEvent(this.event.id!).subscribe({
+      next: () => {
+        this.registrationChange.emit(true);
+        this.snackBar.open(
+          `Successfully unregistered for ${this.event.name}!`,
+          'Close',
+          { duration: 15000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          `Error: Could not unregister. Please try again.`,
+          'Close',
+          { duration: 15000 }
+        );
+      }
+    });
+  }
 }

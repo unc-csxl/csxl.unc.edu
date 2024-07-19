@@ -171,10 +171,21 @@ class EventEntity(EntityBase):
             for registration in self.registrations
             if registration.registration_type == RegistrationType.ATTENDEE
         ]
+
         user_registration = (
-            [attendee for attendee in attendees if attendee.id == subject.id][0]
+            [
+                registration
+                for registration in self.registrations
+                if registration.user_id == subject.id
+            ][0]
             if subject is not None
-            and len([attendee for attendee in attendees if attendee.id == subject.id])
+            and len(
+                [
+                    registration
+                    for registration in self.registrations
+                    if registration.user_id == subject.id
+                ]
+            )
             > 0
             else None
         )

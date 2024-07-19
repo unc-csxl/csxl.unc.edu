@@ -82,7 +82,7 @@ export class EventDetailCard implements OnInit {
       'Register'
     );
     confirmRegistration.onAction().subscribe(() => {
-      this.eventService.registerForEvent(this.event).subscribe({
+      this.eventService.registerForEvent(this.event.id!).subscribe({
         next: () => this.onSuccess(),
         error: () => this.onError()
       });
@@ -97,7 +97,7 @@ export class EventDetailCard implements OnInit {
       { duration: 15000 }
     );
     confirmUnregistration.onAction().subscribe(() => {
-      this.eventService.unregisterForEvent(this.event).subscribe(() => {
+      this.eventService.unregisterForEvent(this.event.id!).subscribe(() => {
         this.event.is_attendee = false;
         this.event.registration_count -= 1;
         this.snackBar.open('Successfully Unregistered!', '', {

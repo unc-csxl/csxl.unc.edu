@@ -21,14 +21,18 @@
         <mat-card-title>Events</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <mat-chip-set class="pagination-chip-set">
+        <mat-chip-set
+          class="pagination-chip-set"
+          [disabled]="filterQuery().length > 0">
           <mat-chip (click)="previousPage()">
             <mat-icon class="primary-color"> keyboard_arrow_left </mat-icon>
           </mat-chip>
           <mat-chip>
             <mat-icon class="primary-color" matChipAvatar> today </mat-icon>
+            @if(filterQuery().length > 0) { Showing Search Results } @else {
             {{ startDate() | date: 'mediumDate' }} -
             {{ endDate() | date: 'mediumDate' }}
+            }
           </mat-chip>
           <mat-chip (click)="nextPage()">
             <mat-icon class="primary-color">keyboard_arrow_right</mat-icon>
@@ -43,7 +47,7 @@
           {{ eventGroup[0] }}
         </mat-card-subtitle>
         @for(event of eventGroup[1]; track event.id) {
-        <new-event-card [event]="event" />
+        <new-event-card [event]="event" (registrationChange)="reloadPage()" />
         } }
       </mat-card-content>
     </mat-pane>

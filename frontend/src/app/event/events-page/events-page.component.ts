@@ -119,6 +119,13 @@ export class EventsPageComponent {
     );
   }
 
+  /** Reloads the data in the current page. */
+  reloadPage() {
+    this.eventService.getEvents(this.previousParams).subscribe((events) => {
+      this.page.set(events);
+    });
+  }
+
   /**
    * Reloads the page to update the query parameters and reload the data.
    * This is required so that the correct query parameters are reflected in the
