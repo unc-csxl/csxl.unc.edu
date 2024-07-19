@@ -19,8 +19,10 @@ import {
 import {
   Event,
   EventJson,
+  EventOverview,
   EventRegistration,
-  parseEventJson
+  parseEventJson,
+  parseEventOverviewJson
 } from './event.model';
 import { Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -31,8 +33,8 @@ import { Profile } from '../models.module';
 })
 export class EventService {
   /** Encapsulated paginators */
-  private eventsPaginator: TimeRangePaginator<Event> =
-    new TimeRangePaginator<Event>('/api/events/paginate');
+  private eventsPaginator: TimeRangePaginator<EventOverview> =
+    new TimeRangePaginator<EventOverview>('/api/events/paginate');
 
   /** Constructor */
   constructor(protected http: HttpClient) {}
@@ -45,7 +47,7 @@ export class EventService {
    * @returns {Observable<Paginated<Event, TimeRangePaginationParams>>}
    */
   getEvents(params: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS) {
-    return this.eventsPaginator.loadPage(params, parseEventJson);
+    return this.eventsPaginator.loadPage(params, parseEventOverviewJson);
   }
 
   /**

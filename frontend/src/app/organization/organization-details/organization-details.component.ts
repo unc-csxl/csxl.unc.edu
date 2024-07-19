@@ -63,10 +63,6 @@ export class OrganizationDetailsComponent implements OnInit {
   public organization: Organization | undefined;
 
   // TODO: Refactor once the event feature is refactored.
-  /** Store a map of days to a list of events for that day */
-  public eventsPerDay: [string, Event[]][];
-
-  // TODO: Refactor once the event feature is refactored.
   /** Whether or not the user has permission to update events. */
   public eventCreationPermission$: Observable<boolean>;
 
@@ -88,7 +84,6 @@ export class OrganizationDetailsComponent implements OnInit {
     };
 
     this.organization = data.organization;
-    this.eventsPerDay = this.groupEventsPipe.transform(data.events ?? []);
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
       `organization/${this.organization?.slug ?? '*'}`

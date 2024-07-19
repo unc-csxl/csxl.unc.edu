@@ -73,3 +73,48 @@ export interface EventRegistration {
   user: Profile | null;
   is_organizer: boolean | null;
 }
+
+export interface EventOverviewJson {
+  id: number;
+  name: string;
+  time: string;
+  location: string;
+  description: string;
+  public: boolean;
+  number_registered: number;
+  registration_limit: number;
+  organization_slug: string;
+  organization_icon: string;
+  organization_name: string;
+  organizers: PublicProfile[];
+  user_registration_type: RegistrationType | null;
+}
+
+export interface EventOverview {
+  id: number;
+  name: string;
+  time: Date;
+  location: string;
+  description: string;
+  public: boolean;
+  number_registered: number;
+  registration_limit: number;
+  organization_slug: string;
+  organization_icon: string;
+  organization_name: string;
+  organizers: PublicProfile[];
+  user_registration_type: RegistrationType | null;
+}
+
+/** Function that converts an EventJSON response model to an Event model.
+ *  This function is needed because the API response will return certain
+ *  objects (such as `Date`s) as strings. We need to convert this to
+ *  TypeScript objects ourselves.
+ */
+export const parseEventOverviewJson = (
+  responseModel: EventOverviewJson
+): EventOverview => {
+  return Object.assign({}, responseModel, {
+    time: new Date(responseModel.time)
+  });
+};

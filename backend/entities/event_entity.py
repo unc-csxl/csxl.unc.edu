@@ -180,10 +180,15 @@ class EventEntity(EntityBase):
         )
 
         # Hide organizer info for unauthenticated users
-        organizers = [
-            registration.to_flat_model()
+        organizer_registrations = [
+            registration
             for registration in self.registrations
             if registration.registration_type == RegistrationType.ORGANIZER
+        ]
+
+        organizers = [
+            registration.user.to_public_model()
+            for registration in organizer_registrations
         ]
 
         return EventOverview(
@@ -197,7 +202,7 @@ class EventEntity(EntityBase):
             number_registered=len(attendees),
             organization_slug=self.organization.slug,
             organization_icon=self.organization.logo,
-            organization_name=self.organization.name,
+            organization_name=self.organization.shorthand,
             organizers=organizers,
             user_registration_type=(
                 user_registration.registration_type if user_registration else None

@@ -39,3 +39,17 @@ mat-card-actions {
     gap: 8px;
     margin-bottom: 8px;
 }
+
+.vertical-divider {
+    margin-left: 8px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+#organization-chip:hover {
+    cursor: pointer;
+}
+
+::ng-deep .profile-icon {
+  border-radius: 9px !important;
+}
