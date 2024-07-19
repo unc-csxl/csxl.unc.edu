@@ -56,6 +56,7 @@ export class EventEditorComponent {
       this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
       [Validators.required]
     ),
+    image_url: new FormControl(''),
     location: new FormControl('', [Validators.required]),
     description: new FormControl('', [
       Validators.required,

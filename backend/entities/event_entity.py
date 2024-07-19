@@ -71,6 +71,7 @@ class EventEntity(EntityBase):
             public=model.public,
             registration_limit=model.registration_limit,
             organization_id=model.organization_id,
+            image_url=model.image_url,
         )
 
     @classmethod
@@ -92,6 +93,7 @@ class EventEntity(EntityBase):
             public=model.public,
             registration_limit=model.registration_limit,
             organization_id=model.organization_id,
+            image_url=model.image_url,
         )
 
     def to_model(self, subject: User | None = None) -> Event:
@@ -139,6 +141,7 @@ class EventEntity(EntityBase):
             is_attendee=is_attendee,
             is_organizer=is_organizer,
             organizers=organizers,
+            image_url=self.image_url,
         )
 
     def to_details_model(self, subject: User | None = None) -> EventDetails:
@@ -164,6 +167,7 @@ class EventEntity(EntityBase):
             is_attendee=event.is_attendee,
             is_organizer=event.is_organizer,
             organizers=event.organizers,
+            image_url=event.image_url,
         )
 
     def to_overview_model(self, subject: User | None = None) -> EventOverview:

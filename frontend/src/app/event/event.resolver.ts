@@ -30,7 +30,8 @@ export const eventResolver: ResolveFn<Event | undefined> = (route, state) => {
       registration_count: 0,
       is_attendee: false,
       is_organizer: false,
-      organizers: []
+      organizers: [],
+      image_url: null
     };
   }
 };

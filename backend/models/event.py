@@ -25,6 +25,7 @@ class DraftEvent(BaseModel):
     registration_limit: int
     organization_id: int
     organizers: list[PublicUser] = []
+    image_url: str | None = None
 
 
 class Event(DraftEvent):

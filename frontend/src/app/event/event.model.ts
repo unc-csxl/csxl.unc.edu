@@ -26,6 +26,7 @@ export interface Event {
   is_attendee: boolean;
   is_organizer: boolean;
   organizers: PublicProfile[];
+  image_url: string | null;
 }
 
 /** Interface for the Event JSON Response model
@@ -47,6 +48,7 @@ export interface EventJson {
   is_attendee: boolean;
   is_organizer: boolean;
   organizers: PublicProfile[];
+  image_url: string | null;
 }
 
 /** Function that converts an EventJSON response model to an Event model.
