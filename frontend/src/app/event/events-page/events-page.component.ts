@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
-import { Event, EventOverview } from '../event.model';
+import { Event, EventOverview, EventStatusOverview } from '../event.model';
 import { DatePipe } from '@angular/common';
 
 import {
@@ -60,6 +60,10 @@ export class EventsPageComponent {
   );
   public filterQuery: WritableSignal<string> = signal('');
 
+  /** Stores the event status in a reactive object. */
+  public eventStatus: WritableSignal<EventStatusOverview | undefined> =
+    signal(undefined);
+
   /** Store the content of the search bar */
   public searchBarQuery = '';
 
@@ -76,6 +80,9 @@ export class EventsPageComponent {
     protected groupEventsPipe: GroupEventsPipe
   ) {
     this.profile = this.profileService.profile()!;
+    this.eventService.getEventStatus().subscribe((status) => {
+      this.eventStatus.set(status);
+    });
   }
 
   /**
@@ -123,6 +130,9 @@ export class EventsPageComponent {
   reloadPage() {
     this.eventService.getEvents(this.previousParams).subscribe((events) => {
       this.page.set(events);
+    });
+    this.eventService.getEventStatus().subscribe((status) => {
+      this.eventStatus.set(status);
     });
   }
 

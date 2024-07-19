@@ -122,3 +122,25 @@ export const parseEventOverviewJson = (
     time: new Date(responseModel.time)
   });
 };
+
+export interface EventStatusOverviewJson {
+  featured: EventOverviewJson | null;
+  registered: EventOverviewJson[];
+}
+export interface EventStatusOverview {
+  featured: EventOverview | null;
+  registered: EventOverview[];
+}
+
+export const parseEventStatusOverviewJson = (
+  responseModel: EventStatusOverviewJson
+): EventStatusOverview => {
+  return Object.assign({}, responseModel, {
+    featured: responseModel.featured
+      ? parseEventOverviewJson(responseModel.featured!)
+      : null,
+    registered: responseModel.registered.map((registered) =>
+      parseEventOverviewJson(registered)
+    )
+  });
+};

@@ -21,8 +21,11 @@ import {
   EventJson,
   EventOverview,
   EventRegistration,
+  EventStatusOverview,
+  EventStatusOverviewJson,
   parseEventJson,
-  parseEventOverviewJson
+  parseEventOverviewJson,
+  parseEventStatusOverviewJson
 } from './event.model';
 import { Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -132,5 +135,15 @@ export class EventService {
     return this.http.delete<EventRegistration>(
       `/api/events/${eventId}/registration`
     );
+  }
+
+  /**
+   * Returns the event status, which includes featured events and registrations.
+   * @returns {Observable<EventStatusOverview>}
+   */
+  getEventStatus(): Observable<EventStatusOverview> {
+    return this.http
+      .get<EventStatusOverviewJson>(`/api/events/status`)
+      .pipe(map(parseEventStatusOverviewJson));
   }
 }
