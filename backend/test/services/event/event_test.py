@@ -51,28 +51,6 @@ from .event_demo_data import date_maker
 # Test Functions
 
 
-def test_get_all(event_svc_integration: EventService):
-    """Test that all events can be retrieved."""
-    fetched_events = event_svc_integration.all(ambassador)
-
-    assert fetched_events is not None
-    assert len(fetched_events) == len(events)
-    assert isinstance(fetched_events[0], EventDetails)
-
-    assert fetched_events[0].is_attendee == True
-    assert fetched_events[1].is_attendee == False
-    assert fetched_events[2].is_attendee == True
-
-
-def test_get_all_unauthenticated(event_svc_integration: EventService):
-    """Test that all events can be retrieved."""
-    fetched_events = event_svc_integration.all()
-
-    assert fetched_events is not None
-    assert len(fetched_events) == len(events)
-    assert isinstance(fetched_events[0], EventDetails)
-
-
 def test_get_by_id(event_svc_integration: EventService):
     """Test that events can be retrieved based on their ID."""
     fetched_event = event_svc_integration.get_by_id(1, ambassador)
@@ -129,16 +107,6 @@ def test_list_unauthenticated(event_svc_integration: EventService):
     )
     fetched_events = event_svc_integration.get_paginated_events(pagination_params)
     assert len(fetched_events.items) == 1
-
-
-def test_get_events_in_time_range(event_svc_integration: EventService):
-    """Test that a list of events can be produced for a valid time range."""
-    range = TimeRange(
-        start=date_maker(days_in_future=1, hour=0, minutes=0),
-        end=date_maker(days_in_future=3, hour=0, minutes=0),
-    )
-    events = event_svc_integration.get_events_in_time_range(range, root)
-    assert len(events) == 3
 
 
 def test_create_enforces_permission(event_svc_integration: EventService):

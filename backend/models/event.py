@@ -2,9 +2,10 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from .public_user import PublicUser
+from .registration_type import RegistrationType
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -38,3 +39,19 @@ class Event(DraftEvent):
     registration_count: int = 0
     is_attendee: bool = False
     is_organizer: bool = False
+
+
+class EventOverview(BaseModel):
+    id: int
+    name: str
+    time: datetime
+    location: str
+    description: str
+    public: bool
+    number_registered: int
+    registration_limit: int
+    organization_slug: str
+    organization_icon: str
+    organization_name: str
+    organizers: list[PublicUser]
+    user_registration_type: RegistrationType | None

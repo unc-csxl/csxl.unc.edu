@@ -16,7 +16,7 @@ from backend.models.registration_type import RegistrationType
 
 from ..models import User, Event, EventDetails, Paginated, EventPaginationParams
 from ..database import db_session
-from backend.models.event import Event, DraftEvent
+from backend.models.event import Event, DraftEvent, EventOverview
 from backend.models.event_details import EventDetails
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
@@ -39,7 +39,7 @@ __authors__ = [
     "Audrey Toney",
     "Kris Jordan",
 ]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -61,7 +61,7 @@ class EventService:
         self,
         pagination_params: EventPaginationParams,
         subject: User | None = None,
-    ) -> Paginated[EventDetails]:
+    ) -> Paginated[EventOverview]:
         """List Events.
 
         Parameters:
@@ -119,52 +119,10 @@ class EventService:
         entities = self._session.execute(statement).scalars()
 
         return Paginated(
-            items=[entity.to_details_model(subject) for entity in entities],
+            items=[entity.to_overview_model(subject) for entity in entities],
             length=length,
             params=pagination_params,
         )
-
-    def all(
-        self,
-        subject: User | None = None,
-    ) -> list[EventDetails]:
-        """
-        Retrieves all events from the table
-
-        Args:
-            subject: The User making the request.
-
-        Returns:
-            list[EventDetails]: List of all `EventDetails`
-        """
-        # Select all entries in `Event` table
-        event_entities = (self._session.query(EventEntity)).all()
-
-        # Convert entities to details models and return
-        return [
-            event_entity.to_details_model(subject) for event_entity in event_entities
-        ]
-
-    def get_events_in_time_range(
-        self, time_range: TimeRange, subject: User | None = None
-    ) -> list[EventDetails]:
-        """
-        Get events in the time range
-
-        Args:
-            subject: The User making the request.
-            time_range: The period over which to search for events.
-
-        Returns:
-            list[EventDetails]: list of valid EventDetails models representing the events
-        """
-        event_entities = (
-            self._session.query(EventEntity)
-            .where(EventEntity.time >= time_range.start)
-            .where(EventEntity.time < time_range.end)
-        )
-
-        return [entity.to_details_model(subject) for entity in event_entities]
 
     def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """

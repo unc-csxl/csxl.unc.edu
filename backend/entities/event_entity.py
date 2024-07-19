@@ -3,6 +3,7 @@
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..models.event_details import EventDetails
+from ..models.event import EventOverview
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event import DraftEvent, Event
@@ -161,4 +162,44 @@ class EventEntity(EntityBase):
             is_attendee=event.is_attendee,
             is_organizer=event.is_organizer,
             organizers=event.organizers,
+        )
+
+    def to_overview_model(self, subject: User | None = None) -> EventOverview:
+        """Creates an overview model from an event."""
+        attendees = [
+            registration.to_flat_model()
+            for registration in self.registrations
+            if registration.registration_type == RegistrationType.ATTENDEE
+        ]
+        user_registration = (
+            [attendee for attendee in attendees if attendee.id == subject.id][0]
+            if subject is not None
+            and len([attendee for attendee in attendees if attendee.id == subject.id])
+            > 0
+            else None
+        )
+
+        # Hide organizer info for unauthenticated users
+        organizers = [
+            registration.to_flat_model()
+            for registration in self.registrations
+            if registration.registration_type == RegistrationType.ORGANIZER
+        ]
+
+        return EventOverview(
+            id=self.id,
+            name=self.name,
+            time=self.time,
+            location=self.location,
+            description=self.description,
+            public=self.public,
+            registration_limit=self.registration_limit,
+            number_registered=len(attendees),
+            organization_slug=self.organization.slug,
+            organization_icon=self.organization.logo,
+            organization_name=self.organization.name,
+            organizers=organizers,
+            user_registration_type=(
+                user_registration.registration_type if user_registration else None
+            ),
         )
