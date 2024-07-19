@@ -39,9 +39,11 @@ import { EventPageComponent } from './event-page/event-page.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
 import { EventUsersList } from './widgets/event-users-list/event-users-list.widget';
 import { GroupEventsPipe } from './pipes/group-events.pipe';
+import { EventsPageComponent } from './events-page/events-page.component';
 
 @NgModule({
   declarations: [
+    EventsPageComponent,
     EventDetailCard,
     EventDetailsComponent,
     EventPageComponent,

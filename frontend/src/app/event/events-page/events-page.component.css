@@ -1,0 +1,40 @@
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    width: 33%;
+    height: 88vh;
+    gap: 32px;
+}
+
+.featured-pane {
+    flex: 0 0 auto; /* Only take up needed space */
+    ::ng-deep .mat-mdc-card-outlined {
+        height: 100% !important;
+    }
+}
+
+.registrations-pane {
+    flex: 1 0 auto; /* Only take up needed space */
+
+    ::ng-deep .mat-mdc-card-outlined {
+        height: 100% !important;
+        margin-bottom: 32px !important;
+    }
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    width: 66%;
+}
+
+::ng-deep .mat-pane {
+    max-width: 100% !important;
+}
