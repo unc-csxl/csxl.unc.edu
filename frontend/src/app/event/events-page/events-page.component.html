@@ -13,7 +13,7 @@
   <div class="right-column">
     <search-bar class="mat-csxl-search-bar" />
 
-    <mat-pane>
+    <mat-pane class="events-pane">
       <mat-card-header>
         <mat-card-title>Events</mat-card-title>
       </mat-card-header>
@@ -32,7 +32,11 @@
         </mat-chip-set>
         <mat-divider />
 
-        <mat-card-subtitle class="date-header">Tuesday, May 28th</mat-card-subtitle>
+        <mat-card-subtitle class="date-header">
+          Tuesday, May 28th
+        </mat-card-subtitle>
+
+        <new-event-card />
       </mat-card-content>
     </mat-pane>
   </div>

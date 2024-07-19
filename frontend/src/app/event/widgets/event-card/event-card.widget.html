@@ -1,18 +1,31 @@
-<mat-pane class="featured-pane">
-  <mat-chip-set class="featured-chipset" aria-label="Dog selection">
-    <mat-chip class="featured-chip on-secondary-background-color">
-      Featured
-    </mat-chip>
-  </mat-chip-set>
-  <img
-    mat-card-image
-    src="https://media.licdn.com/dms/image/D4E3DAQGnWv1b0Gb9gw/image-scale_191_1128/0/1673933475853/unc_csxl_cover?e=2147483647&v=beta&t=OMN1WHqXnrO5x2xsJ3rQWGjQMkcZS9uCUdFonDKYayk" />
+<mat-card appearance="outlined">
   <mat-card-header>
-    <mat-card-title>Workshop Title</mat-card-title>
+    <div class="header-row">
+      <div class="header-column">
+        <mat-card-title>FastAPI Workshop</mat-card-title>
+        <p>The Fishbowl - SN155</p>
+      </div>
+      <div class="header-column" id="chip-column">
+        <mat-chip-set class="pagination-chip-set">
+          <mat-chip>
+            <mat-icon class="primary-color" matChipAvatar>
+              access_time
+            </mat-icon>
+            7:00PM
+          </mat-chip>
+        </mat-chip-set>
+        <mat-chip-set class="pagination-chip-set">
+          <mat-chip>
+            <mat-icon class="primary-color" matChipAvatar>
+              person_outline
+            </mat-icon>
+            1 left
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </div>
   </mat-card-header>
   <mat-card-content>
-    <p>May 28th at 7:00PM in FB009</p>
-
     <mat-chip-set aria-label="Dog selection">
       <mat-chip>
         <img
@@ -36,8 +49,7 @@
         Dog three
       </mat-chip>
     </mat-chip-set>
-
-    <p>
+    <p class="description">
       In this workshop, you will learn about TailwindCSS, a powerful frontend
       design framework that makes writing CSS code a lot easier!
     </p>
@@ -46,4 +58,4 @@
     <button mat-stroked-button>Details</button>
     <button mat-flat-button>Register</button>
   </mat-card-actions>
-</mat-pane>
+</mat-card>

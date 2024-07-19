@@ -1,7 +1,7 @@
 .featured-pane {
     flex: 0 0 auto; /* Only take up needed space */
     ::ng-deep .mat-mdc-card-outlined {
-        height: 100% !important;
+        max-height: fit-content;
     }
 }
 
@@ -26,4 +26,14 @@
 
 .featured-chip {
     height: 28px;
+}
+
+mat-card-actions {
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.description {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }

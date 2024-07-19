@@ -40,7 +40,8 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
 import { EventUsersList } from './widgets/event-users-list/event-users-list.widget';
 import { GroupEventsPipe } from './pipes/group-events.pipe';
 import { EventsPageComponent } from './events-page/events-page.component';
-import { FeaturedEventCardWidget } from './widgets/featured-event-card-widget/featured-event-card.widget';
+import { FeaturedEventCardWidget } from './widgets/featured-event-card/featured-event-card.widget';
+import { EventCardWidget } from './widgets/event-card/event-card.widget';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { FeaturedEventCardWidget } from './widgets/featured-event-card-widget/fe
     EventEditorComponent,
     EventUsersList,
     GroupEventsPipe,
-    FeaturedEventCardWidget
+    FeaturedEventCardWidget,
+    EventCardWidget
   ],
   imports: [
     CommonModule,

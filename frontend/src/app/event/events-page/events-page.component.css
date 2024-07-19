@@ -10,7 +10,6 @@
     flex-direction: column;
     width: 30%;
     height: 88vh;
-    gap: 32px;
 }
 
 .registrations-pane {
@@ -28,6 +27,16 @@
     width: 70%;
     padding-right: 16px;
 }
+
+.events-pane {
+    flex: 1 0 auto; /* Only take up needed space */
+
+    ::ng-deep .mat-mdc-card-outlined {
+        height: 100% !important;
+        margin-bottom: 32px !important;
+    }
+}
+
 
 ::ng-deep .mat-pane {
     max-width: 100% !important;
