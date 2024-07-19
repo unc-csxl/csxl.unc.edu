@@ -6,7 +6,10 @@
         <mat-card-title>My Event Registrations</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>Left Column</p>
+        @if(eventStatus()) { @for (event of eventStatus()!.registered; track
+        event.id) {
+        <event-registration-card [event]="event" />
+        } }
       </mat-card-content>
     </mat-pane>
   </div>

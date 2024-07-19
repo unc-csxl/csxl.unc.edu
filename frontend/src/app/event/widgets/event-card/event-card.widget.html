@@ -11,7 +11,7 @@
             <mat-icon class="primary-color" matChipAvatar>
               access_time
             </mat-icon>
-            7:00PM
+            {{ event.time | date: 'shortTime' }}
           </mat-chip>
         </mat-chip-set>
         <mat-chip-set class="pagination-chip-set">

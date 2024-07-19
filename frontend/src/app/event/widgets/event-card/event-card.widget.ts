@@ -1,3 +1,11 @@
+/**
+ * The Event Card displays details for events in the paginated list.
+ *
+ * @author Ajay Gandecha <agandecha@unc.edu>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EventOverview, RegistrationType } from '../../event.model';
 import { EventService } from '../../event.service';
