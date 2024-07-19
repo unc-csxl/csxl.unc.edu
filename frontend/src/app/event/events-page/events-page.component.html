@@ -1,13 +1,18 @@
 <div class="container">
   <div class="left-column">
-    <featured-event-card />
+    @if(eventStatus() && eventStatus()!.featured) {
+    <featured-event-card
+      [event]="eventStatus()!.featured!"
+      (registrationChange)="reloadPage()" />
+    }
     <mat-pane class="registrations-pane">
       <mat-card-header>
         <mat-card-title>My Event Registrations</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        @if(eventStatus()) { @for (event of eventStatus()!.registered; track
-        event.id) {
+        @if(eventStatus()) { @if (eventStatus()!.registered.length === 0) {
+        <p class="no-events-text">You are not registered for any events.</p>
+        } @for (event of eventStatus()!.registered; track event.id) {
         <event-registration-card [event]="event" />
         } }
       </mat-card-content>
@@ -46,7 +51,7 @@
         <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] is a list of events -->
         @if (eventsByDate().length === 0) {
-        <p id="no-events-text">
+        <p class="no-events-text">
           There are no events for the provided time range.
         </p>
         } @for (eventGroup of eventsByDate(); track eventGroup) {

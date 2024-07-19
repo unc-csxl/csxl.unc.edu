@@ -672,10 +672,10 @@ class EventService:
                 event.organization_id in PREFERRED_ORGANIZATIONS
                 and featured_event == None
             ):
-                featured_event = event.to_overview_model()
+                featured_event = event.to_overview_model(subject)
         if featured_event == None:
             featured_event = (
-                event_entities[0].to_overview_model()
+                event_entities[0].to_overview_model(subject)
                 if len(event_entities) > 0
                 else None
             )
@@ -690,7 +690,7 @@ class EventService:
         ).all()
 
         registered_events = [
-            registration.event.to_overview_model()
+            registration.event.to_overview_model(subject)
             for registration in registered_events_entities
         ]
 

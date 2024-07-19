@@ -5,6 +5,10 @@
     max-height: fit-content;
 }
 
+.mat-mdc-card:hover {
+    cursor: pointer !important;
+}
+
 .header-row {
     display: flex;
     flex-direction: row;
@@ -48,4 +52,9 @@ mat-card-actions {
 
 ::ng-deep .profile-icon {
   border-radius: 9px !important;
+}
+
+mat-card-content {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
 }
