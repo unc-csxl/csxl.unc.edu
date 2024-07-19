@@ -16,7 +16,7 @@ from backend.models.registration_type import RegistrationType
 
 from ..models import User, Event, EventDetails, Paginated, EventPaginationParams
 from ..database import db_session
-from backend.models.event import Event, DraftEvent, EventOverview
+from backend.models.event import Event, DraftEvent, EventOverview, EventStatusOverview
 from backend.models.event_details import EventDetails
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
@@ -651,4 +651,50 @@ class EventService:
             items=[entity.to_model() for entity in entities],
             length=length,
             params=pagination_params,
+        )
+
+    def get_event_status(self, subject: User) -> EventStatusOverview:
+        """Returns the event status."""
+        # 1. Get the featured event.
+        # The featured event is picked based on the following criteria:
+        # Based on the first 50 events coming up...
+        # If a CSXL or UNC CS event is scheduled, choose this as the featured event.
+        # Otherwise, choose the latest event.
+        # If there is no upcoming event, choose no event.
+        PREFERRED_ORGANIZATIONS = [37]
+        featured_event: EventOverview | None = None
+        event_query = (
+            select(EventEntity).where(EventEntity.time >= datetime.now()).limit(50)
+        )
+        event_entities = self._session.scalars(event_query).all()
+        for event in event_entities:
+            if (
+                event.organization_id in PREFERRED_ORGANIZATIONS
+                and featured_event == None
+            ):
+                featured_event = event.to_overview_model()
+        if featured_event == None:
+            featured_event = (
+                event_entities[0].to_overview_model()
+                if len(event_entities) > 0
+                else None
+            )
+
+        # 2. Find all of the events the current user is registered for.
+        registered_events_query = select(EventRegistrationEntity).where(
+            EventRegistrationEntity.user_id == subject.id
+        )
+
+        registered_events_entities = self._session.scalars(
+            registered_events_query
+        ).all()
+
+        registered_events = [
+            registration.event.to_overview_model()
+            for registration in registered_events_entities
+        ]
+
+        # 3. Return the event status.
+        return EventStatusOverview(
+            featured=featured_event, registered=registered_events
         )

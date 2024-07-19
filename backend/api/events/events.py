@@ -14,7 +14,7 @@ from ...services.event import EventService
 from ...services.user import UserService
 from ...services.exceptions import ResourceNotFoundException, UserPermissionException
 from ...models.event import DraftEvent
-from ...models.event import EventOverview
+from ...models.event import EventOverview, EventStatusOverview
 from ...models.event_details import EventDetails
 from ...models.coworking.time_range import TimeRange
 from ...api.authentication import registered_user
@@ -57,6 +57,15 @@ def list_events(
         range_end=range_end,
     )
     return event_service.get_paginated_events(pagination_params, subject)
+
+
+@api.get("/status", tags=["Events"])
+def get_status(
+    subject: User = Depends(registered_user),
+    event_service: EventService = Depends(),
+) -> EventStatusOverview:
+    """Retrieves the featured event and user's registrations."""
+    return event_service.get_event_status(subject)
 
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=["Events"])

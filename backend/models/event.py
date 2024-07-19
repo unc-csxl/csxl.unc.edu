@@ -57,3 +57,8 @@ class EventOverview(BaseModel):
     organizers: list[PublicUser]
     user_registration_type: RegistrationType | None
     image_url: str | None
+
+
+class EventStatusOverview(BaseModel):
+    featured: EventOverview | None
+    registered: list[EventOverview]
