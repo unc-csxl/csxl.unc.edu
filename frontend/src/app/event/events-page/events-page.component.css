@@ -71,3 +71,7 @@ mat-chip {
     margin-top: 8px;
     margin-bottom: 8px;
 }
+
+#no-events-text {
+    margin-top: 16px;
+}

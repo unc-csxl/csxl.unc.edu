@@ -39,6 +39,8 @@ class EventEntity(EntityBase):
     public: Mapped[bool] = mapped_column(Boolean)
     # Maximim number of people who can register for the event
     registration_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # URL for the image for an event.
+    image_url: Mapped[str] = mapped_column(String, nullable=True)
 
     # Organization hosting the event
     # NOTE: This defines a one-to-many relationship between the organization and events tables.
@@ -218,4 +220,5 @@ class EventEntity(EntityBase):
             user_registration_type=(
                 user_registration.registration_type if user_registration else None
             ),
+            image_url=self.image_url,
         )

@@ -88,6 +88,7 @@ export interface EventOverviewJson {
   organization_name: string;
   organizers: PublicProfile[];
   user_registration_type: RegistrationType | null;
+  image_url: string | null;
 }
 
 export interface EventOverview {
@@ -104,6 +105,7 @@ export interface EventOverview {
   organization_name: string;
   organizers: PublicProfile[];
   user_registration_type: RegistrationType | null;
+  image_url: string | null;
 }
 
 /** Function that converts an EventJSON response model to an Event model.

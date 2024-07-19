@@ -55,3 +55,4 @@ class EventOverview(BaseModel):
     organization_name: str
     organizers: list[PublicUser]
     user_registration_type: RegistrationType | None
+    image_url: str | None

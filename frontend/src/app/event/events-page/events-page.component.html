@@ -42,11 +42,15 @@
 
         <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] is a list of events -->
-        @for (eventGroup of eventsByDate(); track eventGroup) {
+        @if (eventsByDate().length === 0) {
+        <p id="no-events-text">
+          There are no events for the provided time range.
+        </p>
+        } @for (eventGroup of eventsByDate(); track eventGroup) {
         <mat-card-subtitle class="date-header">
           {{ eventGroup[0] }}
         </mat-card-subtitle>
-        @for(event of eventGroup[1]; track event.id) {
+        @for (event of eventGroup[1]; track event.id) {
         <new-event-card [event]="event" (registrationChange)="reloadPage()" />
         } }
       </mat-card-content>
