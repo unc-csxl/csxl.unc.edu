@@ -1,0 +1,29 @@
+.featured-pane {
+    flex: 0 0 auto; /* Only take up needed space */
+    ::ng-deep .mat-mdc-card-outlined {
+        height: 100% !important;
+    }
+}
+
+.mat-mdc-chip {
+    height: 26px;
+}
+
+.mat-mdc-card-image {
+    height: 180px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.featured-chipset {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    border-color: transparent !important;
+    outline: 0 !important;
+    z-index: 1;
+}
+
+.featured-chip {
+    height: 28px;
+}

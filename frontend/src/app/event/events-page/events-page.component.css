@@ -8,16 +8,9 @@
 .left-column {
     display: flex;
     flex-direction: column;
-    width: 33%;
+    width: 30%;
     height: 88vh;
     gap: 32px;
-}
-
-.featured-pane {
-    flex: 0 0 auto; /* Only take up needed space */
-    ::ng-deep .mat-mdc-card-outlined {
-        height: 100% !important;
-    }
 }
 
 .registrations-pane {
@@ -32,9 +25,40 @@
 .right-column {
     display: flex;
     flex-direction: column;
-    width: 66%;
+    width: 70%;
+    padding-right: 16px;
 }
 
 ::ng-deep .mat-pane {
     max-width: 100% !important;
+}
+
+.mat-csxl-search-bar {
+    ::ng-deep .mat-mdc-card {
+        max-width: 100% !important;
+    }
+}
+
+mat-chip {
+  mat-icon {
+    margin-top: 4px;
+  }
+}
+
+.mat-mdc-chip-avatar {
+    margin-top: 0 !important;
+}
+
+.pagination-chip-set {
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+.mat-divider {
+    padding-bottom: 4px;
+}
+
+.date-header {
+    margin-top: 8px;
+    margin-bottom: 8px;
 }

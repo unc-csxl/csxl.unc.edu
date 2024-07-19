@@ -40,6 +40,7 @@ import { EventEditorComponent } from './event-editor/event-editor.component';
 import { EventUsersList } from './widgets/event-users-list/event-users-list.widget';
 import { GroupEventsPipe } from './pipes/group-events.pipe';
 import { EventsPageComponent } from './events-page/events-page.component';
+import { FeaturedEventCardWidget } from './widgets/featured-event-card-widget/featured-event-card.widget';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { EventsPageComponent } from './events-page/events-page.component';
     EventPageComponent,
     EventEditorComponent,
     EventUsersList,
-    GroupEventsPipe
+    GroupEventsPipe,
+    FeaturedEventCardWidget
   ],
   imports: [
     CommonModule,

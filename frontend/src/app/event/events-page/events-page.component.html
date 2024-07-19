@@ -1,26 +1,38 @@
 <div class="container">
   <div class="left-column">
-    <mat-pane class="featured-pane">
-      <mat-card-content>
-        <p>Left Column</p>
-        <p>Left Column</p>
-        <p>Left Column</p>
-        <p>Left Column</p>
-        <p>Left Column</p>
-        <p>Left Column</p>
-        <p>Left Column</p>
-      </mat-card-content>
-    </mat-pane>
+    <featured-event-card />
     <mat-pane class="registrations-pane">
+      <mat-card-header>
+        <mat-card-title>My Event Registrations</mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <p>Left Column</p>
       </mat-card-content>
     </mat-pane>
   </div>
   <div class="right-column">
+    <search-bar class="mat-csxl-search-bar" />
+
     <mat-pane>
+      <mat-card-header>
+        <mat-card-title>Events</mat-card-title>
+      </mat-card-header>
       <mat-card-content>
-        <p>Right Column</p>
+        <mat-chip-set class="pagination-chip-set">
+          <mat-chip>
+            <mat-icon class="primary-color"> keyboard_arrow_left </mat-icon>
+          </mat-chip>
+          <mat-chip>
+            <mat-icon class="primary-color" matChipAvatar> today </mat-icon>
+            May 28th - June 28th
+          </mat-chip>
+          <mat-chip>
+            <mat-icon class="primary-color">keyboard_arrow_right</mat-icon>
+          </mat-chip>
+        </mat-chip-set>
+        <mat-divider />
+
+        <mat-card-subtitle class="date-header">Tuesday, May 28th</mat-card-subtitle>
       </mat-card-content>
     </mat-pane>
   </div>

@@ -64,6 +64,11 @@ html, body {
     .tertiary-color {
         color: mat.get-theme-color($theme, tertiary) !important;
     }
+
+    .on-secondary-background-color {
+        background-color: mat.get-theme-color($theme, on-secondary) !important;
+        color: mat.get-theme-color($theme, secondary) !important;
+    }
 }
 
 /// Defines a mixin that applies custom styles to material button components
