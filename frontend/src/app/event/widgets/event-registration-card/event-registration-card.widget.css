@@ -39,12 +39,6 @@ mat-card-actions {
     margin-bottom: 8px;
 }
 
-.vertical-divider {
-    margin-left: 8px;
-    margin-top: 6px;
-    margin-bottom: 6px;
-}
-
 #organization-chip:hover {
     cursor: pointer;
 }

@@ -42,6 +42,13 @@ mat-card-actions {
     padding-bottom: 8px;
 }
 
+
+.vertical-divider {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-left: 8px;
+}
+
 /* Responsive CSS for mobile pages */
 
 @media only screen and (max-width: 1400px) {
