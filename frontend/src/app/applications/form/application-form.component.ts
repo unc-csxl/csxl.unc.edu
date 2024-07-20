@@ -91,6 +91,7 @@ export class ApplicationFormComponent {
     if (this.formGroup.valid) {
       let applicationToSubmit = this.application;
       Object.assign(applicationToSubmit, this.formGroup.value);
+      applicationToSubmit.preferred_sections = this.selectedSections();
 
       let result =
         this.application.id == null
