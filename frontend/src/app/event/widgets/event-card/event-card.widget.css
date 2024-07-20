@@ -38,6 +38,7 @@
 mat-card-actions {
     gap: 8px;
     margin-bottom: 8px;
+    justify-content: flex-end;
 }
 
 .vertical-divider {
