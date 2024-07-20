@@ -24,7 +24,7 @@
       [searchBarQuery]="searchBarQuery"
       (searchBarQueryChange)="onSearchBarQueryChange($event)" />
 
-    <mat-pane class="events-pane">
+    <mat-card appearance="outlined" class="events-pane">
       <mat-card-header>
         <mat-card-title>Events</mat-card-title>
         <mat-chip-set
@@ -46,7 +46,7 @@
         </mat-chip-set>
         <mat-divider />
       </mat-card-header>
-      <mat-card-content>
+      <mat-card-content class="events-pane-content">
         <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] is a list of events -->
         @if (eventsByDate().length === 0) {
@@ -61,6 +61,6 @@
         <new-event-card [event]="event" (registrationChange)="reloadPage()" />
         } }
       </mat-card-content>
-    </mat-pane>
+    </mat-card>
   </div>
 </div>
