@@ -567,3 +567,10 @@ def test_get_registered_users_of_event_without_permissions(
         "organization.events.manage_registrations",
         f"organization/{event_one.organization_id}",
     )
+
+
+def test_get_event_status(event_svc_integration: EventService):
+    status = event_svc_integration.get_event_status(user)
+    assert status is not None
+    assert status.featured is not None
+    assert len(status.registered) == 1
