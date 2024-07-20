@@ -1,8 +1,71 @@
-<event-detail-card [event]="event!" [profile]="this.profile" />
+<mat-pane>
+  <mat-card-header>
+    <mat-card-title>{{ event()!.name }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>May 28th at 7:00PM in FB009</p>
 
-@if ((this.canViewEvent() | async) || this.event?.is_organizer ?? false) {
-<!-- <event-users-list [event]="event!"></event-users-list> -->
-}
+    <mat-chip-set>
+      <!-- Organization chip -->
+      <mat-chip
+        id="organization-chip"
+        [routerLink]="'/organizations/' + event().organization?.slug">
+        <img
+          class="profile-icon"
+          matChipAvatar
+          [src]="event().organization?.logo" />
+        {{ event().organization!.shorthand }}
+      </mat-chip>
+
+      @if (event().organizers.length > 0) {
+      <mat-divider class="vertical-divider" [vertical]="true" />
+      }
+
+      <!-- Organizer Chips -->
+      @for (organizer of event().organizers; track organizer.id) {
+      <mat-chip>
+        @if (organizer.github_avatar && organizer.github_avatar !== '') {
+        <img
+          class="profile-icon"
+          matChipAvatar
+          [src]="organizer.github_avatar" />
+        }
+
+        {{ organizer.first_name }} {{ organizer.last_name }}
+      </mat-chip>
+      }
+    </mat-chip-set>
+
+    <p class="description">
+      {{ event().description }}
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    @if(event().is_attendee) {
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      (click)="unregisterForEvent()">
+      Unregister
+    </button>
+    } @else if(event().is_organizer) {
+    <button mat-flat-button [disabled]="true">Manage</button>
+    } @else if(event().registration_limit === event().registration_count) {
+    <button mat-flat-button [disabled]="true">Filled</button>
+    } @else {
+    <button mat-flat-button (click)="registerForEvent()">
+      Register
+      {{
+        event().registration_limit > 400
+          ? '(Open to All)'
+          : '(' +
+            (event().registration_limit - event().registration_count) +
+            ' seats left)'
+      }}
+    </button>
+    }
+  </mat-card-actions>
+</mat-pane>
 
 <admin-fab
   primaryIcon="edit"

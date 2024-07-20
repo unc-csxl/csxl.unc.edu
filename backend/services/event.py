@@ -251,6 +251,7 @@ class EventService:
         event_entity.location = event.location
         event_entity.public = event.public
         event_entity.registration_limit = event.registration_limit
+        event_entity.image_url = event.image_url
 
         # If attempting to edit organizers, enforce registration management permissions
         if event.organizers != event_details.organizers:
@@ -664,7 +665,10 @@ class EventService:
         PREFERRED_ORGANIZATIONS = [37]
         featured_event: EventOverview | None = None
         event_query = (
-            select(EventEntity).where(EventEntity.time >= datetime.now()).limit(50)
+            select(EventEntity)
+            .where(EventEntity.time >= datetime.now())
+            .order_by(EventEntity.time)
+            .limit(50)
         )
         event_entities = self._session.scalars(event_query).all()
         for event in event_entities:
@@ -681,8 +685,11 @@ class EventService:
             )
 
         # 2. Find all of the events the current user is registered for.
-        registered_events_query = select(EventRegistrationEntity).where(
-            EventRegistrationEntity.user_id == subject.id
+        registered_events_query = (
+            select(EventRegistrationEntity)
+            .where(EventRegistrationEntity.user_id == subject.id)
+            .join(EventEntity)
+            .order_by(EventEntity.time)
         )
 
         registered_events_entities = self._session.scalars(
