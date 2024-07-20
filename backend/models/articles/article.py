@@ -9,6 +9,21 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
+class ArticleDraft(BaseModel):
+    """Data for an article draft (for creation and editing)."""
+
+    id: int | None = None
+    slug: str
+    state: ArticleState
+    title: str
+    image_url: str
+    published: datetime
+    last_modified: datetime
+    is_announcement: bool
+    organization_slug: str | None
+    authors: list[PublicUser]
+
+
 class ArticleOverview(BaseModel):
     """Data for an article."""
 

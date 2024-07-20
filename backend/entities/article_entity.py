@@ -5,7 +5,7 @@ from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from ..models.articles import ArticleState, ArticleOverview
+from ..models.articles import ArticleState, ArticleOverview, ArticleDraft
 from sqlalchemy import Enum as SQLAlchemyEnum
 from .article_author_entity import article_author_table
 
@@ -56,6 +56,19 @@ class ArticleEntity(EntityBase):
     authors: Mapped[list["UserEntity"]] = relationship(
         secondary=article_author_table, back_populates="articles"
     )
+
+    def from_draft(cls, draft: ArticleDraft) -> Self:
+        """Converts an article draft model to an entity"""
+        return cls(
+            id=draft.id,
+            slug=draft.slug,
+            state=draft.state,
+            title=draft.title,
+            image_url=draft.image_url,
+            published=draft.published,
+            last_modified=draft.last_modified,
+            is_announcement=draft.is_announcement,
+        )
 
     def to_overview_model(self) -> ArticleOverview:
         """Converts an article entity to an overview model."""
