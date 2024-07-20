@@ -95,6 +95,12 @@ mat-card-header {
 }
 
 
+.registrations-pane-mobile {
+    display: none;
+    border-color: transparent !important;
+    max-width: 100%;
+}
+
 @media only screen and (max-width: 1000px) {
     .container {
         flex-direction: column;
@@ -115,17 +121,12 @@ mat-card-header {
     }
 
     .registrations-pane {
-        flex: auto;
-    
-        ::ng-deep .mat-mdc-card-outlined {
-            height: auto !important;
-            max-height: max-content !important;
-        }
-    
-        .mat-mdc-card-content {
-            height: auto !important;
-            overflow-y: auto !important;
-        }
+        display: none;
+    }
+
+
+    .registrations-pane-mobile {
+        display: flex;
     }
 
     .events-pane {
