@@ -5,7 +5,7 @@ from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from ..models.articles import ArticleState
+from ..models.articles import ArticleState, ArticleOverview
 from sqlalchemy import Enum as SQLAlchemyEnum
 from .article_author_entity import article_author_table
 
@@ -39,7 +39,7 @@ class ArticleEntity(EntityBase):
     # Time when the article was initially published
     published: Mapped[datetime] = mapped_column(DateTime, nullable=False, default="")
     # Time when the article was last modified
-    published: Mapped[str] = mapped_column(String, nullable=False, default="")
+    last_modified: Mapped[str] = mapped_column(String, nullable=False, default="")
     # Whether or not the article should be treated as an announcement
     is_announcement: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False
@@ -56,3 +56,20 @@ class ArticleEntity(EntityBase):
     authors: Mapped[list["UserEntity"]] = relationship(
         secondary=article_author_table, back_populates="articles"
     )
+
+    def to_overview_model(self) -> ArticleOverview:
+        """Converts an article entity to an overview model."""
+        return ArticleOverview(
+            id=self.id,
+            slug=self.slug,
+            state=self.state,
+            title=self.title,
+            image_url=self.image_url,
+            published=self.published,
+            last_modified=self.last_modified,
+            is_announcement=self.is_announcement,
+            organization_slug=self.organization.slug if self.organization else None,
+            organization_logo=self.organization.logo if self.organization else None,
+            organization_name=self.organization.name if self.organization else None,
+            authors=[author.to_public_model() for author in self.authors],
+        )
