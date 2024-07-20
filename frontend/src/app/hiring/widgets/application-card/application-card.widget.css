@@ -88,3 +88,19 @@
     font-size: 10px;
   }
 }
+
+.title-accessory {
+  margin-left: 4px;
+
+  p {
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 10px;
+  }
+}
+
+.title-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

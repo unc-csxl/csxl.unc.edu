@@ -5,11 +5,25 @@
   matTooltipPosition="after">
   <mat-card-header>
     <mat-card-subtitle>
-      <span class="preference">{{ item.preference + 1 }}. </span>
-      <span> {{ item.application.applicant_name }}</span>
-      @if (item.notes.length > 0) {
-      <mat-icon class="notes" matListItemIcon>tooltip</mat-icon>
-      }
+      <div class="title-group">
+        <span class="preference">{{ item.preference + 1 }}. </span>
+        <span> {{ item.application.applicant_name }}</span>
+        <div class="title-accessory">
+          <span
+            [class]="
+              'text-badge ' +
+              (item.application.type === 'gta'
+                ? 'primary-fixed-dim-background'
+                : 'secondary-container-background')
+            ">
+            @if(item.application.type === 'new_uta') { UTA }
+            @if(item.application.type === 'gta') { GTA }
+          </span>
+        </div>
+        @if (item.notes.length > 0) {
+        <mat-icon class="notes" matListItemIcon>tooltip</mat-icon>
+        }
+      </div>
       <div class="accessories">
         <p class="font-variant">
           Course rank:

@@ -8,6 +8,7 @@
  */
 
 export interface ApplicationOverview {
+  type: string;
   applicant_name: string;
   academic_hours: number | null;
   extracurriculars: string | null;
@@ -21,6 +22,10 @@ export interface ApplicationOverview {
   prior_experience: string | null;
   service_experience: string | null;
   additional_experience: string | null;
+  ta_experience: string | null;
+  best_moment: string | null;
+  desired_improvement: string | null;
+  advisor: string | null;
 }
 
 export interface ApplicationReviewOverview {

@@ -3,6 +3,7 @@
 </h2>
 <mat-dialog-content>
   <p mat-card-subtitle>Applicant Profile</p>
+  @if(data.review.application.type === 'new_uta') {
   <p>
     <span class="semibold">Compensation Preference: </span>
     {{ data.review.application.comp_227 }}
@@ -11,11 +12,19 @@
     <span class="semibold">Expected Graduation: </span>
     {{ data.review.application.expected_graduation }}
   </p>
+  } @if(data.review.application.type === 'gta') {
+  <p>
+    <span class="semibold">Graduate Advisor: </span>
+    {{ data.review.application.advisor }}
+  </p>
+  }
   <p>
     <span class="semibold">Program: </span>
     {{ data.review.application.program_pursued }}
   </p>
+  @if(data.review.application.type === 'new_uta') {
   <p>
+    <span class="semibold">Other Program(s): </span>
     {{ data.review.application.other_programs }}
   </p>
   <p>
@@ -26,7 +35,10 @@
     <span class="semibold">COMP GPA: </span>
     {{ data.review.application.comp_gpa }}
   </p>
+  }
+
   <mat-divider />
+  @if(data.review.application.type === 'new_uta') {
   <p mat-card-subtitle>Workload and Involvement</p>
   <p>
     <span class="semibold">Academic Hours: </span>
@@ -36,6 +48,7 @@
   <p>{{ data.review.application.extracurriculars }}</p>
 
   <mat-divider />
+  }
 
   <p mat-card-subtitle>Application Video</p>
 
@@ -52,9 +65,12 @@
 
   <p mat-card-subtitle>Application Essays</p>
   <p class="semibold">
-    What was your prior programming experience before attending UNC?
+    @if(data.review.application.type === 'new_uta') { What was your prior
+    programming experience before attending UNC? } @else { What is your prior
+    TA/LA experience? }
   </p>
   <p>{{ data.review.application.prior_experience }}</p>
+  @if(data.review.application.type === 'new_uta') {
   <p class="semibold">
     What experience do you have providing service directly to other people (at
     jobs or volunteering)? What lessons did you learn or take away from this
@@ -66,6 +82,7 @@
     experience?
   </p>
   <p>{{ data.review.application.additional_experience }}</p>
+  }
 
   <mat-divider />
 
@@ -83,7 +100,6 @@
 
   <div class="row">
     <p mat-card-subtitle>Your Notes</p>
-    <!-- <p class="end-align"><em>Changes saved.</em></p> -->
   </div>
 
   <mat-form-field appearance="outline" color="accent">
