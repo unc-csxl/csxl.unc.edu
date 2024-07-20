@@ -53,3 +53,8 @@ mat-card-actions {
 ::ng-deep .profile-icon {
   border-radius: 9px !important;
 }
+
+.no-hover-chipset {
+    --mdc-chip-focus-state-layer-color: transparent !important;
+    --mdc-chip-hover-state-layer-color: transparent !important;
+}

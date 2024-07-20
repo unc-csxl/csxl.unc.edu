@@ -6,16 +6,16 @@
         <p>{{ event.location }}</p>
       </div>
       <div class="header-column" id="chip-column">
-        <mat-chip-set class="pagination-chip-set">
-          <mat-chip>
+        <mat-chip-set class="no-hover-chipset">
+          <mat-chip disableRipple>
             <mat-icon class="primary-color" matChipAvatar>
               access_time
             </mat-icon>
             {{ event.time | date: 'shortTime' }}
           </mat-chip>
         </mat-chip-set>
-        <mat-chip-set class="pagination-chip-set">
-          <mat-chip>
+        <mat-chip-set class="no-hover-chipset">
+          <mat-chip disableRipple>
             <mat-icon class="primary-color" matChipAvatar>
               person_outline
             </mat-icon>
@@ -31,7 +31,7 @@
   <mat-card-content>
     <mat-chip-set>
       <!-- Organization chip -->
-      <mat-chip-option
+      <mat-chip
         id="organization-chip"
         [routerLink]="'/organizations/' + event.organization_slug">
         <img
@@ -39,7 +39,7 @@
           matChipAvatar
           [src]="event.organization_icon" />
         {{ event.organization_name }}
-      </mat-chip-option>
+      </mat-chip>
 
       @if (event.organizers.length > 0) {
       <mat-divider class="vertical-divider" [vertical]="true" />

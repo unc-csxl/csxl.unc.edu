@@ -22,6 +22,9 @@
     border-color: transparent !important;
     outline: 0 !important;
     z-index: 1;
+    --mdc-chip-focus-state-layer-color: transparent !important;
+    --mdc-chip-hover-state-layer-color: transparent !important;
+    --mdc-chip-outline-color: transparent !important;
 }
 
 .featured-chip {

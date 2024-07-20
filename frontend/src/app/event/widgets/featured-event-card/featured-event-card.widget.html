@@ -1,6 +1,6 @@
 <mat-pane class="featured-pane">
   <mat-chip-set class="featured-chipset" aria-label="Dog selection">
-    <mat-chip class="featured-chip on-secondary-background-color">
+    <mat-chip disableRipple class="featured-chip on-secondary-background-color">
       Featured
     </mat-chip>
   </mat-chip-set>
@@ -19,7 +19,7 @@
 
     <mat-chip-set>
       <!-- Organization chip -->
-      <mat-chip-option
+      <mat-chip
         id="organization-chip"
         [routerLink]="'/organizations/' + event.organization_slug">
         <img
@@ -27,7 +27,7 @@
           matChipAvatar
           [src]="event.organization_icon" />
         {{ event.organization_name }}
-      </mat-chip-option>
+      </mat-chip>
 
       @if (event.organizers.length > 0) {
       <mat-divider class="vertical-divider" [vertical]="true" />

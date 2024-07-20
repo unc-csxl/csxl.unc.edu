@@ -101,6 +101,11 @@ mat-card-header {
     max-width: 100%;
 }
 
+.no-hover-chip-container {
+    --mdc-chip-focus-state-layer-color: transparent !important;
+    --mdc-chip-hover-state-layer-color: transparent !important;
+}
+
 @media only screen and (max-width: 1000px) {
     .container {
         flex-direction: column;
