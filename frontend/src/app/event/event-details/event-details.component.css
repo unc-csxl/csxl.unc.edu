@@ -52,3 +52,7 @@ mat-card-actions {
     --mdc-chip-focus-state-layer-color: transparent !important;
     --mdc-chip-hover-state-layer-color: transparent !important;
 }
+
+#no-registrations-label {
+    margin-top: 8px;
+}

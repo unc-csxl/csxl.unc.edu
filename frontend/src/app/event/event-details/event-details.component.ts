@@ -15,12 +15,14 @@ import {
   ActivatedRouteSnapshot,
   ResolveFn
 } from '@angular/router';
-import { Event } from '../event.model';
+import { Event, EventRegistration } from '../event.model';
 import { Observable, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '../event.service';
+import { Paginated, PaginationParams } from 'src/app/pagination';
+import { PageEvent } from '@angular/material/paginator';
 
 /** Injects the event's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -52,6 +54,18 @@ export class EventDetailsComponent implements OnInit {
   /** The event to show */
   public event: WritableSignal<Event>;
 
+  /** Event registrations */
+  public eventRegistrationsPage: WritableSignal<
+    Paginated<Profile, PaginationParams> | undefined
+  > = signal(undefined);
+
+  public eventRegistrationDisplayedColumns: string[] = [
+    'first_name',
+    'last_name',
+    'pronouns',
+    'email'
+  ];
+
   /**
    * Determines whether or not a user can view the event.
    * @returns {Observable<boolean>}
@@ -79,6 +93,25 @@ export class EventDetailsComponent implements OnInit {
     };
 
     this.event = signal(data.event);
+
+    this.permissionService
+      .check(
+        'organization.events.edit',
+        `organization/${this.event()?.organization!?.id ?? '*'}`
+      )
+      .subscribe((permission) => {
+        if (permission) {
+          // Load user registrations:
+          this.eventService
+            .getRegisteredUsersForEvent(this.event(), {
+              page: 0,
+              page_size: 25,
+              order_by: 'first_name',
+              filter: ''
+            } as PaginationParams)
+            .subscribe((page) => this.eventRegistrationsPage.set(page));
+        }
+      });
   }
 
   ngOnInit() {
@@ -138,5 +171,14 @@ export class EventDetailsComponent implements OnInit {
         );
       }
     });
+  }
+
+  handlePageEvent(e: PageEvent) {
+    let paginationParams = this.eventRegistrationsPage()!.params;
+    paginationParams.page = e.pageIndex;
+    paginationParams.page_size = e.pageSize;
+    this.eventService
+      .getRegisteredUsersForEvent(this.event(), paginationParams)
+      .subscribe((page) => this.eventRegistrationsPage.set(page));
   }
 }
