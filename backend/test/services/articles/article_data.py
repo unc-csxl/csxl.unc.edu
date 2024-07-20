@@ -41,7 +41,7 @@ article_one = ArticleDraft(
     body="This is a sample article body in **markdown!**",
     published=datetime.now(),
     last_modified=datetime.now(),
-    is_announcement=True,
+    is_announcement=False,
     organization_slug=None,
     authors=[],
 )
@@ -56,12 +56,14 @@ article_two = ArticleDraft(
     body="This is a sample article body in **markdown!**",
     published=datetime.now(),
     last_modified=datetime.now(),
-    is_announcement=True,
+    is_announcement=False,
     organization_slug=None,
     authors=[],
 )
 
 articles = [announcement, article_one, article_two]
+articles_no_announcement = [article_one, article_two]
+
 author_associations = [
     (announcement, user_data.root),
     (article_one, user_data.root),

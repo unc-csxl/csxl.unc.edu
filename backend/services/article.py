@@ -59,6 +59,7 @@ class ArticleService:
         news_query = (
             select(ArticleEntity)
             .where(ArticleEntity.state == ArticleState.PUBLISHED)
+            .where(ArticleEntity.is_announcement == False)
             .order_by(ArticleEntity.published.desc())
             .limit(10)
         )
