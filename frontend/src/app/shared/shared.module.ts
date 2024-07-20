@@ -24,9 +24,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
 import { SearchBar } from './search-bar/search-bar.widget';
-import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
-import { EventList } from './event-list/event-list.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
 import { CommunityAgreement } from './community-agreement/community-agreement.widget';
 import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
@@ -45,8 +43,6 @@ import { YouTubePlayer } from '@angular/youtube-player';
   declarations: [
     SocialMediaIcon,
     SearchBar,
-    EventCard,
-    EventList,
     UserLookup,
     UserChipList,
     SlackInviteBox,
@@ -83,8 +79,6 @@ import { YouTubePlayer } from '@angular/youtube-player';
   exports: [
     SocialMediaIcon,
     SearchBar,
-    EventCard,
-    EventList,
     UserLookup,
     UserChipList,
     ProfileAboutCard,
