@@ -78,7 +78,8 @@ class ArticleService:
             future_reservations_query
         ).all()
         future_reservations = [
-            reservation.to_model() for reservation in future_reservations_entities
+            reservation.to_overview_model()
+            for reservation in future_reservations_entities
         ]
 
         # Construct the welcome overview and return

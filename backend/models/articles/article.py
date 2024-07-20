@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from . import ArticleState
 from ..public_user import PublicUser
-from ..coworking import OperatingHours, Reservation
+from ..coworking import OperatingHours, ReservationOverview
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -32,4 +32,4 @@ class WelcomeOverview(BaseModel):
     announcement: ArticleOverview | None
     latest_news: list[ArticleOverview]
     operating_hours: list[OperatingHours]
-    upcoming_reservations: list[Reservation]
+    upcoming_reservations: list[ReservationOverview]

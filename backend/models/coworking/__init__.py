@@ -11,6 +11,7 @@ from .reservation import (
     ReservationState,
     ReservationPartial,
     ReservationMapDetails,
+    ReservationOverview,
     ReservationIdentity,
 )
 
@@ -33,4 +34,5 @@ __all__ = [
     "RoomAvailability",
     "SeatAvailability",
     "Status",
+    "ReservationOverview",
 ]
