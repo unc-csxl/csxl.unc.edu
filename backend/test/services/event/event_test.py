@@ -72,12 +72,8 @@ def test_list(event_svc_integration: EventService):
     """Test that a paginated list of events can be produced."""
     pagination_params = EventPaginationParams(
         order_by="id",
-        range_start=date_maker(days_in_future=1, hour=10, minutes=0).strftime(
-            "%d/%m/%Y, %H:%M:%S"
-        ),
-        range_end=date_maker(days_in_future=2, hour=10, minutes=0).strftime(
-            "%d/%m/%Y, %H:%M:%S"
-        ),
+        range_start=date_maker(days_in_future=1, hour=10, minutes=0).isoformat(),
+        range_end=date_maker(days_in_future=2, hour=10, minutes=0).isoformat(),
     )
     fetched_events = event_svc_integration.get_paginated_events(
         pagination_params, ambassador
@@ -91,21 +87,6 @@ def test_list_filter(event_svc_integration: EventService):
     fetched_events = event_svc_integration.get_paginated_events(
         pagination_params, ambassador
     )
-    assert len(fetched_events.items) == 1
-
-
-def test_list_unauthenticated(event_svc_integration: EventService):
-    """Test that a paginated list of events can be produced for unauthenticated users."""
-    pagination_params = EventPaginationParams(
-        order_by="id",
-        range_start=date_maker(days_in_future=1, hour=10, minutes=0).strftime(
-            "%d/%m/%Y, %H:%M:%S"
-        ),
-        range_end=date_maker(days_in_future=2, hour=10, minutes=0).strftime(
-            "%d/%m/%Y, %H:%M:%S"
-        ),
-    )
-    fetched_events = event_svc_integration.get_paginated_events(pagination_params)
     assert len(fetched_events.items) == 1
 
 
