@@ -27,8 +27,6 @@
     <mat-pane class="events-pane">
       <mat-card-header>
         <mat-card-title>Events</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
         <mat-chip-set
           class="pagination-chip-set"
           [disabled]="filterQuery().length > 0">
@@ -47,7 +45,8 @@
           </mat-chip>
         </mat-chip-set>
         <mat-divider />
-
+      </mat-card-header>
+      <mat-card-content>
         <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] is a list of events -->
         @if (eventsByDate().length === 0) {
