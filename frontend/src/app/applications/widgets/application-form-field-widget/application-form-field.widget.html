@@ -1,7 +1,7 @@
 <div class="container">
   <mat-card-subtitle>{{ field.title }}</mat-card-subtitle>
   @if (field.description.length > 0) {
-  <p>{{ field.description }}</p>
+  <p markdown>{{ field.description }}</p>
   }
   <!-- Account for the different types of fields -->
   @if (field.fieldType === fieldType.SHORT_TEXT) {
