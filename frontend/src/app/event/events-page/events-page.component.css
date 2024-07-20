@@ -13,11 +13,18 @@
 }
 
 .registrations-pane {
-    flex: 1 0 auto; /* Only take up needed space */
+    flex: 1 1 auto; /* Only take up needed space */
 
     ::ng-deep .mat-mdc-card-outlined {
         height: 100% !important;
-        margin-bottom: 32px !important;
+    }
+
+    /* This CSS is absolute wizardry, which allows the pane to not
+    overflow on the bottom while also enabling scrolling... */
+    min-height: 0;
+
+    .mat-mdc-card-content {
+        overflow-y: scroll !important;
     }
 }
 
@@ -30,10 +37,14 @@
 
 .events-pane {
     flex: 1 0 auto; /* Only take up needed space */
-
     ::ng-deep .mat-mdc-card-outlined {
-        height: 100% !important;
+        max-height: 100% !important;
         margin-bottom: 32px !important;
+    }
+
+    .mat-mdc-card-content {
+        overflow-y: scroll !important;
+        height: 71.5vh !important;    
     }
 }
 
