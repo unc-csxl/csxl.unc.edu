@@ -29,6 +29,9 @@ from .application_entity import ApplicationEntity
 from .section_application_table import section_application_table
 from .academics.hiring.application_review_entity import ApplicationReviewEntity
 
+from .article_entity import ArticleEntity
+from .article_author_entity import article_author_table
+
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"

@@ -9,8 +9,9 @@ from backend.models.academics.section_member import SectionMember
 from .entity_base import EntityBase
 from .user_role_table import user_role_table
 from ..models import User, PublicUser
+from .article_author_entity import article_author_table
 
-__authors__ = ["Kris Jordan", "Matt Vu"]
+__authors__ = ["Kris Jordan", "Matt Vu", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023 - 2024"
 __license__ = "MIT"
 
@@ -67,6 +68,13 @@ class UserEntity(EntityBase):
     # The applications for the  user.
     applications: Mapped[list["ApplicationEntity"]] = relationship(
         back_populates="user"
+    )
+
+    # All of the articles written by this user.
+    # NOTE: This field establishes a many-to-many relationship between the users and article table.
+    #       and uses the "article_author" table as the join table.
+    articles: Mapped[list["ArticleEntity"]] = relationship(
+        secondary=article_author_table, back_populates="authors"
     )
 
     @classmethod
