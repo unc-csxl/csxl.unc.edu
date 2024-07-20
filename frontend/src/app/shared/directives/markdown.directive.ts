@@ -17,7 +17,7 @@ export class MarkdownDirective implements AfterViewInit {
   constructor(private el: ElementRef) {}
 
   /**
-   * Generates HTML from mardown after the view is initialized.
+   * Generates HTML from markdown after the view is initialized.
    * This is needed so that dynamic data is added to the DOM before
    * the markdownify() method is run.
    */
