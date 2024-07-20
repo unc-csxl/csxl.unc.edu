@@ -4,22 +4,10 @@
       <div class="header-column">
         <mat-card-subtitle>{{ event.name }}</mat-card-subtitle>
         <p>{{ event.location }}</p>
-      </div>
-      <div class="header-column" id="chip-column">
-        <mat-chip-set class="pagination-chip-set">
-          <mat-chip>
-            <mat-icon class="primary-color" matChipAvatar> today </mat-icon>
-            {{ event.time | date: 'shortDate' }}
-          </mat-chip>
-        </mat-chip-set>
-        <mat-chip-set class="pagination-chip-set">
-          <mat-chip>
-            <mat-icon class="primary-color" matChipAvatar>
-              access_time
-            </mat-icon>
-            {{ event.time | date: 'shortTime' }}
-          </mat-chip>
-        </mat-chip-set>
+        <p>
+          {{ event.time | date: 'shortDate' }} at
+          {{ event.time | date: 'shortTime' }}
+        </p>
       </div>
     </div>
   </mat-card-content>

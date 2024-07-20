@@ -2,7 +2,6 @@
 .mat-mdc-card {
     margin-left: 0px;
     max-width: 100%;
-    max-height: fit-content;
 }
 
 .mat-mdc-card:hover {

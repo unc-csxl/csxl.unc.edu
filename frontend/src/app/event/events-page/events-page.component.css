@@ -9,23 +9,23 @@
     display: flex;
     flex-direction: column;
     width: 30%;
-    height: 88vh;
+    height: 91.5vh;
 }
 
 .registrations-pane {
     flex: 1 1 auto; /* Only take up needed space */
 
-    ::ng-deep .mat-mdc-card-outlined {
-        height: 100% !important;
-    }
-
     /* This CSS is absolute wizardry, which allows the pane to not
     overflow on the bottom while also enabling scrolling... */
     min-height: 0;
+    max-height: 100%;
+    max-width: 100%;
+    border-color: transparent !important;
+}
 
-    .mat-mdc-card-content {
-        overflow-y: scroll !important;
-    }
+.registrations-pane-content {
+    overflow-y: scroll !important;
+    height: 100%;
 }
 
 .right-column {
@@ -90,3 +90,51 @@ mat-chip {
 mat-card-header {
     flex-direction: column;
 }
+
+
+@media only screen and (max-width: 1000px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .left-column {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+
+    .right-column {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+
+    .registrations-pane {
+        flex: auto;
+    
+        ::ng-deep .mat-mdc-card-outlined {
+            height: auto !important;
+            max-height: max-content !important;
+        }
+    
+        .mat-mdc-card-content {
+            height: auto !important;
+            overflow-y: auto !important;
+        }
+    }
+
+    .events-pane {
+        flex: auto;
+    
+        ::ng-deep .mat-mdc-card-outlined {
+            height: auto !important;
+        }
+    
+        .mat-mdc-card-content {
+            height: auto !important;
+            overflow-y: auto !important;
+        }
+    }
+  }

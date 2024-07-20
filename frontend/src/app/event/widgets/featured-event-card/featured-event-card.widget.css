@@ -37,3 +37,11 @@ mat-card-actions {
     padding-top: 8px;
     padding-bottom: 8px;
 }
+
+/* Responsive CSS for mobile pages */
+
+@media only screen and (max-width: 1400px) {
+    .description {
+        display: none;
+    }
+  }
