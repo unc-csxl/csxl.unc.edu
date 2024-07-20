@@ -31,5 +31,5 @@ class WelcomeOverview(BaseModel):
 
     announcement: ArticleOverview | None
     latest_news: list[ArticleOverview]
-    operating_hours: OperatingHours
+    operating_hours: list[OperatingHours]
     upcoming_reservations: list[Reservation]
