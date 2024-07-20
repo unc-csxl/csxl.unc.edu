@@ -1,7 +1,7 @@
 """Definition of SQLAlchemy table-backed object mapping entity for news articles."""
 
 from datetime import datetime
-from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
@@ -34,12 +34,14 @@ class ArticleEntity(EntityBase):
     title: Mapped[str] = mapped_column(String, nullable=False, default="")
     # Synopsis of the article (to show on the article page)
     synopsis: Mapped[str] = mapped_column(String, nullable=False, default="")
+    # Body of the article, in markdown
+    body: Mapped[str] = mapped_column(Text, nullable=False, default="")
     # Image URL for the article (to show on the article page)
     image_url: Mapped[str] = mapped_column(String, nullable=False, default="")
     # Time when the article was initially published
-    published: Mapped[datetime] = mapped_column(DateTime, nullable=False, default="")
+    published: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # Time when the article was last modified
-    last_modified: Mapped[str] = mapped_column(String, nullable=False, default="")
+    last_modified: Mapped[str] = mapped_column(String, nullable=True)
     # Whether or not the article should be treated as an announcement
     is_announcement: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False
@@ -47,7 +49,9 @@ class ArticleEntity(EntityBase):
 
     # Organization connected to this article.
     # NOTE: This defines a one-to-many relationship between the organization and articles tables.
-    organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"))
+    organization_id: Mapped[int] = mapped_column(
+        ForeignKey("organization.id"), nullable=True
+    )
     organization: Mapped["OrganizationEntity"] = relationship(back_populates="articles")
 
     # All of the authors for this article.
@@ -57,6 +61,7 @@ class ArticleEntity(EntityBase):
         secondary=article_author_table, back_populates="articles"
     )
 
+    @classmethod
     def from_draft(cls, draft: ArticleDraft) -> Self:
         """Converts an article draft model to an entity"""
         return cls(
@@ -64,6 +69,8 @@ class ArticleEntity(EntityBase):
             slug=draft.slug,
             state=draft.state,
             title=draft.title,
+            synopsis=draft.synopsis,
+            body=draft.body,
             image_url=draft.image_url,
             published=draft.published,
             last_modified=draft.last_modified,
@@ -77,6 +84,8 @@ class ArticleEntity(EntityBase):
             slug=self.slug,
             state=self.state,
             title=self.title,
+            synopsis=self.synopsis,
+            body=self.body,
             image_url=self.image_url,
             published=self.published,
             last_modified=self.last_modified,

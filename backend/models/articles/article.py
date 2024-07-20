@@ -17,8 +17,10 @@ class ArticleDraft(BaseModel):
     state: ArticleState
     title: str
     image_url: str
+    synopsis: str
+    body: str
     published: datetime
-    last_modified: datetime
+    last_modified: datetime | None
     is_announcement: bool
     organization_slug: str | None
     authors: list[PublicUser]
@@ -32,8 +34,10 @@ class ArticleOverview(BaseModel):
     state: ArticleState
     title: str
     image_url: str
+    synopsis: str
+    body: str
     published: datetime
-    last_modified: datetime
+    last_modified: datetime | None
     is_announcement: bool
     organization_slug: str | None
     organization_logo: str | None

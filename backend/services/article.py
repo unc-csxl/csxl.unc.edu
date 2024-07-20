@@ -16,7 +16,7 @@ from ..entities import ArticleEntity, UserEntity
 from ..entities.coworking import ReservationEntity, reservation_user_table
 
 from ..models import User
-from ..models.articles import WelcomeOverview
+from ..models.articles import WelcomeOverview, ArticleState
 from ..models.coworking import TimeRange
 
 __authors__ = ["Ajay Gandecha"]
@@ -44,17 +44,23 @@ class ArticleService:
         announcement_query = (
             select(ArticleEntity)
             .where(ArticleEntity.is_announcement)
+            .where(ArticleEntity.state == ArticleState.PUBLISHED)
             .order_by(ArticleEntity.published.desc())
         )
-        announcement_entity = self._session.scalars(announcement_query).one_or_none()
+        announcement_entity = self._session.scalars(announcement_query).all()
         announcement = (
-            announcement_entity.to_overview_model() if announcement_entity else None
+            announcement_entity[0].to_overview_model()
+            if len(announcement_entity) > 0
+            else None
         )
 
         # Next, retrieve the latest news.
         # For now, this will load a maximum of 10 articles.
         news_query = (
-            select(ArticleEntity).order_by(ArticleEntity.published.desc()).limit(10)
+            select(ArticleEntity)
+            .where(ArticleEntity.state == ArticleState.PUBLISHED)
+            .order_by(ArticleEntity.published.desc())
+            .limit(10)
         )
         news_entities = self._session.scalars(news_query).all()
         news = [article.to_overview_model() for article in news_entities]
