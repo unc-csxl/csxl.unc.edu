@@ -33,6 +33,20 @@ export interface ArticleDraft {
   authors: PublicProfile[];
 }
 
+export const BLANK_ARTICLE_DRAFT: ArticleDraft = {
+  id: null,
+  slug: '',
+  state: ArticleState.DRAFT,
+  title: '',
+  image_url: '',
+  synopsis: '',
+  body: '',
+  published: new Date(),
+  last_modified: new Date(),
+  is_announcement: false,
+  organization_id: null,
+  authors: []
+};
 export interface ArticleOverviewJson {
   id: number;
   slug: string;

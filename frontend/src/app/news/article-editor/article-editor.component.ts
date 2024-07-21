@@ -13,7 +13,8 @@ import { newsResolver } from '../news.resolver';
 import {
   ArticleDraft,
   ArticleOverview,
-  ArticleState
+  ArticleState,
+  BLANK_ARTICLE_DRAFT
 } from 'src/app/welcome/welcome.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NewsService } from '../news.service';
@@ -94,7 +95,9 @@ export class ArticleEditorComponent {
    */
   onSubmit(): void {
     if (this.articleForm.valid) {
-      let articleToSubmit = this.article! as ArticleDraft;
+      let articleToSubmit = this.article
+        ? (this.article! as ArticleDraft)
+        : (BLANK_ARTICLE_DRAFT as ArticleDraft);
       Object.assign(articleToSubmit, this.articleForm.value);
       articleToSubmit.authors = this.authors;
       if (this.isNew()) {

@@ -190,7 +190,7 @@ class ArticleService:
         for author in article.authors:
             self._session.execute(
                 article_author_table.insert().values(
-                    {"user_id": author.id, "article_id": article.id}
+                    {"user_id": author.id, "article_id": article_entity.id}
                 )
             )
         self._session.commit()
@@ -236,7 +236,7 @@ class ArticleService:
         for author in article.authors:
             self._session.execute(
                 article_author_table.insert().values(
-                    {"user_id": author.id, "article_id": article.id}
+                    {"user_id": author.id, "article_id": article_entity.id}
                 )
             )
         self._session.commit()
