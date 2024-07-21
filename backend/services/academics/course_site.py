@@ -26,6 +26,7 @@ from ...models.office_hours.course_site import (
     UpdatedCourseSite,
 )
 from ...models.office_hours.course_site_details import CourseSiteDetails
+from ...models.academics.section_member import SectionMemberDraft
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
@@ -118,6 +119,8 @@ class CourseSiteService:
                                 self._to_section_overview(membership.section)
                                 for membership in memberships
                             ],
+                            gtas=[],
+                            utas=[],
                         )
                     )
 
@@ -556,6 +559,7 @@ class CourseSiteService:
         # Complete the updates
         course_site_entity.title = updated_site.title
 
+        # Edit the selected sections
         for section in old_section_entities:
             section.course_site_id = None
 
@@ -566,6 +570,54 @@ class CourseSiteService:
                 )
 
             section.course_site_id = updated_site.id
+
+        # Edit the staff - GTAs
+        # 1. Remove all GTAs, then add new ones.
+        gta_query = (
+            select(SectionMemberEntity)
+            .where(
+                SectionMemberEntity.section_id.in_(
+                    [section.id for section in course_site_entity.sections]
+                )
+            )
+            .where(SectionMemberEntity.member_role == RosterRole.GTA)
+        )
+        gta_entities = self._session.scalars(gta_query).all()
+        for gta_entity in gta_entities:
+            self._session.delete(gta_entity)
+
+        # 2. Add new ones
+        for gta in updated_site.gtas:
+            for section in course_site_entity.sections:
+                draft = SectionMemberDraft(
+                    user_id=gta.id, section_id=section.id, member_role=RosterRole.GTA
+                )
+                section_member_entity = SectionMemberEntity.from_draft_model(draft)
+                self._session.add(section_member_entity)
+
+        # Edit the staff - UTAs
+        # 1. Remove all UTAs, then add new ones.
+        uta_query = (
+            select(SectionMemberEntity)
+            .where(
+                SectionMemberEntity.section_id.in_(
+                    [section.id for section in course_site_entity.sections]
+                )
+            )
+            .where(SectionMemberEntity.member_role == RosterRole.UTA)
+        )
+        uta_entities = self._session.scalars(uta_query).all()
+        for uta_entity in uta_entities:
+            self._session.delete(uta_entity)
+
+        # 2. Add new ones
+        for uta in updated_site.utas:
+            for section in course_site_entity.sections:
+                draft = SectionMemberDraft(
+                    user_id=uta.id, section_id=section.id, member_role=RosterRole.UTA
+                )
+                section_member_entity = SectionMemberEntity.from_draft_model(draft)
+                self._session.add(section_member_entity)
 
         # Save all changes in one commit
         self._session.commit()
@@ -609,6 +661,17 @@ class CourseSiteService:
         )
         user_members = self._session.scalars(user_member_query).unique().all()
 
+        # Create query to find the GTAs and UTAs for a course.
+        ta_query = (
+            select(SectionMemberEntity)
+            .where(
+                SectionMemberEntity.member_role.in_([RosterRole.UTA, RosterRole.GTA])
+            )
+            .join(SectionEntity)
+            .where(SectionEntity.course_site_id == site_id)
+        )
+        tas = self._session.scalars(ta_query).unique().all()
+
         # Return overview
         return CourseSiteOverview(
             id=course_site_entity.id,
@@ -634,5 +697,15 @@ class CourseSiteService:
             sections=[
                 self._to_section_overview(section)
                 for section in course_site_entity.sections
+            ],
+            gtas=[
+                member.user.to_public_model()
+                for member in tas
+                if member.member_role == RosterRole.GTA
+            ],
+            utas=[
+                member.user.to_public_model()
+                for member in tas
+                if member.member_role == RosterRole.UTA
             ],
         )

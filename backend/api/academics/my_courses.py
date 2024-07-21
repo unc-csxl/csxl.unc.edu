@@ -12,8 +12,13 @@ from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
+    CourseSiteOverview,
 )
-from ...models.office_hours.course_site import NewCourseSite, CourseSite
+from ...models.office_hours.course_site import (
+    NewCourseSite,
+    CourseSite,
+    UpdatedCourseSite,
+)
 from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...models.pagination import PaginationParams, Paginated
 
@@ -40,6 +45,21 @@ def get_user_courses(
         list[TermOverview]
     """
     return course_site_svc.get_user_course_sites(subject)
+
+
+@api.get("/{course_site_id}", tags=["My Courses"])
+def get_course_site(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    course_site_svc: CourseSiteService = Depends(),
+) -> CourseSiteOverview:
+    """
+    Gets the current office hour event overviews for a given class.
+
+    Returns:
+        list[OfficeHoursOverview]
+    """
+    return course_site_svc.get(subject, course_site_id)
 
 
 @api.get("/{course_site_id}/roster", tags=["My Courses"])
@@ -142,3 +162,18 @@ def create_course_site(
         CourseSiteDetails: Course created
     """
     return course_site_svc.create(subject, course_site)
+
+
+@api.put("", tags=["My Courses"])
+def update_course_site(
+    course_site: UpdatedCourseSite,
+    subject: User = Depends(registered_user),
+    course_site_svc: CourseSiteService = Depends(),
+) -> CourseSite:
+    """
+    Updates a course site to the database
+
+    Returns:
+        CourseSite: Course updated
+    """
+    return course_site_svc.update(subject, course_site)
