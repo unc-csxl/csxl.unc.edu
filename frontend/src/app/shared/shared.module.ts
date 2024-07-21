@@ -56,7 +56,7 @@ import { MarkdownDirective } from './directives/markdown.directive';
     AdminFabComponent,
     TabContainerWidget,
     CoworkingHoursCard,
-    OperatingHoursCapitalizationPipe
+    OperatingHoursCapitalizationPipe,
     MarkdownDirective
   ],
   imports: [
@@ -92,7 +92,7 @@ import { MarkdownDirective } from './directives/markdown.directive';
     BannerCardComponent,
     AdminFabComponent,
     TabContainerWidget,
-    CoworkingHoursCard
+    CoworkingHoursCard,
     MarkdownDirective
   ],
   providers: [GroupEventsPipe]
