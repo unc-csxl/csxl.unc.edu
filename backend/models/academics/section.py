@@ -57,6 +57,7 @@ class CatalogSectionIdentity(BaseModel):
     subject_code: str
     course_number: str
     section_number: str
+    course_title: str
 
 
 class CatalogSection(CatalogSectionIdentity):

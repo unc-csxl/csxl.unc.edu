@@ -226,6 +226,7 @@ class SectionEntity(EntityBase):
             subject_code=self.course.subject_code,
             course_number=self.course.number,
             section_number=self.number,
+            course_title=self.course.title,
         )
 
     def to_catalog_model(self) -> CatalogSection:

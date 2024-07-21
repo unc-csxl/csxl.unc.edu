@@ -43,9 +43,12 @@ export const GTA_APPLICATION_FORM: ApplicationFormField[] = [
   },
   {
     name: 'preferences',
-    title: 'TA Course Preferences',
-    description:
-      'In the event we cannot match you with an RAship, please select the courses you would prefer to work with in order of highest preference to least preference.',
+    title: 'Possible Course Matches',
+    description: `Please **select ALL courses you have completed at UNC or comparably at another institution**. For PhD students, productive RA matches are given higher precedence over TA matches due to the limited funding available for TAships.
+
+Make your selections in order of preference (first choice being strongest preference, and so on).
+We will make a best effort for a positive match, but cannot guarantee any specific placement.
+    `,
     fieldType: FormFieldType.COURSE_PREFERENCE,
     dropdownItems: undefined,
     required: true
