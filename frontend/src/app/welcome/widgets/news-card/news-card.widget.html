@@ -57,6 +57,8 @@
     </div>
   </div>
   <mat-card-actions>
-    <button mat-flat-button [routerLink]="">Read</button>
+    <button mat-flat-button [routerLink]="'/article/' + article.slug">
+      Read
+    </button>
   </mat-card-actions>
 </mat-card>

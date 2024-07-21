@@ -81,6 +81,7 @@ class ArticleService:
             select(ReservationEntity)
             .join(ReservationEntity.users)
             .where(UserEntity.id == subject.id)
+            .where(ReservationEntity.start > datetime.now())
         )
         future_reservations_entities = self._session.scalars(
             future_reservations_query
