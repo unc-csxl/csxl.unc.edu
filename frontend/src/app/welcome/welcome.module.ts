@@ -32,9 +32,10 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { WelcomeRoutingModule } from './welcome-routing.module';
 import { WelcomePageComponent } from './welcome-page/welcome-page.component';
+import { NewsCardWidget } from './widgets/news-card/news-card.widget';
 
 @NgModule({
-  declarations: [WelcomePageComponent],
+  declarations: [WelcomePageComponent, NewsCardWidget],
   imports: [
     CommonModule,
     MatTabsModule,

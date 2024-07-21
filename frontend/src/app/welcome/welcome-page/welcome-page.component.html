@@ -9,10 +9,12 @@
   <div class="left-column">
     <mat-card appearance="outlined" class="news-pane">
       <mat-card-header>
-        <mat-card-title>Events</mat-card-title>
+        <mat-card-title>Latest News</mat-card-title>
       </mat-card-header>
       <mat-card-content class="news-pane-content">
-        <p>Something here.</p>
+        @for(article of welcomeOverview().latest_news; track article.id) {
+        <news-card [article]="article" />
+        }
       </mat-card-content>
     </mat-card>
   </div>

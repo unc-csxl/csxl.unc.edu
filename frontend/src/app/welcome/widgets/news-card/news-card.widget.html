@@ -1,0 +1,60 @@
+<mat-card appearance="outlined" class="featured-pane">
+  <div class="row">
+    <img class="news-feature-image" src="https://i.etsystatic.com/22085368/r/il/716804/2576209117/il_570xN.2576209117_ran0.jpg" />
+    <div class="column">
+      <mat-card-header>
+        <mat-card-title>{{ article.title }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          {{ article.published | date: 'mediumDate' }} -
+          <em
+            >Modified
+            {{
+              article.last_modified && article.last_modified
+                | date: 'mediumDate'
+            }}</em
+          >
+        </p>
+
+        <mat-chip-set>
+          <!-- Organization chip -->
+          @if(article.organization_slug) {
+          <mat-chip
+            id="organization-chip"
+            [routerLink]="'/organizations/' + article.organization_slug">
+            <img
+              class="profile-icon"
+              matChipAvatar
+              [src]="article.organization_logo" />
+            {{ article.organization_name }}
+          </mat-chip>
+
+          <mat-divider class="vertical-divider" [vertical]="true" />
+
+          }
+
+          <!-- Author Chips -->
+          @for (author of article.authors; track author.id) {
+          <mat-chip>
+            @if (author.github_avatar && author.github_avatar !== '') {
+            <img
+              class="profile-icon"
+              matChipAvatar
+              [src]="author.github_avatar" />
+            }
+            {{ author.first_name }} {{ author.last_name }}
+          </mat-chip>
+          }
+        </mat-chip-set>
+
+        <p class="description">
+          {{ article.synopsis }}
+        </p>
+      </mat-card-content>
+    </div>
+  </div>
+  <mat-card-actions>
+    <button mat-flat-button [routerLink]="">Read</button>
+  </mat-card-actions>
+</mat-card>
