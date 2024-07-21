@@ -30,4 +30,5 @@ interface AdminFacts {
   sections: number;
   rooms: number;
   organizations: number;
+  articles: number;
 }
