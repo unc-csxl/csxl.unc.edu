@@ -12,7 +12,11 @@ import {
 } from '../event/event.model';
 import { PublicProfile } from '../profile/profile.service';
 
-export enum ArticleState {}
+export enum ArticleState {
+  DRAFT = 'Draft',
+  PUBLISHED = 'Published',
+  ARCHIVED = 'Archived'
+}
 
 export interface ArticleDraft {
   id: number | null;

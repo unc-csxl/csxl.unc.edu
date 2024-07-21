@@ -13,6 +13,9 @@ import { NewsService } from './news.service';
 import { ArticleOverview } from '../welcome/welcome.model';
 
 /** This resolver injects an event into the events detail component. */
-export const newsResolver: ResolveFn<ArticleOverview> = (route, state) => {
+export const newsResolver: ResolveFn<ArticleOverview | null> = (
+  route,
+  state
+) => {
   return inject(NewsService).getArticle(route.paramMap.get('slug')!);
 };

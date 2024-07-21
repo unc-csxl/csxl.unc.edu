@@ -33,9 +33,16 @@ import { SharedModule } from '../shared/shared.module';
 import { NewsRoutingModule } from './news-routing.module';
 import { ArticlePageComponent } from './article-page/article-page.component';
 import { NewsAdminComponent } from './news-admin/news-admin.component';
+import { ArticleEditorComponent } from './article-editor/article-editor.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
-  declarations: [ArticlePageComponent, NewsAdminComponent],
+  declarations: [
+    ArticlePageComponent,
+    NewsAdminComponent,
+    ArticleEditorComponent
+  ],
   imports: [
     CommonModule,
     MatTabsModule,
@@ -56,7 +63,9 @@ import { NewsAdminComponent } from './news-admin/news-admin.component';
     MatTooltipModule,
     RouterModule,
     SharedModule,
-    NewsRoutingModule
+    NewsRoutingModule,
+    MatSlideToggleModule,
+    MatButtonToggleModule
   ]
 })
 export class NewsModule {}

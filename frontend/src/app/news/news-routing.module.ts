@@ -11,8 +11,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ArticlePageComponent } from './article-page/article-page.component';
 import { NewsAdminComponent } from './news-admin/news-admin.component';
+import { ArticleEditorComponent } from './article-editor/article-editor.component';
 
-const routes: Routes = [NewsAdminComponent.Route, ArticlePageComponent.Route];
+const routes: Routes = [
+  NewsAdminComponent.Route,
+  ArticlePageComponent.Route,
+  ArticleEditorComponent.Route
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

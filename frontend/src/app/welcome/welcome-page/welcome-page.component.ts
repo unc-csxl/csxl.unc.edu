@@ -1,3 +1,11 @@
+/**
+ * The Welcome Component showcases news articles and details relevant to the user.
+ *
+ * @author Ajay Gandecha
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Signal, computed, signal } from '@angular/core';
 import { welcomeResolver } from '../welcome.resolver';
 import { WelcomeOverview } from '../welcome.model';

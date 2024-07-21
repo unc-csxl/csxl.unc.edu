@@ -1,3 +1,11 @@
+/**
+ * The News Admin Component allows the admin to modify news articles.
+ *
+ * @author Ajay Gandecha
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Signal, WritableSignal, signal } from '@angular/core';
 import { ArticleOverview } from 'src/app/welcome/welcome.model';
 import { NewsService } from '../news.service';

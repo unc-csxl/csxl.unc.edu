@@ -241,6 +241,7 @@ class SectionEntity(EntityBase):
             id=self.id,
             subject_code=self.course.subject_code,
             course_number=self.course.number,
+            course_title=self.course.title,
             section_number=self.number,
             title=(
                 self.override_title

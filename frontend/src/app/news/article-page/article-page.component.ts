@@ -1,3 +1,11 @@
+/**
+ * The Article Editor Component allows students to read news articles.
+ *
+ * @author Ajay Gandecha
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Signal, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NewsService } from '../news.service';
@@ -29,8 +37,8 @@ export class ArticlePageComponent {
     protected newsService: NewsService
   ) {
     const data = this.route.snapshot.data as {
-      article: ArticleOverview;
+      article: ArticleOverview | null;
     };
-    this.article = signal(data.article);
+    this.article = signal(data.article!);
   }
 }
