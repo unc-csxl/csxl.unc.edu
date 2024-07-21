@@ -146,6 +146,7 @@ export class SettingsComponent {
 
   /** Retrieve a section for a given ID */
   sectionForId(id: number) {
+    console.log(id);
     let term = this.myCoursesService
       .allTerms()
       .find((term) => term.id == this.courseSite!.term_id)!;

@@ -43,7 +43,7 @@
           @if(selectedTerm.value) { @for (section of
           selectedTerm.value!.teaching_no_site; track section.id) { @if
           (!selectedSections().includes(section.id)) {
-          <mat-option [value]="section"
+          <mat-option [value]="section.id"
             >{{ section.subject_code }} {{ section.course_number }}-{{
               section.section_number
             }}</mat-option
