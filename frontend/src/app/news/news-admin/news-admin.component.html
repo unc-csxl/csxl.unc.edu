@@ -13,7 +13,20 @@
         </th>
         <td mat-cell *matCellDef="let element">
           <div class="row">
-            <p>{{ element.title }}</p>
+            <p>
+              {{ element.title }}
+              <span
+                [class]="
+                  'text-badge ' +
+                  (element.state === articleState.DRAFT
+                    ? 'tertiary-container-background'
+                    : element.state === articleState.PUBLISHED
+                    ? 'secondary-container-background'
+                    : 'primary-fixed-dim-background')
+                ">
+                {{ element.state }}
+              </span>
+            </p>
             <div class="button-container">
               <button
                 mat-stroked-button

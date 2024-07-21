@@ -7,7 +7,7 @@
  */
 
 import { Component, Signal, WritableSignal, signal } from '@angular/core';
-import { ArticleOverview } from 'src/app/welcome/welcome.model';
+import { ArticleOverview, ArticleState } from 'src/app/welcome/welcome.model';
 import { NewsService } from '../news.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -32,6 +32,8 @@ export class NewsAdminComponent {
   > = signal(undefined);
 
   public displayedColumns: string[] = ['title'];
+
+  articleState = ArticleState;
 
   /** Route information to be used in Organization Routing Module */
   public static Route = {

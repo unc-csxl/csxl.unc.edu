@@ -52,6 +52,11 @@ html, body {
         color: mat.get-theme-color($theme, on-secondary-container) !important;
     }
 
+    .tertiary-container-background {
+        background: mat.get-theme-color($theme, tertiary-container) !important;
+        color: mat.get-theme-color($theme, on-tertiary-container) !important;
+    }
+
     .secondary-background-color {
         background-color: mat.get-theme-color($theme, secondary) !important;
         color: mat.get-theme-color($theme, on-secondary) !important;
