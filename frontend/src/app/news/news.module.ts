@@ -32,9 +32,10 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { NewsRoutingModule } from './news-routing.module';
 import { ArticlePageComponent } from './article-page/article-page.component';
+import { NewsAdminComponent } from './news-admin/news-admin.component';
 
 @NgModule({
-  declarations: [ArticlePageComponent],
+  declarations: [ArticlePageComponent, NewsAdminComponent],
   imports: [
     CommonModule,
     MatTabsModule,

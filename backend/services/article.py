@@ -3,7 +3,7 @@ The Article Service allows the API to manipulate article data in the database.
 """
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func, or_
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -11,6 +11,7 @@ from ..database import db_session
 from .exceptions import ResourceNotFoundException
 
 from ..services.event import EventService
+from ..services.permission import PermissionService
 from ..services.coworking import PolicyService, OperatingHoursService
 
 from ..entities import ArticleEntity, UserEntity, EventEntity, EventRegistrationEntity
@@ -19,6 +20,7 @@ from ..entities.coworking import ReservationEntity, reservation_user_table
 from ..models import User
 from ..models.articles import WelcomeOverview, ArticleState, ArticleOverview
 from ..models.coworking import TimeRange
+from ..models.pagination import Paginated, PaginationParams
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -31,11 +33,13 @@ class ArticleService:
     def __init__(
         self,
         session: Session = Depends(db_session),
+        permission_svc: PermissionService = Depends(),
         policies_svc: PolicyService = Depends(),
         operating_hours_svc: OperatingHoursService = Depends(),
     ):
         """Initializes the session"""
         self._session = session
+        self._permission_svc = permission_svc
         self._policies_svc = policies_svc
         self._operating_hours_svc = operating_hours_svc
 
@@ -121,4 +125,37 @@ class ArticleService:
         """Access a single article by slug"""
         article_query = select(ArticleEntity).where(ArticleEntity.slug == slug)
         article_entity = self._session.scalars(article_query).one_or_none()
-        return article_entity.to_overview_model()
+        return article_entity.to_overview_model() if article_entity else None
+
+    def list(
+        self, subject: User, pagination_params: PaginationParams
+    ) -> Paginated[ArticleOverview]:
+        """List Articles.
+
+        The subject must have the 'article.list' permission on the 'article/' resource.
+
+        Args:
+            subject: The user performing the action.
+            pagination_params: The pagination parameters.
+
+        Returns:
+            Paginated[ArticleOverview]: The paginated list of articles.
+
+        Raises:
+            PermissionException: If the subject does not have the required permission.
+        """
+        self._permission_svc.enforce(subject, "article.list", "article/")
+
+        statement = select(ArticleEntity).order_by(ArticleEntity.published.desc())
+        length_statement = select(func.count()).select_from(ArticleEntity)
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        statement = statement.offset(offset).limit(limit)
+        length = self._session.execute(length_statement).scalar()
+        entities = self._session.execute(statement).scalars()
+
+        return Paginated(
+            items=[entity.to_overview_model() for entity in entities],
+            length=length,
+            params=pagination_params,
+        )

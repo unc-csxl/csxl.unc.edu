@@ -15,11 +15,20 @@ import {
   ArticleOverviewJson,
   parseArticleOverviewJson
 } from '../welcome/welcome.model';
+import {
+  DEFAULT_PAGINATION_PARAMS,
+  PaginationParams,
+  Paginator
+} from '../pagination';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewsService {
+  /** Encapsulated paginators */
+  private eventsPaginator: Paginator<ArticleOverview> =
+    new Paginator<ArticleOverview>('/api/articles/list');
+
   /** Constructor */
   constructor(protected http: HttpClient) {}
 
@@ -32,5 +41,14 @@ export class NewsService {
     return this.http
       .get<ArticleOverviewJson>(`/api/articles/${slug}`)
       .pipe(map(parseArticleOverviewJson));
+  }
+
+  /**
+   * Retrieves a page of events based on pagination parameters.
+   * @param params: Pagination parameters.
+   * @returns {Observable<Paginated<ArticleOverview, PaginationParams>>}
+   */
+  list(params: PaginationParams = DEFAULT_PAGINATION_PARAMS) {
+    return this.eventsPaginator.loadPage(params, parseArticleOverviewJson);
   }
 }
