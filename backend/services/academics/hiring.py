@@ -10,8 +10,8 @@ from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import CourseSiteEntity
-from ...entities.application_entity import UTAApplicationEntity, NewUTAApplicationEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
+from ...entities.application_entity import ApplicationEntity
 from ...entities.academics.hiring.application_review_entity import (
     ApplicationReviewEntity,
 )
@@ -52,7 +52,7 @@ class HiringService:
         site_entity = self._load_instructor_course_site(subject, course_site_id)
 
         # Step 2: Find all applicants for sections in a given course site.
-        applications: list[UTAApplicationEntity] = []
+        applications: list[ApplicationEntity] = []
         for section in site_entity.sections:
             applications += section.preferred_applicants
 
@@ -70,7 +70,7 @@ class HiringService:
                 preferred_applications.append(review)
 
         # Step 4: Find applications with no reviews.
-        applications_missing_review: list[UTAApplicationEntity] = []
+        applications_missing_review: list[ApplicationEntity] = []
 
         for application in applications:
             # Check if the application is missing reviews
@@ -174,15 +174,10 @@ class HiringService:
             select(CourseSiteEntity)
             .where(CourseSiteEntity.id == course_site_id)
             .options(
-                selectinload(CourseSiteEntity.sections)
-                .selectinload(SectionEntity.preferred_applicants)
-                .selectin_polymorphic([NewUTAApplicationEntity]),
-                selectinload(CourseSiteEntity.sections)
-                .selectinload(
-                    SectionEntity.preferred_applicants.of_type(NewUTAApplicationEntity)
-                )
-                .selectinload(NewUTAApplicationEntity.user),
-                selectinload(CourseSiteEntity.application_reviews),
+                joinedload(CourseSiteEntity.sections)
+                .joinedload(SectionEntity.preferred_applicants)
+                .joinedload(ApplicationEntity.user),
+                joinedload(CourseSiteEntity.application_reviews),
             )
         )
 

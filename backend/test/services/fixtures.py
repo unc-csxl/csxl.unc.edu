@@ -10,6 +10,7 @@ from ...services import (
     OrganizationService,
     EventService,
     RoomService,
+    ApplicationService,
 )
 from ...services.academics import HiringService
 
@@ -62,3 +63,9 @@ def event_svc_integration(session: Session, user_svc_integration: UserService):
 def room_svc(session: Session):
     """RoomService fixture."""
     return RoomService(session, PermissionService(session))
+
+
+@pytest.fixture()
+def application_svc(session: Session):
+    """ApplicationService fixture."""
+    return ApplicationService(session, PermissionService(session))

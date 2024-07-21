@@ -17,6 +17,7 @@ from .....models.academics.hiring.application_review import (
     ApplicationReviewStatus,
 )
 from .....services.academics import HiringService
+from .....services.application import ApplicationService
 
 # Injected Service Fixtures
 from .fixtures import hiring_svc

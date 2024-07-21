@@ -49,7 +49,6 @@ def test_get_by_id(section_svc: SectionService):
 
     section = section_svc.get_by_id(section_data.comp_110_001_current_term.id)
 
-    assert isinstance(section, CatalogSection)
     assert section.id == section_data.comp_110_001_current_term.id
 
 

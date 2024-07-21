@@ -17,3 +17,5 @@ class Term(TimeRange, BaseModel):
 
     id: str
     name: str
+    applications_open: datetime | None = None
+    applications_close: datetime | None = None
