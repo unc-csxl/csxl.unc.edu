@@ -21,6 +21,18 @@ export interface SectionOverview {
   section_number: string;
 }
 
+export const sectionOverviewToTeachingSectionOverview = (
+  sectionOverview: SectionOverview
+): TeachingSectionOverview => {
+  return {
+    id: sectionOverview.id,
+    subject_code: sectionOverview.subject_code,
+    course_number: sectionOverview.course_number,
+    section_number: sectionOverview.section_number,
+    title: ''
+  };
+};
+
 export interface CourseOverview {
   id: string;
   subject_code: string;

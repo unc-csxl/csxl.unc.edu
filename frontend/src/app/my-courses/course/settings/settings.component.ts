@@ -4,6 +4,7 @@ import {
   CourseSite,
   CourseSiteOverview,
   SectionOverview,
+  sectionOverviewToTeachingSectionOverview,
   TeachingSectionOverview,
   TermOverview,
   UpdatedCourseSite
@@ -146,15 +147,29 @@ export class SettingsComponent {
 
   /** Retrieve a section for a given ID */
   sectionForId(id: number) {
-    console.log(id);
     let term = this.myCoursesService
       .allTerms()
       .find((term) => term.id == this.courseSite!.term_id)!;
+    console.log(term);
     return (
       term.teaching_no_site.find((section) => section.id === id) ||
       term.sites
         .flatMap((site) => site.sections)
         .find((section) => section.id === id)
     );
+  }
+
+  /** Retrieves a list of all sections for the dropwdown */
+  allSections() {
+    let term = this.myCoursesService
+      .allTerms()
+      .find((term) => term.id == this.courseSite!.term_id)!;
+    return term.teaching_no_site
+      .concat(
+        term.sites
+          .flatMap((site) => site.sections)
+          .map(sectionOverviewToTeachingSectionOverview)
+      )
+      .sort((a, b) => +a.course_number - +b.course_number);
   }
 }

@@ -40,9 +40,8 @@
         <mat-autocomplete
           #auto="matAutocomplete"
           (optionSelected)="selected($event)">
-          @if(selectedTerm.value) { @for (section of
-          selectedTerm.value!.teaching_no_site; track section.id) { @if
-          (!selectedSections().includes(section.id)) {
+          @if(selectedTerm.value) { @for (section of allSections(); track
+          section.id) { @if (!selectedSections().includes(section.id)) {
           <mat-option [value]="section.id"
             >{{ section.subject_code }} {{ section.course_number }}-{{
               section.section_number
