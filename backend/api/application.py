@@ -6,17 +6,14 @@ from fastapi import APIRouter, Depends
 
 from typing import List
 
-from backend.models.application_details import (
-    UTAApplicationDetails,
-    NewUTAApplicationDetails,
-)
+from backend.models.application import Application
 from backend.services.application import ApplicationService
 
 from ..api.authentication import registered_user
 from ..models.user import User
-from ..models.application import SectionApplicant
+from ..models.academics import CatalogSectionIdentity
 
-__authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
+__authors__ = ["Ajay Gandecha", "Ben Goulet", "Abdulaziz Al-Shayef"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -29,77 +26,33 @@ openapi_tags = {
 api = APIRouter(prefix="/api/applications/ta")
 
 
-@api.get(
-    "/section/{section_id}",
-    response_model=list[SectionApplicant],
-    tags=["Applications"],
-)
-def get_applications_for_section(
-    section_id: int,
+@api.get("/user/{term_id}", tags=["Applications"])
+def get_application(
+    term_id: str,
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> list[SectionApplicant]:
-    """
-    Get all applications
+) -> Application | None:
+    """Get a user's application"""
 
-    Parameters:
-        application_service: a valid ApplicationService
-
-    Returns:
-        list[Application]: All `Application`s in the `Application` database table
-    """
-
-    # Return all applications
-    return application_service.get_applications_for_section(section_id, user)
+    return application_service.get_application(term_id, user)
 
 
-@api.get("/user", response_model=NewUTAApplicationDetails | None, tags=["Applications"])
-def get_applications_user(
+@api.post("", tags=["Applications"])
+def create_application(
+    application: Application,
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> NewUTAApplicationDetails | None:
-    """
-    Get all applications
-
-    Parameters:
-        application_service: a valid ApplicationService
-
-    Returns:
-        list[Application]: All `Application`s in the `Application` database table
-    """
-
-    return application_service.get_application(user)
+) -> Application:
+    """Creates an application"""
+    return application_service.create(user, application)
 
 
-@api.post("", response_model=NewUTAApplicationDetails, tags=["Applications"])
-def new_undergrad_application(
-    application: NewUTAApplicationDetails,
-    user: User = Depends(registered_user),
-    application_service: ApplicationService = Depends(),
-) -> NewUTAApplicationDetails:
-    """
-    Create application
-
-    Parameters:
-        application: a valid New_UTA model
-        application_service: a valid ApplicationService
-
-    Returns:
-        Application: Created application
-
-    Raises:
-        HTTPException 422 if create() raises an Exception
-    """
-
-    return application_service.create_uta_application(user, application)
-
-
-@api.put("/update", response_model=NewUTAApplicationDetails, tags=["Applications"])
+@api.put("", tags=["Applications"])
 def update_undergrad_application(
-    application: NewUTAApplicationDetails,
+    application: Application,
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
-) -> NewUTAApplicationDetails:
+) -> Application:
     """
     Update application
 
@@ -115,11 +68,12 @@ def update_undergrad_application(
         ResourceNotFound if application doesn't exist
     """
 
-    return application_service.update_uta_application(user, application)
+    return application_service.update(user, application)
 
 
-@api.delete("/delete", response_model=None, tags={"Applications"})
+@api.delete("", response_model=None, tags={"Applications"})
 def delete_application(
+    application: Application,
     user: User = Depends(registered_user),
     application_service: ApplicationService = Depends(),
 ):
@@ -136,4 +90,23 @@ def delete_application(
         ResourceNotFound if application doesn't exist
     """
 
-    return application_service.delete_application(user)
+    return application_service.delete(application.id, user)
+
+
+@api.get(
+    "/eligible-sections",
+    response_model=list[CatalogSectionIdentity],
+    tags=["Applications"],
+)
+def get_eligible_sections(
+    application_service: ApplicationService = Depends(),
+) -> list[CatalogSectionIdentity]:
+    """
+    Get sections that an applicant can apply to.
+
+    Returns:
+        list[CatalogSectionIdentity]: All sections.
+    """
+
+    # Return all applications
+    return application_service.eligible_sections()

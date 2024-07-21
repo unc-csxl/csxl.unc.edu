@@ -1,12 +1,14 @@
-<div class="dialog">
-  <h3>Upcoming Hours</h3>
-  <ul>
-    @for(hours of operatingHours; track hours.id) {
-    <li>
-      {{ hours.start | date: 'EEEE M/d' }} from
+<h2 mat-dialog-title>Upcoming Hours</h2>
+<mat-dialog-content>
+  @for(hours of operatingHours; track hours.id) {
+  <div class="hours-row">
+    <p>
+      <span class="semibold">{{ hours.start | date: 'EEEE (M/d)' }}</span>
+    </p>
+    <p class="hours-text">
       {{ hours.start | date: 'h:mma' | lowercase }} to
       {{ hours.end | date: 'h:mma' | lowercase }}
-    </li>
-    }
-  </ul>
-</div>
+    </p>
+  </div>
+  }
+</mat-dialog-content>

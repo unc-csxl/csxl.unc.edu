@@ -27,7 +27,6 @@ import { SearchBar } from './search-bar/search-bar.widget';
 import { RouterModule } from '@angular/router';
 import { UserLookup } from './user-lookup/user-lookup.widget';
 import { CommunityAgreement } from './community-agreement/community-agreement.widget';
-import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
@@ -38,6 +37,7 @@ import { AdminFabComponent } from './admin-fab/admin-fab.component';
 import { TabContainerWidget } from './tab-container/tab-container.widget';
 
 import { YouTubePlayer } from '@angular/youtube-player';
+import { MarkdownDirective } from './directives/markdown.directive';
 
 @NgModule({
   declarations: [
@@ -45,13 +45,13 @@ import { YouTubePlayer } from '@angular/youtube-player';
     SearchBar,
     UserLookup,
     UserChipList,
-    SlackInviteBox,
     CommunityAgreement,
     ProfileAboutCard,
     MatPaneComponent,
     BannerCardComponent,
     AdminFabComponent,
-    TabContainerWidget
+    TabContainerWidget,
+    MarkdownDirective
   ],
   imports: [
     CommonModule,
@@ -85,7 +85,8 @@ import { YouTubePlayer } from '@angular/youtube-player';
     MatPaneComponent,
     BannerCardComponent,
     AdminFabComponent,
-    TabContainerWidget
+    TabContainerWidget,
+    MarkdownDirective
   ],
   providers: [GroupEventsPipe]
 })
