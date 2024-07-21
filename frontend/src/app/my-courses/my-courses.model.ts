@@ -9,12 +9,16 @@
 
 import { Section } from '../academics/academics.models';
 import { Paginated, PaginationParams } from '../pagination';
+import { PublicProfile } from '../profile/profile.service';
 
 export interface SectionOverview {
   id: number;
   number: string;
   meeting_pattern: string;
   course_site_id: number | null;
+  subject_code: string;
+  course_number: string;
+  section_number: string;
 }
 
 export interface CourseOverview {
@@ -168,17 +172,29 @@ export interface TicketDraft {
 
 export interface CourseSiteOverview {
   id: number;
+  term_id: string;
   subject_code: string;
   number: string;
   title: string;
   role: string;
   sections: SectionOverview[];
+  gtas: PublicProfile[];
+  utas: PublicProfile[];
 }
 
 export interface NewCourseSite {
   title: string;
   term_id: string;
   section_ids: number[];
+}
+
+export interface UpdatedCourseSite {
+  id: number;
+  title: string;
+  term_id: string;
+  section_ids: number[];
+  gtas: PublicProfile[];
+  utas: PublicProfile[];
 }
 
 export interface CourseSite {

@@ -1,8 +1,76 @@
 <mat-pane>
-  <mat-card-header>
-    <mat-card-title>Settings</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p>Settings here.</p>
-  </mat-card-content>
+  <form>
+    <mat-card-header>
+      <mat-card-title>Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Title Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input
+          matInput
+          placeholder="Enter the title for the course site."
+          [formControl]="title"
+          required />
+      </mat-form-field>
+      <!-- Section Selection Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Select Course Sections</mat-label>
+        <mat-chip-grid #chipGrid>
+          @for (sectionId of selectedSections(); track sectionId) { @if
+          (sectionForId(sectionId)) {
+          <mat-chip-row (removed)="remove(sectionForId(sectionId)!)">
+            {{ sectionForId(sectionId)!.subject_code }}
+            {{ sectionForId(sectionId)!.course_number }}-{{
+              sectionForId(sectionId)!.section_number
+            }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+          } }
+        </mat-chip-grid>
+        <input
+          name="currentSection"
+          placeholder="Add Sections..."
+          #sectionInput
+          [(ngModel)]="currentSectionInput"
+          [matChipInputFor]="chipGrid"
+          [matAutocomplete]="auto" />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selected($event)">
+          @if(selectedTerm.value) { @for (section of
+          selectedTerm.value!.teaching_no_site; track section.id) { @if
+          (!selectedSections().includes(section.id)) {
+          <mat-option [value]="section"
+            >{{ section.subject_code }} {{ section.course_number }}-{{
+              section.section_number
+            }}</mat-option
+          >
+          } } }
+        </mat-autocomplete>
+      </mat-form-field>
+      <!-- GTA Field -->
+      <user-lookup
+        label="Graduate Teaching Assistants"
+        [users]="gtas"></user-lookup>
+      <!-- GTA Field -->
+      <user-lookup
+        label="Undergraduate Teaching Assistants"
+        [users]="utas"></user-lookup>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        type="button"
+        [disabled]="noChanges()"
+        (click)="resetForm()">
+        Reset
+      </button>
+      <button mat-flat-button type="submit" [disabled]="!formIsValid()" (click)="submit()">
+        Save
+      </button>
+    </mat-card-actions>
+  </form>
 </mat-pane>

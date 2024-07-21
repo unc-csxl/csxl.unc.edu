@@ -52,7 +52,7 @@ def get_course_site(
     course_site_id: int,
     subject: User = Depends(registered_user),
     course_site_svc: CourseSiteService = Depends(),
-) -> CourseSiteOverview:
+) -> UpdatedCourseSite:
     """
     Gets the current office hour event overviews for a given class.
 

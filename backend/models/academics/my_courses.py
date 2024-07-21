@@ -19,6 +19,9 @@ class SectionOverview(BaseModel):
     number: str
     meeting_pattern: str
     course_site_id: int | None
+    subject_code: str
+    course_number: str
+    section_number: str
 
 
 class CourseOverview(BaseModel):
@@ -32,6 +35,7 @@ class CourseOverview(BaseModel):
 
 class CourseSiteOverview(BaseModel):
     id: int
+    term_id: str
     subject_code: str
     number: str
     title: str
