@@ -59,10 +59,10 @@ export class NewsAdminComponent {
       { duration: 15000 }
     );
     confirmDelete.onAction().subscribe(() => {
-      this.newsService.list(DEFAULT_PAGINATION_PARAMS).subscribe((page) => {
-        this.articlesPage.set(page);
-      });
       this.newsService.deleteArticle(article.id).subscribe(() => {
+        this.newsService.list(DEFAULT_PAGINATION_PARAMS).subscribe((page) => {
+          this.articlesPage.set(page);
+        });
         this.snackBar.open('This article has been deleted.', '', {
           duration: 2000
         });

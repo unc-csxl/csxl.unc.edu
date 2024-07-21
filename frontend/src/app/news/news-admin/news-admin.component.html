@@ -1,3 +1,4 @@
+@if (articlesPage()) {
 <mat-pane>
   <mat-card-content>
     <table mat-table [dataSource]="articlesPage()!.items">
@@ -46,3 +47,4 @@
       (page)="handlePageEvent($event)"></mat-paginator>
   </mat-card-content>
 </mat-pane>
+}
