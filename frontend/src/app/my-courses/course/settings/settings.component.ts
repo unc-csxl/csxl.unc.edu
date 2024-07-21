@@ -108,26 +108,8 @@ export class SettingsComponent {
     return (
       this.title.value !== null &&
       this.title.value !== '' &&
-      this.selectedSections().length > 0 &&
-      !this.noChanges()
+      this.selectedSections().length > 0
     );
-  }
-
-  /** Determines if there are no current edits. */
-  noChanges(): boolean {
-    const titleCheck = this.title.value === this.courseSite?.title;
-    // JSON.stringify() and sorts are used to compare lists independent of order.
-    const sectionsCheck =
-      JSON.stringify(this.selectedSections().sort()) ===
-      JSON.stringify(this.courseSite?.section_ids.sort());
-    const gtasCheck =
-      JSON.stringify(this.gtas.map((user) => user.id).sort()) ===
-      JSON.stringify(this.courseSite?.gtas.map((user) => user.id).sort());
-    const utasCheck =
-      JSON.stringify(this.utas.map((user) => user.id).sort()) ===
-      JSON.stringify(this.courseSite?.utas.map((user) => user.id).sort());
-
-    return titleCheck && sectionsCheck && gtasCheck && utasCheck;
   }
 
   /**

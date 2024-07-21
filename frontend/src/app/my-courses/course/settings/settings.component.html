@@ -61,16 +61,10 @@
         [users]="utas"></user-lookup>
     </mat-card-content>
     <mat-card-actions>
-      <button
-        mat-stroked-button
-        type="button"
-        [disabled]="noChanges()"
-        (click)="resetForm()">
+      <button mat-stroked-button type="button" (click)="resetForm()">
         Reset
       </button>
-      <button mat-flat-button type="submit" [disabled]="!formIsValid()" (click)="submit()">
-        Save
-      </button>
+      <button mat-flat-button type="submit" (click)="submit()">Save</button>
     </mat-card-actions>
   </form>
 </mat-pane>
