@@ -74,10 +74,10 @@ export class NewsService {
   }
 
   /**
-   * Updates an existing article.
+   * Deletes an existing article.
    * @returns { Observable<ArticleOverview> }
    */
   deleteArticle(articleId: number) {
-    this.http.delete(`/api/articles/${articleId}`);
+    return this.http.delete(`/api/articles/${articleId}`);
   }
 }

@@ -18,6 +18,7 @@ import {
   PaginationParams
 } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-news-admin',
@@ -47,6 +48,25 @@ export class NewsAdminComponent {
   ) {
     this.newsService.list(DEFAULT_PAGINATION_PARAMS).subscribe((page) => {
       this.articlesPage.set(page);
+    });
+  }
+
+  /** Delete an article.*/
+  deleteArticle(article: ArticleOverview): void {
+    let confirmDelete = this.snackBar.open(
+      'Are you sure you want to delete this article?',
+      'Delete',
+      { duration: 15000 }
+    );
+    confirmDelete.onAction().subscribe(() => {
+      this.newsService.list(DEFAULT_PAGINATION_PARAMS).subscribe((page) => {
+        this.articlesPage.set(page);
+      });
+      this.newsService.deleteArticle(article.id).subscribe(() => {
+        this.snackBar.open('This article has been deleted.', '', {
+          duration: 2000
+        });
+      });
     });
   }
 

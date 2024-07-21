@@ -79,6 +79,6 @@ def delete_article(
     article_id: int,
     subject: User = Depends(registered_user),
     article_svc: ArticleService = Depends(),
-) -> ArticleOverview:
+):
     """Deletes an article."""
-    return article_svc.delete_article(subject, article_id)
+    article_svc.delete_article(subject, article_id)
