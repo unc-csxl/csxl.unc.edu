@@ -19,8 +19,13 @@ import {
 import {
   Event,
   EventJson,
+  EventOverview,
   EventRegistration,
-  parseEventJson
+  EventStatusOverview,
+  EventStatusOverviewJson,
+  parseEventJson,
+  parseEventOverviewJson,
+  parseEventStatusOverviewJson
 } from './event.model';
 import { Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -31,8 +36,8 @@ import { Profile } from '../models.module';
 })
 export class EventService {
   /** Encapsulated paginators */
-  private eventsPaginator: TimeRangePaginator<Event> =
-    new TimeRangePaginator<Event>('/api/events/paginate');
+  private eventsPaginator: TimeRangePaginator<EventOverview> =
+    new TimeRangePaginator<EventOverview>('/api/events/paginate');
 
   /** Constructor */
   constructor(protected http: HttpClient) {}
@@ -45,7 +50,7 @@ export class EventService {
    * @returns {Observable<Paginated<Event, TimeRangePaginationParams>>}
    */
   getEvents(params: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS) {
-    return this.eventsPaginator.loadPage(params, parseEventJson);
+    return this.eventsPaginator.loadPage(params, parseEventOverviewJson);
   }
 
   /**
@@ -114,9 +119,9 @@ export class EventService {
    * @param event: Event to register to.
    * @returns {Observable<EventRegistration>}
    */
-  registerForEvent(event: Event): Observable<EventRegistration> {
+  registerForEvent(eventId: number): Observable<EventRegistration> {
     return this.http.post<EventRegistration>(
-      `/api/events/${event.id}/registration`,
+      `/api/events/${eventId}/registration`,
       {}
     );
   }
@@ -126,9 +131,19 @@ export class EventService {
    * @param event: Event to unregister from.
    * @returns {Observable<EventRegistration>}
    */
-  unregisterForEvent(event: Event): Observable<EventRegistration> {
+  unregisterForEvent(eventId: number): Observable<EventRegistration> {
     return this.http.delete<EventRegistration>(
-      `/api/events/${event.id}/registration`
+      `/api/events/${eventId}/registration`
     );
+  }
+
+  /**
+   * Returns the event status, which includes featured events and registrations.
+   * @returns {Observable<EventStatusOverview>}
+   */
+  getEventStatus(): Observable<EventStatusOverview> {
+    return this.http
+      .get<EventStatusOverviewJson>(`/api/events/status`)
+      .pipe(map(parseEventStatusOverviewJson));
   }
 }

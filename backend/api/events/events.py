@@ -14,6 +14,7 @@ from ...services.event import EventService
 from ...services.user import UserService
 from ...services.exceptions import ResourceNotFoundException, UserPermissionException
 from ...models.event import DraftEvent
+from ...models.event import EventOverview, EventStatusOverview
 from ...models.event_details import EventDetails
 from ...models.coworking.time_range import TimeRange
 from ...api.authentication import registered_user
@@ -45,7 +46,7 @@ def list_events(
     filter: str = "",
     range_start: str = "",
     range_end: str = "",
-) -> Paginated[EventDetails]:
+) -> Paginated[EventOverview]:
     """List events in time range via standard backend pagination query parameters."""
 
     pagination_params = EventPaginationParams(
@@ -58,68 +59,13 @@ def list_events(
     return event_service.get_paginated_events(pagination_params, subject)
 
 
-@api.get("/paginate/unauthenticated", tags=["Events"])
-def list_events_unauthenticated(
-    event_service: EventService = Depends(),
-    order_by: str = "time",
-    ascending: str = "true",
-    filter: str = "",
-    range_start: str = "",
-    range_end: str = "",
-) -> Paginated[EventDetails]:
-    """List events in time range via standard backend pagination query parameters for unauthenticated users."""
-
-    pagination_params = EventPaginationParams(
-        order_by=order_by,
-        ascending=ascending,
-        filter=filter,
-        range_start=range_start,
-        range_end=range_end,
-    )
-    return event_service.get_paginated_events(pagination_params)
-
-
-@api.get("", response_model=list[EventDetails], tags=["Events"])
-def get_events(
-    subject: User = Depends(registered_user), event_service: EventService = Depends()
-) -> list[EventDetails]:
-    """
-    Get all events
-
-    Args:
-        subject: a valid User model representing the currently logged in User
-        event_service: a valid EventService
-
-    Returns:
-        list[EventDetails]: All `EventDetails`s in the `Event` database table
-    """
-    return event_service.all(subject)
-
-
-@api.get("/range", response_model=list[EventDetails], tags=["Events"])
-def get_events_in_time_range(
+@api.get("/status", tags=["Events"])
+def get_status(
     subject: User = Depends(registered_user),
-    start: datetime | None = None,
-    end: datetime | None = None,
     event_service: EventService = Depends(),
-) -> list[EventDetails]:
-    """
-    Get all events in the time range
-
-    Args:
-        subject: a valid User model representing the currently logged in User
-        start (optional): a datetime object representing the start time of the range.
-        end (optional): a datetime object representing the start time of the range.
-        event_service: a valid EventService
-
-    Returns:
-        list[EventDetails]: All `EventDetails`s in the `Event` database table
-    """
-    start = datetime.now() if start is None else start
-    end = datetime.now() + timedelta(days=365) if end is None else end
-    time_range = TimeRange(start=start, end=end)
-
-    return event_service.get_events_in_time_range(time_range, subject)
+) -> EventStatusOverview:
+    """Retrieves the featured event and user's registrations."""
+    return event_service.get_event_status(subject)
 
 
 @api.get("/organization/{slug}", response_model=list[EventDetails], tags=["Events"])
@@ -170,30 +116,6 @@ def get_event_by_id(
     return event_service.get_by_id(id, subject)
 
 
-@api.get("/range/unauthenticated", response_model=list[EventDetails], tags=["Events"])
-def get_events_in_time_range_unauthenticated(
-    start: datetime | None = None,
-    end: datetime | None = None,
-    event_service: EventService = Depends(),
-) -> list[EventDetails]:
-    """
-    Get all events in the time range for unauthenticated users
-
-    Args:
-        start (optional): a datetime object representing the start time of the range.
-        end (optional): a datetime object representing the start time of the range.
-        event_service: a valid EventService
-
-    Returns:
-        list[EventDetails]: All `EventDetails`s in the `Event` database table
-    """
-    start = datetime.now() if start is None else start
-    end = datetime.now() + timedelta(days=365) if end is None else end
-    time_range = TimeRange(start=start, end=end)
-
-    return event_service.get_events_in_time_range(time_range)
-
-
 @api.get(
     "/organization/{slug}/unauthenticated",
     response_model=list[EventDetails],
@@ -217,28 +139,6 @@ def get_events_by_organization_unauthenticated(
     """
     organization = organization_service.get_by_slug(slug)
     return event_service.get_events_by_organization(organization)
-
-
-@api.get(
-    "/{id}/unauthenticated",
-    responses={404: {"model": None}},
-    response_model=EventDetails,
-    tags=["Events"],
-)
-def get_event_by_id_unauthenticated(
-    id: int, event_service: EventService = Depends()
-) -> EventDetails:
-    """
-    Get event with matching id for unauthenticated users
-
-    Args:
-        id: an int representing a unique Event ID
-        event_service: a valid EventService
-
-    Returns:
-        EventDetails: a valid EventDetails model corresponding to the given event id
-    """
-    return event_service.get_by_id(id)
 
 
 @api.post("", response_model=EventDetails, tags=["Events"])

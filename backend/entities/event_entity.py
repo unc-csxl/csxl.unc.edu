@@ -3,6 +3,7 @@
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..models.event_details import EventDetails
+from ..models.event import EventOverview
 from .entity_base import EntityBase
 from typing import Self
 from ..models.event import DraftEvent, Event
@@ -38,6 +39,8 @@ class EventEntity(EntityBase):
     public: Mapped[bool] = mapped_column(Boolean)
     # Maximim number of people who can register for the event
     registration_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # URL for the image for an event.
+    image_url: Mapped[str] = mapped_column(String, nullable=True)
 
     # Organization hosting the event
     # NOTE: This defines a one-to-many relationship between the organization and events tables.
@@ -68,6 +71,7 @@ class EventEntity(EntityBase):
             public=model.public,
             registration_limit=model.registration_limit,
             organization_id=model.organization_id,
+            image_url=model.image_url,
         )
 
     @classmethod
@@ -89,6 +93,7 @@ class EventEntity(EntityBase):
             public=model.public,
             registration_limit=model.registration_limit,
             organization_id=model.organization_id,
+            image_url=model.image_url,
         )
 
     def to_model(self, subject: User | None = None) -> Event:
@@ -136,6 +141,7 @@ class EventEntity(EntityBase):
             is_attendee=is_attendee,
             is_organizer=is_organizer,
             organizers=organizers,
+            image_url=self.image_url,
         )
 
     def to_details_model(self, subject: User | None = None) -> EventDetails:
@@ -161,4 +167,62 @@ class EventEntity(EntityBase):
             is_attendee=event.is_attendee,
             is_organizer=event.is_organizer,
             organizers=event.organizers,
+            image_url=event.image_url,
+        )
+
+    def to_overview_model(self, subject: User | None = None) -> EventOverview:
+        """Creates an overview model from an event."""
+        attendees = [
+            registration.to_flat_model()
+            for registration in self.registrations
+            if registration.registration_type == RegistrationType.ATTENDEE
+        ]
+
+        user_registration = (
+            [
+                registration
+                for registration in self.registrations
+                if registration.user_id == subject.id
+            ][0]
+            if subject is not None
+            and len(
+                [
+                    registration
+                    for registration in self.registrations
+                    if registration.user_id == subject.id
+                ]
+            )
+            > 0
+            else None
+        )
+
+        # Hide organizer info for unauthenticated users
+        organizer_registrations = [
+            registration
+            for registration in self.registrations
+            if registration.registration_type == RegistrationType.ORGANIZER
+        ]
+
+        organizers = [
+            registration.user.to_public_model()
+            for registration in organizer_registrations
+        ]
+
+        return EventOverview(
+            id=self.id,
+            name=self.name,
+            time=self.time,
+            location=self.location,
+            description=self.description,
+            public=self.public,
+            registration_limit=self.registration_limit,
+            number_registered=len(attendees),
+            organization_slug=self.organization.slug,
+            organization_icon=self.organization.logo,
+            organization_name=self.organization.shorthand,
+            organizers=organizers,
+            user_registration_type=(
+                user_registration.registration_type if user_registration else None
+            ),
+            image_url=self.image_url,
         )

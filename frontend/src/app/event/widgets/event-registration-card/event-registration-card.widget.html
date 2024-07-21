@@ -1,0 +1,16 @@
+@if(event) {
+<mat-card appearance="outlined" [routerLink]="'/events/' + event.id">
+  <mat-card-content>
+    <div class="header-row">
+      <div class="header-column">
+        <mat-card-subtitle>{{ event.name }}</mat-card-subtitle>
+        <p>{{ event.location }}</p>
+        <p>
+          {{ event.time | date: 'shortDate' }} at
+          {{ event.time | date: 'shortTime' }}
+        </p>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+}

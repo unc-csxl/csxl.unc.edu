@@ -1,0 +1,74 @@
+<mat-pane class="featured-pane">
+  <mat-chip-set class="featured-chipset" aria-label="Dog selection">
+    <mat-chip disableRipple class="featured-chip on-secondary-background-color">
+      Featured
+    </mat-chip>
+  </mat-chip-set>
+  <img
+    mat-card-image
+    [src]="
+      event.image_url !== null && event.image_url !== ''
+        ? event.image_url
+        : 'https://media.licdn.com/dms/image/D4E3DAQGnWv1b0Gb9gw/image-scale_191_1128/0/1673933475853/unc_csxl_cover?e=2147483647&v=beta&t=OMN1WHqXnrO5x2xsJ3rQWGjQMkcZS9uCUdFonDKYayk'
+    " />
+  <mat-card-header>
+    <mat-card-title>{{ event.name }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>May 28th at 7:00PM in FB009</p>
+
+    <mat-chip-set>
+      <!-- Organization chip -->
+      <mat-chip
+        id="organization-chip"
+        [routerLink]="'/organizations/' + event.organization_slug">
+        <img
+          class="profile-icon"
+          matChipAvatar
+          [src]="event.organization_icon" />
+        {{ event.organization_name }}
+      </mat-chip>
+
+      @if (event.organizers.length > 0) {
+      <mat-divider class="vertical-divider" [vertical]="true" />
+      }
+
+      <!-- Organizer Chips -->
+      @for (organizer of event.organizers; track organizer.id) {
+      <mat-chip>
+        @if (organizer.github_avatar && organizer.github_avatar !== '') {
+        <img
+          class="profile-icon"
+          matChipAvatar
+          [src]="organizer.github_avatar" />
+        }
+
+        {{ organizer.first_name }} {{ organizer.last_name }}
+      </mat-chip>
+      }
+    </mat-chip-set>
+
+    <p class="description">
+      {{ event.description }}
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-stroked-button [routerLink]="'/events/' + event.id">
+      Details
+    </button>
+    @if(event.user_registration_type === registrationType.ATTENDEE) {
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      (click)="unregisterForEvent()">
+      Unregister
+    </button>
+    } @else if(event.user_registration_type === registrationType.ORGANIZER) {
+    <button mat-flat-button [disabled]="true">Manage</button>
+    } @else if(event.registration_limit === event.number_registered) {
+    <button mat-flat-button [disabled]="true">Filled</button>
+    } @else {
+    <button mat-flat-button (click)="registerForEvent()">Register</button>
+    }
+  </mat-card-actions>
+</mat-pane>

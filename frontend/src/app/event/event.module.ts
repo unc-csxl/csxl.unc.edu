@@ -33,21 +33,23 @@ import { MatChipsModule } from '@angular/material/chips';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { EventRoutingModule } from './event-routing.module';
-import { EventDetailCard } from './widgets/event-detail-card/event-detail-card.widget';
 import { EventDetailsComponent } from './event-details/event-details.component';
-import { EventPageComponent } from './event-page/event-page.component';
 import { EventEditorComponent } from './event-editor/event-editor.component';
-import { EventUsersList } from './widgets/event-users-list/event-users-list.widget';
 import { GroupEventsPipe } from './pipes/group-events.pipe';
+import { EventsPageComponent } from './events-page/events-page.component';
+import { FeaturedEventCardWidget } from './widgets/featured-event-card/featured-event-card.widget';
+import { EventCardWidget } from './widgets/event-card/event-card.widget';
+import { EventRegistrationCardWidget } from './widgets/event-registration-card/event-registration-card.widget';
 
 @NgModule({
   declarations: [
-    EventDetailCard,
+    EventsPageComponent,
     EventDetailsComponent,
-    EventPageComponent,
     EventEditorComponent,
-    EventUsersList,
-    GroupEventsPipe
+    GroupEventsPipe,
+    FeaturedEventCardWidget,
+    EventCardWidget,
+    EventRegistrationCardWidget
   ],
   imports: [
     CommonModule,
