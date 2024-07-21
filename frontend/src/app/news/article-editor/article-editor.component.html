@@ -40,6 +40,20 @@
           name="slug"
           required />
       </mat-form-field>
+
+      <!-- Organization Selection -->
+      <mat-form-field appearance="outline">
+        <mat-label>Organization</mat-label>
+        <mat-select formControlName="organization_id">
+          @for (organization of organizationService.organizations(); track
+          organization.id) {
+          <mat-option [value]="organization.id">{{
+            organization.name
+          }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
       <!-- User Selection / Authors Form Control -->
       <user-lookup label="Authors" [users]="authors"></user-lookup>
 

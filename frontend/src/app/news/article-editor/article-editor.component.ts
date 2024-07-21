@@ -20,6 +20,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NewsService } from '../news.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PublicProfile } from 'src/app/profile/profile.service';
+import { OrganizationService } from 'src/app/organization/organization.service';
+import { Organization } from 'src/app/organization/organization.model';
 
 @Component({
   selector: 'app-article-editor',
@@ -57,6 +59,7 @@ export class ArticleEditorComponent {
       Validators.maxLength(400)
     ]),
     body: new FormControl('', [Validators.required]),
+    organization_id: new FormControl<number | null>(null),
     is_announcement: new FormControl(false, [Validators.required])
   });
 
@@ -68,6 +71,7 @@ export class ArticleEditorComponent {
     private router: Router,
     private snackBar: MatSnackBar,
     private newsService: NewsService,
+    protected organizationService: OrganizationService,
     protected formBuilder: FormBuilder
   ) {
     const data = this.route.snapshot.data as {
@@ -78,6 +82,7 @@ export class ArticleEditorComponent {
     /** Set article form data */
     if (this.article) {
       this.articleForm.patchValue(this.article);
+      this.authors = this.article.authors;
     } else {
       this.articleForm.patchValue({
         title: '',
@@ -85,6 +90,7 @@ export class ArticleEditorComponent {
         image_url: '',
         synopsis: '',
         body: '',
+        organization_id: null,
         is_announcement: false
       });
     }
