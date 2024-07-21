@@ -125,3 +125,36 @@ mat-card-header {
 .none-text {
     margin-top: 16px;
 }
+
+@media only screen and (max-width: 1000px) {
+    .container {
+        flex-direction: column-reverse;
+    }
+    
+    .left-column {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+
+    .right-column {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+
+    .news-pane {
+        flex: auto;
+    
+        ::ng-deep .mat-mdc-card-outlined {
+            height: auto !important;
+        }
+    
+        .mat-mdc-card-content {
+            height: auto !important;
+            overflow-y: auto !important;
+        }
+    }
+  }
