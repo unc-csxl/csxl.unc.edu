@@ -14,6 +14,7 @@ import { FormControl } from '@angular/forms';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { myCoursesInstructorGuard } from '../../my-courses.guard';
 
 @Component({
   selector: 'app-settings',
@@ -26,7 +27,8 @@ export class SettingsComponent {
   public static Route = {
     path: 'settings',
     title: 'Course',
-    component: SettingsComponent
+    component: SettingsComponent,
+    canActivate: [myCoursesInstructorGuard]
   };
 
   /** Stores the course site.  */
