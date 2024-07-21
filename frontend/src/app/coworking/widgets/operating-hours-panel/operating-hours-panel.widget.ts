@@ -17,6 +17,7 @@ export class CoworkingHoursCard {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(OperatingHoursDialog, {
+      width: '400px',
       data: this.operatingHours
     });
   }

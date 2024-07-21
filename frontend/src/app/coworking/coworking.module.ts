@@ -35,6 +35,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AmbassadorXLComponent } from './ambassador-home/ambassador-xl/ambassador-xl.component';
 import { AmbassadorRoomComponent } from './ambassador-home/ambassador-room/ambassador-room.component';
 import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-facts.widget';
+import { DialogModule } from '@angular/cdk/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -80,7 +82,8 @@ import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-
     MatNativeDateModule,
     MatFormFieldModule,
     MatTooltipModule,
-    MatTabsModule
+    MatTabsModule,
+    MatDialogModule
   ]
 })
 export class CoworkingModule {}

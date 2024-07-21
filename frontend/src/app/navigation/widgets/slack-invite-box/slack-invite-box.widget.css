@@ -1,12 +1,8 @@
-.slack-dialog {
-  max-width: 100%;
-  max-height: 90vh;
-  overflow: auto;
-  scroll-behavior: auto;
+.mat-divider {
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .slack-dialog {
-    color: white;
-  }
+.mat-mdc-dialog-content {
+  overflow-y: scroll;
 }
