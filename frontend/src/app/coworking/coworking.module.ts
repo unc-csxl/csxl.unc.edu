@@ -8,10 +8,6 @@ import { MatCardModule } from '@angular/material/card';
 import { CoworkingReservationCard } from './widgets/coworking-reservation-card/coworking-reservation-card';
 import { CoworkingDropInCard } from './widgets/dropin-availability-card/dropin-availability-card.widget';
 import { MatListModule } from '@angular/material/list';
-import {
-  CoworkingHoursCard,
-  OperatingHoursCapitalizationPipe
-} from './widgets/operating-hours-panel/operating-hours-panel.widget';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { ReservationComponent } from './reservation/reservation.component';
@@ -47,12 +43,10 @@ import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-
     AmbassadorRoomComponent,
     CoworkingDropInCard,
     CoworkingReservationCard,
-    CoworkingHoursCard,
     ConfirmReservationComponent,
     NewReservationPageComponent,
     DateSelector,
     OperatingHoursDialog,
-    OperatingHoursCapitalizationPipe,
     ReservationFactsWidget
   ],
   imports: [

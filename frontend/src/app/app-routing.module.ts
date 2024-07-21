@@ -64,6 +64,12 @@ const routes: Routes = [
     title: 'Hiring',
     loadChildren: () =>
       import('./hiring/hiring.module').then((m) => m.HiringModule)
+  },
+  {
+    path: 'welcome',
+    title: 'Welcome to the CSXL',
+    loadChildren: () =>
+      import('./welcome/welcome.module').then((m) => m.WelcomeModule)
   }
 ];
 

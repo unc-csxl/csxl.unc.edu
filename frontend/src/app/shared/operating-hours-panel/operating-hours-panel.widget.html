@@ -1,0 +1,33 @@
+<mat-card-content class="header">
+  <div class="header-row">
+    @if (openOperatingHours) {
+    <mat-card-title class="hours-title open">
+      <div class="header-row">
+        <span class="badge secondary-background">Open</span
+        ><span class="secondary-color"
+          >until
+          {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</span
+        >
+      </div>
+    </mat-card-title>
+    } @else {
+    <mat-card-title class="hours-title closed">
+      <span class="badge tertiary-background">Closed</span>
+      @if (operatingHours.length > 0) {
+      <span class="tertiary-color"
+        >Open
+        {{
+          operatingHours[0]!.start
+            | date: "EEE, MMM d 'at' h:mma"
+            | operatingHoursCapitalizationPipe
+        }}
+      </span>
+      }
+    </mat-card-title>
+    }
+
+    <button mat-stroked-button id="hours-button" (click)="openDialog()">
+      All Hours
+    </button>
+  </div>
+</mat-card-content>

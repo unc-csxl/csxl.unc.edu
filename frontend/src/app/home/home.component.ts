@@ -20,12 +20,12 @@ export class HomeComponent {
     let profile: Profile | undefined = route.snapshot.data['profile'];
     if (profile) {
       if (profile.id) {
-        router.navigateByUrl('/about');
+        router.navigateByUrl('/welcome');
       } else {
         router.navigateByUrl('/profile');
       }
     } else {
-      router.navigateByUrl('/about');
+      router.navigateByUrl('/welcome');
     }
   }
 }

@@ -1,11 +1,16 @@
 <!-- eslint-disable prettier/prettier -->
 @if (status()) {
   @if (openOperatingHours()) {
-    <coworking-operating-hours-panel
+    <mat-pane>
+      <coworking-operating-hours-panel
       [operatingHours]="status().operating_hours"
       [openOperatingHours]="openOperatingHours()" />
+    </mat-pane>
+    
   } @else {
-    <coworking-operating-hours-panel [operatingHours]="status().operating_hours" />
+    <mat-pane>
+      <coworking-operating-hours-panel [operatingHours]="status().operating_hours" />
+    </mat-pane>
   }
   
   @if (activeReservation()) {

@@ -40,6 +40,10 @@ import { AdminFabComponent } from './admin-fab/admin-fab.component';
 import { TabContainerWidget } from './tab-container/tab-container.widget';
 
 import { YouTubePlayer } from '@angular/youtube-player';
+import {
+  CoworkingHoursCard,
+  OperatingHoursCapitalizationPipe
+} from './operating-hours-panel/operating-hours-panel.widget';
 
 @NgModule({
   declarations: [
@@ -55,7 +59,9 @@ import { YouTubePlayer } from '@angular/youtube-player';
     MatPaneComponent,
     BannerCardComponent,
     AdminFabComponent,
-    TabContainerWidget
+    TabContainerWidget,
+    CoworkingHoursCard,
+    OperatingHoursCapitalizationPipe
   ],
   imports: [
     CommonModule,
@@ -91,7 +97,8 @@ import { YouTubePlayer } from '@angular/youtube-player';
     MatPaneComponent,
     BannerCardComponent,
     AdminFabComponent,
-    TabContainerWidget
+    TabContainerWidget,
+    CoworkingHoursCard
   ],
   providers: [GroupEventsPipe]
 })

@@ -1,0 +1,73 @@
+<banner-card
+  type="info"
+  [wide]="true"
+  icon="construction"
+  title="Page Under Construction"
+  body="This page's styling has not yet been updated to conform to Material 3." />
+
+<div class="container">
+  <div class="left-column">
+    <mat-card appearance="outlined" class="news-pane">
+      <mat-card-header>
+        <mat-card-title>Events</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="news-pane-content">
+        <p>Something here.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="right-column">
+    <mat-card appearance="outlined" class="coworking-pane">
+      <mat-card-header>
+        <mat-card-title>The XL is...</mat-card-title>
+      </mat-card-header>
+      @if (openOperatingHours()) {
+      <coworking-operating-hours-panel
+        [operatingHours]="welcomeOverview().operating_hours"
+        [openOperatingHours]="openOperatingHours()" />
+
+      } @else {
+      <coworking-operating-hours-panel
+        [operatingHours]="welcomeOverview().operating_hours" />
+      }
+    </mat-card>
+    <mat-card appearance="outlined" class="upcoming-pane">
+      <mat-card-header>
+        <mat-card-title id="upcoming-title">Upcoming For You</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="upcoming-pane-content">
+        <mat-card-subtitle>Reservations</mat-card-subtitle>
+        @if (welcomeOverview().upcoming_reservations.length === 0) {
+        <p class="none-text">You currently have no upcoming reservations.</p>
+        } @for (reservation of welcomeOverview().upcoming_reservations; track
+        reservation.start) {
+        <mat-card
+          class="reservation-card"
+          appearance="outlined"
+          routerLink="/coworking/">
+          <mat-card-content>
+            <div class="header-row">
+              <div class="header-column">
+                <mat-card-subtitle>{{
+                  reservation.room
+                    ? reservation.room!.nickname
+                    : reservation.seats[0].shorthand
+                }}</mat-card-subtitle>
+                <p>
+                  {{ reservation.start | date: 'shortDate' }},
+                  {{ reservation.start | date: 'shortTime' }} -
+                  {{ reservation.end | date: 'shortTime' }}
+                </p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }
+        <mat-card-subtitle>Events</mat-card-subtitle>
+        @if (true) {
+        <p class="none-text">You are not registered for any events.</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
