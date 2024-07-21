@@ -5,7 +5,7 @@
 .card-container {
     margin-left: auto;
     margin-right: auto;
-    width: 638px;
+    width: 738px;
 }
 
 .feature-image {
@@ -18,7 +18,7 @@
     margin-bottom: 12px;
 }
 
-@media only screen and (max-width: 876px) {
+@media only screen and (max-width: 976px) {
 .card-container {
     margin: none;
     max-width: 100%;
