@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 from .comp_227 import Comp227
 from .user import User
+from .academics.section import CatalogSectionIdentity
 
 __authors__ = ["Ben Goulet"]
 __copyright__ = "Copyright 2024"
@@ -18,56 +19,52 @@ class Application(BaseModel):
 
     id: int | None = None
     user_id: int
+    term_id: str
+    type: str
+    academic_hours: int | None = None
+    extracurriculars: str | None = None
+    expected_graduation: str | None = None
+    program_pursued: str | None = None
+    other_programs: str | None = None
+    gpa: float | None | None = None
+    comp_gpa: float | None = None
+    comp_227: Comp227 | None = None
+    intro_video_url: str | None = None
+    prior_experience: str | None = None
+    service_experience: str | None = None
+    additional_experience: str | None = None
+    ta_experience: str | None = None
+    best_moment: str | None = None
+    desired_improvement: str | None = None
+    advisor: str | None = None
+    preferred_sections: list[CatalogSectionIdentity]
 
 
-class UTAApplication(Application):
+class ApplicationOverview(BaseModel):
     """
-    Pydantic model to represent a `UTA`.
+    Pydantic model to represent an `ApplicationOverview`.
 
-    This model is based on the `Application` model, which defines the shape
+    This model is based on the `ApplicationEntity` model, which defines the shape
     of the `Application` database in the PostgreSQL database.
     """
 
-    academic_hours: int
-    extracurriculars: str
-    expected_graduation: str
-    program_pursued: str
-    other_programs: str
-    gpa: float
-    comp_gpa: float
-    comp_227: Comp227
-
-
-class NewUTAApplication(UTAApplication):
-    """
-    Pydantic model to represent a `New UTA`.
-
-    This model is based on the `UTA` model, which defines the shape
-    of the `Application` database in the PostgreSQL database.
-    """
-
-    intro_video_url: str
-    prior_experience: str
-    service_experience: str
-    additional_experience: str
-
-
-class ReturningUTAApplication(UTAApplication):
-    """
-    Pydantic model to represent a `Returning UTA`.
-
-    This model is based on the `UTA` model, which defines the shape
-    of the `Application` database in the PostgreSQL database.
-    """
-
-    ta_experience: str
-    best_moment: str
-    desired_improvement: str
-
-
-class SectionApplicant(BaseModel):
-    first_name: str
-    last_name: str
-    email: str
-    preference_rank: int
-    application: NewUTAApplication
+    id: int | None = None
+    type: str
+    applicant_name: str
+    academic_hours: int | None
+    extracurriculars: str | None
+    expected_graduation: str | None
+    program_pursued: str | None
+    other_programs: str | None
+    gpa: float | None | None
+    comp_gpa: float | None
+    comp_227: Comp227 | None
+    intro_video_url: str | None
+    prior_experience: str | None
+    service_experience: str | None
+    additional_experience: str | None
+    ta_experience: str | None
+    best_moment: str | None
+    desired_improvement: str | None
+    advisor: str | None
+    preferred_sections: list[CatalogSectionIdentity]

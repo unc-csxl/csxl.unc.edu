@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
-import { Event } from '../event.model';
+import { Event, EventOverview, EventStatusOverview } from '../event.model';
 import { DatePipe } from '@angular/common';
 
 import {
@@ -29,27 +29,27 @@ import { EventService } from '../event.service';
 import { GroupEventsPipe } from '../pipes/group-events.pipe';
 
 @Component({
-  selector: 'app-event-page',
-  templateUrl: './event-page.component.html',
-  styleUrls: ['./event-page.component.css']
+  selector: 'app-events-page',
+  templateUrl: './events-page.component.html',
+  styleUrl: './events-page.component.css'
 })
-export class EventPageComponent {
+export class EventsPageComponent {
   /** Route information to be used in App Routing Module */
   public static Route = {
     path: '',
     title: 'Events',
-    component: EventPageComponent,
+    component: EventsPageComponent,
     canActivate: []
   };
 
   /** Stores a reactive event pagination page. */
   public page: WritableSignal<
-    Paginated<Event, TimeRangePaginationParams> | undefined
+    Paginated<EventOverview, TimeRangePaginationParams> | undefined
   > = signal(undefined);
   private previousParams: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS;
 
   /** Stores a reactive mapping of days to events on the active page. */
-  protected eventsByDate: Signal<[string, Event[]][]> = computed(() => {
+  protected eventsByDate: Signal<[string, EventOverview[]][]> = computed(() => {
     return this.groupEventsPipe.transform(this.page()?.items ?? []);
   });
 
@@ -59,6 +59,10 @@ export class EventPageComponent {
     new Date(new Date().setMonth(new Date().getMonth() + 1))
   );
   public filterQuery: WritableSignal<string> = signal('');
+
+  /** Stores the event status in a reactive object. */
+  public eventStatus: WritableSignal<EventStatusOverview | undefined> =
+    signal(undefined);
 
   /** Store the content of the search bar */
   public searchBarQuery = '';
@@ -76,6 +80,9 @@ export class EventPageComponent {
     protected groupEventsPipe: GroupEventsPipe
   ) {
     this.profile = this.profileService.profile()!;
+    this.eventService.getEventStatus().subscribe((status) => {
+      this.eventStatus.set(status);
+    });
   }
 
   /**
@@ -117,6 +124,16 @@ export class EventPageComponent {
     this.endDate.set(
       new Date(this.endDate().setMonth(this.endDate().getMonth() - 1))
     );
+  }
+
+  /** Reloads the data in the current page. */
+  reloadPage() {
+    this.eventService.getEvents(this.previousParams).subscribe((events) => {
+      this.page.set(events);
+    });
+    this.eventService.getEventStatus().subscribe((status) => {
+      this.eventStatus.set(status);
+    });
   }
 
   /**

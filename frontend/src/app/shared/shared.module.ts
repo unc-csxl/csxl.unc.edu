@@ -24,12 +24,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 /* UI Widgets */
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
 import { SearchBar } from './search-bar/search-bar.widget';
-import { EventCard } from './event-card/event-card.widget';
 import { RouterModule } from '@angular/router';
-import { EventList } from './event-list/event-list.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
 import { CommunityAgreement } from './community-agreement/community-agreement.widget';
-import { SlackInviteBox } from './slack-invite-box/slack-invite-box.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
@@ -44,16 +41,14 @@ import {
   CoworkingHoursCard,
   OperatingHoursCapitalizationPipe
 } from './operating-hours-panel/operating-hours-panel.widget';
+import { MarkdownDirective } from './directives/markdown.directive';
 
 @NgModule({
   declarations: [
     SocialMediaIcon,
     SearchBar,
-    EventCard,
-    EventList,
     UserLookup,
     UserChipList,
-    SlackInviteBox,
     CommunityAgreement,
     ProfileAboutCard,
     MatPaneComponent,
@@ -62,6 +57,7 @@ import {
     TabContainerWidget,
     CoworkingHoursCard,
     OperatingHoursCapitalizationPipe
+    MarkdownDirective
   ],
   imports: [
     CommonModule,
@@ -89,8 +85,6 @@ import {
   exports: [
     SocialMediaIcon,
     SearchBar,
-    EventCard,
-    EventList,
     UserLookup,
     UserChipList,
     ProfileAboutCard,
@@ -99,6 +93,7 @@ import {
     AdminFabComponent,
     TabContainerWidget,
     CoworkingHoursCard
+    MarkdownDirective
   ],
   providers: [GroupEventsPipe]
 })

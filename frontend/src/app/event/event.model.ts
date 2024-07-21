@@ -26,6 +26,7 @@ export interface Event {
   is_attendee: boolean;
   is_organizer: boolean;
   organizers: PublicProfile[];
+  image_url: string | null;
 }
 
 /** Interface for the Event JSON Response model
@@ -47,6 +48,7 @@ export interface EventJson {
   is_attendee: boolean;
   is_organizer: boolean;
   organizers: PublicProfile[];
+  image_url: string | null;
 }
 
 /** Function that converts an EventJSON response model to an Event model.
@@ -73,3 +75,72 @@ export interface EventRegistration {
   user: Profile | null;
   is_organizer: boolean | null;
 }
+
+export interface EventOverviewJson {
+  id: number;
+  name: string;
+  time: string;
+  location: string;
+  description: string;
+  public: boolean;
+  number_registered: number;
+  registration_limit: number;
+  organization_slug: string;
+  organization_icon: string;
+  organization_name: string;
+  organizers: PublicProfile[];
+  user_registration_type: RegistrationType | null;
+  image_url: string | null;
+}
+
+export interface EventOverview {
+  id: number;
+  name: string;
+  time: Date;
+  location: string;
+  description: string;
+  public: boolean;
+  number_registered: number;
+  registration_limit: number;
+  organization_slug: string;
+  organization_icon: string;
+  organization_name: string;
+  organizers: PublicProfile[];
+  user_registration_type: RegistrationType | null;
+  image_url: string | null;
+}
+
+/** Function that converts an EventJSON response model to an Event model.
+ *  This function is needed because the API response will return certain
+ *  objects (such as `Date`s) as strings. We need to convert this to
+ *  TypeScript objects ourselves.
+ */
+export const parseEventOverviewJson = (
+  responseModel: EventOverviewJson
+): EventOverview => {
+  return Object.assign({}, responseModel, {
+    time: new Date(responseModel.time)
+  });
+};
+
+export interface EventStatusOverviewJson {
+  featured: EventOverviewJson | null;
+  registered: EventOverviewJson[];
+}
+export interface EventStatusOverview {
+  featured: EventOverview | null;
+  registered: EventOverview[];
+}
+
+export const parseEventStatusOverviewJson = (
+  responseModel: EventStatusOverviewJson
+): EventStatusOverview => {
+  return Object.assign({}, responseModel, {
+    featured: responseModel.featured
+      ? parseEventOverviewJson(responseModel.featured!)
+      : null,
+    registered: responseModel.registered.map((registered) =>
+      parseEventOverviewJson(registered)
+    )
+  });
+};

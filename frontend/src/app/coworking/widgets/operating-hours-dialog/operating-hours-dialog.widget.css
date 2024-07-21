@@ -1,9 +1,13 @@
-.dialog {
-  padding: 24px;
+
+.hours-row {
+  display: flex;
+  flex-direction: row;
 }
 
-@media (prefers-color-scheme: dark) {
-  .dialog {
-    color: white;
-  }
+.hours-text {
+  margin-left: auto;
+}
+
+.semibold {
+  font-weight: 500;
 }

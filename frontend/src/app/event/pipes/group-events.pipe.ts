@@ -7,7 +7,7 @@
 
 import { DatePipe } from '@angular/common';
 import { Pipe, PipeTransform, inject } from '@angular/core';
-import { Event } from '../event.model';
+import { Event, EventOverview } from '../event.model';
 
 @Pipe({
   name: 'groupEvents'
@@ -15,9 +15,9 @@ import { Event } from '../event.model';
 export class GroupEventsPipe implements PipeTransform {
   datePipe = inject(DatePipe);
 
-  transform(events: Event[]): [string, Event[]][] {
+  transform(events: EventOverview[]): [string, EventOverview[]][] {
     // Initialize an empty map
-    let groups: Map<string, Event[]> = new Map();
+    let groups: Map<string, EventOverview[]> = new Map();
 
     // Transform the list of events based on the event filter pipe and query
     events.forEach((event) => {

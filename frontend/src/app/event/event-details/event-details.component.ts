@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { eventResolver } from '../event.resolver';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
 import {
@@ -15,10 +15,14 @@ import {
   ActivatedRouteSnapshot,
   ResolveFn
 } from '@angular/router';
-import { Event } from '../event.model';
+import { Event, EventRegistration } from '../event.model';
 import { Observable, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { EventService } from '../event.service';
+import { Paginated, PaginationParams } from 'src/app/pagination';
+import { PageEvent } from '@angular/material/paginator';
 
 /** Injects the event's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -48,7 +52,19 @@ export class EventDetailsComponent implements OnInit {
   public profile: Profile;
 
   /** The event to show */
-  public event: Event | undefined;
+  public event: WritableSignal<Event>;
+
+  /** Event registrations */
+  public eventRegistrationsPage: WritableSignal<
+    Paginated<Profile, PaginationParams> | undefined
+  > = signal(undefined);
+
+  public eventRegistrationDisplayedColumns: string[] = [
+    'first_name',
+    'last_name',
+    'pronouns',
+    'email'
+  ];
 
   /**
    * Determines whether or not a user can view the event.
@@ -57,7 +73,7 @@ export class EventDetailsComponent implements OnInit {
   canViewEvent(): Observable<boolean> {
     return this.permissionService.check(
       'organization.events.view',
-      `organization/${this.event?.organization!?.id ?? '*'}`
+      `organization/${this.event()?.organization!?.id ?? '*'}`
     );
   }
 
@@ -66,7 +82,9 @@ export class EventDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private permissionService: PermissionService,
     private profileService: ProfileService,
-    private gearService: NagivationAdminGearService
+    private gearService: NagivationAdminGearService,
+    protected snackBar: MatSnackBar,
+    private eventService: EventService
   ) {
     this.profile = this.profileService.profile()!;
 
@@ -74,7 +92,26 @@ export class EventDetailsComponent implements OnInit {
       event: Event;
     };
 
-    this.event = data.event;
+    this.event = signal(data.event);
+
+    this.permissionService
+      .check(
+        'organization.events.edit',
+        `organization/${this.event()?.organization!?.id ?? '*'}`
+      )
+      .subscribe((permission) => {
+        if (permission) {
+          // Load user registrations:
+          this.eventService
+            .getRegisteredUsersForEvent(this.event(), {
+              page: 0,
+              page_size: 25,
+              order_by: 'first_name',
+              filter: ''
+            } as PaginationParams)
+            .subscribe((page) => this.eventRegistrationsPage.set(page));
+        }
+      });
   }
 
   ngOnInit() {
@@ -82,7 +119,66 @@ export class EventDetailsComponent implements OnInit {
       'events.*',
       '*',
       '',
-      `/events/${this.event?.organization_id}/${this.event?.id}/edit`
+      `/events/${this.event()?.organization_id}/${this.event()?.id}/edit`
     );
+  }
+
+  /** Registers a user for an event. */
+  registerForEvent() {
+    this.eventService.registerForEvent(this.event()!.id!).subscribe({
+      next: () => {
+        let newEvent = this.event();
+        newEvent.is_attendee = true;
+        newEvent.registration_count += 1;
+        this.event.set(newEvent);
+
+        this.snackBar.open(
+          `Successfully registered for ${this.event()!.name}!`,
+          'Close',
+          { duration: 15000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          `Error: Could not register. Please try again.`,
+          'Close',
+          { duration: 15000 }
+        );
+      }
+    });
+  }
+
+  /** Unregisters a user from an evenet. */
+  unregisterForEvent() {
+    let newEvent = this.event();
+    newEvent.is_attendee = false;
+    newEvent.registration_count -= 1;
+    this.event.set(newEvent);
+
+    this.eventService.unregisterForEvent(this.event()!.id!).subscribe({
+      next: () => {
+        this.snackBar.open(
+          `Successfully unregistered for ${this.event()!.name}!`,
+          'Close',
+          { duration: 15000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          `Error: Could not unregister. Please try again.`,
+          'Close',
+          { duration: 15000 }
+        );
+      }
+    });
+  }
+
+  handlePageEvent(e: PageEvent) {
+    let paginationParams = this.eventRegistrationsPage()!.params;
+    paginationParams.page = e.pageIndex;
+    paginationParams.page_size = e.pageSize;
+    this.eventService
+      .getRegisteredUsersForEvent(this.event(), paginationParams)
+      .subscribe((page) => this.eventRegistrationsPage.set(page));
   }
 }

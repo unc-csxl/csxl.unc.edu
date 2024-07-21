@@ -2,31 +2,30 @@ import pytest
 from sqlalchemy.orm import Session
 from ....services.reset_table_id_seq import reset_table_id_seq
 
-from .....entities.application_entity import NewUTAApplicationEntity, ApplicationEntity
+from .....entities.application_entity import ApplicationEntity
 from .....entities.section_application_table import section_application_table
 from .....entities.academics.hiring.application_review_entity import (
     ApplicationReviewEntity,
 )
 
-from .....models.application import Comp227
-from .....models.application_details import NewUTAApplicationDetails
+from .....models.application import Comp227, Application, CatalogSectionIdentity
 from .....models.academics.hiring.application_review import (
     ApplicationReview,
     ApplicationReviewStatus,
 )
 
 from ... import user_data
-from ...academics import section_data
+from ...academics import section_data, term_data
 from ...office_hours import office_hours_data
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
-application_one = NewUTAApplicationDetails(
+application_one = Application(
     id=1,
+    type="new_uta",
     user_id=user_data.student.id,
-    user=user_data.student,
     academic_hours=12,
     extracurriculars="Many extracurriculars",
     expected_graduation="Soon",
@@ -40,12 +39,13 @@ application_one = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
 )
 
-application_two = NewUTAApplicationDetails(
+application_two = Application(
     id=2,
+    type="new_uta",
     user_id=user_data.user.id,
-    user=user_data.user,
     academic_hours=12,
     extracurriculars="Many extracurriculars",
     expected_graduation="Soon",
@@ -59,12 +59,13 @@ application_two = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
 )
 
-application_three = NewUTAApplicationDetails(
+application_three = Application(
     id=3,
+    type="new_uta",
     user_id=user_data.root.id,
-    user=user_data.root,
     academic_hours=12,
     extracurriculars="Many extracurriculars",
     expected_graduation="Soon",
@@ -78,12 +79,13 @@ application_three = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
 )
 
-application_four = NewUTAApplicationDetails(
+application_four = Application(
     id=4,
+    type="new_uta",
     user_id=user_data.uta.id,
-    user=user_data.uta,
     academic_hours=12,
     extracurriculars="Many extracurriculars",
     expected_graduation="Soon",
@@ -97,6 +99,42 @@ application_four = NewUTAApplicationDetails(
     service_experience="None",
     additional_experience="None",
     preferred_sections=[],
+    term_id=term_data.current_term.id,
+)
+
+new_application = Application(
+    id=5,
+    type="new_uta",
+    user_id=user_data.ambassador.id,
+    academic_hours=12,
+    extracurriculars="Many extracurriculars",
+    expected_graduation="Soon",
+    program_pursued="CS",
+    other_programs="None",
+    gpa=3.8,
+    comp_gpa=4.0,
+    comp_227=Comp227.EITHER,
+    intro_video_url="https://www.youtube.com/watch?v=d6O6kyqjcYo",
+    prior_experience="None",
+    service_experience="None",
+    additional_experience="None",
+    preferred_sections=[
+        CatalogSectionIdentity(
+            id=section_data.comp_110_001_current_term.id,
+            subject_code="COMP",
+            course_number="110",
+            section_number="001",
+            course_title="Intro to Programming",
+        ),
+        CatalogSectionIdentity(
+            id=section_data.comp_110_002_current_term.id,
+            subject_code="COMP",
+            course_number="110",
+            section_number="002",
+            course_title="Intro to Programming",
+        ),
+    ],
+    term_id=term_data.current_term.id,
 )
 
 
@@ -140,7 +178,7 @@ reviews = [review_one, review_two, review_three]
 
 def insert_fake_data(session: Session):
     for application in applications:
-        entity = NewUTAApplicationEntity.from_model(application)
+        entity = ApplicationEntity.from_model(application)
         session.add(entity)
 
     reset_table_id_seq(

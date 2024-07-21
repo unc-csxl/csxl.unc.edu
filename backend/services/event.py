@@ -16,7 +16,7 @@ from backend.models.registration_type import RegistrationType
 
 from ..models import User, Event, EventDetails, Paginated, EventPaginationParams
 from ..database import db_session
-from backend.models.event import Event, DraftEvent
+from backend.models.event import Event, DraftEvent, EventOverview, EventStatusOverview
 from backend.models.event_details import EventDetails
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
@@ -39,7 +39,7 @@ __authors__ = [
     "Audrey Toney",
     "Kris Jordan",
 ]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -61,7 +61,7 @@ class EventService:
         self,
         pagination_params: EventPaginationParams,
         subject: User | None = None,
-    ) -> Paginated[EventDetails]:
+    ) -> Paginated[EventOverview]:
         """List Events.
 
         Parameters:
@@ -119,52 +119,10 @@ class EventService:
         entities = self._session.execute(statement).scalars()
 
         return Paginated(
-            items=[entity.to_details_model(subject) for entity in entities],
+            items=[entity.to_overview_model(subject) for entity in entities],
             length=length,
             params=pagination_params,
         )
-
-    def all(
-        self,
-        subject: User | None = None,
-    ) -> list[EventDetails]:
-        """
-        Retrieves all events from the table
-
-        Args:
-            subject: The User making the request.
-
-        Returns:
-            list[EventDetails]: List of all `EventDetails`
-        """
-        # Select all entries in `Event` table
-        event_entities = (self._session.query(EventEntity)).all()
-
-        # Convert entities to details models and return
-        return [
-            event_entity.to_details_model(subject) for event_entity in event_entities
-        ]
-
-    def get_events_in_time_range(
-        self, time_range: TimeRange, subject: User | None = None
-    ) -> list[EventDetails]:
-        """
-        Get events in the time range
-
-        Args:
-            subject: The User making the request.
-            time_range: The period over which to search for events.
-
-        Returns:
-            list[EventDetails]: list of valid EventDetails models representing the events
-        """
-        event_entities = (
-            self._session.query(EventEntity)
-            .where(EventEntity.time >= time_range.start)
-            .where(EventEntity.time < time_range.end)
-        )
-
-        return [entity.to_details_model(subject) for entity in event_entities]
 
     def create(self, subject: User, event: DraftEvent) -> EventDetails:
         """
@@ -293,6 +251,7 @@ class EventService:
         event_entity.location = event.location
         event_entity.public = event.public
         event_entity.registration_limit = event.registration_limit
+        event_entity.image_url = event.image_url
 
         # If attempting to edit organizers, enforce registration management permissions
         if event.organizers != event_details.organizers:
@@ -693,4 +652,56 @@ class EventService:
             items=[entity.to_model() for entity in entities],
             length=length,
             params=pagination_params,
+        )
+
+    def get_event_status(self, subject: User) -> EventStatusOverview:
+        """Returns the event status."""
+        # 1. Get the featured event.
+        # The featured event is picked based on the following criteria:
+        # Based on the first 50 events coming up...
+        # If a CSXL or UNC CS event is scheduled, choose this as the featured event.
+        # Otherwise, choose the latest event.
+        # If there is no upcoming event, choose no event.
+        PREFERRED_ORGANIZATIONS = [37]
+        featured_event: EventOverview | None = None
+        event_query = (
+            select(EventEntity)
+            .where(EventEntity.time >= datetime.now())
+            .order_by(EventEntity.time)
+            .limit(50)
+        )
+        event_entities = self._session.scalars(event_query).all()
+        for event in event_entities:
+            if (
+                event.organization_id in PREFERRED_ORGANIZATIONS
+                and featured_event == None
+            ):
+                featured_event = event.to_overview_model(subject)
+        if featured_event == None:
+            featured_event = (
+                event_entities[0].to_overview_model(subject)
+                if len(event_entities) > 0
+                else None
+            )
+
+        # 2. Find all of the events the current user is registered for.
+        registered_events_query = (
+            select(EventRegistrationEntity)
+            .where(EventRegistrationEntity.user_id == subject.id)
+            .join(EventEntity)
+            .order_by(EventEntity.time)
+        )
+
+        registered_events_entities = self._session.scalars(
+            registered_events_query
+        ).all()
+
+        registered_events = [
+            registration.event.to_overview_model(subject)
+            for registration in registered_events_entities
+        ]
+
+        # 3. Return the event status.
+        return EventStatusOverview(
+            featured=featured_event, registered=registered_events
         )

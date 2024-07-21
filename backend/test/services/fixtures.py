@@ -10,6 +10,7 @@ from ...services import (
     OrganizationService,
     EventService,
     RoomService,
+    ApplicationService,
 )
 from ...services.academics import HiringService
 from ...services.article import ArticleService
@@ -73,3 +74,8 @@ def article_svc(session: Session):
         PolicyService(),
         OperatingHoursService(session, PermissionService(session)),
     )
+
+@pytest.fixture()
+def application_svc(session: Session):
+    """ApplicationService fixture."""
+    return ApplicationService(session, PermissionService(session))

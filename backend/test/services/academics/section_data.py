@@ -55,6 +55,7 @@ comp_101_001 = Section(
     override_description="",
     enrolled=100,
     total_seats=200,
+    accepts_gta_applications=False,
 )
 
 comp_101_002 = Section(

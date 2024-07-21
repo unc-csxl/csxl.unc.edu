@@ -42,6 +42,16 @@ html, body {
         color: mat.get-theme-color($theme, on-secondary) !important;
     }
 
+    .primary-fixed-dim-background {
+        background: mat.get-theme-color($theme, primary-fixed-dim) !important;
+        color: mat.get-theme-color($theme, on-primary-fixed-variant) !important;
+    }
+
+    .secondary-container-background {
+        background: mat.get-theme-color($theme, secondary-container) !important;
+        color: mat.get-theme-color($theme, on-secondary-container) !important;
+    }
+
     .secondary-background-color {
         background-color: mat.get-theme-color($theme, secondary) !important;
         color: mat.get-theme-color($theme, on-secondary) !important;
@@ -63,6 +73,11 @@ html, body {
 
     .tertiary-color {
         color: mat.get-theme-color($theme, tertiary) !important;
+    }
+
+    .on-secondary-background-color {
+        background-color: mat.get-theme-color($theme, on-secondary) !important;
+        color: mat.get-theme-color($theme, secondary) !important;
     }
 }
 

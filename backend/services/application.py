@@ -2,25 +2,18 @@
 
 from typing import List
 from fastapi import Depends
-from sqlalchemy import update, delete
+from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from typing import Dict
 from backend.entities import section_application_table
-from backend.entities.application_entity import (
-    ApplicationEntity,
-    NewUTAApplicationEntity,
-)
+from backend.entities.application_entity import ApplicationEntity
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.academics.term_entity import TermEntity
 from backend.entities.user_entity import UserEntity
 
-from backend.models.academics.section import Section
-from backend.models.application import SectionApplicant
-
-from backend.models.application_details import (
-    UTAApplicationDetails,
-    NewUTAApplicationDetails,
-)
+from backend.models.academics.section import Section, CatalogSectionIdentity
+from backend.models.application import Application
 from backend.models.user import User
 
 from backend.services.exceptions import (
@@ -31,8 +24,9 @@ from backend.services.exceptions import (
 from .permission import PermissionService
 
 from ..database import db_session
+from datetime import datetime
 
-__authors__ = ["Ben Goulet, Abdulaziz Al-Shayef"]
+__authors__ = ["Ajay Gandecha", "Abdulaziz Al-Shayef", "Ben Goulet"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -53,109 +47,19 @@ class ApplicationService:
         self._session = session
         self._permission_svc = permission_svc
 
-    def get_application(self, subject: User) -> NewUTAApplicationDetails:
-        """Returns an application for a specific user during a specific term
-
-        Returns:
-            list[Application]: List of all current applications for a specific user
-
-
-        This method currently returns the first application that is found in the table, however
-        future implementation will be taking the current term into consideration and querying based off
-        of that term. If a user doesn't have an application during that term then None would be returned.
-        """
-
-        application_entity = (
-            self._session.query(ApplicationEntity)
-            .filter(ApplicationEntity.user_id == subject.id)
-            .first()
+    def get_application(self, term_id: str, subject: User) -> Application | None:
+        """Returns an application for a specific user during a specific term"""
+        application_query = select(ApplicationEntity).where(
+            ApplicationEntity.user_id == subject.id,
+            ApplicationEntity.term_id == term_id,
         )
+        application_entity = self._session.scalars(application_query).first()
 
-        if application_entity is None:
-            return None
+        return application_entity.to_model() if application_entity else None
 
-        sections = (
-            self._session.query(section_application_table)
-            .filter(section_application_table.c.application_id == application_entity.id)
-            .order_by(section_application_table.c.preference)
-            .all()
-        )
-
-        section_ids = [section[1] for section in sections]
-
-        sections_entity = []
-        for id in section_ids:
-            sections_entity.append(
-                self._session.query(SectionEntity)
-                .filter(SectionEntity.id == id)
-                .first()
-            )
-
-        section_dict = {
-            i: section.to_model() for i, section in enumerate(sections_entity)
-        }
-
-        application = application_entity.map_application_to_detail_model(section_dict)
-
-        return application
-
-    def get_applications_for_section(
-        self, section_id: int, subject: User
-    ) -> list[SectionApplicant]:
-
-        self._permission_svc.enforce(
-            subject,
-            "applications.get",
-            f"applications/",
-        )
-        section_applicants = (
-            self._session.query(section_application_table)
-            .filter(section_application_table.c.section_id == section_id)
-            .order_by(section_application_table.c.preference)
-            .all()
-        )
-
-        applicants: list[SectionApplicant] = []
-
-        for applicant in section_applicants:
-            application = (
-                self._session.query(ApplicationEntity)
-                .filter(ApplicationEntity.id == applicant[2])
-                .first()
-            )
-            application_model = application = application.to_model()
-            user = (
-                self._session.query(UserEntity)
-                .filter(UserEntity.id == application_model.user_id)
-                .first()
-            )
-            applicants.append(
-                SectionApplicant(
-                    first_name=user.first_name,
-                    last_name=user.last_name,
-                    email=user.email,
-                    preference_rank=applicant[0],
-                    application=application_model,
-                )
-            )
-
-        return applicants
-
-    def create_uta_application(
-        self, subject: User, application: NewUTAApplicationDetails
-    ) -> NewUTAApplicationDetails:
-        """
-        Creates an application based on the input object and adds it to the table.
-        If the application's ID is unique to the table, a new entry is added.
-        If the application's ID already exists in the table, it raises an error.
-
-        Parameters:
-            application (New_UTADetails): A new UTA application to add to table
-
-        Returns:
-            Application: Object added to table
-        """
-
+    def create(self, subject: User, application: Application) -> Application:
+        """Creates a new application"""
+        # Ensure that users cannot create applications for people other than themselves.
         if subject.id != application.user_id:
             self._permission_svc.enforce(
                 subject,
@@ -163,111 +67,134 @@ class ApplicationService:
                 f"applications/{application.id}",
             )
 
+        # Remove the application ID, if it exists
         if application.id:
             application.id = None
 
-        application_entity = NewUTAApplicationEntity.from_model(application)
-
-        application_entity.preferred_sections = (
-            self._session.query(SectionEntity)
-            .filter(
-                SectionEntity.id.in_(
-                    section.id for section in application.preferred_sections
-                )
-            )
-            .all()
-        )
-
+        # Create the new application
+        application_entity = ApplicationEntity.from_model(application)
         self._session.add(application_entity)
         self._session.commit()
 
-        for index, section in enumerate(application.preferred_sections):
-
+        # Add the user's section preferences to the new application
+        for preference, section in enumerate(application.preferred_sections):
             self._session.execute(
-                update(section_application_table)
-                .filter(
-                    section_application_table.c.application_id == application_entity.id,
-                    section_application_table.c.section_id == section.id,
+                section_application_table.insert().values(
+                    {
+                        "section_id": section.id,
+                        "application_id": application_entity.id,
+                        "preference": preference,
+                    }
                 )
-                .values(preference=index)
+            )
+            self._session.commit()  # This is an issue due to the table not being an entity.
+
+        # Return the added data
+        return application_entity.to_model()
+
+    def update(self, subject: User, application: Application) -> Application:
+        """Updates an application"""
+        # Ensure that users cannot create applications for people other than themselves.
+        if subject.id != application.user_id:
+            self._permission_svc.enforce(
+                subject,
+                "applications.update",
+                f"applications/{application.id}",
             )
 
+        # Ensures that the application exists.
+        application_query = select(ApplicationEntity).where(
+            ApplicationEntity.id == application.id
+        )
+        application_entity = self._session.scalars(application_query).first()
+
+        if application_entity is None:
+            raise ResourceNotFoundException(
+                f"Cannot update an application that does not exist."
+            )
+
+        # Update the application
+        application_entity.extracurriculars = application.extracurriculars
+        application_entity.expected_graduation = application.expected_graduation
+        application_entity.program_pursued = application.program_pursued
+        application_entity.other_programs = application.other_programs
+        application_entity.gpa = application.gpa
+        application_entity.comp_gpa = application.comp_gpa
+        application_entity.comp_227 = application.comp_227
+        application_entity.intro_video_url = application.intro_video_url
+        application_entity.prior_experience = application.prior_experience
+        application_entity.service_experience = application.service_experience
+        application_entity.additional_experience = application.additional_experience
+        application_entity.ta_experience = application.ta_experience
+        application_entity.best_moment = application.best_moment
+        application_entity.desired_improvement = application.desired_improvement
+        application_entity.advisor = application.advisor
+
+        # Save changes
         self._session.commit()
 
-        return application_entity.to_details_model()
-
-    def update_uta_application(
-        self, subject: User, application: NewUTAApplicationDetails
-    ) -> NewUTAApplicationDetails:
-        """
-        Updates an application for a user based on the application sent in.
-        The application id must exist or an error is raised.
-
-        Parameters:
-            subject (User): The User that would like to update their application
-            application (New_UTADetails: The Application with the updated values
-
-        Returns:
-            New_UTADetails: Updated application
-        """
-
-        original_application = (
-            self._session.query(NewUTAApplicationEntity)
-            .filter(ApplicationEntity.user_id == subject.id)
-            .first()
-        )
-
-        if original_application is None:
-            raise ResourceNotFoundException(f"Application does not exist")
-
+        # Update the user's section preferences
         self._session.execute(
             delete(section_application_table).filter(
-                section_application_table.c.application_id == original_application.id
+                section_application_table.c.application_id == application.id
             )
         )
-
-        original_application.update(
-            application,
-            self._session.query(SectionEntity)
-            .filter(
-                SectionEntity.id.in_(
-                    section.id for section in application.preferred_sections
-                )
-            )
-            .all(),
-        )
-
         self._session.commit()
 
-        for index, section in enumerate(application.preferred_sections):
-
+        # Add the user's section preferences to the new application
+        for preference, section in enumerate(application.preferred_sections):
             self._session.execute(
-                update(section_application_table)
-                .filter(
-                    section_application_table.c.application_id
-                    == original_application.id,
-                    section_application_table.c.section_id == section.id,
+                section_application_table.insert().values(
+                    {
+                        "section_id": section.id,
+                        "application_id": application_entity.id,
+                        "preference": preference,
+                    }
                 )
-                .values(preference=index)
             )
-        self._session.commit()
+            self._session.commit()  # This is an issue due to the table not being an entity.
 
-        return original_application.to_details_model()
+        # Return the modified data
+        return application_entity.to_model()
 
-    def delete_application(self, subject: User) -> None:
-        """
-        Deletes an application from the Application table.
-        Raises an error if user doesn't have an associated application.
-        """
-
-        original_application = (
-            self._session.query(NewUTAApplicationEntity)
-            .filter(ApplicationEntity.user_id == subject.id)
-            .first()
+    def delete(self, application_id: int, subject: User) -> None:
+        """Deletes an application."""
+        # Ensure that only admins can delete applications.
+        self._permission_svc.enforce(
+            subject,
+            "applications.delete",
+            f"applications/{application_id}",
         )
 
-        if original_application is None:
-            raise ResourceNotFoundException(f"Application does not exist")
+        # Find the original application
+        application_query = select(ApplicationEntity).where(
+            ApplicationEntity.id == application_id
+        )
+        application_entity = self._session.scalars(application_query).first()
 
-        self._session.delete(original_application)
+        if application_entity is None:
+            raise ResourceNotFoundException(
+                f"Cannot update an application that does not exist."
+            )
+
+        # Delete the application and save
+        self._session.delete(application_entity)
         self._session.commit()
+
+    def eligible_sections(self) -> list[CatalogSectionIdentity]:
+        """
+        Returns the eligible sections for the current active application term.
+        """
+        term_query = select(TermEntity).where(
+            TermEntity.applications_open <= datetime.now(),
+            datetime.now() <= TermEntity.applications_close,
+        )
+        term_entities = self._session.scalars(term_query).all()
+        return (
+            [
+                section.to_catalog_identity_model()
+                for section in term_entities[0].course_sections
+            ]
+            if len(term_entities) > 0
+            else []
+        )

@@ -70,6 +70,14 @@ const routes: Routes = [
     title: 'Welcome to the CSXL',
     loadChildren: () =>
       import('./welcome/welcome.module').then((m) => m.WelcomeModule)
+  },
+  {
+    path: 'apply',
+    title: 'Applications',
+    loadChildren: () =>
+      import('./applications/applications.module').then(
+        (m) => m.ApplicationsModule
+      )
   }
 ];
 

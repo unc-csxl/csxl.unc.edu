@@ -32,6 +32,10 @@ class TermEntity(EntityBase):
     start: Mapped[datetime] = mapped_column(DateTime)
     # Ending date for the term
     end: Mapped[datetime] = mapped_column(DateTime)
+    # Starting date for the application period
+    applications_open: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    # Ending date for the application period
+    applications_close: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
     # NOTE: This field establishes a one-to-many relationship between the term and section tables.
     course_sections: Mapped[list["SectionEntity"]] = relationship(
@@ -45,6 +49,11 @@ class TermEntity(EntityBase):
         back_populates="term", cascade="all,delete"
     )
 
+    # NOTE: This field establishes a one-to-many relationship between the term and applications tables.
+    applications: Mapped[list["ApplicationEntity"]] = relationship(
+        back_populates="term", cascade="all,delete"
+    )
+
     @classmethod
     def from_model(cls, model: Term) -> Self:
         """
@@ -55,7 +64,14 @@ class TermEntity(EntityBase):
         Returns:
             TermEntity: Entity created from model
         """
-        return cls(id=model.id, name=model.name, start=model.start, end=model.end)
+        return cls(
+            id=model.id,
+            name=model.name,
+            start=model.start,
+            end=model.end,
+            applications_open=model.applications_open,
+            applications_close=model.applications_close,
+        )
 
     def to_model(self) -> Term:
         """
@@ -64,7 +80,14 @@ class TermEntity(EntityBase):
         Returns:
             Term: `Term` object from the entity
         """
-        return Term(id=self.id, name=self.name, start=self.start, end=self.end)
+        return Term(
+            id=self.id,
+            name=self.name,
+            start=self.start,
+            end=self.end,
+            applications_open=self.applications_open,
+            applications_close=self.applications_close,
+        )
 
     def to_details_model(self) -> TermDetails:
         """
@@ -78,5 +101,7 @@ class TermEntity(EntityBase):
             name=self.name,
             start=self.start,
             end=self.end,
+            applications_open=self.applications_open,
+            applications_close=self.applications_close,
             course_sections=[section.to_model() for section in self.course_sections],
         )
