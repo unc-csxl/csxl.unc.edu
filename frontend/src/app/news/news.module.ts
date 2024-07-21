@@ -31,9 +31,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { NewsRoutingModule } from './news-routing.module';
+import { ArticlePageComponent } from './article-page/article-page.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [ArticlePageComponent],
   imports: [
     CommonModule,
     MatTabsModule,

@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="card-container">
+    <mat-pane>
+      <img class="feature-image" matCardImage [src]="article().image_url" />
+    </mat-pane>
+    <mat-pane>
+      <mat-card-header>
+        <mat-card-title>{{ article().title }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          {{ article().published | date: 'mediumDate' }} -
+          <em
+            >Modified
+            {{
+              article().last_modified && article().last_modified
+                | date: 'mediumDate'
+            }}</em
+          >
+        </p>
+
+        <mat-chip-set>
+          <!-- Organization chip -->
+          @if(article().organization_slug) {
+          <mat-chip
+            id="organization-chip"
+            [routerLink]="'/organizations/' + article().organization_slug">
+            <img
+              class="profile-icon"
+              matChipAvatar
+              [src]="article().organization_logo" />
+            {{ article().organization_name }}
+          </mat-chip>
+
+          <mat-divider class="vertical-divider" [vertical]="true" />
+
+          }
+
+          <!-- Author Chips -->
+          @for (author of article().authors; track author.id) {
+          <mat-chip>
+            @if (author.github_avatar && author.github_avatar !== '') {
+            <img
+              class="profile-icon"
+              matChipAvatar
+              [src]="author.github_avatar" />
+            }
+            {{ author.first_name }} {{ author.last_name }}
+          </mat-chip>
+          }
+        </mat-chip-set>
+
+        <mat-divider />
+
+        <p markdown class="description">
+          {{ article().body }}
+        </p>
+      </mat-card-content>
+    </mat-pane>
+  </div>
+</div>

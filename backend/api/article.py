@@ -31,8 +31,7 @@ def get_welcome_status(
 @api.get("/{slug}", tags=["Articles"])
 def get_article(
     slug: str,
-    subject: User = Depends(registered_user),
     article_svc: ArticleService = Depends(),
 ) -> ArticleOverview:
     """Retrieves the welcome status."""
-    return article_svc.get_article(slug, subject)
+    return article_svc.get_article(slug)

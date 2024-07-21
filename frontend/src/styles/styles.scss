@@ -273,6 +273,19 @@ html, body {
 /// 
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin font-styles($theme) {
+
+    h1 {
+        font: mat.get-theme-typography($theme, title-large, font) !important;
+    }
+
+    h2 {
+        font: mat.get-theme-typography($theme, title-medium, font) !important;
+    }
+
+    h3 {
+        font: mat.get-theme-typography($theme, title-small, font) !important;
+    }
+
     .title-medium {
         font: mat.get-theme-typography($theme, title-medium, font);
     }
