@@ -71,9 +71,11 @@ def room_svc(session: Session):
 def article_svc(session: Session):
     return ArticleService(
         session,
+        PermissionService(session),
         PolicyService(),
         OperatingHoursService(session, PermissionService(session)),
     )
+
 
 @pytest.fixture()
 def application_svc(session: Session):

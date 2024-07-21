@@ -175,18 +175,13 @@ class ArticleService:
         """Enables the creation of articles."""
         # 1. Enforce permissions
         self._permission_svc.enforce(subject, "article.create", "article/")
-
-        # 2. Create the article
-        if article.id is not None:
-            article.id = None
-
         article_entity = ArticleEntity.from_draft(article)
 
-        # 3. Persist article
+        # 2. Persist article
         self._session.add(article_entity)
         self._session.commit()
 
-        # 4. Persist authors
+        # 3. Persist authors
         for author in article.authors:
             self._session.execute(
                 article_author_table.insert().values(
