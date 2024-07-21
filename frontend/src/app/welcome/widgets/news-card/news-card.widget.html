@@ -1,8 +1,6 @@
 <mat-card appearance="outlined" class="featured-pane">
   <div class="row">
-    <img
-      class="news-feature-image"
-      src="https://i.etsystatic.com/22085368/r/il/716804/2576209117/il_570xN.2576209117_ran0.jpg" />
+    <img class="news-feature-image" [src]="article.image_url" />
     <div class="column">
       <mat-card-header>
         <mat-card-title>{{ article.title }}</mat-card-title>
