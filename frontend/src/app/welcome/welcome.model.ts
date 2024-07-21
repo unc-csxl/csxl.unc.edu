@@ -29,7 +29,7 @@ export interface ArticleDraft {
   published: Date;
   last_modified: Date | null;
   is_announcement: boolean;
-  organization_slug: string | null;
+  organization_id: number | null;
   authors: PublicProfile[];
 }
 
@@ -44,6 +44,7 @@ export interface ArticleOverviewJson {
   published: string;
   last_modified: string | null;
   is_announcement: boolean;
+  organization_id: number | null;
   organization_slug: string | null;
   organization_logo: string | null;
   organization_name: string | null;
@@ -61,6 +62,7 @@ export interface ArticleOverview {
   published: Date;
   last_modified: Date | null;
   is_announcement: boolean;
+  organization_id: number | null;
   organization_slug: string | null;
   organization_logo: string | null;
   organization_name: string | null;

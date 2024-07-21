@@ -3,7 +3,7 @@ The Article Service allows the API to manipulate article data in the database.
 """
 
 from fastapi import Depends
-from sqlalchemy import select, func, or_
+from sqlalchemy import select, func, delete
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -14,11 +14,22 @@ from ..services.event import EventService
 from ..services.permission import PermissionService
 from ..services.coworking import PolicyService, OperatingHoursService
 
-from ..entities import ArticleEntity, UserEntity, EventEntity, EventRegistrationEntity
+from ..entities import (
+    ArticleEntity,
+    UserEntity,
+    EventEntity,
+    EventRegistrationEntity,
+    article_author_table,
+)
 from ..entities.coworking import ReservationEntity, reservation_user_table
 
 from ..models import User
-from ..models.articles import WelcomeOverview, ArticleState, ArticleOverview
+from ..models.articles import (
+    WelcomeOverview,
+    ArticleState,
+    ArticleOverview,
+    ArticleDraft,
+)
 from ..models.coworking import TimeRange
 from ..models.pagination import Paginated, PaginationParams
 
@@ -159,3 +170,92 @@ class ArticleService:
             length=length,
             params=pagination_params,
         )
+
+    def create_article(self, subject: User, article: ArticleDraft) -> ArticleOverview:
+        """Enables the creation of articles."""
+        # 1. Enforce permissions
+        self._permission_svc.enforce(subject, "article.create", "article/")
+
+        # 2. Create the article
+        if article.id is not None:
+            article.id = None
+
+        article_entity = ArticleEntity.from_draft(article)
+
+        # 3. Persist article
+        self._session.add(article_entity)
+        self._session.commit()
+
+        # 4. Persist authors
+        for author in article.authors:
+            self._session.execute(
+                article_author_table.insert().values(
+                    {"user_id": author.id, "article_id": article.id}
+                )
+            )
+        self._session.commit()
+
+        # 5. Return
+        return article_entity.to_overview_model()
+
+    def edit_article(self, subject: User, article: ArticleDraft) -> ArticleOverview:
+        """Enables the editing of articles."""
+        # 1. Enforce permissions
+        self._permission_svc.enforce(subject, "article.edit", "article/")
+
+        # 2. Ensure that the article exists
+        article_entity = self._session.get(ArticleEntity, article.id)
+        if article_entity is None:
+            raise ResourceNotFoundException(
+                f"Found no article with the ID: {article.id}"
+            )
+
+        # 3. Edit the article
+        article_entity.slug = article.slug
+        article_entity.state = article.state
+        article_entity.title = article.title
+        article_entity.image_url = article.image_url
+        article_entity.synopsis = article.synopsis
+        article_entity.body = article.body
+        article_entity.published = article.published
+        article_entity.last_modified = article.last_modified
+        article_entity.is_announcement = article.is_announcement
+        article_entity.organization_id = article.organization_id
+
+        # 3. Persist article
+        self._session.commit()
+
+        # 4. Persist authors
+        self._session.execute(
+            delete(article_author_table).filter(
+                article_author_table.c.article_id == article.id
+            )
+        )
+        self._session.commit()
+
+        for author in article.authors:
+            self._session.execute(
+                article_author_table.insert().values(
+                    {"user_id": author.id, "article_id": article.id}
+                )
+            )
+        self._session.commit()
+
+        # 5. Return
+        return article_entity.to_overview_model()
+
+    def delete_article(self, subject: User, article_id: int):
+        """Enables the deletion of articles."""
+        # 1. Enforce permissions
+        self._permission_svc.enforce(subject, "article.delete", "article/")
+
+        # 2. Ensure that the article exists
+        article_entity = self._session.get(ArticleEntity, article_id)
+        if article_entity is None:
+            raise ResourceNotFoundException(
+                f"Found no article with the ID: {article_id}"
+            )
+
+        # 3. Delete the article
+        self._session.delete(article_entity)
+        self._session.commit()

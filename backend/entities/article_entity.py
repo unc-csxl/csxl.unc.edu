@@ -41,7 +41,7 @@ class ArticleEntity(EntityBase):
     # Time when the article was initially published
     published: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # Time when the article was last modified
-    last_modified: Mapped[str] = mapped_column(String, nullable=True)
+    last_modified: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     # Whether or not the article should be treated as an announcement
     is_announcement: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False
@@ -88,8 +88,9 @@ class ArticleEntity(EntityBase):
             body=self.body,
             image_url=self.image_url,
             published=self.published,
-            last_modified=self.last_modified,
+            last_modified=self.last_modified if self.last_modified else None,
             is_announcement=self.is_announcement,
+            organization_id=self.organization.id if self.organization else None,
             organization_slug=self.organization.slug if self.organization else None,
             organization_logo=self.organization.logo if self.organization else None,
             organization_name=self.organization.name if self.organization else None,

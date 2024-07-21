@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import {
+  ArticleDraft,
   ArticleOverview,
   ArticleOverviewJson,
   parseArticleOverviewJson
@@ -50,5 +51,33 @@ export class NewsService {
    */
   list(params: PaginationParams = DEFAULT_PAGINATION_PARAMS) {
     return this.eventsPaginator.loadPage(params, parseArticleOverviewJson);
+  }
+
+  /**
+   * Creates a new article.
+   * @returns { Observable<ArticleOverview> }
+   */
+  createArticle(article: ArticleDraft): Observable<ArticleOverview> {
+    return this.http
+      .post<ArticleOverviewJson>(`/api/articles`, article)
+      .pipe(map(parseArticleOverviewJson));
+  }
+
+  /**
+   * Updates an existing article.
+   * @returns { Observable<ArticleOverview> }
+   */
+  updateArticle(article: ArticleDraft): Observable<ArticleOverview> {
+    return this.http
+      .put<ArticleOverviewJson>(`/api/articles`, article)
+      .pipe(map(parseArticleOverviewJson));
+  }
+
+  /**
+   * Updates an existing article.
+   * @returns { Observable<ArticleOverview> }
+   */
+  deleteArticle(articleId: number) {
+    this.http.delete(`/api/articles/${articleId}`);
   }
 }

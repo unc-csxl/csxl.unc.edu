@@ -10,7 +10,11 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { newsResolver } from '../news.resolver';
-import { ArticleOverview, ArticleState } from 'src/app/welcome/welcome.model';
+import {
+  ArticleDraft,
+  ArticleOverview,
+  ArticleState
+} from 'src/app/welcome/welcome.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NewsService } from '../news.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -49,7 +53,7 @@ export class ArticleEditorComponent {
     image_url: new FormControl('', [Validators.required]),
     synopsis: new FormControl('', [
       Validators.required,
-      Validators.maxLength(150)
+      Validators.maxLength(400)
     ]),
     body: new FormControl('', [Validators.required]),
     is_announcement: new FormControl(false, [Validators.required])
@@ -90,18 +94,22 @@ export class ArticleEditorComponent {
    */
   onSubmit(): void {
     if (this.articleForm.valid) {
-      let articleToSubmit = this.article!;
+      let articleToSubmit = this.article! as ArticleDraft;
       Object.assign(articleToSubmit, this.articleForm.value);
       articleToSubmit.authors = this.authors;
+      if (this.isNew()) {
+        articleToSubmit.published = new Date();
+      } else {
+        articleToSubmit.last_modified = new Date();
+      }
+      let submittedArticle = this.isNew()
+        ? this.newsService.createArticle(articleToSubmit)
+        : this.newsService.updateArticle(articleToSubmit);
 
-      // let submittedArticle = this.isNew()
-      //   ? this.newsService.createOrganization(organizationToSubmit)
-      //   : this.organizationService.updateOrganization(organizationToSubmit);
-
-      // submittedArticle.subscribe({
-      //   next: (article) => this.onSuccess(article),
-      //   error: (err) => this.onError(err)
-      // });
+      submittedArticle.subscribe({
+        next: (article) => this.onSuccess(article),
+        error: (err) => this.onError(err)
+      });
     }
   }
 

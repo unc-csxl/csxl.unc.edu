@@ -7,7 +7,7 @@ from ..api.authentication import registered_user
 from ..services.article import ArticleService
 
 from ..models import User
-from ..models.articles import WelcomeOverview, ArticleOverview
+from ..models.articles import WelcomeOverview, ArticleOverview, ArticleDraft
 from ..models.pagination import Paginated, PaginationParams
 
 __authors__ = ["Ajay Gandecha"]
@@ -52,3 +52,33 @@ def get_article(
 ) -> ArticleOverview:
     """Retrieves the welcome status."""
     return article_svc.get_article(slug)
+
+
+@api.post("", tags=["Articles"])
+def create_article(
+    article: ArticleDraft,
+    subject: User = Depends(registered_user),
+    article_svc: ArticleService = Depends(),
+) -> ArticleOverview:
+    """Create a new article."""
+    return article_svc.create_article(subject, article)
+
+
+@api.put("", tags=["Articles"])
+def update_article(
+    article: ArticleDraft,
+    subject: User = Depends(registered_user),
+    article_svc: ArticleService = Depends(),
+) -> ArticleOverview:
+    """Updates an article."""
+    return article_svc.edit_article(subject, article)
+
+
+@api.delete("/{article_id}", tags=["Articles"])
+def delete_article(
+    article_id: int,
+    subject: User = Depends(registered_user),
+    article_svc: ArticleService = Depends(),
+) -> ArticleOverview:
+    """Deletes an article."""
+    return article_svc.delete_article(subject, article_id)

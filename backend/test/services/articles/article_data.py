@@ -35,7 +35,7 @@ Viverra nibh cras pulvinar mattis nunc sed blandit libero volutpat. Tincidunt du
     published=datetime.now(),
     last_modified=datetime.now(),
     is_announcement=True,
-    organization_slug=None,
+    organization_id=None,
     authors=[],
 )
 
@@ -58,7 +58,7 @@ Viverra nibh cras pulvinar mattis nunc sed blandit libero volutpat. Tincidunt du
     published=datetime.now(),
     last_modified=datetime.now(),
     is_announcement=False,
-    organization_slug=None,
+    organization_id=None,
     authors=[],
 )
 
@@ -81,7 +81,7 @@ Viverra nibh cras pulvinar mattis nunc sed blandit libero volutpat. Tincidunt du
     published=datetime.now(),
     last_modified=datetime.now(),
     is_announcement=False,
-    organization_slug=None,
+    organization_id=None,
     authors=[],
 )
 

@@ -23,7 +23,7 @@ class ArticleDraft(BaseModel):
     published: datetime
     last_modified: datetime | None
     is_announcement: bool
-    organization_slug: str | None
+    organization_id: int | None
     authors: list[PublicUser]
 
 
@@ -40,6 +40,7 @@ class ArticleOverview(BaseModel):
     published: datetime
     last_modified: datetime | None
     is_announcement: bool
+    organization_id: int | None
     organization_slug: str | None
     organization_logo: str | None
     organization_name: str | None
