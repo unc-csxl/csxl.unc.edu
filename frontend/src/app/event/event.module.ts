@@ -39,7 +39,6 @@ import { GroupEventsPipe } from './pipes/group-events.pipe';
 import { EventsPageComponent } from './events-page/events-page.component';
 import { FeaturedEventCardWidget } from './widgets/featured-event-card/featured-event-card.widget';
 import { EventCardWidget } from './widgets/event-card/event-card.widget';
-import { EventRegistrationCardWidget } from './widgets/event-registration-card/event-registration-card.widget';
 
 @NgModule({
   declarations: [
@@ -48,8 +47,7 @@ import { EventRegistrationCardWidget } from './widgets/event-registration-card/e
     EventEditorComponent,
     GroupEventsPipe,
     FeaturedEventCardWidget,
-    EventCardWidget,
-    EventRegistrationCardWidget
+    EventCardWidget
   ],
   imports: [
     CommonModule,

@@ -5,6 +5,11 @@ import {
   Seat,
   parseOperatingHoursJSON
 } from '../coworking/coworking.models';
+import {
+  EventOverview,
+  EventOverviewJson,
+  parseEventOverviewJson
+} from '../event/event.model';
 import { PublicProfile } from '../profile/profile.service';
 
 export enum ArticleState {}
@@ -97,6 +102,7 @@ export interface WelcomeOverviewJson {
   latest_news: ArticleOverviewJson[];
   operating_hours: OperatingHoursJSON[];
   upcoming_reservations: ReservationOverviewJson[];
+  registered_events: EventOverviewJson[];
 }
 
 export interface WelcomeOverview {
@@ -104,6 +110,7 @@ export interface WelcomeOverview {
   latest_news: ArticleOverview[];
   operating_hours: OperatingHours[];
   upcoming_reservations: ReservationOverview[];
+  registered_events: EventOverview[];
 }
 
 export const parseWelcomeOverviewJson = (
@@ -117,6 +124,7 @@ export const parseWelcomeOverviewJson = (
     operating_hours: json.operating_hours.map(parseOperatingHoursJSON),
     upcoming_reservations: json.upcoming_reservations.map(
       parseReservationOverviewJson
-    )
+    ),
+    registered_events: json.registered_events.map(parseEventOverviewJson)
   };
 };

@@ -42,6 +42,7 @@ import {
   OperatingHoursCapitalizationPipe
 } from './operating-hours-panel/operating-hours-panel.widget';
 import { MarkdownDirective } from './directives/markdown.directive';
+import { EventRegistrationCardWidget } from './event-registration-card/event-registration-card.widget';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { MarkdownDirective } from './directives/markdown.directive';
     TabContainerWidget,
     CoworkingHoursCard,
     OperatingHoursCapitalizationPipe,
-    MarkdownDirective
+    MarkdownDirective,
+    EventRegistrationCardWidget
   ],
   imports: [
     CommonModule,
@@ -93,7 +95,8 @@ import { MarkdownDirective } from './directives/markdown.directive';
     AdminFabComponent,
     TabContainerWidget,
     CoworkingHoursCard,
-    MarkdownDirective
+    MarkdownDirective,
+    EventRegistrationCardWidget
   ],
   providers: [GroupEventsPipe]
 })

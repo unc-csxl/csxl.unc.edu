@@ -72,8 +72,10 @@
         </mat-card>
         }
         <mat-card-subtitle>Events</mat-card-subtitle>
-        @if (true) {
-        <p class="none-text">You are not registered for any events.</p>
+        @if (welcomeOverview().registered_events.length === 0) {
+        <p class="none-text">You currently have no upcoming reservations.</p>
+        } @for (event of welcomeOverview().registered_events; track event.id) {
+        <event-registration-card [event]="event" />
         }
       </mat-card-content>
     </mat-card>

@@ -10,9 +10,10 @@ from datetime import datetime
 from ..database import db_session
 from .exceptions import ResourceNotFoundException
 
+from ..services.event import EventService
 from ..services.coworking import PolicyService, OperatingHoursService
 
-from ..entities import ArticleEntity, UserEntity
+from ..entities import ArticleEntity, UserEntity, EventEntity, EventRegistrationEntity
 from ..entities.coworking import ReservationEntity, reservation_user_table
 
 from ..models import User
@@ -74,7 +75,7 @@ class ArticleService:
             )
         )
 
-        # Finally, load future reservations for a given user.
+        # Load future reservations for a given user.
         # For now, this will load a maximum of 3 future reservations.
         future_reservations_query = (
             select(ReservationEntity)
@@ -89,10 +90,28 @@ class ArticleService:
             for reservation in future_reservations_entities
         ]
 
+        # Finally, load future event registrations.
+        registered_events_query = (
+            select(EventRegistrationEntity)
+            .where(EventRegistrationEntity.user_id == subject.id)
+            .join(EventEntity)
+            .order_by(EventEntity.time)
+        )
+
+        registered_events_entities = self._session.scalars(
+            registered_events_query
+        ).all()
+
+        registered_events = [
+            registration.event.to_overview_model(subject)
+            for registration in registered_events_entities
+        ]
+
         # Construct the welcome overview and return
         return WelcomeOverview(
             announcement=announcement,
             latest_news=news,
             operating_hours=operating_hours,
             upcoming_reservations=future_reservations,
+            registered_events=registered_events,
         )

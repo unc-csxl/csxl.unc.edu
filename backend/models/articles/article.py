@@ -3,6 +3,7 @@ from datetime import datetime
 from . import ArticleState
 from ..public_user import PublicUser
 from ..coworking import OperatingHours, ReservationOverview
+from ..event import EventOverview
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -52,3 +53,4 @@ class WelcomeOverview(BaseModel):
     latest_news: list[ArticleOverview]
     operating_hours: list[OperatingHours]
     upcoming_reservations: list[ReservationOverview]
+    registered_events: list[EventOverview]
