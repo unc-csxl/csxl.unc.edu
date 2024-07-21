@@ -40,6 +40,9 @@
       }
     </mat-card>
     <mat-card appearance="outlined" class="upcoming-pane">
+      @if(profileService.profile() === undefined) {
+      <about-pane-content />
+      } @else {
       <mat-card-header>
         <mat-card-title id="upcoming-title">Upcoming For You</mat-card-title>
       </mat-card-header>
@@ -78,6 +81,7 @@
         <event-registration-card [event]="event" />
         }
       </mat-card-content>
+      }
     </mat-card>
   </div>
 </div>

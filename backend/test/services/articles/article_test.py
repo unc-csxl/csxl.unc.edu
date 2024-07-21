@@ -37,6 +37,17 @@ def test_get_welcome_overview(article_svc: ArticleService):
     )
 
 
+def test_get_welcome_unauthenticated(article_svc: ArticleService):
+    """Ensures that logged out users are able to get the welcome overview."""
+    welcome_overview = article_svc.get_welcome_overview(None)
+    assert welcome_overview is not None
+    assert isinstance(welcome_overview, WelcomeOverview)
+    assert welcome_overview.announcement is not None
+    assert len(welcome_overview.latest_news) == len(
+        article_data.articles_no_announcement
+    )
+
+
 def test_get_by_slug(article_svc: ArticleService):
     """Ensures that users can get articles."""
     article = article_svc.get_article(article_data.article_one.slug)

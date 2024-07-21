@@ -10,6 +10,7 @@ import { Component, Signal, computed, signal } from '@angular/core';
 import { welcomeResolver } from '../welcome.resolver';
 import { WelcomeOverview } from '../welcome.model';
 import { ActivatedRoute } from '@angular/router';
+import { ProfileService } from 'src/app/profile/profile.service';
 
 @Component({
   selector: 'app-welcome-page',
@@ -39,7 +40,10 @@ export class WelcomePageComponent {
   });
 
   /** Constructor */
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    protected profileService: ProfileService
+  ) {
     const data = this.route.snapshot.data as {
       welcomeOverview: WelcomeOverview;
     };

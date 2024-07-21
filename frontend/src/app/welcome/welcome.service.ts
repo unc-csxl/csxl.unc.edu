@@ -32,4 +32,15 @@ export class WelcomeService {
       .get<WelcomeOverviewJson>(`/api/articles/welcome`)
       .pipe(map(parseWelcomeOverviewJson));
   }
+
+  /**
+   * Retrieves the current welcome page status from the API
+   * if the user is not logged in.
+   * @returns { Observable<WelcomeOverview> }
+   */
+  getWelcomeStatusUnauthenticated(): Observable<WelcomeOverview> {
+    return this.http
+      .get<WelcomeOverviewJson>(`/api/articles/welcome/unauthenticated`)
+      .pipe(map(parseWelcomeOverviewJson));
+  }
 }

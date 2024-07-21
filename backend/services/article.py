@@ -54,7 +54,7 @@ class ArticleService:
         self._policies_svc = policies_svc
         self._operating_hours_svc = operating_hours_svc
 
-    def get_welcome_overview(self, subject: User) -> WelcomeOverview:
+    def get_welcome_overview(self, subject: User | None) -> WelcomeOverview:
         """Retrieves the welcome overview."""
         # First, retrieve the latest announcement.
         announcement_query = (
@@ -92,36 +92,40 @@ class ArticleService:
 
         # Load future reservations for a given user.
         # For now, this will load a maximum of 3 future reservations.
-        future_reservations_query = (
-            select(ReservationEntity)
-            .join(ReservationEntity.users)
-            .where(UserEntity.id == subject.id)
-            .where(ReservationEntity.start > datetime.now())
-        )
-        future_reservations_entities = self._session.scalars(
-            future_reservations_query
-        ).all()
-        future_reservations = [
-            reservation.to_overview_model()
-            for reservation in future_reservations_entities
-        ]
+        future_reservations = []
+        if subject:
+            future_reservations_query = (
+                select(ReservationEntity)
+                .join(ReservationEntity.users)
+                .where(UserEntity.id == subject.id)
+                .where(ReservationEntity.start > datetime.now())
+            )
+            future_reservations_entities = self._session.scalars(
+                future_reservations_query
+            ).all()
+            future_reservations = [
+                reservation.to_overview_model()
+                for reservation in future_reservations_entities
+            ]
 
         # Finally, load future event registrations.
-        registered_events_query = (
-            select(EventRegistrationEntity)
-            .where(EventRegistrationEntity.user_id == subject.id)
-            .join(EventEntity)
-            .order_by(EventEntity.time)
-        )
+        registered_events = []
+        if subject:
+            registered_events_query = (
+                select(EventRegistrationEntity)
+                .where(EventRegistrationEntity.user_id == subject.id)
+                .join(EventEntity)
+                .order_by(EventEntity.time)
+            )
 
-        registered_events_entities = self._session.scalars(
-            registered_events_query
-        ).all()
+            registered_events_entities = self._session.scalars(
+                registered_events_query
+            ).all()
 
-        registered_events = [
-            registration.event.to_overview_model(subject)
-            for registration in registered_events_entities
-        ]
+            registered_events = [
+                registration.event.to_overview_model(subject)
+                for registration in registered_events_entities
+            ]
 
         # Construct the welcome overview and return
         return WelcomeOverview(

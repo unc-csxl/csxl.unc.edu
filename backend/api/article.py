@@ -29,6 +29,14 @@ def get_welcome_status(
     return article_svc.get_welcome_overview(subject)
 
 
+@api.get("/welcome/unauthenticated", tags=["Articles"])
+def get_welcome_status_unauthenticated(
+    article_svc: ArticleService = Depends(),
+) -> WelcomeOverview:
+    """Retrieves the welcome status for an unauthenticated user."""
+    return article_svc.get_welcome_overview(None)
+
+
 @api.get("/list", tags=["Articles"])
 def list(
     subject: User = Depends(registered_user),
