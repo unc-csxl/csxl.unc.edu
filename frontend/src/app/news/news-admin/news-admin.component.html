@@ -26,6 +26,11 @@
                 ">
                 {{ element.state }}
               </span>
+              @if(element.is_announcement) {
+              <span class="text-badge primary-container-background" id="announcement">
+                Announcement
+              </span>
+              }
             </p>
             <div class="button-container">
               <button

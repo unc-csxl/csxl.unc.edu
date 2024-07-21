@@ -47,6 +47,11 @@ html, body {
         color: mat.get-theme-color($theme, on-primary-fixed-variant) !important;
     }
 
+    .primary-container-background {
+        background: mat.get-theme-color($theme, primary-container) !important;
+        color: mat.get-theme-color($theme, on-primary-container) !important;
+    }
+
     .secondary-container-background {
         background: mat.get-theme-color($theme, secondary-container) !important;
         color: mat.get-theme-color($theme, on-secondary-container) !important;
