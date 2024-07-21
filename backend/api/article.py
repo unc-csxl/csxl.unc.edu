@@ -7,7 +7,7 @@ from ..api.authentication import registered_user
 from ..services.article import ArticleService
 
 from ..models import User
-from ..models.articles import WelcomeOverview
+from ..models.articles import WelcomeOverview, ArticleOverview
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -26,3 +26,13 @@ def get_welcome_status(
 ) -> WelcomeOverview:
     """Retrieves the welcome status."""
     return article_svc.get_welcome_overview(subject)
+
+
+@api.get("/{slug}", tags=["Articles"])
+def get_article(
+    slug: str,
+    subject: User = Depends(registered_user),
+    article_svc: ArticleService = Depends(),
+) -> ArticleOverview:
+    """Retrieves the welcome status."""
+    return article_svc.get_article(slug, subject)

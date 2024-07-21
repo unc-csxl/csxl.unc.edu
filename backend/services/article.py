@@ -17,7 +17,7 @@ from ..entities import ArticleEntity, UserEntity, EventEntity, EventRegistration
 from ..entities.coworking import ReservationEntity, reservation_user_table
 
 from ..models import User
-from ..models.articles import WelcomeOverview, ArticleState
+from ..models.articles import WelcomeOverview, ArticleState, ArticleOverview
 from ..models.coworking import TimeRange
 
 __authors__ = ["Ajay Gandecha"]
@@ -115,3 +115,9 @@ class ArticleService:
             upcoming_reservations=future_reservations,
             registered_events=registered_events,
         )
+
+    def get_article(self, slug: str) -> ArticleOverview:
+        """Access a single article by slug"""
+        article_query = select(ArticleEntity).where(ArticleEntity.slug == slug)
+        article_entity = self._session.scalars(article_query).one_or_none()
+        return article_entity.to_overview_model()
