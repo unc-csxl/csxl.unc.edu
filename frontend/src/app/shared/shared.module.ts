@@ -29,7 +29,6 @@ import { UserLookup } from './user-lookup/user-lookup.widget';
 import { CommunityAgreement } from './community-agreement/community-agreement.widget';
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
-import { ProfileAboutCard } from './profile-about-card/profile-about-card.widget';
 import { MatPaneComponent } from './mat/mat-pane/mat-pane.component';
 import { BannerCardComponent } from './banner-card/banner-card.component';
 import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
@@ -52,7 +51,6 @@ import { AboutPaneWidget } from './about-pane/about-pane.widget';
     UserLookup,
     UserChipList,
     CommunityAgreement,
-    ProfileAboutCard,
     MatPaneComponent,
     BannerCardComponent,
     AdminFabComponent,
@@ -91,7 +89,6 @@ import { AboutPaneWidget } from './about-pane/about-pane.widget';
     SearchBar,
     UserLookup,
     UserChipList,
-    ProfileAboutCard,
     MatPaneComponent,
     BannerCardComponent,
     AdminFabComponent,

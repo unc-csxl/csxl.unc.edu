@@ -35,7 +35,9 @@ import {
   OfficeHours,
   OfficeHoursJson,
   parseOfficeHoursJson,
-  NewOfficeHours
+  NewOfficeHours,
+  UpdatedCourseSite,
+  CourseSiteOverview
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
@@ -213,12 +215,30 @@ export class MyCoursesService {
   }
 
   /**
+   * Gets a new course site for a given ID.
+   * @param courseSiteID: ID of the course site to get
+   * @returns {Observable<CourseSite>}
+   */
+  getCourseSite(courseSiteId: number): Observable<UpdatedCourseSite> {
+    return this.http.get<UpdatedCourseSite>(`/api/my-courses/${courseSiteId}`);
+  }
+
+  /**∂
    * Creates a new course site.
    * @param newCourseSite New course site to create
    * @returns {Observable<CourseSite>}
    */
   createCourseSite(newCourseSite: NewCourseSite): Observable<CourseSite> {
     return this.http.post<CourseSite>(`/api/my-courses/new`, newCourseSite);
+  }
+
+  /**
+   * Updates a course site.
+   * @param courseSite: Site to update
+   * @returns {Observable<CourseSite>}
+   */
+  updateCourseSite(courseSite: UpdatedCourseSite): Observable<CourseSite> {
+    return this.http.put<CourseSite>(`/api/my-courses`, courseSite);
   }
 
   /**

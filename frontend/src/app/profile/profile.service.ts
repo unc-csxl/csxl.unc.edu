@@ -24,15 +24,23 @@ export interface Profile {
   role: number;
   permissions: Permission[];
   accepted_community_agreement: boolean;
+  bio: string | null;
+  linkedin: string | null;
+  website: string | null;
 }
 
 export interface PublicProfile {
   id: number;
+  onyen: string;
   first_name: string;
   last_name: string;
   pronouns: string;
   email: string;
   github_avatar: string | null;
+  github: string | null;
+  bio: string | null;
+  linkedin: string | null;
+  website: string | null;
 }
 
 @Injectable({
@@ -95,5 +103,9 @@ export class ProfileService {
 
   unlinkGitHub() {
     return this.http.delete('/oauth/github');
+  }
+
+  getByOnyen(onyen: string): Observable<PublicProfile> {
+    return this.http.get<PublicProfile>(`/api/user/${onyen}`);
   }
 }

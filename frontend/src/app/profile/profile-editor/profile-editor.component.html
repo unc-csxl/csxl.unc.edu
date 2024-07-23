@@ -49,6 +49,22 @@
         >
       </mat-form-field>
       <mat-form-field appearance="outline">
+        <mat-label>LinkedIn Profile Link</mat-label>
+        <input
+          matInput
+          placeholder="Paste your LinkedIn profile URL here."
+          formControlName="linkedin"
+          name="linkedin" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Personal Website Link</mat-label>
+        <input
+          matInput
+          placeholder="Paste the url of your website here."
+          formControlName="website"
+          name="website" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Pronouns</mat-label>
         <input
           matInput
@@ -56,6 +72,14 @@
           formControlName="pronouns"
           name="pronouns"
           required />
+      </mat-form-field>
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Bio (Markdown Supported)</mat-label>
+        <textarea
+          matInput
+          placeholder="Write your bio here (markdown supported)."
+          formControlName="bio"
+          name="bio"></textarea>
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>

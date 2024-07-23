@@ -19,7 +19,7 @@
 
     <mat-chip-set>
       <!-- Organization chip -->
-      <mat-chip
+      <mat-chip-row
         id="organization-chip"
         [routerLink]="'/organizations/' + event.organization_slug">
         <img
@@ -27,7 +27,7 @@
           matChipAvatar
           [src]="event.organization_icon" />
         {{ event.organization_name }}
-      </mat-chip>
+      </mat-chip-row>
 
       @if (event.organizers.length > 0) {
       <mat-divider class="vertical-divider" [vertical]="true" />
@@ -35,7 +35,7 @@
 
       <!-- Organizer Chips -->
       @for (organizer of event.organizers; track organizer.id) {
-      <mat-chip>
+      <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
         @if (organizer.github_avatar && organizer.github_avatar !== '') {
         <img
           class="profile-icon"
@@ -44,7 +44,7 @@
         }
 
         {{ organizer.first_name }} {{ organizer.last_name }}
-      </mat-chip>
+      </mat-chip-row>
       }
     </mat-chip-set>
 

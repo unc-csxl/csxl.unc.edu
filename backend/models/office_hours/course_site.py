@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from ..public_user import PublicUser
 
 __authors__ = [
     "Ajay Gandecha",
@@ -30,6 +31,8 @@ class UpdatedCourseSite(BaseModel):
     title: str
     term_id: str
     section_ids: list[int]
+    gtas: list[PublicUser]
+    utas: list[PublicUser]
 
 
 class CourseSite(BaseModel):

@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
 import { AuthenticationService } from 'src/app/authentication.service';
+import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -44,7 +45,8 @@ export class ProfilePageComponent {
     public auth: AuthenticationService,
     protected profileService: ProfileService,
     protected snackBar: MatSnackBar,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    private icons: SocialMediaIconWidgetService
   ) {
     /** Get currently-logged-in user. */
     const data = this.route.snapshot.data as {

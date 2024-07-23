@@ -1,4 +1,3 @@
-<!-- HTML Structure of Profile Page -->
 <mat-pane>
   <mat-card-header>
     @if (profile.github_avatar) {
@@ -55,21 +54,6 @@
           &#64;{{ profile.github }}
         </a>
       </p>
-      <button
-        class="font-secondary"
-        id="unlink-github-button"
-        mat-button
-        (click)="unlinkGitHub()">
-        Unlink
-      </button>
-      } @else {
-      <button
-        class="font-secondary"
-        id="link-github-button"
-        mat-button
-        (click)="linkWithGitHub()">
-        Link with GitHub
-      </button>
       }
     </div>
     <mat-divider id="bio-divider" />
@@ -80,46 +64,4 @@
     <p>User does not have a bio.</p>
     }
   </mat-card-content>
-  <mat-card-actions>
-    <button class="secondary-button" mat-flat-button routerLink="/profile/edit">Edit</button>
-  </mat-card-actions>
-</mat-pane>
-
-<mat-pane>
-  <mat-card-header>
-    <mat-card-subtitle>Profile Actions</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <mat-list class="actions-list">
-      <div class="actions-row bottom-gap">
-        <mat-icon matListItemIcon>handshake</mat-icon>
-        <div matListItemTitle>Community Agreement</div>
-        <button
-          class="trailing-row-button"
-          mat-button
-          (click)="openAgreementDialog()">
-          View
-        </button>
-      </div>
-      <div class="actions-row">
-        <mat-icon matListItemIcon>key</mat-icon>
-        <div matListItemTitle>Bearer Token</div>
-        <button class="trailing-row-button" mat-button (click)="copyToken()">
-          Copy
-        </button>
-      </div>
-    </mat-list>
-  </mat-card-content>
-</mat-pane>
-
-<mat-pane>
-  <mat-card-actions>
-    <button
-      id="sign-out-button"
-      mat-flat-button
-      class="tertiary-button"
-      (click)="auth.signOut()">
-      Sign Out
-    </button>
-  </mat-card-actions>
 </mat-pane>
