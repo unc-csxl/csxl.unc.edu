@@ -6,18 +6,26 @@
  * @license MIT
  */
 
-import { Component, Signal, computed, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Signal,
+  computed,
+  effect,
+  signal
+} from '@angular/core';
 import { welcomeResolver } from '../welcome.resolver';
 import { WelcomeOverview } from '../welcome.model';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileService } from 'src/app/profile/profile.service';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-welcome-page',
   templateUrl: './welcome-page.component.html',
   styleUrl: './welcome-page.component.css'
 })
-export class WelcomePageComponent {
+export class WelcomePageComponent implements OnInit {
   /** Route information to be used in the routing module */
   public static Route = {
     path: '',
@@ -42,11 +50,21 @@ export class WelcomePageComponent {
   /** Constructor */
   constructor(
     private route: ActivatedRoute,
-    protected profileService: ProfileService
+    protected profileService: ProfileService,
+    private gearService: NagivationAdminGearService
   ) {
     const data = this.route.snapshot.data as {
       welcomeOverview: WelcomeOverview;
     };
     this.welcomeOverview = signal(data.welcomeOverview);
+  }
+
+  ngOnInit(): void {
+    this.gearService.showAdminGearByPermissionCheck(
+      'article.*',
+      '*',
+      '',
+      'article/admin'
+    );
   }
 }
