@@ -3,6 +3,7 @@ from datetime import datetime
 from ...models import Paginated
 from ...models.office_hours.ticket_state import TicketState
 from ...models.office_hours.ticket_type import TicketType
+from ...models.public_user import PublicUser
 
 
 class TeachingSectionOverview(BaseModel):
@@ -18,6 +19,9 @@ class SectionOverview(BaseModel):
     number: str
     meeting_pattern: str
     course_site_id: int | None
+    subject_code: str
+    course_number: str
+    section_number: str
 
 
 class CourseOverview(BaseModel):
@@ -31,11 +35,14 @@ class CourseOverview(BaseModel):
 
 class CourseSiteOverview(BaseModel):
     id: int
+    term_id: str
     subject_code: str
     number: str
     title: str
     role: str
     sections: list[SectionOverview]
+    gtas: list[PublicUser]
+    utas: list[PublicUser]
 
 
 class TermOverview(BaseModel):

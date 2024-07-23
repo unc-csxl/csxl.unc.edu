@@ -250,6 +250,8 @@ def test_update_term_noninstructor(course_site_svc: CourseSiteService):
         title="Anything",
         term_id=term_data.current_term.id,
         section_ids=[],
+        gtas=[],
+        utas=[],
     )
     with pytest.raises(CoursePermissionException):
         course_site_svc.update(
