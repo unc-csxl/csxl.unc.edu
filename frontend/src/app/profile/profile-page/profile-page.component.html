@@ -1,78 +1,97 @@
 <!-- HTML Structure of Profile Page -->
-<profile-about-card [profile]="profile" />
-<mat-pane class="profile-management">
+<mat-pane>
   <mat-card-header>
-    <mat-card-title>Profile Actions</mat-card-title>
+    @if (profile.github_avatar) {
+    <img mat-card-avatar class="user-avatar" [src]="profile.github_avatar" />
+    } @else if (profile.first_name && profile.last_name) {
+    <p mat-card-avatar class="user-avatar secondary-background">
+      {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
+    </p>
+    }
+
+    <div class="header-row">
+      <mat-card-title>
+        {{ profile.first_name }} {{ profile.last_name }}
+      </mat-card-title>
+      <mat-chip-set class="no-hover-chipset">
+        <mat-chip disableRipple>
+          {{ profile.pronouns }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
   </mat-card-header>
-  <mat-card-actions class="profile-management-actions">
-    <div class="action-section">
-      <p class="section-title">Github</p>
-      <div class="action-buttons">
-        <div *ngIf="profile.github !== ''; else associate_github">
-          <button
-            class="action-button"
-            mat-stroked-button
-            (click)="unlinkGitHub()">
-            Unlink GitHub
-          </button>
-        </div>
-        <ng-template #associate_github>
-          <button
-            class="action-button"
-            mat-stroked-button
-            (click)="linkWithGitHub()">
-            Link with GitHub
-          </button>
-        </ng-template>
-      </div>
+  <mat-card-content>
+    <div class="links-row">
+      <mat-icon>mail</mat-icon>
+      <p>{{ profile.email }}</p>
+      <mat-icon id="github-icon" svgIcon="github" />
+      @if (profile.github) {
+      <a id="github-link" href="https://github.com/{{ profile.github }}">
+        &#64;{{ profile.github }}
+      </a>
+      <button id="unlink-github-button" mat-button (click)="unlinkGitHub()">
+        Unlink
+      </button>
+      } @else {
+      <button id="link-github-button" mat-button (click)="linkWithGitHub()">
+        Link with GitHub
+      </button>
+      }
     </div>
-    <div class="action-section">
-      <p class="section-title">Community Agreement</p>
-      <div class="action-buttons">
-        <button
-          class="action-button"
-          mat-stroked-button
-          type="button"
-          (click)="openAgreementDialog()">
-          View Community Agreement
-        </button>
-      </div>
-    </div>
-    <div class="action-section">
-      <p class="section-title">Auth Bearer Token</p>
-      <div class="action-buttons">
-        <button
-          class="action-button"
-          mat-stroked-button
-          type="submit"
-          (click)="displayToken()">
-          {{ showToken ? 'Hide Bearer Token' : 'Display Bearer Token' }}
-        </button>
-        <button
-          class="action-button"
-          mat-stroked-button
-          type="submit"
-          (click)="copyToken()">
-          Copy Bearer Token
-        </button>
-      </div>
-      <p class="token-text" *ngIf="showToken && token">
-        <code>{{ token }}</code>
-      </p>
-    </div>
-  </mat-card-actions>
+    <mat-divider id="bio-divider" />
+    <mat-card-subtitle>Profile Bio</mat-card-subtitle>
+    <p>
+      Lorem ipsum odor amet, consectetuer adipiscing elit. Inceptos neque vel
+      curabitur orci est. Sem non bibendum lectus, vestibulum nec elementum
+      metus ad. Porta magna tempus, augue massa adipiscing netus. Congue
+      consequat hac erat pretium tempor. Conubia natoque orci pulvinar taciti
+      metus ad suscipit senectus nulla. Gravida vel dapibus taciti efficitur,
+      tempor phasellus varius. Finibus tristique enim sodales nascetur bibendum
+      bibendum nunc fermentum.
+    </p>
+  </mat-card-content>
 </mat-pane>
 
 <mat-pane>
+  <mat-card-header>
+    <mat-card-subtitle>Profile Actions</mat-card-subtitle>
+  </mat-card-header>
   <mat-card-content>
-    <button mat-flat-button class="tertiary-button" (click)="auth.signOut()">
+    <mat-list class="actions-list">
+      <div class="actions-row bottom-gap">
+        <mat-icon matListItemIcon>handshake</mat-icon>
+        <div matListItemTitle>Community Agreement</div>
+        <button
+          class="trailing-row-button"
+          mat-button
+          (click)="openAgreementDialog()">
+          View
+        </button>
+      </div>
+      <div class="actions-row">
+        <mat-icon matListItemIcon>key</mat-icon>
+        <div matListItemTitle>Bearer Token</div>
+        <button
+          class="trailing-row-button"
+          mat-button
+          (click)="copyToken()">
+          Copy
+        </button>
+      </div>
+    </mat-list>
+  </mat-card-content>
+</mat-pane>
+
+<mat-pane>
+  <mat-card-content class="sign-out-pane-content">
+    <button id="sign-out-button" mat-flat-button class="tertiary-button" (click)="auth.signOut()">
       Sign Out
     </button>
   </mat-card-content>
 </mat-pane>
 
 <div class="profile-edit-fab">
-  <button mat-fab extended color="accent" routerLink="/profile/edit">
+  <button mat-fab extended color="secondary" routerLink="/profile/edit">
     <mat-icon>edit</mat-icon>
     Edit
   </button>

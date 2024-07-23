@@ -33,6 +33,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
 import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
 import { ProfileRoutingModule } from './profile-routing.module';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [ProfilePageComponent, ProfileEditorComponent],
@@ -55,7 +56,8 @@ import { ProfileRoutingModule } from './profile-routing.module';
     MatTooltipModule,
     ProfileRoutingModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    MatChipsModule
   ]
 })
 export class ProfileModule {}
