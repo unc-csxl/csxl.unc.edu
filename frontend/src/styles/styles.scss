@@ -355,7 +355,7 @@ html, body {
     .mat-csxl-alert-card {
 
         .mat-mdc-card-title {
-            font: mat.get-theme-typography($theme, title-small, font);
+            font: mat.get-theme-typography($theme, title-medium, font);
         }
 
     }

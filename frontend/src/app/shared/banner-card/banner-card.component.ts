@@ -21,6 +21,7 @@ export class BannerCardComponent {
   @Input() link?: string;
   @Output() actionButtonPressed = new EventEmitter<void>();
   @Input() wide: boolean = false;
+  @Input() newTab: boolean = false;
 
   buttonPressed() {
     if (this.linkAction) {
@@ -30,7 +31,7 @@ export class BannerCardComponent {
     }
   }
   openLink() {
-    window.open(this.link ?? '', '_blank');
+    window.open(this.link ?? '', this.newTab ? '_blank' : '_self');
   }
 
   bannerClassName(): string {
