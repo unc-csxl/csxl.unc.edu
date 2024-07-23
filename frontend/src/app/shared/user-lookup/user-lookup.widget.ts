@@ -76,6 +76,7 @@ export class UserLookup implements OnInit {
         pronouns: user.pronouns!,
         email: user.email!,
         github_avatar: user.github_avatar,
+        github: user.github,
         bio: user.bio
       };
       this.users.push(organizer);

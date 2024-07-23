@@ -34,6 +34,7 @@ export interface PublicProfile {
   pronouns: string;
   email: string;
   github_avatar: string | null;
+  github: string | null;
   bio: string | null;
 }
 
@@ -97,5 +98,9 @@ export class ProfileService {
 
   unlinkGitHub() {
     return this.http.delete('/oauth/github');
+  }
+
+  getByOnyen(onyen: string): Observable<PublicProfile> {
+    return this.http.get<PublicProfile>(`/api/user/${onyen}`);
   }
 }

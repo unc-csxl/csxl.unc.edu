@@ -1,0 +1,41 @@
+<mat-pane>
+  <mat-card-header>
+    @if (profile.github_avatar) {
+    <img mat-card-avatar class="user-avatar" [src]="profile.github_avatar" />
+    } @else if (profile.first_name && profile.last_name) {
+    <p mat-card-avatar class="user-avatar secondary-background">
+      {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
+    </p>
+    }
+
+    <div class="header-row">
+      <mat-card-title>
+        {{ profile.first_name }} {{ profile.last_name }}
+      </mat-card-title>
+      <mat-chip-set class="no-hover-chipset">
+        <mat-chip disableRipple>
+          {{ profile.pronouns }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="links-row">
+      <mat-icon>mail</mat-icon>
+      <p>{{ profile.email }}</p>
+      @if (profile.github) {
+      <mat-icon id="github-icon" svgIcon="github" />
+      <a id="github-link" href="https://github.com/{{ profile.github }}">
+        &#64;{{ profile.github }}
+      </a>
+      }
+    </div>
+    <mat-divider id="bio-divider" />
+    <mat-card-subtitle>Profile Bio</mat-card-subtitle>
+    @if (profile.bio) {
+    <p markdown>{{ profile.bio! }}</p>
+    } @else {
+    <p>User does not have a bio.</p>
+    }
+  </mat-card-content>
+</mat-pane>

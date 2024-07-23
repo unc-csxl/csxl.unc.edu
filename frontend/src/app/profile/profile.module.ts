@@ -34,9 +34,14 @@ import { ProfilePageComponent } from './profile-page/profile-page.component';
 import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
 import { ProfileRoutingModule } from './profile-routing.module';
 import { MatChipsModule } from '@angular/material/chips';
+import { PublicProfilePageComponent } from './public-profile-page/public-profile-page.component';
 
 @NgModule({
-  declarations: [ProfilePageComponent, ProfileEditorComponent],
+  declarations: [
+    ProfilePageComponent,
+    ProfileEditorComponent,
+    PublicProfilePageComponent
+  ],
   imports: [
     CommonModule,
     MatTabsModule,

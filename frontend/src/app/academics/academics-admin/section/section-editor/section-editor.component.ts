@@ -208,6 +208,7 @@ export class SectionEditorComponent {
             pronouns: '',
             email: '',
             github_avatar: '',
+            github: '',
             bio: ''
           };
         }) ?? [];

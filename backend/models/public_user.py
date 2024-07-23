@@ -22,4 +22,5 @@ class PublicUser(BaseModel):
     pronouns: str
     email: str
     github_avatar: str | None = None
+    github: str | None = None
     bio: str | None = None

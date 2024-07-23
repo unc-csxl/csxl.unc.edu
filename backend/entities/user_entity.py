@@ -147,5 +147,6 @@ class UserEntity(EntityBase):
             pronouns=self.pronouns,
             email=self.email,
             github_avatar=self.github_avatar,
+            github=self.github,
             bio=self.bio,
         )
