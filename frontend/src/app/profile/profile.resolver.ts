@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
-import { ResolveFn } from '@angular/router';
+import { ResolveFn, Router } from '@angular/router';
 import { Profile, ProfileService, PublicProfile } from './profile.service';
+import { tap } from 'rxjs';
 
 export const profileResolver: ResolveFn<Profile | undefined> = (
   route,
@@ -13,5 +14,13 @@ export const publicProfileResolver: ResolveFn<PublicProfile> = (
   route,
   state
 ) => {
-  return inject(ProfileService).getByOnyen(route.params['onyen']);
+  let profileService = inject(ProfileService);
+  let router = inject(Router);
+  return profileService.getByOnyen(route.params['onyen']).pipe(
+    tap((profile) => {
+      if (profile.onyen == profileService.profile()?.onyen) {
+        router.navigateByUrl('/profile');
+      }
+    })
+  );
 };
