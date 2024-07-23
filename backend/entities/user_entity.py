@@ -142,6 +142,7 @@ class UserEntity(EntityBase):
     def to_public_model(self) -> PublicUser:
         return PublicUser(
             id=self.id,
+            onyen=self.onyen,
             first_name=self.first_name,
             last_name=self.last_name,
             pronouns=self.pronouns,

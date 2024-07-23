@@ -17,6 +17,7 @@ class PublicUser(BaseModel):
     """
 
     id: int | None
+    onyen: str
     first_name: str
     last_name: str
     pronouns: str

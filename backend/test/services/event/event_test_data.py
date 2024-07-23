@@ -67,6 +67,7 @@ to_add = DraftEvent(
     organizers=[
         PublicUser(
             id=root.id,
+            onyen=root.onyen,
             first_name=root.first_name,
             last_name=root.last_name,
             pronouns=root.pronouns,
@@ -118,6 +119,7 @@ updated_event_one_organizers = Event(
     organizers=[
         PublicUser(
             id=user.id,
+            onyen=user.onyen,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,
@@ -125,6 +127,7 @@ updated_event_one_organizers = Event(
         ),
         PublicUser(
             id=ambassador.id,
+            onyen=ambassador.onyen,
             first_name=ambassador.first_name,
             last_name=ambassador.last_name,
             pronouns=ambassador.pronouns,
@@ -156,6 +159,7 @@ updated_event_three = Event(
     organizers=[
         PublicUser(
             id=user.id,
+            onyen=user.onyen,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,
@@ -163,6 +167,7 @@ updated_event_three = Event(
         ),
         PublicUser(
             id=ambassador.id,
+            onyen=user.onyen,
             first_name=ambassador.first_name,
             last_name=ambassador.last_name,
             pronouns=ambassador.pronouns,
@@ -170,6 +175,7 @@ updated_event_three = Event(
         ),
         PublicUser(
             id=root.id,
+            onyen=user.onyen,
             first_name=root.first_name,
             last_name=root.last_name,
             pronouns=root.pronouns,
@@ -190,6 +196,7 @@ updated_event_three_remove_organizers = Event(
     organizers=[
         PublicUser(
             id=user.id,
+            onyen=user.onyen,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,

@@ -29,6 +29,7 @@ export interface Profile {
 
 export interface PublicProfile {
   id: number;
+  onyen: string;
   first_name: string;
   last_name: string;
   pronouns: string;

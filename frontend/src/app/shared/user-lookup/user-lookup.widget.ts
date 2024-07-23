@@ -71,6 +71,7 @@ export class UserLookup implements OnInit {
     if (this.users.filter((e) => e.id === user.id).length == 0) {
       let organizer: PublicProfile = {
         id: user.id!,
+        onyen: user.onyen,
         first_name: user.first_name!,
         last_name: user.last_name!,
         pronouns: user.pronouns!,
