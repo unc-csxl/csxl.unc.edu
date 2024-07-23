@@ -226,7 +226,11 @@ class SectionEntity(EntityBase):
             subject_code=self.course.subject_code,
             course_number=self.course.number,
             section_number=self.number,
-            course_title=self.course.title,
+            title=(
+                self.override_title
+                if len(self.override_title) > 0
+                else self.course.title
+            ),
         )
 
     def to_catalog_model(self) -> CatalogSection:
@@ -242,12 +246,12 @@ class SectionEntity(EntityBase):
             subject_code=self.course.subject_code,
             course_number=self.course.number,
             section_number=self.number,
+            meeting_pattern=self.meeting_pattern,
             title=(
                 self.override_title
                 if len(self.override_title) > 0
                 else self.course.title
             ),
-            meeting_pattern=self.meeting_pattern,
             description=(
                 self.override_description
                 if len(self.override_description) > 0
