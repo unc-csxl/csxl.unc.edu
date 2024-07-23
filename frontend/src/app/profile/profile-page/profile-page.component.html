@@ -55,11 +55,19 @@
           &#64;{{ profile.github }}
         </a>
       </p>
-      <button class="font-secondary" id="unlink-github-button" mat-button (click)="unlinkGitHub()">
+      <button
+        class="font-secondary"
+        id="unlink-github-button"
+        mat-button
+        (click)="unlinkGitHub()">
         Unlink
       </button>
       } @else {
-      <button class="font-secondary" id="link-github-button" mat-button (click)="linkWithGitHub()">
+      <button
+        class="font-secondary"
+        id="link-github-button"
+        mat-button
+        (click)="linkWithGitHub()">
         Link with GitHub
       </button>
       }
@@ -72,6 +80,9 @@
     <p>User does not have a bio.</p>
     }
   </mat-card-content>
+  <mat-card-actions>
+    <button class="secondary-button" mat-flat-button routerLink="/profile/edit">Edit</button>
+  </mat-card-actions>
 </mat-pane>
 
 <mat-pane>
@@ -102,7 +113,7 @@
 </mat-pane>
 
 <mat-pane>
-  <mat-card-content class="sign-out-pane-content">
+  <mat-card-actions>
     <button
       id="sign-out-button"
       mat-flat-button
@@ -110,12 +121,5 @@
       (click)="auth.signOut()">
       Sign Out
     </button>
-  </mat-card-content>
+  </mat-card-actions>
 </mat-pane>
-
-<div class="profile-edit-fab">
-  <button mat-fab extended routerLink="/profile/edit">
-    <mat-icon>edit</mat-icon>
-    Edit
-  </button>
-</div>

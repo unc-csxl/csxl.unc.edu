@@ -96,6 +96,13 @@ html, body {
         }
     }
 
+    .secondary-button {
+        .mat-icon {
+            color: white !important;
+        }
+        @include mat.button-color($theme, $color-variant: secondary);
+    }
+    
     .tertiary-button {
         .mat-icon {
             color: white !important;
