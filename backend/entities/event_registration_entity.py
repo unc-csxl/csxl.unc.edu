@@ -107,9 +107,14 @@ class EventRegistrationEntity(EntityBase):
         """
         return PublicUser(
             id=self.user_id,
+            onyen=self.user.onyen,
             first_name=self.user.first_name,
             last_name=self.user.last_name,
             pronouns=self.user.pronouns,
             email=self.user.email,
             github_avatar=self.user.github_avatar,
+            github=self.user.github,
+            bio=self.user.bio,
+            linkedin=self.user.linkedin,
+            website=self.user.website,
         )

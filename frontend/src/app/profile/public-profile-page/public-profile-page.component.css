@@ -134,9 +134,14 @@ mat-list-item {
   width: 200px;
 }
 
-mat-card-actions {
+.profile-edit-fab {
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-end;
 }
 
 @media (prefers-color-scheme: light) {

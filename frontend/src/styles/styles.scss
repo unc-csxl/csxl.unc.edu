@@ -88,11 +88,21 @@ html, body {
 @mixin mat-button-styles($theme) {
 
     .mat-mdc-fab {
+        background-color: mat.get-theme-color($theme, secondary);
+        color: mat.get-theme-color($theme, on-secondary);
+
         .mat-icon {
-            color: mat.get-theme-color($theme, on-primary);
+            color: mat.get-theme-color($theme, on-secondary);
         }
     }
 
+    .secondary-button {
+        .mat-icon {
+            color: white !important;
+        }
+        @include mat.button-color($theme, $color-variant: secondary);
+    }
+    
     .tertiary-button {
         .mat-icon {
             color: white !important;
@@ -166,6 +176,11 @@ html, body {
     .mat-icon svg {
         color: white;
         fill: white;
+    }
+
+    .secondary-icon, .secondary-icon svg {
+        color: mat.get-theme-color($theme, secondary) !important;
+        fill: mat.get-theme-color($theme, secondary) !important;
     }
 
     @media (prefers-color-scheme: light) {

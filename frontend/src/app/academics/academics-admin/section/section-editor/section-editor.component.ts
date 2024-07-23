@@ -203,11 +203,16 @@ export class SectionEditorComponent {
         .map((staff) => {
           return {
             id: staff.user_id!,
+            onyen: '',
             first_name: staff.first_name,
             last_name: staff.last_name,
             pronouns: '',
             email: '',
-            github_avatar: ''
+            github_avatar: '',
+            github: '',
+            bio: '',
+            linkedin: '',
+            website: ''
           };
         }) ?? [];
   }

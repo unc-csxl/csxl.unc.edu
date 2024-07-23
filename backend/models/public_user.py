@@ -17,8 +17,13 @@ class PublicUser(BaseModel):
     """
 
     id: int | None
+    onyen: str
     first_name: str
     last_name: str
     pronouns: str
     email: str
     github_avatar: str | None = None
+    github: str | None = None
+    bio: str | None = None
+    linkedin: str | None = None
+    website: str | None = None

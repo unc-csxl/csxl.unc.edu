@@ -7,7 +7,7 @@ from fastapi import Depends
 from sqlalchemy import select, or_, func, cast, String
 from sqlalchemy.orm import Session
 from ..database import db_session
-from ..models import User, UserDetails, Paginated, PaginationParams
+from ..models import User, UserDetails, Paginated, PaginationParams, PublicUser
 from ..entities import UserEntity
 from .exceptions import ResourceNotFoundException
 from .permission import PermissionService
@@ -68,6 +68,25 @@ class UserService:
 
         return user_entity.to_model()
 
+    def get_by_onyen(self, subject: User, onyen: str) -> PublicUser:
+        """Get a User by their onyen.
+
+        Args:
+            onyen: The onyen of the user.
+
+        Returns:
+            PublicUser
+
+        Raises:
+            ResourceNotFoundException if the User ID is not found
+        """
+        user_query = select(UserEntity).where(UserEntity.onyen == onyen)
+        user_entity = self._session.scalars(user_query).one_or_none()
+        if user_entity is None:
+            raise ResourceNotFoundException(f"User with {id} not found")
+
+        return user_entity.to_public_model()
+
     def search(self, _subject: User, query: str) -> list[User]:
         """Search for users by their name, onyen, email.
 
@@ -84,7 +103,7 @@ class UserService:
             UserEntity.last_name.ilike(f"%{query}%"),
             UserEntity.onyen.ilike(f"%{query}%"),
             UserEntity.email.ilike(f"%{query}%"),
-            cast(UserEntity.pid, String).ilike(f"%{query}%")
+            cast(UserEntity.pid, String).ilike(f"%{query}%"),
         )
         statement = statement.where(criteria).limit(10)
         entities = self._session.execute(statement).scalars()
