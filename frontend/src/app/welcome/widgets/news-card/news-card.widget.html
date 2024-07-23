@@ -1,4 +1,7 @@
-<mat-card appearance="outlined" class="featured-pane">
+<mat-card
+  appearance="outlined"
+  class="featured-pane"
+  [routerLink]="'/article/' + article.slug">
   <div class="row">
     <img class="news-feature-image" [src]="article.image_url" />
     <div class="column">
@@ -54,9 +57,4 @@
       </mat-card-content>
     </div>
   </div>
-  <mat-card-actions>
-    <button mat-flat-button [routerLink]="'/article/' + article.slug">
-      Read
-    </button>
-  </mat-card-actions>
 </mat-card>
