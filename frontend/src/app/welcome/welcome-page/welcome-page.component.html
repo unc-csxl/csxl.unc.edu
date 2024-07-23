@@ -50,7 +50,13 @@
       <mat-card-content class="upcoming-pane-content">
         <mat-card-subtitle>Reservations</mat-card-subtitle>
         @if (welcomeOverview().upcoming_reservations.length === 0) {
-        <p class="none-text">You currently have no upcoming reservations.</p>
+        <p class="none-text">
+          You currently have no upcoming reservations at the CSXL. Reserve a
+          table or room below.
+        </p>
+        <button class="none-buttons" mat-button routerLink="/coworking">
+          Reserve Now
+        </button>
         } @for (reservation of welcomeOverview().upcoming_reservations; track
         reservation.start) {
         <mat-card
@@ -77,7 +83,12 @@
         }
         <mat-card-subtitle>Events</mat-card-subtitle>
         @if (welcomeOverview().registered_events.length === 0) {
-        <p class="none-text">You currently have no upcoming reservations.</p>
+        <p class="none-text">
+          You currently have no upcoming event registrations!
+        </p>
+        <button class="none-buttons" mat-button routerLink="/events">
+          View All Events
+        </button>
         } @for (event of welcomeOverview().registered_events; track event.id) {
         <event-registration-card [event]="event" />
         }

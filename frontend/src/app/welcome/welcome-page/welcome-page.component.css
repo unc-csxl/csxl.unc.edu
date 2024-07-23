@@ -113,6 +113,11 @@ mat-card-header {
     }
 }
 
+.none-buttons {
+    margin-left: -10px;
+    margin-bottom: 8px;
+}
+
 .reservation-card:hover {
     cursor: pointer;
 }

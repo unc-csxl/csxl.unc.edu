@@ -3,18 +3,17 @@
     @if (openOperatingHours) {
     <mat-card-title class="hours-title open">
       <div class="header-row">
-        <span class="badge secondary-background">Open</span
+        <span class="badge font-secondary">Open</span
         ><span class="secondary-color"
-          >until
-          {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</span
+          >until {{ openOperatingHours!.end | date: 'h:mma' | lowercase }}</span
         >
       </div>
     </mat-card-title>
     } @else {
     <mat-card-title class="hours-title closed">
-      <span class="badge tertiary-background">Closed</span>
+      <span class="badge font-tertiary">Closed</span>
       @if (operatingHours.length > 0) {
-      <span class="tertiary-color"
+      <span class="font-tertiary"
         >Open
         {{
           operatingHours[0]!.start
