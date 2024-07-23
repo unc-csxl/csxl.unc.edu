@@ -6,6 +6,7 @@
       [wide]="true"
       icon="campaign"
       [title]="welcomeOverview().announcement!.title"
+      [subtitle]="welcomeOverview().announcement!.published | date: 'shortDate'"
       [body]="welcomeOverview().announcement!.synopsis"
       [bottomActionButton]="true"
       [actionButtonText]="'Read'"

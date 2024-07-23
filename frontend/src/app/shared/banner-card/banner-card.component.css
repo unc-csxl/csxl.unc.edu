@@ -32,4 +32,10 @@
 
 .mat-mdc-card-actions {
     margin-left: 48px;
+    padding-left: 8px;
+}
+
+.icon-section {
+    margin-top: 1px;
+    margin-bottom: auto;
 }

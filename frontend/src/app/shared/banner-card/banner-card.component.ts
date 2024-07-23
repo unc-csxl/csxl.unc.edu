@@ -14,6 +14,7 @@ export class BannerCardComponent {
   @Input() type!: string;
   @Input() icon!: string;
   @Input() title!: string;
+  @Input() subtitle!: string | null;
   @Input() body!: string;
   @Input() bottomActionButton!: boolean;
   @Input() actionButtonText!: string;
