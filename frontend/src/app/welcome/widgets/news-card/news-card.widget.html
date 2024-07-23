@@ -1,0 +1,41 @@
+<mat-card appearance="outlined" class="featured-pane">
+  <div class="row">
+    <img class="news-feature-image" [src]="article.image_url" />
+    <div class="column">
+      <mat-card-header>
+        <mat-card-title [routerLink]="'/article/' + article.slug">{{
+          article.title
+        }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          {{ article.published | date: 'mediumDate' }}
+        </p>
+
+        <mat-chip-set class="organization-chip-set">
+          <!-- Organization chip -->
+          @if(article.organization_slug) {
+          <mat-chip-row
+            id="organization-chip"
+            [routerLink]="'/organizations/' + article.organization_slug">
+            <img
+              class="profile-icon"
+              matChipAvatar
+              [src]="article.organization_logo" />
+            {{ article.organization_name }}
+          </mat-chip-row>
+          }
+        </mat-chip-set>
+
+        <p class="description">
+          {{ article.synopsis }}
+        </p>
+      </mat-card-content>
+    </div>
+  </div>
+  <mat-card-actions>
+    <button mat-flat-button [routerLink]="'/article/' + article.slug">
+      Read
+    </button>
+  </mat-card-actions>
+</mat-card>

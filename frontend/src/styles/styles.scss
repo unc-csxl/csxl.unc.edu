@@ -47,9 +47,19 @@ html, body {
         color: mat.get-theme-color($theme, on-primary-fixed-variant) !important;
     }
 
+    .primary-container-background {
+        background: mat.get-theme-color($theme, primary-container) !important;
+        color: mat.get-theme-color($theme, on-primary-container) !important;
+    }
+
     .secondary-container-background {
         background: mat.get-theme-color($theme, secondary-container) !important;
         color: mat.get-theme-color($theme, on-secondary-container) !important;
+    }
+
+    .tertiary-container-background {
+        background: mat.get-theme-color($theme, tertiary-container) !important;
+        color: mat.get-theme-color($theme, on-tertiary-container) !important;
     }
 
     .secondary-background-color {
@@ -288,6 +298,19 @@ html, body {
 /// 
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin font-styles($theme) {
+
+    h1 {
+        font: mat.get-theme-typography($theme, title-large, font) !important;
+    }
+
+    h2 {
+        font: mat.get-theme-typography($theme, title-medium, font) !important;
+    }
+
+    h3 {
+        font: mat.get-theme-typography($theme, title-small, font) !important;
+    }
+
     .title-medium {
         font: mat.get-theme-typography($theme, title-medium, font);
     }
@@ -299,6 +322,9 @@ html, body {
     }
     .font-secondary {
         color: mat.get-theme-color($theme, secondary) !important;
+    }
+    .font-tertiary {
+        color: mat.get-theme-color($theme, tertiary) !important;
     }
     .font-variant {
         color: mat.get-theme-color($theme, on-surface-variant) !important;
@@ -345,10 +371,6 @@ html, body {
     }
 
     .mat-csxl-alert-card {
-
-        .mat-mdc-card-title {
-            font: mat.get-theme-typography($theme, title-small, font);
-        }
 
     }
 

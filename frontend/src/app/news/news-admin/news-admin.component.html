@@ -1,0 +1,70 @@
+@if (articlesPage()) {
+<mat-pane>
+  <mat-card-content>
+    <table mat-table [dataSource]="articlesPage()!.items">
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="header">
+            <mat-card-title>Articles</mat-card-title>
+            <button mat-stroked-button routerLink="/article/new/edit">
+              Create
+            </button>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="row">
+            <p>
+              {{ element.title }}
+              <span
+                [class]="
+                  'text-badge ' +
+                  (element.state === articleState.DRAFT
+                    ? 'tertiary-container-background'
+                    : element.state === articleState.PUBLISHED
+                    ? 'secondary-container-background'
+                    : 'primary-fixed-dim-background')
+                ">
+                {{ element.state }}
+              </span>
+              @if(element.is_announcement) {
+              <span
+                class="text-badge primary-container-background"
+                id="announcement">
+                Announcement
+              </span>
+              }
+            </p>
+            <div class="button-container">
+              <button
+                mat-stroked-button
+                (click)="deleteArticle(element)"
+                class="tertiary-button control-buttons">
+                Delete
+              </button>
+              <button
+                mat-stroked-button
+                class="control-buttons"
+                [routerLink]="'/article/' + element.slug + '/edit'">
+                Edit
+              </button>
+              <button
+                mat-flat-button
+                class="control-buttons"
+                [routerLink]="'/article/' + element.slug">
+                View
+              </button>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator
+      [length]="articlesPage()!.length"
+      [pageSize]="articlesPage()!.params.page_size"
+      [pageIndex]="articlesPage()!.params.page"
+      (page)="handlePageEvent($event)"></mat-paginator>
+  </mat-card-content>
+</mat-pane>
+}

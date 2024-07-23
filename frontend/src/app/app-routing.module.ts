@@ -66,6 +66,17 @@ const routes: Routes = [
       import('./hiring/hiring.module').then((m) => m.HiringModule)
   },
   {
+    path: 'welcome',
+    title: 'Welcome to the CSXL',
+    loadChildren: () =>
+      import('./welcome/welcome.module').then((m) => m.WelcomeModule)
+  },
+  {
+    path: 'article',
+    title: 'Articles',
+    loadChildren: () => import('./news/news.module').then((m) => m.NewsModule)
+  },
+  {
     path: 'apply',
     title: 'Applications',
     loadChildren: () =>

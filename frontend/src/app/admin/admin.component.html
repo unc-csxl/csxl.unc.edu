@@ -81,3 +81,27 @@
     </div>
   </mat-card-content>
 </mat-pane>
+
+<mat-pane>
+  <mat-card-content>
+    <div class="row">
+      <div class="content">
+        <mat-card-title>Articles</mat-card-title>
+        <p class="font-variant facts">
+          <span class="text-badge secondary-background">{{
+            (facts$ | async)?.articles
+          }}</span
+          >&nbsp;articles
+        </p>
+      </div>
+
+      <button
+        class="manage-button"
+        mat-flat-button
+        color="primary"
+        routerLink="/article/admin">
+        Manage
+      </button>
+    </div>
+  </mat-card-content>
+</mat-pane>

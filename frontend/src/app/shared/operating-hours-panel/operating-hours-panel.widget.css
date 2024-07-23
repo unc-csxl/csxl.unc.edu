@@ -21,11 +21,11 @@
   display: inline-block;
   border-radius: 20px;
   margin-right: 8px;
-  padding: 0 16px;
   height: 40px;
-  color: white;
   width: fit-content;
   align-items: center;
+  font-size: large;
+  font-weight: 600 !important;
 }
 
 .mat-mdc-card {
@@ -36,18 +36,13 @@
 .header-row {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
   width: 100%;
 }
 
-button {
-  margin-left: auto;
-}
-
 @media only screen and (max-width: 900px) {
-  .header-row {
-    flex-direction: column;
-    align-items: baseline;
-  }
 
   .mat-mdc-card-title {
     display: flex;

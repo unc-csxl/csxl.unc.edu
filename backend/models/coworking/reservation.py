@@ -29,6 +29,11 @@ class ReservationRequest(TimeRange):
     room: RoomPartial | None = None
 
 
+class ReservationOverview(TimeRange):
+    seats: list[Seat] = []
+    room: Room | None = None
+
+
 class Reservation(ReservationIdentity, TimeRange):
     state: ReservationState
     users: list[User] = []

@@ -2,7 +2,13 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from ...services import RoleService, UserPermissionException, PermissionService
-from ...entities import UserEntity, RoleEntity, RoomEntity, OrganizationEntity
+from ...entities import (
+    UserEntity,
+    RoleEntity,
+    RoomEntity,
+    OrganizationEntity,
+    ArticleEntity,
+)
 from ...entities.academics import TermEntity, CourseEntity, SectionEntity
 from ..authentication import registered_user
 from ...models import User, Paginated, PaginationParams
@@ -31,6 +37,7 @@ class FactsModel(BaseModel):
     sections: int
     rooms: int
     organizations: int
+    articles: int
 
 
 @api.get("", tags=["(Admin) Facts"])
@@ -49,6 +56,7 @@ def get_facts(
     sections_count = session.query(SectionEntity).count()
     rooms_count = session.query(RoomEntity).count()
     organizations_count = session.query(OrganizationEntity).count()
+    articles_count = session.query(ArticleEntity).count()
 
     return FactsModel(
         users=users_count,
@@ -58,4 +66,5 @@ def get_facts(
         sections=sections_count,
         rooms=rooms_count,
         organizations=organizations_count,
+        articles=articles_count,
     )

@@ -1,0 +1,74 @@
+.mat-mdc-card {
+    margin-left: 0px;
+    max-width: 100%;
+    max-height: fit-content;
+}
+
+.article-title {
+    cursor: pointer !important;
+}
+
+.mat-mdc-chip {
+    height: 26px;
+}
+
+.mat-mdc-card-image {
+    height: 180px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+
+.featured-chipset {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    border-color: transparent !important;
+    outline: 0 !important;
+    z-index: 1;
+    --mdc-chip-focus-state-layer-color: transparent !important;
+    --mdc-chip-hover-state-layer-color: transparent !important;
+    --mdc-chip-outline-color: transparent !important;
+}
+
+.featured-chip {
+    height: 28px;
+}
+
+mat-card-actions {
+    gap: 8px;
+    margin-bottom: 8px;
+    justify-content: flex-end;
+}
+
+
+.description {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+
+.vertical-divider {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-left: 8px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.news-feature-image {
+    height: 176px;
+    border-radius: 12px;
+    margin-top: 12px;
+    margin-left: 12px;
+    aspect-ratio: 1;
+    object-fit: cover;
+}

@@ -36,7 +36,13 @@ import { AdminFabComponent } from './admin-fab/admin-fab.component';
 import { TabContainerWidget } from './tab-container/tab-container.widget';
 
 import { YouTubePlayer } from '@angular/youtube-player';
+import {
+  CoworkingHoursCard,
+  OperatingHoursCapitalizationPipe
+} from './operating-hours-panel/operating-hours-panel.widget';
 import { MarkdownDirective } from './directives/markdown.directive';
+import { EventRegistrationCardWidget } from './event-registration-card/event-registration-card.widget';
+import { AboutPaneWidget } from './about-pane/about-pane.widget';
 
 @NgModule({
   declarations: [
@@ -49,7 +55,11 @@ import { MarkdownDirective } from './directives/markdown.directive';
     BannerCardComponent,
     AdminFabComponent,
     TabContainerWidget,
-    MarkdownDirective
+    CoworkingHoursCard,
+    OperatingHoursCapitalizationPipe,
+    MarkdownDirective,
+    EventRegistrationCardWidget,
+    AboutPaneWidget
   ],
   imports: [
     CommonModule,
@@ -83,7 +93,10 @@ import { MarkdownDirective } from './directives/markdown.directive';
     BannerCardComponent,
     AdminFabComponent,
     TabContainerWidget,
-    MarkdownDirective
+    CoworkingHoursCard,
+    MarkdownDirective,
+    EventRegistrationCardWidget,
+    AboutPaneWidget
   ],
   providers: [GroupEventsPipe]
 })

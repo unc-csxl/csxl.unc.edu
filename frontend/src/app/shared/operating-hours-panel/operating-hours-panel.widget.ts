@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OperatingHours } from 'src/app/coworking/coworking.models';
-import { OperatingHoursDialog } from '../operating-hours-dialog/operating-hours-dialog.widget';
+import { OperatingHoursDialog } from '../../coworking/widgets/operating-hours-dialog/operating-hours-dialog.widget';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Component({

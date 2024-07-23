@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from ..entity_base import EntityBase
-from ...models.coworking import Reservation, ReservationState
+from ...models.coworking import Reservation, ReservationState, ReservationOverview
 from .seat_entity import SeatEntity
 from ..user_entity import UserEntity
 from .reservation_user_table import reservation_user_table
@@ -41,6 +41,14 @@ class ReservationEntity(EntityBase):
     seats: Mapped[list[SeatEntity]] = relationship(secondary=reservation_seat_table)
     room: Mapped["RoomEntity"] = relationship("RoomEntity")
 
+    def to_overview_model(self) -> ReservationOverview:
+        return ReservationOverview(
+            start=self.start,
+            end=self.end,
+            seats=[seat.to_model() for seat in self.seats],
+            room=self.room.to_model() if self.room else None,
+        )
+
     def to_model(self) -> Reservation:
         """Converts the entity to a model.
 
@@ -76,12 +84,16 @@ class ReservationEntity(EntityBase):
             state=model.state,
             walkin=model.walkin,
             room_id=model.room.id if model.room else None,
-            users=[session.get(UserEntity, user.id) for user in model.users]
-            if session
-            else [],
-            seats=[session.get(SeatEntity, seat.id) for seat in model.seats]
-            if session
-            else [],
+            users=(
+                [session.get(UserEntity, user.id) for user in model.users]
+                if session
+                else []
+            ),
+            seats=(
+                [session.get(SeatEntity, seat.id) for seat in model.seats]
+                if session
+                else []
+            ),
             created_at=model.created_at,
             updated_at=model.updated_at,
         )

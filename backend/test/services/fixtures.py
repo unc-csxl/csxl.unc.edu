@@ -13,9 +13,11 @@ from ...services import (
     ApplicationService,
 )
 from ...services.academics import HiringService
+from ...services.article import ArticleService
+from ...services.coworking import PolicyService, OperatingHoursService
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -63,6 +65,16 @@ def event_svc_integration(session: Session, user_svc_integration: UserService):
 def room_svc(session: Session):
     """RoomService fixture."""
     return RoomService(session, PermissionService(session))
+
+
+@pytest.fixture()
+def article_svc(session: Session):
+    return ArticleService(
+        session,
+        PermissionService(session),
+        PolicyService(),
+        OperatingHoursService(session, PermissionService(session)),
+    )
 
 
 @pytest.fixture()

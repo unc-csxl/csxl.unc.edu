@@ -1,0 +1,113 @@
+<form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+  <mat-pane>
+    <mat-card-header>
+      <mat-card-title>{{ isNew() ? 'New' : 'Edit' }} Article</mat-card-title>
+      <mat-button-toggle-group
+        class="state-buttons"
+        formControlName="state"
+        name="state">
+        <mat-button-toggle [value]="articleState.DRAFT">
+          Draft
+        </mat-button-toggle>
+        <mat-button-toggle [value]="articleState.PUBLISHED">
+          Published
+        </mat-button-toggle>
+        <mat-button-toggle [value]="articleState.ARCHIVED">
+          Archived
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Title Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Article Title</mat-label>
+        <input
+          matInput
+          placeholder=""
+          (change)="generateSlug()"
+          formControlName="title"
+          name="title"
+          required />
+      </mat-form-field>
+      <!-- Slug Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Slug</mat-label>
+        <input
+          hintLabel="Lowercase letters, numbers, or dashes"
+          matInput
+          placeholder=""
+          formControlName="slug"
+          name="slug"
+          required />
+      </mat-form-field>
+
+      <!-- Organization Selection -->
+      <mat-form-field appearance="outline">
+        <mat-label>Organization</mat-label>
+        <mat-select formControlName="organization_id">
+          @for (organization of organizationService.organizations(); track
+          organization.id) {
+          <mat-option [value]="organization.id">{{
+            organization.name
+          }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- User Selection / Authors Form Control -->
+      <user-lookup label="Authors" [users]="authors"></user-lookup>
+
+      <!-- Image URL Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Feature Image URL</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="image_url"
+          name="image_url" />
+      </mat-form-field>
+
+      <!-- Synopsis Field -->
+      <mat-form-field
+        hintLabel="Max 400 characters"
+        appearance="outline"
+        color="accent">
+        <mat-label>Synopsis (Markdown Supported)</mat-label>
+        <textarea
+          matInput
+          placeholder="The synopsis appears on the home page of the CSXL."
+          formControlName="synopsis"
+          name="synopsis"></textarea>
+      </mat-form-field>
+      <!-- Article Body Field -->
+      <mat-form-field appearance="outline" color="accent" id="body-form-field">
+        <mat-label>Article Body (Markdown Supported)</mat-label>
+        <textarea
+          matInput
+          placeholder="Enter the body text of your article here. Markdown elements are supported."
+          formControlName="body"
+          name="body"></textarea>
+      </mat-form-field>
+      <!-- Announcement Field -->
+      <mat-slide-toggle formControlName="is_announcement">
+        This article is an announcement.
+      </mat-slide-toggle>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        color="secondary"
+        type="button"
+        (click)="onReset()">
+        Reset
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="articleForm.invalid">
+        Save
+      </button>
+    </mat-card-actions>
+  </mat-pane>
+</form>

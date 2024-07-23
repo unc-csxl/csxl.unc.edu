@@ -8,8 +8,8 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { EventOverview } from '../../event.model';
-import { EventService } from '../../event.service';
+import { EventOverview } from 'src/app/event/event.model';
+import { EventService } from 'src/app/event/event.service';
 
 @Component({
   selector: 'event-registration-card',

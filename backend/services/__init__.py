@@ -6,4 +6,5 @@ from .organization import OrganizationService
 from .event import EventService
 from .exceptions import ResourceNotFoundException, UserPermissionException
 from .room import RoomService
+from .article import ArticleService
 from .application import ApplicationService

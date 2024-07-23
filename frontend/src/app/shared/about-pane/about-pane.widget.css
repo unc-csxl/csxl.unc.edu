@@ -1,0 +1,14 @@
+.feature-image {
+    max-width: 100%;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+mat-card-content {
+    padding-top: 12px;
+}
+
+strong {
+    font-weight: 500; 
+}
