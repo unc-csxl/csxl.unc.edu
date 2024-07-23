@@ -19,7 +19,7 @@ export interface ApplicationSectionChoice {
   subject_code: string;
   course_number: string;
   section_number: string;
-  course_title: string;
+  title: string;
 }
 
 export interface Application {

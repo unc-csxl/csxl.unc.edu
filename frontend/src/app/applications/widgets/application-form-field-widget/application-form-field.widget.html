@@ -47,7 +47,7 @@
       @for (section of selectedSections(); track section.id) {
       <mat-chip-row (removed)="removeSection(section)">
         {{ section.subject_code }} {{ section.course_number }}-{{
-        section.section_number }}: {{ section.course_title }}
+        section.section_number }}: {{ section.title }}
         <button matChipRemove>
           <mat-icon>cancel</mat-icon>
         </button>
@@ -69,7 +69,7 @@
       { @if (!selectedSections().includes(section)) {
       <mat-option [value]="section"
         >{{ section.subject_code }} {{ section.course_number }}-{{
-        section.section_number }}: {{ section.course_title }}</mat-option
+        section.section_number }}: {{ section.title }}</mat-option
       >
       } }
     </mat-autocomplete>

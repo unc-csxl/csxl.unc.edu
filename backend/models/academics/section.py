@@ -57,7 +57,7 @@ class CatalogSectionIdentity(BaseModel):
     subject_code: str
     course_number: str
     section_number: str
-    course_title: str
+    title: str
 
 
 class CatalogSection(CatalogSectionIdentity):
@@ -65,7 +65,6 @@ class CatalogSection(CatalogSectionIdentity):
     Pydantic model that represents a section for the catalog page.
     """
 
-    title: str
     meeting_pattern: str
     description: str
     lecture_room: Room | None = None
