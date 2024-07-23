@@ -47,6 +47,8 @@ class UserEntity(EntityBase):
     accepted_community_agreement: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False
     )
+    # Bio of the user
+    bio: Mapped[str | None] = mapped_column(String(), nullable=True)
 
     # All of the roles for the given user.
     # NOTE: This field establishes a many-to-many relationship between the users and roles table.
@@ -92,6 +94,7 @@ class UserEntity(EntityBase):
             github_id=model.github_id,
             github_avatar=model.github_avatar,
             accepted_community_agreement=model.accepted_community_agreement,
+            bio=model.bio,
         )
 
     def to_model(self) -> User:
@@ -113,6 +116,7 @@ class UserEntity(EntityBase):
             github_avatar=self.github_avatar,
             pronouns=self.pronouns,
             accepted_community_agreement=self.accepted_community_agreement,
+            bio=self.bio,
         )
 
     def update(self, model: User) -> None:
@@ -133,6 +137,7 @@ class UserEntity(EntityBase):
         self.github_id = model.github_id or None
         self.github_avatar = model.github_avatar or ""
         self.accepted_community_agreement = model.accepted_community_agreement
+        self.bio = model.bio
 
     def to_public_model(self) -> PublicUser:
         return PublicUser(
@@ -142,4 +147,5 @@ class UserEntity(EntityBase):
             pronouns=self.pronouns,
             email=self.email,
             github_avatar=self.github_avatar,
+            bio=self.bio,
         )

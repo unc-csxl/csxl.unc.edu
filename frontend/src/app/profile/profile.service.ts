@@ -24,6 +24,7 @@ export interface Profile {
   role: number;
   permissions: Permission[];
   accepted_community_agreement: boolean;
+  bio: string | null;
 }
 
 export interface PublicProfile {
@@ -33,6 +34,7 @@ export interface PublicProfile {
   pronouns: string;
   email: string;
   github_avatar: string | null;
+  bio: string | null;
 }
 
 @Injectable({

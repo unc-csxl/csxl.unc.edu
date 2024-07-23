@@ -36,6 +36,7 @@ class User(UserIdentity, BaseModel):
     github_id: int | None = None
     github_avatar: str | None = None
     accepted_community_agreement: bool = False
+    bio: str | None = None
 
 
 class NewUser(User, BaseModel):
@@ -63,3 +64,4 @@ class ProfileForm(BaseModel):
     pronouns: str
     email: str
     accepted_community_agreement: bool = False
+    bio: str | None = None

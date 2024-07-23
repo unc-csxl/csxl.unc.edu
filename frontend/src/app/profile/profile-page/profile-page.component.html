@@ -40,15 +40,11 @@
     </div>
     <mat-divider id="bio-divider" />
     <mat-card-subtitle>Profile Bio</mat-card-subtitle>
-    <p markdown>
-      Lorem ipsum **odor amet**, consectetuer adipiscing elit. Inceptos neque
-      vel curabitur orci est. Sem non bibendum lectus, vestibulum nec elementum
-      metus ad. Porta magna tempus, augue massa adipiscing netus. Congue
-      consequat hac erat pretium tempor. Conubia natoque orci pulvinar taciti
-      metus ad suscipit senectus nulla. Gravida vel dapibus taciti efficitur,
-      tempor phasellus varius. Finibus tristique enim sodales nascetur bibendum
-      bibendum nunc fermentum. [Test](https://apple.com)
-    </p>
+    @if (profile.bio) {
+    <p markdown>{{ profile.bio! }}</p>
+    } @else {
+    <p>User does not have a bio.</p>
+    }
   </mat-card-content>
 </mat-pane>
 

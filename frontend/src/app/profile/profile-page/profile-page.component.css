@@ -128,43 +128,6 @@ mat-list-item {
   width: 200px;
 }
 
-/* OLD */
-
-/* .profile-management-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0 16px 16px 16px;
-}
-
-.action-section {
-  width: 100% !important;
-}
-
-.section-title {
-  font-size: large;
-  font-weight: 500;
-  margin: 16px 0px 5px 0px;
-}
-
-.action-buttons {
-  display: flex;
-  flex: 1;
-}
-
-.action-button {
-  margin-right: 10px;
-  white-space: normal;
-  word-wrap: normal;
-}
-
-.token-text {
-  word-wrap: break-word;
-  margin-bottom: 0;
-}
-
-*/
-
 .profile-edit-fab {
   position: absolute;
   bottom: 32px;

@@ -30,7 +30,8 @@ export class ProfileEditorComponent implements OnInit {
     first_name: '',
     last_name: '',
     email: '',
-    pronouns: ''
+    pronouns: '',
+    bio: ''
   });
 
   constructor(
@@ -66,7 +67,8 @@ export class ProfileEditorComponent implements OnInit {
       first_name: profile.first_name,
       last_name: profile.last_name,
       email: profile.email,
-      pronouns: profile.pronouns
+      pronouns: profile.pronouns,
+      bio: profile.bio
     });
   }
 

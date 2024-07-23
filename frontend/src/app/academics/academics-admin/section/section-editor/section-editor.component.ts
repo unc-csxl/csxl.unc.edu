@@ -207,7 +207,8 @@ export class SectionEditorComponent {
             last_name: staff.last_name,
             pronouns: '',
             email: '',
-            github_avatar: ''
+            github_avatar: '',
+            bio: ''
           };
         }) ?? [];
   }
