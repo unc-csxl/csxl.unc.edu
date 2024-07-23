@@ -22,6 +22,8 @@ export interface Profile {
   github_avatar: string | null;
   accepted_community_agreement: boolean;
   bio: string | null;
+  linkedin: string | null;
+  website: string | null;
 }
 
 /** Interface for UserSummary Type (used on frontend for user requests) */

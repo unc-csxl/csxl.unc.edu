@@ -30,6 +30,8 @@ export class ProfileEditorComponent implements OnInit {
     first_name: '',
     last_name: '',
     email: '',
+    website: '',
+    linkedin: '',
     pronouns: '',
     bio: ''
   });
@@ -68,7 +70,9 @@ export class ProfileEditorComponent implements OnInit {
       last_name: profile.last_name,
       email: profile.email,
       pronouns: profile.pronouns,
-      bio: profile.bio
+      bio: profile.bio,
+      linkedin: profile.linkedin,
+      website: profile.website
     });
   }
 

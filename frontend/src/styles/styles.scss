@@ -171,6 +171,11 @@ html, body {
         fill: white;
     }
 
+    .secondary-icon, .secondary-icon svg {
+        color: mat.get-theme-color($theme, secondary) !important;
+        fill: mat.get-theme-color($theme, secondary) !important;
+    }
+
     @media (prefers-color-scheme: light) {
         .mat-icon,
         .mat-icon svg {

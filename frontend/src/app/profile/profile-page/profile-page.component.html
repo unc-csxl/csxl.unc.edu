@@ -22,18 +22,44 @@
   </mat-card-header>
   <mat-card-content>
     <div class="links-row">
-      <mat-icon>mail</mat-icon>
+      <mat-icon class="secondary-icon">mail</mat-icon>
       <p>{{ profile.email }}</p>
-      <mat-icon id="github-icon" svgIcon="github" />
+      @if (profile.website) {
+      <mat-icon class="link-icons secondary-icon">link</mat-icon>
+      <p>
+        <a class="font-secondary" [href]="profile.website" target="_blank"
+          >Personal Website</a
+        >
+      </p>
+      } @if (profile.linkedin) {
+      <mat-icon
+        class="link-icons secondary-icon"
+        id="linkedin-icon"
+        svgIcon="linkedin" />
+      <p>
+        <a class="font-secondary" [href]="profile.linkedin" target="_blank"
+          >LinkedIn</a
+        >
+      </p>
+      }
+      <mat-icon
+        class="link-icons secondary-icon"
+        id="github-icon"
+        svgIcon="github" />
       @if (profile.github) {
-      <a id="github-link" href="https://github.com/{{ profile.github }}">
-        &#64;{{ profile.github }}
-      </a>
-      <button id="unlink-github-button" mat-button (click)="unlinkGitHub()">
+      <p>
+        <a
+          class="font-secondary"
+          id="github-link"
+          href="https://github.com/{{ profile.github }}">
+          &#64;{{ profile.github }}
+        </a>
+      </p>
+      <button class="font-secondary" id="unlink-github-button" mat-button (click)="unlinkGitHub()">
         Unlink
       </button>
       } @else {
-      <button id="link-github-button" mat-button (click)="linkWithGitHub()">
+      <button class="font-secondary" id="link-github-button" mat-button (click)="linkWithGitHub()">
         Link with GitHub
       </button>
       }

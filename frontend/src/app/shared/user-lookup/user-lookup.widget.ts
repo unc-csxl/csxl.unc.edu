@@ -78,7 +78,9 @@ export class UserLookup implements OnInit {
         email: user.email!,
         github_avatar: user.github_avatar,
         github: user.github,
-        bio: user.bio
+        bio: user.bio,
+        linkedin: user.linkedin,
+        website: user.website
       };
       this.users.push(organizer);
     }

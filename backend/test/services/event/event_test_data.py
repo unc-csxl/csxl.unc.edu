@@ -72,6 +72,8 @@ to_add = DraftEvent(
             last_name=root.last_name,
             pronouns=root.pronouns,
             email=root.email,
+            linkedin=root.linkedin,
+            website=root.website,
         )
     ],
 )
@@ -99,10 +101,13 @@ updated_event_one = Event(
     organizers=[
         PublicUser(
             id=user.id,
+            onyen=user.onyen,
             first_name=user.first_name,
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
+            linkedin=user.linkedin,
+            website=user.website,
         ),
     ],
 )
@@ -124,6 +129,8 @@ updated_event_one_organizers = Event(
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
+            linkedin=user.linkedin,
+            website=user.website,
         ),
         PublicUser(
             id=ambassador.id,
@@ -132,6 +139,8 @@ updated_event_one_organizers = Event(
             last_name=ambassador.last_name,
             pronouns=ambassador.pronouns,
             email=ambassador.email,
+            linkedin=ambassador.linkedin,
+            website=ambassador.website,
         ),
     ],
 )
@@ -164,6 +173,8 @@ updated_event_three = Event(
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
+            linkedin=user.linkedin,
+            website=user.website,
         ),
         PublicUser(
             id=ambassador.id,
@@ -172,6 +183,8 @@ updated_event_three = Event(
             last_name=ambassador.last_name,
             pronouns=ambassador.pronouns,
             email=ambassador.email,
+            linkedin=ambassador.linkedin,
+            website=ambassador.website,
         ),
         PublicUser(
             id=root.id,
@@ -180,6 +193,8 @@ updated_event_three = Event(
             last_name=root.last_name,
             pronouns=root.pronouns,
             email=root.email,
+            linkedin=root.linkedin,
+            website=root.website,
         ),
     ],
 )
@@ -201,6 +216,8 @@ updated_event_three_remove_organizers = Event(
             last_name=user.last_name,
             pronouns=user.pronouns,
             email=user.email,
+            linkedin=user.linkedin,
+            website=user.website,
         ),
     ],
 )

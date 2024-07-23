@@ -210,7 +210,9 @@ export class SectionEditorComponent {
             email: '',
             github_avatar: '',
             github: '',
-            bio: ''
+            bio: '',
+            linkedin: '',
+            website: ''
           };
         }) ?? [];
   }

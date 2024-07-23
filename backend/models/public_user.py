@@ -25,3 +25,5 @@ class PublicUser(BaseModel):
     github_avatar: str | None = None
     github: str | None = None
     bio: str | None = None
+    linkedin: str | None = None
+    website: str | None = None

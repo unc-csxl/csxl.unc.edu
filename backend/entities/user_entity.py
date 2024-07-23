@@ -49,6 +49,10 @@ class UserEntity(EntityBase):
     )
     # Bio of the user
     bio: Mapped[str | None] = mapped_column(String(), nullable=True)
+    # LinkedIn URL for the user
+    linkedin: Mapped[str | None] = mapped_column(String(), nullable=True)
+    # Website of the user
+    website: Mapped[str | None] = mapped_column(String(), nullable=True)
 
     # All of the roles for the given user.
     # NOTE: This field establishes a many-to-many relationship between the users and roles table.
@@ -95,6 +99,8 @@ class UserEntity(EntityBase):
             github_avatar=model.github_avatar,
             accepted_community_agreement=model.accepted_community_agreement,
             bio=model.bio,
+            linkedin=model.linkedin,
+            website=model.website,
         )
 
     def to_model(self) -> User:
@@ -117,6 +123,8 @@ class UserEntity(EntityBase):
             pronouns=self.pronouns,
             accepted_community_agreement=self.accepted_community_agreement,
             bio=self.bio,
+            linkedin=self.linkedin,
+            website=self.website,
         )
 
     def update(self, model: User) -> None:
@@ -138,6 +146,8 @@ class UserEntity(EntityBase):
         self.github_avatar = model.github_avatar or ""
         self.accepted_community_agreement = model.accepted_community_agreement
         self.bio = model.bio
+        self.linkedin = model.linkedin
+        self.website = model.website
 
     def to_public_model(self) -> PublicUser:
         return PublicUser(
@@ -150,4 +160,6 @@ class UserEntity(EntityBase):
             github_avatar=self.github_avatar,
             github=self.github,
             bio=self.bio,
+            linkedin=self.linkedin,
+            website=self.website,
         )

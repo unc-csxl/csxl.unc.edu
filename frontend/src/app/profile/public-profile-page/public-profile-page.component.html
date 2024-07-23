@@ -21,13 +21,39 @@
   </mat-card-header>
   <mat-card-content>
     <div class="links-row">
-      <mat-icon>mail</mat-icon>
+      <mat-icon class="secondary-icon">mail</mat-icon>
       <p>{{ profile.email }}</p>
+      @if (profile.website) {
+      <mat-icon class="link-icons secondary-icon">link</mat-icon>
+      <p>
+        <a class="font-secondary" [href]="profile.website" target="_blank"
+          >Personal Website</a
+        >
+      </p>
+      } @if (profile.linkedin) {
+      <mat-icon
+        class="link-icons secondary-icon"
+        id="linkedin-icon"
+        svgIcon="linkedin" />
+      <p>
+        <a class="font-secondary" [href]="profile.linkedin" target="_blank"
+          >LinkedIn</a
+        >
+      </p>
+      }
+      <mat-icon
+        class="link-icons secondary-icon"
+        id="github-icon"
+        svgIcon="github" />
       @if (profile.github) {
-      <mat-icon id="github-icon" svgIcon="github" />
-      <a id="github-link" href="https://github.com/{{ profile.github }}">
-        &#64;{{ profile.github }}
-      </a>
+      <p>
+        <a
+          class="font-secondary"
+          id="github-link"
+          href="https://github.com/{{ profile.github }}">
+          &#64;{{ profile.github }}
+        </a>
+      </p>
       }
     </div>
     <mat-divider id="bio-divider" />

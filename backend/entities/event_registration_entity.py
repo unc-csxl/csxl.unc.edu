@@ -115,4 +115,6 @@ class EventRegistrationEntity(EntityBase):
             github_avatar=self.user.github_avatar,
             github=self.user.github,
             bio=self.user.bio,
+            linkedin=self.user.linkedin,
+            website=self.user.website,
         )

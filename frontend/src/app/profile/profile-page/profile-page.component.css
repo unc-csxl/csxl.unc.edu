@@ -79,8 +79,13 @@ p {
   gap: 4px;
 }
 
-#github-icon {
+.link-icons {
   margin-left: 6px;
+}
+
+#linkedin-icon {
+  height: 22px;
+  width: 22px;
 }
 
 #github-link {
@@ -92,6 +97,7 @@ p {
   padding-left: 2px;
   padding-right: 2px;
   font-weight: 500;
+  text-decoration: underline;
 }
 
 #unlink-github-button {

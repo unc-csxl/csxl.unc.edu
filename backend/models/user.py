@@ -37,6 +37,8 @@ class User(UserIdentity, BaseModel):
     github_avatar: str | None = None
     accepted_community_agreement: bool = False
     bio: str | None = None
+    linkedin: str | None = None
+    website: str | None = None
 
 
 class NewUser(User, BaseModel):
@@ -65,3 +67,5 @@ class ProfileForm(BaseModel):
     email: str
     accepted_community_agreement: bool = False
     bio: str | None = None
+    linkedin: str | None = None
+    website: str | None = None
