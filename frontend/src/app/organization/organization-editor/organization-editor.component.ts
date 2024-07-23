@@ -94,6 +94,7 @@ export class OrganizationEditorComponent {
       let organizationToSubmit = this.organization;
       Object.assign(organizationToSubmit, this.organizationForm.value);
 
+      console.log(this.isNew());
       let submittedOrganization = this.isNew()
         ? this.organizationService.createOrganization(organizationToSubmit)
         : this.organizationService.updateOrganization(organizationToSubmit);
@@ -163,7 +164,7 @@ export class OrganizationEditorComponent {
    * @returns {boolean}
    */
   isNew(): boolean {
-    return this.organization.slug === 'new';
+    return this.route.snapshot.params['slug'] === 'new';
   }
 
   /** Shorthand for determining the action being performed on the organization.
