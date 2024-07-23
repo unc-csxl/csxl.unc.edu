@@ -12,7 +12,6 @@
       [actionButtonText]="'Read'"
       [linkAction]="true"
       [link]="'/article/' + welcomeOverview().announcement!.slug" />
-
     }
     <mat-card appearance="outlined" class="news-pane">
       <mat-card-header>
@@ -28,7 +27,7 @@
   <div class="right-column">
     <mat-card appearance="outlined" class="coworking-pane">
       <mat-card-header>
-        <mat-card-title>The XL is...</mat-card-title>
+        <mat-card-title>The XL (SN156) is...</mat-card-title>
       </mat-card-header>
       @if (openOperatingHours()) {
       <coworking-operating-hours-panel
@@ -48,11 +47,11 @@
         <mat-card-title id="upcoming-title">Upcoming For You</mat-card-title>
       </mat-card-header>
       <mat-card-content class="upcoming-pane-content">
-        <mat-card-subtitle>Reservations</mat-card-subtitle>
+        <mat-card-subtitle>Coworking Reservations</mat-card-subtitle>
         @if (welcomeOverview().upcoming_reservations.length === 0) {
         <p class="none-text">
-          You currently have no upcoming reservations at the CSXL. Reserve a
-          table or room below.
+          You currently have no upcoming reservations in the XL CoLab. Reserve a
+          desk or room by clicking the link below.
         </p>
         <button class="none-buttons" mat-button routerLink="/coworking">
           Reserve Now
@@ -66,25 +65,24 @@
           <mat-card-content>
             <div class="header-row">
               <div class="header-column">
-                <mat-card-subtitle>{{
-                  reservation.room
-                    ? reservation.room!.nickname
-                    : reservation.seats[0].shorthand
-                }}</mat-card-subtitle>
+                <mat-card-subtitle
+                  >{{ reservation.room ? reservation.room!.nickname :
+                  reservation.seats[0].shorthand }}</mat-card-subtitle
+                >
                 <p>
-                  {{ reservation.start | date: 'shortDate' }},
-                  {{ reservation.start | date: 'shortTime' }} -
-                  {{ reservation.end | date: 'shortTime' }}
+                  {{ reservation.start | date: 'shortDate' }}, {{
+                  reservation.start | date: 'shortTime' }} - {{ reservation.end
+                  | date: 'shortTime' }}
                 </p>
               </div>
             </div>
           </mat-card-content>
         </mat-card>
         }
-        <mat-card-subtitle>Events</mat-card-subtitle>
+        <mat-card-subtitle>Community Events</mat-card-subtitle>
         @if (welcomeOverview().registered_events.length === 0) {
         <p class="none-text">
-          You currently have no upcoming event registrations!
+          Register for an upcoming community event for them to show up here.
         </p>
         <button class="none-buttons" mat-button routerLink="/events">
           View All Events

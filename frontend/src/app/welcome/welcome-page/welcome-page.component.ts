@@ -29,7 +29,7 @@ export class WelcomePageComponent implements OnInit {
   /** Route information to be used in the routing module */
   public static Route = {
     path: '',
-    title: 'Welcome to the CSXL',
+    title: 'CS Experience Labs @ UNC',
     component: WelcomePageComponent,
     resolve: {
       welcomeOverview: welcomeResolver
