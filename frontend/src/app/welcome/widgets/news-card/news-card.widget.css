@@ -2,11 +2,6 @@
     margin-left: 0px;
     max-width: 100%;
     max-height: fit-content;
-    padding-bottom: 12px;
-}
-
-.mat-mdc-card:hover {
-    cursor: pointer;
 }
 
 .mat-mdc-chip {
