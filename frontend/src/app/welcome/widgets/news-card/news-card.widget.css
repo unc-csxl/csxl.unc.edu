@@ -4,6 +4,10 @@
     max-height: fit-content;
 }
 
+.article-title {
+    cursor: pointer !important;
+}
+
 .mat-mdc-chip {
     height: 26px;
 }
