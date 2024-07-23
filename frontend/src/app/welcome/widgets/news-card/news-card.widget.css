@@ -14,6 +14,7 @@
     border-top-right-radius: 12px;
 }
 
+
 .featured-chipset {
     position: absolute;
     top: 6px;
@@ -35,6 +36,7 @@ mat-card-actions {
     margin-bottom: 8px;
     justify-content: flex-end;
 }
+
 
 .description {
     padding-top: 8px;

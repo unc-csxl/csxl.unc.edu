@@ -17,10 +17,10 @@
           >
         </p>
 
-        <mat-chip-set>
+        <mat-chip-set class="organization-chip-set">
           <!-- Organization chip -->
           @if(article.organization_slug) {
-          <mat-chip
+          <mat-chip-row
             id="organization-chip"
             [routerLink]="'/organizations/' + article.organization_slug">
             <img
@@ -28,7 +28,7 @@
               matChipAvatar
               [src]="article.organization_logo" />
             {{ article.organization_name }}
-          </mat-chip>
+          </mat-chip-row>
 
           <mat-divider class="vertical-divider" [vertical]="true" />
 
