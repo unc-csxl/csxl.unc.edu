@@ -72,3 +72,9 @@ mat-card-actions {
     aspect-ratio: 1;
     object-fit: cover;
 }
+
+@media only screen and (max-width: 800px) {
+    .row {
+        flex-direction: column;
+    }
+}
