@@ -77,4 +77,7 @@ mat-card-actions {
     .row {
         flex-direction: column;
     }
+    .news-feature-image {
+        margin-right: 12px;
+    }
 }
