@@ -89,6 +89,12 @@ html, body {
         background-color: mat.get-theme-color($theme, on-secondary) !important;
         color: mat.get-theme-color($theme, secondary) !important;
     }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
 }
 
 /// Defines a mixin that applies custom styles to material button components
