@@ -116,6 +116,13 @@ html, body {
         }
     }
 
+    .primary-button {
+        .mat-icon {
+            color: white !important;
+        }
+        @include mat.button-color($theme, $color-variant: primary);
+    }
+
     .secondary-button {
         .mat-icon {
             color: white !important;
@@ -171,6 +178,9 @@ html, body {
 
     .surface-container-card {
         background-color: mat.get-theme-color($theme, surface-container) !important;
+        mat-card {
+            background-color: mat.get-theme-color($theme, surface-container) !important;
+        }
     }
 
 }

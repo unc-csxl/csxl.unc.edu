@@ -1,5 +1,8 @@
 <div class="user-chips">
-  <mat-chip-option class="user-chip" *ngFor="let user of users">
+  <mat-chip-row
+    class="user-chip"
+    *ngFor="let user of users"
+    [routerLink]="'/profile/' + user.onyen">
     <img
       class="user-image"
       *ngIf="user.github_avatar"
@@ -14,5 +17,5 @@
     <ng-template #disableMailTo>
       {{ user.first_name + ' ' + user.last_name }}
     </ng-template>
-  </mat-chip-option>
+  </mat-chip-row>
 </div>

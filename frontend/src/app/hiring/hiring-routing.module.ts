@@ -10,8 +10,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HiringPageComponent } from './hiring-page/hiring-page.component';
+import { HiringAdminComponent } from './hiring-admin/hiring-admin.component';
 
-const routes: Routes = [HiringPageComponent.Route];
+const routes: Routes = [HiringAdminComponent.Route, HiringPageComponent.Route];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
