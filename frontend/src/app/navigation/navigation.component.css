@@ -120,3 +120,18 @@ a {
 ::ng-deep #profile-icon {
   border-radius: 9px !important;
 }
+
+.mobile-icon-chips {
+  display: none;
+}
+
+@media only screen and (max-width: 640px) {
+  .desktop-profile-chips {
+    display: none;
+  }
+
+  .mobile-icon-chips {
+    display: flex;
+  }
+  
+}
