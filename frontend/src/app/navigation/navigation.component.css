@@ -100,6 +100,12 @@
   margin-right: 12px;
 }
 
+.profile-circle-icon {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0px;
+}
+
 a {
   text-decoration: none;
 }
@@ -133,5 +139,9 @@ a {
   .mobile-icon-chips {
     display: flex;
   }
-  
+
+  .account-circle-icon {
+    margin-top: 3px;
+    margin-left: 3px;
+  }
 }
