@@ -90,6 +90,7 @@ html, body {
         color: mat.get-theme-color($theme, secondary) !important;
     }
 
+    /// Ensures that all tables are horizontally scrollable.
     table {
         display: block;
         overflow-x: auto;
