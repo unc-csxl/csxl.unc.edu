@@ -3,6 +3,7 @@ import { ActivatedRoute, Route } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { publicProfileResolver } from '../profile.resolver';
 import { PublicProfile } from '../profile.service';
+import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
 
 @Component({
   selector: 'app-public-profile-page',
@@ -22,7 +23,10 @@ export class PublicProfilePageComponent {
 
   profile: PublicProfile;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    private icons: SocialMediaIconWidgetService
+  ) {
     /** Get currently-logged-in user. */
     const data = this.route.snapshot.data as {
       profile: PublicProfile;
