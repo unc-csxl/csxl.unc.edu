@@ -18,6 +18,10 @@
     margin-bottom: 12px;
 }
 
+.profile-icon {
+    border-radius: 50%;
+}
+
 @media only screen and (max-width: 976px) {
 .card-container {
     margin: none;

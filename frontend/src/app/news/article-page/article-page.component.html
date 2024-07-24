@@ -38,7 +38,7 @@
 
           <!-- Author Chips -->
           @for (author of article().authors; track author.id) {
-          <mat-chip>
+          <mat-chip [routerLink]="'/profile/' + author.onyen">
             @if (author.github_avatar && author.github_avatar !== '') {
             <img
               class="profile-icon"
