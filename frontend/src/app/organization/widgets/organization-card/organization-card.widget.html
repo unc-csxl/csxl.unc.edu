@@ -30,15 +30,15 @@
     <a
     class="details-link"
     [routerLink]="['/organizations', organization.slug]">
-    <button mat-stroked-button>Details</button>
+    <button mat-flat-button>Details</button>
   </a>
   
-  <button mat-icon-button class="mat-csxl-stroked-icon-button" id="events-button" color="basic">
+  <!-- <button mat-icon-button class="mat-csxl-stroked-icon-button" id="events-button" color="basic">
     <mat-icon>event</mat-icon>
-  </button>
+  </button> -->
 
   @if (organization.website !== '') {
-    <social-media-icon id="website-button" [fontIcon]="'link'" [href]="organization.website" />
+    <social-media-icon id="events-button" [fontIcon]="'link'" [href]="organization.website" />
   }
 
 
