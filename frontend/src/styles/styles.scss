@@ -91,9 +91,12 @@ html, body {
     }
 
     /// Ensures that all tables are horizontally scrollable.
-    table {
-        display: block;
+    /// All tables have to be wrapped by a div with the 
+    /// `table-responsive` class.
+    .table-responsive {
         overflow-x: auto;
+      }
+    .table-responsive table {
         white-space: nowrap;
     }
 }

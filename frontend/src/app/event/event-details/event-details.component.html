@@ -82,36 +82,38 @@
     @if(eventRegistrationsPage()!.length === 0) {
     <p id="no-registrations-label">Nobody has registered for this event yet.</p>
     } @else {
-    <table mat-table [dataSource]="eventRegistrationsPage()!.items">
-      <ng-container matColumnDef="first_name">
-        <th mat-header-cell *matHeaderCellDef>First Name</th>
-        <td mat-cell *matCellDef="let element">{{ element.first_name }}</td>
-      </ng-container>
-      <ng-container matColumnDef="last_name">
-        <th mat-header-cell *matHeaderCellDef>Last Name</th>
-        <td mat-cell *matCellDef="let element">{{ element.last_name }}</td>
-      </ng-container>
-      <ng-container matColumnDef="pronouns">
-        <th mat-header-cell *matHeaderCellDef>Pronouns</th>
-        <td mat-cell *matCellDef="let element">{{ element.pronouns }}</td>
-      </ng-container>
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
-      </ng-container>
+    <div class="table-responsive">
+      <table mat-table [dataSource]="eventRegistrationsPage()!.items">
+        <ng-container matColumnDef="first_name">
+          <th mat-header-cell *matHeaderCellDef>First Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.first_name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="last_name">
+          <th mat-header-cell *matHeaderCellDef>Last Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.last_name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="pronouns">
+          <th mat-header-cell *matHeaderCellDef>Pronouns</th>
+          <td mat-cell *matCellDef="let element">{{ element.pronouns }}</td>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
 
-      <tr
-        mat-header-row
-        *matHeaderRowDef="eventRegistrationDisplayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: eventRegistrationDisplayedColumns"></tr>
-    </table>
-    <mat-paginator
-      [length]="eventRegistrationsPage()!.length"
-      [pageSize]="eventRegistrationsPage()!.params.page_size"
-      [pageIndex]="eventRegistrationsPage()!.params.page"
-      (page)="handlePageEvent($event)"></mat-paginator>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="eventRegistrationDisplayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: eventRegistrationDisplayedColumns"></tr>
+      </table>
+      <mat-paginator
+        [length]="eventRegistrationsPage()!.length"
+        [pageSize]="eventRegistrationsPage()!.params.page_size"
+        [pageIndex]="eventRegistrationsPage()!.params.page"
+        (page)="handlePageEvent($event)"></mat-paginator>
+    </div>
     }
   </mat-card-content>
 </mat-pane>
