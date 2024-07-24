@@ -1,3 +1,7 @@
 .form-field {
   width: 100%;
 }
+
+.user-image {
+  border-radius: 50%;
+}

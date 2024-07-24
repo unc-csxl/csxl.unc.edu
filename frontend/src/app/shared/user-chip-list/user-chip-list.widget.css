@@ -15,3 +15,7 @@
   margin: 0;
   padding: 0;
 }
+
+.user-image {
+  border-radius: 50%;
+}

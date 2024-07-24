@@ -6,6 +6,7 @@
     [disabled]="this.disabled">
     <mat-chip-row *ngFor="let user of users" (removed)="onUserRemoved(user)">
       <img
+        class="user-image"
         *ngIf="user.github_avatar"
         matChipAvatar
         [src]="user.github_avatar" />

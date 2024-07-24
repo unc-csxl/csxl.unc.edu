@@ -22,7 +22,7 @@
         <mat-chip-set>
           <!-- Organization chip -->
           @if(article().organization_slug) {
-          <mat-chip
+          <mat-chip-row
             id="organization-chip"
             [routerLink]="'/organizations/' + article().organization_slug">
             <img
@@ -30,7 +30,7 @@
               matChipAvatar
               [src]="article().organization_logo" />
             {{ article().organization_name }}
-          </mat-chip>
+          </mat-chip-row>
 
           <mat-divider class="vertical-divider" [vertical]="true" />
 
@@ -38,7 +38,7 @@
 
           <!-- Author Chips -->
           @for (author of article().authors; track author.id) {
-          <mat-chip>
+          <mat-chip-row [routerLink]="'/profile/' + author.onyen">
             @if (author.github_avatar && author.github_avatar !== '') {
             <img
               class="profile-icon"
@@ -46,7 +46,7 @@
               [src]="author.github_avatar" />
             }
             {{ author.first_name }} {{ author.last_name }}
-          </mat-chip>
+          </mat-chip-row>
           }
         </mat-chip-set>
 

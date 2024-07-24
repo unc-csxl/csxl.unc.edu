@@ -1,6 +1,8 @@
 <h2 mat-dialog-title>Upcoming Hours</h2>
 <mat-dialog-content>
-  @for(hours of operatingHours; track hours.id) {
+  @if (operatingHours.length === 0) {
+  <p>Please check back later to see upcoming hours!</p>
+  } @for(hours of operatingHours; track hours.id) {
   <div class="hours-row">
     <p>
       <span class="semibold">{{ hours.start | date: 'EEEE (M/d)' }}</span>

@@ -30,7 +30,9 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
-  return route.parent!.data['organization']?.name ?? 'Organization Not Found';
+  return (
+    route.parent!.data['organization']?.shorthand ?? 'Organization Not Found'
+  );
 };
 
 @Component({

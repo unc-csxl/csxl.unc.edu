@@ -1,13 +1,3 @@
-/** 
-* profile-page.component.css 
-* 
-* The profile page should include basic information about the user, the
-* user's organizations, and the user's past/upcoming events in a simple,
-* easily navigable manner. Major details about events should be
-* expandable so the screen is not overcrowded.
-*
-*/
-
 p {
   margin-bottom: 0;
 }
@@ -15,8 +5,9 @@ p {
 .header-row {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  column-gap: 8px;
   margin-left: 8px;
 }
 
@@ -72,6 +63,7 @@ p {
 .links-row {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   margin-top: 4px;
   align-items: center;
   margin-bottom: 12px;
@@ -134,18 +126,20 @@ mat-list-item {
   width: 200px;
 }
 
-.profile-edit-fab {
-  position: absolute;
-  bottom: 32px;
-  right: 32px;
+mat-card-actions {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
-  align-items: flex-end;
+  flex-direction: row-reverse;
 }
 
 @media (prefers-color-scheme: light) {
   #github_link {
     color: black;
   }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
 }

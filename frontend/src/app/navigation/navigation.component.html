@@ -115,7 +115,7 @@
           *ngIf="isHandset">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-        <span>{{ navigationService.title$ | async }}</span>
+        <span [class]="isHandset ? 'title-medium' : ''">{{ navigationService.title$ | async }}</span>
 
 
         
@@ -130,26 +130,47 @@
               <mat-icon aria-label="Admin icon" color="secondary">settings</mat-icon>
             </button>
           }
-          <mat-chip-set>
+          
             @if(profile$ | async; as profile) {
+              <mat-chip-set class="desktop-profile-chips">
               <mat-chip class="profile-chip" routerLink="/profile">
                 @if(profile.github_avatar) {
                   <img id="profile-icon" matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
                 } @else {
-                  <mat-icon matChipAvatar>account_circle</mat-icon>
+                  <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
                 }
                 {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
               </mat-chip>
+              </mat-chip-set>
+              <button
+              class="mobile-icon-chips mat-csxl-stroked-icon-button profile-circle-icon"
+                type="button"
+                mat-icon-button
+                routerLink="/profile">
+                @if(profile.github_avatar) {
+                  <img id="profile-icon" matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
+                } @else {
+                  <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
+                }
+              </button>
             } @else {
-              <a href="/auth?continue_to={{ router.url }}">
+              <a class="desktop-profile-chips" href="/auth?continue_to={{ router.url }}">
                 <mat-chip class="profile-chip">
                   <mat-icon matChipAvatar>login</mat-icon>
                   Sign In
                 </mat-chip>
               </a>
-              
+              <a class="mobile-icon-chips" href="/auth?continue_to={{ router.url }}">
+                <button
+                class="mat-csxl-stroked-icon-button profile-circle-icon"
+                  type="button"
+                  mat-icon-button>
+                  <mat-icon matChipAvatar>login</mat-icon>
+                </button>   
+              </a>
+                       
             }
-          </mat-chip-set>
+         
         </div>
       </div>
     </mat-toolbar>

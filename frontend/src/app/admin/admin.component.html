@@ -3,17 +3,21 @@
     <div class="row">
       <div class="content">
         <mat-card-title>Users and Roles</mat-card-title>
-        <p class="font-variant facts">
-          <span class="text-badge secondary-background">{{
-            (facts$ | async)?.users
-          }}</span
-          >&nbsp;users&nbsp;&nbsp;&nbsp;<span
-            class="text-badge secondary-background"
-            >{{ (facts$ | async)?.roles }}</span
-          >&nbsp;roles
-        </p>
+        <div class="font-variant facts">
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.users
+            }}</span
+            >&nbsp;users
+          </p>
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.roles
+            }}</span
+            >&nbsp;roles
+          </p>
+        </div>
       </div>
-
       <button
         class="manage-button"
         mat-flat-button
@@ -30,21 +34,32 @@
     <div class="row">
       <div class="content">
         <mat-card-title>Academics</mat-card-title>
-        <p class="font-variant facts">
-          <span class="text-badge secondary-background">{{
-            (facts$ | async)?.terms
-          }}</span
-          >&nbsp;terms&nbsp;&nbsp;&nbsp;<span
-            class="text-badge secondary-background"
-            >{{ (facts$ | async)?.courses }}</span
-          >&nbsp;courses&nbsp;&nbsp;&nbsp;<span
-            class="text-badge secondary-background"
-            >{{ (facts$ | async)?.sections }}</span
-          >&nbsp;sections&nbsp;&nbsp;&nbsp;<span
-            class="text-badge secondary-background"
-            >{{ (facts$ | async)?.rooms }}</span
-          >&nbsp;rooms
-        </p>
+        <div class="font-variant facts">
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.terms
+            }}</span
+            >&nbsp;terms
+          </p>
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.courses
+            }}</span
+            >&nbsp;courses
+          </p>
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.sections
+            }}</span
+            >&nbsp;sections
+          </p>
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.rooms
+            }}</span
+            >&nbsp;rooms
+          </p>
+        </div>
       </div>
 
       <button
@@ -63,12 +78,14 @@
     <div class="row">
       <div class="content">
         <mat-card-title>Organizations</mat-card-title>
-        <p class="font-variant facts">
-          <span class="text-badge secondary-background">{{
-            (facts$ | async)?.organizations
-          }}</span
-          >&nbsp;organizations
-        </p>
+        <div class="font-variant facts">
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.organizations
+            }}</span
+            >&nbsp;organizations
+          </p>
+        </div>
       </div>
 
       <button
@@ -87,14 +104,15 @@
     <div class="row">
       <div class="content">
         <mat-card-title>Articles</mat-card-title>
-        <p class="font-variant facts">
-          <span class="text-badge secondary-background">{{
-            (facts$ | async)?.articles
-          }}</span
-          >&nbsp;articles
-        </p>
+        <div class="font-variant facts">
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.articles
+            }}</span
+            >&nbsp;articles
+          </p>
+        </div>
       </div>
-
       <button
         class="manage-button"
         mat-flat-button

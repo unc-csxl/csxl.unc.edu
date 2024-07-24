@@ -9,3 +9,12 @@
     justify-content: end;
     gap: 12px;
 }
+
+@media only screen and (max-width: 640px) {
+    .mat-mdc-card-actions {
+        flex-direction: column;
+        padding-bottom: 16px;
+        align-items: start;
+        gap: 12px;
+    }
+}

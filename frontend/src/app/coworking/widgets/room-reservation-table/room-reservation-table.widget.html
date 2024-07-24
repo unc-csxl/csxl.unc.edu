@@ -1,24 +1,26 @@
 <div class="table-container">
-  <table class="table">
-    <tr>
-      <th></th>
-      @for(timeSlot of timeSlots; track timeSlot) {
-      <th [innerHTML]="timeSlot" class="time-slot"></th>
+  <div class="table-responsive">
+    <table class="table">
+      <tr>
+        <th></th>
+        @for(timeSlot of timeSlots; track timeSlot) {
+        <th [innerHTML]="timeSlot" class="time-slot"></th>
+        }
+      </tr>
+      @for (record of reservationsMap | keyvalue; track record.key) {
+      <tr>
+        <th>{{ record.key }}</th>
+        <td
+          *ngFor="let timeSlot of record.value; let j = index"
+          [style.background]="cellPropertyMap[timeSlot].backgroundColor"
+          (click)="
+            !cellPropertyMap[timeSlot].isDisabled &&
+              toggleCellColor(record.key, j)
+          "></td>
+      </tr>
       }
-    </tr>
-    @for (record of reservationsMap | keyvalue; track record.key) {
-    <tr>
-      <th>{{ record.key }}</th>
-      <td
-        *ngFor="let timeSlot of record.value; let j = index"
-        [style.background]="cellPropertyMap[timeSlot].backgroundColor"
-        (click)="
-          !cellPropertyMap[timeSlot].isDisabled &&
-            toggleCellColor(record.key, j)
-        "></td>
-    </tr>
-    }
-  </table>
+    </table>
+  </div>
 </div>
 <div class="divider">
   <button

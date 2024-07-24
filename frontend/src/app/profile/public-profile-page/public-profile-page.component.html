@@ -21,40 +21,49 @@
   </mat-card-header>
   <mat-card-content>
     <div class="links-row">
-      <mat-icon class="secondary-icon">mail</mat-icon>
-      <p>{{ profile.email }}</p>
+      <div class="row">
+        <mat-icon class="secondary-icon">mail</mat-icon>
+        <p>{{ profile.email }}</p>
+      </div>
       @if (profile.website) {
-      <mat-icon class="link-icons secondary-icon">link</mat-icon>
-      <p>
-        <a class="font-secondary" [href]="profile.website" target="_blank"
-          >Personal Website</a
-        >
-      </p>
+      <div class="row">
+        <mat-icon class="link-icons secondary-icon">link</mat-icon>
+        <p>
+          <a class="font-secondary" [href]="profile.website" target="_blank"
+            >Personal Website</a
+          >
+        </p>
+      </div>
       } @if (profile.linkedin) {
-      <mat-icon
-        class="link-icons secondary-icon"
-        id="linkedin-icon"
-        svgIcon="linkedin" />
-      <p>
-        <a class="font-secondary" [href]="profile.linkedin" target="_blank"
-          >LinkedIn</a
-        >
-      </p>
+      <div class="row">
+        <mat-icon
+          class="link-icons secondary-icon"
+          id="linkedin-icon"
+          svgIcon="linkedin" />
+        <p>
+          <a class="font-secondary" [href]="profile.linkedin" target="_blank"
+            >LinkedIn</a
+          >
+        </p>
+      </div>
+
       }
-      <mat-icon
-        class="link-icons secondary-icon"
-        id="github-icon"
-        svgIcon="github" />
-      @if (profile.github) {
-      <p>
-        <a
-          class="font-secondary"
-          id="github-link"
-          href="https://github.com/{{ profile.github }}">
-          &#64;{{ profile.github }}
-        </a>
-      </p>
-      }
+      <div class="row">
+        @if (profile.github) {
+        <mat-icon
+          class="link-icons secondary-icon"
+          id="github-icon"
+          svgIcon="github" />
+        <p>
+          <a
+            class="font-secondary"
+            id="github-link"
+            href="https://github.com/{{ profile.github }}">
+            &#64;{{ profile.github }}
+          </a>
+        </p>
+        }
+      </div>
     </div>
     <mat-divider id="bio-divider" />
     <mat-card-subtitle>Profile Bio</mat-card-subtitle>

@@ -89,6 +89,16 @@ html, body {
         background-color: mat.get-theme-color($theme, on-secondary) !important;
         color: mat.get-theme-color($theme, secondary) !important;
     }
+
+    /// Ensures that all tables are horizontally scrollable.
+    /// All tables have to be wrapped by a div with the 
+    /// `table-responsive` class.
+    .table-responsive {
+        overflow-x: auto;
+      }
+    .table-responsive table {
+        white-space: nowrap;
+    }
 }
 
 /// Defines a mixin that applies custom styles to material button components
@@ -310,7 +320,9 @@ html, body {
     h3 {
         font: mat.get-theme-typography($theme, title-small, font) !important;
     }
-
+    .title-large {
+        font: mat.get-theme-typography($theme, title-large, font);
+    }
     .title-medium {
         font: mat.get-theme-typography($theme, title-medium, font);
     }
