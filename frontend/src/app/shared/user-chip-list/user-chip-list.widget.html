@@ -1,6 +1,10 @@
 <div class="user-chips">
   <mat-chip-option class="user-chip" *ngFor="let user of users">
-    <img *ngIf="user.github_avatar" matChipAvatar [src]="user.github_avatar" />
+    <img
+      class="user-image"
+      *ngIf="user.github_avatar"
+      matChipAvatar
+      [src]="user.github_avatar" />
     <a
       *ngIf="enableMailTo; else disableMailTo"
       class="user-email-link"
