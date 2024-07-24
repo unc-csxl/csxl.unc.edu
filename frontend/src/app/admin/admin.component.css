@@ -35,4 +35,20 @@
 
 .facts {
     margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+}
+
+@media only screen and (max-width: 800px) {
+    .row {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .facts {
+        display: flex;
+        flex-wrap: wrap;
+    }
 }
