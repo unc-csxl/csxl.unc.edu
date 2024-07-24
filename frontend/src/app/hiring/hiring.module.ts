@@ -39,7 +39,6 @@ import { ApplicationCardWidget } from './widgets/application-card/application-ca
 import { ApplicationDialog } from './dialogs/application-dialog/application-dialog.dialog';
 import { YouTubePlayerModule } from '@angular/youtube-player';
 import { HiringAdminComponent } from './hiring-admin/hiring-admin.component';
-import { HiringCourseAssignmentComponent } from './hiring-admin/hiring-course-assignment/hiring-course-assignment.component';
 import { CourseHiringCardWidget } from './widgets/course-hiring-card/course-hiring-card.widget';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
@@ -51,7 +50,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     ApplicationCardWidget,
     ApplicationDialog,
     HiringAdminComponent,
-    HiringCourseAssignmentComponent,
     CourseHiringCardWidget
   ],
   imports: [
