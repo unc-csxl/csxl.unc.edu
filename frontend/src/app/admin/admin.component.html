@@ -78,12 +78,14 @@
     <div class="row">
       <div class="content">
         <mat-card-title>Organizations</mat-card-title>
-        <p class="font-variant facts">
-          <span class="text-badge secondary-background">{{
-            (facts$ | async)?.organizations
-          }}</span
-          >&nbsp;organizations
-        </p>
+        <div class="font-variant facts">
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.organizations
+            }}</span
+            >&nbsp;organizations
+          </p>
+        </div>
       </div>
 
       <button
@@ -102,14 +104,15 @@
     <div class="row">
       <div class="content">
         <mat-card-title>Articles</mat-card-title>
-        <p class="font-variant facts">
-          <span class="text-badge secondary-background">{{
-            (facts$ | async)?.articles
-          }}</span
-          >&nbsp;articles
-        </p>
+        <div class="font-variant facts">
+          <p>
+            <span class="text-badge secondary-background">{{
+              (facts$ | async)?.articles
+            }}</span
+            >&nbsp;articles
+          </p>
+        </div>
       </div>
-
       <button
         class="manage-button"
         mat-flat-button
