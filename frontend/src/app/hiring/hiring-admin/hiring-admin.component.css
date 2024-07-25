@@ -63,3 +63,11 @@ course-hiring-card {
     align-items: center;
     float: right;
 }
+
+.sort-by-header {
+    display: flex;
+    flex-direction: row;
+    float: right;
+    align-items: center;
+    gap: 12px;
+}

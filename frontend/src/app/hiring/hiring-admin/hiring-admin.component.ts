@@ -23,7 +23,8 @@ import {
 import { PublicProfile } from 'src/app/profile/profile.service';
 import {
   HiringAdminOverview,
-  HiringAssignmentOverview
+  HiringAssignmentOverview,
+  HiringCourseSiteOverview
 } from '../hiring.models';
 import { HiringService } from '../hiring.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
@@ -34,6 +35,13 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { Term } from 'src/app/academics/academics.models';
 import { FormControl } from '@angular/forms';
+import { toObservable } from '@angular/core/rxjs-interop';
+
+enum HiringAdminTableSortMethod {
+  COURSE = 'Course',
+  COVERAGE_ASCENDING = 'Coverage (Asc)',
+  COVERAGE_DESCENDING = 'Coverage (Desc)'
+}
 
 @Component({
   selector: 'app-hiring-admin',
@@ -65,6 +73,7 @@ export class HiringAdminComponent {
   /** Store list of Terms  */
   public terms: Term[];
   public selectedTermId: WritableSignal<string | undefined> = signal(undefined);
+
   public selectedTerm = computed(() => {
     return this.terms.find((term) => term.id === this.selectedTermId())!;
   });
@@ -72,9 +81,73 @@ export class HiringAdminComponent {
   /** Store the hiring data. */
   hiringAdminOverview: WritableSignal<HiringAdminOverview | undefined> =
     signal(undefined);
+  sortMethods = HiringAdminTableSortMethod;
+  sortMethod: WritableSignal<HiringAdminTableSortMethod> = signal(
+    HiringAdminTableSortMethod.COURSE
+  );
+  /** Calculate a list of sites based on the sorting method. */
+  sortedSites: WritableSignal<HiringCourseSiteOverview[]> = signal([]);
+
+  /** Effect that updates the sorting of course sites.
+   *
+   * NOTE: This seems like a more convoluted approach, but this is the only version that
+   * Angular Material Tables support - computed signals are not supported, so we need an
+   * effect, triggered by the sort method signal changing, that updates a signal storing
+   * a list of sorted sites.
+   */
+  sortedSitesEffect = effect(
+    () => {
+      const courseSortingMethod = (
+        a: HiringCourseSiteOverview,
+        b: HiringCourseSiteOverview
+      ) => {
+        return (a.sections[0].course_number ?? '').localeCompare(
+          b.sections[0].course_number ?? ''
+        );
+      };
+      const coverageAscendingSortingMethod = (
+        a: HiringCourseSiteOverview,
+        b: HiringCourseSiteOverview
+      ) => {
+        return a.coverage - b.coverage;
+      };
+      const coverageDescendingSortingMethod = (
+        a: HiringCourseSiteOverview,
+        b: HiringCourseSiteOverview
+      ) => {
+        return b.coverage - a.coverage;
+      };
+
+      if (this.sortMethod() === HiringAdminTableSortMethod.COURSE) {
+        this.sortedSites.set([
+          ...(this.hiringAdminOverview()?.sites.sort(courseSortingMethod) ?? [])
+        ]);
+      }
+      if (this.sortMethod() === HiringAdminTableSortMethod.COVERAGE_ASCENDING) {
+        this.sortedSites.set([
+          ...(this.hiringAdminOverview()?.sites.sort(
+            coverageAscendingSortingMethod
+          ) ?? [])
+        ]);
+      }
+      if (
+        this.sortMethod() === HiringAdminTableSortMethod.COVERAGE_DESCENDING
+      ) {
+        this.sortedSites.set([
+          ...(this.hiringAdminOverview()?.sites.sort(
+            coverageDescendingSortingMethod
+          ) ?? [])
+        ]);
+      }
+    },
+    { allowSignalWrites: true } // Needed to update the signal.
+  );
+
+  // NOTE: This is required for mat tables.
+  sortedSites$ = toObservable(this.sortedSites);
 
   /** Store the columns to display in the table */
-  public displayedColumns: string[] = ['sections', 'instructor', 'totals'];
+  public displayedColumns: string[] = ['sections', 'instructor'];
   /** Store the columns to display when extended */
   public columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   /** Store the element where the dropdown is currently active */
@@ -110,182 +183,3 @@ export class HiringAdminComponent {
     this.selectedTermId.set(data.currentTerm?.id ?? undefined);
   }
 }
-
-// export const SAMPLE_HIRING_DATA: HiringAdminOverview = {
-//   sites: [
-//     {
-//       sections: ['COMP 110'],
-//       instructor: {
-//         id: 0,
-//         onyen: 'krisj',
-//         first_name: 'Kris',
-//         last_name: 'Jordan',
-//         pronouns: 'he / him',
-//         email: 'kris@cs.unc.edu',
-//         github_avatar: 'https://avatars.githubusercontent.com/u/31329?v=4',
-//         github: null,
-//         bio: null,
-//         linkedin: null,
-//         website: null
-//       },
-//       coverage: 0,
-//       assignments: [
-//         {
-//           user: {
-//             id: 1,
-//             onyen: 'atoney',
-//             first_name: 'Audrey',
-//             last_name: 'Toney',
-//             pronouns: 'she / her',
-//             email: 'audrey@cs.unc.edu',
-//             github_avatar:
-//               'https://avatars.githubusercontent.com/u/31745478?v=4',
-//             github: null,
-//             bio: null,
-//             linkedin: null,
-//             website: null
-//           },
-//           level: 'UTA ($2000)',
-//           position_number: '1560PA',
-//           epar: '201927393',
-//           status: 'final'
-//         },
-//         {
-//           user: {
-//             id: 0,
-//             onyen: 'agandech',
-//             first_name: 'Ajay',
-//             last_name: 'Gandecha',
-//             pronouns: 'he / him',
-//             email: 'ajay@cs.unc.edu',
-//             github_avatar:
-//               'https://avatars.githubusercontent.com/u/17516747?v=4',
-//             github: null,
-//             bio: null,
-//             linkedin: null,
-//             website: null
-//           },
-//           level: 'Lead UTA ($3000)',
-//           position_number: '1660WE',
-//           epar: '201929083',
-//           status: 'draft'
-//         },
-//         {
-//           user: {
-//             id: 0,
-//             onyen: 'jkeegan',
-//             first_name: 'Jade',
-//             last_name: 'Keegan',
-//             pronouns: 'she / her',
-//             email: 'jade@cs.unc.edu',
-//             github_avatar:
-//               'https://avatars.githubusercontent.com/u/97476936?v=4',
-//             github: null,
-//             bio: null,
-//             linkedin: null,
-//             website: null
-//           },
-//           level: 'Half Load UTA ($1000)',
-//           position_number: '2213FQ',
-//           epar: '398375265',
-//           status: 'commit'
-//         }
-//       ],
-//       preferences: [
-//         {
-//           id: 0,
-//           onyen: 'agandech',
-//           first_name: 'Ajay',
-//           last_name: 'Gandecha',
-//           pronouns: 'he / him',
-//           email: 'ajay@cs.unc.edu',
-//           github_avatar: 'https://avatars.githubusercontent.com/u/17516747?v=4',
-//           github: null,
-//           bio: null,
-//           linkedin: null,
-//           website: null
-//         },
-//         {
-//           id: 1,
-//           onyen: 'atoney',
-//           first_name: 'Audrey',
-//           last_name: 'Toney',
-//           pronouns: 'she / her',
-//           email: 'audrey@cs.unc.edu',
-//           github_avatar: 'https://avatars.githubusercontent.com/u/31745478?v=4',
-//           github: null,
-//           bio: null,
-//           linkedin: null,
-//           website: null
-//         }
-//       ]
-//     },
-//     {
-//       sections: ['COMP 590'],
-//       instructor: {
-//         id: 1,
-//         onyen: 'krisj',
-//         first_name: 'Kris',
-//         last_name: 'Jordan',
-//         pronouns: 'he / him',
-//         email: 'kris@cs.unc.edu',
-//         github_avatar: 'https://avatars.githubusercontent.com/u/31329?v=4',
-//         github: null,
-//         bio: null,
-//         linkedin: null,
-//         website: null
-//       },
-//       coverage: 0,
-//       assignments: [
-//         {
-//           user: {
-//             id: 0,
-//             onyen: 'agandech',
-//             first_name: 'Ajay',
-//             last_name: 'Gandecha',
-//             pronouns: 'he / him',
-//             email: 'ajay@cs.unc.edu',
-//             github_avatar:
-//               'https://avatars.githubusercontent.com/u/17516747?v=4',
-//             github: null,
-//             bio: null,
-//             linkedin: null,
-//             website: null
-//           },
-//           level: 'Lead UTA ($3000)',
-//           position_number: '1660IIC',
-//           epar: '294576032',
-//           status: 'commit'
-//         }
-//       ],
-//       preferences: [
-//         {
-//           id: 0,
-//           onyen: 'agandech',
-//           first_name: 'Ajay',
-//           last_name: 'Gandecha',
-//           pronouns: 'he / him',
-//           email: 'ajay@cs.unc.edu',
-//           github_avatar: 'https://avatars.githubusercontent.com/u/17516747?v=4',
-//           github: null,
-//           bio: null,
-//           linkedin: null,
-//           website: null
-//         },
-//         {
-//           id: 0,
-//           onyen: 'jkeegan',
-//           first_name: 'Jade',
-//           last_name: 'Keegan',
-//           pronouns: 'she / her',
-//           email: 'jade@cs.unc.edu',
-//           github_avatar: 'https://avatars.githubusercontent.com/u/97476936?v=4',
-//           github: null,
-//           bio: null,
-//           linkedin: null,
-//           website: null
-//         }
-//       ]
-//     }
-//   ]
-// };

@@ -43,6 +43,7 @@ import { CourseHiringCardWidget } from './widgets/course-hiring-card/course-hiri
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { LevelsAdminComponent } from './levels-admin/levels-admin.component';
 import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 /* UI Widgets */
 
@@ -80,7 +81,8 @@ import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.c
     CdkDropList,
     CdkDragPlaceholder,
     YouTubePlayerModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatChipsModule
   ]
 })
 export class HiringModule {}
