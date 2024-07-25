@@ -7,6 +7,9 @@
  * @license MIT
  */
 
+import { CatalogSectionIdentity } from '../applications/applications.model';
+import { PublicProfile } from '../profile/profile.service';
+
 export interface ApplicationOverview {
   type: string;
   applicant_name: string;
@@ -48,4 +51,67 @@ export enum ApplicationReviewStatus {
   NOT_PREFERRED = 'Not Preferred',
   NOT_PROCESSED = 'Not Processed',
   PREFERRED = 'Preferred'
+}
+
+export enum HiringLevelClassification {
+  IOR = 'Instructor of Record',
+  PHD = 'PhD',
+  MS = 'MS',
+  UG = 'UG'
+}
+
+export interface HiringLevel {
+  id: number | null;
+  title: string;
+  salary: number;
+  load: number;
+  classification: HiringLevelClassification;
+  is_active: boolean;
+}
+
+export enum HiringAssignmentStatus {
+  DRAFT = 'Draft',
+  COMMIT = 'Commit',
+  FINAL = 'Final'
+}
+
+export interface HiringAssignmentDraft {
+  id: number | null;
+  user_id: number;
+  term_id: string;
+  course_site_id: number;
+  level: HiringLevel;
+  status: HiringAssignmentStatus;
+  position_number: string;
+  epar: string;
+  i9: boolean;
+  notes: string;
+  created: Date;
+  modified: Date;
+}
+
+export interface HiringAssignmentOverview {
+  id: number | null;
+  user: PublicProfile;
+  level: HiringLevel;
+  status: HiringAssignmentStatus;
+  position_number: string;
+  epar: string;
+  i9: boolean;
+  notes: string;
+}
+
+export interface HiringCourseSiteOverview {
+  course_site_id: number;
+  sections: CatalogSectionIdentity[];
+  instructors: PublicProfile[];
+  total_enrollment: number;
+  total_cost: number;
+  coverage: number;
+  assignments: HiringAssignmentOverview[];
+  instructor_preferences: PublicProfile[];
+}
+
+export interface HiringAdminOverview {
+  sites: HiringCourseSiteOverview[];
 }
