@@ -47,6 +47,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { CreateAssignmentDialog } from './dialogs/create-assignment-dialog/create-assignment.dialog';
 import { QuickCreateAssignmentDialog } from './dialogs/quick-create-assignment-dialog/quick-create-assignment.dialog';
 import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assignment.dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 /* UI Widgets */
 
@@ -88,7 +89,8 @@ import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assi
     CdkDragPlaceholder,
     YouTubePlayerModule,
     MatButtonToggleModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSlideToggleModule
   ]
 })
 export class HiringModule {}

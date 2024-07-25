@@ -4,13 +4,13 @@
     <div class="row">
       <user-chip-list [users]="[data.assignment.user]" />
       @if(getApplication()) {
-        <button
-          mat-button
-          class="primary-button"
-          (click)="openApplicationDialog()">
-          View Application
-        </button>
-        }
+      <button
+        mat-button
+        class="primary-button"
+        (click)="openApplicationDialog()">
+        View Application
+      </button>
+      }
     </div>
     <mat-form-field appearance="outline">
       <mat-label>Select Level</mat-label>
@@ -46,6 +46,9 @@
       <mat-label>Notes</mat-label>
       <textarea matInput formControlName="notes" name="notes"></textarea>
     </mat-form-field>
+    <mat-slide-toggle formControlName="i9">
+      This student has submitted an I9.
+    </mat-slide-toggle>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>

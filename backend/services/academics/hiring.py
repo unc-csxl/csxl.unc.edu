@@ -288,10 +288,13 @@ class HiringService:
                 application_review.application.user.to_public_model()
                 for application_review in preferred_review_entities
             ]
-            assignments = [
-                assignment.to_overview_model()
-                for assignment in course_site_entity.hiring_assignments
-            ]
+            assignments = sorted(
+                [
+                    assignment.to_overview_model()
+                    for assignment in course_site_entity.hiring_assignments
+                ],
+                key=lambda x: x.user.last_name,
+            )
             total_cost = sum([assignment.level.salary for assignment in assignments])
             coverage = self._calculate_coverage(
                 total_enrollment, course_site_entity.hiring_assignments

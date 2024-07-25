@@ -18,7 +18,13 @@ export class LevelsAdminComponent {
   };
 
   /** Columns to display on the table */
-  public displayedColumns: string[] = ['title'];
+  public displayedColumns: string[] = [
+    'title',
+    'classification',
+    'salary',
+    'title',
+    'active'
+  ];
 
   constructor(
     private router: Router,

@@ -31,3 +31,7 @@
     margin-right: 32px !important;
   }
   
+  mat-card-header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
