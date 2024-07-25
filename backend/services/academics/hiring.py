@@ -365,7 +365,7 @@ class HiringService:
         self._session.delete(assignment_entity)
         self._session.commit()
 
-    def get_hiring_levels(self, subject: User):
+    def get_hiring_levels(self, subject: User) -> list[HiringLevel]:
         """Retrieves all of the hiring levels."""
         # 1. Check user permissions
         self._permission.enforce(subject, "hiring.admin", "*")
