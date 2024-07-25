@@ -8,7 +8,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { computed, Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import {
   HiringAdminOverview,
@@ -60,7 +60,9 @@ export class HiringService {
 
   private hiringLevelsSignal: WritableSignal<HiringLevel[]> = signal([]);
   hiringLevels = this.hiringLevelsSignal.asReadonly();
-
+  activeHiringlevels = computed(() => {
+    return this.hiringLevels().filter((h) => h.is_active);
+  });
   getHiringLevels() {
     this.http.get<HiringLevel[]>(`/api/hiring/level`).subscribe((levels) => {
       this.hiringLevelsSignal.set(levels);

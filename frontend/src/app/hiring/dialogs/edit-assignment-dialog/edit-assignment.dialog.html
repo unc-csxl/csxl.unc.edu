@@ -15,7 +15,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Select Level</mat-label>
       <mat-select formControlName="level">
-        @for(level of hiringService.hiringLevels(); track level.id) {
+        @for(level of hiringService.activeHiringlevels(); track level.id) {
         <mat-option [value]="level">{{ level.title }}</mat-option>
         }
       </mat-select>
@@ -58,6 +58,6 @@
     color="primary"
     [disabled]="!formIsValid()"
     (click)="submit()">
-    Create
+    Edit
   </button>
 </mat-dialog-actions>
