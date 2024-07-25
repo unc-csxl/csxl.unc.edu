@@ -311,30 +311,97 @@ class HiringService:
         # 4. Return hiring adming overview object
         return HiringAdminOverview(sites=hiring_course_site_overviews)
 
-    def create_hiring_assignment(self, subject: User):
+    def create_hiring_assignment(
+        self, subject: User, assignment: HiringAssignmentDraft
+    ) -> HiringAssignmentOverview:
         """Creates a new hiring assignment."""
-        ...
+        # 1. Check user permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+        # 2. Create the entity and persist.
+        assignment_entity = HiringAssignmentEntity.from_draft_model(assignment)
+        self._session.add(assignment_entity)
+        self._session.commit()
 
-    def update_hiring_assignment(self, subject: User):
+        return assignment_entity.to_overview_model()
+
+    def update_hiring_assignment(
+        self, subject: User, assignment: HiringAssignmentDraft
+    ) -> HiringAssignmentOverview:
         """Updates an existing hiring assignment."""
-        ...
+        # 1. Check user permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+        # 2. Try to fetch the assignment from the database
+        assignment_entity = self._session.get(HiringAssignmentEntity, assignment.id)
+        if assignment_entity is None:
+            raise ResourceNotFoundException(
+                f"No hiring assignment with ID: {assignment.id}"
+            )
+        # 3. Update the data and commit
+        assignment_entity.hiring_level_id = assignment.level.id
+        assignment_entity.status = assignment.status
+        assignment_entity.position_number = assignment.position_number
+        assignment_entity.epar = assignment.epar
+        assignment_entity.i9 = assignment.i9
+        assignment_entity.notes = assignment.notes
+        assignment_entity.modified = datetime.now()
 
-    def delete_hiring_assignment(self, subject: User):
+        self._session.commit()
+
+        return assignment_entity.to_overview_model()
+
+    def delete_hiring_assignment(self, subject: User, assignment_id: int):
         """Deletes an existing hiring assignment."""
-        ...
+        # 1. Check user permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+
+        # 2. Try to fetch the assignment from the database
+        assignment_entity = self._session.get(HiringAssignmentEntity, assignment_id)
+        if assignment_entity is None:
+            raise ResourceNotFoundException(
+                f"No hiring assignment with ID: {assignment_id}"
+            )
+
+        # 3. Delete and save
+        self._session.delete(assignment_entity)
+        self._session.commit()
 
     def get_hiring_levels(self, subject: User):
         """Retrieves all of the hiring levels."""
-        ...
+        # 1. Check user permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+        # 2. Fetch all
+        hiring_levels_query = select(HiringLevelEntity)
+        hiring_levels_entities = self._session.scalars(hiring_levels_query).all()
+        # 3. Return
+        return [level.to_model() for level in hiring_levels_entities]
 
-    def create_hiring_level(self, subject: User):
+    def create_hiring_level(self, subject: User, level: HiringLevel) -> HiringLevel:
         """Creates a new hiring level."""
-        ...
+        # 1. Check user permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+        # 2. Create and persist
+        level_entity = HiringLevelEntity.from_model(level)
+        self._session.add(level_entity)
+        self._session.commit()
 
-    def update_hiring_level(self, subject: User):
+        return level_entity.to_model()
+
+    def update_hiring_level(self, subject: User, level: HiringLevel) -> HiringLevel:
         """Updates an existing hiring level."""
-        ...
+        # 1. Check user permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+        # 2. Try to fetch the level from the database
+        level_entity = self._session.get(HiringLevelEntity, level.id)
+        if level_entity is None:
+            raise ResourceNotFoundException(f"No hiring level with ID: {level.id}")
+        # 3. Update
+        level_entity.id = level.id
+        level_entity.title = level.title
+        level_entity.salary = level.salary
+        level_entity.load = level.load
+        level_entity.classification = level.classification
+        level_entity.is_active = level.is_active
 
-    def delete_hiring_level(self, subject: User):
-        """Deletes an existing hiring level."""
-        ...
+        self._session.commit()
+
+        return level_entity.to_model()

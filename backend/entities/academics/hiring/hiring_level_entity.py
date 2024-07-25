@@ -3,9 +3,12 @@
 from sqlalchemy import Integer, String, Float, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Enum as SQLAlchemyEnum
-
+from typing import Self
 from ...entity_base import EntityBase
-from ....models.academics.hiring.hiring_level import HiringLevelClassification
+from ....models.academics.hiring.hiring_level import (
+    HiringLevelClassification,
+    HiringLevel,
+)
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -41,3 +44,24 @@ class HiringLevelEntity(EntityBase):
     hiring_assignments: Mapped[list["HiringAssignmentEntity"]] = relationship(
         back_populates="hiring_level"
     )
+
+    @classmethod
+    def from_model(cls, model: HiringLevel) -> Self:
+        return cls(
+            id=model.id,
+            title=model.title,
+            salary=model.salary,
+            load=model.load,
+            classification=model.classification,
+            is_active=model.is_active,
+        )
+
+    def to_model(self) -> HiringLevel:
+        return HiringLevel(
+            id=self.id,
+            title=self.title,
+            salary=self.salary,
+            load=self.load,
+            classification=self.classification,
+            is_active=self.is_active,
+        )

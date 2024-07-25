@@ -14,7 +14,7 @@ class HiringLevelClassification(Enum):
 
 
 class HiringLevel(BaseModel):
-    id: int | None
+    id: int | None = None
     title: str
     salary: float
     load: float

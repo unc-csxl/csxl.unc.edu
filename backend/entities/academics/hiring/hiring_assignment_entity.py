@@ -3,13 +3,14 @@
 from sqlalchemy import Integer, String, Float, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Enum as SQLAlchemyEnum
-
+from typing import Self
 from datetime import datetime
 
 from ...entity_base import EntityBase
 from ....models.academics.hiring.hiring_assignment import (
     HiringAssignmentStatus,
     HiringAssignmentOverview,
+    HiringAssignmentDraft,
 )
 
 __authors__ = ["Ajay Gandecha"]
@@ -82,11 +83,28 @@ class HiringAssignmentEntity(EntityBase):
     # Stores the timestamp for the last time the assignment was updated.
     modified: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
+    @classmethod
+    def from_draft_model(cls, overview: HiringAssignmentDraft) -> Self:
+        return cls(
+            id=overview.id,
+            user_id=overview.user_id,
+            term_id=overview.term_id,
+            course_site_id=overview.course_site_id,
+            hiring_level_id=overview.level.id,
+            status=overview.status,
+            position_number=overview.position_number,
+            epar=overview.epar,
+            i9=overview.i9,
+            notes=overview.notes,
+            created=overview.created,
+            modified=overview.modified,
+        )
+
     def to_overview_model(self) -> HiringAssignmentOverview:
         return HiringAssignmentOverview(
             id=self.id,
             user=self.user.to_public_model(),
-            level=self.hiring_level,
+            level=self.hiring_level.to_model(),
             status=self.status,
             position_number=self.position_number,
             epar=self.epar,

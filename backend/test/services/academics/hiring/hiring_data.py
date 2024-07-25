@@ -7,15 +7,24 @@ from .....entities.section_application_table import section_application_table
 from .....entities.academics.hiring.application_review_entity import (
     ApplicationReviewEntity,
 )
+from .....entities.academics.hiring.hiring_assignment_entity import (
+    HiringAssignmentEntity,
+)
+from .....entities.academics.hiring.hiring_level_entity import (
+    HiringLevelEntity,
+)
 
 from .....models.application import Comp227, Application, CatalogSectionIdentity
 from .....models.academics.hiring.application_review import (
     ApplicationReview,
     ApplicationReviewStatus,
 )
+from .....models.academics.hiring.hiring_assignment import *
+from .....models.academics.hiring.hiring_level import *
 
 from ... import user_data
-from ...academics import section_data, term_data
+from ...academics import section_data, term_data, course_data
+from ...academics.hiring import hiring_data
 from ...office_hours import office_hours_data
 
 __authors__ = ["Ajay Gandecha"]
@@ -137,7 +146,6 @@ new_application = Application(
     term_id=term_data.current_term.id,
 )
 
-
 applications = [application_one, application_two, application_three, application_four]
 
 application_associations = [
@@ -175,6 +183,82 @@ review_three = ApplicationReview(
 
 reviews = [review_one, review_two, review_three]
 
+uta_level = HiringLevel(
+    id=1,
+    title="UTA Full Time",
+    salary=2000.00,
+    load=1.00,
+    classification=HiringLevelClassification.UG,
+    is_active=True,
+)
+
+updated_uta_level = HiringLevel(
+    id=1,
+    title="UTA Full Time",
+    salary=2000.00,
+    load=1.00,
+    classification=HiringLevelClassification.UG,
+    is_active=False,
+)
+
+new_level = HiringLevel(
+    id=2,
+    title="Lead UTA Full Time",
+    salary=3000.00,
+    load=1.50,
+    classification=HiringLevelClassification.UG,
+    is_active=True,
+)
+
+hiring_levels = [uta_level]
+
+hiring_assignment = HiringAssignmentDraft(
+    id=1,
+    user_id=user_data.student.id,
+    term_id=term_data.current_term.id,
+    course_site_id=office_hours_data.comp_110_site.id,
+    level=uta_level,
+    status=HiringAssignmentStatus.COMMIT,
+    position_number="sample",
+    epar="12345",
+    i9=True,
+    notes="Some notes here",
+    created=datetime.now(),
+    modified=datetime.now(),
+)
+
+updated_hiring_assignment = HiringAssignmentDraft(
+    id=1,
+    user_id=user_data.student.id,
+    term_id=term_data.current_term.id,
+    course_site_id=office_hours_data.comp_110_site.id,
+    level=uta_level,
+    status=HiringAssignmentStatus.FINAL,
+    position_number="sample",
+    epar="12345",
+    i9=True,
+    notes="Some notes here",
+    created=datetime.now(),
+    modified=datetime.now(),
+)
+
+new_hiring_assignment = HiringAssignmentDraft(
+    id=2,
+    user_id=user_data.ambassador.id,
+    term_id=term_data.current_term.id,
+    course_site_id=office_hours_data.comp_110_site.id,
+    level=uta_level,
+    status=HiringAssignmentStatus.FINAL,
+    position_number="sample",
+    epar="54321",
+    i9=True,
+    notes="Some notes here",
+    created=datetime.now(),
+    modified=datetime.now(),
+)
+
+hiring_assignments = [hiring_assignment]
+
 
 def insert_fake_data(session: Session):
     for application in applications:
@@ -211,6 +295,32 @@ def insert_fake_data(session: Session):
         ApplicationReviewEntity,
         ApplicationReviewEntity.id,
         len(reviews) + 1,
+    )
+
+    session.commit()
+
+    for level in hiring_levels:
+        entity = HiringLevelEntity.from_model(level)
+        session.add(entity)
+
+    reset_table_id_seq(
+        session,
+        HiringLevelEntity,
+        HiringLevelEntity.id,
+        len(hiring_levels) + 1,
+    )
+
+    session.commit()
+
+    for assignment in hiring_assignments:
+        entity = HiringAssignmentEntity.from_draft_model(assignment)
+        session.add(entity)
+
+    reset_table_id_seq(
+        session,
+        HiringAssignmentEntity,
+        HiringAssignmentEntity.id,
+        len(hiring_assignments) + 1,
     )
 
     session.commit()

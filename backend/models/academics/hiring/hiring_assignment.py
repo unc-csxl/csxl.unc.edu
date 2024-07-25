@@ -17,8 +17,23 @@ class HiringAssignmentStatus(Enum):
     FINAL = "Final"
 
 
+class HiringAssignmentDraft(BaseModel):
+    id: int | None = None
+    user_id: int
+    term_id: str
+    course_site_id: int
+    level: HiringLevel
+    status: HiringAssignmentStatus
+    position_number: str
+    epar: str
+    i9: bool
+    notes: str
+    created: datetime
+    modified: datetime
+
+
 class HiringAssignmentOverview(BaseModel):
-    id: int | None
+    id: int | None = None
     user: PublicUser
     level: HiringLevel
     status: HiringAssignmentStatus
