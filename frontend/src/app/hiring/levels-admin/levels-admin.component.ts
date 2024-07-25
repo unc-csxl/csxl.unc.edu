@@ -22,7 +22,7 @@ export class LevelsAdminComponent {
     'title',
     'classification',
     'salary',
-    'title',
+    'load',
     'active'
   ];
 

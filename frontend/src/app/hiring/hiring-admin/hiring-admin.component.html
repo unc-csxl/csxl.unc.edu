@@ -23,7 +23,7 @@
       <table mat-table [dataSource]="sortedSites()" multiTemplateDataRows>
         <!-- Section Column -->
         <ng-container matColumnDef="sections">
-          <th mat-header-cell *matHeaderCellDef>Sections</th>
+          <th mat-header-cell *matHeaderCellDef>Course</th>
           <td mat-cell *matCellDef="let element">
             @if(element.sections.length > 0) {
             <mat-card-subtitle>
