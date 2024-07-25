@@ -5,10 +5,16 @@
  */
 
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef
+} from '@angular/material/dialog';
 import { HiringService } from '../../hiring.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import {
+  ApplicationOverview,
+  ApplicationReviewOverview,
   HiringAssignmentDraft,
   HiringAssignmentStatus,
   HiringCourseSiteOverview,
@@ -16,6 +22,7 @@ import {
 } from '../../hiring.models';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ApplicationDialog } from '../application-dialog/application-dialog.dialog';
 
 export interface QuickCreateAssignmentDialogData {
   user: PublicProfile;
@@ -51,6 +58,7 @@ export class QuickCreateAssignmentDialog {
     protected dialogRef: MatDialogRef<QuickCreateAssignmentDialog>,
     protected formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
+    protected dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: QuickCreateAssignmentDialogData
   ) {
     this.user = data.user;
@@ -98,5 +106,23 @@ export class QuickCreateAssignmentDialog {
   /** Closes the dialog */
   close(): void {
     this.dialogRef.close();
+  }
+
+  getApplication(): ApplicationReviewOverview | undefined {
+    return this.data.courseSite.reviews.find(
+      (a) => a.applicant_id === this.data.user.id
+    );
+  }
+
+  openApplicationDialog(): void {
+    this.dialog.open(ApplicationDialog, {
+      height: '600px',
+      width: '800px',
+      data: {
+        courseSiteId: this.data.courseSite.course_site_id,
+        review: this.getApplication()!,
+        viewOnly: true
+      }
+    });
   }
 }

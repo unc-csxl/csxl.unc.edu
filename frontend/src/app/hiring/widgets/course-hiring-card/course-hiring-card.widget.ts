@@ -30,6 +30,7 @@ import {
   EditAssignmentDialog,
   EditAssignmentDialogData
 } from '../../dialogs/edit-assignment-dialog/edit-assignment.dialog';
+import { ApplicationDialog } from '../../dialogs/application-dialog/application-dialog.dialog';
 
 @Component({
   selector: 'course-hiring-card',

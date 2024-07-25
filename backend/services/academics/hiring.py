@@ -280,6 +280,10 @@ class HiringService:
                 ],
                 key=lambda x: x.preference,
             )
+            reviews = [
+                application_review.to_overview_model()
+                for application_review in preferred_review_entities
+            ]
             instructor_preferences = [
                 application_review.application.user.to_public_model()
                 for application_review in preferred_review_entities
@@ -302,6 +306,7 @@ class HiringService:
                 total_cost=total_cost,
                 coverage=coverage,
                 assignments=assignments,
+                reviews=reviews,
                 instructor_preferences=instructor_preferences,
             )
 

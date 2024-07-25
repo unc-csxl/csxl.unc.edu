@@ -98,6 +98,12 @@
 
   <mat-divider />
 
+  @if(data.viewOnly) {
+  <div class="row">
+    <p mat-card-subtitle>Instructor's Notes</p>
+    <p markdown>{{ data.review.notes }}</p>
+  </div>
+  } @else {
   <div class="row">
     <p mat-card-subtitle>Your Notes</p>
   </div>
@@ -109,4 +115,5 @@
       [formControl]="notes"
       name="notes"></textarea>
   </mat-form-field>
+  }
 </mat-dialog-content>

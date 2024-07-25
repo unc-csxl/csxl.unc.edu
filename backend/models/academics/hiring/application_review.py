@@ -34,6 +34,7 @@ class ApplicationReviewOverview(ApplicationReview):
     id: int | None = None
     application_id: int
     application: ApplicationOverview
+    applicant_id: int
     status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
     preference: int
     notes: str

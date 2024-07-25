@@ -35,6 +35,7 @@ export interface ApplicationReviewOverview {
   id: number | null;
   application_id: number;
   application: ApplicationOverview;
+  applicant_id: number;
   status: ApplicationReviewStatus;
   preference: number;
   notes: string;
@@ -130,6 +131,7 @@ export interface HiringCourseSiteOverview {
   total_cost: number;
   coverage: number;
   assignments: HiringAssignmentOverview[];
+  reviews: ApplicationReviewOverview[];
   instructor_preferences: PublicProfile[];
 }
 

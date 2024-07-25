@@ -3,7 +3,14 @@
   <form [formGroup]="editAssignmentForm">
     <div class="row">
       <user-chip-list [users]="[data.assignment.user]" />
-      <button mat-button class="primary-button">View Application</button>
+      @if(getApplication()) {
+        <button
+          mat-button
+          class="primary-button"
+          (click)="openApplicationDialog()">
+          View Application
+        </button>
+        }
     </div>
     <mat-form-field appearance="outline">
       <mat-label>Select Level</mat-label>

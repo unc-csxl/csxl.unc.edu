@@ -5,6 +5,7 @@ from datetime import datetime
 from ... import PublicUser
 from ...academics import CatalogSectionIdentity
 from .hiring_level import HiringLevel
+from .application_review import ApplicationReviewOverview
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -51,6 +52,7 @@ class HiringCourseSiteOverview(BaseModel):
     total_cost: float
     coverage: float
     assignments: list[HiringAssignmentOverview]
+    reviews: list[ApplicationReviewOverview]
     instructor_preferences: list[PublicUser]
 
 
