@@ -297,7 +297,7 @@ class HiringService:
             course_site_overview = HiringCourseSiteOverview(
                 course_site_id=course_site_entity.id,
                 sections=sections,
-                instructors=instructors,
+                instructors=list(set(instructors)),
                 total_enrollment=total_enrollment,
                 total_cost=total_cost,
                 coverage=coverage,

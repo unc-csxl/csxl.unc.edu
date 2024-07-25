@@ -16,6 +16,10 @@ class PublicUser(BaseModel):
     of the `User` database in the PostgreSQL database
     """
 
+    # Makes `PublicUser` hashable, enabling it to be used in sets.
+    def __hash__(self) -> int:
+        return self.onyen.__hash__()
+
     id: int | None
     onyen: str
     first_name: str
