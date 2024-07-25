@@ -32,6 +32,9 @@ from .academics.hiring.application_review_entity import ApplicationReviewEntity
 from .article_entity import ArticleEntity
 from .article_author_entity import article_author_table
 
+from .academics.hiring.hiring_assignment_entity import HiringAssignmentEntity
+from .academics.hiring.hiring_level_entity import HiringLevelEntity
+
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"

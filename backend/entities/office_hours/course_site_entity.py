@@ -53,6 +53,11 @@ class CourseSiteEntity(EntityBase):
         back_populates="course_site", cascade="all, delete"
     )
 
+    # NOTE: One-to-many relationship between course sites and hiring assignments
+    hiring_assignments: Mapped[list["HiringAssignmentEntity"]] = relationship(
+        back_populates="course_site", cascade="all, delete"
+    )
+
     @classmethod
     def from_new_model(cls, model: NewCourseSite) -> Self:
         """

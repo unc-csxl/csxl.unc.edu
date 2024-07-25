@@ -1,0 +1,80 @@
+"""Definition of SQLAlchemy table-backed object mapping entity for hiring assignments."""
+
+from sqlalchemy import Integer, String, Float, Boolean, ForeignKey, DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Enum as SQLAlchemyEnum
+
+from datetime import datetime
+
+from ...entity_base import EntityBase
+from ....models.academics.hiring.hiring_assignment import HiringAssignmentStatus
+
+__authors__ = ["Ajay Gandecha"]
+__copyright__ = "Copyright 2024"
+__license__ = "MIT"
+
+
+class HiringAssignmentEntity(EntityBase):
+    """Serves as the database model schema defining the shape of the hiring assignment table"""
+
+    # Name for the review table in the PostgreSQL database
+    __tablename__ = "academics__hiring__assignment"
+
+    # Properties (columns in the database table)
+
+    # Unique ID
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    # Term the section is in
+    # NOTE: This defines a one-to-many relationship between the term and sections tables.
+    term_id: Mapped[str] = mapped_column(
+        ForeignKey("academics__term.id"), nullable=False
+    )
+    term: Mapped["TermEntity"] = relationship(back_populates="hiring_assignments")
+
+    # Course site this assignment is for
+    # NOTE: This defines a one-to-many relationship between the assignment and course site tables.
+    course_site_id: Mapped[int] = mapped_column(
+        ForeignKey("course_site.id"), nullable=False
+    )
+    course_site: Mapped["CourseSiteEntity"] = relationship(
+        back_populates="hiring_assignments"
+    )
+
+    # User (the student that the assignment is for)
+    # NOTE: This defines a one-to-many relationship between the user and assignments tables.
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    user: Mapped["UserEntity"] = relationship(back_populates="hiring_assignments")
+
+    # Hiring level for the assignment
+    # NOTE: This defines a one-to-many relationship between the assignment and level tables.
+    hiring_level_id: Mapped[int] = mapped_column(
+        ForeignKey("academics__hiring__level.id"), nullable=False
+    )
+    hiring_level: Mapped["HiringLevelEntity"] = relationship(
+        back_populates="hiring_assignments"
+    )
+
+    # Status (Draft, Commit, Final)
+    status: Mapped[HiringAssignmentStatus] = mapped_column(
+        SQLAlchemyEnum(HiringAssignmentStatus),
+        nullable=False,
+    )
+
+    # Position number (listed in ConnectCarolina, used for hiring purposes)
+    position_number: Mapped[str] = mapped_column(String, nullable=True)
+
+    # Epar (used for hiring purposes)
+    epar: Mapped[str] = mapped_column(String, nullable=True)
+
+    # Whether or not the user has submitted an I9
+    i9: Mapped[bool] = mapped_column(Boolean, nullable=True)
+
+    # Additional notes left by the assigner about this assignment.
+    notes: Mapped[str] = mapped_column(String, nullable=True)
+
+    # Stores the timestamp for the creation of the assignment.
+    created: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+    # Stores the timestamp for the last time the assignment was updated.
+    modified: Mapped[datetime] = mapped_column(DateTime, nullable=False)

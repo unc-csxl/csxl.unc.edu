@@ -54,6 +54,11 @@ class TermEntity(EntityBase):
         back_populates="term", cascade="all,delete"
     )
 
+    # NOTE: One-to-many relationship between term and hiring assignments
+    hiring_assignments: Mapped[list["HiringAssignmentEntity"]] = relationship(
+        back_populates="term", cascade="all, delete"
+    )
+
     @classmethod
     def from_model(cls, model: Term) -> Self:
         """
