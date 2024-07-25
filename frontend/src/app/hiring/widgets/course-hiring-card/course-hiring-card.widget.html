@@ -1,6 +1,9 @@
 <mat-pane class="surface-container-card">
   <mat-card-header>
-    <mat-card-title>{{ item().sections[0].subject_code }} {{ item().sections[0].course_number }} Hiring</mat-card-title>
+    <mat-card-title
+      >{{ item().sections[0].subject_code }}
+      {{ item().sections[0].course_number }} Hiring</mat-card-title
+    >
   </mat-card-header>
   <mat-card-content>
     <mat-card-subtitle class="subtitle-header">Totals</mat-card-subtitle>
@@ -104,6 +107,20 @@
     <mat-card-subtitle class="subtitle-header">
       Instructor Preferences
     </mat-card-subtitle>
-    <user-chip-list [users]="item().instructor_preferences" />
+    <div class="user-chips">
+      <mat-chip-option
+        class="user-chip"
+        *ngFor="let user of item().instructor_preferences"
+        (click)="quickCreateAssignment(user)"
+        [selectable]="false"
+        [selected]="chipSelected(user)">
+        <img
+          class="user-image"
+          *ngIf="user.github_avatar"
+          matChipAvatar
+          [src]="user.github_avatar" />
+        {{ user.first_name + ' ' + user.last_name }}
+      </mat-chip-option>
+    </div>
   </mat-card-content>
 </mat-pane>

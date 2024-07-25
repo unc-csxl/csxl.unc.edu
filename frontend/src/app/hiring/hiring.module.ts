@@ -45,6 +45,7 @@ import { LevelsAdminComponent } from './levels-admin/levels-admin.component';
 import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { CreateAssignmentDialog } from './dialogs/create-assignment-dialog/create-assignment.dialog';
+import { QuickCreateAssignmentDialog } from './dialogs/quick-create-assignment-dialog/quick-create-assignment.dialog';
 
 /* UI Widgets */
 
@@ -57,7 +58,8 @@ import { CreateAssignmentDialog } from './dialogs/create-assignment-dialog/creat
     CourseHiringCardWidget,
     LevelsAdminComponent,
     LevelEditorComponent,
-    CreateAssignmentDialog
+    CreateAssignmentDialog,
+    QuickCreateAssignmentDialog
   ],
   imports: [
     CommonModule,

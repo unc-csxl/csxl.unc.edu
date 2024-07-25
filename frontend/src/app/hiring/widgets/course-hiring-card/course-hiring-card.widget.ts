@@ -20,6 +20,10 @@ import {
   CreateAssignmentDialogData
 } from '../../dialogs/create-assignment-dialog/create-assignment.dialog';
 import { PublicProfile } from 'src/app/profile/profile.service';
+import {
+  QuickCreateAssignmentDialog,
+  QuickCreateAssignmentDialogData
+} from '../../dialogs/quick-create-assignment-dialog/quick-create-assignment.dialog';
 
 @Component({
   selector: 'course-hiring-card',
@@ -114,5 +118,34 @@ export class CourseHiringCardWidget implements OnInit {
         });
       }
     });
+  }
+
+  /** Opens the dialog to create an assignment from a existing instructor preference. */
+  quickCreateAssignment(user: PublicProfile): void {
+    let dialogRef = this.dialog.open(QuickCreateAssignmentDialog, {
+      height: '700px',
+      width: '800px',
+      data: {
+        user: user,
+        termId: this.termId,
+        courseSite: this.item()
+      } as QuickCreateAssignmentDialogData
+    });
+    dialogRef.afterClosed().subscribe((assignment) => {
+      if (assignment) {
+        this.item.update((oldItem) => {
+          oldItem.assignments = [...oldItem.assignments, assignment];
+          return oldItem;
+        });
+      }
+    });
+  }
+
+  chipSelected(user: PublicProfile): boolean {
+    return (
+      this.item()
+        .assignments.map((assignment) => assignment.user)
+        .filter((u) => u.id === user.id).length > 0
+    );
   }
 }

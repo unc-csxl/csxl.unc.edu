@@ -55,4 +55,26 @@ mat-divider {
     margin-top: 8px;
     gap: 12px;
 }
+
+.user-chips {
+    margin-bottom: 16px;
+  }
+  
+  .user-chip {
+    margin: 8px 8px 0px 0px;
+    vertical-align: middle;
+  }
+  
+  .user-email-link {
+    text-decoration: none;
+    display: flex;
+    color: inherit;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .user-image {
+    border-radius: 50%;
+  }
   
