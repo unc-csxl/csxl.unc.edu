@@ -205,3 +205,43 @@ class HiringService:
 
         # Return the site
         return site_entity
+
+    # Hiring Admin Features
+
+    def get_hiring_admin_overview(self, subject: User, term_id: str):
+        """Get the overview for hiring during a given term for the site admin."""
+        ...
+
+    def get_course_site_hiring_details(
+        self, subject: User, term_id: str, course_site_id: int
+    ):
+        """Retrieves the details of hiring for a course site during a given term."""
+        ...
+
+    def create_hiring_assignment(self, subject: User):
+        """Creates a new hiring assignment."""
+        ...
+
+    def update_hiring_assignment(self, subject: User):
+        """Updates an existing hiring assignment."""
+        ...
+
+    def delete_hiring_assignment(self, subject: User):
+        """Deletes an existing hiring assignment."""
+        ...
+
+    def get_hiring_levels(self, subject: User):
+        """Retrieves all of the hiring levels."""
+        ...
+
+    def create_hiring_level(self, subject: User):
+        """Creates a new hiring level."""
+        ...
+
+    def update_hiring_level(self, subject: User):
+        """Updates an existing hiring level."""
+        ...
+
+    def delete_hiring_level(self, subject: User):
+        """Deletes an existing hiring level."""
+        ...
