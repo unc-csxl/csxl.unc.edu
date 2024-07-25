@@ -15,6 +15,11 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { HiringService } from '../../hiring.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  CreateAssignmentDialog,
+  CreateAssignmentDialogData
+} from '../../dialogs/create-assignment-dialog/create-assignment.dialog';
+import { PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
   selector: 'course-hiring-card',
@@ -89,6 +94,25 @@ export class CourseHiringCardWidget implements OnInit {
             duration: 2000
           });
         });
+    });
+  }
+
+  createAssignment(): void {
+    let dialogRef = this.dialog.open(CreateAssignmentDialog, {
+      height: '700px',
+      width: '800px',
+      data: {
+        termId: this.termId,
+        courseSite: this.item()
+      } as CreateAssignmentDialogData
+    });
+    dialogRef.afterClosed().subscribe((assignment) => {
+      if (assignment) {
+        this.item.update((oldItem) => {
+          oldItem.assignments = [...oldItem.assignments, assignment];
+          return oldItem;
+        });
+      }
     });
   }
 }

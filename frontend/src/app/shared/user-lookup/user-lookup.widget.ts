@@ -38,6 +38,7 @@ export class UserLookup implements OnInit {
   @Input() label: string = 'Users';
   @Input() maxSelected: number | null = null;
   @Input() users: PublicProfile[] = [];
+  @Input() initialUser?: PublicProfile;
   @Input() disabled: boolean | null = false;
 
   @Output() usersChanged: EventEmitter<PublicProfile[]> = new EventEmitter();
@@ -62,6 +63,9 @@ export class UserLookup implements OnInit {
   ngOnInit() {
     if (this.disabled) {
       this.userLookup.disable();
+    }
+    if (this.initialUser) {
+      this.users = [this.initialUser!];
     }
   }
 

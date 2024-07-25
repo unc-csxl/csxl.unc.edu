@@ -72,7 +72,10 @@
         </ng-container>
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>
-            <button class="status-column-header" mat-stroked-button>
+            <button
+              class="status-column-header"
+              mat-stroked-button
+              (click)="createAssignment()">
               <mat-icon class="font-primary">add</mat-icon>
               Add Hire
             </button>
