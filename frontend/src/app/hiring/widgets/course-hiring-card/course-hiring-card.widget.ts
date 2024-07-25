@@ -1,7 +1,9 @@
 import {
   Component,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   signal,
   WritableSignal
 } from '@angular/core';
@@ -33,6 +35,7 @@ import {
 export class CourseHiringCardWidget implements OnInit {
   @Input() termId!: string;
   @Input() itemInput!: HiringCourseSiteOverview;
+  @Output() updateData = new EventEmitter();
 
   item: WritableSignal<HiringCourseSiteOverview> = signal(this.itemInput);
 
@@ -88,12 +91,7 @@ export class CourseHiringCardWidget implements OnInit {
       this.hiringService
         .deleteHiringAssignment(assignment.id!)
         .subscribe(() => {
-          this.item.update((oldItem) => {
-            oldItem.assignments = oldItem.assignments.filter(
-              (item) => item.id !== assignment.id
-            );
-            return oldItem;
-          });
+          this.updateData.emit();
           this.snackBar.open('This assignment has been deleted.', '', {
             duration: 2000
           });
@@ -112,10 +110,7 @@ export class CourseHiringCardWidget implements OnInit {
     });
     dialogRef.afterClosed().subscribe((assignment) => {
       if (assignment) {
-        this.item.update((oldItem) => {
-          oldItem.assignments = [...oldItem.assignments, assignment];
-          return oldItem;
-        });
+        this.updateData.emit();
       }
     });
   }

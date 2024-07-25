@@ -134,7 +134,8 @@
               ">
               <course-hiring-card
                 [termId]="selectedTermId()!"
-                [itemInput]="element" />
+                [itemInput]="element"
+                (updateData)="reloadData()" />
             </div>
           </td>
         </ng-container>

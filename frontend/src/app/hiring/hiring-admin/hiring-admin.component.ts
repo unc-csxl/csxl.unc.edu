@@ -151,7 +151,7 @@ export class HiringAdminComponent {
   /** Store the columns to display when extended */
   public columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   /** Store the element where the dropdown is currently active */
-  public expandedElement: HiringAssignmentOverview | null = null;
+  public expandedElement: HiringCourseSiteOverview | undefined = undefined;
 
   /** Effect that updates the hiring data when the selected term changes. */
   selectedTermEffect = effect(() => {
@@ -181,5 +181,26 @@ export class HiringAdminComponent {
 
     this.terms = data.terms;
     this.selectedTermId.set(data.currentTerm?.id ?? undefined);
+  }
+
+  /**
+   * Reload the data on the creation and deletion of assignments so that
+   * the coverage calculations can be re-performed.
+   */
+  reloadData() {
+    let expanded = this.expandedElement;
+    if (this.selectedTermId()) {
+      const term = this.terms.find(
+        (term) => term.id === this.selectedTermId()
+      )!;
+      this.hiringService
+        .getHiringAdminOverview(term.id)
+        .subscribe((overview) => {
+          this.hiringAdminOverview.set(overview);
+          this.expandedElement = overview.sites.find(
+            (s) => s.course_site_id === expanded?.course_site_id
+          );
+        });
+    }
   }
 }
