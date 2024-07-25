@@ -6,22 +6,43 @@
     <mat-card-subtitle class="subtitle-header">Totals</mat-card-subtitle>
     <div class="row totals-row">
       <p>
-        <span class="text-badge secondary-background">700</span>&nbsp;total
-        students
+        <span class="text-badge secondary-background">
+          {{ item.total_enrollment }}</span
+        >&nbsp;total students
       </p>
-      <p><span class="text-badge secondary-background">24</span>&nbsp;hires</p>
       <p>
-        <span class="text-badge secondary-background">$6000</span>&nbsp;total
-        cost
+        <span class="text-badge secondary-background">{{
+          item.assignments.length
+        }}</span
+        >&nbsp;hires
+      </p>
+      <p>
+        <span class="text-badge secondary-background"
+          >${{ item.total_cost }}</span
+        >&nbsp;total cost
       </p>
       <div class="row">
         <p>
-          <span class="text-badge tertiary-background">0.6</span>&nbsp;coverage
+          <span
+            [class]="
+              'text-badge ' +
+              (item.coverage <= -2.0 || item.coverage >= 2.0
+                ? 'tertiary-background'
+                : 'primary-background')
+            "
+            >{{ item.coverage.toFixed(2) }}</span
+          >&nbsp;coverage
         </p>
+        @if(item.coverage <= -2.0) {
         <mat-icon class="font-tertiary">keyboard_double_arrow_down</mat-icon>
+        } @else if(item.coverage >= 2.0) {
+        <mat-icon class="font-tertiary">keyboard_double_arrow_up</mat-icon>
+        } @else {
+        <mat-icon class="font-primary">done_all</mat-icon>
+        }
       </div>
     </div>
-    <mat-card-subtitle class="subtitle-header">Hires</mat-card-subtitle>
+    <mat-card-subtitle class="subtitle-header">Assignments</mat-card-subtitle>
     <div class="table-responsive">
       <table
         mat-table
@@ -35,7 +56,9 @@
         </ng-container>
         <ng-container matColumnDef="level">
           <th mat-header-cell *matHeaderCellDef>Level</th>
-          <td mat-cell *matCellDef="let element">{{ element.level }}</td>
+          <td mat-cell *matCellDef="let element">
+            {{ element.level.title }} (${{ element.level.salary.toFixed(2) }})
+          </td>
         </ng-container>
         <ng-container matColumnDef="position_number">
           <th mat-header-cell *matHeaderCellDef>Position Number</th>
@@ -59,9 +82,9 @@
               <mat-button-toggle-group
                 class="status-toggle"
                 [(ngModel)]="element.status">
-                <mat-button-toggle value="draft">Draft</mat-button-toggle>
-                <mat-button-toggle value="commit">Commit</mat-button-toggle>
-                <mat-button-toggle value="final">Final</mat-button-toggle>
+                <mat-button-toggle value="Draft">Draft</mat-button-toggle>
+                <mat-button-toggle value="Commit">Commit</mat-button-toggle>
+                <mat-button-toggle value="Final">Final</mat-button-toggle>
               </mat-button-toggle-group>
               <button mat-icon-button>
                 <mat-icon class="font-tertiary">delete</mat-icon>
@@ -77,6 +100,6 @@
     <mat-card-subtitle class="subtitle-header">
       Instructor Preferences
     </mat-card-subtitle>
-    <user-chip-list [users]="item.preferences" />
+    <user-chip-list [users]="item.instructor_preferences" />
   </mat-card-content>
 </mat-pane>

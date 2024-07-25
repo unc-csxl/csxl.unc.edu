@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { ApplicationReviewOverview } from '../../hiring.models';
+import {
+  ApplicationReviewOverview,
+  HiringCourseSiteOverview
+} from '../../hiring.models';
 import { MatDialog } from '@angular/material/dialog';
-import { HiringCourseSiteOverview } from '../../hiring-admin/hiring-admin.component';
 
 @Component({
   selector: 'course-hiring-card',

@@ -10,7 +10,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HiringStatus } from './hiring.models';
+import { HiringAdminOverview, HiringStatus } from './hiring.models';
 
 @Injectable({
   providedIn: 'root'
@@ -39,5 +39,14 @@ export class HiringService {
     status: HiringStatus
   ): Observable<HiringStatus> {
     return this.http.put<HiringStatus>(`/api/hiring/${courseSiteId}`, status);
+  }
+
+  /**
+   * Returns the state of hiring to the admin.
+   * @param termId: ID for the term to get the hiring data for.
+   * @returns { Observable<HiringAdminOverview> }
+   */
+  getHiringAdminOverview(termId: string): Observable<HiringAdminOverview> {
+    return this.http.get<HiringAdminOverview>(`/api/hiring/admin/${termId}`);
   }
 }

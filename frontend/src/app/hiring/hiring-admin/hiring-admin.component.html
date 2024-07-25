@@ -1,13 +1,17 @@
 @if (hiringAdminOverview()) {
 <mat-card appearance="outlined">
   <mat-card-header>
-    <mat-card-title>Fall 2024 Hiring</mat-card-title>
+    <mat-card-title>{{ selectedTerm().name }} Hiring</mat-card-title>
     <div class="header-actions">
       <button mat-stroked-button>Manage Hiring Levels</button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
-        <mat-select>
-          <mat-option value="fall2024">Fall 2024</mat-option>
+        <mat-select
+          [value]="selectedTermId()"
+          (valueChange)="selectedTermId.set($event)">
+          @for(term of terms; track term.id) {
+          <mat-option [value]="term.id">{{ term.name }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -22,16 +26,19 @@
         <ng-container matColumnDef="sections">
           <th mat-header-cell *matHeaderCellDef>Sections</th>
           <td mat-cell *matCellDef="let element">
-            @for(section of element.sections; track section) {
-            <p>{{ section }}</p>
+            @if(element.sections.length > 0) {
+            <mat-card-subtitle>
+              {{ element.sections[0].subject_code }}
+              {{ element.sections[0].course_number }}
+            </mat-card-subtitle>
             }
           </td>
         </ng-container>
         <!-- Instructor Column -->
         <ng-container matColumnDef="instructor">
-          <th mat-header-cell *matHeaderCellDef>Instructor</th>
+          <th mat-header-cell *matHeaderCellDef>Instructor(s)</th>
           <td mat-cell *matCellDef="let element">
-            <user-chip-list [users]="[element.instructor]" />
+            <user-chip-list [users]="element.instructors" />
           </td>
         </ng-container>
         <!-- totals Column -->
@@ -40,25 +47,44 @@
           <td mat-cell *matCellDef="let element">
             <div class="row totals-row">
               <p>
-                <span class="text-badge secondary-background">700</span
+                <span class="text-badge secondary-background">
+                  {{ element.total_enrollment }}</span
                 >&nbsp;total students
               </p>
               <p>
-                <span class="text-badge secondary-background">24</span
+                <span class="text-badge secondary-background">{{
+                  element.assignments.length
+                }}</span
                 >&nbsp;hires
               </p>
               <p>
-                <span class="text-badge secondary-background">$6000</span
+                <span class="text-badge secondary-background"
+                  >${{ element.total_cost }}</span
                 >&nbsp;total cost
               </p>
               <div class="row">
                 <p>
-                  <span class="text-badge tertiary-background">0.6</span
+                  <span
+                    [class]="
+                      'text-badge ' +
+                      (element.coverage <= -2.0 || element.coverage >= 2.0
+                        ? 'tertiary-background'
+                        : 'primary-background')
+                    "
+                    >{{ element.coverage.toFixed(2) }}</span
                   >&nbsp;coverage
                 </p>
+                @if(element.coverage <= -2.0) {
                 <mat-icon class="font-tertiary"
                   >keyboard_double_arrow_down</mat-icon
                 >
+                } @else if(element.coverage >= 2.0) {
+                <mat-icon class="font-tertiary"
+                  >keyboard_double_arrow_up</mat-icon
+                >
+                } @else {
+                <mat-icon class="font-primary">done_all</mat-icon>
+                }
               </div>
             </div>
           </td>
