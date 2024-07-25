@@ -11,3 +11,12 @@ class HiringLevelClassification(Enum):
     PHD = "PhD"
     MS = "MS"
     UG = "UG"
+
+
+class HiringLevel(BaseModel):
+    id: int | None
+    title: str
+    salary: float
+    load: float
+    classification: HiringLevelClassification
+    is_active: bool
