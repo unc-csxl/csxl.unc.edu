@@ -12,17 +12,12 @@
                 </button>
               </div>
             </th>
-            <td mat-cell *matCellDef="let element">
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [routerLink]="'/hiring/levels/' + element.id + '/edit'">
               <div class="row">
                 <p>{{ element.title }}</p>
-                <div class="button-container">
-                  <button
-                    mat-stroked-button
-                    class="control-buttons"
-                    (click)="editLevel(element)">
-                    Edit
-                  </button>
-                </div>
               </div>
             </td>
           </ng-container>
