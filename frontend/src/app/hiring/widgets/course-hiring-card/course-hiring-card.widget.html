@@ -125,10 +125,14 @@
     <mat-card-subtitle class="subtitle-header">
       Instructor Preferences
     </mat-card-subtitle>
+    @if(item().instructor_preferences.length === 0) {
+    <p>The instructor left no preferences.</p>
+    }
     <div class="user-chips">
       <mat-chip-option
         class="user-chip"
         *ngFor="let user of item().instructor_preferences"
+        [disableRipple]="chipSelected(user)"
         (click)="quickCreateAssignment(user)"
         [selectable]="false"
         [selected]="chipSelected(user)">

@@ -121,20 +121,22 @@ export class CourseHiringCardWidget implements OnInit {
 
   /** Opens the dialog to create an assignment from a existing instructor preference. */
   quickCreateAssignment(user: PublicProfile): void {
-    let dialogRef = this.dialog.open(QuickCreateAssignmentDialog, {
-      height: '700px',
-      width: '800px',
-      data: {
-        user: user,
-        termId: this.termId,
-        courseSite: this.item()
-      } as QuickCreateAssignmentDialogData
-    });
-    dialogRef.afterClosed().subscribe((assignment) => {
-      if (assignment) {
-        this.updateData.emit();
-      }
-    });
+    if (!this.chipSelected(user)) {
+      let dialogRef = this.dialog.open(QuickCreateAssignmentDialog, {
+        height: '700px',
+        width: '800px',
+        data: {
+          user: user,
+          termId: this.termId,
+          courseSite: this.item()
+        } as QuickCreateAssignmentDialogData
+      });
+      dialogRef.afterClosed().subscribe((assignment) => {
+        if (assignment) {
+          this.updateData.emit();
+        }
+      });
+    }
   }
 
   editAssignment(assignment: HiringAssignmentOverview): void {

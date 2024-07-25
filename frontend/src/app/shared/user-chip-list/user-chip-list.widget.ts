@@ -20,4 +20,8 @@ export class UserChipList {
   @Input() enableMailTo!: boolean;
   @Input() clickable?: boolean = true;
   constructor() {}
+
+  emailRedirect(user: PublicProfile) {
+    window.location.href = `mailto:${user.email}`;
+  }
 }

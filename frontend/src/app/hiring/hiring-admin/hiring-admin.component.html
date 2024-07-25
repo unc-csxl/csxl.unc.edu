@@ -37,7 +37,9 @@
         <ng-container matColumnDef="instructor">
           <th mat-header-cell *matHeaderCellDef>Instructor(s)</th>
           <td mat-cell *matCellDef="let element">
-            <user-chip-list [users]="element.instructors" />
+            <user-chip-list
+              [users]="element.instructors"
+              [enableMailTo]="true" />
           </td>
         </ng-container>
         <!-- Expanding Container -->
