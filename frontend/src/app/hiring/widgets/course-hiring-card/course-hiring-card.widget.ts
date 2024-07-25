@@ -128,10 +128,7 @@ export class CourseHiringCardWidget implements OnInit {
     });
     dialogRef.afterClosed().subscribe((assignment) => {
       if (assignment) {
-        this.item.update((oldItem) => {
-          oldItem.assignments = [...oldItem.assignments, assignment];
-          return oldItem;
-        });
+        this.updateData.emit();
       }
     });
   }
