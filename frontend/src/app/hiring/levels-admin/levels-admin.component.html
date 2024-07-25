@@ -1,35 +1,25 @@
-<!-- HTML Structure of Admin Organizations List -->
 <mat-pane>
   <mat-card-content>
     <div class="content">
       <div class="table-responsive">
-        <table mat-table [dataSource]="this.displayedOrganizations()">
-          <ng-container matColumnDef="name">
+        <table mat-table [dataSource]="this.hiringService.hiringLevels()">
+          <ng-container matColumnDef="title">
             <th mat-header-cell *matHeaderCellDef>
               <div class="header">
-                Organizations @if (adminPermissions() | async) {
-                <button mat-stroked-button (click)="createOrganization()">
+                Hiring Levels
+                <button mat-stroked-button (click)="createLevel()">
                   Create
                 </button>
-                }
               </div>
             </th>
             <td mat-cell *matCellDef="let element">
               <div class="row">
-                <p>{{ element.name }}</p>
+                <p>{{ element.title }}</p>
                 <div class="button-container">
-                  @if(adminPermissions() | async) {
-                  <button
-                    mat-stroked-button
-                    (click)="deleteOrganization(element)"
-                    class="control-buttons">
-                    Delete
-                  </button>
-                  }
                   <button
                     mat-stroked-button
                     class="control-buttons"
-                    (click)="editOrganization(element)">
+                    (click)="editLevel(element)">
                     Edit
                   </button>
                 </div>

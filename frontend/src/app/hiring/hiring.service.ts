@@ -8,16 +8,22 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HiringAdminOverview, HiringStatus } from './hiring.models';
+import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import {
+  HiringAdminOverview,
+  HiringLevel,
+  HiringStatus
+} from './hiring.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HiringService {
   /** Constructor */
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient) {
+    this.getHiringLevels();
+  }
 
   /**
    * Retrieves the hiring status for a course site.
@@ -48,5 +54,32 @@ export class HiringService {
    */
   getHiringAdminOverview(termId: string): Observable<HiringAdminOverview> {
     return this.http.get<HiringAdminOverview>(`/api/hiring/admin/${termId}`);
+  }
+
+  private hiringLevelsSignal: WritableSignal<HiringLevel[]> = signal([]);
+  hiringLevels = this.hiringLevelsSignal.asReadonly();
+
+  getHiringLevels() {
+    this.http.get<HiringLevel[]>(`/api/hiring/level`).subscribe((levels) => {
+      this.hiringLevelsSignal.set(levels);
+    });
+  }
+
+  getHiringLevel(id: number): HiringLevel | undefined {
+    return this.hiringLevels().find((level) => level.id === id);
+  }
+
+  createHiringLevel(level: HiringLevel): Observable<HiringLevel> {
+    return this.http.post<HiringLevel>(`/api/hiring/level`, level).pipe(
+      tap((level) =>
+        this.hiringLevelsSignal.update((old) => {
+          return [...old, level];
+        })
+      )
+    );
+  }
+
+  updateHiringLevel(level: HiringLevel): Observable<HiringLevel> {
+    return this.http.put<HiringLevel>(`/api/hiring/level`, level);
   }
 }

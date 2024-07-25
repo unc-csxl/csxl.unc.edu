@@ -3,7 +3,9 @@
   <mat-card-header>
     <mat-card-title>{{ selectedTerm().name }} Hiring</mat-card-title>
     <div class="header-actions">
-      <button mat-stroked-button>Manage Hiring Levels</button>
+      <button mat-stroked-button routerLink="/hiring/levels">
+        Manage Hiring Levels
+      </button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
         <mat-select

@@ -25,31 +25,6 @@ openapi_tags = {
 }
 
 
-@api.get("/{course_site_id}", tags=["Hiring"])
-def get_status(
-    course_site_id: int,
-    subject: User = Depends(registered_user),
-    hiring_service: HiringService = Depends(),
-) -> HiringStatus:
-    """
-    Retrieves the hiring status for TA Applications.
-    """
-    return hiring_service.get_status(subject, course_site_id)
-
-
-@api.put("/{course_site_id}", tags=["Hiring"])
-def update_status(
-    course_site_id: int,
-    hiring_status: HiringStatus,
-    subject: User = Depends(registered_user),
-    hiring_service: HiringService = Depends(),
-) -> HiringStatus:
-    """
-    Updates the hiring status for TA Applications.
-    """
-    return hiring_service.update_status(subject, course_site_id, hiring_status)
-
-
 @api.get("/admin/{term_id}", tags=["Hiring"])
 def get_hiring_admin_overview(
     term_id: str,
@@ -114,7 +89,7 @@ def create_hiring_level(
     level: HiringLevel,
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
-) -> HiringAssignmentOverview:
+) -> HiringLevel:
     """
     Creates a new level
     """
@@ -126,8 +101,33 @@ def update_hiring_level(
     level: HiringLevel,
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
-) -> HiringAssignmentOverview:
+) -> HiringLevel:
     """
     Updates a level
     """
     return hiring_service.update_hiring_level(subject, level)
+
+
+@api.get("/{course_site_id}", tags=["Hiring"])
+def get_status(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> HiringStatus:
+    """
+    Retrieves the hiring status for TA Applications.
+    """
+    return hiring_service.get_status(subject, course_site_id)
+
+
+@api.put("/{course_site_id}", tags=["Hiring"])
+def update_status(
+    course_site_id: int,
+    hiring_status: HiringStatus,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> HiringStatus:
+    """
+    Updates the hiring status for TA Applications.
+    """
+    return hiring_service.update_status(subject, course_site_id, hiring_status)

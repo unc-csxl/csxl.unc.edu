@@ -11,8 +11,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HiringPageComponent } from './hiring-page/hiring-page.component';
 import { HiringAdminComponent } from './hiring-admin/hiring-admin.component';
+import { LevelsAdminComponent } from './levels-admin/levels-admin.component';
+import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.component';
 
-const routes: Routes = [HiringAdminComponent.Route, HiringPageComponent.Route];
+const routes: Routes = [
+  HiringAdminComponent.Route,
+  LevelsAdminComponent.Route,
+  HiringPageComponent.Route,
+  LevelEditorComponent.Route
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -41,6 +41,8 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
 import { HiringAdminComponent } from './hiring-admin/hiring-admin.component';
 import { CourseHiringCardWidget } from './widgets/course-hiring-card/course-hiring-card.widget';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { LevelsAdminComponent } from './levels-admin/levels-admin.component';
+import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.component';
 
 /* UI Widgets */
 
@@ -50,7 +52,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     ApplicationCardWidget,
     ApplicationDialog,
     HiringAdminComponent,
-    CourseHiringCardWidget
+    CourseHiringCardWidget,
+    LevelsAdminComponent,
+    LevelEditorComponent
   ],
   imports: [
     CommonModule,
