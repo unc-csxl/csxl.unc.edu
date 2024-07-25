@@ -349,7 +349,9 @@ class HiringService:
 
         return assignment_entity.to_overview_model()
 
-    def delete_hiring_assignment(self, subject: User, assignment_id: int):
+    def delete_hiring_assignment(
+        self, subject: User, assignment_id: int
+    ) -> HiringAssignmentOverview:
         """Deletes an existing hiring assignment."""
         # 1. Check user permissions
         self._permission.enforce(subject, "hiring.admin", "*")
@@ -360,10 +362,11 @@ class HiringService:
             raise ResourceNotFoundException(
                 f"No hiring assignment with ID: {assignment_id}"
             )
-
+        model = assignment_entity.to_overview_model()
         # 3. Delete and save
         self._session.delete(assignment_entity)
         self._session.commit()
+        return model
 
     def get_hiring_levels(self, subject: User) -> list[HiringLevel]:
         """Retrieves all of the hiring levels."""

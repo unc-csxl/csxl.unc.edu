@@ -127,7 +127,9 @@
               [@detailExpand]="
                 element === expandedElement ? 'expanded' : 'collapsed'
               ">
-              <course-hiring-card [item]="element" />
+              <course-hiring-card
+                [termId]="selectedTermId()!"
+                [itemInput]="element" />
             </div>
           </td>
         </ng-container>

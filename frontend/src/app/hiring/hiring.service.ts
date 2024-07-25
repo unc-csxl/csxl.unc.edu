@@ -12,6 +12,8 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import {
   HiringAdminOverview,
+  HiringAssignmentDraft,
+  HiringAssignmentOverview,
   HiringLevel,
   HiringStatus
 } from './hiring.models';
@@ -81,5 +83,27 @@ export class HiringService {
 
   updateHiringLevel(level: HiringLevel): Observable<HiringLevel> {
     return this.http.put<HiringLevel>(`/api/hiring/level`, level);
+  }
+
+  createHiringAssignment(
+    assignment: HiringAssignmentDraft
+  ): Observable<HiringAssignmentOverview> {
+    return this.http.post<HiringAssignmentOverview>(
+      `/api/hiring/assignment`,
+      assignment
+    );
+  }
+
+  updateHiringAssignment(
+    assignment: HiringAssignmentDraft
+  ): Observable<HiringAssignmentOverview> {
+    return this.http.put<HiringAssignmentOverview>(
+      `/api/hiring/assignment`,
+      assignment
+    );
+  }
+
+  deleteHiringAssignment(assignmentId: number) {
+    return this.http.delete(`/api/hiring/assignment/${assignmentId}`);
   }
 }

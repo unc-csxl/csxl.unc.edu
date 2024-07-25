@@ -101,6 +101,27 @@ export interface HiringAssignmentOverview {
   notes: string;
 }
 
+export const hiringAssignmentOverviewToDraft = (
+  termId: string,
+  site: HiringCourseSiteOverview,
+  assignment: HiringAssignmentOverview
+): HiringAssignmentDraft => {
+  return {
+    id: assignment.id,
+    user_id: assignment.user.id,
+    term_id: termId,
+    course_site_id: site.course_site_id,
+    level: assignment.level,
+    status: assignment.status,
+    position_number: assignment.position_number,
+    epar: assignment.epar,
+    i9: assignment.i9,
+    notes: assignment.notes,
+    created: new Date(), // overwritten anyway
+    modified: new Date() // overwritten anyway
+  };
+};
+
 export interface HiringCourseSiteOverview {
   course_site_id: number;
   sections: CatalogSectionIdentity[];
