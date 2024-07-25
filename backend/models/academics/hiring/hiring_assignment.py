@@ -18,6 +18,7 @@ class HiringAssignmentStatus(Enum):
 
 
 class HiringAssignmentOverview(BaseModel):
+    id: int | None
     user: PublicUser
     level: HiringLevel
     status: HiringAssignmentStatus
@@ -32,7 +33,7 @@ class HiringAssignmentOverview(BaseModel):
 class HiringCourseSiteOverview(BaseModel):
     course_site_id: int
     sections: list[CatalogSectionIdentity]
-    instructor: PublicUser
+    instructors: list[PublicUser]
     total_enrollment: int
     total_cost: float
     coverage: float
@@ -41,4 +42,4 @@ class HiringCourseSiteOverview(BaseModel):
 
 
 class HiringAdminOverview(BaseModel):
-    sites: HiringCourseSiteOverview
+    sites: list[HiringCourseSiteOverview]

@@ -8,21 +8,26 @@ from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
 from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
-from ...entities.academics.section_entity import SectionEntity
+from ...entities.academics import SectionEntity, TermEntity
 from ...entities.office_hours import CourseSiteEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...entities.application_entity import ApplicationEntity
 from ...entities.academics.hiring.application_review_entity import (
     ApplicationReviewEntity,
 )
-from ..exceptions import CoursePermissionException, ResourceNotFoundException
+from ...entities.academics.hiring.hiring_level_entity import HiringLevelEntity
+from ...entities.academics.hiring.hiring_assignment_entity import HiringAssignmentEntity
 
+from ..exceptions import CoursePermissionException, ResourceNotFoundException
+from ...services import PermissionService
 from ...models.academics.hiring.application_review import (
     HiringStatus,
     ApplicationReview,
     ApplicationReviewOverview,
     ApplicationReviewStatus,
 )
+from ...models.academics.hiring.hiring_assignment import *
+from ...models.academics.hiring.hiring_level import *
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -34,11 +39,16 @@ class HiringService:
     Service that performs all actions for hiring.
     """
 
-    def __init__(self, session: Session = Depends(db_session)):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
+    ):
         """
         Initializes the database session.
         """
         self._session = session
+        self._permission = permission
 
     def get_status(self, subject: User, course_site_id: int) -> HiringStatus:
         """
@@ -208,15 +218,98 @@ class HiringService:
 
     # Hiring Admin Features
 
-    def get_hiring_admin_overview(self, subject: User, term_id: str):
-        """Get the overview for hiring during a given term for the site admin."""
-        ...
+    def _calculate_coverage(
+        self, enrollment: int, assignments: list[HiringAssignmentEntity]
+    ) -> float:
+        assignment_count_non_ior = len(
+            [
+                assignment
+                for assignment in assignments
+                if assignment.hiring_level.classification
+                != HiringLevelClassification.IOR
+            ]
+        )
+        coverage = (float(enrollment) / 60.0) - (float(assignment_count_non_ior) / 4.0)
+        return coverage
 
-    def get_course_site_hiring_details(
-        self, subject: User, term_id: str, course_site_id: int
-    ):
-        """Retrieves the details of hiring for a course site during a given term."""
-        ...
+    def get_hiring_admin_overview(
+        self, subject: User, term_id: str
+    ) -> HiringAdminOverview:
+        """Get the overview for hiring during a given term for the site admin."""
+        # 1. Check for hiring permissions.
+        self._permission.enforce(subject, "hiring.admin", "*")
+        # 2. Find the hiring information based on course sites for a given term
+        course_site_query = (
+            select(CourseSiteEntity)
+            .join(CourseSiteEntity.term)
+            .where(TermEntity.id == term_id)
+            .options(
+                joinedload(CourseSiteEntity.sections)
+                .joinedload(SectionEntity.staff)
+                .joinedload(SectionMemberEntity.user),
+                joinedload(CourseSiteEntity.application_reviews)
+                .joinedload(ApplicationReviewEntity.application)
+                .joinedload(ApplicationEntity.user),
+                joinedload(CourseSiteEntity.hiring_assignments),
+            )
+        )
+        course_site_entities = self._session.scalars(course_site_query).unique().all()
+
+        # 3. Assemble the overview models
+        hiring_course_site_overviews: list[HiringCourseSiteOverview] = []
+        for course_site_entity in course_site_entities:
+            # Find all of the data for a course site overview
+            section_entites = course_site_entity.sections
+            sections = [
+                section.to_catalog_identity_model() for section in section_entites
+            ]
+            instructors: list[PublicUser] = []
+            total_enrollment = 0
+            for section_entity in section_entites:
+                instructors += [
+                    staff.user.to_public_model()
+                    for staff in section_entity.staff
+                    if staff.member_role == RosterRole.INSTRUCTOR
+                ]
+                total_enrollment += section_entity.enrolled
+            preferred_review_entities = sorted(
+                [
+                    review
+                    for review in course_site_entity.application_reviews
+                    if review.status == ApplicationReviewStatus.PREFERRED
+                ],
+                key=lambda x: x.preference,
+            )
+            instructor_preferences = [
+                application_review.application.user.to_public_model()
+                for application_review in preferred_review_entities
+            ]
+            assignments = [
+                assignment.to_overview_model()
+                for assignment in course_site_entity.hiring_assignments
+            ]
+            total_cost = sum([assignment.level.salary for assignment in assignments])
+            coverage = self._calculate_coverage(
+                total_enrollment, course_site_entity.hiring_assignments
+            )
+
+            # Create overview with found data
+            course_site_overview = HiringCourseSiteOverview(
+                course_site_id=course_site_entity.id,
+                sections=sections,
+                instructors=instructors,
+                total_enrollment=total_enrollment,
+                total_cost=total_cost,
+                coverage=coverage,
+                assignments=assignments,
+                instructor_preferences=instructor_preferences,
+            )
+
+            # Add overview to the list
+            hiring_course_site_overviews.append(course_site_overview)
+
+        # 4. Return hiring adming overview object
+        return HiringAdminOverview(sites=hiring_course_site_overviews)
 
     def create_hiring_assignment(self, subject: User):
         """Creates a new hiring assignment."""

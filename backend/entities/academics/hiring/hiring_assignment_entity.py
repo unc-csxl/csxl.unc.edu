@@ -7,7 +7,10 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from datetime import datetime
 
 from ...entity_base import EntityBase
-from ....models.academics.hiring.hiring_assignment import HiringAssignmentStatus
+from ....models.academics.hiring.hiring_assignment import (
+    HiringAssignmentStatus,
+    HiringAssignmentOverview,
+)
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -78,3 +81,17 @@ class HiringAssignmentEntity(EntityBase):
 
     # Stores the timestamp for the last time the assignment was updated.
     modified: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+    def to_overview_model(self) -> HiringAssignmentOverview:
+        return HiringAssignmentOverview(
+            id=self.id,
+            user=self.user.to_public_model(),
+            level=self.hiring_level,
+            status=self.status,
+            position_number=self.position_number,
+            epar=self.epar,
+            i9=self.i9,
+            notes=self.notes,
+            created=self.created,
+            modified=self.modified,
+        )

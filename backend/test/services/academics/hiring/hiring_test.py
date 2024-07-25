@@ -34,7 +34,7 @@ from .hiring_data import fake_data_fixture as insert_order_6
 
 # Test data
 from ... import user_data
-from ...academics import section_data
+from ...academics import section_data, term_data
 from ...office_hours import office_hours_data
 from . import hiring_data
 
@@ -134,5 +134,23 @@ def test_update_status_site_not_instructor(hiring_svc: HiringService):
     with pytest.raises(CoursePermissionException):
         hiring_svc.update_status(
             user_data.root, office_hours_data.comp_110_site.id, status
+        )
+        pytest.fail()
+
+
+def test_get_hiring_admin_overview(hiring_svc: HiringService):
+    """Ensures that the admin is able to get the hiring admin data."""
+    hiring_admin_overview = hiring_svc.get_hiring_admin_overview(
+        user_data.root, term_data.current_term.id
+    )
+    assert hiring_admin_overview is not None
+    assert len(hiring_admin_overview.sites) == 2
+
+
+def test_get_hiring_admin_overview_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able to check the hiring data."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.get_hiring_admin_overview(
+            user_data.ambassador, term_data.current_term.id
         )
         pytest.fail()
