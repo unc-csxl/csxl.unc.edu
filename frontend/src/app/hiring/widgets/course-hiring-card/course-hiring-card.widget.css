@@ -78,3 +78,6 @@ mat-divider {
     border-radius: 50%;
   }
   
+.clickable-td:hover {
+    cursor: pointer !important;
+}

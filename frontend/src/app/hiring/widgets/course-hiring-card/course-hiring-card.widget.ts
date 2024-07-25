@@ -26,6 +26,10 @@ import {
   QuickCreateAssignmentDialog,
   QuickCreateAssignmentDialogData
 } from '../../dialogs/quick-create-assignment-dialog/quick-create-assignment.dialog';
+import {
+  EditAssignmentDialog,
+  EditAssignmentDialogData
+} from '../../dialogs/edit-assignment-dialog/edit-assignment.dialog';
 
 @Component({
   selector: 'course-hiring-card',
@@ -125,6 +129,23 @@ export class CourseHiringCardWidget implements OnInit {
         termId: this.termId,
         courseSite: this.item()
       } as QuickCreateAssignmentDialogData
+    });
+    dialogRef.afterClosed().subscribe((assignment) => {
+      if (assignment) {
+        this.updateData.emit();
+      }
+    });
+  }
+
+  editAssignment(assignment: HiringAssignmentOverview): void {
+    let dialogRef = this.dialog.open(EditAssignmentDialog, {
+      height: '700px',
+      width: '800px',
+      data: {
+        assignment: assignment,
+        termId: this.termId,
+        courseSite: this.item()
+      } as EditAssignmentDialogData
     });
     dialogRef.afterClosed().subscribe((assignment) => {
       if (assignment) {

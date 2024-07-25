@@ -53,25 +53,43 @@
         class="surface-container-card">
         <ng-container matColumnDef="hire">
           <th mat-header-cell *matHeaderCellDef>Hire</th>
-          <td mat-cell *matCellDef="let element">
-            <user-chip-list [users]="[element.user]" />
+          <td
+            class="clickable-td"
+            mat-cell
+            *matCellDef="let element"
+            (click)="editAssignment(element)">
+            <user-chip-list [users]="[element.user]" [clickable]="false" />
           </td>
         </ng-container>
         <ng-container matColumnDef="level">
           <th mat-header-cell *matHeaderCellDef>Level</th>
-          <td mat-cell *matCellDef="let element">
+          <td
+            class="clickable-td"
+            mat-cell
+            *matCellDef="let element"
+            (click)="editAssignment(element)">
             {{ element.level.title }} (${{ element.level.salary.toFixed(2) }})
           </td>
         </ng-container>
         <ng-container matColumnDef="position_number">
           <th mat-header-cell *matHeaderCellDef>Position Number</th>
-          <td mat-cell *matCellDef="let element">
+          <td
+            class="clickable-td"
+            mat-cell
+            *matCellDef="let element"
+            (click)="editAssignment(element)">
             {{ element.position_number }}
           </td>
         </ng-container>
         <ng-container matColumnDef="epar">
           <th mat-header-cell *matHeaderCellDef>EPar</th>
-          <td mat-cell *matCellDef="let element">{{ element.epar }}</td>
+          <td
+            class="clickable-td"
+            mat-cell
+            *matCellDef="let element"
+            (click)="editAssignment(element)">
+            {{ element.epar }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>

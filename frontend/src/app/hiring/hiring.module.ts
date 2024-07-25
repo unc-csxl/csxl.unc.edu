@@ -46,6 +46,7 @@ import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.c
 import { MatChipsModule } from '@angular/material/chips';
 import { CreateAssignmentDialog } from './dialogs/create-assignment-dialog/create-assignment.dialog';
 import { QuickCreateAssignmentDialog } from './dialogs/quick-create-assignment-dialog/quick-create-assignment.dialog';
+import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assignment.dialog';
 
 /* UI Widgets */
 
@@ -59,7 +60,8 @@ import { QuickCreateAssignmentDialog } from './dialogs/quick-create-assignment-d
     LevelsAdminComponent,
     LevelEditorComponent,
     CreateAssignmentDialog,
-    QuickCreateAssignmentDialog
+    QuickCreateAssignmentDialog,
+    EditAssignmentDialog
   ],
   imports: [
     CommonModule,
