@@ -69,18 +69,18 @@
                   <span
                     [class]="
                       'text-badge ' +
-                      (element.coverage <= -2.0 || element.coverage >= 2.0
+                      (element.coverage <= -0.5 || element.coverage >= 0.5
                         ? 'tertiary-background'
                         : 'primary-background')
                     "
                     >{{ element.coverage.toFixed(2) }}</span
                   >&nbsp;coverage
                 </p>
-                @if(element.coverage <= -2.0) {
+                @if(element.coverage <= -0.5) {
                 <mat-icon class="font-tertiary"
                   >keyboard_double_arrow_down</mat-icon
                 >
-                } @else if(element.coverage >= 2.0) {
+                } @else if(element.coverage >= 0.5) {
                 <mat-icon class="font-tertiary"
                   >keyboard_double_arrow_up</mat-icon
                 >

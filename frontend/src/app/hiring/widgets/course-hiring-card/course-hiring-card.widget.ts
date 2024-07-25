@@ -79,9 +79,6 @@ export class CourseHiringCardWidget implements OnInit {
       this.hiringService
         .deleteHiringAssignment(assignment.id!)
         .subscribe(() => {
-          let assignmentIndex = this.item().assignments.findIndex(
-            (a) => a.id == assignment.id
-          );
           this.item.update((oldItem) => {
             oldItem.assignments = oldItem.assignments.filter(
               (item) => item.id !== assignment.id
