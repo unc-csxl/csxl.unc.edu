@@ -41,8 +41,6 @@ class HiringAssignmentOverview(BaseModel):
     epar: str
     i9: bool
     notes: str
-    created: datetime
-    modified: datetime
 
 
 class HiringCourseSiteOverview(BaseModel):

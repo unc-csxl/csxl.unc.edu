@@ -110,6 +110,4 @@ class HiringAssignmentEntity(EntityBase):
             epar=self.epar,
             i9=self.i9,
             notes=self.notes,
-            created=self.created,
-            modified=self.modified,
         )
