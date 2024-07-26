@@ -158,7 +158,7 @@ export class EventService {
   getEventStatus(authenticated: boolean): Observable<EventStatusOverview> {
     return this.http
       .get<EventStatusOverviewJson>(
-        `/api/events/${!authenticated && 'unauthenticated/'}status`
+        `/api/events/${!authenticated ? 'unauthenticated/' : ''}status`
       )
       .pipe(map(parseEventStatusOverviewJson));
   }
