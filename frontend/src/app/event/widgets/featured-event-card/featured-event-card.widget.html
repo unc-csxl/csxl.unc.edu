@@ -53,11 +53,11 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
+    @if(profile) {
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
     </button>
-    @if(profile) { @if(event.user_registration_type ===
-    registrationType.ATTENDEE) {
+    @if(event.user_registration_type === registrationType.ATTENDEE) {
     <button
       mat-flat-button
       class="tertiary-button"

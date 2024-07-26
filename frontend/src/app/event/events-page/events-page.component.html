@@ -5,7 +5,7 @@
       [event]="eventStatus()!.featured!"
       [profile]="profile"
       (registrationChange)="reloadPage()" />
-    }
+    } @if(profile) {
     <mat-card appearance="outlined" class="registrations-pane">
       <mat-card-header>
         <mat-card-title>My Event Registrations</mat-card-title>
@@ -30,6 +30,11 @@
         }
       </mat-card-content>
     </mat-card>
+    } @else {
+    <mat-card appearance="outlined" class="registrations-pane">
+      <about-pane-content />
+    </mat-card>
+    }
   </div>
   <div class="right-column">
     <search-bar
