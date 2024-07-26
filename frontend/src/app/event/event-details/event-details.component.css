@@ -56,3 +56,8 @@ mat-card-actions {
 #no-registrations-label {
     margin-top: 8px;
 }
+
+.feature-image {
+    max-height: 200px !important;
+    object-fit: cover;
+}
