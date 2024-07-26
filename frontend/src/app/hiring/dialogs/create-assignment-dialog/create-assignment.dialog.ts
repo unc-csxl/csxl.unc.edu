@@ -9,6 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HiringService } from '../../hiring.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import {
+  ApplicationReviewOverview,
   HiringAssignmentDraft,
   HiringAssignmentStatus,
   HiringCourseSiteOverview,
@@ -69,6 +70,7 @@ export class CreateAssignmentDialog {
         user_id: this.users[0].id,
         term_id: this.data.termId,
         course_site_id: this.data.courseSite.course_site_id,
+        application_review_id: this.getApplication()?.id ?? null,
         level: this.createAssignmentForm.get('level')!.value!,
         status: this.createAssignmentForm.get('status')!.value!,
         position_number:
@@ -95,5 +97,11 @@ export class CreateAssignmentDialog {
   /** Closes the dialog */
   close(): void {
     this.dialogRef.close();
+  }
+
+  getApplication(): ApplicationReviewOverview | undefined {
+    return this.data.courseSite.reviews.find(
+      (a) => a.applicant_id === this.users[0].id
+    );
   }
 }

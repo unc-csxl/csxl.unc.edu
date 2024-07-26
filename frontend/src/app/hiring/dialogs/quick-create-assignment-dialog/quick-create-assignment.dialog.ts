@@ -80,6 +80,7 @@ export class QuickCreateAssignmentDialog {
         user_id: this.user.id,
         term_id: this.data.termId,
         course_site_id: this.data.courseSite.course_site_id,
+        application_review_id: this.getApplication()?.id ?? null,
         level: this.createAssignmentForm.get('level')!.value!,
         status: this.createAssignmentForm.get('status')!.value!,
         position_number:

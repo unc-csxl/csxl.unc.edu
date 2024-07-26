@@ -23,6 +23,7 @@ class HiringAssignmentDraft(BaseModel):
     user_id: int
     term_id: str
     course_site_id: int
+    application_review_id: int | None = None
     level: HiringLevel
     status: HiringAssignmentStatus
     position_number: str

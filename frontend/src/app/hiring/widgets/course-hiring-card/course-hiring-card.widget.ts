@@ -73,7 +73,8 @@ export class CourseHiringCardWidget implements OnInit {
     let draft = hiringAssignmentOverviewToDraft(
       this.termId,
       this.item(),
-      updatedAssignment
+      updatedAssignment,
+      null
     );
     this.hiringService.updateHiringAssignment(draft).subscribe((assignment) => {
       let assignmentIndex = this.item().assignments.findIndex(

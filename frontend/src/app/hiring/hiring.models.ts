@@ -80,6 +80,7 @@ export interface HiringAssignmentDraft {
   id: number | null;
   user_id: number;
   term_id: string;
+  application_review_id: number | null;
   course_site_id: number;
   level: HiringLevel;
   status: HiringAssignmentStatus;
@@ -105,13 +106,15 @@ export interface HiringAssignmentOverview {
 export const hiringAssignmentOverviewToDraft = (
   termId: string,
   site: HiringCourseSiteOverview,
-  assignment: HiringAssignmentOverview
+  assignment: HiringAssignmentOverview,
+  applicationReviewId: number | null
 ): HiringAssignmentDraft => {
   return {
     id: assignment.id,
     user_id: assignment.user.id,
     term_id: termId,
     course_site_id: site.course_site_id,
+    application_review_id: applicationReviewId,
     level: assignment.level,
     status: assignment.status,
     position_number: assignment.position_number,

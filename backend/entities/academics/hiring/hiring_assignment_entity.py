@@ -50,6 +50,12 @@ class HiringAssignmentEntity(EntityBase):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     user: Mapped["UserEntity"] = relationship(back_populates="hiring_assignments")
 
+    # Optional ID for an application review.
+    # NOTE: This defines a one-to-many relationship between the user and assignments tables.
+    application_review_id: Mapped[int] = mapped_column(
+        ForeignKey("academics__hiring__application_review.id"), nullable=True
+    )
+
     # Hiring level for the assignment
     # NOTE: This defines a one-to-many relationship between the assignment and level tables.
     hiring_level_id: Mapped[int] = mapped_column(
@@ -90,6 +96,7 @@ class HiringAssignmentEntity(EntityBase):
             user_id=overview.user_id,
             term_id=overview.term_id,
             course_site_id=overview.course_site_id,
+            application_review_id=overview.application_review_id,
             hiring_level_id=overview.level.id,
             status=overview.status,
             position_number=overview.position_number,

@@ -86,6 +86,7 @@ export class EditAssignmentDialog {
         user_id: this.data.assignment.user.id,
         term_id: this.data.termId,
         course_site_id: this.data.courseSite.course_site_id,
+        application_review_id: null,
         level: this.editAssignmentForm.get('level')!.value!,
         status: this.editAssignmentForm.get('status')!.value!,
         position_number:
