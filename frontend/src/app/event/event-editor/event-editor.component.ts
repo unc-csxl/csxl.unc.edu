@@ -148,6 +148,23 @@ export class EventEditorComponent {
     );
   }
 
+  /** Event handler to handle deleting the event. */
+  onDelete() {
+    let confirmDelete = this.snackBar.open(
+      'Are you sure you want to delete this event?',
+      'Delete',
+      { duration: 15000 }
+    );
+    confirmDelete.onAction().subscribe(() => {
+      this.eventService.deleteEvent(this.event.id!).subscribe(() => {
+        this.router.navigate([`events/`]);
+        this.snackBar.open('This event has been deleted.', '', {
+          duration: 2000
+        });
+      });
+    });
+  }
+
   /** Takes user back to events page without changing any event info.
    * @returns {void}
    */

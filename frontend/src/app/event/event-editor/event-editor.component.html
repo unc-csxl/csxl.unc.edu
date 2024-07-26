@@ -79,20 +79,31 @@
 
     <!-- Save Button -->
     <mat-card-actions>
-      <button
-        mat-stroked-button
-        color="secondary"
-        type="button"
-        (click)="onReset()">
-        Reset
-      </button>
+      @if (!isNew()) {
       <button
         mat-flat-button
-        color="primary"
-        type="submit"
-        [disabled]="eventForm.invalid">
-        Save
+        class="tertiary-button"
+        type="button"
+        (click)="onDelete()">
+        Delete
       </button>
+      }
+      <div class="right-buttons">
+        <button
+          mat-stroked-button
+          color="secondary"
+          type="button"
+          (click)="onReset()">
+          Reset
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="eventForm.invalid">
+          Save
+        </button>
+      </div>
     </mat-card-actions>
   </mat-pane>
 </form>
