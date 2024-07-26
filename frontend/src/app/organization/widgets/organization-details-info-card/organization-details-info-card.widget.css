@@ -1,165 +1,55 @@
-/** Profile Card CSS */
-.mdc-list-item--with-two-lines .mdc-list-item__primary-text,
-.mdc-list-item--with-three-lines .mdc-list-item__primary-text {
-    margin-bottom: 0;
-}
 
-
-.organization-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding-bottom: 16px;
-}
-
-.left-header-info {
-    padding-top: 0.5rem;
-    width: 10%;
-}
-
-.right-header-info {
-    display: flex;
+mat-card-header {
     flex-direction: column;
-    width: 90%;
+    width: 100%;
 }
 
-.organization-top-header-group {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: left;
-}
-
-.organization-name-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    height: 48px;
-}
-
-/* .organization-icons-section {
-    display: flex;
-    flex-direction: row-reverse;
-    width: 50%;
-    height: 5vh;
-} */
-.link-icons {
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-}
-/*TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-mat-card-footer {
-    margin: 0 1rem 1.25rem 1rem;
-}
-
-.edit-organization-button {
-    margin-left: 6rem;
-}
-
-.user-avatar {
-    margin-right: 1rem;
+p {
     margin-bottom: 0;
-    background-color: #4786C6;
-    text-align: center;
-    vertical-align: middle;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 100%;
-    font-size: 1.15em;
-}
-
-.user-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    /* number of lines to show */
-    line-clamp: 1;
-    -webkit-box-orient: vertical;
 }
 
 .mat-mdc-card-avatar {
     margin-bottom: 0 !important;
 }
 
-.mdc-list-group__subheader {
-    margin: 0;
+.header-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
 }
 
-.user-info-label {
-    font-weight: 500;
-    margin-bottom: 0;
-    font-size: 1.15em;
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
 }
 
-.organization-description {
-    font-size: 1rem;
-    margin-top: 0;
+.links-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    align-items: center;
+    margin-bottom: 12px;
+    margin-left: 48px;
+    margin-right: 32px;
+    gap: 12px;
+  }
+  
+  .link-icons {
+    width: 22px;
+    height: 22px;
+  }
+
+mat-divider {
+    margin-top: 12px;
+    padding-bottom: 4px;
 }
 
-.logo {
-    width: 85%;
-    border-radius: 50% !important;
-}
-
-a {
-    text-decoration: none !important;
-}
-
-/** Make cards display in one column, with the event card appearing last */
-@media only screen and (max-width: 1180px) {
-
-    .right-header-info {
-        width: 100%;
-    }
-
-    .organization-card {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-    }
-
-    .logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50% !important;
-        margin-right: 0.5rem;
-    }
-
-    .organization-header {
-        flex-direction: column;
-        justify-content: left;
-        align-items: flex-start !important;
-    }
-
-    .organization-name-section {
-        width: 100%;
-    }
-
-    .organization-icons-section {
-        width: 100%;
-        height: 100% !important;
-    }
-
-    button {
-        width: max-content;
-    }
-
-    .mat-mdc-card {
-        margin: 1rem !important;
-    }
-
-    .edit-organization-button {
-        margin-left: 0;
-    }
-}
-
-@media only screen and (max-width: 1280px) {
-    .right-header-info {
-        width: 100%;
-    }
+mat-card-actions {
+    padding-bottom: 12px;
+    justify-content: flex-end;
+    gap: 8px;
 }

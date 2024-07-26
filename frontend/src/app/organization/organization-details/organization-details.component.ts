@@ -97,8 +97,7 @@ export class OrganizationDetailsComponent implements OnInit {
       'organization.*',
       `organization/${this.organization?.slug}`,
       '',
-      `/organizations/${this.organization?.slug}/edit`,
-      `/events/${this.organization?.slug}/new/edit`
+      `/organizations/${this.organization?.slug}/edit`
     );
   }
 }
