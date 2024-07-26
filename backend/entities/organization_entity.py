@@ -132,5 +132,5 @@ class OrganizationEntity(EntityBase):
             youtube=self.youtube,
             heel_life=self.heel_life,
             public=self.public,
-            events=[event.to_model() for event in self.events],
+            events=[event.to_overview_model() for event in self.events],
         )

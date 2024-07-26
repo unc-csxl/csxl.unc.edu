@@ -48,24 +48,6 @@ class EventRegistrationEntity(EntityBase):
     )
 
     @classmethod
-    def from_model(cls, model: EventRegistration) -> Self:
-        """
-        Class method that converts an `EventRegistration` model into a `EventRegistrationEntity`
-
-        Parameters:
-            - model (EventRegistration): Model to convert into an entity
-        Returns:
-            EventRegistrationEntity: Entity created from model
-        """
-        return cls(
-            event_id=model.event_id,
-            user_id=model.user_id,
-            event=EventEntity.from_model(model.event),
-            user=UserEntity.from_model(model.user),
-            registration_type=model.registration_type,
-        )
-
-    @classmethod
     def from_new_model(cls, model: NewEventRegistration) -> Self:
         """
         Class method that converts an `NewEventRegistration` model into a `EventRegistrationEntity`
@@ -91,7 +73,7 @@ class EventRegistrationEntity(EntityBase):
         """
         return EventRegistration(
             event_id=self.event_id,
-            event=self.event.to_model(),
+            event=self.event.to_overview_model(),
             user_id=self.user_id,
             user=self.user.to_model(),
             registration_type=self.registration_type,

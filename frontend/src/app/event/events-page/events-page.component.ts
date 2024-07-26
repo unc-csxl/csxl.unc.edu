@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
-import { Event, EventOverview, EventStatusOverview } from '../event.model';
+import { EventOverview, EventStatusOverview } from '../event.model';
 import { DatePipe } from '@angular/common';
 
 import {

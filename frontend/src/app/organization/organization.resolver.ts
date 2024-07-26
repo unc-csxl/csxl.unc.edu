@@ -10,7 +10,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { Organization } from './organization.model';
-import { Event } from '../event/event.model';
 import { catchError, map, of } from 'rxjs';
 import { OrganizationService } from './organization.service';
 
@@ -51,15 +50,4 @@ export const organizationResolver: ResolveFn<Organization | undefined> = (
         return of(undefined);
       })
     );
-};
-
-// TODO: Refactor once the event feature is refactored.
-/** This resolver injects the events for a given organization into the organization component. */
-export const organizationEventsResolver: ResolveFn<Event[] | undefined> = (
-  route,
-  _state
-) => {
-  return inject(OrganizationService)
-    .getOrganization(route.paramMap.get('slug')!)
-    .pipe(map((organization) => organization?.events ?? []));
 };

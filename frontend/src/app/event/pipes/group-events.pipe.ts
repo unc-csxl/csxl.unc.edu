@@ -7,7 +7,7 @@
 
 import { DatePipe } from '@angular/common';
 import { Pipe, PipeTransform, inject } from '@angular/core';
-import { Event, EventOverview } from '../event.model';
+import { EventOverview } from '../event.model';
 
 @Pipe({
   name: 'groupEvents'

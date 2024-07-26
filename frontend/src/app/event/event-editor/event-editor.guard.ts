@@ -10,9 +10,9 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { PermissionService } from 'src/app/permission.service';
-import { Event } from '../event.model';
 import { combineLatest, map, of } from 'rxjs';
 import { EventService } from '../event.service';
+import { ProfileService } from 'src/app/profile/profile.service';
 
 // TODO: Refactor with a new event permission API so that we do not
 // duplicate calls to the event API here.
@@ -37,13 +37,21 @@ export const eventEditorGuard: CanActivateFn = (route, _) => {
     `organization/${organizationId}`
   );
 
+  const profile = inject(ProfileService).profile();
+
   // Checks if the user is the organizer for the event
   const isOrganizerCheck$ =
     eventId === 'new'
       ? of(true)
       : inject(EventService)
           .getEvent(+eventId)
-          .pipe(map((event) => event?.is_organizer ?? false));
+          .pipe(
+            map(
+              (event) =>
+                event?.organizers.find((p) => p.id === profile?.id) !==
+                undefined
+            )
+          );
 
   // Since only one check has to be true for the user to see the page,
   // we combine the results of these observables into a single
