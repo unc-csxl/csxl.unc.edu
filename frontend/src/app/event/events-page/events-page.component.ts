@@ -74,16 +74,18 @@ export class EventsPageComponent {
   /** Constructor for the events page. */
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    protected router: Router,
     public datePipe: DatePipe,
     public eventService: EventService,
     private profileService: ProfileService,
     protected groupEventsPipe: GroupEventsPipe
   ) {
     this.profile = this.profileService.profile();
-    this.eventService.getEventStatus().subscribe((status) => {
-      this.eventStatus.set(status);
-    });
+    this.eventService
+      .getEventStatus(this.profile !== undefined)
+      .subscribe((status) => {
+        this.eventStatus.set(status);
+      });
   }
 
   /**
@@ -136,9 +138,11 @@ export class EventsPageComponent {
       .subscribe((events) => {
         this.page.set(events);
       });
-    this.eventService.getEventStatus().subscribe((status) => {
-      this.eventStatus.set(status);
-    });
+    this.eventService
+      .getEventStatus(this.profile !== undefined)
+      .subscribe((status) => {
+        this.eventStatus.set(status);
+      });
   }
 
   /**
@@ -179,5 +183,10 @@ export class EventsPageComponent {
       );
     }
     this.filterQuery.set(query);
+  }
+
+  /** Performs the redirection for the sign in button */
+  signIn() {
+    window.location.href = '/auth?continue_to=/events';
   }
 }

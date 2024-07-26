@@ -5,15 +5,27 @@
       [event]="eventStatus()!.featured!"
       [profile]="profile"
       (registrationChange)="reloadPage()" />
-    } @if(profile) {
+    }
     <mat-card appearance="outlined" class="registrations-pane">
       <mat-card-header>
         <mat-card-title>My Event Registrations</mat-card-title>
       </mat-card-header>
       <mat-card-content class="registrations-pane-content">
         @if(eventStatus()) { @if (eventStatus()!.registered.length === 0) {
+        @if(profile) {
         <p class="no-events-text">You are not registered for any events.</p>
-        } @for (event of eventStatus()!.registered; track event.id) {
+        } @else {
+        <p class="no-events-text">
+          You cannot register or view details for events until you sign in to
+          the CSXL site.
+        </p>
+        <button
+          mat-button
+          class="primary-button sign-in-button"
+          (click)="signIn()">
+          Sign In
+        </button>
+        } } @for (event of eventStatus()!.registered; track event.id) {
         <event-registration-card [event]="event" />
         } }
       </mat-card-content>
@@ -24,17 +36,24 @@
       </mat-card-header>
       <mat-card-content class="registrations-pane-content">
         @if(eventStatus()) { @if (eventStatus()!.registered.length === 0) {
+        @if(profile) {
         <p class="no-events-text">You are not registered for any events.</p>
-        }
+        } @else {
+        <p class="no-events-text">
+          You cannot register or view details for events until you sign in to
+          the CSXL site.
+        </p>
+        <button
+          mat-button
+          class="primary-button sign-in-button"
+          (click)="signIn()">
+          Sign In
+        </button>
+        } }
         <event-registration-card [event]="eventStatus()!.registered[0]" />
         }
       </mat-card-content>
     </mat-card>
-    } @else {
-    <mat-card appearance="outlined" class="registrations-pane">
-      <about-pane-content />
-    </mat-card>
-    }
   </div>
   <div class="right-column">
     <search-bar

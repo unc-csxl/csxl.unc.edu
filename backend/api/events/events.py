@@ -80,6 +80,14 @@ def list_events(
     return event_service.get_paginated_events(pagination_params, subject)
 
 
+@api.get("/unauthenticated/status", tags=["Events"])
+def get_status(
+    event_service: EventService = Depends(),
+) -> EventStatusOverview:
+    """Retrieves the featured event and user's registrations."""
+    return event_service.get_event_status_unauthenticated()
+
+
 @api.get("/status", tags=["Events"])
 def get_status(
     subject: User = Depends(registered_user),

@@ -155,9 +155,11 @@ export class EventService {
    * Returns the event status, which includes featured events and registrations.
    * @returns {Observable<EventStatusOverview>}
    */
-  getEventStatus(): Observable<EventStatusOverview> {
+  getEventStatus(authenticated: boolean): Observable<EventStatusOverview> {
     return this.http
-      .get<EventStatusOverviewJson>(`/api/events/status`)
+      .get<EventStatusOverviewJson>(
+        `/api/events/${!authenticated && 'unauthenticated/'}status`
+      )
       .pipe(map(parseEventStatusOverviewJson));
   }
 }
