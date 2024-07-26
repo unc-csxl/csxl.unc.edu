@@ -37,6 +37,27 @@ openapi_tags = {
 }
 
 
+@api.get("/unauthenticated/paginate", tags=["Events"])
+def list_events(
+    event_service: EventService = Depends(),
+    order_by: str = "time",
+    ascending: str = "true",
+    filter: str = "",
+    range_start: str = "",
+    range_end: str = "",
+) -> Paginated[EventOverview]:
+    """List events in time range via standard backend pagination query parameters."""
+
+    pagination_params = EventPaginationParams(
+        order_by=order_by,
+        ascending=ascending,
+        filter=filter,
+        range_start=range_start,
+        range_end=range_end,
+    )
+    return event_service.get_paginated_events(pagination_params, None)
+
+
 @api.get("/paginate", tags=["Events"])
 def list_events(
     subject: User = Depends(registered_user),

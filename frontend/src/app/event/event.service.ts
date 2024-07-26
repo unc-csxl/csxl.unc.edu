@@ -38,6 +38,10 @@ export class EventService {
   /** Encapsulated paginators */
   private eventsPaginator: TimeRangePaginator<EventOverview> =
     new TimeRangePaginator<EventOverview>('/api/events/paginate');
+  private unauthenticatedEventsPaginator: TimeRangePaginator<EventOverview> =
+    new TimeRangePaginator<EventOverview>(
+      '/api/events/unauthenticated/paginate'
+    );
 
   /** Constructor */
   constructor(protected http: HttpClient) {}
@@ -49,8 +53,18 @@ export class EventService {
    * @param params: Pagination parameters.
    * @returns {Observable<Paginated<Event, TimeRangePaginationParams>>}
    */
-  getEvents(params: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS) {
-    return this.eventsPaginator.loadPage(params, parseEventOverviewJson);
+  getEvents(
+    params: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS,
+    authenticated: boolean
+  ) {
+    if (authenticated) {
+      return this.eventsPaginator.loadPage(params, parseEventOverviewJson);
+    } else {
+      return this.unauthenticatedEventsPaginator.loadPage(
+        params,
+        parseEventOverviewJson
+      );
+    }
   }
 
   /**

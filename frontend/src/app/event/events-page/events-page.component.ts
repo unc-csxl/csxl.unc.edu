@@ -27,6 +27,7 @@ import {
 } from 'src/app/pagination';
 import { EventService } from '../event.service';
 import { GroupEventsPipe } from '../pipes/group-events.pipe';
+import { profileResolver } from 'src/app/profile/profile.resolver';
 
 @Component({
   selector: 'app-events-page',
@@ -68,7 +69,7 @@ export class EventsPageComponent {
   public searchBarQuery = '';
 
   /** Store the currently-logged-in user's profile.  */
-  public profile: Profile;
+  public profile: Profile | undefined;
 
   /** Constructor for the events page. */
   constructor(
@@ -79,7 +80,7 @@ export class EventsPageComponent {
     private profileService: ProfileService,
     protected groupEventsPipe: GroupEventsPipe
   ) {
-    this.profile = this.profileService.profile()!;
+    this.profile = this.profileService.profile();
     this.eventService.getEventStatus().subscribe((status) => {
       this.eventStatus.set(status);
     });
@@ -99,11 +100,13 @@ export class EventsPageComponent {
     params.range_end = this.endDate().toISOString();
     params.filter = this.filterQuery();
     // Refresh the data
-    this.eventService.getEvents(params).subscribe((events) => {
-      this.page.set(events);
-      this.previousParams = events.params;
-      this.reloadQueryParams();
-    });
+    this.eventService
+      .getEvents(params, this.profile !== undefined)
+      .subscribe((events) => {
+        this.page.set(events);
+        this.previousParams = events.params;
+        this.reloadQueryParams();
+      });
   });
 
   /** Reloads the page and its query parameters to adjust to the next month. */
@@ -128,9 +131,11 @@ export class EventsPageComponent {
 
   /** Reloads the data in the current page. */
   reloadPage() {
-    this.eventService.getEvents(this.previousParams).subscribe((events) => {
-      this.page.set(events);
-    });
+    this.eventService
+      .getEvents(this.previousParams, this.profile !== undefined)
+      .subscribe((events) => {
+        this.page.set(events);
+      });
     this.eventService.getEventStatus().subscribe((status) => {
       this.eventStatus.set(status);
     });
