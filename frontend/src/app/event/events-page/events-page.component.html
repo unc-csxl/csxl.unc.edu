@@ -3,6 +3,7 @@
     @if(eventStatus() && eventStatus()!.featured) {
     <featured-event-card
       [event]="eventStatus()!.featured!"
+      [profile]="profile"
       (registrationChange)="reloadPage()" />
     }
     <mat-card appearance="outlined" class="registrations-pane">
@@ -72,7 +73,10 @@
           {{ eventGroup[0] }}
         </mat-card-subtitle>
         @for (event of eventGroup[1]; track event.id) {
-        <new-event-card [event]="event" (registrationChange)="reloadPage()" />
+        <new-event-card
+          [event]="event"
+          [profile]="profile"
+          (registrationChange)="reloadPage()" />
         } }
       </mat-card-content>
     </mat-card>

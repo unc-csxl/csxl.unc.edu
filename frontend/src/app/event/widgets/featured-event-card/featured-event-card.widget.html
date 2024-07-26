@@ -56,7 +56,8 @@
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
     </button>
-    @if(event.user_registration_type === registrationType.ATTENDEE) {
+    @if(profile) { @if(event.user_registration_type ===
+    registrationType.ATTENDEE) {
     <button
       mat-flat-button
       class="tertiary-button"
@@ -69,6 +70,6 @@
     <button mat-flat-button [disabled]="true">Filled</button>
     } @else {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
-    }
+    } }
   </mat-card-actions>
 </mat-pane>
