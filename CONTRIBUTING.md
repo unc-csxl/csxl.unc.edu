@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-These code reviews will be completed via pull requests. 
+This document outlines the guidelines and expectations for the contributing process into the XL repository!
 
 ## Review Process for Large Features
 
@@ -36,7 +36,7 @@ The second design review focuses on the backend implementation of the design spe
 
 The final design review focuses on the frontend implementation of your design specified in Part 1, connected to the backend you implemented in Part 2. This is often the final review completed before migrations are written and a merge into `main` can be performed. This review will focus on polishing UI/UX to Material 3 guidelines.
 
-**3. Frontend Review**
+**Angular Frontend**
 - [ ] The new frontend service should include all necessary endpoints for the feature.
 - [ ] All service methods return observables where needed.
 - [ ] Angular Signals are used to store reactive objects, where needed.
@@ -49,6 +49,3 @@ The final design review focuses on the frontend implementation of your design sp
 ## Expedited Review for Smaller Features
 
 Smaller features and pull requests may implement small to medium-size changes to the existing codebase, and therefore, three separate reviews may not be necessary. However, all of the checklist items for Step 2 and Step 3 should be completed, and will be checked by the reviewers!
-
-## Writing PRs
-
