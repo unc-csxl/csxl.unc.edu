@@ -11,7 +11,11 @@
     <mat-card-title>{{ event()!.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p>May 28th at 7:00PM in FB009</p>
+    <p>
+      {{ event().time | date: 'MMMM d' }} at
+      {{ event().time | date: 'h:mm a' }} in
+      {{ event().location }}
+    </p>
 
     <mat-chip-set>
       <!-- Organization chip -->
