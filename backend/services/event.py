@@ -696,6 +696,7 @@ class EventService:
             select(EventRegistrationEntity)
             .where(EventRegistrationEntity.user_id == subject.id)
             .join(EventEntity)
+            .where(EventEntity.time >= datetime.now())
             .order_by(EventEntity.time)
         )
 
