@@ -1,71 +1,99 @@
-<mat-pane
-  class="organization-card"
-  *ngIf="organization !== undefined"
-  appearance="outlined">
-  <!-- Organization Card Header (Image, Name, Description) -->
-  <mat-card-header class="organization-header">
-    @if (!isTablet && !isHandset) {
-    <div class="left-header-info">
-      <!-- Organization Logo (Laptops/Monitors) -->
-      <img mat-card-image src="{{ organization.logo }}" class="logo" />
+@if (organization) {
+<mat-pane>
+  <mat-card-header>
+    <div class="header-row">
+      <img mat-card-avatar src="{{ organization.logo }}" />
+      <mat-card-title>{{ organization.name }}</mat-card-title>
     </div>
-    }
-    <div class="right-header-info">
-      <!-- Organization Name, Logo, and Social Media -->
-      <div class="organization-top-header-group">
-        <!-- Organization Logo (Tablets/Phones) -->
-        @if (isTablet || isHandset) {
-        <img
-          mat-card-image
-          src="{{ organization.logo }}"
-          class="logo"
-          [ngStyle]="{
-            width: '32px',
-            height: '32px',
-            'margin-right': '16px'
-          }" />
-        }
-        <!-- Organization Name -->
-        <div class="organization-name-section">
-          <mat-card-title class="user-name">
-            {{ organization.name }}
-          </mat-card-title>
-        </div>
+    <div class="links-row">
+      @if (organization.website !== '') {
+      <div class="row">
+        <mat-icon class="link-icons secondary-icon">link</mat-icon>
+        <p>
+          <a
+            class="font-secondary"
+            [href]="organization.website"
+            target="_blank"
+            >Website</a
+          >
+        </p>
       </div>
-
-      <!-- Organization Description -->
-      <p class="organization-description">
-        {{ organization.long_description || organization.short_description }}
-      </p>
-
-      <!-- Organization Icons (Phones)-->
-      <div
-        class="organization-icons-section"
-        [ngStyle]="{ 'flex-direction': 'row' }">
-        <div class="link-icons">
-          @if(organization) { @if (organization.website !== '') {
-          <social-media-icon
-            [fontIcon]="'link'"
-            [href]="organization!.website" />
-          } @if (organization.email !== '') {
-          <social-media-icon
-            [fontIcon]="'mail'"
-            [href]="'mailto:' + organization.email" />
-          } @if(organization.instagram !== '') {
-          <social-media-icon
-            [svgIcon]="'instagram'"
-            [href]="organization!.instagram" />
-          } @if(organization.linked_in !== '') {
-          <social-media-icon
-            [svgIcon]="'linkedin'"
-            [href]="organization!.linked_in" />
-          } @if(organization.youtube !== '') {
-          <social-media-icon
-            [svgIcon]="'youtube'"
-            [href]="organization!.youtube" />
-          } }
-        </div>
+      } @if (organization.email !== '') {
+      <div class="row">
+        <mat-icon class="secondary-icon">mail</mat-icon>
+        <p>
+          <a
+            class="font-secondary"
+            href="mailto:{{ organization.email }}"
+            target="_blank"
+            >Email</a
+          >
+        </p>
       </div>
+      } @if (organization.instagram !== '') {
+      <div class="row">
+        <mat-icon class="link-icons secondary-icon" svgIcon="instagram" />
+        <p>
+          <a
+            class="font-secondary"
+            [href]="organization.instagram"
+            target="_blank"
+            >Instagram</a
+          >
+        </p>
+      </div>
+      } @if (organization.linked_in !== '') {
+      <div class="row">
+        <mat-icon
+          class="link-icons secondary-icon"
+          id="linkedin-icon"
+          svgIcon="linkedin" />
+        <p>
+          <a
+            class="font-secondary"
+            [href]="organization.linked_in"
+            target="_blank"
+            >LinkedIn</a
+          >
+        </p>
+      </div>
+      } @if (organization.youtube !== '') {
+      <div class="row">
+        <mat-icon class="link-icons secondary-icon" svgIcon="youtube" />
+        <p>
+          <a
+            class="font-secondary"
+            [href]="organization.youtube"
+            target="_blank"
+            >YouTube</a
+          >
+        </p>
+      </div>
+      }
     </div>
   </mat-card-header>
+  <mat-card-content>
+    <p>{{ organization.long_description || organization.short_description }}</p>
+    @if(eventCreationPermissions) {
+    <mat-divider />
+    }
+  </mat-card-content>
+  <mat-card-actions>
+    @if(eventCreationPermissions) {
+    <button
+      mat-stroked-button
+      class="primary-button"
+      [routerLink]="'/events/' + this.organization.slug + '/new/edit'">
+      <mat-icon class="font-primary">calendar_add_on</mat-icon>
+      Create Event
+    </button>
+    <button
+      mat-flat-button
+      class="primary-button"
+      [routerLink]="'/organizations/' + this.organization.slug + '/edit'">
+      Edit
+    </button>
+    }
+  </mat-card-actions>
 </mat-pane>
+}

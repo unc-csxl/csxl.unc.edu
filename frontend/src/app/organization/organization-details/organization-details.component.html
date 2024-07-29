@@ -5,10 +5,7 @@
 } @else {
 <organization-details-info-card
   [organization]="organization"
-  [profile]="profile" />
+  [profile]="profile"
+  [eventCreationPermissions]="eventCreationPermission$ | async"
+/>
 }
-
-<admin-fab
-  primaryIcon="edit"
-  primaryText="Edit"
-  secondaryIcon="calendar_add_on" />
