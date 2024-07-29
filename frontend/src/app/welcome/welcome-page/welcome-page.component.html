@@ -1,24 +1,27 @@
+@if(welcomeOverview()) {
 <div class="container">
   <div class="left-column">
-    @if (welcomeOverview().announcement) {
+    @if (welcomeOverview()!.announcement) {
     <banner-card
       type="info"
       [wide]="true"
       icon="campaign"
-      [title]="welcomeOverview().announcement!.title"
-      [subtitle]="welcomeOverview().announcement!.published | date: 'shortDate'"
-      [body]="welcomeOverview().announcement!.synopsis"
+      [title]="welcomeOverview()!.announcement!.title"
+      [subtitle]="
+        welcomeOverview()!.announcement!.published | date: 'shortDate'
+      "
+      [body]="welcomeOverview()!.announcement!.synopsis"
       [bottomActionButton]="true"
       [actionButtonText]="'Read'"
       [linkAction]="true"
-      [link]="'/article/' + welcomeOverview().announcement!.slug" />
+      [link]="'/article/' + welcomeOverview()!.announcement!.slug" />
     }
     <mat-card appearance="outlined" class="news-pane">
       <mat-card-header>
         <mat-card-title>Latest News</mat-card-title>
       </mat-card-header>
       <mat-card-content class="news-pane-content">
-        @for(article of welcomeOverview().latest_news; track article.id) {
+        @for(article of welcomeOverview()!.latest_news; track article.id) {
         <news-card [article]="article" />
         }
       </mat-card-content>
@@ -31,24 +34,24 @@
       </mat-card-header>
       @if (openOperatingHours()) {
       <coworking-operating-hours-panel
-        [operatingHours]="welcomeOverview().operating_hours"
+        [operatingHours]="welcomeOverview()!.operating_hours"
         [openOperatingHours]="openOperatingHours()" />
 
       } @else {
       <coworking-operating-hours-panel
-        [operatingHours]="welcomeOverview().operating_hours" />
+        [operatingHours]="welcomeOverview()!.operating_hours" />
       }
     </mat-card>
     <mat-card appearance="outlined" class="upcoming-pane">
       @if(profileService.profile() === undefined) {
-      <about-pane-content class="upcoming-pane-content"/>
+      <about-pane-content class="upcoming-pane-content" />
       } @else {
       <mat-card-header>
         <mat-card-title id="upcoming-title">Upcoming For You</mat-card-title>
       </mat-card-header>
       <mat-card-content class="upcoming-pane-content">
         <mat-card-subtitle>Coworking Reservations</mat-card-subtitle>
-        @if (welcomeOverview().upcoming_reservations.length === 0) {
+        @if (welcomeOverview()!.upcoming_reservations.length === 0) {
         <p class="none-text">
           You currently have no upcoming reservations in the XL Colab found on
           the first floor of Sitterson Hall. Reserve a desk or room by clicking
@@ -57,7 +60,7 @@
         <button class="none-buttons" mat-button routerLink="/coworking">
           Reserve Now
         </button>
-        } @for (reservation of welcomeOverview().upcoming_reservations; track
+        } @for (reservation of welcomeOverview()!.upcoming_reservations; track
         reservation.start) {
         <mat-card
           class="reservation-card"
@@ -82,14 +85,14 @@
         </mat-card>
         }
         <mat-card-subtitle>Community Events</mat-card-subtitle>
-        @if (welcomeOverview().registered_events.length === 0) {
+        @if (welcomeOverview()!.registered_events.length === 0) {
         <p class="none-text">
           Register for an upcoming community event for them to show up here.
         </p>
         <button class="none-buttons" mat-button routerLink="/events">
           View All Events
         </button>
-        } @for (event of welcomeOverview().registered_events; track event.id) {
+        } @for (event of welcomeOverview()!.registered_events; track event.id) {
         <event-registration-card [event]="event" />
         }
       </mat-card-content>
@@ -97,3 +100,5 @@
     </mat-card>
   </div>
 </div>
+
+}
