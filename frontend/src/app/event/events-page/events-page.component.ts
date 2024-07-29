@@ -40,7 +40,10 @@ export class EventsPageComponent {
     path: '',
     title: 'Events',
     component: EventsPageComponent,
-    canActivate: []
+    canActivate: [],
+    resolve: {
+      profile: profileResolver
+    }
   };
 
   /** Stores a reactive event pagination page. */
@@ -80,9 +83,12 @@ export class EventsPageComponent {
     private profileService: ProfileService,
     protected groupEventsPipe: GroupEventsPipe
   ) {
-    this.profile = this.profileService.profile();
+    const data = this.route.snapshot.data as {
+      profile: Profile | undefined;
+    };
+    this.profile = data.profile;
     this.eventService
-      .getEventStatus(this.profile !== undefined)
+      .getEventStatus(data.profile !== undefined)
       .subscribe((status) => {
         this.eventStatus.set(status);
       });
