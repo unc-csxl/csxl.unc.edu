@@ -28,7 +28,8 @@ export interface EventRegistration {
 export interface EventOverviewJson {
   id: number;
   name: string;
-  time: string;
+  start: string;
+  end: string;
   location: string;
   description: string;
   public: boolean;
@@ -46,7 +47,8 @@ export interface EventOverviewJson {
 export interface EventOverview {
   id: number | null;
   name: string;
-  time: Date;
+  start: Date;
+  end: Date;
   location: string;
   description: string;
   public: boolean;
@@ -64,7 +66,8 @@ export interface EventOverview {
 export interface EventDraft {
   id: number | null;
   name: string;
-  time: Date;
+  start: Date;
+  end: Date;
   location: string;
   description: string;
   public: boolean;
@@ -78,7 +81,8 @@ export const eventOverviewToDraft = (overview: EventOverview): EventDraft => {
   return {
     id: overview.id,
     name: overview.name,
-    time: overview.time,
+    start: overview.start,
+    end: overview.end,
     location: overview.location,
     description: overview.description,
     public: overview.public,
@@ -98,7 +102,8 @@ export const parseEventOverviewJson = (
   responseModel: EventOverviewJson
 ): EventOverview => {
   return Object.assign({}, responseModel, {
-    time: new Date(responseModel.time)
+    start: new Date(responseModel.start),
+    end: new Date(responseModel.end)
   });
 };
 

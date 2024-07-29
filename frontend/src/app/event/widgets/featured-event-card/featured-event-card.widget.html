@@ -17,7 +17,8 @@
   </mat-card-header>
   <mat-card-content>
     <p>
-      {{ event.time | date: 'MMMM d' }} at {{ event.time | date: 'h:mm a' }} in
+      {{ event.start | date: 'MMMM d' }} at
+      {{ event.start | date: 'h:mm a' }} in
       {{ event.location }}
     </p>
 
@@ -61,8 +62,8 @@
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
     </button>
-    @if(event.user_registration_type === registrationType.ATTENDEE && event.time
-    > now) {
+    @if(event.user_registration_type === registrationType.ATTENDEE &&
+    event.start > now) {
     <button
       mat-flat-button
       class="tertiary-button"
@@ -72,9 +73,9 @@
     } @else if(event.user_registration_type === registrationType.ORGANIZER) {
     <button mat-flat-button [disabled]="true">Manage</button>
     } @else if(event.registration_limit === event.number_registered &&
-    event.time > now) {
+    event.start > now) {
     <button mat-flat-button [disabled]="true">Filled</button>
-    } @else if(event.time > now) {
+    } @else if(event.start > now) {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
     } }
   </mat-card-actions>

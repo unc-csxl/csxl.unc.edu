@@ -22,15 +22,27 @@
 
       <!-- Start Time -->
       <mat-form-field appearance="outline" color="accent">
+        <mat-label>Start Time</mat-label>
         <input
           matInput
           type="datetime-local"
           placeholder="Start Time"
-          formControlName="time"
-          name="time"
+          formControlName="start"
+          name="start"
           required />
       </mat-form-field>
 
+      <!-- End Time -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>End Time</mat-label>
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="End Time"
+          formControlName="end"
+          name="end"
+          required />
+      </mat-form-field>
       <!-- Image URL -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Image URL</mat-label>

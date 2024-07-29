@@ -11,11 +11,31 @@
     <mat-card-title>{{ event()!.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p>
-      {{ event().time | date: 'MMMM d' }} at
-      {{ event().time | date: 'h:mm a' }} in
-      {{ event().location }}
-    </p>
+    <div class="links-row">
+      <div class="row">
+        <mat-icon class="secondary-icon">schedule</mat-icon>
+        <p>
+          {{ event().start | date: 'shortTime' }} -
+          {{ event().end | date: 'shortTime' }}
+        </p>
+      </div>
+      <div class="row">
+        <mat-icon class="secondary-icon">location_on</mat-icon>
+        <p>{{ event().location }}</p>
+      </div>
+      @if(profile) {
+      <div class="row">
+        <mat-icon class="secondary-icon">person_outline</mat-icon>
+        @if (event().registration_limit > 400) {
+        <p>Open to all</p>
+        } @else if (event().registration_limit === event().number_registered) {
+        <p><span class="tertiary-color">Filled</span></p>
+        } @else {
+        <p>{{ event().registration_limit - event().number_registered }} left</p>
+        }
+      </div>
+      }
+    </div>
 
     <mat-chip-set>
       <!-- Organization chip -->

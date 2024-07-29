@@ -24,7 +24,8 @@ __license__ = "MIT"
 event_one = EventDraft(
     id=1,
     name="CS+SG Mixer",
-    time=date_maker(days_in_future=1, hour=10, minutes=0),
+    start=date_maker(days_in_future=1, hour=10, minutes=0),
+    end=date_maker(days_in_future=1, hour=11, minutes=0),
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     registration_limit=50,
@@ -34,7 +35,8 @@ event_one = EventDraft(
 event_two = EventDraft(
     id=2,
     name="CS+SG Workshop",
-    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    start=date_maker(days_in_future=2, hour=19, minutes=0),
+    end=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN 014",
     description="This is a sample description.",
     public=True,
@@ -45,7 +47,8 @@ event_two = EventDraft(
 event_three = EventDraft(
     id=3,
     name="Super Exclusive Meeting",
-    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    start=date_maker(days_in_future=2, hour=19, minutes=0),
+    end=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN 014",
     description="This is a sample description.",
     public=True,
@@ -58,7 +61,8 @@ event_organization = {event_one: cssg, event_two: cssg, event_three: cssg}
 
 to_add = EventDraft(
     name="Carolina Data Challenge",
-    time=date_maker(days_in_future=2, hour=20, minutes=0),
+    start=date_maker(days_in_future=2, hour=20, minutes=0),
+    end=date_maker(days_in_future=2, hour=21, minutes=0),
     location="SN011",
     description="This is a sample description.",
     public=True,
@@ -81,7 +85,8 @@ to_add = EventDraft(
 invalid_event = EventDraft(
     id=4,
     name="Frontend Debugging Workshop",
-    time=date_maker(days_in_future=1, hour=10, minutes=0),
+    start=date_maker(days_in_future=1, hour=10, minutes=0),
+    end=date_maker(days_in_future=1, hour=11, minutes=0),
     location="SN156",
     description="This is a sample description.",
     public=True,
@@ -92,7 +97,8 @@ invalid_event = EventDraft(
 updated_event_one = EventDraft(
     id=1,
     name="Carolina Data Challenge",
-    time=date_maker(days_in_future=1, hour=10, minutes=0),
+    start=date_maker(days_in_future=1, hour=10, minutes=0),
+    end=date_maker(days_in_future=1, hour=11, minutes=0),
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
@@ -115,7 +121,8 @@ updated_event_one = EventDraft(
 updated_event_one_organizers = EventDraft(
     id=1,
     name="Carolina Data Challenge",
-    time=date_maker(days_in_future=1, hour=10, minutes=0),
+    start=date_maker(days_in_future=1, hour=10, minutes=0),
+    end=date_maker(days_in_future=1, hour=11, minutes=0),
     location="Fetzer Gym",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
@@ -148,7 +155,8 @@ updated_event_one_organizers = EventDraft(
 updated_event_two = EventDraft(
     id=2,
     name="CS+SG Workshop",
-    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    start=date_maker(days_in_future=2, hour=19, minutes=0),
+    end=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN 014",
     description="Come join us for a new workshop!",
     public=True,
@@ -159,7 +167,8 @@ updated_event_two = EventDraft(
 updated_event_three = EventDraft(
     id=3,
     name="Super Exclusive Meeting",
-    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    start=date_maker(days_in_future=2, hour=19, minutes=0),
+    end=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN 014",
     description="This is a sample description.",
     public=True,
@@ -202,7 +211,8 @@ updated_event_three = EventDraft(
 updated_event_three_remove_organizers = EventDraft(
     id=3,
     name="Super Exclusive Meeting",
-    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    start=date_maker(days_in_future=2, hour=19, minutes=0),
+    end=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN 014",
     description="This is a sample description.",
     public=True,
