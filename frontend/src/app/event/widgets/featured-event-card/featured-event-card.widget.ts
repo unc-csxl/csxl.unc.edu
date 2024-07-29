@@ -10,6 +10,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EventOverview, RegistrationType } from '../../event.model';
 import { EventService } from '../../event.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Profile } from 'src/app/models.module';
 
 @Component({
   selector: 'featured-event-card',
@@ -17,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './featured-event-card.widget.css'
 })
 export class FeaturedEventCardWidget {
+  @Input() profile: Profile | undefined;
   registrationType = RegistrationType;
   @Input() event!: EventOverview;
   @Output() registrationChange = new EventEmitter<boolean>();

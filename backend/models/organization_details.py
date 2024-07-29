@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from .organization import Organization
-from .event import Event
+from .event import EventOverview
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -16,4 +16,4 @@ class OrganizationDetails(Organization):
     of the `Organization` database in the PostgreSQL database.
     """
 
-    events: list[Event]
+    events: list[EventOverview]

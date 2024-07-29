@@ -1,5 +1,6 @@
 <mat-pane>
   <img
+    class="feature-image"
     mat-card-image
     [src]="
       event().image_url !== null && event().image_url !== ''
@@ -10,18 +11,22 @@
     <mat-card-title>{{ event()!.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p>May 28th at 7:00PM in FB009</p>
+    <p>
+      {{ event().time | date: 'MMMM d' }} at
+      {{ event().time | date: 'h:mm a' }} in
+      {{ event().location }}
+    </p>
 
     <mat-chip-set>
       <!-- Organization chip -->
       <mat-chip
         id="organization-chip"
-        [routerLink]="'/organizations/' + event().organization?.slug">
+        [routerLink]="'/organizations/' + event().organization_slug">
         <img
           class="profile-icon"
           matChipAvatar
-          [src]="event().organization?.logo" />
-        {{ event().organization!.shorthand }}
+          [src]="event().organization_icon" />
+        {{ event().organization_name }}
       </mat-chip>
 
       @if (event().organizers.length > 0) {
@@ -48,15 +53,15 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
-    @if(event().is_attendee) {
+    @if(event().user_registration_type === registrationType.ATTENDEE) {
     <button
       mat-flat-button
       class="tertiary-button"
       (click)="unregisterForEvent()">
       Unregister
     </button>
-    } @else if(event().is_organizer) {} @else if(event().registration_limit ===
-    event().registration_count) {
+    } @else if(event().user_registration_type === registrationType.ORGANIZER) {}
+    @else if(event().registration_limit === event().number_registered) {
     <button mat-flat-button [disabled]="true">Filled</button>
     } @else {
     <button mat-flat-button (click)="registerForEvent()">
@@ -65,7 +70,7 @@
         event().registration_limit > 400
           ? '(Open to All)'
           : '(' +
-            (event().registration_limit - event().registration_count) +
+            (event().registration_limit - event().number_registered) +
             ' seats left)'
       }}
     </button>

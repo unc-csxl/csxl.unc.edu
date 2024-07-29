@@ -14,6 +14,7 @@
             {{ event.time | date: 'shortTime' }}
           </mat-chip>
         </mat-chip-set>
+        @if(profile) {
         <mat-chip-set class="no-hover-chipset">
           <mat-chip disableRipple>
             <mat-icon class="primary-color" matChipAvatar>
@@ -25,6 +26,7 @@
             {{ event.registration_limit - event.number_registered }} left }
           </mat-chip>
         </mat-chip-set>
+        }
       </div>
     </div>
   </mat-card-header>
@@ -64,6 +66,7 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
+    @if(profile) {
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
     </button>
@@ -80,6 +83,6 @@
     <button mat-flat-button [disabled]="true">Filled</button>
     } @else {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
-    }
+    } }
   </mat-card-actions>
 </mat-card>
