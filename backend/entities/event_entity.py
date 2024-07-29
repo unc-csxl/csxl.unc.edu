@@ -12,7 +12,7 @@ from ..models.user import User
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -28,9 +28,9 @@ class EventEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Name of the event
     name: Mapped[str] = mapped_column(String)
-    # Time of the event
+    # Start time of the event
     start: Mapped[datetime] = mapped_column(DateTime)
-    # Time of the event
+    # End time of the event
     end: Mapped[datetime] = mapped_column(DateTime)
     # Location of the event
     location: Mapped[str] = mapped_column(String)
