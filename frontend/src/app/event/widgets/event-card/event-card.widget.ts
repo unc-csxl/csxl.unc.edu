@@ -23,6 +23,8 @@ export class EventCardWidget {
   @Input() event!: EventOverview;
   @Output() registrationChange = new EventEmitter<boolean>();
 
+  now = new Date();
+
   constructor(
     protected eventService: EventService,
     protected snackBar: MatSnackBar
