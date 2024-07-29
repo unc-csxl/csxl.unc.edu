@@ -115,8 +115,8 @@ class ArticleService:
                 select(EventRegistrationEntity)
                 .where(EventRegistrationEntity.user_id == subject.id)
                 .join(EventEntity)
-                .where(EventEntity.time >= now)
-                .order_by(EventEntity.time)
+                .where(EventEntity.start >= now)
+                .order_by(EventEntity.start)
             )
 
             registered_events_entities = self._session.scalars(
