@@ -6,8 +6,8 @@
         <mat-card-subtitle>{{ event.name }}</mat-card-subtitle>
         <p>{{ event.location }}</p>
         <p>
-          {{ event.time | date: 'shortDate' }} at
-          {{ event.time | date: 'shortTime' }}
+          {{ event.start | date: 'shortDate' }} at
+          {{ event.start | date: 'shortTime' }}
         </p>
       </div>
     </div>

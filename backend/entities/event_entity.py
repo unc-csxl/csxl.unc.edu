@@ -29,7 +29,9 @@ class EventEntity(EntityBase):
     # Name of the event
     name: Mapped[str] = mapped_column(String)
     # Time of the event
-    time: Mapped[datetime] = mapped_column(DateTime)
+    start: Mapped[datetime] = mapped_column(DateTime)
+    # Time of the event
+    end: Mapped[datetime] = mapped_column(DateTime)
     # Location of the event
     location: Mapped[str] = mapped_column(String)
     # Description of the event
@@ -64,7 +66,8 @@ class EventEntity(EntityBase):
         """
         return cls(
             name=model.name,
-            time=model.time,
+            start=model.start,
+            end=model.end,
             location=model.location,
             description=model.description,
             public=False,  # TODO: Implement public and private events.
@@ -114,7 +117,8 @@ class EventEntity(EntityBase):
         return EventOverview(
             id=self.id,
             name=self.name,
-            time=self.time,
+            start=self.start,
+            end=self.end,
             location=self.location,
             description=self.description,
             public=self.public,

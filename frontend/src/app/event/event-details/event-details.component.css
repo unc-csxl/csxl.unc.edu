@@ -61,3 +61,28 @@ mat-card-actions {
     max-height: 200px !important;
     object-fit: cover;
 }
+
+.links-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    align-items: center;
+    margin-bottom: 4px;
+    column-gap: 16px;
+
+    p {
+        margin-bottom: 0;
+    }
+  }
+  
+  .link-icons {
+    margin-left: 6px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+  }

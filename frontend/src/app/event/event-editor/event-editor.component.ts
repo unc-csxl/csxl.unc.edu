@@ -52,7 +52,11 @@ export class EventEditorComponent {
   /** Event Editor Form */
   public eventForm = this.formBuilder.group({
     name: new FormControl('', [Validators.required]),
-    time: new FormControl(
+    start: new FormControl(
+      this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+      [Validators.required]
+    ),
+    end: new FormControl(
       this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
       [Validators.required]
     ),
@@ -90,7 +94,8 @@ export class EventEditorComponent {
     // Set values for form group
     this.eventForm.patchValue(
       Object.assign({}, this.event, {
-        time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
+        start: this.datePipe.transform(this.event.start, 'yyyy-MM-ddTHH:mm'),
+        end: this.datePipe.transform(this.event.end, 'yyyy-MM-ddTHH:mm'),
         userLookup: ''
       })
     );
@@ -142,7 +147,8 @@ export class EventEditorComponent {
   onReset() {
     this.eventForm.patchValue(
       Object.assign({}, this.event, {
-        time: this.datePipe.transform(this.event.time, 'yyyy-MM-ddTHH:mm'),
+        start: this.datePipe.transform(this.event.start, 'yyyy-MM-ddTHH:mm'),
+        end: this.datePipe.transform(this.event.end, 'yyyy-MM-ddTHH:mm'),
         userLookup: ''
       })
     );

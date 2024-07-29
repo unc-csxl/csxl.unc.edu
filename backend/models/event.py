@@ -18,7 +18,8 @@ class EventDraft(BaseModel):
 
     id: int | None = None
     name: str
-    time: datetime
+    start: datetime
+    end: datetime
     location: str
     description: str
     registration_limit: int
@@ -30,7 +31,8 @@ class EventDraft(BaseModel):
 class EventOverview(BaseModel):
     id: int
     name: str
-    time: datetime
+    start: datetime
+    end: datetime
     location: str
     description: str
     public: bool

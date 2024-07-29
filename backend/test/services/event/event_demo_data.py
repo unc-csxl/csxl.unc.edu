@@ -47,7 +47,8 @@ def date_maker(days_in_future: int, hour: int, minutes: int) -> datetime.datetim
 
 event_one = EventEntity(
     name="Carolina Data Challenge",
-    time=date_maker(days_in_future=1, hour=10, minutes=0),
+    start=date_maker(days_in_future=1, hour=10, minutes=0),
+    end=date_maker(days_in_future=1, hour=11, minutes=0),
     location="Sitterson Hall",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
@@ -57,7 +58,8 @@ event_one = EventEntity(
 
 event_two = EventEntity(
     name="CS+SG Workshop",
-    time=date_maker(days_in_future=2, hour=19, minutes=0),
+    start=date_maker(days_in_future=2, hour=19, minutes=0),
+    end=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN 014",
     description="This is a sample description.",
     public=True,
@@ -67,7 +69,8 @@ event_two = EventEntity(
 
 event_three = EventEntity(
     name="HackNC Hackathon",
-    time=date_maker(days_in_future=10, hour=10, minutes=0),
+    start=date_maker(days_in_future=10, hour=10, minutes=0),
+    end=date_maker(days_in_future=10, hour=11, minutes=0),
     location="Fetzer Gym",
     description="HackNC is a weekend for students of all skill levels to broaden their talents. Your challenge is to make an awesome project in just 24 hours. You will have access to hands-on tech workshops, sponsor networking, as well as exciting talks about the awesome things happening right now with computer science and technology - not to mention all of the free food, shirts, stickers, and swag! We are the largest hackathon in the southeastern United States.",
     public=True,
@@ -77,7 +80,8 @@ event_three = EventEntity(
 
 event_four = EventEntity(
     name="Intro to Web Scraping Workshop",
-    time=date_maker(days_in_future=12, hour=19, minutes=0),
+    start=date_maker(days_in_future=12, hour=19, minutes=0),
+    end=date_maker(days_in_future=12, hour=20, minutes=0),
     location="FB 009",
     description="If you are interested in web scraping, come out to learn!",
     public=True,
@@ -87,7 +91,8 @@ event_four = EventEntity(
 
 event_five = EventEntity(
     name="API Workshop",
-    time=date_maker(days_in_future=-10, hour=19, minutes=0),
+    start=date_maker(days_in_future=-10, hour=19, minutes=0),
+    end=date_maker(days_in_future=-10, hour=20, minutes=0),
     location="FB 009",
     description="If you are interested in APIs, come out to learn!",
     public=True,
@@ -96,7 +101,8 @@ event_five = EventEntity(
 
 event_six = EventEntity(
     name="Python Workshop",
-    time=date_maker(days_in_future=-15, hour=19, minutes=0),
+    start=date_maker(days_in_future=-15, hour=19, minutes=0),
+    end=date_maker(days_in_future=-15, hour=20, minutes=0),
     location="FB 009",
     description="If you are interested in Python, come out to learn!",
     public=True,
