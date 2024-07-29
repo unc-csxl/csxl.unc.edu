@@ -15,7 +15,6 @@ import {
   effect,
   signal
 } from '@angular/core';
-import { welcomeResolver } from '../welcome.resolver';
 import { WelcomeOverview } from '../welcome.model';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileService } from 'src/app/profile/profile.service';
