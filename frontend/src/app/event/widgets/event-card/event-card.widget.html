@@ -70,7 +70,8 @@
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
     </button>
-    @if(event.user_registration_type === registrationType.ATTENDEE) {
+    @if(event.user_registration_type === registrationType.ATTENDEE && event.time
+    > now) {
     <button
       mat-flat-button
       class="tertiary-button"
@@ -79,9 +80,10 @@
     </button>
     } @else if(event.user_registration_type === registrationType.ORGANIZER) {
     <button mat-flat-button [disabled]="true">Manage</button>
-    } @else if(event.registration_limit === event.number_registered) {
+    } @else if(event.registration_limit === event.number_registered &&
+    event.time > now) {
     <button mat-flat-button [disabled]="true">Filled</button>
-    } @else {
+    } @else if(event.time > now) {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
     } }
   </mat-card-actions>
