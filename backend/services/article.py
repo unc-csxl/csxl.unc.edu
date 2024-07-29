@@ -115,6 +115,7 @@ class ArticleService:
                 select(EventRegistrationEntity)
                 .where(EventRegistrationEntity.user_id == subject.id)
                 .join(EventEntity)
+                .where(EventEntity.time >= now)
                 .order_by(EventEntity.time)
             )
 
