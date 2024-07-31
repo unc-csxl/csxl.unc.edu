@@ -3,7 +3,7 @@ Service for hiring.
 """
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
 from ...database import db_session
 from ..permission import PermissionService
@@ -16,6 +16,7 @@ from ...entities.application_entity import ApplicationEntity
 from ...entities.academics.hiring.application_review_entity import (
     ApplicationReviewEntity,
 )
+from ...entities.section_application_table import section_application_table
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
 from ...models.academics.hiring.application_review import (
@@ -63,6 +64,9 @@ class HiringService:
                 subject, "hiring.get_status", f"course_site/{course_site_id}"
             )
 
+        # Step 2: Ensure all applications have an application_review entity.
+        self._create_missing_reviews(site_entity)
+
         # Step 2: Find all applicants for sections in a given course site.
         applications: list[ApplicationEntity] = []
         for section in site_entity.sections:
@@ -91,27 +95,6 @@ class HiringService:
             ]
             if course_site_id not in reviews_course_site_ids:
                 applications_missing_review.append(application)
-
-        # Step 4: Create reviews for applications missing reviews, if any.
-        preference_to_use = (
-            (max([review.preference for review in not_processed_applications]) + 1)
-            if len(not_processed_applications) > 0
-            else 0
-        )
-
-        for application in applications_missing_review:
-            review = ApplicationReview(
-                application_id=application.id,
-                course_site_id=course_site_id,
-                preference=preference_to_use,
-                notes="",
-            )
-            review_entity = ApplicationReviewEntity.from_model(review)
-            self._session.add(review_entity)
-            preference_to_use += 1
-            not_processed_applications.append(review_entity)
-
-        self._session.commit()
 
         # Step 5: Create review overview objects
         not_preferred_overviews: list[ApplicationReviewOverview] = [
@@ -217,3 +200,70 @@ class HiringService:
             .where(SectionMemberEntity.member_role == RosterRole.INSTRUCTOR)
         )
         return self._session.scalars(membership_query).first() is not None
+
+    def _create_missing_reviews(self, site: CourseSiteEntity) -> None:
+        need_review: list[int] = self._select_application_ids_without_reviews(site)
+
+        preference: int = self._count_unprocessed(site)
+        if len(need_review) > 0:
+            for application_id in need_review:
+                preference += 1
+                review = ApplicationReviewEntity(
+                    application_id=application_id,
+                    course_site_id=site.id,
+                    status=ApplicationReviewStatus.NOT_PROCESSED,
+                    preference=preference,
+                    notes="",
+                )
+                self._session.add(review)
+            self._session.commit()
+
+    def _count_unprocessed(self, course_site: CourseSiteEntity) -> int:
+        """
+        Returns the maximum preference value for unprocessed applications.
+
+        Args:
+            course_site (CourseSiteEntity): The course site to check against.
+
+        Returns:
+            int: The maximum preference value for unprocessed applications.
+        """
+        count_unprocessed = (
+            select(func.count(ApplicationReviewEntity.preference))
+            .where(ApplicationReviewEntity.course_site_id == course_site.id)
+            .where(
+                ApplicationReviewEntity.status == ApplicationReviewStatus.NOT_PROCESSED
+            )
+        )
+        return self._session.scalar(count_unprocessed) or 0
+
+    def _select_application_ids_without_reviews(
+        self, course_site: CourseSiteEntity
+    ) -> list[int]:
+        """
+        Returns a list of application IDs that do not have a review for a given course site.
+
+        Args:
+            course_site (CourseSiteEntity): The course site to check against.
+
+        Returns:
+            list[int]: A list of application IDs that do not have a review for the course site.
+        """
+        application_ids = (
+            select(section_application_table.c.application_id)
+            .where(
+                section_application_table.c.section_id.in_(
+                    select(SectionEntity.id).where(
+                        SectionEntity.course_site_id == course_site.id
+                    )
+                )
+            )
+            .where(
+                section_application_table.c.application_id.notin_(
+                    select(ApplicationReviewEntity.application_id).where(
+                        ApplicationReviewEntity.course_site_id == course_site.id
+                    )
+                )
+            )
+        )
+        return list(self._session.scalars(application_ids).all())
