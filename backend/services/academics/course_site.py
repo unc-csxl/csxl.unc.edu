@@ -84,6 +84,7 @@ class CourseSiteService:
             list[TermOverview]: The grouped SectionMemberEntity.
         """
         terms = []
+        entities.sort(key=lambda x: x.section.term.start)
         for term, term_memberships in groupby(entities, lambda x: x.section.term):
 
             # Since the output `term_memberships` is an iterator, we cannot iterate over the list

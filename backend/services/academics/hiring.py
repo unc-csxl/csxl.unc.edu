@@ -353,7 +353,9 @@ class HiringService:
                 status=review.status,
                 preference=review.preference,
                 notes=review.notes,
-                applicant_course_ranking=applicant_preferences[review.application_id],
+                applicant_course_ranking=applicant_preferences.get(
+                    review.application_id, 999
+                ),
             )
             for review in application_reviews
         ]
