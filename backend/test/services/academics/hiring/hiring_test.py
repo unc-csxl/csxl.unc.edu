@@ -129,13 +129,16 @@ def test_update_status_site_not_instructor(hiring_svc: HiringService):
     status = hiring_svc.get_status(
         user_data.instructor, office_hours_data.comp_110_site.id
     )
-    with pytest.raises(CoursePermissionException):
+    with pytest.raises(UserPermissionException):
         hiring_svc.update_status(
             user_data.ambassador, office_hours_data.comp_110_site.id, status
         )
         pytest.fail()
-    with pytest.raises(CoursePermissionException):
-        hiring_svc.update_status(
-            user_data.root, office_hours_data.comp_110_site.id, status
-        )
-        pytest.fail()
+
+
+def test_update_status_administrator(hiring_svc: HiringService):
+    status = hiring_svc.get_status(
+        user_data.instructor, office_hours_data.comp_110_site.id
+    )
+    hiring_svc.update_status(user_data.root, office_hours_data.comp_110_site.id, status)
+    assert True

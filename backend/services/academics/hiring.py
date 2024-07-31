@@ -2,6 +2,8 @@
 Service for hiring.
 """
 
+from itertools import groupby
+from operator import attrgetter
 from fastapi import Depends
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
@@ -9,6 +11,8 @@ from ...database import db_session
 from ..permission import PermissionService
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
+from ...models.application import ApplicationUnderReview
+from ...entities.user_entity import UserEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import CourseSiteEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -67,55 +71,13 @@ class HiringService:
         # Step 2: Ensure all applications have an application_review entity.
         self._create_missing_reviews(site_entity)
 
-        # Step 2: Find all applicants for sections in a given course site.
-        applications: list[ApplicationEntity] = []
-        for section in site_entity.sections:
-            applications += section.preferred_applicants
-
-        # Step 3: Process reviews.
-        not_preferred_applications: list[ApplicationReviewEntity] = []
-        not_processed_applications: list[ApplicationReviewEntity] = []
-        preferred_applications: list[ApplicationReviewEntity] = []
-
-        for review in site_entity.application_reviews:
-            if review.status == ApplicationReviewStatus.NOT_PREFERRED:
-                not_preferred_applications.append(review)
-            if review.status == ApplicationReviewStatus.NOT_PROCESSED:
-                not_processed_applications.append(review)
-            if review.status == ApplicationReviewStatus.PREFERRED:
-                preferred_applications.append(review)
-
-        # Step 4: Find applications with no reviews.
-        applications_missing_review: list[ApplicationEntity] = []
-
-        for application in applications:
-            # Check if the application is missing reviews
-            reviews_course_site_ids = [
-                review.course_site_id for review in application.reviews
-            ]
-            if course_site_id not in reviews_course_site_ids:
-                applications_missing_review.append(application)
-
-        # Step 5: Create review overview objects
-        not_preferred_overviews: list[ApplicationReviewOverview] = [
-            review.to_overview_model() for review in not_preferred_applications
-        ]
-        not_processed_overviews: list[ApplicationReviewOverview] = [
-            review.to_overview_model() for review in not_processed_applications
-        ]
-        preferred_overviews: list[ApplicationReviewOverview] = [
-            review.to_overview_model() for review in preferred_applications
-        ]
-
-        # Step 6: Create hiring status object and return
-        hiring_status = HiringStatus(
-            not_preferred=sorted(not_preferred_overviews, key=lambda o: o.preference),
-            not_processed=sorted(not_processed_overviews, key=lambda o: o.preference),
-            preferred=sorted(preferred_overviews, key=lambda o: o.preference),
+        # Step 3: Load all reviews for the course site.
+        review_models: list[ApplicationReviewOverview] = self._to_review_models(
+            site_entity
         )
 
-        # Step 7: Return
-        return hiring_status
+        # Step 4: Return the hiring status model
+        return self._hiring_status_model(review_models)
 
     def update_status(
         self, subject: User, course_site_id: int, hiring_status: HiringStatus
@@ -126,8 +88,14 @@ class HiringService:
         Returns:
             HiringStatus
         """
+        # Step 0: Load a Course Site
+        site_entity = self._load_course_site(course_site_id)
+
         # Step 1: Ensure that a user can access a course site's hiring.
-        site_entity = self._load_instructor_course_site(subject, course_site_id)
+        if not self._is_instructor(subject, site_entity):
+            self._permission_svc.enforce(
+                subject, "hiring.get_status", f"course_site/{course_site_id}"
+            )
 
         # Step 2: Update the values for all reviews.
 
@@ -267,3 +235,189 @@ class HiringService:
             )
         )
         return list(self._session.scalars(application_ids).all())
+
+    def _load_application_reviews(
+        self, course_site: CourseSiteEntity
+    ) -> list[ApplicationReviewEntity]:
+        """
+        Loads all application reviews for a given course site.
+
+        Args:
+            course_site (CourseSiteEntity): The course site to check against.
+
+        Returns:
+            list[ApplicationReviewEntity]: A list of application reviews for the course site.
+        """
+        reviews_query = select(ApplicationReviewEntity).where(
+            ApplicationReviewEntity.course_site_id == course_site.id
+        )
+        return list(self._session.scalars(reviews_query).all())
+
+    def _load_applications(
+        self, reviews: list[ApplicationReviewEntity]
+    ) -> dict[int, ApplicationEntity]:
+        """
+        Loads all applications for a given course site.
+
+        Args:
+            course_site (CourseSiteEntity): The course site to check against.
+
+        Returns:
+            list[ApplicationEntity]: A list of applications for the course site.
+        """
+        applications_query = select(ApplicationEntity).where(
+            ApplicationEntity.id.in_([review.application_id for review in reviews])
+        )
+        # Use a dict comprehension to map application IDs to application entities.
+        return {app.id: app for app in self._session.scalars(applications_query).all()}
+
+    def _load_applicants(
+        self, applications: dict[int, ApplicationEntity]
+    ) -> dict[int, UserEntity]:
+        """
+        Loads all applicants for a given course site.
+
+        Args:
+            applications (dict[int, ApplicationEntity]): A dictionary of application IDs to application entities.
+
+        Returns:
+            dict[int, User]: A dictionary of applicant IDs to applicant entities.
+        """
+        applicant_ids = {app.user_id for app in applications.values()}
+        applicants_query = select(UserEntity).where(UserEntity.id.in_(applicant_ids))
+        # Use a dict comprehension to map applicant IDs to applicant entities.
+        return {
+            applicant.id: applicant
+            for applicant in self._session.scalars(applicants_query).all()
+        }
+
+    def _load_application_preferences(
+        self, applications: dict[int, ApplicationEntity]
+    ) -> dict[int, int]:
+        """
+        Loads all application preferences for a given course site.
+
+        Args:
+            applications (dict[int, ApplicationEntity]): A dictionary of application IDs to application entities.
+
+        Returns:
+            dict[int, int]: A dictionary of application IDs to application preferences.
+        """
+        preferences_query = (
+            select(
+                ApplicationReviewEntity.application_id,
+                func.min(ApplicationReviewEntity.preference),
+            )
+            .where(ApplicationReviewEntity.application_id.in_(applications.keys()))
+            .group_by(ApplicationReviewEntity.application_id)
+        )
+        result = self._session.execute(preferences_query)
+        return {row[0]: row[1] + 1 for row in result}
+
+    def _to_review_models(
+        self,
+        site_entity: CourseSiteEntity,
+    ) -> list[ApplicationReviewOverview]:
+        """
+        Converts a list of application reviews into a list of review models.
+
+        Args:
+            reviews (list[ApplicationReviewEntity]): A list of application reviews.
+            applications (dict[int, ApplicationEntity]): A dictionary of application IDs to application entities.
+            applicants (dict[int, UserEntity]): A dictionary of applicant IDs to applicant entities.
+            applicant_preferences (dict[int, int]): A dictionary of application IDs to application preferences.
+
+        Returns:
+            list[ApplicationReviewOverview]: A list of review models.
+        """
+        application_reviews = self._load_application_reviews(site_entity)
+        applications = self._load_applications(application_reviews)
+        applicants = self._load_applicants(applications)
+        applicant_preferences = self._load_application_preferences(applications)
+        return [
+            ApplicationReviewOverview(
+                id=review.id,
+                course_site_id=review.course_site_id,
+                application_id=review.application_id,
+                application=self._application_model(
+                    applications[review.application_id],
+                    applicants[applications[review.application_id].user_id],
+                ),
+                status=review.status,
+                preference=review.preference,
+                notes=review.notes,
+                applicant_course_ranking=applicant_preferences[review.application_id],
+            )
+            for review in application_reviews
+        ]
+
+    def _application_model(
+        self, application: ApplicationEntity, applicant: UserEntity
+    ) -> ApplicationUnderReview:
+        """
+        Converts an application entity into an application model.
+
+        Args:
+            application (ApplicationEntity): The application entity to convert.
+            applicant (UserEntity): The applicant entity to convert.
+
+        Returns:
+            ApplicationUnderReview: The application model.
+        """
+        return ApplicationUnderReview(
+            id=application.id,
+            type=str(application.type),
+            applicant=applicant.to_public_model(),
+            applicant_name=applicant.first_name + " " + applicant.last_name,
+            academic_hours=application.academic_hours,
+            extracurriculars=application.extracurriculars,
+            expected_graduation=application.expected_graduation,
+            program_pursued=application.program_pursued,
+            other_programs=application.other_programs,
+            gpa=application.gpa,
+            comp_gpa=application.comp_gpa,
+            comp_227=application.comp_227,
+            intro_video_url=application.intro_video_url,
+            prior_experience=application.prior_experience,
+            service_experience=application.service_experience,
+            additional_experience=application.additional_experience,
+            ta_experience=application.ta_experience,
+            best_moment=application.best_moment,
+            desired_improvement=application.desired_improvement,
+            advisor=application.advisor,
+        )
+
+    def _hiring_status_model(
+        self, review_models: list[ApplicationReviewOverview]
+    ) -> HiringStatus:
+        """
+        Converts a list of review models into a hiring status model.
+
+        Args:
+            review_models (list[ApplicationReviewOverview]): A list of review models.
+
+        Returns:
+            HiringStatus: The hiring status model.
+        """
+        # Group by status
+        review_models.sort(key=lambda review: str(review.status))
+        status_groups = groupby(review_models, key=attrgetter("status"))
+        grouped_items = {key: list(group) for key, group in status_groups}
+
+        # Sort by preference
+        for status in [
+            ApplicationReviewStatus.NOT_PREFERRED,
+            ApplicationReviewStatus.PREFERRED,
+            ApplicationReviewStatus.NOT_PROCESSED,
+        ]:
+            if status not in grouped_items:
+                grouped_items[status] = []
+            else:
+                grouped_items[status].sort(key=attrgetter("preference"))
+
+        # Return Grouped
+        return HiringStatus(
+            not_preferred=grouped_items[ApplicationReviewStatus.NOT_PREFERRED],
+            not_processed=grouped_items[ApplicationReviewStatus.NOT_PROCESSED],
+            preferred=grouped_items[ApplicationReviewStatus.PREFERRED],
+        )
