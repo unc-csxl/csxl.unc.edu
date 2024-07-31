@@ -6,6 +6,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
 from ...database import db_session
+from ..permission import PermissionService
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...entities.academics.section_entity import SectionEntity
@@ -34,11 +35,16 @@ class HiringService:
     Service that performs all actions for hiring.
     """
 
-    def __init__(self, session: Session = Depends(db_session)):
+    def __init__(
+        self,
+        session: Session = Depends(db_session),
+        permission_svc: PermissionService = Depends(),
+    ):
         """
         Initializes the database session.
         """
         self._session = session
+        self._permission_svc = permission_svc
 
     def get_status(self, subject: User, course_site_id: int) -> HiringStatus:
         """
@@ -48,8 +54,14 @@ class HiringService:
         Returns:
             HiringStatus
         """
+        # Step 0: Load a Course Site
+        site_entity = self._load_course_site(course_site_id)
+
         # Step 1: Ensure that a user can access a course site's hiring.
-        site_entity = self._load_instructor_course_site(subject, course_site_id)
+        if not self._is_instructor(subject, site_entity):
+            self._permission_svc.enforce(
+                subject, "hiring.get_status", f"course_site/{course_site_id}"
+            )
 
         # Step 2: Find all applicants for sections in a given course site.
         applications: list[ApplicationEntity] = []
@@ -157,51 +169,51 @@ class HiringService:
         # Reload the data and return the hiring status.
         return self.get_status(subject, course_site_id)
 
-    def _load_instructor_course_site(
-        self, subject: User, course_site_id: int
-    ) -> CourseSiteEntity:
+    def _load_course_site(self, course_site_id: int) -> CourseSiteEntity:
         """
         Loads a course site given a subject and course site ID.
-        Ensures that a subject is an instructor for all of the courses in a course site.
-
-        Throws:
-          CoursePermissionException
 
         Returns:
-            CourseSiteEntity
+            CourseSiteEntity | None
+
+        Raises:
+            ResourceNotFoundException when the course site does not exist.
         """
-        site_query = (
-            select(CourseSiteEntity)
-            .where(CourseSiteEntity.id == course_site_id)
-            .options(
-                joinedload(CourseSiteEntity.sections)
-                .joinedload(SectionEntity.preferred_applicants)
-                .joinedload(ApplicationEntity.user),
-                joinedload(CourseSiteEntity.application_reviews),
-            )
+        site_query = select(CourseSiteEntity).where(
+            CourseSiteEntity.id == course_site_id
         )
+        site_entity: CourseSiteEntity | None = self._session.scalar(site_query)
 
-        # Attempt to load a site.
-        site_entity = self._session.scalars(site_query).unique().one_or_none()
-
-        # Throw error if the site is not retrieved
         if site_entity is None:
             raise ResourceNotFoundException(
                 f"No course site exists for id: {course_site_id}"
             )
 
-        # Check permissions
-        for section in site_entity.sections:
-            roles = [
-                member
-                for member in section.members
-                if member.user_id == subject.id
-                and member.member_role == RosterRole.INSTRUCTOR
-            ]
-            if len(roles) < 1:
-                raise CoursePermissionException(
-                    f"You are not the instructor for a course site with ID: {course_site_id}"
-                )
-
         # Return the site
         return site_entity
+
+    def _is_instructor(self, subject: User, course_site: CourseSiteEntity) -> bool:
+        """
+        Checks if the given user is an instructor for the specified course site.
+
+        Args:
+            subject (User): The user to check.
+            course_site (CourseSiteEntity): The course site to check against.
+
+        Returns:
+            bool: True if the user is an instructor, False otherwise.
+
+        """
+        membership_query = (
+            select(SectionMemberEntity)
+            .where(SectionMemberEntity.user_id == subject.id)
+            .where(
+                SectionMemberEntity.section_id.in_(
+                    select(SectionEntity.id).where(
+                        SectionEntity.course_site_id == course_site.id
+                    )
+                )
+            )
+            .where(SectionMemberEntity.member_role == RosterRole.INSTRUCTOR)
+        )
+        return self._session.scalars(membership_query).first() is not None
