@@ -292,7 +292,7 @@ class HiringService:
         }
 
     def _load_application_preferences(
-        self, applications: dict[int, ApplicationEntity]
+        self, site: CourseSiteEntity, applications: dict[int, ApplicationEntity]
     ) -> dict[int, int]:
         """
         Loads all application preferences for a given course site.
@@ -305,11 +305,16 @@ class HiringService:
         """
         preferences_query = (
             select(
-                ApplicationReviewEntity.application_id,
-                func.min(ApplicationReviewEntity.preference),
+                section_application_table.c.application_id,
+                func.min(section_application_table.c.preference),
             )
-            .where(ApplicationReviewEntity.application_id.in_(applications.keys()))
-            .group_by(ApplicationReviewEntity.application_id)
+            .where(section_application_table.c.application_id.in_(applications.keys()))
+            .where(
+                section_application_table.c.section_id.in_(
+                    [section.id for section in site.sections]
+                )
+            )
+            .group_by(section_application_table.c.application_id)
         )
         result = self._session.execute(preferences_query)
         return {row[0]: row[1] + 1 for row in result}
@@ -333,7 +338,9 @@ class HiringService:
         application_reviews = self._load_application_reviews(site_entity)
         applications = self._load_applications(application_reviews)
         applicants = self._load_applicants(applications)
-        applicant_preferences = self._load_application_preferences(applications)
+        applicant_preferences = self._load_application_preferences(
+            site_entity, applications
+        )
         return [
             ApplicationReviewOverview(
                 id=review.id,
