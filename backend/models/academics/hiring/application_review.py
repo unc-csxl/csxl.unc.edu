@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from enum import Enum
 
-from ...application import Comp227, ApplicationOverview
+from ...application import Comp227, ApplicationUnderReview
 from ...public_user import PublicUser
 
 __authors__ = ["Ajay Gandecha"]
@@ -33,7 +33,7 @@ class ApplicationReview(BaseModel):
 class ApplicationReviewOverview(ApplicationReview):
     id: int | None = None
     application_id: int
-    application: ApplicationOverview
+    application: ApplicationUnderReview
     status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
     preference: int
     notes: str

@@ -20,7 +20,7 @@ from typing import Self, Dict
 from ..models.application import Application
 from ..models.comp_227 import Comp227
 
-from ..models.academics.hiring.application_review import ApplicationOverview
+from ..models.application import ApplicationOverview
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
