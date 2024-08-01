@@ -82,6 +82,7 @@ export class HiringSummaryComponent {
     'name',
     'onyen',
     'instructors',
+    'level',
     'epar',
     'position_number',
     'notes',
