@@ -45,6 +45,41 @@ class HiringAssignmentOverview(BaseModel):
     notes: str
 
 
+class HiringAssignmentSummaryOverview(BaseModel):
+    """Model specific for the summary page."""
+
+    id: int | None = None
+    application_review_id: int | None = None
+    course_site_id: int | None = None
+    user: PublicUser
+    instructors: str
+    level: HiringLevel
+    status: HiringAssignmentStatus
+    position_number: str
+    epar: str
+    i9: bool
+    notes: str
+
+
+class HiringAssignmentCsvRow(BaseModel):
+    """Model specific for the CSV export."""
+
+    first_name: str
+    last_name: str
+    onyen: str
+    pid: str
+    email: str
+    instructors: str
+    epar: str
+    position_number: str
+    i9: bool
+    notes: str
+    status: HiringAssignmentStatus
+    level_title: str
+    level_load: str
+    level_salary: str
+
+
 class HiringCourseSiteOverview(BaseModel):
     course_site_id: int
     sections: list[CatalogSectionIdentity]

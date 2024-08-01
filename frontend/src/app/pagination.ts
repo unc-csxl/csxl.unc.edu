@@ -148,6 +148,11 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
         .pipe(tap((pageData) => this.pageSignal.set(pageData)));
     }
   }
+
+  /** Enables the dynamic change of the API route for more nuanced pagination. */
+  changeApiRoute(route: string) {
+    this.api = route;
+  }
 }
 
 /** Default paginator implementation. */

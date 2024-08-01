@@ -3,6 +3,11 @@
 Hiring routes are used for hiring based on TA Applications."""
 
 from fastapi import APIRouter, Depends
+import io
+import csv
+from fastapi.responses import StreamingResponse
+
+from backend.models.pagination import Paginated, PaginationParams
 
 from ...services.academics import HiringService
 
@@ -131,3 +136,50 @@ def update_status(
     Updates the hiring status for TA Applications.
     """
     return hiring_service.update_status(subject, course_site_id, hiring_status)
+
+
+@api.get("/summary/{term_id}", tags=["Hiring"])
+def get_hiring_summary_overview(
+    term_id: str,
+    page: int = 0,
+    page_size: int = 25,
+    order_by: str = "",
+    filter: str = "",
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> Paginated[HiringAssignmentSummaryOverview]:
+    """
+    Returns the state of hiring as a summary.
+    """
+    pagination_params = PaginationParams(
+        page=page, page_size=page_size, order_by=order_by, filter=filter
+    )
+    return hiring_service.get_hiring_summary_overview(
+        subject, term_id, pagination_params
+    )
+
+
+@api.get("/summary/{term_id}/csv", tags=["Hiring"])
+def get_hiring_summary_csv(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> Paginated[HiringAssignmentSummaryOverview]:
+    """
+    Returns the state of hiring as a summary.
+    """
+    # Get the data
+    data = hiring_service.get_hiring_summary_for_csv(subject, term_id)
+    # Create IO Stream
+    stream = io.StringIO()
+    # Create dictionary writer to convert objects to CSV rows
+    # Note: __dict__ converts the Pydantic model into a dictionary of key-value
+    # pairs, enabling access of the object's keys.
+    wr = csv.DictWriter(stream, delimiter=",", fieldnames=list(data[0].__dict__.keys()))
+    wr.writeheader()
+    wr.writerows([d.__dict__ for d in data])
+    # Create HTTP response of type `text/csv`
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    # Return the response
+    return response

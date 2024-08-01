@@ -13,9 +13,11 @@ import { HiringPageComponent } from './hiring-page/hiring-page.component';
 import { HiringAdminComponent } from './hiring-admin/hiring-admin.component';
 import { LevelsAdminComponent } from './levels-admin/levels-admin.component';
 import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.component';
+import { HiringSummaryComponent } from './hiring-summary/hiring-summary.component';
 
 const routes: Routes = [
   HiringAdminComponent.Route,
+  HiringSummaryComponent.Route,
   LevelsAdminComponent.Route,
   HiringPageComponent.Route,
   LevelEditorComponent.Route

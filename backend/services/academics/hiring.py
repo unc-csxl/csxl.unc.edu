@@ -5,14 +5,16 @@ Service for hiring.
 from itertools import groupby
 from operator import attrgetter
 from fastapi import Depends
-from sqlalchemy import select, func, update
+from sqlalchemy import func, or_, select, update
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
+
+from backend.models.pagination import Paginated, PaginationParams
 from ...database import db_session
 from ..permission import PermissionService
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
+from ...entities import UserEntity
 from ...models.application import ApplicationUnderReview
-from ...entities.user_entity import UserEntity
 from ...entities.academics import SectionEntity, TermEntity
 from ...entities.office_hours import CourseSiteEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -655,3 +657,84 @@ class HiringService:
         self._session.commit()
 
         return level_entity.to_model()
+
+    def get_hiring_summary_overview(
+        self, subject: User, term_id: str, pagination_params: PaginationParams
+    ) -> Paginated[HiringAssignmentSummaryOverview]:
+        """Returns the hires to show on a summary page for a given term."""
+        # 1. Check for hiring permissions.
+        self._permission.enforce(subject, "hiring.summary", "*")
+        # 2. Build query
+        assignment_query = (
+            select(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.term_id == term_id)
+            .where(
+                HiringAssignmentEntity.status.in_(
+                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
+                )
+            )
+            .join(HiringAssignmentEntity.user)
+            .options(
+                joinedload(HiringAssignmentEntity.course_site)
+                .joinedload(CourseSiteEntity.sections)
+                .joinedload(SectionEntity.staff)
+            )
+        )
+        # Count the number of rows before applying pagination and filter
+        count_query = select(func.count()).select_from(
+            assignment_query.distinct(HiringAssignmentEntity.id).subquery()
+        )
+
+        # Filter based on search entry
+        if pagination_params.filter != "":
+            query = pagination_params.filter
+            criteria = or_(
+                HiringAssignmentEntity.user.first_name.ilike(f"%{query}%"),
+                HiringAssignmentEntity.user.last_name.ilike(f"%{query}%"),
+                HiringAssignmentEntity.user.onyen.ilike(f"%{query}%"),
+                HiringAssignmentEntity.user.pid.ilike(f"%{query}%"),
+            )
+            assignment_query = assignment_query.where(criteria)
+            count_query = count_query.where(criteria)
+
+        # Calculate offset and limit for pagination
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        assignment_query = (
+            assignment_query.offset(offset).limit(limit).order_by(UserEntity.last_name)
+        )
+
+        # 3. Fetch data and build summary model
+        length = self._session.scalar(count_query)
+        assignment_entities = self._session.scalars(assignment_query).unique().all()
+
+        return Paginated(
+            items=[
+                assignment.to_summary_overview_model()
+                for assignment in assignment_entities
+            ],
+            length=length,
+            params=pagination_params,
+        )
+
+    def get_hiring_summary_for_csv(
+        self, subject: User, term_id: str
+    ) -> list[HiringAssignmentCsvRow]:
+        """Returns the hires to show on a summary page for a given term."""
+        # 1. Check for hiring permissions.
+        self._permission.enforce(subject, "hiring.summary", "*")
+        # 2. Build query
+        assignment_query = (
+            select(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.term_id == term_id)
+            .where(
+                HiringAssignmentEntity.status.in_(
+                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
+                )
+            )
+        )
+        # 3. Return items
+        assignment_entities = self._session.scalars(assignment_query).all()
+        return [
+            assignment_entity.to_csv_row() for assignment_entity in assignment_entities
+        ]
