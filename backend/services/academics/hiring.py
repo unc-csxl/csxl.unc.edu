@@ -5,7 +5,7 @@ Service for hiring.
 from itertools import groupby
 from operator import attrgetter
 from fastapi import Depends
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
 from ...database import db_session
 from ..permission import PermissionService
@@ -101,21 +101,37 @@ class HiringService:
 
         # Retrieve all reviews, indexed by ID for efficient searching.
         hiring_status_reviews_by_id: dict[int, ApplicationReviewOverview] = {}
-        for review_overview in hiring_status.not_preferred:
-            hiring_status_reviews_by_id[review_overview.id] = review_overview
-        for review_overview in hiring_status.not_processed:
-            hiring_status_reviews_by_id[review_overview.id] = review_overview
-        for review_overview in hiring_status.preferred:
-            hiring_status_reviews_by_id[review_overview.id] = review_overview
+        for pool in (
+            hiring_status.not_preferred,
+            hiring_status.not_processed,
+            hiring_status.preferred,
+        ):
+            for review_overview in pool:
+                assert review_overview.id is not None
+                hiring_status_reviews_by_id[review_overview.id] = review_overview
 
         # Update every application associated with the site.
-        for review in site_entity.application_reviews:
-            new_review = hiring_status_reviews_by_id[review.id]
-            review.status = new_review.status
-            review.preference = new_review.preference
-            review.notes = new_review.notes
+        updates: list[dict] = []
+        for persisted in site_entity.application_reviews:
+            request = hiring_status_reviews_by_id[persisted.id]
+            if (
+                persisted.status != request.status
+                or persisted.preference != request.preference
+                or persisted.notes != request.notes
+            ):
+                updates.append(
+                    {
+                        "id": persisted.id,
+                        "status": request.status,
+                        "preference": request.preference,
+                        "notes": request.notes,
+                    }
+                )
 
-        self._session.commit()
+        # Bulk update
+        if len(updates) > 0:
+            self._session.execute(update(ApplicationReviewEntity), updates)
+            self._session.commit()
 
         # Reload the data and return the hiring status.
         return self.get_status(subject, course_site_id)
@@ -175,7 +191,6 @@ class HiringService:
         preference: int = self._count_unprocessed(site)
         if len(need_review) > 0:
             for application_id in need_review:
-                preference += 1
                 review = ApplicationReviewEntity(
                     application_id=application_id,
                     course_site_id=site.id,
@@ -183,6 +198,7 @@ class HiringService:
                     preference=preference,
                     notes="",
                 )
+                preference += 1
                 self._session.add(review)
             self._session.commit()
 
@@ -203,7 +219,7 @@ class HiringService:
                 ApplicationReviewEntity.status == ApplicationReviewStatus.NOT_PROCESSED
             )
         )
-        return self._session.scalar(count_unprocessed) or 0
+        return self._session.scalar(count_unprocessed) or 1
 
     def _select_application_ids_without_reviews(
         self, course_site: CourseSiteEntity
