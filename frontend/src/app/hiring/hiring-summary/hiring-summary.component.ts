@@ -13,6 +13,14 @@ import {
 } from 'src/app/academics/academics.resolver';
 import { HiringService } from '../hiring.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
+import {
+  DEFAULT_PAGINATION_PARAMS,
+  Paginated,
+  PaginationParams,
+  Paginator
+} from 'src/app/pagination';
+import { HiringAssignmentSummaryOverview } from '../hiring.models';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-hiring-summary',
@@ -45,13 +53,36 @@ export class HiringSummaryComponent {
       const term = this.terms.find(
         (term) => term.id === this.selectedTermId()
       )!;
-      this.hiringService
-        .getHiringAdminOverview(term.id)
-        .subscribe((overview) => {
-          //this.hiringAdminOverview.set(overview);
+      // Load paginated data
+      this.assignmentsPaginator.changeApiRoute(
+        `/api/hiring/summary/${term.id}`
+      );
+
+      this.assignmentsPaginator
+        .loadPage(this.previousPaginationParams)
+        .subscribe((page) => {
+          this.assignmentsPage.set(page);
         });
     }
   });
+
+  /** Encapsulated future events paginator and params */
+  private assignmentsPaginator: Paginator<HiringAssignmentSummaryOverview>;
+  assignmentsPage: WritableSignal<
+    Paginated<HiringAssignmentSummaryOverview, PaginationParams> | undefined
+  > = signal(undefined);
+  private previousPaginationParams: PaginationParams =
+    DEFAULT_PAGINATION_PARAMS;
+
+  public displayedColumns: string[] = [
+    'name',
+    'onyen',
+    'instructors',
+    'epar',
+    'position_number',
+    'i9',
+    'status'
+  ];
 
   /** Constructor */
   constructor(
@@ -67,5 +98,27 @@ export class HiringSummaryComponent {
 
     this.terms = data.terms;
     this.selectedTermId.set(data.currentTerm?.id ?? undefined);
+
+    // Load paginated data
+    this.assignmentsPaginator = new Paginator<HiringAssignmentSummaryOverview>(
+      `/api/hiring/summary/${data.currentTerm!.id}`
+    );
+
+    this.assignmentsPaginator
+      .loadPage(this.previousPaginationParams)
+      .subscribe((page) => {
+        this.assignmentsPage.set(page);
+      });
+  }
+
+  /** Handles a pagination event for the future office hours table */
+  handlePageEvent(e: PageEvent) {
+    let paginationParams = this.assignmentsPage()!.params;
+    paginationParams.page = e.pageIndex;
+    paginationParams.page_size = e.pageSize;
+    this.assignmentsPaginator.loadPage(paginationParams).subscribe((page) => {
+      this.assignmentsPage.set(page);
+      this.previousPaginationParams = paginationParams;
+    });
   }
 }

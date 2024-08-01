@@ -141,3 +141,15 @@ export interface HiringCourseSiteOverview {
 export interface HiringAdminOverview {
   sites: HiringCourseSiteOverview[];
 }
+
+export interface HiringAssignmentSummaryOverview {
+  id: number | null;
+  user: PublicProfile;
+  instructors: string[];
+  level: HiringLevel;
+  status: HiringAssignmentStatus;
+  position_number: string;
+  epar: string;
+  i9: boolean;
+  notes: string;
+}
