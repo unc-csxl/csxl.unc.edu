@@ -125,4 +125,16 @@ export class HiringService {
         saveAs(response, `hiring-export-${termId}.csv`);
       });
   }
+
+  downloadCourseHiringCsv(courseSiteId: number) {
+    const params = new HttpParams();
+    return this.http
+      .get(`/api/hiring/${courseSiteId}/csv`, {
+        responseType: 'blob'
+      })
+      .subscribe((response) => {
+        console.log(response);
+        saveAs(response, `applications-export.csv`);
+      });
+  }
 }

@@ -183,3 +183,29 @@ def get_hiring_summary_csv(
     response.headers["Content-Disposition"] = "attachment; filename=export.csv"
     # Return the response
     return response
+
+
+@api.get("/{course_site_id}/csv", tags=["Hiring"])
+def get_applicants_for_site_csv(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> Paginated[HiringAssignmentSummaryOverview]:
+    """
+    Returns the state of hiring as a summary.
+    """
+    # Get the data
+    data = hiring_service.get_course_site_hiring_status_csv(subject, course_site_id)
+    # Create IO Stream
+    stream = io.StringIO()
+    # Create dictionary writer to convert objects to CSV rows
+    # Note: __dict__ converts the Pydantic model into a dictionary of key-value
+    # pairs, enabling access of the object's keys.
+    wr = csv.DictWriter(stream, delimiter=",", fieldnames=list(data[0].__dict__.keys()))
+    wr.writeheader()
+    wr.writerows([d.__dict__ for d in data])
+    # Create HTTP response of type `text/csv`
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    # Return the response
+    return response

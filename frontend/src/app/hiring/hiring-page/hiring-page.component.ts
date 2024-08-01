@@ -151,4 +151,9 @@ export class HiringPageComponent {
     this.notPreferred = this.notPreferred.concat(notFirstChoice);
     this.updateHiringStatus();
   }
+
+  /** Downloads a CSV of applications. */
+  downloadCsv() {
+    this.hiringService.downloadCourseHiringCsv(this.courseSiteId);
+  }
 }

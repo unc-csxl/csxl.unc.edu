@@ -33,6 +33,7 @@ from ...models.academics.hiring.application_review import (
     ApplicationReview,
     ApplicationReviewOverview,
     ApplicationReviewStatus,
+    ApplicationReviewCsvRow,
 )
 from ...models.academics.hiring.hiring_assignment import *
 from ...models.academics.hiring.hiring_level import *
@@ -737,4 +738,22 @@ class HiringService:
         assignment_entities = self._session.scalars(assignment_query).all()
         return [
             assignment_entity.to_csv_row() for assignment_entity in assignment_entities
+        ]
+
+    def get_course_site_hiring_status_csv(
+        self, subject: User, course_site_id: int
+    ) -> list[ApplicationReviewCsvRow]:
+        """Retrieves the applications to a course for a CSV export."""
+        # Step 0: Load a Course Site
+        site_entity = self._load_course_site(course_site_id)
+
+        # Step 1: Ensure that a user can access a course site's hiring.
+        if not self._is_instructor(subject, site_entity):
+            self._permission.enforce(
+                subject, "hiring.get_status", f"course_site/{course_site_id}"
+            )
+
+        # Step 2: Convert all applicants to rows and return
+        return [
+            application.to_csv_row() for application in site_entity.application_reviews
         ]
