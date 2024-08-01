@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile, ProfileService } from 'src/app/profile/profile.service';
-import { Event, EventOverview, EventStatusOverview } from '../event.model';
+import { EventOverview, EventStatusOverview } from '../event.model';
 import { DatePipe } from '@angular/common';
 
 import {
@@ -27,6 +27,7 @@ import {
 } from 'src/app/pagination';
 import { EventService } from '../event.service';
 import { GroupEventsPipe } from '../pipes/group-events.pipe';
+import { profileResolver } from 'src/app/profile/profile.resolver';
 
 @Component({
   selector: 'app-events-page',
@@ -68,21 +69,23 @@ export class EventsPageComponent {
   public searchBarQuery = '';
 
   /** Store the currently-logged-in user's profile.  */
-  public profile: Profile;
+  public profile: Profile | undefined;
 
   /** Constructor for the events page. */
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    protected router: Router,
     public datePipe: DatePipe,
     public eventService: EventService,
     private profileService: ProfileService,
     protected groupEventsPipe: GroupEventsPipe
   ) {
-    this.profile = this.profileService.profile()!;
-    this.eventService.getEventStatus().subscribe((status) => {
-      this.eventStatus.set(status);
-    });
+    this.profile = this.profileService.profile();
+    this.eventService
+      .getEventStatus(this.profile !== undefined)
+      .subscribe((status) => {
+        this.eventStatus.set(status);
+      });
   }
 
   /**
@@ -99,11 +102,13 @@ export class EventsPageComponent {
     params.range_end = this.endDate().toISOString();
     params.filter = this.filterQuery();
     // Refresh the data
-    this.eventService.getEvents(params).subscribe((events) => {
-      this.page.set(events);
-      this.previousParams = events.params;
-      this.reloadQueryParams();
-    });
+    this.eventService
+      .getEvents(params, this.profile !== undefined)
+      .subscribe((events) => {
+        this.page.set(events);
+        this.previousParams = events.params;
+        this.reloadQueryParams();
+      });
   });
 
   /** Reloads the page and its query parameters to adjust to the next month. */
@@ -128,12 +133,16 @@ export class EventsPageComponent {
 
   /** Reloads the data in the current page. */
   reloadPage() {
-    this.eventService.getEvents(this.previousParams).subscribe((events) => {
-      this.page.set(events);
-    });
-    this.eventService.getEventStatus().subscribe((status) => {
-      this.eventStatus.set(status);
-    });
+    this.eventService
+      .getEvents(this.previousParams, this.profile !== undefined)
+      .subscribe((events) => {
+        this.page.set(events);
+      });
+    this.eventService
+      .getEventStatus(this.profile !== undefined)
+      .subscribe((status) => {
+        this.eventStatus.set(status);
+      });
   }
 
   /**
@@ -174,5 +183,10 @@ export class EventsPageComponent {
       );
     }
     this.filterQuery.set(query);
+  }
+
+  /** Performs the redirection for the sign in button */
+  signIn() {
+    window.location.href = '/auth?continue_to=/events';
   }
 }

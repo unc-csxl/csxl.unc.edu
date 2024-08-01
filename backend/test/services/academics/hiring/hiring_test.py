@@ -76,12 +76,15 @@ def test_get_status_site_not_found(hiring_svc: HiringService):
 
 def test_get_status_site_not_instructor(hiring_svc: HiringService):
     """Ensures that hiring information can only be viwed by instructors."""
-    with pytest.raises(CoursePermissionException):
+    with pytest.raises(UserPermissionException):
         hiring_svc.get_status(user_data.ambassador, office_hours_data.comp_110_site.id)
         pytest.fail()
-    with pytest.raises(CoursePermissionException):
-        hiring_svc.get_status(user_data.root, office_hours_data.comp_110_site.id)
-        pytest.fail()
+
+
+def test_get_status_with_permission(hiring_svc: HiringService):
+    """Ensures that hiring information can only be viwed by instructors."""
+    status = hiring_svc.get_status(user_data.root, office_hours_data.comp_110_site.id)
+    assert status is not None
 
 
 def test_update_status(hiring_svc: HiringService):
@@ -126,16 +129,19 @@ def test_update_status_site_not_instructor(hiring_svc: HiringService):
     status = hiring_svc.get_status(
         user_data.instructor, office_hours_data.comp_110_site.id
     )
-    with pytest.raises(CoursePermissionException):
+    with pytest.raises(UserPermissionException):
         hiring_svc.update_status(
             user_data.ambassador, office_hours_data.comp_110_site.id, status
         )
         pytest.fail()
-    with pytest.raises(CoursePermissionException):
-        hiring_svc.update_status(
-            user_data.root, office_hours_data.comp_110_site.id, status
-        )
-        pytest.fail()
+
+
+def test_update_status_administrator(hiring_svc: HiringService):
+    status = hiring_svc.get_status(
+        user_data.instructor, office_hours_data.comp_110_site.id
+    )
+    hiring_svc.update_status(user_data.root, office_hours_data.comp_110_site.id, status)
+    assert True
 
 
 def test_get_hiring_admin_overview(hiring_svc: HiringService):

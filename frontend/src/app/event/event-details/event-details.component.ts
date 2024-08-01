@@ -15,7 +15,7 @@ import {
   ActivatedRouteSnapshot,
   ResolveFn
 } from '@angular/router';
-import { Event, EventRegistration } from '../event.model';
+import { EventOverview, RegistrationType } from '../event.model';
 import { Observable, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
@@ -52,7 +52,7 @@ export class EventDetailsComponent implements OnInit {
   public profile: Profile;
 
   /** The event to show */
-  public event: WritableSignal<Event>;
+  public event: WritableSignal<EventOverview>;
 
   /** Event registrations */
   public eventRegistrationsPage: WritableSignal<
@@ -66,16 +66,7 @@ export class EventDetailsComponent implements OnInit {
     'email'
   ];
 
-  /**
-   * Determines whether or not a user can view the event.
-   * @returns {Observable<boolean>}
-   */
-  canViewEvent(): Observable<boolean> {
-    return this.permissionService.check(
-      'organization.events.view',
-      `organization/${this.event()?.organization!?.id ?? '*'}`
-    );
-  }
+  registrationType = RegistrationType;
 
   /** Constructs the Event Detail component. */
   constructor(
@@ -89,7 +80,7 @@ export class EventDetailsComponent implements OnInit {
     this.profile = this.profileService.profile()!;
 
     const data = this.route.snapshot.data as {
-      event: Event;
+      event: EventOverview;
     };
 
     this.event = signal(data.event);
@@ -97,7 +88,7 @@ export class EventDetailsComponent implements OnInit {
     this.permissionService
       .check(
         'organization.events.edit',
-        `organization/${this.event()?.organization!?.id ?? '*'}`
+        `organization/${this.event()?.organization_id ?? '*'}`
       )
       .subscribe((permission) => {
         if (permission) {
@@ -119,7 +110,7 @@ export class EventDetailsComponent implements OnInit {
       'events.*',
       '*',
       '',
-      `/events/${this.event()?.organization_id}/${this.event()?.id}/edit`
+      `/events/${this.event()?.organization_slug}/${this.event()?.id}/edit`
     );
   }
 
@@ -128,8 +119,8 @@ export class EventDetailsComponent implements OnInit {
     this.eventService.registerForEvent(this.event()!.id!).subscribe({
       next: () => {
         let newEvent = this.event();
-        newEvent.is_attendee = true;
-        newEvent.registration_count += 1;
+        newEvent.user_registration_type = RegistrationType.ATTENDEE;
+        newEvent.number_registered += 1;
         this.event.set(newEvent);
 
         this.snackBar.open(
@@ -151,8 +142,8 @@ export class EventDetailsComponent implements OnInit {
   /** Unregisters a user from an evenet. */
   unregisterForEvent() {
     let newEvent = this.event();
-    newEvent.is_attendee = false;
-    newEvent.registration_count -= 1;
+    newEvent.user_registration_type = null;
+    newEvent.number_registered -= 1;
     this.event.set(newEvent);
 
     this.eventService.unregisterForEvent(this.event()!.id!).subscribe({

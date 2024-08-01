@@ -2,11 +2,10 @@
 
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from ..models.event_details import EventDetails
 from ..models.event import EventOverview
 from .entity_base import EntityBase
 from typing import Self
-from ..models.event import DraftEvent, Event
+from ..models.event import EventOverview, EventDraft
 from ..models.registration_type import RegistrationType
 from ..models.user import User
 
@@ -54,7 +53,7 @@ class EventEntity(EntityBase):
     )
 
     @classmethod
-    def from_draft_model(cls, model: DraftEvent) -> Self:
+    def from_draft_model(cls, model: EventDraft, organization_id: int) -> Self:
         """
         Class method that converts an `DraftEvent` model into a `EventEntity`
 
@@ -68,106 +67,10 @@ class EventEntity(EntityBase):
             time=model.time,
             location=model.location,
             description=model.description,
-            public=model.public,
+            public=False,  # TODO: Implement public and private events.
             registration_limit=model.registration_limit,
-            organization_id=model.organization_id,
+            organization_id=organization_id,
             image_url=model.image_url,
-        )
-
-    @classmethod
-    def from_model(cls, model: Event) -> Self:
-        """
-        Class method that converts an `Event` model into a `EventEntity`
-
-        Parameters:
-            - model (Event): Model to convert into an entity
-        Returns:
-            EventEntity: Entity created from model
-        """
-        return cls(
-            id=model.id,
-            name=model.name,
-            time=model.time,
-            location=model.location,
-            description=model.description,
-            public=model.public,
-            registration_limit=model.registration_limit,
-            organization_id=model.organization_id,
-            image_url=model.image_url,
-        )
-
-    def to_model(self, subject: User | None = None) -> Event:
-        """
-        Converts a `EventEntity` object into a `Event` model object
-
-        Returns:
-            Event: `Event` object from the entity
-        """
-        attendees = [
-            registration.to_flat_model()
-            for registration in self.registrations
-            if registration.registration_type == RegistrationType.ATTENDEE
-        ]
-        is_attendee = (
-            len([attendee for attendee in attendees if attendee.id == subject.id]) > 0
-            if subject is not None
-            else False
-        )
-
-        # Hide organizer info for unauthenticated users
-        organizers = [
-            registration.to_flat_model()
-            for registration in self.registrations
-            if registration.registration_type == RegistrationType.ORGANIZER
-        ]
-
-        is_organizer = (
-            len([organizer for organizer in organizers if organizer.id == subject.id])
-            > 0
-            if subject is not None
-            else False
-        )
-
-        return Event(
-            id=self.id,
-            name=self.name,
-            time=self.time,
-            location=self.location,
-            description=self.description,
-            public=self.public,
-            registration_limit=self.registration_limit,
-            organization_id=self.organization_id,
-            registration_count=len(attendees),
-            is_attendee=is_attendee,
-            is_organizer=is_organizer,
-            organizers=organizers,
-            image_url=self.image_url,
-        )
-
-    def to_details_model(self, subject: User | None = None) -> EventDetails:
-        """Create a EventDetails model from an EventEntity, with permissions and members included.
-
-        Returns:
-            EventDetails: An EventDetails model for API usage.
-        """
-
-        event = self.to_model(subject)
-
-        return EventDetails(
-            id=self.id,
-            name=self.name,
-            time=self.time,
-            location=self.location,
-            description=self.description,
-            public=self.public,
-            registration_limit=self.registration_limit,
-            registration_count=event.registration_count,
-            organization_id=self.organization_id,
-            organization=self.organization.to_model(),
-            is_attendee=event.is_attendee,
-            is_organizer=event.is_organizer,
-            organizers=event.organizers,
-            image_url=event.image_url,
         )
 
     def to_overview_model(self, subject: User | None = None) -> EventOverview:
@@ -220,6 +123,7 @@ class EventEntity(EntityBase):
             organization_slug=self.organization.slug,
             organization_icon=self.organization.logo,
             organization_name=self.organization.shorthand,
+            organization_id=self.organization.id,
             organizers=organizers,
             user_registration_type=(
                 user_registration.registration_type if user_registration else None

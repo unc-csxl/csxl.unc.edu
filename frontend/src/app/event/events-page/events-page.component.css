@@ -106,6 +106,10 @@ mat-card-header {
     --mdc-chip-hover-state-layer-color: transparent !important;
 }
 
+.sign-in-button {
+    margin-left: -12px;
+}
+
 @media only screen and (max-width: 1000px) {
     .container {
         flex-direction: column;

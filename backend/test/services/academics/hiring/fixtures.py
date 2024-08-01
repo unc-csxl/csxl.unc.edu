@@ -5,8 +5,7 @@ from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
 
 from .....services.academics.hiring import HiringService
-from .....services.application import ApplicationService
-from .....services import PermissionService
+from .....services.permission import PermissionService
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"

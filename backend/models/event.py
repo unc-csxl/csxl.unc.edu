@@ -9,37 +9,22 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class DraftEvent(BaseModel):
-    """
-    Pydantic model to represent an `Event` that has not been created yet.
+class EventDraft(BaseModel):
+    """Represents the model used to create new events."""
 
-    This model is based on the `EventEntity` model, which defines the shape
-    of the `Event` database in the PostgreSQL database
-    """
+    # Makes `EventDraft` hashable, enabling it to be used in sets.
+    def __hash__(self) -> int:
+        return self.id.__hash__()
 
+    id: int | None = None
     name: str
     time: datetime
     location: str
     description: str
-    public: bool
     registration_limit: int
-    organization_id: int
+    organization_slug: str
     organizers: list[PublicUser] = []
     image_url: str | None = None
-
-
-class Event(DraftEvent):
-    """
-    Pydantic model to represent an `Event`.
-
-    This model is based on the `EventEntity` model, which defines the shape
-    of the `Event` database in the PostgreSQL database
-    """
-
-    id: int
-    registration_count: int = 0
-    is_attendee: bool = False
-    is_organizer: bool = False
 
 
 class EventOverview(BaseModel):
@@ -51,6 +36,7 @@ class EventOverview(BaseModel):
     public: bool
     number_registered: int
     registration_limit: int
+    organization_id: int
     organization_slug: str
     organization_icon: str
     organization_name: str

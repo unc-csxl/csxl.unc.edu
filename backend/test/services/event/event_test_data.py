@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy.orm import Session
 
 from ....models.public_user import PublicUser
-from ....models.event import DraftEvent, Event
+from ....models.event import EventDraft, EventOverview
 from ....models.event_registration import NewEventRegistration
 from ....models.registration_type import RegistrationType
 from ....entities.event_entity import EventEntity
@@ -21,18 +21,17 @@ __license__ = "MIT"
 # Sample Data Objects
 # These sample entities will be used to generate the test data.
 
-event_one = Event(
+event_one = EventDraft(
     id=1,
     name="CS+SG Mixer",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
     location="Sitterson Hall Lower Lobby",
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
-    public=True,
     registration_limit=50,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
 )
 
-event_two = Event(
+event_two = EventDraft(
     id=2,
     name="CS+SG Workshop",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
@@ -40,10 +39,10 @@ event_two = Event(
     description="This is a sample description.",
     public=True,
     registration_limit=50,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
 )
 
-event_three = Event(
+event_three = EventDraft(
     id=3,
     name="Super Exclusive Meeting",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
@@ -51,19 +50,20 @@ event_three = Event(
     description="This is a sample description.",
     public=True,
     registration_limit=1,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
 )
 
 events = [event_one, event_two, event_three]
+event_organization = {event_one: cssg, event_two: cssg, event_three: cssg}
 
-to_add = DraftEvent(
+to_add = EventDraft(
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=2, hour=20, minutes=0),
     location="SN011",
     description="This is a sample description.",
     public=True,
     registration_limit=50,
-    organization_id=cads.id | 0,
+    organization_slug=cads.slug,
     organizers=[
         PublicUser(
             id=root.id,
@@ -78,7 +78,7 @@ to_add = DraftEvent(
     ],
 )
 
-invalid_event = Event(
+invalid_event = EventDraft(
     id=4,
     name="Frontend Debugging Workshop",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
@@ -86,10 +86,10 @@ invalid_event = Event(
     description="This is a sample description.",
     public=True,
     registration_limit=50,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
 )
 
-updated_event_one = Event(
+updated_event_one = EventDraft(
     id=1,
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
@@ -97,7 +97,7 @@ updated_event_one = Event(
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
     registration_limit=50,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
     organizers=[
         PublicUser(
             id=user.id,
@@ -112,7 +112,7 @@ updated_event_one = Event(
     ],
 )
 
-updated_event_one_organizers = Event(
+updated_event_one_organizers = EventDraft(
     id=1,
     name="Carolina Data Challenge",
     time=date_maker(days_in_future=1, hour=10, minutes=0),
@@ -120,7 +120,7 @@ updated_event_one_organizers = Event(
     description="Mark your calendars for the 2023 Carolina Data Challenge (CDC)! CDC is UNC's weekend-long datathon that brings together hundreds of participants from across campus, numerous corporate sponsors, tons of free food as well as merch, and hundreds of dollars of prizes!",
     public=True,
     registration_limit=50,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
     organizers=[
         PublicUser(
             id=user.id,
@@ -145,7 +145,7 @@ updated_event_one_organizers = Event(
     ],
 )
 
-updated_event_two = Event(
+updated_event_two = EventDraft(
     id=2,
     name="CS+SG Workshop",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
@@ -153,10 +153,10 @@ updated_event_two = Event(
     description="Come join us for a new workshop!",
     public=True,
     registration_limit=50,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
 )
 
-updated_event_three = Event(
+updated_event_three = EventDraft(
     id=3,
     name="Super Exclusive Meeting",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
@@ -164,7 +164,7 @@ updated_event_three = Event(
     description="This is a sample description.",
     public=True,
     registration_limit=1,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
     organizers=[
         PublicUser(
             id=user.id,
@@ -199,7 +199,7 @@ updated_event_three = Event(
     ],
 )
 
-updated_event_three_remove_organizers = Event(
+updated_event_three_remove_organizers = EventDraft(
     id=3,
     name="Super Exclusive Meeting",
     time=date_maker(days_in_future=2, hour=19, minutes=0),
@@ -207,7 +207,7 @@ updated_event_three_remove_organizers = Event(
     description="This is a sample description.",
     public=True,
     registration_limit=1,
-    organization_id=cssg.id | 0,
+    organization_slug=cssg.slug,
     organizers=[
         PublicUser(
             id=user.id,
@@ -224,20 +224,20 @@ updated_event_three_remove_organizers = Event(
 
 
 registration = NewEventRegistration(
-    event_id=event_one.id | 0,
-    user_id=ambassador.id | 0,
+    event_id=event_one.id,
+    user_id=ambassador.id,
     registration_type=RegistrationType.ATTENDEE,
 )
 
 organizer_registration = NewEventRegistration(
-    event_id=event_one.id | 0,
-    user_id=user.id | 0,
+    event_id=event_one.id,
+    user_id=user.id,
     registration_type=RegistrationType.ORGANIZER,
 )
 
 registration_for_event_three = NewEventRegistration(
-    event_id=event_three.id | 0,
-    user_id=ambassador.id | 0,
+    event_id=event_three.id,
+    user_id=ambassador.id,
     registration_type=RegistrationType.ATTENDEE,
 )
 registrations = [registration, organizer_registration, registration_for_event_three]
@@ -253,9 +253,11 @@ def insert_fake_data(session: Session):
     # Create entities for test event data
     entities = []
     for event in events:
-        event_entity = EventEntity.from_model(event)
+        event_entity = EventEntity.from_draft_model(event, event_organization[event].id)
         session.add(event_entity)
         entities.append(event_entity)
+
+    session.commit()
 
     for registration in registrations:
         registration_entity = EventRegistrationEntity.from_new_model(registration)
