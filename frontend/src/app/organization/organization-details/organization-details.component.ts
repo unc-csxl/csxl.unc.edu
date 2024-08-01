@@ -17,12 +17,8 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Organization } from '../organization.model';
 import { Profile, ProfileService } from '../../profile/profile.service';
-import {
-  organizationResolver,
-  organizationEventsResolver
-} from '../organization.resolver';
+import { organizationResolver } from '../organization.resolver';
 import { EventService } from '../../event/event.service';
-import { Event } from '../../event/event.model';
 import { Observable } from 'rxjs';
 import { PermissionService } from '../../permission.service';
 import { GroupEventsPipe } from '../../event/pipes/group-events.pipe';
@@ -46,8 +42,7 @@ export class OrganizationDetailsComponent implements OnInit {
     path: ':slug',
     component: OrganizationDetailsComponent,
     resolve: {
-      organization: organizationResolver,
-      events: organizationEventsResolver
+      organization: organizationResolver
     },
     children: [
       {
@@ -97,8 +92,7 @@ export class OrganizationDetailsComponent implements OnInit {
       'organization.*',
       `organization/${this.organization?.slug}`,
       '',
-      `/organizations/${this.organization?.slug}/edit`,
-      `/events/${this.organization?.slug}/new/edit`
+      `/organizations/${this.organization?.slug}/edit`
     );
   }
 }

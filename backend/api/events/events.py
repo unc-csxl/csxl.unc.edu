@@ -13,9 +13,7 @@ from backend.services.organization import OrganizationService
 from ...services.event import EventService
 from ...services.user import UserService
 from ...services.exceptions import ResourceNotFoundException, UserPermissionException
-from ...models.event import DraftEvent
-from ...models.event import EventOverview, EventStatusOverview
-from ...models.event_details import EventDetails
+from ...models.event import EventDraft, EventOverview, EventStatusOverview
 from ...models.coworking.time_range import TimeRange
 from ...api.authentication import registered_user
 from ...models.user import User
@@ -27,7 +25,7 @@ __authors__ = [
     "Audrey Toney",
     "Kris Jordan",
 ]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 api = APIRouter(prefix="/api/events")
@@ -35,6 +33,27 @@ openapi_tags = {
     "name": "Events",
     "description": "Create, update, delete, and retrieve CS Events.",
 }
+
+
+@api.get("/unauthenticated/paginate", tags=["Events"])
+def list_events(
+    event_service: EventService = Depends(),
+    order_by: str = "time",
+    ascending: str = "true",
+    filter: str = "",
+    range_start: str = "",
+    range_end: str = "",
+) -> Paginated[EventOverview]:
+    """List events in time range via standard backend pagination query parameters."""
+
+    pagination_params = EventPaginationParams(
+        order_by=order_by,
+        ascending=ascending,
+        filter=filter,
+        range_start=range_start,
+        range_end=range_end,
+    )
+    return event_service.get_paginated_events(pagination_params, None)
 
 
 @api.get("/paginate", tags=["Events"])
@@ -59,6 +78,14 @@ def list_events(
     return event_service.get_paginated_events(pagination_params, subject)
 
 
+@api.get("/unauthenticated/status", tags=["Events"])
+def get_status(
+    event_service: EventService = Depends(),
+) -> EventStatusOverview:
+    """Retrieves the featured event and user's registrations."""
+    return event_service.get_event_status_unauthenticated()
+
+
 @api.get("/status", tags=["Events"])
 def get_status(
     subject: User = Depends(registered_user),
@@ -68,40 +95,16 @@ def get_status(
     return event_service.get_event_status(subject)
 
 
-@api.get("/organization/{slug}", response_model=list[EventDetails], tags=["Events"])
-def get_events_by_organization(
-    slug: str,
-    subject: User = Depends(registered_user),
-    event_service: EventService = Depends(),
-    organization_service: OrganizationService = Depends(),
-) -> list[EventDetails]:
-    """
-    Get all events from an organization
-
-    Args:
-        slug: a valid str representing a unique Organization
-        subject: a valid User model representing the currently logged in User
-        event_service: a valid EventService
-        orgnaization_service: a valid OrganizationService
-
-    Returns:
-        list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
-    """
-    organization = organization_service.get_by_slug(slug)
-    return event_service.get_events_by_organization(organization, subject)
-
-
 @api.get(
     "/{id}",
     responses={404: {"model": None}},
-    response_model=EventDetails,
     tags=["Events"],
 )
 def get_event_by_id(
     id: int,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
-) -> EventDetails:
+) -> EventOverview:
     """
     Get event with matching id
 
@@ -116,37 +119,12 @@ def get_event_by_id(
     return event_service.get_by_id(id, subject)
 
 
-@api.get(
-    "/organization/{slug}/unauthenticated",
-    response_model=list[EventDetails],
-    tags=["Events"],
-)
-def get_events_by_organization_unauthenticated(
-    slug: str,
-    event_service: EventService = Depends(),
-    organization_service: OrganizationService = Depends(),
-) -> list[EventDetails]:
-    """
-    Get all events from an organization for unauthenticated users
-
-    Args:
-        slug: a valid str representing a unique Organization
-        event_service: a valid EventService
-        organization_service: a valid OrganizationService
-
-    Returns:
-        list[EventDetails]: All `EventDetails`s in the `Event` database table from a specific organization
-    """
-    organization = organization_service.get_by_slug(slug)
-    return event_service.get_events_by_organization(organization)
-
-
-@api.post("", response_model=EventDetails, tags=["Events"])
+@api.post("", tags=["Events"])
 def new_event(
-    event: DraftEvent,
+    event: EventDraft,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
-) -> EventDetails:
+) -> EventOverview:
     """
     Create event
 
@@ -161,14 +139,12 @@ def new_event(
     return event_service.create(subject, event)
 
 
-@api.put(
-    "", responses={404: {"model": None}}, response_model=EventDetails, tags=["Events"]
-)
+@api.put("", tags=["Events"])
 def update_event(
-    event: EventDetails,
+    event: EventDraft,
     subject: User = Depends(registered_user),
     event_service: EventService = Depends(),
-) -> EventDetails:
+) -> EventOverview:
     """
     Update event
 
@@ -229,7 +205,7 @@ def register_for_event(
     else:
         user = user_service.get_by_id(user_id)
 
-    event: EventDetails = event_service.get_by_id(event_id, subject)
+    event: EventOverview = event_service.get_by_id(event_id, subject)
     return event_service.register(subject, user, event)
 
 
@@ -247,7 +223,7 @@ def get_event_registration_of_user(
         subject: the logged in user making the request
         event_service: the backing service
     """
-    event: EventDetails = event_service.get_by_id(event_id, subject)
+    event: EventOverview = event_service.get_by_id(event_id, subject)
     event_registration = event_service.get_registration(subject, subject, event)
     if event_registration is None:
         raise ResourceNotFoundException("You are not registered for this event")
@@ -300,7 +276,7 @@ def unregister_for_event(
     else:
         user = user_service.get_by_id(user_id)
 
-    event: EventDetails = event_service.get_by_id(event_id, subject)
+    event: EventOverview = event_service.get_by_id(event_id, subject)
     event_service.unregister(subject, user, event)
 
 

@@ -5,6 +5,7 @@
     </mat-chip>
   </mat-chip-set>
   <img
+    class="feature-image"
     mat-card-image
     [src]="
       event.image_url !== null && event.image_url !== ''
@@ -15,7 +16,10 @@
     <mat-card-title>{{ event.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p>May 28th at 7:00PM in FB009</p>
+    <p>
+      {{ event.time | date: 'MMMM d' }} at {{ event.time | date: 'h:mm a' }} in
+      {{ event.location }}
+    </p>
 
     <mat-chip-set>
       <!-- Organization chip -->
@@ -53,6 +57,7 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
+    @if(profile) {
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
     </button>
@@ -69,6 +74,6 @@
     <button mat-flat-button [disabled]="true">Filled</button>
     } @else {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
-    }
+    } }
   </mat-card-actions>
 </mat-pane>

@@ -128,7 +128,7 @@ class ApplicationReviewEntity(EntityBase):
             status=self.status,
             preference=self.preference,
             notes=self.notes,
-            application=self.application.to_overview_model(),
+            application=self.application.to_review_overview_model(),
             applicant_id=self.application.user_id,
             applicant_course_ranking=applicant_preference_for_course
             + 1,  # Increment since starting index is 0.

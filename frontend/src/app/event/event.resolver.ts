@@ -9,11 +9,14 @@
 
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { Event } from './event.model';
 import { EventService } from './event.service';
+import { EventOverview } from './event.model';
 
 /** This resolver injects an event into the events detail component. */
-export const eventResolver: ResolveFn<Event | undefined> = (route, state) => {
+export const eventResolver: ResolveFn<EventOverview | undefined> = (
+  route,
+  state
+) => {
   if (route.paramMap.get('id') != 'new') {
     return inject(EventService).getEvent(+route.paramMap.get('id')!);
   } else {
@@ -24,14 +27,15 @@ export const eventResolver: ResolveFn<Event | undefined> = (route, state) => {
       location: '',
       description: '',
       public: true,
+      number_registered: 0,
       registration_limit: 0,
-      organization_id: null,
-      organization: null,
-      registration_count: 0,
-      is_attendee: false,
-      is_organizer: false,
+      organization_id: 0,
+      organization_slug: '',
+      organization_icon: '',
+      organization_name: '',
       organizers: [],
-      image_url: null
+      image_url: null,
+      user_registration_type: null
     };
   }
 };

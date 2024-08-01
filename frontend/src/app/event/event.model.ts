@@ -11,57 +11,6 @@ import { Profile } from '../models.module';
 import { Organization } from '../organization/organization.model';
 import { PublicProfile } from '../profile/profile.service';
 
-/** Interface for Event Type (used on frontend for event detail) */
-export interface Event {
-  id: number | null;
-  name: string;
-  time: Date;
-  location: string;
-  description: string;
-  public: boolean;
-  registration_limit: number;
-  organization_id: number | null;
-  organization: Organization | null;
-  registration_count: number;
-  is_attendee: boolean;
-  is_organizer: boolean;
-  organizers: PublicProfile[];
-  image_url: string | null;
-}
-
-/** Interface for the Event JSON Response model
- *  Note: The API returns object data, such as `Date`s, as strings. So,
- *  this interface models the data directly received from the API. It is
- *  the job of the `parseEventJson` function to convert it to the `Event` type
- */
-export interface EventJson {
-  id: number | null;
-  name: string;
-  time: string;
-  location: string;
-  description: string;
-  public: boolean;
-  registration_limit: number;
-  organization_id: number | null;
-  organization: Organization | null;
-  registration_count: number;
-  is_attendee: boolean;
-  is_organizer: boolean;
-  organizers: PublicProfile[];
-  image_url: string | null;
-}
-
-/** Function that converts an EventJSON response model to an Event model.
- *  This function is needed because the API response will return certain
- *  objects (such as `Date`s) as strings. We need to convert this to
- *  TypeScript objects ourselves.
- */
-export const parseEventJson = (responseModel: EventJson): Event => {
-  return Object.assign({}, responseModel, {
-    time: new Date(responseModel.time)
-  });
-};
-
 export enum RegistrationType {
   ATTENDEE,
   ORGANIZER
@@ -85,6 +34,7 @@ export interface EventOverviewJson {
   public: boolean;
   number_registered: number;
   registration_limit: number;
+  organization_id: number;
   organization_slug: string;
   organization_icon: string;
   organization_name: string;
@@ -94,13 +44,14 @@ export interface EventOverviewJson {
 }
 
 export interface EventOverview {
-  id: number;
+  id: number | null;
   name: string;
   time: Date;
   location: string;
   description: string;
   public: boolean;
   number_registered: number;
+  organization_id: number;
   registration_limit: number;
   organization_slug: string;
   organization_icon: string;
@@ -109,6 +60,34 @@ export interface EventOverview {
   user_registration_type: RegistrationType | null;
   image_url: string | null;
 }
+
+export interface EventDraft {
+  id: number | null;
+  name: string;
+  time: Date;
+  location: string;
+  description: string;
+  public: boolean;
+  registration_limit: number;
+  organization_slug: string;
+  organizers: PublicProfile[];
+  image_url: string | null;
+}
+
+export const eventOverviewToDraft = (overview: EventOverview): EventDraft => {
+  return {
+    id: overview.id,
+    name: overview.name,
+    time: overview.time,
+    location: overview.location,
+    description: overview.description,
+    public: overview.public,
+    registration_limit: overview.registration_limit,
+    organization_slug: overview.organization_slug,
+    organizers: overview.organizers,
+    image_url: overview.image_url
+  };
+};
 
 /** Function that converts an EventJSON response model to an Event model.
  *  This function is needed because the API response will return certain

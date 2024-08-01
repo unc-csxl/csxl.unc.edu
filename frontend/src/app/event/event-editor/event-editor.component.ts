@@ -18,10 +18,10 @@ import {
   PublicProfile
 } from '../../profile/profile.service';
 import { eventResolver } from '../event.resolver';
-import { Event } from '../event.model';
 import { DatePipe } from '@angular/common';
 import { OrganizationService } from 'src/app/organization/organization.service';
 import { eventEditorGuard } from './event-editor.guard';
+import { EventOverview, eventOverviewToDraft } from '../event.model';
 
 @Component({
   selector: 'app-event-editor',
@@ -44,7 +44,7 @@ export class EventEditorComponent {
   public profile: Profile;
 
   /** Stores the event.  */
-  public event: Event;
+  public event: EventOverview;
 
   /** Store organizers */
   public organizers: PublicProfile[];
@@ -83,7 +83,7 @@ export class EventEditorComponent {
     this.profile = this.profileService.profile()!;
 
     const data = this.route.snapshot.data as {
-      event: Event;
+      event: EventOverview;
     };
     this.event = data.event;
 
@@ -97,7 +97,7 @@ export class EventEditorComponent {
 
     // Add validator for registration_limit
     this.eventForm.controls['registration_limit'].addValidators(
-      Validators.min(this.event.registration_count)
+      Validators.min(this.event.number_registered)
     );
 
     // Set the organizers
@@ -114,11 +114,15 @@ export class EventEditorComponent {
     if (this.eventForm.valid) {
       let eventToSubmit = this.event;
       Object.assign(eventToSubmit, this.eventForm.value);
+      let id = this.route.snapshot.params['id'];
+      console.log(id);
+      eventToSubmit.id = id !== 'new' ? id : null;
+      eventToSubmit.organization_slug = this.route.snapshot.params['orgid'];
       eventToSubmit.organizers = this.organizers;
 
       let submittedEvent = this.isNew()
-        ? this.eventService.createEvent(eventToSubmit)
-        : this.eventService.updateEvent(eventToSubmit);
+        ? this.eventService.createEvent(eventOverviewToDraft(eventToSubmit))
+        : this.eventService.updateEvent(eventOverviewToDraft(eventToSubmit));
 
       submittedEvent.subscribe({
         next: (event) => this.onSuccess(event),
@@ -127,7 +131,7 @@ export class EventEditorComponent {
 
       this.router.navigate([
         '/organizations/',
-        eventToSubmit.organization?.slug
+        eventToSubmit.organization_slug
       ]);
     }
   }
@@ -144,6 +148,23 @@ export class EventEditorComponent {
     );
   }
 
+  /** Event handler to handle deleting the event. */
+  onDelete() {
+    let confirmDelete = this.snackBar.open(
+      'Are you sure you want to delete this event?',
+      'Delete',
+      { duration: 15000 }
+    );
+    confirmDelete.onAction().subscribe(() => {
+      this.eventService.deleteEvent(this.event.id!).subscribe(() => {
+        this.router.navigate([`events/`]);
+        this.snackBar.open('This event has been deleted.', '', {
+          duration: 2000
+        });
+      });
+    });
+  }
+
   /** Takes user back to events page without changing any event info.
    * @returns {void}
    */
@@ -154,7 +175,7 @@ export class EventEditorComponent {
   /** Opens a confirmation snackbar when an event is successfully created.
    * @returns {void}
    */
-  private onSuccess(event: Event): void {
+  private onSuccess(event: EventOverview): void {
     this.router.navigate(['/events/', event.id]);
     this.snackBar.open(`Event ${this.action()}`, '', { duration: 2000 });
   }

@@ -278,12 +278,12 @@ def test_get(course_site_svc: CourseSiteService):
         user_data.instructor, office_hours_data.comp_110_site.id
     )
     assert overview is not None
-    assert isinstance(overview, CourseSiteOverview)
+    assert isinstance(overview, UpdatedCourseSite)
     assert overview.id == office_hours_data.comp_110_site.id
 
 
 def test_get_no_access(course_site_svc: CourseSiteService):
     """Ensures that a member can access the overview of a course site."""
     with pytest.raises(CoursePermissionException):
-        course_site_svc.get(user_data.root, office_hours_data.comp_110_site.id)
+        course_site_svc.get(user_data.user, office_hours_data.comp_110_site.id)
         pytest.fail()

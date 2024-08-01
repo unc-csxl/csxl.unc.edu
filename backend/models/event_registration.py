@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-from .event import Event
 from .user import User
 from .registration_type import RegistrationType
+from .event import EventOverview
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -31,5 +31,5 @@ class EventRegistration(NewEventRegistration):
     defines the shape of the `EventRegistration` table in the PostgreSQL database
     """
 
-    event: Event
+    event: EventOverview
     user: User

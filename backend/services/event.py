@@ -8,16 +8,20 @@ from fastapi import Depends
 from sqlalchemy import func, select, and_, func, or_, exists, or_
 from sqlalchemy.orm import Session, aliased
 from backend.entities.user_entity import UserEntity
-from backend.models.event_registration import EventRegistration
+from backend.models.event_registration import EventRegistration, NewEventRegistration
 from ..models.public_user import PublicUser
 from backend.models.organization_details import OrganizationDetails
 from backend.models.pagination import Paginated, PaginationParams
 from backend.models.registration_type import RegistrationType
 
-from ..models import User, Event, EventDetails, Paginated, EventPaginationParams
+from ..models import User, Paginated, EventPaginationParams
 from ..database import db_session
-from backend.models.event import Event, DraftEvent, EventOverview, EventStatusOverview
-from backend.models.event_details import EventDetails
+from backend.models.event import (
+    EventDraft,
+    EventOverview,
+    EventOverview,
+    EventStatusOverview,
+)
 from backend.models.coworking.time_range import TimeRange
 from ..entities import (
     EventEntity,
@@ -124,7 +128,7 @@ class EventService:
             params=pagination_params,
         )
 
-    def create(self, subject: User, event: DraftEvent) -> EventDetails:
+    def create(self, subject: User, event: EventDraft) -> EventOverview:
         """
         Creates a event based on the input object and adds it to the table.
         If the event's ID is unique to the table, a new entry is added.
@@ -132,41 +136,54 @@ class EventService:
         Args:
             subject: a valid User model representing the currently logged in User
             event: a valid Event model representing the event to be added
-
-        Returns:
-            EventDetails: a valid EventDetails model representing the new Event
         """
+
+        # Locate the organization based on the provided slug
+        organization_query = select(OrganizationEntity).where(
+            OrganizationEntity.slug == event.organization_slug
+        )
+        organization = self._session.scalars(organization_query).one_or_none()
+
+        # Raise an exception if the organization does not exist.
+        if organization is None:
+            raise ResourceNotFoundException(
+                f"Cannot create an event for an organization that doesn not exist."
+            )
 
         # Ensure that the user has appropriate permissions to create users
         self._permission.enforce(
             subject,
             "organization.events.create",
-            f"organization/{event.organization_id}",
+            f"organization/{organization.id}",
         )
 
         # Otherwise, create new object
-        event_entity = EventEntity.from_draft_model(event)
+        event_entity = EventEntity.from_draft_model(event, organization.id)
 
         # Add new object to table and commit changes
         self._session.add(event_entity)
         self._session.commit()
 
-        # Retrieve the detail model of the event created
-        event_details = event_entity.to_details_model()
+        # Add organizers that should be added.
+        for organizer_id in [organizer.id for organizer in event.organizers]:
+            new_registration = NewEventRegistration(
+                event_id=event_entity.id,
+                user_id=organizer_id,
+                registration_type=RegistrationType.ORGANIZER,
+            )
+            new_registration_entity = EventRegistrationEntity.from_new_model(
+                new_registration
+            )
+            self._session.add(new_registration_entity)
 
-        # Set the user as the organizer of the event
-        for organizer in event.organizers:
-            if organizer.id != None:
-                self.set_event_organizer(
-                    subject=subject, user_id=organizer.id, event=event_details
-                )
+        self._session.commit()
 
         # Return added object
         # NOTE: Must re-convert the entity to a model again so that the registration
         # for the event organizer is automatically populated
-        return event_entity.to_details_model(subject)
+        return event_entity.to_overview_model(subject)
 
-    def get_by_id(self, id: int, subject: User | None = None) -> EventDetails:
+    def get_by_id(self, id: int, subject: User | None = None) -> EventOverview:
         """
         Get the event from an id
         If none retrieved, a debug description is displayed.
@@ -174,12 +191,6 @@ class EventService:
         Args:
             id: a valid int representing a unique event ID
             subject: The User making the request.
-
-        Returns:
-            EventDetails: a valid EventDetails model representing the event corresponding to the ID
-
-        Raises:
-            ResourceNotFoundException when event ID cannot be looked up
         """
 
         # Query the event with matching id
@@ -190,32 +201,9 @@ class EventService:
             raise ResourceNotFoundException(f"No event found with matching ID: {id}")
 
         # Convert entry to a model and return
-        return entity.to_details_model(subject)
+        return entity.to_overview_model(subject)
 
-    def get_events_by_organization(
-        self, organization: OrganizationDetails, subject: User | None = None
-    ) -> list[EventDetails]:
-        """
-        Get all the events hosted by an organization with slug
-
-        Args:
-            slug: a valid str representing a unique Organization slug
-            subject: The User making the request.
-
-        Returns:
-            list[EventDetail]: a list of valid EventDetails models
-        """
-        # Query the event with matching organization slug
-        events = (
-            self._session.query(EventEntity)
-            .filter(EventEntity.organization_id == organization.id)
-            .all()
-        )
-
-        # Convert entities to models and return
-        return [event.to_details_model(subject) for event in events]
-
-    def update(self, subject: User, event: Event) -> EventDetails:
+    def update(self, subject: User, event: EventDraft) -> EventOverview:
         """
         Update the event
 
@@ -231,17 +219,37 @@ class EventService:
 
         # Check if result is null
         if event_entity is None:
-            raise ResourceNotFoundException(f"No event found with matching ID: {id}")
+            raise ResourceNotFoundException(
+                f"No event found with matching ID: {event.id}"
+            )
 
-        # Ensure that the user has appropriate permissions to update event information
-        event_details = event_entity.to_details_model(subject)
+        # Locate the organization based on the provided slug
+        organization_query = select(OrganizationEntity).where(
+            OrganizationEntity.slug == event.organization_slug
+        )
+        organization = self._session.scalars(organization_query).one_or_none()
 
-        # If not organizer, enforce permissions
-        if not event_details.is_organizer:
+        # Raise an exception if the organization does not exist.
+        if organization is None:
+            raise ResourceNotFoundException(
+                f"Cannot create an event for an organization that does not exist."
+            )
+
+        # Determine organizer IDs prior to the edit
+        old_organizer_ids = set(
+            [
+                registration.user_id
+                for registration in event_entity.registrations
+                if registration.registration_type == RegistrationType.ORGANIZER
+            ]
+        )
+
+        # Ensure that the user has appropriate permissions to update events
+        if subject.id not in old_organizer_ids:
             self._permission.enforce(
                 subject,
                 "organization.events.update",
-                f"organization/{event.organization_id}",
+                f"organization/{organization.id}",
             )
 
         # Update event object
@@ -249,48 +257,62 @@ class EventService:
         event_entity.time = event.time
         event_entity.description = event.description
         event_entity.location = event.location
-        event_entity.public = event.public
         event_entity.registration_limit = event.registration_limit
         event_entity.image_url = event.image_url
 
-        # If attempting to edit organizers, enforce registration management permissions
-        if event.organizers != event_details.organizers:
+        # Check for permissions to enforce registration management
+        if subject.id not in old_organizer_ids:
             self._permission.enforce(
                 subject,
                 "organization.events.manage_registrations",
-                f"organization/{event.organization_id}",
+                f"organization/{organization.id}",
             )
-            # Remove organizers not in new organizers
-            for organizer in event_details.organizers:
-                if organizer not in event.organizers:
-                    event_registration_entity = self._session.get(
-                        EventRegistrationEntity, (event.id, organizer.id)
-                    )
-                    self._session.delete(event_registration_entity)
 
-            # Add organizers not in current organizers
-            for organizer in event.organizers:
-                if organizer not in event_details.organizers:
-                    event_registration_entity = self._session.get(
-                        EventRegistrationEntity, (event.id, organizer.id)
-                    )
+        # Determine new list of organizers
+        new_organizer_ids = set([user.id for user in event.organizers])
+        # Determine organizers to remove
+        organizers_to_remove = [
+            organizer_id
+            for organizer_id in old_organizer_ids
+            if organizer_id not in new_organizer_ids
+        ]
+        # Determine organizers to add
+        organizers_to_add = [
+            organizer_id
+            for organizer_id in new_organizer_ids
+            if organizer_id not in old_organizer_ids
+        ]
 
-                    if event_registration_entity is None:
-                        if organizer.id != None:
-                            self.set_event_organizer(
-                                subject, organizer.id, event_details
-                            )
-                            continue
+        # Remove organizers that should be removed.
+        for organizer_id in organizers_to_remove:
+            event_registration_entity = self._session.get(
+                EventRegistrationEntity, (event_entity.id, organizer_id)
+            )
+            self._session.delete(event_registration_entity)
 
-                    event_registration_entity.registration_type = (
-                        RegistrationType.ORGANIZER
-                    )
+        # Add organizers that should be added.
+        for organizer_id in organizers_to_add:
+            # Check if the user is already registered for the event.
+            event_registration_entity = self._session.get(
+                EventRegistrationEntity, (event_entity.id, organizer_id)
+            )
+            if event_registration_entity:
+                event_registration_entity.registration_type = RegistrationType.ORGANIZER
+            else:
+                new_registration = NewEventRegistration(
+                    event_id=event_entity.id,
+                    user_id=organizer_id,
+                    registration_type=RegistrationType.ORGANIZER,
+                )
+                new_registration_entity = EventRegistrationEntity.from_new_model(
+                    new_registration
+                )
+                self._session.add(new_registration_entity)
 
-        # Save changes
+        # Save all changes
         self._session.commit()
-
         # Return updated object
-        return event_entity.to_details_model(subject)
+        return event_entity.to_overview_model(subject)
 
     def delete(self, subject: User, id: int) -> None:
         """
@@ -324,46 +346,37 @@ class EventService:
     """Event Registration Service Methods"""
 
     def get_registration(
-        self, subject: User, attendee: User, event: EventDetails
+        self, subject: User, attendee: User, event: EventOverview
     ) -> EventRegistration | None:
         """
         Get a registration of an attendee for an Event.
-
-        Args:
-            subject: User requesting the registration object
-            attendee: User registered for the event
-            event: EventDetails of the event seeking registration for
-
-        Returns:
-            PublicUser or None if no registration found
-
-        Raises:
-            UserPermissionException if subject does not have permission
         """
+        event_entity = self._session.get(EventEntity, event.id)
+
         # Administrative Permission: organization.events.view : organization/{id}
         if subject.id != attendee.id:
             self._permission.enforce(
                 subject,
                 "organization.events.manage_registrations",
-                f"organization/{event.organization.id}",
+                f"organization/{event_entity.organization_id}",
             )
 
-        # Query for EventRegistration
-        event_registration_entity = (
-            self._session.query(EventRegistrationEntity)
-            .where(EventRegistrationEntity.user_id == attendee.id)
-            .where(EventRegistrationEntity.event_id == event.id)
-            .one_or_none()
+        # Query for the registration
+        registration_query = select(EventRegistrationEntity).where(
+            EventRegistrationEntity.user_id == attendee.id,
+            EventRegistrationEntity.event_id == event.id,
+        )
+        event_registration_entity = self._session.scalars(
+            registration_query
+        ).one_or_none()
+
+        # Return
+        return (
+            event_registration_entity.to_model() if event_registration_entity else None
         )
 
-        # Return EventRegistration model or None
-        if event_registration_entity is not None:
-            return event_registration_entity.to_model()
-        else:
-            return None
-
     def get_registrations_of_event(
-        self, subject: User, event: EventDetails
+        self, subject: User, event: EventOverview
     ) -> list[PublicUser]:
         """
         List the registrations of an event.
@@ -382,11 +395,23 @@ class EventService:
         Raises:
             UserPermissionException if user is not an event organizer or admin.
         """
-        if not event.is_organizer:
+        event_entity = self._session.get(EventEntity, event.id)
+        if event_entity is None:
+            raise ResourceNotFoundException(
+                "Cannot find registrations for an event that does not exist."
+            )
+
+        organizer_ids = [
+            registration.user_id
+            for registration in event_entity.registrations
+            if registration.registration_type == RegistrationType.ORGANIZER
+        ]
+
+        if subject.id not in organizer_ids:
             self._permission.enforce(
                 subject,
                 "organization.events.manage_registrations",
-                f"organization/{event.organization.id}",
+                f"organization/{event_entity.organization_id}",
             )
 
         event_registration_entities = (
@@ -397,42 +422,8 @@ class EventService:
 
         return [entity.to_flat_model() for entity in event_registration_entities]
 
-    def set_event_organizer(
-        self, subject: User, user_id: int, event: EventDetails
-    ) -> PublicUser:
-        """
-        Set the organizer of an event.
-
-        Args:
-            subject: User making the registration request
-            event: The EventDetails being registered for
-
-        Returns:
-            PublicUser
-
-        """
-
-        # Re-ensure that the user has the correct permissions to run this command
-        self._permission.enforce(
-            subject,
-            "organization.events.manage_registrations",
-            f"organization/{event.organization_id}",
-        )
-
-        # Add new object to table and commit changes
-        event_registration_entity = EventRegistrationEntity(
-            user_id=user_id,
-            event_id=event.id,
-            registration_type=RegistrationType.ORGANIZER,
-        )
-        self._session.add(event_registration_entity)
-        self._session.commit()
-
-        # Return registration
-        return event_registration_entity.to_flat_model()
-
     def register(
-        self, subject: User, attendee: User, event: EventDetails
+        self, subject: User, attendee: User, event: EventOverview
     ) -> PublicUser:
         """
         Register a user for an event.
@@ -449,11 +440,18 @@ class EventService:
             UserPermissionException if subject does not have permission to register user
             EventRegistrationException if the event is full
         """
-        if subject.id != attendee.id and not event.is_organizer:
+
+        event_entity = self._session.get(EventEntity, event.id)
+        if event_entity is None:
+            raise ResourceNotFoundException(
+                "Cannot register for an event that does not exist."
+            )
+
+        if subject.id != attendee.id:
             self._permission.enforce(
                 subject,
                 "organization.events.manage_registrations",
-                f"organization/{event.organization.id}",
+                f"organization/{event_entity.organization_id}",
             )
 
         # Get the registration status.
@@ -462,22 +460,26 @@ class EventService:
         # between when `event` was fetched and this function runs.
 
         # Raise exception if event is full.
-        if event.registration_count >= event.registration_limit:
+        if event.number_registered >= event.registration_limit:
             raise EventRegistrationException(event.id)
 
         # Enable idemopotency in returning existing registration, if one exists.
         # Permission to manage / read registration is enforced in EventService#get_registration
         existing_registration = self.get_registration(subject, attendee, event)
         if existing_registration:
-            return EventRegistrationEntity.from_model(
-                existing_registration
-            ).to_flat_model()
+            user_entity = self._session.get_one(
+                UserEntity, existing_registration.user_id
+            )
+            return user_entity.to_public_model()
 
         # Add new object to table and commit changes
-        event_registration_entity = EventRegistrationEntity(
+        new_event_registration = NewEventRegistration(
             user_id=attendee.id,
             event_id=event.id,
             registration_type=RegistrationType.ATTENDEE,
+        )
+        event_registration_entity = EventRegistrationEntity.from_new_model(
+            new_event_registration
         )
         self._session.add(event_registration_entity)
         self._session.commit()
@@ -485,7 +487,7 @@ class EventService:
         # Return registration
         return event_registration_entity.to_flat_model()
 
-    def unregister(self, subject: User, attendee: User, event: EventDetails) -> None:
+    def unregister(self, subject: User, attendee: User, event: EventOverview) -> None:
         """
         Delete a user's event registration.
 
@@ -576,14 +578,19 @@ class EventService:
             PermissionException: If the subject does not have the required permission.
         """
         event_entity = self._session.get(EventEntity, event_id)
-        event = event_entity.to_details_model(subject)
+        organizer_ids = [
+            registration.user_id
+            for registration in event_entity.registrations
+            if registration.registration_type == RegistrationType.ORGANIZER
+        ]
 
         # Ensure that the user has appropriate permissions to view event information
-        if not event.is_organizer:
+
+        if subject.id not in organizer_ids:
             self._permission.enforce(
                 subject,
                 "organization.events.manage_registrations",
-                f"organization/{event.organization_id}",
+                f"organization/{event_entity.organization_id}",
             )
 
         # Create an alias for the EventRegistrationEntity to be used in join
@@ -689,6 +696,7 @@ class EventService:
             select(EventRegistrationEntity)
             .where(EventRegistrationEntity.user_id == subject.id)
             .join(EventEntity)
+            .where(EventEntity.time >= datetime.now())
             .order_by(EventEntity.time)
         )
 
@@ -705,3 +713,36 @@ class EventService:
         return EventStatusOverview(
             featured=featured_event, registered=registered_events
         )
+
+    def get_event_status_unauthenticated(self) -> EventStatusOverview:
+        """Returns the event status for an unauthenticated user."""
+        # 1. Get the featured event.
+        # The featured event is picked based on the following criteria:
+        # Based on the first 50 events coming up...
+        # If a CSXL or UNC CS event is scheduled, choose this as the featured event.
+        # Otherwise, choose the latest event.
+        # If there is no upcoming event, choose no event.
+        PREFERRED_ORGANIZATIONS = [37]
+        featured_event: EventOverview | None = None
+        event_query = (
+            select(EventEntity)
+            .where(EventEntity.time >= datetime.now())
+            .order_by(EventEntity.time)
+            .limit(50)
+        )
+        event_entities = self._session.scalars(event_query).all()
+        for event in event_entities:
+            if (
+                event.organization_id in PREFERRED_ORGANIZATIONS
+                and featured_event == None
+            ):
+                featured_event = event.to_overview_model()
+        if featured_event == None:
+            featured_event = (
+                event_entities[0].to_overview_model()
+                if len(event_entities) > 0
+                else None
+            )
+
+        # 3. Return the event status.
+        return EventStatusOverview(featured=featured_event, registered=[])

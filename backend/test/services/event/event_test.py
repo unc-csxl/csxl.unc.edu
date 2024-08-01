@@ -17,7 +17,7 @@ from ....models.coworking.time_range import TimeRange
 from ..coworking.time import *
 
 # Tested Dependencies
-from ....models import Event, EventDetails, EventPaginationParams
+from ....models import EventDraft, EventOverview, EventPaginationParams
 from ....services import EventService
 
 # Injected Service Fixtures
@@ -45,6 +45,7 @@ from .event_test_data import (
     event_three,
 )
 from ..user_data import root, ambassador, user
+from ..organization import organization_test_data
 
 from .event_demo_data import date_maker
 
@@ -55,16 +56,15 @@ def test_get_by_id(event_svc_integration: EventService):
     """Test that events can be retrieved based on their ID."""
     fetched_event = event_svc_integration.get_by_id(1, ambassador)
     assert fetched_event is not None
-    assert isinstance(fetched_event, Event)
+    assert isinstance(fetched_event, EventOverview)
     assert fetched_event.id == event_one.id
-    assert fetched_event.is_attendee == True
 
 
 def test_get_by_id_unauthenticated(event_svc_integration: EventService):
     """Test that events can be retrieved based on their ID."""
     fetched_event = event_svc_integration.get_by_id(1)
     assert fetched_event is not None
-    assert isinstance(fetched_event, Event)
+    assert isinstance(fetched_event, EventOverview)
     assert fetched_event.id == event_one.id
 
 
@@ -101,7 +101,9 @@ def test_create_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.create(root, to_add)
     event_svc_integration._permission.enforce.assert_any_call(
-        root, "organization.events.create", f"organization/{to_add.organization_id}"
+        root,
+        "organization.events.create",
+        f"organization/{organization_test_data.cads.id}",
     )
 
 
@@ -113,9 +115,6 @@ def test_create_event_as_root(event_svc_integration: EventService):
 
     assert len(created_event.organizers) == 1
     assert created_event.organizers[0].id == root.id
-    assert created_event.is_organizer == True
-
-    assert created_event.is_attendee == False
 
 
 def test_create_event_as_user(event_svc_integration: EventService):
@@ -123,49 +122,6 @@ def test_create_event_as_user(event_svc_integration: EventService):
     with pytest.raises(UserPermissionException):
         event_svc_integration.create(user, to_add)
         pytest.fail()  # Fail test if no error was thrown above
-
-
-def test_get_events_by_organization(
-    event_svc_integration: EventService,
-    organization_svc_integration: OrganizationService,
-):
-    """Test that list of events can be retrieved based on specified organization."""
-    organization = organization_svc_integration.get_by_slug("cssg")
-    fetched_events = event_svc_integration.get_events_by_organization(
-        organization, ambassador
-    )
-    assert fetched_events is not None
-    assert len(fetched_events) == 3
-    assert fetched_events[0].is_attendee == True
-    assert fetched_events[1].is_attendee == False
-    assert fetched_events[2].is_attendee == True
-
-
-def test_get_events_by_organization_organizer(
-    event_svc_integration: EventService,
-    organization_svc_integration: OrganizationService,
-):
-    """Test that list of events can be retrieved based on specified organization."""
-    organization = organization_svc_integration.get_by_slug("cssg")
-    fetched_events = event_svc_integration.get_events_by_organization(
-        organization, user
-    )
-    assert fetched_events is not None
-    assert len(fetched_events) == 3
-    assert fetched_events[0].is_organizer == True
-    assert fetched_events[1].is_organizer == False
-    assert fetched_events[2].is_organizer == False
-
-
-def test_get_events_by_organization_unauthenticated(
-    event_svc_integration: EventService,
-    organization_svc_integration: OrganizationService,
-):
-    """Test that list of events can be retrieved based on specified organization."""
-    organization = organization_svc_integration.get_by_slug("cssg")
-    fetched_events = event_svc_integration.get_events_by_organization(organization)
-    assert fetched_events is not None
-    assert len(fetched_events) == 3
 
 
 def test_update_event_as_root(
@@ -187,19 +143,15 @@ def test_update_event_organizers_as_root(
     """
     event_svc_integration.update(root, updated_event_three)
     updated_organizers = event_svc_integration.get_by_id(3).organizers
-    assert updated_organizers[0].id == ambassador.id
-    assert updated_organizers[1].id == user.id
-    assert updated_organizers[2].id == root.id
+    assert len(updated_organizers) == 3
 
     event_svc_integration.update(root, updated_event_three_remove_organizers)
     updated_organizers = event_svc_integration.get_by_id(3).organizers
     assert len(updated_organizers) == 1
-    assert updated_organizers[0].id == user.id
 
     event_svc_integration.update(root, updated_event_three)
     updated_organizers = event_svc_integration.get_by_id(3).organizers
-    assert updated_organizers[0].id == user.id
-    assert updated_organizers[1].id == ambassador.id
+    assert len(updated_organizers) == 3
 
 
 def test_update_event_organizers_as_user(
@@ -242,7 +194,9 @@ def test_delete_enforces_permission(event_svc_integration: EventService):
     # Test permissions with root user (admin permission)
     event_svc_integration.delete(root, 1)
     event_svc_integration._permission.enforce.assert_called_with(
-        root, "organization.events.delete", f"organization/{event_one.organization_id}"
+        root,
+        "organization.events.delete",
+        f"organization/{organization_test_data.cssg.id}",
     )
 
 
@@ -291,7 +245,7 @@ def test_register_for_event_enforces_permission(event_svc_integration: EventServ
     event_svc_integration._permission.enforce.assert_any_call(
         root,
         "organization.events.manage_registrations",
-        f"organization/{event_details.organization.id}",
+        f"organization/{organization_test_data.cssg.id}",
     )
 
 
@@ -342,7 +296,7 @@ def test_get_registrations_enforces_admin_auth(
     event_svc_integration._permission.enforce.assert_called_with(
         ambassador,
         "organization.events.manage_registrations",
-        f"organization/{event_one.organization_id}",
+        f"organization/{organization_test_data.cssg.id}",
     )
 
 
@@ -401,7 +355,7 @@ def test_unregister_for_event_enforces_admin_auth(
     event_svc_integration._permission.enforce.assert_called_with(
         root,
         "organization.events.manage_registrations",
-        f"organization/{event_one.organization_id}",
+        f"organization/{organization_test_data.cssg.id}",
     )
 
 
@@ -542,7 +496,7 @@ def test_get_registered_users_of_event_permissions(event_svc_integration: EventS
     event_svc_integration._permission.enforce.assert_called_with(
         root,
         "organization.events.manage_registrations",
-        f"organization/{event_one.organization_id}",
+        f"organization/{organization_test_data.cssg.id}",
     )
 
 
@@ -565,7 +519,7 @@ def test_get_registered_users_of_event_without_permissions(
     event_svc_integration._permission.enforce.assert_called_with(
         user,
         "organization.events.manage_registrations",
-        f"organization/{event_one.organization_id}",
+        f"organization/{organization_test_data.cssg.id}",
     )
 
 

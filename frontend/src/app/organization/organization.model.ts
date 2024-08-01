@@ -7,8 +7,6 @@
  * @license MIT
  */
 
-import { Event } from '../event/event.model';
-
 /** Interface for Organization Type (used on frontend for organization detail) */
 export interface Organization {
   id: number | null;
