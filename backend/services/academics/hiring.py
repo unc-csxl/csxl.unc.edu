@@ -234,7 +234,7 @@ class HiringService:
                 )
             )
         )
-        return list(self._session.scalars(application_ids).all())
+        return list(self._session.scalars(application_ids).unique().all())
 
     def _load_application_reviews(
         self, course_site: CourseSiteEntity
