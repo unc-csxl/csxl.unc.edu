@@ -147,4 +147,9 @@ export class HiringSummaryComponent {
     };
     this.hiringService.updateHiringAssignment(draft).subscribe((_) => {});
   }
+
+  /** Export CSV button pressed */
+  exportCsv() {
+    this.hiringService.downloadHiringSummaryCsv(this.selectedTerm()!.id);
+  }
 }

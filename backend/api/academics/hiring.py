@@ -175,9 +175,7 @@ def get_hiring_summary_csv(
     # Create dictionary writer to convert objects to CSV rows
     # Note: __dict__ converts the Pydantic model into a dictionary of key-value
     # pairs, enabling access of the object's keys.
-    wr = csv.DictWriter(
-        stream, delimiter="\t", fieldnames=list(data[0].__dict__.keys())
-    )
+    wr = csv.DictWriter(stream, delimiter=",", fieldnames=list(data[0].__dict__.keys()))
     wr.writeheader()
     wr.writerows([d.__dict__ for d in data])
     # Create HTTP response of type `text/csv`

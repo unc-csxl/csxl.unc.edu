@@ -2,9 +2,7 @@
   <mat-card-header>
     <mat-card-title>{{ selectedTerm().name }} Hiring Summary</mat-card-title>
     <div class="header-actions">
-      <button mat-stroked-button routerLink="/hiring/levels">
-        Download CSV
-      </button>
+      <button mat-stroked-button (click)="exportCsv()">Download CSV</button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
         <mat-select

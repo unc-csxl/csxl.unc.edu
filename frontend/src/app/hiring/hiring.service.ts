@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import {
@@ -17,6 +17,7 @@ import {
   HiringLevel,
   HiringStatus
 } from './hiring.models';
+import saveAs from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -111,5 +112,17 @@ export class HiringService {
 
   updateEnrollmentTotals() {
     return this.http.get(`/api/academics/section/update-enrollments`);
+  }
+
+  downloadHiringSummaryCsv(termId: string) {
+    const params = new HttpParams();
+    return this.http
+      .get(`/api/hiring/summary/${termId}/csv`, {
+        responseType: 'blob'
+      })
+      .subscribe((response) => {
+        console.log(response);
+        saveAs(response, `hiring-export-${termId}.csv`);
+      });
   }
 }
