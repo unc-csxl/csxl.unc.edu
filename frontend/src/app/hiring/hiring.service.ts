@@ -108,4 +108,8 @@ export class HiringService {
   deleteHiringAssignment(assignmentId: number) {
     return this.http.delete(`/api/hiring/assignment/${assignmentId}`);
   }
+
+  updateEnrollmentTotals() {
+    return this.http.get(`/api/academics/section/update-enrollments`);
+  }
 }

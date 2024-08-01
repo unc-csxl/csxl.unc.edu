@@ -13,12 +13,17 @@ mat-card-header {
 }
 
 .header-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
     margin-left: auto;
+    align-items: center;
 }
 
 .term-selector {
     margin-bottom: -1.25em;
     margin-left: 16px;
+    width: 260px;
 }
 
 tr.example-detail-row {

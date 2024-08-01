@@ -203,4 +203,11 @@ export class HiringAdminComponent {
         });
     }
   }
+
+  /** Upload enrollment totals and refresh data */
+  updateEnrollmentTotals() {
+    this.hiringService.updateEnrollmentTotals().subscribe((_) => {
+      this.reloadData();
+    });
+  }
 }
