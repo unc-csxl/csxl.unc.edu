@@ -49,6 +49,7 @@ import { QuickCreateAssignmentDialog } from './dialogs/quick-create-assignment-d
 import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assignment.dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HiringSummaryComponent } from './hiring-summary/hiring-summary.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* UI Widgets */
 
@@ -92,7 +93,8 @@ import { HiringSummaryComponent } from './hiring-summary/hiring-summary.componen
     YouTubePlayerModule,
     MatButtonToggleModule,
     MatChipsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatCheckboxModule
   ]
 })
 export class HiringModule {}

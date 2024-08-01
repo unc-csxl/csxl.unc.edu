@@ -20,3 +20,12 @@ mat-card-header {
     margin-bottom: -1.25em;
     margin-left: 16px;
 }
+
+.input-field {
+    margin-top: 4px;
+    margin-bottom: -1.25em;
+}
+
+p {
+    margin-bottom: 0;
+}

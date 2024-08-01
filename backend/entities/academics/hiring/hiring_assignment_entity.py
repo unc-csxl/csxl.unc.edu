@@ -134,6 +134,8 @@ class HiringAssignmentEntity(EntityBase):
 
         return HiringAssignmentSummaryOverview(
             id=self.id,
+            application_review_id=self.application_review_id,
+            course_site_id=self.course_site_id,
             user=self.user.to_public_model(),
             instructors=list(set(instructors)),
             level=self.hiring_level.to_model(),

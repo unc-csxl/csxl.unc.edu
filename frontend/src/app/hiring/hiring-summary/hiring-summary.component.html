@@ -46,7 +46,7 @@
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p>${{ element.instructors }}</p>
+              <p>{{ element.instructors }}</p>
             </div>
           </td>
         </ng-container>
@@ -54,9 +54,15 @@
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">Epar</div>
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let element; let i = index">
             <div class="row">
-              <p>{{ element.epar }}</p>
+              <mat-form-field class="input-field" appearance="outline">
+                <input
+                  matInput
+                  [(ngModel)]="(assignmentsPage()?.items ?? [])[i].epar"
+                  (change)="updateAssignment(i)"
+                  placeholder="" />
+              </mat-form-field>
             </div>
           </td>
         </ng-container>
@@ -64,9 +70,32 @@
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">Pos #</div>
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let element; let i = index">
             <div class="row">
-              <p>{{ element.position_number }}</p>
+              <mat-form-field class="input-field" appearance="outline">
+                <input
+                  matInput
+                  [(ngModel)]="
+                    (assignmentsPage()?.items ?? [])[i].position_number
+                  "
+                  (change)="updateAssignment(i)"
+                  placeholder="" />
+              </mat-form-field>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="notes">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header">Notes</div>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <div class="row">
+              <mat-form-field class="input-field" appearance="outline">
+                <textarea
+                  matInput
+                  [(ngModel)]="(assignmentsPage()?.items ?? [])[i].notes"
+                  (change)="updateAssignment(i)"></textarea>
+              </mat-form-field>
             </div>
           </td>
         </ng-container>
@@ -74,16 +103,23 @@
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">I9?</div>
           </th>
-          <td mat-cell *matCellDef="let element">
-            <p>{{ element.i9 }}</p>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <mat-checkbox
+              [(ngModel)]="(assignmentsPage()?.items ?? [])[i].i9"
+              (change)="updateAssignment(i)" />
           </td>
         </ng-container>
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">Status</div>
           </th>
-          <td mat-cell *matCellDef="let element">
-            <p>{{ element.status }}</p>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <mat-button-toggle-group
+              [(ngModel)]="(assignmentsPage()?.items ?? [])[i].status"
+              (change)="updateAssignment(i)">
+              <mat-button-toggle value="Commit">Commit</mat-button-toggle>
+              <mat-button-toggle value="Final">Final</mat-button-toggle>
+            </mat-button-toggle-group>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

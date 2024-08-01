@@ -144,6 +144,8 @@ export interface HiringAdminOverview {
 
 export interface HiringAssignmentSummaryOverview {
   id: number | null;
+  application_review_id: number | null;
+  course_site_id: number | null;
   user: PublicProfile;
   instructors: string[];
   level: HiringLevel;

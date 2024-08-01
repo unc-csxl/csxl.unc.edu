@@ -49,6 +49,8 @@ class HiringAssignmentSummaryOverview(BaseModel):
     """Model specific for the summary page."""
 
     id: int | None = None
+    application_review_id: int | None = None
+    course_site_id: int | None = None
     user: PublicUser
     instructors: list[str]
     level: HiringLevel

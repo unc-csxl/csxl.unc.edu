@@ -19,7 +19,11 @@ import {
   PaginationParams,
   Paginator
 } from 'src/app/pagination';
-import { HiringAssignmentSummaryOverview } from '../hiring.models';
+import {
+  HiringAssignmentDraft,
+  HiringAssignmentStatus,
+  HiringAssignmentSummaryOverview
+} from '../hiring.models';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
@@ -80,6 +84,7 @@ export class HiringSummaryComponent {
     'instructors',
     'epar',
     'position_number',
+    'notes',
     'i9',
     'status'
   ];
@@ -120,5 +125,26 @@ export class HiringSummaryComponent {
       this.assignmentsPage.set(page);
       this.previousPaginationParams = paginationParams;
     });
+  }
+
+  /** Save changes */
+  updateAssignment(assignmentIndex: number) {
+    let assignment = this.assignmentsPage()!.items[assignmentIndex]!;
+    let draft: HiringAssignmentDraft = {
+      id: assignment.id,
+      user_id: assignment.user.id,
+      term_id: this.selectedTerm()!.id,
+      application_review_id: assignment.application_review_id,
+      course_site_id: assignment.course_site_id!,
+      level: assignment.level,
+      status: assignment.status,
+      position_number: assignment.position_number,
+      epar: assignment.epar,
+      i9: assignment.i9,
+      notes: assignment.notes,
+      created: new Date(), // will be overrided
+      modified: new Date()
+    };
+    this.hiringService.updateHiringAssignment(draft).subscribe((_) => {});
   }
 }
