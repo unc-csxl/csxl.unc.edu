@@ -14,6 +14,7 @@ from ....models.academics.hiring.hiring_assignment import (
     HiringAssignmentOverview,
     HiringAssignmentDraft,
     HiringAssignmentSummaryOverview,
+    HiringAssignmentCsvRow,
 )
 
 __authors__ = ["Ajay Gandecha"]
@@ -137,11 +138,38 @@ class HiringAssignmentEntity(EntityBase):
             application_review_id=self.application_review_id,
             course_site_id=self.course_site_id,
             user=self.user.to_public_model(),
-            instructors=list(set(instructors)),
+            instructors=", ".join(map(str, list(set(instructors)))),
             level=self.hiring_level.to_model(),
             status=self.status,
             position_number=self.position_number,
             epar=self.epar,
             i9=self.i9,
             notes=self.notes,
+        )
+
+    def to_csv_row(self) -> HiringAssignmentCsvRow:
+        sections = self.course_site.sections
+        instructors: list[str] = []
+        for section in sections:
+            instructors += [
+                staff.user.first_name + " " + staff.user.last_name
+                for staff in section.staff
+                if staff.member_role == RosterRole.INSTRUCTOR
+            ]
+
+        return HiringAssignmentCsvRow(
+            first_name=self.user.first_name,
+            last_name=self.user.last_name,
+            onyen=self.user.onyen,
+            pid=str(self.user.pid),
+            email=self.user.email,
+            instructors=", ".join(map(str, list(set(instructors)))),
+            epar=self.epar,
+            position_number=self.position_number,
+            i9=self.i9,
+            notes=self.notes,
+            status=self.status,
+            level_title=self.hiring_level.title,
+            level_load=str(self.hiring_level.load),
+            level_salary=str(self.hiring_level.salary),
         )

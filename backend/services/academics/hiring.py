@@ -478,3 +478,25 @@ class HiringService:
             length=length,
             params=pagination_params,
         )
+
+    def get_hiring_summary_for_csv(
+        self, subject: User, term_id: str
+    ) -> list[HiringAssignmentCsvRow]:
+        """Returns the hires to show on a summary page for a given term."""
+        # 1. Check for hiring permissions.
+        self._permission.enforce(subject, "hiring.summary", "*")
+        # 2. Build query
+        assignment_query = (
+            select(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.term_id == term_id)
+            .where(
+                HiringAssignmentEntity.status.in_(
+                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
+                )
+            )
+        )
+        # 3. Return items
+        assignment_entities = self._session.scalars(assignment_query).all()
+        return [
+            assignment_entity.to_csv_row() for assignment_entity in assignment_entities
+        ]

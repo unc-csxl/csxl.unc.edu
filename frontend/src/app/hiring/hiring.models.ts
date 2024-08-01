@@ -147,7 +147,7 @@ export interface HiringAssignmentSummaryOverview {
   application_review_id: number | null;
   course_site_id: number | null;
   user: PublicProfile;
-  instructors: string[];
+  instructors: string;
   level: HiringLevel;
   status: HiringAssignmentStatus;
   position_number: string;
