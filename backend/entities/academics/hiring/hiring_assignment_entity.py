@@ -7,10 +7,13 @@ from typing import Self
 from datetime import datetime
 
 from ...entity_base import EntityBase
+from ....models import PublicUser
+from ....models.roster_role import RosterRole
 from ....models.academics.hiring.hiring_assignment import (
     HiringAssignmentStatus,
     HiringAssignmentOverview,
     HiringAssignmentDraft,
+    HiringAssignmentSummaryOverview,
 )
 
 __authors__ = ["Ajay Gandecha"]
@@ -111,6 +114,28 @@ class HiringAssignmentEntity(EntityBase):
         return HiringAssignmentOverview(
             id=self.id,
             user=self.user.to_public_model(),
+            level=self.hiring_level.to_model(),
+            status=self.status,
+            position_number=self.position_number,
+            epar=self.epar,
+            i9=self.i9,
+            notes=self.notes,
+        )
+
+    def to_summary_overview_model(self) -> HiringAssignmentSummaryOverview:
+        sections = self.course_site.sections
+        instructors: list[str] = []
+        for section in sections:
+            instructors += [
+                staff.user.first_name + " " + staff.user.last_name
+                for staff in section.staff
+                if staff.member_role == RosterRole.INSTRUCTOR
+            ]
+
+        return HiringAssignmentSummaryOverview(
+            id=self.id,
+            user=self.user.to_public_model(),
+            instructors=list(set(instructors)),
             level=self.hiring_level.to_model(),
             status=self.status,
             position_number=self.position_number,

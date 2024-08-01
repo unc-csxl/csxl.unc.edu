@@ -48,6 +48,7 @@ import { CreateAssignmentDialog } from './dialogs/create-assignment-dialog/creat
 import { QuickCreateAssignmentDialog } from './dialogs/quick-create-assignment-dialog/quick-create-assignment.dialog';
 import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assignment.dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { HiringSummaryComponent } from './hiring-summary/hiring-summary.component';
 
 /* UI Widgets */
 
@@ -62,7 +63,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     LevelEditorComponent,
     CreateAssignmentDialog,
     QuickCreateAssignmentDialog,
-    EditAssignmentDialog
+    EditAssignmentDialog,
+    HiringSummaryComponent
   ],
   imports: [
     CommonModule,

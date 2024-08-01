@@ -4,6 +4,8 @@ Hiring routes are used for hiring based on TA Applications."""
 
 from fastapi import APIRouter, Depends
 
+from backend.models.pagination import Paginated, PaginationParams
+
 from ...services.academics import HiringService
 
 from ...models.academics.hiring.application_review import HiringStatus
@@ -131,3 +133,24 @@ def update_status(
     Updates the hiring status for TA Applications.
     """
     return hiring_service.update_status(subject, course_site_id, hiring_status)
+
+
+@api.get("/summary/{term_id}", tags=["Hiring"])
+def get_hiring_summary_overview(
+    term_id: str,
+    page: int = 0,
+    page_size: int = 25,
+    order_by: str = "",
+    filter: str = "",
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> Paginated[HiringAssignmentSummaryOverview]:
+    """
+    Returns the state of hiring as a summary.
+    """
+    pagination_params = PaginationParams(
+        page=page, page_size=page_size, order_by=order_by, filter=filter
+    )
+    return hiring_service.get_hiring_summary_overview(
+        subject, term_id, pagination_params
+    )

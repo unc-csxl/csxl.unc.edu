@@ -45,6 +45,20 @@ class HiringAssignmentOverview(BaseModel):
     notes: str
 
 
+class HiringAssignmentSummaryOverview(BaseModel):
+    """Model specific for the summary page."""
+
+    id: int | None = None
+    user: PublicUser
+    instructors: list[str]
+    level: HiringLevel
+    status: HiringAssignmentStatus
+    position_number: str
+    epar: str
+    i9: bool
+    notes: str
+
+
 class HiringCourseSiteOverview(BaseModel):
     course_site_id: int
     sections: list[CatalogSectionIdentity]

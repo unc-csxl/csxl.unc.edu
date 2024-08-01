@@ -1,0 +1,20 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ selectedTerm().name }} Hiring Summary</mat-card-title>
+    <div class="header-actions">
+      <button mat-stroked-button routerLink="/hiring/levels">
+        Download CSV
+      </button>
+      <mat-form-field class="term-selector" appearance="outline">
+        <mat-label>Select Term</mat-label>
+        <mat-select
+          [value]="selectedTermId()"
+          (valueChange)="selectedTermId.set($event)">
+          @for(term of terms; track term.id) {
+          <mat-option [value]="term.id">{{ term.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-card-header>
+</mat-card>
