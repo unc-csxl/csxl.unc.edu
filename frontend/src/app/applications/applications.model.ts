@@ -43,5 +43,5 @@ export interface Application {
   best_moment: string | null;
   desired_improvement: string | null;
   advisor: string | null;
-  preferred_sections: CatalogSectionIdentity[];
+  preferred_sections: ApplicationSectionChoice[];
 }

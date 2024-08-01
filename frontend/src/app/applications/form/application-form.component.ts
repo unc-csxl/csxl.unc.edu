@@ -83,6 +83,7 @@ export class ApplicationFormComponent {
       if (application) {
         this.application = application;
         this.formGroup.patchValue(application!);
+        this.selectedSections.set(application!.preferred_sections);
       }
     });
   }
