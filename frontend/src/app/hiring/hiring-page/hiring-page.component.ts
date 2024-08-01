@@ -149,6 +149,9 @@ export class HiringPageComponent {
       (a) => a.applicant_course_ranking === 1
     );
     this.notPreferred = this.notPreferred.concat(notFirstChoice);
+    this.notPreferred.sort(
+      (a, b) => a.applicant_course_ranking - b.applicant_course_ranking
+    );
     this.updateHiringStatus();
   }
 }
