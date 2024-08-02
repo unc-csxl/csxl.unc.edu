@@ -260,6 +260,7 @@ class EventService:
         event_entity.location = event.location
         event_entity.registration_limit = event.registration_limit
         event_entity.image_url = event.image_url
+        event_entity.override_registration_url = event.override_registration_url
 
         # Check for permissions to enforce registration management
         if subject.id not in old_organizer_ids:

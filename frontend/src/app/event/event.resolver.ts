@@ -36,7 +36,8 @@ export const eventResolver: ResolveFn<EventOverview | undefined> = (
       organization_name: '',
       organizers: [],
       image_url: null,
-      user_registration_type: null
+      user_registration_type: null,
+      override_registration_url: null
     };
   }
 };

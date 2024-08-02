@@ -67,11 +67,14 @@ export class EventEditorComponent {
       Validators.maxLength(2000)
     ]),
     public: new FormControl(false, [Validators.required]),
+    has_limit: new FormControl(false),
+    internal_registration: new FormControl(true),
     registration_limit: new FormControl(0, [
       Validators.required,
       Validators.min(0)
     ]),
-    userLookup: ''
+    userLookup: '',
+    override_registration_url: new FormControl('')
   });
 
   constructor(
@@ -110,6 +113,14 @@ export class EventEditorComponent {
     this.organizers = this.isNew()
       ? [this.profile as PublicProfile]
       : this.event.organizers;
+
+    // Set the toggle flags
+    this.eventForm
+      .get('has_limit')
+      ?.setValue(this.event.registration_limit !== 999);
+    this.eventForm
+      .get('internal_registration')
+      ?.setValue(this.event.override_registration_url === null);
   }
 
   /** Event handler to handle submitting the event form.
@@ -124,7 +135,9 @@ export class EventEditorComponent {
       eventToSubmit.id = id !== 'new' ? id : null;
       eventToSubmit.organization_slug = this.route.snapshot.params['orgid'];
       eventToSubmit.organizers = this.organizers;
-
+      if (this.eventForm.get('has_limit')?.value === false) {
+        eventToSubmit.registration_limit = 999;
+      }
       let submittedEvent = this.isNew()
         ? this.eventService.createEvent(eventOverviewToDraft(eventToSubmit))
         : this.eventService.updateEvent(eventOverviewToDraft(eventToSubmit));

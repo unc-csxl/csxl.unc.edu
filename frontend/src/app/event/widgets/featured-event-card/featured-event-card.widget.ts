@@ -30,6 +30,11 @@ export class FeaturedEventCardWidget {
 
   /** Registers a user for an event. */
   registerForEvent() {
+    if (this.event.override_registration_url) {
+      window.location.href = this.event.override_registration_url!;
+      return;
+    }
+
     this.eventService.registerForEvent(this.event.id!).subscribe({
       next: () => {
         this.registrationChange.emit(true);

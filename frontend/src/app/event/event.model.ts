@@ -42,6 +42,7 @@ export interface EventOverviewJson {
   organizers: PublicProfile[];
   user_registration_type: RegistrationType | null;
   image_url: string | null;
+  override_registration_url: string | null;
 }
 
 export interface EventOverview {
@@ -61,6 +62,7 @@ export interface EventOverview {
   organizers: PublicProfile[];
   user_registration_type: RegistrationType | null;
   image_url: string | null;
+  override_registration_url: string | null;
 }
 
 export interface EventDraft {
@@ -75,6 +77,7 @@ export interface EventDraft {
   organization_slug: string;
   organizers: PublicProfile[];
   image_url: string | null;
+  override_registration_url: string | null;
 }
 
 export const eventOverviewToDraft = (overview: EventOverview): EventDraft => {
@@ -89,7 +92,8 @@ export const eventOverviewToDraft = (overview: EventOverview): EventDraft => {
     registration_limit: overview.registration_limit,
     organization_slug: overview.organization_slug,
     organizers: overview.organizers,
-    image_url: overview.image_url
+    image_url: overview.image_url,
+    override_registration_url: overview.override_registration_url
   };
 };
 

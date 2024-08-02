@@ -19,7 +19,9 @@
           @if(profile) {
           <div class="row">
             <mat-icon class="secondary-icon">person_outline</mat-icon>
-            @if (event.registration_limit > 400) {
+            @if (event.override_registration_url) {
+            <p>External registration</p>
+            } @else if (event.registration_limit > 400) {
             <p>Open to all</p>
             } @else if (event.registration_limit === event.number_registered) {
             <p><span class="tertiary-color">Filled</span></p>
@@ -85,8 +87,12 @@
     } @else if(event.registration_limit === event.number_registered &&
     event.start > now) {
     <button mat-flat-button [disabled]="true">Filled</button>
-    } @else if(event.start > now) {
+    } @else if(event.start > now) { @if(event.override_registration_url) {
+    <button mat-flat-button (click)="registerForEvent()">
+      Register (External)
+    </button>
+    } @else {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
-    } }
+    } } }
   </mat-card-actions>
 </mat-card>

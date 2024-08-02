@@ -75,8 +75,12 @@
     } @else if(event.registration_limit === event.number_registered &&
     event.start > now) {
     <button mat-flat-button [disabled]="true">Filled</button>
-    } @else if(event.start > now) {
+    } @else if(event.start > now) { @if(event.override_registration_url) {
+    <button mat-flat-button (click)="registerForEvent()">
+      Register (External)
+    </button>
+    } @else {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
-    } }
+    } } }
   </mat-card-actions>
 </mat-pane>
