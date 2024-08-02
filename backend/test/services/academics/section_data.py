@@ -526,7 +526,7 @@ def insert_fake_data(session: Session):
         )
         session.add(entity)
 
-    reset_table_id_seq(session, SectionEntity, SectionEntity.id, len(sections) + 1)
+    reset_table_id_seq(session, SectionEntity, SectionEntity.id, len(sections) + 100)
 
 
 @pytest.fixture(autouse=True)
