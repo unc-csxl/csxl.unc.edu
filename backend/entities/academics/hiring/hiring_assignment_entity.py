@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for hiring assignments."""
 
-from sqlalchemy import Integer, String, Float, Boolean, ForeignKey, DateTime
+from sqlalchemy import Integer, String, Float, Boolean, ForeignKey, DateTime, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Enum as SQLAlchemyEnum
 from typing import Self
@@ -29,6 +29,16 @@ class HiringAssignmentEntity(EntityBase):
     __tablename__ = "academics__hiring__assignment"
 
     # Properties (columns in the database table)
+    __table_args__ = (
+        Index("academics__hiring_term_idx", "term_id", "hiring_level_id", unique=False),
+        Index("academics__hiring_course_site_idx", "course_site_id", unique=False),
+        Index("academics__hiring_user_idx", "user_id", unique=False),
+        Index(
+            "academics__hiring_application_review_idx",
+            "application_review_id",
+            unique=False,
+        ),
+    )
 
     # Unique ID
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
