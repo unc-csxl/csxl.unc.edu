@@ -26,6 +26,7 @@ class EventDraft(BaseModel):
     organization_slug: str
     organizers: list[PublicUser] = []
     image_url: str | None = None
+    override_registration_url: str | None = None
 
 
 class EventOverview(BaseModel):
@@ -45,6 +46,7 @@ class EventOverview(BaseModel):
     organizers: list[PublicUser]
     user_registration_type: RegistrationType | None
     image_url: str | None
+    override_registration_url: str | None
 
 
 class EventStatusOverview(BaseModel):

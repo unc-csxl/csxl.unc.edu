@@ -42,6 +42,8 @@ class EventEntity(EntityBase):
     registration_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     # URL for the image for an event.
     image_url: Mapped[str] = mapped_column(String, nullable=True)
+    # This field provides a registration URL if external registration is used.
+    override_registration_url: Mapped[str] = mapped_column(String, nullable=True)
 
     # Organization hosting the event
     # NOTE: This defines a one-to-many relationship between the organization and events tables.
@@ -74,6 +76,7 @@ class EventEntity(EntityBase):
             registration_limit=model.registration_limit,
             organization_id=organization_id,
             image_url=model.image_url,
+            override_registration_url=model.override_registration_url,
         )
 
     def to_overview_model(self, subject: User | None = None) -> EventOverview:
@@ -133,4 +136,5 @@ class EventEntity(EntityBase):
                 user_registration.registration_type if user_registration else None
             ),
             image_url=self.image_url,
+            override_registration_url=self.override_registration_url,
         )
