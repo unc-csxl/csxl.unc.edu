@@ -40,6 +40,12 @@
                   <div matListItemTitle>Admin</div>              
               </mat-list-item>
             } 
+            @if (hiringPermission$ | async) {
+              <mat-list-item routerLink="/hiring/admin" [activated]="router.isActive('/hiring/admin', false)">
+                  <mat-icon matListItemIcon>badge</mat-icon>
+                  <div matListItemTitle>Hiring</div>              
+              </mat-list-item>
+            } 
             @if (ambassadorPermission$ | async) {
               <mat-list-item routerLink="/coworking/ambassador" [activated]="router.isActive('/coworking/ambassador', false)">
                 <mat-icon matListItemIcon>handshake</mat-icon>

@@ -28,6 +28,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   public checkinPermission$: Observable<boolean>;
   public adminPermission$: Observable<boolean>;
   public ambassadorPermission$: Observable<boolean>;
+  public hiringPermission$: Observable<boolean>;
 
   constructor(
     public auth: AuthenticationService,
@@ -50,7 +51,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
       'coworking.reservation.*',
       '*'
     );
-
+    this.hiringPermission$ = this.permission.check('hiring.*', '*');
     // Reset the admin settings navigation every time the route changes
     router.events
       .pipe(filter((e) => e instanceof RouterEvent))

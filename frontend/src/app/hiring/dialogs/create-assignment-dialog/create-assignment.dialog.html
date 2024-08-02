@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Create Assignment</h2>
+<mat-dialog-content>
+  <form [formGroup]="createAssignmentForm">
+    <user-lookup [users]="users" [maxSelected]="1" />
+    <mat-form-field appearance="outline">
+      <mat-label>Select Level</mat-label>
+      <mat-select formControlName="level">
+        @for(level of hiringService.activeHiringlevels(); track level.id) {
+        <mat-option [value]="level">{{ level.title }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option [value]="hiringAssignmentStatus.DRAFT">{{
+          hiringAssignmentStatus.DRAFT
+        }}</mat-option>
+        <mat-option [value]="hiringAssignmentStatus.COMMIT">{{
+          hiringAssignmentStatus.COMMIT
+        }}</mat-option>
+        <mat-option [value]="hiringAssignmentStatus.FINAL">{{
+          hiringAssignmentStatus.FINAL
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Position Number</mat-label>
+      <input matInput formControlName="position_number" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>EPar</mat-label>
+      <input matInput formControlName="epar" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="notes" name="notes"></textarea>
+    </mat-form-field>
+    <mat-slide-toggle formControlName="i9">
+      This student has submitted an I9.
+    </mat-slide-toggle>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="secondary" (click)="close()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="!formIsValid()"
+    (click)="submit()">
+    Create
+  </button>
+</mat-dialog-actions>

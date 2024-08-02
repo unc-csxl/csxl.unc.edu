@@ -1,0 +1,78 @@
+.mat-mdc-card-outlined {
+    border-color: transparent !important;
+    margin-right: 32px !important;
+    max-width: 100% !important;
+    min-height: calc(100vh - 112px);
+    height: 100%;
+    margin-bottom: 32px !important;
+}
+
+mat-card-header {
+    flex-direction: row;
+    align-items: center;
+}
+
+.header-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    margin-left: auto;
+    align-items: center;
+}
+
+.term-selector {
+    margin-bottom: -1.25em;
+    margin-left: 16px;
+    width: 260px;
+}
+
+tr.example-detail-row {
+    height: 0;
+}
+  
+.example-element-row td {
+    border-bottom-width: 0;
+}
+  
+.example-element-detail {
+    overflow: hidden;
+    display: flex;
+}
+
+course-hiring-card {
+    width: 100% !important;
+}
+
+.text-badge {
+    font-size: 14px;
+    height: 22px;
+    width: 32px;
+    text-align: center;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 11px;
+    line-height: 24px;
+    color: white;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.totals-row {
+    margin-top: 8px;
+    gap: 12px;
+    align-items: center;
+    float: right;
+}
+
+.sort-by-header {
+    display: flex;
+    flex-direction: row;
+    float: right;
+    align-items: center;
+    gap: 12px;
+}

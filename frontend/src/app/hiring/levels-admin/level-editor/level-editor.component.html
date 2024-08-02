@@ -1,0 +1,76 @@
+<form [formGroup]="levelForm" (ngSubmit)="onSubmit()">
+  <mat-pane>
+    <mat-card-header>
+      <mat-card-title>
+        {{ this.isNew() ? 'Create' : 'Update' }} Hiring Level
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Level Title</mat-label>
+        <input
+          matInput
+          placeholder=""
+          formControlName="title"
+          name="title"
+          required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Classification</mat-label>
+        <mat-select formControlName="classification">
+          <mat-option [value]="classification.IOR">{{
+            classification.IOR
+          }}</mat-option>
+          <mat-option [value]="classification.PHD">{{
+            classification.PHD
+          }}</mat-option>
+          <mat-option [value]="classification.MS">{{
+            classification.MS
+          }}</mat-option>
+          <mat-option [value]="classification.UG">{{
+            classification.UG
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Level Salary (in $)</mat-label>
+        <input
+          type="number"
+          matInput
+          placeholder=""
+          formControlName="salary"
+          name="salary"
+          required />
+      </mat-form-field>
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Level Load</mat-label>
+        <input
+          type="number"
+          matInput
+          placeholder=""
+          formControlName="load"
+          name="load"
+          required />
+      </mat-form-field>
+      <mat-slide-toggle formControlName="is_active">
+        This level is currently being used.
+      </mat-slide-toggle>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        color="secondary"
+        type="button"
+        (click)="onReset()">
+        Reset
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="levelForm.invalid">
+        Save
+      </button>
+    </mat-card-actions>
+  </mat-pane>
+</form>

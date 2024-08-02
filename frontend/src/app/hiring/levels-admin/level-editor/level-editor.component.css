@@ -1,0 +1,10 @@
+mat-form-field {
+    width: 100%;
+    margin-top: 16px;
+}
+  
+.mat-mdc-card-actions {
+    padding-bottom: 16px;
+    justify-content: end;
+    gap: 12px;
+}

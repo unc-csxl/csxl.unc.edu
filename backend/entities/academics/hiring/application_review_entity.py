@@ -11,6 +11,7 @@ from ....models.academics.hiring.application_review import (
     ApplicationReviewStatus,
     ApplicationReview,
     ApplicationReviewOverview,
+    ApplicationReviewCsvRow,
 )
 
 __authors__ = ["Ajay Gandecha"]
@@ -128,7 +129,50 @@ class ApplicationReviewEntity(EntityBase):
             status=self.status,
             preference=self.preference,
             notes=self.notes,
-            application=self.application.to_overview_model(),
+            application=self.application.to_review_overview_model(),
+            applicant_id=self.application.user_id,
             applicant_course_ranking=applicant_preference_for_course
             + 1,  # Increment since starting index is 0.
+        )
+
+    def to_csv_row(self) -> ApplicationReviewCsvRow:
+        """
+        This method converts an application into an application overview.
+        """
+        section_preferences_models = [
+            section.to_catalog_identity_model()
+            for section in self.application.preferred_sections
+        ]
+        section_preferences = [
+            section.subject_code
+            + " "
+            + section.course_number
+            + "-"
+            + section.section_number
+            for section in section_preferences_models
+        ]
+
+        return ApplicationReviewCsvRow(
+            applicant_name=f"{self.application.user.first_name} {self.application.user.last_name}",
+            type=self.application.type,
+            academic_hours=self.application.academic_hours,
+            extracurriculars=self.application.extracurriculars,
+            expected_graduation=self.application.expected_graduation,
+            program_pursued=self.application.program_pursued,
+            other_programs=self.application.other_programs,
+            gpa=self.application.gpa,
+            comp_gpa=self.application.comp_gpa,
+            comp_227=self.application.comp_227,
+            intro_video_url=self.application.intro_video_url,
+            prior_experience=self.application.prior_experience,
+            service_experience=self.application.service_experience,
+            additional_experience=self.application.additional_experience,
+            ta_experience=self.application.ta_experience,
+            best_moment=self.application.best_moment,
+            desired_improvement=self.application.desired_improvement,
+            advisor=self.application.advisor,
+            preferred_sections=", ".join(map(str, section_preferences)),
+            status=self.status,
+            preference=self.preference,
+            notes=self.notes,
         )

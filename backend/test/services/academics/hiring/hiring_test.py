@@ -34,7 +34,7 @@ from .hiring_data import fake_data_fixture as insert_order_6
 
 # Test data
 from ... import user_data
-from ...academics import section_data
+from ...academics import section_data, term_data
 from ...office_hours import office_hours_data
 from . import hiring_data
 
@@ -142,3 +142,142 @@ def test_update_status_administrator(hiring_svc: HiringService):
     )
     hiring_svc.update_status(user_data.root, office_hours_data.comp_110_site.id, status)
     assert True
+
+
+def test_get_hiring_admin_overview(hiring_svc: HiringService):
+    """Ensures that the admin is able to get the hiring admin data."""
+    hiring_admin_overview = hiring_svc.get_hiring_admin_overview(
+        user_data.root, term_data.current_term.id
+    )
+    assert hiring_admin_overview is not None
+    assert len(hiring_admin_overview.sites) == 2
+
+
+def test_get_hiring_admin_overview_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able to check the hiring data."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.get_hiring_admin_overview(
+            user_data.ambassador, term_data.current_term.id
+        )
+        pytest.fail()
+
+
+def test_create_hiring_assignment(hiring_svc: HiringService):
+    """Ensures that the admin can create hiring assignments."""
+    assignment = hiring_svc.create_hiring_assignment(
+        user_data.root, hiring_data.new_hiring_assignment
+    )
+    assert assignment is not None
+
+
+def test_create_hiring_assignment_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able to modify hiring data."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.create_hiring_assignment(
+            user_data.ambassador, hiring_data.new_hiring_assignment
+        )
+        pytest.fail()
+
+
+def test_update_hiring_assignment(hiring_svc: HiringService):
+    """Ensures that the admin can update hiring assignments."""
+    assignment = hiring_svc.update_hiring_assignment(
+        user_data.root, hiring_data.updated_hiring_assignment
+    )
+    assert assignment is not None
+    assert assignment.id == hiring_data.updated_hiring_assignment.id
+
+
+def test_update_hiring_assignment_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able to modify hiring data."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.update_hiring_assignment(
+            user_data.ambassador, hiring_data.updated_hiring_assignment
+        )
+        pytest.fail()
+
+
+def test_update_hiring_assignment_not_found(hiring_svc: HiringService):
+    """Ensures that hiring data cannot be updated if it does not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        hiring_svc.update_hiring_assignment(
+            user_data.root, hiring_data.new_hiring_assignment
+        )
+        pytest.fail()
+
+
+def test_delete_hiring_assignment(hiring_svc: HiringService):
+    """Ensures that the admin can delete hiring assignments."""
+    hiring_svc.delete_hiring_assignment(
+        user_data.root, hiring_data.hiring_assignment.id
+    )
+
+
+def test_delete_hiring_assignment_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able to modify hiring data."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.delete_hiring_assignment(
+            user_data.ambassador, hiring_data.hiring_assignment.id
+        )
+        pytest.fail()
+
+
+def test_delete_hiring_assignment_not_found(hiring_svc: HiringService):
+    """Ensures that hiring data cannot be deleted if it does not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        hiring_svc.delete_hiring_assignment(
+            user_data.root, hiring_data.new_hiring_assignment.id
+        )
+        pytest.fail()
+
+
+def test_get_hiring_levels(hiring_svc: HiringService):
+    """Ensures that the admin can see all hiring levels."""
+    levels = hiring_svc.get_hiring_levels(user_data.root)
+    assert levels is not None
+    assert len(levels) == 1
+
+
+def test_get_hiring_level_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able see hiring levels."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.get_hiring_levels(user_data.ambassador)
+        pytest.fail()
+
+
+def test_create_hiring_level(hiring_svc: HiringService):
+    """Ensures that the admin can create hiring levels."""
+    level = hiring_svc.create_hiring_level(user_data.root, hiring_data.new_level)
+    assert level is not None
+
+
+def test_create_hiring_level_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able to modify hiring data."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.create_hiring_level(user_data.ambassador, hiring_data.new_level)
+        pytest.fail()
+
+
+def test_update_hiring_level(hiring_svc: HiringService):
+    """Ensures that the admin can update hiring levels."""
+    level = hiring_svc.update_hiring_level(
+        user_data.root, hiring_data.updated_uta_level
+    )
+    assert level is not None
+    assert level.id == hiring_data.updated_uta_level.id
+
+
+def test_update_hiring_level_checks_permission(hiring_svc: HiringService):
+    """Ensures that nobody else is able to modify hiring data."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.update_hiring_level(
+            user_data.ambassador, hiring_data.updated_uta_level
+        )
+        pytest.fail()
+
+
+def test_update_hiring_level_not_found(hiring_svc: HiringService):
+    """Ensures that hiring data cannot be deleted if it does not exist."""
+    with pytest.raises(ResourceNotFoundException):
+        hiring_svc.update_hiring_level(user_data.root, hiring_data.new_level)
+        pytest.fail()

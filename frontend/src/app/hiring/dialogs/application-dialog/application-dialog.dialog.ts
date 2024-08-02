@@ -20,7 +20,8 @@ import { Subscription, debounce, debounceTime, interval, timer } from 'rxjs';
 export interface ApplicationDialogData {
   courseSiteId: number;
   review: ApplicationReviewOverview;
-  status: HiringStatus;
+  viewOnly?: boolean;
+  status?: HiringStatus;
 }
 
 @Component({
@@ -42,11 +43,13 @@ export class ApplicationDialog implements OnInit, OnDestroy {
 
   /** Save the notes data as the user types, with a debounce of 200ms. */
   ngOnInit(): void {
-    this.notesSubcription = this.notesSubcription = this.notes.valueChanges
-      .pipe(debounceTime(200))
-      .subscribe((_) => {
-        this.saveData();
-      });
+    if (!this.data.viewOnly) {
+      this.notesSubcription = this.notesSubcription = this.notes.valueChanges
+        .pipe(debounceTime(200))
+        .subscribe((_) => {
+          this.saveData();
+        });
+    }
   }
 
   /** Unsubsribe from the notes subscription when the page is closed. */
@@ -62,21 +65,21 @@ export class ApplicationDialog implements OnInit, OnDestroy {
   saveData() {
     // Replace the current review based on its place in the hiring status.
     if (this.data.review.status == ApplicationReviewStatus.NOT_PREFERRED) {
-      this.data.status.not_preferred[this.data.review.preference].notes =
+      this.data.status!.not_preferred[this.data.review.preference].notes =
         this.notes.value ?? '';
     }
     if (this.data.review.status == ApplicationReviewStatus.NOT_PROCESSED) {
-      this.data.status.not_processed[this.data.review.preference].notes =
+      this.data.status!.not_processed[this.data.review.preference].notes =
         this.notes.value ?? '';
     }
     if (this.data.review.status == ApplicationReviewStatus.PREFERRED) {
-      this.data.status.preferred[this.data.review.preference].notes =
+      this.data.status!.preferred[this.data.review.preference].notes =
         this.notes.value ?? '';
     }
 
     // Persist the data
     this.hiringService
-      .updateStatus(this.data.courseSiteId, this.data.status)
+      .updateStatus(this.data.courseSiteId, this.data.status!)
       .subscribe((hiringStatus) => {
         this.data.status = hiringStatus;
       });

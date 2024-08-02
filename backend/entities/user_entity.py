@@ -83,6 +83,12 @@ class UserEntity(EntityBase):
         secondary=article_author_table, back_populates="authors"
     )
 
+    # All of the hiring assignments for this user.
+    # NOTE: This field establishes a one-to-many relationship between the users and article table.
+    hiring_assignments: Mapped[list["HiringAssignmentEntity"]] = relationship(
+        back_populates="user"
+    )
+
     @classmethod
     def from_model(cls, model: User) -> Self:
         """

@@ -1,0 +1,164 @@
+@if (hiringAdminOverview()) {
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ selectedTerm().name }} Hiring</mat-card-title>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="updateEnrollmentTotals()">
+        Update Enrollment Totals
+      </button>
+      <button mat-stroked-button routerLink="/hiring/levels">
+        Manage Hiring Levels
+      </button>
+      <button mat-flat-button routerLink="/hiring/summary">View Summary</button>
+      <mat-form-field class="term-selector" appearance="outline">
+        <mat-label>Select Term</mat-label>
+        <mat-select
+          [value]="selectedTermId()"
+          (valueChange)="selectedTermId.set($event)">
+          @for(term of terms; track term.id) {
+          <mat-option [value]="term.id">{{ term.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="table-responsive">
+      <table mat-table [dataSource]="sortedSites()" multiTemplateDataRows>
+        <!-- Section Column -->
+        <ng-container matColumnDef="sections">
+          <th mat-header-cell *matHeaderCellDef>Course</th>
+          <td mat-cell *matCellDef="let element">
+            @if(element.sections.length > 0) {
+            <mat-card-subtitle>
+              {{ element.sections[0].subject_code }}
+              {{ element.sections[0].course_number }}
+            </mat-card-subtitle>
+            }
+          </td>
+        </ng-container>
+        <!-- Instructor Column -->
+        <ng-container matColumnDef="instructor">
+          <th mat-header-cell *matHeaderCellDef>Instructor(s)</th>
+          <td mat-cell *matCellDef="let element">
+            <user-chip-list
+              [users]="element.instructors"
+              [enableMailTo]="true" />
+          </td>
+        </ng-container>
+        <!-- Expanding Container -->
+        <ng-container matColumnDef="expand">
+          <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+            <div class="sort-by-header">
+              Sort By:
+              <mat-chip-listbox
+                [value]="sortMethod()"
+                (change)="sortMethod.set($event.value)">
+                <mat-chip-option [value]="sortMethods.COURSE">{{
+                  sortMethods.COURSE
+                }}</mat-chip-option>
+                <mat-chip-option [value]="sortMethods.COVERAGE_ASCENDING">{{
+                  sortMethods.COVERAGE_ASCENDING
+                }}</mat-chip-option>
+                <mat-chip-option [value]="sortMethods.COVERAGE_DESCENDING">{{
+                  sortMethods.COVERAGE_DESCENDING
+                }}</mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="row totals-row">
+              <p>
+                <span class="text-badge secondary-background">
+                  {{ element.total_enrollment }}</span
+                >&nbsp;total students
+              </p>
+              <p>
+                <span class="text-badge secondary-background">{{
+                  element.assignments.length
+                }}</span
+                >&nbsp;hires
+              </p>
+              <p>
+                <span class="text-badge secondary-background"
+                  >${{ element.total_cost }}</span
+                >&nbsp;total cost
+              </p>
+              <div class="row">
+                <p>
+                  <span
+                    [class]="
+                      'text-badge ' +
+                      (element.coverage <= -0.5 || element.coverage >= 0.5
+                        ? 'tertiary-background'
+                        : 'primary-background')
+                    "
+                    >{{ element.coverage.toFixed(2) }}</span
+                  >&nbsp;coverage
+                </p>
+                @if(element.coverage <= -0.5) {
+                <mat-icon class="font-tertiary"
+                  >keyboard_double_arrow_down</mat-icon
+                >
+                } @else if(element.coverage >= 0.5) {
+                <mat-icon class="font-tertiary"
+                  >keyboard_double_arrow_up</mat-icon
+                >
+                } @else {
+                <mat-icon class="font-primary">done_all</mat-icon>
+                }
+              </div>
+
+              <button
+                mat-icon-button
+                aria-label="expand row"
+                (click)="
+                  expandedElement =
+                    expandedElement === element ? null : element;
+                  $event.stopPropagation()
+                ">
+                <mat-icon *ngIf="expandedElement === element"
+                  >keyboard_arrow_up</mat-icon
+                >
+                <mat-icon *ngIf="expandedElement !== element"
+                  >keyboard_arrow_down</mat-icon
+                >
+              </button>
+            </div>
+          </td>
+        </ng-container>
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="expandedDetail">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="columnsToDisplayWithExpand.length">
+            <div
+              class="example-element-detail"
+              [@detailExpand]="
+                element === expandedElement ? 'expanded' : 'collapsed'
+              ">
+              <course-hiring-card
+                [termId]="selectedTermId()!"
+                [itemInput]="element"
+                (updateData)="reloadData()" />
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: columnsToDisplayWithExpand"
+          class="example-element-row"
+          [class.example-expanded-row]="expandedElement === row"
+          (click)="expandedElement = expandedElement === row ? null : row"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['expandedDetail']"
+          class="example-detail-row"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+}

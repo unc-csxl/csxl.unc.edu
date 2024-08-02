@@ -21,6 +21,8 @@ from ..models.application import Application
 from ..models.comp_227 import Comp227
 
 from ..models.application import ApplicationOverview
+from ..models.application import ApplicationUnderReview
+from ..models.public_user import PublicUser
 
 __authors__ = ["Ben Goulet, Abdulaziz Al-Shayef", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -202,4 +204,37 @@ class ApplicationEntity(EntityBase):
                 section.to_catalog_identity_model()
                 for section in self.preferred_sections
             ],
+        )
+
+    def to_review_overview_model(self) -> ApplicationUnderReview:
+        """
+        This method converts an application into an application overview.
+        """
+        return ApplicationUnderReview(
+            applicant_name=f"{self.user.first_name} {self.user.last_name}",
+            applicant=PublicUser(
+                id=self.user.id,
+                first_name=self.user.first_name,
+                last_name=self.user.last_name,
+                email=self.user.email,
+                onyen=self.user.onyen,
+                pronouns=self.user.pronouns,
+            ),
+            type=self.type,
+            academic_hours=self.academic_hours,
+            extracurriculars=self.extracurriculars,
+            expected_graduation=self.expected_graduation,
+            program_pursued=self.program_pursued,
+            other_programs=self.other_programs,
+            gpa=self.gpa,
+            comp_gpa=self.comp_gpa,
+            comp_227=self.comp_227,
+            intro_video_url=self.intro_video_url,
+            prior_experience=self.prior_experience,
+            service_experience=self.service_experience,
+            additional_experience=self.additional_experience,
+            ta_experience=self.ta_experience,
+            best_moment=self.best_moment,
+            desired_improvement=self.desired_improvement,
+            advisor=self.advisor,
         )

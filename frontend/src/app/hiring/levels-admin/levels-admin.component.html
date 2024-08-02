@@ -1,0 +1,86 @@
+<mat-pane>
+  <mat-card-header>
+    <mat-card-title>Hiring Levels</mat-card-title>
+    <button mat-stroked-button (click)="createLevel()">Create</button>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="content">
+      <div class="table-responsive">
+        <table mat-table [dataSource]="this.hiringService.hiringLevels()">
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header">Title</div>
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [routerLink]="'/hiring/levels/' + element.id + '/edit'">
+              <div class="row">
+                <p>{{ element.title }}</p>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="classification">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header">Classification</div>
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [routerLink]="'/hiring/levels/' + element.id + '/edit'">
+              <div class="row">
+                <p>{{ element.classification }}</p>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="salary">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header">Salary</div>
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [routerLink]="'/hiring/levels/' + element.id + '/edit'">
+              <div class="row">
+                <p>${{ element.salary.toFixed(2) }}</p>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="load">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header">Load</div>
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [routerLink]="'/hiring/levels/' + element.id + '/edit'">
+              <div class="row">
+                <p>{{ element.load.toFixed(2) }}</p>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header">Active?</div>
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [routerLink]="'/hiring/levels/' + element.id + '/edit'">
+              <div class="row">
+                <p
+                  [class]="
+                    element.is_active ? 'font-primary' : 'font-tertiary'
+                  ">
+                  {{ element.is_active ? 'Yes' : 'No' }}
+                </p>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-pane>

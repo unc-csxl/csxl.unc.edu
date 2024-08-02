@@ -1,0 +1,16 @@
+mat-form-field {
+    width: 100%;
+    margin-top: 10px;
+}
+::ng-deep .user-chips {
+    margin-bottom: 4px !important;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}

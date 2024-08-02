@@ -1,0 +1,31 @@
+.mat-mdc-card-outlined {
+    border-color: transparent !important;
+    margin-right: 32px !important;
+    max-width: 100% !important;
+    min-height: calc(100vh - 112px);
+    height: 100%;
+    margin-bottom: 32px !important;
+}
+
+mat-card-header {
+    flex-direction: row;
+    align-items: center;
+}
+
+.header-actions {
+    margin-left: auto;
+}
+
+.term-selector {
+    margin-bottom: -1.25em;
+    margin-left: 16px;
+}
+
+.input-field {
+    margin-top: 4px;
+    margin-bottom: -1.25em;
+}
+
+p {
+    margin-bottom: 0;
+}

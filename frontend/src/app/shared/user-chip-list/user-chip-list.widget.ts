@@ -18,6 +18,10 @@ import { PublicProfile } from 'src/app/profile/profile.service';
 export class UserChipList {
   @Input() users!: PublicProfile[];
   @Input() enableMailTo!: boolean;
-
+  @Input() clickable?: boolean = true;
   constructor() {}
+
+  emailRedirect(user: PublicProfile) {
+    window.location.href = `mailto:${user.email}`;
+  }
 }

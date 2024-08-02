@@ -154,4 +154,9 @@ export class HiringPageComponent {
     );
     this.updateHiringStatus();
   }
+
+  /** Downloads a CSV of applications. */
+  downloadCsv() {
+    this.hiringService.downloadCourseHiringCsv(this.courseSiteId);
+  }
 }

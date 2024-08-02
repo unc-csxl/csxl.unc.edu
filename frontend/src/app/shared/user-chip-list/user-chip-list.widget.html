@@ -1,5 +1,21 @@
 <div class="user-chips">
-  <mat-chip-option class="user-chip" *ngFor="let user of users">
+  @if(clickable) { @if(enableMailTo) {
+  <mat-chip-row
+    class="user-chip"
+    *ngFor="let user of users"
+    (click)="emailRedirect(user)">
+    <img
+      class="user-image"
+      *ngIf="user.github_avatar"
+      matChipAvatar
+      [src]="user.github_avatar" />
+    {{ user.first_name + ' ' + user.last_name }}
+  </mat-chip-row>
+  } @else {
+  <mat-chip-row
+    class="user-chip"
+    *ngFor="let user of users"
+    [routerLink]="'/profile/' + user.onyen">
     <img
       class="user-image"
       *ngIf="user.github_avatar"
@@ -14,5 +30,25 @@
     <ng-template #disableMailTo>
       {{ user.first_name + ' ' + user.last_name }}
     </ng-template>
-  </mat-chip-option>
+  </mat-chip-row>
+  } } @else {
+  <div class="no-hover-chipset">
+    <mat-chip-row class="user-chip" *ngFor="let user of users" disableRipple>
+      <img
+        class="user-image"
+        *ngIf="user.github_avatar"
+        matChipAvatar
+        [src]="user.github_avatar" />
+      <a
+        *ngIf="enableMailTo; else disableMailTo"
+        class="user-email-link"
+        href="mailto:{{ user.email }}">
+        {{ user.first_name + ' ' + user.last_name }}
+      </a>
+      <ng-template #disableMailTo>
+        {{ user.first_name + ' ' + user.last_name }}
+      </ng-template>
+    </mat-chip-row>
+  </div>
+  }
 </div>

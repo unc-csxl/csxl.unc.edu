@@ -83,6 +83,7 @@ def test_update_application(application_svc: ApplicationService):
             subject_code="COMP",
             course_number="110",
             section_number="001",
+            title="Introduction to Computer Science",
         )
     ]
     application = application_svc.update(user_data.student, updated_application)
@@ -119,6 +120,7 @@ def test_update_application_other_user_root(application_svc: ApplicationService)
             subject_code="COMP",
             course_number="110",
             section_number="001",
+            title="Introduction to Computer Science",
         )
     ]
     application = application_svc.update(user_data.root, updated_application)

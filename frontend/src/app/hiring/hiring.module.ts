@@ -38,11 +38,35 @@ import {
 import { ApplicationCardWidget } from './widgets/application-card/application-card.widget';
 import { ApplicationDialog } from './dialogs/application-dialog/application-dialog.dialog';
 import { YouTubePlayerModule } from '@angular/youtube-player';
+import { HiringAdminComponent } from './hiring-admin/hiring-admin.component';
+import { CourseHiringCardWidget } from './widgets/course-hiring-card/course-hiring-card.widget';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { LevelsAdminComponent } from './levels-admin/levels-admin.component';
+import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { CreateAssignmentDialog } from './dialogs/create-assignment-dialog/create-assignment.dialog';
+import { QuickCreateAssignmentDialog } from './dialogs/quick-create-assignment-dialog/quick-create-assignment.dialog';
+import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assignment.dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { HiringSummaryComponent } from './hiring-summary/hiring-summary.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /* UI Widgets */
 
 @NgModule({
-  declarations: [HiringPageComponent, ApplicationCardWidget, ApplicationDialog],
+  declarations: [
+    HiringPageComponent,
+    ApplicationCardWidget,
+    ApplicationDialog,
+    HiringAdminComponent,
+    CourseHiringCardWidget,
+    LevelsAdminComponent,
+    LevelEditorComponent,
+    CreateAssignmentDialog,
+    QuickCreateAssignmentDialog,
+    EditAssignmentDialog,
+    HiringSummaryComponent
+  ],
   imports: [
     CommonModule,
     MatTabsModule,
@@ -66,7 +90,11 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
     CdkDrag,
     CdkDropList,
     CdkDragPlaceholder,
-    YouTubePlayerModule
+    YouTubePlayerModule,
+    MatButtonToggleModule,
+    MatChipsModule,
+    MatSlideToggleModule,
+    MatCheckboxModule
   ]
 })
 export class HiringModule {}
