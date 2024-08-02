@@ -12,11 +12,18 @@ import { ResolveFn } from '@angular/router';
 import { WelcomeService } from './welcome.service';
 import { WelcomeOverview } from './welcome.model';
 import { ProfileService } from '../profile/profile.service';
+import { map, switchMap } from 'rxjs';
 
 /** This resolver injects an event into the events detail component. */
 export const welcomeResolver: ResolveFn<WelcomeOverview> = (route, state) => {
-  if (inject(ProfileService).profile() === undefined) {
-    return inject(WelcomeService).getWelcomeStatusUnauthenticated();
-  }
-  return inject(WelcomeService).getWelcomeStatus();
+  const welcomeService = inject(WelcomeService);
+  return inject(ProfileService).profile$.pipe(
+    switchMap((profile) => {
+      if (profile !== undefined) {
+        return welcomeService.getWelcomeStatus();
+      } else {
+        return welcomeService.getWelcomeStatusUnauthenticated();
+      }
+    })
+  );
 };

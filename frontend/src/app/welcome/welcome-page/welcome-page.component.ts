@@ -10,15 +10,18 @@ import {
   Component,
   OnInit,
   Signal,
+  WritableSignal,
   computed,
   effect,
   signal
 } from '@angular/core';
-import { welcomeResolver } from '../welcome.resolver';
 import { WelcomeOverview } from '../welcome.model';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileService } from 'src/app/profile/profile.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { WelcomeService } from '../welcome.service';
+import { profileResolver } from 'src/app/profile/profile.resolver';
+import { Profile } from 'src/app/models.module';
 
 @Component({
   selector: 'app-welcome-page',
@@ -32,17 +35,18 @@ export class WelcomePageComponent implements OnInit {
     title: 'CS Experience Labs @ UNC',
     component: WelcomePageComponent,
     resolve: {
-      welcomeOverview: welcomeResolver
+      profile: profileResolver
     }
   };
 
   /** Variable to store the current welcome status. */
-  welcomeOverview: Signal<WelcomeOverview>;
+  welcomeOverview: WritableSignal<WelcomeOverview | undefined> =
+    signal(undefined);
 
   /** Signal to determine the opening office hours. */
   openOperatingHours = computed(() => {
     let now = new Date();
-    return this.welcomeOverview().operating_hours.find(
+    return this.welcomeOverview()!.operating_hours.find(
       (hours) => hours.start <= now
     );
   });
@@ -51,12 +55,26 @@ export class WelcomePageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     protected profileService: ProfileService,
-    private gearService: NagivationAdminGearService
+    private gearService: NagivationAdminGearService,
+    protected welcomeService: WelcomeService
   ) {
     const data = this.route.snapshot.data as {
-      welcomeOverview: WelcomeOverview;
+      profile: Profile | undefined;
     };
-    this.welcomeOverview = signal(data.welcomeOverview);
+
+    // If the user is logged in, call the regular API.
+    // If the user is logged out, call the unauthenticated API.
+    if (data.profile) {
+      this.welcomeService.getWelcomeStatus().subscribe((welcomeStatus) => {
+        this.welcomeOverview.set(welcomeStatus);
+      });
+    } else {
+      this.welcomeService
+        .getWelcomeStatusUnauthenticated()
+        .subscribe((welcomeStatus) => {
+          this.welcomeOverview.set(welcomeStatus);
+        });
+    }
   }
 
   ngOnInit(): void {

@@ -23,6 +23,8 @@ export class EventCardWidget {
   @Input() event!: EventOverview;
   @Output() registrationChange = new EventEmitter<boolean>();
 
+  now = new Date();
+
   constructor(
     protected eventService: EventService,
     protected snackBar: MatSnackBar
@@ -30,6 +32,11 @@ export class EventCardWidget {
 
   /** Registers a user for an event. */
   registerForEvent() {
+    if (this.event.override_registration_url) {
+      window.location.href = this.event.override_registration_url!;
+      return;
+    }
+
     this.eventService.registerForEvent(this.event.id!).subscribe({
       next: () => {
         this.registrationChange.emit(true);

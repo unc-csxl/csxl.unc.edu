@@ -59,3 +59,25 @@ mat-card-actions {
     --mdc-chip-focus-state-layer-color: transparent !important;
     --mdc-chip-hover-state-layer-color: transparent !important;
 }
+
+
+.links-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    align-items: center;
+    margin-bottom: 4px;
+    column-gap: 16px;
+  }
+  
+  .link-icons {
+    margin-left: 6px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+  }

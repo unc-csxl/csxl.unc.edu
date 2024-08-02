@@ -23,7 +23,8 @@ export const eventResolver: ResolveFn<EventOverview | undefined> = (
     return {
       id: null,
       name: '',
-      time: new Date(),
+      start: new Date(),
+      end: new Date(),
       location: '',
       description: '',
       public: true,
@@ -35,7 +36,8 @@ export const eventResolver: ResolveFn<EventOverview | undefined> = (
       organization_name: '',
       organizers: [],
       image_url: null,
-      user_registration_type: null
+      user_registration_type: null,
+      override_registration_url: null
     };
   }
 };

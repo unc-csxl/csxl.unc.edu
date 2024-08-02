@@ -81,8 +81,8 @@ class EventService:
             range_start = pagination_params.range_start
             range_end = pagination_params.range_end
             criteria = and_(
-                EventEntity.time >= datetime.fromisoformat(range_start),
-                EventEntity.time <= datetime.fromisoformat(range_end),
+                EventEntity.start >= datetime.fromisoformat(range_start),
+                EventEntity.start <= datetime.fromisoformat(range_end),
             )
             statement = statement.where(criteria)
             length_statement = length_statement.where(criteria)
@@ -254,11 +254,13 @@ class EventService:
 
         # Update event object
         event_entity.name = event.name
-        event_entity.time = event.time
+        event_entity.start = event.start
+        event_entity.end = event.end
         event_entity.description = event.description
         event_entity.location = event.location
         event_entity.registration_limit = event.registration_limit
         event_entity.image_url = event.image_url
+        event_entity.override_registration_url = event.override_registration_url
 
         # Check for permissions to enforce registration management
         if subject.id not in old_organizer_ids:
@@ -554,8 +556,8 @@ class EventService:
             self._session.query(EventRegistrationEntity)
             .where(EventRegistrationEntity.user_id == user.id)
             .join(EventEntity, EventRegistrationEntity.event_id == EventEntity.id)
-            .where(EventEntity.time >= time_range.start)
-            .where(EventEntity.time < time_range.end)
+            .where(EventEntity.start >= time_range.start)
+            .where(EventEntity.start < time_range.end)
         ).all()
 
         return [entity.to_flat_model() for entity in registration_entities]
@@ -673,8 +675,8 @@ class EventService:
         featured_event: EventOverview | None = None
         event_query = (
             select(EventEntity)
-            .where(EventEntity.time >= datetime.now())
-            .order_by(EventEntity.time)
+            .where(EventEntity.start >= datetime.now())
+            .order_by(EventEntity.start)
             .limit(50)
         )
         event_entities = self._session.scalars(event_query).all()
@@ -696,8 +698,8 @@ class EventService:
             select(EventRegistrationEntity)
             .where(EventRegistrationEntity.user_id == subject.id)
             .join(EventEntity)
-            .where(EventEntity.time >= datetime.now())
-            .order_by(EventEntity.time)
+            .where(EventEntity.start >= datetime.now())
+            .order_by(EventEntity.start)
         )
 
         registered_events_entities = self._session.scalars(
@@ -726,8 +728,8 @@ class EventService:
         featured_event: EventOverview | None = None
         event_query = (
             select(EventEntity)
-            .where(EventEntity.time >= datetime.now())
-            .order_by(EventEntity.time)
+            .where(EventEntity.start >= datetime.now())
+            .order_by(EventEntity.start)
             .limit(50)
         )
         event_entities = self._session.scalars(event_query).all()

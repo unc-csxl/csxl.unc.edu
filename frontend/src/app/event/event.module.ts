@@ -39,6 +39,7 @@ import { GroupEventsPipe } from './pipes/group-events.pipe';
 import { EventsPageComponent } from './events-page/events-page.component';
 import { FeaturedEventCardWidget } from './widgets/featured-event-card/featured-event-card.widget';
 import { EventCardWidget } from './widgets/event-card/event-card.widget';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { EventCardWidget } from './widgets/event-card/event-card.widget';
     MatTooltipModule,
     RouterModule,
     SharedModule,
-    EventRoutingModule
+    EventRoutingModule,
+    MatSlideToggleModule
   ]
 })
 export class EventModule {}

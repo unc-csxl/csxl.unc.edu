@@ -18,19 +18,22 @@ class EventDraft(BaseModel):
 
     id: int | None = None
     name: str
-    time: datetime
+    start: datetime
+    end: datetime
     location: str
     description: str
     registration_limit: int
     organization_slug: str
     organizers: list[PublicUser] = []
     image_url: str | None = None
+    override_registration_url: str | None = None
 
 
 class EventOverview(BaseModel):
     id: int
     name: str
-    time: datetime
+    start: datetime
+    end: datetime
     location: str
     description: str
     public: bool
@@ -43,6 +46,7 @@ class EventOverview(BaseModel):
     organizers: list[PublicUser]
     user_registration_type: RegistrationType | None
     image_url: str | None
+    override_registration_url: str | None
 
 
 class EventStatusOverview(BaseModel):

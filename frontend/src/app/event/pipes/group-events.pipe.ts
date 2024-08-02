@@ -23,7 +23,7 @@ export class GroupEventsPipe implements PipeTransform {
     events.forEach((event) => {
       // Find the date to group by
       let dateString =
-        this.datePipe.transform(event.time, 'EEEE, MMMM d, y') ?? '';
+        this.datePipe.transform(event.start, 'EEEE, MMMM d, y') ?? '';
       // Add the event
       let newEventsList = groups.get(dateString) ?? [];
       newEventsList.push(event);
