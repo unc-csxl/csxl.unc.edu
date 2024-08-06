@@ -171,7 +171,7 @@ class SectionService:
         # Add the instructors.
         for instructor in section.instructors:
             self._section_member_svc.add_section_member(
-                subject, section.id, instructor.id, RosterRole.INSTRUCTOR
+                subject, added_section.id, instructor.id, RosterRole.INSTRUCTOR
             )
 
         # Now, refresh the data and return.

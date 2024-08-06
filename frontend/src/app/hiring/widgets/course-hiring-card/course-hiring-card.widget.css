@@ -58,6 +58,8 @@ mat-divider {
 
 .user-chips {
     margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
   }
   
   .user-chip {
