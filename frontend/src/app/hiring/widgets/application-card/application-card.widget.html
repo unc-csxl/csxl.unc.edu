@@ -19,6 +19,13 @@
             @if(item.application.type === 'new_uta') { UTA }
             @if(item.application.type === 'gta') { GTA }
           </span>
+          @if (item.application.type === 'new_uta') {
+            <span class="text-badge secondary-container-background" [matTooltip]="item.application.comp_227!">
+              @if (item.application.comp_227 === "Monetary compensation only") { $ }
+              @else if(item.application.comp_227 === "Open to either 227 credit or compensation") { $/227 }
+              @else { 227 }
+            </span>
+          }
         </div>
         @if (item.notes.length > 0) {
         <mat-icon class="notes" matListItemIcon>tooltip</mat-icon>
@@ -26,7 +33,7 @@
       </div>
       <div class="accessories">
         <p class="font-variant">
-          Course rank:
+          Priority:
           <span
             [class]="
               'text-badge ' +
