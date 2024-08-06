@@ -1,50 +1,11 @@
 <mat-pane class="surface-container-card">
   <mat-card-header>
     <mat-card-title
-      >{{ item().sections[0].subject_code }}
-      {{ item().sections[0].course_number }} Hiring</mat-card-title
+      >{{ item().sections[0].subject_code }} {{ item().sections[0].course_number
+      }} Hiring</mat-card-title
     >
   </mat-card-header>
   <mat-card-content>
-    <mat-card-subtitle class="subtitle-header">Totals</mat-card-subtitle>
-    <div class="row totals-row">
-      <p>
-        <span class="text-badge secondary-background">
-          {{ item().total_enrollment }}</span
-        >&nbsp;total students
-      </p>
-      <p>
-        <span class="text-badge secondary-background">{{
-          item().assignments.length
-        }}</span
-        >&nbsp;hires
-      </p>
-      <p>
-        <span class="text-badge secondary-background"
-          >${{ item().total_cost }}</span
-        >&nbsp;total cost
-      </p>
-      <div class="row">
-        <p>
-          <span
-            [class]="
-              'text-badge ' +
-              (item().coverage <= -0.5 || item().coverage >= 0.5
-                ? 'tertiary-background'
-                : 'primary-background')
-            "
-            >{{ item().coverage.toFixed(2) }}</span
-          >&nbsp;coverage
-        </p>
-        @if(item().coverage <= -0.5) {
-        <mat-icon class="font-tertiary">keyboard_double_arrow_down</mat-icon>
-        } @else if(item().coverage >= 0.5) {
-        <mat-icon class="font-tertiary">keyboard_double_arrow_up</mat-icon>
-        } @else {
-        <mat-icon class="font-primary">done_all</mat-icon>
-        }
-      </div>
-    </div>
     <mat-card-subtitle class="subtitle-header">Assignments</mat-card-subtitle>
     <div class="table-responsive">
       <table
@@ -98,8 +59,13 @@
               mat-stroked-button
               (click)="createAssignment()">
               <mat-icon class="font-primary">add</mat-icon>
-              Add Hire
+              Hire
             </button>
+            <a
+              mat-stroked-button
+              routerLink="/hiring/{{ item().course_site_id }}"
+              >View Applicants</a
+            >
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="status-column-items">

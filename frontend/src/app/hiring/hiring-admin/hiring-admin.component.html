@@ -31,8 +31,8 @@
           <td mat-cell *matCellDef="let element">
             @if(element.sections.length > 0) {
             <mat-card-subtitle>
-              {{ element.sections[0].subject_code }}
-              {{ element.sections[0].course_number }}
+              {{ element.sections[0].subject_code }} {{
+              element.sections[0].course_number }}
             </mat-card-subtitle>
             }
           </td>
@@ -54,15 +54,15 @@
               <mat-chip-listbox
                 [value]="sortMethod()"
                 (change)="sortMethod.set($event.value)">
-                <mat-chip-option [value]="sortMethods.COURSE">{{
-                  sortMethods.COURSE
-                }}</mat-chip-option>
-                <mat-chip-option [value]="sortMethods.COVERAGE_ASCENDING">{{
-                  sortMethods.COVERAGE_ASCENDING
-                }}</mat-chip-option>
-                <mat-chip-option [value]="sortMethods.COVERAGE_DESCENDING">{{
-                  sortMethods.COVERAGE_DESCENDING
-                }}</mat-chip-option>
+                <mat-chip-option [value]="sortMethods.COURSE"
+                  >{{ sortMethods.COURSE }}</mat-chip-option
+                >
+                <mat-chip-option [value]="sortMethods.COVERAGE_ASCENDING"
+                  >{{ sortMethods.COVERAGE_ASCENDING }}</mat-chip-option
+                >
+                <mat-chip-option [value]="sortMethods.COVERAGE_DESCENDING"
+                  >{{ sortMethods.COVERAGE_DESCENDING }}</mat-chip-option
+                >
               </mat-chip-listbox>
             </div>
           </th>
@@ -71,18 +71,17 @@
               <p>
                 <span class="text-badge secondary-background">
                   {{ element.total_enrollment }}</span
-                >&nbsp;total students
+                >&nbsp;enrolled
               </p>
               <p>
-                <span class="text-badge secondary-background">{{
-                  element.assignments.length
-                }}</span
+                <span class="text-badge secondary-background"
+                  >{{ element.assignments.length }}</span
                 >&nbsp;hires
               </p>
               <p>
                 <span class="text-badge secondary-background"
                   >${{ element.total_cost }}</span
-                >&nbsp;total cost
+                >&nbsp;cost
               </p>
               <div class="row">
                 <p>

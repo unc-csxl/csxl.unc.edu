@@ -54,6 +54,8 @@ class ApplicationReviewCsvRow(BaseModel):
 
     type: str
     applicant_name: str
+    email: str | None
+    pid: str | None
     academic_hours: int | None
     extracurriculars: str | None
     expected_graduation: str | None
