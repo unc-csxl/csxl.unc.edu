@@ -154,6 +154,8 @@ class ApplicationReviewEntity(EntityBase):
 
         return ApplicationReviewCsvRow(
             applicant_name=f"{self.application.user.first_name} {self.application.user.last_name}",
+            email=self.application.user.email,
+            pid=str(self.application.user.pid),
             type=self.application.type,
             academic_hours=self.application.academic_hours,
             extracurriculars=self.application.extracurriculars,

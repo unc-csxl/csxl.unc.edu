@@ -121,7 +121,6 @@ export class HiringService {
         responseType: 'blob'
       })
       .subscribe((response) => {
-        console.log(response);
         saveAs(response, `hiring-export-${termId}.csv`);
       });
   }
@@ -133,7 +132,6 @@ export class HiringService {
         responseType: 'blob'
       })
       .subscribe((response) => {
-        console.log(response);
         saveAs(response, `applications-export.csv`);
       });
   }

@@ -90,8 +90,9 @@
 }
 
 .drop-list {
-  min-height: 200px;
+  min-height: 10000px;
   padding-bottom: 60px;
+  display: relative;
 }
 
 application-card {
