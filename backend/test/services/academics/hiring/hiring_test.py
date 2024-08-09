@@ -18,9 +18,11 @@ from .....models.academics.hiring.application_review import (
 )
 from .....services.academics import HiringService
 from .....services.application import ApplicationService
+from .....services.academics.course_site import CourseSiteService
 
 # Injected Service Fixtures
 from .fixtures import hiring_svc
+from ..course_site_test import course_site_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from ...core_data import setup_insert_data_fixture as insert_order_0
@@ -281,3 +283,14 @@ def test_update_hiring_level_not_found(hiring_svc: HiringService):
     with pytest.raises(ResourceNotFoundException):
         hiring_svc.update_hiring_level(user_data.root, hiring_data.new_level)
         pytest.fail()
+
+
+def test_create_missing_course_sites_for_term(
+    hiring_svc: HiringService, course_site_svc: CourseSiteService
+):
+    user = user_data.root
+    term = term_data.current_term
+    overview_pre = hiring_svc.get_hiring_admin_overview(user, term.id)
+    hiring_svc.create_missing_course_sites_for_term(user, term.id)
+    overview_post = hiring_svc.get_hiring_admin_overview(user, term.id)
+    assert len(overview_post.sites) > len(overview_pre.sites)
