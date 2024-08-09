@@ -89,6 +89,15 @@ class UserEntity(EntityBase):
         back_populates="user"
     )
 
+    def full_name(self) -> str:
+        """
+        Returns the full name of the user.
+
+        Returns:
+            str: The full name of the user.
+        """
+        return f"{self.first_name} {self.last_name}"
+
     @classmethod
     def from_model(cls, model: User) -> Self:
         """

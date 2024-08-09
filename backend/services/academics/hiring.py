@@ -144,6 +144,43 @@ class HiringService:
         # Reload the data and return the hiring status.
         return self.get_status(subject, course_site_id)
 
+    def create_missing_course_sites_for_term(self, subject: User, term_id: str) -> bool:
+        """
+        Creates missing course sites for a given term.
+        """
+        self._permission.enforce(
+            subject, "hiring.create_missing_course_sites_for_term", f"course_sites/*"
+        )
+
+        # Get a list of all sections that are not associated with course sites
+        section_query = select(SectionEntity).where(
+            SectionEntity.course_site_id.is_(None)
+        )
+        joint: dict[tuple[str, str], list[SectionEntity]] = {}
+        for section in self._session.scalars(section_query).all():
+            instructors = [
+                section_member.user.full_name()
+                for section_member in section.members
+                if section_member.member_role == RosterRole.INSTRUCTOR
+            ]
+            key = (f"{section.course_id}", str(instructors))
+            if key not in joint:
+                joint[key] = []
+            joint[key].append(section)
+
+        # Create a course site for each group of sections
+        for key, sections in joint.items():
+            course_site = CourseSiteEntity(
+                term_id=term_id,
+                title=sections[0].get_title(),
+            )
+            for section in sections:
+                section.course_site = course_site
+            self._session.add(course_site)
+
+        self._session.commit()
+        return True
+
     def _load_course_site(self, course_site_id: int) -> CourseSiteEntity:
         """
         Loads a course site given a subject and course site ID.

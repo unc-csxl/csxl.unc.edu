@@ -113,6 +113,18 @@ def update_hiring_level(
     return hiring_service.update_hiring_level(subject, level)
 
 
+@api.post("/create_sites", tags=["Hiring"])
+def create_missing_course_sites_for_term(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> bool:
+    """
+    Creates missing course sites for the term
+    """
+    return hiring_service.create_missing_course_sites_for_term(subject, term_id)
+
+
 @api.get("/{course_site_id}", tags=["Hiring"])
 def get_status(
     course_site_id: int,

@@ -82,6 +82,15 @@ class SectionEntity(EntityBase):
         primaryjoin="and_(SectionEntity.id==SectionRoomEntity.section_id, SectionRoomEntity.assignment_type=='OFFICE_HOURS')",
     )
 
+    def get_title(self) -> str:
+        """
+        Returns the title of the section, either the override title or the course title
+
+        Returns:
+            str: Title of the section
+        """
+        return self.override_title if self.override_title else self.course.title
+
     # Members of the course
     members: Mapped[list["SectionMemberEntity"]] = relationship(
         back_populates="section", cascade="delete"
