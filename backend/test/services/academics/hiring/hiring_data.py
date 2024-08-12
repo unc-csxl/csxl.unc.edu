@@ -111,8 +111,28 @@ application_four = Application(
     term_id=term_data.current_term.id,
 )
 
-new_application = Application(
+application_five = Application(
     id=5,
+    type="gta",
+    user_id=user_data.root.id,
+    academic_hours=12,
+    extracurriculars="Many extracurriculars",
+    expected_graduation="Soon",
+    program_pursued="PhD",
+    other_programs="None",
+    gpa=3.8,
+    comp_gpa=4.0,
+    comp_227=Comp227.EITHER,
+    intro_video_url="https://www.youtube.com/watch?v=d6O6kyqjcYo",
+    prior_experience="None",
+    service_experience="None",
+    additional_experience="None",
+    preferred_sections=[],
+    term_id=term_data.current_term.id,
+)
+
+new_application = Application(
+    id=6,
     type="new_uta",
     user_id=user_data.ambassador.id,
     academic_hours=12,
@@ -146,7 +166,13 @@ new_application = Application(
     term_id=term_data.current_term.id,
 )
 
-applications = [application_one, application_two, application_three, application_four]
+applications = [
+    application_one,
+    application_two,
+    application_three,
+    application_four,
+    application_five,
+]
 
 application_associations = [
     (application_one, section_data.comp_301_001_current_term, 0),
@@ -155,6 +181,7 @@ application_associations = [
     (application_two, section_data.comp_110_001_current_term, 0),
     (application_three, section_data.comp_110_001_current_term, 0),
     (application_four, section_data.comp_110_001_current_term, 0),
+    (application_five, section_data.comp_301_001_current_term, 0),
 ]
 
 review_one = ApplicationReview(

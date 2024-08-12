@@ -14,7 +14,7 @@ from ..permission import PermissionService
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...entities import UserEntity
-from ...models.application import ApplicationUnderReview
+from ...models.application import ApplicationUnderReview, ApplicationOverview
 from ...entities.academics import SectionEntity, TermEntity
 from ...entities.office_hours import CourseSiteEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -149,13 +149,14 @@ class HiringService:
         Creates missing course sites for a given term.
         """
         self._permission.enforce(
-            subject, "hiring.create_missing_course_sites_for_term", f"course_sites/*"
+            subject,
+            "hiring.create_missing_course_sites_for_term",
+            f"course_sites/term:{term_id}",
         )
 
         # Get a list of all sections that are not associated with course sites
         section_query = select(SectionEntity).where(
-            SectionEntity.term_id == term_id,
-            SectionEntity.course_site_id.is_(None)
+            SectionEntity.term_id == term_id, SectionEntity.course_site_id.is_(None)
         )
         joint: dict[tuple[str, str], list[SectionEntity]] = {}
         for section in self._session.scalars(section_query).all():
@@ -181,6 +182,22 @@ class HiringService:
 
         self._session.commit()
         return True
+
+    def get_phd_applicants(
+        self, subject: User, term_id: str
+    ) -> list[ApplicationOverview]:
+        self._permission.enforce(
+            subject, "hiring.get_phd_applicants", f"course_sites/term:{term_id}"
+        )
+
+        query = select(ApplicationEntity).where(
+            ApplicationEntity.term_id == term_id,
+            ApplicationEntity.type == "gta",
+            ApplicationEntity.program_pursued.in_({"PhD", "PhD (ABD)"}),
+        )
+        all = self._session.scalars(query).all()
+
+        return [app.to_overview_model() for app in all]
 
     def _load_course_site(self, course_site_id: int) -> CourseSiteEntity:
         """

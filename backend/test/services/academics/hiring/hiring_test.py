@@ -294,3 +294,12 @@ def test_create_missing_course_sites_for_term(
     hiring_svc.create_missing_course_sites_for_term(user, term.id)
     overview_post = hiring_svc.get_hiring_admin_overview(user, term.id)
     assert len(overview_post.sites) > len(overview_pre.sites)
+
+
+def test_get_phd_applicants(hiring_svc: HiringService):
+    user = user_data.root
+    term = term_data.current_term
+    applicants = hiring_svc.get_phd_applicants(user, term.id)
+    assert len(applicants) > 0
+    for applicant in applicants:
+        assert applicant.program_pursued in {"PhD", "PhD (ABD)"}
