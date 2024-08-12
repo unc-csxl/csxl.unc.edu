@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from ...public_user import PublicUser
+from ...user import User
 from ..section import CatalogSectionIdentity
 
 
 class PhDApplicationReview(BaseModel):
     id: int
-    applicant: PublicUser
+    applicant: User
     applicant_name: str
     advisor: str | None
     program_pursued: str

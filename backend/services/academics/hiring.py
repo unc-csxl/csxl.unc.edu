@@ -203,7 +203,7 @@ class HiringService:
         for application in all:
             phd_application = PhDApplicationReview(
                 id=application.id,
-                applicant=application.user.to_public_model(),
+                applicant=application.user.to_model(),
                 applicant_name=application.user.full_name(),
                 advisor=application.advisor,
                 program_pursued=application.program_pursued,
@@ -226,10 +226,12 @@ class HiringService:
             .where(section_application_table.c.application_id.in_(application_ids))
             .order_by(section_application_table.c.preference)
         )
-        for section_application in self._session.execute(section_application_query):
-            preference, section_id, application_id = section_application
+        for idx, section_application in enumerate(
+            self._session.execute(section_application_query)
+        ):
+            _, section_id, application_id = section_application
             phd_applications[application_id].student_preferences.append(
-                f"{preference}. {sections[section_id].course_id}.{sections[section_id].number}"
+                f"{idx}. {sections[section_id].course_id}.{sections[section_id].number}"
             )
 
         # Grab instructor preferences of applications
@@ -244,9 +246,9 @@ class HiringService:
             )
         )
         instructor_preferences = self._session.scalars(instructor_review_query).all()
-        for review in instructor_preferences:
+        for idx, review in enumerate(instructor_preferences):
             phd_applications[review.application_id].instructor_preferences.append(
-                f"{review.preference}. {review.course_site.sections[0].course_id}.{review.course_site.sections[0].number}"
+                f"{idx}. {review.course_site.sections[0].course_id}.{review.course_site.sections[0].number}"
             )
 
         return list(phd_applications.values())
