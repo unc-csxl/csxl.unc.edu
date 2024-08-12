@@ -176,7 +176,7 @@ def get_hiring_summary_csv(
     term_id: str,
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
-) -> Paginated[HiringAssignmentSummaryOverview]:
+) -> StreamingResponse:
     """
     Returns the state of hiring as a summary.
     """
@@ -202,7 +202,7 @@ def get_applicants_for_site_csv(
     course_site_id: int,
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
-) -> Paginated[HiringAssignmentSummaryOverview]:
+) -> StreamingResponse:
     """
     Returns the state of hiring as a summary.
     """
@@ -219,5 +219,58 @@ def get_applicants_for_site_csv(
     # Create HTTP response of type `text/csv`
     response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
     response.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    # Return the response
+    return response
+
+
+@api.get("/summary/{term_id}/phd_applicants", tags=["Hiring"])
+def get_hiring_summary_csv(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> StreamingResponse:
+    """
+    Returns the state of hiring as a summary.
+    """
+    data = hiring_service.get_phd_applicants(subject, term_id)
+    # Create IO Stream
+    stream = io.StringIO()
+    # Create dictionary writer to convert objects to CSV rows
+    # Note: __dict__ converts the Pydantic model into a dictionary of key-value
+    # pairs, enabling access of the object's keys.
+    keys = [
+        "id",
+        "last_name",
+        "first_name",
+        "onyen",
+        "email",
+        "program_pursued",
+        "intro_video_url",
+        "student_preferences",
+        "instructor_preferences",
+    ]
+    wr = csv.DictWriter(stream, delimiter=",", fieldnames=keys)
+    wr.writeheader()
+    rows = []
+    for d in data:
+        rows.append(
+            {
+                "id": d.id,
+                "last_name": d.applicant.last_name,
+                "first_name": d.applicant.first_name,
+                "onyen": d.applicant.onyen,
+                "email": d.applicant.email,
+                "program_pursued": d.program_pursued,
+                "intro_video_url": d.intro_video_url,
+                "student_preferences": ", ".join(d.student_preferences),
+                "instructor_preferences": ", ".join(d.instructor_preferences),
+            }
+        )
+    wr.writerows(rows)
+    # Create HTTP response of type `text/csv`
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = (
+        f"attachment; filename=phd_applicants_{term_id}.csv"
+    )
     # Return the response
     return response

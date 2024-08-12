@@ -7,8 +7,8 @@ class PhDApplicationReview(BaseModel):
     id: int
     applicant: PublicUser
     applicant_name: str
-    advisor: str
+    advisor: str | None
     program_pursued: str
     intro_video_url: str
-    student_preferences: list[CatalogSectionIdentity]
-    instructor_preferences: list[CatalogSectionIdentity]
+    student_preferences: list[str]
+    instructor_preferences: list[str]
