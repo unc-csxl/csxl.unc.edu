@@ -3,6 +3,7 @@ from enum import Enum
 from datetime import datetime
 
 from ... import PublicUser
+from ... import User
 from ...academics import CatalogSectionIdentity
 from .hiring_level import HiringLevel
 from .application_review import ApplicationReviewOverview
@@ -51,7 +52,7 @@ class HiringAssignmentSummaryOverview(BaseModel):
     id: int | None = None
     application_review_id: int | None = None
     course_site_id: int | None = None
-    user: PublicUser
+    user: User
     instructors: str
     level: HiringLevel
     status: HiringAssignmentStatus
