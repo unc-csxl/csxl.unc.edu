@@ -14,7 +14,7 @@ from ..permission import PermissionService
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...entities import UserEntity
-from ...models.application import ApplicationUnderReview
+from ...models.application import ApplicationUnderReview, ApplicationOverview
 from ...entities.academics import SectionEntity, TermEntity
 from ...entities.office_hours import CourseSiteEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -35,6 +35,7 @@ from ...models.academics.hiring.application_review import (
     ApplicationReviewStatus,
     ApplicationReviewCsvRow,
 )
+from ...models.academics.hiring.phd_application import PhDApplicationReview
 from ...models.academics.hiring.hiring_assignment import *
 from ...models.academics.hiring.hiring_level import *
 
@@ -149,13 +150,14 @@ class HiringService:
         Creates missing course sites for a given term.
         """
         self._permission.enforce(
-            subject, "hiring.create_missing_course_sites_for_term", f"course_sites/*"
+            subject,
+            "hiring.create_missing_course_sites_for_term",
+            f"course_sites/term:{term_id}",
         )
 
         # Get a list of all sections that are not associated with course sites
         section_query = select(SectionEntity).where(
-            SectionEntity.term_id == term_id,
-            SectionEntity.course_site_id.is_(None)
+            SectionEntity.term_id == term_id, SectionEntity.course_site_id.is_(None)
         )
         joint: dict[tuple[str, str], list[SectionEntity]] = {}
         for section in self._session.scalars(section_query).all():
@@ -181,6 +183,73 @@ class HiringService:
 
         self._session.commit()
         return True
+
+    def get_phd_applicants(
+        self, subject: User, term_id: str
+    ) -> list[PhDApplicationReview]:
+        self._permission.enforce(
+            subject, "hiring.get_phd_applicants", f"course_sites/term:{term_id}"
+        )
+
+        query = select(ApplicationEntity).where(
+            ApplicationEntity.term_id == term_id,
+            ApplicationEntity.type == "gta",
+            ApplicationEntity.program_pursued.in_({"PhD", "PhD (ABD)"}),
+        )
+        all = self._session.scalars(query).all()
+
+        # Create the models
+        phd_applications = {}
+        for application in all:
+            phd_application = PhDApplicationReview(
+                id=application.id,
+                applicant=application.user.to_public_model(),
+                applicant_name=application.user.full_name(),
+                advisor=application.advisor,
+                program_pursued=application.program_pursued,
+                intro_video_url=application.intro_video_url,
+                student_preferences=[],
+                instructor_preferences=[],
+            )
+            phd_applications[application.id] = phd_application
+
+        sections_query = select(SectionEntity).where(SectionEntity.term_id == term_id)
+        sections = {
+            section.id: section
+            for section in self._session.scalars(sections_query).all()
+        }
+
+        # Grab student preferences of sections
+        application_ids = list(phd_applications.keys())
+        section_application_query = (
+            select(section_application_table)
+            .where(section_application_table.c.application_id.in_(application_ids))
+            .order_by(section_application_table.c.preference)
+        )
+        for section_application in self._session.execute(section_application_query):
+            preference, section_id, application_id = section_application
+            phd_applications[application_id].student_preferences.append(
+                f"{preference}. {sections[section_id].course_id}.{sections[section_id].number}"
+            )
+
+        # Grab instructor preferences of applications
+        instructor_review_query = (
+            select(ApplicationReviewEntity)
+            .where(ApplicationReviewEntity.application_id.in_(application_ids))
+            .where(ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED)
+            .options(
+                joinedload(ApplicationReviewEntity.course_site).joinedload(
+                    CourseSiteEntity.sections
+                )
+            )
+        )
+        instructor_preferences = self._session.scalars(instructor_review_query).all()
+        for review in instructor_preferences:
+            phd_applications[review.application_id].instructor_preferences.append(
+                f"{review.preference}. {review.course_site.sections[0].course_id}.{review.course_site.sections[0].number}"
+            )
+
+        return list(phd_applications.values())
 
     def _load_course_site(self, course_site_id: int) -> CourseSiteEntity:
         """
@@ -744,7 +813,7 @@ class HiringService:
         )
 
         # 3. Fetch data and build summary model
-        length = self._session.scalar(count_query)
+        length = self._session.scalar(count_query) or 0
         assignment_entities = self._session.scalars(assignment_query).unique().all()
 
         return Paginated(
