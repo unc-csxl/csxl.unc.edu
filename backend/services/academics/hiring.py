@@ -226,12 +226,10 @@ class HiringService:
             .where(section_application_table.c.application_id.in_(application_ids))
             .order_by(section_application_table.c.preference)
         )
-        for idx, section_application in enumerate(
-            self._session.execute(section_application_query)
-        ):
+        for section_application in self._session.execute(section_application_query):
             _, section_id, application_id = section_application
             phd_applications[application_id].student_preferences.append(
-                f"{idx}. {sections[section_id].course_id}.{sections[section_id].number}"
+                f"{sections[section_id].course_id}.{sections[section_id].number}"
             )
 
         # Grab instructor preferences of applications
@@ -246,9 +244,9 @@ class HiringService:
             )
         )
         instructor_preferences = self._session.scalars(instructor_review_query).all()
-        for idx, review in enumerate(instructor_preferences):
+        for review in instructor_preferences:
             phd_applications[review.application_id].instructor_preferences.append(
-                f"{idx}. {review.course_site.sections[0].course_id}.{review.course_site.sections[0].number}"
+                f"{review.course_site.sections[0].course_id}.{review.course_site.sections[0].number}"
             )
 
         return list(phd_applications.values())
