@@ -154,6 +154,7 @@ class HiringService:
 
         # Get a list of all sections that are not associated with course sites
         section_query = select(SectionEntity).where(
+            SectionEntity.term_id == term_id,
             SectionEntity.course_site_id.is_(None)
         )
         joint: dict[tuple[str, str], list[SectionEntity]] = {}
