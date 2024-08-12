@@ -35,7 +35,7 @@ export class HiringSummaryComponent {
   /** Route for the routing module */
   public static Route = {
     path: 'summary',
-    title: 'Hiring Summary',
+    title: 'Hiring Onboarding',
     component: HiringSummaryComponent,
     resolve: {
       terms: termsResolver,
@@ -80,13 +80,12 @@ export class HiringSummaryComponent {
 
   public displayedColumns: string[] = [
     'name',
-    'onyen',
-    'instructors',
+    'pid',
     'level',
-    'epar',
-    'position_number',
-    'notes',
     'i9',
+    'position_number',
+    'epar',
+    'notes',
     'status'
   ];
 

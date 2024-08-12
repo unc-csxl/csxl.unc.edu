@@ -147,7 +147,7 @@ class HiringAssignmentEntity(EntityBase):
             id=self.id,
             application_review_id=self.application_review_id,
             course_site_id=self.course_site_id,
-            user=self.user.to_public_model(),
+            user=self.user.to_model(),
             instructors=", ".join(map(str, list(set(instructors)))),
             level=self.hiring_level.to_model(),
             status=self.status,

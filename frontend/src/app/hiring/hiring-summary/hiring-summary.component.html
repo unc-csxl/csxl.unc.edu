@@ -1,6 +1,6 @@
 <mat-card appearance="outlined">
   <mat-card-header>
-    <mat-card-title>{{ selectedTerm().name }} Hiring Summary</mat-card-title>
+    <mat-card-title>{{ selectedTerm().name }} Onboarding</mat-card-title>
     <div class="header-actions">
       <button mat-stroked-button (click)="exportCsv()">Download CSV</button>
       <mat-form-field class="term-selector" appearance="outline">
@@ -28,13 +28,13 @@
             </div>
           </td>
         </ng-container>
-        <ng-container matColumnDef="onyen">
+        <ng-container matColumnDef="pid">
           <th mat-header-cell *matHeaderCellDef>
-            <div class="header">Onyen</div>
+            <div class="header">PID</div>
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p>{{ element.user.onyen }}</p>
+              <p>{{ element.user.pid }}</p>
             </div>
           </td>
         </ng-container>
@@ -55,9 +55,9 @@
           <td mat-cell *matCellDef="let element">
             <div class="row">
               <p>
-                {{ element.level.title }} (${{
+                ${{
                   element.level.salary.toFixed(2)
-                }})
+                }}
               </p>
             </div>
           </td>
@@ -68,7 +68,7 @@
           </th>
           <td mat-cell *matCellDef="let element; let i = index">
             <div class="row">
-              <mat-form-field class="input-field" appearance="outline">
+              <mat-form-field class="input-field epar" appearance="outline">
                 <input
                   matInput
                   [(ngModel)]="(assignmentsPage()?.items ?? [])[i].epar"
@@ -84,7 +84,7 @@
           </th>
           <td mat-cell *matCellDef="let element; let i = index">
             <div class="row">
-              <mat-form-field class="input-field" appearance="outline">
+              <mat-form-field class="input-field pos_number" appearance="outline">
                 <input
                   matInput
                   [(ngModel)]="
@@ -104,6 +104,7 @@
             <div class="row">
               <mat-form-field class="input-field" appearance="outline">
                 <textarea
+                  rows="1"
                   matInput
                   [(ngModel)]="(assignmentsPage()?.items ?? [])[i].notes"
                   (change)="updateAssignment(i)"></textarea>
