@@ -237,11 +237,7 @@ class HiringService:
             select(ApplicationReviewEntity)
             .where(ApplicationReviewEntity.application_id.in_(application_ids))
             .where(ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED)
-            .options(
-                joinedload(ApplicationReviewEntity.course_site).joinedload(
-                    CourseSiteEntity.sections
-                )
-            )
+            .options(joinedload(ApplicationReviewEntity.course_site))
         )
         instructor_preferences = self._session.scalars(instructor_review_query).all()
         for review in instructor_preferences:
