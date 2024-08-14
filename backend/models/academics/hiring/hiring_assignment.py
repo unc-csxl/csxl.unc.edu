@@ -89,9 +89,13 @@ class HiringCourseSiteOverview(BaseModel):
     total_cost: float
     coverage: float
     assignments: list[HiringAssignmentOverview]
-    # reviews: list[ApplicationReviewOverview]
-    # instructor_preferences: list[PublicUser]
 
 
 class HiringAdminOverview(BaseModel):
     sites: list[HiringCourseSiteOverview]
+
+
+class HiringAdminCourseOverview(BaseModel):
+    assignments: list[HiringAssignmentOverview]
+    reviews: list[ApplicationReviewOverview]
+    instructor_preferences: list[PublicUser]

@@ -588,12 +588,6 @@ class HiringService:
             .where(TermEntity.id == term_id)
             .options(
                 joinedload(CourseSiteEntity.sections),
-                # # .joinedload(SectionEntity.staff)
-                # # .joinedload(SectionMemberEntity.user),
-                # joinedload(CourseSiteEntity.application_reviews)
-                # .joinedload(ApplicationReviewEntity.application),
-                # # .joinedload(ApplicationEntity.user),
-                # joinedload(CourseSiteEntity.hiring_assignments),
             )
         )
         course_site_entities = self._session.scalars(course_site_query).unique().all()
@@ -616,25 +610,6 @@ class HiringService:
                 ]
                 total_enrollment += section_entity.enrolled
 
-            # preferred_review_query = (
-            #     select(ApplicationReviewEntity)
-            #     .where(
-            #         ApplicationReviewEntity.course_site_id == course_site_entity.id,
-            #         ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
-            #     )
-            #     .order_by(ApplicationReviewEntity.preference)
-            # )
-            # preferred_review_entities = self._session.scalars(
-            #     preferred_review_query
-            # ).all()
-            # reviews = [
-            #     application_review.to_overview_model()
-            #     for application_review in preferred_review_entities
-            # ]
-            # instructor_preferences = [
-            #     application_review.application.user.to_public_model()
-            #     for application_review in preferred_review_entities
-            # ]
             assignments = sorted(
                 [
                     assignment.to_overview_model()
@@ -656,8 +631,6 @@ class HiringService:
                 total_cost=total_cost,
                 coverage=coverage,
                 assignments=assignments,
-                # reviews=reviews,
-                # instructor_preferences=instructor_preferences,
             )
 
             # Add overview to the list
@@ -665,6 +638,65 @@ class HiringService:
 
         # 4. Return hiring adming overview object
         return HiringAdminOverview(sites=hiring_course_site_overviews)
+
+    def get_hiring_admin_course_overview(
+        self, subject: User, course_site_id: str
+    ) -> HiringAdminCourseOverview:
+        self._permission.enforce(subject, "hiring.admin", "*")
+        course_site_entity = self._session.get(CourseSiteEntity, course_site_id)
+        if course_site_entity is None:
+            raise ResourceNotFoundException()
+
+        preferred_review_query = (
+            select(ApplicationReviewEntity)
+            .where(
+                ApplicationReviewEntity.course_site_id == course_site_entity.id,
+                ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
+            )
+            .order_by(ApplicationReviewEntity.preference)
+            .options(
+                joinedload(ApplicationReviewEntity.application).joinedload(
+                    ApplicationEntity.user
+                )
+            )
+        )
+        preferred_review_entities = self._session.scalars(preferred_review_query).all()
+
+        def to_overview(review: ApplicationReviewEntity) -> ApplicationReviewOverview:
+            return ApplicationReviewOverview(
+                id=review.id,
+                application_id=review.application_id,
+                course_site_id=course_site_entity.id,
+                status=review.status,
+                preference=review.preference,
+                notes=review.notes,
+                application=review.application.to_review_overview_model(),
+                applicant_id=review.application.user_id,
+                applicant_course_ranking=0,
+            )
+
+        reviews = [
+            to_overview(application_review)
+            for application_review in preferred_review_entities
+        ]
+
+        instructor_preferences = [review.application.applicant for review in reviews]
+
+        assignments_query = (
+            select(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.course_site_id == course_site_id)
+            .options(joinedload(HiringAssignmentEntity.user))
+        )
+        assignment_entities = self._session.scalars(assignments_query).all()
+        assignments = [
+            assignment.to_overview_model() for assignment in assignment_entities
+        ]
+
+        return HiringAdminCourseOverview(
+            assignments=assignments,
+            reviews=reviews,
+            instructor_preferences=instructor_preferences,
+        )
 
     def create_hiring_assignment(
         self, subject: User, assignment: HiringAssignmentDraft

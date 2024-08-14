@@ -42,6 +42,18 @@ def get_hiring_admin_overview(
     return hiring_service.get_hiring_admin_overview(subject, term_id)
 
 
+@api.get("/admin/course/{course_site_id}", tags=["Hiring"])
+def get_hiring_admin_course_overview(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> HiringAdminCourseOverview:
+    """
+    Returns the state of hiring to the admin.
+    """
+    return hiring_service.get_hiring_admin_course_overview(subject, course_site_id)
+
+
 @api.post("/assignment", tags=["Hiring"])
 def create_hiring_assignment(
     assignment: HiringAssignmentDraft,
