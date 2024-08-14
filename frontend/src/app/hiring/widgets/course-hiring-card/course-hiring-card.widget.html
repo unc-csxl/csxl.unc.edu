@@ -8,7 +8,7 @@
   <mat-card-content>
     <mat-card-subtitle class="subtitle-header">Assignments</mat-card-subtitle>
     <div class="table-responsive">
-      <table
+      <!-- <table
         mat-table
         [dataSource]="item().assignments"
         class="surface-container-card">
@@ -85,13 +85,13 @@
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
+      </table> -->
     </div>
     <!-- <mat-divider /> -->
     <mat-card-subtitle class="subtitle-header">
       Instructor Preferences
     </mat-card-subtitle>
-    @if(item().instructor_preferences.length === 0) {
+    <!-- @if(item().instructor_preferences.length === 0) {
     <p>The instructor left no preferences.</p>
     }
     <div class="user-chips">
@@ -109,6 +109,6 @@
           [src]="user.github_avatar" />
         {{ user.first_name + ' ' + user.last_name }}
       </mat-chip-option>
-    </div>
+    </div> -->
   </mat-card-content>
 </mat-pane>
