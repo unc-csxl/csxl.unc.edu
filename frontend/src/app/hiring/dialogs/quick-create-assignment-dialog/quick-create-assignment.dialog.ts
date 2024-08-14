@@ -13,8 +13,8 @@ import {
 import { HiringService } from '../../hiring.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import {
-  ApplicationOverview,
   ApplicationReviewOverview,
+  HiringAdminCourseOverview,
   HiringAssignmentDraft,
   HiringAssignmentStatus,
   HiringCourseSiteOverview,
@@ -28,6 +28,7 @@ export interface QuickCreateAssignmentDialogData {
   user: PublicProfile;
   termId: string;
   courseSite: HiringCourseSiteOverview;
+  courseAdmin: HiringAdminCourseOverview;
 }
 
 @Component({
@@ -110,7 +111,7 @@ export class QuickCreateAssignmentDialog {
   }
 
   getApplication(): ApplicationReviewOverview | undefined {
-    return this.data.courseSite.reviews.find(
+    return this.data.courseAdmin.reviews.find(
       (a) => a.applicant_id === this.data.user.id
     );
   }

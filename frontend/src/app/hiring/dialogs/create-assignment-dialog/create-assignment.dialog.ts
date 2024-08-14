@@ -10,6 +10,7 @@ import { HiringService } from '../../hiring.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import {
   ApplicationReviewOverview,
+  HiringAdminCourseOverview,
   HiringAssignmentDraft,
   HiringAssignmentStatus,
   HiringCourseSiteOverview,
@@ -21,6 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export interface CreateAssignmentDialogData {
   termId: string;
   courseSite: HiringCourseSiteOverview;
+  courseAdmin: HiringAdminCourseOverview;
 }
 
 @Component({
@@ -100,7 +102,7 @@ export class CreateAssignmentDialog {
   }
 
   getApplication(): ApplicationReviewOverview | undefined {
-    return this.data.courseSite.reviews.find(
+    return this.data.courseAdmin.reviews.find(
       (a) => a.applicant_id === this.users[0].id
     );
   }

@@ -1,114 +1,110 @@
 <mat-pane class="surface-container-card">
-  <mat-card-header>
-    <mat-card-title
-      >{{ item().sections[0].subject_code }} {{ item().sections[0].course_number
-      }} Hiring</mat-card-title
-    >
-  </mat-card-header>
-  <mat-card-content>
-    <mat-card-subtitle class="subtitle-header">Assignments</mat-card-subtitle>
-    <div class="table-responsive">
-      <!-- <table
-        mat-table
-        [dataSource]="item().assignments"
-        class="surface-container-card">
-        <ng-container matColumnDef="hire">
-          <th mat-header-cell *matHeaderCellDef>Hire</th>
-          <td
-            class="clickable-td"
-            mat-cell
-            *matCellDef="let element"
-            (click)="editAssignment(element)">
-            <user-chip-list [users]="[element.user]" [clickable]="false" />
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="level">
-          <th mat-header-cell *matHeaderCellDef>Level</th>
-          <td
-            class="clickable-td"
-            mat-cell
-            *matCellDef="let element"
-            (click)="editAssignment(element)">
-            {{ element.level.title }} (${{ element.level.salary.toFixed(2) }})
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="position_number">
-          <th mat-header-cell *matHeaderCellDef>Position Number</th>
-          <td
-            class="clickable-td"
-            mat-cell
-            *matCellDef="let element"
-            (click)="editAssignment(element)">
-            {{ element.position_number }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="epar">
-          <th mat-header-cell *matHeaderCellDef>EPar</th>
-          <td
-            class="clickable-td"
-            mat-cell
-            *matCellDef="let element"
-            (click)="editAssignment(element)">
-            {{ element.epar }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>
-            <button
-              class="status-column-header"
-              mat-stroked-button
-              (click)="createAssignment()">
-              <mat-icon class="font-primary">add</mat-icon>
-              Hire
-            </button>
-            <a
-              mat-stroked-button
-              routerLink="/hiring/{{ item().course_site_id }}"
-              >View Applicants</a
-            >
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <div class="status-column-items">
-              <mat-button-toggle-group
-                class="status-toggle"
-                [(ngModel)]="element.status"
-                (change)="changeAssignmentStatus(element, $event.value)">
-                <mat-button-toggle value="Draft">Draft</mat-button-toggle>
-                <mat-button-toggle value="Commit">Commit</mat-button-toggle>
-                <mat-button-toggle value="Final">Final</mat-button-toggle>
-              </mat-button-toggle-group>
-              <button mat-icon-button (click)="deleteAssignment(element)">
-                <mat-icon class="font-tertiary">delete</mat-icon>
+  @if (item()) {
+    <mat-card-content>
+      <mat-card-subtitle class="subtitle-header">Assignments</mat-card-subtitle>
+      <div class="table-responsive">
+        <table
+          mat-table
+          [dataSource]="item()!.assignments"
+          class="surface-container-card">
+          <ng-container matColumnDef="hire">
+            <th mat-header-cell *matHeaderCellDef>Hire</th>
+            <td
+              class="clickable-td"
+              mat-cell
+              *matCellDef="let element"
+              (click)="editAssignment(element)">
+              <user-chip-list [users]="[element.user]" [clickable]="false" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="level">
+            <th mat-header-cell *matHeaderCellDef>Level</th>
+            <td
+              class="clickable-td"
+              mat-cell
+              *matCellDef="let element"
+              (click)="editAssignment(element)">
+              {{ element.level.title }} (${{ element.level.salary.toFixed(2) }})
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="position_number">
+            <th mat-header-cell *matHeaderCellDef>Position Number</th>
+            <td
+              class="clickable-td"
+              mat-cell
+              *matCellDef="let element"
+              (click)="editAssignment(element)">
+              {{ element.position_number }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="epar">
+            <th mat-header-cell *matHeaderCellDef>EPar</th>
+            <td
+              class="clickable-td"
+              mat-cell
+              *matCellDef="let element"
+              (click)="editAssignment(element)">
+              {{ element.epar }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>
+              <button
+                class="status-column-header"
+                mat-stroked-button
+                (click)="createAssignment()">
+                <mat-icon class="font-primary">add</mat-icon>
+                Hire
               </button>
-            </div>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table> -->
-    </div>
-    <!-- <mat-divider /> -->
-    <mat-card-subtitle class="subtitle-header">
-      Instructor Preferences
-    </mat-card-subtitle>
-    <!-- @if(item().instructor_preferences.length === 0) {
-    <p>The instructor left no preferences.</p>
-    }
-    <div class="user-chips">
-      <mat-chip-option
-        class="user-chip"
-        *ngFor="let user of item().instructor_preferences"
-        [disableRipple]="chipSelected(user)"
-        (click)="quickCreateAssignment(user)"
-        [selectable]="false"
-        [selected]="chipSelected(user)">
-        <img
-          class="user-image"
-          *ngIf="user.github_avatar"
-          matChipAvatar
-          [src]="user.github_avatar" />
-        {{ user.first_name + ' ' + user.last_name }}
-      </mat-chip-option>
-    </div> -->
-  </mat-card-content>
+              <a
+                mat-stroked-button
+                routerLink="/hiring/{{ itemInput.course_site_id }}"
+                >View Applicants</a
+              >
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="status-column-items">
+                <mat-button-toggle-group
+                  class="status-toggle"
+                  [(ngModel)]="element.status"
+                  (change)="changeAssignmentStatus(element, $event.value)">
+                  <mat-button-toggle value="Draft">Draft</mat-button-toggle>
+                  <mat-button-toggle value="Commit">Commit</mat-button-toggle>
+                  <mat-button-toggle value="Final">Final</mat-button-toggle>
+                </mat-button-toggle-group>
+                <button mat-icon-button (click)="deleteAssignment(element)">
+                  <mat-icon class="font-tertiary">delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+      <!-- <mat-divider /> -->
+      <mat-card-subtitle class="subtitle-header">
+        Instructor Preferences
+      </mat-card-subtitle>
+      @if(item()!.instructor_preferences!.length === 0) {
+      <p>The instructor left no preferences.</p>
+      }
+      <div class="user-chips">
+        <mat-chip-option
+          class="user-chip"
+          *ngFor="let user of item()!.instructor_preferences"
+          [disableRipple]="chipSelected(user)"
+          (click)="quickCreateAssignment(user)"
+          [selectable]="false"
+          [selected]="chipSelected(user)">
+          <img
+            class="user-image"
+            *ngIf="user.github_avatar"
+            matChipAvatar
+            [src]="user.github_avatar" />
+          {{ user.first_name + ' ' + user.last_name }}
+        </mat-chip-option>
+      </div>
+    </mat-card-content>
+  }
 </mat-pane>

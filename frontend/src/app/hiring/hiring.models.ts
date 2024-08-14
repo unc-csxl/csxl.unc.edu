@@ -134,12 +134,18 @@ export interface HiringCourseSiteOverview {
   total_cost: number;
   coverage: number;
   assignments: HiringAssignmentOverview[];
-  reviews: ApplicationReviewOverview[];
-  instructor_preferences: PublicProfile[];
+  // reviews: ApplicationReviewOverview[];
+  // instructor_preferences: PublicProfile[];
 }
 
 export interface HiringAdminOverview {
   sites: HiringCourseSiteOverview[];
+}
+
+export interface HiringAdminCourseOverview {
+  assignments: HiringAssignmentOverview[];
+  reviews: ApplicationReviewOverview[];
+  instructor_preferences: PublicProfile[];
 }
 
 export interface HiringAssignmentSummaryOverview {
