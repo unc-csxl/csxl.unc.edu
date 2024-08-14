@@ -587,13 +587,13 @@ class HiringService:
             .join(CourseSiteEntity.term)
             .where(TermEntity.id == term_id)
             .options(
-                joinedload(CourseSiteEntity.sections)
-                .joinedload(SectionEntity.staff)
-                .joinedload(SectionMemberEntity.user),
-                joinedload(CourseSiteEntity.application_reviews)
-                .joinedload(ApplicationReviewEntity.application)
-                .joinedload(ApplicationEntity.user),
-                joinedload(CourseSiteEntity.hiring_assignments),
+                joinedload(CourseSiteEntity.sections),
+                # # .joinedload(SectionEntity.staff)
+                # # .joinedload(SectionMemberEntity.user),
+                # joinedload(CourseSiteEntity.application_reviews)
+                # .joinedload(ApplicationReviewEntity.application),
+                # # .joinedload(ApplicationEntity.user),
+                # joinedload(CourseSiteEntity.hiring_assignments),
             )
         )
         course_site_entities = self._session.scalars(course_site_query).unique().all()
@@ -615,22 +615,26 @@ class HiringService:
                     if staff.member_role == RosterRole.INSTRUCTOR
                 ]
                 total_enrollment += section_entity.enrolled
-            preferred_review_entities = sorted(
-                [
-                    review
-                    for review in course_site_entity.application_reviews
-                    if review.status == ApplicationReviewStatus.PREFERRED
-                ],
-                key=lambda x: x.preference,
-            )
-            reviews = [
-                application_review.to_overview_model()
-                for application_review in preferred_review_entities
-            ]
-            instructor_preferences = [
-                application_review.application.user.to_public_model()
-                for application_review in preferred_review_entities
-            ]
+
+            # preferred_review_query = (
+            #     select(ApplicationReviewEntity)
+            #     .where(
+            #         ApplicationReviewEntity.course_site_id == course_site_entity.id,
+            #         ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
+            #     )
+            #     .order_by(ApplicationReviewEntity.preference)
+            # )
+            # preferred_review_entities = self._session.scalars(
+            #     preferred_review_query
+            # ).all()
+            # reviews = [
+            #     application_review.to_overview_model()
+            #     for application_review in preferred_review_entities
+            # ]
+            # instructor_preferences = [
+            #     application_review.application.user.to_public_model()
+            #     for application_review in preferred_review_entities
+            # ]
             assignments = sorted(
                 [
                     assignment.to_overview_model()
@@ -652,8 +656,8 @@ class HiringService:
                 total_cost=total_cost,
                 coverage=coverage,
                 assignments=assignments,
-                reviews=reviews,
-                instructor_preferences=instructor_preferences,
+                # reviews=reviews,
+                # instructor_preferences=instructor_preferences,
             )
 
             # Add overview to the list
