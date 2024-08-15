@@ -565,16 +565,20 @@ class HiringService:
     def _calculate_coverage(
         self, enrollment: int, assignments: list[HiringAssignmentEntity]
     ) -> float:
-        assignment_count_non_ior = len(
-            [
-                assignment
-                for assignment in assignments
-                if assignment.hiring_level.classification
-                != HiringLevelClassification.IOR
-            ]
-        )
-        coverage = (float(enrollment) / 60.0) - (float(assignment_count_non_ior) / 4.0)
-        return coverage
+        coverage: float = 0.0
+        for assignment in assignments:
+            if assignment.hiring_level.classification in {
+                HiringLevelClassification.MS,
+                HiringLevelClassification.PHD,
+            }:
+                coverage += assignment.hiring_level.load
+            elif assignment.hiring_level.classification == HiringLevelClassification.UG:
+                coverage += assignment.hiring_level.load * 0.25
+            else:
+                # IOR
+                coverage += 0
+
+        return (float(enrollment) / 60.0) - coverage
 
     def get_hiring_admin_overview(
         self, subject: User, term_id: str
