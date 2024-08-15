@@ -161,3 +161,9 @@ export interface HiringAssignmentSummaryOverview {
   i9: boolean;
   notes: string;
 }
+
+export interface ReleasedHiringAssignment {
+  course: string;
+  instructors: PublicProfile[];
+  level_title: string;
+}

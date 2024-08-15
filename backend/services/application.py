@@ -2,16 +2,24 @@
 
 from typing import List
 from fastapi import Depends
-from sqlalchemy import update, delete, select
+from sqlalchemy import update, delete, select, or_
 from sqlalchemy.orm import Session
 from typing import Dict
 from backend.entities import section_application_table
 from backend.entities.application_entity import ApplicationEntity
+from backend.entities.academics.hiring.hiring_assignment_entity import (
+    HiringAssignmentEntity,
+)
+from backend.entities.academics.hiring.application_review_entity import (
+    ApplicationReviewEntity,
+)
+
 from backend.entities.section_application_table import section_application_table
 from backend.entities.academics.section_entity import SectionEntity
 from backend.entities.academics.term_entity import TermEntity
 from backend.entities.user_entity import UserEntity
 
+from backend.models.academics.hiring.hiring_assignment import HiringAssignmentStatus
 from backend.models.academics.section import Section, CatalogSectionIdentity
 from backend.models.application import Application
 from backend.models.user import User
@@ -54,8 +62,22 @@ class ApplicationService:
             ApplicationEntity.term_id == term_id,
         )
         application_entity = self._session.scalars(application_query).first()
-
-        return application_entity.to_model() if application_entity else None
+        # Retrieve any assignments, if made.
+        # NOTE: This includes a hard-coded release date of 8/18.
+        assignments = []
+        release_date = datetime(2024, 8, 18)
+        if datetime.now() > release_date:
+            assignments_query = (
+                select(HiringAssignmentEntity)
+                .where(HiringAssignmentEntity.status == HiringAssignmentStatus.COMMIT)
+                .where(HiringAssignmentEntity.user_id == subject.id)
+            )
+            assignments_entites = self._session.scalars(assignments_query).all()
+            assignments = [
+                assignment.to_released_hiring_assignment()
+                for assignment in assignments_entites
+            ]
+        return application_entity.to_model(assignments) if application_entity else None
 
     def create(self, subject: User, application: Application) -> Application:
         """Creates a new application"""

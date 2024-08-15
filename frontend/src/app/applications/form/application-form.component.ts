@@ -16,6 +16,9 @@ import { Application, ApplicationSectionChoice } from '../applications.model';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Term } from 'src/app/academics/academics.models';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-application-form',
@@ -33,6 +36,9 @@ export class ApplicationFormComponent {
     }
   };
 
+  showApplicationAssignmentCard =
+    new Date().getTime() > new Date(2024, 7, 18).getTime();
+
   /** Form */
   formGroup: FormGroup;
   fields: ApplicationFormField[];
@@ -40,11 +46,14 @@ export class ApplicationFormComponent {
 
   application: Application;
 
+  term$: Observable<Term>;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     protected snackBar: MatSnackBar,
-    protected applicationsService: ApplicationsService
+    protected applicationsService: ApplicationsService,
+    protected academicsService: AcademicsService
   ) {
     // Load the profile
     const data = this.route.snapshot.data as {
@@ -77,7 +86,8 @@ export class ApplicationFormComponent {
       best_moment: null,
       desired_improvement: null,
       advisor: null,
-      preferred_sections: []
+      preferred_sections: [],
+      assignments: []
     };
     this.applicationsService.getApplication(termId).subscribe((application) => {
       if (application) {
@@ -86,6 +96,8 @@ export class ApplicationFormComponent {
         this.selectedSections.set(application!.preferred_sections);
       }
     });
+
+    this.term$ = this.academicsService.getTerm(termId);
   }
 
   onSubmit() {

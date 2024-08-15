@@ -1,3 +1,28 @@
+@if(showApplicationAssignmentCard) {
+    <mat-pane>
+      <mat-card-header>
+        <mat-card-title>{{ (term$ | async)?.name }} Assignment</mat-card-title>
+      </mat-card-header>
+      @if(this.application.assignments.length > 0) {
+      <mat-card-content>
+        <p><strong class="font-primary">Congratulations!</strong> You have been matched with the following assignment{{ this.application.assignments.length > 1 ? 's' : ''}}:</p>
+        <div>
+          @for(assignment of this.application.assignments; track assignment) {
+            <div class="assignment-row">
+              <p><strong>{{ assignment.level_title }}</strong> for <strong>{{ assignment.course }}</strong></p>
+              <user-chip-list [users]="assignment.instructors" [clickable]="false" />
+            </div>
+          }
+        </div>
+      </mat-card-content>
+      } @else {
+        <mat-card-content>
+          <p markdown>Thank you for applying to serve as a TA this term. Unfortunately, the number of applications exceeded the available positions and we were unable to match you with a course. We appreciate your interest in serving as a UTA in the CS department and encourage you to look for alternate ways to be involved. One great opportunity is the [Learning Center](https://learningcenter.unc.edu/become-a-tutor/), which hires tutors for CS courses. Additionally, look toward student organizations in the department as a means for finding community.</p>
+        </mat-card-content>
+      }
+    </mat-pane>
+}
+
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <mat-pane>
     <mat-card-header>

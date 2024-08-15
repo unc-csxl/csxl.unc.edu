@@ -7,6 +7,8 @@
  * @license MIT
  */
 
+import { ReleasedHiringAssignment } from '../hiring/hiring.models';
+
 export interface CatalogSectionIdentity {
   id: number | null;
   subject_code: string;
@@ -44,4 +46,5 @@ export interface Application {
   desired_improvement: string | null;
   advisor: string | null;
   preferred_sections: ApplicationSectionChoice[];
+  assignments: ReleasedHiringAssignment[];
 }

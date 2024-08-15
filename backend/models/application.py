@@ -9,6 +9,12 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
+class ReleasedHiringAssignment(BaseModel):
+    course: str
+    instructors: list[PublicUser]
+    level_title: str
+
+
 class Application(BaseModel):
     """
     Pydantic model to represent an `Application`.
@@ -38,6 +44,7 @@ class Application(BaseModel):
     desired_improvement: str | None = None
     advisor: str | None = None
     preferred_sections: list[CatalogSectionIdentity]
+    assignments: list[ReleasedHiringAssignment] = []
 
 
 class ApplicationOverview(BaseModel):

@@ -6,6 +6,8 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from typing import Self
 from datetime import datetime
 
+from backend.models.application import ReleasedHiringAssignment
+
 from ...entity_base import EntityBase
 from ....models import PublicUser
 from ....models.roster_role import RosterRole
@@ -182,4 +184,22 @@ class HiringAssignmentEntity(EntityBase):
             level_title=self.hiring_level.title,
             level_load=str(self.hiring_level.load),
             level_salary=str(self.hiring_level.salary),
+        )
+
+    def to_released_hiring_assignment(self) -> ReleasedHiringAssignment:
+        course = self.course_site.sections[0].course
+        course_text = course.subject_code + " " + course.number
+        instructors = set()
+        for section in self.course_site.sections:
+            for instructor in [
+                member.user.to_public_model()
+                for member in section.members
+                if member.member_role == RosterRole.INSTRUCTOR
+            ]:
+                instructors.add(instructor)
+
+        return ReleasedHiringAssignment(
+            course=course_text,
+            instructors=instructors,
+            level_title=self.hiring_level.title,
         )

@@ -20,7 +20,7 @@ from typing import Self, Dict
 from ..models.application import Application
 from ..models.comp_227 import Comp227
 
-from ..models.application import ApplicationOverview
+from ..models.application import ApplicationOverview, ReleasedHiringAssignment
 from ..models.application import ApplicationUnderReview
 from ..models.public_user import PublicUser
 
@@ -146,7 +146,7 @@ class ApplicationEntity(EntityBase):
             advisor=model.advisor,
         )
 
-    def to_model(self) -> Application:
+    def to_model(self, assignments: list[ReleasedHiringAssignment] = []) -> Application:
         """
         This method converts an application into an application.
         """
@@ -175,6 +175,7 @@ class ApplicationEntity(EntityBase):
                 section.to_catalog_identity_model()
                 for section in self.preferred_sections
             ],
+            assignments=assignments,
         )
 
     def to_overview_model(self) -> ApplicationOverview:
