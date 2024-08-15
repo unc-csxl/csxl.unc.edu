@@ -52,6 +52,7 @@ class HiringAssignmentSummaryOverview(BaseModel):
     id: int | None = None
     application_review_id: int | None = None
     course_site_id: int | None = None
+    course: str | None = None
     user: User
     instructors: str
     level: HiringLevel

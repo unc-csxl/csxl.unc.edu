@@ -140,7 +140,7 @@ class HiringAssignmentEntity(EntityBase):
         instructors: list[str] = []
         for section in sections:
             instructors += [
-                staff.user.first_name + " " + staff.user.last_name
+                staff.user.last_name
                 for staff in section.staff
                 if staff.member_role == RosterRole.INSTRUCTOR
             ]
@@ -149,6 +149,7 @@ class HiringAssignmentEntity(EntityBase):
             id=self.id,
             application_review_id=self.application_review_id,
             course_site_id=self.course_site_id,
+            course="COMP" + self.course_site.sections[0].course.number,
             user=self.user.to_model(),
             instructors=", ".join(map(str, list(set(instructors)))),
             level=self.hiring_level.to_model(),
