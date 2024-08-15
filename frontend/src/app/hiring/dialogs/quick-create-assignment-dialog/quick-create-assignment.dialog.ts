@@ -63,6 +63,35 @@ export class QuickCreateAssignmentDialog {
     @Inject(MAT_DIALOG_DATA) public data: QuickCreateAssignmentDialogData
   ) {
     this.user = data.user;
+
+    // Simple hack to automatically populate the level...
+    let review = data.courseAdmin.reviews.find(
+      (r) => r.applicant_id == data.user.id
+    )!;
+    let program = review.application.program_pursued!;
+    let defaultLevelSearch: string | null;
+    switch (program) {
+      case 'PhD':
+        defaultLevelSearch = '1.0 PhD TA';
+        break;
+      case 'PhD (ABD)':
+        defaultLevelSearch = '1.0 PhD (ABD) TA';
+        break;
+      case 'BS/MS':
+      case 'MS':
+        defaultLevelSearch = '1.0 MS TA';
+        break;
+      default:
+        defaultLevelSearch = '10h UTA';
+        break;
+    }
+
+    const level = this.hiringService
+      .hiringLevels()
+      .find((level) => level.title == defaultLevelSearch);
+    if (level) {
+      this.createAssignmentForm.get('level')?.setValue(level);
+    }
   }
 
   /** Determines if the form is valid and can be submitted. */

@@ -24,6 +24,9 @@
         }}</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-slide-toggle formControlName="i9">
+      This student has submitted an I9.
+    </mat-slide-toggle>
     <mat-form-field appearance="outline">
       <mat-label>Position Number</mat-label>
       <input matInput formControlName="position_number" />
@@ -36,9 +39,6 @@
       <mat-label>Notes</mat-label>
       <textarea matInput formControlName="notes" name="notes"></textarea>
     </mat-form-field>
-    <mat-slide-toggle formControlName="i9">
-      This student has submitted an I9.
-    </mat-slide-toggle>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
