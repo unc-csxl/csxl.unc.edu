@@ -80,7 +80,7 @@ export class HiringSummaryComponent {
 
   public displayedColumns: string[] = [
     'name',
-    'pid',
+    'course',
     'level',
     'i9',
     'position_number',

@@ -24,27 +24,18 @@
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p>{{ element.user.first_name }} {{ element.user.last_name }}</p>
+              <p>{{ element.user.first_name }} {{ element.user.last_name }}<br>{{ element.user.pid }}</p>
             </div>
           </td>
         </ng-container>
-        <ng-container matColumnDef="pid">
+        <ng-container matColumnDef="course">
           <th mat-header-cell *matHeaderCellDef>
-            <div class="header">PID</div>
+            <div class="header">Course</div>
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p>{{ element.user.pid }}</p>
-            </div>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="instructors">
-          <th mat-header-cell *matHeaderCellDef>
-            <div class="header">Instructors</div>
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <div class="row">
-              <p>{{ element.instructors }}</p>
+              <p>{{ element.course }}<br>
+                {{ element.instructors }}</p>
             </div>
           </td>
         </ng-container>
