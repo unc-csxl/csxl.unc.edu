@@ -901,3 +901,64 @@ class HiringService:
         return [
             application.to_csv_row() for application in site_entity.application_reviews
         ]
+
+    def get_hiring_assignments_for_course_site(
+        self, subject: User, course_site_id: int, pagination_params: PaginationParams
+    ) -> Paginated[HiringAssignmentOverview]:
+        """Gets the committed hiring assignments for one course site."""
+        # Step 1: Check permissions
+        course_site = self._load_course_site(course_site_id)
+        if not self._is_instructor(subject, course_site):
+            self._permission.enforce(
+                subject, "hiring.get_assignments", f"course_site/{course_site_id}"
+            )
+
+        # Step 2: Create query
+        assignments_query = (
+            select(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.course_site_id == course_site_id)
+            .where(
+                HiringAssignmentEntity.status.in_(
+                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
+                )
+            )
+        )
+        # Count the number of rows before applying pagination and filter
+        count_query = select(func.count()).select_from(
+            assignments_query.distinct(HiringAssignmentEntity.id).subquery()
+        )
+
+        # Filter based on search entry
+        if pagination_params.filter != "":
+            query = pagination_params.filter
+            criteria = or_(
+                HiringAssignmentEntity.user.first_name.ilike(f"%{query}%"),
+                HiringAssignmentEntity.user.last_name.ilike(f"%{query}%"),
+                HiringAssignmentEntity.user.onyen.ilike(f"%{query}%"),
+                HiringAssignmentEntity.user.pid.ilike(f"%{query}%"),
+                HiringAssignmentEntity.user.email.ilike(f"%{query}%"),
+                HiringAssignmentEntity.hiring_level.title.ilike(f"%{query}%"),
+            )
+            assignments_query = assignments_query.where(criteria)
+            count_query = count_query.where(criteria)
+
+        # Calculate offset and limit for pagination
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        assignments_query = (
+            assignments_query.offset(offset)
+            .limit(limit)
+            .join(HiringAssignmentEntity.user)
+            .order_by(UserEntity.last_name)
+        )
+
+        # Step 3: Load and return data
+        assignment_entities = self._session.scalars(assignments_query).all()
+        length = self._session.scalar(count_query) or 0
+        return Paginated(
+            items=[
+                assignment.to_overview_model() for assignment in assignment_entities
+            ],
+            length=length,
+            params=pagination_params,
+        )

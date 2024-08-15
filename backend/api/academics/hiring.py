@@ -290,3 +290,22 @@ def get_hiring_summary_csv(
     )
     # Return the response
     return response
+
+
+@api.get("/assignments/{course_site_id}", tags=["Hiring"])
+def get_hiring_assignments_for_course_site(
+    course_site_id: int,
+    page: int = 0,
+    page_size: int = 25,
+    order_by: str = "",
+    filter: str = "",
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> Paginated[HiringAssignmentOverview]:
+    """Retrieves the committed and final hiring assignments for a course site."""
+    pagination_params = PaginationParams(
+        page=page, page_size=page_size, order_by=order_by, filter=filter
+    )
+    return hiring_service.get_hiring_assignments_for_course_site(
+        subject, course_site_id, pagination_params
+    )
