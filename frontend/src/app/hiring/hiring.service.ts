@@ -11,6 +11,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import {
+  HiringAdminCourseOverview,
   HiringAdminOverview,
   HiringAssignmentDraft,
   HiringAssignmentOverview,
@@ -57,6 +58,17 @@ export class HiringService {
    */
   getHiringAdminOverview(termId: string): Observable<HiringAdminOverview> {
     return this.http.get<HiringAdminOverview>(`/api/hiring/admin/${termId}`);
+  }
+
+  /**
+   * Returns the state of hiring for a course.
+   */
+  getHiringAdminCourseOverview(
+    courseId: number
+  ): Observable<HiringAdminCourseOverview> {
+    return this.http.get<HiringAdminCourseOverview>(
+      `/api/hiring/admin/course/${courseId}`
+    );
   }
 
   private hiringLevelsSignal: WritableSignal<HiringLevel[]> = signal([]);

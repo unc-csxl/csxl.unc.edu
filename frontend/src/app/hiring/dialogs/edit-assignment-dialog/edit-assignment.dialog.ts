@@ -14,6 +14,7 @@ import { HiringService } from '../../hiring.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import {
   ApplicationReviewOverview,
+  HiringAdminCourseOverview,
   HiringAssignmentDraft,
   HiringAssignmentOverview,
   HiringAssignmentStatus,
@@ -28,6 +29,7 @@ export interface EditAssignmentDialogData {
   assignment: HiringAssignmentOverview;
   termId: string;
   courseSite: HiringCourseSiteOverview;
+  courseAdmin: HiringAdminCourseOverview;
 }
 
 @Component({
@@ -116,7 +118,7 @@ export class EditAssignmentDialog {
   }
 
   getApplication(): ApplicationReviewOverview | undefined {
-    return this.data.courseSite.reviews.find(
+    return this.data.courseAdmin.reviews.find(
       (a) => a.applicant_id === this.data.assignment.user.id
     );
   }

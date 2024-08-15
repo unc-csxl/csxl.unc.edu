@@ -137,10 +137,12 @@
               [@detailExpand]="
                 element === expandedElement ? 'expanded' : 'collapsed'
               ">
-              <course-hiring-card
-                [termId]="selectedTermId()!"
-                [itemInput]="element"
-                (updateData)="reloadData()" />
+              @if (element === expandedElement) {
+                <course-hiring-card
+                  [termId]="selectedTermId()!"
+                  [itemInput]="element"
+                  (updateData)="reloadData()" />
+              }
             </div>
           </td>
         </ng-container>

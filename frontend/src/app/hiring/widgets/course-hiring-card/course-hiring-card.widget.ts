@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import {
   ApplicationReviewOverview,
+  HiringAdminCourseOverview,
   HiringAssignmentOverview,
   hiringAssignmentOverviewToDraft,
   HiringAssignmentStatus,
@@ -42,7 +43,7 @@ export class CourseHiringCardWidget implements OnInit {
   @Input() itemInput!: HiringCourseSiteOverview;
   @Output() updateData = new EventEmitter();
 
-  item: WritableSignal<HiringCourseSiteOverview> = signal(this.itemInput);
+  item: WritableSignal<HiringAdminCourseOverview | null> = signal(null);
 
   /** Store the columns to display in the table */
   public displayedColumns: string[] = [
@@ -60,7 +61,11 @@ export class CourseHiringCardWidget implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.item = signal(this.itemInput);
+    this.hiringService
+      .getHiringAdminCourseOverview(this.itemInput.course_site_id)
+      .subscribe((courseOverview) => {
+        this.item.set(courseOverview);
+      });
   }
 
   /** Changes a status for a single assignment. */
@@ -72,16 +77,16 @@ export class CourseHiringCardWidget implements OnInit {
     updatedAssignment.status = newStatus;
     let draft = hiringAssignmentOverviewToDraft(
       this.termId,
-      this.item(),
+      this.itemInput,
       updatedAssignment,
       null
     );
     this.hiringService.updateHiringAssignment(draft).subscribe((assignment) => {
-      let assignmentIndex = this.item().assignments.findIndex(
+      let assignmentIndex = this.item()!.assignments.findIndex(
         (a) => a.id == assignment.id
       );
       this.item.update((oldItem) => {
-        oldItem.assignments[assignmentIndex] = assignment;
+        oldItem!.assignments[assignmentIndex] = assignment;
         return oldItem;
       });
     });
@@ -111,7 +116,8 @@ export class CourseHiringCardWidget implements OnInit {
       width: '800px',
       data: {
         termId: this.termId,
-        courseSite: this.item()
+        courseSite: this.itemInput,
+        courseAdmin: this.item()!
       } as CreateAssignmentDialogData
     });
     dialogRef.afterClosed().subscribe((assignment) => {
@@ -130,7 +136,8 @@ export class CourseHiringCardWidget implements OnInit {
         data: {
           user: user,
           termId: this.termId,
-          courseSite: this.item()
+          courseSite: this.itemInput,
+          courseAdmin: this.item()!
         } as QuickCreateAssignmentDialogData
       });
       dialogRef.afterClosed().subscribe((assignment) => {
@@ -148,7 +155,8 @@ export class CourseHiringCardWidget implements OnInit {
       data: {
         assignment: assignment,
         termId: this.termId,
-        courseSite: this.item()
+        courseSite: this.itemInput,
+        courseAdmin: this.item()!
       } as EditAssignmentDialogData
     });
     dialogRef.afterClosed().subscribe((assignment) => {
@@ -160,7 +168,7 @@ export class CourseHiringCardWidget implements OnInit {
 
   chipSelected(user: PublicProfile): boolean {
     return (
-      this.item()
+      this.item()!
         .assignments.map((assignment) => assignment.user)
         .filter((u) => u.id === user.id).length > 0
     );
