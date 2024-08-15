@@ -26,7 +26,7 @@ import { Observable, tap } from 'rxjs';
 export class HiringAssignmentsComponent {
   /** Route for the routing module */
   public static Route = {
-    path: ':courseSiteId/assignments',
+    path: 'assignments',
     title: 'Hiring Assignments',
     component: HiringAssignmentsComponent
   };
@@ -69,7 +69,7 @@ export class HiringAssignmentsComponent {
     protected academicsService: AcademicsService,
     protected myCoursesService: MyCoursesService
   ) {
-    let courseSiteId = this.route.snapshot.params['courseSiteId'];
+    let courseSiteId = this.route.parent!.snapshot.params['courseSiteId'];
 
     this.courseSite$ = this.myCoursesService.getCourseSite(courseSiteId).pipe(
       tap((courseSite) => {

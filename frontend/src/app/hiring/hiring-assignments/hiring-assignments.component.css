@@ -7,7 +7,6 @@
 
     ::ng-deep .mat-pane {
         max-width: 100% !important;
-        min-height: 73vh;
         margin-bottom: 32px !important;
     }
 }
