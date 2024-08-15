@@ -194,7 +194,7 @@ class HiringService:
         query = select(ApplicationEntity).where(
             ApplicationEntity.term_id == term_id,
             ApplicationEntity.type == "gta",
-            ApplicationEntity.program_pursued.in_({"PhD", "PhD (ABD)"}),
+            ApplicationEntity.program_pursued.in_({"PhD", "PhD (ABD)", "MS", "BS/MS"}),
         )
         all = self._session.scalars(query).all()
 
@@ -237,12 +237,13 @@ class HiringService:
             select(ApplicationReviewEntity)
             .where(ApplicationReviewEntity.application_id.in_(application_ids))
             .where(ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED)
+            .order_by(ApplicationReviewEntity.preference)
             .options(joinedload(ApplicationReviewEntity.course_site))
         )
         instructor_preferences = self._session.scalars(instructor_review_query).all()
         for review in instructor_preferences:
             phd_applications[review.application_id].instructor_preferences.append(
-                f"{review.course_site.sections[0].course_id}.{review.course_site.sections[0].number}"
+                f"({review.preference}) {review.course_site.sections[0].course_id}.{review.course_site.sections[0].number}"
             )
 
         return list(phd_applications.values())
