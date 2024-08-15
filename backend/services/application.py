@@ -2,7 +2,7 @@
 
 from typing import List
 from fastapi import Depends
-from sqlalchemy import update, delete, select
+from sqlalchemy import update, delete, select, or_
 from sqlalchemy.orm import Session
 from typing import Dict
 from backend.entities import section_application_table
@@ -70,8 +70,7 @@ class ApplicationService:
             assignments_query = (
                 select(HiringAssignmentEntity)
                 .where(HiringAssignmentEntity.status == HiringAssignmentStatus.COMMIT)
-                .join(ApplicationReviewEntity)
-                .where(ApplicationReviewEntity.application_id == application_entity.id)
+                .where(HiringAssignmentEntity.user_id == subject.id)
             )
             assignments_entites = self._session.scalars(assignments_query).all()
             assignments = [

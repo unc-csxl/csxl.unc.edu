@@ -3,3 +3,19 @@
     margin-left: auto;
     margin-bottom: 16px;
 }
+
+strong {
+    font-weight: 500 !important;
+}
+
+.assignment-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+mat-card-content {
+    padding-top: 12px;
+}

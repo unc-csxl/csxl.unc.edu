@@ -189,13 +189,14 @@ class HiringAssignmentEntity(EntityBase):
     def to_released_hiring_assignment(self) -> ReleasedHiringAssignment:
         course = self.course_site.sections[0].course
         course_text = course.subject_code + " " + course.number
-        instructors = []
+        instructors = set()
         for section in self.course_site.sections:
-            instructors += [
+            for instructor in [
                 member.user.to_public_model()
                 for member in section.members
                 if member.member_role == RosterRole.INSTRUCTOR
-            ]
+            ]:
+                instructors.add(instructor)
 
         return ReleasedHiringAssignment(
             course=course_text,
