@@ -922,6 +922,8 @@ class HiringService:
                     [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
                 )
             )
+            .join(HiringAssignmentEntity.user)
+            .join(HiringAssignmentEntity.hiring_level)
         )
         # Count the number of rows before applying pagination and filter
         count_query = select(func.count()).select_from(
@@ -932,12 +934,11 @@ class HiringService:
         if pagination_params.filter != "":
             query = pagination_params.filter
             criteria = or_(
-                HiringAssignmentEntity.user.first_name.ilike(f"%{query}%"),
-                HiringAssignmentEntity.user.last_name.ilike(f"%{query}%"),
-                HiringAssignmentEntity.user.onyen.ilike(f"%{query}%"),
-                HiringAssignmentEntity.user.pid.ilike(f"%{query}%"),
-                HiringAssignmentEntity.user.email.ilike(f"%{query}%"),
-                HiringAssignmentEntity.hiring_level.title.ilike(f"%{query}%"),
+                UserEntity.first_name.ilike(f"%{query}%"),
+                UserEntity.last_name.ilike(f"%{query}%"),
+                UserEntity.onyen.ilike(f"%{query}%"),
+                UserEntity.email.ilike(f"%{query}%"),
+                HiringLevelEntity.title.ilike(f"%{query}%"),
             )
             assignments_query = assignments_query.where(criteria)
             count_query = count_query.where(criteria)
@@ -948,8 +949,7 @@ class HiringService:
         assignments_query = (
             assignments_query.offset(offset)
             .limit(limit)
-            .join(HiringAssignmentEntity.user)
-            .order_by(UserEntity.last_name)
+            .order_by(HiringLevelEntity.salary.desc(), UserEntity.last_name)
         )
 
         # Step 3: Load and return data

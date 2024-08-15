@@ -50,6 +50,7 @@ import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assi
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HiringSummaryComponent } from './hiring-summary/hiring-summary.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { HiringAssignmentsComponent } from './hiring-assignments/hiring-assignments.component';
 
 /* UI Widgets */
 
@@ -65,7 +66,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     CreateAssignmentDialog,
     QuickCreateAssignmentDialog,
     EditAssignmentDialog,
-    HiringSummaryComponent
+    HiringSummaryComponent,
+    HiringAssignmentsComponent
   ],
   imports: [
     CommonModule,

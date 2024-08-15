@@ -1,0 +1,32 @@
+::ng-deep .mat-pane {
+    margin-right: 32px !important;
+}
+
+.container {
+    height: 100%;
+
+    ::ng-deep .mat-pane {
+        max-width: 100% !important;
+        min-height: 73vh;
+        margin-bottom: 32px !important;
+    }
+}
+
+.roster-search-bar {
+    ::ng-deep .mat-mdc-card {
+        max-width: 100% !important;
+        margin-right: 32px !important;
+    }
+}
+
+#pane-header {
+    align-items: center !important;
+    padding-bottom: 16px !important;
+}
+
+.header-buttons {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    gap: 12px;
+}

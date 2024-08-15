@@ -14,13 +14,15 @@ import { HiringAdminComponent } from './hiring-admin/hiring-admin.component';
 import { LevelsAdminComponent } from './levels-admin/levels-admin.component';
 import { LevelEditorComponent } from './levels-admin/level-editor/level-editor.component';
 import { HiringSummaryComponent } from './hiring-summary/hiring-summary.component';
+import { HiringAssignmentsComponent } from './hiring-assignments/hiring-assignments.component';
 
 const routes: Routes = [
   HiringAdminComponent.Route,
   HiringSummaryComponent.Route,
   LevelsAdminComponent.Route,
   HiringPageComponent.Route,
-  LevelEditorComponent.Route
+  LevelEditorComponent.Route,
+  HiringAssignmentsComponent.Route
 ];
 
 @NgModule({
