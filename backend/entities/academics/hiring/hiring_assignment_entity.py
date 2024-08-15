@@ -17,6 +17,7 @@ from ....models.academics.hiring.hiring_assignment import (
     HiringAssignmentDraft,
     HiringAssignmentSummaryOverview,
     HiringAssignmentCsvRow,
+    HiringAssignmentSummaryCsvRow,
 )
 
 __authors__ = ["Ajay Gandecha"]
@@ -185,6 +186,16 @@ class HiringAssignmentEntity(EntityBase):
             level_title=self.hiring_level.title,
             level_load=str(self.hiring_level.load),
             level_salary=str(self.hiring_level.salary),
+        )
+
+    def to_summary_csv_row(self) -> HiringAssignmentSummaryCsvRow:
+        return HiringAssignmentSummaryCsvRow(
+            first_name=self.user.first_name,
+            last_name=self.user.last_name,
+            onyen=self.user.onyen,
+            pid=str(self.user.pid),
+            email=self.user.email,
+            level_title=self.hiring_level.title,
         )
 
     def to_released_hiring_assignment(self) -> ReleasedHiringAssignment:

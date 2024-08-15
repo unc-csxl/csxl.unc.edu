@@ -9,9 +9,7 @@
     <mat-card-header id="pane-header">
       <mat-card-title>{{ (term$ | async)?.name }} Hiring Assignments for {{ (courseSite$ | async)?.title }}</mat-card-title>
       <div class="header-buttons">
-        <!-- <button mat-stroked-button color="primary" (click)="importFromCanvas()">
-          Import From Canvas
-        </button> -->
+        <button mat-stroked-button (click)="exportCsv()">Download CSV</button>
       </div>
     </mat-card-header>
     <mat-card-content>

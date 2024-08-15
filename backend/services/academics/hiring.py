@@ -962,3 +962,32 @@ class HiringService:
             length=length,
             params=pagination_params,
         )
+
+    def get_assignment_summary_for_instructors_csv(
+        self, subject: User, course_site_id: int
+    ) -> list[HiringAssignmentSummaryCsvRow]:
+        """Returns the hires to show for a course site as a CSV."""
+        # 1. Check for hiring permissions.
+        course_site = self._load_course_site(course_site_id)
+        if not self._is_instructor(subject, course_site):
+            self._permission.enforce(
+                subject, "hiring.get_assignments", f"course_site/{course_site_id}"
+            )
+
+        # 2. Build query
+        assignments_query = (
+            select(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.course_site_id == course_site_id)
+            .where(
+                HiringAssignmentEntity.status.in_(
+                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
+                )
+            )
+        )
+
+        # 3. Return items
+        assignment_entities = self._session.scalars(assignments_query).all()
+        return [
+            assignment_entity.to_summary_csv_row()
+            for assignment_entity in assignment_entities
+        ]

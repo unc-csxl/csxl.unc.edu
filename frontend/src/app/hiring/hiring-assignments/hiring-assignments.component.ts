@@ -95,4 +95,11 @@ export class HiringAssignmentsComponent {
       this.previousParams = paginationParams;
     });
   }
+
+  /** Export CSV button pressed */
+  exportCsv() {
+    this.courseSite$.subscribe((courseSite) => {
+      this.hiringService.downloadHiringAssignmentsCsv(courseSite.id);
+    });
+  }
 }

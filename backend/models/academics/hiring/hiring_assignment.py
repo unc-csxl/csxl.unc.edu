@@ -82,6 +82,17 @@ class HiringAssignmentCsvRow(BaseModel):
     level_salary: str
 
 
+class HiringAssignmentSummaryCsvRow(BaseModel):
+    """Used in the instructor summary CSV export."""
+
+    first_name: str
+    last_name: str
+    onyen: str
+    pid: str
+    email: str
+    level_title: str
+
+
 class HiringCourseSiteOverview(BaseModel):
     course_site_id: int
     sections: list[CatalogSectionIdentity]
