@@ -77,7 +77,8 @@ export class ApplicationFormComponent {
       best_moment: null,
       desired_improvement: null,
       advisor: null,
-      preferred_sections: []
+      preferred_sections: [],
+      assignments: []
     };
     this.applicationsService.getApplication(termId).subscribe((application) => {
       if (application) {
