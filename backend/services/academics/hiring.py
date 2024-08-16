@@ -921,11 +921,7 @@ class HiringService:
         assignments_query = (
             select(HiringAssignmentEntity)
             .where(HiringAssignmentEntity.course_site_id == course_site_id)
-            .where(
-                HiringAssignmentEntity.status.in_(
-                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
-                )
-            )
+            .where(HiringAssignmentEntity.status == HiringAssignmentStatus.FINAL)
             .join(HiringAssignmentEntity.user)
             .join(HiringAssignmentEntity.hiring_level)
         )

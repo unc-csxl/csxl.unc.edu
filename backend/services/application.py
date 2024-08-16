@@ -69,11 +69,7 @@ class ApplicationService:
         if datetime.now() > release_date:
             assignments_query = (
                 select(HiringAssignmentEntity)
-                .where(
-                    HiringAssignmentEntity.status.in_(
-                        [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
-                    )
-                )
+                .where(HiringAssignmentEntity.status == HiringAssignmentStatus.FINAL)
                 .where(HiringAssignmentEntity.user_id == subject.id)
             )
             assignments_entites = self._session.scalars(assignments_query).all()

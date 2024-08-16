@@ -166,7 +166,7 @@ def update_status(
 def get_hiring_summary_overview(
     term_id: str,
     page: int = 0,
-    page_size: int = 25,
+    page_size: int = 100,
     order_by: str = "",
     filter: str = "",
     subject: User = Depends(registered_user),
