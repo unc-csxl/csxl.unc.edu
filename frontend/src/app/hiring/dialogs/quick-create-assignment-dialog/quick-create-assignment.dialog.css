@@ -15,3 +15,13 @@ mat-form-field {
     justify-content: space-between;
     margin-bottom: 16px;
 }
+
+table.priorities > tbody > tr > td.studentPriority, 
+table.priorities > tbody > tr > td.instructorPriority {
+    text-align: center;
+}
+
+table > tbody>  tr.selected {
+    color: green;
+    font-weight: bold;
+}

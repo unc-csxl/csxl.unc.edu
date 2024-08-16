@@ -14,6 +14,7 @@ from ...services.academics import HiringService
 from ...models.academics.hiring.application_review import HiringStatus
 from ...models.academics.hiring.hiring_assignment import *
 from ...models.academics.hiring.hiring_level import *
+from ...models.academics.hiring.conflict_check import ConflictCheck
 
 from ...api.authentication import registered_user
 from ...models.user import User
@@ -352,3 +353,12 @@ def get_assignments_csv(
     )
     # Return the response
     return response
+
+
+@api.get("/conflict_check/{application_id}", tags=["Hiring"])
+def conflict_check(
+    application_id: int,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> ConflictCheck:
+    return hiring_service.conflict_check(subject, application_id)

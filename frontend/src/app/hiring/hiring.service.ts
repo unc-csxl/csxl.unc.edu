@@ -11,6 +11,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import {
+  ConflictCheck,
   HiringAdminCourseOverview,
   HiringAdminOverview,
   HiringAssignmentDraft,
@@ -157,5 +158,12 @@ export class HiringService {
       .subscribe((response) => {
         saveAs(response, `hiring-assignments.csv`);
       });
+  }
+
+  conflictCheck(applicationId: number) {
+    const params = new HttpParams();
+    return this.http.get<ConflictCheck>(
+      `/api/hiring/conflict_check/${applicationId}`
+    );
   }
 }
