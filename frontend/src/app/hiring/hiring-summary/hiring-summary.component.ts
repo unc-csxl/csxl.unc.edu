@@ -13,18 +13,19 @@ import {
 } from 'src/app/academics/academics.resolver';
 import { HiringService } from '../hiring.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import {
-  DEFAULT_PAGINATION_PARAMS,
-  Paginated,
-  PaginationParams,
-  Paginator
-} from 'src/app/pagination';
+import { Paginated, PaginationParams, Paginator } from 'src/app/pagination';
 import {
   HiringAssignmentDraft,
-  HiringAssignmentStatus,
   HiringAssignmentSummaryOverview
 } from '../hiring.models';
 import { PageEvent } from '@angular/material/paginator';
+
+const DEFAULT_PAGINATION_PARAMS = {
+  page: 0,
+  page_size: 50,
+  order_by: '',
+  filter: ''
+} as PaginationParams;
 
 @Component({
   selector: 'app-hiring-summary',
@@ -85,9 +86,27 @@ export class HiringSummaryComponent {
     'i9',
     'position_number',
     'epar',
-    'notes',
-    'status'
+    'notes'
   ];
+
+  /** Current search bar query */
+  public searchBarQuery: WritableSignal<string> = signal('');
+
+  // TODO: ADD DEBOUNCE
+  /**
+   * Effect that refreshes the  pagination when the search bar text changes.
+   */
+  searchBarEffect = effect(() => {
+    // Update the parameters with the new date range
+    let paginationParams = this.previousPaginationParams;
+    paginationParams.filter = this.searchBarQuery();
+
+    // Refresh the data
+    this.assignmentsPaginator.loadPage(paginationParams).subscribe((page) => {
+      this.assignmentsPage.set(page);
+      this.previousPaginationParams = paginationParams;
+    });
+  });
 
   /** Constructor */
   constructor(

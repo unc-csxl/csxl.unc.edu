@@ -29,7 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { HiringRoutingModule } from './hiring-routing.module';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
-import { HiringPageComponent } from './hiring-page/hiring-page.component';
+import { HiringPreferencesComponent } from './hiring-preferences/hiring-preferences.component';
 import {
   CdkDrag,
   CdkDragPlaceholder,
@@ -50,12 +50,14 @@ import { EditAssignmentDialog } from './dialogs/edit-assignment-dialog/edit-assi
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HiringSummaryComponent } from './hiring-summary/hiring-summary.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { HiringAssignmentsComponent } from './hiring-assignments/hiring-assignments.component';
+import { HiringPageComponent } from './hiring-page/hiring-page.component';
 
 /* UI Widgets */
 
 @NgModule({
   declarations: [
-    HiringPageComponent,
+    HiringPreferencesComponent,
     ApplicationCardWidget,
     ApplicationDialog,
     HiringAdminComponent,
@@ -65,7 +67,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     CreateAssignmentDialog,
     QuickCreateAssignmentDialog,
     EditAssignmentDialog,
-    HiringSummaryComponent
+    HiringSummaryComponent,
+    HiringAssignmentsComponent,
+    HiringPageComponent
   ],
   imports: [
     CommonModule,

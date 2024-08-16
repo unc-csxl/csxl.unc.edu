@@ -147,4 +147,15 @@ export class HiringService {
         saveAs(response, `applications-export.csv`);
       });
   }
+
+  downloadHiringAssignmentsCsv(courseSiteId: number) {
+    const params = new HttpParams();
+    return this.http
+      .get(`/api/hiring/assignments/${courseSiteId}/csv`, {
+        responseType: 'blob'
+      })
+      .subscribe((response) => {
+        saveAs(response, `hiring-assignments.csv`);
+      });
+  }
 }

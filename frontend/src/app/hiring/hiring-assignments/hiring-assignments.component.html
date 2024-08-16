@@ -1,0 +1,61 @@
+<!-- Search Bar: Disabling for now. -->
+<!-- <search-bar
+  class="roster-search-bar mat-csxl-search-bar"
+  [searchBarQuery]="searchBarQuery()"
+  (searchBarQueryChange)="searchBarQuery.set($event)" /> -->
+
+<div class="container">
+  @if(assignmentPage()?.items?.length == 0) {
+    <mat-pane>
+      <mat-card-header id="pane-header">
+        <mat-card-title>{{ (term$ | async)?.name }} Hiring Assignments for {{ (courseSite$ | async)?.title }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Your course does not have any hiring assignments yet.</p>
+      </mat-card-content>
+    </mat-pane>
+  } @else {
+    <mat-pane>
+      <mat-card-header id="pane-header">
+        <mat-card-title>{{ (term$ | async)?.name }} Hiring Assignments for {{ (courseSite$ | async)?.title }}</mat-card-title>
+        <div class="header-buttons">
+          <button mat-stroked-button (click)="exportCsv()">Download CSV</button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="table-responsive">
+          <table mat-table [dataSource]="assignmentPage()?.items ?? []">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.user.first_name }} {{ element.user.last_name }}
+                @if (element.user.pronouns && element.user.pronouns !== '' ) {
+                <span class="pronoun-labels">({{ element.user.pronouns }})</span>
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="onyen">
+              <th mat-header-cell *matHeaderCellDef>Onyen</th>
+              <td mat-cell *matCellDef="let element">{{ element.user.onyen }}</td>
+            </ng-container>
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let element">{{ element.user.email }}</td>
+            </ng-container>
+            <ng-container matColumnDef="level">
+              <th mat-header-cell *matHeaderCellDef>Hiring Level</th>
+              <td mat-cell *matCellDef="let element">{{ element.level.title }} (${{ element.level.salary.toFixed(2)}})</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+          <mat-paginator
+            [length]="assignmentPage()?.length ?? 0"
+            [pageSize]="assignmentPage()?.params?.page_size ?? 0"
+            [pageIndex]="assignmentPage()?.params?.page ?? 0"
+            (page)="handlePageEvent($event)"></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-pane>  
+  }
+</div>

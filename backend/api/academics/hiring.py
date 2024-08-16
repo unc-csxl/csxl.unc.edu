@@ -166,7 +166,7 @@ def update_status(
 def get_hiring_summary_overview(
     term_id: str,
     page: int = 0,
-    page_size: int = 25,
+    page_size: int = 100,
     order_by: str = "",
     filter: str = "",
     subject: User = Depends(registered_user),
@@ -287,6 +287,68 @@ def get_hiring_summary_csv(
     response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
     response.headers["Content-Disposition"] = (
         f"attachment; filename=phd_applicants_{term_id}.csv"
+    )
+    # Return the response
+    return response
+
+
+@api.get("/assignments/{course_site_id}", tags=["Hiring"])
+def get_hiring_assignments_for_course_site(
+    course_site_id: int,
+    page: int = 0,
+    page_size: int = 25,
+    order_by: str = "",
+    filter: str = "",
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> Paginated[HiringAssignmentOverview]:
+    """Retrieves the committed and final hiring assignments for a course site."""
+    pagination_params = PaginationParams(
+        page=page, page_size=page_size, order_by=order_by, filter=filter
+    )
+    return hiring_service.get_hiring_assignments_for_course_site(
+        subject, course_site_id, pagination_params
+    )
+
+
+@api.get("/assignments/{course_site_id}/csv", tags=["Hiring"])
+def get_assignments_csv(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> StreamingResponse:
+    """
+    Returns the state of hiring as a summary.
+    """
+    data = hiring_service.get_assignment_summary_for_instructors_csv(
+        subject, course_site_id
+    )
+    # Create IO Stream
+    stream = io.StringIO()
+    # Create dictionary writer to convert objects to CSV rows
+    # Note: __dict__ converts the Pydantic model into a dictionary of key-value
+    # pairs, enabling access of the object's keys.
+    keys = ["first_name", "last_name", "onyen", "pid", "email", "level_title"]
+
+    wr = csv.DictWriter(stream, delimiter=",", fieldnames=keys)
+    wr.writeheader()
+    rows = []
+    for d in data:
+        rows.append(
+            {
+                "first_name": d.first_name,
+                "last_name": d.last_name,
+                "pid": d.pid,
+                "onyen": d.onyen,
+                "email": d.email,
+                "level_title": d.level_title,
+            }
+        )
+    wr.writerows(rows)
+    # Create HTTP response of type `text/csv`
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = (
+        f"attachment; filename=hiring_assignments.csv"
     )
     # Return the response
     return response
