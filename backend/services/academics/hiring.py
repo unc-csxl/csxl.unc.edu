@@ -819,6 +819,7 @@ class HiringService:
                 )
             )
             .join(HiringAssignmentEntity.user)
+            .join(HiringAssignmentEntity.hiring_level)
             .options(
                 joinedload(HiringAssignmentEntity.course_site)
                 .joinedload(CourseSiteEntity.sections)
@@ -839,6 +840,7 @@ class HiringService:
                 UserEntity.onyen.ilike(f"%{query}%"),
                 HiringAssignmentEntity.epar.ilike(f"%{query}%"),
                 HiringAssignmentEntity.position_number.ilike(f"%{query}%"),
+                HiringLevelEntity.title.ilike(f"%{query}%"),
             )
             assignment_query = assignment_query.where(criteria)
             count_query = count_query.where(criteria)
