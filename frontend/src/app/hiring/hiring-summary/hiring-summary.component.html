@@ -1,3 +1,9 @@
+<!-- Search Bar -->
+<search-bar
+  class="summary-search-bar mat-csxl-search-bar"
+  [searchBarQuery]="searchBarQuery()"
+  (searchBarQueryChange)="searchBarQuery.set($event)" />
+
 <mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title>{{ selectedTerm().name }} Onboarding</mat-card-title>

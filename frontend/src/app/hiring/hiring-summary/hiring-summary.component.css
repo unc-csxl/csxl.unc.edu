@@ -35,3 +35,10 @@ mat-form-field.pos_number {
   width: 100px;
   font-size: 16px;
 }
+
+.summary-search-bar {
+  ::ng-deep .mat-mdc-card {
+      max-width: 100% !important;
+      margin-right: 32px !important;
+  }
+}

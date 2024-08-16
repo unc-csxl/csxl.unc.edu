@@ -89,6 +89,25 @@ export class HiringSummaryComponent {
     'status'
   ];
 
+  /** Current search bar query */
+  public searchBarQuery: WritableSignal<string> = signal('');
+
+  // TODO: ADD DEBOUNCE
+  /**
+   * Effect that refreshes the  pagination when the search bar text changes.
+   */
+  searchBarEffect = effect(() => {
+    // Update the parameters with the new date range
+    let paginationParams = this.previousPaginationParams;
+    paginationParams.filter = this.searchBarQuery();
+
+    // Refresh the data
+    this.assignmentsPaginator.loadPage(paginationParams).subscribe((page) => {
+      this.assignmentsPage.set(page);
+      this.previousPaginationParams = paginationParams;
+    });
+  });
+
   /** Constructor */
   constructor(
     private route: ActivatedRoute,

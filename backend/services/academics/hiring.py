@@ -834,10 +834,11 @@ class HiringService:
         if pagination_params.filter != "":
             query = pagination_params.filter
             criteria = or_(
-                HiringAssignmentEntity.user.first_name.ilike(f"%{query}%"),
-                HiringAssignmentEntity.user.last_name.ilike(f"%{query}%"),
-                HiringAssignmentEntity.user.onyen.ilike(f"%{query}%"),
-                HiringAssignmentEntity.user.pid.ilike(f"%{query}%"),
+                UserEntity.first_name.ilike(f"%{query}%"),
+                UserEntity.last_name.ilike(f"%{query}%"),
+                UserEntity.onyen.ilike(f"%{query}%"),
+                HiringAssignmentEntity.epar.ilike(f"%{query}%"),
+                HiringAssignmentEntity.position_number.ilike(f"%{query}%"),
             )
             assignment_query = assignment_query.where(criteria)
             count_query = count_query.where(criteria)
