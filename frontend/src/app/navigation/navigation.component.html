@@ -94,6 +94,14 @@
             <mat-icon matListItemIcon>info</mat-icon>
             <div matListItemTitle>About the XL</div>
           </mat-list-item>
+          <mat-list-item (click)="openLink('https://www.instagram.com/unc.csxl')">
+            <mat-icon matListItemIcon svgIcon="instagram" class="svg-icon secondary-icon"></mat-icon>
+            <div matListItemTitle>&commat;unc.csxl</div>
+          </mat-list-item>
+          <mat-list-item (click)="openLink('https://github.com/unc-csxl/csxl.unc.edu')">
+            <mat-icon matListItemIcon svgIcon="github" class="svg-icon secondary-icon"></mat-icon>
+            <div matListItemTitle>Fork on GitHub</div>
+          </mat-list-item>
         </div>
       </mat-nav-list>
       <!-- <div

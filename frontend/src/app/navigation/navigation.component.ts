@@ -12,6 +12,7 @@ import { Profile, ProfileService } from '../profile/profile.service';
 import { PermissionService } from '../permission.service';
 import { NagivationAdminGearService } from './navigation-admin-gear.service';
 import { SlackInviteBox } from './widgets/slack-invite-box/slack-invite-box.widget';
+import { SocialMediaIconWidgetService } from '../shared/social-media-icon/social-media-icon.widget.service';
 
 @Component({
   selector: 'app-navigation',
@@ -39,7 +40,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
     protected navigationService: NavigationTitleService,
     protected navigationAdminGearService: NagivationAdminGearService,
     protected errorDialog: MatDialog,
-    protected slackDialog: MatDialog
+    protected slackDialog: MatDialog,
+    protected iconService: SocialMediaIconWidgetService
   ) {
     this.profile$ = this.profileService.profile$;
     this.checkinPermission$ = this.permission.check(
@@ -96,5 +98,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
       .observe(Breakpoints.HandsetPortrait)
       .pipe(map((result) => result.matches))
       .subscribe((isHandset) => (this.isHandset = isHandset));
+  }
+
+  openLink(link: string) {
+    window.open(link ?? '', '_blank');
   }
 }
