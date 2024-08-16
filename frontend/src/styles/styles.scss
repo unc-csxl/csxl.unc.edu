@@ -213,6 +213,11 @@ html, body {
         fill: mat.get-theme-color($theme, secondary) !important;
     }
 
+    .on-surface-variant-icon, .on-surface-variant-icon svg {
+        color: mat.get-theme-color($theme, on-surface-variant) !important;
+        fill: mat.get-theme-color($theme, on-surface-variant) !important;
+    }
+
     @media (prefers-color-scheme: light) {
         .mat-icon,
         .mat-icon svg {
