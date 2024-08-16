@@ -22,7 +22,7 @@ import { PageEvent } from '@angular/material/paginator';
 
 const DEFAULT_PAGINATION_PARAMS = {
   page: 0,
-  page_size: 100,
+  page_size: 50,
   order_by: '',
   filter: ''
 } as PaginationParams;

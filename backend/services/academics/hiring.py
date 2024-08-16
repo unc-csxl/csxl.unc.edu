@@ -818,17 +818,17 @@ class HiringService:
                     [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
                 )
             )
-            .join(HiringAssignmentEntity.user)
-            .join(HiringAssignmentEntity.hiring_level)
-            .options(
-                joinedload(HiringAssignmentEntity.course_site)
-                .joinedload(CourseSiteEntity.sections)
-                .joinedload(SectionEntity.staff)
-            )
         )
         # Count the number of rows before applying pagination and filter
-        count_query = select(func.count()).select_from(
-            assignment_query.distinct(HiringAssignmentEntity.id).subquery()
+        count_query = (
+            select(func.count())
+            .select_from(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.term_id == term_id)
+            .where(
+                HiringAssignmentEntity.status.in_(
+                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
+                )
+            )
         )
 
         # Filter based on search entry
@@ -837,14 +837,18 @@ class HiringService:
             criteria = or_(
                 UserEntity.first_name.ilike(f"%{query}%"),
                 UserEntity.last_name.ilike(f"%{query}%"),
-                UserEntity.onyen.ilike(f"%{query}%"),
-                UserEntity.pid.cast(String).ilike(f"%{query}%"),
-                HiringAssignmentEntity.epar.ilike(f"%{query}%"),
-                HiringAssignmentEntity.position_number.ilike(f"%{query}%"),
-                HiringLevelEntity.title.ilike(f"%{query}%"),
             )
-            assignment_query = assignment_query.where(criteria)
-            count_query = count_query.where(criteria)
+            assignment_query = assignment_query.join(HiringAssignmentEntity.user).where(
+                criteria
+            )
+            count_query = count_query.join(HiringAssignmentEntity.user).where(criteria)
+
+        # Load joined data into assignment_query
+        assignment_query = assignment_query.options(
+            joinedload(HiringAssignmentEntity.course_site)
+            .joinedload(CourseSiteEntity.sections)
+            .joinedload(SectionEntity.staff),
+        )
 
         # Calculate offset and limit for pagination
         offset = pagination_params.page * pagination_params.page_size
