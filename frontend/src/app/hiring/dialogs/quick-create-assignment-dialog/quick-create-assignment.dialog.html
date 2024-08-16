@@ -3,6 +3,9 @@
   <form [formGroup]="createAssignmentForm">
     <div class="row">
       <user-chip-list [users]="[user]" />
+      @if(getApplication()?.application?.comp_227) {
+        <mat-chip>{{getApplication()?.application?.comp_227}} </mat-chip>
+      }
       @if(getApplication()) {
       <button
         mat-button
