@@ -5,7 +5,7 @@ Service for hiring.
 from itertools import groupby
 from operator import attrgetter
 from fastapi import Depends
-from sqlalchemy import func, or_, select, update
+from sqlalchemy import String, func, or_, select, update
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
 
 from backend.models.pagination import Paginated, PaginationParams
@@ -838,6 +838,7 @@ class HiringService:
                 UserEntity.first_name.ilike(f"%{query}%"),
                 UserEntity.last_name.ilike(f"%{query}%"),
                 UserEntity.onyen.ilike(f"%{query}%"),
+                UserEntity.pid.cast(String).ilike(f"%{query}%"),
                 HiringAssignmentEntity.epar.ilike(f"%{query}%"),
                 HiringAssignmentEntity.position_number.ilike(f"%{query}%"),
                 HiringLevelEntity.title.ilike(f"%{query}%"),
