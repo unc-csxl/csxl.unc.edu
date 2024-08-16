@@ -131,6 +131,11 @@ a {
   display: none;
 }
 
+.svg-icon {
+  width: 22px !important;
+  height: 22px !important;
+}
+
 @media only screen and (max-width: 640px) {
   .desktop-profile-chips {
     display: none;
@@ -154,5 +159,4 @@ a {
     margin-left: 3px;
     margin-top: 3px;
   }
-
 }
