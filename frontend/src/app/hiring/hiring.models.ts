@@ -168,3 +168,16 @@ export interface ReleasedHiringAssignment {
   instructors: PublicProfile[];
   level_title: string;
 }
+
+export interface ApplicationPriority {
+  student_priority: number;
+  instructor_priority: number;
+  course_site_id: number;
+  course_title: string;
+}
+
+export interface ConflictCheck {
+  application_id: number;
+  assignments: HiringAssignmentSummaryOverview[];
+  priorities: ApplicationPriority[];
+}

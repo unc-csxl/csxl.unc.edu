@@ -14,6 +14,7 @@ import { HiringService } from '../../hiring.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import {
   ApplicationReviewOverview,
+  ConflictCheck,
   HiringAdminCourseOverview,
   HiringAssignmentDraft,
   HiringAssignmentStatus,
@@ -23,6 +24,7 @@ import {
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicationDialog } from '../application-dialog/application-dialog.dialog';
+import { filter, map } from 'rxjs';
 
 export interface QuickCreateAssignmentDialogData {
   user: PublicProfile;
@@ -38,6 +40,11 @@ export interface QuickCreateAssignmentDialogData {
 })
 export class QuickCreateAssignmentDialog {
   hiringAssignmentStatus = HiringAssignmentStatus;
+  public conflictCheck: ConflictCheck = {
+    application_id: 0,
+    assignments: [],
+    priorities: []
+  };
 
   /** Assignment form */
   user: PublicProfile;
@@ -92,6 +99,22 @@ export class QuickCreateAssignmentDialog {
     if (level) {
       this.createAssignmentForm.get('level')?.setValue(level);
     }
+
+    this.hiringService
+      .conflictCheck(review.application_id)
+      // .pipe(
+      //   map((conflictCheck) => {
+      //     let thisPriority = conflictCheck.priorities.find(
+      //       (priority) =>
+      //         priority.course_site_id == data.courseSite.course_site_id
+      //     );
+      //     if (thisPriority) {
+      //       let minStudentPriority
+      //     }
+      //     return conflictCheck;
+      //   })
+      // )
+      .subscribe((result) => (this.conflictCheck = result));
   }
 
   /** Determines if the form is valid and can be submitted. */

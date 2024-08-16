@@ -15,6 +15,7 @@ from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...entities import UserEntity
 from ...models.application import ApplicationUnderReview, ApplicationOverview
+from ...models.academics.hiring.conflict_check import ApplicationPriority, ConflictCheck
 from ...entities.academics import SectionEntity, TermEntity
 from ...entities.office_hours import CourseSiteEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -995,3 +996,80 @@ class HiringService:
             assignment_entity.to_summary_csv_row()
             for assignment_entity in assignment_entities
         ]
+
+    def conflict_check(
+        self, subject: User, application_id: int
+    ) -> list[ApplicationPriority]:
+        self._permission.enforce(subject, "hiring.conflict_check", "*")
+        from sqlalchemy import func, and_
+
+        student_priority = func.min(section_application_table.c.preference).label(
+            "student_priority"
+        )
+        query = (
+            select(
+                student_priority,
+                func.min(ApplicationReviewEntity.preference).label(
+                    "instructor_priority"
+                ),
+                CourseSiteEntity.id,
+                CourseSiteEntity.title,
+            )
+            .join(
+                CourseSiteEntity,
+                ApplicationReviewEntity.course_site_id == CourseSiteEntity.id,
+                isouter=True,
+            )
+            .join(
+                SectionEntity,
+                SectionEntity.course_site_id == CourseSiteEntity.id,
+                isouter=True,
+            )
+            .join(
+                ApplicationEntity,
+                ApplicationReviewEntity.application_id == ApplicationEntity.id,
+                isouter=True,
+            )
+            .join(
+                section_application_table,
+                and_(
+                    section_application_table.c.section_id == SectionEntity.id,
+                    section_application_table.c.application_id == ApplicationEntity.id,
+                ),
+                isouter=True,
+            )
+            .where(
+                ApplicationEntity.id == application_id,
+                ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
+                section_application_table.c.preference.isnot(None),
+            )
+            .group_by(CourseSiteEntity.id)
+            .order_by(student_priority.asc())
+        )
+        preferences = self._session.execute(query).all()
+        priorities: list[ApplicationPriority] = []
+        for student_pri, instructor_pri, course_site_id, title in preferences:
+            priorities.append(
+                ApplicationPriority(
+                    student_priority=student_pri,
+                    instructor_priority=instructor_pri,
+                    course_site_id=course_site_id,
+                    course_title=title,
+                )
+            )
+
+        assignments_query = (
+            select(HiringAssignmentEntity)
+            .join(ApplicationReviewEntity)
+            .join(ApplicationEntity)
+            .where(ApplicationEntity.id == application_id)
+        )
+
+        return ConflictCheck(
+            application_id=application_id,
+            assignments=[
+                a.to_summary_overview_model()
+                for a in self._session.scalars(assignments_query).all()
+            ],
+            priorities=priorities,
+        )
