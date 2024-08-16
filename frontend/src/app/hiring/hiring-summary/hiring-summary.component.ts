@@ -13,18 +13,19 @@ import {
 } from 'src/app/academics/academics.resolver';
 import { HiringService } from '../hiring.service';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import {
-  DEFAULT_PAGINATION_PARAMS,
-  Paginated,
-  PaginationParams,
-  Paginator
-} from 'src/app/pagination';
+import { Paginated, PaginationParams, Paginator } from 'src/app/pagination';
 import {
   HiringAssignmentDraft,
-  HiringAssignmentStatus,
   HiringAssignmentSummaryOverview
 } from '../hiring.models';
 import { PageEvent } from '@angular/material/paginator';
+
+const DEFAULT_PAGINATION_PARAMS = {
+  page: 0,
+  page_size: 100,
+  order_by: '',
+  filter: ''
+} as PaginationParams;
 
 @Component({
   selector: 'app-hiring-summary',
@@ -85,8 +86,7 @@ export class HiringSummaryComponent {
     'i9',
     'position_number',
     'epar',
-    'notes',
-    'status'
+    'notes'
   ];
 
   /** Current search bar query */
