@@ -210,6 +210,7 @@ class SectionMemberService:
         #  Case 1: Student is already on the roster - we do not need to make any changes.
         #  Case 2: Students are not on the roster, but user profiles exist - just add a SectionMemberEntity.
         #  Case 3: User is not in the system - create a user and a relationship.
+        #  Case 4: Student is already on the roster, but not in the CSV.
 
         # Case 1: Determine students that are already on the roster
         existing_roster_members_query = (
@@ -266,6 +267,26 @@ class SectionMemberService:
             draft = SectionMemberDraft(user_id=new_student.id, section_id=section_id)
             section_membership = SectionMemberEntity.from_draft_model(draft)
             self._session.add(section_membership)
+
+        # Commit changes
+        self._session.commit()
+
+        # Case 4: Remove students not in the CSV file that are still on the roster.
+        students_to_remove_query = (
+            select(SectionMemberEntity)
+            .join(UserEntity)
+            .where(
+                UserEntity.pid.not_in(student_pids),
+                UserEntity.pid.in_(existing_roster_member_pids),
+            )
+            .where(
+                SectionMemberEntity.section_id == section_id,
+                SectionMemberEntity.member_role == RosterRole.STUDENT,
+            )
+        )
+        students_to_remove = self._session.scalars(students_to_remove_query).all()
+        for student in students_to_remove:
+            self._session.delete(student)
 
         # Commit changes a final time
         self._session.commit()
