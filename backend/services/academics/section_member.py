@@ -216,27 +216,26 @@ class SectionMemberService:
         existing_roster_members_query = (
             select(SectionMemberEntity)
             .join(UserEntity)
-            .where(UserEntity.pid.in_(student_pids))
             .where(SectionMemberEntity.section_id == section_id)
         )
         existing_roster_member_entities = self._session.scalars(
             existing_roster_members_query
         ).all()
         existing_roster_member_pids = [
-            member.pid for member in existing_roster_member_entities
+            member.user.pid for member in existing_roster_member_entities
         ]
 
         # Case 2: Determine students that are not on the roster, but that exist in the database.
         existing_users_query = select(UserEntity).where(
-            UserEntity.pid.in_(student_pids),
-            UserEntity.pid.not_in(existing_roster_member_pids),
+            UserEntity.pid.in_(student_pids)
         )
         existing_user_entities = self._session.scalars(existing_users_query).all()
         existing_users_pids = [member.pid for member in existing_user_entities]
         for user in existing_user_entities:
-            draft = SectionMemberDraft(user_id=user.id, section_id=section_id)
-            section_membership = SectionMemberEntity.from_draft_model(draft)
-            self._session.add(section_membership)
+            if user.pid not in existing_roster_member_pids:
+                draft = SectionMemberDraft(user_id=user.id, section_id=section_id)
+                section_membership = SectionMemberEntity.from_draft_model(draft)
+                self._session.add(section_membership)
 
         # Case 3: Find remaining students that do not exist
         nonexisting_students = [
