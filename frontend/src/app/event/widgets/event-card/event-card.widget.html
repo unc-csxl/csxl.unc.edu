@@ -3,30 +3,34 @@
     <div class="header-row">
       <div class="header-column">
         <mat-card-title>{{ event.name }}</mat-card-title>
-        <p>{{ event.location }}</p>
-      </div>
-      <div class="header-column" id="chip-column">
-        <mat-chip-set class="no-hover-chipset">
-          <mat-chip disableRipple>
-            <mat-icon class="primary-color" matChipAvatar>
-              access_time
-            </mat-icon>
-            {{ event.time | date: 'shortTime' }}
-          </mat-chip>
-        </mat-chip-set>
-        @if(profile) {
-        <mat-chip-set class="no-hover-chipset">
-          <mat-chip disableRipple>
-            <mat-icon class="primary-color" matChipAvatar>
-              person_outline
-            </mat-icon>
-            @if (event.registration_limit > 400) { Open to all } @else if
-            (event.registration_limit === event.number_registered) {
-            <span class="tertiary-color">Filled</span> } @else {
-            {{ event.registration_limit - event.number_registered }} left }
-          </mat-chip>
-        </mat-chip-set>
-        }
+
+        <div class="links-row">
+          <div class="row">
+            <mat-icon class="secondary-icon">schedule</mat-icon>
+            <p>
+              {{ event.start | date: 'shortTime' }} -
+              {{ event.end | date: 'shortTime' }}
+            </p>
+          </div>
+          <div class="row">
+            <mat-icon class="secondary-icon">location_on</mat-icon>
+            <p>{{ event.location }}</p>
+          </div>
+          @if(profile) {
+          <div class="row">
+            <mat-icon class="secondary-icon">person_outline</mat-icon>
+            @if (event.override_registration_url) {
+            <p>External registration</p>
+            } @else if (event.registration_limit > 400) {
+            <p>Open to all</p>
+            } @else if (event.registration_limit === event.number_registered) {
+            <p><span class="tertiary-color">Filled</span></p>
+            } @else {
+            <p>{{ event.registration_limit - event.number_registered }} left</p>
+            }
+          </div>
+          }
+        </div>
       </div>
     </div>
   </mat-card-header>
@@ -70,7 +74,8 @@
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
     </button>
-    @if(event.user_registration_type === registrationType.ATTENDEE) {
+    @if(event.user_registration_type === registrationType.ATTENDEE &&
+    event.start > now) {
     <button
       mat-flat-button
       class="tertiary-button"
@@ -79,10 +84,15 @@
     </button>
     } @else if(event.user_registration_type === registrationType.ORGANIZER) {
     <button mat-flat-button [disabled]="true">Manage</button>
-    } @else if(event.registration_limit === event.number_registered) {
+    } @else if(event.registration_limit === event.number_registered &&
+    event.start > now) {
     <button mat-flat-button [disabled]="true">Filled</button>
+    } @else if(event.start > now) { @if(event.override_registration_url) {
+    <button mat-flat-button (click)="registerForEvent()">
+      Register (External)
+    </button>
     } @else {
     <button mat-flat-button (click)="registerForEvent()">Register</button>
-    } }
+    } } }
   </mat-card-actions>
 </mat-card>

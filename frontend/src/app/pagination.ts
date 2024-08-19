@@ -39,7 +39,7 @@ export interface TimeRangePaginationParams extends URLSearchParams {
 }
 
 export const DEFAULT_TIME_RANGE_PARAMS = {
-  order_by: 'time',
+  order_by: 'start',
   ascending: 'true',
   filter: '',
   range_start: new Date().toISOString(),

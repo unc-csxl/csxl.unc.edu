@@ -12,7 +12,7 @@ from ..models.user import User
 from datetime import datetime
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -28,8 +28,10 @@ class EventEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Name of the event
     name: Mapped[str] = mapped_column(String)
-    # Time of the event
-    time: Mapped[datetime] = mapped_column(DateTime)
+    # Start time of the event
+    start: Mapped[datetime] = mapped_column(DateTime)
+    # End time of the event
+    end: Mapped[datetime] = mapped_column(DateTime)
     # Location of the event
     location: Mapped[str] = mapped_column(String)
     # Description of the event
@@ -40,6 +42,8 @@ class EventEntity(EntityBase):
     registration_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     # URL for the image for an event.
     image_url: Mapped[str] = mapped_column(String, nullable=True)
+    # This field provides a registration URL if external registration is used.
+    override_registration_url: Mapped[str] = mapped_column(String, nullable=True)
 
     # Organization hosting the event
     # NOTE: This defines a one-to-many relationship between the organization and events tables.
@@ -64,13 +68,15 @@ class EventEntity(EntityBase):
         """
         return cls(
             name=model.name,
-            time=model.time,
+            start=model.start,
+            end=model.end,
             location=model.location,
             description=model.description,
             public=False,  # TODO: Implement public and private events.
             registration_limit=model.registration_limit,
             organization_id=organization_id,
             image_url=model.image_url,
+            override_registration_url=model.override_registration_url,
         )
 
     def to_overview_model(self, subject: User | None = None) -> EventOverview:
@@ -114,7 +120,8 @@ class EventEntity(EntityBase):
         return EventOverview(
             id=self.id,
             name=self.name,
-            time=self.time,
+            start=self.start,
+            end=self.end,
             location=self.location,
             description=self.description,
             public=self.public,
@@ -129,4 +136,5 @@ class EventEntity(EntityBase):
                 user_registration.registration_type if user_registration else None
             ),
             image_url=self.image_url,
+            override_registration_url=self.override_registration_url,
         )

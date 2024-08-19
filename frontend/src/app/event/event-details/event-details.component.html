@@ -11,11 +11,33 @@
     <mat-card-title>{{ event()!.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p>
-      {{ event().time | date: 'MMMM d' }} at
-      {{ event().time | date: 'h:mm a' }} in
-      {{ event().location }}
-    </p>
+    <div class="links-row">
+      <div class="row">
+        <mat-icon class="secondary-icon">schedule</mat-icon>
+        <p>
+          {{ event().start | date: 'shortTime' }} -
+          {{ event().end | date: 'shortTime' }}
+        </p>
+      </div>
+      <div class="row">
+        <mat-icon class="secondary-icon">location_on</mat-icon>
+        <p>{{ event().location }}</p>
+      </div>
+      @if(profile) {
+      <div class="row">
+        <mat-icon class="secondary-icon">person_outline</mat-icon>
+        @if (event().override_registration_url) {
+        <p>External registration</p>
+        } @else if (event().registration_limit > 400) {
+        <p>Open to all</p>
+        } @else if (event().registration_limit === event().number_registered) {
+        <p><span class="tertiary-color">Filled</span></p>
+        } @else {
+        <p>{{ event().registration_limit - event().number_registered }} left</p>
+        }
+      </div>
+      }
+    </div>
 
     <mat-chip-set>
       <!-- Organization chip -->
@@ -63,6 +85,10 @@
     } @else if(event().user_registration_type === registrationType.ORGANIZER) {}
     @else if(event().registration_limit === event().number_registered) {
     <button mat-flat-button [disabled]="true">Filled</button>
+    } @else { @if(event().override_registration_url) {
+    <button mat-flat-button (click)="registerForEvent()">
+      Register (External)
+    </button>
     } @else {
     <button mat-flat-button (click)="registerForEvent()">
       Register
@@ -74,11 +100,11 @@
             ' seats left)'
       }}
     </button>
-    }
+    } }
   </mat-card-actions>
 </mat-pane>
 
-@if(eventRegistrationsPage()) {
+@if(eventRegistrationsPage() && !event().override_registration_url) {
 <mat-pane>
   <mat-card-header>
     <mat-card-title>Attendees</mat-card-title>

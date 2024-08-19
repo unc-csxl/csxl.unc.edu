@@ -28,7 +28,8 @@ export interface EventRegistration {
 export interface EventOverviewJson {
   id: number;
   name: string;
-  time: string;
+  start: string;
+  end: string;
   location: string;
   description: string;
   public: boolean;
@@ -41,12 +42,14 @@ export interface EventOverviewJson {
   organizers: PublicProfile[];
   user_registration_type: RegistrationType | null;
   image_url: string | null;
+  override_registration_url: string | null;
 }
 
 export interface EventOverview {
   id: number | null;
   name: string;
-  time: Date;
+  start: Date;
+  end: Date;
   location: string;
   description: string;
   public: boolean;
@@ -59,12 +62,14 @@ export interface EventOverview {
   organizers: PublicProfile[];
   user_registration_type: RegistrationType | null;
   image_url: string | null;
+  override_registration_url: string | null;
 }
 
 export interface EventDraft {
   id: number | null;
   name: string;
-  time: Date;
+  start: Date;
+  end: Date;
   location: string;
   description: string;
   public: boolean;
@@ -72,20 +77,23 @@ export interface EventDraft {
   organization_slug: string;
   organizers: PublicProfile[];
   image_url: string | null;
+  override_registration_url: string | null;
 }
 
 export const eventOverviewToDraft = (overview: EventOverview): EventDraft => {
   return {
     id: overview.id,
     name: overview.name,
-    time: overview.time,
+    start: overview.start,
+    end: overview.end,
     location: overview.location,
     description: overview.description,
     public: overview.public,
     registration_limit: overview.registration_limit,
     organization_slug: overview.organization_slug,
     organizers: overview.organizers,
-    image_url: overview.image_url
+    image_url: overview.image_url,
+    override_registration_url: overview.override_registration_url
   };
 };
 
@@ -98,7 +106,8 @@ export const parseEventOverviewJson = (
   responseModel: EventOverviewJson
 ): EventOverview => {
   return Object.assign({}, responseModel, {
-    time: new Date(responseModel.time)
+    start: new Date(responseModel.start),
+    end: new Date(responseModel.end)
   });
 };
 

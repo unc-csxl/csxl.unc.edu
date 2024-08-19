@@ -363,7 +363,9 @@ def test_get_registrations_of_user(
     event_svc_integration: EventService, time: dict[str, datetime]
 ):
     """Test that a user with a registration is able to query for it."""
-    time_range = TimeRange(start=event_one.time - ONE_DAY, end=event_one.time + ONE_DAY)
+    time_range = TimeRange(
+        start=event_one.start - ONE_DAY, end=event_one.start + ONE_DAY
+    )
     registrations = event_svc_integration.get_registrations_of_user(
         ambassador, ambassador, time_range
     )
@@ -376,7 +378,7 @@ def test_get_registrations_of_user_outside_time_range(
     """Test that a user with a registration is able to query for it."""
     # Test range after event
     time_range = TimeRange(
-        start=event_one.time + 2 * ONE_DAY, end=event_one.time + 3 * ONE_DAY
+        start=event_one.start + 2 * ONE_DAY, end=event_one.start + 3 * ONE_DAY
     )
     registrations = event_svc_integration.get_registrations_of_user(
         ambassador, ambassador, time_range
@@ -385,7 +387,7 @@ def test_get_registrations_of_user_outside_time_range(
 
     # Test range before event
     time_range = TimeRange(
-        start=event_one.time - ONE_DAY * 2, end=event_one.time - ONE_DAY
+        start=event_one.start - ONE_DAY * 2, end=event_one.start - ONE_DAY
     )
     registrations = event_svc_integration.get_registrations_of_user(
         ambassador, ambassador, time_range
@@ -397,7 +399,9 @@ def test_get_registrations_of_user_without_reservations(
     event_svc_integration: EventService, time: dict[str, datetime]
 ):
     """Test that a user without any registrations is able to query for it."""
-    time_range = TimeRange(start=event_one.time - ONE_DAY, end=event_one.time + ONE_DAY)
+    time_range = TimeRange(
+        start=event_one.start - ONE_DAY, end=event_one.start + ONE_DAY
+    )
     registrations = event_svc_integration.get_registrations_of_user(
         root, root, time_range
     )
@@ -414,7 +418,9 @@ def test_get_registrations_of_user_admin_authorization(
     )
 
     # Ensure delete occurs
-    time_range = TimeRange(start=event_one.time - ONE_DAY, end=event_one.time + ONE_DAY)
+    time_range = TimeRange(
+        start=event_one.start - ONE_DAY, end=event_one.start + ONE_DAY
+    )
     event_svc_integration.get_registrations_of_user(root, ambassador, time_range)
 
     # Ensure that the correct permission check is run
