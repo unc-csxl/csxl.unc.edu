@@ -542,6 +542,12 @@ Points Possible,,,,,(read only),(read only),(read only),(read only),(read only),
 "Student, New",0,345345345,nstudent,COMP301.001.S224,,,,,,,,,,,,,,,,
 "Jordan, Kris",0,89898989,kjordan,COMP301.001.S224,,,,,,,,,,,,,,,,"""
 
+smaller_roster_csv = """Student,ID,SIS User ID,SIS Login ID,Section,Assignments Current Points,Assignments Final Points,Assignments Current Score,Assignments Unposted Current Score,Assignments Final Score,Assignments Unposted Final Score,Current Points,Final Points,Current Score,Unposted Current Score,Final Score,Unposted Final Score,Current Grade,Unposted Current Grade,Final Grade,Unposted Final Grade
+Points Possible,,,,,(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only)
+"Root, Rhonda",0,999999999,rroot,COMP301.001.S224,,,,,,,,,,,,,,,,
+"Jordan, Kris",0,89898989,kjordan,COMP301.001.S224,,,,,,,,,,,,,,,,"""
+
+
 bad_roster_csv = """Student,Assignments Current Points,Assignments Final Points,Assignments Current Score,Assignments Unposted Current Score,Assignments Final Score,Assignments Unposted Final Score,Current Points,Final Points,Current Score,Unposted Current Score,Final Score,Unposted Final Score,Current Grade,Unposted Current Grade,Final Grade,Unposted Final Grade
 Points Possible,,,,,(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only),(read only)
 "Root, Rhonda",0,999999999,,,,,,,,,,,,,,,

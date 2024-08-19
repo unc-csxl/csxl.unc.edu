@@ -210,32 +210,32 @@ class SectionMemberService:
         #  Case 1: Student is already on the roster - we do not need to make any changes.
         #  Case 2: Students are not on the roster, but user profiles exist - just add a SectionMemberEntity.
         #  Case 3: User is not in the system - create a user and a relationship.
+        #  Case 4: Student is already on the roster, but not in the CSV.
 
         # Case 1: Determine students that are already on the roster
         existing_roster_members_query = (
             select(SectionMemberEntity)
             .join(UserEntity)
-            .where(UserEntity.pid.in_(student_pids))
             .where(SectionMemberEntity.section_id == section_id)
         )
         existing_roster_member_entities = self._session.scalars(
             existing_roster_members_query
         ).all()
         existing_roster_member_pids = [
-            member.pid for member in existing_roster_member_entities
+            member.user.pid for member in existing_roster_member_entities
         ]
 
         # Case 2: Determine students that are not on the roster, but that exist in the database.
         existing_users_query = select(UserEntity).where(
-            UserEntity.pid.in_(student_pids),
-            UserEntity.pid.not_in(existing_roster_member_pids),
+            UserEntity.pid.in_(student_pids)
         )
         existing_user_entities = self._session.scalars(existing_users_query).all()
         existing_users_pids = [member.pid for member in existing_user_entities]
         for user in existing_user_entities:
-            draft = SectionMemberDraft(user_id=user.id, section_id=section_id)
-            section_membership = SectionMemberEntity.from_draft_model(draft)
-            self._session.add(section_membership)
+            if user.pid not in existing_roster_member_pids:
+                draft = SectionMemberDraft(user_id=user.id, section_id=section_id)
+                section_membership = SectionMemberEntity.from_draft_model(draft)
+                self._session.add(section_membership)
 
         # Case 3: Find remaining students that do not exist
         nonexisting_students = [
@@ -266,6 +266,26 @@ class SectionMemberService:
             draft = SectionMemberDraft(user_id=new_student.id, section_id=section_id)
             section_membership = SectionMemberEntity.from_draft_model(draft)
             self._session.add(section_membership)
+
+        # Commit changes
+        self._session.commit()
+
+        # Case 4: Remove students not in the CSV file that are still on the roster.
+        students_to_remove_query = (
+            select(SectionMemberEntity)
+            .join(UserEntity)
+            .where(
+                UserEntity.pid.not_in(student_pids),
+                UserEntity.pid.in_(existing_roster_member_pids),
+            )
+            .where(
+                SectionMemberEntity.section_id == section_id,
+                SectionMemberEntity.member_role == RosterRole.STUDENT,
+            )
+        )
+        students_to_remove = self._session.scalars(students_to_remove_query).all()
+        for student in students_to_remove:
+            self._session.delete(student)
 
         # Commit changes a final time
         self._session.commit()
