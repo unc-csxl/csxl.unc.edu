@@ -20,67 +20,53 @@ SUNDAY = 6
 
 OH_HOURS = {
     MONDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+        "SN135": [(time(hour=8), time(hour=20))],
+        "SN137": [(time(hour=8), time(hour=20))],
+        "SN139": [(time(hour=8), time(hour=20))],
+        "SN141": [(time(hour=8), time(hour=20))],
+        "SN144": [(time(hour=8), time(hour=20))],
+        "SN146": [(time(hour=8), time(hour=20))],
+        "SN147": [(time(hour=8), time(hour=20))],
     },
     TUESDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+        "SN135": [(time(hour=8), time(hour=20))],
+        "SN137": [(time(hour=8), time(hour=20))],
+        "SN139": [(time(hour=8), time(hour=20))],
+        "SN141": [(time(hour=8), time(hour=20))],
+        "SN144": [(time(hour=8), time(hour=20))],
+        "SN146": [(time(hour=8), time(hour=20))],
+        "SN147": [(time(hour=8), time(hour=20))],
     },
     WEDNESDAY : {
-        "SN135": [],
-        "SN137": [(time(hour=15), time(hour=16))],  # Johnathan Leong
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+        "SN135": [(time(hour=8), time(hour=20))],
+        "SN137": [(time(hour=8), time(hour=20))],
+        "SN139": [(time(hour=8), time(hour=20))],
+        "SN141": [(time(hour=8), time(hour=20))],
+        "SN144": [(time(hour=8), time(hour=20))],
+        "SN146": [(time(hour=8), time(hour=20))],
+        "SN147": [(time(hour=8), time(hour=20))],
     },
     THURSDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
+        "SN135": [(time(hour=8), time(hour=20))],
+        "SN137": [(time(hour=8), time(hour=20))],
+        "SN139": [(time(hour=8), time(hour=20))],
+        "SN141": [(time(hour=8), time(hour=20))],
+        "SN144": [(time(hour=8), time(hour=20))],
+        "SN146": [(time(hour=8), time(hour=20))],
+        "SN147": [(time(hour=8), time(hour=20))],
     },
     FRIDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [],
+        "SN135": [(time(hour=8), time(hour=20))],
+        "SN137": [(time(hour=8), time(hour=20))],
+        "SN139": [(time(hour=8), time(hour=20))],
+        "SN141": [(time(hour=8), time(hour=20))],
+        "SN144": [(time(hour=8), time(hour=20))],
+        "SN146": [(time(hour=8), time(hour=20))],
+        "SN147": [(time(hour=8), time(hour=20))],
     },
     SATURDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [],
     },
     SUNDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [],
     }
 }
 
