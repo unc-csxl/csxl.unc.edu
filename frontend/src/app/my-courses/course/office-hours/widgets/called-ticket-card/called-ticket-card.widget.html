@@ -24,9 +24,12 @@
   </mat-card-header>
   @if(expanded()) {
   <mat-card-content>
+    <mat-divider class="spacing-divider" />
     <p><span class="semibold-text">Helping:</span> {{ ticket.creators }}</p>
-    <p><span class="semibold-text">Description:</span></p>
-    <p>{{ ticket.description }}</p>
+    <mat-divider class="spacing-divider" />
+
+    <!-- <p><span class="semibold-text">Description:</span></p> -->
+    <p markdown>{{ ticket.description }}</p>
   </mat-card-content>
   <mat-card-actions>
     <button

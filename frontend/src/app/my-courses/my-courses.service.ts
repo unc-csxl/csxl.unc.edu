@@ -90,12 +90,15 @@ export class MyCoursesService {
 
   /** Refreshes the my courses data emitted by the signals. */
   getTermOverviews() {
-    this.http
+    const terms$ = this.http
       .get<TermOverviewJson[]>('/api/my-courses')
-      .pipe(map(parseTermOverviewJsonList))
-      .subscribe((terms) => {
-        this.termsSignal.set(terms);
-      });
+      .pipe(map(parseTermOverviewJsonList));
+
+    terms$.subscribe((terms) => {
+      this.termsSignal.set(terms);
+    });
+
+    return terms$;
   }
 
   /**

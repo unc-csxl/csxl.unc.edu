@@ -37,3 +37,7 @@ p {
     gap: 8px;
     justify-content: end;
 }
+
+::ng-deep strong, b {
+    font-weight: 500 !important;
+}

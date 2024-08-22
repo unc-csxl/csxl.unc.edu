@@ -34,3 +34,12 @@ p {
     padding-top: 12px;
     justify-content: end;
 }
+
+::ng-deep strong, b {
+    font-weight: 500 !important;
+}
+
+.spacing-divider {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}

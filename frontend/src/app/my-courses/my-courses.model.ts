@@ -117,7 +117,7 @@ export interface OfficeHourTicketOverviewJson {
   created_at: string;
   called_at: string | undefined;
   state: string;
-  type: string;
+  type: number;
   description: string;
   creators: string[];
   caller: string | undefined;
@@ -128,7 +128,7 @@ export interface OfficeHourTicketOverview {
   created_at: Date;
   called_at: Date | undefined;
   state: string;
-  type: string;
+  type: number;
   description: string;
   creators: string[];
   caller: string | undefined;
@@ -179,7 +179,7 @@ export interface OfficeHourGetHelpOverview {
 export interface TicketDraft {
   office_hours_id: number;
   description: string;
-  type: string;
+  type: number;
 }
 
 export interface CourseSiteOverview {

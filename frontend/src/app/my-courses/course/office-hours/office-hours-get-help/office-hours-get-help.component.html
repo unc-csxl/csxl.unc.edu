@@ -68,7 +68,7 @@
           <mat-option [value]="1">Conceptual Help</mat-option>
         </mat-select>
       </mat-form-field>
-      @if (ticketForm.controls['type'].value === 'Assignment Help') {
+      @if (+ticketForm.controls['type'].value! === 0) {
       <mat-form-field appearance="outline">
         <mat-label>
           What section of the assignment do you need help with?

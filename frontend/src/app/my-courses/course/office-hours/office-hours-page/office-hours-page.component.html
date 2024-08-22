@@ -23,14 +23,14 @@
         <mat-button-toggle [value]="ViewState.History">
           History
         </mat-button-toggle>
-        <mat-button-toggle [value]="ViewState.Data">Data</mat-button-toggle>
+        <!-- <mat-button-toggle [value]="ViewState.Data">Data</mat-button-toggle> -->
       </mat-button-toggle-group>
     </div>
     <mat-divider />
   </mat-card-header>
   @if (viewState === ViewState.Scheduled) {
   <mat-card-content class="pane-content">
-    <mat-card-subtitle>Current Events</mat-card-subtitle>
+    <mat-card-subtitle>Happening Now</mat-card-subtitle>
     <div class="card-container">
       @if (currentOfficeHourEvents().length === 0) {
       <p>Office hours are currently closed.</p>
@@ -65,17 +65,17 @@
                 {{ element.location }}
               </td>
             </ng-container>
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-icon-button [routerLink]="element.id + '/edit'">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button (click)="deleteOfficeHours(element)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button [routerLink]="element.id + '/edit'">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="deleteOfficeHours(element)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>  
             <tr mat-header-row *matHeaderRowDef="futureOhDisplayedColumns"></tr>
             <tr
               mat-row

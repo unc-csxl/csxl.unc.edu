@@ -46,7 +46,7 @@ export class RosterComponent {
   > = signal(undefined);
   private previousParams: PaginationParams = DEFAULT_PAGINATION_PARAMS;
 
-  public displayedColumns: string[] = ['section', 'name', 'pid', 'email'];
+  public displayedColumns: string[] = ['section', 'name'];
 
   /** Current search bar query */
   public searchBarQuery: WritableSignal<string> = signal('');
@@ -67,19 +67,33 @@ export class RosterComponent {
     });
   });
 
+  courseSiteId: string;
+
   constructor(
     private route: ActivatedRoute,
     protected dialog: MatDialog,
     protected myCoursesService: MyCoursesService
   ) {
-    let courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
+    this.courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
 
     this.rosterPaginator = new Paginator<CourseMemberOverview>(
-      `/api/my-courses/${courseSiteId}/roster`
+      `/api/my-courses/${this.courseSiteId}/roster`
     );
 
     this.rosterPaginator.loadPage(this.previousParams).subscribe((page) => {
       this.rosterPage.set(page);
+    });
+
+    // This subscription loads whether or not the user is a student in the course, and
+    // hides some detail columns if so. This is a hack to get around requirements for
+    // Angular tables, and should be revisited in the future.
+    this.myCoursesService.getTermOverviews().subscribe((terms) => {
+      const courseSite = terms
+        .flatMap((term) => term.sites)
+        .find((site) => site.id == +this.courseSiteId);
+      if (courseSite?.role !== 'Student') {
+        this.displayedColumns = ['section', 'name', 'pid', 'email'];
+      }
     });
   }
 
