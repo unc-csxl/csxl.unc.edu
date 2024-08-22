@@ -5,10 +5,25 @@
 
 /** Global CSS Styles */
 
-html, body {
-    height: 100%;
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #313030;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #cfbcff;
+    border-radius: 10px;
+  }
 }
 
 /** Custom Material Component Styling Mixins */
@@ -16,476 +31,484 @@ html, body {
 
 /// Defines a mixin that applies global styles using the M3 theme
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin global-styles($theme) {
-    p {
-        font: mat.get-theme-typography($theme, body-medium, font);
-    }
+  p {
+    font: mat.get-theme-typography($theme, body-medium, font);
+  }
 
-    .primary-background {
-        background: mat.get-theme-color($theme, primary) !important;
-        color: mat.get-theme-color($theme, on-primary) !important;
-    }
+  .primary-background {
+    background: mat.get-theme-color($theme, primary) !important;
+    color: mat.get-theme-color($theme, on-primary) !important;
+  }
 
-    .primary-background-color {
-        background-color: mat.get-theme-color($theme, primary) !important;
-        color: mat.get-theme-color($theme, on-primary) !important;
-    }
+  .primary-background-color {
+    background-color: mat.get-theme-color($theme, primary) !important;
+    color: mat.get-theme-color($theme, on-primary) !important;
+  }
 
-    .primary-color {
-        color: mat.get-theme-color($theme, primary) !important;
-    }
+  .primary-color {
+    color: mat.get-theme-color($theme, primary) !important;
+  }
 
-    .secondary-background {
-        background: mat.get-theme-color($theme, secondary) !important;
-        color: mat.get-theme-color($theme, on-secondary) !important;
-    }
+  .secondary-background {
+    background: mat.get-theme-color($theme, secondary) !important;
+    color: mat.get-theme-color($theme, on-secondary) !important;
+  }
 
-    .primary-fixed-dim-background {
-        background: mat.get-theme-color($theme, primary-fixed-dim) !important;
-        color: mat.get-theme-color($theme, on-primary-fixed-variant) !important;
-    }
+  .primary-fixed-dim-background {
+    background: mat.get-theme-color($theme, primary-fixed-dim) !important;
+    color: mat.get-theme-color($theme, on-primary-fixed-variant) !important;
+  }
 
-    .primary-container-background {
-        background: mat.get-theme-color($theme, primary-container) !important;
-        color: mat.get-theme-color($theme, on-primary-container) !important;
-    }
+  .primary-container-background {
+    background: mat.get-theme-color($theme, primary-container) !important;
+    color: mat.get-theme-color($theme, on-primary-container) !important;
+  }
 
-    .secondary-container-background {
-        background: mat.get-theme-color($theme, secondary-container) !important;
-        color: mat.get-theme-color($theme, on-secondary-container) !important;
-    }
+  .secondary-container-background {
+    background: mat.get-theme-color($theme, secondary-container) !important;
+    color: mat.get-theme-color($theme, on-secondary-container) !important;
+  }
 
-    .tertiary-container-background {
-        background: mat.get-theme-color($theme, tertiary-container) !important;
-        color: mat.get-theme-color($theme, on-tertiary-container) !important;
-    }
+  .tertiary-container-background {
+    background: mat.get-theme-color($theme, tertiary-container) !important;
+    color: mat.get-theme-color($theme, on-tertiary-container) !important;
+  }
 
-    .secondary-background-color {
-        background-color: mat.get-theme-color($theme, secondary) !important;
-        color: mat.get-theme-color($theme, on-secondary) !important;
-    }
+  .secondary-background-color {
+    background-color: mat.get-theme-color($theme, secondary) !important;
+    color: mat.get-theme-color($theme, on-secondary) !important;
+  }
 
-    .secondary-color {
-        color: mat.get-theme-color($theme, secondary) !important;
-    }
+  .secondary-color {
+    color: mat.get-theme-color($theme, secondary) !important;
+  }
 
-    .tertiary-background {
-        background: mat.get-theme-color($theme, tertiary) !important;
-        color: mat.get-theme-color($theme, on-tertiary) !important;
-    }
+  .tertiary-background {
+    background: mat.get-theme-color($theme, tertiary) !important;
+    color: mat.get-theme-color($theme, on-tertiary) !important;
+  }
 
-    .tertiary-background-color {
-        background-color: mat.get-theme-color($theme, tertiary) !important;
-        color: mat.get-theme-color($theme, on-tertiary) !important;
-    }
+  .tertiary-background-color {
+    background-color: mat.get-theme-color($theme, tertiary) !important;
+    color: mat.get-theme-color($theme, on-tertiary) !important;
+  }
 
-    .tertiary-color {
-        color: mat.get-theme-color($theme, tertiary) !important;
-    }
+  .tertiary-color {
+    color: mat.get-theme-color($theme, tertiary) !important;
+  }
 
-    .on-secondary-background-color {
-        background-color: mat.get-theme-color($theme, on-secondary) !important;
-        color: mat.get-theme-color($theme, secondary) !important;
-    }
+  .on-secondary-background-color {
+    background-color: mat.get-theme-color($theme, on-secondary) !important;
+    color: mat.get-theme-color($theme, secondary) !important;
+  }
 
-    /// Ensures that all tables are horizontally scrollable.
-    /// All tables have to be wrapped by a div with the 
-    /// `table-responsive` class.
-    .table-responsive {
-        overflow-x: auto;
-      }
-    .table-responsive table {
-        white-space: nowrap;
-    }
+  /// Ensures that all tables are horizontally scrollable.
+  /// All tables have to be wrapped by a div with the
+  /// `table-responsive` class.
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table-responsive table {
+    white-space: nowrap;
+  }
 }
 
 /// Defines a mixin that applies custom styles to material button components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-button-styles($theme) {
+  .mat-mdc-fab {
+    background-color: mat.get-theme-color($theme, secondary);
+    color: mat.get-theme-color($theme, on-secondary);
 
-    .mat-mdc-fab {
-        background-color: mat.get-theme-color($theme, secondary);
-        color: mat.get-theme-color($theme, on-secondary);
-
-        .mat-icon {
-            color: mat.get-theme-color($theme, on-secondary);
-        }
+    .mat-icon {
+      color: mat.get-theme-color($theme, on-secondary);
     }
+  }
 
-    .primary-button {
-        .mat-icon {
-            color: white !important;
-        }
-        @include mat.button-color($theme, $color-variant: primary);
+  .primary-button {
+    .mat-icon {
+      color: white !important;
     }
+    @include mat.button-color($theme, $color-variant: primary);
+  }
 
-    .secondary-button {
-        .mat-icon {
-            color: white !important;
-        }
-        @include mat.button-color($theme, $color-variant: secondary);
+  .secondary-button {
+    .mat-icon {
+      color: white !important;
     }
-    
-    .tertiary-button {
-        .mat-icon {
-            color: white !important;
-        }
-        @include mat.button-color($theme, $color-variant: tertiary);
-    }
+    @include mat.button-color($theme, $color-variant: secondary);
+  }
 
-    .low-button-toggle-density {
-        @include mat.button-toggle-density(-3);       
-     }
+  .tertiary-button {
+    .mat-icon {
+      color: white !important;
+    }
+    @include mat.button-color($theme, $color-variant: tertiary);
+  }
+
+  .low-button-toggle-density {
+    @include mat.button-toggle-density(-3);
+  }
 }
 
 /// Defines a mixin that applies custom styles to material card components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-card-styles($theme) {
+  .mat-mdc-card {
+    background-color: mat.get-theme-color($theme, surface);
+    max-width: 640px;
+    margin: 1em;
+  }
 
-    .mat-mdc-card {
-        background-color: mat.get-theme-color($theme, surface);
-        max-width: 640px;
-        margin: 1em;
+  .mat-mdc-card-outlined {
+    background-color: mat.get-theme-color($theme, surface);
+  }
+
+  .mat-mdc-card-actions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .mdc-card__actions {
+    min-height: 0px !important;
+  }
+
+  .mat-mdc-card-title {
+    font: mat.get-theme-typography($theme, title-large, font);
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
+
+  .mat-mdc-card p {
+    color: mat.get-theme-color($theme, on-surface-variant);
+  }
+
+  .surface-container-card {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+    mat-card {
+      background-color: mat.get-theme-color(
+        $theme,
+        surface-container
+      ) !important;
     }
-
-    .mat-mdc-card-outlined {
-        background-color: mat.get-theme-color($theme, surface);
-    }
-
-    .mat-mdc-card-actions {
-        padding-left: 16px;
-        padding-right: 16px;
-
-    }
-    .mdc-card__actions {
-        min-height: 0px !important;
-    }
-
-    .mat-mdc-card-title {
-        font: mat.get-theme-typography($theme, title-large, font);
-        color: mat.get-theme-color($theme, on-surface) !important;
-    }  
-
-    .mat-mdc-card p {
-        color: mat.get-theme-color($theme, on-surface-variant);
-    }
-
-    .surface-container-card {
-        background-color: mat.get-theme-color($theme, surface-container) !important;
-        mat-card {
-            background-color: mat.get-theme-color($theme, surface-container) !important;
-        }
-    }
-
+  }
 }
 
 /// Defines a mixin that applies custom styles to material header components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-header-styles($theme) {
-    .mat-mdc-subheader {
-        font: mat.get-theme-typography($theme, title-small, font);
-        margin-left: 16px;
-    }
+  .mat-mdc-subheader {
+    font: mat.get-theme-typography($theme, title-small, font);
+    margin-left: 16px;
+  }
 }
 
 /// Defines a mixin that applies custom styles to material icon components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-icon-styles($theme) {
+  .mat-icon,
+  .mat-icon svg {
+    color: white;
+    fill: white;
+  }
 
+  .secondary-icon,
+  .secondary-icon svg {
+    color: mat.get-theme-color($theme, secondary) !important;
+    fill: mat.get-theme-color($theme, secondary) !important;
+  }
+
+  .on-surface-variant-icon,
+  .on-surface-variant-icon svg {
+    color: mat.get-theme-color($theme, on-surface-variant) !important;
+    fill: mat.get-theme-color($theme, on-surface-variant) !important;
+  }
+
+  @media (prefers-color-scheme: light) {
     .mat-icon,
     .mat-icon svg {
-        color: white;
-        fill: white;
+      color: black;
+      fill: black;
     }
-
-    .secondary-icon, .secondary-icon svg {
-        color: mat.get-theme-color($theme, secondary) !important;
-        fill: mat.get-theme-color($theme, secondary) !important;
-    }
-
-    .on-surface-variant-icon, .on-surface-variant-icon svg {
-        color: mat.get-theme-color($theme, on-surface-variant) !important;
-        fill: mat.get-theme-color($theme, on-surface-variant) !important;
-    }
-
-    @media (prefers-color-scheme: light) {
-        .mat-icon,
-        .mat-icon svg {
-            color: black;
-            fill: black;
-        }
-    }
-
-
+  }
 }
 
 /// Defines a mixin that applies custom styles to material list components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-list-styles($theme) {
+  .mat-mdc-list-item-title {
+    font: mat.get-theme-typography($theme, label-large, font);
+  }
 
-    .mat-mdc-list-item-title {
-        font: mat.get-theme-typography($theme, label-large, font);
-    }
-
-    .mdc-list-item {
-        .material-symbols-outlined {
-        font-variation-settings:
+  .mdc-list-item {
+    .material-symbols-outlined {
+      font-variation-settings:
         'FILL' 0,
         'wght' 500,
         'GRAD' 0,
-        'opsz' 24
-        }
+        'opsz' 24;
     }
+  }
 
-    .mdc-list-item__primary-text {
-        color: mat.get-theme-color($theme, on-surface-variant);
-    }
+  .mdc-list-item__primary-text {
+    color: mat.get-theme-color($theme, on-surface-variant);
+  }
 
-    // NOTE: The following item should be refactored once the icon colors are working correctly.
-    .facts-list {
-        .mat-icon {
-            color: mat.get-theme-color($theme, primary) !important;
-        }
+  // NOTE: The following item should be refactored once the icon colors are working correctly.
+  .facts-list {
+    .mat-icon {
+      color: mat.get-theme-color($theme, primary) !important;
     }
+  }
 }
 
 /// Defines a mixin that applies custom styles to material components
 /// that involve navigation (including the toolbar, sidebar, etc)
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-navigation-styles($theme) {
+  .mat-toolbar {
+    background-color: mat.get-theme-color($theme, surface-container);
+    color: mat.get-theme-color($theme, on-surface);
+    font: mat.get-theme-typography($theme, headline-medium, font);
+    font-weight: 500;
+  }
 
-    .mat-toolbar {
-        background-color: mat.get-theme-color($theme, surface-container);
-        color: mat.get-theme-color($theme, on-surface);
-        font: mat.get-theme-typography($theme, headline-medium, font);
-        font-weight: 500;
-    }
+  .mat-sidenav-container,
+  .mat-sidenav {
+    background-color: mat.get-theme-color($theme, surface-container);
+  }
 
-    .mat-sidenav-container, .mat-sidenav {
-        background-color: mat.get-theme-color($theme, surface-container);
-    }
-    
-    .sidebar-button-tooltip-panel {
-        max-width: 150px;
-    }
+  .sidebar-button-tooltip-panel {
+    max-width: 150px;
+  }
 
-    .mat-mdc-nav-list {
-        margin-left: 12px;
-        margin-right: 12px;
-    }
-    .mat-mdc-nav-list .mat-divider-horizontal {
-        margin-top: 16px;
-        margin-bottom: 29px; // 16px + 13 to make it look even (which is offset from label to end of button for listing above)
-        margin-left: 16px;
-        margin-right: 16px;
-    }
+  .mat-mdc-nav-list {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+  .mat-mdc-nav-list .mat-divider-horizontal {
+    margin-top: 16px;
+    margin-bottom: 29px; // 16px + 13 to make it look even (which is offset from label to end of button for listing above)
+    margin-left: 16px;
+    margin-right: 16px;
+  }
 }
 
 /// Defines a mixin that applies custom styles to material switch components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-switch-styles($theme) {
-    .mat-mdc-slide-toggle {
-        label {
-            padding-left: 8px;
-            color: mat.get-theme-color($theme, on-surface) !important;
-        }
+  .mat-mdc-slide-toggle {
+    label {
+      padding-left: 8px;
+      color: mat.get-theme-color($theme, on-surface) !important;
     }
+  }
 }
 
 /// Defines a mixin that applies custom styles to material text field components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-text-field-styles($theme) {
-    .mdc-text-field__input::-webkit-calendar-picker-indicator {
-        display: block !important;
-        filter: invert(1);
-    }
+  .mdc-text-field__input::-webkit-calendar-picker-indicator {
+    display: block !important;
+    filter: invert(1);
+  }
 }
 
 /// Defines a mixim that applies custom styles for fonts based on Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin font-styles($theme) {
+  h1 {
+    font: mat.get-theme-typography($theme, title-large, font) !important;
+  }
 
-    h1 {
-        font: mat.get-theme-typography($theme, title-large, font) !important;
-    }
+  h2 {
+    font: mat.get-theme-typography($theme, title-medium, font) !important;
+  }
 
-    h2 {
-        font: mat.get-theme-typography($theme, title-medium, font) !important;
-    }
-
-    h3 {
-        font: mat.get-theme-typography($theme, title-small, font) !important;
-    }
-    .title-large {
-        font: mat.get-theme-typography($theme, title-large, font);
-    }
-    .title-medium {
-        font: mat.get-theme-typography($theme, title-medium, font);
-    }
-    .title-small {
-        font: mat.get-theme-typography($theme, title-small, font);
-    }
-    .font-primary {
-        color: mat.get-theme-color($theme, primary) !important;
-    }
-    .font-secondary {
-        color: mat.get-theme-color($theme, secondary) !important;
-    }
-    .font-tertiary {
-        color: mat.get-theme-color($theme, tertiary) !important;
-    }
-    .font-variant {
-        color: mat.get-theme-color($theme, on-surface-variant) !important;
-    }
+  h3 {
+    font: mat.get-theme-typography($theme, title-small, font) !important;
+  }
+  .title-large {
+    font: mat.get-theme-typography($theme, title-large, font);
+  }
+  .title-medium {
+    font: mat.get-theme-typography($theme, title-medium, font);
+  }
+  .title-small {
+    font: mat.get-theme-typography($theme, title-small, font);
+  }
+  .font-primary {
+    color: mat.get-theme-color($theme, primary) !important;
+  }
+  .font-secondary {
+    color: mat.get-theme-color($theme, secondary) !important;
+  }
+  .font-tertiary {
+    color: mat.get-theme-color($theme, tertiary) !important;
+  }
+  .font-variant {
+    color: mat.get-theme-color($theme, on-surface-variant) !important;
+  }
 }
 
 /// Defines a mixin that applies custom widgets to material text field components
 /// to better conform to Material 3 standards.
-/// 
+///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin widget-styles($theme) {
+  // This is a special class definition for a stroked icon button.
+  //
+  // Currently, the Angular Material framework does not expose a stroked icon button.
+  // So, this manually applies the same border to a regular icon button that the stroked
+  // button applies.
+  //
+  // Once Angular Material upgrades to include a stroked icon button, this can be refactored.
+  .mat-csxl-stroked-icon-button {
+    border: 1px solid mat.get-theme-color($theme, inverse-surface);
+    padding-top: 7px;
+    padding-left: 7px;
+    .mat-icon {
+      color: mat.get-theme-color($theme, surface-tint);
+    }
+    .mat-icon svg {
+      fill: mat.get-theme-color($theme, surface-tint);
+    }
+  }
 
-    // This is a special class definition for a stroked icon button.
-    // 
-    // Currently, the Angular Material framework does not expose a stroked icon button.
-    // So, this manually applies the same border to a regular icon button that the stroked
-    // button applies.
-    //
-    // Once Angular Material upgrades to include a stroked icon button, this can be refactored.
-    .mat-csxl-stroked-icon-button {
-        border: 1px solid mat.get-theme-color($theme, inverse-surface);
-        padding-top: 7px;
-        padding-left: 7px;
-        .mat-icon {
-            color: mat.get-theme-color($theme, surface-tint);
-        }
-        .mat-icon svg {
-            fill: mat.get-theme-color($theme, surface-tint);
-        }
+  // This is a special class definition for a search bar input.
+  //
+  // Currently, the Angular Material framework does not expose a search bar input.
+  // Once Angular Material upgrades to include the M3 search bar, this can be refactored.
+
+  .mat-csxl-search-bar {
+    .mat-mdc-card-outlined {
+      background-color: mat.get-theme-color(
+        $theme,
+        surface-container-high
+      ) !important;
+    }
+    .mat-icon {
+      color: mat.get-theme-color($theme, on-surface-variant);
+    }
+  }
+
+  .mat-csxl-alert-card {
+  }
+
+  .mat-csxl-alert-card-info {
+    .mat-mdc-card-outlined {
+      background-color: mat.get-theme-color(
+        $theme,
+        secondary-container
+      ) !important;
     }
 
-    // This is a special class definition for a search bar input.
-    // 
-    // Currently, the Angular Material framework does not expose a search bar input.
-    // Once Angular Material upgrades to include the M3 search bar, this can be refactored.
-
-    .mat-csxl-search-bar {
-         .mat-mdc-card-outlined {
-            background-color: mat.get-theme-color($theme, surface-container-high) !important;
-        }
-        .mat-icon {
-            color: mat.get-theme-color($theme, on-surface-variant); 
-        }
+    .mat-mdc-card-title {
+      color: mat.get-theme-color($theme, on-secondary-container);
     }
 
-    .mat-csxl-alert-card {
-
+    .mat-icon {
+      color: mat.get-theme-color($theme, on-secondary-container);
     }
 
-    .mat-csxl-alert-card-info {
-        .mat-mdc-card-outlined {
-            background-color: mat.get-theme-color($theme, secondary-container) !important;
-        }
-
-        .mat-mdc-card-title {
-            color: mat.get-theme-color($theme, on-secondary-container);
-        }
-
-        .mat-icon {
-            color: mat.get-theme-color($theme, on-secondary-container);
-        }
-
-        p {
-            color: mat.get-theme-color($theme, on-secondary-fixed-variant) !important;
-        }
+    p {
+      color: mat.get-theme-color($theme, on-secondary-fixed-variant) !important;
     }
-    
-    .mat-csxl-alert-card-alert {
-        .mat-mdc-card-outlined {
-            background-color: mat.get-theme-color($theme, tertiary-container) !important;
-        }
+  }
 
-        .mat-mdc-card-title {
-            color: mat.get-theme-color($theme, on-tertiary-container);
-        }
-
-        .mat-icon {
-            color: mat.get-theme-color($theme, on-tertiary-container);
-        }
-
-        p {
-            color: mat.get-theme-color($theme, on-tertiary-fixed-variant);
-        }
+  .mat-csxl-alert-card-alert {
+    .mat-mdc-card-outlined {
+      background-color: mat.get-theme-color(
+        $theme,
+        tertiary-container
+      ) !important;
     }
 
-    .tab-container-button {
-        color: mat.get-theme-color($theme, on-secondary-container) !important;
+    .mat-mdc-card-title {
+      color: mat.get-theme-color($theme, on-tertiary-container);
     }
-    
-    .tab-enabled-container-button {
-        background-color: mat.get-theme-color($theme, secondary-container) !important;
+
+    .mat-icon {
+      color: mat.get-theme-color($theme, on-tertiary-container);
     }
+
+    p {
+      color: mat.get-theme-color($theme, on-tertiary-fixed-variant);
+    }
+  }
+
+  .tab-container-button {
+    color: mat.get-theme-color($theme, on-secondary-container) !important;
+  }
+
+  .tab-enabled-container-button {
+    background-color: mat.get-theme-color(
+      $theme,
+      secondary-container
+    ) !important;
+  }
 }
 .mdc-notched-outline__notch {
-    border-left: 1px solid rgba(0, 0, 0, 0);
-    border-right: none !important;
+  border-left: 1px solid rgba(0, 0, 0, 0);
+  border-right: none !important;
 }
 
 /// Defines a mixin that applies all of the custom style mixins declared above.
 /// This mixin is defined so that these @include lines are not duplicated between
 /// light and dark mode.
 @mixin apply-styles($theme) {
-    @include mat-button-styles($theme);
-    @include mat-card-styles($theme);
-    @include mat-navigation-styles($theme);
-    @include mat-list-styles($theme);
-    @include mat-header-styles($theme);
-    @include mat-icon-styles($theme);
-    @include mat-switch-styles($theme);
-    @include mat-text-field-styles($theme);
-    @include font-styles($theme);
-    @include widget-styles($theme);
-    @include global-styles($theme);
+  @include mat-button-styles($theme);
+  @include mat-card-styles($theme);
+  @include mat-navigation-styles($theme);
+  @include mat-list-styles($theme);
+  @include mat-header-styles($theme);
+  @include mat-icon-styles($theme);
+  @include mat-switch-styles($theme);
+  @include mat-text-field-styles($theme);
+  @include font-styles($theme);
+  @include widget-styles($theme);
+  @include global-styles($theme);
 }
 
 /// Defines a mixin that applies any manual dark mode override styles.
 @mixin apply-overrided-dark-mode-styles($theme) {
-    .mat-csxl-alert-card-info {
-        p {
-            color: mat.get-theme-color(csxl-theme.$dark-theme, on-secondary-container) !important;
-        }
+  .mat-csxl-alert-card-info {
+    p {
+      color: mat.get-theme-color(
+        csxl-theme.$dark-theme,
+        on-secondary-container
+      ) !important;
     }
+  }
 }
 
 /** Apply themes and custom styling to the site. */
 
 html {
+  @include mat.all-component-themes(csxl-theme.$dark-theme);
+  @include apply-styles(csxl-theme.$dark-theme);
+  @include apply-overrided-dark-mode-styles(csxl-theme.$dark-theme);
 
-    @include mat.all-component-themes(csxl-theme.$dark-theme);
-    @include apply-styles(csxl-theme.$dark-theme);
-    @include apply-overrided-dark-mode-styles(csxl-theme.$dark-theme);
-
-    @media (prefers-color-scheme: light) {
-        @include mat.all-component-colors(csxl-theme.$light-theme);
-        @include apply-styles(csxl-theme.$light-theme);
-    }
+  @media (prefers-color-scheme: light) {
+    @include mat.all-component-colors(csxl-theme.$light-theme);
+    @include apply-styles(csxl-theme.$light-theme);
+  }
 }
