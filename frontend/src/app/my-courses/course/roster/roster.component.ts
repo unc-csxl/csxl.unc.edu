@@ -83,6 +83,18 @@ export class RosterComponent {
     this.rosterPaginator.loadPage(this.previousParams).subscribe((page) => {
       this.rosterPage.set(page);
     });
+
+    // This subscription loads whether or not the user is a student in the course, and
+    // hides some detail columns if so. This is a hack to get around requirements for
+    // Angular tables, and should be revisited in the future.
+    this.myCoursesService.getTermOverviews().subscribe((terms) => {
+      const courseSite = terms
+        .flatMap((term) => term.sites)
+        .find((site) => site.id == +this.courseSiteId);
+      if (courseSite?.role === 'Student') {
+        this.displayedColumns = ['section', 'name'];
+      }
+    });
   }
 
   handlePageEvent(e: PageEvent) {
