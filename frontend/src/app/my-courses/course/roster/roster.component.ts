@@ -67,15 +67,17 @@ export class RosterComponent {
     });
   });
 
+  courseSiteId: string;
+
   constructor(
     private route: ActivatedRoute,
     protected dialog: MatDialog,
     protected myCoursesService: MyCoursesService
   ) {
-    let courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
+    this.courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
 
     this.rosterPaginator = new Paginator<CourseMemberOverview>(
-      `/api/my-courses/${courseSiteId}/roster`
+      `/api/my-courses/${this.courseSiteId}/roster`
     );
 
     this.rosterPaginator.loadPage(this.previousParams).subscribe((page) => {
