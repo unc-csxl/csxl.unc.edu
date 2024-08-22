@@ -54,7 +54,7 @@ export class OfficeHoursPageComponent {
   private previousFutureOfficeHourEventParams: PaginationParams =
     DEFAULT_PAGINATION_PARAMS;
 
-  public futureOhDisplayedColumns: string[] = ['date', 'type', 'actions'];
+  public futureOhDisplayedColumns: string[] = ['date', 'type'];
 
   /** Encapsulated past events paginator and params */
   private pastOfficeHourEventsPaginator: Paginator<OfficeHourEventOverview>;
@@ -119,8 +119,8 @@ export class OfficeHoursPageComponent {
       const courseSite = terms
         .flatMap((term) => term.sites)
         .find((site) => site.id == +this.courseSiteId);
-      if (courseSite?.role === 'Student') {
-        this.futureOhDisplayedColumns.pop();
+      if (courseSite?.role !== 'Student') {
+        this.futureOhDisplayedColumns = ['date', 'type', 'actions'];
       }
     });
   }

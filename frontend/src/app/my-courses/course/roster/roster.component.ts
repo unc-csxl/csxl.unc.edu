@@ -46,7 +46,7 @@ export class RosterComponent {
   > = signal(undefined);
   private previousParams: PaginationParams = DEFAULT_PAGINATION_PARAMS;
 
-  public displayedColumns: string[] = ['section', 'name', 'pid', 'email'];
+  public displayedColumns: string[] = ['section', 'name'];
 
   /** Current search bar query */
   public searchBarQuery: WritableSignal<string> = signal('');
@@ -91,8 +91,8 @@ export class RosterComponent {
       const courseSite = terms
         .flatMap((term) => term.sites)
         .find((site) => site.id == +this.courseSiteId);
-      if (courseSite?.role === 'Student') {
-        this.displayedColumns = ['section', 'name'];
+      if (courseSite?.role !== 'Student') {
+        this.displayedColumns = ['section', 'name', 'pid', 'email'];
       }
     });
   }
