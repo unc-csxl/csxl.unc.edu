@@ -10,20 +10,6 @@ body {
   height: 100%;
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: #313030;
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #cfbcff;
-    border-radius: 10px;
-  }
 }
 
 /** Custom Material Component Styling Mixins */
@@ -36,6 +22,22 @@ body {
 @mixin global-styles($theme) {
   p {
     font: mat.get-theme-typography($theme, body-medium, font);
+  }
+
+  body {
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: mat.get-theme-color($theme, inverse-on-surface);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: mat.get-theme-color($theme, primary);
+      border-radius: 10px;
+    }
   }
 
   .primary-background {
