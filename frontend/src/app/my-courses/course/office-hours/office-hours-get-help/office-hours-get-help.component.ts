@@ -51,7 +51,7 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
   /** Office Hour Ticket Editor Form */
   public ticketForm = this.formBuilder.group({
-    type: new FormControl('Assignment Help', [Validators.required]),
+    type: new FormControl(0, [Validators.required]),
     assignmentSection: new FormControl('', [Validators.required]),
     codeSection: new FormControl('', [Validators.required]),
     conceptsSection: new FormControl('', [Validators.required]),
@@ -93,7 +93,7 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
   isFormValid(): boolean {
     let contentFieldsValid =
-      this.ticketForm.controls['type'].value === 'Assignment Help'
+      this.ticketForm.controls['type'].value === 0
         ? this.ticketForm.controls['assignmentSection'].value !== '' &&
           this.ticketForm.controls['codeSection'].value !== '' &&
           this.ticketForm.controls['conceptsSection'].value !== '' &&
@@ -120,24 +120,26 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
   submitTicketForm() {
     let form_description: string = '';
-    let form_type: string = this.ticketForm.controls['type'].value!;
+    let form_type: number = this.ticketForm.controls['type'].value!;
 
     /* Below is logic for checking form values and assigning the correct
       TicketType and ticket description accordingly
     */
-    if (this.ticketForm.controls['type'].value === 'Conceptual Help') {
+    if (this.ticketForm.controls['type'].value === 1) {
       form_description =
-        'Conceptual: ' + (this.ticketForm.controls['description'].value ?? '');
+        '**Conceptual Question**:  \n' +
+        (this.ticketForm.controls['description'].value ?? '');
     } else {
       // Concatenates form description together and adds in new line characters
+      // NOTE: Two spaces in front of \n is required.
       form_description =
-        'Assignment Part: ' +
+        '**Assignment Part**:  \n' +
         (this.ticketForm.controls['assignmentSection'].value ?? '') +
-        ' \nGoal: ' +
+        '  \n  \n**Goal**:  \n' +
         (this.ticketForm.controls['codeSection'].value ?? '') +
-        ' \nConcepts: ' +
+        '  \n  \n**Concepts**:  \n' +
         (this.ticketForm.controls['conceptsSection'].value ?? '') +
-        ' \nTried: ' +
+        '  \n  \n**Tried**:  \n' +
         (this.ticketForm.controls['attemptSection'].value ?? '');
     }
 
