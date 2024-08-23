@@ -26,16 +26,15 @@ body {
 
   body {
     ::-webkit-scrollbar {
-      width: 6px;
+      width: 3px;
     }
 
     ::-webkit-scrollbar-track {
-      background-color: mat.get-theme-color($theme, inverse-on-surface);
-      border-radius: 10px;
+      background-color: transparent;
     }
 
     ::-webkit-scrollbar-thumb {
-      background-color: mat.get-theme-color($theme, primary);
+      background-color: mat.get-theme-color($theme, surface-container-highest);
       border-radius: 10px;
     }
   }
