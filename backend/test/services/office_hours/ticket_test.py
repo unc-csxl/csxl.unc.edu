@@ -38,8 +38,7 @@ def test_call_ticket(oh_ticket_svc: OfficeHourTicketService):
         user_data.instructor, office_hours_data.comp_110_queued_ticket.id
     )
     assert called.state == TicketState.CALLED.to_string()
-    name = user_data.instructor.first_name + " " + user_data.instructor.last_name
-    assert called.caller == name
+    assert called.caller.id == user_data.instructor.id
 
 
 def test_call_ticket_already_called(oh_ticket_svc: OfficeHourTicketService):

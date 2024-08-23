@@ -25,8 +25,11 @@
   @if(expanded()) {
   <mat-card-content>
     <mat-divider class="spacing-divider" />
-    <p><span class="semibold-text">Helping:</span> {{ ticket.creators }}</p>
-    <mat-divider class="spacing-divider" />
+    <div class="row">
+      <p><span class="semibold-text">Helping:</span></p>
+      <user-chip-list [users]="ticket.creators" [clickable]="false" />
+    </div>
+    <mat-divider class="spacing-divider-bottom" />
 
     <!-- <p><span class="semibold-text">Description:</span></p> -->
     <p markdown>{{ ticket.description }}</p>
