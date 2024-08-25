@@ -61,6 +61,11 @@
   justify-content: space-between;
 }
 
+.mat-drawer {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
 .sidenav .mat-toolbar {
   background: inherit;
 }

@@ -4,5 +4,5 @@
 }
 
 .mat-mdc-dialog-content {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
