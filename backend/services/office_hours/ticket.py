@@ -54,15 +54,8 @@ class OfficeHourTicketService:
             state=ticket.state.to_string(),
             type=ticket.type.to_string(),
             description=ticket.description,
-            creators=[
-                f"{creator.user.first_name} {creator.user.last_name}"
-                for creator in ticket.creators
-            ],
-            caller=(
-                f"{ticket.caller.user.first_name} {ticket.caller.user.last_name}"
-                if ticket.caller
-                else None
-            ),
+            creators=[creator.user.to_public_model() for creator in ticket.creators],
+            caller=(ticket.caller.user.to_public_model() if ticket.caller else None),
         )
 
     def call_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:

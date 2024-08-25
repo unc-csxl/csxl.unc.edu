@@ -119,8 +119,8 @@ export interface OfficeHourTicketOverviewJson {
   state: string;
   type: number;
   description: string;
-  creators: string[];
-  caller: string | undefined;
+  creators: PublicProfile[];
+  caller: PublicProfile | undefined;
 }
 
 export interface OfficeHourTicketOverview {
@@ -130,8 +130,8 @@ export interface OfficeHourTicketOverview {
   state: string;
   type: number;
   description: string;
-  creators: string[];
-  caller: string | undefined;
+  creators: PublicProfile[];
+  caller: PublicProfile | undefined;
 }
 
 export interface OfficeHourQueueOverviewJson {
@@ -163,6 +163,8 @@ export interface OfficeHourGetHelpOverviewJson {
   event_mode: string;
   event_start_time: string;
   event_end_time: string;
+  event_location: string;
+  event_location_description: string;
   ticket: OfficeHourTicketOverviewJson | undefined;
   queue_position: number;
 }
@@ -172,6 +174,8 @@ export interface OfficeHourGetHelpOverview {
   event_mode: string;
   event_start_time: Date;
   event_end_time: Date;
+  event_location: string;
+  event_location_description: string;
   ticket: OfficeHourTicketOverview | undefined;
   queue_position: number;
 }
