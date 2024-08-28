@@ -70,6 +70,11 @@
     border-color: transparent !important;
 }
 
+.facts-pane-content {
+    overflow-y: auto;
+    height: 100%;
+}
+
 .mdc-list-item--with-leading-icon .mdc-list-item__start {
     font-size: 24px;
     background: #4786c6;
@@ -97,11 +102,12 @@ strong {
 
 .history-card {
     margin: 0 !important;
+    margin-bottom: 12px !important;
 }
 
 @media only screen and (max-width: 1000px) {
     .container {
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
 
     .left-column {
