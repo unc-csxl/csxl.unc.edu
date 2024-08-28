@@ -142,6 +142,10 @@ export interface OfficeHourQueueOverviewJson {
   active: OfficeHourTicketOverviewJson | undefined;
   other_called: OfficeHourTicketOverviewJson[];
   queue: OfficeHourTicketOverviewJson[];
+  personal_tickets_called: number;
+  average_minutes: number;
+  total_tickets_called: number;
+  history: OfficeHourTicketOverviewJson[];
 }
 
 export interface OfficeHourQueueOverview {
@@ -152,6 +156,10 @@ export interface OfficeHourQueueOverview {
   active: OfficeHourTicketOverview | undefined;
   other_called: OfficeHourTicketOverview[];
   queue: OfficeHourTicketOverview[];
+  personal_tickets_called: number;
+  average_minutes: number;
+  total_tickets_called: number;
+  history: OfficeHourTicketOverview[];
 }
 
 export interface OfficeHourEventRoleOverview {
@@ -326,7 +334,8 @@ export const parseOfficeHourQueueOverview = (
     other_called: responseModel.other_called.map(
       parseOfficeHourTicketOverviewJson
     ),
-    queue: responseModel.queue.map(parseOfficeHourTicketOverviewJson)
+    queue: responseModel.queue.map(parseOfficeHourTicketOverviewJson),
+    history: responseModel.history.map(parseOfficeHourTicketOverviewJson)
   });
 };
 

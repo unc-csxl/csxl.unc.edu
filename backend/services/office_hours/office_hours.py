@@ -2,6 +2,7 @@
 Service for office hour events.
 """
 
+import math
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
@@ -198,6 +199,21 @@ class OfficeHoursService:
             and ticket.caller
             and ticket.caller.user_id != user.id
         ]
+        completed_tickets = [
+            ticket for ticket in oh_event.tickets if ticket.state == TicketState.CLOSED
+        ]
+        personal_completed_tickets = [
+            ticket for ticket in completed_tickets if ticket.caller.user_id == user.id
+        ]
+        personal_minutes = [
+            (ticket.closed_at - ticket.called_at).total_seconds() / 60.0
+            for ticket in personal_completed_tickets
+        ]
+        personal_average_minutes = (
+            math.floor(sum(personal_minutes) / len(personal_minutes))
+            if len(personal_minutes) > 0
+            else 0
+        )
         queued_tickets = [
             ticket for ticket in oh_event.tickets if ticket.state == TicketState.QUEUED
         ]
@@ -215,6 +231,12 @@ class OfficeHoursService:
                 self._to_oh_ticket_overview(ticket) for ticket in called_tickets
             ],
             queue=[self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
+            personal_tickets_called=len(personal_completed_tickets),
+            average_minutes=personal_average_minutes,
+            total_tickets_called=len(completed_tickets),
+            history=[
+                self._to_oh_ticket_overview(ticket) for ticket in completed_tickets
+            ],
         )
 
     def get_oh_event_role(

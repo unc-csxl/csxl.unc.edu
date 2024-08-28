@@ -46,6 +46,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SettingsComponent } from './course/settings/settings.component';
 import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog';
 import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-e
     MatButtonToggleModule,
     MatChipsModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatListModule
   ]
 })
 export class MyCoursesModule {}

@@ -96,6 +96,10 @@ class OfficeHourQueueOverview(BaseModel):
     active: OfficeHourTicketOverview | None
     other_called: list[OfficeHourTicketOverview]
     queue: list[OfficeHourTicketOverview]
+    personal_tickets_called: int
+    average_minutes: int
+    total_tickets_called: int
+    history: list[OfficeHourTicketOverview]
 
 
 class OfficeHourEventRoleOverview(BaseModel):
