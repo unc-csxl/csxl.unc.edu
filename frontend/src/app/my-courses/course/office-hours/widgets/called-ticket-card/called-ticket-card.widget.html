@@ -9,7 +9,7 @@
       </p>
       } @else {
       <p>
-        Called by <span class="semibold-text">{{ ticket.caller }}</span> at
+        Called by <span class="semibold-text">{{ ticket.caller!.first_name }} {{ ticket.caller!.last_name }}</span> at
         {{ ticket.called_at | date: 'shortTime' }}
       </p>
       }
