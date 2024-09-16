@@ -9,7 +9,7 @@
       </tr>
       @for (record of reservationsMap | keyvalue; track record.key) {
       <tr>
-        <th>{{ record.key }}</th>
+        <th>{{ record.key }}<br>{{"Capacity: "}}{{capacityMap[record.key]}} </th>
         <td
           *ngFor="let timeSlot of record.value; let j = index"
           [style.background]="cellPropertyMap[timeSlot].backgroundColor"

@@ -23,6 +23,9 @@ export class RoomReservationWidgetComponent {
   //- Reservations Map
   reservationsMap: Record<string, number[]> = {};
 
+  //- Capcity Map
+  capacityMap: Record<string, number> = {};
+
   //- Select Button enabled
   selectButton: boolean = false;
 
@@ -60,6 +63,7 @@ export class RoomReservationWidgetComponent {
     this.reservationTableService.getReservationsForRoomsByDate(date).subscribe(
       (result) => {
         this.reservationsMap = result.reserved_date_map;
+        this.capacityMap = result.capacity_map;
         let end = new Date(result.operating_hours_end);
         this.operationStart = new Date(result.operating_hours_start);
         let slots = result.number_of_time_slots;

@@ -268,6 +268,7 @@ class ReservationService:
             the implementation. Future reservations are shown up to the current time.
         """
         reserved_date_map: dict[str, list[int]] = {}
+        capacity_map: dict[str, int] = {}
 
         # Query DB to get reservable rooms.
         rooms = self._get_reservable_rooms()
@@ -287,8 +288,10 @@ class ReservationService:
             for room in rooms:
                 if room.id:
                     reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
+                    capacity_map[room.id] = room.capacity
             return ReservationMapDetails(
                 reserved_date_map=reserved_date_map,
+                capacity_map=capacity_map,
                 operating_hours_start=datetime.now().replace(hour=10, minute=0),
                 operating_hours_end=datetime.now().replace(hour=18, minute=0),
                 number_of_time_slots=16,
@@ -353,6 +356,8 @@ class ReservationService:
                         if time_slots_for_room[idx] != RoomState.SUBJECT_RESERVED.value:
                             time_slots_for_room[idx] = RoomState.RESERVED.value
             reserved_date_map[room.id] = time_slots_for_room
+            capacity_map[room.id] = room.capacity
+
 
         self._transform_date_map_for_unavailable(reserved_date_map)
         if "SN156" in reserved_date_map:
@@ -363,6 +368,7 @@ class ReservationService:
 
         return ReservationMapDetails(
             reserved_date_map=reserved_date_map,
+            capacity_map=capacity_map,
             operating_hours_start=operating_hours_start,
             operating_hours_end=operating_hours_end,
             number_of_time_slots=operating_hours_duration,

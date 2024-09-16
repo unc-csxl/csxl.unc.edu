@@ -46,6 +46,7 @@ class Reservation(ReservationIdentity, TimeRange):
 
 class ReservationMapDetails(BaseModel):
     reserved_date_map: dict[str, list[int]] = {}
+    capacity_map: dict[str, int] = {}
     operating_hours_start: datetime | None = None
     operating_hours_end: datetime | None = None
     number_of_time_slots: int | None = None
