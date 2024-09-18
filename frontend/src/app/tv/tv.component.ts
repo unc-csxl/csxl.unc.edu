@@ -9,5 +9,6 @@ export class TvComponent {
   public static Route = {
     path: 'signage',
     component: TvComponent
-  }
+  };
+  date: number = Date.now();
 }
