@@ -10,7 +10,7 @@ ENV SHELL=/bin/bash
 RUN ng analytics disable
 COPY ./frontend/src /workspace/frontend/src
 COPY ./frontend/*.json /workspace/frontend
-RUN ng build --optimization --output-path ../static
+RUN node --max-old-space-size=1024 ./node_modules/@angular/cli/bin/ng build --optimization --output-path ../static
 
 # Back-end Build Steps
 FROM python:3.12
