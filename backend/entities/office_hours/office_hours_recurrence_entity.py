@@ -1,3 +1,6 @@
+from typing import Self
+
+from ...models.office_hours.office_hours_recurrence import NewOfficeHoursRecurrence, OfficeHoursRecurrence
 from ..entity_base import EntityBase
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Date, Integer, Boolean
@@ -36,4 +39,71 @@ class OfficeHoursRecurrenceEntity(EntityBase):
   # NOTE: One-to-many relationship of OfficeHoursRecurrence to OfficeHoursEvent
   events: Mapped[list["OfficeHoursEntity"]] = relationship(
     back_populates="office_hours_recurrence", cascade="all, delete"
+    )
+
+  @classmethod
+  def from_new_model(cls, model: NewOfficeHoursRecurrence) -> Self:
+    """
+    Class method that converts a `NewOfficeHoursRecurrence` model into a 
+    `OfficeHoursRecurrenceEntity`
+
+    Parameters:
+        - model (NewOfficeHoursRecurrence): Model to convert into an entity
+    Returns:
+        OfficeHoursRecurrenceEntity: Entity created from model
+    """
+    return cls(
+      start_date=model.start_date,
+      end_date=model.end_date,
+      recur_monday=model.recur_monday,
+      recur_tuesday=model.recur_tuesday,
+      recur_wednesday=model.recur_wednesday,
+      recur_thursday=model.recur_thursday,
+      recur_friday=model.recur_friday,
+      recur_saturday=model.recur_saturday,
+      recur_sunday=model.recur_sunday,
+    )
+  
+  @classmethod
+  def from_model(cls, model: OfficeHoursRecurrence) -> Self:
+    """
+    Class method that converts a `OfficeHoursRecurrence` model into a 
+    `OfficeHoursRecurrenceEntity`
+
+    Parameters:
+        - model (OfficeHoursRecurrence): Model to convert into an entity
+    Returns:
+        OfficeHoursRecurrenceEntity: Entity created from model
+    """
+    return cls(
+      start_date=model.start_date,
+      end_date=model.end_date,
+      recur_monday=model.recur_monday,
+      recur_tuesday=model.recur_tuesday,
+      recur_wednesday=model.recur_wednesday,
+      recur_thursday=model.recur_thursday,
+      recur_friday=model.recur_friday,
+      recur_saturday=model.recur_saturday,
+      recur_sunday=model.recur_sunday,
+    )
+  
+  def to_model(self) -> OfficeHoursRecurrence:
+    """
+    Converts an `OfficeHoursRecurrenceEntity` object into an
+    `OfficeHoursRecurrence` model object
+
+    Returns
+      OfficeHoursRecurrence: `OfficeHoursRecurrence` object from the entity
+    """
+    return OfficeHoursRecurrence(
+      id=self.id,
+      start_date=self.start_date,
+      end_date=self.end_date,
+      recur_monday=self.recur_monday,
+      recur_tuesday=self.recur_tuesday,
+      recur_wednesday=self.recur_wednesday,
+      recur_thursday=self.recur_thursday,
+      recur_friday=self.recur_friday,
+      recur_saturday=self.recur_saturday,
+      recur_sunday=self.recur_sunday,
     )

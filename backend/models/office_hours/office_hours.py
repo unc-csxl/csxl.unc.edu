@@ -47,6 +47,7 @@ class NewOfficeHours(BaseModel):
     end_time: datetime
     course_site_id: int
     room_id: str
+    recurrence_id: int | None
 
 
 class OfficeHours(NewOfficeHours):

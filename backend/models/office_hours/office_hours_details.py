@@ -8,6 +8,7 @@ __authors__ = [
     "Bailey DeSouza",
     "Meghan Sun",
     "Maddy Andrews",
+    "Jade Keegan"
 ]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -24,4 +25,5 @@ class OfficeHoursDetails(OfficeHours):
 
     course_site: CourseSite
     room: Room
+    recurrence: OfficeHoursRecurrence
     tickets: list[OfficeHoursTicket]
