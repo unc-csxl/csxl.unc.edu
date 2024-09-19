@@ -1,8 +1,8 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Office Hours."""
 
-from datetime import datetime, date
+from datetime import datetime
 from typing import Self
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.office_hours_details import OfficeHoursDetails
@@ -61,6 +61,14 @@ class OfficeHoursEntity(EntityBase):
     )
     course_site: Mapped["CourseSiteEntity"] = relationship(
         back_populates="office_hours"
+    )
+
+    # NOTE: Many-to-one relationship of OfficeHoursEvents to OfficeHoursRecurrence
+    recurrence_id: Mapped[int] = mapped_column(
+        ForeignKey("office_hours_recurrence.id", nullable=True)
+    )
+    recurrence: Mapped["OfficeHoursRecurrence"] = relationship(
+        back_populats="office_hours"
     )
 
     # NOTE: Unidirectional relationship to Room
