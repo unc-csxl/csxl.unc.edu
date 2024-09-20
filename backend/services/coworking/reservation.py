@@ -269,6 +269,7 @@ class ReservationService:
         """
         reserved_date_map: dict[str, list[int]] = {}
         capacity_map: dict[str, int] = {}
+        room_type_map: dict[str, str] = {}
 
         # Query DB to get reservable rooms.
         rooms = self._get_reservable_rooms()
@@ -289,9 +290,11 @@ class ReservationService:
                 if room.id:
                     reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
                     capacity_map[room.id] = room.capacity
+                    room_type_map[room.id] = "Pairing Room" if room.capacity == 2 else "Small Group" if room.capacity < 6 else "Large Group"
             return ReservationMapDetails(
                 reserved_date_map=reserved_date_map,
                 capacity_map=capacity_map,
+                room_type_map=room_type_map,
                 operating_hours_start=datetime.now().replace(hour=10, minute=0),
                 operating_hours_end=datetime.now().replace(hour=18, minute=0),
                 number_of_time_slots=16,
@@ -357,6 +360,7 @@ class ReservationService:
                             time_slots_for_room[idx] = RoomState.RESERVED.value
             reserved_date_map[room.id] = time_slots_for_room
             capacity_map[room.id] = room.capacity
+            room_type_map[room.id] = "Pairing Room" if room.capacity == 2 else "Small Group" if room.capacity < 6 else "Large Group"
 
 
         self._transform_date_map_for_unavailable(reserved_date_map)
@@ -369,6 +373,7 @@ class ReservationService:
         return ReservationMapDetails(
             reserved_date_map=reserved_date_map,
             capacity_map=capacity_map,
+            room_type_map=room_type_map,
             operating_hours_start=operating_hours_start,
             operating_hours_end=operating_hours_end,
             number_of_time_slots=operating_hours_duration,

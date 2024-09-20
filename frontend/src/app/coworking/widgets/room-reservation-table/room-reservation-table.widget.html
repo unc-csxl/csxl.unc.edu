@@ -10,8 +10,8 @@
       @for (record of reservationsMap | keyvalue; track record.key) {
       <tr>
         <th>{{ record.key }}
-          <br><span class= "room-details"> {{"# seats: "}}{{ capacityMap[record.key]}}
-          <br>{{ capacityMap[record.key] === 2 ? "Pairing Room" : capacityMap[record.key] < 6 ? "Small Group" : "Large Group"}}</span>
+          <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
+          <br>{{roomTypeMap[record.key]}}</span>
         </th>
         <td
           *ngFor="let timeSlot of record.value; let j = index"
