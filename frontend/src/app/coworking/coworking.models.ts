@@ -173,7 +173,6 @@ export interface TablePropertyMap {
 }
 
 export interface ReservationMapDetails {
-  // TODO: add information to contain capacity details
   reserved_date_map: Record<string, number[]>;
   capacity_map: Record<string, number>;
   operating_hours_start: string;
