@@ -47,3 +47,6 @@ class SignageService:
         return SignageOverviewFast(
             seat_availability = seat_availability
         )
+
+    def get_slow_data(self) -> SignageOverviewSlow:
+        return SignageOverviewSlow()

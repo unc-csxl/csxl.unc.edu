@@ -4,11 +4,9 @@ from fastapi import APIRouter, Depends
 
 from ..api.authentication import registered_user
 
-from ..services.article import ArticleService
+from ..services import SignageService
 
-from ..models import User
-from ..models.articles import WelcomeOverview, ArticleOverview, ArticleDraft
-from ..models.pagination import Paginated, PaginationParams
+from ..models import SignageOverviewFast, SignageOverviewSlow
 
 __authors__ = ["Will Zahrt"]
 __copyright__ = "Copyright 2024"
@@ -22,16 +20,16 @@ openapi_tags = {
 
 
 @api.get("/slow", tags=["Signage"])
-def get_welcome_status(
-    subject: User = Depends(registered_user), article_svc: ArticleService = Depends()
-) -> WelcomeOverview:
+def get_slow_signage(
+    signage_svc: SignageService = Depends()
+) -> SignageOverviewSlow:
     """Retrieves the welcome status."""
-    return article_svc.get_welcome_overview(subject)
+    return signage_svc.get_slow_data()
 
 
 @api.get("/fast", tags=["Signage"])
-def get_welcome_status(
-    subject: User = Depends(registered_user), article_svc: ArticleService = Depends()
-) -> WelcomeOverview:
+def get_fast_signage(
+    signage_svc: SignageService = Depends()
+) -> SignageOverviewFast:
     """Retrieves the welcome status."""
-    return article_svc.get_welcome_overview(subject)
+    return signage_svc.get_fast_data()
