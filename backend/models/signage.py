@@ -15,12 +15,14 @@ class SignageOverviewSlow(BaseModel):
     latest_news: list[ArticleOverview]
     operating_hours: list[OperatingHours]
     registered_events: list[EventOverview]
+    announcement: ArticleOverview | None
+
 
 
 class SignageOverviewFast(BaseModel):
     """Encapsulates data for the tv."""
 
-    announcement: ArticleOverview | None
     latest_news: list[ArticleOverview]
     operating_hours: list[OperatingHours]
     registered_events: list[EventOverview]
+    seat_availability: Sequence[SeatAvailability]
