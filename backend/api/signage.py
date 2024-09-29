@@ -8,7 +8,7 @@ from ..services import SignageService
 
 from ..models import SignageOverviewFast, SignageOverviewSlow
 
-__authors__ = ["Will Zahrt"]
+__authors__ = ["Will Zahrt", "Andrew Lockard"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 

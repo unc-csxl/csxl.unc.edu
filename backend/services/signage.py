@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 
 from ..database import db_session
 
-from datatime import datetime
+from datetime import datetime, timedelta
+from ..models.coworking import TimeRange
 
 from models import SignageOverviewFast, SignageOverviewSlow
 from services import ReservationService, SeatService
@@ -35,6 +36,7 @@ class SignageService:
         Gets the data for the fast API route
         """
         # Seats
+        now = datetime.now()
         walkin_window = TimeRange(
             start=now,
             end=now + timedelta(hours=6, minutes=10) # Makes sure open seats are available for 2hr walkin reservation
