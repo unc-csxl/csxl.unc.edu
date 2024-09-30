@@ -1,14 +1,11 @@
 """Signage API"""
 
 from fastapi import APIRouter, Depends
-
 from ..api.authentication import registered_user
-
 from ..services import SignageService
-
 from ..models import SignageOverviewFast, SignageOverviewSlow
 
-__authors__ = ["Will Zahrt", "Andrew Lockard"]
+__authors__ = ["Will Zahrt", "Andrew Lockard", "Audrey Toney"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -20,16 +17,12 @@ openapi_tags = {
 
 
 @api.get("/slow", tags=["Signage"])
-def get_slow_signage(
-    signage_svc: SignageService = Depends()
-) -> SignageOverviewSlow:
+def get_slow_signage(signage_svc: SignageService = Depends()) -> SignageOverviewSlow:
     """Retrieves the welcome status."""
     return signage_svc.get_slow_data()
 
 
 @api.get("/fast", tags=["Signage"])
-def get_fast_signage(
-    signage_svc: SignageService = Depends()
-) -> SignageOverviewFast:
+def get_fast_signage(signage_svc: SignageService = Depends()) -> SignageOverviewFast:
     """Retrieves the welcome status."""
     return signage_svc.get_fast_data()
