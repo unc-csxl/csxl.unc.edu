@@ -21,6 +21,7 @@ __authors__ = [
     "Sadie Amato",
     "Bailey DeSouza",
     "Meghan Sun",
+    "Jade Keegan"
 ]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"

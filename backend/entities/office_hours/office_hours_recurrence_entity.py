@@ -76,6 +76,7 @@ class OfficeHoursRecurrenceEntity(EntityBase):
         OfficeHoursRecurrenceEntity: Entity created from model
     """
     return cls(
+      id=model.id,
       start_date=model.start_date,
       end_date=model.end_date,
       recur_monday=model.recur_monday,
