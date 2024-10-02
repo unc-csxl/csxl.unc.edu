@@ -3,7 +3,7 @@ Service to collect and organize the information for CSXL Signage
 """
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from ..database import db_session
@@ -15,7 +15,9 @@ from ..models.signage import SignageOverviewFast, SignageOverviewSlow
 from ..services.coworking import ReservationService, SeatService
 from ..services import RoomService
 
-from ..entities import ArticleEntity
+from ..entities import ArticleEntity, RoomEntity, UserEntity
+from ..entities.coworking import ReservationEntity
+from ..entities.office_hours import OfficeHoursEntity
 from ..models.articles import ArticleState
 
 __authors__ = ["Andrew Lockard", "Will Zahrt", "Audrey Toney"]
@@ -44,16 +46,25 @@ class SignageService:
         """
         Gets the data for the fast API route
         """
-        # Office Hours
+        # TODO: Office Hours
+        now = datetime.now
+        office_hours_query = select(OfficeHoursEntity).filter(
+            OfficeHoursEntity.start_time <= now, OfficeHoursEntity.end_time >= now
+        )
+        active_office_hours_entities = self._session.scalars(office_hours_query).all()
+        active_office_hours = [
+            office_hours.to_overview_model()
+            for office_hours in active_office_hours_entities
+        ]
 
         # Rooms
-        all_rooms = self.room_svc.all()
-        available_rooms = list[str]
-
-        # Putting the names of all the available rooms into a list to return
-        for room in all_rooms:
-            if room.reservable:
-                available_rooms.append(room.room)
+        room_query = (
+            select(RoomEntity)
+            .where(RoomEntity.reservable)
+            .order_by(RoomEntity.nickname.desc())
+        )
+        room_entities = self._session.scalars(room_query).all()
+        available_rooms = [room.to_overview_model() for room in room_entities]
 
         # Seats
         now = datetime.now()
@@ -70,16 +81,29 @@ class SignageService:
         )
 
         return SignageOverviewFast(
-            available_rooms=available_rooms, seat_availability=seat_availability
+            active_office_hour=active_office_hours,
+            available_rooms=available_rooms,
+            seat_availability=seat_availability,
         )
 
     def get_slow_data(self) -> SignageOverviewSlow:
-        # Newest News
+        # TODO: Newest News
 
-        # Checkin Leaderboard
-        # Suggestion: Use a query to make a table with a new column that adds up the number of rows for checkins.
+        # TODO: Checkin Leaderboard
+        top_users_query = (
+            self._session.query(
+                UserEntity, func.count(ReservationEntity.id).label("reservation_count")
+            )
+            .join(ReservationEntity)
+            .group_by(UserEntity.id)
+            .order_by(func.count(ReservationEntity.id).desc())
+            .limit(10)
+        )
 
-        # Newest Events
+        user_entities = self._session.scalars(top_users_query).all()
+        top_users = [user.to_overview_model() for user in user_entities]
+
+        # TODO: Newest Events
 
         # Announcements
         announcement_query = (
@@ -94,4 +118,4 @@ class SignageService:
             announcement.to_overview_model() for announcement in announcement_entities
         ]
 
-        return SignageOverviewSlow(announcements=announcements)
+        return SignageOverviewSlow(top_users=top_users, announcements=announcements)
