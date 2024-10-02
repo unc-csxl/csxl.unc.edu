@@ -105,17 +105,35 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   reserve(seatSelection: SeatAvailability[]) {
-    this.coworkingService.draftReservation(seatSelection).subscribe({
-      error: (_) =>
-        this.snackBar.open(
-          'Error. There may be a conflicting upcoming reservation. Please check upcoming reservations.',
-          '',
-          { duration: 8000 }
-        ),
-      next: (reservation) => {
-        this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
+    this.profileService.profile.subscribe((profile)=>{
+      if (!profile.accepted_community_agreement) {
+        this.snackBar.open('You must accept the community agreement to reserve a seat.', '', { duration: 5000 });
+        return;
       }
     });
+    
+    const profile = this.profileService.profile();
+    if (profile?.accepted_community_agreement){
+      this.coworkingService.draftReservation(seatSelection).subscribe({
+        error: (_) =>
+            this.snackBar.open(
+                'Error. There may be a conflicting upcoming reservation. Please check upcoming reservations.',
+                '',
+                { duration: 8000 }
+            ),
+        next: (reservation) => {
+          this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
+        }
+      });
+    }else{
+      this.snackBar.open(
+          'You must accept the community agreement to reserve a seat.', 
+          '', 
+          { duration: 8000 }
+      );
+      return;
+    }
+    
   }
 
   navigateToNewReservation() {
