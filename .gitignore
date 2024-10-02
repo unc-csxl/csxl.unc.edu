@@ -6,3 +6,4 @@ deploy_key*
 .env
 .DS_Store
 .coverage
+.idea
