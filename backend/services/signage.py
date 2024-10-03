@@ -15,8 +15,8 @@ from ..models.signage import SignageOverviewFast, SignageOverviewSlow
 from ..services.coworking import ReservationService, SeatService
 from ..services import RoomService
 
-from ..entities import ArticleEntity, RoomEntity, UserEntity
-from ..entities.coworking import ReservationEntity
+from ..entities import ArticleEntity, RoomEntity, UserEntity, EventEntity
+from ..entities.coworking import ReservationEntity, Reserva
 from ..entities.office_hours import OfficeHoursEntity
 from ..models.articles import ArticleState
 
@@ -87,9 +87,19 @@ class SignageService:
         )
 
     def get_slow_data(self) -> SignageOverviewSlow:
-        # TODO: Newest News
+        # Newest News
+        news_query = (
+            select(ArticleEntity)
+            .where(ArticleEntity.is_announcement == False)
+            .where(ArticleEntity.state == ArticleState.PUBLISHED)
+            .order_by(ArticleEntity.published.desc())
+            .limit(5)
+        )
+        news_entities = self._session.scalars(news_query).all()
+        newest_news = [news.to_overview_model() for news in news_entities]
 
         # TODO: Checkin Leaderboard
+        # Need to fix this so that it is only doing reservations that have been checkin/out and it updates based off of a new month
         top_users_query = (
             self._session.query(
                 UserEntity, func.count(ReservationEntity.id).label("reservation_count")
@@ -103,7 +113,10 @@ class SignageService:
         user_entities = self._session.scalars(top_users_query).all()
         top_users = [user.to_overview_model() for user in user_entities]
 
-        # TODO: Newest Events
+        # Newest Events
+        events_query = select(EventEntity).order_by(EventEntity.start.desc()).limit(5)
+        event_entities = self._session.scalars(events_query).all()
+        events = [event.to_overview_model() for event in event_entities]
 
         # Announcements
         announcement_query = (
@@ -118,4 +131,9 @@ class SignageService:
             announcement.to_overview_model() for announcement in announcement_entities
         ]
 
-        return SignageOverviewSlow(top_users=top_users, announcements=announcements)
+        return SignageOverviewSlow(
+            newest_news=newest_news,
+            events=events,
+            top_users=top_users,
+            announcements=announcements,
+        )

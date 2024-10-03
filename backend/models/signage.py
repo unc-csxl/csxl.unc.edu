@@ -15,8 +15,8 @@ __license__ = "MIT"
 class SignageOverviewSlow(BaseModel):
     """Encapsulates data for the tv."""
 
-    latest_news: list[ArticleOverview]
-    registered_events: list[EventOverview]
+    newest_news: list[ArticleOverview]
+    events: list[EventOverview]
     top_users: list[User]  # May want to make this a PublicUser
     announcements: list[str] | None
 
