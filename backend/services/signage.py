@@ -4,13 +4,9 @@ Service to collect and organize the information for CSXL Signage
 
 from fastapi import Depends
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
-from backend.entities.academics.section_entity import SectionEntity
-from backend.entities.office_hours.course_site_entity import CourseSiteEntity
-from backend.models.academics.my_courses import OfficeHoursOverview
 from backend.models.coworking.reservation import ReservationState
-from backend.models.office_hours.ticket_state import TicketState
 
 from ..database import db_session
 
@@ -64,7 +60,7 @@ class SignageService:
         )
         active_office_hours_entities = self._session.scalars(office_hours_query).all()
         active_office_hours = [
-            self._to_oh_event_overview(office_hours)
+            office_hours.to_overview_model()
             for office_hours in active_office_hours_entities
         ]
 
@@ -150,25 +146,4 @@ class SignageService:
             events=events,
             top_users=top_users,
             announcement_titles=announcement_titles,
-        )
-
-    def _to_oh_event_overview(self, oh_event: OfficeHoursEntity) -> OfficeHoursOverview:
-        # Brought over from the my_courses service
-        return OfficeHoursOverview(
-            id=oh_event.id,
-            type=oh_event.type.to_string(),
-            mode=oh_event.mode.to_string(),
-            description=oh_event.description,
-            location=f"{oh_event.room.building} {oh_event.room.room}",
-            location_description=oh_event.location_description,
-            start_time=oh_event.start_time,
-            end_time=oh_event.end_time,
-            queued=len(
-                [
-                    ticket
-                    for ticket in oh_event.tickets
-                    if ticket.state == TicketState.QUEUED
-                ]
-            ),
-            total_tickets=len(oh_event.tickets),
         )

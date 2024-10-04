@@ -4,6 +4,9 @@ from datetime import datetime, date
 from typing import Self
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from backend.models.academics.my_courses import OfficeHoursOverview
+from backend.models.office_hours.ticket_state import TicketState
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.office_hours_details import OfficeHoursDetails
 
@@ -21,6 +24,7 @@ __authors__ = [
     "Sadie Amato",
     "Bailey DeSouza",
     "Meghan Sun",
+    "Andrew Lockard",
 ]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -154,4 +158,24 @@ class OfficeHoursEntity(EntityBase):
             course_site=self.course_site.to_model(),
             room=self.room.to_model(),
             tickets=[ticket.to_model() for ticket in self.tickets],
+        )
+    
+    def to_overview_model(self) -> OfficeHoursOverview:
+        return OfficeHoursOverview(
+            id=self.id,
+            type=self.type.to_string(),
+            mode=self.mode.to_string(),
+            description=self.description,
+            location=f"{self.room.building} {self.room.room}",
+            location_description=self.location_description,
+            start_time=self.start_time,
+            end_time=self.end_time,
+            queued=len(
+                [
+                    ticket
+                    for ticket in self.tickets
+                    if ticket.state == TicketState.QUEUED
+                ]
+            ),
+            total_tickets=len(self.tickets),
         )
