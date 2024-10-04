@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from .articles import ArticleOverview
-from .user import User
+from .public_user import PublicUser
 from .coworking import OperatingHours, SeatAvailability
-from .office_hours import OfficeHours
+from .academics.my_courses import OfficeHoursOverview
 from .event import EventOverview
 from typing import Sequence
 from .room_details import RoomDetails
@@ -17,13 +17,13 @@ class SignageOverviewSlow(BaseModel):
 
     newest_news: list[ArticleOverview]
     events: list[EventOverview]
-    top_users: list[User]  # May want to make this a PublicUser
-    announcements: list[str] | None
+    top_users: list[PublicUser]
+    announcements: list[ArticleOverview] | None
 
 
 class SignageOverviewFast(BaseModel):
     """Encapsulates data for the tv."""
 
-    office_hours: list[OfficeHours]
+    active_office_hours: list[OfficeHoursOverview]
     available_rooms: list[str]
     seat_availability: Sequence[SeatAvailability]

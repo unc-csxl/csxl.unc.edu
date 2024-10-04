@@ -4,7 +4,13 @@ Service to collect and organize the information for CSXL Signage
 
 from fastapi import Depends
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+
+from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.office_hours.course_site_entity import CourseSiteEntity
+from backend.models.academics.my_courses import OfficeHoursOverview
+from backend.models.coworking.reservation import ReservationState
+from backend.models.office_hours.ticket_state import TicketState
 
 from ..database import db_session
 
@@ -24,6 +30,10 @@ __authors__ = ["Andrew Lockard", "Will Zahrt", "Audrey Toney"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
+MAX_ARTICLES = 5
+MAX_LEADERBOARD_SLOTS = 10
+MAX_EVENTS = 5
+MAX_ANNOUCEMENTS = 3
 
 class SignageService:
     """
@@ -46,14 +56,14 @@ class SignageService:
         """
         Gets the data for the fast API route
         """
-        # TODO: Office Hours
-        now = datetime.now
+        # Office Hours
+        now = datetime.now()
         office_hours_query = select(OfficeHoursEntity).filter(
             OfficeHoursEntity.start_time <= now, OfficeHoursEntity.end_time >= now
         )
         active_office_hours_entities = self._session.scalars(office_hours_query).all()
         active_office_hours = [
-            office_hours.to_overview_model()
+            self._to_oh_event_overview(office_hours)
             for office_hours in active_office_hours_entities
         ]
 
@@ -61,10 +71,10 @@ class SignageService:
         room_query = (
             select(RoomEntity)
             .where(RoomEntity.reservable)
-            .order_by(RoomEntity.nickname.desc())
+            .order_by(RoomEntity.room.desc())
         )
         room_entities = self._session.scalars(room_query).all()
-        available_rooms = [room.to_overview_model() for room in room_entities]
+        available_rooms = [room.to_model().id for room in room_entities]
 
         # Seats
         now = datetime.now()
@@ -81,7 +91,7 @@ class SignageService:
         )
 
         return SignageOverviewFast(
-            active_office_hour=active_office_hours,
+            active_office_hours=active_office_hours,
             available_rooms=available_rooms,
             seat_availability=seat_availability,
         )
@@ -93,28 +103,31 @@ class SignageService:
             .where(ArticleEntity.is_announcement == False)
             .where(ArticleEntity.state == ArticleState.PUBLISHED)
             .order_by(ArticleEntity.published.desc())
-            .limit(5)
+            .limit(MAX_ARTICLES)
         )
         news_entities = self._session.scalars(news_query).all()
         newest_news = [news.to_overview_model() for news in news_entities]
 
         # TODO: Checkin Leaderboard
         # Need to fix this so that it is only doing reservations that have been checkin/out and it updates based off of a new month
+        start_of_month = datetime.today().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         top_users_query = (
-            self._session.query(
+            select(
                 UserEntity, func.count(ReservationEntity.id).label("reservation_count")
             )
-            .join(ReservationEntity)
+            .join(ReservationEntity.users)
+            .where(ReservationEntity.end >= start_of_month)
+            .where(ReservationEntity.state == ReservationState.CHECKED_OUT)
             .group_by(UserEntity.id)
             .order_by(func.count(ReservationEntity.id).desc())
-            .limit(10)
+            .limit(MAX_LEADERBOARD_SLOTS)
         )
 
         user_entities = self._session.scalars(top_users_query).all()
-        top_users = [user.to_overview_model() for user in user_entities]
+        top_users = [user.to_public_model() for user in user_entities]
 
         # Newest Events
-        events_query = select(EventEntity).order_by(EventEntity.start.desc()).limit(5)
+        events_query = select(EventEntity).order_by(EventEntity.start.desc()).limit(MAX_EVENTS)
         event_entities = self._session.scalars(events_query).all()
         events = [event.to_overview_model() for event in event_entities]
 
@@ -124,7 +137,7 @@ class SignageService:
             .where(ArticleEntity.is_announcement)
             .where(ArticleEntity.state == ArticleState.PUBLISHED)
             .order_by(ArticleEntity.published.desc())
-            .limit(3)
+            .limit(MAX_ANNOUCEMENTS)
         )
         announcement_entities = self._session.scalars(announcement_query).all()
         announcements = [
@@ -136,4 +149,25 @@ class SignageService:
             events=events,
             top_users=top_users,
             announcements=announcements,
+        )
+
+    def _to_oh_event_overview(self, oh_event: OfficeHoursEntity) -> OfficeHoursOverview:
+        # Brought over from the my_courses service
+        return OfficeHoursOverview(
+            id=oh_event.id,
+            type=oh_event.type.to_string(),
+            mode=oh_event.mode.to_string(),
+            description=oh_event.description,
+            location=f"{oh_event.room.building} {oh_event.room.room}",
+            location_description=oh_event.location_description,
+            start_time=oh_event.start_time,
+            end_time=oh_event.end_time,
+            queued=len(
+                [
+                    ticket
+                    for ticket in oh_event.tickets
+                    if ticket.state == TicketState.QUEUED
+                ]
+            ),
+            total_tickets=len(oh_event.tickets),
         )
