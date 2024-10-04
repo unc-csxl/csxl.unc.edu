@@ -16,7 +16,7 @@ from ..services.coworking import ReservationService, SeatService
 from ..services import RoomService
 
 from ..entities import ArticleEntity, RoomEntity, UserEntity, EventEntity
-from ..entities.coworking import ReservationEntity, Reserva
+from ..entities.coworking import ReservationEntity
 from ..entities.office_hours import OfficeHoursEntity
 from ..models.articles import ArticleState
 

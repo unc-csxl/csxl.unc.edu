@@ -1,7 +1,6 @@
 """Signage API"""
 
 from fastapi import APIRouter, Depends
-from ..api.authentication import registered_user
 from ..services import SignageService
 from ..models import SignageOverviewFast, SignageOverviewSlow
 
@@ -18,11 +17,25 @@ openapi_tags = {
 
 @api.get("/slow", tags=["Signage"])
 def get_slow_signage(signage_svc: SignageService = Depends()) -> SignageOverviewSlow:
-    """Retrieves the welcome status."""
+    """Gets signage data that does not need to be updated frequently.
+    
+    Parameters:
+        None
+
+    Returns:
+        SignageOverviewSlow - contains news, top users, events, and announcements
+    """
     return signage_svc.get_slow_data()
 
 
 @api.get("/fast", tags=["Signage"])
 def get_fast_signage(signage_svc: SignageService = Depends()) -> SignageOverviewFast:
-    """Retrieves the welcome status."""
+    """Gets signage data that needs to be updated in real time.
+
+    Parameters:
+        None
+    
+    Returns:
+        SignageOverviewFast - contains office hours information for queue time, room and seat availability
+    """
     return signage_svc.get_fast_data()

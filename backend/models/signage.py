@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from articles import ArticleOverview
+from .articles import ArticleOverview
 from .user import User
 from .coworking import OperatingHours, SeatAvailability
 from .office_hours import OfficeHours
