@@ -18,7 +18,7 @@ class SignageOverviewSlow(BaseModel):
     newest_news: list[ArticleOverview]
     events: list[EventOverview]
     top_users: list[PublicUser]
-    announcements: list[ArticleOverview] | None
+    announcement_titles: list[str] | None
 
 
 class SignageOverviewFast(BaseModel):

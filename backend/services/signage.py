@@ -35,6 +35,7 @@ MAX_LEADERBOARD_SLOTS = 10
 MAX_EVENTS = 5
 MAX_ANNOUCEMENTS = 3
 
+# TODO: Create Tests for this Service
 class SignageService:
     """
     Service to collect and organize the information for CSXL Signage
@@ -108,8 +109,8 @@ class SignageService:
         news_entities = self._session.scalars(news_query).all()
         newest_news = [news.to_overview_model() for news in news_entities]
 
-        # TODO: Checkin Leaderboard
-        # Need to fix this so that it is only doing reservations that have been checkin/out and it updates based off of a new month
+        # Checkin Leaderboard
+        # TODO: Create public_user field and checkbox on Profile page so users can opt-out of being displayed here (and in future public places)
         start_of_month = datetime.today().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         top_users_query = (
             select(
@@ -140,15 +141,15 @@ class SignageService:
             .limit(MAX_ANNOUCEMENTS)
         )
         announcement_entities = self._session.scalars(announcement_query).all()
-        announcements = [
-            announcement.to_overview_model() for announcement in announcement_entities
+        announcement_titles = [
+            announcement.to_overview_model().title for announcement in announcement_entities
         ]
 
         return SignageOverviewSlow(
             newest_news=newest_news,
             events=events,
             top_users=top_users,
-            announcements=announcements,
+            announcement_titles=announcement_titles,
         )
 
     def _to_oh_event_overview(self, oh_event: OfficeHoursEntity) -> OfficeHoursOverview:
