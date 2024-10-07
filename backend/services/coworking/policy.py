@@ -19,70 +19,61 @@ SATURDAY = 5
 SUNDAY = 6
 
 OH_HOURS = {
-    MONDAY : {
+    MONDAY: {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [(time(hour=15), time(hour=17))],
+        "SN141": [(time(hour=13), time(hour=17))],
+        "SN144": [(time(hour=13), time(hour=18))],
+        "SN146": [],
+        "SN147": [(time(hour=10), time(hour=15))],
+    },
+    TUESDAY: {
         "SN135": [],
         "SN137": [],
         "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+        "SN141": [(time(hour=12), time(hour=18))],
+        "SN144": [(time(hour=9), time(hour=11)), (time(hour=13), time(hour=17))],
+        "SN146": [(time(hour=15), time(hour=17))],
+        "SN147": [
+            (time(hour=9), time(hour=13)),
+            (time(hour=14), time(hour=16, minute=30)),
+        ],
     },
-    TUESDAY : {
+    WEDNESDAY: {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [(time(hour=14), time(hour=15))],
+        "SN141": [(time(hour=14), time(hour=17))],
+        "SN144": [(time(hour=13), time(hour=17))],
+        "SN146": [(time(hour=10), time(hour=12))],
+        "SN147": [(time(hour=10), time(hour=1)), (time(hour=14), time(hour=16))],
+    },
+    THURSDAY: {
+        "SN135": [],
+        "SN137": [],
+        "SN139": [(time(hour=16), time(hour=17))],
+        "SN141": [(time(hour=15), time(hour=17))],
+        "SN144": [(time(hour=9), time(hour=18))],
+        "SN146": [(time(hour=15), time(hour=17))],
+        "SN147": [
+            (time(hour=9), time(hour=13)),
+            (time(hour=15, minute=30), time(hour=16, minute=30)),
+        ],
+    },
+    FRIDAY: {
         "SN135": [],
         "SN137": [],
         "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
+        "SN141": [(time(hour=13), time(hour=16))],
+        "SN144": [(time(hour=9), time(hour=10)), (time(hour=12), time(hour=15))],
+        "SN146": [(time(hour=13), time(hour=15))],
+        "SN147": [(time(hour=12), time(hour=15))],
     },
-    WEDNESDAY : {
-        "SN135": [],
-        "SN137": [(time(hour=15), time(hour=16))],  # Johnathan Leong
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=15), time(hour=18))],  # Sridhar
-    },
-    THURSDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=16), time(hour=18))],  # Sridhar
-    },
-    FRIDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [(time(hour=9), time(hour=16))],  # Stotts 301
-        "SN144": [],
-        "SN146": [],
-        "SN147": [],
-    },
-    SATURDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [],
-    },
-    SUNDAY : {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [],
-    }
+    SATURDAY: {},
+    SUNDAY: {},
 }
+
 
 class PolicyService:
     """RoleService is the access layer to the role data model, its members, and permissions.

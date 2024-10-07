@@ -19,7 +19,12 @@ def _engine_str(database: str = getenv("POSTGRES_DATABASE")) -> str:
     return f"{dialect}://{user}:{password}@{host}:{port}/{database}"
 
 
-engine = sqlalchemy.create_engine(_engine_str(), echo=True)
+def _in_production() -> bool:
+    """Helper function for reading settings from environment variables to determine verbosity of SQL output."""
+    return getenv("MODE") == "production"
+
+
+engine = sqlalchemy.create_engine(_engine_str(), echo=not _in_production())
 """Application-level SQLAlchemy database engine."""
 
 

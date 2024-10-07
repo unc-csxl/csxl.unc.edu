@@ -34,3 +34,28 @@ p {
     padding-top: 12px;
     justify-content: end;
 }
+
+::ng-deep strong, b {
+    font-weight: 500 !important;
+}
+
+.spacing-divider {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.spacing-divider-bottom {
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+
+    p {
+        margin-bottom: 8px;
+    }
+}

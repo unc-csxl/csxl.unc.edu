@@ -6,7 +6,7 @@
  * @license MIT
  */
 
-import { Component, WritableSignal, signal } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -54,7 +54,7 @@ export class OfficeHoursPageComponent {
   private previousFutureOfficeHourEventParams: PaginationParams =
     DEFAULT_PAGINATION_PARAMS;
 
-  public futureOhDisplayedColumns: string[] = ['date', 'type', 'actions'];
+  public futureOhDisplayedColumns: string[] = ['date', 'type'];
 
   /** Encapsulated past events paginator and params */
   private pastOfficeHourEventsPaginator: Paginator<OfficeHourEventOverview>;
@@ -111,6 +111,18 @@ export class OfficeHoursPageComponent {
       .subscribe((page) => {
         this.pastOfficeHourEventsPage.set(page);
       });
+
+    // This subscription loads whether or not the user is a student in the course, and
+    // hides the Actions columns if so. This is a hack to get around requirements for
+    // Angular tables, and should be revisited in the future.
+    this.myCoursesService.getTermOverviews().subscribe((terms) => {
+      const courseSite = terms
+        .flatMap((term) => term.sites)
+        .find((site) => site.id == +this.courseSiteId);
+      if (courseSite?.role !== 'Student') {
+        this.futureOhDisplayedColumns = ['date', 'type', 'actions'];
+      }
+    });
   }
 
   /** Handles a pagination event for the future office hours table */

@@ -1,7 +1,7 @@
 <mat-card appearance="outlined">
   <mat-card-header>
     <div class="column-view">
-      <mat-card-subtitle>Ticket - {{ ticket.type }}</mat-card-subtitle>
+      <mat-card-subtitle>{{ ticket.type }}</mat-card-subtitle>
       @if (calledByUser) {
       <p>
         <span class="semibold-text">You</span> called this ticket at
@@ -9,7 +9,7 @@
       </p>
       } @else {
       <p>
-        Called by <span class="semibold-text">{{ ticket.caller }}</span> at
+        Called by <span class="semibold-text">{{ ticket.caller!.first_name }} {{ ticket.caller!.last_name }}</span> at
         {{ ticket.called_at | date: 'shortTime' }}
       </p>
       }
@@ -24,9 +24,15 @@
   </mat-card-header>
   @if(expanded()) {
   <mat-card-content>
-    <p><span class="semibold-text">Helping:</span> {{ ticket.creators }}</p>
-    <p><span class="semibold-text">Description:</span></p>
-    <p>{{ ticket.description }}</p>
+    <mat-divider class="spacing-divider" />
+    <div class="row">
+      <p><span class="semibold-text">Helping:</span></p>
+      <user-chip-list [users]="ticket.creators" [clickable]="false" />
+    </div>
+    <mat-divider class="spacing-divider-bottom" />
+
+    <!-- <p><span class="semibold-text">Description:</span></p> -->
+    <p markdown>{{ ticket.description }}</p>
   </mat-card-content>
   <mat-card-actions>
     <button

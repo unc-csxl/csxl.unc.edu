@@ -117,10 +117,10 @@ export interface OfficeHourTicketOverviewJson {
   created_at: string;
   called_at: string | undefined;
   state: string;
-  type: string;
+  type: number;
   description: string;
-  creators: string[];
-  caller: string | undefined;
+  creators: PublicProfile[];
+  caller: PublicProfile | undefined;
 }
 
 export interface OfficeHourTicketOverview {
@@ -128,10 +128,10 @@ export interface OfficeHourTicketOverview {
   created_at: Date;
   called_at: Date | undefined;
   state: string;
-  type: string;
+  type: number;
   description: string;
-  creators: string[];
-  caller: string | undefined;
+  creators: PublicProfile[];
+  caller: PublicProfile | undefined;
 }
 
 export interface OfficeHourQueueOverviewJson {
@@ -142,6 +142,10 @@ export interface OfficeHourQueueOverviewJson {
   active: OfficeHourTicketOverviewJson | undefined;
   other_called: OfficeHourTicketOverviewJson[];
   queue: OfficeHourTicketOverviewJson[];
+  personal_tickets_called: number;
+  average_minutes: number;
+  total_tickets_called: number;
+  history: OfficeHourTicketOverviewJson[];
 }
 
 export interface OfficeHourQueueOverview {
@@ -152,6 +156,10 @@ export interface OfficeHourQueueOverview {
   active: OfficeHourTicketOverview | undefined;
   other_called: OfficeHourTicketOverview[];
   queue: OfficeHourTicketOverview[];
+  personal_tickets_called: number;
+  average_minutes: number;
+  total_tickets_called: number;
+  history: OfficeHourTicketOverview[];
 }
 
 export interface OfficeHourEventRoleOverview {
@@ -163,6 +171,8 @@ export interface OfficeHourGetHelpOverviewJson {
   event_mode: string;
   event_start_time: string;
   event_end_time: string;
+  event_location: string;
+  event_location_description: string;
   ticket: OfficeHourTicketOverviewJson | undefined;
   queue_position: number;
 }
@@ -172,6 +182,8 @@ export interface OfficeHourGetHelpOverview {
   event_mode: string;
   event_start_time: Date;
   event_end_time: Date;
+  event_location: string;
+  event_location_description: string;
   ticket: OfficeHourTicketOverview | undefined;
   queue_position: number;
 }
@@ -179,7 +191,7 @@ export interface OfficeHourGetHelpOverview {
 export interface TicketDraft {
   office_hours_id: number;
   description: string;
-  type: string;
+  type: number;
 }
 
 export interface CourseSiteOverview {
@@ -322,7 +334,8 @@ export const parseOfficeHourQueueOverview = (
     other_called: responseModel.other_called.map(
       parseOfficeHourTicketOverviewJson
     ),
-    queue: responseModel.queue.map(parseOfficeHourTicketOverviewJson)
+    queue: responseModel.queue.map(parseOfficeHourTicketOverviewJson),
+    history: responseModel.history.map(parseOfficeHourTicketOverviewJson)
   });
 };
 

@@ -33,7 +33,7 @@
   </mat-chip-row>
   } } @else {
   <div class="no-hover-chipset">
-    <mat-chip-row class="user-chip" *ngFor="let user of users" disableRipple>
+    <mat-chip class="user-chip" *ngFor="let user of users" disableRipple>
       <img
         class="user-image"
         *ngIf="user.github_avatar"
@@ -48,7 +48,7 @@
       <ng-template #disableMailTo>
         {{ user.first_name + ' ' + user.last_name }}
       </ng-template>
-    </mat-chip-row>
+    </mat-chip>
   </div>
   }
 </div>

@@ -84,8 +84,8 @@ class OfficeHourTicketOverview(BaseModel):
     state: str
     type: str
     description: str
-    creators: list[str]
-    caller: str | None
+    creators: list[PublicUser]
+    caller: PublicUser | None
 
 
 class OfficeHourQueueOverview(BaseModel):
@@ -96,6 +96,10 @@ class OfficeHourQueueOverview(BaseModel):
     active: OfficeHourTicketOverview | None
     other_called: list[OfficeHourTicketOverview]
     queue: list[OfficeHourTicketOverview]
+    personal_tickets_called: int
+    average_minutes: int
+    total_tickets_called: int
+    history: list[OfficeHourTicketOverview]
 
 
 class OfficeHourEventRoleOverview(BaseModel):
@@ -107,5 +111,7 @@ class OfficeHourGetHelpOverview(BaseModel):
     event_mode: str
     event_start_time: datetime
     event_end_time: datetime
+    event_location: str
+    event_location_description: str
     ticket: OfficeHourTicketOverview | None
     queue_position: int

@@ -40,9 +40,15 @@
       {{ data()!.event_end_time | date: 'shortTime' }}
     </p>
     <div class="queue-text-container">
+      <div class="row">
+        <p class="secondary-color">
+          <span class="bold-text">Your ticket has been called by: </span>
+        </p>
+        <user-chip-list [users]="[data()!.ticket!.caller!]" [clickable]="false" />
+      </div>
       <p class="secondary-color">
-        <span class="bold-text">Your ticket has been called by: </span
-        >{{ data()!.ticket!.caller }}
+        <span class="bold-text">Meeting Location: <span class="font-primary">{{ data()!.event_location }}</span></span><br/>
+        {{ data()!.event_location_description }}
       </p>
     </div>
   </mat-card-header>
@@ -68,7 +74,7 @@
           <mat-option [value]="1">Conceptual Help</mat-option>
         </mat-select>
       </mat-form-field>
-      @if (ticketForm.controls['type'].value === 'Assignment Help') {
+      @if (+ticketForm.controls['type'].value! === 0) {
       <mat-form-field appearance="outline">
         <mat-label>
           What section of the assignment do you need help with?
