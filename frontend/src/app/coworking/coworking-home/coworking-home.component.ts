@@ -8,10 +8,11 @@
  */
 
 import { Component, OnDestroy, OnInit, Signal, computed } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
+import { Profile } from 'src/app/models.module';
 import { ProfileService } from 'src/app/profile/profile.service';
 import {
   CoworkingStatus,
@@ -31,6 +32,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class CoworkingPageComponent implements OnInit, OnDestroy {
   public status: Signal<CoworkingStatus>;
+
+  /** Store the currently-logged-in user's profile.  */
+  public profile: Profile | null = null;
 
   openOperatingHours = computed(() => {
     let now = new Date();
@@ -76,6 +80,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   constructor(
     public coworkingService: CoworkingService,
     private router: Router,
+    private route: ActivatedRoute,
     private reservationService: ReservationService,
     protected snackBar: MatSnackBar,
     private roomReservationService: RoomReservationService,
@@ -83,6 +88,11 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     this.status = coworkingService.status;
+
+    const data = this.route.snapshot.data as {
+      profile: Profile;
+    };
+    this.profile = data.profile;
   }
 
   /**
@@ -106,12 +116,21 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   reserve(seatSelection: SeatAvailability[]) {
     this.coworkingService.draftReservation(seatSelection).subscribe({
-      error: (_) =>
-        this.snackBar.open(
-          'Error. There may be a conflicting upcoming reservation. Please check upcoming reservations.',
-          '',
-          { duration: 8000 }
-        ),
+      error: (_) => {
+        if (!(this.profile && this.profile.accepted_community_agreement)) {
+          this.snackBar.open(
+            'You must accept the community agreement to reserve a seat.',
+            '',
+            { duration: 8000 }
+          );
+        } else {
+          this.snackBar.open(
+            'Error. There may be a conflicting upcoming reservation. Please check upcoming reservations.',
+            '',
+            { duration: 8000 }
+          );
+        }
+      },
       next: (reservation) => {
         this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
       }
