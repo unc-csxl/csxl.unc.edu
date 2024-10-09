@@ -119,16 +119,16 @@ def permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 
-@app.exception_handler(ReservationException)
-def permission_exception_handler(request: Request, e: ReservationException):
-    return JSONResponse(status_code=403, content={"message": str(e)})
-
-
 @app.exception_handler(ResourceNotFoundException)
 def resource_not_found_exception_handler(
     request: Request, e: ResourceNotFoundException
 ):
     return JSONResponse(status_code=404, content={"message": str(e)})
+
+
+@app.exception_handler(ReservationException)
+def reservation_exception_handler(request: Request, e: ReservationException):
+    return JSONResponse(status_code=403, content={"message": str(e)})
 
 
 @app.exception_handler(CourseDataScrapingException)
@@ -139,10 +139,9 @@ def resource_not_found_exception_handler(
 
 
 # Add feature-specific exception handling middleware
-from .api import coworking
 from .api import events
 
-feature_exception_handlers = [coworking.exception_handlers, events.exception_handlers]
+feature_exception_handlers = [events.exception_handlers]
 
 for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:
