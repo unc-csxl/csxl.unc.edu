@@ -119,6 +119,11 @@ def permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 
+@app.exception_handler(ReservationException)
+def permission_exception_handler(request: Request, e: ReservationException):
+    return JSONResponse(status_code=403, content={"message": str(e)})
+
+
 @app.exception_handler(ResourceNotFoundException)
 def resource_not_found_exception_handler(
     request: Request, e: ResourceNotFoundException

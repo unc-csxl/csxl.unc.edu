@@ -290,7 +290,11 @@ class ReservationService:
                 if room.id:
                     reserved_date_map[room.id] = [RoomState.UNAVAILABLE.value] * 16
                     capacity_map[room.id] = room.capacity
-                    room_type_map[room.id] = "Pairing Room" if room.capacity == 2 else "Small Group" if room.capacity < 6 else "Large Group"
+                    room_type_map[room.id] = (
+                        "Pairing Room"
+                        if room.capacity == 2
+                        else "Small Group" if room.capacity < 6 else "Large Group"
+                    )
             return ReservationMapDetails(
                 reserved_date_map=reserved_date_map,
                 capacity_map=capacity_map,
@@ -360,8 +364,11 @@ class ReservationService:
                             time_slots_for_room[idx] = RoomState.RESERVED.value
             reserved_date_map[room.id] = time_slots_for_room
             capacity_map[room.id] = room.capacity
-            room_type_map[room.id] = "Pairing Room" if room.capacity == 2 else "Small Group" if room.capacity < 6 else "Large Group"
-
+            room_type_map[room.id] = (
+                "Pairing Room"
+                if room.capacity == 2
+                else "Small Group" if room.capacity < 6 else "Large Group"
+            )
 
         self._transform_date_map_for_unavailable(reserved_date_map)
         if "SN156" in reserved_date_map:
@@ -778,7 +785,9 @@ class ReservationService:
                 )
 
         if not subject.accepted_community_agreement:
-            raise ReservationException("User has not accepted community agreement.")
+            raise ReservationException(
+                "You must accept the community agreement to make a reservation."
+            )
 
         # Bound start
         now = datetime.now()
