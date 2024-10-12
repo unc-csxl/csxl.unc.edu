@@ -4,7 +4,7 @@ Service for office hour events.
 
 import math
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, exists, and_, func
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
@@ -381,36 +381,51 @@ class OfficeHoursService:
         return office_hours_entity.to_model()
 
     def _check_site_permissions(self, user: User, site_id: int):
-        # Get the course site
-        course_site_query = (
-            select(CourseSiteEntity)
-            .join(SectionEntity)
-            .join(SectionMemberEntity)
-            .where(CourseSiteEntity.id == site_id)
-            .options(
-                joinedload(CourseSiteEntity.sections),
-                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.members),
-            )
-        )
-        course_site_entity = (
-            self._session.scalars(course_site_query).unique().one_or_none()
-        )
 
-        # Complete error handling
-        if course_site_entity is None:
+        # Use an enhanced query to check if a course site exists.
+        course_site_exists_query = exists().where(CourseSiteEntity.id == site_id)
+        course_site_exists = self._session.scalar(course_site_exists_query)
+
+        if not course_site_exists:
             raise ResourceNotFoundException(
                 f"Course site with ID: {site_id} not found."
             )
 
-        section_entities = [section for section in course_site_entity.sections]
-        for section in section_entities:
-            members = [
-                member
-                for member in section.members
-                if member.user_id == user.id
-                and member.member_role != RosterRole.STUDENT
-            ]
-            if len(members) == 0:
-                raise CoursePermissionException(
-                    "Cannot modify a course page containing a section you are not an instructor for."
-                )
+        # Determine whether a student does not have permissions for any site.
+        #
+        # This query does this by first selecting section rows, joined to
+        # course site. An outer join then joins with section member data, only
+        # where the section member is for the section selected, is the user who
+        # made the request, and where the member is *not* a student (ie, is
+        # a UTA, GTA, or INSTRUCTOR ).
+        #
+        # Finally, we count the sections where the course site ID matches and
+        # where the user does *not* exist as a UTA/GTA/INSTRUCTOR user. We can
+        # check for this by counting where the member ID is none.
+        #
+        # Ultimately, this query should result in a number counting the number of
+        # sections in the course site for which the user is not authorized. If
+        # this number is 0, the user passes site permissions. If this number is
+        # > 0, then this should fail.
+
+        no_permissions_query = (
+            select(func.count())
+            .select_from(SectionEntity)
+            .join(SectionEntity.course_site)
+            .outerjoin(
+                SectionMemberEntity,
+                and_(
+                    SectionMemberEntity.section_id == SectionEntity.id,
+                    SectionMemberEntity.user_id == user.id,
+                    SectionMemberEntity.member_role != RosterRole.STUDENT,
+                ),
+            )
+            .where(CourseSiteEntity.id == site_id, SectionMemberEntity.id == None)
+        )
+
+        no_permissions_length = self._session.execute(no_permissions_query).scalar()
+
+        if no_permissions_length > 0:
+            raise CoursePermissionException(
+                "Cannot modify a course page containing a section you are not an instructor for."
+            )
