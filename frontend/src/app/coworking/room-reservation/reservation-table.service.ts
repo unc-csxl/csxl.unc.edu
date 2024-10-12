@@ -46,7 +46,7 @@ export class ReservationTableService {
       isDisabled: false
     },
     [ReservationTableService.CellEnum.BOOKED]: {
-      backgroundColor: 'red',
+      backgroundColor: '#B3261E',
       isDisabled: true
     },
     [ReservationTableService.CellEnum.RESERVING]: {

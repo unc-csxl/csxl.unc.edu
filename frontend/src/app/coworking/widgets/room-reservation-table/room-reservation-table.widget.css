@@ -44,3 +44,8 @@ td {
 .divider {
   margin-bottom: 1em;
 }
+
+.room-details {
+  font-size: smaller;
+  font-weight: lighter;
+}
