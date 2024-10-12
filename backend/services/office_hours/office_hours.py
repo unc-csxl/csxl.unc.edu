@@ -10,7 +10,6 @@ from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
-    OfficeHoursOverview,
     OfficeHourTicketOverview,
     OfficeHourQueueOverview,
     OfficeHourEventRoleOverview,
@@ -52,27 +51,8 @@ class OfficeHoursService:
         Returns:
             OfficeHourQueueOverview
         """
-        # Create query off of the member query for just the members matching
-        # with the current user (used to determine permissions)
-        user_member_query = (
-            select(SectionMemberEntity)
-            .where(SectionMemberEntity.user_id == user.id)
-            .join(SectionEntity)
-            .join(CourseSiteEntity)
-            .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == office_hours_id)
-        )
-
-        user_members = self._session.scalars(user_member_query).unique().all()
-
-        # If the user is not a member of the looked up course, throw an error
-        if len(user_members) == 0 or user_members[0].member_role == RosterRole.STUDENT:
-            raise CoursePermissionException(
-                "Not allowed to access the queue of a course you are not a UTA, GTA, or instructor for."
-            )
-
-        # Start building the query
-        queue_query = (
+        # Use an enhanced query to check if an office hour event exists.
+        office_hour_event_query = (
             select(OfficeHoursEntity)
             .where(OfficeHoursEntity.id == office_hours_id)
             .options(
@@ -87,11 +67,20 @@ class OfficeHoursService:
             )
         )
 
-        # Load data
-        queue_entity = self._session.scalars(queue_query).unique().one_or_none()
+        office_hour_event = (
+            self._session.scalars(office_hour_event_query).unique().one_or_none()
+        )
+
+        if not office_hour_event:
+            raise ResourceNotFoundException(
+                f"Office hour event with ID: {office_hours_id} not found."
+            )
+
+        # Check the site permission for the office hours site for the event.
+        self._check_site_admin_permissions(user, office_hour_event.course_site_id)
 
         # Return data
-        return self._to_oh_queue_overview(user, queue_entity)
+        return self._to_oh_queue_overview(user, office_hour_event)
 
     def get_office_hour_get_help_overview(
         self, user: User, office_hours_id: int
@@ -102,32 +91,6 @@ class OfficeHoursService:
         Returns:
             OfficeHourGetHelpOverview
         """
-        # Create query off of the member query for just the members matching
-        # with the current user (used to determine permissions)
-        user_member_query = (
-            select(SectionMemberEntity)
-            .where(SectionMemberEntity.user_id == user.id)
-            .join(SectionEntity)
-            .join(CourseSiteEntity)
-            .join(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == office_hours_id)
-            .options(joinedload(SectionMemberEntity.created_oh_tickets))
-        )
-
-        user_members = self._session.scalars(user_member_query).unique().all()
-
-        # If the user is not a member of the looked up course, throw an error
-        if len(user_members) == 0:
-            raise CoursePermissionException(
-                "You cannot access office hours for a class you are not enrolled in."
-            )
-
-        for user_member in user_members:
-            if user_member.member_role != RosterRole.STUDENT:
-                raise CoursePermissionException(
-                    "You cannot access office hours for a class you are not enrolled in."
-                )
-
         # Start building the query
         queue_query = (
             select(OfficeHoursEntity)
@@ -147,11 +110,14 @@ class OfficeHoursService:
         # Load data
         queue_entity = self._session.scalars(queue_query).unique().one_or_none()
 
+        # Check permissions
+        self._check_site_student_permissions(user, queue_entity.course_site_id)
+
         # Get ticket for user, if any
         active_tickets = [
             ticket
             for ticket in queue_entity.tickets
-            if user_member.id in [creator.id for creator in ticket.creators]
+            if user.id in [creator.user_id for creator in ticket.creators]
             and ticket.state in [TicketState.QUEUED, TicketState.CALLED]
         ]
 
@@ -305,7 +271,7 @@ class OfficeHoursService:
         Creates a new office hours event.
         """
         # Check permissions
-        self._check_site_permissions(user, site_id)
+        self._check_site_admin_permissions(user, site_id)
 
         # Create office hours event
         office_hours_entity = OfficeHoursEntity.from_new_model(event)
@@ -328,7 +294,7 @@ class OfficeHoursService:
             )
 
         # Check permissions
-        self._check_site_permissions(user, site_id)
+        self._check_site_admin_permissions(user, site_id)
 
         # Update
         office_hours_entity.type = event.type
@@ -358,7 +324,7 @@ class OfficeHoursService:
             )
 
         # Check permissions
-        self._check_site_permissions(user, site_id)
+        self._check_site_admin_permissions(user, site_id)
 
         self._session.delete(office_hours_entity)
         self._session.commit()
@@ -376,15 +342,15 @@ class OfficeHoursService:
             )
 
         # Check permissions
-        self._check_site_permissions(user, site_id)
+        self._check_site_admin_permissions(user, site_id)
 
         return office_hours_entity.to_model()
 
-    def _check_site_permissions(self, user: User, site_id: int):
+    def _check_site_admin_permissions(self, user: User, site_id: int):
 
         # Use an enhanced query to check if a course site exists.
         course_site_exists_query = exists().where(CourseSiteEntity.id == site_id)
-        course_site_exists = self._session.scalar(course_site_exists_query)
+        course_site_exists = self._session.query(course_site_exists_query).scalar()
 
         if not course_site_exists:
             raise ResourceNotFoundException(
@@ -427,5 +393,53 @@ class OfficeHoursService:
 
         if no_permissions_length > 0:
             raise CoursePermissionException(
-                "Cannot modify a course page containing a section you are not an instructor for."
+                "Cannot access a course page containing a section you are not an instructor for."
+            )
+
+    def _check_site_student_permissions(self, user: User, site_id: int):
+
+        # Use an enhanced query to check if a course site exists.
+        course_site_exists_query = exists().where(CourseSiteEntity.id == site_id)
+        course_site_exists = self._session.query(course_site_exists_query).scalar()
+
+        if not course_site_exists:
+            raise ResourceNotFoundException(
+                f"Course site with ID: {site_id} not found."
+            )
+
+        # Determine whether a student does not have permissions for any site.
+        #
+        # This query does this by first selecting section rows, joined to
+        # course site. An outer join then joins with section member data, only
+        # where the section member is for the section selected, is the user who
+        # made the request, and where the member is a student (not a UTA, etc)
+        #
+        # Finally, we count the sections where the course site ID matches and
+        # where the user exists as a student. We can check for this by counting
+        # where the member ID is not none.
+        #
+        # Ultimately, this query should result in a number counting the number of
+        # sections in the course site for which the user is a student. If
+        # this number is 0, the user passes site fails.
+
+        is_student_query = (
+            select(func.count())
+            .select_from(SectionEntity)
+            .join(SectionEntity.course_site)
+            .outerjoin(
+                SectionMemberEntity,
+                and_(
+                    SectionMemberEntity.section_id == SectionEntity.id,
+                    SectionMemberEntity.user_id == user.id,
+                    SectionMemberEntity.member_role == RosterRole.STUDENT,
+                ),
+            )
+            .where(CourseSiteEntity.id == site_id, SectionMemberEntity.id != None)
+        )
+
+        is_student_length = self._session.execute(is_student_query).scalar()
+
+        if is_student_length == 0:
+            raise CoursePermissionException(
+                "You cannot access office hours for a class you are not enrolled in."
             )
