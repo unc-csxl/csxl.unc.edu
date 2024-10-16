@@ -99,7 +99,7 @@ class QueueConnectionManager:
             if connection.socket != websocket
         ]
 
-    def broadcast_queue_changes(
+    async def broadcast_queue_changes(
         self, office_hours_id: int, oh_event_svc: OfficeHoursService
     ):
         """
@@ -109,14 +109,14 @@ class QueueConnectionManager:
         # Send new queue to all staff
         for connection in self._active_staff_connections.get(office_hours_id, []):
             queue = oh_event_svc.get_office_hour_queue(connection.user, office_hours_id)
-            connection.socket.send_json(queue)
+            await connection.socket.send_json(queue.model_dump_json())
 
         # Send new queue data to all students
         for connection in self._active_student_connections.get(office_hours_id, []):
             overview = oh_event_svc.get_office_hour_get_help_overview(
                 connection.user, office_hours_id
             )
-            connection.socket.send_json(overview)
+            await connection.socket.send_json(overview.model_dump_json())
 
 
 # Create the queue connection manager object
@@ -153,6 +153,9 @@ async def queue_websocket(
     subject = registered_user_from_websocket(token, user_svc)
     # Connect the new websocket connection to the manager.
     await manager.queue_connect(office_hours_id, subject, websocket)
+    # Send the initial queue data.
+    queue = oh_event_svc.get_office_hour_queue(subject, office_hours_id)
+    await websocket.send_json(queue.model_dump_json())
     try:
         # Await receiving new data.
         while True:
@@ -166,17 +169,17 @@ async def queue_websocket(
                 # Talls a ticket
                 oh_ticket_svc.call_ticket(subject, data.id)
                 # Broadcast the changes using the mamanger.
-                manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
+                await manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
             elif data.action == QueueWebSocketAction.CLOSE:
                 # Close a ticket
                 oh_ticket_svc.close_ticket(subject, data.id)
                 # Broadcast the changes using the mamanger.
-                manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
+                await manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
             elif data.action == QueueWebSocketAction.CANCEL:
                 # Close a ticket
                 oh_ticket_svc.cancel_ticket(subject, data.id)
                 # Broadcast the changes using the mamanger.
-                manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
+                await manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
     except WebSocketDisconnect:
         # When the websocket disconnects, remove the connection
         # using the manager.
@@ -211,25 +214,29 @@ async def get_help_websocket(
     subject = registered_user_from_websocket(token, user_svc)
     # Connect the new websocket connection to the manager.
     await manager.get_help_connect(office_hours_id, subject, websocket)
+    # Send the initial data.
+    overview = oh_event_svc.get_office_hour_get_help_overview(subject, office_hours_id)
+    await websocket.send_json(overview.model_dump_json())
+
     try:
         # Await receiving new data.
         while True:
             # When new data is sent to the websocket, read it as JSON
             # and cast to the correct data model with Pydantic.
             json_data = await websocket.receive_json()
-            data = GetHelpWebSocketData.model_validate_json(json_data)
+            data = GetHelpWebSocketData.model_validate(json_data)
             # Depending on the type of request, call the respective
             # manager actions.
             if data.action == GetHelpWebSocketAction.CREATE and data.new_ticket:
                 # Create a new ticket
                 oh_ticket_svc.create_ticket(subject, data.new_ticket)
                 # Broadcast the changes using the mamanger.
-                manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
+                await manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
             elif data.action == GetHelpWebSocketAction.CANCEL:
                 # Close a ticket
                 oh_ticket_svc.cancel_ticket(subject, data.id)
                 # Broadcast the changes using the mamanger.
-                manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
+                await manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
     except WebSocketDisconnect:
         # When the websocket disconnects, remove the connection
         # using the manager.

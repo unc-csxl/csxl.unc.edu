@@ -273,6 +273,17 @@ export interface OfficeHours {
   room_id: string;
 }
 
+export enum GetHelpWebSocketAction {
+  CREATE = 'CREATE',
+  CANCEL = 'CANCEL'
+}
+
+export interface GetHelpWebSocketData {
+  action: GetHelpWebSocketAction;
+  id: number | null;
+  new_ticket: TicketDraft | null;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.

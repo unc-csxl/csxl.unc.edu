@@ -22,6 +22,7 @@ import {
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { officeHourPageGuard } from '../office-hours.guard';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
 @Component({
   selector: 'app-office-hours-queue',
@@ -47,6 +48,9 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   /** Stores subscription to the timer observable that refreshes data every 10s */
   timer!: Subscription;
 
+  /** Connection to the office hours get help websocket */
+  webSocketSubject$: WebSocketSubject<any>;
+
   constructor(
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
@@ -54,6 +58,14 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
+    // Load the web socket
+    this.webSocketSubject$ = webSocket({
+      url: `ws://localhost:1561/ws/office-hours/${this.ohEventId}/queue?token=${localStorage.getItem('bearerToken')}`
+    });
+    // Subscribe to the web socket
+    this.webSocketSubject$.subscribe((value) => {
+      console.log(value);
+    });
   }
 
   /** Create a timer subscription to poll office hour queue data at an interval at view initalization */
