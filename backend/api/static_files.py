@@ -12,12 +12,20 @@ __license__ = "MIT"
 import os
 
 from fastapi.staticfiles import StaticFiles
+from fastapi.websockets import WebSocket
 
 
 class StaticFileMiddleware(StaticFiles):
     def __init__(self, directory: os.PathLike, index: str = "index.html") -> None:
         self.index = index
         super().__init__(directory=directory, packages=None, html=True, check_dir=True)
+
+    async def __call__(self, scope, receive, send):  # type: ignore
+        if scope["type"] != "websocket":
+            websocket = WebSocket(scope, receive=receive, send=send)
+            ...
+        else:
+            return await super().__call__(scope, receive, send)
 
     def lookup_path(self, path: str) -> tuple[str, os.stat_result | None]:
         """Returns the index file when no match is found.

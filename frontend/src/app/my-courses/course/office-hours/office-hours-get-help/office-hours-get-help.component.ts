@@ -18,12 +18,16 @@ import { ActivatedRoute } from '@angular/router';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import {
   OfficeHourGetHelpOverview,
+  OfficeHourGetHelpOverviewJson,
   OfficeHourTicketOverview,
+  parseOfficeHourGetHelpOverviewJson,
   TicketDraft
 } from 'src/app/my-courses/my-courses.model';
 import { Subscription, timer } from 'rxjs';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LocationStrategy } from '@angular/common';
 
 @Component({
   selector: 'app-office-hours-get-help',
@@ -60,6 +64,9 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     link: new FormControl('', [Validators.required])
   });
 
+  /** Connection to the office hours get help websocket */
+  webSocketSubject$: WebSocketSubject<any>;
+
   constructor(
     private route: ActivatedRoute,
     protected formBuilder: FormBuilder,
@@ -68,6 +75,16 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
+    // Load the web socket connection
+    const url = `ws://localhost:1561/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
+    console.log(url);
+    this.webSocketSubject$ = webSocket({
+      url: url
+    });
+
+    this.webSocketSubject$.subscribe((value) => {
+      console.log(value);
+    });
   }
 
   /** Create a timer subscription to poll office hour data at an interval at view initalization */

@@ -5,9 +5,10 @@ Implements the office hours queue using websocket functionality.
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from enum import Enum
 from pydantic import BaseModel
-from ..authentication import registered_user
+from ..authentication import registered_user_from_websocket
 from ...services.office_hours.office_hours import OfficeHoursService
 from ...services.office_hours.ticket import OfficeHourTicketService
+from ...services.user import UserService
 from ...models.user import User
 from ...models.office_hours.ticket import NewOfficeHoursTicket
 
@@ -15,14 +16,18 @@ __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
-api = APIRouter(prefix="/api/office-hours")
+api = APIRouter(prefix="/ws/office-hours")
 
 
-class UserWebSocketConnection(BaseModel):
+class UserWebSocketConnection:
     """Stores dat about the user and the web socket they are connected to."""
 
     user: User
     socket: WebSocket
+
+    def __init__(self, user: User, socket: WebSocket):
+        self.user = user
+        self.socket = socket
 
 
 # Define the websocket connection manager for the queue feature.
@@ -135,14 +140,17 @@ class QueueWebSocketData(BaseModel):
     id: int
 
 
-@api.websocket("/{id}/queue/websocket")
+@api.websocket("/{office_hours_id}/queue")
 async def queue_websocket(
     websocket: WebSocket,
     office_hours_id: int,
-    subject: User = Depends(registered_user),
     oh_ticket_svc: OfficeHourTicketService = Depends(),
     oh_event_svc: OfficeHoursService = Depends(),
+    user_svc: UserService = Depends(),
 ):
+    # Try to load the current user.
+    token = websocket.query_params.get("token")
+    subject = registered_user_from_websocket(token, user_svc)
     # Connect the new websocket connection to the manager.
     await manager.queue_connect(office_hours_id, subject, websocket)
     try:
@@ -172,7 +180,7 @@ async def queue_websocket(
     except WebSocketDisconnect:
         # When the websocket disconnects, remove the connection
         # using the manager.
-        manager.get_help_disconnect(websocket)
+        manager.get_help_disconnect(office_hours_id, websocket)
 
 
 class GetHelpWebSocketAction(Enum):
@@ -190,14 +198,17 @@ class GetHelpWebSocketData(BaseModel):
     new_ticket: NewOfficeHoursTicket | None
 
 
-@api.websocket("/{id}/get-help/websocket")
+@api.websocket("/{office_hours_id}/get-help")
 async def get_help_websocket(
     websocket: WebSocket,
     office_hours_id: int,
-    subject: User = Depends(registered_user),
     oh_ticket_svc: OfficeHourTicketService = Depends(),
     oh_event_svc: OfficeHoursService = Depends(),
+    user_svc: UserService = Depends(),
 ):
+    # Try to load the current user.
+    token = websocket.query_params.get("token")
+    subject = registered_user_from_websocket(token, user_svc)
     # Connect the new websocket connection to the manager.
     await manager.get_help_connect(office_hours_id, subject, websocket)
     try:
@@ -222,4 +233,4 @@ async def get_help_websocket(
     except WebSocketDisconnect:
         # When the websocket disconnects, remove the connection
         # using the manager.
-        manager.get_help_disconnect(websocket)
+        manager.get_help_disconnect(office_hours_id, websocket)
