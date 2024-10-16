@@ -18,7 +18,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, timer } from 'rxjs';
 import {
   OfficeHourQueueOverview,
-  OfficeHourTicketOverview
+  OfficeHourQueueOverviewJson,
+  OfficeHourTicketOverview,
+  parseOfficeHourQueueOverview,
+  QueueWebSocketAction,
+  QueueWebSocketData
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { officeHourPageGuard } from '../office-hours.guard';
@@ -62,54 +66,83 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
     this.webSocketSubject$ = webSocket({
       url: `ws://localhost:1561/ws/office-hours/${this.ohEventId}/queue?token=${localStorage.getItem('bearerToken')}`
     });
-    // Subscribe to the web socket
+  }
+
+  ngOnInit(): void {
     this.webSocketSubject$.subscribe((value) => {
-      console.log(value);
+      const json: OfficeHourQueueOverviewJson = JSON.parse(value);
+      const overview = parseOfficeHourQueueOverview(json);
+      this.queue.set(overview);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketSubject$.complete();
   }
 
   /** Create a timer subscription to poll office hour queue data at an interval at view initalization */
-  ngOnInit(): void {
-    this.timer = timer(0, 10000).subscribe(() => {
-      this.pollQueue();
-    });
-  }
+  // ngOnInit(): void {
+  //   this.timer = timer(0, 10000).subscribe(() => {
+  //     this.pollQueue();
+  //   });
+  // }
 
   /** Remove the timer subscription when the view is destroyed so polling does not persist on other pages */
-  ngOnDestroy(): void {
-    this.timer.unsubscribe();
-  }
+  // ngOnDestroy(): void {
+  //   this.timer.unsubscribe();
+  // }
 
   /** Loads office hours queue data */
-  pollQueue(): void {
-    this.myCoursesService
-      .getOfficeHoursQueue(this.ohEventId)
-      .subscribe((queue) => {
-        this.queue.set(queue);
-      });
-  }
+  // pollQueue(): void {
+  //   this.myCoursesService
+  //     .getOfficeHoursQueue(this.ohEventId)
+  //     .subscribe((queue) => {
+  //       this.queue.set(queue);
+  //     });
+  // }
 
   /** Calls a ticket and reloads the queue data */
   callTicket(ticket: OfficeHourTicketOverview): void {
-    this.myCoursesService.callTicket(ticket.id).subscribe({
-      next: (_) => this.pollQueue(),
-      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    });
+    // Create the web socket object
+    const action: QueueWebSocketData = {
+      action: QueueWebSocketAction.CALL,
+      id: ticket.id
+    };
+    this.webSocketSubject$.next(action);
+
+    // this.myCoursesService.callTicket(ticket.id).subscribe({
+    //   next: (_) => this.pollQueue(),
+    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    // });
   }
 
   /** Cancels a ticket and reloads the queue data */
   cancelTicket(ticket: OfficeHourTicketOverview): void {
-    this.myCoursesService.cancelTicket(ticket.id).subscribe({
-      next: (_) => this.pollQueue(),
-      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    });
+    // Create the web socket object
+    const action: QueueWebSocketData = {
+      action: QueueWebSocketAction.CANCEL,
+      id: ticket.id
+    };
+    this.webSocketSubject$.next(action);
+
+    // this.myCoursesService.cancelTicket(ticket.id).subscribe({
+    //   next: (_) => this.pollQueue(),
+    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    // });
   }
 
   /** Closes a ticket and reloads the queue data */
   closeTicket(ticket: OfficeHourTicketOverview): void {
-    this.myCoursesService.closeTicket(ticket.id).subscribe({
-      next: (_) => this.pollQueue(),
-      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    });
+    // Create the web socket object
+    const action: QueueWebSocketData = {
+      action: QueueWebSocketAction.CLOSE,
+      id: ticket.id
+    };
+    this.webSocketSubject$.next(action);
+
+    // this.myCoursesService.closeTicket(ticket.id).subscribe({
+    //   next: (_) => this.pollQueue(),
+    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    // });
   }
 }

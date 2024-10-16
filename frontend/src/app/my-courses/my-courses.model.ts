@@ -273,6 +273,17 @@ export interface OfficeHours {
   room_id: string;
 }
 
+export enum QueueWebSocketAction {
+  CALL = 'CALL',
+  CLOSE = 'CLOSE',
+  CANCEL = 'CANCEL'
+}
+
+export interface QueueWebSocketData {
+  action: QueueWebSocketAction;
+  id: number;
+}
+
 export enum GetHelpWebSocketAction {
   CREATE = 'CREATE',
   CANCEL = 'CANCEL'

@@ -162,7 +162,7 @@ async def queue_websocket(
             # When new data is sent to the websocket, read it as JSON
             # and cast to the correct data model with Pydantic.
             json_data = await websocket.receive_json()
-            data = QueueWebSocketData.model_validate_json(json_data)
+            data = QueueWebSocketData.model_validate(json_data)
             # Depending on the type of request, call the respective
             # manager actions.
             if data.action == QueueWebSocketAction.CALL:
