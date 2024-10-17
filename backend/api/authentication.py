@@ -61,7 +61,16 @@ for routes used in the process of registering a user.
 import jwt
 import requests
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Header, HTTPException, Request, Response, Depends
+from fastapi import (
+    APIRouter,
+    Header,
+    HTTPException,
+    WebSocketException,
+    Request,
+    Response,
+    Depends,
+    WebSocket,
+)
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
@@ -99,6 +108,21 @@ def registered_user(
         except:
             ...
     raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def registered_user_from_websocket(token: str, user_service: UserService) -> User:
+    """
+    Since web sockets cannot use the HTTPBearer dependency, we need to use the websocket to
+    extract the bearer information.
+    """
+    try:
+        auth_info = jwt.decode(token, _JWT_SECRET, algorithms=[_JST_ALGORITHM])
+        user = user_service.get(auth_info["pid"])
+        if user:
+            return user
+    except:
+        ...
+    raise WebSocketException(status_code=401, detail="Unauthorized")
 
 
 def authenticated_pid(

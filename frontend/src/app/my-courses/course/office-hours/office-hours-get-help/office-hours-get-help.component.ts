@@ -17,13 +17,19 @@ import { officeHourPageGuard } from '../office-hours.guard';
 import { ActivatedRoute } from '@angular/router';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import {
+  GetHelpWebSocketAction,
+  GetHelpWebSocketData,
   OfficeHourGetHelpOverview,
+  OfficeHourGetHelpOverviewJson,
   OfficeHourTicketOverview,
+  parseOfficeHourGetHelpOverviewJson,
   TicketDraft
 } from 'src/app/my-courses/my-courses.model';
 import { Subscription, timer } from 'rxjs';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LocationStrategy } from '@angular/common';
 
 @Component({
   selector: 'app-office-hours-get-help',
@@ -60,6 +66,9 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     link: new FormControl('', [Validators.required])
   });
 
+  /** Connection to the office hours get help websocket */
+  webSocketSubject$: WebSocketSubject<any>;
+
   constructor(
     private route: ActivatedRoute,
     protected formBuilder: FormBuilder,
@@ -68,28 +77,46 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
-  }
-
-  /** Create a timer subscription to poll office hour data at an interval at view initalization */
-  ngOnInit(): void {
-    this.timer = timer(0, 10000).subscribe(() => {
-      this.pollData();
+    // Load the web socket connection
+    const url = `ws://localhost:1561/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
+    console.log(url);
+    this.webSocketSubject$ = webSocket({
+      url: url
     });
   }
 
-  /** Remove the timer subscription when the view is destroyed so polling does not persist on other pages */
-  ngOnDestroy(): void {
-    this.timer.unsubscribe();
+  ngOnInit(): void {
+    this.webSocketSubject$.subscribe((value) => {
+      const json: OfficeHourGetHelpOverviewJson = JSON.parse(value);
+      const overview = parseOfficeHourGetHelpOverviewJson(json);
+      this.data.set(overview);
+    });
   }
 
-  /** Loads office hours data */
-  pollData(): void {
-    this.myCoursesService
-      .getOfficeHoursHelpOverview(this.ohEventId)
-      .subscribe((getHelpData) => {
-        this.data.set(getHelpData);
-      });
+  ngOnDestroy(): void {
+    this.webSocketSubject$.complete();
   }
+
+  /** Create a timer subscription to poll office hour data at an interval at view initalization */
+  // ngOnInit(): void {
+  //   this.timer = timer(0, 10000).subscribe(() => {
+  //     this.pollData();
+  //   });
+  // }
+
+  /** Remove the timer subscription when the view is destroyed so polling does not persist on other pages */
+  // ngOnDestroy(): void {
+  //   this.timer.unsubscribe();
+  // }
+
+  /** Loads office hours data */
+  // pollData(): void {
+  //   this.myCoursesService
+  //     .getOfficeHoursHelpOverview(this.ohEventId)
+  //     .subscribe((getHelpData) => {
+  //       this.data.set(getHelpData);
+  //     });
+  // }
 
   isFormValid(): boolean {
     let contentFieldsValid =
@@ -109,13 +136,19 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
   /** Cancels a ticket and reloads the queue data */
   cancelTicket(ticket: OfficeHourTicketOverview): void {
-    this.myCoursesService.cancelTicket(ticket.id).subscribe({
-      next: (_) => {
-        this.pollData();
-        this.snackBar.open('Ticket cancelled', '', { duration: 5000 });
-      },
-      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    });
+    let action: GetHelpWebSocketData = {
+      action: GetHelpWebSocketAction.CANCEL,
+      id: ticket.id,
+      new_ticket: null
+    };
+    this.webSocketSubject$.next(action);
+    // this.myCoursesService.cancelTicket(ticket.id).subscribe({
+    //   next: (_) => {
+    //     this.pollData();
+    //     this.snackBar.open('Ticket cancelled', '', { duration: 5000 });
+    //   },
+    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    // });
   }
 
   submitTicketForm() {
@@ -157,15 +190,24 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       type: form_type
     };
 
-    this.myCoursesService.createTicket(ticketDraft).subscribe({
-      next: (_) => {
-        this.pollData();
-      },
-      error: (_) => {
-        this.snackBar.open(`Could not create a ticket at this time.`, '', {
-          duration: 2000
-        });
-      }
-    });
+    // Create the web socket object
+    const action: GetHelpWebSocketData = {
+      action: GetHelpWebSocketAction.CREATE,
+      id: null,
+      new_ticket: ticketDraft
+    };
+
+    this.webSocketSubject$.next(action);
+
+    // this.myCoursesService.createTicket(ticketDraft).subscribe({
+    //   next: (_) => {
+    //     this.pollData();
+    //   },
+    //   error: (_) => {
+    //     this.snackBar.open(`Could not create a ticket at this time.`, '', {
+    //       duration: 2000
+    //     });
+    //   }
+    // });
   }
 }
