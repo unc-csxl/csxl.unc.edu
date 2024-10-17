@@ -11,6 +11,7 @@
 
 .pane-content {
     padding-top: 8px;
+    overflow-y: scroll;
 }
 .mat-mdc-chip-set {
     height: 24px;
