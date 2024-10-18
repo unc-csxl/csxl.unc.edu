@@ -1,17 +1,8 @@
-"""Single-page application middleware.
-
-Our application is organized as a single-page application (SPA). This middleware class
-extends the functionality of the StaticFiles middleware and was inspired by: 
-<https://stackoverflow.com/questions/63069190/how-to-capture-arbitrary-paths-at-one-route-in-fastapi>
-"""
-
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
-__license__ = "MIT"
-
+from fastapi import Response
+from starlette.responses import FileResponse
+from starlette.staticfiles import StaticFiles
+from starlette.types import Scope
 import os
-
-from fastapi.staticfiles import StaticFiles
 
 
 class StaticFileMiddleware(StaticFiles):
@@ -35,3 +26,21 @@ class StaticFileMiddleware(StaticFiles):
             return (full_path, stat_result)
         else:
             return (full_path, stat_result)
+
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        """Override get_response to set cache-control headers for index.html."""
+
+        # Explicitly handle the root path ("/")
+        if path in ["", "/", "."]:
+            path = self.index  # Treat the root as a request for index.html
+
+        full_path, _ = self.lookup_path(path)
+
+        # If serving index.html, set cache-control header to prevent caching
+        if full_path.endswith(self.index):
+            response = FileResponse(full_path)
+            response.headers["Cache-Control"] = "no-store"
+            return response
+
+        # For other static files, let the default caching behavior handle it
+        return await super().get_response(path, scope)
