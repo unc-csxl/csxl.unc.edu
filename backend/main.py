@@ -110,12 +110,12 @@ app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
 @app.exception_handler(UserPermissionException)
-def permission_exception_handler(request: Request, e: UserPermissionException):
+def user_permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 
 @app.exception_handler(CoursePermissionException)
-def permission_exception_handler(request: Request, e: UserPermissionException):
+def course_permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 
@@ -132,9 +132,7 @@ def reservation_exception_handler(request: Request, e: ReservationException):
 
 
 @app.exception_handler(CourseDataScrapingException)
-def resource_not_found_exception_handler(
-    request: Request, e: CourseDataScrapingException
-):
+def course_data_scraping_exception(request: Request, e: CourseDataScrapingException):
     return JSONResponse(status_code=500, content={"message": str(e)})
 
 
