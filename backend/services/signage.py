@@ -3,7 +3,7 @@ Service to collect and organize the information for CSXL Signage
 """
 
 from fastapi import Depends
-from sqlalchemy import select, func
+from sqlalchemy import select, func, not_, exists
 from sqlalchemy.orm import Session
 
 from backend.models.coworking.reservation import ReservationState
@@ -65,10 +65,23 @@ class SignageService:
             for office_hours in active_office_hours_entities
         ]
 
-        # Rooms
+        # Get Rooms that do not have an active reservation for this moment in time
         room_query = (
             select(RoomEntity)
-            .where(RoomEntity.reservable)
+            .where(
+                RoomEntity.reservable,
+                not_(
+                    exists()
+                    .where(
+                        ReservationEntity.room_id == RoomEntity.id,
+                        ReservationEntity.start <= now,
+                        ReservationEntity.end > now,
+                        ReservationEntity.state.not_in(
+                            [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
+                        )
+                    )
+                )
+            )
             .order_by(RoomEntity.room.desc())
         )
         room_entities = self._session.scalars(room_query).all()
