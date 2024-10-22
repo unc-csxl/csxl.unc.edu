@@ -1,3 +1,4 @@
+from backend.models.office_hours.office_hours_recurrence import OfficeHoursRecurrence
 from .ticket import OfficeHoursTicket
 from .office_hours import OfficeHours, CourseSite
 from ..room import Room

@@ -66,10 +66,10 @@ class OfficeHoursEntity(EntityBase):
 
     # NOTE: Many-to-one relationship of OfficeHoursEvents to OfficeHoursRecurrence
     recurrence_id: Mapped[int] = mapped_column(
-        ForeignKey("office_hours_recurrence.id", nullable=True)
+        ForeignKey("office_hours_recurrence.id"), nullable=True
     )
-    recurrence: Mapped["OfficeHoursRecurrence"] = relationship(
-        back_populats="office_hours"
+    recurrence: Mapped["OfficeHoursRecurrenceEntity"] = relationship(
+        back_populates="office_hours"
     )
 
     # NOTE: Unidirectional relationship to Room
@@ -141,6 +141,7 @@ class OfficeHoursEntity(EntityBase):
             end_time=self.end_time,
             course_site_id=self.course_site_id,
             room_id=self.room_id,
+            recurrence_id=self.recurrence_id
         )
 
     def to_details_model(self) -> OfficeHoursDetails:
@@ -161,6 +162,8 @@ class OfficeHoursEntity(EntityBase):
             course_site_id=self.course_site_id,
             room_id=self.room_id,
             course_site=self.course_site.to_model(),
+            recurrence_id=self.recurrence_id,
+            recurrence=self.recurrence.to_model(),
             room=self.room.to_model(),
             tickets=[ticket.to_model() for ticket in self.tickets],
         )

@@ -37,8 +37,8 @@ class OfficeHoursRecurrenceEntity(EntityBase):
   recur_sunday: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
   # NOTE: One-to-many relationship of OfficeHoursRecurrence to OfficeHoursEvent
-  events: Mapped[list["OfficeHoursEntity"]] = relationship(
-    back_populates="office_hours_recurrence", cascade="all, delete"
+  office_hours: Mapped[list["OfficeHoursEntity"]] = relationship(
+    back_populates="recurrence", cascade="all, delete"
     )
 
   @classmethod

@@ -4,6 +4,9 @@ APIs handling office hours.
 """
 
 from fastapi import APIRouter, Depends
+
+from backend.models.office_hours.office_hours_recurrence import NewOfficeHoursRecurrence
+from backend.services.office_hours.office_hours_recurrence import OfficeHoursRecurrenceService
 from ..authentication import registered_user
 from ...services.office_hours.office_hours import OfficeHoursService
 from ...models.user import User
@@ -80,6 +83,22 @@ def create_office_hours(
         OfficeHours
     """
     return oh_event_svc.create(subject, site_id, oh)
+
+@api.post("/{site_id}/recurring", tags=["Office Hours"])
+def create_recurring_office_hours(
+    site_id: int,
+    oh: NewOfficeHours,
+    recur: NewOfficeHoursRecurrence,
+    subject: User = Depends(registered_user),
+    oh_event_recurrence_svc: OfficeHoursRecurrenceService = Depends(),
+) -> list[OfficeHours]:
+    """
+    Creates new office hours events based on a recurrence pattern.
+
+    Returns:
+        list[OfficeHours]
+    """
+    return oh_event_recurrence_svc.create_recurring(subject, site_id, oh, recur)
 
 
 @api.put("/{site_id}", tags=["Office Hours"])

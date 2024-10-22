@@ -73,6 +73,7 @@ comp_110_current_office_hours = OfficeHours(
     end_time=datetime.now() + timedelta(hours=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_id=None
 )
 comp_110_future_office_hours = OfficeHours(
     id=2,
@@ -84,6 +85,7 @@ comp_110_future_office_hours = OfficeHours(
     end_time=datetime.now() + timedelta(days=1, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_id=None
 )
 comp_110_past_office_hours = OfficeHours(
     id=3,
@@ -95,6 +97,7 @@ comp_110_past_office_hours = OfficeHours(
     end_time=datetime.now() - timedelta(days=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_id=None
 )
 
 # Tickets
@@ -390,6 +393,7 @@ new_event = NewOfficeHours(
     end_time=datetime.now(),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_id=None
 )
 
 new_event_site_not_found = NewOfficeHours(
@@ -401,6 +405,7 @@ new_event_site_not_found = NewOfficeHours(
     end_time=datetime.now(),
     course_site_id=404,
     room_id=room_data.group_a.id,
+    recurrence_id=None
 )
 
 updated_future_event = OfficeHours(
@@ -413,6 +418,7 @@ updated_future_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=1, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_id=None
 )
 
 nonexistent_event = OfficeHours(
@@ -425,4 +431,5 @@ nonexistent_event = OfficeHours(
     end_time=datetime.now(),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_id=None
 )
