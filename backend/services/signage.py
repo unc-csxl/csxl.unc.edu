@@ -31,6 +31,7 @@ MAX_LEADERBOARD_SLOTS = 10
 MAX_EVENTS = 5
 MAX_ANNOUCEMENTS = 3
 
+
 # TODO: Create Tests for this Service
 class SignageService:
     """
@@ -106,8 +107,9 @@ class SignageService:
         newest_news = [news.to_overview_model() for news in news_entities]
 
         # Checkin Leaderboard
-        # TODO: Create public_user field and checkbox on Profile page so users can opt-out of being displayed here (and in future public places)
-        start_of_month = datetime.today().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        start_of_month = datetime.today().replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        )
         top_users_query = (
             select(
                 UserEntity, func.count(ReservationEntity.id).label("reservation_count")
@@ -124,7 +126,9 @@ class SignageService:
         top_users = [user.to_public_model() for user in user_entities]
 
         # Newest Events
-        events_query = select(EventEntity).order_by(EventEntity.start.desc()).limit(MAX_EVENTS)
+        events_query = (
+            select(EventEntity).order_by(EventEntity.start.desc()).limit(MAX_EVENTS)
+        )
         event_entities = self._session.scalars(events_query).all()
         events = [event.to_overview_model() for event in event_entities]
 
@@ -138,7 +142,8 @@ class SignageService:
         )
         announcement_entities = self._session.scalars(announcement_query).all()
         announcement_titles = [
-            announcement.to_overview_model().title for announcement in announcement_entities
+            announcement.to_overview_model().title
+            for announcement in announcement_entities
         ]
 
         return SignageOverviewSlow(

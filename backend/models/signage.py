@@ -13,7 +13,7 @@ __license__ = "MIT"
 
 
 class SignageOverviewSlow(BaseModel):
-    """Encapsulates data for the tv."""
+    """Encapsulates less frequent data for the tv."""
 
     newest_news: list[ArticleOverview]
     events: list[EventOverview]
@@ -22,7 +22,7 @@ class SignageOverviewSlow(BaseModel):
 
 
 class SignageOverviewFast(BaseModel):
-    """Encapsulates data for the tv."""
+    """Encapsulates frequent data for the tv."""
 
     active_office_hours: list[OfficeHoursOverview]
     available_rooms: list[str]
