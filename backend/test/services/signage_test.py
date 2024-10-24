@@ -25,18 +25,19 @@ __license__ = "MIT"
 
 now = datetime.now()
 
-current_reservation = Reservation (
-        id=8,
-        start=now - timedelta(hours=1),
-        end=now + timedelta(hours=2),
-        created_at=now - timedelta(hours=2),
-        updated_at=now - timedelta(hours=1, minutes=30),
-        walkin=False,
-        room=room_data.pair_a,
-        state=ReservationState.CHECKED_IN,
-        users=[user_data.root],
-        seats=[]
-    )
+current_reservation = Reservation(
+    id=8,
+    start=now - timedelta(hours=1),
+    end=now + timedelta(hours=2),
+    created_at=now - timedelta(hours=2),
+    updated_at=now - timedelta(hours=1, minutes=30),
+    walkin=False,
+    room=room_data.pair_a,
+    state=ReservationState.CHECKED_IN,
+    users=[user_data.root],
+    seats=[],
+)
+
 
 @pytest.fixture(autouse=True)
 def insert_additional_fake_data(session: Session):
@@ -45,6 +46,7 @@ def insert_additional_fake_data(session: Session):
     session.add(entity)
     session.commit()
 
+
 def test_get_fast_data(signage_svc: SignageService):
     fast_data = signage_svc.get_fast_data()
     assert len(fast_data.active_office_hours) == 1
@@ -52,3 +54,9 @@ def test_get_fast_data(signage_svc: SignageService):
         fast_data.active_office_hours[0].id
         == office_hours_data.comp_110_current_office_hours.id
     )
+    available_rooms = [room.id for room in room_data.rooms]
+    assert room_data.pair_a.id not in available_rooms
+
+    available_seats = [seat for seat in fast_data.seat_availability if seat.reservable]
+    assert seat_data.monitor_seat_01 not in available_seats
+    assert seat_data.monitor_seat_11 not in available_seats
