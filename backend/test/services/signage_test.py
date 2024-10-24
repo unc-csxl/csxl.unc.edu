@@ -10,12 +10,25 @@ from backend.models.coworking.reservation import Reservation, ReservationState
 from ...models import SignageOverviewFast, SignageOverviewSlow
 from ...services import SignageService
 
-# Data Setup and Injected Service Fixtures
-from .core_data import setup_insert_data_fixture
+# Imported fixtures provide dependencies injected for the tests as parameters.
+from .fixtures import signage_svc
 
-# Data Models for Fake Data Inserted in Setup
+# Data Setup and Injected Service Fixtures
+from .coworking.seat_data import fake_data_fixture as insert_fake_seat_data
+from .room_data import fake_data_fixture as insert_fake_room_data
+from .user_data import fake_data_fixture as insert_fake_user_data
+from .coworking.reservation.reservation_data import (
+    fake_data_fixture as insert_fake_reservation_data,
+)
+from .office_hours.office_hours_data import (
+    fake_data_fixture as insert_fake_office_hours_data,
+)
+from .signage_data import fake_data_fixture as insert_fake_sigange_data
+
+
+#  Import the fake model data in a namespace for test assertions
 from .coworking import seat_data
-import room_data, user_data
+from . import room_data, user_data
 from .coworking.reservation import reservation_data
 from .office_hours import office_hours_data
 
@@ -25,26 +38,26 @@ __license__ = "MIT"
 
 now = datetime.now()
 
-current_reservation = Reservation(
-    id=8,
-    start=now - timedelta(hours=1),
-    end=now + timedelta(hours=2),
-    created_at=now - timedelta(hours=2),
-    updated_at=now - timedelta(hours=1, minutes=30),
-    walkin=False,
-    room=room_data.pair_a,
-    state=ReservationState.CHECKED_IN,
-    users=[user_data.root],
-    seats=[],
-)
+# current_reservation = Reservation(
+#     id=8,
+#     start=now - timedelta(hours=1),
+#     end=now + timedelta(hours=2),
+#     created_at=now - timedelta(hours=2),
+#     updated_at=now - timedelta(hours=1, minutes=30),
+#     walkin=False,
+#     room=room_data.pair_a,
+#     state=ReservationState.CHECKED_IN,
+#     users=[user_data.root],
+#     seats=[],
+# )
 
 
-@pytest.fixture(autouse=True)
-def insert_additional_fake_data(session: Session):
-    """Inserts additional data needed to fully test signage."""
-    entity = ReservationEntity.from_model(current_reservation)
-    session.add(entity)
-    session.commit()
+# @pytest.fixture(autouse=True)
+# def insert_additional_fake_data(session: Session):
+#     """Inserts additional data needed to fully test signage."""
+#     entity = ReservationEntity.from_model(current_reservation)
+#     session.add(entity)
+#     session.commit()
 
 
 def test_get_fast_data(signage_svc: SignageService):

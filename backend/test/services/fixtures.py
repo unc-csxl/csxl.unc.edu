@@ -11,6 +11,7 @@ from ...services import (
     EventService,
     RoomService,
     ApplicationService,
+    SignageService,
 )
 from ...services.academics import HiringService
 from ...services.article import ArticleService
@@ -47,6 +48,11 @@ def user_svc_integration(session: Session):
 @pytest.fixture()
 def role_svc(session: Session, permission_svc_mock: PermissionService):
     return RoleService(session, permission_svc_mock)
+
+
+@pytest.fixture()
+def signage_svc(session: Session):
+    return SignageService(session)
 
 
 @pytest.fixture()

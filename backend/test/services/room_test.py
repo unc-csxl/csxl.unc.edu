@@ -1,4 +1,5 @@
 """Tests for Coworking Rooms Service."""
+
 from unittest.mock import create_autospec
 import pytest
 from backend.services.exceptions import (
