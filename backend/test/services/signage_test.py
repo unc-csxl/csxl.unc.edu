@@ -1,29 +1,35 @@
 """Tests for the RoleService class."""
 
 # Tested Dependencies
-from datetime import datetime, timedelta
 import pytest
+
 from sqlalchemy.orm import Session
 
-from backend.entities.coworking.reservation_entity import ReservationEntity
-from backend.models.coworking.reservation import Reservation, ReservationState
 from ...models import SignageOverviewFast, SignageOverviewSlow
 from ...services import SignageService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
+
 from .fixtures import signage_svc
+from .coworking.time import time
+from .coworking.fixtures import *
 
 # Data Setup and Injected Service Fixtures
-from .coworking.seat_data import fake_data_fixture as insert_fake_seat_data
-from .room_data import fake_data_fixture as insert_fake_room_data
-from .user_data import fake_data_fixture as insert_fake_user_data
+from .core_data import setup_insert_data_fixture as insert_order_0
+from .academics.term_data import fake_data_fixture as insert_order_1
+from .academics.course_data import fake_data_fixture as insert_order_2
+from .academics.section_data import fake_data_fixture as insert_order_3
+from .room_data import fake_data_fixture as insert_order_4
+from .coworking.seat_data import fake_data_fixture as insert_order_5
+from .coworking.operating_hours_data import fake_data_fixture as insert_order_6
 from .coworking.reservation.reservation_data import (
-    fake_data_fixture as insert_fake_reservation_data,
+    fake_data_fixture as insert_order_7,
 )
+
 from .office_hours.office_hours_data import (
-    fake_data_fixture as insert_fake_office_hours_data,
+    fake_data_fixture as insert_order_8,
 )
-from .signage_data import fake_data_fixture as insert_fake_sigange_data
+from .signage_data import fake_data_fixture as insert_order_9
 
 
 #  Import the fake model data in a namespace for test assertions
@@ -33,32 +39,8 @@ from .coworking.reservation import reservation_data
 from .office_hours import office_hours_data
 
 __authors__ = ["Will Zahrt", "Andrew Lockard"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
-
-now = datetime.now()
-
-# current_reservation = Reservation(
-#     id=8,
-#     start=now - timedelta(hours=1),
-#     end=now + timedelta(hours=2),
-#     created_at=now - timedelta(hours=2),
-#     updated_at=now - timedelta(hours=1, minutes=30),
-#     walkin=False,
-#     room=room_data.pair_a,
-#     state=ReservationState.CHECKED_IN,
-#     users=[user_data.root],
-#     seats=[],
-# )
-
-
-# @pytest.fixture(autouse=True)
-# def insert_additional_fake_data(session: Session):
-#     """Inserts additional data needed to fully test signage."""
-#     entity = ReservationEntity.from_model(current_reservation)
-#     session.add(entity)
-#     session.commit()
-
 
 def test_get_fast_data(signage_svc: SignageService):
     fast_data = signage_svc.get_fast_data()

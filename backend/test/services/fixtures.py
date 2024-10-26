@@ -15,9 +15,14 @@ from ...services import (
 )
 from ...services.academics import HiringService
 from ...services.article import ArticleService
-from ...services.coworking import PolicyService, OperatingHoursService
+from ...services.coworking import (
+    PolicyService,
+    OperatingHoursService,
+    ReservationService,
+    SeatService,
+)
 
-__authors__ = ["Kris Jordan", "Ajay Gandecha"]
+__authors__ = ["Kris Jordan", "Ajay Gandecha", "Will Zahrt", "Andrew Lockard"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -51,8 +56,13 @@ def role_svc(session: Session, permission_svc_mock: PermissionService):
 
 
 @pytest.fixture()
-def signage_svc(session: Session):
-    return SignageService(session)
+def signage_svc(
+    session: Session,
+    reservation_svc: ReservationService,
+    seat_svc: SeatService,
+    room_svc: RoomService,
+):
+    return SignageService(session, reservation_svc, seat_svc, room_svc)
 
 
 @pytest.fixture()

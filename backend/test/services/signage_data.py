@@ -31,13 +31,13 @@ current_reservation = Reservation(
 )
 
 
-@pytest.fixture(autouse=True)
-def fake_data_fixture(session: Session, time: dict[str, datetime]):
-    """Inserts additional data needed to fully test signage."""
-    insert_fake_data(session, time)
-    session.commit()
-
-
-def insert_fake_data(session: Session, time: dict[str, datetime]):
+def insert_fake_data(session: Session):
     entity = ReservationEntity.from_model(current_reservation)
     session.add(entity)
+    session.commit()
+
+@pytest.fixture(autouse=True)
+def fake_data_fixture(session: Session):
+    """Inserts additional data needed to fully test signage."""
+    insert_fake_data(session)
+    session.commit()

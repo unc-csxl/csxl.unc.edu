@@ -40,8 +40,8 @@ class SignageService:
 
     def __init__(
         self,
-        reservation_svc: ReservationService = Depends(),
         session: Session = Depends(db_session),
+        reservation_svc: ReservationService = Depends(),
         seat_svc: SeatService = Depends(),
         room_svc: RoomService = Depends(),
     ):
