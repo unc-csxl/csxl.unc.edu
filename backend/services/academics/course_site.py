@@ -33,7 +33,7 @@ from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
-__authors__ = ["Ajay Gandecha", "Kris Jordan"]
+__authors__ = ["Ajay Gandecha", "Kris Jordan", "Andrew Lockard"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -283,9 +283,7 @@ class CourseSiteService:
         # Load office hours data
         office_hour_event_entities = self._session.scalars(event_query).unique().all()
 
-        return [
-            self._to_oh_event_overview(event) for event in office_hour_event_entities
-        ]
+        return [event.to_overview_model() for event in office_hour_event_entities]
 
     def get_future_office_hour_events(
         self,
@@ -326,10 +324,7 @@ class CourseSiteService:
 
         # Create paginated representation of data and return
         return Paginated(
-            items=[
-                self._to_oh_event_overview(event)
-                for event in office_hour_event_entities
-            ],
+            items=[event.to_overview_model() for event in office_hour_event_entities],
             length=length,
             params=pagination_params,
         )
@@ -373,10 +368,7 @@ class CourseSiteService:
 
         # Create paginated representation of data and return
         return Paginated(
-            items=[
-                self._to_oh_event_overview(event)
-                for event in office_hour_event_entities
-            ],
+            items=[event.to_overview_model() for event in office_hour_event_entities],
             length=length,
             params=pagination_params,
         )
@@ -418,26 +410,6 @@ class CourseSiteService:
         event_query = event_query.where(SectionEntity.id.in_(section_ids))
 
         return event_query
-
-    def _to_oh_event_overview(self, oh_event: OfficeHoursEntity) -> OfficeHoursOverview:
-        return OfficeHoursOverview(
-            id=oh_event.id,
-            type=oh_event.type.to_string(),
-            mode=oh_event.mode.to_string(),
-            description=oh_event.description,
-            location=f"{oh_event.room.building} {oh_event.room.room}",
-            location_description=oh_event.location_description,
-            start_time=oh_event.start_time,
-            end_time=oh_event.end_time,
-            queued=len(
-                [
-                    ticket
-                    for ticket in oh_event.tickets
-                    if ticket.state == TicketState.QUEUED
-                ]
-            ),
-            total_tickets=len(oh_event.tickets),
-        )
 
     def create(self, user: User, new_site: NewCourseSite) -> CourseSite:
         """
