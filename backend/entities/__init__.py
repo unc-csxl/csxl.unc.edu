@@ -25,6 +25,7 @@ from .organization_entity import OrganizationEntity
 from .event_entity import EventEntity
 from .event_registration_entity import EventRegistrationEntity
 
+
 from .application_entity import ApplicationEntity
 from .section_application_table import section_application_table
 from .academics.hiring.application_review_entity import ApplicationReviewEntity
