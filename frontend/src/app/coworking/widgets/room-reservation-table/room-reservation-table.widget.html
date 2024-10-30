@@ -9,8 +9,9 @@
       </tr>
       @for (record of reservationsMap | keyvalue; track record.key) {
       <tr>
-        @if (num) {
-          @if (capacityMap[record.key] >= num) {
+        <!-- Check capacity in non-null -->
+        @if (capacityFilter) {
+          @if (capacityMap[record.key] >= capacityFilter) {
             <th>{{ record.key }}
               <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
               <br>{{roomTypeMap[record.key]}}</span>
@@ -24,8 +25,9 @@
               "></td>
           }
         } @else {
+          <!-- If capacity is null, display all rooms -->
           <th>{{ record.key }}
-            <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}} {{"test: "}}{{num}}
+            <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
             <br>{{roomTypeMap[record.key]}}</span>
           </th>
           <td

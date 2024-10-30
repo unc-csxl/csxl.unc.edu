@@ -18,14 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./room-reservation-table.widget.css']
 })
 export class RoomReservationWidgetComponent {
-  @Input() num: number | null = null;
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.num != null) {
-      
-    }
-  }
-
+  @Input() capacityFilter: number | null = null;
 
   timeSlots: string[] = [];
 
