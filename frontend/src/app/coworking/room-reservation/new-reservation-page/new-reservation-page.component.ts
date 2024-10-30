@@ -30,8 +30,7 @@ export class NewReservationPageComponent implements OnInit {
   };
 
   public numHoursStudyRoomReservations$!: Observable<string>;
-  // public capacity = new FormControl<number | null>(0, Validators.required);
-  public capacity = new FormControl<number | null>(null, [Validators.required, Validators.min(1)])
+  public capacity = new FormControl<number | null>(null, [Validators.min(1)])
 
   constructor(
     private router: Router,
@@ -59,13 +58,5 @@ export class NewReservationPageComponent implements OnInit {
   getNumHoursStudyRoomReservations() {
     this.numHoursStudyRoomReservations$ =
       this.roomReservationService.getNumHoursStudyRoomReservations();
-  }
-
-  updateCapacity() {
-    if (this.capacity.value === null) {
-      console.log("null");
-    } else {
-      console.log("Current capacity:", this.capacity.value);
-    }
   }
 }

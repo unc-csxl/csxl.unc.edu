@@ -17,7 +17,6 @@
           type="number"
           [formControl]="capacity"
           name="capacity"
-          (change)="updateCapacity()"
           />
       </mat-form-field>
       
@@ -26,7 +25,7 @@
   </mat-card-header>
 
   <mat-card-content>
-    <room-reservation-table class="horizontal-scroll" [num]="capacity.value"></room-reservation-table>
+    <room-reservation-table class="horizontal-scroll" [capacityFilter]="capacity.value"></room-reservation-table>
 
     <div class="legend-container">
       <div class="legend-item">
