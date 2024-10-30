@@ -3,15 +3,30 @@
     <mat-card-title>Reserve a Room</mat-card-title>
     <mat-card-subtitle
       >Total Hours Remaining:
-      {{ numHoursStudyRoomReservations$ | async }}</mat-card-subtitle
-    >
-    <div class="date-selector">
+      {{ numHoursStudyRoomReservations$ | async }}
+    </mat-card-subtitle>
+    
+    <div class="filters">
+      <mat-form-field appearance="outline" color="accent" class="capacity-input">
+        <mat-label>Capacity</mat-label>
+        <input
+          matInput
+          min="1"
+          max="6"
+          id="capacity-input"
+          type="number"
+          [formControl]="capacity"
+          name="capacity"
+          (change)="updateCapacity()"
+          />
+      </mat-form-field>
+      
       <date-selector></date-selector>
     </div>
   </mat-card-header>
 
   <mat-card-content>
-    <room-reservation-table class="horizontal-scroll"></room-reservation-table>
+    <room-reservation-table class="horizontal-scroll" [num]="capacity.value"></room-reservation-table>
 
     <div class="legend-container">
       <div class="legend-item">

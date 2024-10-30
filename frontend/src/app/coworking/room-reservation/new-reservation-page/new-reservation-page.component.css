@@ -21,8 +21,12 @@
 
 /* Add any additional styling for the room-reservation-table if needed */
 
-.date-selector {
+.filters {
   padding: 10px; /* Adjust the value as needed */
+}
+
+.capacity-input {
+  margin-right: 20px;
 }
 
 .upcoming-reservations-container {

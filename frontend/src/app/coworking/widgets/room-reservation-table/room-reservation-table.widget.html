@@ -9,8 +9,35 @@
       </tr>
       @for (record of reservationsMap | keyvalue; track record.key) {
       <tr>
-        <th>{{ record.key }}
-          <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
+        @if (num) {
+          @if (capacityMap[record.key] >= num) {
+            <th>{{ record.key }}
+              <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
+              <br>{{roomTypeMap[record.key]}}</span>
+            </th>
+            <td
+              *ngFor="let timeSlot of record.value; let j = index"
+              [style.background]="cellPropertyMap[timeSlot].backgroundColor"
+              (click)="
+                !cellPropertyMap[timeSlot].isDisabled &&
+                  toggleCellColor(record.key, j)
+              "></td>
+          }
+        } @else {
+          <th>{{ record.key }}
+            <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}} {{"test: "}}{{num}}
+            <br>{{roomTypeMap[record.key]}}</span>
+          </th>
+          <td
+            *ngFor="let timeSlot of record.value; let j = index"
+            [style.background]="cellPropertyMap[timeSlot].backgroundColor"
+            (click)="
+              !cellPropertyMap[timeSlot].isDisabled &&
+                toggleCellColor(record.key, j)
+            "></td>
+        }
+        <!-- <th>{{ record.key }}
+          <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}} {{"test: "}}{{num}}
           <br>{{roomTypeMap[record.key]}}</span>
         </th>
         <td
@@ -19,7 +46,7 @@
           (click)="
             !cellPropertyMap[timeSlot].isDisabled &&
               toggleCellColor(record.key, j)
-          "></td>
+          "></td> -->
       </tr>
       }
     </table>

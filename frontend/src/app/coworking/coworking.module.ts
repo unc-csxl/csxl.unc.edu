@@ -77,7 +77,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatFormFieldModule,
     MatTooltipModule,
     MatTabsModule,
-    MatDialogModule
+    MatDialogModule,
+    ReactiveFormsModule
   ]
 })
 export class CoworkingModule {}

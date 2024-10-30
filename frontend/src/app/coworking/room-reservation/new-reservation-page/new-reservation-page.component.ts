@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, input, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Reservation } from 'src/app/coworking/coworking.models';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
@@ -12,6 +12,8 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { catchError, Observable, of } from 'rxjs';
 import { RoomReservationService } from '../room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-reservation-page',
@@ -28,6 +30,8 @@ export class NewReservationPageComponent implements OnInit {
   };
 
   public numHoursStudyRoomReservations$!: Observable<string>;
+  // public capacity = new FormControl<number | null>(0, Validators.required);
+  public capacity = new FormControl<number | null>(null, [Validators.required, Validators.min(1)])
 
   constructor(
     private router: Router,
@@ -55,5 +59,13 @@ export class NewReservationPageComponent implements OnInit {
   getNumHoursStudyRoomReservations() {
     this.numHoursStudyRoomReservations$ =
       this.roomReservationService.getNumHoursStudyRoomReservations();
+  }
+
+  updateCapacity() {
+    if (this.capacity.value === null) {
+      console.log("null");
+    } else {
+      console.log("Current capacity:", this.capacity.value);
+    }
   }
 }

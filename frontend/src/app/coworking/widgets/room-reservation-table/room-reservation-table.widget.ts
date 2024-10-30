@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -18,6 +18,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./room-reservation-table.widget.css']
 })
 export class RoomReservationWidgetComponent {
+  @Input() num: number | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.num != null) {
+      
+    }
+  }
+
+
   timeSlots: string[] = [];
 
   //- Reservations Map
