@@ -1,21 +1,11 @@
 import {
-  OperatingHours,
-  OperatingHoursJSON,
-  Room,
-  Seat,
   SeatAvailability,
   SeatAvailabilityJSON,
-  parseSeatAvailabilityJSON,
-  parseOperatingHoursJSON
+  parseSeatAvailabilityJSON
 } from '../coworking/coworking.models';
 import {
   EventOverview,
-  EventRegistration,
-  EventStatusOverview,
-  EventStatusOverviewJson,
   parseEventOverviewJson,
-  parseEventStatusOverviewJson,
-  EventDraft,
   EventOverviewJson
 } from '../event/event.model';
 import { PublicProfile } from '../profile/profile.service';
@@ -26,15 +16,9 @@ import {
   parseOfficeHoursJson
 } from '../my-courses/my-courses.model';
 import {
-  ArticleState,
-  ArticleDraft,
-  BLANK_ARTICLE_DRAFT,
   ArticleOverviewJson,
   ArticleOverview,
-  parseArticleOverviewJson,
-  ReservationOverviewJson,
-  ReservationOverview,
-  parseReservationOverviewJson
+  parseArticleOverviewJson
 } from '../welcome/welcome.model';
 
 export interface FastTvDataJson {

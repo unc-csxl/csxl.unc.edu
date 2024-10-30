@@ -18,11 +18,6 @@ import {
   parseFastTvDataJson,
   parseSlowTvDataJson
 } from './tv.model';
-import {
-  DEFAULT_PAGINATION_PARAMS,
-  PaginationParams,
-  Paginator
-} from '../pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -30,4 +25,16 @@ import {
 export class TvService {
   /** Constructor */
   constructor(protected http: HttpClient) {}
+
+  getFastData(): Observable<FastTvData> {
+    return this.http
+      .get<FastTvDataJson>(`/api/signage/fast`)
+      .pipe(map(parseFastTvDataJson));
+  }
+
+  getSlowData(): Observable<SlowTvData> {
+    return this.http
+      .get<SlowTvDataJson>(`/api/signage/slow`)
+      .pipe(map(parseSlowTvDataJson));
+  }
 }
