@@ -22,11 +22,11 @@
 /* Add any additional styling for the room-reservation-table if needed */
 
 .filters {
-  padding: 10px; /* Adjust the value as needed */
+  padding-top: 10px; /* Adjust the value as needed */
 }
 
-.capacity-input {
-  margin-right: 20px;
+.filter {
+  padding: 10px;
 }
 
 .upcoming-reservations-container {
@@ -78,5 +78,16 @@
   .mat-mdc-card-header {
     flex-direction: column;
     align-items: baseline;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .filters {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter {
+    padding: 0px;
   }
 }
