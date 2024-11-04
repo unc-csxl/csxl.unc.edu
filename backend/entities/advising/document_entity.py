@@ -8,14 +8,11 @@ from backend.models.document import DocumentEnum
 class DocumentEntity(EntityBase):
     __tablename__ = "document"
 
-    # Unique ID for the news post
+    # Unique ID for the document
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
     # Title of the document
     title: Mapped[str] = mapped_column(String, nullable=False)
-
-    # Content of the document
-    content: Mapped[str] = mapped_column(String, nullable=False) # Might have to change later based on full text search
 
     # Tsvector for full-text search
     tsv_content: Mapped[str] = mapped_column(
@@ -30,8 +27,6 @@ class DocumentEntity(EntityBase):
         Index('ix_document_tsv_content', tsv_content, postgresql_using='gin'),
     )
 
-    # Type of document
-    type: Mapped[int] = mapped_column(Integer, nullable=False) # Registration guide = 1, FAQ = 2
 
     @classmethod
     def from_model(cls, model: document) -> "DocumentEntity":
@@ -60,7 +55,5 @@ class DocumentEntity(EntityBase):
         """
         return document(
             id=self.id,
-            title=self.title,
-            content=self.content,
-            type=self.type,
+            title=self.title
         )
