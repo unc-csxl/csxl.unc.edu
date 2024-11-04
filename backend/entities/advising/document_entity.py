@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime, func, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .entity_base import EntityBase
@@ -16,6 +16,19 @@ class DocumentEntity(EntityBase):
 
     # Content of the document
     content: Mapped[str] = mapped_column(String, nullable=False) # Might have to change later based on full text search
+
+    # Tsvector for full-text search
+    tsv_content: Mapped[str] = mapped_column(
+        "tsv_content", 
+        type_=String, 
+        index=True,
+        nullable=False,
+    )
+
+    # Create a GIN index on the tsv_content column
+    __table_args__ = (
+        Index('ix_document_tsv_content', tsv_content, postgresql_using='gin'),
+    )
 
     # Type of document
     type: Mapped[int] = mapped_column(Integer, nullable=False) # Registration guide = 1, FAQ = 2
@@ -35,6 +48,7 @@ class DocumentEntity(EntityBase):
             id=document.id,
             title=document.title,
             content=document.content,
+            tsv_content=func.to_tsvector('english', model.content),
             type=document.type,
         )
     def to_model(self) -> document:
