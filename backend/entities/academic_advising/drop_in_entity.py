@@ -38,10 +38,10 @@ class DropInEntity(EntityBase):
     @classmethod
     def from_model(cls, model: DropIn) -> Self:
         """
-        Create a UserEntity from a User model.
+        Create a DropInEntity from a DropIn model.
 
         Args:
-            model (User): The model to create the entity from.
+            model (DropIn): The model to create the entity from.
 
         Returns:
             Self: The entity (not yet persisted).

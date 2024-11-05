@@ -9,10 +9,10 @@ __license__ = "MIT"
 
 class NewDropInReminder(BaseModel):
     """
-    Pydantic model to represent an `EventRegistration`.
+    Pydantic model to represent an `DropInReminder`.
 
-    This model is based on the `EventRegistrationEntity` model, which
-    defines the shape of the `EventRegistration` table in the PostgreSQL database
+    This model is based on the `DropInReminderEntity` model, which
+    defines the shape of the `DropInReminder` table in the PostgreSQL database
 
     This model is needed for the creation of new registrations in the event service
     """
@@ -23,10 +23,10 @@ class NewDropInReminder(BaseModel):
 
 class DropInReminder(NewDropInReminder):
     """
-    Pydantic model to represent an `EventRegistration`.
+    Pydantic model to represent an `DropInReminder`.
 
-    This model is based on the `EventRegistrationEntity` model, which
-    defines the shape of the `EventRegistration` table in the PostgreSQL database
+    This model is based on the `DropInReminderEntity` model, which
+    defines the shape of the `DropInReminder` table in the PostgreSQL database
     """
 
     drop_in: DropIn
