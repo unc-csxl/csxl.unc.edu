@@ -16,8 +16,6 @@ class DocumentEntity(EntityBase):
     # Title of the document
     title: Mapped[str] = mapped_column(String, nullable=False)
 
-    # Content of the document
-    content: Mapped[str] = mapped_column(String, nullable=False) # Might have to change later based on full text search
 
     # NOTE: This field establishes a one-to-many relationship between the documents and sections table.
     sections: Mapped[list["SectionEntity"]] = relationship(
@@ -61,7 +59,6 @@ class DocumentEntity(EntityBase):
         return DocumentDetails(
             id=self.id,
             title=self.title,
-            content=self.content,
             document_id=self.document_id,
             sections=[section.to_overview_model() for section in self.sections],
         )
