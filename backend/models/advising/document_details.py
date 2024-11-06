@@ -16,4 +16,4 @@ class DocumentDetails(Document):
     of the `Document` database in the PostgreSQL database.
     """
 
-    events: list[DocumentSection]
+    sections: list[DocumentSection]
