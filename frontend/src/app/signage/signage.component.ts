@@ -6,7 +6,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SignageService } from './signage.service';
 
@@ -15,14 +15,16 @@ import { SignageService } from './signage.service';
   templateUrl: './signage.component.html',
   styleUrl: './signage.component.css'
 })
-export class SignageComponent {
+export class SignageComponent implements OnInit{
   public static Route = {
     path: 'signage',
     component: SignageComponent
   };
   date: number = Date.now();
 
-  constructor(protected signageService: SignageService) {
+  constructor(protected signageService: SignageService) {}
+
+  ngOnInit(): void {
     this.signageService.getFastData().subscribe((fastSignageData) => {
       console.log(fastSignageData);
     });
@@ -32,3 +34,4 @@ export class SignageComponent {
     });
   }
 }
+

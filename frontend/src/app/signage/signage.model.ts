@@ -10,10 +10,9 @@ import {
 } from '../event/event.model';
 import { PublicProfile } from '../profile/profile.service';
 import {
-  OfficeHourQueueOverview,
-  OfficeHourQueueOverviewJson,
-  parseOfficeHourQueueOverview,
-  parseOfficeHoursJson
+  OfficeHourEventOverview,
+  OfficeHourEventOverviewJson,
+  parseOfficeHourEventOverviewJsonList, 
 } from '../my-courses/my-courses.model';
 import {
   ArticleOverviewJson,
@@ -21,46 +20,44 @@ import {
   parseArticleOverviewJson
 } from '../welcome/welcome.model';
 
-export interface FastSignageDataJson {
+export interface SlowSignageDataJson {
   newest_news: ArticleOverviewJson[];
-  newest_events: EventOverviewJson[];
+  events: EventOverviewJson[];
   top_users: PublicProfile[];
-  announcements: string[];
+  announcement_titles: string[];
 }
 
-export interface SlowSignageDataJson {
-  active_office_hours: OfficeHourQueueOverviewJson[];
+export interface FastSignageDataJson {
+  active_office_hours: OfficeHourEventOverviewJson[];
   available_rooms: string[];
   seat_availability: SeatAvailabilityJSON[];
 }
 
-export interface FastSignageData {
-  newest_news: ArticleOverview[] | null;
+export interface SlowSignageData {
+  newest_news: ArticleOverview[];
   newest_events: EventOverview[];
   top_users: PublicProfile[];
-  announcements: string[];
+  announcement_titles: string[];
 }
 
-export interface SlowSignageData {
-  active_office_hours: OfficeHourQueueOverview[] | null;
+export interface FastSignageData {
+  active_office_hours: OfficeHourEventOverview[];
   available_rooms: string[];
   seat_availability: SeatAvailability[];
 }
 
-export const parseFastSignageDataJson = (json: FastSignageDataJson): FastSignageData => {
+export const parseSlowSignageDataJson = (json: SlowSignageDataJson): SlowSignageData => {
   return {
     newest_news: json.newest_news.map(parseArticleOverviewJson),
-    newest_events: json.newest_events.map(parseEventOverviewJson),
+    newest_events: json.events.map(parseEventOverviewJson),
     top_users: json.top_users,
-    announcements: json.announcements
+    announcement_titles: json.announcement_titles
   };
 };
 
-export const parseSlowSignageDataJson = (json: SlowSignageDataJson): SlowSignageData => {
+export const parseFastSignageDataJson = (json: FastSignageDataJson): FastSignageData => {
   return {
-    active_office_hours: json.active_office_hours.map(
-      parseOfficeHourQueueOverview
-    ),
+    active_office_hours: parseOfficeHourEventOverviewJsonList(json.active_office_hours),
     available_rooms: json.available_rooms,
     seat_availability: json.seat_availability.map(parseSeatAvailabilityJSON)
   };

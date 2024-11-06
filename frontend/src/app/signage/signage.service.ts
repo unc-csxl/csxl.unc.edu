@@ -26,15 +26,15 @@ export class SignageService {
   /** Constructor */
   constructor(protected http: HttpClient) {}
 
-  getFastData(): Observable<FastSignageData> {
-    return this.http
-      .get<FastSignageDataJson>(`/api/signage/fast`)
-      .pipe(map(parseFastSignageDataJson));
-  }
-
   getSlowData(): Observable<SlowSignageData> {
     return this.http
       .get<SlowSignageDataJson>(`/api/signage/slow`)
       .pipe(map(parseSlowSignageDataJson));
+  }
+
+  getFastData(): Observable<FastSignageData> {
+    return this.http
+      .get<FastSignageDataJson>(`/api/signage/fast`)
+      .pipe(map(parseFastSignageDataJson));
   }
 }
