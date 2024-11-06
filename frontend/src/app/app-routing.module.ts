@@ -4,13 +4,13 @@ import { AppTitleStrategy } from './app-title.strategy';
 import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
-import { TvComponent } from './tv/tv.component';
+import { SignageComponent } from './signage/signage.component';
 
 const routes: Routes = [
   HomeComponent.Route,
   AboutComponent.Route,
   GateComponent.Route,
-  TvComponent.Route,
+  SignageComponent.Route,
   {
     path: 'coworking',
     title: 'Cowork in the XL',

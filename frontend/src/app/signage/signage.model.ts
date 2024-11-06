@@ -21,33 +21,33 @@ import {
   parseArticleOverviewJson
 } from '../welcome/welcome.model';
 
-export interface FastTvDataJson {
+export interface FastSignageDataJson {
   newest_news: ArticleOverviewJson[];
   newest_events: EventOverviewJson[];
   top_users: PublicProfile[];
   announcements: string[];
 }
 
-export interface SlowTvDataJson {
+export interface SlowSignageDataJson {
   active_office_hours: OfficeHourQueueOverviewJson[];
   available_rooms: string[];
   seat_availability: SeatAvailabilityJSON[];
 }
 
-export interface FastTvData {
+export interface FastSignageData {
   newest_news: ArticleOverview[] | null;
   newest_events: EventOverview[];
   top_users: PublicProfile[];
   announcements: string[];
 }
 
-export interface SlowTvData {
+export interface SlowSignageData {
   active_office_hours: OfficeHourQueueOverview[] | null;
   available_rooms: string[];
   seat_availability: SeatAvailability[];
 }
 
-export const parseFastTvDataJson = (json: FastTvDataJson): FastTvData => {
+export const parseFastSignageDataJson = (json: FastSignageDataJson): FastSignageData => {
   return {
     newest_news: json.newest_news.map(parseArticleOverviewJson),
     newest_events: json.newest_events.map(parseEventOverviewJson),
@@ -56,7 +56,7 @@ export const parseFastTvDataJson = (json: FastTvDataJson): FastTvData => {
   };
 };
 
-export const parseSlowTvDataJson = (json: SlowTvDataJson): SlowTvData => {
+export const parseSlowSignageDataJson = (json: SlowSignageDataJson): SlowSignageData => {
   return {
     active_office_hours: json.active_office_hours.map(
       parseOfficeHourQueueOverview
