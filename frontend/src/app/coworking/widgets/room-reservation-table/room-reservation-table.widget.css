@@ -49,3 +49,36 @@ td {
   font-size: smaller;
   font-weight: lighter;
 }
+
+@media only screen and (max-width: 600px) {
+
+  table {
+    border-collapse: collapse;
+    width: 99%;
+    margin-left: 10px;
+    white-space: nowrap; /* Prevent line breaks for child elements */ 
+    display: block;
+  }
+
+  th, td {
+    padding: 5px;
+    font-size: 10px;
+    line-height: 20px;
+    display: block;
+    height: 60px;
+    width: 50px;
+  }
+
+  tr {
+    display: inline-block;
+  }
+
+  br {
+    text-align: center;
+  }
+
+  .room-details {
+    text-align: center;
+    vertical-align: middle;
+  }
+}

@@ -4,7 +4,7 @@
       <tr>
         <th></th>
         @for(timeSlot of timeSlots; track timeSlot) {
-        <th [innerHTML]="timeSlot" class="time-slot"></th>
+        <th [innerHTML]="timeSlot"></th>
         }
       </tr>
       @for (record of reservationsMap | keyvalue; track record.key) {
@@ -12,16 +12,16 @@
         <!-- Check capacity in non-null -->
         @if (capacityFilter) {
           @if (capacityMap[record.key] >= capacityFilter) {
-            <th>{{ record.key }}
-              <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
-              <br>{{roomTypeMap[record.key]}}</span>
-            </th>
-            <td
-              *ngFor="let timeSlot of record.value; let j = index"
-              [style.background]="cellPropertyMap[timeSlot].backgroundColor"
-              (click)="
-                !cellPropertyMap[timeSlot].isDisabled &&
-                  toggleCellColor(record.key, j)
+              <th>{{ record.key }}
+                <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
+                <br>{{roomTypeMap[record.key]}}</span>
+              </th>
+              <td
+                *ngFor="let timeSlot of record.value; let j = index"
+                [style.background]="cellPropertyMap[timeSlot].backgroundColor"
+                (click)="
+                  !cellPropertyMap[timeSlot].isDisabled &&
+                    toggleCellColor(record.key, j)
               "></td>
           }
         } @else {
@@ -36,20 +36,8 @@
             (click)="
               !cellPropertyMap[timeSlot].isDisabled &&
                 toggleCellColor(record.key, j)
-            "></td>
+          "></td>
         }
-        <!-- <th>{{ record.key }}
-          <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}} {{"test: "}}{{num}}
-          <br>{{roomTypeMap[record.key]}}</span>
-        </th>
-        <td
-          *ngFor="let timeSlot of record.value; let j = index"
-          [style.background]="cellPropertyMap[timeSlot].backgroundColor"
-          (click)="
-            !cellPropertyMap[timeSlot].isDisabled &&
-              toggleCellColor(record.key, j)
-          "></td> -->
-      </tr>
       }
     </table>
   </div>
