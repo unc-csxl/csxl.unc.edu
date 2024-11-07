@@ -47,7 +47,6 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { SharedModule } from './shared/shared.module';
 import { MatChipsModule } from '@angular/material/chips';
-import { SignageComponent } from "./signage/signage.component";
 
 @NgModule({
   declarations: [
@@ -58,7 +57,6 @@ import { SignageComponent } from "./signage/signage.component";
     HomeComponent,
     AboutComponent,
     GateComponent,
-    SignageComponent
   ],
   bootstrap: [AppComponent],
   imports: [

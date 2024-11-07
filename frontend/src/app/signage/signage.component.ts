@@ -17,7 +17,7 @@ import { SignageService } from './signage.service';
 })
 export class SignageComponent implements OnInit{
   public static Route = {
-    path: 'signage',
+    path: '',
     component: SignageComponent
   };
   date: number = Date.now();
