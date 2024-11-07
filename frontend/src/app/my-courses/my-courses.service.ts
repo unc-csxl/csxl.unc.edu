@@ -37,7 +37,8 @@ import {
   parseOfficeHoursJson,
   NewOfficeHours,
   UpdatedCourseSite,
-  CourseSiteOverview
+  CourseSiteOverview,
+  NewOfficeHoursRecurrence
 } from './my-courses.model';
 import { Observable, map, tap } from 'rxjs';
 import { Paginator } from '../pagination';
@@ -112,9 +113,9 @@ export class MyCoursesService {
     courseSiteId: string
   ): Observable<OfficeHourEventOverview[]> {
     return this.http
-      .get<OfficeHourEventOverviewJson[]>(
-        `/api/my-courses/${courseSiteId}/oh-events/current`
-      )
+      .get<
+        OfficeHourEventOverviewJson[]
+      >(`/api/my-courses/${courseSiteId}/oh-events/current`)
       .pipe(map(parseOfficeHourEventOverviewJsonList));
   }
 
@@ -288,6 +289,29 @@ export class MyCoursesService {
     return this.http
       .post<OfficeHoursJson>(`/api/office-hours/${siteId}`, officeHours)
       .pipe(map(parseOfficeHoursJson));
+  }
+
+  /**
+   * Create office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to create.
+   * @returns {Observable<OfficeHours>}
+   */
+  createRecurringOfficeHours(
+    siteId: number,
+    officeHours: NewOfficeHours,
+    recurrence: NewOfficeHoursRecurrence
+  ): Observable<OfficeHours[]> {
+    return this.http
+      .post<
+        OfficeHoursJson[]
+      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrence })
+      .pipe(
+        map((officeHoursJSON) => {
+          console.log('jadey', officeHoursJSON);
+          return officeHoursJSON.map(parseOfficeHoursJson);
+        })
+      );
   }
 
   /**

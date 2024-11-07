@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 from pydantic import BaseModel
 
@@ -18,8 +18,8 @@ class NewOfficeHoursRecurrence(BaseModel):
   PostgreSQL database.
   """
 
-  start_date: date
-  end_date: date
+  start_date: datetime
+  end_date: datetime
   recur_monday: bool
   recur_tuesday: bool
   recur_wednesday: bool

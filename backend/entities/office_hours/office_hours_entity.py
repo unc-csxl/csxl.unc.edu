@@ -100,6 +100,7 @@ class OfficeHoursEntity(EntityBase):
             end_time=model.end_time,
             course_site_id=model.course_site_id,
             room_id=model.room_id,
+            recurrence_id=model.recurrence_id
         )
 
     @classmethod

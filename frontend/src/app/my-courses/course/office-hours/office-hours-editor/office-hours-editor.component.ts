@@ -49,6 +49,16 @@ export class OfficeHoursEditorComponent {
   /* Holds the virtual room. */
   virtualRoom: Room | undefined;
 
+  public days: { [day: string]: boolean } = {
+    Mon: false,
+    Tues: false,
+    Wed: false,
+    Thurs: false,
+    Fri: false,
+    Sat: false,
+    Sun: false
+  };
+
   /** Office Hours Editor Form */
   public officeHoursForm = this.formBuilder.group({
     type: new FormControl(0, [Validators.required]),
@@ -63,7 +73,12 @@ export class OfficeHoursEditorComponent {
       this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
       [Validators.required]
     ),
-    room_id: new FormControl('', [Validators.required])
+    room_id: new FormControl('', [Validators.required]),
+    recurs: new FormControl(false, [Validators.required]),
+    recur_end: new FormControl(
+      this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+      []
+    )
   });
 
   constructor(
@@ -97,6 +112,18 @@ export class OfficeHoursEditorComponent {
     );
   }
 
+  /** "Null" comparator function to prevent keyvalue pipe from sorting
+   * the day keys alphabetically.
+   */
+  maintainOriginalOrder = () => 0;
+
+  /** Toggles day boolean to determine which days should be included in
+   * the recurrence.
+   */
+  toggleDay(day: string) {
+    this.days[day] = !this.days[day];
+  }
+
   /** Shorthand for whether office hours is new or not.
    * @returns {boolean}
    */
@@ -117,26 +144,57 @@ export class OfficeHoursEditorComponent {
   onSubmit(): void {
     if (this.officeHoursForm.valid) {
       let officeHoursToSubmit = this.officeHours;
-      Object.assign(officeHoursToSubmit, this.officeHoursForm.value);
+      let { recurs, recur_end, ...officeHoursInfo } =
+        this.officeHoursForm.value;
+      Object.assign(officeHoursToSubmit, officeHoursInfo);
 
       // Load information from the parent route
       let courseSiteId = +this.route.parent!.snapshot.params['course_site_id'];
       officeHoursToSubmit.course_site_id = courseSiteId;
 
-      let submittedOfficeHours = this.isNew()
-        ? this.myCoursesService.createOfficeHours(
-            courseSiteId,
-            officeHoursToSubmit as NewOfficeHours
-          )
-        : this.myCoursesService.updateOfficeHours(
-            courseSiteId,
-            officeHoursToSubmit
-          );
+      let submittedOfficeHours;
+      if (recurs) {
+        let recurrence = {
+          start_date: new Date(
+            new Date(officeHoursToSubmit.start_time).setHours(0, 0, 0, 0)
+          ),
+          end_date: recur_end
+            ? new Date(new Date(recur_end).setHours(0, 0, 0, 0))
+            : null,
+          recur_monday: this.days['Mon'],
+          recur_tuesday: this.days['Tues'],
+          recur_wednesday: this.days['Wed'],
+          recur_thursday: this.days['Thurs'],
+          recur_friday: this.days['Fri'],
+          recur_saturday: this.days['Sat'],
+          recur_sunday: this.days['Sun']
+        };
+        submittedOfficeHours = this.myCoursesService.createRecurringOfficeHours(
+          courseSiteId,
+          officeHoursToSubmit as NewOfficeHours,
+          recurrence
+        );
 
-      submittedOfficeHours.subscribe({
-        next: (officeHours) => this.onSuccess(officeHours),
-        error: (err) => this.onError(err)
-      });
+        submittedOfficeHours.subscribe({
+          next: (officeHours) => this.onSuccess(officeHours[0]),
+          error: (err) => this.onError(err)
+        });
+      } else {
+        submittedOfficeHours = this.isNew()
+          ? this.myCoursesService.createOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit as NewOfficeHours
+            )
+          : this.myCoursesService.updateOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit
+            );
+
+        submittedOfficeHours.subscribe({
+          next: (officeHours) => this.onSuccess(officeHours),
+          error: (err) => this.onError(err)
+        });
+      }
     }
   }
 

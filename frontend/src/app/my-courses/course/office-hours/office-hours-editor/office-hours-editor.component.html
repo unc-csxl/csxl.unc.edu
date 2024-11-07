@@ -60,29 +60,66 @@
           name="description"></textarea>
       </mat-form-field>
 
-      <!-- Start Time -->
-      <mat-form-field appearance="outline" color="accent">
-        <mat-label>Office Hours Event Start Time</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          placeholder="Start Time"
-          formControlName="start_time"
-          name="start_time"
-          required />
+      <div class="time-form-fields-container">
+        <!-- Start Time -->
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Office Hours Event Start Time</mat-label>
+          <input
+            matInput
+            type="datetime-local"
+            placeholder="Start Time"
+            formControlName="start_time"
+            name="start_time"
+            required />
+        </mat-form-field>
+
+        <!-- End Time -->
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Office Hours Event End Time</mat-label>
+          <input
+            matInput
+            type="datetime-local"
+            placeholder="End Time"
+            formControlName="end_time"
+            name="end_time"
+            required />
+        </mat-form-field>
+      </div>
+
+      <!-- Recurrence Pattern Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Recurrence Pattern</mat-label>
+        <mat-select formControlName="recurs">
+          @for(recur of [false, true]; track recur) {
+          <mat-option [value]="recur">{{ recur ? 'Weekly' : 'Does not repeat' }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
 
-      <!-- End Time -->
-      <mat-form-field appearance="outline" color="accent">
-        <mat-label>Office Hours Event End Time</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          placeholder="End Time"
-          formControlName="end_time"
-          name="end_time"
-          required />
-      </mat-form-field>
+      <!-- Recurrence Pattern Day Options -->
+      @if (officeHoursForm.value.recurs) {
+        <mat-button-toggle-group
+          name="days"
+          aria-label="Days to Recur"
+          multiple
+        >
+          @for (day of this.days | keyvalue: maintainOriginalOrder; track day) {
+            <mat-button-toggle (change)="toggleDay(day.key)" value="{{day.key}}">{{day.key}}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+
+        <!-- Recurrence End Date -->
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Recurrence End Date</mat-label>
+          <input
+            matInput
+            type="datetime-local"
+            placeholder="Recurrence End Date"
+            formControlName="recur_end"
+            name="recur_end"
+            required />
+        </mat-form-field>
+      }
     </mat-card-content>
     <mat-card-actions>
       <button

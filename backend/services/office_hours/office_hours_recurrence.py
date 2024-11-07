@@ -2,6 +2,7 @@ from datetime import timedelta
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
+from backend.services.exceptions import RecurringOfficeHourEventException
 from backend.services.office_hours.office_hours import OfficeHoursService
 
 from ...database import db_session
@@ -40,12 +41,15 @@ class OfficeHoursRecurrenceService:
           # Create recurrence entity
           recurrence_entity = OfficeHoursRecurrenceEntity.from_new_model(recurrence)
           self._session.add(recurrence_entity)
+          self._session.commit()
 
           # Create office hour events
           new_events = []
           current_date = recurrence.start_date
           current_event = event
 
+          current_event.recurrence_id = recurrence_entity.id
+        
           original_td = current_event.end_time - current_event.start_time
 
           # put valid date strings into list
@@ -72,8 +76,9 @@ class OfficeHoursRecurrenceService:
               days_recur.append('sunday')
 
           if len(days_recur) == 0:
-              # error out
-              ...
+              raise RecurringOfficeHourEventException("No days to recur selected.")
+
+            # error out if recurrence end date is before 1st OH event
 
           while current_date <= recurrence.end_date:     
               # Get day name of date
@@ -88,16 +93,18 @@ class OfficeHoursRecurrenceService:
                   # move to next iteration if day is not valid
                   current_date += timedelta(days = 1)
                   continue
-              
-              current_event.recurrence_id = recurrence_entity.id
 
               # Create new OH entity
-              office_hours_entity = OfficeHoursEntity.from_new_model(event)
+              office_hours_entity = OfficeHoursEntity.from_new_model(current_event)
+
               self._session.add(office_hours_entity)
               new_events.append(office_hours_entity)
 
               # Increment date
               current_date += timedelta(days = 1)
+
+          if len(new_events) == 0:
+              raise RecurringOfficeHourEventException("No events created. Check your recurrence end date.")
 
           # commit changes
           self._session.commit()
