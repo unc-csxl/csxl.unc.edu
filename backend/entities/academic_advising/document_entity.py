@@ -1,11 +1,11 @@
 from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime, func, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .entity_base import EntityBase
-from ...models.advising import document
-from backend.models.document import DocumentEnum
-from document_section_entity import SectionEntity
-from ...models.advising.document_details import DocumentDetails
+from ..entity_base import EntityBase
+from ...models.academic_advising.document import Document
+from ...models.academic_advising.document_details import DocumentDetails
+from typing import Self
+
 
 class DocumentEntity(EntityBase):
     __tablename__ = "document"
@@ -24,7 +24,7 @@ class DocumentEntity(EntityBase):
    
 
     @classmethod
-    def from_model(cls, model: document) -> "DocumentEntity":
+    def from_model(cls, model: Document) -> Self:
         """
         Create a DocumentEntity from a Document model.
 
@@ -38,7 +38,8 @@ class DocumentEntity(EntityBase):
             id=model.id,
             title=model.title
         )
-    def to_model(self) -> document:
+    
+    def to_model(self) -> Document:
         """
         Create a Document model from a DocumentEntity.
 
@@ -49,6 +50,7 @@ class DocumentEntity(EntityBase):
             id=self.id,
             title=self.title,
         )
+    
     def to_details_model(self) -> DocumentDetails:
         """
         Converts a `DocumentEntity` object into a `DocumentDetails` model object

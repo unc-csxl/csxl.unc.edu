@@ -1,15 +1,14 @@
 from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime, func, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .entity_base import EntityBase
-from ...models.advising import document
-from backend.models.document import DocumentEnum
-from document_entity import DocumentEntity
-from ...models.advising import document_section
-from ...models.advising.document_section import DocumentSection
-from ...models.advising.document_details import DocumentDetails
+from ..entity_base import EntityBase
+from typing import Self
+from ...models.academic_advising import document
+from ...models.academic_advising import document_section
+from ...models.academic_advising.document_section import DocumentSection
+from ...models.academic_advising.document_details import DocumentDetails
 
-class SectionEntity(EntityBase):
+class DocumentSectionEntity(EntityBase):
     __tablename__ = "section"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -37,7 +36,7 @@ class SectionEntity(EntityBase):
 
 
     @classmethod
-    def from_model(cls, model: DocumentSection) -> "SectionEntity":
+    def from_model(cls, model: DocumentSection) -> Self:
         return cls(
             id=model.id,
             title=model.title,
