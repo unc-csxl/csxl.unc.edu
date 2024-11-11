@@ -158,11 +158,16 @@ class OfficeHoursService:
         active_ticket = active_tickets[0] if len(active_tickets) > 0 else None
 
         # Find queue position
-        queue_tickets = [
-            ticket
-            for ticket in queue_entity.tickets
-            if ticket.state == TicketState.QUEUED
-        ]
+        queue_tickets = (
+            sorted(
+                [
+                    ticket
+                    for ticket in queue_entity.tickets
+                    if ticket.state == TicketState.QUEUED
+                ],
+                key=lambda ticket: ticket.created_at,
+            ),
+        )
 
         queue_position = (
             queue_tickets.index(active_ticket) + 1
@@ -230,7 +235,10 @@ class OfficeHoursService:
             other_called=[
                 self._to_oh_ticket_overview(ticket) for ticket in called_tickets
             ],
-            queue=[self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
+            queue=sorted(
+                [self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
+                key=lambda ticket: ticket.created_at,
+            ),
             personal_tickets_called=len(personal_completed_tickets),
             average_minutes=personal_average_minutes,
             total_tickets_called=len(completed_tickets),

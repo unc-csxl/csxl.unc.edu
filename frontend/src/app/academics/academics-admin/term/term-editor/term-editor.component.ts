@@ -75,13 +75,17 @@ export class TermEditorComponent {
   name = new FormControl('', [Validators.required]);
   start = new FormControl('', [Validators.required]);
   end = new FormControl('', [Validators.required]);
+  applications_open = new FormControl('', [Validators.required]);
+  applications_close = new FormControl('', [Validators.required]);
 
   /** Term Editor Form */
   public termForm = this.formBuilder.group({
     id: this.id,
     name: this.name,
     start: this.start,
-    end: this.end
+    end: this.end,
+    applications_open: this.applications_open,
+    applications_close: this.applications_close
   });
 
   /** Constructs the term editor component */
@@ -111,7 +115,15 @@ export class TermEditorComponent {
       id: this.termId == 'new' ? '' : this.term.id,
       name: this.term.name,
       start: this.datePipe.transform(this.term.start, 'yyyy-MM-ddTHH:mm'),
-      end: this.datePipe.transform(this.term.end, 'yyyy-MM-ddTHH:mm')
+      end: this.datePipe.transform(this.term.end, 'yyyy-MM-ddTHH:mm'),
+      applications_open: this.datePipe.transform(
+        this.term.applications_open,
+        'yyyy-MM-ddTHH:mm'
+      ),
+      applications_close: this.datePipe.transform(
+        this.term.applications_close,
+        'yyyy-MM-ddTHH:mm'
+      )
     });
   }
 
