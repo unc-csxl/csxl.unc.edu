@@ -230,7 +230,10 @@ class OfficeHoursService:
             other_called=[
                 self._to_oh_ticket_overview(ticket) for ticket in called_tickets
             ],
-            queue=[self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
+            queue=sorted(
+                [self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
+                key=lambda ticket: ticket.created_at,
+            ),
             personal_tickets_called=len(personal_completed_tickets),
             average_minutes=personal_average_minutes,
             total_tickets_called=len(completed_tickets),
