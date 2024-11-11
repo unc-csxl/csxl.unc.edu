@@ -80,6 +80,8 @@ export const termResolver: ResolveFn<Term | undefined> = (route, state) => {
       name: '',
       start: new Date(),
       end: new Date(),
+      applications_open: new Date(),
+      applications_close: new Date(),
       course_sections: null
     };
   }
