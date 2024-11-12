@@ -1,0 +1,91 @@
+/* Begin Action List Styling */
+
+.mdc-list-item__content {
+  align-items: center;
+}
+
+.mat-mdc-list-item {
+  margin-bottom: 10px;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start {
+  font-size: 36px;
+  background: #4786c6;
+  width: 62px;
+  height: 62px;
+  margin-left: 6px;
+  margin-right: 12px;
+  padding-bottom: 0;
+  line-height: 36px;
+  border-radius: 100%;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start div {
+  text-align: center;
+  margin-top: 12px; 
+  color: white;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start.unavailable {
+  background: #612d23;
+}
+
+
+/* End Action List Styling */
+
+.mat-mdc-card {
+  margin: 0 !important;
+  max-width: 640px;
+}
+
+.dropin-header {
+  display: flex;
+  margin-bottom: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+mat-card-footer {
+    font-style: italic;
+    padding: 5px;
+    padding-left: 10px;
+}
+
+.mdc-list-item {
+  padding: 0 !important;
+  display: flex;
+  align-items: baseline;
+}
+
+.mdc-list-group__subheader {
+  margin: 0;
+}
+
+.mat-mdc-list-base {
+  padding: 0;
+}
+
+.mat-expansion-panel-header-description {
+  align-items: right;
+  flex: 0 0 auto;
+}
+
+.mat-expansion-panel-header-description button {
+  z-index: 10 !important;
+}
+
+mat-expansion-panel {
+  margin-top: 8px;
+}
+
+.mat-action-row {
+  align-items: center;
+}
+
+.bolded {
+  font-weight: 500;
+}
+
+a {
+  text-decoration: none;
+}
