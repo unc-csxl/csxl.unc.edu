@@ -359,6 +359,9 @@ body {
   .headline-large {
     font: mat.get-theme-typography($theme, headline-large, font);
   }
+  .display-large {
+    font: mat.get-theme-typography($theme, display-large, font);
+  }
   .display-medium {
     font: mat.get-theme-typography($theme, display-medium, font);
   }

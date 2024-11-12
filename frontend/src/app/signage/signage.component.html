@@ -1,7 +1,6 @@
-<mat-sidenav-container>
-    <mat-sidenav-content>
-        <mat-toolbar>
-            <span [class]="''">{{date | date:'EEEE MMMM d, h:m aaa'}}</span>
-        </mat-toolbar>
-    </mat-sidenav-content>  
-</mat-sidenav-container>
+<div class="mat-sidenav">
+    <mat-card-header>
+        <mat-card-title class="display-large">{{date | date:'EEEE MMMM d, h:m aaa'}}</mat-card-title>
+    </mat-card-header>
+    <occupancy [seat_availability]="fastData().seat_availability"></occupancy>
+</div>
