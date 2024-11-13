@@ -3,5 +3,6 @@
         <mat-toolbar>
             <span [class]="''">{{date | date:'EEEE MMMM d, h:m aaa'}}</span>
         </mat-toolbar>
+        <news-card [article]="slowData().newest_news[0]"></news-card>
     </mat-sidenav-content>  
 </mat-sidenav-container>

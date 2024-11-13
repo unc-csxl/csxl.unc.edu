@@ -356,6 +356,18 @@ body {
   .title-small {
     font: mat.get-theme-typography($theme, title-small, font);
   }
+  .display-medium {
+    font: mat.get-theme-typography($theme, display-medium, font);
+  }
+  .headline-large {
+    font: mat.get-theme-typography($theme, headline-large, font);
+  }
+  .headline-small{
+    font: mat.get-theme-typography($theme, headline-small, font);
+  }
+  .body-large {
+    font: mat.get-theme-typography($theme, body-large, font);
+  }
   .font-primary {
     color: mat.get-theme-color($theme, primary) !important;
   }

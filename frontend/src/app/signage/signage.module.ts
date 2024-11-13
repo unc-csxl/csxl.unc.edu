@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipSet } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,15 +35,23 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { SignageRoutingModule } from './signage-routing.module';
 import { SignageComponent } from './signage.component';
+import { NewsCardWidget } from './widgets/news-card/news-card.widget';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  declarations: [SignageComponent],
+  declarations: [
+    SignageComponent,
+
+    // Widgets
+    NewsCardWidget
+  ],
   imports: [
     SignageRoutingModule,
     CommonModule,
     MatTabsModule,
     MatTableModule,
     MatCardModule,
+    MatChipSet,
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,
@@ -58,7 +67,8 @@ import { SignageComponent } from './signage.component';
     OrganizationRoutingModule,
     MatSidenavModule,
     MatToolbarModule,
-    RouterModule
+    RouterModule,
+    SharedModule
   ]
 })
 export class SignageModule {}

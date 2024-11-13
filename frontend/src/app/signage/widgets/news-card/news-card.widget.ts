@@ -7,7 +7,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ArticleOverview } from '../../welcome.model';
+import { ArticleOverview } from '../../../welcome/welcome.model';
 
 @Component({
   selector: 'news-card',
