@@ -1,7 +1,18 @@
 <div class="mat-sidenav">
     <mat-card-header>
-        <mat-card-title class="display-large">{{date | date:'EEEE MMMM d, h:m aaa'}}</mat-card-title>
+        <mat-card-title class="display-large">{{date | date:'EEEE MMMM d, h:mm aaa'}}</mat-card-title>
     </mat-card-header>
-    <occupancy class="occupancy" [seat_availability]="fastData().seat_availability"></occupancy>
-    <news-card class="news" [article]="slowData().newest_news[0]"></news-card>
+    <div class = 'column'>
+        <div class = 'row'>
+            <div class = 'occupancy'>
+                <occupancy [seat_availability]="fastData().seat_availability"></occupancy>
+            </div>
+            <div class = 'news'>
+            <news-card [article]="slowData().newest_news[0]"></news-card>
+            </div>
+        </div>
+        <div class = 'row'>
+            <!--Add bottom row cards here!--->
+        </div>
+    </div>
 </div>

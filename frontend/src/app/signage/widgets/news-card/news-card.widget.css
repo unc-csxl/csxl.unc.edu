@@ -1,10 +1,10 @@
-.mat-mdc-card {
-    margin-left: 20px;
-    margin-right:39px;
-    max-width: 47%;
-    max-height: fit-content;
-    padding: 20px;
-}
+.full-size-pane {
+    height: 43vh !important;
+    max-width: 100% !important;
+    flex-grow: 1;  
+    border-color: transparent !important;
+    margin: 0px !important;
+  }
 
 .article-title {
     cursor: pointer !important;
@@ -86,10 +86,10 @@ mat-card-actions {
     margin-left: 20px;
 }
 
-.news-footer {
+/* .news-footer {
     margin-top: 40px;
     margin-left: 36px;
-}
+} */
 
 @media only screen and (max-width: 800px) {
     .row {
