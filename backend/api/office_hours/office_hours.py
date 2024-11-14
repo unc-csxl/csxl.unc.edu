@@ -130,6 +130,18 @@ def delete_office_hours(
     oh_event_svc.delete(subject, site_id, oh_id)
 
 
+@api.delete("/{site_id}/{oh_id}/recurring", tags=["Office Hours"])
+def delete_recurring_office_hours(
+    site_id: int,
+    oh_id: int,
+    subject: User = Depends(registered_user),
+    oh_event_recurrence_svc: OfficeHoursRecurrenceService = Depends(),
+):
+    """
+    Deletes an existing office hours event and future events in the reucrrence pattern.
+    """
+    oh_event_recurrence_svc.delete_recurring(subject, site_id, oh_id)
+
 @api.get("/{site_id}/{oh_id}", tags=["Office Hours"])
 def get_office_hours(
     site_id: int,

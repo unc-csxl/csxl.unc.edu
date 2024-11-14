@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
+
+from backend.models.office_hours.office_hours_recurrence import OfficeHoursRecurrence
 from ...models import Paginated
 from ...models.office_hours.ticket_state import TicketState
 from ...models.office_hours.ticket_type import TicketType
@@ -75,6 +77,7 @@ class OfficeHoursOverview(BaseModel):
     end_time: datetime
     queued: int
     total_tickets: int
+    recurrence_id: int | None
 
 
 class OfficeHourTicketOverview(BaseModel):

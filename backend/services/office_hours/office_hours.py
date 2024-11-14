@@ -2,7 +2,6 @@
 Service for office hour events.
 """
 
-from datetime import timedelta
 import math
 from fastapi import Depends
 from sqlalchemy import select

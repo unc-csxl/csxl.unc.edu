@@ -1,8 +1,9 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
-from backend.services.exceptions import RecurringOfficeHourEventException
+from backend.services.exceptions import RecurringOfficeHourEventException, ResourceNotFoundException
 from backend.services.office_hours.office_hours import OfficeHoursService
 
 from ...database import db_session
@@ -110,3 +111,33 @@ class OfficeHoursRecurrenceService:
           self._session.commit()
 
           return [entity.to_model() for entity in new_events]
+
+    def delete_recurring(self, user: User, site_id: int, event_id: int):
+        """
+        Deletes an existing office hours event and future events in the event's recurrence pattern.
+        """
+        # Find existing event
+        office_hours_entity = self._session.get(OfficeHoursEntity, event_id)
+
+        if office_hours_entity is None:
+            raise ResourceNotFoundException(
+                "Office hours event with id: {event_id} does not exist."
+            )
+
+        # Check permissions
+        self._office_hours_svc._check_site_permissions(user, site_id)
+
+        # Find future events in recurrence pattern
+        start_date = office_hours_entity.start_time.date() if (office_hours_entity.start_time.date() > date.today()) else date.today()
+        future_events_query = (
+            select(OfficeHoursEntity)
+            .where(OfficeHoursEntity.recurrence_id == office_hours_entity.recurrence_id)
+            .where(OfficeHoursEntity.start_time >= start_date)
+        )
+
+        future_event_entities = self._session.scalars(future_events_query).unique().all()
+
+        for entity in future_event_entities:
+            self._session.delete(entity)
+            
+        self._session.commit()
