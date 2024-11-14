@@ -7,3 +7,11 @@ div {
 .mat-mdc-card-header {
     margin-bottom: 20px;
 }
+
+.occupancy, .news {
+    display: flex;
+}
+
+.occupancy {
+    float: left;
+}
