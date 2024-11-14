@@ -121,18 +121,18 @@
   <mat-sidenav-content>
     <mat-toolbar color="primary">
       <div class="toolbar">
-        <button
-          type="button"
-          aria-label="Toggle sidenav"
-          mat-icon-button
-          (click)="drawer.toggle()"
-          *ngIf="isHandset">
+        <div class="toolbar-left">
+          <button
+           type="button"
+           aria-label="Toggle sidenav"
+           mat-icon-button
+           (click)="drawer.toggle()"
+           *ngIf="isHandset">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-        </button>
-        <span [class]="isHandset ? 'title-medium' : ''">{{ navigationService.title$ | async }}</span>
+          </button>
+          <span id="toolbar-title" [class]="isHandset ? 'title-medium' : ''">{{ navigationService.title$ | async }}</span>
+        </div>
 
-
-        
         <div class="profile-chip-container">
           @if(navigationAdminGearService.adminSettingsData()) {
             <button
@@ -144,7 +144,7 @@
               <mat-icon aria-label="Admin icon" color="secondary">settings</mat-icon>
             </button>
           }
-          
+
             @if(profile$ | async; as profile) {
               <mat-chip-set class="desktop-profile-chips">
               <mat-chip class="profile-chip" routerLink="/profile">
@@ -168,23 +168,13 @@
                 }
               </button>
             } @else {
-              <a class="desktop-profile-chips" href="/auth?continue_to={{ router.url }}">
+              <a class="profile-chip-container" href="/auth?continue_to={{ router.url }}">
                 <mat-chip class="profile-chip">
-                  <mat-icon matChipAvatar>login</mat-icon>
+                  <mat-icon matChipAvatar>account_circle</mat-icon>
                   Sign In
                 </mat-chip>
               </a>
-              <a class="mobile-icon-chips" href="/auth?continue_to={{ router.url }}">
-                <button
-                class="mat-csxl-stroked-icon-button profile-circle-icon"
-                  type="button"
-                  mat-icon-button>
-                  <mat-icon class="login-circle-icon" matChipAvatar>login</mat-icon>
-                </button>   
-              </a>
-                       
             }
-         
         </div>
       </div>
     </mat-toolbar>

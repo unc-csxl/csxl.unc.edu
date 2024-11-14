@@ -70,11 +70,11 @@
       <mat-form-field appearance="outline">
         <mat-label>Ticket Type</mat-label>
         <mat-select formControlName="type" required>
-          <mat-option [value]="0">Assignment Help</mat-option>
-          <mat-option [value]="1">Conceptual Help</mat-option>
+          <mat-option [value]="1">Assignment Help</mat-option>
+          <mat-option [value]="0">Conceptual Help</mat-option>
         </mat-select>
       </mat-form-field>
-      @if (+ticketForm.controls['type'].value! === 0) {
+      @if (+ticketForm.controls['type'].value! === 1) {
       <mat-form-field appearance="outline">
         <mat-label>
           What section of the assignment do you need help with?

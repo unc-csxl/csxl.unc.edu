@@ -84,6 +84,9 @@
             name="end_time"
             required />
         </mat-form-field>
+      @if (officeHoursForm.hasError('dateRangeInvalid')) {
+        <mat-error>This event's end time must be after its start time.</mat-error>
+      }
       </div>
 
       <!-- Recurrence Pattern Field -->

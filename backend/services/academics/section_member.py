@@ -186,7 +186,11 @@ class SectionMemberService:
 
         try:
             for row in reader:
-                if reader.line_num != 2 and row["Student"] != "Student, Test":
+                if (
+                    reader.line_num != 2
+                    and row["Student"] != "Student, Test"
+                    and len(row["Student"]) > 0
+                ):
 
                     # Ensure that the uploaded CSV only contains one section
                     unique_sections.add(row["Section"])

@@ -17,12 +17,22 @@ import {
   OfficeHours
 } from 'src/app/my-courses/my-courses.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgFor } from '@angular/common';
 import { roomsResolver } from 'src/app/academics/academics.resolver';
 import { Room } from 'src/app/coworking/coworking.models';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'app-office-hours-editor',
@@ -59,27 +69,52 @@ export class OfficeHoursEditorComponent {
     Sun: false
   };
 
+  /** Custom date range validator. */
+  dateRangeValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const startDateControl = control.get('start_time');
+    const endDateControl = control.get('end_time');
+
+    console.log(startDateControl);
+
+    if (
+      startDateControl &&
+      startDateControl.value &&
+      endDateControl &&
+      endDateControl.value &&
+      startDateControl.value >= endDateControl.value
+    ) {
+      return { dateRangeInvalid: true };
+    }
+
+    return null;
+  };
+
   /** Office Hours Editor Form */
-  public officeHoursForm = this.formBuilder.group({
-    type: new FormControl(0, [Validators.required]),
-    mode: new FormControl(0, [Validators.required]),
-    description: new FormControl(''),
-    location_description: new FormControl(''),
-    start_time: new FormControl(
-      this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
-      [Validators.required]
-    ),
-    end_time: new FormControl(
-      this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
-      [Validators.required]
-    ),
-    room_id: new FormControl('', [Validators.required]),
-    recurs: new FormControl(false, [Validators.required]),
-    recur_end: new FormControl(
-      this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
-      []
-    )
-  });
+  public officeHoursForm = this.formBuilder.group(
+    {
+      type: new FormControl(0, [Validators.required]),
+      mode: new FormControl(0, [Validators.required]),
+      description: new FormControl(''),
+      location_description: new FormControl(''),
+      start_time: new FormControl(
+        this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+        [Validators.required]
+      ),
+      end_time: new FormControl(
+        this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
+        [Validators.required]
+      ),
+      room_id: new FormControl('', [Validators.required]),
+      recurs: new FormControl(false, [Validators.required]),
+      recur_end: new FormControl(
+        this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+        []
+      )
+    },
+    { validators: [this.dateRangeValidator] }
+  );
 
   constructor(
     private route: ActivatedRoute,
