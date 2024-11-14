@@ -84,9 +84,6 @@
             name="end_time"
             required />
         </mat-form-field>
-      @if (officeHoursForm.hasError('dateRangeInvalid')) {
-        <mat-error>This event's end time must be after its start time.</mat-error>
-      }
       </div>
 
       <!-- Recurrence Pattern Field -->
@@ -115,13 +112,24 @@
         <mat-form-field appearance="outline" color="accent">
           <mat-label>Recurrence End Date</mat-label>
           <input
-            matInput
-            type="datetime-local"
-            placeholder="Recurrence End Date"
-            formControlName="recur_end"
+            matInput 
+            formControlName="recur_end" 
             name="recur_end"
-            required />
+            [matDatepicker]="endDatePicker" 
+            (click)="endDatePicker.open()"
+            required
+          >
+          <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #endDatePicker></mat-datepicker>
         </mat-form-field>
+      }
+      
+      <!-- Date Range Validation Error -->
+      @if (officeHoursForm.hasError('dateRangeInvalid')) {
+        <mat-error>This event's end time must be after its start time.</mat-error>
+      }
+      @if (officeHoursForm.value.recurs && officeHoursForm.hasError('recurEndDateInvalid')) {
+        <mat-error>This event's recurrence end date must be after the original event end date.</mat-error>
       }
     </mat-card-content>
     <mat-card-actions>

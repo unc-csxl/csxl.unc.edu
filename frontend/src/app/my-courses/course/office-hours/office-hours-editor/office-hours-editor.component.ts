@@ -21,8 +21,6 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
-  FormGroupDirective,
   ValidationErrors,
   ValidatorFn,
   Validators
@@ -76,8 +74,6 @@ export class OfficeHoursEditorComponent {
     const startDateControl = control.get('start_time');
     const endDateControl = control.get('end_time');
 
-    console.log(startDateControl);
-
     if (
       startDateControl &&
       startDateControl.value &&
@@ -89,6 +85,32 @@ export class OfficeHoursEditorComponent {
     }
 
     return null;
+  };
+
+  /** Custom parameterized date range validator. */
+  genericDateRangeValidator = (
+    startDateLabel: string,
+    endDateLabel: string
+  ): ValidatorFn => {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const startDateControl = control.get(startDateLabel);
+      const endDateControl = control.get(endDateLabel);
+
+      if (
+        startDateControl &&
+        startDateControl.value &&
+        endDateControl &&
+        endDateControl.value &&
+        startDateControl.value >= endDateControl.value
+      ) {
+        if (endDateLabel == 'recur_end') {
+          return { recurEndDateInvalid: true };
+        } else {
+          return { dateRangeInvalid: true };
+        }
+      }
+      return null;
+    };
   };
 
   /** Office Hours Editor Form */
@@ -113,7 +135,12 @@ export class OfficeHoursEditorComponent {
         []
       )
     },
-    { validators: [this.dateRangeValidator] }
+    {
+      validators: [
+        this.genericDateRangeValidator('start_time', 'end_time'),
+        this.genericDateRangeValidator('end_time', 'recur_end')
+      ]
+    }
   );
 
   constructor(

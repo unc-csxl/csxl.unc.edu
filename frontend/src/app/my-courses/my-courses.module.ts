@@ -47,6 +47,8 @@ import { SettingsComponent } from './course/settings/settings.component';
 import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog';
 import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
 import { MatListModule } from '@angular/material/list';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -89,7 +91,10 @@ import { MatListModule } from '@angular/material/list';
     MatChipsModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatListModule
-  ]
+    MatListModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
+  providers: [MatDatepickerModule]
 })
 export class MyCoursesModule {}
