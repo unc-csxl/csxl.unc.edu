@@ -35,7 +35,8 @@
 
 .mat-mdc-card {
   margin: 0 !important;
-  max-width: 640px;
+  max-width: 29.3%;
+  padding-bottom: 15px;
 }
 
 .dropin-header {
@@ -45,10 +46,10 @@
   justify-content: space-between;
 }
 
-mat-card-footer {
+.news-footer {
     font-style: italic;
-    padding: 5px;
-    padding-left: 10px;
+    margin-top: 40px;
+    margin-left: 36px;
 }
 
 .mdc-list-item {
