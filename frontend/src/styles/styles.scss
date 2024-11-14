@@ -368,6 +368,12 @@ body {
   .body-large {
     font: mat.get-theme-typography($theme, body-large, font);
   }
+  .display-large {
+    font: mat.get-theme-typography($theme, display-large, font);
+  }
+  .display-small {
+    font: mat.get-theme-typography($theme, display-small, font);
+  }
   .font-primary {
     color: mat.get-theme-color($theme, primary) !important;
   }

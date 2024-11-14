@@ -1,3 +1,9 @@
-mat-sidenav-container {
+div {
     height: 100%;
+    width: 100%;
+    padding: 20px;
+}
+
+.mat-mdc-card-header {
+    margin-bottom: 20px;
 }

@@ -14,28 +14,23 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 // Angular Material Modules
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipSet } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { OrganizationRoutingModule } from '../organization/organization-routing.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { SignageRoutingModule } from './signage-routing.module';
 import { SignageComponent } from './signage.component';
 import { NewsCardWidget } from './widgets/news-card/news-card.widget';
+import { OccupancyWidget } from './widgets/occupancy/occupancy.widget';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -43,7 +38,8 @@ import { SharedModule } from '../shared/shared.module';
     SignageComponent,
 
     // Widgets
-    NewsCardWidget
+    NewsCardWidget,
+    OccupancyWidget
   ],
   imports: [
     SignageRoutingModule,
@@ -53,18 +49,11 @@ import { SharedModule } from '../shared/shared.module';
     MatCardModule,
     MatChipSet,
     MatDialogModule,
-    MatButtonModule,
     MatSelectModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatPaginatorModule,
     MatListModule,
-    MatAutocompleteModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatIconModule,
     MatTooltipModule,
-    OrganizationRoutingModule,
     MatSidenavModule,
     MatToolbarModule,
     RouterModule,

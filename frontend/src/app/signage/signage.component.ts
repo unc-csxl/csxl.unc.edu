@@ -17,7 +17,7 @@ import { SignageService } from './signage.service';
 import { FastSignageData, SlowSignageData } from './signage.model';
 import { Subscription, timer } from 'rxjs';
 
-const REFRESH_FAST_SECONDS = 10;
+const REFRESH_FAST_SECONDS = 100000000;
 const REFRESH_SLOW_MINUTES = 20;
 
 @Component({

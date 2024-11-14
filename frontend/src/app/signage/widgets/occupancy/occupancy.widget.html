@@ -1,0 +1,29 @@
+<mat-pane class="mat-mdc-card">
+  <!-- Coworking Card Header -->
+  <mat-card-header class="dropin-header">
+    <!--  class="user-name" -->
+    <mat-card-title class="display-medium">Current Occupancy</mat-card-title>
+  </mat-card-header>
+
+  <!-- Coworking Information -->
+  <mat-card-content>
+    <!-- Coworking Dropdowns -->
+      @for (category of categories; track category) { @if
+      (category.reservable_now) {
+      <mat-list-item>
+        <span matListItemTitle class="headline-large">{{ category.title }}</span>
+        <span matListItemIcon class="display-small primary-background"><div>{{
+          category.seats_available_now.length
+        }}</div></span>
+      </mat-list-item>
+      } @else {
+      <mat-list-item>
+        <span matListItemTitle class="headline-large">{{ category.title }}</span>
+        <span matListItemIcon class="display-small unavailable tertiary-background"><div>0</div></span>
+      </mat-list-item>
+      } }
+  </mat-card-content>
+  <mat-card-footer  class="title-medium font-variant news-footer">
+    Reserve at csxl.unc.edu/coworking
+  </mat-card-footer>
+</mat-pane>
