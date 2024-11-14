@@ -337,4 +337,15 @@ export class MyCoursesService {
   deleteOfficeHours(siteId: number, officeHoursId: number) {
     return this.http.delete(`/api/office-hours/${siteId}/${officeHoursId}`);
   }
+
+  /**
+   * Delete office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHoursId: ID of the office hours.
+   */
+  deleteRecurringOfficeHours(siteId: number, officeHoursId: number) {
+    return this.http.delete(
+      `/api/office-hours/${siteId}/${officeHoursId}/recurring`
+    );
+  }
 }

@@ -97,6 +97,7 @@ export interface OfficeHourEventOverviewJson {
   end_time: string;
   queued: number;
   total_tickets: number;
+  recurrence_id: number;
 }
 
 export interface OfficeHourEventOverview {
@@ -110,6 +111,7 @@ export interface OfficeHourEventOverview {
   end_time: Date;
   queued: number;
   total_tickets: number;
+  recurrence_id: number;
 }
 
 export interface OfficeHourTicketOverviewJson {

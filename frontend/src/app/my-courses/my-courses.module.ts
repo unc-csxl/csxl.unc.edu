@@ -49,6 +49,8 @@ import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-e
 import { MatListModule } from '@angular/material/list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { DeleteRecurringEventDialog } from './dialogs/delete-recurring-event/delete-recurring-event.dialog';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     CalledTicketCardWidget,
     QueuedTicketCardWidget,
     CreateCourseSiteDialog,
-    ImportRosterDialog
+    ImportRosterDialog,
+    DeleteRecurringEventDialog
   ],
   imports: [
     CommonModule,
@@ -93,7 +96,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatAutocompleteModule,
     MatListModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatRadioModule
   ],
   providers: [MatDatepickerModule]
 })
