@@ -27,10 +27,9 @@ import {
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
-import { DatePipe, NgFor } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { roomsResolver } from 'src/app/academics/academics.resolver';
 import { Room } from 'src/app/coworking/coworking.models';
-import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'app-office-hours-editor',
@@ -160,6 +159,7 @@ export class OfficeHoursEditorComponent {
     this.virtualRoom = this.rooms.find((room) => room.id === 'Virtual');
 
     /** Set form data */
+    let currentTermEndDate = this.myCoursesService.currentTerms()[0].end;
     this.officeHoursForm.patchValue(
       Object.assign({}, this.officeHours, {
         start_time: this.datePipe.transform(
@@ -169,6 +169,15 @@ export class OfficeHoursEditorComponent {
         end_time: this.datePipe.transform(
           this.officeHours.end_time,
           'yyyy-MM-ddTHH:mm'
+        ),
+        // The truncated date defaults to GMT. When converted to local EST,
+        // it rolls the date ~5hrs back to the previous day. Temporary solution
+        // is to "add" the extra day back.
+        recur_end: this.datePipe.transform(
+          new Date(currentTermEndDate).setDate(
+            currentTermEndDate.getDate() + 1
+          ),
+          'yyyy-MM-dd'
         )
       })
     );

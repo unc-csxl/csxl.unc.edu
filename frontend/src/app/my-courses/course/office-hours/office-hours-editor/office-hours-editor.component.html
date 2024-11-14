@@ -115,6 +115,7 @@
             matInput 
             formControlName="recur_end" 
             name="recur_end"
+            [max]="this.myCoursesService.currentTerms()[0].end"
             [matDatepicker]="endDatePicker" 
             (click)="endDatePicker.open()"
             required

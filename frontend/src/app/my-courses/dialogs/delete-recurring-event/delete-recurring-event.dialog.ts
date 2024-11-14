@@ -1,5 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MyCoursesService } from '../../my-courses.service';
 import { OfficeHourEventOverview } from '../../my-courses.model';

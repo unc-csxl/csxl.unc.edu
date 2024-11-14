@@ -23,7 +23,6 @@ import {
   OfficeHourTicketOverviewJson,
   TermOverview,
   TermOverviewJson,
-  parseOfficeHourEventOverviewJson,
   parseOfficeHourEventOverviewJsonList,
   parseOfficeHourGetHelpOverviewJson,
   parseOfficeHourQueueOverview,
@@ -37,11 +36,9 @@ import {
   parseOfficeHoursJson,
   NewOfficeHours,
   UpdatedCourseSite,
-  CourseSiteOverview,
   NewOfficeHoursRecurrence
 } from './my-courses.model';
-import { Observable, map, tap } from 'rxjs';
-import { Paginator } from '../pagination';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
