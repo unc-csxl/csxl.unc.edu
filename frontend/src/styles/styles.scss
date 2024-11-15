@@ -362,6 +362,9 @@ body {
   .headline-large {
     font: mat.get-theme-typography($theme, headline-large, font);
   }
+  .headline-medium {
+    font: mat.get-theme-typography($theme, headline-medium, font) !important;
+  }
   .headline-small{
     font: mat.get-theme-typography($theme, headline-small, font);
   }

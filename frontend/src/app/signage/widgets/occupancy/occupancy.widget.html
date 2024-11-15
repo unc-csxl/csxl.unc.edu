@@ -6,7 +6,6 @@
 
   <!-- Coworking Information -->
   <mat-card-content class="full-size-content">
-    <!-- Coworking Dropdowns -->
       @for (category of categories; track category) { @if
       (category.reservable_now) {
       <mat-list-item>
@@ -21,8 +20,8 @@
         <span matListItemIcon class="display-small unavailable tertiary-background"><div>0</div></span>
       </mat-list-item>
       } }
-      <mat-card-footer  class="title-medium font-variant news-footer">
-        Reserve at csxl.unc.edu/coworking
-      </mat-card-footer>
   </mat-card-content>
+  <mat-card-footer  class="title-medium font-variant news-footer">
+    Reserve at csxl.unc.edu/coworking
+  </mat-card-footer>
 </mat-card>

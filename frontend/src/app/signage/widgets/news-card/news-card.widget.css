@@ -86,10 +86,11 @@ mat-card-actions {
     margin-left: 20px;
 }
 
-/* .news-footer {
-    margin-top: 40px;
+.news-footer {
+    font-style: italic;
+    margin-top: 120px;
     margin-left: 36px;
-} */
+}
 
 @media only screen and (max-width: 800px) {
     .row {

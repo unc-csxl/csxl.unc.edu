@@ -4,14 +4,24 @@
   max-width: 100% !important;
   flex-grow: 1;  
   border-color: transparent !important;
+  margin: 0px !important;
+}
+
+.room-title {
+  justify-content: center;
 }
 
 .full-size-content {
   height: 20vh;
+  margin-left: 36px;
 }
 
 .news-footer {
     font-style: italic;
-    margin-top: 40px;
-    margin-left: 36px;
+    margin-top: 178px;
+    margin-left: 12px;
+}
+
+.room-title-margins {
+  margin-top: 15px;
 }
