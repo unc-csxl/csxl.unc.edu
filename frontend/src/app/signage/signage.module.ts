@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
 
 // Angular Material Modules
 import { MatCardModule } from '@angular/material/card';
-import { MatChipSet } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -31,6 +31,7 @@ import { SignageRoutingModule } from './signage-routing.module';
 import { SignageComponent } from './signage.component';
 import { NewsCardWidget } from './widgets/news-card/news-card.widget';
 import { OccupancyWidget } from './widgets/occupancy/occupancy.widget';
+import { RoomsWidget } from './widgets/rooms/rooms.widget';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -39,7 +40,8 @@ import { SharedModule } from '../shared/shared.module';
 
     // Widgets
     NewsCardWidget,
-    OccupancyWidget
+    OccupancyWidget,
+    RoomsWidget
   ],
   imports: [
     SignageRoutingModule,
@@ -47,7 +49,7 @@ import { SharedModule } from '../shared/shared.module';
     MatTabsModule,
     MatTableModule,
     MatCardModule,
-    MatChipSet,
+    MatChipsModule,
     MatDialogModule,
     MatSelectModule,
     MatPaginatorModule,

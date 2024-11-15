@@ -3,6 +3,10 @@ div {
     width: 100%;
 }
 
+.big-div {
+    padding: 20px 40px 0 40px;
+}
+
 .mat-mdc-card-header {
     margin-bottom: 20px;
 }
