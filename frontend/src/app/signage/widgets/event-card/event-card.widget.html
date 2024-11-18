@@ -1,0 +1,70 @@
+<mat-card appearance="outlined" class="full-size-pane">
+  <mat-card-header>
+    <div class="header-row">
+      <div class="header-column">
+        <mat-card-title>{{ event.name }}</mat-card-title>
+
+        <div class="links-row">
+          <div class="row">
+            <mat-icon class="secondary-icon">schedule</mat-icon>
+            <p>
+              {{ event.start | date: 'shortTime' }} -
+              {{ event.end | date: 'shortTime' }}
+            </p>
+          </div>
+          <div class="row">
+            <mat-icon class="secondary-icon">location_on</mat-icon>
+            <p>{{ event.location }}</p>
+          </div>
+          <div class="row">
+            <mat-icon class="secondary-icon">person_outline</mat-icon>
+            @if (event.override_registration_url) {
+            <p>External registration</p>
+            } @else if (event.registration_limit > 400) {
+            <p>Open to all</p>
+            } @else if (event.registration_limit === event.number_registered) {
+            <p><span class="tertiary-color">Filled</span></p>
+            } @else {
+            <p>{{ event.registration_limit - event.number_registered }} left</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-chip-set>
+      <!-- Organization chip -->
+      <mat-chip-row
+        id="organization-chip"
+        [routerLink]="'/organizations/' + event.organization_slug">
+        <img
+          class="profile-icon"
+          matChipAvatar
+          [src]="event.organization_icon" />
+        {{ event.organization_name }}
+      </mat-chip-row>
+
+      @if (event.organizers.length > 0) {
+      <mat-divider class="vertical-divider" [vertical]="true" />
+      }
+
+      <!-- Organizer Chips -->
+      @for (organizer of event.organizers; track organizer.id) {
+      <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
+        @if (organizer.github_avatar && organizer.github_avatar !== '') {
+        <img
+          class="profile-icon"
+          matChipAvatar
+          [src]="organizer.github_avatar" />
+        }
+
+        {{ organizer.first_name }} {{ organizer.last_name }}
+      </mat-chip-row>
+      }
+    </mat-chip-set>
+    <p class="description">
+      {{ event.description }}
+    </p>
+  </mat-card-content>
+</mat-card>
