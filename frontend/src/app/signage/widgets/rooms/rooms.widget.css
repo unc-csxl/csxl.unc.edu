@@ -16,9 +16,10 @@
 }
 
 .news-footer {
-    font-style: italic;
-    margin-top: 148px;
-    margin-left: 12px;
+  font-style: italic;
+  margin-left: 22px;
+  position: absolute;
+  bottom: 26px;
 }
 
 .room-title-margins {
