@@ -1,9 +1,10 @@
 .full-size-pane {
-    height: 43vh !important;
     min-height: 464px !important;
-    min-width: 562px !important;
+    min-width: 615px !important;
+    max-width: 615px !important;
     border-color: transparent !important;
     margin: 0px !important;
+    margin-left: 40px !important;
   }
   
 .mat-mdc-card {

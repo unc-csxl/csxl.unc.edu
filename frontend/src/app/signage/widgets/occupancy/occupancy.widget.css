@@ -1,19 +1,20 @@
 .full-size-pane {
-  height: 43vh !important;
-  min-height: 464px !important;
-  min-width: 562px !important;
+  height: 464px !important;
+  width: 562px !important;
   border-color: transparent !important;
   margin: 0px !important;
+  margin-left: 40px !important;
 }
 
-.full-size-content {
+/* .full-size-content {
   height: 20vh;
-}
+} */
 
 .news-footer {
   font-style: italic;
-  margin-top: 90px;
   margin-left: 30px;
+  position: absolute;
+  bottom: 26px;
 }
 
 /* Begin Action List Styling */
@@ -22,7 +23,7 @@
 }
 
 .mat-mdc-list-item {
-  margin-bottom: 50px;
+  margin-bottom: 42px;
 }
 
 .mdc-list-item--with-leading-icon .mdc-list-item__start {
@@ -57,7 +58,7 @@
 
 .dropin-header {
   display: flex;
-  margin: 0.5rem 0 3rem 0.25rem;
+  margin: 0.5rem 0 50px 0.25rem;
   align-items: center;
   justify-content: space-between;
 }

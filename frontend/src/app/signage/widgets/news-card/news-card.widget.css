@@ -1,9 +1,9 @@
 .full-size-pane {
-    height: 43vh !important;
     min-height: 464px !important;
     min-width: 903px !important;
     border-color: transparent !important;
     margin: 0px !important;
+    margin-left: 20px !important;
   }
 
 .article-title {
@@ -90,6 +90,9 @@ mat-card-actions {
     font-style: italic;
     margin-top: 36px;
     margin-left: 36px;
+    position: absolute;
+    bottom: 26px;
+
 }
 
 @media only screen and (max-width: 800px) {
