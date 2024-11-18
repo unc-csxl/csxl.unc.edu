@@ -1,8 +1,7 @@
 .full-size-pane {
   height: 43vh !important;
   min-height: 464px !important;
-  max-width: 100% !important;
-  flex-grow: 1;  
+  min-width: 336px !important;
   border-color: transparent !important;
   margin: 0px !important;
 }
@@ -13,12 +12,12 @@
 
 .full-size-content {
   height: 20vh;
-  margin-left: 36px;
+  margin-left: 24px;
 }
 
 .news-footer {
     font-style: italic;
-    margin-top: 178px;
+    margin-top: 148px;
     margin-left: 12px;
 }
 

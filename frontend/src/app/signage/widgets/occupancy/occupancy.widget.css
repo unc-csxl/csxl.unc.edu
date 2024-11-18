@@ -1,8 +1,7 @@
 .full-size-pane {
   height: 43vh !important;
   min-height: 464px !important;
-  max-width: 100% !important;
-  flex-grow: 1 !important;
+  min-width: 562px !important;
   border-color: transparent !important;
   margin: 0px !important;
 }
@@ -13,7 +12,7 @@
 
 .news-footer {
   font-style: italic;
-  margin-top: 120px;
+  margin-top: 90px;
   margin-left: 30px;
 }
 
@@ -75,4 +74,8 @@
 
 .mat-mdc-list-base {
   padding: 0;
+}
+
+.occupancy-title {
+  margin-left: 20px;
 }

@@ -1,7 +1,7 @@
 .full-size-pane {
     height: 43vh !important;
-    max-width: 100% !important;
-    flex-grow: 1;  
+    min-height: 464px !important;
+    min-width: 903px !important;
     border-color: transparent !important;
     margin: 0px !important;
   }
@@ -88,7 +88,7 @@ mat-card-actions {
 
 .news-footer {
     font-style: italic;
-    margin-top: 120px;
+    margin-top: 36px;
     margin-left: 36px;
 }
 
