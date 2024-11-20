@@ -20,7 +20,6 @@ import { ConfirmReservationComponent } from './room-reservation/confirm-reservat
 import { DateSelector } from './widgets/date-selector/date-selector.widget';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { OperatingHoursDialog } from './widgets/operating-hours-dialog/operating-hours-dialog.widget';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -31,8 +30,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AmbassadorXLComponent } from './ambassador-home/ambassador-xl/ambassador-xl.component';
 import { AmbassadorRoomComponent } from './ambassador-home/ambassador-room/ambassador-room.component';
 import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-facts.widget';
-import { DialogModule } from '@angular/cdk/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CoworkingAdminComponent } from './coworking-admin/coworking-admin.component';
+import { CoworkingOperatingHoursEditorComponent } from './coworking-admin/coworking-operating-hours-editor/coworking-operating-hours-editor.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -47,8 +49,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     CoworkingReservationCard,
     ConfirmReservationComponent,
     NewReservationPageComponent,
+    CoworkingAdminComponent,
+    CoworkingOperatingHoursEditorComponent,
     DateSelector,
-    OperatingHoursDialog,
     ReservationFactsWidget
   ],
   imports: [
@@ -77,7 +80,10 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatFormFieldModule,
     MatTooltipModule,
     MatTabsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonToggleModule,
+    MatSelectModule,
+    ReactiveFormsModule
   ]
 })
 export class CoworkingModule {}

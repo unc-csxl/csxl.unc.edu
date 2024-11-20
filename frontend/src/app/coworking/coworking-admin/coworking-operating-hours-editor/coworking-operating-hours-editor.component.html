@@ -1,0 +1,58 @@
+<form [formGroup]="operatingHoursForm" (ngSubmit)="onSubmit()">
+    <mat-card-header>
+        <mat-card-title>Create Operating Hours</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <!-- Date Selector -->
+        <mat-form-field appearance="outline" color="accent">
+            <mat-label>Select Date</mat-label>
+            <input matInput [matDatepicker]="datePicker" formControlName="selected_date" />
+            <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+
+        <div class="horizontal-wrapper">
+            <!-- Start Time Selector -->
+            <mat-form-field appearance="outline" color="accent">
+                <mat-label>Start Time</mat-label>
+                <input matInput type="time" formControlName="start_time">
+            </mat-form-field>
+
+            <!-- End Time Selector -->
+            <mat-form-field appearance="outline" color="accent">
+                <mat-label>End Time</mat-label>
+                <input matInput type="time" formControlName="end_time">
+            </mat-form-field>
+        </div>
+
+        <!-- Recurrence Pattern -->
+        <!-- Removing this temporarily until we're actually able to implement the feature, which will require backend stuff -->
+        <!--<mat-form-field appearance="outline" color="accent">
+            <mat-label>Recurrence Pattern</mat-label>
+            <mat-select formControlName="recurrence">
+                <mat-option value="None">None</mat-option>
+                <mat-option value="Daily">Daily</mat-option>
+                <mat-option value="Weekly">Weekly</mat-option>
+            </mat-select>
+        </mat-form-field>-->
+
+        <!-- Recurrence Days -->
+        <!-- Removing this temporarily until we're actually able to implement the feature, which will require backend stuff -->
+        <!--
+        <mat-button-toggle-group formControlName="recurrenceDays" multiple>
+            @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']; track day) {
+                <mat-button-toggle [value]="day">{{ day.substring(0, 3) }}</mat-button-toggle>
+            }
+        </mat-button-toggle-group>-->
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-stroked-button color="secondary" (click)="onCancel()" type="button">
+            Cancel
+        </button>
+        <button mat-flat-button color="primary" type="submit">
+            Save
+        </button>
+    </mat-card-actions>
+</form>

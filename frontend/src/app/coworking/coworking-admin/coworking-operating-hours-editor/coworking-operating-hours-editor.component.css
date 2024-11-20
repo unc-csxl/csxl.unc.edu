@@ -1,0 +1,28 @@
+.horizontal-wrapper {
+  display: flex;
+  gap: 16px;
+}
+
+mat-card-header {
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+mat-button-toggle-group {
+  display: flex;
+}
+
+mat-button-toggle {
+  min-width: 108px;
+  text-align: center;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

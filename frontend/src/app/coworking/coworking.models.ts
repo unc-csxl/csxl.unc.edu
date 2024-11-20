@@ -1,6 +1,10 @@
 import { Profile } from '../models.module';
 import { TimeRangeJSON, TimeRange } from '../time-range';
 
+export interface NewOperatingHoursJSON extends TimeRangeJSON {}
+
+export interface NewOperatingHours extends TimeRange {}
+
 export interface OperatingHoursJSON extends TimeRangeJSON {
   id: number;
 }
@@ -20,6 +24,14 @@ export const parseOperatingHoursJSON = (
   json: OperatingHoursJSON
 ): OperatingHours => {
   return Object.assign({}, json, parseTimeRange(json));
+};
+
+export const parseOperatingHoursJSONArray = (
+  json: OperatingHoursJSON[]
+): OperatingHours[] => {
+  return json.map((jsonItem) =>
+    Object.assign({}, jsonItem, parseTimeRange(jsonItem))
+  );
 };
 
 export interface Seat {

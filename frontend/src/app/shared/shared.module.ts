@@ -43,6 +43,8 @@ import {
 import { MarkdownDirective } from './directives/markdown.directive';
 import { EventRegistrationCardWidget } from './event-registration-card/event-registration-card.widget';
 import { AboutPaneWidget } from './about-pane/about-pane.widget';
+import { OperatingHoursCalendar } from './operating-hours-calendar/operating-hours-calendar.widget';
+import { OperatingHoursDialog } from './operating-hours-dialog/operating-hours-dialog.widget';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import { AboutPaneWidget } from './about-pane/about-pane.widget';
     AdminFabComponent,
     TabContainerWidget,
     CoworkingHoursCard,
+    OperatingHoursCalendar,
+    OperatingHoursDialog,
     OperatingHoursCapitalizationPipe,
     MarkdownDirective,
     EventRegistrationCardWidget,
@@ -93,6 +97,8 @@ import { AboutPaneWidget } from './about-pane/about-pane.widget';
     BannerCardComponent,
     AdminFabComponent,
     TabContainerWidget,
+    OperatingHoursCalendar,
+    OperatingHoursDialog,
     CoworkingHoursCard,
     MarkdownDirective,
     EventRegistrationCardWidget,

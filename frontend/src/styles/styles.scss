@@ -466,6 +466,25 @@ body {
       secondary-container
     ) !important;
   }
+
+  .calendar-day-outline {
+    border-left: 1px mat.get-theme-color($theme, outline-variant) solid;
+    border-right: 1px mat.get-theme-color($theme, outline-variant) solid;
+  }
+
+  .calendar-hour-outline {
+    border-top: 1px mat.get-theme-color($theme, outline-variant) solid;
+    border-bottom: 1px mat.get-theme-color($theme, outline-variant) solid;
+  }
+
+  .operating-hours-calendar-outline {
+    border: 2px mat.get-theme-color($theme, outline-variant) solid;
+  }
+
+  .current-date {
+    background-color: mat.get-theme-color($theme, inverse-surface) !important;
+    color: mat.get-theme-color($theme, inverse-on-surface) !important;
+  }
 }
 .mdc-notched-outline__notch {
   border-left: 1px solid rgba(0, 0, 0, 0);

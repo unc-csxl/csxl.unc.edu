@@ -1,0 +1,82 @@
+.open-hours-page-container {
+  display: flex;
+  align-items: flex-start;
+
+  flex-direction: row;
+}
+
+.coworking-admin-add-hours {
+  flex: 1;
+  height: 100%;
+}
+
+.card-calendar {
+  display: flex;
+
+  width: 100%;
+  height: min(700px, 100cqh);
+}
+
+.open-hours-calendar-card {
+  width: 100%;
+  max-width: 1000px;
+}
+
+@media (max-width: 1200px) {
+  .open-hours-page-container {
+    flex-direction: column-reverse;
+  }
+}
+
+#new-room-reservation-button {
+  margin-left: auto;
+  margin-right: 16px;
+}
+
+#calendar-container{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+mat-icon {
+  color: var(--mat-icon-color) !important;
+}
+
+.add-hours-button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+    top: 0;
+    right: 0;
+  margin-top: 13px;
+  margin-right: 10px;
+}
+
+
+@media (max-width: 1300px){
+  .add-hours-button .second-span{
+    display: none;
+    width: 0;
+  }
+
+  /* .add-hours-button mat-icon{
+    padding: none !important;
+    width: none !important;
+    min-width: none !important;
+    max-width: none !important;
+  } */
+
+  /* .add-hours-button{
+    padding: none !important;
+    width: none !important;
+    min-width: none !important;
+    max-width: none !important;
+    border-radius: none;
+  } */
+}
+
+.hidden{
+  display: none;
+}

@@ -2,7 +2,7 @@
  * The Coworking Component serves as the hub for students to create reservations
  * for tables, rooms, and equipment from the CSXL.
  *
- * @author Kris Jordan, Ajay Gandecha, John Schachte
+ * @author Kris Jordan, Ajay Gandecha, John Schachte, Francine Wei, Tobenna Okoli
  * @copyright 2024
  * @license MIT
  */
@@ -110,7 +110,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
       'coworking.*',
       '*',
       '',
-      'welcome/'
+      'coworking/calendar'
     );
     this.status = this.coworkingService.status;
     this.timerSubscription = timer(0, 10000).subscribe(() => {

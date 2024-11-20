@@ -6,7 +6,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy, WritableSignal, signal } from '@angular/core';
-import { Subscription, map, BehaviorSubject } from 'rxjs';
+import { Subscription, map, BehaviorSubject, Observable } from 'rxjs';
 import {
   CoworkingStatus,
   CoworkingStatusJSON,
@@ -15,7 +15,11 @@ import {
   parseCoworkingStatusJSON,
   parseReservationJSON,
   Reservation,
-  EMPTY_COWORKING_STATUS
+  EMPTY_COWORKING_STATUS,
+  NewOperatingHours,
+  OperatingHours,
+  OperatingHoursJSON,
+  parseOperatingHoursJSON
 } from './coworking.models';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
@@ -104,5 +108,35 @@ export class CoworkingService implements OnDestroy {
    */
   toggleCancelExpansion(): void {
     this.isCancelExpanded.next(!this.isCancelExpanded.value);
+  }
+
+  /**
+   * Create operating hours.
+   * @param operatingHours: Operating hours object to create.
+   * @returns {Observable<OperatingHours>}
+   */
+  createOperatingHours(
+    operatingHours: NewOperatingHours
+  ): Observable<OperatingHours> {
+    return this.http
+      .post<OperatingHoursJSON>(
+        '/api/coworking/operating_hours',
+        operatingHours
+      )
+      .pipe(map(parseOperatingHoursJSON));
+  }
+
+  /**
+   * Update operating hours.
+   * @param operatingHours: Operating hours object to update.
+   * @returns {Observable<OperatingHours>}
+   */
+  updateOperatingHours(
+    operatingHours: OperatingHours
+  ): Observable<OperatingHours> {
+    throw new Error('Update function not yet implemented');
+    return this.http
+      .put<OperatingHoursJSON>('/api/coworking/operating_hours', operatingHours)
+      .pipe(map(parseOperatingHoursJSON));
   }
 }

@@ -1,0 +1,18 @@
+<div class="open-hours-page-container">
+    <!-- Calendar Section -->
+    <mat-card class="open-hours-calendar-card">
+        <mat-card-content id="calendar-container">
+            <button mat-flat-button class="add-hours-button" (click)="showAddHoursPanel()" [disabled]="isAddingHours()">
+                <mat-icon>add</mat-icon>
+                <span>Add <span class="second-span">Hours</span></span>
+            </button>
+            <operating-hours-calendar #calendar class="card-calendar"/>
+        </mat-card-content>
+    </mat-card>
+  
+    <!-- Create Open Hours Form -->
+    <mat-card [class]="'coworking-admin-add-hours ' + (isAddingHours() ? '' : 'hidden')">
+      <coworking-operating-hours-editor [calendar]="calendar" [isPanelVisible]="isAddingHours" id="add-hours-panel"/>
+    </mat-card>
+  </div>
+  
