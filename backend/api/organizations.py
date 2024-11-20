@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends
 
 from ..services import OrganizationService, RoleService
 from ..models.organization import Organization
+from ..models.organization_membership import OrganizationMembership
 from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
 from ..models.user import User
@@ -67,6 +68,36 @@ def new_organization(
     return new_organization
 
 
+@api.post(
+    "/{slug}/roster/{user_id}",
+    responses={404: {"model": None}},
+    response_model=OrganizationMembership,
+    tags=["Organizations"],
+)
+def add_member_to_organization(
+    slug: str,
+    user_id: int,
+    organization_service: OrganizationService = Depends(),
+    subject: User = Depends(registered_user),
+) -> OrganizationMembership:
+    """
+    Add member
+
+    Parameters:
+        user_id: new member id, passed in from frontend
+        organization_service: a valid OrganizationService
+        subject: a valid User model representing the currently logged in User
+
+    Returns:
+        OrganizationMember: Created organization member
+
+    Raises:
+        HTTPException 404 if add_member() raises an Exception
+    """
+    new_member = organization_service.add_member(subject, slug, user_id)
+    return new_member
+
+
 @api.get(
     "/{slug}",
     responses={404: {"model": None}},
@@ -91,6 +122,34 @@ def get_organization_by_slug(
     """
 
     return organization_service.get_by_slug(slug)
+
+
+@api.get(
+    "/{slug}/roster",
+    responses={404: {"model": None}},
+    response_model=list[OrganizationMembership],
+    tags=["Organizations"],
+)
+def get_roster_by_slug(
+    slug: str,
+    organization_service: OrganizationService = Depends(),
+    subject: User = Depends(registered_user),
+) -> list[OrganizationMembership]:
+    """
+    Get organization roster with matching slug
+
+    Parameters:
+        slug: a string representing a unique identifier for an Organization
+        organization_service: a valid OrganizationService
+        // add user?
+
+    Returns:
+        list[OrganizationMember]: List of OrganizationMember of Organization with matching slug
+
+    Raises:
+        HTTPException 404 if get_roster() raises an Exception
+    """
+    return organization_service.get_roster(subject, slug)
 
 
 @api.put(
@@ -141,3 +200,20 @@ def delete_organization(
     """
 
     organization_service.delete(subject, slug)
+
+
+@api.delete("/{slug}/roster/{user_id}")
+def delete_member(
+    user_id: int,
+    subject: User = Depends(registered_user),
+    organization_service: OrganizationService = Depends(),
+):
+    """
+    Delete user based on user_id
+
+    Parameters:
+        user_id: new member id, passed in from frontend
+        organization_service: a valid OrganizationService
+        subject: a valid User model representing the currently logged in User
+    """
+    organization_service.remove_member(subject, user_id)

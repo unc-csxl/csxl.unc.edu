@@ -39,6 +39,7 @@ class User(UserIdentity, BaseModel):
     bio: str | None = None
     linkedin: str | None = None
     website: str | None = None
+    organizations: list[str] | None = None # new
 
 
 class NewUser(User, BaseModel):

@@ -7,11 +7,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..database import db_session
-from ..models.organization import Organization
+from ..models import User, Organization
 from ..models.organization_details import OrganizationDetails
+from ..models.organization_membership import OrganizationMembership
+from ..models.organization_role import OrganizationRole
 from ..entities.organization_entity import OrganizationEntity
-from ..models import User
+from ..entities.organization_membership_entity import OrganizationMembershipEntity
+from ..entities.user_entity import UserEntity
 from .permission import PermissionService
+from .user import UserService
 
 from .exceptions import ResourceNotFoundException
 
@@ -109,6 +113,83 @@ class OrganizationService:
 
         return organization.to_details_model()
 
+    def add_member(
+        self, subject: User, slug: str, user_id: int
+    ) -> OrganizationMembership:
+        # TODO: authenticate and check that user exists in database
+
+        organization = (
+            (
+                self._session.query(OrganizationEntity).filter(
+                    OrganizationEntity.slug == slug
+                )
+            )
+            .first()
+            .to_model()
+        )
+        newMember = (
+            self._session.query(UserEntity)
+            .filter(UserEntity.id == user_id)
+            .first()
+            .to_model()
+        )
+
+        membership_model = OrganizationMembership(
+            user=newMember,
+            organization_id=organization.id,
+            organization_slug=organization.slug,
+            organization_role=OrganizationRole.MEMBER,
+        )
+
+        organization_membership_entity = OrganizationMembershipEntity.from_model(
+            membership_model
+        )
+
+        # Add new object to table and commit changes
+        self._session.add(organization_membership_entity)
+        self._session.commit()
+
+        # Return added object
+        return organization_membership_entity.to_model()
+
+    def remove_member(self, subject: User, user_id: int) -> None:
+        # TODO: authenticate
+        formerMember = self._session.query(UserEntity).filter(UserEntity.id == user_id)
+
+        organization_membership_entity = OrganizationMembershipEntity.from_model(
+            formerMember
+        )
+
+        self._session.delete(organization_membership_entity)
+        self._session.commit()
+
+    def get_roster(
+        self, subject: User, organization_slug: str
+    ) -> list[OrganizationMembership]:
+        # TODO: authenticate
+
+        # Query the organization with matching slug
+        organization = (
+            self._session.query(OrganizationEntity)
+            .filter(OrganizationEntity.slug == organization_slug)
+            .one_or_none()
+        )
+
+        # Check if result is null
+        if organization is None:
+            raise ResourceNotFoundException(
+                f"No organization found with matching slug: {organization_slug}"
+            )
+
+        # Select all entries in `Organization` table
+        query = select(OrganizationMembershipEntity).filter(
+            OrganizationMembershipEntity.organization_id == organization.id
+        )
+        entities = self._session.scalars(query).all()
+
+        # Convert entries to a model and return
+        return [entity.to_model() for entity in entities]
+
     def update(self, subject: User, organization: Organization) -> Organization:
         """
         Update the organization
@@ -157,6 +238,8 @@ class OrganizationService:
         obj.youtube = organization.youtube
         obj.heel_life = organization.heel_life
         obj.public = organization.public
+        obj.members = organization.members
+        obj.users = organization.users
 
         # Save changes
         self._session.commit()

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from .user import User
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -27,3 +28,4 @@ class Organization(BaseModel):
     youtube: str
     heel_life: str
     public: bool
+

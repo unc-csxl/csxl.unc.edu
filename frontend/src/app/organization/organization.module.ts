@@ -43,6 +43,7 @@ import { SharedModule } from '../shared/shared.module';
 import { OrganizationDetailsInfoCard } from './widgets/organization-details-info-card/organization-details-info-card.widget';
 import { OrganizationEditorComponent } from '/workspace/frontend/src/app/organization/organization-editor/organization-editor.component';
 import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/organization-not-found-card.widget';
+import { OrganizationRoster } from './widgets/organization-roster/organization-roster.widget';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/
     // UI Widgets
     OrganizationCard,
     OrganizationDetailsInfoCard,
-    OrganizationNotFoundCard
+    OrganizationNotFoundCard,
+    OrganizationRoster
   ],
   imports: [
     CommonModule,

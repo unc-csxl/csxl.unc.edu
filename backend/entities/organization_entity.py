@@ -59,6 +59,14 @@ class OrganizationEntity(EntityBase):
         back_populates="organization", cascade="all,delete"
     )
 
+    # NOTE: This field establishes a one-to-many relationship between the organizations and organization_member table.
+    members: Mapped[list["OrganizationMembershipEntity"]] = relationship(
+        back_populates="organization", cascade="all,delete"
+    )
+    users: Mapped[list["UserEntity"]] = relationship(
+        secondary="organization_membership", back_populates="organizations"
+    )
+
     @classmethod
     def from_model(cls, model: Organization) -> Self:
         """

@@ -15,9 +15,12 @@ import {
   Route
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Organization } from '../organization.model';
+import { Organization, OrganizationMembership } from '../organization.model';
 import { Profile, ProfileService } from '../../profile/profile.service';
-import { organizationResolver } from '../organization.resolver';
+import {
+  organizationResolver,
+  organizationRosterResolver
+} from '../organization.resolver';
 import { EventService } from '../../event/event.service';
 import { Observable } from 'rxjs';
 import { PermissionService } from '../../permission.service';
@@ -42,7 +45,8 @@ export class OrganizationDetailsComponent implements OnInit {
     path: ':slug',
     component: OrganizationDetailsComponent,
     resolve: {
-      organization: organizationResolver
+      organization: organizationResolver,
+      organizationRoster: organizationRosterResolver
     },
     children: [
       {
@@ -58,6 +62,9 @@ export class OrganizationDetailsComponent implements OnInit {
 
   /** The organization to show */
   public organization: Organization | undefined;
+
+  /** The organization's roster to show */
+  public organizationRoster: OrganizationMembership[] | undefined;
 
   // TODO: Refactor once the event feature is refactored.
   /** Whether or not the user has permission to update events. */
@@ -77,10 +84,13 @@ export class OrganizationDetailsComponent implements OnInit {
 
     const data = this.route.snapshot.data as {
       organization: Organization;
+      organizationRoster: OrganizationMembership[];
       events: Event[];
     };
 
     this.organization = data.organization;
+    this.organizationRoster = data.organizationRoster;
+
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
       `organization/${this.organization?.slug ?? '*'}`

@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, tap } from 'rxjs';
-import { Organization } from './organization.model';
+import { Organization, OrganizationMembership } from './organization.model';
 import { PermissionService } from '../permission.service';
 
 @Injectable({
@@ -113,4 +113,18 @@ export class OrganizationService {
         })
       );
   }
+
+  //#region Organization Roster
+  /** Gets an organization's roster (represented as an array of OrganizationMemberships) based on its slug.
+   * @param slug: String representing the organization slug
+   * @returns {Observable<OrganizationMembership[] | undefined>}
+   */
+  getOrganizationRoster(
+    slug: string
+  ): Observable<OrganizationMembership[] | undefined> {
+    return this.http.get<OrganizationMembership[]>(
+      '/api/organizations/' + slug + '/roster'
+    );
+  }
+  //#endregion
 }

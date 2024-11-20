@@ -10,7 +10,7 @@ from backend.services.exceptions import (
 )
 
 # Tested Dependencies
-from ....models import Organization
+from ....models import Organization, OrganizationMembership
 from ....services import OrganizationService
 
 # Injected Service Fixtures
@@ -27,6 +27,7 @@ from .organization_test_data import (
     new_cads,
     to_add_conflicting_id,
 )
+from .organization_membership_test_data import member_to_add, roster
 from ..user_data import root, user
 
 __authors__ = ["Ajay Gandecha"]
@@ -55,6 +56,13 @@ def test_get_by_slug(organization_svc_integration: OrganizationService):
     assert fetched_organization is not None
     assert isinstance(fetched_organization, Organization)
     assert fetched_organization.slug == cads.slug
+
+
+def test_get_roster_by_slug(organization_svc_integration: OrganizationService):
+    fetched_members = organization_svc_integration.get_roster(root, cads.slug)
+    assert fetched_members is not None
+    assert len(fetched_members) == len(roster)
+    assert isinstance(fetched_members[0], OrganizationMembership)
 
 
 # Test `OrganizationService.create()`
@@ -98,6 +106,23 @@ def test_create_organization_as_user(organization_svc_integration: OrganizationS
     with pytest.raises(UserPermissionException):
         organization_svc_integration.create(user, to_add)
         pytest.fail()  # Fail test if no error was thrown above
+
+
+def test_add_member(organization_svc_integration: OrganizationService):
+    """Test that member can be added to database"""
+    added_member = organization_svc_integration.add_member(
+        root, cads.slug, member_to_add
+    )
+    assert added_member is not None
+    assert added_member.id is not None
+
+
+# def test_remove_member(organization_svc_integration: OrganizationService):
+#     """Test that member can be removed from database"""
+#     removed_member = organization_svc_integration.remove_member(root, member_to_add)
+
+#     with pytest.raises(ResourceNotFoundException):
+#         organization_svc_integration.get_by_slug(cads.slug)
 
 
 # Test `OrganizationService.update()`

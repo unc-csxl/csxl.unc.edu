@@ -10,3 +10,20 @@
   padding-left: 16px;
   padding-right: 16px;
 }
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start; /* Adjust alignment as needed */
+  width: 100%; /* Full width */
+  height: 100%; /* Ensure full height for proper positioning */
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  padding-right: 16px;
+  height: 91.5vh;
+}

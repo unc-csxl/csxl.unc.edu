@@ -1,0 +1,77 @@
+.mat-mdc-row:hover .mat-mdc-cell {
+    border-color: white;
+}
+  
+mat-card-header {
+    flex-direction: column;
+    width: 100%;
+}
+
+.organization-search-bar {
+    ::ng-deep .mat-mdc-card {
+        max-width: 100% !important;
+        max-height: 90% !important;
+        margin-right: 10% !important;
+    }
+}
+
+.name-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .name-content mat-icon {
+    margin-right: 8px;
+  }
+
+  .name-content p {
+    margin: 0;
+  }
+
+  .user-description{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-description h2 {
+    margin-bottom: 0px; 
+  }
+
+  .mdc-list-item__primary-text {
+    margin-top: -4px !important;
+    margin-left: 4px !important;
+  }
+  
+  .mdc-list-item__secondary-text {
+    margin-left: 4px !important;
+    margin-bottom: 0px;
+  }
+
+  .mdc-list-item.mdc-list-item--with-trailing-meta .mdc-list-item__end {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    margin-top: auto;
+  }
+
+  .mdc-list-item {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: baseline;
+    border: none;
+  }
+  
+  .mat-mdc-list-base {
+    padding: 0;
+    margin: 0;
+    overflow: auto;
+  }
+  
+  .student-description p {
+    margin-top: 0;
+  }

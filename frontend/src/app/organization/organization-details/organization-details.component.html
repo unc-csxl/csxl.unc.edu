@@ -3,9 +3,19 @@
 @if (organization === undefined) {
 <organization-not-found-card />
 } @else {
-<organization-details-info-card
-  [organization]="organization"
-  [profile]="profile"
-  [eventCreationPermissions]="eventCreationPermission$ | async"
-/>
+  <div class="container">
+    <!-- Main Organization Details -->
+    <organization-details-info-card
+      [organization]="organization"
+      [profile]="profile"
+      [eventCreationPermissions]="eventCreationPermission$ | async"
+    ></organization-details-info-card>
+  
+    <!-- Right Column -->
+    <div class="right-column">
+      <organization-roster
+        [organizationRoster]="organizationRoster">
+      </organization-roster>
+    </div>
+  </div>
 }
