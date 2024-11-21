@@ -110,7 +110,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
       'coworking.*',
       '*',
       '',
-      'coworking/calendar'
+      'coworking/admin'
     );
     this.status = this.coworkingService.status;
     this.timerSubscription = timer(0, 10000).subscribe(() => {

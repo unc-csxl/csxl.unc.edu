@@ -4,6 +4,10 @@ David Foss, Ella Gonzales, Tobenna Okoli, Francine Wei
 
 ## New/Modified Model Representations and API Route
 
+There were no new or modified models or API routes for this sprint.
+
+Our Sprint 01 stories did not require any underlying database or entity-level representation decisions.
+
 There were no new or API routes for this sprint. We did create the NewOperatingHours and NewOperatingHoursJSON models to facilitate the creation of new operating hours, as well as the parseOperatingHoursJSONArray method to facilitate getting operating hours from the backend.
 
 ## Database/Entity-Level Representation Decisions

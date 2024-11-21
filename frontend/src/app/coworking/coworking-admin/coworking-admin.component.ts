@@ -23,7 +23,7 @@ import { permissionGuard } from 'src/app/permission.guard';
 export class CoworkingAdminComponent implements OnInit, OnDestroy {
   isAddingHours: WritableSignal<boolean> = signal(false);
   public static Route = {
-    path: 'calendar',
+    path: 'admin',
     component: CoworkingAdminComponent,
     title: 'CSXL Open Hours Administration',
     canActivate: [permissionGuard('coworking.operating_hours', '*')]
