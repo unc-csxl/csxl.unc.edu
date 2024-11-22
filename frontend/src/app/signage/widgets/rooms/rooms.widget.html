@@ -9,23 +9,25 @@
     <!-- Coworking Dropdowns -->
     <h3 class="headline-medium room-title-margins">Pairing</h3>
     <mat-chip-set>
-        <mat-chip>SN139</mat-chip>
-        <mat-chip>SN144</mat-chip>
-        <mat-chip>SN146</mat-chip>
+      @for (room of ['SN139', 'SN144', 'SN146']; track room) {
+        <mat-chip [ngClass]="{ 'unavailable-room': !isRoomAvailable(room) }">{{room}}</mat-chip>
+      }
     </mat-chip-set>
     <h3 class="headline-medium room-title-margins">Small Group (5)</h3>
     <mat-chip-set>
-        <mat-chip>SN135</mat-chip>
-        <mat-chip>SN137</mat-chip>
+      @for (room of ['SN135', 'SN137']; track room) {
+        <mat-chip [ngClass]="{ 'unavailable-room': !isRoomAvailable(room) }">{{room}}</mat-chip>
+      }
     </mat-chip-set>
     <h3 class="headline-medium room-title-margins">Large Group (7)</h3>
     <mat-chip-set>
-        <mat-chip>SN141</mat-chip>
-        <mat-chip>SN147</mat-chip>
+      @for (room of ['SN141', 'SN147']; track room) {
+        <mat-chip [ngClass]="{ 'unavailable-room': !isRoomAvailable(room) }">{{room}}</mat-chip>
+      }
     </mat-chip-set>
   </mat-card-content>
 
-  <mat-card-footer  class="title-medium font-variant news-footer">
+  <mat-card-footer  class="title-medium font-variant footer">
     Red rooms indicate currently reserved
   </mat-card-footer>
 </mat-card>
