@@ -58,6 +58,16 @@ body {
     color: mat.get-theme-color($theme, on-secondary) !important;
   }
 
+  .primary-fixed-background-leaderboard {
+    background: mat.get-theme-color($theme, on-primary-fixed) !important;
+    color: mat.get-theme-color($theme, on-primary) !important;
+  }
+
+  .primary-fixed-dim-background-leaderboard {
+    background: mat.get-theme-color($theme, primary-fixed-dim) !important;
+    color: mat.get-theme-color($theme, on-primary) !important;
+  }
+
   .primary-fixed-dim-background {
     background: mat.get-theme-color($theme, primary-fixed-dim) !important;
     color: mat.get-theme-color($theme, on-primary-fixed-variant) !important;
@@ -356,6 +366,9 @@ body {
   .title-small {
     font: mat.get-theme-typography($theme, title-small, font);
   }
+  .label-large {
+    font: mat.get-theme-typography($theme, label-large, font) !important;
+  }
   .display-medium {
     font: mat.get-theme-typography($theme, display-medium, font);
   }
@@ -370,6 +383,9 @@ body {
   }
   .body-large {
     font: mat.get-theme-typography($theme, body-large, font);
+  }
+  .body-medium {
+    font: mat.get-theme-typography($theme, body-medium, font) !important;
   }
   .display-large {
     font: mat.get-theme-typography($theme, display-large, font);
