@@ -15,7 +15,7 @@
   margin-left: 24px;
 }
 
-.news-footer {
+.footer {
   font-style: italic;
   margin-left: 22px;
   position: absolute;
@@ -24,4 +24,8 @@
 
 .room-title-margins {
   margin-top: 15px;
+}
+
+.unavailable-room {
+  background-color: #FFD8E4;
 }
