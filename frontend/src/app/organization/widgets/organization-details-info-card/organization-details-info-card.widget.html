@@ -94,6 +94,14 @@
       Edit
     </button>
     }
+    @if(profile && profile.id != null) {
+      <button mat-flat-button
+      class="primary-button"
+      (click)="joinOrganizationMethod(this.organization.slug, this.profile.id)"
+      >
+      Join
+    </button>
+    }
   </mat-card-actions>
 </mat-pane>
 }

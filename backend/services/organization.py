@@ -17,7 +17,7 @@ from ..entities.user_entity import UserEntity
 from .permission import PermissionService
 from .user import UserService
 
-from .exceptions import ResourceNotFoundException
+from .exceptions import ResourceNotFoundException, ResourceExistsException
 
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
@@ -116,18 +116,49 @@ class OrganizationService:
     def add_member(
         self, subject: User, slug: str, user_id: int
     ) -> OrganizationMembership:
+        """
+        Add a new organization membership
+        If either user or organization don't exist, a debug message is displayed
+
+        Parameters:
+            slug: a string representing a unique organization slug
+            user_id: an int representing a unique user id
+
+        Returns:
+            OrganizationMembership: Object added to table
+
+        Raises:
+            ResourceNotFoundException if no organization is found with the corresponding slug
+            ResourceExistsException if user is already in the organization
+        """
         # TODO: authenticate and check that user exists in database
 
         organization = (
-            (
-                self._session.query(OrganizationEntity).filter(
-                    OrganizationEntity.slug == slug
-                )
+            self._session.query(OrganizationEntity).filter(
+                OrganizationEntity.slug == slug
+            )
+        ).one_or_none()
+
+        if organization is None:
+            raise ResourceNotFoundException(
+                f"No organization found with matching slug: {slug}"
+            )
+
+        check_existing_membership = (
+            self._session.query(OrganizationMembershipEntity)
+            .filter(
+                OrganizationMembershipEntity.user_id == user_id,
+                OrganizationMembershipEntity.organization_id == organization.id,
             )
             .first()
-            .to_model()
         )
-        newMember = (
+
+        if check_existing_membership:
+            raise ResourceExistsException(
+                f"User with id {user_id} already in the organization with slug: {slug}"
+            )
+
+        new_membership = (
             self._session.query(UserEntity)
             .filter(UserEntity.id == user_id)
             .first()
@@ -135,7 +166,7 @@ class OrganizationService:
         )
 
         membership_model = OrganizationMembership(
-            user=newMember,
+            user=new_membership,
             organization_id=organization.id,
             organization_slug=organization.slug,
             organization_role=OrganizationRole.MEMBER,
@@ -152,21 +183,63 @@ class OrganizationService:
         # Return added object
         return organization_membership_entity.to_model()
 
-    def remove_member(self, subject: User, user_id: int) -> None:
-        # TODO: authenticate
-        formerMember = self._session.query(UserEntity).filter(UserEntity.id == user_id)
+    def remove_member(self, subject: User, slug: str, user_id: int) -> None:
+        # TODO: authenticate user for deleting
+        """
+        Remove an existing organization membership
+        If the user isn't a part of the organization, a debug message is displayed
 
-        organization_membership_entity = OrganizationMembershipEntity.from_model(
-            formerMember
+        Parameters:
+            slug: a string representing a unique organization slug
+            user_id: an int representing a unique user id
+
+        Raises:
+            ResourceNotFoundException if no organization membership is found with the corresponding slug and user id
+        """
+
+        organization = (
+            self._session.query(OrganizationEntity)
+            .filter(OrganizationEntity.slug == slug)
+            .first()
+            .to_model()
         )
 
-        self._session.delete(organization_membership_entity)
+        former_membership = (
+            self._session.query(OrganizationMembershipEntity)
+            .filter(
+                OrganizationMembershipEntity.user_id == user_id,
+                OrganizationMembershipEntity.organization_id == organization.id,
+            )
+            .one_or_none()
+        )
+
+        # Check if result is null
+        if former_membership is None:
+            raise ResourceNotFoundException(
+                f"No organization membership for organization with slug {slug} found with matching user id: {user_id}"
+            )
+
+        self._session.delete(former_membership)
         self._session.commit()
 
     def get_roster(
         self, subject: User, organization_slug: str
     ) -> list[OrganizationMembership]:
         # TODO: authenticate
+
+        """
+        Get an organization roster
+        If the organization doesn't exist, a debug message is displayed
+
+        Parameters:
+            slug: a string representing a unique organization slug
+
+        Returns:
+            list[OrganizationMembership]: list of'OrganizationMembership' objects
+
+        Raises:
+            ResourceNotFoundException if no organization is found with the corresponding slug
+        """
 
         # Query the organization with matching slug
         organization = (

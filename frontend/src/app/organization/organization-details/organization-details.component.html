@@ -9,13 +9,18 @@
       [organization]="organization"
       [profile]="profile"
       [eventCreationPermissions]="eventCreationPermission$ | async"
+      [joinOrganizationMethod]="joinOrganization"
     ></organization-details-info-card>
-  
-    <!-- Right Column -->
-    <div class="right-column">
-      <organization-roster
-        [organizationRoster]="organizationRoster">
-      </organization-roster>
-    </div>
+    @if (organizationRoster != undefined) {
+      <!-- Right Column -->
+      <div class="right-column">
+        <organization-roster
+          [organizationRoster]="organizationRoster"
+          [organization]="organization"
+          [profile]="profile"
+          [organizationRosterService]="organizationRosterService"
+        ></organization-roster>
+      </div>
+    }
   </div>
 }

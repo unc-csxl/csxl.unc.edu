@@ -12,6 +12,12 @@ class ResourceNotFoundException(Exception):
     ...
 
 
+class ResourceExistsException(Exception):
+    """ResourceExistsException is raised when a user attempts to create an already existing resource."""
+
+    ...
+
+
 class UserPermissionException(Exception):
     """UserPermissionException is raised when a user attempts to perform an action they are not authorized to perform."""
 

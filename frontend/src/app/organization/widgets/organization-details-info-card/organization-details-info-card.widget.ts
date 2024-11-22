@@ -11,6 +11,7 @@ import { Component, Input } from '@angular/core';
 import { Organization } from '../../organization.model';
 import { Profile } from '../../../profile/profile.service';
 import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
+import { OrganizationRosterService } from '../organization-roster/organization-roster.widget.service';
 
 @Component({
   selector: 'organization-details-info-card',
@@ -24,6 +25,8 @@ export class OrganizationDetailsInfoCard {
   @Input() profile?: Profile;
   /** Whether or not the user has permission to create events */
   @Input() eventCreationPermissions!: boolean | null;
+  /** The parent's join org method */
+  @Input() joinOrganizationMethod!: (slug: string, user_id: number) => void;
 
   /** Constructs the organization detail info card widget */
   constructor(private icons: SocialMediaIconWidgetService) {}

@@ -16,11 +16,9 @@ import {
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Organization, OrganizationMembership } from '../organization.model';
+import { OrganizationRosterService } from '../widgets/organization-roster/organization-roster.widget.service';
 import { Profile, ProfileService } from '../../profile/profile.service';
-import {
-  organizationResolver,
-  organizationRosterResolver
-} from '../organization.resolver';
+import { organizationResolver } from '../organization.resolver';
 import { EventService } from '../../event/event.service';
 import { Observable } from 'rxjs';
 import { PermissionService } from '../../permission.service';
@@ -45,8 +43,7 @@ export class OrganizationDetailsComponent implements OnInit {
     path: ':slug',
     component: OrganizationDetailsComponent,
     resolve: {
-      organization: organizationResolver,
-      organizationRoster: organizationRosterResolver
+      organization: organizationResolver
     },
     children: [
       {
@@ -75,6 +72,7 @@ export class OrganizationDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     protected snackBar: MatSnackBar,
     private profileService: ProfileService,
+    protected organizationRosterService: OrganizationRosterService,
     protected eventService: EventService,
     protected groupEventsPipe: GroupEventsPipe,
     private permission: PermissionService,
@@ -84,12 +82,14 @@ export class OrganizationDetailsComponent implements OnInit {
 
     const data = this.route.snapshot.data as {
       organization: Organization;
-      organizationRoster: OrganizationMembership[];
       events: Event[];
     };
 
     this.organization = data.organization;
-    this.organizationRoster = data.organizationRoster;
+
+    if (this.organization) {
+      this.getRoster(this.organization.slug);
+    }
 
     this.eventCreationPermission$ = this.permission.check(
       'organization.*',
@@ -105,4 +105,27 @@ export class OrganizationDetailsComponent implements OnInit {
       `/organizations/${this.organization?.slug}/edit`
     );
   }
+
+  private getRoster(slug: string): void {
+    this.organizationRosterService.getOrganizationRoster(slug).subscribe({
+      next: (roster) => {
+        if (roster?.length !== 0) {
+          this.organizationRoster = roster;
+        }
+      }
+    });
+  }
+
+  // Arrow function is necessary to make sure "this.service" is still passed with child
+  protected joinOrganization = (slug: string, user_id: number): void => {
+    this.organizationRosterService
+      .addOrganizationMembership(slug, user_id)
+      .subscribe({
+        error: (error) => {
+          this.snackBar.open('Unable to join organization', 'Close', {
+            duration: 5000
+          });
+        }
+      });
+  };
 }

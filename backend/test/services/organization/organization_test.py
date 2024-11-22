@@ -7,6 +7,7 @@ from unittest.mock import create_autospec
 from backend.services.exceptions import (
     UserPermissionException,
     ResourceNotFoundException,
+    ResourceExistsException,
 )
 
 # Tested Dependencies
@@ -27,7 +28,7 @@ from .organization_test_data import (
     new_cads,
     to_add_conflicting_id,
 )
-from .organization_membership_test_data import member_to_add, roster
+from .organization_membership_test_data import member_to_add, member_1, roster
 from ..user_data import root, user
 
 __authors__ = ["Ajay Gandecha"]
@@ -56,13 +57,6 @@ def test_get_by_slug(organization_svc_integration: OrganizationService):
     assert fetched_organization is not None
     assert isinstance(fetched_organization, Organization)
     assert fetched_organization.slug == cads.slug
-
-
-def test_get_roster_by_slug(organization_svc_integration: OrganizationService):
-    fetched_members = organization_svc_integration.get_roster(root, cads.slug)
-    assert fetched_members is not None
-    assert len(fetched_members) == len(roster)
-    assert isinstance(fetched_members[0], OrganizationMembership)
 
 
 # Test `OrganizationService.create()`
@@ -108,21 +102,66 @@ def test_create_organization_as_user(organization_svc_integration: OrganizationS
         pytest.fail()  # Fail test if no error was thrown above
 
 
+# Test Organization Management (roster) begin
+
+
 def test_add_member(organization_svc_integration: OrganizationService):
     """Test that member can be added to database"""
     added_member = organization_svc_integration.add_member(
-        root, cads.slug, member_to_add
+        root, cads.slug, member_to_add.id
     )
     assert added_member is not None
     assert added_member.id is not None
 
 
-# def test_remove_member(organization_svc_integration: OrganizationService):
-#     """Test that member can be removed from database"""
-#     removed_member = organization_svc_integration.remove_member(root, member_to_add)
+def test_add_member_to_nonexistent_organization(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that member cannot be added to nonexistent organization"""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.add_member(root, "fakeslug", member_to_add.id)
 
-#     with pytest.raises(ResourceNotFoundException):
-#         organization_svc_integration.get_by_slug(cads.slug)
+
+def test_add_existing_member_to_organization(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that member cannot be added to an organization multiple times"""
+    organization_svc_integration.add_member(root, cads.slug, member_to_add.id)
+
+    with pytest.raises(ResourceExistsException):
+        organization_svc_integration.add_member(root, cads.slug, member_to_add.id)
+
+
+def test_get_roster_by_slug(organization_svc_integration: OrganizationService):
+    """Test retrieve roster for an organization by slug"""
+    fetched_members = organization_svc_integration.get_roster(root, cads.slug)
+    assert fetched_members is not None
+    assert len(fetched_members) == len(roster)
+    assert isinstance(fetched_members[0], OrganizationMembership)
+
+
+def test_get_nonexistent_roster(organization_svc_integration: OrganizationService):
+    """Test retrieving roster for a nonexistent organization"""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.get_roster(root, "fakeslug")
+
+
+def test_remove_member(organization_svc_integration: OrganizationService):
+    """Test that member can be removed from database"""
+    organization_svc_integration.remove_member(root, cads.slug, member_1.id)
+
+    updated_roster = organization_svc_integration.get_roster(root, cads.slug)
+
+    assert len(updated_roster) == len(roster) - 1
+
+
+def test_remove_nonexistent_member(organization_svc_integration: OrganizationService):
+    """Test that a nonexistent member cannot be removed from database"""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.remove_member(root, cads.slug, member_to_add.id)
+
+
+# Test Organization Management (roster) end
 
 
 # Test `OrganizationService.update()`

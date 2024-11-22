@@ -2,7 +2,7 @@
 
 Organization routes are used to create, retrieve, and update Organizations."""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Body, Depends
 
 from ..services import OrganizationService, RoleService
 from ..models.organization import Organization
@@ -69,14 +69,14 @@ def new_organization(
 
 
 @api.post(
-    "/{slug}/roster/{user_id}",
+    "/{slug}/roster",
     responses={404: {"model": None}},
     response_model=OrganizationMembership,
     tags=["Organizations"],
 )
 def add_member_to_organization(
     slug: str,
-    user_id: int,
+    user_id: int = Body(...),
     organization_service: OrganizationService = Depends(),
     subject: User = Depends(registered_user),
 ) -> OrganizationMembership:
@@ -202,8 +202,9 @@ def delete_organization(
     organization_service.delete(subject, slug)
 
 
-@api.delete("/{slug}/roster/{user_id}")
+@api.delete("/{slug}/roster/{user_id}", response_model=None, tags=["Organizations"])
 def delete_member(
+    slug: str,
     user_id: int,
     subject: User = Depends(registered_user),
     organization_service: OrganizationService = Depends(),
@@ -216,4 +217,4 @@ def delete_member(
         organization_service: a valid OrganizationService
         subject: a valid User model representing the currently logged in User
     """
-    organization_service.remove_member(subject, user_id)
+    organization_service.remove_member(subject, slug, user_id)

@@ -1,29 +1,25 @@
  <!-- eslint-disable prettier/prettier -->
 
-<mat-pane class="card" appearance="outlined">
-    <!-- Card Header Row (Roster) -->
-    <mat-card-header class="header">
-      <mat-card-title>Roster</mat-card-title>
-      <!-- Search Bar -->
-      <search-bar
-      placeholder="Search for members"
-      class="organization-search-bar mat-csxl-search-bar"
-      [(searchBarQuery)]="searchBarQuery" />
-    </mat-card-header>
-    <mat-card-content>
-    <!-- Organization Roster -->
-     <mat-list style="height: 450px; overflow: auto;">
-      @for(membership of organizationRoster; track membership.user){
-        <mat-list-item>
-          <div class="name-content">
-          <mat-icon>account_circle</mat-icon>
-          <div class = "user-description">
-          <span matListItemTitle>{{ membership.user.first_name }}</span>
-          <p matListItemLine>{{ membership.role }}</p>
-        </div>
-        </div>
-        </mat-list-item>
-      }
-     </mat-list>
-  </mat-card-content>
+ <mat-pane class="card" appearance="outlined">
+  <!-- Card Header Row (Roster) -->
+  <mat-card-header class="header">
+    <mat-card-title>Roster</mat-card-title>
+    <!-- Search Bar -->
+    <search-bar
+    placeholder="Search for members"
+    class="organization-search-bar mat-csxl-search-bar"
+    [(searchBarQuery)]="searchBarQuery" />
+  </mat-card-header>
+  <mat-card-content>
+  <!-- Organization Roster -->
+   <mat-list style="height: 450px; overflow: auto;">
+    @for(membership of organizationRoster; track membership.user){
+      <mat-list-item>
+        <div matListItemIcon class="upcoming secondary-background">A</div>
+        <span matListItemTitle>{{ membership.user.first_name }}</span>
+        <p matListItemLine>{{ membership.organization_role }}</p>
+      </mat-list-item>
+    }
+   </mat-list>
+</mat-card-content>
 </mat-pane>

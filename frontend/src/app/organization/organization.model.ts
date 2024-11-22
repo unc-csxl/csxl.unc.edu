@@ -35,7 +35,7 @@ export interface OrganizationMembership {
   user: Profile;
   organization_id: number;
   organization_slug: string;
-  role: OrganizationRole;
+  organization_role: OrganizationRole;
 }
 
 enum OrganizationRole {

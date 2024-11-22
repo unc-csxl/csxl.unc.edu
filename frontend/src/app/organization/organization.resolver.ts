@@ -9,8 +9,8 @@
 
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { Organization, OrganizationMembership } from './organization.model';
-import { catchError, map, of } from 'rxjs';
+import { Organization } from './organization.model';
+import { catchError, of } from 'rxjs';
 import { OrganizationService } from './organization.service';
 
 // TODO: Explore if this can be replaced by a signal.
@@ -45,28 +45,6 @@ export const organizationResolver: ResolveFn<Organization | undefined> = (
   // If there is an error, return undefined
   return inject(OrganizationService)
     .getOrganization(route.paramMap.get('slug')!)
-    .pipe(
-      catchError((error) => {
-        console.log(error);
-        return of(undefined);
-      })
-    );
-};
-
-// TODO: Explore if this can be replaced by a signal.
-/** This resolver injects an organization roster into the organization roster widget. */
-export const organizationRosterResolver: ResolveFn<
-  OrganizationMembership[] | undefined
-> = (route, _state) => {
-  // If the organization roster is new, return a blank one
-  if (route.paramMap.get('slug')! == 'new') {
-    return undefined;
-  }
-
-  // Otherwise, return the organization.
-  // If there is an error, return undefined
-  return inject(OrganizationService)
-    .getOrganizationRoster(route.paramMap.get('slug')!)
     .pipe(
       catchError((error) => {
         console.log(error);

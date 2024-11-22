@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { OrganizationMembership } from '../../organization.model';
+import { Organization, OrganizationMembership } from '../../organization.model';
+import { Profile } from 'src/app/models.module';
+import { OrganizationRosterService } from './organization-roster.widget.service';
 
 @Component({
   selector: 'organization-roster',
@@ -7,8 +9,14 @@ import { OrganizationMembership } from '../../organization.model';
   styleUrls: ['./organization-roster.widget.css']
 })
 export class OrganizationRoster {
-  /** The organization to show */
-  @Input() organizationRoster!: OrganizationMembership[] | undefined;
+  // Organization to perform operations on
+  @Input() organization!: Organization | undefined;
+  // Service to perform operations with
+  @Input() organizationRosterService!: OrganizationRosterService;
+  // Roster that has been pre-fetched
+  @Input() organizationRoster!: OrganizationMembership[];
+  // User if they are logged in
+  @Input() profile?: Profile;
 
   public searchBarQuery = '';
   constructor() {}
