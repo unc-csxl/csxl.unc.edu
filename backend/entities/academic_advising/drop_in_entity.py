@@ -1,6 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Advising Drop-in Sessions."""
 
-from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Date, Integer, String, Boolean, DateTime, ForeignKey, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from typing import Self
@@ -23,11 +23,11 @@ class DropInEntity(EntityBase):
     # Title of the drop-in session (whose session this is)
     title: Mapped[str] = mapped_column(String)
     # Date of the drop-in session
-    date: Mapped[datetime] = mapped_column(DateTime)
+    date: Mapped[datetime] = mapped_column(Date)
     # Start time of the drop-in session
-    start: Mapped[datetime] = mapped_column(DateTime)
+    start: Mapped[datetime] = mapped_column(Time)
     # End time of the drop-in session
-    end: Mapped[datetime] = mapped_column(DateTime)
+    end: Mapped[datetime] = mapped_column(Time)
     # Link to reroute to individual event in Google Calendar
     link: Mapped[str] = mapped_column(String)
 
