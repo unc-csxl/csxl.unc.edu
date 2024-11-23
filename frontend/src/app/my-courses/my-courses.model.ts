@@ -219,6 +219,8 @@ export interface UpdatedCourseSite {
   section_ids: number[];
   gtas: PublicProfile[];
   utas: PublicProfile[];
+  minimum_ticket_cooldown: number | null;
+  max_tickets_per_day: number | null;
 }
 
 export interface CourseSite {

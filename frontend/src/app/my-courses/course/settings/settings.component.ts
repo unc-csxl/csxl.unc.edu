@@ -10,7 +10,7 @@ import {
   UpdatedCourseSite
 } from '../../my-courses.model';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -43,6 +43,9 @@ export class SettingsComponent {
   /** GTA and UTA selectors */
   public gtas: PublicProfile[] = [];
   public utas: PublicProfile[] = [];
+
+  /** Ticket Settings selectors */
+  ticketCooldown = new FormControl('1');
 
   constructor(
     private route: ActivatedRoute,
@@ -127,7 +130,9 @@ export class SettingsComponent {
         term_id: this.courseSite.term_id,
         section_ids: this.selectedSections(),
         gtas: this.gtas,
-        utas: this.utas
+        utas: this.utas,
+        minimum_ticket_cooldown: null,
+        max_tickets_per_day: null
       };
 
       // Attempt to update

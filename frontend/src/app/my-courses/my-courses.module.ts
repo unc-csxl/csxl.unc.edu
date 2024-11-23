@@ -47,6 +47,11 @@ import { SettingsComponent } from './course/settings/settings.component';
 import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog';
 import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
 import { MatListModule } from '@angular/material/list';
+import {
+  MatSlideToggle,
+  MatSlideToggleModule
+} from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -89,7 +94,9 @@ import { MatListModule } from '@angular/material/list';
     MatChipsModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatListModule
+    MatListModule,
+    MatSlideToggleModule,
+    MatSliderModule
   ]
 })
 export class MyCoursesModule {}
