@@ -84,13 +84,13 @@
           type="number"
           matInput
           placeholder="Maximum number of tickets a student can make in a 24hr period."
-          [formControl]="ticketCooldown"
+          [formControl]="maxTicketsInDay"
           [min]="1"
-          name="ticketCooldown"
+          name="maxTicketsInDay"
         />
         @if(ticketCooldown.hasError('min')) {
           <mat-error>
-            The value must be greater than 0 minutes.
+            The value must be greater than 0.
           </mat-error>
         }
       </mat-form-field>

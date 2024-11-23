@@ -45,7 +45,8 @@ export class SettingsComponent {
   public utas: PublicProfile[] = [];
 
   /** Ticket Settings selectors */
-  ticketCooldown = new FormControl('1');
+  ticketCooldown = new FormControl(1);
+  maxTicketsInDay = new FormControl(1);
 
   constructor(
     private route: ActivatedRoute,
@@ -106,6 +107,8 @@ export class SettingsComponent {
         this.selectedSections.set(this.courseSite.section_ids);
         this.gtas = this.courseSite.gtas;
         this.utas = this.courseSite.utas;
+        this.ticketCooldown.setValue(this.courseSite.minimum_ticket_cooldown);
+        this.maxTicketsInDay.setValue(this.courseSite.max_tickets_per_day);
       });
   }
 
@@ -131,8 +134,8 @@ export class SettingsComponent {
         section_ids: this.selectedSections(),
         gtas: this.gtas,
         utas: this.utas,
-        minimum_ticket_cooldown: null,
-        max_tickets_per_day: null
+        minimum_ticket_cooldown: this.ticketCooldown.value,
+        max_tickets_per_day: this.maxTicketsInDay.value
       };
 
       // Attempt to update

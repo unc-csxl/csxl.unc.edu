@@ -161,8 +161,8 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       next: (_) => {
         this.pollData();
       },
-      error: (_) => {
-        this.snackBar.open(`Could not create a ticket at this time.`, '', {
+      error: (err) => {
+        this.snackBar.open(`${err.error.message}`, '', {
           duration: 2000
         });
       }
