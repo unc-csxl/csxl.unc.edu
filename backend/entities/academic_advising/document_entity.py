@@ -18,7 +18,7 @@ class DocumentEntity(EntityBase):
 
 
     # NOTE: This field establishes a one-to-many relationship between the documents and sections table.
-    sections: Mapped[list["SectionEntity"]] = relationship(
+    doc_sections: Mapped[list["DocumentSectionEntity"]] = relationship(
         back_populates="document", cascade="all,delete"
     )
    
@@ -46,7 +46,7 @@ class DocumentEntity(EntityBase):
         Returns:
             Document: A Document model for API usage.
         """
-        return document(
+        return Document(
             id=self.id,
             title=self.title,
         )
@@ -61,7 +61,6 @@ class DocumentEntity(EntityBase):
         return DocumentDetails(
             id=self.id,
             title=self.title,
-            document_id=self.document_id,
-            sections=[section.to_overview_model() for section in self.sections],
+            sections=[section.to_model() for section in self.sections],
         )
 

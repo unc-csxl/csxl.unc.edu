@@ -5,6 +5,7 @@ from ..entity_base import EntityBase
 from typing import Self
 from ...models.academic_advising import document
 from ...models.academic_advising import document_section
+from sqlalchemy.dialects.postgresql import TSVECTOR  
 from ...models.academic_advising.document_section import DocumentSection
 from ...models.academic_advising.document_details import DocumentDetails
 
@@ -19,13 +20,11 @@ class DocumentSectionEntity(EntityBase):
 
     # NOTE: This defines a one-to-many relationship between the document and section tables.
     document_id: Mapped[int] = mapped_column(ForeignKey("document.id"))
-    document: Mapped["DocumentEntity"] = relationship(back_populates="sections")
+    document: Mapped["DocumentEntity"] = relationship(back_populates="doc_sections")
 
-     # Tsvector for full-text search
+     # Store the tsvector for full-text search
     tsv_content: Mapped[str] = mapped_column(
-        "tsv_content", 
-        type_=String, 
-        index=True,
+        TSVECTOR,  # Change from String to TSVECTOR
         nullable=False,
     )
 

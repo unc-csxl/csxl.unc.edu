@@ -2,7 +2,7 @@
 
 When we reset the database and insert data with predefined IDs, Postgres does
 not automatically reset the id counter of the database. This helper function
-emits a SQL statament to do so."""
+emits a SQL statement to do so."""
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session, DeclarativeBase, InstrumentedAttribute

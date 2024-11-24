@@ -12,7 +12,7 @@ class DocumentSection(BaseModel):
     id: int
     title: str
     content: str
-    doc_id: int
+    document_id: int
     
     
 

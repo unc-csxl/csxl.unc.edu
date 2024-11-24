@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from .document_section import DocumentSection
-from document import Document
+from backend.models.academic_advising.document import Document
 
 __author__ = ["Nathan Kelete"]
 __copyright__ = "Copyright 2023"
