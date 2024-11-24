@@ -1,9 +1,8 @@
 .full-size-pane {
-  min-height: 464px !important;
-  min-width: 336px !important;
+  min-height: 100% !important;
+  width: 100% !important;
   border-color: transparent !important;
   margin: 0px !important;
-  margin-left: 20px !important;
 }
 
 .room-title {

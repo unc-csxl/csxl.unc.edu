@@ -1,9 +1,9 @@
 .full-size-pane {
-  height: 464px !important;
-  width: 562px !important;
+  height: 100% !important;
+  width: 100% !important;
   border-color: transparent !important;
   margin: 0px !important;
-  margin-left: 40px !important;
+  max-width: none;
 }
 
 .news-footer {
@@ -54,7 +54,7 @@
 
 .dropin-header {
   display: flex;
-  margin: 0.5rem 0 30px 0.25rem;
+  margin: 3% 0 8% 0%;
   align-items: center;
   justify-content: space-between;
 }
@@ -74,5 +74,7 @@
 }
 
 .occupancy-title {
-  margin-left: 20px;
+  margin-left: 8%;
+  font-size:2.4vw;
+  white-space: nowrap;
 }
