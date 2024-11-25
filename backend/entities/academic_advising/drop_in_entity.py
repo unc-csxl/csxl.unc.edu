@@ -4,7 +4,7 @@ from sqlalchemy import Date, Integer, String, Boolean, DateTime, ForeignKey, Tim
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from typing import Self
-from datetime import datetime
+from datetime import datetime, date as d, time
 from ...models.academic_advising import DropIn
 
 __author__ = "Emmalyn Foster"
@@ -23,11 +23,11 @@ class DropInEntity(EntityBase):
     # Title of the drop-in session (whose session this is)
     title: Mapped[str] = mapped_column(String)
     # Date of the drop-in session
-    date: Mapped[datetime] = mapped_column(Date)
+    date: Mapped[d] = mapped_column(Date)
     # Start time of the drop-in session
-    start: Mapped[datetime] = mapped_column(Time)
+    start: Mapped[time] = mapped_column(Time)
     # End time of the drop-in session
-    end: Mapped[datetime] = mapped_column(Time)
+    end: Mapped[time] = mapped_column(Time)
     # Link to reroute to individual event in Google Calendar
     link: Mapped[str] = mapped_column(String)
 
@@ -58,13 +58,12 @@ class DropInEntity(EntityBase):
             link=model.link,
         )
 
-    @classmethod
     def to_model(self) -> DropIn:
         return DropIn(
-            id=self.id,
-            title=self.title,
-            date=self.date,
-            start=self.start,
-            end=self.end,
-            link=self.link,
+            id= self.id,
+            title= self.title,
+            date= self.date,
+            start= self.start,
+            end= self.end,
+            link= self.link,
         )

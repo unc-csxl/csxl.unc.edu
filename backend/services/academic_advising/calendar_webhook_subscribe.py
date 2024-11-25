@@ -38,6 +38,6 @@ def subscribe_to_calendar_changes(calendar_id, webhook_url): # type: ignore
 
 
 if __name__ == "__main__":
-    calendar_id = "fc6f3c360534b8dc34022e7d0224c8db328033f147cd79d8454388bf15800ec0@group.calendar.google.com"
-    webhook_url = "https://fancy-plums-marry.loca.lt/notifications"  # The URL where you want to receive the notifications
+    calendar_id = "cs.unc.edu_340oonr4ec26n1fo9l854r3ip8@group.calendar.google.com"
+    webhook_url = "https://two-webs-start.loca.lt/notifications"  # The URL where you want to receive the notifications
     subscribe_to_calendar_changes(calendar_id, webhook_url)

@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from .organization import organization_test_data
 from .event import event_test_data
 from . import permission_data, role_data, user_data
-from .academic_advising import drop_in_data
+from .academic_advising import drop_in_demo_data
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -24,7 +24,6 @@ def setup_insert_data_fixture(session: Session):
     permission_data.insert_fake_data(session)
     organization_test_data.insert_fake_data(session)
     event_test_data.insert_fake_data(session)
-    drop_in_data.insert_fake_data(session)
 
     session.commit()
     yield

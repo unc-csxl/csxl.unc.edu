@@ -7,15 +7,27 @@ from google.oauth2.service_account import Credentials
 from dateutil.relativedelta import relativedelta
 import urllib
 
+# grabbing the events from today -> 6 months from now every time the webhook notifies of our reocurring script 
+# drop table first
+
+# credentials to call API, will eventually be stored in db
 SERVICE_ACCOUNT_FILE = 'csxl-academic-advising-feature.json'
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-
+creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 # Global academic advising calendar ID
-calendar_id_global = 'fc6f3c360534b8dc34022e7d0224c8db328033f147cd79d8454388bf15800ec0@group.calendar.google.com'
+calendar_id_global = 'cs.unc.edu_340oonr4ec26n1fo9l854r3ip8@group.calendar.google.com'
 
-# grabbing the events from today -> 6 months from now every time the webhook notifies or our reocurring script 
-# drop table first
-def upcoming_events(calendar_id, creds):  # type: ignore
+
+def get_events(calendar_id, creds): # type: ignore
+    """Calls events().list to retrieve all events within a 6 month range from today to populate database 
+    
+        Args: 
+            calendar_id: the id of the calendar, to be stored as a credential 
+            creds: required credentials to make the API call
+
+        Returns: 
+            events_result: API response
+    """
     service = build("calendar", "v3", credentials=creds)
 
     now = datetime.now(timezone.utc).isoformat()
@@ -29,11 +41,25 @@ def upcoming_events(calendar_id, creds):  # type: ignore
             calendarId=calendar_id,
             timeMin=now,
             timeMax=six_months_later,
+            maxResults=2,
             singleEvents=True,
             orderBy="startTime",
         )
         .execute()
     )
+    
+    # print(f'{events_result}')
+    return events_result
+
+def upcoming_events(events_result):  # type: ignore
+    """ Parses events_result API response into a dictionary for processing and inserting into database 
+    
+        Args: 
+            event_result: Returned response from get_events()
+
+        Returns: 
+            events_dict: dictionary with each event 
+    """
     events = events_result.get("items", [])
 
     if not events:
@@ -76,15 +102,9 @@ def upcoming_events(calendar_id, creds):  # type: ignore
             "link": link,
         }
 
-        # Optional: Debugging output
-        print(
-            f'ID: {event_id}, Summary: {cleaned_summary}, Start Date: {start_date}, '
-            f'Start Time: {start_time}, End Time: {end_time}, Link: {link}'
-        )
-
+    print(f'{events_dict}')
     return events_dict
 
 
 if __name__ == '__main__':
-   creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-   upcoming_events(calendar_id_global, creds)
+    upcoming_events(get_events(calendar_id_global, creds))

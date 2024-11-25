@@ -6,7 +6,10 @@ from typing import Self
 
 app = Flask(__name__)
 
-# Set your Google credentials file and document ID
+
+# command to start app python -m backend.services.academic_advising.webhook_notification_handler
+
+# Set your Google credentials file and calendar ID
 SERVICE_ACCOUNT_FILE = "csxl-academic-advising-feature.json"
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 
@@ -14,7 +17,7 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
 # calendar id for watched resource
-calendar_id_global = "fc6f3c360534b8dc34022e7d0224c8db328033f147cd79d8454388bf15800ec0@group.calendar.google.com"
+calendar_id_global = "cs.unc.edu_340oonr4ec26n1fo9l854r3ip8@group.calendar.google.com"
 
 
 @app.route("/notifications", methods=["POST"])

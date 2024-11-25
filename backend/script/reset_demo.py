@@ -14,6 +14,8 @@ import sys
 import subprocess
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+
+from backend.test.services.academic_advising import drop_in_demo_data
 from ..database import engine
 from ..env import getenv
 from .. import entities
@@ -65,6 +67,7 @@ with Session(engine) as session:
     office_hours_data.insert_fake_data(session)
     hiring_data.insert_fake_data(session)
     article_data.insert_fake_data(session)
+    drop_in_demo_data.insert_fake_data(session)
 
     # Commit changes to the database
     session.commit()
