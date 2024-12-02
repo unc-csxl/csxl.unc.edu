@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { SignageService } from '../../signage.service';
 
 @Component({
@@ -6,8 +6,8 @@ import { SignageService } from '../../signage.service';
   templateUrl: './rooms.widget.html',
   styleUrls: ['./rooms.widget.css']
 })
-export class RoomsWidget implements OnInit {
-  availableRooms: string[] = [];
+export class RoomsWidget {
+  @Input() availableRooms: string[] = [];
   allRooms: string[] = [
     'SN139',
     'SN144',
@@ -18,13 +18,7 @@ export class RoomsWidget implements OnInit {
     'SN147'
   ];
 
-  constructor(private signageService: SignageService) {}
-
-  ngOnInit(): void {
-    this.signageService.getFastData().subscribe((data) => {
-      this.availableRooms = data.available_rooms;
-    });
-  }
+  constructor() {}
 
   isRoomAvailable(room: string): boolean {
     return this.availableRooms.includes(room);

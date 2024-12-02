@@ -4,14 +4,13 @@
     </mat-card-header>
     <div class='column'>
         <div class='row'>
-            <occupancy [seat_availability]="fastData().seat_availability" class='occupancy'></occupancy>
-            <rooms class='rooms'></rooms>
-            <news-card [article]="slowData().newest_news[0]" class='news'></news-card>
+            <occupancy [seat_availability]="signageService.fastData().seat_availability" class='occupancy'></occupancy>
+            <rooms [availableRooms]="signageService.fastData().available_rooms" class='rooms'></rooms>
+            <news-card [article]="signageService.slowData().newest_news[0]" class='news'></news-card>
         </div>
         <div class='row'>
-            <div class='events'>
-                <event-card [event]="slowData().newest_events[1]"></event-card>
-            </div>
+            <event-card [event]="signageService.slowData().newest_events[1]" class='events'></event-card>
+            <leaderboard [profiles]="signageService.slowData().top_users"></leaderboard>
         </div>
     </div>
 </div>

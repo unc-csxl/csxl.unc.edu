@@ -1,0 +1,80 @@
+.full-size-pane {
+  min-height: 464px !important;
+  min-width: 358px !important;
+  border-color: transparent !important;
+  margin: 0px !important;
+  margin-left: 20px !important;
+}
+
+.room-title {
+  justify-content: center;
+}
+
+.full-size-content {
+  height: 20vh;
+  text-align: center;
+  justify-content: center;
+}
+
+.sub-header {
+  margin: 0px;
+}
+
+.news-footer {
+  font-style: italic;
+  margin-left: 22px;
+  position: absolute;
+  bottom: 26px;
+}
+
+.room-title-margins {
+  margin-top: 15px;
+}
+
+.profile-chip-container {
+  display: flex;
+  width: 186px !important;
+  height: 44px !important;
+  margin-left: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  align-items: center;
+  border-radius: 100%;
+}
+
+.profile-chip {
+  width: 186px !important;
+  height: 44px !important;
+  text-align: center !important;
+  border-radius: 100% !important;
+}
+
+.desktop-profile-chips {
+  display: none;
+}
+
+.item {
+  font-size: 12px;
+  width: 37px;
+  height: 37px;
+  margin-left: 38px;
+  margin-right: 12px;
+  margin-top: 10px;
+  padding-bottom: 0;
+  line-height: 36px;
+  border-radius: 100%;
+}
+
+.item-div {
+  text-align: center;
+  margin-top: 9px; 
+}
+
+.chip-margin {
+  margin-top: 15px; 
+}
+
+.account-circle-icon {
+  /* width: 34px;
+  height: 33px; */
+}

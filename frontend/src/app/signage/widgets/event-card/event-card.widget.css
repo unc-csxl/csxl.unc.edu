@@ -86,3 +86,7 @@ mat-card-actions {
   gap: 4px;
   align-items: center;
 }
+
+.event-title {
+  margin-left: 20px;
+}

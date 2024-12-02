@@ -1,0 +1,45 @@
+<mat-card appearance="outlined" class="full-size-pane">
+  <!-- Coworking Card Header -->
+  <mat-card-header class="dropin-header room-title">
+    <mat-card-title class="display-medium">Leaderboard</mat-card-title>
+  </mat-card-header>
+
+  <!-- Coworking Information -->
+  <mat-card-content class="full-size-content">
+    <h2 class="body-medium sub-header">Based on number of check-ins</h2>
+    <h2 class="body-medium sub-header">Resets at the start of each month</h2>
+    <!-- Coworking Dropdowns -->
+    @for(profile of profiles; track $index) {
+      <mat-chip-set class="chip-margin">
+        @if($index === 0) {
+          <mat-list-item class="item primary-fixed-background-leaderboard">
+            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+          </mat-list-item>
+        }
+        @else if($index === 1) {
+          <mat-list-item class="item primary-background">
+            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+          </mat-list-item>
+        }
+        @else if($index === 2) {
+          <mat-list-item class="item primary-fixed-dim-background-leaderboard">
+            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+          </mat-list-item>
+        }
+        @else {
+          <mat-list-item class="item secondary-container-background">
+            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+          </mat-list-item>
+        }
+        <mat-chip class="profile-chip label-large">
+          @if(profile.github_avatar) {
+            <img id="profile-icon" matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
+          } @else {
+            <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
+          }
+          {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
+        </mat-chip>
+      </mat-chip-set>
+    }
+  </mat-card-content>
+</mat-card>
