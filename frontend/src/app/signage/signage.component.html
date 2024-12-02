@@ -5,7 +5,7 @@
     <div class='column'>
         <div class='row'>
             <occupancy [seat_availability]="signageService.fastData().seat_availability"></occupancy>
-            <rooms></rooms>
+            <rooms [availableRooms]="signageService.fastData().available_rooms"></rooms>
             <news-card [article]="signageService.slowData().newest_news[0]"></news-card>
         </div>
         <div class='row'>
