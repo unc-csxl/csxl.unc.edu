@@ -41,7 +41,7 @@
 
 .mdc-list-item--with-leading-icon .mdc-list-item__start div {
   text-align: center;
-  margin-top: 12px; 
+  margin-top: 12px;
   color: white;
 }
 
@@ -49,17 +49,17 @@
   background: #612d23;
 }
 
-
 /* End Action List Styling */
 
 .dropin-header {
   display: flex;
-  margin: 3% 0 8% 0%;
+  margin: 3% 0 5% 0%;
   align-items: center;
   justify-content: space-between;
 }
 
-.mdc-list-item, .list-item{
+.mdc-list-item,
+.list-item {
   padding: 0 !important;
   display: flex;
   align-items: baseline;
@@ -75,6 +75,6 @@
 
 .occupancy-title {
   margin-left: 8%;
-  font-size:2.4vw;
+  font-size: 2.4vw;
   white-space: nowrap;
 }
