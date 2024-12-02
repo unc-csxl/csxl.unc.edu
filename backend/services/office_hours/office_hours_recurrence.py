@@ -3,7 +3,10 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from backend.services.exceptions import RecurringOfficeHourEventException, ResourceNotFoundException
+from backend.services.exceptions import (
+    RecurringOfficeHourEventException,
+    ResourceNotFoundException,
+)
 from backend.services.office_hours.office_hours import OfficeHoursService
 
 from ...database import db_session
@@ -13,8 +16,11 @@ from ...entities.office_hours import (
     OfficeHoursEntity,
 )
 
-from backend.entities.office_hours.office_hours_recurrence_entity import OfficeHoursRecurrenceEntity
+from backend.entities.office_hours.office_hours_recurrence_entity import (
+    OfficeHoursRecurrenceEntity,
+)
 from backend.models.office_hours.office_hours_recurrence import NewOfficeHoursRecurrence
+
 
 class OfficeHoursRecurrenceService:
     """
@@ -22,9 +28,9 @@ class OfficeHoursRecurrenceService:
     """
 
     def __init__(
-            self, 
-            session: Session = Depends(db_session), 
-            _office_hours_svc: OfficeHoursService = Depends()
+        self,
+        session: Session = Depends(db_session),
+        _office_hours_svc: OfficeHoursService = Depends(),
     ):
         """
         Initializes the database session.
@@ -32,85 +38,97 @@ class OfficeHoursRecurrenceService:
         self._session = session
         self._office_hours_svc = _office_hours_svc
 
-    def create_recurring(self, user: User, site_id: int, event: NewOfficeHours, recurrence: NewOfficeHoursRecurrence) -> list[OfficeHours]:
-          """
-          Creates new office hours events for recurring events.
-          """
-          # Check permissions
-          self._office_hours_svc._check_site_permissions(user, site_id)
+    def create_recurring(
+        self,
+        user: User,
+        site_id: int,
+        event: NewOfficeHours,
+        recurrence: NewOfficeHoursRecurrence,
+    ) -> list[OfficeHours]:
+        """
+        Creates new office hours events for recurring events.
+        """
+        # Check permissions
+        self._office_hours_svc._check_site_permissions(user, site_id)
 
-          # Create recurrence entity
-          recurrence_entity = OfficeHoursRecurrenceEntity.from_new_model(recurrence)
-          self._session.add(recurrence_entity)
-          self._session.commit()
+        # Create recurrence entity
+        recurrence_entity = OfficeHoursRecurrenceEntity.from_new_model(recurrence)
+        self._session.add(recurrence_entity)
+        self._session.commit()
 
-          # Create office hour events
-          new_events = []
-          current_date = recurrence.start_date
-          current_event = event
+        # Create office hour events
+        new_events = []
+        current_date = recurrence.start_date
+        current_event = event
 
-          current_event.recurrence_id = recurrence_entity.id
-        
-          original_td = current_event.end_time - current_event.start_time
+        current_event.recurrence_id = recurrence_entity.id
 
-          # put valid date strings into list
-          days_recur = []
-          if recurrence.recur_monday:
-              days_recur.append('monday')
-          
-          if recurrence.recur_tuesday:
-              days_recur.append('tuesday')
-          
-          if recurrence.recur_wednesday:
-              days_recur.append('wednesday')
-          
-          if recurrence.recur_thursday:
-              days_recur.append('thursday')
-          
-          if recurrence.recur_friday:
-              days_recur.append('friday')
-          
-          if recurrence.recur_saturday:
-              days_recur.append('saturday')
-          
-          if recurrence.recur_sunday:
-              days_recur.append('sunday')
+        original_td = current_event.end_time - current_event.start_time
 
-          if len(days_recur) == 0:
-              raise RecurringOfficeHourEventException("No days to recur selected.")
+        # put valid date strings into list
+        days_recur = []
+        if recurrence.recur_monday:
+            days_recur.append("monday")
 
-            # error out if recurrence end date is before 1st OH event
+        if recurrence.recur_tuesday:
+            days_recur.append("tuesday")
 
-          while current_date <= recurrence.end_date:     
-              # Get day name of date
-              day = current_date.strftime("%A")
+        if recurrence.recur_wednesday:
+            days_recur.append("wednesday")
 
-              if day.lower() in days_recur:
-                  # new date is the start date of original event with "current date" instead (leave the time!)
-                  current_event.start_time = event.start_time.replace(year=current_date.year, month=current_date.month, day=current_date.day)
-                  # end date is new date plus original timedelta (accounts for edge case of events that span multiple days)
-                  current_event.end_time = current_event.start_time + original_td
-              else:
-                  # move to next iteration if day is not valid
-                  current_date += timedelta(days = 1)
-                  continue
+        if recurrence.recur_thursday:
+            days_recur.append("thursday")
 
-              # Create new OH entity
-              office_hours_entity = OfficeHoursEntity.from_new_model(current_event)
+        if recurrence.recur_friday:
+            days_recur.append("friday")
 
-              self._session.add(office_hours_entity)
-              new_events.append(office_hours_entity)
+        if recurrence.recur_saturday:
+            days_recur.append("saturday")
 
-              # Increment date
-              current_date += timedelta(days = 1)
+        if recurrence.recur_sunday:
+            days_recur.append("sunday")
 
-          if len(new_events) == 0:
-              raise RecurringOfficeHourEventException("No events created. Check your recurrence end date.")
+        if len(days_recur) == 0:
+            raise RecurringOfficeHourEventException("No days to recur selected.")
 
-          # commit changes
-          self._session.commit()
+        # error out if recurrence end date is before 1st OH event
 
-          return [entity.to_model() for entity in new_events]
+        while current_date <= recurrence.end_date:
+            # Get day name of date
+            day = current_date.strftime("%A")
+
+            if day.lower() in days_recur:
+                # new date is the start date of original event with "current date" instead (leave the time!)
+                current_event.start_time = event.start_time.replace(
+                    year=current_date.year,
+                    month=current_date.month,
+                    day=current_date.day,
+                )
+                # end date is new date plus original timedelta (accounts for edge case of events that span multiple days)
+                current_event.end_time = current_event.start_time + original_td
+            else:
+                # move to next iteration if day is not valid
+                current_date += timedelta(days=1)
+                continue
+
+            # Create new OH entity
+            office_hours_entity = OfficeHoursEntity.from_new_model(current_event)
+
+            self._session.add(office_hours_entity)
+            new_events.append(office_hours_entity)
+
+            # Increment date
+            current_date += timedelta(days=1)
+
+        if len(new_events) == 0:
+            raise RecurringOfficeHourEventException(
+                "No events created. Check your recurrence end date."
+            )
+
+        # commit changes
+        self._session.commit()
+
+        return [entity.to_model() for entity in new_events]
 
     def delete_recurring(self, user: User, site_id: int, event_id: int):
         """
@@ -128,16 +146,22 @@ class OfficeHoursRecurrenceService:
         self._office_hours_svc._check_site_permissions(user, site_id)
 
         # Find future events in recurrence pattern
-        start_date = office_hours_entity.start_time.date() if (office_hours_entity.start_time.date() > date.today()) else date.today()
+        start_date = (
+            office_hours_entity.start_time.date()
+            if (office_hours_entity.start_time.date() > date.today())
+            else date.today()
+        )
         future_events_query = (
             select(OfficeHoursEntity)
             .where(OfficeHoursEntity.recurrence_id == office_hours_entity.recurrence_id)
             .where(OfficeHoursEntity.start_time >= start_date)
         )
 
-        future_event_entities = self._session.scalars(future_events_query).unique().all()
+        future_event_entities = (
+            self._session.scalars(future_events_query).unique().all()
+        )
 
         for entity in future_event_entities:
             self._session.delete(entity)
-            
+
         self._session.commit()
