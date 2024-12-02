@@ -4,8 +4,14 @@ div {
 }
 
 .mat-mdc-card-header {
-  margin-left: 40px;
-  margin-bottom: 20px;
+  margin-left: 2.03%;
+  padding-top: 1.15%;
+  padding-bottom: 1.35%;
+}
+
+.title {
+  font-size: 6vh;
+  line-height: 6vh;
 }
 
 .column {
@@ -17,7 +23,7 @@ div {
   flex-direction: row;
   /* gap: 0.0185%; */
   width: 100%;
-  height: 43%;
+  height: 48%;
   margin-bottom: 1.05%;
 }
 
