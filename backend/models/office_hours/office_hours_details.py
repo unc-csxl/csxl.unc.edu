@@ -1,4 +1,4 @@
-from backend.models.office_hours.office_hours_recurrence_pattern import (
+from ...models.office_hours.office_hours_recurrence_pattern import (
     OfficeHoursRecurrencePattern,
 )
 from .ticket import OfficeHoursTicket

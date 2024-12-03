@@ -534,6 +534,30 @@ new_recurrence_pattern = NewOfficeHoursRecurrencePattern(
     recur_sunday=True,
 )
 
+invalid_recurrence_pattern_days = NewOfficeHoursRecurrencePattern(
+    start_date=datetime.now(),
+    end_date=datetime.now() + timedelta(days=14),
+    recur_monday=False,
+    recur_tuesday=False,
+    recur_wednesday=False,
+    recur_thursday=False,
+    recur_friday=False,
+    recur_saturday=False,
+    recur_sunday=False,
+)
+
+invalid_recurrence_pattern_end = NewOfficeHoursRecurrencePattern(
+    start_date=datetime.now() - timedelta(days=14),
+    end_date=datetime.now() - timedelta(days=13),
+    recur_monday=True,
+    recur_tuesday=False,
+    recur_wednesday=False,
+    recur_thursday=False,
+    recur_friday=False,
+    recur_saturday=False,
+    recur_sunday=False,
+)
+
 new_event_site_not_found = NewOfficeHours(
     type=OfficeHoursEventType.OFFICE_HOURS,
     mode=OfficeHoursEventModeType.IN_PERSON,

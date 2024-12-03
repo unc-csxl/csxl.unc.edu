@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-from backend.models.office_hours.office_hours_recurrence_pattern import (
+from ...models.office_hours.office_hours_recurrence_pattern import (
     OfficeHoursRecurrencePattern,
 )
 from ...models import Paginated

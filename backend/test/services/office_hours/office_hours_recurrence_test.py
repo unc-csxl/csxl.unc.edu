@@ -2,7 +2,11 @@
 
 import pytest
 
-from backend.services.exceptions import CoursePermissionException
+from ....services.exceptions import (
+    CoursePermissionException,
+    RecurringOfficeHourEventException,
+    ResourceNotFoundException,
+)
 
 from ....services.office_hours import OfficeHoursRecurrenceService
 
@@ -54,6 +58,34 @@ def test_create_recurring_oh_event_not_authenticated(
         pytest.fail()
 
 
+def test_create_recurring_oh_event_invalid_days_recur(
+    oh_recurrence_svc: OfficeHoursRecurrenceService,
+):
+    """Ensures that an exception is thrown when recurrence pattern has no days selected."""
+    with pytest.raises(RecurringOfficeHourEventException):
+        oh_recurrence_svc.create_recurring(
+            user_data.instructor,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.new_event,
+            office_hours_data.invalid_recurrence_pattern_days,
+        )
+        pytest.fail()
+
+
+def test_create_recurring_oh_event_invalid_recurrence_end(
+    oh_recurrence_svc: OfficeHoursRecurrenceService,
+):
+    """Ensures that an exception is thrown when recurrence pattern end date is earlier than first event."""
+    with pytest.raises(RecurringOfficeHourEventException):
+        oh_recurrence_svc.create_recurring(
+            user_data.instructor,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.new_event,
+            office_hours_data.invalid_recurrence_pattern_end,
+        )
+        pytest.fail()
+
+
 def test_delete_recurring_oh_event_instructor(
     oh_recurrence_svc: OfficeHoursRecurrenceService,
 ):
@@ -63,3 +95,29 @@ def test_delete_recurring_oh_event_instructor(
         office_hours_data.comp_110_site.id,
         office_hours_data.second_recurring_event.id,
     )
+
+
+def test_delete_recurring_oh_event_not_found(
+    oh_recurrence_svc: OfficeHoursRecurrenceService,
+):
+    """Ensures that an exception is thrown when an unknown OH event ID is provided."""
+    with pytest.raises(ResourceNotFoundException):
+        oh_recurrence_svc.delete_recurring(
+            user_data.instructor,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.seventh_recurring_event.id + 1,
+        )
+        pytest.fail()
+
+
+def test_delete_recurring_oh_event_not_authorized(
+    oh_recurrence_svc: OfficeHoursRecurrenceService,
+):
+    """Ensures that an unauthorized user cannot delete recurring events."""
+    with pytest.raises(CoursePermissionException):
+        oh_recurrence_svc.delete_recurring(
+            user_data.root,
+            office_hours_data.comp_110_site.id,
+            office_hours_data.second_recurring_event.id,
+        )
+        pytest.fail()

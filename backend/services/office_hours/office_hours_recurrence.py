@@ -95,6 +95,12 @@ class OfficeHoursRecurrenceService:
         if len(days_recur) == 0:
             raise RecurringOfficeHourEventException("No days to recur selected.")
 
+        # Error out if recurrence pattern end date is before the first event.
+        if recurrence_pattern.end_date <= event.start_time:
+            raise RecurringOfficeHourEventException(
+                "Recurrence pattern end date precedes first event start time."
+            )
+
         while current_date <= recurrence_pattern.end_date:
             # Get number corresponding to day
             day = current_date.weekday()
@@ -108,25 +114,15 @@ class OfficeHoursRecurrenceService:
                 )
                 # end date is new date plus original timedelta (accounts for edge case of events that span multiple days)
                 current_event.end_time = current_event.start_time + original_td
-            else:
-                # move to next iteration if day is not valid
-                current_date += timedelta(days=1)
-                continue
 
-            # Create new OH entity
-            office_hours_entity = OfficeHoursEntity.from_new_model(current_event)
+                # Create new OH entity
+                office_hours_entity = OfficeHoursEntity.from_new_model(current_event)
 
-            self._session.add(office_hours_entity)
-            new_events.append(office_hours_entity)
+                self._session.add(office_hours_entity)
+                new_events.append(office_hours_entity)
 
             # Increment date
             current_date += timedelta(days=1)
-
-        # Error out if recurrence pattern end date is before the first event.
-        if len(new_events) == 0:
-            raise RecurringOfficeHourEventException(
-                "No events created. Check your recurrence pattern end date."
-            )
 
         # commit changes
         self._session.commit()
