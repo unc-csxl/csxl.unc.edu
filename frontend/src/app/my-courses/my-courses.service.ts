@@ -40,6 +40,17 @@ import {
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
 
+/** Enum for days of the week */
+export enum Weekday {
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday'
+}
+
 @Injectable({
   providedIn: 'root'
 })

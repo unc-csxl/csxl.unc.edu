@@ -23,7 +23,10 @@ import {
   Validators
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
+import {
+  MyCoursesService,
+  Weekday
+} from 'src/app/my-courses/my-courses.service';
 import { DatePipe } from '@angular/common';
 import { roomsResolver } from 'src/app/academics/academics.resolver';
 import { Room } from 'src/app/coworking/coworking.models';
@@ -53,14 +56,14 @@ export class OfficeHoursEditorComponent {
   /* Holds the virtual room. */
   virtualRoom: Room | undefined;
 
-  public days: { [day: string]: boolean } = {
-    Mon: false,
-    Tues: false,
-    Wed: false,
-    Thurs: false,
-    Fri: false,
-    Sat: false,
-    Sun: false
+  public days: Record<string, boolean> = {
+    [Weekday.Monday]: false,
+    [Weekday.Tuesday]: false,
+    [Weekday.Wednesday]: false,
+    [Weekday.Thursday]: false,
+    [Weekday.Friday]: false,
+    [Weekday.Saturday]: false,
+    [Weekday.Sunday]: false
   };
 
   /** Custom date range validator. */
@@ -238,13 +241,13 @@ export class OfficeHoursEditorComponent {
           end_date: recur_end
             ? new Date(new Date(recur_end).setHours(0, 0, 0, 0))
             : null,
-          recur_monday: this.days['Mon'],
-          recur_tuesday: this.days['Tues'],
-          recur_wednesday: this.days['Wed'],
-          recur_thursday: this.days['Thurs'],
-          recur_friday: this.days['Fri'],
-          recur_saturday: this.days['Sat'],
-          recur_sunday: this.days['Sun']
+          recur_monday: this.days[Weekday.Monday],
+          recur_tuesday: this.days[Weekday.Tuesday],
+          recur_wednesday: this.days[Weekday.Wednesday],
+          recur_thursday: this.days[Weekday.Thursday],
+          recur_friday: this.days[Weekday.Friday],
+          recur_saturday: this.days[Weekday.Saturday],
+          recur_sunday: this.days[Weekday.Sunday]
         };
         submittedOfficeHours = this.myCoursesService.createRecurringOfficeHours(
           courseSiteId,
