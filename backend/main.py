@@ -31,6 +31,7 @@ from .api.admin import roles as admin_roles
 from .api.admin import facts as admin_facts
 
 from .services.exceptions import (
+    RecurringOfficeHourEventException,
     UserPermissionException,
     ResourceNotFoundException,
     CoursePermissionException,
@@ -133,6 +134,13 @@ def reservation_exception_handler(request: Request, e: ReservationException):
 
 @app.exception_handler(CourseDataScrapingException)
 def course_data_scraping_exception(request: Request, e: CourseDataScrapingException):
+    return JSONResponse(status_code=500, content={"message": str(e)})
+
+
+@app.exception_handler(RecurringOfficeHourEventException)
+def recurring_office_hour_event_exception(
+    request: Request, e: RecurringOfficeHourEventException
+):
     return JSONResponse(status_code=500, content={"message": str(e)})
 
 
