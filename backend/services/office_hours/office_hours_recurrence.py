@@ -11,7 +11,7 @@ from backend.services.office_hours.office_hours import OfficeHoursService
 
 from ...database import db_session
 from ...models.user import User
-from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
+from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours, Weekday
 from ...entities.office_hours import (
     OfficeHoursEntity,
 )
@@ -72,36 +72,34 @@ class OfficeHoursRecurrenceService:
         # put valid date strings into list
         days_recur = []
         if recurrence_pattern.recur_monday:
-            days_recur.append("monday")
+            days_recur.append(Weekday.Monday)
 
         if recurrence_pattern.recur_tuesday:
-            days_recur.append("tuesday")
+            days_recur.append(Weekday.Tuesday)
 
         if recurrence_pattern.recur_wednesday:
-            days_recur.append("wednesday")
+            days_recur.append(Weekday.Wednesday)
 
         if recurrence_pattern.recur_thursday:
-            days_recur.append("thursday")
+            days_recur.append(Weekday.Thursday)
 
         if recurrence_pattern.recur_friday:
-            days_recur.append("friday")
+            days_recur.append(Weekday.Friday)
 
         if recurrence_pattern.recur_saturday:
-            days_recur.append("saturday")
+            days_recur.append(Weekday.Saturday)
 
         if recurrence_pattern.recur_sunday:
-            days_recur.append("sunday")
+            days_recur.append(Weekday.Sunday)
 
         if len(days_recur) == 0:
             raise RecurringOfficeHourEventException("No days to recur selected.")
 
-        # error out if recurrence end date is before 1st OH event
-
         while current_date <= recurrence_pattern.end_date:
-            # Get day name of date
-            day = current_date.strftime("%A")
+            # Get number corresponding to day
+            day = current_date.weekday()
 
-            if day.lower() in days_recur:
+            if Weekday(day) in days_recur:
                 # new date is the start date of original event with "current date" instead (leave the time!)
                 current_event.start_time = event.start_time.replace(
                     year=current_date.year,
@@ -124,6 +122,7 @@ class OfficeHoursRecurrenceService:
             # Increment date
             current_date += timedelta(days=1)
 
+        # Error out if recurrence pattern end date is before the first event.
         if len(new_events) == 0:
             raise RecurringOfficeHourEventException(
                 "No events created. Check your recurrence pattern end date."
