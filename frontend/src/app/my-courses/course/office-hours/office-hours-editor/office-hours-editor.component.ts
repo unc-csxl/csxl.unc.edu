@@ -170,7 +170,6 @@ export class OfficeHoursEditorComponent {
         // The truncated date defaults to GMT. When converted to local EST,
         // it rolls the date ~5hrs back to the previous day. Temporary solution
         // is to "add" the extra day back.
-        recurs: this.officeHours.recurrence_id !== undefined,
         recur_end: this.datePipe.transform(
           new Date(currentTermEndDate).setDate(
             currentTermEndDate.getDate() + 1
@@ -182,6 +181,9 @@ export class OfficeHoursEditorComponent {
 
     /** Disable recurrence form fields if updating */
     if (this.officeHours.id !== -1) {
+      this.officeHoursForm.controls.recurs.setValue(
+        this.officeHours.recurrence_pattern_id !== undefined
+      );
       this.officeHoursForm.controls.recurs.disable();
       this.officeHoursForm.controls.recur_end.disable();
     }
@@ -229,7 +231,7 @@ export class OfficeHoursEditorComponent {
 
       let submittedOfficeHours;
       if (recurs) {
-        let recurrence = {
+        let recurrencePattern = {
           start_date: new Date(
             new Date(officeHoursToSubmit.start_time).setHours(0, 0, 0, 0)
           ),
@@ -247,7 +249,7 @@ export class OfficeHoursEditorComponent {
         submittedOfficeHours = this.myCoursesService.createRecurringOfficeHours(
           courseSiteId,
           officeHoursToSubmit as NewOfficeHours,
-          recurrence
+          recurrencePattern
         );
 
         submittedOfficeHours.subscribe({

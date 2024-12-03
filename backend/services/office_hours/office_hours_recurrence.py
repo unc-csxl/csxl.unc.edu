@@ -16,10 +16,12 @@ from ...entities.office_hours import (
     OfficeHoursEntity,
 )
 
-from backend.entities.office_hours.office_hours_recurrence_entity import (
-    OfficeHoursRecurrenceEntity,
+from ...entities.office_hours.office_hours_recurrence_pattern_entity import (
+    OfficeHoursRecurrencePatternEntity,
 )
-from backend.models.office_hours.office_hours_recurrence import NewOfficeHoursRecurrence
+from ...models.office_hours.office_hours_recurrence_pattern import (
+    NewOfficeHoursRecurrencePattern,
+)
 
 
 class OfficeHoursRecurrenceService:
@@ -43,7 +45,7 @@ class OfficeHoursRecurrenceService:
         user: User,
         site_id: int,
         event: NewOfficeHours,
-        recurrence: NewOfficeHoursRecurrence,
+        recurrence_pattern: NewOfficeHoursRecurrencePattern,
     ) -> list[OfficeHours]:
         """
         Creates new office hours events for recurring events.
@@ -52,40 +54,42 @@ class OfficeHoursRecurrenceService:
         self._office_hours_svc._check_site_permissions(user, site_id)
 
         # Create recurrence entity
-        recurrence_entity = OfficeHoursRecurrenceEntity.from_new_model(recurrence)
-        self._session.add(recurrence_entity)
+        recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_new_model(
+            recurrence_pattern
+        )
+        self._session.add(recurrence_pattern_entity)
         self._session.commit()
 
         # Create office hour events
         new_events = []
-        current_date = recurrence.start_date
+        current_date = recurrence_pattern.start_date
         current_event = event
 
-        current_event.recurrence_id = recurrence_entity.id
+        current_event.recurrence_pattern_id = recurrence_pattern_entity.id
 
         original_td = current_event.end_time - current_event.start_time
 
         # put valid date strings into list
         days_recur = []
-        if recurrence.recur_monday:
+        if recurrence_pattern.recur_monday:
             days_recur.append("monday")
 
-        if recurrence.recur_tuesday:
+        if recurrence_pattern.recur_tuesday:
             days_recur.append("tuesday")
 
-        if recurrence.recur_wednesday:
+        if recurrence_pattern.recur_wednesday:
             days_recur.append("wednesday")
 
-        if recurrence.recur_thursday:
+        if recurrence_pattern.recur_thursday:
             days_recur.append("thursday")
 
-        if recurrence.recur_friday:
+        if recurrence_pattern.recur_friday:
             days_recur.append("friday")
 
-        if recurrence.recur_saturday:
+        if recurrence_pattern.recur_saturday:
             days_recur.append("saturday")
 
-        if recurrence.recur_sunday:
+        if recurrence_pattern.recur_sunday:
             days_recur.append("sunday")
 
         if len(days_recur) == 0:
@@ -93,7 +97,7 @@ class OfficeHoursRecurrenceService:
 
         # error out if recurrence end date is before 1st OH event
 
-        while current_date <= recurrence.end_date:
+        while current_date <= recurrence_pattern.end_date:
             # Get day name of date
             day = current_date.strftime("%A")
 
@@ -122,7 +126,7 @@ class OfficeHoursRecurrenceService:
 
         if len(new_events) == 0:
             raise RecurringOfficeHourEventException(
-                "No events created. Check your recurrence end date."
+                "No events created. Check your recurrence pattern end date."
             )
 
         # commit changes
@@ -153,7 +157,10 @@ class OfficeHoursRecurrenceService:
         )
         future_events_query = (
             select(OfficeHoursEntity)
-            .where(OfficeHoursEntity.recurrence_id == office_hours_entity.recurrence_id)
+            .where(
+                OfficeHoursEntity.recurrence_pattern_id
+                == office_hours_entity.recurrence_pattern_id
+            )
             .where(OfficeHoursEntity.start_time >= start_date)
         )
 

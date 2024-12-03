@@ -161,7 +161,7 @@ export class OfficeHoursPageComponent {
   }
 
   deleteOfficeHours(officeHours: OfficeHourEventOverview) {
-    if (officeHours.recurrence_id) {
+    if (officeHours.recurrence_pattern_id) {
       // Options for deleting recurring evnets
       let dialogRef = this.dialog.open(DeleteRecurringEventDialog, {
         height: '230px',

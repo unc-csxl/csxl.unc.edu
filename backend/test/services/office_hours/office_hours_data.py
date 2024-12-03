@@ -14,14 +14,14 @@ from ....entities.office_hours.office_hours_entity import OfficeHoursEntity
 from ....entities.office_hours.course_site_entity import CourseSiteEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ....entities.academics.section_entity import SectionEntity
-from ....entities.office_hours.office_hours_recurrence_entity import (
-    OfficeHoursRecurrenceEntity,
+from ....entities.office_hours.office_hours_recurrence_pattern_entity import (
+    OfficeHoursRecurrencePatternEntity,
 )
 
 
-from ....models.office_hours.office_hours_recurrence import (
-    NewOfficeHoursRecurrence,
-    OfficeHoursRecurrence,
+from ....models.office_hours.office_hours_recurrence_pattern import (
+    NewOfficeHoursRecurrencePattern,
+    OfficeHoursRecurrencePattern,
 )
 from ....models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ....models.office_hours.event_type import (
@@ -80,7 +80,7 @@ comp_110_current_office_hours = OfficeHours(
     end_time=datetime.now() + timedelta(hours=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=None,
+    recurrence_pattern_id=None,
 )
 comp_110_future_office_hours = OfficeHours(
     id=2,
@@ -92,7 +92,7 @@ comp_110_future_office_hours = OfficeHours(
     end_time=datetime.now() + timedelta(days=1, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=None,
+    recurrence_pattern_id=None,
 )
 comp_110_past_office_hours = OfficeHours(
     id=3,
@@ -104,11 +104,11 @@ comp_110_past_office_hours = OfficeHours(
     end_time=datetime.now() - timedelta(days=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=None,
+    recurrence_pattern_id=None,
 )
 
 # Recurring Office Hours
-recurrence_pattern = OfficeHoursRecurrence(
+recurrence_pattern = OfficeHoursRecurrencePattern(
     id=1,
     start_date=datetime.now(),
     end_date=datetime.now() + timedelta(days=7),
@@ -130,7 +130,7 @@ first_recurring_event = OfficeHours(
     end_time=datetime.now() + timedelta(hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=1,
+    recurrence_pattern_id=1,
 )
 second_recurring_event = OfficeHours(
     id=5,
@@ -142,7 +142,7 @@ second_recurring_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=1, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=1,
+    recurrence_pattern_id=1,
 )
 third_recurring_event = OfficeHours(
     id=6,
@@ -154,7 +154,7 @@ third_recurring_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=2, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=1,
+    recurrence_pattern_id=1,
 )
 fourth_recurring_event = OfficeHours(
     id=7,
@@ -166,7 +166,7 @@ fourth_recurring_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=3, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=1,
+    recurrence_pattern_id=1,
 )
 fifth_recurring_event = OfficeHours(
     id=8,
@@ -178,7 +178,7 @@ fifth_recurring_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=4, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=1,
+    recurrence_pattern_id=1,
 )
 sixth_recurring_event = OfficeHours(
     id=9,
@@ -190,7 +190,7 @@ sixth_recurring_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=5, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=1,
+    recurrence_pattern_id=1,
 )
 seventh_recurring_event = OfficeHours(
     id=10,
@@ -202,7 +202,7 @@ seventh_recurring_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=6, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=1,
+    recurrence_pattern_id=1,
 )
 
 # Tickets
@@ -320,7 +320,9 @@ def insert_fake_data(session: Session):
 
     # Step 3: Add office hours to database
     for pattern in recurrence_patterns:
-        recurrence_pattern_entity = OfficeHoursRecurrenceEntity.from_model(pattern)
+        recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_model(
+            pattern
+        )
         session.add(recurrence_pattern_entity)
 
     for oh in office_hours:
@@ -336,8 +338,8 @@ def insert_fake_data(session: Session):
 
     reset_table_id_seq(
         session,
-        OfficeHoursRecurrenceEntity,
-        OfficeHoursRecurrenceEntity.id,
+        OfficeHoursRecurrencePatternEntity,
+        OfficeHoursRecurrencePatternEntity.id,
         len(recurrence_patterns) + 1,
     )
 
@@ -517,10 +519,10 @@ new_event = NewOfficeHours(
     end_time=datetime.now(),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=None,
+    recurrence_pattern_id=None,
 )
 
-new_recurrence_pattern = NewOfficeHoursRecurrence(
+new_recurrence_pattern = NewOfficeHoursRecurrencePattern(
     start_date=datetime.now(),
     end_date=datetime.now() + timedelta(days=14),
     recur_monday=True,
@@ -541,7 +543,7 @@ new_event_site_not_found = NewOfficeHours(
     end_time=datetime.now(),
     course_site_id=404,
     room_id=room_data.group_a.id,
-    recurrence_id=None,
+    recurrence_pattern_id=None,
 )
 
 updated_future_event = OfficeHours(
@@ -554,7 +556,7 @@ updated_future_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=1, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=None,
+    recurrence_pattern_id=None,
 )
 
 nonexistent_event = OfficeHours(
@@ -567,5 +569,5 @@ nonexistent_event = OfficeHours(
     end_time=datetime.now(),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
-    recurrence_id=None,
+    recurrence_pattern_id=None,
 )

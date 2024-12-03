@@ -97,7 +97,7 @@ export interface OfficeHourEventOverviewJson {
   end_time: string;
   queued: number;
   total_tickets: number;
-  recurrence_id: number;
+  recurrence_pattern_id: number;
 }
 
 export interface OfficeHourEventOverview {
@@ -111,7 +111,7 @@ export interface OfficeHourEventOverview {
   end_time: Date;
   queued: number;
   total_tickets: number;
-  recurrence_id: number;
+  recurrence_pattern_id: number;
 }
 
 export interface OfficeHourTicketOverviewJson {
@@ -251,7 +251,7 @@ export interface NewOfficeHours {
   room_id: string;
 }
 
-export interface NewOfficeHoursRecurrence {
+export interface NewOfficeHoursRecurrencePattern {
   start_date: Date;
   end_date: Date | null;
   recur_monday: boolean;
@@ -273,7 +273,7 @@ export interface OfficeHoursJson {
   end_time: string;
   course_site_id: number;
   room_id: string;
-  recurrence_id: number | null;
+  recurrence_pattern_id: number | null;
 }
 
 export interface OfficeHours {
@@ -286,7 +286,7 @@ export interface OfficeHours {
   end_time: Date;
   course_site_id: number;
   room_id: string;
-  recurrence_id: number | null;
+  recurrence_pattern_id: number | null;
 }
 
 /**

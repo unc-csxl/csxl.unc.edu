@@ -37,7 +37,7 @@ def test_create_recurring_oh_event_instructor(
         office_hours_data.new_recurrence_pattern,
     )
     assert len(new_events) == 15
-    assert new_events[0].recurrence_id is not None
+    assert new_events[0].recurrence_pattern_id is not None
 
 
 def test_create_recurring_oh_event_not_authenticated(

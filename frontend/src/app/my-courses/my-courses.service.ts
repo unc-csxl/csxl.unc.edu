@@ -36,7 +36,7 @@ import {
   parseOfficeHoursJson,
   NewOfficeHours,
   UpdatedCourseSite,
-  NewOfficeHoursRecurrence
+  NewOfficeHoursRecurrencePattern
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
 
@@ -297,15 +297,14 @@ export class MyCoursesService {
   createRecurringOfficeHours(
     siteId: number,
     officeHours: NewOfficeHours,
-    recurrence: NewOfficeHoursRecurrence
+    recurrencePattern: NewOfficeHoursRecurrencePattern
   ): Observable<OfficeHours[]> {
     return this.http
       .post<
         OfficeHoursJson[]
-      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrence })
+      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrencePattern })
       .pipe(
         map((officeHoursJSON) => {
-          console.log('jadey', officeHoursJSON);
           return officeHoursJSON.map(parseOfficeHoursJson);
         })
       );

@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
 
-from backend.services.office_hours.office_hours_recurrence import (
+from backend.services.office_hours.office_hours_recurrence_pattern import (
     OfficeHoursRecurrenceService,
 )
 from ....services import PermissionService

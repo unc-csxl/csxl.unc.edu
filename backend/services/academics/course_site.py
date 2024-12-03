@@ -437,7 +437,7 @@ class CourseSiteService:
                 ]
             ),
             total_tickets=len(oh_event.tickets),
-            recurrence_id=oh_event.recurrence_id
+            recurrence_pattern_id=oh_event.recurrence_pattern_id,
         )
 
     def create(self, user: User, new_site: NewCourseSite) -> CourseSite:
