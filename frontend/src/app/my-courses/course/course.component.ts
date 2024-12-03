@@ -76,7 +76,6 @@ export class CourseComponent {
       .get<TermOverviewJson[]>('/api/my-courses')
       .pipe(map(parseTermOverviewJsonList))
       .subscribe((terms) => {
-        console.log(terms);
         let isInstructor =
           terms.flatMap((term) => term.sites).find((site) => site.id === id)
             ?.role == 'Instructor';

@@ -6,14 +6,16 @@
  * @license MIT
  */
 
-import { Component, OnInit, WritableSignal, signal } from '@angular/core';
+import { DialogRef } from '@angular/cdk/dialog';
+import { Component, WritableSignal, signal } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { DeleteRecurringEventDialog } from 'src/app/my-courses/dialogs/delete-recurring-event/delete-recurring-event.dialog';
 import {
   OfficeHourEventOverview,
   OfficeHourEventOverviewJson,
-  OfficeHours,
   parseOfficeHourEventOverviewJson
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
@@ -71,7 +73,8 @@ export class OfficeHoursPageComponent {
   constructor(
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    protected dialog: MatDialog
   ) {
     // Load information from the parent route
     this.courseSiteId = this.route.parent!.snapshot.params['course_site_id'];
@@ -158,28 +161,47 @@ export class OfficeHoursPageComponent {
   }
 
   deleteOfficeHours(officeHours: OfficeHourEventOverview) {
-    let confirmDelete = this.snackBar.open(
-      'Are you sure you want to delete this office hours event?',
-      'Delete',
-      { duration: 15000 }
-    );
-    confirmDelete.onAction().subscribe(() => {
-      this.myCoursesService
-        .deleteOfficeHours(+this.courseSiteId, officeHours.id)
-        .subscribe(() => {
-          this.futureOfficeHourEventsPaginator
-            .loadPage<OfficeHourEventOverviewJson>(
-              this.previousFutureOfficeHourEventParams,
-              parseOfficeHourEventOverviewJson
-            )
-            .subscribe((page) => {
-              this.futureOfficeHourEventsPage.set(page);
-            });
-          this.snackBar.open('The office hours has been deleted.', '', {
-            duration: 2000
+    if (officeHours.recurrence_pattern_id) {
+      // Options for deleting recurring evnets
+      let dialogRef = this.dialog.open(DeleteRecurringEventDialog, {
+        height: '230px',
+        width: '300px',
+        data: { siteId: this.courseSiteId, officeHours }
+      });
+      dialogRef.afterClosed().subscribe(() => {
+        this.futureOfficeHourEventsPaginator
+          .loadPage<OfficeHourEventOverviewJson>(
+            this.previousFutureOfficeHourEventParams,
+            parseOfficeHourEventOverviewJson
+          )
+          .subscribe((page) => {
+            this.futureOfficeHourEventsPage.set(page);
           });
-        });
-    });
+      });
+    } else {
+      let confirmDelete = this.snackBar.open(
+        'Are you sure you want to delete this office hours event?',
+        'Delete',
+        { duration: 15000 }
+      );
+      confirmDelete.onAction().subscribe(() => {
+        this.myCoursesService
+          .deleteOfficeHours(+this.courseSiteId, officeHours.id)
+          .subscribe(() => {
+            this.futureOfficeHourEventsPaginator
+              .loadPage<OfficeHourEventOverviewJson>(
+                this.previousFutureOfficeHourEventParams,
+                parseOfficeHourEventOverviewJson
+              )
+              .subscribe((page) => {
+                this.futureOfficeHourEventsPage.set(page);
+              });
+            this.snackBar.open('The office hours has been deleted.', '', {
+              duration: 2000
+            });
+          });
+      });
+    }
   }
 }
 

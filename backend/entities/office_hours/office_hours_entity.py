@@ -1,8 +1,8 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Office Hours."""
 
-from datetime import datetime, date
+from datetime import datetime
 from typing import Self
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.office_hours_details import OfficeHoursDetails
@@ -21,6 +21,7 @@ __authors__ = [
     "Sadie Amato",
     "Bailey DeSouza",
     "Meghan Sun",
+    "Jade Keegan",
 ]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -63,6 +64,14 @@ class OfficeHoursEntity(EntityBase):
         back_populates="office_hours"
     )
 
+    # NOTE: Many-to-one relationship of OfficeHoursEvents to OfficeHoursRecurrencePattern
+    recurrence_pattern_id: Mapped[int] = mapped_column(
+        ForeignKey("office_hours_recurrence_pattern.id"), nullable=True
+    )
+    recurrence_pattern: Mapped["OfficeHoursRecurrencePatternEntity"] = relationship(
+        back_populates="office_hours"
+    )
+
     # NOTE: Unidirectional relationship to Room
     room_id: Mapped[str] = mapped_column(ForeignKey("room.id"), nullable=False)
     room: Mapped["RoomEntity"] = relationship("RoomEntity")
@@ -91,6 +100,7 @@ class OfficeHoursEntity(EntityBase):
             end_time=model.end_time,
             course_site_id=model.course_site_id,
             room_id=model.room_id,
+            recurrence_pattern_id=model.recurrence_pattern_id,
         )
 
     @classmethod
@@ -132,6 +142,7 @@ class OfficeHoursEntity(EntityBase):
             end_time=self.end_time,
             course_site_id=self.course_site_id,
             room_id=self.room_id,
+            recurrence_pattern_id=self.recurrence_pattern_id,
         )
 
     def to_details_model(self) -> OfficeHoursDetails:
@@ -152,6 +163,8 @@ class OfficeHoursEntity(EntityBase):
             course_site_id=self.course_site_id,
             room_id=self.room_id,
             course_site=self.course_site.to_model(),
+            recurrence_pattern_id=self.recurrence_pattern_id,
+            recurrence_pattern=self.recurrence_pattern.to_model(),
             room=self.room.to_model(),
             tickets=[ticket.to_model() for ticket in self.tickets],
         )
