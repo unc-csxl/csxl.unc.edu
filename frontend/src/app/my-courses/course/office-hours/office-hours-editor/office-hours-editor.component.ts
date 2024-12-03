@@ -7,10 +7,7 @@
  */
 
 import { Component } from '@angular/core';
-import {
-  courseSitePageGuard,
-  officeHourPageGuard
-} from '../office-hours.guard';
+import { courseSitePageGuard } from '../office-hours.guard';
 import { officeHoursResolver } from '../office-hours.resolver';
 import {
   NewOfficeHours,
@@ -173,6 +170,7 @@ export class OfficeHoursEditorComponent {
         // The truncated date defaults to GMT. When converted to local EST,
         // it rolls the date ~5hrs back to the previous day. Temporary solution
         // is to "add" the extra day back.
+        recurs: this.officeHours.recurrence_id !== undefined,
         recur_end: this.datePipe.transform(
           new Date(currentTermEndDate).setDate(
             currentTermEndDate.getDate() + 1
@@ -181,6 +179,12 @@ export class OfficeHoursEditorComponent {
         )
       })
     );
+
+    /** Disable recurrence form fields if updating */
+    if (this.officeHours.id !== -1) {
+      this.officeHoursForm.controls.recurs.disable();
+      this.officeHoursForm.controls.recur_end.disable();
+    }
   }
 
   /** "Null" comparator function to prevent keyvalue pipe from sorting

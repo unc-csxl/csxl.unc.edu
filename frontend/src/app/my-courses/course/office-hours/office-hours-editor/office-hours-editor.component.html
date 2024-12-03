@@ -97,14 +97,14 @@
       </mat-form-field>
 
       <!-- Recurrence Pattern Day Options -->
-      @if (officeHoursForm.value.recurs) {
+      @if (officeHoursForm.getRawValue().recurs) {
         <mat-button-toggle-group
           name="days"
           aria-label="Days to Recur"
           multiple
         >
           @for (day of this.days | keyvalue: maintainOriginalOrder; track day) {
-            <mat-button-toggle (change)="toggleDay(day.key)" value="{{day.key}}">{{day.key}}</mat-button-toggle>
+            <mat-button-toggle (change)="toggleDay(day.key)" value="{{day.key}}" [disabled]="!isNew()">{{day.key}}</mat-button-toggle>
           }
         </mat-button-toggle-group>
 
