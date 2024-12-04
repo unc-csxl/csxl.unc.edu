@@ -5,7 +5,7 @@
   flex-direction: row;
 }
 
-.coworking-admin-add-hours {
+.coworking-admin-edit-hours {
   flex: 1;
   height: 100%;
 }
@@ -75,7 +75,6 @@ mat-icon {
     max-width: none !important;
     border-radius: none;
   } */
-}
 
 .hidden{
   display: none;

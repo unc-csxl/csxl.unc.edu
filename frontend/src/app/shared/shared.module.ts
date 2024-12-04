@@ -45,6 +45,7 @@ import { EventRegistrationCardWidget } from './event-registration-card/event-reg
 import { AboutPaneWidget } from './about-pane/about-pane.widget';
 import { OperatingHoursCalendar } from './operating-hours-calendar/operating-hours-calendar.widget';
 import { OperatingHoursDialog } from './operating-hours-dialog/operating-hours-dialog.widget';
+import { MatRippleModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { OperatingHoursDialog } from './operating-hours-dialog/operating-hours-d
     MatCardModule,
     MatDialogModule,
     MatButtonModule,
+    MatRippleModule,
     MatSelectModule,
     MatFormFieldModule,
     MatInputModule,

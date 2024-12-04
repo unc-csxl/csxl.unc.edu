@@ -10,7 +10,7 @@ from ...models import User
 from ...models.coworking import OperatingHours, TimeRange
 from ...services.coworking import OperatingHoursService
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Kris Jordan", "Tobenna Okoli"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -44,6 +44,16 @@ def new_operating_hours(
         start=operating_hours_range.start, end=operating_hours_range.end
     )
     return operating_hours_svc.create(subject, time_range)
+
+
+@api.put("", response_model=OperatingHours, tags=["Coworking"])
+def update_operating_hours(
+    newest_operating_hours: OperatingHours,
+    subject: User = Depends(registered_user),
+    operating_hours_svc: OperatingHoursService = Depends(),
+):
+    """Create new opening hours for the XL."""
+    return operating_hours_svc.update(subject, newest_operating_hours)
 
 
 @api.delete("/{id}", tags=["Coworking"])

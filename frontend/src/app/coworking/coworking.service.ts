@@ -1,5 +1,5 @@
 /**
- * @author Kris Jordan, Ajay Gandecha, John Schachte
+ * @author Kris Jordan, Ajay Gandecha, John Schachte, Tobenna Okoli, Francine Wei
  * @copyright 2024
  * @license MIT
  */
@@ -134,9 +134,17 @@ export class CoworkingService implements OnDestroy {
   updateOperatingHours(
     operatingHours: OperatingHours
   ): Observable<OperatingHours> {
-    throw new Error('Update function not yet implemented');
     return this.http
       .put<OperatingHoursJSON>('/api/coworking/operating_hours', operatingHours)
       .pipe(map(parseOperatingHoursJSON));
+  }
+
+  /**
+   * Delete operating hours.
+   * @param id: id of the operating hours to delete.
+   * @returns {Observable<void>}
+   */
+  deleteOperatingHours(id: number): Observable<void> {
+    return this.http.delete<void>(`/api/coworking/operating_hours/${id}`);
   }
 }

@@ -55,11 +55,15 @@
       </p>
       } @else { @for(hours of operatingHours(); track hours.id) {
       <div
-        [class]="'hour-block secondary-container-background ' + (hours.start | date: 'EEEE')"
+        matRipple
+        [matRippleDisabled]="selectOperatingHours == null"
+        (click)="clickOperatingHours(hours)"
+        [class]="'hour-block ' + (hours.start | date: 'EEEE')
+         + (selectOperatingHours == null ? '' : ' clickable') + (selectedOperatingHours?.id == hours.id ? ' primary-background' : ' primary-container-background')"
         [style]="'grid-row-start: ' + ((hours.start.getHours() - earliestHour())*60 + hours.start.getMinutes() + 1).toString() + ';grid-row-end: ' + ((hours.end.getHours() - earliestHour())*60 + hours.end.getMinutes() + 1).toString()">
-        <p class="semibold">Open Hours</p>
-        <p class="hours-text">
-          {{ hours.start | date: (hours.start.getMinutes() == 0 ? 'h a' : 'h:mm
+        <p [class]="'semibold ' + (selectedOperatingHours?.id == hours.id ? 'primary-background' : 'primary-container-background')">Open Hours</p>
+        <p [class]="'hours-text ' + (selectedOperatingHours?.id == hours.id ? 'primary-background' : 'primary-container-background')">
+          {{ hours.start | date: (hours.start.getMinutes() == 0 ? 'h a' : 'h:mm\
           a') | lowercase }} - {{ hours.end | date: (hours.end.getMinutes() == 0
           ? 'h a' : 'h:mm a') | lowercase }}
         </p>

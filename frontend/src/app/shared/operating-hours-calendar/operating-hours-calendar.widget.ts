@@ -11,6 +11,7 @@ import {
   Component,
   computed,
   effect,
+  Input,
   Signal,
   signal,
   WritableSignal
@@ -29,6 +30,8 @@ import { map } from 'rxjs';
   styleUrls: ['./operating-hours-calendar.widget.css']
 })
 export class OperatingHoursCalendar {
+  @Input() selectedOperatingHours?: OperatingHours | null;
+  @Input() selectOperatingHours?: (operating_hours: OperatingHours) => void;
   protected startDate: WritableSignal<Date>;
 
   // endDate is midnight on Saturday of the week
@@ -141,5 +144,11 @@ export class OperatingHoursCalendar {
     let newDate = new Date(this.startDate());
     newDate.setDate(this.startDate().getDate() + 7);
     this.startDate.set(newDate);
+  }
+
+  clickOperatingHours(operatingHours: OperatingHours) {
+    if (this.selectOperatingHours) {
+      this.selectOperatingHours(operatingHours);
+    }
   }
 }
