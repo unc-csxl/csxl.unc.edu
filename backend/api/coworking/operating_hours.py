@@ -5,6 +5,8 @@ This API manages the Operating Hours of the XL."""
 from datetime import datetime, timedelta
 from typing import Sequence
 from fastapi import APIRouter, Depends
+
+from backend.models.coworking.operating_hours import OperatingHoursDraft
 from ..authentication import registered_user
 from ...models import User
 from ...models.coworking import OperatingHours, TimeRange
@@ -35,25 +37,23 @@ def get_operating_hours(
 
 @api.post("", response_model=OperatingHours, tags=["Coworking"])
 def new_operating_hours(
-    operating_hours_range: TimeRange,
+    operating_hours: OperatingHoursDraft,
     subject: User = Depends(registered_user),
     operating_hours_svc: OperatingHoursService = Depends(),
 ):
     """Create new opening hours for the XL."""
-    time_range = TimeRange(
-        start=operating_hours_range.start, end=operating_hours_range.end
-    )
+    time_range = TimeRange(start=operating_hours.start, end=operating_hours.end)
     return operating_hours_svc.create(subject, time_range)
 
 
 @api.put("", response_model=OperatingHours, tags=["Coworking"])
 def update_operating_hours(
-    newest_operating_hours: OperatingHours,
+    operating_hours: OperatingHoursDraft,
     subject: User = Depends(registered_user),
     operating_hours_svc: OperatingHoursService = Depends(),
 ):
     """Create new opening hours for the XL."""
-    return operating_hours_svc.update(subject, newest_operating_hours)
+    return operating_hours_svc.update(subject, operating_hours)
 
 
 @api.delete("/{id}", tags=["Coworking"])

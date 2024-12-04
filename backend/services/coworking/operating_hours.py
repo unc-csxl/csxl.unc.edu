@@ -2,6 +2,8 @@
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
+
+from backend.models.coworking.operating_hours import OperatingHoursDraft
 from .exceptions import OperatingHoursCannotOverlapException
 from ..exceptions import ResourceNotFoundException
 from ..permission import PermissionService
@@ -68,12 +70,14 @@ class OperatingHoursService:
         )
         return [entity.to_model() for entity in entities]
 
-    def create(self, subject: User, time_range: TimeRange) -> OperatingHours:
+    def create(
+        self, subject: User, operating_hours: OperatingHoursDraft
+    ) -> OperatingHours:
         """Create new, open Operating Hours for XL coworking.
 
         Args:
             subject (User): The user creating the Operating Hours entry.
-            time_range (TimeRange): The time which the XL is open for.
+            operating_Hours (OperatingHoursDraft): A draft of the operating hours to be created.
 
         Returns:
             OperatingHours: The persisted object.
@@ -82,13 +86,15 @@ class OperatingHoursService:
             subject, "coworking.operating_hours.create", "coworking/operating_hours"
         )
 
-        conflicts = self.schedule(time_range)
+        conflicts = self.schedule(operating_hours)
         if len(conflicts) > 0:
             raise OperatingHoursCannotOverlapException(
-                f"Conflicts in the range of {str(time_range)}"
+                f"Conflicts in the range of {str(operating_hours)}"
             )
 
-        entity = OperatingHoursEntity(start=time_range.start, end=time_range.end)
+        entity = OperatingHoursEntity(
+            start=operating_hours.start, end=operating_hours.end
+        )
         self._session.add(entity)
         self._session.commit()
         return entity.to_model()
@@ -96,7 +102,7 @@ class OperatingHoursService:
     def update(
         self,
         subject: User,
-        newest_operating_hours: OperatingHours,
+        newest_operating_hours: OperatingHoursDraft,
     ) -> OperatingHours:
         """Update existing, open Operating Hours for XL coworking.
 

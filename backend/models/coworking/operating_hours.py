@@ -10,6 +10,14 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
+class OperatingHoursRecurrence(BaseModel):
+    start_date: date
+    end_date: date
+
+    # Bitmask saved as an int
+    recurs_on: int
+
+
 class OperatingHours(TimeRange, BaseModel):
     """The operating hours of the XL."""
 
@@ -18,9 +26,7 @@ class OperatingHours(TimeRange, BaseModel):
     recurrence_id: int | None = None
 
 
-class OperatingHoursRecurrence(BaseModel):
-    start_date: date
-    end_date: date
+class OperatingHoursDraft(TimeRange, BaseModel):
+    """Data for an operating hours draft (for creation and editing)."""
 
-    # Bitmask saved as an int
-    recurs_on: int
+    recurrence: OperatingHoursRecurrence | None = None
