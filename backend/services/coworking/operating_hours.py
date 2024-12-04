@@ -10,7 +10,7 @@ from ...database import db_session
 from ...models.coworking import OperatingHours, TimeRange
 from ...entities.coworking import OperatingHoursEntity
 
-__authors__ = ["Kris Jordan"]
+__authors__ = ["Kris Jordan", "Tobenna Okoli"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -92,6 +92,54 @@ class OperatingHoursService:
         self._session.add(entity)
         self._session.commit()
         return entity.to_model()
+
+    def update(
+        self,
+        subject: User,
+        newest_operating_hours: OperatingHours,
+    ) -> OperatingHours:
+        """Update existing, open Operating Hours for XL coworking.
+
+        Args:
+            subject (User): The user updating the Operating Hours entry.
+            newest_operating_hours (OperatingHours): object containing the id of the entity to update and the new operating hours.
+
+        Returns:
+            OperatingHours: The persisted object.
+        """
+        self._permission_svc.enforce(
+            subject, "coworking.operating_hours.update", "coworking/operating_hours"
+        )
+
+        new_time_range = TimeRange(
+            start=newest_operating_hours.start, end=newest_operating_hours.end
+        )
+        all_hours = self.schedule(new_time_range)
+
+        conflicts = [
+            opHours
+            for opHours in all_hours
+            if opHours.id
+            != newest_operating_hours.id  # ignore the hours we are currently updating
+        ]
+        if len(conflicts) > 0:
+            raise OperatingHoursCannotOverlapException(
+                f"Conflicts in the range of {str(new_time_range)}"
+            )
+
+        # get the entity to update
+        old_operating_hours_entity = self._session.get(
+            OperatingHoursEntity, newest_operating_hours.id
+        )
+
+        # update it's start time
+        old_operating_hours_entity.start = newest_operating_hours.start
+
+        # update it's end time
+        old_operating_hours_entity.end = newest_operating_hours.end
+
+        self._session.commit()  # once edits have been made to the entity, session.commit() will update it in the db.
+        return old_operating_hours_entity.to_model()
 
     def delete(self, subject: User, operating_hours: OperatingHours) -> None:
         """Delete Operating Hours entry from the database.

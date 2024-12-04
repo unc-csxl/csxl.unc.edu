@@ -1,6 +1,6 @@
 <form [formGroup]="operatingHoursForm" (ngSubmit)="onSubmit()">
     <mat-card-header>
-        <mat-card-title>Create Operating Hours</mat-card-title>
+        <mat-card-title>{{isNew() ? "Create" : "Update"}} Operating Hours</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
@@ -48,11 +48,16 @@
     </mat-card-content>
 
     <mat-card-actions>
-        <button mat-stroked-button color="secondary" (click)="onCancel()" type="button">
+        <button mat-stroked-button (click)="onCancel()" type="button">
             Cancel
         </button>
-        <button mat-flat-button color="primary" type="submit">
+        <button mat-flat-button type="submit">
             Save
         </button>
+        @if (!isNew()) {
+            <button mat-flat-button type="button" (click)="onDelete()">
+                Delete
+            </button>
+        }
     </mat-card-actions>
 </form>

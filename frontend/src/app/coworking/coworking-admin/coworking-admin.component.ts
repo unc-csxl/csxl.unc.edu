@@ -11,9 +11,11 @@ import {
   WritableSignal,
   OnInit,
   OnDestroy,
-  signal
+  signal,
+  effect
 } from '@angular/core';
 import { permissionGuard } from 'src/app/permission.guard';
+import { OperatingHours } from '../coworking.models';
 
 @Component({
   selector: 'app-coworking-admin',
@@ -22,6 +24,7 @@ import { permissionGuard } from 'src/app/permission.guard';
 })
 export class CoworkingAdminComponent implements OnInit, OnDestroy {
   isAddingHours: WritableSignal<boolean> = signal(false);
+  selectedOperatingHours: WritableSignal<OperatingHours | null> = signal(null);
   public static Route = {
     path: 'admin',
     component: CoworkingAdminComponent,
@@ -32,6 +35,19 @@ export class CoworkingAdminComponent implements OnInit, OnDestroy {
   showAddHoursPanel(): void {
     this.isAddingHours.set(true);
     localStorage.setItem('isAddingHours', String(this.isAddingHours()));
+    this.selectedOperatingHours.set(null);
+  }
+
+  // Do not pass this function to the calendar, instead pass the return value to the calendar
+  // We do this because we're referring to instance properties that don't seem to exist
+  selectOperatingHours(): (operatingHours: OperatingHours) => void {
+    let isAddingHours = this.isAddingHours;
+    let selectedOperatingHours = this.selectedOperatingHours;
+    return (operatingHours: OperatingHours) => {
+      isAddingHours.set(false);
+      localStorage.removeItem('isAddingHours');
+      selectedOperatingHours.set(operatingHours);
+    };
   }
 
   ngOnInit(): void {

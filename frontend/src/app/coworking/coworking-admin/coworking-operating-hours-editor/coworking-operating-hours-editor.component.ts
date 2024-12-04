@@ -3,11 +3,11 @@
  *
  * Referenced office-hours-editor component for implementation.
  *
- * @author David Foss, Ella Gonzales, Tobenna Okoli
+ * @author David Foss, Ella Gonzales, Tobenna Okoli, Francine Wei
  * @copyright 2024
  * @license MIT
  */
-import { Component, Input, WritableSignal } from '@angular/core';
+import { Component, effect, Input, WritableSignal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -27,6 +27,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
 import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/operating-hours-calendar.widget';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'coworking-operating-hours-editor',
@@ -34,7 +35,7 @@ import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/
   styleUrls: ['./coworking-operating-hours-editor.component.css']
 })
 export class CoworkingOperatingHoursEditorComponent {
-  @Input() operatingHours?: OperatingHours;
+  @Input() operatingHoursSignal!: WritableSignal<OperatingHours | null>;
   @Input() isPanelVisible!: WritableSignal<boolean>;
   @Input() calendar?: OperatingHoursCalendar;
   public operatingHoursForm: FormGroup;
@@ -43,7 +44,8 @@ export class CoworkingOperatingHoursEditorComponent {
     protected http: HttpClient,
     private snackBar: MatSnackBar,
     private fb: FormBuilder,
-    public coworkingService: CoworkingService
+    public coworkingService: CoworkingService,
+    private datePipe: DatePipe
   ) {
     this.operatingHoursForm = this.fb.group(
       {
@@ -55,6 +57,22 @@ export class CoworkingOperatingHoursEditorComponent {
       },
       { validators: [this.dateRangeValidator] }
     );
+
+    effect(() => {
+      this.operatingHoursForm
+        .get('selected_date')
+        ?.setValue(this.operatingHoursSignal()?.start);
+      this.operatingHoursForm
+        .get('start_time')
+        ?.setValue(
+          this.datePipe.transform(this.operatingHoursSignal()?.start, 'HH:mm')
+        );
+      this.operatingHoursForm
+        .get('end_time')
+        ?.setValue(
+          this.datePipe.transform(this.operatingHoursSignal()?.end, 'HH:mm')
+        );
+    });
   }
 
   /** Custom date range validator. */
@@ -87,31 +105,62 @@ export class CoworkingOperatingHoursEditorComponent {
     });
 
     this.isPanelVisible.set(false);
+    this.operatingHoursSignal.set(null);
+  }
+
+  /** Delete existing time range. */
+  onDelete(): void {
+    const id = this.operatingHoursSignal()?.id;
+
+    /** Opens a snackbar if there is an error with getting the id. */
+    if (id === undefined) {
+      this.snackBar.open(
+        'Error: The specified operating hours ID does not exist',
+        '',
+        {
+          duration: 2000
+        }
+      );
+      return;
+    }
+    /** Opens a confirmation snackbar for successful delete. */
+    this.coworkingService.deleteOperatingHours(id).subscribe({
+      next: () => {
+        this.snackBar.open('Operating Hours Deleted', '', { duration: 2000 });
+        this.calendar?.update();
+        this.onCancel();
+      },
+      /** Opens a snackbar for delete error. */
+      error: (err) => {
+        console.error('Failed to delete operating hours:', err);
+        this.snackBar.open('Error: Unable to delete operating hours', '', {
+          duration: 2000
+        });
+      }
+    });
   }
 
   /** Shorthand for whether operating hours is new or not.
    * @returns {boolean}
    */
   isNew(): boolean {
-    console.log(this.operatingHours?.id);
-    console.log(!!!this.operatingHours?.id);
-    return !!!this.operatingHours?.id;
+    return !!!this.operatingHoursSignal()?.id;
   }
 
-  /** Shorthand for determining the action being performed on office hours.
+  /** Shorthand for determining the action being performed on operating hours.
    * @returns {string}
    */
   action(): string {
     return this.isNew() ? 'Created' : 'Updated';
   }
 
-  /** Event handler to handle submitting the Update Organization Form.
+  /** Event handler to handle submitting the Update Operating Hours Form.
    * @returns {void}
    */
   onSubmit(): void {
     if (this.operatingHoursForm.valid) {
       let operatingHoursToSubmit =
-        this.operatingHours ?? ({} as OperatingHours);
+        this.operatingHoursSignal() ?? ({} as OperatingHours);
 
       operatingHoursToSubmit.start = new Date(
         this.operatingHoursForm
@@ -130,7 +179,6 @@ export class CoworkingOperatingHoursEditorComponent {
             this.operatingHoursForm.get('end_time')?.value.split(':')[1]
           )
       );
-      console.log(operatingHoursToSubmit);
 
       let submittedOperatingHours = this.isNew()
         ? this.coworkingService.createOperatingHours(
@@ -139,7 +187,10 @@ export class CoworkingOperatingHoursEditorComponent {
         : this.coworkingService.updateOperatingHours(operatingHoursToSubmit);
 
       submittedOperatingHours.subscribe({
-        next: (operatingHours) => this.onSuccess(operatingHours),
+        next: (operatingHours) => {
+          console.log('SUCCESS');
+          this.onSuccess(operatingHours);
+        },
         error: (err) => this.onError(err)
       });
     }
