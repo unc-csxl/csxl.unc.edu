@@ -1,41 +1,159 @@
-# Technical Specification Documentation
+# Open Hours Editor Technical Specification
 
-David Foss, Ella Gonzales, Tobenna Okoli, Francine Wei
+> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6)  
+> [GitHub Repository](https://github.com/comp423-24f/csxl-team-a8)  
+> _Last Updated: 12/04/2024_
 
-## New/Modified Model Representations and API Route
-For this sprint we had to create an new API route for the PUT operation to edit open hours.
+This document outlines the technical specifications for the Open Hours Editor feature of the CSXL web application. This feature adds functionality to manage open hours directly through a user-friendly interface, improving administrative efficiency. The project introduces several new frontend components and utilizes existing API routes with minimal modifications to achieve its goals.
 
-We did create the NewOperatingHours and NewOperatingHoursJSON models to facilitate the creation of new operating hours, as well as the parseOperatingHoursJSONArray method to facilitate getting operating hours from the backend.
+---
 
-## Database/Entity-Level Representation Decisions
+## Table of Contents
 
-While we interacted with the operating hours, we decided not to make any changes as our current feature set for this sprint did not require them.
+1. [Overview](#overview)
+2. [New/Modified Model Representations and API Routes](#models-and-api)
+3. [Database/Entity-Level Representation Decisions](#database-decisions)
+4. [Technical Design Choices](#technical-design)
+5. [User Experience Design Choices](#ux-design)
+6. [Design Trade-Offs](#trade-offs)
+7. [Development Concerns](#development-concerns)
+8. [Screenshots and Descriptions](#screenshots)
+9. [Future Considerations](#future-considerations)
 
-## Technical Design Choices
+---
 
-**Calendar View:** We chose to implement a calendar widget rather than use an existing MaterialUI form as a time picker because we wanted to innovate on what currently exists on the CSXL website and create a potentially mergeable final project that will make the open hours editing process easier and more user friendly.
+## Overview<a name="overview"></a>
 
-## User Experience Design Choices
+The Open Hours Editor provides a calendar-based interface for administrators to add, edit, and manage the open hours of the CSXL. This feature enhances usability by offering visual scheduling tools while maintaining consistency with existing site design.
 
-**Calendar Time Ranges:** We chose to only show times between 8am and 10 pm over a 24 hour calendar, because currently the open hours of the CSXL fall within those times. We also chose to only show Monday through Friday for the same reason. In the event that an operating hours block is scheduled during a time that would normally not be shown, the calendar is automatically adjusted to allow the user to see it.
+---
 
-**Calendar View:** We chose to allow admins to add/edit the open hours on a calendar rather than a form because having the visual representation would make it easier to schedule and coordinate hours and dates.
+## New/Modified Model Representations and API Routes<a name="models-and-api"></a>
 
-**Sidebar Editing:** We considered using a dialog box for adding operating hours for mobile support concerns, however we decided to instead orient it as a sidebar to allow administrators to see the current schedule as they're adding new hours.
+- **API Route**:  
+  A new `PUT` operation was added to edit open hours (`/api/openhours/edit`).
 
-## Development Concerns
+- **Models**:  
+  Two new models were created:
 
-**frontend/src/app/coworking/coworking-home/coworking-home.component.ts:** First, the gear button that accesses and links an authorized user to the Open Hours Calendar Editor is located in this file. This gear button dictates the path to the new page that holds the operating hours calendar editor that an admin user can access.
+  - `NewOperatingHours`: Represents a single set of operating hours.
+  - `NewOperatingHoursJSON`: Handles JSON serialization for operating hours data.
 
-**frontend/src/app/coworking/coworking-admin folder:** This folder was created to contain the landing page for the calendar. It contains the coworking-admin.component.ts file, coworking-admin.component.html file, and the coworking-admin.component.css file.
+- **Helper Methods**:
+  - `parseOperatingHoursJSONArray`: Processes JSON data from the backend for frontend compatibility.
 
-**frontend/src/app/coworking/coworking-admin/coworking-admin.component.ts:** This page contains the route used by the gear button to access the page. It also specifies the html template and css styling used for the page.
+---
 
-**frontend/src/app/coworking/coworking-admin/coworking-admin.component.html:** The html template contains the operating hours calendar widget and can be edited in the future to include any other components needed on the page.
+## Database/Entity-Level Representation Decisions<a name="database-decisions"></a>
 
-**frontend/src/app/coworking/coworking-admin/coworking-admin.component.css:** The CSS file contains any classes and stylings used uniquely for the page.
+While we interacted with the `OperatingHours` entity, no changes were made to the database schema. The existing entity provided sufficient functionality for this sprint.
 
-**frontend/src/app/coworking/coworking-admin/coworking-operating-hours folder:** This folder was created to contain the component that allows an administrator to create/edit an operating hours entity.
+---
 
-**frontend/src/app/shared/operating-hours-calendar folder:** This folder contains the ts, html, and css files used to make the operating hours calendar and it’s functionalities.
-While most of the styling for this section is defined in the css, there is a small portion defined in the html directly as it is dynamically generated, namely the grid layout of the calendar.
+## Technical Design Choices<a name="technical-design"></a>
+
+1. **Custom Calendar Widget**:
+
+   - We implemented a calendar widget to provide an intuitive, visual interface for managing open hours, rather than relying on a simpler time picker.
+
+2. **Dynamic Calendar Adjustments**:
+
+   - The calendar adjusts dynamically to display scheduled hours even if they fall outside the typical 8 AM–10 PM range.
+
+3. **Highlighting Selected Hour Blocks**:
+   - The selected hour block changes color during editing, providing clear visual feedback to the user.
+
+---
+
+## User Experience Design Choices<a name="ux-design"></a>
+
+1. **Pop-Up Panels for Add/Edit Hours**:
+
+   - The Add/Edit actions are handled through a pop-up panel, keeping the main calendar view uncluttered.
+
+2. **Simplified Calendar View**:
+
+   - The calendar only displays Monday through Friday and hours from 8 AM to 10 PM, reflecting current CSXL operating hours.
+
+3. **Sidebar Editing**:
+   - A sidebar was chosen for editing hours, allowing users to see the full calendar while managing operating hours.
+
+---
+
+## Design Trade-Offs<a name="trade-offs"></a>
+
+### Technical Design Trade-Off: Sidebar vs. Persistent Panel
+
+- **Decision**: We implemented a pop-up sidebar for editing instead of a persistent panel.
+- **Reasoning**: The sidebar ensures the UI remains uncluttered, while allowing administrators to view the calendar as they manage open hours.
+- **Trade-Off**: A persistent panel would have streamlined the workflow slightly but at the cost of reduced calendar visibility.
+
+### User Experience Design Trade-Off: Add Hours Button vs. Direct Calendar Interaction
+
+- **Decision**: We opted for an "Add Hours" button instead of direct calendar interaction for adding hours.
+- **Reasoning**: The button simplifies interactions and prevents accidental scheduling errors.
+- **Trade-Off**: While direct calendar interaction would be faster for experienced users, it could confuse new users and increase UI complexity.
+
+---
+
+## Development Concerns<a name="development-concerns"></a>
+
+1. **Frontend Components**:
+
+   - **`frontend/src/app/coworking/coworking-home/coworking-home.component.ts`**:  
+     Contains the gear button that grants access to the Open Hours Calendar Editor.
+
+   - **`frontend/src/app/coworking/coworking-admin folder`**:  
+     Houses the main calendar component and related files, including:
+
+     - `coworking-admin.component.ts` (logic and routing)
+     - `coworking-admin.component.html` (template for the calendar view)
+     - `coworking-admin.component.css` (styling for the calendar page).
+
+   - **`frontend/src/app/shared/operating-hours-calendar folder`**:  
+     Contains the reusable `OperatingHoursCalendar` component, which dynamically renders the calendar and applies styling.
+
+2. **Dynamic Calendar Styling**:
+   - The grid layout for the calendar is dynamically generated within the HTML and styled via CSS.
+
+---
+
+## Screenshots and Descriptions<a name="screenshots"></a>
+
+### Default View
+
+![Default View](https://github.com/comp423-24f/csxl-team-a8/blob/stage/docs/images/defaultView.png)  
+**Description**: Displays the weekly open hours with buttons to add or edit hours.
+
+### Add Hours Pop-Up
+
+![Add Hours View](https://github.com/comp423-24f/csxl-team-a8/blob/stage/docs/images/addHoursView.png)  
+**Description**: The "Add Hours" button triggers this panel for creating new open hours.
+
+### Edit Hours Pop-Up
+
+![Edit Hours View](https://github.com/comp423-24f/csxl-team-a8/blob/stage/docs/images/editHoursView.png)  
+**Description**: Selecting an existing hour block highlights it and opens this panel for edits.
+
+---
+
+## Future Considerations<a name="future-considerations"></a>
+
+1. **Direct Calendar Interaction**:
+
+   - Enable users to click directly on a day to add hours, complementing the "Add Hours" button.
+
+2. **Recurring Hours**:
+
+   - Add a recurrence hour feature for streamlined scheduling.
+
+3. **Mobile Optimization**:
+
+   - Refactor components to improve mobile usability, including touch-friendly interactions.
+
+4. **Expanded Time Range**:
+
+   - Consider extending calendar hours and days for special events or unique schedules.
+
+5. **Enhanced Styling**:
+   - Incorporate additional visual cues and animations to improve accessibility and aesthetics.
