@@ -7,8 +7,8 @@ from ...models.coworking import OperatingHours
 from datetime import datetime
 from typing import Self
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan, David Foss"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -24,12 +24,16 @@ class OperatingHoursEntity(EntityBase):
     start: Mapped[datetime] = mapped_column(DateTime, index=True)
     end: Mapped[datetime] = mapped_column(DateTime, index=True)
 
+    recurrence_id: Mapped[int] = mapped_column(Integer)
+
     def to_model(self) -> OperatingHours:
         """Converts the entity to a model.
 
         Returns:
             OperatingHours: The model representation of the entity."""
-        return OperatingHours(id=self.id, start=self.start, end=self.end)
+        return OperatingHours(
+            id=self.id, start=self.start, end=self.end, recurrence_id=self.recurrence_id
+        )
 
     @classmethod
     def from_model(cls, model: OperatingHours) -> Self:
@@ -40,4 +44,9 @@ class OperatingHoursEntity(EntityBase):
 
         Returns:
             Self: The entity (not yet persisted)."""
-        return cls(id=model.id, start=model.start, end=model.end)
+        return cls(
+            id=model.id,
+            start=model.start,
+            end=model.end,
+            recurrence_id=model.recurrence_id,
+        )
