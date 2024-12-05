@@ -11,10 +11,13 @@ __license__ = "MIT"
 
 
 class OperatingHoursRecurrence(BaseModel):
+    id: int | None = None
+
     start_date: date
     end_date: date
 
     # Bitmask saved as an int
+    # Monday is 0, Sunday is 6 (following python datetime standard)
     recurs_on: int
 
 
@@ -28,5 +31,7 @@ class OperatingHours(TimeRange, BaseModel):
 
 class OperatingHoursDraft(TimeRange, BaseModel):
     """Data for an operating hours draft (for creation and editing)."""
+
+    id: int | None = None
 
     recurrence: OperatingHoursRecurrence | None = None

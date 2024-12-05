@@ -2,6 +2,8 @@
 
 from sqlalchemy import Integer, DateTime, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from backend.models.coworking.operating_hours import OperatingHoursDraft
 from ..entity_base import EntityBase
 from ...models.coworking import OperatingHours
 from datetime import datetime
@@ -24,7 +26,7 @@ class OperatingHoursEntity(EntityBase):
     start: Mapped[datetime] = mapped_column(DateTime, index=True)
     end: Mapped[datetime] = mapped_column(DateTime, index=True)
 
-    recurrence_id: Mapped[int] = mapped_column(Integer)
+    recurrence_id: Mapped[int] = mapped_column(Integer, nullable=True)
 
     def to_model(self) -> OperatingHours:
         """Converts the entity to a model.
@@ -49,4 +51,20 @@ class OperatingHoursEntity(EntityBase):
             start=model.start,
             end=model.end,
             recurrence_id=model.recurrence_id,
+        )
+
+    @classmethod
+    def from_draft(cls, model: OperatingHoursDraft) -> Self:
+        """Create an OperatingHoursEntity from a OperatingHoursDraft model.
+
+        Args:
+            model (OperatingHoursDraft): The model to create the entity from.
+
+        Returns:
+            Self: The entity (not yet persisted)."""
+        return cls(
+            id=model.id,
+            start=model.start,
+            end=model.end,
+            recurrence_id=model.recurrence.id if model.recurrence else None,
         )

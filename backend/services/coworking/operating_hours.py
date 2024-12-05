@@ -1,5 +1,6 @@
 """Service that manages operating hours of the XL."""
 
+from datetime import datetime, time, timedelta
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -71,7 +72,7 @@ class OperatingHoursService:
         return [entity.to_model() for entity in entities]
 
     def create(
-        self, subject: User, operating_hours: OperatingHoursDraft
+        self, subject: User, operating_hours_draft: OperatingHoursDraft
     ) -> OperatingHours:
         """Create new, open Operating Hours for XL coworking.
 
@@ -86,18 +87,69 @@ class OperatingHoursService:
             subject, "coworking.operating_hours.create", "coworking/operating_hours"
         )
 
-        conflicts = self.schedule(operating_hours)
-        if len(conflicts) > 0:
-            raise OperatingHoursCannotOverlapException(
-                f"Conflicts in the range of {str(operating_hours)}"
+        operating_hours_to_create = []
+
+        if operating_hours_draft.recurrence:
+            # Go through every day between the start date and end date(inclusive)
+            # https://stackoverflow.com/a/24637447
+
+            # Manually perform the autoincrement as we aren't using an external table to manage recurrence
+
+            highest_recurrence_entity = (
+                self._session.query(OperatingHoursEntity)
+                .order_by(OperatingHoursEntity.recurrence_id)
+                .first()
             )
 
-        entity = OperatingHoursEntity(
-            start=operating_hours.start, end=operating_hours.end
-        )
-        self._session.add(entity)
+            operating_hours_draft.recurrence.id = (
+                highest_recurrence_entity.recurrence_id + 1
+                if highest_recurrence_entity
+                else 0
+            )
+
+            for day in [
+                operating_hours_draft.recurrence.start_date + timedelta(days=x)
+                for x in range(
+                    0,
+                    (
+                        operating_hours_draft.recurrence.end_date
+                        - operating_hours_draft.recurrence.start_date
+                        + 1
+                    ).days,
+                )
+            ]:
+                # If date is in recurrence, create a new operating hours object for that day
+                if (1 << day.weekday) & operating_hours_draft.recurrence.recurs_on:
+                    start = datetime.combine(day, operating_hours_draft.start.time())
+                    end = datetime.combine(day, operating_hours_draft.end.time())
+                    operating_hours_to_create.append(
+                        OperatingHoursDraft(
+                            start=start,
+                            end=end,
+                            recurrence=operating_hours_draft.recurrence,
+                        )
+                    )
+        else:
+            operating_hours_to_create = [operating_hours_draft]
+
+        for operating_hours in operating_hours_to_create:
+            conflicts = self.schedule(operating_hours)
+            if len(conflicts) > 0:
+                raise OperatingHoursCannotOverlapException(
+                    f"Conflicts in the range of {str(operating_hours)}"
+                )
+
+        entities = [
+            OperatingHoursEntity.from_draft(operating_hours)
+            for operating_hours in operating_hours_to_create
+        ]
+        self._session.add_all(entities)
         self._session.commit()
-        return entity.to_model()
+
+        # Return first operating hour
+        # I believe this isn't used anywhere on the frontend yet
+        # Might be worth switching to returning an array, however that might lead to weird behavior when not doing recurrence
+        return entities[0].to_model()
 
     def update(
         self,

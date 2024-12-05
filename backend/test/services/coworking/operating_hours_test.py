@@ -2,6 +2,8 @@
 
 from unittest.mock import create_autospec, call
 
+from backend.models.coworking.operating_hours import OperatingHoursDraft
+
 from ....services.coworking import OperatingHoursService
 from ....models.coworking import OperatingHours, TimeRange
 from ....services.coworking.exceptions import OperatingHoursCannotOverlapException
@@ -57,11 +59,13 @@ def test_schedule_multiple_match(
 
 def test_create(operating_hours_svc: OperatingHoursService, time: dict[str, datetime]):
     """Creating an Operating Hours entity expected case."""
-    time_range = TimeRange(
+    operating_hours_draft = OperatingHoursDraft(
         start=time[TOMORROW] + timedelta(days=5),
         end=time[TOMORROW] + timedelta(days=5, hours=2),
     )
-    result: OperatingHours = operating_hours_svc.create(user_data.root, time_range)
+    result: OperatingHours = operating_hours_svc.create(
+        user_data.root, operating_hours_draft
+    )
     assert result.id is not None
 
 
@@ -70,7 +74,7 @@ def test_create_overlap(operating_hours_svc: OperatingHoursService):
     with pytest.raises(OperatingHoursCannotOverlapException):
         operating_hours_svc.create(
             user_data.root,
-            TimeRange(
+            OperatingHoursDraft(
                 start=operating_hours_data.future.start + timedelta(minutes=30),
                 end=operating_hours_data.future.end + timedelta(minutes=30),
             ),
@@ -83,11 +87,11 @@ def test_create_enforces_permission(
     """Ensure we are enforcing coworking.operating_hours.create on coworking/operating_hours"""
     permission_svc = create_autospec(PermissionService)
     operating_hours_svc._permission_svc = permission_svc
-    time_range = TimeRange(
+    operating_hours_draft = OperatingHoursDraft(
         start=time[TOMORROW] + timedelta(days=5),
         end=time[TOMORROW] + timedelta(days=5, hours=2),
     )
-    operating_hours_svc.create(user_data.user, time_range)
+    operating_hours_svc.create(user_data.user, operating_hours_draft)
     permission_svc.enforce.assert_called_with(
         user_data.user,
         "coworking.operating_hours.create",
