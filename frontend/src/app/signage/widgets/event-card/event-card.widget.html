@@ -3,15 +3,24 @@
     <mat-card-title class="display-medium event-title">Upcoming Events</mat-card-title>
   </mat-card-header>
 
+  <img
+  class="image"
+  mat-card-image
+  [src]="
+    event.image_url !== null && event.image_url !== ''
+      ? event.image_url
+      : 'https://media.licdn.com/dms/image/D4E3DAQGnWv1b0Gb9gw/image-scale_191_1128/0/1673933475853/unc_csxl_cover?e=2147483647&v=beta&t=OMN1WHqXnrO5x2xsJ3rQWGjQMkcZS9uCUdFonDKYayk'
+  " />
   <mat-card-header>
     <div class="header-row">
       <div class="header-column">
-        <mat-card-title>{{ event.name }}</mat-card-title>
+        <mat-card-title class="headline-large">{{ event.name }}</mat-card-title>
 
         <div class="links-row">
           <div class="row">
             <mat-icon class="secondary-icon">schedule</mat-icon>
             <p>
+              {{ event.start | date: 'MMM d' }}
               {{ event.start | date: 'shortTime' }} -
               {{ event.end | date: 'shortTime' }}
             </p>
@@ -67,7 +76,7 @@
       </mat-chip-row>
       }
     </mat-chip-set>
-    <p class="description">
+    <p class="description headline-small">
       {{ event.description }}
     </p>
   </mat-card-content>

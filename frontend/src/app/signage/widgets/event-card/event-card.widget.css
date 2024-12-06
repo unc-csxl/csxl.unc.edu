@@ -6,6 +6,25 @@
   max-width: none;
 }
 
+.event-pane {
+  height: 100%;
+  width: 100%;
+  border-color: transparent !important;
+  margin: 0px !important;
+  max-width: none;
+  justify-content: center;
+}
+
+.image {
+  margin-top: 16px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 95%;
+  height: auto;
+  border-radius: 10px;
+}
+
 .mat-mdc-card {
   margin-left: 0px;
   max-width: 100%;
@@ -37,24 +56,21 @@
 }
 
 .description {
+  max-height: 140px;
+  max-width: 600px;
   padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-mat-card-actions {
-  gap: 8px;
-  margin-bottom: 8px;
-  justify-content: flex-end;
+  display: -webkit-box;           /* This is needed for the 5 line ellipsis cutoff */
+  -webkit-box-orient: vertical;   
+  -webkit-line-clamp: 4;          
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .vertical-divider {
   margin-left: 8px;
   margin-top: 6px;
   margin-bottom: 6px;
-}
-
-#organization-chip:hover {
-  cursor: pointer;
 }
 
 ::ng-deep .profile-icon {
@@ -88,5 +104,5 @@ mat-card-actions {
 }
 
 .event-title {
-  margin-left: 20px;
+  margin-left: 24px;
 }

@@ -44,9 +44,16 @@ mat-card-actions {
 
 
 .description {
+    max-height: 160px;
+    max-width: 600px;
     padding-top: 8px;
-    padding-bottom: 8px;
-}
+    display: -webkit-box;           /* This is needed for the 5 line ellipsis cutoff */
+    -webkit-box-orient: vertical;   
+    -webkit-line-clamp: 5;          
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
 
 .header {
     display: flex;
