@@ -211,21 +211,24 @@ export class CoworkingOperatingHoursEditorComponent {
       if (this.operatingHoursForm.get('recurrence')?.value != 'None') {
         operatingHoursToSubmit.recurrence = {
           end_date: this.operatingHoursForm.get('recurrence_end')?.value,
-          recurs_on: this.operatingHoursForm
-            .get('recurrence_days')
-            ?.value.reduce(
-              (acc: number, day: string) =>
-                acc +
-                (1 <<
-                  [
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday'
-                  ].indexOf(day)),
-              0
-            )
+          recurs_on:
+            this.operatingHoursForm.get('recurrence')?.value == 'Weekly'
+              ? this.operatingHoursForm
+                  .get('recurrence_days')
+                  ?.value.reduce(
+                    (acc: number, day: string) =>
+                      acc +
+                      (1 <<
+                        [
+                          'Monday',
+                          'Tuesday',
+                          'Wednesday',
+                          'Thursday',
+                          'Friday'
+                        ].indexOf(day)),
+                    0
+                  )
+              : parseInt('0011111', 2) // Select M-F if daily is picked
         } as OperatingHoursRecurrenceDraft;
       }
 
