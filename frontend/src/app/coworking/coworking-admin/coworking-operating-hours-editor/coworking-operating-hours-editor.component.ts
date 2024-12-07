@@ -38,7 +38,6 @@ export class CoworkingOperatingHoursEditorComponent {
   @Input() operatingHoursSignal!: WritableSignal<OperatingHoursDraft | null>;
   @Input() isPanelVisible!: WritableSignal<boolean>;
   @Input() calendar?: OperatingHoursCalendar;
-  protected showRecurrence: WritableSignal<boolean> = signal(false);
   public operatingHoursForm: FormGroup;
 
   constructor(
