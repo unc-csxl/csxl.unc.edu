@@ -36,12 +36,24 @@
             </mat-select>
         </mat-form-field>
 
+        <!-- Recur Until -->
+        @if (operatingHoursForm.get('recurrence')?.value != 'None') {
+            <mat-form-field appearance="outline" color="accent">
+                <mat-label>Repeat Until</mat-label>
+                <input matInput [matDatepicker]="recurrenceDatePicker" formControlName="recurrence_end" />
+                <mat-datepicker-toggle matSuffix [for]="recurrenceDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #recurrenceDatePicker></mat-datepicker>
+            </mat-form-field>
+        }
+
         <!-- Recurrence Days -->
-        <mat-button-toggle-group formControlName="recurrence_days" multiple [style]="(operatingHoursForm.get('recurrence')?.value == 'Weekly' ? '' : 'display: none')">
-            @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']; track day) {
-                <mat-button-toggle [value]="day">{{ day.substring(0, 3) }}</mat-button-toggle>
-            }
-        </mat-button-toggle-group>
+        @if (operatingHoursForm.get('recurrence')?.value == 'Weekly') {
+            <mat-button-toggle-group [formGroup]="operatingHoursForm" formControlName="recurrence_days" multiple [style]="(operatingHoursForm.get('recurrence')?.value == 'Weekly' ? '' : 'display: none')">
+                @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']; track day) {
+                    <mat-button-toggle [value]="day">{{ day.substring(0, 3) }}</mat-button-toggle>
+                }
+            </mat-button-toggle-group>
+        }
     </mat-card-content>
 
     <mat-card-actions>

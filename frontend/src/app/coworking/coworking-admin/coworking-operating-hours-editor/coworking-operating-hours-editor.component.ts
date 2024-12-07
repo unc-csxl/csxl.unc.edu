@@ -22,7 +22,11 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { OperatingHoursDraft, OperatingHours } from '../../coworking.models';
+import {
+  OperatingHoursDraft,
+  OperatingHours,
+  OperatingHoursRecurrenceDraft
+} from '../../coworking.models';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
@@ -53,7 +57,8 @@ export class CoworkingOperatingHoursEditorComponent {
         start_time: [null, Validators.required],
         end_time: [null, Validators.required],
         recurrence: ['None'],
-        recurrenceDays: [[]]
+        recurrence_days: [[]],
+        recurrence_end: null
       },
       { validators: [this.dateRangeValidator] }
     );
@@ -120,7 +125,8 @@ export class CoworkingOperatingHoursEditorComponent {
       start_time: null,
       end_time: null,
       recurrence: 'None',
-      recurrenceDays: []
+      recurrence_days: [],
+      recurrence_end: null
     });
 
     this.isPanelVisible.set(false);
@@ -179,7 +185,7 @@ export class CoworkingOperatingHoursEditorComponent {
   onSubmit(): void {
     if (this.operatingHoursForm.valid) {
       let operatingHoursToSubmit =
-        this.operatingHoursSignal() ?? ({} as OperatingHours);
+        this.operatingHoursSignal() ?? ({} as OperatingHoursDraft);
 
       operatingHoursToSubmit.start = new Date(
         this.operatingHoursForm
@@ -199,10 +205,15 @@ export class CoworkingOperatingHoursEditorComponent {
           )
       );
 
+      if (this.operatingHoursForm.get('recurrence')?.value != 'None') {
+        operatingHoursToSubmit.recurrence = {
+          end_date: new Date(0),
+          recurs_on: 12
+        } as OperatingHoursRecurrenceDraft;
+      }
+
       let submittedOperatingHours = this.isNew()
-        ? this.coworkingService.createOperatingHours(
-            operatingHoursToSubmit as OperatingHoursDraft
-          )
+        ? this.coworkingService.createOperatingHours(operatingHoursToSubmit)
         : this.coworkingService.updateOperatingHours(operatingHoursToSubmit);
 
       submittedOperatingHours.subscribe({
