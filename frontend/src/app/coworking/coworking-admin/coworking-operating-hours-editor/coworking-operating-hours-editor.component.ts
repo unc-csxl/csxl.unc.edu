@@ -7,7 +7,13 @@
  * @copyright 2024
  * @license MIT
  */
-import { Component, effect, Input, WritableSignal } from '@angular/core';
+import {
+  Component,
+  effect,
+  Input,
+  signal,
+  WritableSignal
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -16,13 +22,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import {
-  NewOperatingHours,
-  OperatingHours,
-  OperatingHoursJSON,
-  parseOperatingHoursJSON
-} from '../../coworking.models';
-import { map, Observable } from 'rxjs';
+import { OperatingHoursDraft, OperatingHours } from '../../coworking.models';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
@@ -35,9 +35,10 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./coworking-operating-hours-editor.component.css']
 })
 export class CoworkingOperatingHoursEditorComponent {
-  @Input() operatingHoursSignal!: WritableSignal<OperatingHours | null>;
+  @Input() operatingHoursSignal!: WritableSignal<OperatingHoursDraft | null>;
   @Input() isPanelVisible!: WritableSignal<boolean>;
   @Input() calendar?: OperatingHoursCalendar;
+  protected showRecurrence: WritableSignal<boolean> = signal(false);
   public operatingHoursForm: FormGroup;
 
   constructor(
@@ -72,6 +73,25 @@ export class CoworkingOperatingHoursEditorComponent {
         ?.setValue(
           this.datePipe.transform(this.operatingHoursSignal()?.end, 'HH:mm')
         );
+      this.operatingHoursForm
+        .get('recurrence')
+        ?.setValue(
+          this.operatingHoursSignal()?.recurrence
+            ? this.operatingHoursSignal()?.recurrence.recurs_on ==
+              parseInt('1111100', 2)
+              ? 'Daily'
+              : 'Weekly'
+            : 'None'
+        );
+      if (this.operatingHoursSignal()?.recurrence) {
+        this.operatingHoursForm.get('recurrence_days')?.setValue(
+          ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].filter(
+            (_: string, index: number) =>
+              (1 << index) &
+              (this.operatingHoursSignal()?.recurrence.recurs_on ?? 0) // We do the ?? 0 to cover the impossible event where recurrence is null despite that being checked
+          )
+        );
+      }
     });
   }
 
@@ -113,7 +133,7 @@ export class CoworkingOperatingHoursEditorComponent {
     const id = this.operatingHoursSignal()?.id;
 
     /** Opens a snackbar if there is an error with getting the id. */
-    if (id === undefined) {
+    if (!id) {
       this.snackBar.open(
         'Error: The specified operating hours ID does not exist',
         '',
@@ -182,7 +202,7 @@ export class CoworkingOperatingHoursEditorComponent {
 
       let submittedOperatingHours = this.isNew()
         ? this.coworkingService.createOperatingHours(
-            operatingHoursToSubmit as NewOperatingHours
+            operatingHoursToSubmit as OperatingHoursDraft
           )
         : this.coworkingService.updateOperatingHours(operatingHoursToSubmit);
 

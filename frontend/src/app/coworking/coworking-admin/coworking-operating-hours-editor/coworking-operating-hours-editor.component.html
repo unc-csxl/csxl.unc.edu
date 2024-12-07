@@ -27,24 +27,23 @@
         </div>
 
         <!-- Recurrence Pattern -->
-        <!-- Removing this temporarily until we're actually able to implement the feature, which will require backend stuff -->
-        <!--<mat-form-field appearance="outline" color="accent">
+        <mat-form-field appearance="outline" color="accent">
             <mat-label>Recurrence Pattern</mat-label>
             <mat-select formControlName="recurrence">
                 <mat-option value="None">None</mat-option>
                 <mat-option value="Daily">Daily</mat-option>
                 <mat-option value="Weekly">Weekly</mat-option>
             </mat-select>
-        </mat-form-field>-->
+        </mat-form-field>
 
         <!-- Recurrence Days -->
-        <!-- Removing this temporarily until we're actually able to implement the feature, which will require backend stuff -->
-        <!--
-        <mat-button-toggle-group formControlName="recurrenceDays" multiple>
-            @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']; track day) {
-                <mat-button-toggle [value]="day">{{ day.substring(0, 3) }}</mat-button-toggle>
-            }
-        </mat-button-toggle-group>-->
+        @if (showRecurrence()) {
+            <mat-button-toggle-group formControlName="recurrence_days" multiple>
+                @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']; track day) {
+                    <mat-button-toggle [value]="day">{{ day.substring(0, 3) }}</mat-button-toggle>
+                }
+            </mat-button-toggle-group>
+        }
     </mat-card-content>
 
     <mat-card-actions>

@@ -16,7 +16,7 @@ import {
   parseReservationJSON,
   Reservation,
   EMPTY_COWORKING_STATUS,
-  NewOperatingHours,
+  OperatingHoursDraft,
   OperatingHours,
   OperatingHoursJSON,
   parseOperatingHoursJSON
@@ -116,7 +116,7 @@ export class CoworkingService implements OnDestroy {
    * @returns {Observable<OperatingHours>}
    */
   createOperatingHours(
-    operatingHours: NewOperatingHours
+    operatingHours: OperatingHoursDraft
   ): Observable<OperatingHours> {
     return this.http
       .post<OperatingHoursJSON>(
@@ -132,7 +132,7 @@ export class CoworkingService implements OnDestroy {
    * @returns {Observable<OperatingHours>}
    */
   updateOperatingHours(
-    operatingHours: OperatingHours
+    operatingHours: OperatingHoursDraft
   ): Observable<OperatingHours> {
     return this.http
       .put<OperatingHoursJSON>('/api/coworking/operating_hours', operatingHours)
