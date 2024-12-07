@@ -16,8 +16,8 @@ from ...database import db_session
 from ...models.coworking import OperatingHours, TimeRange
 from ...entities.coworking import OperatingHoursEntity
 
-__authors__ = ["Kris Jordan", "Tobenna Okoli"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan", "Tobenna Okoli", "David Foss"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 

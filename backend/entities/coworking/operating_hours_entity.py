@@ -12,7 +12,7 @@ from ...models.coworking import OperatingHours
 from datetime import datetime
 from typing import Self
 
-__authors__ = ["Kris Jordan, David Foss"]
+__authors__ = ["Kris Jordan", "David Foss"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 

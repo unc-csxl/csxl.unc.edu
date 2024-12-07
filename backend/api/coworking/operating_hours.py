@@ -12,7 +12,7 @@ from ...models import User
 from ...models.coworking import OperatingHours, TimeRange
 from ...services.coworking import OperatingHoursService
 
-__authors__ = ["Kris Jordan", "Tobenna Okoli"]
+__authors__ = ["Kris Jordan", "Tobenna Okoli", "David Foss"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
