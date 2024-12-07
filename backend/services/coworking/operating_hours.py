@@ -197,12 +197,15 @@ class OperatingHoursService:
         self._session.commit()  # once edits have been made to the entity, session.commit() will update it in the db.
         return old_operating_hours_entity.to_model()
 
-    def delete(self, subject: User, operating_hours: OperatingHours) -> None:
+    def delete(
+        self, subject: User, operating_hours: OperatingHours, cascade: bool
+    ) -> None:
         """Delete Operating Hours entry from the database.
 
         Args:
             subject (User): The user deleting the Operating Hours entry.
             operating_hours (OperatingHours): The entry to delete.
+            cascade (bool): Whether or not to delete subsequent recurrences, if the entry recurs.
 
         Returns:
             None
@@ -216,5 +219,28 @@ class OperatingHoursService:
         operating_hours_entity = self._session.get(
             OperatingHoursEntity, operating_hours.id
         )
+
+        if cascade and (operating_hours_entity.recurrence_id != None):
+            for entity in (
+                self._session.query(OperatingHoursEntity)
+                .filter(
+                    OperatingHoursEntity.start > operating_hours_entity.start,
+                    OperatingHoursEntity.recurrence_id
+                    == operating_hours_entity.recurrence_id,
+                )
+                .all()
+            ):
+                print(entity.id)
+                self._session.delete(entity)
+            operating_hours_entity.recurrence.end_date = (
+                operating_hours_entity.start.replace(
+                    hour=0,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
+                    tzinfo=operating_hours_entity.start.tzinfo,
+                )
+            )
+
         self._session.delete(operating_hours_entity)
         self._session.commit()

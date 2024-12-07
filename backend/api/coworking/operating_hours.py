@@ -58,9 +58,10 @@ def update_operating_hours(
 @api.delete("/{id}", tags=["Coworking"])
 def delete_operating_hours(
     id: int,
+    cascade: bool = False,
     subject: User = Depends(registered_user),
     operating_hours_svc: OperatingHoursService = Depends(),
 ):
     """Delete operating hours for the XL."""
     operating_hours = operating_hours_svc.get_by_id(id)
-    return operating_hours_svc.delete(subject, operating_hours)
+    return operating_hours_svc.delete(subject, operating_hours, cascade)
