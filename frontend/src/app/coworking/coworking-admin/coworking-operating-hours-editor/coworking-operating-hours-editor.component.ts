@@ -82,7 +82,7 @@ export class CoworkingOperatingHoursEditorComponent {
         ?.setValue(
           this.operatingHoursSignal()?.recurrence
             ? this.operatingHoursSignal()?.recurrence.recurs_on ==
-              parseInt('1111100', 2)
+              parseInt('0011111', 2)
               ? 'Daily'
               : 'Weekly'
             : 'None'
@@ -207,8 +207,22 @@ export class CoworkingOperatingHoursEditorComponent {
 
       if (this.operatingHoursForm.get('recurrence')?.value != 'None') {
         operatingHoursToSubmit.recurrence = {
-          end_date: new Date(0),
-          recurs_on: 12
+          end_date: this.operatingHoursForm.get('recurrence_end')?.value,
+          recurs_on: this.operatingHoursForm
+            .get('recurrence_days')
+            ?.value.reduce(
+              (acc: number, day: string) =>
+                acc +
+                (1 <<
+                  [
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday'
+                  ].indexOf(day)),
+              0
+            )
         } as OperatingHoursRecurrenceDraft;
       }
 

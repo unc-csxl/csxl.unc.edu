@@ -93,33 +93,23 @@ class OperatingHoursService:
             # Go through every day between the start date and end date(inclusive)
             # https://stackoverflow.com/a/24637447
 
-            # Manually perform the autoincrement as we aren't using an external table to manage recurrence
-
-            highest_recurrence_entity = (
-                self._session.query(OperatingHoursEntity)
-                .order_by(OperatingHoursEntity.recurrence_id)
-                .first()
-            )
-
-            operating_hours_draft.recurrence.id = (
-                highest_recurrence_entity.recurrence_id + 1
-                if highest_recurrence_entity
-                else 0
+            start_date = operating_hours_draft.start.replace(
+                hour=0,
+                minute=0,
+                second=0,
+                microsecond=0,
+                tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
             )
 
             for day in [
-                operating_hours_draft.recurrence.start_date + timedelta(days=x)
+                start_date + timedelta(days=x)
                 for x in range(
                     0,
-                    (
-                        operating_hours_draft.recurrence.end_date
-                        - operating_hours_draft.recurrence.start_date
-                        + 1
-                    ).days,
+                    (operating_hours_draft.recurrence.end_date - start_date).days + 1,
                 )
             ]:
                 # If date is in recurrence, create a new operating hours object for that day
-                if (1 << day.weekday) & operating_hours_draft.recurrence.recurs_on:
+                if (1 << day.weekday()) & operating_hours_draft.recurrence.recurs_on:
                     start = datetime.combine(day, operating_hours_draft.start.time())
                     end = datetime.combine(day, operating_hours_draft.end.time())
                     operating_hours_to_create.append(

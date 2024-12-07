@@ -42,8 +42,7 @@ def new_operating_hours(
     operating_hours_svc: OperatingHoursService = Depends(),
 ):
     """Create new opening hours for the XL."""
-    time_range = TimeRange(start=operating_hours.start, end=operating_hours.end)
-    return operating_hours_svc.create(subject, time_range)
+    return operating_hours_svc.create(subject, operating_hours)
 
 
 @api.put("", response_model=OperatingHours, tags=["Coworking"])

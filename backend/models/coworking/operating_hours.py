@@ -13,8 +13,7 @@ __license__ = "MIT"
 class OperatingHoursRecurrence(BaseModel):
     id: int | None = None
 
-    start_date: date
-    end_date: date
+    end_date: datetime
 
     # Bitmask saved as an int
     # Monday is 0, Sunday is 6 (following python datetime standard)
@@ -24,9 +23,10 @@ class OperatingHoursRecurrence(BaseModel):
 class OperatingHours(TimeRange, BaseModel):
     """The operating hours of the XL."""
 
-    id: int | None = None
+    id: int
 
     recurrence_id: int | None = None
+    recurrence: OperatingHoursRecurrence | None = None
 
 
 class OperatingHoursDraft(TimeRange, BaseModel):

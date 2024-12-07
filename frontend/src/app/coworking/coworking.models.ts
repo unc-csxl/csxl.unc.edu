@@ -2,7 +2,7 @@ import { Profile } from '../models.module';
 import { TimeRangeJSON, TimeRange } from '../time-range';
 
 export interface OperatingHoursRecurrenceDraft {
-  id: number | null;
+  id?: number | null;
 
   end_date: Date;
 
@@ -64,7 +64,7 @@ export const parseOperatingHoursJSON = (
   json: OperatingHoursJSON
 ): OperatingHours => {
   return Object.assign({}, json, parseTimeRange(json), {
-    recurrence: parseRecurrenceJSON(json.recurrence)
+    recurrence: json.recurrence ? parseRecurrenceJSON(json.recurrence) : null
   });
 };
 
