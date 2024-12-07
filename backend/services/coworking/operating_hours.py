@@ -4,6 +4,9 @@ from datetime import datetime, time, timedelta
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
+from backend.entities.coworking.operating_hours_recurrence_entity import (
+    OperatingHoursRecurrenceEntity,
+)
 from backend.models.coworking.operating_hours import OperatingHoursDraft
 from .exceptions import OperatingHoursCannotOverlapException
 from ..exceptions import ResourceNotFoundException
@@ -220,27 +223,56 @@ class OperatingHoursService:
             OperatingHoursEntity, operating_hours.id
         )
 
-        if cascade and (operating_hours_entity.recurrence_id != None):
-            for entity in (
-                self._session.query(OperatingHoursEntity)
-                .filter(
-                    OperatingHoursEntity.start > operating_hours_entity.start,
-                    OperatingHoursEntity.recurrence_id
-                    == operating_hours_entity.recurrence_id,
+        if operating_hours_entity.recurrence_id:
+            if cascade:
+                for entity in (
+                    self._session.query(OperatingHoursEntity)
+                    .filter(
+                        OperatingHoursEntity.start > operating_hours_entity.start,
+                        OperatingHoursEntity.recurrence_id
+                        == operating_hours_entity.recurrence_id,
+                    )
+                    .all()
+                ):
+                    self._session.delete(entity)
+                operating_hours_entity.recurrence.end_date = (
+                    operating_hours_entity.start.replace(
+                        hour=0,
+                        minute=0,
+                        second=0,
+                        microsecond=0,
+                        tzinfo=operating_hours_entity.start.tzinfo,
+                    )
                 )
-                .all()
-            ):
-                print(entity.id)
-                self._session.delete(entity)
-            operating_hours_entity.recurrence.end_date = (
-                operating_hours_entity.start.replace(
-                    hour=0,
-                    minute=0,
-                    second=0,
-                    microsecond=0,
-                    tzinfo=operating_hours_entity.start.tzinfo,
+            else:
+                # Update future recurrences with a new recurrence starting with the next day
+                future_recurrences = (
+                    self._session.query(OperatingHoursEntity)
+                    .filter(
+                        OperatingHoursEntity.start > operating_hours_entity.start,
+                        OperatingHoursEntity.recurrence_id
+                        == operating_hours_entity.recurrence_id,
+                    )
+                    .all()
                 )
-            )
+                if len(future_recurrences) > 0:
+                    new_recurrence = OperatingHoursRecurrenceEntity(
+                        end_date=operating_hours_entity.recurrence.end_date,
+                        recurs_on=operating_hours_entity.recurrence.recurs_on,
+                    )
+                    for entity in future_recurrences:
+                        entity.recurrence = new_recurrence
+
+                # Update current recurrence to stop at the day of this recurrence
+                operating_hours_entity.recurrence.end_date = (
+                    operating_hours_entity.start.replace(
+                        hour=0,
+                        minute=0,
+                        second=0,
+                        microsecond=0,
+                        tzinfo=operating_hours_entity.start.tzinfo,
+                    )
+                )
 
         self._session.delete(operating_hours_entity)
         self._session.commit()
