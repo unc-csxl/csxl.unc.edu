@@ -87,11 +87,18 @@ class OperatingHoursService:
             subject, "coworking.operating_hours.create", "coworking/operating_hours"
         )
 
-        operating_hours_to_create = []
+        if len(self.schedule(operating_hours_draft)) > 0:
+            raise OperatingHoursCannotOverlapException(
+                f"Conflicts in the range of {str(operating_hours_draft)}"
+            )
 
+        operating_hours = OperatingHoursEntity.from_draft(operating_hours_draft)
+        self._session.add(operating_hours)
+
+        recurrence = operating_hours.recurrence
         if operating_hours_draft.recurrence:
-            # Go through every day between the start date and end date(inclusive)
-            # https://stackoverflow.com/a/24637447
+
+            operating_hours_to_create = []
 
             start_date = operating_hours_draft.start.replace(
                 hour=0,
@@ -101,10 +108,13 @@ class OperatingHoursService:
                 tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
             )
 
+            # Go through every day between the start date and end date(inclusive)
+            # https://stackoverflow.com/a/24637447
+
             for day in [
                 start_date + timedelta(days=x)
                 for x in range(
-                    0,
+                    1,
                     (operating_hours_draft.recurrence.end_date - start_date).days + 1,
                 )
             ]:
@@ -113,27 +123,25 @@ class OperatingHoursService:
                     start = datetime.combine(day, operating_hours_draft.start.time())
                     end = datetime.combine(day, operating_hours_draft.end.time())
                     operating_hours_to_create.append(
-                        OperatingHoursDraft(
-                            start=start,
-                            end=end,
-                            recurrence=operating_hours_draft.recurrence,
-                        )
+                        OperatingHoursDraft(start=start, end=end)
                     )
-        else:
-            operating_hours_to_create = [operating_hours_draft]
 
-        for operating_hours in operating_hours_to_create:
-            conflicts = self.schedule(operating_hours)
-            if len(conflicts) > 0:
-                raise OperatingHoursCannotOverlapException(
-                    f"Conflicts in the range of {str(operating_hours)}"
-                )
+            for operating_hours in operating_hours_to_create:
+                conflicts = self.schedule(operating_hours)
+                if len(conflicts) > 0:
+                    raise OperatingHoursCannotOverlapException(
+                        f"Conflicts in the range of {str(operating_hours)}"
+                    )
 
-        entities = [
-            OperatingHoursEntity.from_draft(operating_hours)
-            for operating_hours in operating_hours_to_create
-        ]
-        self._session.add_all(entities)
+            entities = [
+                OperatingHoursEntity.from_draft(operating_hours)
+                for operating_hours in operating_hours_to_create
+            ]
+
+            for entity in entities:
+                entity.recurrence = recurrence
+                print(recurrence)
+            self._session.add_all(entities)
         self._session.commit()
 
         # Return first operating hour
