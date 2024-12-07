@@ -95,6 +95,9 @@ export class CoworkingOperatingHoursEditorComponent {
               (this.operatingHoursSignal()?.recurrence.recurs_on ?? 0) // We do the ?? 0 to cover the impossible event where recurrence is null despite that being checked
           )
         );
+        this.operatingHoursForm
+          .get('recurrence_end')
+          ?.setValue(this.operatingHoursSignal()?.recurrence.end_date);
       }
     });
   }
