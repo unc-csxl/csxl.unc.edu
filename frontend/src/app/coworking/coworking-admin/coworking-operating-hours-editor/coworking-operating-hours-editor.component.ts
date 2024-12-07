@@ -51,6 +51,7 @@ export class CoworkingOperatingHoursEditorComponent {
     public coworkingService: CoworkingService,
     private datePipe: DatePipe
   ) {
+    // TODO: Add validator requiring a repeat until and some date selection when weekly recurrence is picked
     this.operatingHoursForm = this.fb.group(
       {
         selected_date: [null, Validators.required],
