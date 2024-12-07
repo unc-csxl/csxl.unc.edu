@@ -48,7 +48,7 @@
 
         <!-- Recurrence Days -->
         @if (operatingHoursForm.get('recurrence')?.value == 'Weekly') {
-            <mat-button-toggle-group [formGroup]="operatingHoursForm" formControlName="recurrence_days" multiple [style]="(operatingHoursForm.get('recurrence')?.value == 'Weekly' ? '' : 'display: none')">
+            <mat-button-toggle-group [formGroup]="operatingHoursForm" formControlName="recurrence_days" multiple>
                 @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']; track day) {
                     <mat-button-toggle [value]="day">{{ day.substring(0, 3) }}</mat-button-toggle>
                 }
