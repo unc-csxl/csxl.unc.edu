@@ -35,6 +35,8 @@ import { CoworkingAdminComponent } from './coworking-admin/coworking-admin.compo
 import { CoworkingOperatingHoursEditorComponent } from './coworking-admin/coworking-operating-hours-editor/coworking-operating-hours-editor.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { RecurringModifyDialog } from './coworking-admin/recurring-hours-modify-dialog/recurring-hours-modify.dialog';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,8 @@ import { MatSelectModule } from '@angular/material/select';
     CoworkingAdminComponent,
     CoworkingOperatingHoursEditorComponent,
     DateSelector,
-    ReservationFactsWidget
+    ReservationFactsWidget,
+    RecurringModifyDialog
   ],
   imports: [
     CommonModule,
@@ -83,7 +86,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatDialogModule,
     MatButtonToggleModule,
     MatSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatRadioModule
   ]
 })
 export class CoworkingModule {}

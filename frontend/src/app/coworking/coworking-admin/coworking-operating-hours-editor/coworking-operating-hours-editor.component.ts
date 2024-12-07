@@ -32,6 +32,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
 import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/operating-hours-calendar.widget';
 import { DatePipe } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { RecurringModifyDialog } from '../recurring-hours-modify-dialog/recurring-hours-modify.dialog';
+import { Observable, share } from 'rxjs';
 
 @Component({
   selector: 'coworking-operating-hours-editor',
@@ -49,6 +52,7 @@ export class CoworkingOperatingHoursEditorComponent {
     private snackBar: MatSnackBar,
     private fb: FormBuilder,
     public coworkingService: CoworkingService,
+    protected dialog: MatDialog,
     private datePipe: DatePipe
   ) {
     // TODO: Add validator requiring a repeat until and some date selection when weekly recurrence is picked
@@ -152,12 +156,43 @@ export class CoworkingOperatingHoursEditorComponent {
       );
       return;
     }
+
+    if (this.operatingHoursSignal()?.recurrence) {
+      this.dialog.open(RecurringModifyDialog, {
+        height: '300px',
+        width: '300px',
+        data: {
+          actionName: 'Delete',
+          id: id,
+          actionFunction: this.doDelete.bind(this)
+        }
+      });
+    } else {
+      this.doDelete(id);
+    }
+  }
+
+  doDelete(id: number, cascade: boolean = false): Observable<void> {
+    let observable = this.coworkingService
+      .deleteOperatingHours(id, cascade)
+      .pipe(share());
+
     /** Opens a confirmation snackbar for successful delete. */
-    this.coworkingService.deleteOperatingHours(id).subscribe({
+    observable.subscribe({
       next: () => {
         this.snackBar.open('Operating Hours Deleted', '', { duration: 2000 });
         this.calendar?.update();
-        this.onCancel();
+        this.operatingHoursForm.reset({
+          selected_date: null,
+          start_time: null,
+          end_time: null,
+          recurrence: 'None',
+          recurrence_days: [],
+          recurrence_end: null
+        });
+
+        this.isPanelVisible.set(false);
+        this.operatingHoursSignal.set(null);
       },
       /** Opens a snackbar for delete error. */
       error: (err) => {
@@ -167,6 +202,8 @@ export class CoworkingOperatingHoursEditorComponent {
         });
       }
     });
+
+    return observable;
   }
 
   /** Shorthand for whether operating hours is new or not.
