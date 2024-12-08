@@ -391,37 +391,17 @@ class OperatingHoursService:
                     .all()
                 ):
                     self._session.delete(entity)
-            else:
-                future_recurrences = (
-                    self._session.query(OperatingHoursEntity)
-                    .filter(
-                        OperatingHoursEntity.start > operating_hours_entity.start,
-                        OperatingHoursEntity.recurrence_id
-                        == operating_hours_entity.recurrence_id,
-                    )
-                    .all()
-                )
 
-                # Update future recurrences with a new recurrence
-                if len(future_recurrences) > 0:
-                    new_recurrence = OperatingHoursRecurrenceEntity(
-                        end_date=operating_hours_entity.recurrence.end_date,
-                        recurs_on=operating_hours_entity.recurrence.recurs_on,
+                # Update current recurrence to stop at the day of this recurrence
+                operating_hours_entity.recurrence.end_date = (
+                    operating_hours_entity.start.replace(
+                        hour=0,
+                        minute=0,
+                        second=0,
+                        microsecond=0,
+                        tzinfo=operating_hours_entity.start.tzinfo,
                     )
-                    for entity in future_recurrences:
-                        entity.recurrence = new_recurrence
-
-            # Update current recurrence to stop at the day of this recurrence
-            # We do this regardless of cascade value
-            operating_hours_entity.recurrence.end_date = (
-                operating_hours_entity.start.replace(
-                    hour=0,
-                    minute=0,
-                    second=0,
-                    microsecond=0,
-                    tzinfo=operating_hours_entity.start.tzinfo,
                 )
-            )
 
         self._session.delete(operating_hours_entity)
         self._session.commit()
