@@ -230,21 +230,17 @@ export class CoworkingOperatingHoursEditorComponent {
       operatingHoursToSubmit.id = this.operatingHoursSignal()?.id ?? null;
 
       operatingHoursToSubmit.start = new Date(
-        this.operatingHoursForm
-          .get('selected_date')
-          ?.value.setHours(
-            this.operatingHoursForm.get('start_time')?.value.split(':')[0],
-            this.operatingHoursForm.get('start_time')?.value.split(':')[1]
-          )
+        new Date(this.operatingHoursForm.get('selected_date')?.value).setHours(
+          this.operatingHoursForm.get('start_time')?.value.split(':')[0],
+          this.operatingHoursForm.get('start_time')?.value.split(':')[1]
+        )
       );
 
       operatingHoursToSubmit.end = new Date(
-        this.operatingHoursForm
-          .get('selected_date')
-          ?.value.setHours(
-            this.operatingHoursForm.get('end_time')?.value.split(':')[0],
-            this.operatingHoursForm.get('end_time')?.value.split(':')[1]
-          )
+        new Date(this.operatingHoursForm.get('selected_date')?.value).setHours(
+          this.operatingHoursForm.get('end_time')?.value.split(':')[0],
+          this.operatingHoursForm.get('end_time')?.value.split(':')[1]
+        )
       );
 
       if (this.operatingHoursForm.get('recurrence')?.value != 'None') {
