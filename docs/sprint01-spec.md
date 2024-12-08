@@ -113,7 +113,14 @@ While we interacted with the `OperatingHours` entity, no changes were made to th
    - **`frontend/src/app/shared/operating-hours-calendar folder`**:  
      Contains the reusable `OperatingHoursCalendar` component, which dynamically renders the calendar and applies styling.
 
-2. **Dynamic Calendar Styling**:
+ 2. **Backend CRUD Operations**:
+    - **`backend/services/coworking/operating_hours.py`**:
+      - Created a new `update` method to communicate with the PostgreSQL database and update the OperatingHours entity.
+    - **`backend/api/coworking/operating_hours.py`**:
+      - Created a new API route for editing operating hours
+
+
+3. **Dynamic Calendar Styling**:
    - The grid layout for the calendar is dynamically generated within the HTML and styled via CSS.
 
 ---
