@@ -16,6 +16,7 @@ import {
 } from '@angular/core';
 import { permissionGuard } from 'src/app/permission.guard';
 import { OperatingHours } from '../coworking.models';
+import { currentTermResolver } from 'src/app/academics/academics.resolver';
 
 @Component({
   selector: 'app-coworking-admin',
@@ -29,7 +30,10 @@ export class CoworkingAdminComponent implements OnInit, OnDestroy {
     path: 'admin',
     component: CoworkingAdminComponent,
     title: 'CSXL Open Hours Administration',
-    canActivate: [permissionGuard('coworking.operating_hours', '*')]
+    canActivate: [permissionGuard('coworking.operating_hours', '*')],
+    resolve: {
+      currentTerm: currentTermResolver
+    }
   };
 
   showAddHoursPanel(): void {

@@ -36,6 +36,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { RecurringModifyDialog } from '../recurring-hours-modify-dialog/recurring-hours-modify.dialog';
 import { Observable, share } from 'rxjs';
 import { RecurringModifyConfirmDialog } from '../recurring-hours-modify-confirm-dialog/recurring-hours-modify-confirm.dialog';
+import { currentTermResolver } from 'src/app/academics/academics.resolver';
+import { ActivatedRoute } from '@angular/router';
+import { Term } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'coworking-operating-hours-editor',
@@ -54,8 +57,14 @@ export class CoworkingOperatingHoursEditorComponent {
     private fb: FormBuilder,
     public coworkingService: CoworkingService,
     protected dialog: MatDialog,
+    private route: ActivatedRoute,
     private datePipe: DatePipe
   ) {
+    // Initialize data from resolvers
+    const data = this.route.snapshot.data as {
+      currentTerm: Term | undefined;
+    };
+    console.log(data.currentTerm);
     // TODO: Add validator requiring a repeat until and some date selection when weekly recurrence is picked
     this.operatingHoursForm = this.fb.group(
       {
@@ -64,7 +73,7 @@ export class CoworkingOperatingHoursEditorComponent {
         end_time: [null, Validators.required],
         recurrence: ['None'],
         recurrence_days: [[]],
-        recurrence_end: null
+        recurrence_end: data.currentTerm?.end
       },
       { validators: [this.dateRangeValidator] }
     );
