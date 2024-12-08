@@ -225,8 +225,9 @@ export class CoworkingOperatingHoursEditorComponent {
    */
   onSubmit(): void {
     if (this.operatingHoursForm.valid) {
-      let operatingHoursToSubmit =
-        this.operatingHoursSignal() ?? ({} as OperatingHoursDraft);
+      let operatingHoursToSubmit = {} as OperatingHoursDraft;
+
+      operatingHoursToSubmit.id = this.operatingHoursSignal()?.id ?? null;
 
       operatingHoursToSubmit.start = new Date(
         this.operatingHoursForm
