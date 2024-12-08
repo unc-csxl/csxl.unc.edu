@@ -26,3 +26,20 @@ mat-card-actions {
   justify-content: flex-end;
   gap: 12px;
 }
+
+@media screen and (max-width: 768px) {
+  .horizontal-wrapper {
+    display: block; 
+  }
+
+  mat-card-content {
+    padding: 0 8px;
+  }
+
+  mat-card-actions {
+    flex-direction: column; 
+    gap: 8px;
+    align-items: stretch; 
+  }
+}
+
