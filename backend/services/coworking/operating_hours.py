@@ -283,11 +283,6 @@ class OperatingHoursService:
                 operating_hours_entity.recurrence.end_date
                 < operating_hours_draft.recurrence.end_date
             ):
-                print(
-                    "\n\n\n\n",
-                    operating_hours_entity.recurrence.end_date,
-                    operating_hours_draft.recurrence.end_date,
-                )
                 self._create_recurring_hours_on_schedule(
                     operating_hours_draft,
                     operating_hours_entity.recurrence.end_date,
@@ -328,7 +323,7 @@ class OperatingHoursService:
                     second=0,
                     microsecond=0,
                     tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
-                )
+                ) + timedelta(days=1)
                 # Create new hours
                 self._create_recurring_hours_on_schedule(
                     operating_hours_draft,
@@ -343,8 +338,7 @@ class OperatingHoursService:
                 for entity in (
                     self._session.query(OperatingHoursEntity)
                     .filter(
-                        OperatingHoursEntity.start
-                        > operating_hours_draft.recurrence.end_date,
+                        OperatingHoursEntity.start > start_date,
                         OperatingHoursEntity.recurrence_id
                         == operating_hours_entity.recurrence_id,
                     )
