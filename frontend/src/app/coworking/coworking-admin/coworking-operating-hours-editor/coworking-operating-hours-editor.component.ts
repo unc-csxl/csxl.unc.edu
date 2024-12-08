@@ -291,6 +291,8 @@ export class CoworkingOperatingHoursEditorComponent {
 
       if (
         !this.isNew() &&
+        this.operatingHoursSignal()?.recurrence &&
+        operatingHoursToSubmit.recurrence &&
         (this.operatingHoursSignal()?.recurrence.end_date !=
           operatingHoursToSubmit.recurrence.end_date ||
           this.operatingHoursSignal()?.recurrence.recurs_on !=
