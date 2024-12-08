@@ -24,8 +24,8 @@ from ....models.coworking import OperatingHours
 from ..reset_table_id_seq import reset_table_id_seq
 from .time import *
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan", "David Foss"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 today: OperatingHours

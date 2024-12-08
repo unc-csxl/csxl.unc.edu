@@ -7,8 +7,8 @@ from ....models.academics import Term
 from ..reset_table_id_seq import reset_table_id_seq
 from datetime import datetime
 
-__authors__ = ["Ajay Gandecha"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Ajay Gandecha", "David Foss"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 sp_25 = Term(
@@ -56,7 +56,7 @@ ss2_24 = Term(
 )
 
 new_term = Term(
-    id="24F", name="Fall 2024", start=datetime(2024, 8, 20), end=datetime(2024, 12, 15)
+    id="25F", name="Fall 2025", start=datetime(2025, 8, 20), end=datetime(2025, 12, 15)
 )
 
 terms = [sp_23, f_23, sp_24, ss1_24, ss2_24, sp_25, f_24]
