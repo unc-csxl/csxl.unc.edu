@@ -92,7 +92,7 @@ class OperatingHoursService:
             second=0,
             microsecond=0,
             tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
-        )
+        ) + timedelta(days=1)
 
         self._create_recurring_hours_on_schedule(
             operating_hours_draft,
@@ -127,8 +127,8 @@ class OperatingHoursService:
         for day in [
             start_date + timedelta(days=x)
             for x in range(
-                1,
-                (end_date - start_date).days + 1,
+                0,
+                (end_date - start_date).days,
             )
         ]:
             # If date is in recurrence, create a new operating hours object for that day
@@ -283,16 +283,14 @@ class OperatingHoursService:
                 operating_hours_entity.recurrence.end_date
                 < operating_hours_draft.recurrence.end_date
             ):
-                start_date = operating_hours_draft.start.replace(
-                    hour=0,
-                    minute=0,
-                    second=0,
-                    microsecond=0,
-                    tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
+                print(
+                    "\n\n\n\n",
+                    operating_hours_entity.recurrence.end_date,
+                    operating_hours_draft.recurrence.end_date,
                 )
                 self._create_recurring_hours_on_schedule(
                     operating_hours_draft,
-                    start_date,
+                    operating_hours_entity.recurrence.end_date,
                     operating_hours_draft.recurrence.end_date,
                     operating_hours_draft.recurrence.recurs_on,
                     operating_hours_entity.recurrence,
@@ -324,10 +322,17 @@ class OperatingHoursService:
                 operating_hours_entity.recurrence.recurs_on
                 != operating_hours_draft.recurrence.recurs_on
             ):
+                start_date = operating_hours_draft.start.replace(
+                    hour=0,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
+                    tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
+                )
                 # Create new hours
                 self._create_recurring_hours_on_schedule(
                     operating_hours_draft,
-                    operating_hours_entity.recurrence.end_date,
+                    start_date,
                     operating_hours_draft.recurrence.end_date,
                     (operating_hours_entity.recurrence.recurs_on ^ 0b11111)
                     & operating_hours_draft.recurrence.recurs_on,
