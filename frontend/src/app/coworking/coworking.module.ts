@@ -37,6 +37,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { RecurringModifyDialog } from './coworking-admin/recurring-hours-modify-dialog/recurring-hours-modify.dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { RecurringModifyConfirmDialog } from './coworking-admin/recurring-hours-modify-confirm-dialog/recurring-hours-modify-confirm.dialog';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { MatRadioModule } from '@angular/material/radio';
     CoworkingOperatingHoursEditorComponent,
     DateSelector,
     ReservationFactsWidget,
-    RecurringModifyDialog
+    RecurringModifyDialog,
+    RecurringModifyConfirmDialog
   ],
   imports: [
     CommonModule,

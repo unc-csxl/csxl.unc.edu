@@ -74,6 +74,87 @@ class OperatingHoursService:
         )
         return [entity.to_model() for entity in entities]
 
+    def _create_recurring_hours(
+        self,
+        operating_hours_draft: OperatingHoursDraft,
+        recurrence: OperatingHoursRecurrenceEntity,
+    ):
+        """Helper function to create operating hours following a recurrence schedule
+
+        Args:
+            operating_hours_draft (OperatingHoursDraft): A draft of the original operating hours to be recurred.
+            recurrence (OperatingHoursRecurrenceEntity): The recurrence to apply to all of the new hours.
+        """
+
+        start_date = operating_hours_draft.start.replace(
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
+        )
+
+        self._create_recurring_hours_on_schedule(
+            operating_hours_draft,
+            start_date,
+            operating_hours_draft.recurrence.end_date,
+            operating_hours_draft.recurrence.recurs_on,
+            recurrence,
+        )
+
+    def _create_recurring_hours_on_schedule(
+        self,
+        operating_hours_draft: OperatingHoursDraft,
+        start_date: datetime,
+        end_date: datetime,
+        recurs_on: int,
+        recurrence: OperatingHoursRecurrenceEntity,
+    ):
+        """Helper function to create operating hours following a given schedule.
+
+        Args:
+            operating_hours_draft (OperatingHoursDraft): A draft of the original operating hours to be recurred.
+            start_date (datetime): The start date of recurrence.
+            end_date (datetime): The end date (non-inclusive) of recurrence.
+            recurs_on (int): A bitmask representing the days to recur on, with Monday=0, Sunday=127
+            recurrence (OperatingHoursRecurrenceEntity): The recurrence to apply to all of the new hours.
+        """
+        operating_hours_to_create = []
+
+        # Go through every day between the start date and end date(inclusive)
+        # https://stackoverflow.com/a/24637447
+
+        for day in [
+            start_date + timedelta(days=x)
+            for x in range(
+                1,
+                (end_date - start_date).days + 1,
+            )
+        ]:
+            # If date is in recurrence, create a new operating hours object for that day
+            if (1 << day.weekday()) & recurs_on:
+                start = datetime.combine(day, operating_hours_draft.start.time())
+                end = datetime.combine(day, operating_hours_draft.end.time())
+                operating_hours_to_create.append(
+                    OperatingHoursDraft(start=start, end=end)
+                )
+
+        for operating_hours in operating_hours_to_create:
+            conflicts = self.schedule(operating_hours)
+            if len(conflicts) > 0:
+                raise OperatingHoursCannotOverlapException(
+                    f"Conflicts in the range of {str(operating_hours)}"
+                )
+
+        entities = [
+            OperatingHoursEntity.from_draft(operating_hours)
+            for operating_hours in operating_hours_to_create
+        ]
+
+        for entity in entities:
+            entity.recurrence = recurrence
+        self._session.add_all(entities)
+
     def create(
         self, subject: User, operating_hours_draft: OperatingHoursDraft
     ) -> OperatingHours:
@@ -98,70 +179,26 @@ class OperatingHoursService:
         operating_hours = OperatingHoursEntity.from_draft(operating_hours_draft)
         self._session.add(operating_hours)
 
-        recurrence = operating_hours.recurrence
         if operating_hours_draft.recurrence:
-
-            operating_hours_to_create = []
-
-            start_date = operating_hours_draft.start.replace(
-                hour=0,
-                minute=0,
-                second=0,
-                microsecond=0,
-                tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
+            self._create_recurring_hours(
+                operating_hours_draft, operating_hours.recurrence
             )
-
-            # Go through every day between the start date and end date(inclusive)
-            # https://stackoverflow.com/a/24637447
-
-            for day in [
-                start_date + timedelta(days=x)
-                for x in range(
-                    1,
-                    (operating_hours_draft.recurrence.end_date - start_date).days + 1,
-                )
-            ]:
-                # If date is in recurrence, create a new operating hours object for that day
-                if (1 << day.weekday()) & operating_hours_draft.recurrence.recurs_on:
-                    start = datetime.combine(day, operating_hours_draft.start.time())
-                    end = datetime.combine(day, operating_hours_draft.end.time())
-                    operating_hours_to_create.append(
-                        OperatingHoursDraft(start=start, end=end)
-                    )
-
-            for operating_hours in operating_hours_to_create:
-                conflicts = self.schedule(operating_hours)
-                if len(conflicts) > 0:
-                    raise OperatingHoursCannotOverlapException(
-                        f"Conflicts in the range of {str(operating_hours)}"
-                    )
-
-            entities = [
-                OperatingHoursEntity.from_draft(operating_hours)
-                for operating_hours in operating_hours_to_create
-            ]
-
-            for entity in entities:
-                entity.recurrence = recurrence
-                print(recurrence)
-            self._session.add_all(entities)
         self._session.commit()
 
-        # Return first operating hour
+        # Return original operating hour
         # I believe this isn't used anywhere on the frontend yet
         # Might be worth switching to returning an array, however that might lead to weird behavior when not doing recurrence
-        return entities[0].to_model()
+        return operating_hours
 
     def update(
-        self,
-        subject: User,
-        newest_operating_hours: OperatingHoursDraft,
+        self, subject: User, operating_hours_draft: OperatingHoursDraft, cascade: bool
     ) -> OperatingHours:
         """Update existing, open Operating Hours for XL coworking.
 
         Args:
             subject (User): The user updating the Operating Hours entry.
-            newest_operating_hours (OperatingHours): object containing the id of the entity to update and the new operating hours.
+            operating_hours_draft (OperatingHoursDraft): Object containing the id of the entity to update and the new operating hours.
+            cascade (bool): Whether or not to cascade the update across future recurrences, if the entity has a recurrence.
 
         Returns:
             OperatingHours: The persisted object.
@@ -171,7 +208,7 @@ class OperatingHoursService:
         )
 
         new_time_range = TimeRange(
-            start=newest_operating_hours.start, end=newest_operating_hours.end
+            start=operating_hours_draft.start, end=operating_hours_draft.end
         )
         all_hours = self.schedule(new_time_range)
 
@@ -179,26 +216,146 @@ class OperatingHoursService:
             opHours
             for opHours in all_hours
             if opHours.id
-            != newest_operating_hours.id  # ignore the hours we are currently updating
+            != operating_hours_draft.id  # ignore the hours we are currently updating
         ]
         if len(conflicts) > 0:
             raise OperatingHoursCannotOverlapException(
                 f"Conflicts in the range of {str(new_time_range)}"
             )
 
-        # get the entity to update
-        old_operating_hours_entity = self._session.get(
-            OperatingHoursEntity, newest_operating_hours.id
+        operating_hours_entity = self._session.get(
+            OperatingHoursEntity, operating_hours_draft.id
         )
 
-        # update it's start time
-        old_operating_hours_entity.start = newest_operating_hours.start
+        operating_hours_entity.start = operating_hours_draft.start
+        operating_hours_entity.end = operating_hours_draft.end
 
-        # update it's end time
-        old_operating_hours_entity.end = newest_operating_hours.end
+        # Update future operating hours if cascading and has recurrence information
+        if cascade and operating_hours_entity.recurrence:
+            for entity in (
+                self._session.query(OperatingHoursEntity)
+                .filter(
+                    OperatingHoursEntity.start > operating_hours_entity.start,
+                    OperatingHoursEntity.recurrence_id
+                    == operating_hours_entity.recurrence_id,
+                )
+                .all()
+            ):
+                entity.start = datetime.combine(
+                    entity.start.date(),
+                    operating_hours_draft.start.time().replace(
+                        tzinfo=operating_hours_draft.start.tzinfo
+                    ),
+                )
+                entity.end = datetime.combine(
+                    entity.end.date(),
+                    operating_hours_draft.end.time().replace(
+                        tzinfo=operating_hours_draft.end.tzinfo
+                    ),
+                )
+
+        # Create new recurring operating hours if adding a recurrence
+        if (not operating_hours_entity.recurrence) and operating_hours_draft.recurrence:
+            new_recurrence = OperatingHoursRecurrenceEntity.from_model(
+                operating_hours_draft.recurrence
+            )
+
+            self._create_recurring_hours(operating_hours_draft, new_recurrence)
+
+        # Delete all recurring operating hours if removing recurrence information
+        if operating_hours_entity.recurrence and (not operating_hours_draft.recurrence):
+            for entity in (
+                self._session.query(OperatingHoursEntity)
+                .filter(
+                    OperatingHoursEntity.start > operating_hours_entity.start,
+                    OperatingHoursEntity.recurrence_id
+                    == operating_hours_entity.recurrence_id,
+                )
+                .all()
+            ):
+                self._session.delete(entity)
+
+        # Three operations that only happen when recurrence exists both in original and edited
+        if operating_hours_entity.recurrence and operating_hours_draft.recurrence:
+
+            # Create new hours if end_date is made later
+            if (
+                operating_hours_entity.recurrence.end_date
+                < operating_hours_draft.recurrence.end_date
+            ):
+                start_date = operating_hours_draft.start.replace(
+                    hour=0,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
+                    tzinfo=operating_hours_draft.recurrence.end_date.tzinfo,
+                )
+                self._create_recurring_hours_on_schedule(
+                    operating_hours_draft,
+                    start_date,
+                    operating_hours_draft.recurrence.end_date,
+                    operating_hours_draft.recurrence.recurs_on,
+                    operating_hours_entity.recurrence,
+                )
+
+            # Delete hours if end_date is made earlier
+            if (
+                operating_hours_entity.recurrence.end_date
+                > operating_hours_draft.recurrence.end_date
+            ):
+                for entity in (
+                    self._session.query(OperatingHoursEntity)
+                    .filter(
+                        OperatingHoursEntity.start
+                        > operating_hours_draft.recurrence.end_date,
+                        OperatingHoursEntity.recurrence_id
+                        == operating_hours_entity.recurrence_id,
+                    )
+                    .all()
+                ):
+                    self._session.delete(entity)
+
+            operating_hours_entity.recurrence.end_date = (
+                operating_hours_draft.recurrence.end_date
+            )
+
+            # Create/delete hours if recurrence pattern changed
+            if (
+                operating_hours_entity.recurrence.recurs_on
+                != operating_hours_draft.recurrence.recurs_on
+            ):
+                # Create new hours
+                self._create_recurring_hours_on_schedule(
+                    operating_hours_draft,
+                    operating_hours_entity.recurrence.end_date,
+                    operating_hours_draft.recurrence.end_date,
+                    (operating_hours_entity.recurrence.recurs_on ^ 0b11111)
+                    & operating_hours_draft.recurrence.recurs_on,
+                    operating_hours_entity.recurrence,
+                )
+
+                # Delete hours no longer in recurrence
+                for entity in (
+                    self._session.query(OperatingHoursEntity)
+                    .filter(
+                        OperatingHoursEntity.start
+                        > operating_hours_draft.recurrence.end_date,
+                        OperatingHoursEntity.recurrence_id
+                        == operating_hours_entity.recurrence_id,
+                    )
+                    .all()
+                ):
+                    if 1 << entity.start.weekday() & (
+                        operating_hours_draft.recurrence.recurs_on ^ 0b11111
+                    ):
+                        self._session.delete(entity)
+
+                operating_hours_entity.recurrence.recurs_on = (
+                    operating_hours_draft.recurrence.recurs_on
+                )
 
         self._session.commit()  # once edits have been made to the entity, session.commit() will update it in the db.
-        return old_operating_hours_entity.to_model()
+        return operating_hours_entity.to_model()
 
     def delete(
         self, subject: User, operating_hours: OperatingHours, cascade: bool
@@ -235,17 +392,7 @@ class OperatingHoursService:
                     .all()
                 ):
                     self._session.delete(entity)
-                operating_hours_entity.recurrence.end_date = (
-                    operating_hours_entity.start.replace(
-                        hour=0,
-                        minute=0,
-                        second=0,
-                        microsecond=0,
-                        tzinfo=operating_hours_entity.start.tzinfo,
-                    )
-                )
             else:
-                # Update future recurrences with a new recurrence starting with the next day
                 future_recurrences = (
                     self._session.query(OperatingHoursEntity)
                     .filter(
@@ -255,6 +402,8 @@ class OperatingHoursService:
                     )
                     .all()
                 )
+
+                # Update future recurrences with a new recurrence
                 if len(future_recurrences) > 0:
                     new_recurrence = OperatingHoursRecurrenceEntity(
                         end_date=operating_hours_entity.recurrence.end_date,
@@ -263,16 +412,17 @@ class OperatingHoursService:
                     for entity in future_recurrences:
                         entity.recurrence = new_recurrence
 
-                # Update current recurrence to stop at the day of this recurrence
-                operating_hours_entity.recurrence.end_date = (
-                    operating_hours_entity.start.replace(
-                        hour=0,
-                        minute=0,
-                        second=0,
-                        microsecond=0,
-                        tzinfo=operating_hours_entity.start.tzinfo,
-                    )
+            # Update current recurrence to stop at the day of this recurrence
+            # We do this regardless of cascade value
+            operating_hours_entity.recurrence.end_date = (
+                operating_hours_entity.start.replace(
+                    hour=0,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
+                    tzinfo=operating_hours_entity.start.tzinfo,
                 )
+            )
 
         self._session.delete(operating_hours_entity)
         self._session.commit()

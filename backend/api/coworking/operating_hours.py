@@ -48,11 +48,12 @@ def new_operating_hours(
 @api.put("", response_model=OperatingHours, tags=["Coworking"])
 def update_operating_hours(
     operating_hours: OperatingHoursDraft,
+    cascade: bool = False,
     subject: User = Depends(registered_user),
     operating_hours_svc: OperatingHoursService = Depends(),
 ):
     """Create new opening hours for the XL."""
-    return operating_hours_svc.update(subject, operating_hours)
+    return operating_hours_svc.update(subject, operating_hours, cascade)
 
 
 @api.delete("/{id}", tags=["Coworking"])

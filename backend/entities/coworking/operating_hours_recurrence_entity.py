@@ -25,7 +25,7 @@ class OperatingHoursRecurrenceEntity(EntityBase):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    end_date: Mapped[datetime] = mapped_column(DateTime, index=True)
+    end_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
 
     recurs_on: Mapped[int] = mapped_column(Integer)
 

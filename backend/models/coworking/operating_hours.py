@@ -5,7 +5,7 @@ from .time_range import TimeRange
 from datetime import datetime, date
 
 
-__authors__ = ["Kris Jordan, Yuvraj Jain, David Foss"]
+__authors__ = ["Kris Jordan", "Yuvraj Jain", "David Foss"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 

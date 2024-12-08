@@ -35,6 +35,7 @@ import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { RecurringModifyDialog } from '../recurring-hours-modify-dialog/recurring-hours-modify.dialog';
 import { Observable, share } from 'rxjs';
+import { RecurringModifyConfirmDialog } from '../recurring-hours-modify-confirm-dialog/recurring-hours-modify-confirm.dialog';
 
 @Component({
   selector: 'coworking-operating-hours-editor',
@@ -163,8 +164,7 @@ export class CoworkingOperatingHoursEditorComponent {
         width: '300px',
         data: {
           actionName: 'Delete',
-          id: id,
-          actionFunction: this.doDelete.bind(this)
+          actionFunction: this.doDelete.bind(this, id)
         }
       });
     } else {
@@ -267,18 +267,51 @@ export class CoworkingOperatingHoursEditorComponent {
         } as OperatingHoursRecurrenceDraft;
       }
 
-      let submittedOperatingHours = this.isNew()
-        ? this.coworkingService.createOperatingHours(operatingHoursToSubmit)
-        : this.coworkingService.updateOperatingHours(operatingHoursToSubmit);
-
-      submittedOperatingHours.subscribe({
-        next: (operatingHours) => {
-          console.log('SUCCESS');
-          this.onSuccess(operatingHours);
-        },
-        error: (err) => this.onError(err)
-      });
+      if (
+        !this.isNew() &&
+        (this.operatingHoursSignal()?.recurrence.end_date !=
+          operatingHoursToSubmit.recurrence.end_date ||
+          this.operatingHoursSignal()?.recurrence.recurs_on !=
+            operatingHoursToSubmit.recurrence.recurs_on)
+      ) {
+        this.dialog.open(RecurringModifyConfirmDialog, {
+          height: '300px',
+          width: '300px',
+          data: {
+            actionName: 'Update',
+            actionFunction: this.doSubmit.bind(this, operatingHoursToSubmit)
+          }
+        });
+      } else if (this.operatingHoursSignal()?.recurrence) {
+        this.dialog.open(RecurringModifyDialog, {
+          height: '300px',
+          width: '300px',
+          data: {
+            actionName: 'Update',
+            actionFunction: this.doSubmit.bind(this, operatingHoursToSubmit)
+          }
+        });
+      } else {
+        this.doSubmit(operatingHoursToSubmit);
+      }
     }
+  }
+
+  private doSubmit(
+    operatingHours: OperatingHoursDraft,
+    cascade: boolean = false
+  ): void {
+    let submittedOperatingHours = this.isNew()
+      ? this.coworkingService.createOperatingHours(operatingHours)
+      : this.coworkingService.updateOperatingHours(operatingHours, cascade);
+
+    submittedOperatingHours.subscribe({
+      next: (operatingHours) => {
+        console.log('SUCCESS');
+        this.onSuccess(operatingHours);
+      },
+      error: (err) => this.onError(err)
+    });
   }
 
   /** Opens a confirmation snackbar when an operating hours is successfully created/updated.

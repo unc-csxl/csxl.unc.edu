@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{this.data.actionName}} Recurring Operating Hours</h2>
+<mat-dialog-content>
+  <p>Are you sure you want to {{this.data.actionName | lowercase }}? This will impact any future events created by the same recurrence.</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="secondary" (click)="close()">Cancel</button>
+  <button
+    mat-flat-button
+    mat-dialog-close
+    (click)="confirm()">
+    Confirm
+  </button>
+</mat-dialog-actions>

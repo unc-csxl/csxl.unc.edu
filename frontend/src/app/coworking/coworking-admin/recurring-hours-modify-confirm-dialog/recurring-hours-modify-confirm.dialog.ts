@@ -20,15 +20,16 @@ import { Observable } from 'rxjs';
 
 export interface RecurringModifyDialogData {
   actionName: string;
-  actionFunction: (cascade: boolean) => Observable<void>;
+  id: number;
+  actionFunction: (id: number, cascade: boolean) => Observable<void>;
 }
 
 @Component({
   selector: 'recurring-modify-dialog',
-  templateUrl: './recurring-hours-modify.dialog.html',
-  styleUrls: ['./recurring-hours-modify.dialog.css']
+  templateUrl: './recurring-hours-modify-confirm.dialog.html',
+  styleUrls: ['./recurring-hours-modify-confirm.dialog.css']
 })
-export class RecurringModifyDialog {
+export class RecurringModifyConfirmDialog {
   @Input() action!: string;
 
   recurringEffectForm: FormGroup;
@@ -36,7 +37,7 @@ export class RecurringModifyDialog {
 
   constructor(
     private fb: FormBuilder,
-    protected dialogRef: MatDialogRef<RecurringModifyDialog>,
+    protected dialogRef: MatDialogRef<RecurringModifyConfirmDialog>,
     @Inject(MAT_DIALOG_DATA) public data: RecurringModifyDialogData
   ) {
     this.recurringEffectForm = this.fb.group({
@@ -45,11 +46,13 @@ export class RecurringModifyDialog {
   }
 
   confirm(): void {
-    this.data.actionFunction(this.cascades.value == 'true').subscribe({
-      next: () => {
-        this.close();
-      }
-    });
+    this.data
+      .actionFunction(this.data.id, this.cascades.value == 'true')
+      .subscribe({
+        next: () => {
+          this.close();
+        }
+      });
   }
 
   /** Closes the dialog */

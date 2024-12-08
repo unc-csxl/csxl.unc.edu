@@ -132,10 +132,14 @@ export class CoworkingService implements OnDestroy {
    * @returns {Observable<OperatingHours>}
    */
   updateOperatingHours(
-    operatingHours: OperatingHoursDraft
+    operatingHours: OperatingHoursDraft,
+    cascade: boolean = false
   ): Observable<OperatingHours> {
     return this.http
-      .put<OperatingHoursJSON>('/api/coworking/operating_hours', operatingHours)
+      .put<OperatingHoursJSON>(
+        `/api/coworking/operating_hours?cascade=${cascade}`,
+        operatingHours
+      )
       .pipe(map(parseOperatingHoursJSON));
   }
 
