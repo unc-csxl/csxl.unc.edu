@@ -430,3 +430,95 @@ def test_delete_permissions(operating_hours_svc: OperatingHoursService):
         "coworking.operating_hours.delete",
         f"coworking/operating_hours/{operating_hours_data.future.id}",
     )
+
+
+def test_delete_recurring(operating_hours_svc: OperatingHoursService):
+    """Delete an Operating Hours entity expected case when deleting an hour that recurs."""
+    tuesday_recurring = operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    )
+    future_tuesday_recurring = (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > tuesday_recurring.start + timedelta(days=15),
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .first()
+    ).to_model()
+    original_days_following = len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+    assert future_tuesday_recurring.id is not None
+    assert original_days_following > 0
+    operating_hours_svc.delete(user_data.root, future_tuesday_recurring, True)
+    with pytest.raises(ResourceNotFoundException):
+        future_tuesday_recurring = operating_hours_svc.get_by_id(future_tuesday_recurring.id)  # type: ignore
+
+    assert 0 == len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+
+    assert future_tuesday_recurring.start >= operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    ).recurrence.end_date.replace(tzinfo=future_tuesday_recurring.start.tzinfo)
+
+
+def test_delete_mid_recurrence(operating_hours_svc: OperatingHoursService):
+    """Delete an Operating Hours entity expected case when deleting an hour that recurs without cascading."""
+    tuesday_recurring = operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    )
+    future_tuesday_recurring = (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > tuesday_recurring.start + timedelta(days=15),
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .first()
+    ).to_model()
+    original_days_following = len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+    assert future_tuesday_recurring.id is not None
+    assert original_days_following > 0
+    operating_hours_svc.delete(user_data.root, future_tuesday_recurring)
+    with pytest.raises(ResourceNotFoundException):
+        future_tuesday_recurring = operating_hours_svc.get_by_id(future_tuesday_recurring.id)  # type: ignore
+
+    assert original_days_following == len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+
+    assert (
+        tuesday_recurring.recurrence.end_date
+        == (
+            operating_hours_svc._session.query(OperatingHoursEntity)
+            .filter(
+                OperatingHoursEntity.start > future_tuesday_recurring.start,
+                OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+            )
+            .first()
+        )
+        .to_model()
+        .recurrence.end_date
+    )
