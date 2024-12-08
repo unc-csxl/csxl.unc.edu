@@ -12,6 +12,11 @@ Each opens one hour before the module evalues and ends one hour after.
 import pytest
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
+
+from backend.entities.coworking.operating_hours_recurrence_entity import (
+    OperatingHoursRecurrenceEntity,
+)
+from backend.models.coworking.operating_hours import OperatingHoursRecurrence
 from ....entities.coworking import OperatingHoursEntity
 from ....models.coworking import OperatingHours
 from ..reset_table_id_seq import reset_table_id_seq
@@ -53,7 +58,33 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
         end=time[IN_EIGHT_HOURS] + 3 * ONE_DAY,
     )
 
-    all = [today, future, tomorrow, three_days_from_today]
+    future_monday = OperatingHours(
+        id=5,
+        start=datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+        + timedelta(days=14 - datetime.now().weekday()),
+        end=datetime.now().replace(hour=20, minute=0, second=0, microsecond=0)
+        + timedelta(days=14 - datetime.now().weekday()),
+    )
+
+    tuesday_recurring = OperatingHours(
+        id=6,
+        start=datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+        + timedelta(days=15 - datetime.now().weekday()),
+        end=datetime.now().replace(hour=20, minute=0, second=0, microsecond=0)
+        + timedelta(days=15 - datetime.now().weekday()),
+        recurrence=OperatingHoursRecurrence(
+            end_date=datetime.now() + timedelta(days=50), recurs_on=0b00010
+        ),
+    )
+
+    all = [
+        today,
+        future,
+        tomorrow,
+        three_days_from_today,
+        future_monday,
+        tuesday_recurring,
+    ]
 
     for operating_hours in all:
         entity = OperatingHoursEntity.from_model(operating_hours)
@@ -73,3 +104,4 @@ def fake_data_fixture(session: Session, time: dict[str, datetime]):
 
 def delete_all(session: Session):
     session.execute(delete(OperatingHoursEntity))
+    session.execute(delete(OperatingHoursRecurrenceEntity))

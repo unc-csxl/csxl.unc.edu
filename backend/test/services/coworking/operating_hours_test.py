@@ -2,7 +2,11 @@
 
 from unittest.mock import create_autospec, call
 
-from backend.models.coworking.operating_hours import OperatingHoursDraft
+from backend.entities.coworking.operating_hours_entity import OperatingHoursEntity
+from backend.models.coworking.operating_hours import (
+    OperatingHoursDraft,
+    OperatingHoursRecurrence,
+)
 
 from ....services.coworking import OperatingHoursService
 from ....models.coworking import OperatingHours, TimeRange
@@ -97,6 +101,50 @@ def test_create_enforces_permission(
         "coworking.operating_hours.create",
         "coworking/operating_hours",
     )
+
+
+def test_recurring_create(
+    operating_hours_svc: OperatingHoursService, time: dict[str, datetime]
+):
+    """Creating a recurring Operating Hours entity expected case."""
+    operating_hours_draft = OperatingHoursDraft(
+        start=time[TOMORROW] + timedelta(days=5),
+        end=time[TOMORROW] + timedelta(days=5, hours=2),
+        recurrence=OperatingHoursRecurrence(
+            end_date=datetime.now() + timedelta(days=50), recurs_on=0b10100
+        ),
+    )
+    result: OperatingHours = operating_hours_svc.create(
+        user_data.root, operating_hours_draft
+    )
+
+    hours_in_future_week = (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > time[TOMORROW] + timedelta(days=30, hours=10),
+            OperatingHoursEntity.end < time[TOMORROW] + timedelta(days=37, hours=10),
+            OperatingHoursEntity.recurrence_id == result.recurrence_id,
+        )
+        .all()
+    )
+
+    print(len(hours_in_future_week))
+    assert len(hours_in_future_week) == 2
+
+
+def test_recurring_create_overlap(operating_hours_svc: OperatingHoursService):
+    """Creating a recurring Operating Hours entity that overlaps in the future raises OperatingHoursCannotOverlapException"""
+    with pytest.raises(OperatingHoursCannotOverlapException):
+        operating_hours_svc.create(
+            user_data.root,
+            OperatingHoursDraft(
+                start=datetime.now().replace(hour=11),
+                end=datetime.now().replace(hour=15),
+                recurrence=OperatingHoursRecurrence(
+                    end_date=datetime.now() + timedelta(days=30), recurs_on=0b11111
+                ),
+            ),
+        )
 
 
 def test_update(operating_hours_svc: OperatingHoursService):
