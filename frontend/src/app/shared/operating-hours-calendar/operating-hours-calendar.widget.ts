@@ -131,7 +131,6 @@ export class OperatingHoursCalendar {
       .pipe(map(parseOperatingHoursJSONArray))
       .subscribe((hours) => {
         this.operatingHours.set(hours);
-        console.log('hours', this.operatingHours());
       });
   }
 

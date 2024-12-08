@@ -66,8 +66,6 @@ export class OfficeHoursEditorComponent {
     const startDateControl = control.get('start_time');
     const endDateControl = control.get('end_time');
 
-    console.log(startDateControl);
-
     if (
       startDateControl &&
       startDateControl.value &&
