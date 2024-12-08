@@ -191,7 +191,10 @@ class OperatingHoursService:
         return operating_hours
 
     def update(
-        self, subject: User, operating_hours_draft: OperatingHoursDraft, cascade: bool
+        self,
+        subject: User,
+        operating_hours_draft: OperatingHoursDraft,
+        cascade: bool = False,
     ) -> OperatingHours:
         """Update existing, open Operating Hours for XL coworking.
 
@@ -357,7 +360,7 @@ class OperatingHoursService:
         return operating_hours_entity.to_model()
 
     def delete(
-        self, subject: User, operating_hours: OperatingHours, cascade: bool
+        self, subject: User, operating_hours: OperatingHours, cascade: bool = False
     ) -> None:
         """Delete Operating Hours entry from the database.
 
