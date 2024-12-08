@@ -26,7 +26,7 @@ from .operating_hours_data import fake_data_fixture as insert_order_1
 from . import operating_hours_data
 from ..core_data import user_data
 
-__authors__ = ["Kris Jordan", "Tobenna Okoli"]
+__authors__ = ["Kris Jordan", "Tobenna Okoli", "David Foss"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
