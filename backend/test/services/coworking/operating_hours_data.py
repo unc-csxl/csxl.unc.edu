@@ -17,6 +17,8 @@ from backend.entities.coworking.operating_hours_recurrence_entity import (
     OperatingHoursRecurrenceEntity,
 )
 from backend.models.coworking.operating_hours import OperatingHoursRecurrence
+from backend.services.coworking.operating_hours import OperatingHoursService
+from backend.test.services.coworking.fixtures import operating_hours_svc
 from ....entities.coworking import OperatingHoursEntity
 from ....models.coworking import OperatingHours
 from ..reset_table_id_seq import reset_table_id_seq
@@ -30,15 +32,21 @@ today: OperatingHours
 tomorrow: OperatingHours
 future: OperatingHours
 three_days_from_today: OperatingHours
+future_monday: OperatingHours
+tuesday_recurring: OperatingHours
 all: list[OperatingHours] = []
 
 
-def insert_fake_data(session: Session, time: dict[str, datetime]):
+def insert_fake_data(
+    session: Session,
+    time: dict[str, datetime],
+    operating_hours_svc: OperatingHoursService,
+):
     """Fake data insert factored out of the fixture for use in dev reset scripts."""
 
     # We're definining these values here so that they can depend on times generated per
     # test run.
-    global today, future, tomorrow, three_days_from_today, all
+    global today, future, tomorrow, three_days_from_today, future_monday, tuesday_recurring, all
 
     today = OperatingHours(id=1, start=time[AN_HOUR_AGO], end=time[IN_THREE_HOURS])
 
@@ -61,9 +69,9 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
     future_monday = OperatingHours(
         id=5,
         start=datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
-        + timedelta(days=14 - datetime.now().weekday()),
+        + timedelta(days=21 - datetime.now().weekday()),
         end=datetime.now().replace(hour=20, minute=0, second=0, microsecond=0)
-        + timedelta(days=14 - datetime.now().weekday()),
+        + timedelta(days=21 - datetime.now().weekday()),
     )
 
     tuesday_recurring = OperatingHours(
@@ -90,14 +98,23 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
         entity = OperatingHoursEntity.from_model(operating_hours)
         session.add(entity)
 
+        if operating_hours.recurrence:
+            operating_hours_svc._create_recurring_hours(
+                operating_hours, entity.recurrence
+            )
+
     reset_table_id_seq(
         session, OperatingHoursEntity, OperatingHoursEntity.id, len(all) + 1
     )
 
 
 @pytest.fixture(autouse=True)
-def fake_data_fixture(session: Session, time: dict[str, datetime]):
-    insert_fake_data(session, time)
+def fake_data_fixture(
+    session: Session,
+    time: dict[str, datetime],
+    operating_hours_svc: OperatingHoursService,
+):
+    insert_fake_data(session, time, operating_hours_svc)
     session.commit()
     yield
 

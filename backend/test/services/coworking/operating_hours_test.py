@@ -131,6 +131,18 @@ def test_recurring_create(
     print(len(hours_in_future_week))
     assert len(hours_in_future_week) == 2
 
+    for operating_hours in hours_in_future_week:
+        assert (
+            operating_hours.start.hour == result.start.hour
+            and operating_hours.start.minute == result.start.minute
+            and operating_hours.start.second == result.start.second
+            and operating_hours.start.microsecond == result.start.microsecond
+            and operating_hours.end.hour == result.end.hour
+            and operating_hours.end.minute == result.end.minute
+            and operating_hours.end.second == result.end.second
+            and operating_hours.end.microsecond == result.end.microsecond
+        )
+
 
 def test_recurring_create_overlap(operating_hours_svc: OperatingHoursService):
     """Creating a recurring Operating Hours entity that overlaps in the future raises OperatingHoursCannotOverlapException"""
@@ -150,14 +162,15 @@ def test_recurring_create_overlap(operating_hours_svc: OperatingHoursService):
 def test_update(operating_hours_svc: OperatingHoursService):
     """Update an Operating Hours entity expected case."""
     future = operating_hours_svc.get_by_id(operating_hours_data.future.id)
+    future.start = future.start + timedelta(minutes=30)
     future.end = future.end + timedelta(minutes=30)
     operating_hours_svc.update(user_data.root, future)
     updated_future = operating_hours_svc.get_by_id(operating_hours_data.future.id)
-    assert updated_future.end == future.end
+    assert updated_future.start == future.start and updated_future.end == future.end
 
 
 def test_update_overlap(operating_hours_svc: OperatingHoursService):
-    """Updating an Operating Hours entity that overlaps with another raises OperatingHoursCannotOverlapException"""
+    """Updating an Operating Hours entity to where it overlaps with another raises OperatingHoursCannotOverlapException"""
     tomorrow = operating_hours_svc.get_by_id(operating_hours_data.tomorrow.id)
     future = operating_hours_svc.get_by_id(operating_hours_data.future.id)
     future.start = tomorrow.start
@@ -165,6 +178,218 @@ def test_update_overlap(operating_hours_svc: OperatingHoursService):
 
     with pytest.raises(OperatingHoursCannotOverlapException):
         operating_hours_svc.update(user_data.root, future)
+
+
+def test_recurring_update_hours(operating_hours_svc: OperatingHoursService):
+    """Update an Operating Hours entity expected case when just updating the hours."""
+
+    tuesday_recurring = operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    )
+    future_tuesday_recurring = (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > tuesday_recurring.start + timedelta(days=15),
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .first()
+    )
+    future_tuesday_recurring.start = future_tuesday_recurring.start + timedelta(
+        minutes=30
+    )
+    future_tuesday_recurring.end = future_tuesday_recurring.end + timedelta(minutes=30)
+    operating_hours_svc.update(user_data.root, future_tuesday_recurring, cascade=True)
+    for entity in (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    ):
+        assert (
+            entity.start.hour == future_tuesday_recurring.start.hour
+            and entity.start.minute == future_tuesday_recurring.start.minute
+            and entity.start.second == future_tuesday_recurring.start.second
+            and entity.start.microsecond == future_tuesday_recurring.start.microsecond
+            and entity.end.hour == future_tuesday_recurring.end.hour
+            and entity.end.minute == future_tuesday_recurring.end.minute
+            and entity.end.second == future_tuesday_recurring.end.second
+            and entity.end.microsecond == future_tuesday_recurring.end.microsecond
+        )
+    for entity in (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start < future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    ):
+        assert (
+            entity.start.hour == tuesday_recurring.start.hour
+            and entity.start.minute == tuesday_recurring.start.minute
+            and entity.start.second == tuesday_recurring.start.second
+            and entity.start.microsecond == tuesday_recurring.start.microsecond
+            and entity.end.hour == tuesday_recurring.end.hour
+            and entity.end.minute == tuesday_recurring.end.minute
+            and entity.end.second == tuesday_recurring.end.second
+            and entity.end.microsecond == tuesday_recurring.end.microsecond
+        )
+
+
+def test_recurring_update_days(operating_hours_svc: OperatingHoursService):
+    """Update an Operating Hours entity expected case when changing recur_on."""
+    tuesday_recurring = operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    )
+    future_tuesday_recurring = (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > tuesday_recurring.start + timedelta(days=15),
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .first()
+    ).to_model()
+
+    future_tuesday_recurring_draft = OperatingHoursDraft(
+        id=future_tuesday_recurring.id,
+        start=future_tuesday_recurring.start,
+        end=future_tuesday_recurring.end,
+        recurrence=future_tuesday_recurring.recurrence,
+    )
+    future_tuesday_recurring_draft.recurrence.recurs_on = 0b10000
+    operating_hours_svc.update(
+        user_data.root, future_tuesday_recurring_draft, cascade=True
+    )
+    for entity in (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    ):
+        assert entity.start.weekday() == 4
+    for entity in (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start < future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    ):
+        assert entity.start.weekday() == 1
+
+
+def test_recurring_update_extend(operating_hours_svc: OperatingHoursService):
+    """Update an Operating Hours entity expected case when making end_date later."""
+    tuesday_recurring = operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    )
+    future_tuesday_recurring = (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > tuesday_recurring.start + timedelta(days=15),
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .first()
+    ).to_model()
+
+    future_tuesday_recurring_draft = OperatingHoursDraft(
+        id=future_tuesday_recurring.id,
+        start=future_tuesday_recurring.start,
+        end=future_tuesday_recurring.end,
+        recurrence=future_tuesday_recurring.recurrence,
+    )
+
+    original_days_following = len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+
+    future_tuesday_recurring_draft.recurrence.end_date = (
+        future_tuesday_recurring_draft.recurrence.end_date + timedelta(days=7)
+    )
+    operating_hours_svc.update(
+        user_data.root, future_tuesday_recurring_draft, cascade=True
+    )
+    assert original_days_following + 1 == len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+
+
+def test_recurring_update_contract(operating_hours_svc: OperatingHoursService):
+    """Update an Operating Hours entity expected case when making end_date sooner."""
+    tuesday_recurring = operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    )
+    future_tuesday_recurring = (
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > tuesday_recurring.start + timedelta(days=15),
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .first()
+    ).to_model()
+
+    future_tuesday_recurring_draft = OperatingHoursDraft(
+        id=future_tuesday_recurring.id,
+        start=future_tuesday_recurring.start,
+        end=future_tuesday_recurring.end,
+        recurrence=future_tuesday_recurring.recurrence,
+    )
+
+    original_days_following = len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+
+    future_tuesday_recurring_draft.recurrence.end_date = (
+        future_tuesday_recurring_draft.recurrence.end_date - timedelta(days=7)
+    )
+    operating_hours_svc.update(
+        user_data.root, future_tuesday_recurring_draft, cascade=True
+    )
+    assert original_days_following - 1 == len(
+        operating_hours_svc._session.query(OperatingHoursEntity)
+        .filter(
+            OperatingHoursEntity.start > future_tuesday_recurring.start,
+            OperatingHoursEntity.recurrence_id == tuesday_recurring.recurrence_id,
+        )
+        .all()
+    )
+
+
+def test_recurring_update_overlap(operating_hours_svc: OperatingHoursService):
+    """Updating an Operating Hours entity to where recurrence overlaps with another raises OperatingHoursCannotOverlapException"""
+    tuesday_recurring = operating_hours_svc.get_by_id(
+        operating_hours_data.tuesday_recurring.id
+    )
+
+    tuesday_recurring_draft = OperatingHoursDraft(
+        id=tuesday_recurring.id,
+        start=tuesday_recurring.start,
+        end=tuesday_recurring.end,
+        recurrence=tuesday_recurring.recurrence,
+    )
+    tuesday_recurring_draft.recurrence.recurs_on = 0b00001
+    with pytest.raises(OperatingHoursCannotOverlapException):
+        operating_hours_svc.update(
+            user_data.root, tuesday_recurring_draft, cascade=True
+        )
 
 
 def test_update_enforces_permission(

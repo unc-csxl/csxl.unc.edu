@@ -200,7 +200,7 @@ class OperatingHoursService:
 
         Args:
             subject (User): The user updating the Operating Hours entry.
-            operating_hours_draft (OperatingHoursDraft): Object containing the id of the entity to update and the new operating hours.
+            operating_hours_draft (OperatingHoursDraft): Object describing the modified operating hours, including an id.
             cascade (bool): Whether or not to cascade the update across future recurrences, if the entity has a recurrence.
 
         Returns:
