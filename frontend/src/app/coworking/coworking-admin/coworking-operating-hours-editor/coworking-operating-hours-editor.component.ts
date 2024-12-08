@@ -7,13 +7,7 @@
  * @copyright 2024
  * @license MIT
  */
-import {
-  Component,
-  effect,
-  Input,
-  signal,
-  WritableSignal
-} from '@angular/core';
+import { Component, effect, Input, WritableSignal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -36,7 +30,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { RecurringModifyDialog } from '../recurring-hours-modify-dialog/recurring-hours-modify.dialog';
 import { Observable, share } from 'rxjs';
 import { RecurringModifyConfirmDialog } from '../recurring-hours-modify-confirm-dialog/recurring-hours-modify-confirm.dialog';
-import { currentTermResolver } from 'src/app/academics/academics.resolver';
 import { ActivatedRoute } from '@angular/router';
 import { Term } from 'src/app/academics/academics.models';
 
@@ -64,8 +57,6 @@ export class CoworkingOperatingHoursEditorComponent {
     const data = this.route.snapshot.data as {
       currentTerm: Term | undefined;
     };
-    console.log(data.currentTerm);
-    // TODO: Add validator requiring a repeat until and some date selection when weekly recurrence is picked
     this.operatingHoursForm = this.fb.group(
       {
         selected_date: [null, Validators.required],
@@ -75,7 +66,7 @@ export class CoworkingOperatingHoursEditorComponent {
         recurrence_days: [[]],
         recurrence_end: data.currentTerm?.end
       },
-      { validators: [this.dateRangeValidator] }
+      { validators: [this.dateRangeValidator, this.recurrenceValidator] }
     );
 
     effect(() => {
@@ -132,6 +123,28 @@ export class CoworkingOperatingHoursEditorComponent {
       startTimeControl.value >= endTimeControl.value
     ) {
       return { dateRangeInvalid: true };
+    }
+
+    return null;
+  };
+
+  /** Custom date range validator. */
+  recurrenceValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const recurrenceControl = control.get('recurrence');
+    const recurrenceEndDateControl = control.get('recurrence_end');
+    const recurrenceDaysControl = control.get('recurrence_days');
+
+    if (
+      recurrenceControl &&
+      recurrenceEndDateControl &&
+      recurrenceDaysControl &&
+      ((recurrenceControl.value != 'None' && !recurrenceEndDateControl.value) ||
+        (recurrenceControl.value == 'Weekly' &&
+          recurrenceDaysControl.value.length == 0))
+    ) {
+      return { recurrenceInvalid: true };
     }
 
     return null;
