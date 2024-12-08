@@ -11,6 +11,14 @@ __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+sp_25 = Term(
+    id="25S", name="Spring 2025", start=datetime(2025, 1, 8), end=datetime(2025, 5, 9)
+)
+
+f_24 = Term(
+    id="24F", name="Fall 2024", start=datetime(2024, 8, 18), end=datetime(2024, 12, 13)
+)
+
 
 sp_23 = Term(
     id="23S", name="Spring 2023", start=datetime(2023, 1, 10), end=datetime(2023, 5, 10)
@@ -51,7 +59,7 @@ new_term = Term(
     id="24F", name="Fall 2024", start=datetime(2024, 8, 20), end=datetime(2024, 12, 15)
 )
 
-terms = [sp_23, f_23, sp_24, ss1_24, ss2_24]
+terms = [sp_23, f_23, sp_24, ss1_24, ss2_24, sp_25, f_24]
 
 current_term = ss2_24
 
