@@ -32,27 +32,17 @@ export interface RecurringModifyDialogData {
 export class RecurringModifyConfirmDialog {
   @Input() action!: string;
 
-  recurringEffectForm: FormGroup;
-  cascades = new FormControl('false', Validators.required);
-
   constructor(
-    private fb: FormBuilder,
     protected dialogRef: MatDialogRef<RecurringModifyConfirmDialog>,
     @Inject(MAT_DIALOG_DATA) public data: RecurringModifyDialogData
-  ) {
-    this.recurringEffectForm = this.fb.group({
-      cascades: this.cascades
-    });
-  }
+  ) {}
 
   confirm(): void {
-    this.data
-      .actionFunction(this.data.id, this.cascades.value == 'true')
-      .subscribe({
-        next: () => {
-          this.close();
-        }
-      });
+    this.data.actionFunction(this.data.id, true).subscribe({
+      next: () => {
+        this.close();
+      }
+    });
   }
 
   /** Closes the dialog */
