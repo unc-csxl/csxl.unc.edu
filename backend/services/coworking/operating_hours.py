@@ -277,6 +277,16 @@ class OperatingHoursService:
                 .all()
             ):
                 self._session.delete(entity)
+            operating_hours_entity.recurrence.end_date = (
+                operating_hours_entity.start.replace(
+                    hour=0,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
+                    tzinfo=operating_hours_entity.start.tzinfo,
+                )
+            )
+            operating_hours_entity.recurrence = None
 
         # Three operations that only happen when recurrence exists both in original and edited
         if operating_hours_entity.recurrence and operating_hours_draft.recurrence:
