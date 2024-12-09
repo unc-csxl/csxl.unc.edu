@@ -11,7 +11,6 @@ import { Component, Input } from '@angular/core';
 import { Organization } from '../../organization.model';
 import { Profile } from '../../../profile/profile.service';
 import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
-import { OrganizationRosterService } from '../organization-roster/organization-roster.widget.service';
 
 @Component({
   selector: 'organization-details-info-card',

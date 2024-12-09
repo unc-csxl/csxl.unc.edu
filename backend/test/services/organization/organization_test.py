@@ -11,7 +11,7 @@ from backend.services.exceptions import (
 )
 
 # Tested Dependencies
-from ....models import Organization, OrganizationMembership
+from ....models import Organization, OrganizationMembership, OrganizationRole
 from ....services import OrganizationService
 
 # Injected Service Fixtures
@@ -25,6 +25,8 @@ from .organization_test_data import (
     organizations,
     to_add,
     cads,
+    appteam,
+    queerhack,
     new_cads,
     to_add_conflicting_id,
 )
@@ -105,13 +107,44 @@ def test_create_organization_as_user(organization_svc_integration: OrganizationS
 # Test Organization Management (roster) begin
 
 
-def test_add_member(organization_svc_integration: OrganizationService):
+def test_add_member_to_open_organization(
+    organization_svc_integration: OrganizationService,
+):
     """Test that member can be added to database"""
     added_member = organization_svc_integration.add_member(
         root, cads.slug, member_to_add.id
     )
     assert added_member is not None
     assert added_member.id is not None
+    assert added_member.organization_role.name is OrganizationRole.MEMBER.name
+
+
+def test_add_member_to_application_based_organization(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that member added to application based organization has correct attributes"""
+    added_member = organization_svc_integration.add_member(
+        root, appteam.slug, member_to_add.id
+    )
+    assert added_member.organization_role.name is OrganizationRole.PENDING.name
+
+
+def test_update_member_role(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that member added to application based organization has correct attributes"""
+    added_member = organization_svc_integration.add_member(
+        root, appteam.slug, member_to_add.id
+    )
+    assert added_member.organization_role.name is OrganizationRole.PENDING.name
+
+
+def test_add_member_to_closed_organization(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that member added to application based organization has correct attributes"""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.add_member(root, queerhack.slug, member_to_add.id)
 
 
 def test_add_member_to_nonexistent_organization(
@@ -148,7 +181,7 @@ def test_get_nonexistent_roster(organization_svc_integration: OrganizationServic
 
 def test_remove_member(organization_svc_integration: OrganizationService):
     """Test that member can be removed from database"""
-    organization_svc_integration.remove_member(root, cads.slug, member_1.id)
+    organization_svc_integration.remove_member(root, member_1.id)
 
     updated_roster = organization_svc_integration.get_roster(root, cads.slug)
 
@@ -158,7 +191,25 @@ def test_remove_member(organization_svc_integration: OrganizationService):
 def test_remove_nonexistent_member(organization_svc_integration: OrganizationService):
     """Test that a nonexistent member cannot be removed from database"""
     with pytest.raises(ResourceNotFoundException):
-        organization_svc_integration.remove_member(root, cads.slug, member_to_add.id)
+        organization_svc_integration.remove_member(root, member_to_add.id)
+
+
+def test_update_existing_member_role(organization_svc_integration: OrganizationService):
+    """Test an existing member can have their role updated in database"""
+    new_member = organization_svc_integration.update_member_role(
+        root, member_1.id, OrganizationRole.OFFICER
+    )
+    assert new_member.organization_role.name == OrganizationRole.OFFICER.name
+
+
+def test_update_nonexistent_member_role(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that a nonexistent member cannot have their role updated"""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.update_member_role(
+            root, member_to_add.id, OrganizationRole.OFFICER
+        )
 
 
 # Test Organization Management (roster) end

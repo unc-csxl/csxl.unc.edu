@@ -7,6 +7,8 @@ from .entity_base import EntityBase
 from typing import Self
 from ..models import OrganizationMembership, OrganizationRole
 
+# from ..models.organization_join_status import OrganizationJoinStatus
+
 
 class OrganizationMembershipEntity(EntityBase):
 

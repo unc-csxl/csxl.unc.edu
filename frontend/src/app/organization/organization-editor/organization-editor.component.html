@@ -125,6 +125,12 @@
           formControlName="heel_life"
           name="heel_life" />
       </mat-form-field>
+      <p>Join Type</p>
+      <mat-button-toggle-group [value]="organization.join_type" formControlName="join_type">
+        <mat-button-toggle value="Open">Open</mat-button-toggle>
+        <mat-button-toggle value="Apply">Apply</mat-button-toggle>
+        <mat-button-toggle value="Closed">Closed</mat-button-toggle>
+      </mat-button-toggle-group>      
     </mat-card-content>
     <mat-card-actions>
       <button

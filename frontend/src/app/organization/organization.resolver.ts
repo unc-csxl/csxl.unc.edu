@@ -36,6 +36,7 @@ export const organizationResolver: ResolveFn<Organization | undefined> = (
       youtube: '',
       heel_life: '',
       public: false,
+      join_type: null,
       events: null,
       members: null
     };

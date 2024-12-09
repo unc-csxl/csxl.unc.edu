@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from .public_user import PublicUser
+from .organization_join_type import OrganizationJoinType
 from .registration_type import RegistrationType
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
@@ -37,6 +38,7 @@ class EventOverview(BaseModel):
     location: str
     description: str
     public: bool
+    # join_type: OrganizationJoinType
     number_registered: int
     registration_limit: int
     organization_id: int

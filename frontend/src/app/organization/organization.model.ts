@@ -23,6 +23,7 @@ export interface Organization {
   youtube: string;
   heel_life: string;
   public: boolean;
+  join_type: OrganizationJoinType | null;
   slug: string;
   shorthand: string;
   events: Event[] | null;
@@ -36,11 +37,20 @@ export interface OrganizationMembership {
   organization_id: number;
   organization_slug: string;
   organization_role: OrganizationRole;
+  selected_role?: OrganizationRole;
+  checked?: boolean;
 }
 
-enum OrganizationRole {
+export enum OrganizationRole {
   PRESIDENT = 'President',
   OFFICER = 'Officer',
   MEMBER = 'Member',
-  ADMIN = 'Member with Admin'
+  ADMIN = 'Member with Admin',
+  PENDING = 'Membership pending'
+}
+
+export enum OrganizationJoinType {
+  OPEN = 'Open',
+  APPLY = 'Apply',
+  CLOSED = 'Closed'
 }

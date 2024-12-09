@@ -36,4 +36,35 @@ export class OrganizationRosterService {
       user_id
     );
   }
+
+  /** Removes a student represented by a membership_id from an organization represented by a slug.
+   * @param slug: String representing the organization slug
+   * @param membership_id: String representing the user's ID
+   * @returns { Observable<void> }
+   */
+  deleteOrganizationMembership(
+    slug: string,
+    membership_id: number
+  ): Observable<void> {
+    return this.http.delete<void>(
+      '/api/organizations/' + slug + '/roster/' + membership_id
+    );
+  }
+
+  /** Updates a student represented by a member_id's role (enum) in an organization represented by a slug.
+   * @param slug: String representing the organization slug
+   * @param membership_id: String representing the user's ID
+   * @param new_role: Enum representing the new role
+   * @returns { Observable<void> }
+   */
+  updateOrganizationMembership(
+    slug: string,
+    membership_id: number,
+    new_role: string
+  ): Observable<OrganizationMembership> {
+    return this.http.put<OrganizationMembership>(
+      '/api/organizations/' + slug + '/roster/' + membership_id,
+      new_role
+    );
+  }
 }

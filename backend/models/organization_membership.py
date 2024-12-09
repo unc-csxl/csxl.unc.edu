@@ -1,8 +1,10 @@
 from pydantic import BaseModel
-from . import User, Organization
+from . import User
 from .organization_role import OrganizationRole
 
-__authors__ = ["Alanna Zhang"]
+# from .organization_join_status import OrganizationJoinStatus
+
+__authors__ = ["Alanna Zhang, Alexander Feng"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 

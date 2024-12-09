@@ -28,13 +28,17 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { OrganizationPageComponent } from './organization-page/organization-page.component';
 import { OrganizationRoutingModule } from './organization-routing.module';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 import { OrganizationAdminComponent } from './organization-admin/organization-admin.component';
 
 import { OrganizationFilterPipe } from './pipes/organization-filter.pipe';
+import { RosterFilterPipe } from './pipes/roster-filter.pipe';
 
 /* UI Widgets */
 import { OrganizationCard } from './widgets/organization-card/organization-card.widget';
@@ -54,6 +58,7 @@ import { OrganizationRoster } from './widgets/organization-roster/organization-r
 
     // Pipes
     OrganizationFilterPipe,
+    RosterFilterPipe,
 
     // UI Widgets
     OrganizationCard,
@@ -65,14 +70,19 @@ import { OrganizationRoster } from './widgets/organization-roster/organization-r
     CommonModule,
     MatTabsModule,
     MatTableModule,
+    MatButtonToggleModule,
     MatCardModule,
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
     MatPaginatorModule,
+    MatCheckboxModule,
     MatListModule,
+    MatChipsModule,
+    MatMenuModule,
     MatAutocompleteModule,
     FormsModule,
     ReactiveFormsModule,

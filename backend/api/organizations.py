@@ -2,7 +2,7 @@
 
 Organization routes are used to create, retrieve, and update Organizations."""
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Depends, Body
 
 from ..services import OrganizationService, RoleService
 from ..models.organization import Organization
@@ -10,6 +10,7 @@ from ..models.organization_membership import OrganizationMembership
 from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
 from ..models.user import User
+from ..models.organization_role import OrganizationRole
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -181,6 +182,32 @@ def update_organization(
     return organization_service.update(subject, organization)
 
 
+@api.put(
+    "/{slug}/roster/{membership_id}",
+    response_model=OrganizationMembership,
+    tags=["Organizations"],
+)
+def update_membership_role(
+    slug: str,
+    membership_id: int,
+    new_role: str = Body(...),
+    subject: User = Depends(registered_user),
+    organization_service: OrganizationService = Depends(),
+) -> OrganizationMembership:
+    """
+    Update membership role
+
+    Parameters:
+        membership_id: a membership id of the user and corresponding organization
+        new_role: a valid role from the organization role enumeration to assign to a new User
+        subject: a valid User model representing the currently logged in User
+        organization_service: a valid OrganizationService
+    """
+    return organization_service.update_member_role(
+        subject, slug, membership_id, new_role
+    )
+
+
 @api.delete("/{slug}", response_model=None, tags=["Organizations"])
 def delete_organization(
     slug: str,
@@ -202,19 +229,22 @@ def delete_organization(
     organization_service.delete(subject, slug)
 
 
-@api.delete("/{slug}/roster/{user_id}", response_model=None, tags=["Organizations"])
+@api.delete(
+    "/{slug}/roster/{membership_id}", response_model=None, tags=["Organizations"]
+)
 def delete_member(
     slug: str,
-    user_id: int,
+    membership_id: int,
     subject: User = Depends(registered_user),
     organization_service: OrganizationService = Depends(),
 ):
     """
-    Delete user based on user_id
+    Delete user based on membership_id
 
     Parameters:
-        user_id: new member id, passed in from frontend
+        slug: a string representing a unique identifier for an Organization
+        membership_id: a unique membership id
         organization_service: a valid OrganizationService
         subject: a valid User model representing the currently logged in User
     """
-    organization_service.remove_member(subject, slug, user_id)
+    organization_service.remove_member(subject, slug, membership_id)

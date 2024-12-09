@@ -60,7 +60,8 @@ export class OrganizationEditorComponent {
     linked_in: '',
     youtube: '',
     heel_life: '',
-    public: false
+    public: false,
+    join_type: 'Open'
   });
 
   /** Constructs the organization editor component */

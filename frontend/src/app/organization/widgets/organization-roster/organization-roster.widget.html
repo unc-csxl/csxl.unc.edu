@@ -3,7 +3,35 @@
  <mat-pane class="card" appearance="outlined">
   <!-- Card Header Row (Roster) -->
   <mat-card-header class="header">
+    <div class="header-row">
     <mat-card-title>Roster</mat-card-title>
+      @if (adminPermissions() | async) {
+        @if (inEditing()) {
+          <button
+            mat-stroked-button
+            color="secondary"
+            class="edit-button"
+            (click)="cancelEditing()">
+            Cancel
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            class="edit-button"
+            (click)="confirmUpdate()">
+            Save
+          </button>
+        } @else {
+          <button
+            mat-flat-button
+            color="primary"
+            class="edit-button"
+            (click)="startEditing()">
+            Edit
+          </button>
+        }
+      }
+    </div>
     <!-- Search Bar -->
     <search-bar
     placeholder="Search for members"
@@ -12,14 +40,116 @@
   </mat-card-header>
   <mat-card-content>
   <!-- Organization Roster -->
-   <mat-list style="height: 450px; overflow: auto;">
-    @for(membership of organizationRoster; track membership.user){
-      <mat-list-item>
-        <div matListItemIcon class="upcoming secondary-background">A</div>
-        <span matListItemTitle>{{ membership.user.first_name }}</span>
-        <p matListItemLine>{{ membership.organization_role }}</p>
-      </mat-list-item>
+      <!-- Admin Interface -->
+    @if(adminPermissions()){
+      @if(inEditing()){
+        <mat-list style="height: 450px; overflow: auto;">
+          @for(membership of organizationRoster | rosterFilter: searchBarQuery; track membership.user){
+          <mat-list-item style = "height: 70px">
+              <!-- Icon -->
+              <div matListItemIcon class="upcoming secondary-background" style="padding: 0px">A</div>
+              <!-- Content -->
+              <div class="item-content" style="padding: 0px">
+                <div class="text-content" style="margin-top: -21.5px">
+                  <span matListItemTitle>{{ membership.user.first_name + ' ' + membership.user.last_name}}</span>
+                  <p matListItemLine>{{ membership.organization_role }}</p>
+                </div>
+                <!-- Dropdown -->
+                <mat-chip [matMenuTriggerFor]="chipDropdownMenu" style="padding: 0px">
+                  {{ membership.selected_role || 'Select role' }}
+                <mat-icon class="dropdown-icon" style="padding: 0px">arrow_drop_down</mat-icon>
+                <mat-menu #chipDropdownMenu="matMenu" class="chip-dropdown-menu" style="padding: 0px">
+                  <mat-chip-listbox aria-label="Select a role" style="padding: 0px">
+                    @for(role of roles; track role){
+                      <mat-chip-option
+                      [value]="role"
+                      (click)="selectRole(role, membership)" style="padding: 0px"
+                      >
+                      {{ role }}
+                      </mat-chip-option>
+                      }
+                    </mat-chip-listbox>
+                  </mat-menu>
+                </mat-chip>
+                <!-- Checkbox -->
+                <mat-checkbox
+                class="checkbox-right"
+                [checked]="selectedMemberships.includes(membership)"
+                style="padding: 0px"
+                (change)="toggleSelectedMembership(membership, $event.checked)"></mat-checkbox>
+              </div>
+            </mat-list-item>
+            }
+        </mat-list>
+        <mat-divider></mat-divider>
+        <div class="remove-content">
+        <button
+        (click)="stageDeletes(selectedMemberships)"
+        mat-stroked-button>Remove</button>
+        <p>{{ checkCount() }} selected</p>
+        </div>
+      }
+      @else{
+        <mat-tab-group>
+        <mat-tab label="Roster">
+       <mat-list style="height: 450px; overflow: auto;">
+        @for(membership of organizationRoster | rosterFilter: searchBarQuery; track membership.user){
+          <mat-list-item style = "height: 70px">
+            <div matListItemIcon class="upcoming secondary-background">A</div>
+            <span matListItemTitle>{{ membership.user.first_name + ' ' + membership.user.last_name}}</span>
+            <p matListItemLine>{{ membership.organization_role }}</p>
+          </mat-list-item>
+        }
+       </mat-list>
+      </mat-tab>
+      @if (adminPermissions() | async) {
+        <mat-tab label ="Requests">
+          <mat-list style="height: 450px; overflow: auto;">
+            @for(membership of organizationRoster | rosterFilter: searchBarQuery; track membership.user){
+              @if(checkPending(membership.organization_role)){
+                <mat-list-item style = "height: 70px">
+                <div matListItemIcon class="upcoming secondary-background">A</div>
+                <div class = "item-content">
+                <div class="text-content" style="margin-top:-35px">
+                <span matListItemTitle>{{ membership.user.first_name + ' ' + membership.user.last_name}}</span>
+              </div>
+                <div class="accept-reject-buttons">
+                <button
+                mat-flat-button
+                color="primary"
+                class="accept-button"
+                (click)="acceptRequest(membership)">
+                Accept
+              </button>
+              <button
+                mat-flat-button
+                color="error"
+                class="reject-button"
+                (click)="rejectRequest(membership)">
+                Reject
+              </button>
+            </div>
+            </div>
+             </mat-list-item>
+            }
+            }
+           </mat-list>
+          </mat-tab>
+      }
+    </mat-tab-group>
+      }
     }
-   </mat-list>
+    @else{
+      <mat-list style="height: 450px; overflow: auto;">
+       @for(membership of organizationRoster | rosterFilter: searchBarQuery; track membership.user){
+        @if(!checkPending(membership.organization_role)){
+         <mat-list-item style = "height: 70px">
+           <div matListItemIcon class="upcoming secondary-background">A</div>
+           <span matListItemTitle>{{ membership.user.first_name + ' ' + membership.user.last_name}}</span>
+           <p matListItemLine>{{ membership.organization_role }}</p>
+         </mat-list-item>
+        }}
+      </mat-list>
+     }
 </mat-card-content>
 </mat-pane>

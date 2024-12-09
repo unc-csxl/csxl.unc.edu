@@ -6,6 +6,7 @@ from ....models.organization_membership import OrganizationMembership
 from ....models.organization_role import OrganizationRole
 from ....entities.organization_membership_entity import OrganizationMembershipEntity
 from ....models.user import User
+from ....models.organization_join_type import OrganizationJoinType
 from ....entities.user_entity import UserEntity
 
 from ..reset_table_id_seq import reset_table_id_seq
@@ -28,6 +29,25 @@ cads = Organization(
     youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
     heel_life="https://heellife.unc.edu/organization/carolinadatascience",
     public=True,
+    join_type=OrganizationJoinType.OPEN,
+)
+
+appteam = Organization(
+    id=2,
+    name="App Team Carolina",
+    shorthand="App Team",
+    slug="app-team",
+    logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/appteam.jpg",
+    short_description="UNC Chapel Hill's iOS development team.",
+    long_description="The mission of App Team Carolina is to create a collaborative space for UNC students to design, build, and release apps for Apple platforms. App Team Carolina's multi-faceted development process aims to leverage its individual skillsets while encouraging cooperation among team members with different levels of experience.",
+    website="",
+    email="",
+    instagram="https://www.instagram.com/appteamcarolina/",
+    linked_in="https://www.linkedin.com/company/appteamcarolina",
+    youtube="",
+    heel_life="https://heellife.unc.edu/organization/appteamcarolina",
+    public=True,
+    join_type=OrganizationJoinType.APPLY,
 )
 
 # Sample Users
@@ -71,6 +91,7 @@ member_1 = OrganizationMembership(
     organization_id=cads.id,
     organization_slug=cads.slug,
     organization_role=OrganizationRole.ADMIN,
+    # organization_join_status=OrganizationJoinStatus.JOINED,
 )
 
 member_2 = OrganizationMembership(
@@ -79,14 +100,16 @@ member_2 = OrganizationMembership(
     organization_id=cads.id,
     organization_slug=cads.slug,
     organization_role=OrganizationRole.OFFICER,
+    # organization_join_status=OrganizationJoinStatus.JOINED,
 )
 
 member_to_add = OrganizationMembership(
     id=3,
     user=user,
-    organization_id=cads.id,
-    organization_slug=cads.slug,
-    organization_role=OrganizationRole.MEMBER,
+    organization_id=appteam.id,
+    organization_slug=appteam.slug,
+    organization_role=OrganizationRole.PENDING,
+    # organization_join_status=OrganizationJoinStatus.APPLIED,
 )
 
 roster = [member_1, member_2]
