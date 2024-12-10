@@ -157,6 +157,11 @@ class UserEntity(EntityBase):
             bio=self.bio,
             linkedin=self.linkedin,
             website=self.website,
+            organizations=(
+                [org.name for org in self.organizations if org.name]
+                if self.organizations
+                else []
+            ),
         )
 
     def update(self, model: User) -> None:

@@ -5,7 +5,7 @@
   <mat-card-header class="header">
     <div class="header-row">
     <mat-card-title>Roster</mat-card-title>
-      @if (adminPermissions() | async) {
+      @if (adminPermissions(this.organization?.slug) | async) {
         @if (inEditing()) {
           <button
             mat-stroked-button
@@ -18,7 +18,8 @@
             mat-flat-button
             color="primary"
             class="edit-button"
-            (click)="confirmUpdate()">
+            (click)="confirmUpdate()"
+            [disabled]="!hasUnsavedChanges">
             Save
           </button>
         } @else {
@@ -41,10 +42,11 @@
   <mat-card-content>
   <!-- Organization Roster -->
       <!-- Admin Interface -->
-    @if(adminPermissions()){
+    @if(adminPermissions(this.organization?.slug)){
       @if(inEditing()){
         <mat-list style="height: 450px; overflow: auto;">
           @for(membership of organizationRoster | rosterFilter: searchBarQuery; track membership.user){
+            @if(!checkPending(membership.organization_role)){
           <mat-list-item style = "height: 70px">
               <!-- Icon -->
               <div matListItemIcon class="upcoming secondary-background" style="padding: 0px">A</div>
@@ -56,7 +58,7 @@
                 </div>
                 <!-- Dropdown -->
                 <mat-chip [matMenuTriggerFor]="chipDropdownMenu" style="padding: 0px">
-                  {{ membership.selected_role || 'Select role' }}
+                  {{ membership.selected_role ?? membership.organization_role || 'Select role' }}
                 <mat-icon class="dropdown-icon" style="padding: 0px">arrow_drop_down</mat-icon>
                 <mat-menu #chipDropdownMenu="matMenu" class="chip-dropdown-menu" style="padding: 0px">
                   <mat-chip-listbox aria-label="Select a role" style="padding: 0px">
@@ -80,12 +82,15 @@
               </div>
             </mat-list-item>
             }
+          }
         </mat-list>
         <mat-divider></mat-divider>
         <div class="remove-content">
         <button
         (click)="stageDeletes(selectedMemberships)"
-        mat-stroked-button>Remove</button>
+        mat-stroked-button
+        [disabled]="!selectedMemberships.length"
+        >Remove</button>
         <p>{{ checkCount() }} selected</p>
         </div>
       }
@@ -94,15 +99,17 @@
         <mat-tab label="Roster">
        <mat-list style="height: 450px; overflow: auto;">
         @for(membership of organizationRoster | rosterFilter: searchBarQuery; track membership.user){
+          @if(!checkPending(membership.organization_role)){
           <mat-list-item style = "height: 70px">
-            <div matListItemIcon class="upcoming secondary-background">A</div>
+            <div matListItemIcon class="upcoming secondary-background">{{ membership.user.first_name | slice:0:1 }}</div>
             <span matListItemTitle>{{ membership.user.first_name + ' ' + membership.user.last_name}}</span>
             <p matListItemLine>{{ membership.organization_role }}</p>
           </mat-list-item>
         }
+      }
        </mat-list>
       </mat-tab>
-      @if (adminPermissions() | async) {
+      @if (adminPermissions(this.organization?.slug) | async) {
         <mat-tab label ="Requests">
           <mat-list style="height: 450px; overflow: auto;">
             @for(membership of organizationRoster | rosterFilter: searchBarQuery; track membership.user){

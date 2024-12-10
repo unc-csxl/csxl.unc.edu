@@ -117,10 +117,18 @@ export class OrganizationDetailsComponent implements OnInit {
   }
 
   // Arrow function is necessary to make sure "this.service" is still passed with child
-  protected joinOrganization = (slug: string, user_id: number): void => {
+  protected joinOrganization = (
+    slug: string,
+    user_id: number,
+    onSuccess: () => void
+  ): void => {
     this.organizationRosterService
       .addOrganizationMembership(slug, user_id)
       .subscribe({
+        complete: () => {
+          this.getRoster(slug);
+          onSuccess();
+        },
         error: (error) => {
           this.snackBar.open('Unable to join organization', 'Close', {
             duration: 5000

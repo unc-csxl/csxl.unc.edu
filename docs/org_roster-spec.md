@@ -12,7 +12,13 @@ organization_id: int identifies organization
 organization_slug: str useful for queries filtering by organization slug  
 organization_role: OrganizationRole (enum)
 
-### [NEW] OrganizationRole: enum with {PRESIDENT, OFFICER, MEMBER, ADMIN}
+### [EDIT] Organization:
+
+join_type: OrganizationJoinType (enum)
+
+### [NEW] OrganizationRole: enum with {PRESIDENT, OFFICER, MEMBER, ADMIN, PENDING}
+
+### [NEW] OrganizationJoinType: enum with {OPEN, APPLY, CLOSED}
 
 ### Sample data representation for Sally Student as a member of CADS:
 
@@ -50,25 +56,33 @@ name: deleteOrganizationMembership(member_id)
 returns OrganizationMembership  
 addOrganizationMembership(slug, user_id)
 
+**PUT organizations/{slug}/roster/{member_id}** <- updates role of one membership from the roster list
+returns void
+updateOrganizationMembership(slug, membership_id, new_role)
+
 ### Backend API:
 
-**GET /{slug}/roster** <- gets the roster, which is a list of members  
+**GET /{slug}/roster** <- gets the roster, which is a list of memberships
 returns OrganizationMembership[]  
 name: get_roster_by_slug
 
-**DELETE/{slug}/roster/{member_id}** <- deletes one member from the roster list, doesnt return anything  
+**DELETE/{slug}/roster/{membership_id}** <- deletes one membership from the roster list  
 name: delete_member
 
-**POST {slug}/roster** <- adds member  
+**POST {slug}/roster** <- adds membership  
 returns OrganizationMembership  
 name: add_member_to_organization
+
+**PUT {slug}/roster/{membership_id}** <- updates role of one membership from the roster list
+returns void
+name: update_membership_role
 
 ## New and modified database/entity-level representations
 
 **[NEW] OrganizationMembershipEntity (organization_member_entity.py):** \
 This allows the many-to-many relationship between organization and user tables.  
 id  
-organization_role  
+organization_role: takes a value from the OrganizationRole enum (PRESIDENT, OFFICER, MEMBER, ADMIN, PENDING)  
 User relationship:
 
 - user_id: foreign key pointing to user.id
@@ -80,9 +94,10 @@ Organization relationship:
 - organization: back populates members
 
 **[EDIT] OrganizationEntity (organization_entity.py):** \
-The edit involves adding the secondary relationship with the user table through a one-to-many relationship with organization_membership.  
+The edit involves adding the secondary relationship with the user table through a one-to-many relationship with organization_membership. A new field for organization join type was added to control adding new memberships to an organization.
 members: back populates organization from organization_membership  
 users: back populates organizations from user
+join_type: takes a value from the OrganizationJoinType enum (OPEN, APPLY, CLOSED)
 
 **[EDIT] UserEntity (user_entity.py):**  
 The edit involves adding the secondary relationship with the organization table through a one-to-many relationship with organization_membership.  
@@ -94,6 +109,8 @@ organizations: back populates users from organization
 An important technical decision for the organization management’s roster is how to represent and store data about organization members. Entities for an organization and general CSXL user already exist, so we initially considered adding a new “roster” field to the organization entity to group all the members of an organization and make it easier for officers to manage members together. However, because this is actually a many-to-many relationship (where users can join multiple organizations under different roles and organizations will have many members), we found it necessary to create a new entity called OrganizationMembership that describes the relationship between users and organizations as “user has membership in organization.” While creating a new entity makes it more complex to track and organize different representations of data, we hope that the OrganizationMembership entity will make it easier in future development to access fields specific to a membership such as membership term, organization role, and special privileges for event creation.
 
 Our UX design tradeoff was how to introduce the edit interface of the roster - whether it should be enabled at the same time that “edit organization details” is usually activated, or if it should have its own toggle. We ultimately chose its own toggle because conceptually to us, editing the roster is a more common and frequent action, while editing an organization’s details is very rarely done, and they are two different things, as a roster is just a transient component of an organization. Therefore, they should be represented by different UX actions.
+
+We were mainly concerned with giving administrative permissions to members of a specific organization without letting that permission overlap and allow them to edit other organizations. We decided that each organization should have their own unique role that admin would create and subsequently assign users to. The added users should be the presidents/co-presidents or media managers of that organization. Our backend service to update a member’s role in an organization enforce that this permission must be assigned in order to complete the action. We also enforce that this permission must be given to those who are trying to remove a member that is not themselves.
 
 ## Getting Started
 

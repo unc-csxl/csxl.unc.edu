@@ -32,3 +32,8 @@ mat-button-toggle {
   flex: 1;
   text-align: center;
 }
+
+.reset-save-button {
+  margin-top: 10px;
+  padding: 10px;
+}

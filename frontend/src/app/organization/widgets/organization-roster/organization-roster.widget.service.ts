@@ -1,5 +1,8 @@
 import { Observable } from 'rxjs';
-import { OrganizationMembership } from '../../organization.model';
+import {
+  OrganizationMembership,
+  OrganizationRole
+} from '../../organization.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -60,11 +63,11 @@ export class OrganizationRosterService {
   updateOrganizationMembership(
     slug: string,
     membership_id: number,
-    new_role: string
+    new_role: OrganizationRole
   ): Observable<OrganizationMembership> {
     return this.http.put<OrganizationMembership>(
       '/api/organizations/' + slug + '/roster/' + membership_id,
-      new_role
+      new_role as string
     );
   }
 }

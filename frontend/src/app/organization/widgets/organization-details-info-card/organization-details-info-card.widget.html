@@ -95,12 +95,22 @@
     </button>
     }
     @if(profile && profile.id != null) {
-      <button mat-flat-button
-      class="primary-button"
-      (click)="joinOrganizationMethod(this.organization.slug, this.profile.id)"
-      >
-      Join
-    </button>
+        @if (!isinOrganization() && !justJoined && organization.join_type !== 'Closed') {
+          <button mat-flat-button
+          class="primary-button"
+          (click)="handleJoinOrganization(this.organization.slug, this.profile.id)"
+          >
+          {{ getJoinButtonText(organization.join_type) }}
+          </button>
+        }
+        @else {
+          <button mat-flat-button
+          class="primary-button"
+          disabled
+          >
+          {{ getJoinedButtonText(organization.join_type) }}
+        </button>
+        }
     }
   </mat-card-actions>
 </mat-pane>

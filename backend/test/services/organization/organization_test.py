@@ -212,6 +212,24 @@ def test_update_nonexistent_member_role(
         )
 
 
+def test_update_existing_member_role(organization_svc_integration: OrganizationService):
+    """Test an existing member can have their role updated in database"""
+    new_member = organization_svc_integration.update_member_role(
+        root, cads.slug, member_1.id, OrganizationRole.OFFICER
+    )
+    assert new_member.organization_role.name == OrganizationRole.OFFICER.name
+
+
+def test_update_nonexistent_member_role(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that a nonexistent member cannot have their role updated"""
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.update_member_role(
+            root, cads.slug, member_to_add.id, OrganizationRole.OFFICER
+        )
+
+
 # Test Organization Management (roster) end
 
 

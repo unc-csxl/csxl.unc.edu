@@ -1,13 +1,15 @@
-import { Component, Input } from '@angular/core';
+
+import { Component, Input, SimpleChanges } from '@angular/core';
 import {
   Organization,
   OrganizationMembership,
-  OrganizationRole
+  OrganizationRole,
+  OrganizationJoinType
 } from '../../organization.model';
 import { Profile } from 'src/app/models.module';
 import { OrganizationRosterService } from './organization-roster.widget.service';
 import { PermissionService } from '../../../permission.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'organization-roster',
@@ -29,8 +31,50 @@ export class OrganizationRoster {
   /** Resposible for showing editable roster view in HTML code when admin signed in.
    * @returns {Observable<boolean>}
    */
-  adminPermissions(): Observable<boolean> {
-    return this.permissionService.check('organization.create', '*');
+  adminPermissions(slug: String | undefined): Observable<boolean> {
+    if (slug) {
+      return this.permissionService.check(
+        'organization.update',
+        `organization/${slug}`
+      );
+    }
+    return of(false);
+  }
+
+  // Responsible for auto-updating the roster when join type changes
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['organization'] && changes['organization'].currentValue) {
+      const previousJoinType = changes['organization'].previousValue?.join_type;
+      const currentJoinType = changes['organization'].currentValue.join_type;
+
+      if (previousJoinType !== currentJoinType) {
+        console.log('Join type changed:', {
+          previousJoinType,
+          currentJoinType
+        });
+        this.handleJoinTypeChange(currentJoinType);
+      }
+      this.organization = changes['organization'].currentValue;
+    }
+  }
+
+  private handleJoinTypeChange(newJoinType: OrganizationJoinType | null) {
+    switch (newJoinType) {
+      case 'Open':
+        this.acceptRequests(this.getPendingRequests());
+        break;
+      case 'Closed':
+        this.rejectRequests(this.getPendingRequests());
+        break;
+      case 'Apply':
+        break;
+    }
+  }
+
+  private getPendingRequests(): OrganizationMembership[] {
+    return this.organizationRoster.filter((membership) =>
+      this.checkPending(membership.organization_role)
+    );
   }
 
   /** Store the content of the search bar */
@@ -38,7 +82,9 @@ export class OrganizationRoster {
 
   protected selectedMemberships: OrganizationMembership[] = [];
   protected stagedDeletes: OrganizationMembership[] = [];
+  protected selectedRequests: OrganizationMembership[] = [];
   originalRoster: OrganizationMembership[] = [];
+  hasUnsavedChanges = false;
 
   roles: OrganizationRole[] = [
     OrganizationRole.PRESIDENT,
@@ -52,6 +98,7 @@ export class OrganizationRoster {
 
   selectRole(role: OrganizationRole, membership: OrganizationMembership): void {
     membership.selected_role = role;
+    this.hasUnsavedChanges = true;
   }
 
   inEditing() {
@@ -73,16 +120,19 @@ export class OrganizationRoster {
 
   confirmUpdate() {
     this.removeMemberships(this.stagedDeletes);
+    this.originalRoster = this.organizationRoster;
     this.selectedMemberships = [];
     for (const membership of this.organizationRoster) {
-      if (membership.id && membership.organization_slug)
+      if (
+        membership.id &&
+        membership.organization_slug &&
+        membership.selected_role
+      )
         this.organizationRosterService
           .updateOrganizationMembership(
             membership.organization_slug,
             membership.id,
             membership.selected_role
-              ? membership.selected_role
-              : membership.organization_role
           )
           .subscribe((updatedMembership) => {
             const rosterItem = this.organizationRoster.find(
@@ -93,9 +143,10 @@ export class OrganizationRoster {
                 updatedMembership.organization_role;
             }
             this.originalRoster = this.organizationRoster;
-            this.cancelEditing();
           });
     }
+    this.hasUnsavedChanges = false;
+    this.cancelEditing();
   }
 
   protected toggleSelectedMembership(
@@ -116,7 +167,6 @@ export class OrganizationRoster {
     return this.selectedMemberships.length;
   }
   checkPending(role: any) {
-    console.log({ role });
     if (role === 'Membership pending') {
       return true;
     }
@@ -138,22 +188,29 @@ export class OrganizationRoster {
   }
 
   protected acceptRequest = (membership: OrganizationMembership) => {
-    if (membership.id !== null)
+    if (
+      membership.id !== null &&
+      membership.organization_role === OrganizationRole.PENDING
+    )
       this.organizationRosterService
         .updateOrganizationMembership(
           membership.organization_slug,
           membership.id,
           OrganizationRole.MEMBER
         )
-        .subscribe(() => {
+        .subscribe((updatedMembership) => {
           this.organizationRoster = this.organizationRoster.filter(
             (m) => m.id !== membership.id
           );
+          this.organizationRoster.push(updatedMembership);
         });
   };
 
   protected rejectRequest = (membership: OrganizationMembership) => {
-    if (membership.id !== null)
+    if (
+      membership.id !== null &&
+      membership.organization_role === OrganizationRole.PENDING
+    )
       this.organizationRosterService
         .deleteOrganizationMembership(
           membership.organization_slug,
@@ -174,5 +231,20 @@ export class OrganizationRoster {
       );
     }
     this.selectedMemberships = [];
+    this.hasUnsavedChanges = true;
+  };
+
+  // Configurable for a selection of requests
+  // Currently used to select all requests for the purpose of opening/closing a club
+  protected acceptRequests = (memberships: OrganizationMembership[]) => {
+    for (const membership of memberships) {
+      this.acceptRequest(membership);
+    }
+  };
+
+  protected rejectRequests = (memberships: OrganizationMembership[]) => {
+    for (const membership of memberships) {
+      this.rejectRequest(membership);
+    }
   };
 }
