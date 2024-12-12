@@ -1,16 +1,7 @@
 <mat-card appearance="outlined" class="full-size-pane">
-  <mat-card-header class="">
+  <mat-card-header class="events-header">
     <mat-card-title class="display-medium event-title">Upcoming Events</mat-card-title>
   </mat-card-header>
-
-  <img
-  class="image"
-  mat-card-image
-  [src]="
-    event.image_url !== null && event.image_url !== ''
-      ? event.image_url
-      : 'https://media.licdn.com/dms/image/D4E3DAQGnWv1b0Gb9gw/image-scale_191_1128/0/1673933475853/unc_csxl_cover?e=2147483647&v=beta&t=OMN1WHqXnrO5x2xsJ3rQWGjQMkcZS9uCUdFonDKYayk'
-  " />
   <mat-card-header>
     <div class="header-row">
       <div class="header-column">

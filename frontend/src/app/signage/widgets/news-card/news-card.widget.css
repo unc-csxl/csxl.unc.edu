@@ -55,13 +55,12 @@ mat-card-actions {
     white-space: normal;
   }
 
-.header {
+.news-header {
     display: flex;
     margin-bottom: 0.5rem;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
   }
-
 
 .vertical-divider {
     margin-top: 6px;
@@ -90,6 +89,8 @@ mat-card-actions {
 
 .news-title {
     margin-left: 24px;
+    text-align: center;
+    justify-content: center;
 }
 
 .news-footer {

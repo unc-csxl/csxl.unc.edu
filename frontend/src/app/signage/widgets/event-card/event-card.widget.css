@@ -21,6 +21,7 @@
   margin-left: auto;
   margin-right: auto;
   max-width: 95%;
+  max-height: 33%;
   height: auto;
   border-radius: 10px;
 }
@@ -56,12 +57,12 @@
 }
 
 .description {
-  max-height: 140px;
-  max-width: 600px;
+  max-height: 82%;
+  max-width: 90%;
   padding-top: 8px;
   display: -webkit-box;           /* This is needed for the 5 line ellipsis cutoff */
   -webkit-box-orient: vertical;   
-  -webkit-line-clamp: 4;          
+  -webkit-line-clamp: 6;          
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
@@ -105,4 +106,11 @@
 
 .event-title {
   margin-left: 24px;
+}
+
+.events-header {
+  display: flex;
+  margin-bottom: 0.5rem;
+  align-items: center;
+  justify-content: center;
 }
