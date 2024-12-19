@@ -40,6 +40,7 @@ import { SharedModule } from '../shared/shared.module';
 import { MatDivider } from '@angular/material/divider';
 import { EventCardWidget } from './widgets/event-card/event-card.widget';
 import { LeaderboardWidget } from './widgets/leaderboard/leaderboard.widget';
+import { OfficeHoursWidget } from './widgets/office-hours/office-hours.widget';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { LeaderboardWidget } from './widgets/leaderboard/leaderboard.widget';
     OccupancyWidget,
     RoomsWidget,
     EventCardWidget,
-    LeaderboardWidget
+    LeaderboardWidget,
+    OfficeHoursWidget
   ],
   imports: [
     SignageRoutingModule,

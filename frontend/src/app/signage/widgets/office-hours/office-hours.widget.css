@@ -1,0 +1,17 @@
+.full-size-pane {
+  min-height: 464px !important;
+  min-width: 828px !important;
+  border-color: transparent !important;
+  margin: 0px !important;
+  margin-left: 20px !important;
+}
+
+.full-size-content {
+    height: 20vh;
+    text-align: center;
+    justify-content: center;
+}
+
+.centered-title {
+    justify-content: center;
+}
