@@ -10,11 +10,6 @@ import {
 } from '../event/event.model';
 import { PublicProfile } from '../profile/profile.service';
 import {
-  OfficeHourEventOverview,
-  OfficeHourEventOverviewJson,
-  parseOfficeHourEventOverviewJsonList, 
-} from '../my-courses/my-courses.model';
-import {
   ArticleOverviewJson,
   ArticleOverview,
   parseArticleOverviewJson
@@ -27,8 +22,16 @@ export interface SlowSignageDataJson {
   announcement_titles: string[];
 }
 
+export interface SignageOfficeHours {
+  id: number;
+  mode: string;
+  course: string;
+  location: string;
+  queued: number;
+}
+
 export interface FastSignageDataJson {
-  active_office_hours: OfficeHourEventOverviewJson[];
+  active_office_hours: SignageOfficeHours[];
   available_rooms: string[];
   seat_availability: SeatAvailabilityJSON[];
 }
@@ -41,7 +44,7 @@ export interface SlowSignageData {
 }
 
 export interface FastSignageData {
-  active_office_hours: OfficeHourEventOverview[];
+  active_office_hours: SignageOfficeHours[];
   available_rooms: string[];
   seat_availability: SeatAvailability[];
 }
@@ -57,7 +60,7 @@ export const parseSlowSignageDataJson = (json: SlowSignageDataJson): SlowSignage
 
 export const parseFastSignageDataJson = (json: FastSignageDataJson): FastSignageData => {
   return {
-    active_office_hours: parseOfficeHourEventOverviewJsonList(json.active_office_hours),
+    active_office_hours: json.active_office_hours,
     available_rooms: json.available_rooms,
     seat_availability: json.seat_availability.map(parseSeatAvailabilityJSON)
   };

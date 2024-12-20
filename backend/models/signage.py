@@ -1,15 +1,23 @@
 from pydantic import BaseModel
 from .articles import ArticleOverview
 from .public_user import PublicUser
-from .coworking import OperatingHours, SeatAvailability
-from .academics.my_courses import OfficeHoursOverview
+from .coworking import SeatAvailability
 from .event import EventOverview
 from typing import Sequence
-from .room_details import RoomDetails
 
 __authors__ = ["Will Zahrt", "Andrew Lockard", "Audrey Toney"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
+
+
+class SignageOfficeHours(BaseModel):
+    """Stores necessary info for displaying the office hours signage widget"""
+
+    id: int
+    mode: str
+    course: str
+    location: str
+    queued: int
 
 
 class SignageOverviewSlow(BaseModel):
@@ -24,6 +32,6 @@ class SignageOverviewSlow(BaseModel):
 class SignageOverviewFast(BaseModel):
     """Encapsulates frequent data for the tv."""
 
-    active_office_hours: list[OfficeHoursOverview]
+    active_office_hours: list[SignageOfficeHours]
     available_rooms: list[str]
     seat_availability: Sequence[SeatAvailability]

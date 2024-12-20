@@ -7,13 +7,18 @@ from sqlalchemy import select, func, not_, exists
 from sqlalchemy.orm import Session
 
 from backend.models.coworking.reservation import ReservationState
+from backend.models.office_hours.ticket_state import TicketState
 
 from ..database import db_session
 
 from datetime import datetime, timedelta
 from ..models.coworking import TimeRange
 
-from ..models.signage import SignageOverviewFast, SignageOverviewSlow
+from ..models.signage import (
+    SignageOverviewFast,
+    SignageOverviewSlow,
+    SignageOfficeHours,
+)
 from ..services.coworking import ReservationService, SeatService
 from ..services import RoomService
 
@@ -49,6 +54,24 @@ class SignageService:
         self._seat_svc = seat_svc
         self.room_svc = room_svc
 
+    def office_hours_to_signage_model(
+        self, entity: OfficeHoursEntity
+    ) -> SignageOfficeHours:
+        """Converts OfficeHoursEntity into the SignageOfficeHours model"""
+        return SignageOfficeHours(
+            id=entity.id,
+            mode=entity.mode.to_string(),
+            location=entity.room.id,
+            course=entity.course_site.title,
+            queued=len(
+                [
+                    ticket
+                    for ticket in entity.tickets
+                    if ticket.state == TicketState.QUEUED
+                ]
+            ),
+        )
+
     def get_fast_data(self) -> SignageOverviewFast:
         """
         Gets the data for the fast API route
@@ -60,7 +83,7 @@ class SignageService:
         )
         active_office_hours_entities = self._session.scalars(office_hours_query).all()
         active_office_hours = [
-            office_hours.to_overview_model()
+            self.office_hours_to_signage_model(office_hours)
             for office_hours in active_office_hours_entities
         ]
 
