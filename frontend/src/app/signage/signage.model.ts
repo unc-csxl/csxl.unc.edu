@@ -15,14 +15,7 @@ import {
   parseArticleOverviewJson
 } from '../welcome/welcome.model';
 
-export interface SlowSignageDataJson {
-  newest_news: ArticleOverviewJson[];
-  events: EventOverviewJson[];
-  top_users: PublicProfile[];
-  announcement_titles: string[];
-}
-
-export interface SignageOfficeHours {
+export interface SignageOfficeHoursJSON {
   id: number;
   mode: string;
   course: string;
@@ -30,10 +23,24 @@ export interface SignageOfficeHours {
   queued: number;
 }
 
+export interface SlowSignageDataJson {
+  newest_news: ArticleOverviewJson[];
+  events: EventOverviewJson[];
+  top_users: PublicProfile[];
+  announcement_titles: string[];
+}
+
 export interface FastSignageDataJson {
-  active_office_hours: SignageOfficeHours[];
+  active_office_hours: SignageOfficeHoursJSON[];
   available_rooms: string[];
   seat_availability: SeatAvailabilityJSON[];
+}
+
+export interface SignageOfficeHours {
+  id: number;
+  course: string;
+  location: string;
+  queued: number;
 }
 
 export interface SlowSignageData {
@@ -49,7 +56,20 @@ export interface FastSignageData {
   seat_availability: SeatAvailability[];
 }
 
-export const parseSlowSignageDataJson = (json: SlowSignageDataJson): SlowSignageData => {
+export const parseSignageOfficeHoursJson = (
+  json: SignageOfficeHoursJSON
+): SignageOfficeHours => {
+  return {
+    id: json.id,
+    course: json.course,
+    location: json.mode == 'In-Person' ? json.location : 'Virtual',
+    queued: json.queued
+  };
+};
+
+export const parseSlowSignageDataJson = (
+  json: SlowSignageDataJson
+): SlowSignageData => {
   return {
     newest_news: json.newest_news.map(parseArticleOverviewJson),
     newest_events: json.events.map(parseEventOverviewJson),
@@ -58,9 +78,13 @@ export const parseSlowSignageDataJson = (json: SlowSignageDataJson): SlowSignage
   };
 };
 
-export const parseFastSignageDataJson = (json: FastSignageDataJson): FastSignageData => {
+export const parseFastSignageDataJson = (
+  json: FastSignageDataJson
+): FastSignageData => {
   return {
-    active_office_hours: json.active_office_hours,
+    active_office_hours: json.active_office_hours.map(
+      parseSignageOfficeHoursJson
+    ),
     available_rooms: json.available_rooms,
     seat_availability: json.seat_availability.map(parseSeatAvailabilityJSON)
   };
