@@ -30,6 +30,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { SignageRoutingModule } from './signage-routing.module';
 import { SignageComponent } from './signage.component';
@@ -41,6 +42,7 @@ import { MatDivider } from '@angular/material/divider';
 import { EventCardWidget } from './widgets/event-card/event-card.widget';
 import { LeaderboardWidget } from './widgets/leaderboard/leaderboard.widget';
 import { OfficeHoursWidget } from './widgets/office-hours/office-hours.widget';
+import { PageSpinnerWidget } from './widgets/page-spinner/page-spinner.widget';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,8 @@ import { OfficeHoursWidget } from './widgets/office-hours/office-hours.widget';
     RoomsWidget,
     EventCardWidget,
     LeaderboardWidget,
-    OfficeHoursWidget
+    OfficeHoursWidget,
+    PageSpinnerWidget
   ],
   imports: [
     SignageRoutingModule,
@@ -69,6 +72,7 @@ import { OfficeHoursWidget } from './widgets/office-hours/office-hours.widget';
     MatTooltipModule,
     MatSidenavModule,
     MatToolbarModule,
+    MatProgressSpinnerModule,
     MatDivider,
     MatChipSet,
     MatChipAvatar,
