@@ -5,12 +5,14 @@
 
     <mat-card-content class="full-size-content">
         @for (col of columns; track $index) {
-            @if($index < 2) { <!-- Need to update when pagination is implemented -->
+            @if($index >= 2) { <!-- Need to update when pagination is implemented -->
                 <div class="column">
-                    <mat-divider></mat-divider>
+                    <mat-divider class="divide"></mat-divider>
                     @for (location of col.locations; track $index) {
                         <div class="location">
-                            <p class="location-name headline-medium font-primary">{{location}}</p>
+                            <div class="floated">
+                                <p class="location-name headline-medium font-primary">{{location}}</p>
+                            </div>
                             @for (officeHour of sortedHours[location]; track officeHour.id) {
                                 <div class="office-hour">
                                     <p class="oh-name body-large font-secondary">{{officeHour.course}}</p>
@@ -22,7 +24,7 @@
                                     }
                                 </div>
                             }
-                            <mat-divider></mat-divider>
+                            <mat-divider class="divide"></mat-divider>
                         </div>
                     }
                 </div>

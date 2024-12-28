@@ -39,7 +39,7 @@ export class OfficeHoursWidget implements OnChanges {
         return acc;
       }, {} as LocationHoursMap);
       console.log(this.sortedHours);
-      this.columns = this.distributeToColumns(this.sortedHours, 12);
+      this.columns = this.distributeToColumns(this.sortedHours, 9);
       console.log(this.columns);
     }
   }
@@ -66,7 +66,7 @@ export class OfficeHoursWidget implements OnChanges {
       .sort((a, b) => b.size - a.size);
 
     // Validate that no single location has over the maxOfficeHours amout
-    if (locationSizes[0].size > maxPerCol) {
+    if (locationSizes[0].size + 1 > maxPerCol) {
       throw new Error(
         `Location ${locationSizes[0].location} has ${locationSizes[0].size} office hours which is more than the max of ${maxPerCol} per display column.`
       );

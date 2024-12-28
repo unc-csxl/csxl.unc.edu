@@ -18,30 +18,59 @@
 
 .column {
   display: inline-block;
-  width: 48%;
-  padding: 1%;
+  width: 46%;
+  padding: 2%;
+  vertical-align: top;
+}
+
+.location {
+  position: relative;
+}
+
+.floated {
+  float: left;
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 15%;
 }
 
 .location-name {
-  float: left;
+  margin: auto;
+}
+
+.office-hour {
+  position: relative;
+  top: 0.1em;
+  text-align: right;
+  padding: 0.3rem 0;
 }
 
 .oh-name {
   display: inline;
+  margin-right: 25px;
 }
 
 .icon {
+  position: relative;
+  top: 0.15em;
   display: inline;
   font-size: 18px;
   height: 18px;
   width: 18px;
+  margin-right: 5px;
 }
 
 .queue {
   display: inline-block;
   border-radius: 50%;
-  min-width: 26px !important;
+  width: 26px !important;
   aspect-ratio: 1/1;
-  align-items: center;
+  text-align: center;
   justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  position: relative;
+  bottom: 0.1rem;
 }
