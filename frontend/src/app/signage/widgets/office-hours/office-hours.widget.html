@@ -4,6 +4,30 @@
     </mat-card-header>
 
     <mat-card-content class="full-size-content">
+        @for (col of columns; track $index) {
+            @if($index < 2) { <!-- Need to update when pagination is implemented -->
+                <div class="column">
+                    <mat-divider></mat-divider>
+                    @for (location of col.locations; track $index) {
+                        <div class="location">
+                            <p class="location-name headline-medium font-primary">{{location}}</p>
+                            @for (officeHour of sortedHours[location]; track officeHour.id) {
+                                <div class="office-hour">
+                                    <p class="oh-name body-large font-secondary">{{officeHour.course}}</p>
+                                    <mat-icon class="icon">person_raised_hand</mat-icon>
+                                    @if (officeHour.queued == 0) {
+                                        <div class="queue body-large primary-background">0</div>
+                                    } @else {
+                                        <div class="queue body-large tertiary-background">{{officeHour.queued}}</div>
+                                    }
+                                </div>
+                            }
+                            <mat-divider></mat-divider>
+                        </div>
+                    }
+                </div>
+            }
+        }
 
     </mat-card-content>
 </mat-card>

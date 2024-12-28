@@ -7,11 +7,41 @@
 }
 
 .full-size-content {
-    height: 20vh;
-    text-align: center;
-    justify-content: center;
+  height: 20vh;
+  text-align: center;
+  justify-content: center;
 }
 
 .centered-title {
-    justify-content: center;
+  justify-content: center;
+}
+
+.column {
+  display: inline-block;
+  width: 48%;
+  padding: 1%;
+}
+
+.location-name {
+  float: left;
+}
+
+.oh-name {
+  display: inline;
+}
+
+.icon {
+  display: inline;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+.queue {
+  display: inline-block;
+  border-radius: 50%;
+  min-width: 26px !important;
+  aspect-ratio: 1/1;
+  align-items: center;
+  justify-content: center;
 }
