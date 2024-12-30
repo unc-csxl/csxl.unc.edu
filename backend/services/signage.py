@@ -78,8 +78,12 @@ class SignageService:
         """
         # Office Hours
         now = datetime.now()
-        office_hours_query = select(OfficeHoursEntity).filter(
-            OfficeHoursEntity.start_time <= now, OfficeHoursEntity.end_time >= now
+        office_hours_query = (
+            select(OfficeHoursEntity)
+            .filter(
+                OfficeHoursEntity.start_time <= now, OfficeHoursEntity.end_time >= now
+            )
+            .order_by(OfficeHoursEntity.id.asc())
         )
         active_office_hours_entities = self._session.scalars(office_hours_query).all()
         active_office_hours = [

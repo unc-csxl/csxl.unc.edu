@@ -9,7 +9,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SignageOfficeHours } from '../../signage.model';
 
-type LocationHoursMap = { [location: string]: SignageOfficeHours[] };
+type LocationHoursMap = { [location: string]: number[] }; // maps locations to index of the officeHours input
 
 // Used to calculate which Locations will be stored on each column
 interface Column {
@@ -26,25 +26,66 @@ export class OfficeHoursWidget implements OnChanges {
   @Input() officeHours!: SignageOfficeHours[];
   sortedHours: LocationHoursMap = {};
   columns: Column[] = [];
+  columns_to_show: number[] = []; // Index of the columns array
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['officeHours']) {
-      this.sortedHours = this.officeHours.reduce((acc, curr) => {
+    if (
+      changes['officeHours'] &&
+      // Compare old vs new values to see if there is a change other than queue length
+      (changes['officeHours'].previousValue === undefined ||
+        this.test_OH_difference(
+          changes['officeHours'].currentValue,
+          changes['officeHours'].previousValue
+        ))
+    ) {
+      this.sortedHours = this.officeHours.reduce((acc, curr, ind) => {
         if (!acc[curr.location]) {
           acc[curr.location] = [];
         }
 
-        // Add the current to it's location list
-        acc[curr.location].push(curr);
+        // Add the current's index to it's correct location list
+        acc[curr.location].push(ind);
         return acc;
       }, {} as LocationHoursMap);
       console.log(this.sortedHours);
-      this.columns = this.distributeToColumns(this.sortedHours, 9);
+      this.columns = this.distributeToColumns(this.sortedHours, 10);
       console.log(this.columns);
+      // TODO: Need to reset pagination since columns may be different
     }
   }
 
-  distributeToColumns(
+  rotate_columns() {
+    console.log('TEST');
+  }
+
+  private test_OH_difference(
+    oh1: SignageOfficeHours[],
+    oh2: SignageOfficeHours[]
+  ): boolean {
+    /**
+     * Tests to see if the two differencce office hours arrays are differing in anything but the queued length
+     *
+     * @input oh1/oh2 - lists of SignageOfficeHours that will be compared. !NOTE: These must be sorted by increasing id
+     * @returns boolean - True if the lists are different in something other than queued length
+     */
+
+    if (oh1.length !== oh2.length) {
+      return true;
+    }
+
+    for (let i = 0; i < oh1.length; i++) {
+      if (
+        oh1[i].id !== oh2[i].id ||
+        oh1[i].course !== oh2[i].course ||
+        oh1[i].location !== oh2[i].location
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private distributeToColumns(
     locationMap: LocationHoursMap,
     maxPerCol: number
   ): Column[] {
@@ -92,7 +133,7 @@ export class OfficeHoursWidget implements OnChanges {
       if (!colFound) {
         cols.push({
           locations: [location],
-          totalHours: size
+          totalHours: size + 1
         });
       }
     });

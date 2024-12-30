@@ -13,14 +13,14 @@
                             <div class="floated">
                                 <p class="location-name headline-medium font-primary">{{location}}</p>
                             </div>
-                            @for (officeHour of sortedHours[location]; track officeHour.id) {
+                            @for (oh_i of sortedHours[location]; track officeHours[oh_i].id) {
                                 <div class="office-hour">
-                                    <p class="oh-name body-large font-secondary">{{officeHour.course}}</p>
+                                    <p class="oh-name body-large font-secondary">{{officeHours[oh_i].course}}</p>
                                     <mat-icon class="icon">person_raised_hand</mat-icon>
-                                    @if (officeHour.queued == 0) {
+                                    @if (officeHours[oh_i].queued == 0) {
                                         <div class="queue body-large primary-background">0</div>
                                     } @else {
-                                        <div class="queue body-large tertiary-background">{{officeHour.queued}}</div>
+                                        <div class="queue body-large tertiary-background">{{officeHours[oh_i].queued}}</div>
                                     }
                                 </div>
                             }
@@ -30,6 +30,6 @@
                 </div>
             }
         }
-        <page-spinner></page-spinner>
+        <page-spinner [time]="15" [end_action]="rotate_columns"></page-spinner>
     </mat-card-content>
 </mat-card>
