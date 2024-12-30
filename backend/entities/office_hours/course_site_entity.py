@@ -32,7 +32,14 @@ class CourseSiteEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Title of OH section
     title: Mapped[str] = mapped_column(String, nullable=False)
-
+    # Minimum cooldown between tickets from the same person, in minutes
+    minimum_ticket_cooldown: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0
+    )
+    # Maximum tickets per day per student
+    max_tickets_per_day: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=100
+    )
     # Term the section is in
     # NOTE: This defines a one-to-many relationship between the term and the course site tables.
     term_id: Mapped[str] = mapped_column(ForeignKey("academics__term.id"))

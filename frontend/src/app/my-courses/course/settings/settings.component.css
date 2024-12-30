@@ -16,3 +16,21 @@ mat-form-field {
 mat-card-content {
     padding-top: 16px;
 }
+
+.ticket-settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ticket-settings-subtitle {
+    margin-top: 16px;
+}
+
+.ticket-settings-input {
+    margin-top: 16px;
+}
+
+.ticket-settings-slider {
+    width: 50%;
+}

@@ -33,6 +33,8 @@ class UpdatedCourseSite(BaseModel):
     section_ids: list[int]
     gtas: list[PublicUser]
     utas: list[PublicUser]
+    minimum_ticket_cooldown: int | None = None
+    max_tickets_per_day: int | None = None
 
 
 class CourseSite(BaseModel):
