@@ -45,6 +45,8 @@ export class HiringPreferencesComponent {
 
   courseSiteId: number;
 
+  isDropProcessing: boolean = false;
+
   /** Constructor */
   constructor(
     private route: ActivatedRoute,
@@ -65,6 +67,7 @@ export class HiringPreferencesComponent {
   }
 
   drop(event: CdkDragDrop<ApplicationReviewOverview[]>) {
+    this.isDropProcessing = true;
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -112,8 +115,12 @@ export class HiringPreferencesComponent {
           this.notPreferred = hiringStatus.not_preferred;
           this.notProcessed = hiringStatus.not_processed;
           this.preferred = hiringStatus.preferred;
+          this.isDropProcessing = false;
         },
-        error: (error) => this.saveErrorSnackBar(error)
+        error: (error) => {
+          this.saveErrorSnackBar(error);
+          this.isDropProcessing = false;
+        }
       });
   }
 
