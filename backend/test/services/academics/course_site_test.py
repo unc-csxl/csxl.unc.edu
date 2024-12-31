@@ -99,7 +99,7 @@ def test_get_current_office_hour_events(course_site_svc: CourseSiteService):
     office_hours = course_site_svc.get_current_office_hour_events(
         user_data.instructor, office_hours_data.comp_110_site.id
     )
-    assert len(office_hours) == 1
+    assert len(office_hours) == 2
     assert isinstance(office_hours[0], OfficeHoursOverview)
     assert office_hours[0].id == office_hours_data.comp_110_current_office_hours.id
 
@@ -120,7 +120,7 @@ def test_get_future_office_hour_events(course_site_svc: CourseSiteService):
         user_data.instructor, office_hours_data.comp_110_site.id, pagination_params
     )
     assert isinstance(office_hours, Paginated)
-    assert office_hours.length == 1
+    assert office_hours.length == 7
     assert isinstance(office_hours.items[0], OfficeHoursOverview)
     assert office_hours.items[0].id == office_hours_data.comp_110_future_office_hours.id
 

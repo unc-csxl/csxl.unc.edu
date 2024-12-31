@@ -6,11 +6,11 @@ import math
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
+
 from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
 from ...models.academics.my_courses import (
-    OfficeHoursOverview,
     OfficeHourTicketOverview,
     OfficeHourQueueOverview,
     OfficeHourEventRoleOverview,
@@ -27,7 +27,7 @@ from ...entities.office_hours import (
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
-__authors__ = ["Ajay Gandecha"]
+__authors__ = ["Ajay Gandecha", "Jade Keegan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -302,7 +302,7 @@ class OfficeHoursService:
 
         # Return model
         return office_hours_entity.to_model()
-
+            
     def update(self, user: User, site_id: int, event: OfficeHours) -> OfficeHours:
         """
         Updates an existing office hours event.
