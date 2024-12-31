@@ -11,7 +11,9 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
   WritableSignal,
   signal
 } from '@angular/core';
@@ -22,7 +24,7 @@ import { OfficeHourTicketOverview } from '../../../../my-courses.model';
   templateUrl: './called-ticket-card.widget.html',
   styleUrls: ['./called-ticket-card.widget.scss']
 })
-export class CalledTicketCardWidget {
+export class CalledTicketCardWidget implements OnChanges {
   @Input() ticket!: OfficeHourTicketOverview;
   @Input() calledByUser: boolean = false;
   @Output() closeButtonPressed = new EventEmitter<OfficeHourTicketOverview>();
@@ -37,5 +39,12 @@ export class CalledTicketCardWidget {
 
   closeButtonEvent() {
     this.closeButtonPressed.emit(this.ticket);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // If the TA calling the ticket is the active user, expand the card
+    if (changes['calledByUser'] && changes['calledByUser'].currentValue) {
+      this.expanded.set(true);
+    }
   }
 }
