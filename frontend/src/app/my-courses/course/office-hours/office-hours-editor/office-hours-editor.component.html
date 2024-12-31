@@ -101,6 +101,7 @@
         <mat-button-toggle-group
           name="days"
           aria-label="Days to Recur"
+          [hideMultipleSelectionIndicator]="true"
           multiple
         >
           @for (day of this.days | keyvalue: maintainOriginalOrder; track day) {
