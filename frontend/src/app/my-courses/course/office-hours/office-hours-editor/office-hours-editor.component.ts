@@ -227,6 +227,8 @@ export class OfficeHoursEditorComponent {
       let { recurs, recur_end, ...officeHoursInfo } =
         this.officeHoursForm.value;
       Object.assign(officeHoursToSubmit, officeHoursInfo);
+      officeHoursToSubmit.start_time = new Date(officeHoursInfo.start_time!);
+      officeHoursToSubmit.end_time = new Date(officeHoursInfo.end_time!);
 
       // Load information from the parent route
       let courseSiteId = +this.route.parent!.snapshot.params['course_site_id'];
