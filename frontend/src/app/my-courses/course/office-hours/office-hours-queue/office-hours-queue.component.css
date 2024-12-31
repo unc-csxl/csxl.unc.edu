@@ -106,7 +106,7 @@ strong {
 
 @media only screen and (max-width: 1000px) {
   .container {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   .left-column {
