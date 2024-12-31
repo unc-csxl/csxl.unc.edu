@@ -151,7 +151,7 @@ def get_status(
 
 
 @api.put("/{course_site_id}", tags=["Hiring"])
-def update_status(
+async def update_status(
     course_site_id: int,
     hiring_status: HiringStatus,
     subject: User = Depends(registered_user),

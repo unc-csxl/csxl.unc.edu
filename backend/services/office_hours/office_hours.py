@@ -3,9 +3,10 @@ Service for office hour events.
 """
 
 import math
+from typing import Type, TypeVar
 from fastapi import Depends
 from sqlalchemy import select, exists, and_, func
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, selectinload
 from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
@@ -17,18 +18,24 @@ from ...models.academics.my_courses import (
 )
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.ticket import TicketState
+from ...entities.entity_base import EntityBase
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import (
     CourseSiteEntity,
     OfficeHoursEntity,
     OfficeHoursTicketEntity,
 )
+from ...entities.office_hours.user_created_tickets_table import (
+    user_created_tickets_table,
+)
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
-__authors__ = ["Ajay Gandecha"]
+__authors__ = ["Ajay Gandecha", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
+
+T = TypeVar("T", bound=EntityBase)
 
 
 class OfficeHoursService:
@@ -48,39 +55,81 @@ class OfficeHoursService:
         """
         Loads all of the data relevant to an office hour queue.
 
+        Args:
+            user (User): The user requesting the queue.
+            office_hours_id (int): The ID of the office hour event.
+
         Returns:
             OfficeHourQueueOverview
         """
-        # Use an enhanced query to check if an office hour event exists.
-        office_hour_event_query = (
-            select(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == office_hours_id)
-            .options(
-                joinedload(OfficeHoursEntity.tickets)
-                .joinedload(OfficeHoursTicketEntity.caller)
-                .joinedload(SectionMemberEntity.user)
-            )
-            .options(
-                joinedload(OfficeHoursEntity.tickets)
-                .joinedload(OfficeHoursTicketEntity.creators)
-                .joinedload(SectionMemberEntity.user)
-            )
+
+        # Let's gather relevant entities to the problem at hand
+        office_hours_entity = self._get_entity_or_raise(
+            OfficeHoursEntity, office_hours_id
+        )
+        course_site_entity = self._get_entity_or_raise(
+            CourseSiteEntity, office_hours_entity.course_site_id
+        )
+        section_member_entity = self._get_membership_or_raise(user, course_site_entity)
+
+        self._enforce_membership_level(
+            section_member_entity,
+            {RosterRole.INSTRUCTOR, RosterRole.GTA, RosterRole.UTA},
         )
 
-        office_hour_event = (
-            self._session.scalars(office_hour_event_query).unique().one_or_none()
-        )
+        return self._to_oh_queue_overview(user, office_hours_entity)
 
-        if not office_hour_event:
+    def _get_entity_or_raise(self, entity_type: Type[T], id: int) -> T:
+        """
+        Gets an entity from the database or raises a ResourceNotFoundException.
+        """
+        entity = self._session.get(entity_type, id)
+
+        if entity is None:
             raise ResourceNotFoundException(
-                f"Office hour event with ID: {office_hours_id} not found."
+                f"{entity_type.__name__} with ID: {id} not found."
             )
 
-        # Check the site permission for the office hours site for the event.
-        self._check_site_admin_permissions(user, office_hour_event.course_site_id)
+        return entity
 
-        # Return data
-        return self._to_oh_queue_overview(user, office_hour_event)
+    def _get_membership_or_raise(
+        self, user: User, course_site_entity: CourseSiteEntity
+    ) -> SectionMemberEntity:
+        """
+        Gets the membership for a user in a course site.
+        """
+        # Use an enhanced query to check if a course site exists.
+        section_member_query = select(SectionMemberEntity).where(
+            SectionMemberEntity.user_id == user.id,
+            SectionMemberEntity.section_id.in_(
+                [section.id for section in course_site_entity.sections]
+            ),
+        )
+
+        section_membership = self._session.scalars(section_member_query).first()
+
+        if section_membership is None:
+            raise CoursePermissionException("User is not a member of the course site.")
+
+        return section_membership
+
+    def _enforce_membership_level(
+        self, section_member_entity: SectionMemberEntity, roles: set[RosterRole]
+    ) -> None:
+        """
+        Enforces that a user has a specific membership level.
+
+        Args:
+            section_member_entity (SectionMemberEntity): The membership entity.
+            roles (set[RosterRole]): The roles that the user must have.
+
+        Raises:
+            CoursePermissionException: If the user does not have the required membership.
+        """
+        if section_member_entity.member_role not in roles:
+            raise CoursePermissionException(
+                "User does not have the required membership level."
+            )
 
     def get_office_hour_get_help_overview(
         self, user: User, office_hours_id: int
@@ -92,28 +141,27 @@ class OfficeHoursService:
             OfficeHourGetHelpOverview
         """
         # Start building the query
-        queue_query = (
-            select(OfficeHoursEntity)
-            .where(OfficeHoursEntity.id == office_hours_id)
-            .options(
-                joinedload(OfficeHoursEntity.tickets)
-                .joinedload(OfficeHoursTicketEntity.caller)
-                .joinedload(SectionMemberEntity.user)
-            )
-            .options(
-                joinedload(OfficeHoursEntity.tickets)
-                .joinedload(OfficeHoursTicketEntity.creators)
-                .joinedload(SectionMemberEntity.user)
-            )
+        queue_query = select(OfficeHoursEntity).where(
+            OfficeHoursEntity.id == office_hours_id
         )
 
         # Load data
         queue_entity = self._session.scalars(queue_query).unique().one_or_none()
+        if queue_entity is None:
+            raise ResourceNotFoundException(
+                f"Office Hours Queue with ID:{office_hours_id} not found."
+            )
 
         # Check permissions
         self._check_site_student_permissions(user, queue_entity.course_site_id)
 
         # Get ticket for user, if any
+        active_tickets_query = (
+            select(OfficeHoursTicketEntity)
+            .join(user_created_tickets_table)
+            .where(OfficeHoursTicketEntity.office_hours_id == office_hours_id)
+            # .where(user_created_tickets_table.member_id == )
+        )
         active_tickets = [
             ticket
             for ticket in queue_entity.tickets
@@ -156,71 +204,67 @@ class OfficeHoursService:
     def _to_oh_queue_overview(
         self, user: User, oh_event: OfficeHoursEntity
     ) -> OfficeHourQueueOverview:
-        active_tickets = [
-            ticket
-            for ticket in oh_event.tickets
-            if ticket.state == TicketState.CALLED and ticket.caller.user_id == user.id
-        ]
-        called_tickets = [
-            ticket
-            for ticket in oh_event.tickets
-            if ticket.state == TicketState.CALLED
-            and ticket.caller
-            and ticket.caller.user_id != user.id
-        ]
-        completed_tickets = [
-            ticket for ticket in oh_event.tickets if ticket.state == TicketState.CLOSED
-        ]
-        personal_completed_tickets = [
-            ticket for ticket in completed_tickets if ticket.caller.user_id == user.id
-        ]
-        personal_minutes = [
-            (ticket.closed_at - ticket.called_at).total_seconds() / 60.0
-            for ticket in personal_completed_tickets
-        ]
-        personal_average_minutes = (
-            math.floor(sum(personal_minutes) / len(personal_minutes))
-            if len(personal_minutes) > 0
-            else 0
-        )
-        completed_tickets = [
-            ticket for ticket in oh_event.tickets if ticket.state == TicketState.CLOSED
-        ]
-        personal_completed_tickets = [
-            ticket for ticket in completed_tickets if ticket.caller.user_id == user.id
-        ]
-        personal_minutes = [
-            (ticket.closed_at - ticket.called_at).total_seconds() / 60.0
-            for ticket in personal_completed_tickets
-        ]
-        personal_average_minutes = (
-            math.floor(sum(personal_minutes) / len(personal_minutes))
-            if len(personal_minutes) > 0
-            else 0
-        )
-        queued_tickets = [
-            ticket for ticket in oh_event.tickets if ticket.state == TicketState.QUEUED
-        ]
+
+        ticket_entities = self._session.scalars(
+            select(OfficeHoursTicketEntity)
+            .where(OfficeHoursTicketEntity.office_hours_id == oh_event.id)
+            .where(
+                OfficeHoursTicketEntity.state.in_(
+                    [TicketState.CALLED, TicketState.QUEUED]
+                )
+            )
+            .order_by(OfficeHoursTicketEntity.id)
+            .options(
+                selectinload(OfficeHoursTicketEntity.creators).selectinload(
+                    SectionMemberEntity.user
+                )
+            )
+        ).all()
+
+        active_tickets: list[OfficeHourTicketOverview] = []
+        called_tickets: list[OfficeHourTicketOverview] = []
+        queued_tickets: list[OfficeHourTicketOverview] = []
+        for ticket in ticket_entities:
+            overview = self._to_oh_ticket_overview(ticket)
+            if ticket.state == TicketState.CALLED:
+                if ticket.caller.user_id == user.id:
+                    active_tickets.append(overview)
+                else:
+                    called_tickets.append(overview)
+            elif ticket.state == TicketState.QUEUED:
+                queued_tickets.append(overview)
+
+        completed_tickets = []
+        personal_completed_tickets = []
+        personal_average_minutes = 0
+        # completed_tickets = [
+        #     ticket for ticket in oh_event.tickets if ticket.state == TicketState.CLOSED
+        # ]
+        # personal_completed_tickets = [
+        #     ticket for ticket in completed_tickets if ticket.caller.user_id == user.id
+        # ]
+        # personal_minutes = [
+        #     (ticket.closed_at - ticket.called_at).total_seconds() / 60.0
+        #     for ticket in personal_completed_tickets
+        # ]
+        # personal_average_minutes = (
+        #     math.floor(sum(personal_minutes) / len(personal_minutes))
+        #     if len(personal_minutes) > 0
+        #     else 0
+        # )
+
         return OfficeHourQueueOverview(
             id=oh_event.id,
             type=oh_event.type.to_string(),
             start_time=oh_event.start_time,
             end_time=oh_event.end_time,
-            active=(
-                self._to_oh_ticket_overview(active_tickets[0])
-                if len(active_tickets) > 0
-                else None
-            ),
-            other_called=[
-                self._to_oh_ticket_overview(ticket) for ticket in called_tickets
-            ],
-            queue=[self._to_oh_ticket_overview(ticket) for ticket in queued_tickets],
+            active=active_tickets[0] if len(active_tickets) > 0 else None,
+            other_called=called_tickets,
+            queue=queued_tickets,
             personal_tickets_called=len(personal_completed_tickets),
             average_minutes=personal_average_minutes,
             total_tickets_called=len(completed_tickets),
-            history=[
-                self._to_oh_ticket_overview(ticket) for ticket in completed_tickets
-            ],
+            history=[],
         )
 
     def get_oh_event_role(
@@ -391,7 +435,7 @@ class OfficeHoursService:
 
         no_permissions_length = self._session.execute(no_permissions_query).scalar()
 
-        if no_permissions_length > 0:
+        if no_permissions_length is not None and no_permissions_length > 0:
             raise CoursePermissionException(
                 "Cannot access a course page containing a section you are not an instructor for."
             )
