@@ -2,10 +2,7 @@
  * Simple Widget for the timing spinner on the signage.
  *
  * @input time: time in seconds for one revolution of the widget
- * @input end_action: callback function that is run when the timer ends
- *
- * You can specify a callback function "end_action" that will be run each time the timer ends
- * Make sure to detach this widget when you don't want the end_action to run anymore
+ * @output timer_end: event with null data is emitted each time the timer completes
  *
  * @author Andrew Lockard
  * @copyright 2024
@@ -17,7 +14,8 @@ import {
   OnChanges,
   SimpleChanges,
   OnInit,
-  OnDestroy
+  OnDestroy,
+  output
 } from '@angular/core';
 import { Subscription, interval, map } from 'rxjs';
 
@@ -28,7 +26,7 @@ import { Subscription, interval, map } from 'rxjs';
 })
 export class PageSpinnerWidget implements OnChanges, OnInit, OnDestroy {
   @Input() time!: number;
-  @Input() end_action: undefined | (() => void) = undefined;
+  timer_end = output<void>();
   timer_subscription!: Subscription;
   time_left = -1;
 
@@ -45,9 +43,7 @@ export class PageSpinnerWidget implements OnChanges, OnInit, OnDestroy {
           if (this.time_left > 0) {
             this.time_left--;
           } else if (this.time_left == 0) {
-            if (this.end_action) {
-              this.end_action();
-            }
+            this.timer_end.emit();
             if (this.time) {
               this.time_left = this.time * 100;
             }
