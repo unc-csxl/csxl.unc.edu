@@ -24,38 +24,88 @@ interface Column {
 })
 export class OfficeHoursWidget implements OnChanges {
   @Input() officeHours!: SignageOfficeHours[];
+  displayOfficeHours!: SignageOfficeHours[]; // Hours that are on display currently
   sortedHours: LocationHoursMap = {};
   columns: Column[] = [];
   columns_to_show: number[] = []; // Index of the columns array
+  private updater: undefined | (() => void) = undefined; // sets the new sortedHours and columns on change
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes['officeHours'] &&
+    if (changes['officeHours']) {
       // Compare old vs new values to see if there is a change other than queue length
-      (changes['officeHours'].previousValue === undefined ||
+      if (
+        this.displayOfficeHours === undefined ||
         this.test_OH_difference(
           changes['officeHours'].currentValue,
-          changes['officeHours'].previousValue
-        ))
-    ) {
-      this.sortedHours = this.officeHours.reduce((acc, curr, ind) => {
-        if (!acc[curr.location]) {
-          acc[curr.location] = [];
+          this.displayOfficeHours
+        )
+      ) {
+        let newSortedHours: LocationHoursMap;
+        let newColumns: Column[];
+
+        // Handle no current office hours case
+        if (changes['officeHours'].currentValue.length === 0) {
+          newSortedHours = {};
+          newColumns = [];
+        } else {
+          newSortedHours = this.officeHours.reduce((acc, curr, ind) => {
+            if (!acc[curr.location]) {
+              acc[curr.location] = [];
+            }
+
+            // Add the current's index to it's correct location list
+            acc[curr.location].push(ind);
+            return acc;
+          }, {} as LocationHoursMap);
+
+          newColumns = this.distributeToColumns(newSortedHours, 10);
         }
 
-        // Add the current's index to it's correct location list
-        acc[curr.location].push(ind);
-        return acc;
-      }, {} as LocationHoursMap);
-      console.log(this.sortedHours);
-      this.columns = this.distributeToColumns(this.sortedHours, 10);
-      console.log(this.columns);
-      // TODO: Need to reset pagination since columns may be different
+        // If we currently have more than 2 columns, we will run this update in sync with the page spinner
+        if (this.columns.length > 2) {
+          this.updater = () => {
+            this.displayOfficeHours = this.officeHours;
+            this.sortedHours = newSortedHours;
+            this.columns = newColumns;
+            this.reset_display_columns(newColumns.length);
+          };
+        } else {
+          this.displayOfficeHours = this.officeHours;
+          this.sortedHours = newSortedHours;
+          this.columns = newColumns;
+          this.reset_display_columns(newColumns.length);
+        }
+        console.log(newColumns);
+        console.log(newSortedHours);
+      } else {
+        // Update only queue values so we can just update the displayOfficeHours
+        this.displayOfficeHours = this.officeHours;
+      }
     }
   }
 
   rotate_columns() {
-    console.log('TEST');
+    // If there is an update ready, run it
+    if (this.updater) {
+      this.updater();
+      this.updater = undefined;
+    } else {
+      // Otherwise just shift all columns forward by 1 using circular logic
+      this.columns_to_show[0] =
+        (this.columns_to_show[0] + 1) % this.columns.length;
+      this.columns_to_show[1] =
+        (this.columns_to_show[0] + 1) % this.columns.length;
+    }
+  }
+
+  private reset_display_columns(col_nums: number) {
+    if (col_nums >= 2) {
+      this.columns_to_show = [0, 1];
+    } else if (col_nums === 1) {
+      this.columns_to_show = [0];
+    } else {
+      this.columns_to_show = [];
+    }
   }
 
   private test_OH_difference(

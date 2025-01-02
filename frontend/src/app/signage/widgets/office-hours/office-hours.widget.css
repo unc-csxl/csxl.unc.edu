@@ -74,3 +74,9 @@
   position: relative;
   bottom: 0.1rem;
 }
+
+.spinner {
+  position: absolute;
+  right: 3%;
+  bottom: 5%;
+}
