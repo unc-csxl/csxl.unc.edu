@@ -78,6 +78,15 @@ def test_search_by_last_name(user_svc: UserService):
     assert users[0].email == ambassador.email
 
 
+def test_search_full_name(user_svc: UserService):
+    users = user_svc.search(ambassador, "Amy Ambassad")
+    assert len(users) == 1
+    assert users[0].id == ambassador.id
+    assert users[0].pid == ambassador.pid
+    assert users[0].onyen == ambassador.onyen
+    assert users[0].email == ambassador.email
+
+
 def test_search_by_onyen(user_svc: UserService):
     """Test that a user can be retrieved by Searching for part of their onyen."""
     users = user_svc.search(ambassador, "xlst")
