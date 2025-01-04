@@ -99,13 +99,14 @@ class UserService:
         """
         statement = select(UserEntity)
         criteria = or_(
-            UserEntity.first_name.ilike(f"%{query}%"),
-            UserEntity.last_name.ilike(f"%{query}%"),
+            func.concat(UserEntity.first_name, " ", UserEntity.last_name).ilike(
+                f"%{query}%"
+            ),
             UserEntity.onyen.ilike(f"%{query}%"),
             UserEntity.email.ilike(f"%{query}%"),
             cast(UserEntity.pid, String).ilike(f"%{query}%"),
         )
-        statement = statement.where(criteria).limit(10)
+        statement = statement.where(criteria).limit(50)
         entities = self._session.execute(statement).scalars()
         return [entity.to_model() for entity in entities]
 
