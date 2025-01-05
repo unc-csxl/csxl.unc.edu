@@ -67,6 +67,7 @@ class ApplicationService:
             select(HiringAssignmentEntity)
             .where(HiringAssignmentEntity.status == HiringAssignmentStatus.FINAL)
             .where(HiringAssignmentEntity.user_id == subject.id)
+            .where(HiringAssignmentEntity.term_id == term_id)
         )
         assignments_entites = self._session.scalars(assignments_query).all()
         assignments = [
