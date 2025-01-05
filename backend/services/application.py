@@ -62,21 +62,17 @@ class ApplicationService:
             ApplicationEntity.term_id == term_id,
         )
         application_entity = self._session.scalars(application_query).first()
-        # Retrieve any assignments, if made.
-        # NOTE: This includes a hard-coded release date of 8/18.
         assignments = []
-        release_date = datetime(2025, 1, 9)
-        if datetime.now() > release_date:
-            assignments_query = (
-                select(HiringAssignmentEntity)
-                .where(HiringAssignmentEntity.status == HiringAssignmentStatus.FINAL)
-                .where(HiringAssignmentEntity.user_id == subject.id)
-            )
-            assignments_entites = self._session.scalars(assignments_query).all()
-            assignments = [
-                assignment.to_released_hiring_assignment()
-                for assignment in assignments_entites
-            ]
+        assignments_query = (
+            select(HiringAssignmentEntity)
+            .where(HiringAssignmentEntity.status == HiringAssignmentStatus.FINAL)
+            .where(HiringAssignmentEntity.user_id == subject.id)
+        )
+        assignments_entites = self._session.scalars(assignments_query).all()
+        assignments = [
+            assignment.to_released_hiring_assignment()
+            for assignment in assignments_entites
+        ]
         return application_entity.to_model(assignments) if application_entity else None
 
     def create(self, subject: User, application: Application) -> Application:
