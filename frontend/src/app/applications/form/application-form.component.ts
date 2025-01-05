@@ -37,7 +37,7 @@ export class ApplicationFormComponent {
   };
 
   showApplicationAssignmentCard =
-    new Date().getTime() > new Date(2025, 1, 9).getTime();
+    new Date().getTime() > new Date(2025, 1, 4).getTime();
 
   /** Form */
   formGroup: FormGroup;
