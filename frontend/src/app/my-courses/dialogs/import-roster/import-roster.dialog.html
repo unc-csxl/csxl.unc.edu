@@ -2,11 +2,17 @@
 <mat-dialog-content>
   <form>
     <p>
-      Add students to a course section by importng the CSV file exported from
-      Canvas's Students tab.
+      Add students to a course section by importing the roster CSV from Canvas.
     </p>
+    <p><strong class="semibold">Steps to Download Roster CSV:</strong></p>
+    <ol>
+      <li>Navigate to the "Grades" tab in your Canvas course page.</li>
+      <li>On the top right, press the dropdown "Export".</li>
+      <li>Select "Export Entire Gradebook".</li>
+      <li>Now, fill in the prompts below to upload your roster into the CSXL site.</li>
+    </ol>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="section-selector">
       <mat-label>Select Section to Import Into</mat-label>
       <mat-select
         [formControl]="selectedSection"
