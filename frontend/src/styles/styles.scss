@@ -405,6 +405,9 @@ body {
   .font-variant {
     color: mat.get-theme-color($theme, on-surface-variant) !important;
   }
+  .font-on-surface {
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
 }
 
 /// Defines a mixin that applies custom widgets to material text field components
