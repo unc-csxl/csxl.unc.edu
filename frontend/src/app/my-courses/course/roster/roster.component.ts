@@ -110,7 +110,7 @@ export class RosterComponent {
   /** Opens the dialog for importing the roster */
   importFromCanvas(): void {
     let dialogRef = this.dialog.open(ImportRosterDialog, {
-      height: '500px',
+      height: '540px',
       width: '600px',
       data: this.myCoursesService.courseOverview(
         this.route.parent!.snapshot.params['course_site_id']
