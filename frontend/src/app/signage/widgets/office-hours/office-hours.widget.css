@@ -1,5 +1,5 @@
 .full-size-pane {
-  min-height: 464px !important;
+  min-height: 100% !important;
   min-width: 100% !important;
   border-color: transparent !important;
   margin: 0px !important;
@@ -7,6 +7,7 @@
 
 .full-size-content {
   height: 20vh;
+  margin-top: 0.6%;
   text-align: center;
   justify-content: center;
 }
@@ -77,5 +78,5 @@
 .spinner {
   position: absolute;
   right: 3%;
-  bottom: 5%;
+  bottom: 4%;
 }

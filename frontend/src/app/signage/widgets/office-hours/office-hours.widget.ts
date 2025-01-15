@@ -58,7 +58,7 @@ export class OfficeHoursWidget implements OnChanges {
             return acc;
           }, {} as LocationHoursMap);
 
-          newColumns = this.distributeToColumns(newSortedHours, 10);
+          newColumns = this.distributeToColumns(newSortedHours, 9);
         }
 
         // If we currently have more than 2 columns, we will run this update in sync with the page spinner
