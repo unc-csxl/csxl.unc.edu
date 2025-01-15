@@ -6,17 +6,9 @@
  * @license MIT
  */
 
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  Signal,
-  signal,
-  WritableSignal
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SignageService } from './signage.service';
-import { FastSignageData, SlowSignageData } from './signage.model';
-import { Subscription, timer } from 'rxjs';
+import { Subscription, timer, delay } from 'rxjs';
 
 const REFRESH_FAST_SECONDS = 100000000;
 const REFRESH_SLOW_MINUTES = 20;
@@ -36,9 +28,9 @@ export class SignageComponent implements OnInit, OnDestroy {
 
   private fastSubscription!: Subscription;
   private slowSubscription!: Subscription;
+  private dateSubscription!: Subscription;
 
-  constructor(protected signageService: SignageService) {
-  }
+  constructor(protected signageService: SignageService) {}
 
   ngOnInit(): void {
     this.fastSubscription = timer(0, REFRESH_FAST_SECONDS * 1000).subscribe(
@@ -52,15 +44,25 @@ export class SignageComponent implements OnInit, OnDestroy {
         this.signageService.getSlowData();
       }
     );
+
+    // Delay the observable emission so the clock updates on the minute
+    this.dateSubscription = timer(0, 60000)
+      .pipe(delay(60000 - (Date.now() % 60000)))
+      .subscribe(() => {
+        this.date = Date.now();
+      });
   }
 
   ngOnDestroy(): void {
+    // If statements needed here to prevent null exception
     if (this.fastSubscription) {
-      // If statements needed here to prevent null exception
       this.fastSubscription.unsubscribe();
     }
     if (this.slowSubscription) {
       this.slowSubscription.unsubscribe();
+    }
+    if (this.dateSubscription) {
+      this.dateSubscription.unsubscribe();
     }
   }
 }
