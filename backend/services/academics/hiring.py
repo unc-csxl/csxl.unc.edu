@@ -809,12 +809,12 @@ class HiringService:
     ) -> Paginated[HiringAssignmentSummaryOverview]:
         """
         Returns the hires to show on a summary page for a given term.
-        
+
         Args:
             subject: The user making the request
             term_id: The term to get assignments for
             pagination_params: Parameters for pagination and filtering
-            
+
         Raises:
             ValueError: If pagination parameters are invalid
             PermissionError: If user lacks required permissions
@@ -822,10 +822,10 @@ class HiringService:
         # 1. Validate inputs
         if pagination_params.page < 0 or pagination_params.page_size <= 0:
             raise ValueError("Invalid pagination parameters")
-            
+
         # 2. Check for hiring permissions
         self._permission.enforce(subject, "hiring.summary", "*")
-        
+
         # 3. Build base query with consistent joins and ordering
         SUMMARY_STATUSES = [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
         base_query = (
@@ -833,7 +833,9 @@ class HiringService:
             .join(HiringAssignmentEntity.user)
             .where(HiringAssignmentEntity.term_id == term_id)
             .where(HiringAssignmentEntity.status.in_(SUMMARY_STATUSES))
-            .order_by(UserEntity.last_name, UserEntity.first_name)  # Secondary sort for stability
+            .order_by(
+                UserEntity.last_name, UserEntity.first_name
+            )  # Secondary sort for stability
         )
 
         # 4. Apply search filter if present
@@ -843,7 +845,7 @@ class HiringService:
             search_pattern = f"%{search_query.lower()}%"
             criteria = or_(
                 func.lower(UserEntity.first_name).like(search_pattern),
-                func.lower(UserEntity.last_name).like(search_pattern)
+                func.lower(UserEntity.last_name).like(search_pattern),
             )
             base_query = base_query.where(criteria)
 
@@ -865,7 +867,7 @@ class HiringService:
         # 8. Execute queries
         length = self._session.scalar(count_query) or 0
         assignment_entities = self._session.scalars(assignment_query).unique().all()
-            
+
         # 9. Build and return response
         return Paginated(
             items=[
@@ -891,6 +893,7 @@ class HiringService:
                     [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
                 )
             )
+            .order_by(UserEntity.last_name, UserEntity.first_name)
         )
         # 3. Return items
         assignment_entities = self._session.scalars(assignment_query).all()
