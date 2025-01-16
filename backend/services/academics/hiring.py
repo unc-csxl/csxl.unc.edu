@@ -887,6 +887,7 @@ class HiringService:
         # 2. Build query
         assignment_query = (
             select(HiringAssignmentEntity)
+            .join(HiringAssignmentEntity.user)
             .where(HiringAssignmentEntity.term_id == term_id)
             .where(
                 HiringAssignmentEntity.status.in_(
