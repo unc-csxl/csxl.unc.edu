@@ -848,7 +848,7 @@ class HiringService:
             base_query = base_query.where(criteria)
 
         # 5. Create count query from base query
-        count_query = select(func.count()).from_statement(base_query)
+        count_query = select(func.count()).select_from(base_query.subquery())
 
         # 6. Create assignment query with eager loading
         assignment_query = base_query.options(
