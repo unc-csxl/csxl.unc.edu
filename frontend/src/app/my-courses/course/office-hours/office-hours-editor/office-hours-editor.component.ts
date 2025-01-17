@@ -296,7 +296,7 @@ export class OfficeHoursEditorComponent {
    * @returns {void}
    */
   private onError(err: any): void {
-    this.snackBar.open(`Error: Office Hours Not ${this.action()}`, '', {
+    this.snackBar.open(`${err.error.message}`, '', {
       duration: 2000
     });
   }

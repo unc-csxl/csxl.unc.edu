@@ -93,12 +93,12 @@ class OfficeHoursRecurrenceService:
             days_recur.append(Weekday.Sunday)
 
         if len(days_recur) == 0:
-            raise RecurringOfficeHourEventException("No days to recur selected.")
+            raise RecurringOfficeHourEventException("No recurrence pattern selected.")
 
         # Error out if recurrence pattern end date is before the first event.
         if recurrence_pattern.end_date <= event.start_time:
             raise RecurringOfficeHourEventException(
-                "Recurrence pattern end date precedes first event start time."
+                "Recurrence pattern end date precedes first event's start."
             )
 
         while current_date <= recurrence_pattern.end_date:
@@ -127,7 +127,12 @@ class OfficeHoursRecurrenceService:
         # commit changes
         self._session.commit()
 
-        return [entity.to_model() for entity in new_events]
+        result = [entity.to_model() for entity in new_events]
+
+        if len(result) == 0:
+            raise RecurringOfficeHourEventException(
+                "Cannot create any with the given recurrence pattern before the recurrence end date."
+            )
 
     def delete_recurring(self, user: User, site_id: int, event_id: int):
         """
