@@ -65,10 +65,7 @@ export class SignageComponent implements OnInit, OnDestroy {
   private slowSubscription!: Subscription;
   public current_weather_icon!: String;
 
-  constructor(
-    protected signageService: SignageService,
-    private http: HttpClient = inject(HttpClient)
-  ) {}
+  constructor(protected signageService: SignageService) {}
 
   // Observable-based method to fetch weather data
   private fetchWeatherData(): Observable<any> {
