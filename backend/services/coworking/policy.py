@@ -42,7 +42,7 @@ OH_HOURS = {
         "SN137": [],
         "SN139": [],
         "SN141": [(time(hour=10), time(hour=17))],
-        "SN144": [(time(hour=11), time(hour=17))],
+        "SN144": [],
         "SN146": [],
         "SN147": [],
     },
