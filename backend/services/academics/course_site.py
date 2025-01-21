@@ -718,14 +718,22 @@ class CourseSiteService:
             title=course_site_entity.title,
             term_id=course_site_entity.term_id,
             section_ids=[section.id for section in course_site_entity.sections],
-            gtas=[
-                staff.user.to_public_model()
-                for staff in staff_entities
-                if staff.member_role == RosterRole.GTA
-            ],
-            utas=[
-                staff.user.to_public_model()
-                for staff in staff_entities
-                if staff.member_role == RosterRole.UTA
-            ],
+            gtas=list(
+                set(
+                    [
+                        staff.user.to_public_model()
+                        for staff in staff_entities
+                        if staff.member_role == RosterRole.GTA
+                    ]
+                )
+            ),
+            utas=list(
+                set(
+                    [
+                        staff.user.to_public_model()
+                        for staff in staff_entities
+                        if staff.member_role == RosterRole.UTA
+                    ]
+                )
+            ),
         )
