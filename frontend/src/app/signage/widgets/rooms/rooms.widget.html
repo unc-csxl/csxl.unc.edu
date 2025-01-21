@@ -7,27 +7,27 @@
   <!-- Coworking Information -->
   <mat-card-content class="full-size-content">
     <!-- Coworking Dropdowns -->
-    <h3 class="headline-medium room-title-margins">Pairing</h3>
+    <h3 class="headline-medium font-on-surface room-title-margins">Pairing</h3>
     <mat-chip-set>
       @for (room of ['SN139', 'SN144', 'SN146']; track room) {
-        <mat-chip [ngClass]="{ 'unavailable-room': !isRoomAvailable(room) }">{{room}}</mat-chip>
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{room}}</mat-chip>
       }
     </mat-chip-set>
-    <h3 class="headline-medium room-title-margins">Small Group (5)</h3>
+    <h3 class="headline-medium font-on-surface room-title-margins">Small Group (5)</h3>
     <mat-chip-set>
       @for (room of ['SN135', 'SN137']; track room) {
-        <mat-chip [ngClass]="{ 'unavailable-room': !isRoomAvailable(room) }">{{room}}</mat-chip>
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{room}}</mat-chip>
       }
     </mat-chip-set>
-    <h3 class="headline-medium room-title-margins">Large Group (7)</h3>
+    <h3 class="headline-medium font-on-surface room-title-margins">Large Group (7)</h3>
     <mat-chip-set>
       @for (room of ['SN141', 'SN147']; track room) {
-        <mat-chip [ngClass]="{ 'unavailable-room': !isRoomAvailable(room) }">{{room}}</mat-chip>
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{room}}</mat-chip>
       }
     </mat-chip-set>
   </mat-card-content>
 
   <mat-card-footer  class="title-medium font-variant footer">
-    Red rooms indicate currently reserved
+    Red rooms are currently reserved
   </mat-card-footer>
 </mat-card>

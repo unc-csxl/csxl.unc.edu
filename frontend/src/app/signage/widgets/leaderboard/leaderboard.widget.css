@@ -1,9 +1,8 @@
 .full-size-pane {
-  min-height: 464px !important;
-  min-width: 358px !important;
+  min-height: 100% !important;
+  min-width: 100% !important;
   border-color: transparent !important;
   margin: 0px !important;
-  margin-left: 20px !important;
 }
 
 .room-title {
@@ -67,11 +66,11 @@
 
 .item-div {
   text-align: center;
-  margin-top: 9px; 
+  margin-top: 9px;
 }
 
 .chip-margin {
-  margin-top: 15px; 
+  margin-top: 15px;
 }
 
 .account-circle-icon {

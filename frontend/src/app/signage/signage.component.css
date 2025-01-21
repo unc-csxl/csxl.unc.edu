@@ -73,13 +73,18 @@ div {
 }
 
 .leaderboard {
+  margin-left: 1.04%;
   width: 18.64%;
+  display: flex;
+  justify-content: center;
 }
 
 .office-hours {
   width: 43.125%;
   margin-left: 1.04%;
   margin-right: 2.03%;
+  display: flex;
+  justify-content: center;
 }
 
 .weather {

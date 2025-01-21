@@ -17,8 +17,7 @@ import {
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SignageService } from './signage.service';
-import { FastSignageData, SlowSignageData } from './signage.model';
-import { Observable, Subscription, timer } from 'rxjs';
+import { Observable, Subscription, timer, delay } from 'rxjs';
 import { fetchWeatherApi } from 'openmeteo';
 
 const REFRESH_FAST_SECONDS = 100000000;
@@ -63,6 +62,7 @@ export class SignageComponent implements OnInit, OnDestroy {
   public weatherData: any; // Store weather data
   private fastSubscription!: Subscription;
   private slowSubscription!: Subscription;
+  private dateSubscription!: Subscription;
   public current_weather_icon!: String;
 
   constructor(protected signageService: SignageService) {}
@@ -147,15 +147,25 @@ export class SignageComponent implements OnInit, OnDestroy {
         });
       }
     );
+
+    // Delay the observable emission so the clock updates on the minute
+    this.dateSubscription = timer(0, 60000)
+      .pipe(delay(60000 - (Date.now() % 60000)))
+      .subscribe(() => {
+        this.date = Date.now();
+      });
   }
 
   ngOnDestroy(): void {
+    // If statements needed here to prevent null exception
     if (this.fastSubscription) {
-      // If statements needed here to prevent null exception
       this.fastSubscription.unsubscribe();
     }
     if (this.slowSubscription) {
       this.slowSubscription.unsubscribe();
+    }
+    if (this.dateSubscription) {
+      this.dateSubscription.unsubscribe();
     }
   }
 }
