@@ -97,16 +97,44 @@ class UserService:
         Returns:
             list[User]: The list of users matching the query.
         """
-        statement = select(UserEntity)
-        criteria = or_(
-            UserEntity.first_name.ilike(f"%{query}%"),
-            UserEntity.last_name.ilike(f"%{query}%"),
-            UserEntity.onyen.ilike(f"%{query}%"),
-            UserEntity.email.ilike(f"%{query}%"),
-            cast(UserEntity.pid, String).ilike(f"%{query}%"),
+        # First attempt: Query for users by name, onyen, or PID from start of string
+        statement = (
+            select(UserEntity)
+            .where(
+                or_(
+                    func.concat(UserEntity.first_name, " ", UserEntity.last_name).ilike(
+                        f"{query}%"
+                    ),
+                    UserEntity.last_name.ilike(f"{query}%"),
+                    UserEntity.onyen.ilike(f"{query}%"),
+                    cast(UserEntity.pid, String).ilike(f"{query}%"),
+                )
+            )
+            .order_by(UserEntity.first_name, UserEntity.last_name)
+            .limit(50)
         )
-        statement = statement.where(criteria).limit(10)
-        entities = self._session.execute(statement).scalars()
+        entities = self._session.execute(statement).scalars().all()
+
+        # Second attempt: match in the middle of strings and also search email
+        if len(entities) == 0:
+            statement = (
+                select(UserEntity)
+                .where(
+                    or_(
+                        func.concat(
+                            UserEntity.first_name, " ", UserEntity.last_name
+                        ).ilike(f"%{query}%"),
+                        UserEntity.last_name.ilike(f"%{query}%"),
+                        UserEntity.onyen.ilike(f"%{query}%"),
+                        UserEntity.email.ilike(f"%{query}%"),
+                        cast(UserEntity.pid, String).ilike(f"%{query}%"),
+                    )
+                )
+                .order_by(UserEntity.first_name, UserEntity.last_name)
+                .limit(50)
+            )
+            entities = self._session.execute(statement).scalars().all()
+
         return [entity.to_model() for entity in entities]
 
     def list(

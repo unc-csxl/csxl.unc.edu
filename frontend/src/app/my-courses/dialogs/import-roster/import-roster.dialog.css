@@ -25,3 +25,11 @@ mat-form-field {
     margin-left: auto;
     margin-right: 16px;
 }
+
+.semibold {
+    font-weight: 500;
+}
+
+.section-selector {
+    margin-top: 16px;
+}
