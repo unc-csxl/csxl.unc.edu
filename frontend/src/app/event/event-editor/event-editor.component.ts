@@ -135,7 +135,10 @@ export class EventEditorComponent {
       eventToSubmit.id = id !== 'new' ? id : null;
       eventToSubmit.organization_slug = this.route.snapshot.params['orgid'];
       eventToSubmit.organizers = this.organizers;
-      if (this.eventForm.get('has_limit')?.value === false) {
+      if (
+        this.eventForm.get('has_limit')?.value === false ||
+        this.eventForm.get('internal_registration')?.value === false
+      ) {
         eventToSubmit.registration_limit = 999;
       }
       let submittedEvent = this.isNew()

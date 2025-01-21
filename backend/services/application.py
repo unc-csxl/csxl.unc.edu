@@ -65,7 +65,7 @@ class ApplicationService:
         # Retrieve any assignments, if made.
         # NOTE: This includes a hard-coded release date of 8/18.
         assignments = []
-        release_date = datetime(2024, 8, 18)
+        release_date = datetime(2025, 1, 9)
         if datetime.now() > release_date:
             assignments_query = (
                 select(HiringAssignmentEntity)

@@ -1,22 +1,138 @@
-
 .pane-header {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 #pane-divider {
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 .pane-content {
-    padding-top: 8px;
+  padding-top: 8px;
+  overflow-y: scroll;
 }
 .mat-mdc-chip-set {
-    height: 24px;
-    margin-top: 0px;
+  height: 24px;
+  margin-top: 0px;
 }
 .mat-mdc-chip {
-    height: 24px;
-    margin-top: 0px;
+  height: 24px;
+  margin-top: 0px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  height: 85vh;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  height: 85vh;
+  padding-right: 16px;
+}
+
+.queue-pane {
+  flex: 1 1 auto; /* Only take up needed space */
+
+  /* This CSS is absolute wizardry, which allows the pane to not
+      overflow on the bottom while also enabling scrolling... */
+  min-height: 0;
+  max-height: 100%;
+  max-width: 100%;
+  border-color: transparent !important;
+}
+
+.ta-facts-pane {
+  max-width: 100%;
+  border-color: transparent !important;
+}
+
+.facts-pane {
+  flex: 1 1 auto; /* Only take up needed space */
+
+  /* This CSS is absolute wizardry, which allows the pane to not
+        overflow on the bottom while also enabling scrolling... */
+  min-height: 0;
+  max-height: 100%;
+  max-width: 100%;
+  border-color: transparent !important;
+}
+
+.facts-pane-content {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start {
+  font-size: 24px;
+  background: #4786c6;
+  width: 36px;
+  height: 36px;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 8px;
+  margin-right: 8px;
+  padding-bottom: 0;
+  line-height: 36px;
+  border-radius: 100%;
+  color: white;
+}
+
+.pane-subtitle {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+strong {
+  font-weight: 500 !important;
+}
+
+.history-card {
+  margin: 0 !important;
+  margin-bottom: 12px !important;
+}
+
+@media only screen and (max-width: 1000px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .queue-pane {
+    flex: auto;
+
+    ::ng-deep .mat-mdc-card-outlined {
+      height: auto !important;
+    }
+
+    .mat-mdc-card-content {
+      height: auto !important;
+      overflow-y: auto !important;
+    }
+  }
 }

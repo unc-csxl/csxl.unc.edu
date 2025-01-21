@@ -36,6 +36,7 @@
       </mat-form-field>
       <!-- Term Start Field -->
       <mat-form-field appearance="outline" color="accent">
+        <mat-label>Term Start Date</mat-label>
         <input
           matInput
           type="datetime-local"
@@ -46,12 +47,35 @@
       </mat-form-field>
       <!-- Term End Field -->
       <mat-form-field appearance="outline" color="accent">
+        <mat-label>Term End Date</mat-label>
         <input
           matInput
           type="datetime-local"
           placeholder="End Date"
           formControlName="end"
           name="end"
+          required />
+      </mat-form-field>
+      <!-- Term Applications Open Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Term Applications Open Date</mat-label>
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="Start Date"
+          formControlName="applications_open"
+          name="applications_open"
+          required />
+      </mat-form-field>
+      <!-- Term Applications Close Field -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Term Applications Close Date</mat-label>
+        <input
+          matInput
+          type="datetime-local"
+          placeholder="End Date"
+          formControlName="applications_close"
+          name="applications_close"
           required />
       </mat-form-field>
     </mat-card-content>

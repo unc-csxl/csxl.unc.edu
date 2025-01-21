@@ -142,6 +142,8 @@ class TermService:
         term_entity.name = term.name
         term_entity.start = term.start
         term_entity.end = term.end
+        term_entity.applications_open = term.applications_open
+        term_entity.applications_close = term.applications_close
 
         # Commit changes
         self._session.commit()

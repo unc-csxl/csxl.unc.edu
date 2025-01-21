@@ -1,63 +1,63 @@
 .container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
 
 .right-column {
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    height: 91.5vh;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  height: 91.5vh;
 }
 
 .upcoming-pane {
-    flex: 1 1 auto; /* Only take up needed space */
+  flex: 1 1 auto; /* Only take up needed space */
 
-    /* This CSS is absolute wizardry, which allows the pane to not
+  /* This CSS is absolute wizardry, which allows the pane to not
     overflow on the bottom while also enabling scrolling... */
-    min-height: 0;
-    max-height: 100%;
-    max-width: 100%;
-    border-color: transparent !important;
+  min-height: 0;
+  max-height: 100%;
+  max-width: 100%;
+  border-color: transparent !important;
 }
 
 .upcoming-pane-content {
-    overflow-y: scroll !important;
-    height: 100%;
+  overflow-y: auto;
+  height: 100%;
 }
 
 .left-column {
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    height: 91.5vh;
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  height: 91.5vh;
 }
 
 .news-pane {
-    flex: 1 1 auto; /* Only take up needed space */
+  flex: 1 1 auto; /* Only take up needed space */
 
-    /* This CSS is absolute wizardry, which allows the pane to not
+  /* This CSS is absolute wizardry, which allows the pane to not
     overflow on the bottom while also enabling scrolling... */
-    min-height: 0;
-    max-height: 100%;
-    max-width: 100%;
-    border-color: transparent !important;
+  min-height: 0;
+  max-height: 100%;
+  max-width: 100%;
+  border-color: transparent !important;
 }
 
 .news-pane-content {
-    overflow-y: scroll !important;
-    height: 100%;
+  overflow-y: auto;
+  height: 100%;
 }
 
 ::ng-deep .mat-pane {
-    max-width: 100% !important;
+  max-width: 100% !important;
 }
 
 .mat-csxl-search-bar {
-    ::ng-deep .mat-mdc-card {
-        max-width: 100% !important;
-    }
+  ::ng-deep .mat-mdc-card {
+    max-width: 100% !important;
+  }
 }
 
 mat-chip {
@@ -67,59 +67,58 @@ mat-chip {
 }
 
 .mat-mdc-chip-avatar {
-    margin-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 .pagination-chip-set {
-    margin-top: 4px;
-    margin-bottom: 8px;
+  margin-top: 4px;
+  margin-bottom: 8px;
 }
 
 .mat-divider {
-    padding-bottom: 4px;
+  padding-bottom: 4px;
 }
 
 .date-header {
-    margin-top: 8px;
-    margin-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .no-events-text {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 mat-card-header {
-    flex-direction: column;
+  flex-direction: column;
 }
 
-
 .no-hover-chip-container {
-    --mdc-chip-focus-state-layer-color: transparent !important;
-    --mdc-chip-hover-state-layer-color: transparent !important;
+  --mdc-chip-focus-state-layer-color: transparent !important;
+  --mdc-chip-hover-state-layer-color: transparent !important;
 }
 
 .coworking-pane {
-    max-width: 100%;
-    border-color: transparent !important;
+  max-width: 100%;
+  border-color: transparent !important;
 }
 
 .reservation-card {
-    margin-left: 0px;
-    margin-right: 0px;
-    max-width: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+  max-width: 100%;
 
-    p {
-        margin-bottom: 0;
-    }
+  p {
+    margin-bottom: 0;
+  }
 }
 
 .none-buttons {
-    margin-left: -10px;
-    margin-bottom: 8px;
+  margin-left: -10px;
+  margin-bottom: 8px;
 }
 
 .reservation-card:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #upcoming-title {
@@ -127,38 +126,38 @@ mat-card-header {
 }
 
 .none-text {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 @media only screen and (max-width: 1000px) {
-    .container {
-        flex-direction: column-reverse;
-    }
-    
-    .left-column {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: auto;
+  .container {
+    flex-direction: column-reverse;
+  }
+
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .news-pane {
+    flex: auto;
+
+    ::ng-deep .mat-mdc-card-outlined {
+      height: auto !important;
     }
 
-    .right-column {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: auto;
-    }
-
-    .news-pane {
-        flex: auto;
-    
-        ::ng-deep .mat-mdc-card-outlined {
-            height: auto !important;
-        }
-    
-        .mat-mdc-card-content {
-            height: auto !important;
-            overflow-y: auto !important;
-        }
+    .mat-mdc-card-content {
+      height: auto !important;
+      overflow-y: auto !important;
     }
   }
+}
