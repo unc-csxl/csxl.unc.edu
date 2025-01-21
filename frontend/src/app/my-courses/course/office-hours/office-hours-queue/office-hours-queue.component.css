@@ -30,7 +30,7 @@
 .left-column {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 95%;
   height: 85vh;
 }
 
