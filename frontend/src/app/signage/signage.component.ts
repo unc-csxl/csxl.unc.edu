@@ -18,22 +18,9 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { SignageService } from './signage.service';
 import { Observable, Subscription, timer, delay } from 'rxjs';
-import { fetchWeatherApi } from 'openmeteo';
 
 const REFRESH_FAST_SECONDS = 100000000;
 const REFRESH_SLOW_MINUTES = 20;
-
-const params = {
-  latitude: 35.910259,
-  longitude: -79.055473,
-  current: ['temperature_2m', 'weather_code', 'wind_speed_10m'],
-  temperature_unit: 'fahrenheit',
-  wind_speed_unit: 'mph',
-  precipitation_unit: 'inch',
-  timezone: 'America/New_York',
-  forecast_days: 1
-};
-const url = 'https://api.open-meteo.com/v1/forecast';
 
 const weather_types: { [weather: string]: string } = {
   sunny: '/assets/sunny.png',
@@ -44,7 +31,8 @@ const weather_types: { [weather: string]: string } = {
   stormy: '/assets/stormy.png',
   overcast: '/assets/overcast.png',
   snowy: '/assets/snowy.png',
-  foggy: '/assets/foggy.png'
+  foggy: '/assets/foggy.png',
+  night: '/assets/night.png'
 };
 
 @Component({
@@ -59,36 +47,13 @@ export class SignageComponent implements OnInit, OnDestroy {
   };
 
   date: number = Date.now();
-  public weatherData: any; // Store weather data
+  public weatherData: any; // Store weather data for choosing correct icon
   private fastSubscription!: Subscription;
   private slowSubscription!: Subscription;
   private dateSubscription!: Subscription;
   public current_weather_icon!: String;
 
   constructor(protected signageService: SignageService) {}
-
-  // Observable-based method to fetch weather data
-  private fetchWeatherData(): Observable<any> {
-    return new Observable((observer) => {
-      fetchWeatherApi(url, params).then((responses) => {
-        const response = responses[0];
-        const utcOffsetSeconds = response.utcOffsetSeconds();
-        const current = response.current()!;
-
-        // Process the weather data
-        this.weatherData = {
-          current: {
-            time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
-            temperature2m: current.variables(0)!.value(),
-            weatherCode: current.variables(1)!.value(),
-            windSpeed10m: current.variables(2)!.value()
-          }
-        };
-
-        observer.next(this.weatherData); // Emit the data
-      });
-    });
-  }
 
   private assginWeatherIcon() {
     if (
@@ -123,10 +88,14 @@ export class SignageComponent implements OnInit, OnDestroy {
       this.weatherData.current.weatherCode == 86
     ) {
       this.current_weather_icon = weather_types['snowy'];
-    } else if (this.weatherData.current.windSpeed10m >= 15) {
-      this.current_weather_icon = weather_types['sunny_windy'];
+    } else if (this.weatherData.current.is_day == 1) {
+      if (this.weatherData.current.windSpeed10m >= 15) {
+        this.current_weather_icon = weather_types['sunny_windy'];
+      } else {
+        this.current_weather_icon = weather_types['sunny'];
+      }
     } else {
-      this.current_weather_icon = weather_types['sunny'];
+      this.current_weather_icon = weather_types['night'];
     }
   }
 
@@ -140,7 +109,7 @@ export class SignageComponent implements OnInit, OnDestroy {
     this.slowSubscription = timer(0, REFRESH_SLOW_MINUTES * 60000).subscribe(
       () => {
         this.signageService.getSlowData();
-        this.fetchWeatherData().subscribe((data) => {
+        this.signageService.fetchWeatherData().subscribe((data) => {
           this.weatherData = data;
           this.assginWeatherIcon();
           console.log('Weather Data: ', this.weatherData);
