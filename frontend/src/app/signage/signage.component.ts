@@ -90,8 +90,7 @@ export class SignageComponent implements OnInit, OnDestroy {
       } else {
         this.current_weather_icon = weather_types['partly_cloudy'];
       }
-    }
-    if (this.weatherData.current.windSpeed10m >= 15) {
+    } else if (this.weatherData.current.windSpeed10m >= 15) {
       this.current_weather_icon = weather_types['sunny_windy'];
     } else {
       this.current_weather_icon = weather_types['sunny'];
@@ -111,7 +110,6 @@ export class SignageComponent implements OnInit, OnDestroy {
         this.signageService.fetchWeatherData().subscribe((data) => {
           this.weatherData = data;
           this.assginWeatherIcon();
-          console.log('Weather Data: ', this.weatherData);
         });
       }
     );
