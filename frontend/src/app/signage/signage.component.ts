@@ -68,12 +68,6 @@ export class SignageComponent implements OnInit, OnDestroy {
       this.weatherData.current.weatherCode <= 49
     ) {
       this.current_weather_icon = weather_types['foggy'];
-    } else if (this.weatherData.current.weatherCode == 2) {
-      if (this.weatherData.current.windSpeed10m >= 15) {
-        this.current_weather_icon = weather_types['partly_cloudy_windy'];
-      } else {
-        this.current_weather_icon = weather_types['partly_cloudy'];
-      }
     } else if (
       (this.weatherData.current.weatherCode >= 60 &&
         this.weatherData.current.weatherCode <= 66) ||
@@ -88,14 +82,19 @@ export class SignageComponent implements OnInit, OnDestroy {
       this.weatherData.current.weatherCode == 86
     ) {
       this.current_weather_icon = weather_types['snowy'];
-    } else if (this.weatherData.current.is_day == 1) {
-      if (this.weatherData.current.windSpeed10m >= 15) {
-        this.current_weather_icon = weather_types['sunny_windy'];
-      } else {
-        this.current_weather_icon = weather_types['sunny'];
-      }
-    } else {
+    } else if (this.weatherData.current.is_day == 0) {
       this.current_weather_icon = weather_types['night'];
+    } else if (this.weatherData.current.weatherCode == 2) {
+      if (this.weatherData.current.windSpeed10m >= 15) {
+        this.current_weather_icon = weather_types['partly_cloudy_windy'];
+      } else {
+        this.current_weather_icon = weather_types['partly_cloudy'];
+      }
+    }
+    if (this.weatherData.current.windSpeed10m >= 15) {
+      this.current_weather_icon = weather_types['sunny_windy'];
+    } else {
+      this.current_weather_icon = weather_types['sunny'];
     }
   }
 
