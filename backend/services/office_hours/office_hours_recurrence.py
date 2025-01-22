@@ -51,7 +51,7 @@ class OfficeHoursRecurrenceService:
         Creates new office hours events for recurring events.
         """
         # Check permissions
-        self._office_hours_svc._check_site_permissions(user, site_id)
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
         # Create recurrence entity
         recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_new_model(
@@ -134,6 +134,8 @@ class OfficeHoursRecurrenceService:
                 "Cannot create any with the given recurrence pattern before the recurrence end date."
             )
 
+        return result
+
     def delete_recurring(self, user: User, site_id: int, event_id: int):
         """
         Deletes an existing office hours event and future events in the event's recurrence pattern.
@@ -147,7 +149,7 @@ class OfficeHoursRecurrenceService:
             )
 
         # Check permissions
-        self._office_hours_svc._check_site_permissions(user, site_id)
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
         # Find future events in recurrence pattern
         start_date = (
