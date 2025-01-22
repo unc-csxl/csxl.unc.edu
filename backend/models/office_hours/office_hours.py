@@ -1,9 +1,6 @@
-from pydantic import BaseModel
-from datetime import datetime, date
+from datetime import datetime
 from enum import Enum
-
-from ..room import Room, RoomPartial
-from .course_site import CourseSite
+from pydantic import BaseModel, field_validator, ValidationInfo
 from .event_type import OfficeHoursEventModeType, OfficeHoursEventType
 
 __authors__ = [
@@ -48,6 +45,23 @@ class NewOfficeHours(BaseModel):
     course_site_id: int
     room_id: str
     recurrence_pattern_id: int | None
+
+    @field_validator("start_time", "end_time", mode="before")
+    @classmethod
+    def remove_timezone(cls, value: datetime):
+        if type(value) == str:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            dt = dt.astimezone(ZoneInfo("America/New_York"))
+            dt = dt.replace(tzinfo=None)
+            return dt
+        return value
+
+    @field_validator("end_time")
+    @classmethod
+    def check_end_greater_than_start(cls, v: datetime, info: ValidationInfo):
+        if v <= info.data["start_time"]:
+            raise ValueError("end must be greater than start")
+        return v
 
 
 class OfficeHours(NewOfficeHours):

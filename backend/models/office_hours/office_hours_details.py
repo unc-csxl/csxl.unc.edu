@@ -2,7 +2,8 @@ from ...models.office_hours.office_hours_recurrence_pattern import (
     OfficeHoursRecurrencePattern,
 )
 from .ticket import OfficeHoursTicket
-from .office_hours import OfficeHours, CourseSite
+from .office_hours import OfficeHours
+from .course_site import CourseSite
 from ..room import Room
 
 __authors__ = [
