@@ -31,7 +31,7 @@ from ...entities.office_hours.user_created_tickets_table import (
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
-__authors__ = ["Ajay Gandecha", "Kris Jordan"]
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 

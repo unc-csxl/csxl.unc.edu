@@ -23,7 +23,6 @@ import {
   OfficeHourTicketOverviewJson,
   TermOverview,
   TermOverviewJson,
-  parseOfficeHourEventOverviewJson,
   parseOfficeHourEventOverviewJsonList,
   parseOfficeHourGetHelpOverviewJson,
   parseOfficeHourQueueOverview,
@@ -37,10 +36,20 @@ import {
   parseOfficeHoursJson,
   NewOfficeHours,
   UpdatedCourseSite,
-  CourseSiteOverview
+  NewOfficeHoursRecurrencePattern
 } from './my-courses.model';
-import { Observable, map, tap } from 'rxjs';
-import { Paginator } from '../pagination';
+import { Observable, map } from 'rxjs';
+
+/** Enum for days of the week */
+export enum Weekday {
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday'
+}
 
 @Injectable({
   providedIn: 'root'
@@ -112,9 +121,9 @@ export class MyCoursesService {
     courseSiteId: string
   ): Observable<OfficeHourEventOverview[]> {
     return this.http
-      .get<OfficeHourEventOverviewJson[]>(
-        `/api/my-courses/${courseSiteId}/oh-events/current`
-      )
+      .get<
+        OfficeHourEventOverviewJson[]
+      >(`/api/my-courses/${courseSiteId}/oh-events/current`)
       .pipe(map(parseOfficeHourEventOverviewJsonList));
   }
 
@@ -291,6 +300,28 @@ export class MyCoursesService {
   }
 
   /**
+   * Create office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to create.
+   * @returns {Observable<OfficeHours>}
+   */
+  createRecurringOfficeHours(
+    siteId: number,
+    officeHours: NewOfficeHours,
+    recurrencePattern: NewOfficeHoursRecurrencePattern
+  ): Observable<OfficeHours[]> {
+    return this.http
+      .post<
+        OfficeHoursJson[]
+      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrencePattern })
+      .pipe(
+        map((officeHoursJSON) => {
+          return officeHoursJSON.map(parseOfficeHoursJson);
+        })
+      );
+  }
+
+  /**
    * Update office hours.
    * @param siteId: ID of the site to look for office hours.
    * @param officeHours: Office hours object to update.
@@ -312,5 +343,16 @@ export class MyCoursesService {
    */
   deleteOfficeHours(siteId: number, officeHoursId: number) {
     return this.http.delete(`/api/office-hours/${siteId}/${officeHoursId}`);
+  }
+
+  /**
+   * Delete office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHoursId: ID of the office hours.
+   */
+  deleteRecurringOfficeHours(siteId: number, officeHoursId: number) {
+    return this.http.delete(
+      `/api/office-hours/${siteId}/${officeHoursId}/recurring`
+    );
   }
 }
