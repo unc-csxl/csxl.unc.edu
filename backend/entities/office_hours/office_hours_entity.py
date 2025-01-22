@@ -37,12 +37,14 @@ class OfficeHoursEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Type of event
     type: Mapped[OfficeHoursEventType] = mapped_column(
-        SQLAlchemyEnum(OfficeHoursEventType), nullable=False
+        SQLAlchemyEnum(OfficeHoursEventType, name="office_hours__event__type"),
+        nullable=False,
     )
 
     # Mode of event
     mode: Mapped[OfficeHoursEventModeType] = mapped_column(
-        SQLAlchemyEnum(OfficeHoursEventModeType), nullable=False
+        SQLAlchemyEnum(OfficeHoursEventModeType, name="office_hours__event__mode"),
+        nullable=False,
     )
 
     # Description of event
