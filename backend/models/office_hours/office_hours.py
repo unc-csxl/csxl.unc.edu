@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from enum import Enum
 from pydantic import BaseModel, field_validator, ValidationInfo
 from .event_type import OfficeHoursEventModeType, OfficeHoursEventType
