@@ -77,3 +77,9 @@
   /* width: 34px;
   height: 33px; */
 }
+
+.spinner {
+  position: absolute;
+  right: 3%;
+  bottom: 2%;
+}

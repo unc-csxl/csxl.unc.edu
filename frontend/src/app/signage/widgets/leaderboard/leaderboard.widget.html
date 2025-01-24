@@ -9,37 +9,40 @@
     <h2 class="body-medium font-on-surface sub-header">Based on number of check-ins</h2>
     <h2 class="body-medium font-on-surface sub-header">Resets at the start of each month</h2>
     <!-- Coworking Dropdowns -->
-    @for(profile of profiles; track $index) {
+    @for(i of shown_indicies; track $index) {
       <mat-chip-set class="chip-margin">
-        @if($index === 0) {
+        @if(i === 0) {
           <mat-list-item class="item primary-fixed-background-leaderboard">
-            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
-        @else if($index === 1) {
+        @else if(i === 1) {
           <mat-list-item class="item primary-background">
-            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
-        @else if($index === 2) {
+        @else if(i === 2) {
           <mat-list-item class="item primary-fixed-dim-background-leaderboard">
-            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
         @else {
           <mat-list-item class="item secondary-container-background">
-            <span matListItemIcon class="label-large"><div class="item-div">{{$index + 1}}</div></span>
+            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
         <mat-chip class="profile-chip label-large">
-          @if(profile.github_avatar) {
-            <img id="profile-icon" matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
+          @if(profiles[i].github_avatar) {
+            <img id="profile-icon" matChipAvatar [src]="profiles[i].github_avatar" alt="GitHub Avatar"/>
           } @else {
             <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
           }
-          {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
+          {{ profiles[i].first_name !== '' ? profiles[i].first_name + ' ' + profiles[i].last_name : 'Profile' }}
         </mat-chip>
       </mat-chip-set>
+    }
+    @if (profiles.length > 5) {
+      <page-spinner class="spinner" [time]="30" (timer_end)="switch_page()"></page-spinner>
     }
   </mat-card-content>
 </mat-card>
