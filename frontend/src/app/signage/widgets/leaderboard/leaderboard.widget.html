@@ -12,32 +12,36 @@
     @for(i of shown_indicies; track $index) {
       <mat-chip-set class="chip-margin">
         @if(i === 0) {
-          <mat-list-item class="item primary-fixed-background-leaderboard">
+          <mat-list-item class="position primary-fixed-background-leaderboard">
             <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
         @else if(i === 1) {
-          <mat-list-item class="item primary-background">
+          <mat-list-item class="position primary-background">
             <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
         @else if(i === 2) {
-          <mat-list-item class="item primary-fixed-dim-background-leaderboard">
+          <mat-list-item class="position primary-fixed-dim-background-leaderboard">
             <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
         @else {
-          <mat-list-item class="item secondary-container-background">
+          <mat-list-item class="position secondary-container-background">
             <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
           </mat-list-item>
         }
-        <mat-chip class="profile-chip label-large">
+        <mat-chip class="leaderboard-chips label-large">
           @if(profiles[i].github_avatar) {
-            <img id="profile-icon" matChipAvatar [src]="profiles[i].github_avatar" alt="GitHub Avatar"/>
+            <img class="account-circle-icon" matChipAvatar [src]="profiles[i].github_avatar" alt="GitHub Avatar"/>
           } @else {
             <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
           }
+          @if (profiles[i].first_name.length + profiles[i].last_name.length > 20){
+          {{ profiles[i].first_name !== '' ? profiles[i].first_name + ' ' + profiles[i].last_name[0] : 'Profile' }}
+          } @else {
           {{ profiles[i].first_name !== '' ? profiles[i].first_name + ' ' + profiles[i].last_name : 'Profile' }}
+          }
         </mat-chip>
       </mat-chip-set>
     }

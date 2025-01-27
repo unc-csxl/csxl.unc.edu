@@ -45,22 +45,14 @@
   width: 186px !important;
   height: 44px !important;
   text-align: center !important;
-  border-radius: 100% !important;
 }
 
-.desktop-profile-chips {
-  display: none;
-}
-
-.item {
+.position {
   font-size: 12px;
-  width: 37px;
-  height: 37px;
-  margin-left: 38px;
-  margin-right: 12px;
-  margin-top: 10px;
-  padding-bottom: 0;
-  line-height: 36px;
+  width: 12.97%;
+  height: 82.2%;
+  margin-right: 5%;
+  margin-top: 1%;
   border-radius: 100%;
 }
 
@@ -70,16 +62,28 @@
 }
 
 .chip-margin {
-  margin-top: 15px;
+  margin-top: 4%;
+  margin-left: 15%;
 }
 
 .account-circle-icon {
-  /* width: 34px;
-  height: 33px; */
+  /* width: 34px !important;
+  height: 33px !important; */
 }
 
 .spinner {
   position: absolute;
   right: 3%;
   bottom: 2%;
+}
+
+.leaderboard-chips {
+  display: flex;
+  --mdc-chip-container-shape-family: rounded !important;
+  --mdc-chip-container-shape-radius: 16px 16px 16px 16px !important;
+  width: 66%;
+  height: 37px;
+  align-items: center;
+  /* --mdc-chip-with-avatar-avatar-shape-family: rounded !important;
+  --mdc-chip-with-avatar-avatar-shape-radius: 14px 14px 14px 14px !important; */
 }
