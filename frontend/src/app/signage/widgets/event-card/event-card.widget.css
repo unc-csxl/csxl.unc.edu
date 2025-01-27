@@ -60,9 +60,9 @@
   max-height: 82%;
   max-width: 90%;
   padding-top: 8px;
-  display: -webkit-box;           /* This is needed for the 5 line ellipsis cutoff */
-  -webkit-box-orient: vertical;   
-  -webkit-line-clamp: 6;          
+  display: -webkit-box; /* This is needed for the 5 line ellipsis cutoff */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
@@ -113,4 +113,14 @@
   margin-bottom: 0.5rem;
   align-items: center;
   justify-content: center;
+}
+
+.spinner {
+  position: absolute;
+  right: 3%;
+  bottom: 3%;
+}
+
+.empty-text {
+  text-align: center;
 }
