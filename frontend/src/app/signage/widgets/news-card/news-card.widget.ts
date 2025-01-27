@@ -6,7 +6,7 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ArticleOverview } from '../../../welcome/welcome.model';
 
 @Component({
@@ -14,8 +14,17 @@ import { ArticleOverview } from '../../../welcome/welcome.model';
   templateUrl: './news-card.widget.html',
   styleUrl: './news-card.widget.css'
 })
-export class NewsCardWidget {
-  @Input() article!: ArticleOverview;
+export class NewsCardWidget implements OnChanges {
+  @Input() articles!: ArticleOverview[];
+  shown_article = 0;
 
-  constructor() {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['articles']) {
+      this.shown_article %= this.articles.length;
+    }
+  }
+
+  next_event() {
+    this.shown_article = (this.shown_article + 1) % this.articles.length;
+  }
 }

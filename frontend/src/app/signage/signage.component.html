@@ -20,7 +20,7 @@
         <div class='row'>
             <occupancy [seat_availability]="signageService.fastData().seat_availability" class='occupancy'></occupancy>
             <rooms [availableRooms]="signageService.fastData().available_rooms" class='rooms'></rooms>
-            <news-card [article]="signageService.slowData().newest_news[0]" class='news'></news-card>
+            <news-card [articles]="signageService.slowData().newest_news" class='news'></news-card>
         </div>
         <div class='row'>
             <event-card [events]="signageService.slowData().newest_events" class='events'></event-card>

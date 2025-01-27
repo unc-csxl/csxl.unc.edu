@@ -44,12 +44,12 @@ mat-card-actions {
 
 
 .description {
-    max-height: 160px;
-    max-width: 600px;
+    max-height: 80%;
+    max-width: 90%;
     padding-top: 8px;
     display: -webkit-box;           /* This is needed for the 5 line ellipsis cutoff */
     -webkit-box-orient: vertical;   
-    -webkit-line-clamp: 5;          
+    -webkit-line-clamp: 6;          
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
@@ -102,11 +102,12 @@ mat-card-actions {
 
 }
 
-@media only screen and (max-width: 800px) {
-    .row {
-        flex-direction: column;
-    }
-    .news-feature-image {
-        margin-right: 12px;
-    }
-}
+.empty-text {
+    text-align: center;
+  }
+
+.spinner {
+    position: absolute;
+    right: 2.5%;
+    bottom: 2.5%;
+  }

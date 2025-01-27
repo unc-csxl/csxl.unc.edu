@@ -2,41 +2,47 @@
   <mat-card-header class="news-header">
     <mat-card-title class="display-medium news-title">Recent News</mat-card-title>
   </mat-card-header>
+  @if (articles.length > 0) {
   <div class="row">
-    <img class="news-feature-image" [src]="article.image_url" />
+    <img class="news-feature-image" [src]="articles[shown_article].image_url" />
     <div class="column">
       <mat-card-header>
         <mat-card-title class="headline-large">{{
-          article.title
+          articles[shown_article].title
         }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <p class="headline-small">
-          {{ article.published | date: 'mediumDate' }}
+          {{ articles[shown_article].published | date: 'mediumDate' }}
         </p>
 
         <mat-chip-set class="organization-chip-set">
           <!-- Organization chip -->
-          @if(article.organization_slug) {
+          @if(articles[shown_article].organization_slug) {
           <mat-chip-row
             id="organization-chip"
-            [routerLink]="'/organizations/' + article.organization_slug">
+            [routerLink]="'/organizations/' + articles[shown_article].organization_slug">
             <img
               class="profile-icon"
               matChipAvatar
-              [src]="article.organization_logo" />
-            {{ article.organization_name }}
+              [src]="articles[shown_article].organization_logo" />
+            {{ articles[shown_article].organization_name }}
           </mat-chip-row>
           }
         </mat-chip-set>
-
         <p class="description headline-small">
-          {{ article.synopsis + "The cat danced gracefully across the moonlit floor, its paws making soft tapping sounds on the wooden planks. A bird with bright purple feathers landed on the old oak tree, singing a song that echoed through the night air. She accidentally spilled coffee on her favorite book but didn’t mind, as the warm aroma filled the room with comfort." }}
+          {{ articles[shown_article].synopsis }}
         </p>
       </mat-card-content>
     </div>
   </div>
+  @if (articles.length > 1) {
+    <page-spinner class="spinner" [time]="30" (timer_end)="next_event()"></page-spinner>
+  }
   <mat-card-footer class="title-medium font-variant news-footer">
     Read more at csxl.unc.edu/coworking
   </mat-card-footer>
+  } @else {
+    <p class="headline-medium font-primary empty-text">No recent news. Check back later.</p>
+  }
 </mat-card>
