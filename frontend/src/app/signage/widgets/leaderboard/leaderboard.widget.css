@@ -80,7 +80,7 @@
 .leaderboard-chips {
   display: flex;
   --mdc-chip-container-shape-family: rounded !important;
-  --mdc-chip-container-shape-radius: 16px 16px 16px 16px !important;
+  --mdc-chip-container-shape-radius: 20px !important;
   width: 66%;
   height: 37px;
   align-items: center;
