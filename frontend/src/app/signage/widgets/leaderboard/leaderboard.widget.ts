@@ -20,7 +20,7 @@ export class LeaderboardWidget implements OnChanges {
   /** Inputs and outputs go here */
   @Input() profiles: PublicProfile[] = []; // Should be a max of 10 elements
   shown_indicies: number[] = [
-    ...Array(this.profiles.length > 5 ? 5 : this.profiles.length).keys()
+    ...Array(Math.min(5, this.profiles.length)).keys()
   ];
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -31,7 +31,7 @@ export class LeaderboardWidget implements OnChanges {
     ) {
       // Only run this if there is less than 5 on the leaderboard right now
       this.shown_indicies = [
-        ...Array(this.profiles.length > 5 ? 5 : this.profiles.length).keys()
+        ...Array(Math.min(5, this.profiles.length)).keys()
       ];
     }
   }
@@ -40,9 +40,7 @@ export class LeaderboardWidget implements OnChanges {
     if (this.shown_indicies.includes(1)) {
       // Generates an array of numbers 5 to length of profile
       this.shown_indicies = [
-        ...Array(
-          this.profiles.length >= 10 ? 5 : this.profiles.length - 5
-        ).keys()
+        ...Array(Math.min(5, this.profiles.length - 5)).keys()
       ].map((i) => i + 5);
     } else {
       // At this point we can assume that the array is larger than 5 elements
