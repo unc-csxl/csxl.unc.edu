@@ -3,6 +3,7 @@
  * from the components.
  *
  * @author Will Zahrt
+ * @author Andrew Lockard
  * @copyright 2024
  * @license MIT
  */
@@ -15,6 +16,7 @@ import {
   FastSignageDataJson,
   SlowSignageData,
   SlowSignageDataJson,
+  WeatherData,
   parseFastSignageDataJson,
   parseSlowSignageDataJson
 } from './signage.model';
@@ -51,7 +53,13 @@ export class SignageService implements OnInit {
     announcement_titles: []
   });
   public slowData = this.slowDataSignal.asReadonly();
-  private weatherData: any; // Store weather data to pass to component
+  private weatherDataSignal: WritableSignal<WeatherData> = signal({
+    temperature2m: 100,
+    isDay: 1,
+    weatherCode: 0,
+    windSpeed10m: 0
+  });
+  public weatherData = this.weatherDataSignal.asReadonly();
 
   constructor(protected http: HttpClient) {}
 
@@ -73,26 +81,18 @@ export class SignageService implements OnInit {
       });
   }
 
-  // Observable-based method to fetch weather data
-  fetchWeatherData(): Observable<any> {
-    return new Observable((observer) => {
-      fetchWeatherApi(url, params).then((responses) => {
-        const response = responses[0];
-        const utcOffsetSeconds = response.utcOffsetSeconds();
-        const current = response.current()!;
+  fetchWeatherData() {
+    fetchWeatherApi(url, params).then((responses) => {
+      const response = responses[0];
+      const utcOffsetSeconds = response.utcOffsetSeconds();
+      const current = response.current()!;
 
-        // Process the weather data
-        this.weatherData = {
-          current: {
-            time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
-            temperature2m: current.variables(0)!.value(),
-            isDay: current.variables(1)!.value(),
-            weatherCode: current.variables(2)!.value(),
-            windSpeed10m: current.variables(3)!.value()
-          }
-        };
-
-        observer.next(this.weatherData); // Emit the data
+      // Process the weather data
+      this.weatherDataSignal.set({
+        temperature2m: current.variables(0)!.value(),
+        isDay: current.variables(1)!.value(),
+        weatherCode: current.variables(2)!.value(),
+        windSpeed10m: current.variables(3)!.value()
       });
     });
   }
@@ -100,5 +100,6 @@ export class SignageService implements OnInit {
   ngOnInit(): void {
     this.getSlowData();
     this.getFastData();
+    this.fetchWeatherData();
   }
 }
