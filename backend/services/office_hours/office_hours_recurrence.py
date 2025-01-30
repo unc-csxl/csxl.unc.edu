@@ -16,11 +16,12 @@ from ...entities.office_hours import (
     OfficeHoursEntity,
 )
 
-from ...entities.office_hours.office_hours_recurrence_pattern_entity import (
-    OfficeHoursRecurrencePatternEntity,
-)
+# from ...entities.office_hours.office_hours_recurrence_pattern_entity import (
+#     OfficeHoursRecurrencePatternEntity,
+# )
 from ...models.office_hours.office_hours_recurrence_pattern import (
     NewOfficeHoursRecurrencePattern,
+    OfficeHoursRecurrencePattern,
 )
 
 
@@ -54,7 +55,8 @@ class OfficeHoursRecurrenceService:
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
         # Create recurrence entity
-        recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_new_model(
+
+        recurrence_pattern_entity = OfficeHoursRecurrencePattern.model_validate(
             recurrence_pattern
         )
         self._session.add(recurrence_pattern_entity)

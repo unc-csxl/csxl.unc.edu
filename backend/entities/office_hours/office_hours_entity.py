@@ -1,5 +1,6 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Office Hours."""
 
+from typing import TYPE_CHECKING
 from datetime import datetime
 from typing import Self
 from sqlalchemy import DateTime, ForeignKey, Integer, String
@@ -14,6 +15,13 @@ from ...models.office_hours.event_type import (
 
 from ..entity_base import EntityBase
 from sqlalchemy import Enum as SQLAlchemyEnum
+
+
+if TYPE_CHECKING:
+    from ...models.office_hours.office_hours_recurrence_pattern import (
+        OfficeHoursRecurrencePattern,
+    )
+
 
 __authors__ = [
     "Ajay Gandecha",
@@ -70,7 +78,7 @@ class OfficeHoursEntity(EntityBase):
     recurrence_pattern_id: Mapped[int] = mapped_column(
         ForeignKey("office_hours_recurrence_pattern.id"), nullable=True
     )
-    recurrence_pattern: Mapped["OfficeHoursRecurrencePatternEntity"] = relationship(
+    recurrence_pattern: Mapped["OfficeHoursRecurrencePattern"] = relationship(
         back_populates="office_hours"
     )
 

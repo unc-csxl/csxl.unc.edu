@@ -14,9 +14,10 @@ from ....entities.office_hours.office_hours_entity import OfficeHoursEntity
 from ....entities.office_hours.course_site_entity import CourseSiteEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ....entities.academics.section_entity import SectionEntity
-from ....entities.office_hours.office_hours_recurrence_pattern_entity import (
-    OfficeHoursRecurrencePatternEntity,
-)
+
+# from ....entities.office_hours.office_hours_recurrence_pattern_entity import (
+#     OfficeHoursRecurrencePatternEntity,
+# )
 
 
 from ....models.office_hours.office_hours_recurrence_pattern import (
@@ -319,11 +320,11 @@ def insert_fake_data(session: Session):
     session.commit()
 
     # Step 3: Add office hours to database
-    for pattern in recurrence_patterns:
-        recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_model(
-            pattern
-        )
-        session.add(recurrence_pattern_entity)
+    # for pattern in recurrence_patterns:
+    #     recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_model(
+    #         pattern
+    #     )
+    #     session.add(recurrence_pattern_entity)
 
     for oh in office_hours:
         office_hours_entity = OfficeHoursEntity.from_model(oh)
@@ -336,12 +337,12 @@ def insert_fake_data(session: Session):
         len(office_hours) + 1,
     )
 
-    reset_table_id_seq(
-        session,
-        OfficeHoursRecurrencePatternEntity,
-        OfficeHoursRecurrencePatternEntity.id,
-        len(recurrence_patterns) + 1,
-    )
+    # reset_table_id_seq(
+    #     session,
+    #     OfficeHoursRecurrencePatternEntity,
+    #     OfficeHoursRecurrencePatternEntity.id,
+    #     len(recurrence_patterns) + 1,
+    # )
 
     session.commit()
 

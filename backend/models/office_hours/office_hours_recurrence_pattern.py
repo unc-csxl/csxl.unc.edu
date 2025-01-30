@@ -1,13 +1,39 @@
+from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from pydantic import BaseModel, field_validator, ValidationInfo
+from sqlmodel import SQLModel, Field, Relationship
+from datetime import date
+
+if TYPE_CHECKING:
+    from ...entities.office_hours.office_hours_entity import OfficeHoursEntity
+
 
 __authors__ = ["Jade Keegan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
-class NewOfficeHoursRecurrencePattern(BaseModel):
+class OfficeHoursRecurrencePatternBase(SQLModel):
+    start_date: date = Field(nullable=False)
+    end_date: date = Field(nullable=False)
+    recur_monday: bool = Field(default=False, nullable=False)
+    recur_tuesday: bool = Field(default=False, nullable=False)
+    recur_wednesday: bool = Field(default=False, nullable=False)
+    recur_thursday: bool = Field(default=False, nullable=False)
+    recur_friday: bool = Field(default=False, nullable=False)
+    recur_saturday: bool = Field(default=False, nullable=False)
+    recur_sunday: bool = Field(default=False, nullable=False)
+
+
+class OfficeHoursRecurrencePattern(OfficeHoursRecurrencePatternBase, table=True):
+    id: int = Field(primary_key=True)
+    office_hours: list["OfficeHoursEntity"] = Relationship(
+        back_populates="recurrence_pattern", cascade_delete=True
+    )
+
+
+class NewOfficeHoursRecurrencePattern(OfficeHoursRecurrencePatternBase):
     """
     Pydantic model to represent new office hours recurrence pattern.
 
@@ -15,16 +41,6 @@ class NewOfficeHoursRecurrencePattern(BaseModel):
     defines the shape of the office hours recurrence pattern table in the
     PostgreSQL database.
     """
-
-    start_date: datetime
-    end_date: datetime
-    recur_monday: bool
-    recur_tuesday: bool
-    recur_wednesday: bool
-    recur_thursday: bool
-    recur_friday: bool
-    recur_saturday: bool
-    recur_sunday: bool
 
     @field_validator("start_date", "end_date", mode="before")
     @classmethod
@@ -44,13 +60,13 @@ class NewOfficeHoursRecurrencePattern(BaseModel):
         return v
 
 
-class OfficeHoursRecurrencePattern(NewOfficeHoursRecurrencePattern):
-    """
-    Pydantic model to represent office hours recurrence pattern.
+# class OfficeHoursRecurrencePattern(NewOfficeHoursRecurrencePattern):
+#     """
+#     Pydantic model to represent office hours recurrence pattern.
 
-    This model is based on the `OfficeHoursRecurrencePatternEntity` model, which
-    defines the shape of the office hours recurrence pattern table in the
-    PostgreSQL database.
-    """
+#     This model is based on the `OfficeHoursRecurrencePatternEntity` model, which
+#     defines the shape of the office hours recurrence pattern table in the
+#     PostgreSQL database.
+#     """
 
-    id: int
+#     id: int

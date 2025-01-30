@@ -35,6 +35,10 @@ from .article_author_entity import article_author_table
 from .academics.hiring.hiring_assignment_entity import HiringAssignmentEntity
 from .academics.hiring.hiring_level_entity import HiringLevelEntity
 
+from ..models.office_hours.office_hours_recurrence_pattern import (
+    OfficeHoursRecurrencePattern,
+)
+
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
