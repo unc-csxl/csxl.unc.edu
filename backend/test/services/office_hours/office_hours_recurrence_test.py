@@ -86,6 +86,21 @@ def test_create_recurring_oh_event_invalid_recurrence_end(
         pytest.fail()
 
 
+def test_update_recurring_oh_event_instructor(
+    oh_recurrence_svc: OfficeHoursRecurrenceService,
+):
+    """Ensures that instructors can modfy recurring office hours events."""
+    modified_events = oh_recurrence_svc.update_recurring(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        office_hours_data.first_recurring_event,
+        office_hours_data.updated_recurrence_pattern,
+    )
+
+    assert len(modified_events) == 11
+    assert modified_events[0].recurrence_pattern_id is not None
+
+
 def test_delete_recurring_oh_event_instructor(
     oh_recurrence_svc: OfficeHoursRecurrenceService,
 ):

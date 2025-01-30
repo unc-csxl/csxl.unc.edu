@@ -534,6 +534,18 @@ new_recurrence_pattern = NewOfficeHoursRecurrencePattern(
     recur_sunday=True,
 )
 
+updated_recurrence_pattern = NewOfficeHoursRecurrencePattern(
+    start_date=datetime.now(),
+    end_date=datetime.now() + timedelta(days=14),
+    recur_monday=True,
+    recur_tuesday=False,
+    recur_wednesday=True,
+    recur_thursday=False,
+    recur_friday=True,
+    recur_saturday=True,
+    recur_sunday=True,
+)
+
 invalid_recurrence_pattern_days = NewOfficeHoursRecurrencePattern(
     start_date=datetime.now(),
     end_date=datetime.now() + timedelta(days=14),

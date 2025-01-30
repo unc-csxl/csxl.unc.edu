@@ -66,6 +66,8 @@ export class OfficeHoursEditorComponent {
     [Weekday.Sunday]: false
   };
 
+  public updateRecurrencePattern: boolean = false;
+
   /** Custom date range validator. */
   dateRangeValidator: ValidatorFn = (
     control: AbstractControl
@@ -160,6 +162,13 @@ export class OfficeHoursEditorComponent {
 
     /** Set form data */
     let currentTermEndDate = this.myCoursesService.currentTerms()[0].end;
+    let recurrenceEndDate = new Date(
+      this.officeHours.recurrence_pattern &&
+      this.officeHours.recurrence_pattern.end_date
+        ? this.officeHours.recurrence_pattern.end_date
+        : currentTermEndDate
+    );
+
     this.officeHoursForm.patchValue(
       Object.assign({}, this.officeHours, {
         start_time: this.datePipe.transform(
@@ -174,15 +183,28 @@ export class OfficeHoursEditorComponent {
         // it rolls the date ~5hrs back to the previous day. Temporary solution
         // is to "add" the extra day back.
         recur_end: this.datePipe.transform(
-          new Date(currentTermEndDate).setDate(
-            currentTermEndDate.getDate() + 1
-          ),
+          new Date(recurrenceEndDate).setDate(recurrenceEndDate.getDate() + 1),
           'yyyy-MM-dd'
         )
       })
     );
 
-    /** Disable recurrence form fields if updating */
+    this.days = this.officeHours.recurrence_pattern
+      ? {
+          [Weekday.Monday]: this.officeHours.recurrence_pattern.recur_monday,
+          [Weekday.Tuesday]: this.officeHours.recurrence_pattern.recur_tuesday,
+          [Weekday.Wednesday]:
+            this.officeHours.recurrence_pattern.recur_wednesday,
+          [Weekday.Thursday]:
+            this.officeHours.recurrence_pattern.recur_thursday,
+          [Weekday.Friday]: this.officeHours.recurrence_pattern.recur_friday,
+          [Weekday.Saturday]:
+            this.officeHours.recurrence_pattern.recur_saturday,
+          [Weekday.Sunday]: this.officeHours.recurrence_pattern.recur_sunday
+        }
+      : this.days;
+
+    /** Default to disabling recurrence modificatins when updating */
     if (this.officeHours.id !== -1) {
       this.officeHoursForm.controls.recurs.setValue(
         this.officeHours.recurrence_pattern_id !== undefined
@@ -218,6 +240,21 @@ export class OfficeHoursEditorComponent {
     return this.isNew() ? 'Created' : 'Updated';
   }
 
+  toggleUpdateRecurrencePattern(checked: boolean): void {
+    this.updateRecurrencePattern = checked;
+    console.log(this.updateRecurrencePattern);
+    this.officeHoursForm.controls.recurs.setValue(
+      this.officeHours.recurrence_pattern_id !== undefined
+    );
+    if (!this.isNew() && checked) {
+      this.officeHoursForm.controls.recurs.enable();
+      this.officeHoursForm.controls.recur_end.enable();
+    } else {
+      this.officeHoursForm.controls.recurs.disable();
+      this.officeHoursForm.controls.recur_end.disable();
+    }
+  }
+
   /** Event handler to handle submitting the Update Organization Form.
    * @returns {void}
    */
@@ -235,7 +272,7 @@ export class OfficeHoursEditorComponent {
       officeHoursToSubmit.course_site_id = courseSiteId;
 
       let submittedOfficeHours;
-      if (recurs) {
+      if (recurs || this.updateRecurrencePattern) {
         let recurrencePattern = {
           start_date: new Date(
             new Date(officeHoursToSubmit.start_time).setHours(0, 0, 0, 0)
@@ -251,11 +288,17 @@ export class OfficeHoursEditorComponent {
           recur_saturday: this.days[Weekday.Saturday],
           recur_sunday: this.days[Weekday.Sunday]
         };
-        submittedOfficeHours = this.myCoursesService.createRecurringOfficeHours(
-          courseSiteId,
-          officeHoursToSubmit as NewOfficeHours,
-          recurrencePattern
-        );
+        submittedOfficeHours = this.isNew()
+          ? this.myCoursesService.createRecurringOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit as NewOfficeHours,
+              recurrencePattern
+            )
+          : this.myCoursesService.updateRecurringOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit,
+              recurrencePattern
+            );
 
         submittedOfficeHours.subscribe({
           next: (officeHours) => this.onSuccess(officeHours[0]),
