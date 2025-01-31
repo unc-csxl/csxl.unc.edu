@@ -84,7 +84,6 @@ export class SignageService implements OnInit {
   fetchWeatherData() {
     fetchWeatherApi(url, params).then((responses) => {
       const response = responses[0];
-      const utcOffsetSeconds = response.utcOffsetSeconds();
       const current = response.current()!;
 
       // Process the weather data
