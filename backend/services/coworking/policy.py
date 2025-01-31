@@ -26,7 +26,7 @@ OH_HOURS = {
         "SN141": [(time(hour=12), time(hour=17))],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [(time(hour=15), time(hour=18))],
     },
     TUESDAY: {
         "SN135": [],
@@ -35,7 +35,7 @@ OH_HOURS = {
         "SN141": [(time(hour=13), time(hour=17))],
         "SN144": [(time(hour=14), time(hour=15))],
         "SN146": [],
-        "SN147": [],
+        "SN147": [(time(hour=15), time(hour=18))],
     },
     WEDNESDAY: {
         "SN135": [],
@@ -44,7 +44,7 @@ OH_HOURS = {
         "SN141": [(time(hour=10), time(hour=17))],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [(time(hour=15), time(hour=18))],
     },
     THURSDAY: {
         "SN135": [],
@@ -53,7 +53,7 @@ OH_HOURS = {
         "SN141": [(time(hour=13), time(hour=17))],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [(time(hour=15), time(hour=18))],
     },
     FRIDAY: {
         "SN135": [],
