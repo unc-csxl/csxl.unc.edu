@@ -5,7 +5,10 @@ from typing import Self
 from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
-from ...models.office_hours.office_hours_details import OfficeHoursDetails
+from ...models.office_hours.office_hours_details import (
+    OfficeHoursDetails,
+    PrimaryOfficeHoursDetails,
+)
 
 from ...models.office_hours.event_type import (
     OfficeHoursEventModeType,
@@ -145,6 +148,29 @@ class OfficeHoursEntity(EntityBase):
             course_site_id=self.course_site_id,
             room_id=self.room_id,
             recurrence_pattern_id=self.recurrence_pattern_id,
+        )
+
+    def to_primary_details_model(self) -> PrimaryOfficeHoursDetails:
+        """
+        Converts a `OfficeHoursEntity` object into a `PrimaryOfficeHoursDetails` model object
+
+        Returns:
+            OfficeHours: `OfficeHours` object from the entity
+        """
+        return PrimaryOfficeHoursDetails(
+            id=self.id,
+            type=self.type,
+            mode=self.mode,
+            description=self.description,
+            location_description=self.location_description,
+            start_time=self.start_time,
+            end_time=self.end_time,
+            course_site_id=self.course_site_id,
+            room_id=self.room_id,
+            recurrence_pattern_id=self.recurrence_pattern_id,
+            recurrence_pattern=(
+                self.recurrence_pattern.to_model() if self.recurrence_pattern else None
+            ),
         )
 
     def to_details_model(self) -> OfficeHoursDetails:

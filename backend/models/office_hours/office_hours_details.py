@@ -18,6 +18,10 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
+class PrimaryOfficeHoursDetails(OfficeHours):
+    recurrence_pattern: OfficeHoursRecurrencePattern | None = None
+
+
 class OfficeHoursDetails(OfficeHours):
     """
     Pydantic model to represent an `OfficeHours`, including back-populated
@@ -29,5 +33,5 @@ class OfficeHoursDetails(OfficeHours):
 
     course_site: CourseSite
     room: Room
-    recurrence_pattern: OfficeHoursRecurrencePattern
+    recurrence_pattern: OfficeHoursRecurrencePattern | None = None
     tickets: list[OfficeHoursTicket]

@@ -86,6 +86,11 @@
         </mat-form-field>
       </div>
 
+      <!-- Recurrence Pattern Update Options -->
+      @if (!isNew()) {
+        <mat-checkbox className="recurrence-update-toggle" (change)="this.toggleUpdateRecurrencePattern($event.checked)">Update future events in recurrence pattern.</mat-checkbox>
+      }
+
       <!-- Recurrence Pattern Field -->
       <mat-form-field appearance="outline">
         <mat-label>Recurrence Pattern</mat-label>
@@ -104,8 +109,8 @@
           [hideMultipleSelectionIndicator]="true"
           multiple
         >
-          @for (day of this.days | keyvalue: maintainOriginalOrder; track day) {
-            <mat-button-toggle (change)="toggleDay(day.key)" value="{{day.key}}" [disabled]="!isNew()">{{day.key}}</mat-button-toggle>
+          @for (day of this.days | keyvalue: maintainOriginalOrder; track day.key) {
+            <mat-button-toggle (change)="toggleDay(day.key)" value="{{day.key}}" [checked]="this.days[day.key]" [disabled]="!this.isNew() && !this.updateRecurrencePattern">{{day.key}}</mat-button-toggle>
           }
         </mat-button-toggle-group>
 

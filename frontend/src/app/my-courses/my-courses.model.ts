@@ -263,6 +263,19 @@ export interface NewOfficeHoursRecurrencePattern {
   recur_sunday: boolean;
 }
 
+export interface OfficeHoursRecurrencePattern {
+  id: number;
+  start_date: Date;
+  end_date: Date | null;
+  recur_monday: boolean;
+  recur_tuesday: boolean;
+  recur_wednesday: boolean;
+  recur_thursday: boolean;
+  recur_friday: boolean;
+  recur_saturday: boolean;
+  recur_sunday: boolean;
+}
+
 export interface OfficeHoursJson {
   id: number;
   type: number;
@@ -274,6 +287,7 @@ export interface OfficeHoursJson {
   course_site_id: number;
   room_id: string;
   recurrence_pattern_id: number | null;
+  recurrence_pattern: OfficeHoursRecurrencePattern | null;
 }
 
 export interface OfficeHours {
@@ -287,6 +301,7 @@ export interface OfficeHours {
   course_site_id: number;
   room_id: string;
   recurrence_pattern_id: number | null;
+  recurrence_pattern: OfficeHoursRecurrencePattern | null;
 }
 
 /**

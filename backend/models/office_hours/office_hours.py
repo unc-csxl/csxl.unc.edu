@@ -2,6 +2,8 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from enum import Enum
 from pydantic import BaseModel, field_validator, ValidationInfo
+
+from .office_hours_recurrence_pattern import OfficeHoursRecurrencePattern
 from .event_type import OfficeHoursEventModeType, OfficeHoursEventType
 
 __authors__ = [

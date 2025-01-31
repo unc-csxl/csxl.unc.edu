@@ -53,6 +53,16 @@ class OfficeHoursRecurrenceService:
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
+        # Create events
+        new_events = self.create_events(event, recurrence_pattern)
+
+        # Commit changes
+        self._session.commit()
+        return [entity.to_model() for entity in new_events]
+
+    def create_events(
+        self, event: NewOfficeHours, recurrence_pattern: NewOfficeHoursRecurrencePattern
+    ):
         # Create recurrence entity
         recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_new_model(
             recurrence_pattern
@@ -124,22 +134,49 @@ class OfficeHoursRecurrenceService:
             # Increment date
             current_date += timedelta(days=1)
 
-        # commit changes
-        self._session.commit()
-
-        result = [entity.to_model() for entity in new_events]
-
-        if len(result) == 0:
+        if len(new_events) == 0:
             raise RecurringOfficeHourEventException(
                 "Cannot create any with the given recurrence pattern before the recurrence end date."
             )
 
-        return result
+        return new_events
+
+    def update_recurring(
+        self,
+        user: User,
+        site_id: int,
+        event: OfficeHours,
+        recurrence_pattern: NewOfficeHoursRecurrencePattern,
+    ):
+        """
+        Updates an existing office hours event and future events in the recurrence pattern.
+        """
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        # Delete all future events.
+        self.delete_events(event.id)
+
+        # Recreate events according to the new recurrence pattern.
+        new_events = self.create_events(event, recurrence_pattern)
+
+        # Commit changes
+        self._session.commit()
+
+        return [entity.to_model() for entity in new_events]
 
     def delete_recurring(self, user: User, site_id: int, event_id: int):
         """
         Deletes an existing office hours event and future events in the event's recurrence pattern.
         """
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        self.delete_events(event_id)
+
+        self._session.commit()
+
+    def delete_events(self, event_id: int):
         # Find existing event
         office_hours_entity = self._session.get(OfficeHoursEntity, event_id)
 
@@ -147,9 +184,6 @@ class OfficeHoursRecurrenceService:
             raise ResourceNotFoundException(
                 "Office hours event with id: {event_id} does not exist."
             )
-
-        # Check permissions
-        self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
         # Find future events in recurrence pattern
         start_date = (
@@ -172,5 +206,3 @@ class OfficeHoursRecurrenceService:
 
         for entity in future_event_entities:
             self._session.delete(entity)
-
-        self._session.commit()
