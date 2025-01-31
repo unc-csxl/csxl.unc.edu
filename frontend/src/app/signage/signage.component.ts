@@ -18,6 +18,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { SignageService } from './signage.service';
 import { Observable, Subscription, timer, delay } from 'rxjs';
+import { WeatherData } from './signage.model';
 
 const REFRESH_FAST_SECONDS = 100000000;
 const REFRESH_SLOW_MINUTES = 20;
@@ -47,53 +48,43 @@ export class SignageComponent implements OnInit, OnDestroy {
   };
 
   date: number = Date.now();
-  public weatherData: any; // Store weather data for choosing correct icon
   private fastSubscription!: Subscription;
   private slowSubscription!: Subscription;
   private dateSubscription!: Subscription;
-  public current_weather_icon!: String;
+  private weatherSubscription!: Subscription;
 
   constructor(protected signageService: SignageService) {}
 
-  private assginWeatherIcon() {
-    if (
-      this.weatherData.current.weatherCode >= 95 &&
-      this.weatherData.current.weatherCode <= 99
-    ) {
-      this.current_weather_icon = weather_types['stormy'];
-    } else if (this.weatherData.current.weatherCode == 3) {
-      this.current_weather_icon = weather_types['overcast'];
+  public assginWeatherIcon(weatherData: WeatherData): string {
+    if (weatherData.weatherCode >= 95 && weatherData.weatherCode <= 99) {
+      return weather_types['stormy'];
+    } else if (weatherData.weatherCode == 3) {
+      return weather_types['overcast'];
+    } else if (weatherData.weatherCode >= 40 && weatherData.weatherCode <= 49) {
+      return weather_types['foggy'];
     } else if (
-      this.weatherData.current.weatherCode >= 40 &&
-      this.weatherData.current.weatherCode <= 49
+      (weatherData.weatherCode >= 60 && weatherData.weatherCode <= 66) ||
+      (weatherData.weatherCode >= 80 && weatherData.weatherCode <= 82)
     ) {
-      this.current_weather_icon = weather_types['foggy'];
+      return weather_types['rainy'];
     } else if (
-      (this.weatherData.current.weatherCode >= 60 &&
-        this.weatherData.current.weatherCode <= 66) ||
-      (this.weatherData.current.weatherCode >= 80 &&
-        this.weatherData.current.weatherCode <= 82)
+      (weatherData.weatherCode >= 70 && weatherData.weatherCode <= 75) ||
+      weatherData.weatherCode == 85 ||
+      weatherData.weatherCode == 86
     ) {
-      this.current_weather_icon = weather_types['rainy'];
-    } else if (
-      (this.weatherData.current.weatherCode >= 70 &&
-        this.weatherData.current.weatherCode <= 75) ||
-      this.weatherData.current.weatherCode == 85 ||
-      this.weatherData.current.weatherCode == 86
-    ) {
-      this.current_weather_icon = weather_types['snowy'];
-    } else if (this.weatherData.current.is_day == 0) {
-      this.current_weather_icon = weather_types['night'];
-    } else if (this.weatherData.current.weatherCode == 2) {
-      if (this.weatherData.current.windSpeed10m >= 15) {
-        this.current_weather_icon = weather_types['partly_cloudy_windy'];
+      return weather_types['snowy'];
+    } else if (weatherData.isDay == 0) {
+      return weather_types['night'];
+    } else if (weatherData.weatherCode == 2) {
+      if (weatherData.windSpeed10m >= 15) {
+        return weather_types['partly_cloudy_windy'];
       } else {
-        this.current_weather_icon = weather_types['partly_cloudy'];
+        return weather_types['partly_cloudy'];
       }
-    } else if (this.weatherData.current.windSpeed10m >= 15) {
-      this.current_weather_icon = weather_types['sunny_windy'];
+    } else if (weatherData.windSpeed10m >= 15) {
+      return weather_types['sunny_windy'];
     } else {
-      this.current_weather_icon = weather_types['sunny'];
+      return weather_types['sunny'];
     }
   }
 
@@ -107,10 +98,12 @@ export class SignageComponent implements OnInit, OnDestroy {
     this.slowSubscription = timer(0, REFRESH_SLOW_MINUTES * 60000).subscribe(
       () => {
         this.signageService.getSlowData();
-        this.signageService.fetchWeatherData().subscribe((data) => {
-          this.weatherData = data;
-          this.assginWeatherIcon();
-        });
+      }
+    );
+
+    this.weatherSubscription = timer(0, REFRESH_SLOW_MINUTES * 60000).subscribe(
+      () => {
+        this.signageService.fetchWeatherData();
       }
     );
 
@@ -132,6 +125,10 @@ export class SignageComponent implements OnInit, OnDestroy {
     }
     if (this.dateSubscription) {
       this.dateSubscription.unsubscribe();
+    }
+
+    if (this.weatherSubscription) {
+      this.weatherSubscription.unsubscribe();
     }
   }
 }

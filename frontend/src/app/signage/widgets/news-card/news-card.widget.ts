@@ -20,7 +20,7 @@ export class NewsCardWidget implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['articles']) {
-      this.shown_article %= this.articles.length;
+      this.shown_article = 0;
     }
   }
 

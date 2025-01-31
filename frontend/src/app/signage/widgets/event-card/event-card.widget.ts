@@ -21,7 +21,7 @@ export class EventCardWidget implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events']) {
-      this.shown_event %= this.events.length;
+      this.shown_event = 0;
     }
   }
 

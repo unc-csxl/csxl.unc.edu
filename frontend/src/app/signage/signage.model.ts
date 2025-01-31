@@ -56,6 +56,13 @@ export interface FastSignageData {
   seat_availability: SeatAvailability[];
 }
 
+export interface WeatherData {
+  temperature2m: number;
+  isDay: number;
+  weatherCode: number;
+  windSpeed10m: number;
+}
+
 export const parseSignageOfficeHoursJson = (
   json: SignageOfficeHoursJSON
 ): SignageOfficeHours => {
