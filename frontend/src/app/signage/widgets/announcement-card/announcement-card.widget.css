@@ -1,0 +1,7 @@
+.full-size-pane {
+  height: 100%;
+  width: 100%;
+  border-color: transparent !important;
+  margin: 0px !important;
+  max-width: none;
+}
