@@ -75,8 +75,6 @@ export class OfficeHoursWidget implements OnChanges {
           this.columns = newColumns;
           this.reset_display_columns(newColumns.length);
         }
-        console.log(newColumns);
-        console.log(newSortedHours);
       } else {
         // Update only queue values so we can just update the displayOfficeHours
         this.displayOfficeHours = this.officeHours;
