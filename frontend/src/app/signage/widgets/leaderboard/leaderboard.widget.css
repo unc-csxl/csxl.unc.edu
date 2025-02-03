@@ -48,8 +48,8 @@
 
 .position {
   font-size: 12px;
-  width: 11.56%;
-  height: 82.2%;
+  width: 37px;
+  height: 37px;
   margin-right: 5%;
   margin-top: 1%;
   border-radius: 100%;
@@ -61,7 +61,7 @@
 }
 
 .chip-margin {
-  margin-top: 4%;
+  margin-top: 6%;
   padding-left: 5%;
 }
 
