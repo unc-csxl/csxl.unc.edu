@@ -6,12 +6,13 @@
 }
 
 .room-title {
-  justify-content: center;
+  justify-content: left;
+  padding-left: 24px;
 }
 
 .full-size-content {
   height: 20vh;
-  margin-left: 24px;
+  padding-left: 24px;
 }
 
 .footer {

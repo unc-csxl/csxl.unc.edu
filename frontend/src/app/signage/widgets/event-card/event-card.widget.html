@@ -1,9 +1,9 @@
 <mat-card appearance="outlined" class="full-size-pane">
   <mat-card-header class="events-header">
-    <mat-card-title class="display-medium event-title">Upcoming Events</mat-card-title>
+    <mat-card-title class="display-medium">Upcoming Events</mat-card-title>
   </mat-card-header>
   @if (events.length > 0) {
-    <mat-card-header>
+    <mat-card-header class="header-margin">
       <div class="header-row">
         <div class="header-column">
           <mat-card-title class="headline-large">{{ events[shown_event].name }}</mat-card-title>
@@ -37,7 +37,7 @@
         </div>
       </div>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="content-margin">
       <mat-chip-set>
         <!-- Organization chip -->
         <mat-chip-row

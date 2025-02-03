@@ -59,7 +59,8 @@ mat-card-actions {
     display: flex;
     margin-bottom: 0.5rem;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
+    padding-left: 24px
   }
 
 .vertical-divider {
@@ -82,32 +83,26 @@ mat-card-actions {
     height: 300px;
     border-radius: 12px;
     margin-top: 12px;
-    margin-left: 38px;
+    margin-left: 24px;
     aspect-ratio: 0.67;
     object-fit: cover;
-}
-
-.news-title {
-    margin-left: 24px;
-    text-align: center;
-    justify-content: center;
 }
 
 .news-footer {
     font-style: italic;
     margin-top: 36px;
-    margin-left: 36px;
+    margin-left: 24px;
     position: absolute;
     bottom: 26px;
 
 }
 
 .empty-text {
-    text-align: center;
-  }
+    padding-left: 24px;
+}
 
 .spinner {
     position: absolute;
     right: 2.5%;
     bottom: 2.5%;
-  }
+}

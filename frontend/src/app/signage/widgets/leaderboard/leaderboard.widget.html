@@ -1,13 +1,11 @@
 <mat-card appearance="outlined" class="full-size-pane">
   <!-- Coworking Card Header -->
-  <mat-card-header class="dropin-header room-title">
+  <mat-card-header class="dropin-header leaderboard-title">
     <mat-card-title class="display-medium">Leaderboard</mat-card-title>
   </mat-card-header>
 
   <!-- Coworking Information -->
   <mat-card-content class="full-size-content">
-    <h2 class="body-medium font-on-surface sub-header">Based on number of check-ins</h2>
-    <h2 class="body-medium font-on-surface sub-header">Resets at the start of each month</h2>
     <!-- Coworking Dropdowns -->
     @for(i of shown_indicies; track $index) {
       <mat-chip-set class="chip-margin">
@@ -48,5 +46,8 @@
     @if (profiles.length > 5) {
       <page-spinner class="spinner" [time]="30" (timer_end)="switch_page()"></page-spinner>
     }
+    <mat-card-footer  class="title-medium font-variant footer">
+      Resets at the start of each month
+    </mat-card-footer>
   </mat-card-content>
 </mat-card>

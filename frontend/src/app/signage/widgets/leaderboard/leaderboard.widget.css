@@ -5,14 +5,14 @@
   margin: 0px !important;
 }
 
-.room-title {
-  justify-content: center;
+.leaderboard-title {
+  padding-left: 24px;
 }
 
 .full-size-content {
   height: 20vh;
-  text-align: center;
-  justify-content: center;
+  /* text-align: center; */
+  /* justify-content: center; */
 }
 
 .sub-header {
@@ -31,25 +31,24 @@
 }
 
 .profile-chip-container {
-  display: flex;
+  /* display: flex; */
   width: 186px !important;
   height: 44px !important;
   margin-left: auto;
   margin-top: auto;
   margin-bottom: auto;
-  align-items: center;
   border-radius: 100%;
 }
 
 .profile-chip {
   width: 186px !important;
   height: 44px !important;
-  text-align: center !important;
+  /* text-align: center !important; */
 }
 
 .position {
   font-size: 12px;
-  width: 12.97%;
+  width: 11.56%;
   height: 82.2%;
   margin-right: 5%;
   margin-top: 1%;
@@ -63,7 +62,7 @@
 
 .chip-margin {
   margin-top: 4%;
-  margin-left: 15%;
+  padding-left: 5%;
 }
 
 .account-circle-icon {
@@ -83,7 +82,12 @@
   --mdc-chip-container-shape-radius: 20px !important;
   width: 66%;
   height: 37px;
-  align-items: center;
-  /* --mdc-chip-with-avatar-avatar-shape-family: rounded !important;
-  --mdc-chip-with-avatar-avatar-shape-radius: 14px 14px 14px 14px !important; */
+  align-items: left;
+}
+
+.footer {
+  font-style: italic;
+  /* margin-left: 22px; */
+  position: absolute;
+  bottom: 26px;
 }

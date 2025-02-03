@@ -104,15 +104,9 @@
   align-items: center;
 }
 
-.event-title {
-  margin-left: 24px;
-}
-
 .events-header {
-  display: flex;
   margin-bottom: 0.5rem;
-  align-items: center;
-  justify-content: center;
+  padding-left: 24px;
 }
 
 .spinner {
@@ -122,5 +116,13 @@
 }
 
 .empty-text {
-  text-align: center;
+  padding-left: 24px;
+}
+
+.header-margin {
+  padding-left: 24px;
+}
+
+.content-margin {
+  padding-left: 24px;
 }

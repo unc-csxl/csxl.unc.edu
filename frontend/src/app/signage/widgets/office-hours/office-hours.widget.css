@@ -12,8 +12,8 @@
   justify-content: center;
 }
 
-.centered-title {
-  justify-content: center;
+.office-hours-title {
+  padding-left: 24px;
 }
 
 .column {
