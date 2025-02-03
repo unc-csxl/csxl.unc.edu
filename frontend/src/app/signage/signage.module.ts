@@ -42,6 +42,7 @@ import { MatDivider } from '@angular/material/divider';
 import { EventCardWidget } from './widgets/event-card/event-card.widget';
 import { LeaderboardWidget } from './widgets/leaderboard/leaderboard.widget';
 import { OfficeHoursWidget } from './widgets/office-hours/office-hours.widget';
+import { AnnouncementCardWidget } from './widgets/announcement-card/announcement-card.widget';
 import { PageSpinnerWidget } from './widgets/page-spinner/page-spinner.widget';
 
 @NgModule({
@@ -55,7 +56,8 @@ import { PageSpinnerWidget } from './widgets/page-spinner/page-spinner.widget';
     EventCardWidget,
     LeaderboardWidget,
     OfficeHoursWidget,
-    PageSpinnerWidget
+    PageSpinnerWidget,
+    AnnouncementCardWidget
   ],
   imports: [
     SignageRoutingModule,

@@ -9,20 +9,37 @@ div {
   padding-bottom: 1.35%;
   padding-left: 0%;
   padding-right: 0%;
-  width: 55%;
 }
 
 .title {
   font-size: 6vh;
   line-height: 6vh;
-  width: 100%;
 }
 
 .header {
   height: 10.5%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+}
+
+.weather {
+  width: 13%;
+  height: 100%;
+  padding-top: 1.15%;
+}
+
+.weather-image {
+  float: left;
+  width: 27%;
+  padding-right: 10%;
+}
+
+.announcement {
+  width: 23.6%;
+  height: 6.48%;
+  position: absolute;
+  right: 2.03%;
+  top: 2.01%;
 }
 
 .column {
@@ -85,23 +102,4 @@ div {
   margin-right: 2.03%;
   display: flex;
   justify-content: center;
-}
-
-.weather {
-  width: 13%;
-  height: 100%;
-  padding-top: 1.15%;
-}
-
-.announcement {
-  width: 23.6%;
-  height: 10.5%;
-  align-items: right;
-}
-
-.weather-image {
-  float: left;
-  width: 27%;
-  padding-right: 10%;
-  /* height: 3%; */
 }

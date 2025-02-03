@@ -1,7 +1,7 @@
 <div class="mat-sidenav big-div">
     <div class='header'>
         <mat-card-header>
-            <mat-card-title class="title">{{date | date:'EEEE MMMM d, h:mm aaa'}}</mat-card-title>
+            <mat-card-title class="title">{{date | date:'EEEE MMMM d, h:mm aaa'}} |&nbsp;</mat-card-title>
         </mat-card-header>
             <div class="weather">
                 <img
@@ -12,7 +12,9 @@
                     <mat-card-title class="title">{{signageService.weatherData().temperature2m | number: '1.0-0'}}°F</mat-card-title>
                 </mat-card-header>
             </div>
-        <div class="announcement">announcement</div>
+            <div class="announcement">
+                <announcement-card></announcement-card>
+            </div>
     </div>
     <div class='column'>
         <div class='row'>
