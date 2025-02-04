@@ -51,6 +51,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { DeleteRecurringEventDialog } from './dialogs/delete-recurring-event/delete-recurring-event.dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { MatRadioModule } from '@angular/material/radio';
     MatListModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatRadioModule
+    MatRadioModule,
+    MatCheckbox
   ],
   providers: [MatDatepickerModule]
 })

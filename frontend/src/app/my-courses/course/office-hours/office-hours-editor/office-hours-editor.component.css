@@ -21,6 +21,11 @@ mat-form-field {
   gap: 12px;
 }
 
+.recurrence-update-toggle {
+  /* Move up to account  */
+  margin-top: -20px;
+}
+
 .time-form-fields-container {
   display: flex;
   flex-direction: row;
