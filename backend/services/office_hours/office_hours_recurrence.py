@@ -18,6 +18,7 @@ from ...entities.office_hours import (
 
 from ...entities.office_hours.office_hours_recurrence_pattern_entity import (
     OfficeHoursRecurrencePatternEntity,
+    OfficeHoursRecurrencePattern,
 )
 from ...models.office_hours.office_hours_recurrence_pattern import (
     NewOfficeHoursRecurrencePattern,
@@ -39,6 +40,10 @@ class OfficeHoursRecurrenceService:
         """
         self._session = session
         self._office_hours_svc = _office_hours_svc
+
+    def test_get(self):
+        query = select(OfficeHoursRecurrencePattern)
+        return self._session.scalars(query).all()
 
     def create_recurring(
         self,

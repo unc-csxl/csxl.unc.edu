@@ -24,6 +24,8 @@ from ..test.services.event import event_test_data
 from ..test.services.coworking import seat_data, operating_hours_data, time
 from ..test.services.coworking.reservation import reservation_data
 
+from sqlmodel import SQLModel
+
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
@@ -39,6 +41,7 @@ subprocess.run(["python3", "-m", "backend.script.delete_database"])
 subprocess.run(["python3", "-m", "backend.script.create_database"])
 
 # Reset Tables
+entities.EntityBase.metadata = SQLModel.metadata
 entities.EntityBase.metadata.drop_all(engine)
 entities.EntityBase.metadata.create_all(engine)
 

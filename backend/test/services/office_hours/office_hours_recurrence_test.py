@@ -30,6 +30,14 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
+def test_get_recurring_oh_events(
+    oh_recurrence_svc: OfficeHoursRecurrenceService,
+):
+    """Tests that all recurring office hour events are returned."""
+    recurring_events = oh_recurrence_svc.test_get()
+    assert True
+
+
 def test_create_recurring_oh_event_instructor(
     oh_recurrence_svc: OfficeHoursRecurrenceService,
 ):

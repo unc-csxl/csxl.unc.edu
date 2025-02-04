@@ -1,17 +1,52 @@
-from typing import Self
+from typing import Self, TYPE_CHECKING
 
 from ...models.office_hours.office_hours_recurrence_pattern import (
     NewOfficeHoursRecurrencePattern,
     OfficeHoursRecurrencePattern,
 )
 from ..entity_base import EntityBase
+from .office_hours_entity import OfficeHoursEntity
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Date, Integer, Boolean
 from datetime import date
+from sqlmodel import SQLModel, Field, Relationship
+
+if TYPE_CHECKING:
+    from .office_hours_entity import OfficeHoursEntity
+
 
 __authors__ = ["Jade Keegan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
+
+
+class OfficeHoursRecurrencePattern(SQLModel, table=True):
+    """Serves as the database model schema defining the shape of the `OfficeHoursRecurrencePattern` table"""
+
+    # Name for the recurrence table in the PostgreSQL database
+    __tablename__ = "office_hours_recurrence_pattern"
+
+    # Unique id for OfficeHoursRecurrence
+    id: int | None = Field(default=None, primary_key=True)
+
+    # Date recurrence starts
+    start_date: date
+
+    # Date recurrence ends
+    end_date: date
+
+    # Days of the week the event should recur on
+    recur_monday: bool = False
+    recur_tuesday: bool = False
+    recur_wednesday: bool = False
+    recur_thursday: bool = False
+    recur_friday: bool = False
+    recur_saturday: bool = False
+    recur_sunday: bool = False
+
+    office_hours: list["OfficeHoursEntity"] = Relationship(
+        back_populates="recurrence_pattern"
+    )
 
 
 class OfficeHoursRecurrencePatternEntity(EntityBase):
