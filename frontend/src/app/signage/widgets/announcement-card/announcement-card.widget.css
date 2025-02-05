@@ -4,4 +4,10 @@
   border-color: transparent !important;
   margin: 0px !important;
   max-width: none;
+  display: flex;
+  flex-direction: row;
+}
+
+.icon {
+  font-variation-settings: 'FILL' 1;
 }

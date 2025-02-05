@@ -1,3 +1,6 @@
-<mat-card appearance="outlined" class="full-size-pane secondary-container-background">
-    Announcement
-</mat-card>
+@if (announcements.length > 0) {
+    <mat-card appearance="outlined" class="full-size-pane secondary-container-background">
+        <mat-icon class="icon secondary-container-background">chat_bubble</mat-icon>
+        <p class="secondary-container-background headline-small">{{announcements[announcement_to_display]}}</p>
+    </mat-card>
+}

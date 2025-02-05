@@ -13,7 +13,7 @@
                 </mat-card-header>
             </div>
             <div class="announcement">
-                <announcement-card></announcement-card>
+                <announcement-card [announcements]="signageService.slowData().announcement_titles"></announcement-card>
             </div>
     </div>
     <div class='column'>
