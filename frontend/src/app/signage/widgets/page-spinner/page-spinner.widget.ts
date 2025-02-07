@@ -32,20 +32,21 @@ export class PageSpinnerWidget implements OnChanges, OnInit, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['time'] && this.time > 0) {
-      this.time_left = this.time * 100;
+      // Multiplied by 10 so we can have a 10x smoother progress indicator
+      this.time_left = this.time * 10;
     }
   }
 
   ngOnInit(): void {
-    this.timer_subscription = interval(10)
+    this.timer_subscription = interval(100)
       .pipe(
         map(() => {
           if (this.time_left > 0) {
             this.time_left--;
-          } else if (this.time_left == 0) {
+          } else {
             this.timer_end.emit();
             if (this.time) {
-              this.time_left = this.time * 100;
+              this.time_left = this.time * 10;
             }
           }
         })
