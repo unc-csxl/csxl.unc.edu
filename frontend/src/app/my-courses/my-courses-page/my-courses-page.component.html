@@ -23,8 +23,16 @@
         <h3 class="title-medium term-header">{{ term.name }}</h3>
         <div class="course-card-container">
           @for (course of term.sites; track course.id) {
-            <course-card [termId]="term.id" [course]="course" />
+            @if(course.role != "Student") {
+              <course-card [termId]="term.id" [course]="course" />
+            }
           }
+          @for (course of term.sites; track course.id) {
+            @if(course.role == "Student") {
+              <course-card [termId]="term.id" [course]="course" />
+            }
+          }
+
         </div>
       }
       @if (showPreviousCourses()) {
@@ -32,7 +40,14 @@
           <h3 class="title-medium term-header">{{ term.name }}</h3>
           <div class="course-card-container">
             @for (course of term.sites; track course.id) {
-              <course-card [course]="course" />
+              @if(course.role != "Student") {
+                <course-card [course]="course" />
+              }
+            }
+            @for (course of term.sites; track course.id) {
+              @if(course.role == "Student") {
+                <course-card [course]="course" />
+              }
             }
           </div>
         }
