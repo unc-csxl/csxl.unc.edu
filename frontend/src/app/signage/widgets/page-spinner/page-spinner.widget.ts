@@ -4,7 +4,7 @@
  * @input time: time in seconds for one revolution of the widget
  * @output timer_end: event with null data is emitted each time the timer completes
  *
- * @author Andrew Lockard
+ * @author Andrew Lockard <andrew.lockard15@gmail.com>
  * @copyright 2024
  * @license MIT
  */

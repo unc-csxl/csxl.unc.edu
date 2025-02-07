@@ -1,3 +1,12 @@
+/**
+ * The Rooms Card displays which rooms are currently available to be reserved.
+ *
+ * @author Will Zahrt <wzahrt@unc.edu>
+ * @author Andrew Lockard <andrew.lockard15@gmail.com>
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, OnInit, Input } from '@angular/core';
 import { SignageService } from '../../signage.service';
 

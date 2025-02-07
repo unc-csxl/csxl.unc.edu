@@ -1,30 +1,8 @@
-.full-size-pane {
-  min-height: 100% !important;
-  min-width: 100% !important;
-  border-color: transparent !important;
-  margin: 0px !important;
-}
-
-.full-size-content {
-  height: 20vh;
-  margin-top: 0.6%;
-  text-align: center;
-  justify-content: center;
-}
-
-.office-hours-title {
-  padding-left: 24px;
-}
-
 .column {
   display: inline-block;
   width: 46%;
   padding: 2%;
   vertical-align: top;
-}
-
-.location {
-  position: relative;
 }
 
 .floated {
@@ -36,20 +14,18 @@
   left: 15%;
 }
 
-.location-name {
-  margin: auto;
+.full-size-content {
+  height: 20vh;
+  margin-top: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
-.office-hour {
-  position: relative;
-  top: 0.1em;
-  text-align: right;
-  padding: 0.3rem 0;
-}
-
-.oh-name {
-  display: inline;
-  margin-right: 25px;
+.full-size-pane {
+  min-height: 100% !important;
+  min-width: 100% !important;
+  border-color: transparent !important;
+  margin: 0px !important;
 }
 
 .icon {
@@ -60,6 +36,34 @@
   height: 18px;
   width: 18px;
   margin-right: 5px;
+}
+
+.location {
+  position: relative;
+}
+
+.location-name {
+  margin: auto;
+}
+
+.no_oh {
+  padding-left: 12px;
+}
+
+.office-hour {
+  position: relative;
+  top: 0.1em;
+  text-align: right;
+  padding: 0.3rem 0;
+}
+
+.office-hours-title {
+  padding-left: 24px;
+}
+
+.oh-name {
+  display: inline;
+  margin-right: 25px;
 }
 
 .queue {

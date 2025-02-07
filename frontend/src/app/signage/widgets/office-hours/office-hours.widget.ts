@@ -1,5 +1,5 @@
 /**
- * Office Hours Widget to Display all currently active office hours, their locations, and queue length
+ * Office Hours Widget to display all currently active office hours, their locations, and queue length
  *
  * @author Andrew Lockard <andrew.lockard15@gmail.com>
  * @copyright 2024

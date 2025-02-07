@@ -18,7 +18,8 @@ import {
   SlowSignageDataJson,
   WeatherData,
   parseFastSignageDataJson,
-  parseSlowSignageDataJson
+  parseSlowSignageDataJson,
+  SignageOfficeHours
 } from './signage.model';
 import { fetchWeatherApi } from 'openmeteo';
 

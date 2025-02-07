@@ -1,5 +1,14 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
-import { SeatAvailability } from "src/app/coworking/coworking.models";
+/**
+ * The Occupancy Card displays the current availability of different types of seating in the CSXL.
+ *
+ * @author Will Zahrt <wzahrt@unc.edu>
+ * @author Andrew Lockard <andrew.lockard15@gmail.com>
+ * @copyright 2024
+ * @license MIT
+ */
+
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { SeatAvailability } from 'src/app/coworking/coworking.models';
 
 class SeatCategory {
   public title: string;
@@ -68,12 +77,11 @@ const STANDING_BENCH = 1;
 const COLLAB_AREA = 2;
 
 @Component({
-    selector: 'occupancy',
-    templateUrl: './occupancy.widget.html',
-    styleUrls: ['./occupancy.widget.css']
+  selector: 'occupancy',
+  templateUrl: './occupancy.widget.html',
+  styleUrls: ['./occupancy.widget.css']
 })
-export class OccupancyWidget implements OnChanges{
-
+export class OccupancyWidget implements OnChanges {
   /** Inputs and outputs go here */
   @Input() seat_availability!: SeatAvailability[];
 

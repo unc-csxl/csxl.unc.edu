@@ -5,7 +5,7 @@
 
     <mat-card-content class="full-size-content">
         @if (columns.length == 0) {
-            <p class="headline-medium font-primary">All are currently closed, please check back later.</p>
+            <p class="no_oh headline-medium font-primary">All are currently closed, please check back later.</p>
         } @else {
             @for (col_i of columns_to_show; track $index) {
                 <div class="column">
