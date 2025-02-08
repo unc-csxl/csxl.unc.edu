@@ -3,7 +3,9 @@
 <div class="container">  
   <mat-pane>
     <mat-card-header id="pane-header">
-      <mat-card-title>My Courses</mat-card-title>
+      @for (term of this.myCoursesService.currentTerms(); track term.name) {
+        <mat-card-title>{{term.name}}</mat-card-title>
+      }
       <div class="header-buttons">
         <button mat-stroked-button color="secondary" routerLink="/catalog/offerings">
           <!-- <mat-icon>search</mat-icon> -->
@@ -20,19 +22,21 @@
     <mat-card-content>
       <mat-divider />
       @for (term of this.myCoursesService.currentTerms(); track term.id) {
-        <h3 class="title-medium term-header">{{ term.name }}</h3>
+        <h2 class="title-medium term-header">{{ "Instructor Courses" }}</h2>
         <div class="course-card-container">
           @for (course of term.sites; track course.id) {
-            @if(course.role != "Student") {
+            @if(course.role != "Student"){
               <course-card [termId]="term.id" [course]="course" />
             }
           }
+        </div>
+        <h2 class="title-medium term-header">{{ "Student Courses" }}</h2>
+        <div class="course-card-container">
           @for (course of term.sites; track course.id) {
-            @if(course.role == "Student") {
+            @if(course.role == "Student"){
               <course-card [termId]="term.id" [course]="course" />
             }
           }
-
         </div>
       }
       @if (showPreviousCourses()) {
@@ -40,13 +44,13 @@
           <h3 class="title-medium term-header">{{ term.name }}</h3>
           <div class="course-card-container">
             @for (course of term.sites; track course.id) {
-              @if(course.role != "Student") {
-                <course-card [course]="course" />
+              @if(course.role != "Student"){
+              <course-card [course]="course" />
               }
             }
             @for (course of term.sites; track course.id) {
-              @if(course.role == "Student") {
-                <course-card [course]="course" />
+              @if(course.role == "Student"){
+              <course-card [course]="course" />
               }
             }
           </div>
