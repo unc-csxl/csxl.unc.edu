@@ -71,6 +71,17 @@
       mat-flat-button
       class="tertiary-button"
       type="submit"
+      (click)="moveClicked()">
+      @if(!updatingReservation) {
+        Move
+      } @else {
+        Cancel
+      }
+    </button>
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      type="submit"
       (click)="checkout()">
       Check Out
     </button>
@@ -93,3 +104,9 @@
     } }
   </mat-card-actions>
 </mat-card>
+
+@if(updatingReservation) {
+  <mat-pane>
+    Moving....
+  </mat-pane>
+}

@@ -23,6 +23,7 @@ export class CoworkingReservationCard implements OnInit {
   @Output() updateReservationsList = new EventEmitter<void>();
   @Output() isConfirmed = new EventEmitter<boolean>();
   @Output() updateActiveReservation = new EventEmitter<void>();
+  updatingReservation: boolean = false;
   @Output() reloadCoworkingHome = new EventEmitter<void>();
 
   public draftConfirmationDeadline$!: Observable<string>;
@@ -120,6 +121,10 @@ export class CoworkingReservationCard implements OnInit {
         );
       }
     });
+  }
+
+  moveClicked(): void {
+    this.updatingReservation = !this.updatingReservation;
   }
 
   private initDraftConfirmationDeadline(): Observable<string> {
