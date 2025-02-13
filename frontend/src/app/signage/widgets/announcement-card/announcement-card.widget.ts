@@ -15,6 +15,8 @@ import {
 } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
 
+const SECONDS_BETWEEN_CHANGE = 120;
+
 @Component({
   selector: 'announcement-card',
   templateUrl: 'announcement-card.widget.html',
@@ -26,16 +28,19 @@ export class AnnouncementCardWidget implements OnChanges, OnDestroy {
   rotating_subscription: Subscription | null = null;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['annoucements']) {
+    if (changes['announcements']) {
       this.announcement_to_display = 0;
       // Handle rotating between multiple announcements
       if (this.announcements.length > 1 && this.rotating_subscription == null) {
-        this.rotating_subscription = timer(0, 30000).subscribe(() => {
+        this.rotating_subscription = timer(
+          0,
+          SECONDS_BETWEEN_CHANGE * 1000
+        ).subscribe(() => {
           this.announcement_to_display =
             (this.announcement_to_display + 1) % this.announcements.length;
         });
       } else if (
-        this.announcements.length < 1 &&
+        this.announcements.length <= 1 &&
         this.rotating_subscription != null
       ) {
         this.rotating_subscription.unsubscribe();
