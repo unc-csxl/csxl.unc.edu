@@ -58,11 +58,19 @@ class SignageService:
         self, entity: OfficeHoursEntity
     ) -> SignageOfficeHours:
         """Converts OfficeHoursEntity into the SignageOfficeHours model"""
+        min_section_num = min(
+            map(lambda section: section.number, entity.course_site.sections)
+        )
+
         return SignageOfficeHours(
             id=entity.id,
             mode=entity.mode.to_string(),
             location=entity.room.id,
-            course=entity.course_site.title,
+            course=(
+                entity.course_site.title
+                if min_section_num == "001"
+                else entity.course_site.title + "-" + min_section_num
+            ),
             queued=len(
                 [
                     ticket
