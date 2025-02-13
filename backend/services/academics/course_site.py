@@ -33,7 +33,7 @@ from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
-__authors__ = ["Ajay Gandecha", "Kris Jordan", "Andrew Lockard"]
+__authors__ = ["Ajay Gandecha", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -283,7 +283,9 @@ class CourseSiteService:
         # Load office hours data
         office_hour_event_entities = self._session.scalars(event_query).unique().all()
 
-        return [event.to_overview_model() for event in office_hour_event_entities]
+        return [
+            self._to_oh_event_overview(event) for event in office_hour_event_entities
+        ]
 
     def get_future_office_hour_events(
         self,
@@ -324,7 +326,10 @@ class CourseSiteService:
 
         # Create paginated representation of data and return
         return Paginated(
-            items=[event.to_overview_model() for event in office_hour_event_entities],
+            items=[
+                self._to_oh_event_overview(event)
+                for event in office_hour_event_entities
+            ],
             length=length,
             params=pagination_params,
         )
@@ -368,7 +373,10 @@ class CourseSiteService:
 
         # Create paginated representation of data and return
         return Paginated(
-            items=[event.to_overview_model() for event in office_hour_event_entities],
+            items=[
+                self._to_oh_event_overview(event)
+                for event in office_hour_event_entities
+            ],
             length=length,
             params=pagination_params,
         )

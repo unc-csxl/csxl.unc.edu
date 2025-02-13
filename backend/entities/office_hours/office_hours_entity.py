@@ -5,8 +5,6 @@ from typing import Self
 from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.models.academics.my_courses import OfficeHoursOverview
-from backend.models.office_hours.ticket_state import TicketState
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.office_hours_details import (
     OfficeHoursDetails,
