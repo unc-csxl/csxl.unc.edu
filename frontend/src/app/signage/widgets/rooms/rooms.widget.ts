@@ -7,8 +7,7 @@
  * @license MIT
  */
 
-import { Component, OnInit, Input } from '@angular/core';
-import { SignageService } from '../../signage.service';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'rooms',

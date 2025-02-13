@@ -6,18 +6,9 @@
  * @license MIT
  */
 
-import {
-  Component,
-  inject,
-  OnDestroy,
-  OnInit,
-  Signal,
-  signal,
-  WritableSignal
-} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SignageService } from './signage.service';
-import { Observable, Subscription, timer, delay } from 'rxjs';
+import { Subscription, timer, delay } from 'rxjs';
 import { WeatherData } from './signage.model';
 
 const REFRESH_FAST_SECONDS = 20;

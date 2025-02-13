@@ -9,7 +9,6 @@
 
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { PublicProfile } from 'src/app/profile/profile.service';
-import { SignageService } from '../../signage.service';
 
 @Component({
   selector: 'leaderboard',
