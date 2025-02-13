@@ -58,7 +58,7 @@ export class OfficeHoursWidget implements OnChanges {
             return acc;
           }, {} as LocationHoursMap);
 
-          newColumns = this.distributeToColumns(newSortedHours, 9);
+          newColumns = this.distributeToColumns(newSortedHours, 8);
         }
 
         // If we currently have more than 2 columns, we will run this update in sync with the page spinner
@@ -155,7 +155,7 @@ export class OfficeHoursWidget implements OnChanges {
       .sort((a, b) => b.size - a.size);
 
     // Validate that no single location has over the maxOfficeHours amout
-    if (locationSizes[0].size + 1 > maxPerCol) {
+    if (locationSizes[0].size > maxPerCol) {
       throw new Error(
         `Location ${locationSizes[0].location} has ${locationSizes[0].size} office hours which is more than the max of ${maxPerCol} per display column.`
       );
@@ -169,9 +169,9 @@ export class OfficeHoursWidget implements OnChanges {
 
       // Look for column that we can place this location into
       for (const col of cols) {
-        if (col.totalHours + size + 1 <= maxPerCol) {
+        if (col.totalHours + size <= maxPerCol) {
           col.locations.push(location);
-          col.totalHours += size + 1; // + 1 is for the dividing bar between locations
+          col.totalHours += size; // + 1 is for the dividing bar between locations
           colFound = true;
           break;
         }
@@ -181,7 +181,7 @@ export class OfficeHoursWidget implements OnChanges {
       if (!colFound) {
         cols.push({
           locations: [location],
-          totalHours: size + 1
+          totalHours: size
         });
       }
     });

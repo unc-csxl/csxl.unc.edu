@@ -37,10 +37,10 @@
     </div>
   </div>
   @if (articles.length > 1) {
-    <page-spinner class="spinner" [time]="30" (timer_end)="next_event()"></page-spinner>
+    <page-spinner class="spinner" [time]="90" (timer_end)="next_event()"></page-spinner>
   }
   <mat-card-footer class="title-medium font-variant news-footer">
-    Read more at csxl.unc.edu/coworking
+    Read more at csxl.unc.edu/welcome
   </mat-card-footer>
   } @else {
     <p class="headline-medium font-primary empty-text">No recent news. Check back later.</p>

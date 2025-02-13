@@ -20,7 +20,7 @@ import { SignageService } from './signage.service';
 import { Observable, Subscription, timer, delay } from 'rxjs';
 import { WeatherData } from './signage.model';
 
-const REFRESH_FAST_SECONDS = 100000000;
+const REFRESH_FAST_SECONDS = 20;
 const REFRESH_SLOW_MINUTES = 20;
 
 const weather_types: { [weather: string]: string } = {

@@ -72,7 +72,7 @@
         {{ events[shown_event].description }}
       </p>
       @if (events.length > 1) {
-        <page-spinner class="spinner" [time]="30" (timer_end)="next_event()"></page-spinner>
+        <page-spinner class="spinner" [time]="45" (timer_end)="next_event()"></page-spinner>
       }
     </mat-card-content>
   } @else {
