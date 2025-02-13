@@ -1,14 +1,17 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Office Hours."""
 
-from datetime import datetime, date
+from datetime import datetime
 from typing import Self
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.models.academics.my_courses import OfficeHoursOverview
 from backend.models.office_hours.ticket_state import TicketState
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
-from ...models.office_hours.office_hours_details import OfficeHoursDetails
+from ...models.office_hours.office_hours_details import (
+    OfficeHoursDetails,
+    PrimaryOfficeHoursDetails,
+)
 
 from ...models.office_hours.event_type import (
     OfficeHoursEventModeType,
@@ -24,7 +27,7 @@ __authors__ = [
     "Sadie Amato",
     "Bailey DeSouza",
     "Meghan Sun",
-    "Andrew Lockard",
+    "Jade Keegan",
 ]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -40,12 +43,14 @@ class OfficeHoursEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Type of event
     type: Mapped[OfficeHoursEventType] = mapped_column(
-        SQLAlchemyEnum(OfficeHoursEventType), nullable=False
+        SQLAlchemyEnum(OfficeHoursEventType, name="office_hours__event__type"),
+        nullable=False,
     )
 
     # Mode of event
     mode: Mapped[OfficeHoursEventModeType] = mapped_column(
-        SQLAlchemyEnum(OfficeHoursEventModeType), nullable=False
+        SQLAlchemyEnum(OfficeHoursEventModeType, name="office_hours__event__mode"),
+        nullable=False,
     )
 
     # Description of event
@@ -64,6 +69,14 @@ class OfficeHoursEntity(EntityBase):
         ForeignKey("course_site.id"), nullable=False
     )
     course_site: Mapped["CourseSiteEntity"] = relationship(
+        back_populates="office_hours"
+    )
+
+    # NOTE: Many-to-one relationship of OfficeHoursEvents to OfficeHoursRecurrencePattern
+    recurrence_pattern_id: Mapped[int] = mapped_column(
+        ForeignKey("office_hours_recurrence_pattern.id"), nullable=True
+    )
+    recurrence_pattern: Mapped["OfficeHoursRecurrencePatternEntity"] = relationship(
         back_populates="office_hours"
     )
 
@@ -95,6 +108,7 @@ class OfficeHoursEntity(EntityBase):
             end_time=model.end_time,
             course_site_id=model.course_site_id,
             room_id=model.room_id,
+            recurrence_pattern_id=model.recurrence_pattern_id,
         )
 
     @classmethod
@@ -136,6 +150,30 @@ class OfficeHoursEntity(EntityBase):
             end_time=self.end_time,
             course_site_id=self.course_site_id,
             room_id=self.room_id,
+            recurrence_pattern_id=self.recurrence_pattern_id,
+        )
+
+    def to_primary_details_model(self) -> PrimaryOfficeHoursDetails:
+        """
+        Converts a `OfficeHoursEntity` object into a `PrimaryOfficeHoursDetails` model object
+
+        Returns:
+            OfficeHours: `OfficeHours` object from the entity
+        """
+        return PrimaryOfficeHoursDetails(
+            id=self.id,
+            type=self.type,
+            mode=self.mode,
+            description=self.description,
+            location_description=self.location_description,
+            start_time=self.start_time,
+            end_time=self.end_time,
+            course_site_id=self.course_site_id,
+            room_id=self.room_id,
+            recurrence_pattern_id=self.recurrence_pattern_id,
+            recurrence_pattern=(
+                self.recurrence_pattern.to_model() if self.recurrence_pattern else None
+            ),
         )
 
     def to_details_model(self) -> OfficeHoursDetails:
@@ -156,26 +194,8 @@ class OfficeHoursEntity(EntityBase):
             course_site_id=self.course_site_id,
             room_id=self.room_id,
             course_site=self.course_site.to_model(),
+            recurrence_pattern_id=self.recurrence_pattern_id,
+            recurrence_pattern=self.recurrence_pattern.to_model(),
             room=self.room.to_model(),
             tickets=[ticket.to_model() for ticket in self.tickets],
-        )
-    
-    def to_overview_model(self) -> OfficeHoursOverview:
-        return OfficeHoursOverview(
-            id=self.id,
-            type=self.type.to_string(),
-            mode=self.mode.to_string(),
-            description=self.description,
-            location=f"{self.room.building} {self.room.room}",
-            location_description=self.location_description,
-            start_time=self.start_time,
-            end_time=self.end_time,
-            queued=len(
-                [
-                    ticket
-                    for ticket in self.tickets
-                    if ticket.state == TicketState.QUEUED
-                ]
-            ),
-            total_tickets=len(self.tickets),
         )

@@ -69,7 +69,10 @@ export class ImportRosterDialog {
               // Close the dialog
               this.close();
             },
-            error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+            error: (err) =>
+              this.snackBar.open('Error: ' + err.error.detail, '', {
+                duration: 2000
+              })
           });
       };
       reader.onerror = (_) => {

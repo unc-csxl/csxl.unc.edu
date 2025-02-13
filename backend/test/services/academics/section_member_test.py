@@ -82,6 +82,11 @@ def test_create_from_csv_remove(section_member_svc: SectionMemberService):
         section_data.comp_301_001_current_term.id,
         csv_data=section_data.smaller_roster_csv,
     )
+    section_member_svc.import_users_from_csv(
+        user_data.instructor,
+        section_data.comp_301_001_current_term.id,
+        csv_data=section_data.extra_row_roster_csv,
+    )
 
 
 def test_create_from_csv_not_instructor(section_member_svc: SectionMemberService):

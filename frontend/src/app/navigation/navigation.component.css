@@ -94,6 +94,18 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+#toolbar-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* NOTE: This is temporary until the admin pages are refactored. */
@@ -117,12 +129,9 @@ a {
 
 .profile-chip-container {
   display: flex;
-  margin-left: auto;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 16px;
   align-items: center;
 }
+
 /* Round the border for the profile image chip */
 .mat-mdc-standard-chip {
   --mdc-chip-container-shape-radius: 16px;
@@ -141,7 +150,7 @@ a {
   height: 22px !important;
 }
 
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   .desktop-profile-chips {
     display: none;
   }
@@ -163,5 +172,13 @@ a {
     border-radius: 50% !important;
     margin-left: 3px;
     margin-top: 3px;
+  }
+
+  ::ng-deep .mat-mdc-standard-chip .mdc-evolution-chip__graphic {
+    display: none !important;
+  }
+
+  ::ng-deep .mat-mdc-standard-chip .mdc-evolution-chip__text-label:not(:only-child) {
+    padding-left: 12px;
   }
 }

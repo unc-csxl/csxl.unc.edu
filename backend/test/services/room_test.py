@@ -33,10 +33,10 @@ def test_list(room_svc: RoomService):
     assert isinstance(rooms[0], RoomDetails)
 
 
-def test_list_ordered_by_capacity(room_svc: RoomService):
+def test_list_ordered_by_name(room_svc: RoomService):
     rooms = room_svc.all()
     for i in range(1, len(rooms)):
-        assert rooms[i - 1].capacity <= rooms[i].capacity
+        assert rooms[i - 1].nickname <= rooms[i].nickname
 
 
 def test_get_by_id(room_svc: RoomService):

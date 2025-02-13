@@ -36,8 +36,9 @@ export class ApplicationFormComponent {
     }
   };
 
+  // TODO: Do not hard code this logic and always remember JS months are 0 indexed (:
   showApplicationAssignmentCard =
-    new Date().getTime() > new Date(2024, 7, 18).getTime();
+    new Date().getTime() > new Date(2025, 0, 4).getTime();
 
   /** Form */
   formGroup: FormGroup;

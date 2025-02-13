@@ -32,6 +32,7 @@ from .api.admin import roles as admin_roles
 from .api.admin import facts as admin_facts
 
 from .services.exceptions import (
+    RecurringOfficeHourEventException,
     UserPermissionException,
     ResourceNotFoundException,
     CoursePermissionException,
@@ -113,12 +114,12 @@ app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
 @app.exception_handler(UserPermissionException)
-def permission_exception_handler(request: Request, e: UserPermissionException):
+def user_permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 
 @app.exception_handler(CoursePermissionException)
-def permission_exception_handler(request: Request, e: UserPermissionException):
+def course_permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 
@@ -129,18 +130,27 @@ def resource_not_found_exception_handler(
     return JSONResponse(status_code=404, content={"message": str(e)})
 
 
+@app.exception_handler(ReservationException)
+def reservation_exception_handler(request: Request, e: ReservationException):
+    return JSONResponse(status_code=403, content={"message": str(e)})
+
+
 @app.exception_handler(CourseDataScrapingException)
-def resource_not_found_exception_handler(
-    request: Request, e: CourseDataScrapingException
+def course_data_scraping_exception(request: Request, e: CourseDataScrapingException):
+    return JSONResponse(status_code=500, content={"message": str(e)})
+
+
+@app.exception_handler(RecurringOfficeHourEventException)
+def recurring_office_hour_event_exception(
+    request: Request, e: RecurringOfficeHourEventException
 ):
     return JSONResponse(status_code=500, content={"message": str(e)})
 
 
 # Add feature-specific exception handling middleware
-from .api import coworking
 from .api import events
 
-feature_exception_handlers = [coworking.exception_handlers, events.exception_handlers]
+feature_exception_handlers = [events.exception_handlers]
 
 for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:
