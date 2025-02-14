@@ -24,6 +24,7 @@ import {
 import { Subscription, timer } from 'rxjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-office-hours-get-help',
@@ -49,6 +50,16 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   /** Stores subscription to the timer observable that refreshes data every 10s */
   timer!: Subscription;
 
+  /** Stores subscription to a timer observable for flashing the title for notifications */
+  titleFlashTimer: Subscription | undefined;
+
+  /** Store both possible titles as strings to flash between them easily */
+  originalTitle: string = 'Office Hours Get Help';
+  notificationTitle: string = 'Ticket Called!';
+
+  /** Store notification audio */
+  chime = new Audio('assets/office-hours-notif.wav');
+
   /** Office Hour Ticket Editor Form */
   public ticketForm = this.formBuilder.group({
     type: new FormControl(0, [Validators.required]),
@@ -64,7 +75,8 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     protected formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
-    protected myCoursesService: MyCoursesService
+    protected myCoursesService: MyCoursesService,
+    private titleService: Title
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
@@ -77,9 +89,38 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Remove the timer subscription when the view is destroyed so polling does not persist on other pages */
+  /** Remove the timer subscriptions when the view is destroyed so polling/flashing does not persist on other pages */
   ngOnDestroy(): void {
     this.timer.unsubscribe();
+    this.titleFlashTimer?.unsubscribe();
+  }
+
+  /** Sends a notification if necessary on each pollData call */
+  handleNotification(getHelpData: OfficeHourGetHelpOverview): void {
+    /**
+     * If a ticket exists in the new data, and its state is Called, and if the
+     * ticket existed in the old data and its state was Queued, send a
+     * notification to the student. If not, stop the flashing subscription
+     * (if the flashing existed).
+     */
+    let notify: boolean = false;
+    if (getHelpData.ticket && getHelpData.ticket.state === 'Called') {
+      if (this.data() && this.data()!.ticket &&
+        this.data()!.ticket!.state === 'Queued') {
+        notify = true;
+      }
+    }
+    if (notify) {
+      this.chime.play();
+      this.titleFlashTimer = timer(0, 1000).subscribe(() => {
+        this.titleService.setTitle(
+          this.titleService.getTitle() === this.notificationTitle ?
+            this.originalTitle : this.notificationTitle);
+      })
+    } else {
+      this.titleFlashTimer?.unsubscribe();
+      this.titleService.setTitle(this.originalTitle);
+    }
   }
 
   /** Loads office hours data */
@@ -87,6 +128,7 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     this.myCoursesService
       .getOfficeHoursHelpOverview(this.ohEventId)
       .subscribe((getHelpData) => {
+        this.handleNotification(getHelpData);
         this.data.set(getHelpData);
       });
   }
@@ -95,9 +137,9 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     let contentFieldsValid =
       this.ticketForm.controls['type'].value === 1
         ? this.ticketForm.controls['assignmentSection'].value !== '' &&
-          this.ticketForm.controls['codeSection'].value !== '' &&
-          this.ticketForm.controls['conceptsSection'].value !== '' &&
-          this.ticketForm.controls['attemptSection'].value !== ''
+        this.ticketForm.controls['codeSection'].value !== '' &&
+        this.ticketForm.controls['conceptsSection'].value !== '' &&
+        this.ticketForm.controls['attemptSection'].value !== ''
         : this.ticketForm.controls['description'].value !== '';
 
     let linkFieldValid =
