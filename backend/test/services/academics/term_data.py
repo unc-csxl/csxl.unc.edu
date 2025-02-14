@@ -51,13 +51,13 @@ f24 = Term(
     id="24F", name="Fall 2024", start=datetime(2024, 8, 20), end=datetime(2024, 12, 31)
 )
 
-new_term = Term(
+s25 = Term(
     id="25S", name="Spring 2025", start=datetime(2025, 1, 1), end=datetime(2025, 5, 31)
 )
 
-terms = [sp_23, f_23, sp_24, ss1_24, ss2_24, f24]
+terms = [sp_23, f_23, sp_24, ss1_24, ss2_24, f24, s25]
 
-current_term = f24
+current_term = s25
 
 today = datetime(2023, 12, 1)
 bad_day = datetime(3000, 1, 1)
