@@ -9,8 +9,8 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnInit, signal, WritableSignal } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Injectable, signal, WritableSignal } from '@angular/core';
+import { map } from 'rxjs';
 import {
   FastSignageData,
   FastSignageDataJson,
@@ -18,8 +18,7 @@ import {
   SlowSignageDataJson,
   WeatherData,
   parseFastSignageDataJson,
-  parseSlowSignageDataJson,
-  SignageOfficeHours
+  parseSlowSignageDataJson
 } from './signage.model';
 import { fetchWeatherApi } from 'openmeteo';
 
@@ -38,8 +37,7 @@ const params = {
 @Injectable({
   providedIn: 'root'
 })
-export class SignageService implements OnInit {
-  /** Constructor */
+export class SignageService {
   private fastDataSignal: WritableSignal<FastSignageData> = signal({
     active_office_hours: [],
     available_rooms: [],
@@ -54,6 +52,7 @@ export class SignageService implements OnInit {
     announcement_titles: []
   });
   public slowData = this.slowDataSignal.asReadonly();
+
   private weatherDataSignal: WritableSignal<WeatherData> = signal({
     temperature2m: 100,
     isDay: 1,
@@ -62,8 +61,17 @@ export class SignageService implements OnInit {
   });
   public weatherData = this.weatherDataSignal.asReadonly();
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient) {
+    this.getSlowData();
+    this.getFastData();
+    this.fetchWeatherData();
+  }
 
+  /**
+   * Fetches the slow data from the backend, parses the JSON into the frontend model, and updates the signals
+   *
+   * @returns SlowData Subscription
+   */
   getSlowData() {
     return this.http
       .get<SlowSignageDataJson>(`/api/signage/slow`)
@@ -73,6 +81,11 @@ export class SignageService implements OnInit {
       });
   }
 
+  /**
+   * Fetches the fast data from the backend, parses JSON into frontend model, and updates fast data signal
+   *
+   * @returns FastData Subscription
+   */
   getFastData() {
     return this.http
       .get<FastSignageDataJson>(`/api/signage/fast`)
@@ -82,6 +95,11 @@ export class SignageService implements OnInit {
       });
   }
 
+  /**
+   * Fetches weather data from open mateo using params defined above, and updates the weather signal
+   *
+   * Gets the temperature, day/night distinction, weather code (cloudy/rainy/etc.), and wind speed for Sitterson Hall
+   */
   fetchWeatherData() {
     fetchWeatherApi(url, params).then((responses) => {
       const response = responses[0];
@@ -95,11 +113,5 @@ export class SignageService implements OnInit {
         windSpeed10m: current.variables(3)!.value()
       });
     });
-  }
-
-  ngOnInit(): void {
-    this.getSlowData();
-    this.getFastData();
-    this.fetchWeatherData();
   }
 }
