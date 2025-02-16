@@ -3,6 +3,7 @@ import { MyCoursesService } from '../my-courses.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateCourseSiteDialog } from '../dialogs/create-course-site/create-course-site.dialog';
+import { TermOverview } from '../my-courses.model';
 
 @Component({
   selector: 'app-my-courses-page',
@@ -34,4 +35,16 @@ export class MyCoursesPageComponent {
       data: this.myCoursesService.allTerms()
     });
   }
+
+  /** Returns whether or not user has a non-student role in a course during a term */
+  hasInstructorCourses(term: TermOverview): boolean {
+    return term.sites.some(course => course.role !== 'Student');
+  }
+  
+    /** Returns whether or not user has a student role in a course during a term */
+  hasStudentCourses(term: TermOverview): boolean {
+    return term.sites.some(course => course.role === 'Student');
+  }
 }
+
+
