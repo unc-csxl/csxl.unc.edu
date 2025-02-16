@@ -95,20 +95,20 @@ checked_out_reservation_5 = Reservation(
     seats=[],
 )
 
+reservations = [
+    current_reservation,
+    checked_out_reservation_1,
+    checked_out_reservation_2,
+    checked_out_reservation_3,
+    checked_out_reservation_4,
+    checked_out_reservation_5,
+]
+
 
 def insert_fake_data(session: Session):
-    entity1 = ReservationEntity.from_model(current_reservation, session)
-    session.add(entity1)
-    entity2 = ReservationEntity.from_model(checked_out_reservation_1, session)
-    session.add(entity2)
-    entity3 = ReservationEntity.from_model(checked_out_reservation_2, session)
-    session.add(entity3)
-    entity4 = ReservationEntity.from_model(checked_out_reservation_3, session)
-    session.add(entity4)
-    entity5 = ReservationEntity.from_model(checked_out_reservation_4, session)
-    session.add(entity5)
-    entity6 = ReservationEntity.from_model(checked_out_reservation_5, session)
-    session.add(entity6)
+    for model in reservations:
+        entity = ReservationEntity.from_model(model, session)
+        session.add(entity)
 
 
 @pytest.fixture(autouse=True)

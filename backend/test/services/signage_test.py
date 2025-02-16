@@ -51,9 +51,10 @@ __license__ = "MIT"
 
 
 def test_get_fast_data(signage_svc: SignageService):
+    """Ensure that the fast data script returns the values as expected."""
     fast_data = signage_svc.get_fast_data()
 
-    assert len(fast_data.active_office_hours) == 1
+    assert len(fast_data.active_office_hours) == 2
     assert (
         fast_data.active_office_hours[0].id
         == office_hours_data.comp_110_current_office_hours.id
@@ -67,6 +68,7 @@ def test_get_fast_data(signage_svc: SignageService):
 
 
 def test_get_slow_data(signage_svc: SignageService):
+    """Ensures that the slow data returns the values as expected."""
     slow_data = signage_svc.get_slow_data()
 
     assert article_data.announcement not in slow_data.newest_news
