@@ -89,27 +89,26 @@ member_1 = OrganizationMembership(
     id=1,
     user=root,
     organization_id=cads.id,
+    organization_name=cads.name,
     organization_slug=cads.slug,
-    organization_role=OrganizationRole.ADMIN,
-    # organization_join_status=OrganizationJoinStatus.JOINED,
+    is_admin=True,
 )
 
 member_2 = OrganizationMembership(
     id=2,
     user=ambassador,
     organization_id=cads.id,
+    organization_name=cads.name,
     organization_slug=cads.slug,
-    organization_role=OrganizationRole.OFFICER,
-    # organization_join_status=OrganizationJoinStatus.JOINED,
 )
 
 member_to_add = OrganizationMembership(
     id=3,
     user=user,
     organization_id=appteam.id,
+    organization_name=appteam.name,
     organization_slug=appteam.slug,
-    organization_role=OrganizationRole.PENDING,
-    # organization_join_status=OrganizationJoinStatus.APPLIED,
+    title="Membership pending",
 )
 
 roster = [member_1, member_2]
@@ -122,8 +121,8 @@ def insert_fake_data(session: Session):
 
     # Create entities for test organization data
     entities = []
-    for org in roster:
-        entity = OrganizationMembershipEntity.from_model(org)
+    for membership in roster:
+        entity = OrganizationMembershipEntity.from_model(membership)
         session.add(entity)
         entities.append(entity)
 

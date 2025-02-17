@@ -1,8 +1,6 @@
 from pydantic import BaseModel
 from . import User
-from .organization_role import OrganizationRole
-
-# from .organization_join_status import OrganizationJoinStatus
+from .academics import Term
 
 __authors__ = ["Alanna Zhang, Alexander Feng"]
 __copyright__ = "Copyright 2024"
@@ -15,5 +13,8 @@ class OrganizationMembership(BaseModel):
     id: int | None = None
     user: User
     organization_id: int
+    organization_name: str
     organization_slug: str
-    organization_role: OrganizationRole
+    title: str = "Member"
+    is_admin: bool = False
+    term: Term | None = None

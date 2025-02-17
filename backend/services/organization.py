@@ -113,189 +113,6 @@ class OrganizationService:
 
         return organization.to_details_model()
 
-    def add_member(
-        self, subject: User, slug: str, user_id: int
-    ) -> OrganizationMembership | None:
-        """
-        Add a new organization membership
-        If either user or organization don't exist, a debug message is displayed
-
-        Parameters:
-            slug: a string representing a unique organization slug
-            user_id: an int representing a unique user id
-
-        Returns:
-            OrganizationMembership: Object added to table
-
-        Raises:
-            ResourceNotFoundException if no organization is found with the corresponding slug
-            ResourceExistsException if user is already in the organization
-        """
-        # TODO: authenticate and check that user exists in database
-
-        # Check if organization exists
-        organization = (
-            self._session.query(OrganizationEntity).filter(
-                OrganizationEntity.slug == slug
-            )
-        ).one_or_none()
-        if organization is None:
-            raise ResourceNotFoundException(
-                f"No organization found with matching slug: {slug}"
-            )
-        if organization.join_type == OrganizationJoinType.CLOSED:
-            raise ResourceNotFoundException(
-                f"Organization {slug} is not accepting new members"
-            )
-
-        # Check if user exists
-        user = (
-            self._session.query(UserEntity)
-            .filter(UserEntity.id == user_id)
-            .one_or_none()
-        )
-        if user is None:
-            raise ResourceNotFoundException(
-                f"No user found with matching id: {user_id}"
-            )
-
-        # Check if user has existing membership in this organization
-        check_existing_membership = (
-            self._session.query(OrganizationMembershipEntity)
-            .filter(
-                OrganizationMembershipEntity.user_id == user_id,
-                OrganizationMembershipEntity.organization_id == organization.id,
-            )
-            .one_or_none()
-        )
-        if check_existing_membership:
-            raise ResourceExistsException(
-                f"User with id {user_id} already in the organization with slug: {slug}"
-            )
-
-        # Create membership according to organization join type (OPEN/APPLY)
-        membership_model = OrganizationMembership(
-            user=user.to_model(),
-            organization_id=organization.id,
-            organization_slug=organization.slug,
-            organization_role=OrganizationRole.PENDING,
-        )
-
-        if organization.join_type.name == OrganizationJoinType.OPEN.name:
-            membership_model.organization_role = OrganizationRole.MEMBER
-
-        organization_membership_entity = OrganizationMembershipEntity.from_model(
-            membership_model
-        )
-
-        # Add new object to table and commit changes
-        self._session.add(organization_membership_entity)
-        self._session.commit()
-
-        # Return added object
-        return organization_membership_entity.to_model()
-
-    def remove_member(self, subject: User, slug: str, membership_id: int) -> None:
-        # TODO: authenticate user for deleting
-        """
-        Remove an existing organization membership
-        If the user isn't a part of the organization, a debug message is displayed
-
-        Parameters:
-            slug: a string representing a unique organization slug
-            user_id: an int representing a unique membership id
-
-        Raises:
-            ResourceNotFoundException if no organization membership is found with the corresponding slug and membership id
-        """
-        former_membership = (
-            self._session.query(OrganizationMembershipEntity)
-            .filter(OrganizationMembershipEntity.id == membership_id)
-            .one_or_none()
-        )
-
-        # Check if result is null
-        if former_membership is None:
-            raise ResourceNotFoundException(
-                f"No organization membership found with id {membership_id}"
-            )
-
-        membership_user_id = former_membership.user_id
-        if membership_user_id != subject.id:
-            self._permission.enforce(
-                subject, "organization.update", f"organization/{slug}"
-            )
-
-        self._session.delete(former_membership)
-        self._session.commit()
-
-    def update_member_role(
-        self,
-        subject: User,
-        slug: str,
-        membership_id: int,
-        new_role: OrganizationRole,
-    ) -> OrganizationMembership:
-        """
-        Update a member's role in an organization
-        """
-        self._permission.enforce(subject, "organization.update", f"organization/{slug}")
-
-        query = select(OrganizationMembershipEntity).where(
-            OrganizationMembershipEntity.id == membership_id
-        )
-        entity = self._session.scalars(query).one_or_none()
-
-        if entity is None:
-            raise ResourceNotFoundException(
-                f"No organization membership found with id: {membership_id}"
-            )
-        if entity.organization_role != new_role:
-            entity.organization_role = new_role
-        self._session.commit()
-        return entity.to_model()
-
-    def get_roster(
-        self, subject: User, organization_slug: str
-    ) -> list[OrganizationMembership]:
-        # TODO: authenticate
-
-        """
-        Get an organization roster
-        If the organization doesn't exist, a debug message is displayed
-
-        Parameters:
-            slug: a string representing a unique organization slug
-
-        Returns:
-            list[OrganizationMembership]: list of'OrganizationMembership' objects
-
-        Raises:
-            ResourceNotFoundException if no organization is found with the corresponding slug
-        """
-
-        # Query the organization with matching slug
-        organization = (
-            self._session.query(OrganizationEntity)
-            .filter(OrganizationEntity.slug == organization_slug)
-            .one_or_none()
-        )
-
-        # Check if result is null
-        if organization is None:
-            raise ResourceNotFoundException(
-                f"No organization found with matching slug: {organization_slug}"
-            )
-
-        # Select all entries in `Organization` table
-        query = select(OrganizationMembershipEntity).filter(
-            OrganizationMembershipEntity.organization_id == organization.id
-        )
-        entities = self._session.scalars(query).all()
-
-        # Convert entries to a model and return
-        return [entity.to_model() for entity in entities]
-
     def update(self, subject: User, organization: Organization) -> Organization:
         """
         Update the organization
@@ -383,4 +200,191 @@ class OrganizationService:
         # Delete object and commit
         self._session.delete(obj)
         # Save changes
+        self._session.commit()
+
+    def add_membership(
+        self, subject: User, slug: str, membership: OrganizationMembership
+    ) -> OrganizationMembership | None:
+        """
+        Add a new organization membership
+        If either user or organization don't exist, a debug message is displayed
+
+        Parameters:
+            slug: a string representing a unique organization slug
+            user_id: an int representing a unique user id
+
+        Returns:
+            OrganizationMembership: Object added to table
+
+        Raises:
+            ResourceNotFoundException if no organization is found with the corresponding slug
+            ResourceExistsException if user is already in the organization
+        """
+        # Query the organization with matching slug
+        organization = (
+            self._session.query(OrganizationEntity)
+            .filter(OrganizationEntity.slug == membership.organization_slug)
+            .one_or_none()
+        )
+
+        # Check if result is null
+        if organization is None:
+            raise ResourceNotFoundException(
+                f"No organization found with matching slug: {membership.organization_slug}"
+            )
+
+        # Check if user has permissions to add new memberships (organization or CSXL admin)
+        subject_user_membership = (
+            self._session.query(OrganizationMembershipEntity).filter(
+                OrganizationMembershipEntity.user_id == subject.id,
+                OrganizationMembershipEntity.organization_id
+                == membership.organization_id,
+            )
+        ).one_or_none()
+        if subject_user_membership is None or not subject_user_membership.is_admin:
+            # Check if user is CSXL admin
+            self._permission.enforce(
+                subject, "organization.update", f"organization/{slug}"
+            )
+
+        # Check if membership already exists for this organization
+        check_existing_membership = (
+            self._session.query(OrganizationMembershipEntity)
+            .filter(
+                OrganizationMembershipEntity.user_id == membership.user.id,
+                OrganizationMembershipEntity.organization_id
+                == membership.organization_id,
+            )
+            .one_or_none()
+        )
+        if check_existing_membership:
+            raise ResourceExistsException(
+                f"User with id {membership.user.id} already in the organization with slug: {slug}"
+            )
+
+        membership.id = None
+
+        if organization.join_type.name == OrganizationJoinType.APPLY.name:
+            membership.title = "Membership pending"
+
+        organization_membership_entity = OrganizationMembershipEntity.from_model(
+            membership
+        )
+
+        # Add new object to table and commit changes
+        self._session.add(organization_membership_entity)
+        self._session.commit()
+
+        # Return added object
+        return organization_membership_entity.to_model()
+
+    def get_roster(
+        self, subject: User, organization_slug: str
+    ) -> list[OrganizationMembership]:
+        """
+        Get an organization roster
+        If the organization doesn't exist, a debug message is displayed
+
+        Parameters:
+            slug: a string representing a unique organization slug
+
+        Returns:
+            list[OrganizationMembership]: list of'OrganizationMembership' objects
+
+        Raises:
+            ResourceNotFoundException if no organization is found with the corresponding slug
+        """
+
+        # Query the organization with matching slug
+        organization = (
+            self._session.query(OrganizationEntity)
+            .filter(OrganizationEntity.slug == organization_slug)
+            .one_or_none()
+        )
+
+        # Check if result is null
+        if organization is None:
+            raise ResourceNotFoundException(
+                f"No organization found with matching slug: {organization_slug}"
+            )
+
+        # Select all entries in `Organization` table
+        query = select(OrganizationMembershipEntity).filter(
+            OrganizationMembershipEntity.organization_id == organization.id
+        )
+        entities = self._session.scalars(query).all()
+
+        # Convert entries to a model and return
+        return [entity.to_model() for entity in entities]
+
+    def update_membership(
+        self,
+        subject: User,
+        slug: str,
+        membership: OrganizationMembership,
+    ) -> OrganizationMembership:
+        """
+        Update a member's role in an organization
+        """
+        # Check if user has permissions to add edit memberships (organization or CSXL admin)
+        subject_user_membership = (
+            self._session.query(OrganizationMembershipEntity).filter(
+                OrganizationMembershipEntity.user_id == subject.id,
+                OrganizationMembershipEntity.organization_id
+                == membership.organization_id,
+            )
+        ).one_or_none()
+        if subject_user_membership is None or not subject_user_membership.is_admin:
+            # Check if user is CSXL admin
+            self._permission.enforce(
+                subject, "organization.update", f"organization/{slug}"
+            )
+
+        query = select(OrganizationMembershipEntity).where(
+            OrganizationMembershipEntity.id == membership.id
+        )
+        entity = self._session.scalars(query).one_or_none()
+
+        if entity is None:
+            raise ResourceNotFoundException(
+                f"No organization membership found with id: {membership.id}"
+            )
+
+        entity.title = membership.title
+        entity.is_admin = membership.is_admin
+
+        self._session.commit()
+        return entity.to_model()
+
+    def remove_membership(self, subject: User, slug: str, membership_id: int) -> None:
+        """
+        Remove an existing organization membership
+        If the user isn't a part of the organization, a debug message is displayed
+
+        Parameters:
+            slug: a string representing a unique organization slug
+            user_id: an int representing a unique membership id
+
+        Raises:
+            ResourceNotFoundException if no organization membership is found with the corresponding slug and membership id
+        """
+        former_membership = (
+            self._session.query(OrganizationMembershipEntity)
+            .filter(OrganizationMembershipEntity.id == membership_id)
+            .one_or_none()
+        )
+
+        # Check if result is null
+        if former_membership is None:
+            raise ResourceNotFoundException(
+                f"No organization membership found with id {membership_id}"
+            )
+
+        membership_user_id = former_membership.user_id
+        if membership_user_id != subject.id:
+            self._permission.enforce(
+                subject, "organization.update", f"organization/{slug}"
+            )
+
+        self._session.delete(former_membership)
         self._session.commit()

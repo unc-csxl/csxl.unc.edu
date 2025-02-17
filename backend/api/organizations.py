@@ -10,7 +10,6 @@ from ..models.organization_membership import OrganizationMembership
 from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
 from ..models.user import User
-from ..models.organization_role import OrganizationRole
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -69,36 +68,6 @@ def new_organization(
     return new_organization
 
 
-@api.post(
-    "/{slug}/roster",
-    responses={404: {"model": None}},
-    response_model=OrganizationMembership,
-    tags=["Organizations"],
-)
-def add_member_to_organization(
-    slug: str,
-    user_id: int = Body(...),
-    organization_service: OrganizationService = Depends(),
-    subject: User = Depends(registered_user),
-) -> OrganizationMembership:
-    """
-    Add member
-
-    Parameters:
-        user_id: new member id, passed in from frontend
-        organization_service: a valid OrganizationService
-        subject: a valid User model representing the currently logged in User
-
-    Returns:
-        OrganizationMember: Created organization member
-
-    Raises:
-        HTTPException 404 if add_member() raises an Exception
-    """
-    new_member = organization_service.add_member(subject, slug, user_id)
-    return new_member
-
-
 @api.get(
     "/{slug}",
     responses={404: {"model": None}},
@@ -123,34 +92,6 @@ def get_organization_by_slug(
     """
 
     return organization_service.get_by_slug(slug)
-
-
-@api.get(
-    "/{slug}/roster",
-    responses={404: {"model": None}},
-    response_model=list[OrganizationMembership],
-    tags=["Organizations"],
-)
-def get_roster_by_slug(
-    slug: str,
-    organization_service: OrganizationService = Depends(),
-    subject: User = Depends(registered_user),
-) -> list[OrganizationMembership]:
-    """
-    Get organization roster with matching slug
-
-    Parameters:
-        slug: a string representing a unique identifier for an Organization
-        organization_service: a valid OrganizationService
-        // add user?
-
-    Returns:
-        list[OrganizationMember]: List of OrganizationMember of Organization with matching slug
-
-    Raises:
-        HTTPException 404 if get_roster() raises an Exception
-    """
-    return organization_service.get_roster(subject, slug)
 
 
 @api.put(
@@ -182,32 +123,6 @@ def update_organization(
     return organization_service.update(subject, organization)
 
 
-@api.put(
-    "/{slug}/roster/{membership_id}",
-    response_model=OrganizationMembership,
-    tags=["Organizations"],
-)
-def update_membership_role(
-    slug: str,
-    membership_id: int,
-    new_role: str = Body(...),
-    subject: User = Depends(registered_user),
-    organization_service: OrganizationService = Depends(),
-) -> OrganizationMembership:
-    """
-    Update membership role
-
-    Parameters:
-        membership_id: a membership id of the user and corresponding organization
-        new_role: a valid role from the organization role enumeration to assign to a new User
-        subject: a valid User model representing the currently logged in User
-        organization_service: a valid OrganizationService
-    """
-    return organization_service.update_member_role(
-        subject, slug, membership_id, new_role
-    )
-
-
 @api.delete("/{slug}", response_model=None, tags=["Organizations"])
 def delete_organization(
     slug: str,
@@ -229,10 +144,91 @@ def delete_organization(
     organization_service.delete(subject, slug)
 
 
+@api.post(
+    "/{slug}/roster",
+    responses={404: {"model": None}},
+    response_model=OrganizationMembership,
+    tags=["Organizations"],
+)
+def add_membership_to_organization(
+    slug: str,
+    membership: OrganizationMembership = Body(...),
+    organization_service: OrganizationService = Depends(),
+    subject: User = Depends(registered_user),
+) -> OrganizationMembership:
+    """
+    Add member
+
+    Parameters:
+        user_id: new member id, passed in from frontend
+        organization_service: a valid OrganizationService
+        subject: a valid User model representing the currently logged in User
+
+    Returns:
+        OrganizationMember: Created organization member
+
+    Raises:
+        HTTPException 404 if add_member() raises an Exception
+    """
+    new_member = organization_service.add_membership(subject, slug, membership)
+    return new_member
+
+
+@api.get(
+    "/{slug}/roster",
+    responses={404: {"model": None}},
+    response_model=list[OrganizationMembership],
+    tags=["Organizations"],
+)
+def get_roster_by_slug(
+    slug: str,
+    organization_service: OrganizationService = Depends(),
+    subject: User = Depends(registered_user),
+) -> list[OrganizationMembership]:
+    """
+    Get organization roster with matching slug
+
+    Parameters:
+        slug: a string representing a unique identifier for an Organization
+        organization_service: a valid OrganizationService
+        // add user?
+
+    Returns:
+        list[OrganizationMember]: List of OrganizationMember of Organization with matching slug
+
+    Raises:
+        HTTPException 404 if get_roster() raises an Exception
+    """
+    return organization_service.get_roster(subject, slug)
+
+
+@api.put(
+    "/{slug}/roster",
+    response_model=OrganizationMembership,
+    tags=["Organizations"],
+)
+def update_membership(
+    slug: str,
+    membership: OrganizationMembership = Body(...),
+    subject: User = Depends(registered_user),
+    organization_service: OrganizationService = Depends(),
+) -> OrganizationMembership:
+    """
+    Update membership role
+
+    Parameters:
+        membership_id: a membership id of the user and corresponding organization
+        new_role: a valid role from the organization role enumeration to assign to a new User
+        subject: a valid User model representing the currently logged in User
+        organization_service: a valid OrganizationService
+    """
+    return organization_service.update_membership(subject, slug, membership)
+
+
 @api.delete(
     "/{slug}/roster/{membership_id}", response_model=None, tags=["Organizations"]
 )
-def delete_member(
+def delete_membership(
     slug: str,
     membership_id: int,
     subject: User = Depends(registered_user),
@@ -247,4 +243,4 @@ def delete_member(
         organization_service: a valid OrganizationService
         subject: a valid User model representing the currently logged in User
     """
-    organization_service.remove_member(subject, slug, membership_id)
+    organization_service.remove_membership(subject, slug, membership_id)
