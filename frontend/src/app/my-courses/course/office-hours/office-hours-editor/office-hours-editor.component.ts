@@ -7,10 +7,7 @@
  */
 
 import { Component } from '@angular/core';
-import {
-  courseSitePageGuard,
-  officeHourPageGuard
-} from '../office-hours.guard';
+import { courseSitePageGuard } from '../office-hours.guard';
 import { officeHoursResolver } from '../office-hours.resolver';
 import {
   NewOfficeHours,
@@ -21,18 +18,18 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
-  FormGroupDirective,
   ValidationErrors,
   ValidatorFn,
   Validators
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
-import { DatePipe, NgFor } from '@angular/common';
+import {
+  MyCoursesService,
+  Weekday
+} from 'src/app/my-courses/my-courses.service';
+import { DatePipe } from '@angular/common';
 import { roomsResolver } from 'src/app/academics/academics.resolver';
 import { Room } from 'src/app/coworking/coworking.models';
-import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'app-office-hours-editor',
@@ -59,14 +56,24 @@ export class OfficeHoursEditorComponent {
   /* Holds the virtual room. */
   virtualRoom: Room | undefined;
 
+  public days: Record<string, boolean> = {
+    [Weekday.Monday]: false,
+    [Weekday.Tuesday]: false,
+    [Weekday.Wednesday]: false,
+    [Weekday.Thursday]: false,
+    [Weekday.Friday]: false,
+    [Weekday.Saturday]: false,
+    [Weekday.Sunday]: false
+  };
+
+  public updateRecurrencePattern: boolean = false;
+
   /** Custom date range validator. */
   dateRangeValidator: ValidatorFn = (
     control: AbstractControl
   ): ValidationErrors | null => {
     const startDateControl = control.get('start_time');
     const endDateControl = control.get('end_time');
-
-    console.log(startDateControl);
 
     if (
       startDateControl &&
@@ -79,6 +86,32 @@ export class OfficeHoursEditorComponent {
     }
 
     return null;
+  };
+
+  /** Custom parameterized date range validator. */
+  genericDateRangeValidator = (
+    startDateLabel: string,
+    endDateLabel: string
+  ): ValidatorFn => {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const startDateControl = control.get(startDateLabel);
+      const endDateControl = control.get(endDateLabel);
+
+      if (
+        startDateControl &&
+        startDateControl.value &&
+        endDateControl &&
+        endDateControl.value &&
+        startDateControl.value >= endDateControl.value
+      ) {
+        if (endDateLabel == 'recur_end') {
+          return { recurEndDateInvalid: true };
+        } else {
+          return { dateRangeInvalid: true };
+        }
+      }
+      return null;
+    };
   };
 
   /** Office Hours Editor Form */
@@ -96,9 +129,19 @@ export class OfficeHoursEditorComponent {
         this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm'),
         [Validators.required]
       ),
-      room_id: new FormControl('', [Validators.required])
+      room_id: new FormControl('', [Validators.required]),
+      recurs: new FormControl(false, [Validators.required]),
+      recur_end: new FormControl(
+        this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
+        []
+      )
     },
-    { validators: [this.dateRangeValidator] }
+    {
+      validators: [
+        this.genericDateRangeValidator('start_time', 'end_time'),
+        this.genericDateRangeValidator('end_time', 'recur_end')
+      ]
+    }
   );
 
   constructor(
@@ -118,6 +161,14 @@ export class OfficeHoursEditorComponent {
     this.virtualRoom = this.rooms.find((room) => room.id === 'Virtual');
 
     /** Set form data */
+    let currentTermEndDate = this.myCoursesService.currentTerms()[0].end;
+    let recurrenceEndDate = new Date(
+      this.officeHours.recurrence_pattern &&
+      this.officeHours.recurrence_pattern.end_date
+        ? this.officeHours.recurrence_pattern.end_date
+        : currentTermEndDate
+    );
+
     this.officeHoursForm.patchValue(
       Object.assign({}, this.officeHours, {
         start_time: this.datePipe.transform(
@@ -127,9 +178,52 @@ export class OfficeHoursEditorComponent {
         end_time: this.datePipe.transform(
           this.officeHours.end_time,
           'yyyy-MM-ddTHH:mm'
+        ),
+        // The truncated date defaults to GMT. When converted to local EST,
+        // it rolls the date ~5hrs back to the previous day. Temporary solution
+        // is to "add" the extra day back.
+        recur_end: this.datePipe.transform(
+          new Date(recurrenceEndDate).setDate(recurrenceEndDate.getDate() + 1),
+          'yyyy-MM-dd'
         )
       })
     );
+
+    this.days = this.officeHours.recurrence_pattern
+      ? {
+          [Weekday.Monday]: this.officeHours.recurrence_pattern.recur_monday,
+          [Weekday.Tuesday]: this.officeHours.recurrence_pattern.recur_tuesday,
+          [Weekday.Wednesday]:
+            this.officeHours.recurrence_pattern.recur_wednesday,
+          [Weekday.Thursday]:
+            this.officeHours.recurrence_pattern.recur_thursday,
+          [Weekday.Friday]: this.officeHours.recurrence_pattern.recur_friday,
+          [Weekday.Saturday]:
+            this.officeHours.recurrence_pattern.recur_saturday,
+          [Weekday.Sunday]: this.officeHours.recurrence_pattern.recur_sunday
+        }
+      : this.days;
+
+    /** Default to disabling recurrence modificatins when updating */
+    if (this.officeHours.id !== -1) {
+      this.officeHoursForm.controls.recurs.setValue(
+        this.officeHours.recurrence_pattern_id !== undefined
+      );
+      this.officeHoursForm.controls.recurs.disable();
+      this.officeHoursForm.controls.recur_end.disable();
+    }
+  }
+
+  /** "Null" comparator function to prevent keyvalue pipe from sorting
+   * the day keys alphabetically.
+   */
+  maintainOriginalOrder = () => 0;
+
+  /** Toggles day boolean to determine which days should be included in
+   * the recurrence.
+   */
+  toggleDay(day: string) {
+    this.days[day] = !this.days[day];
   }
 
   /** Shorthand for whether office hours is new or not.
@@ -146,32 +240,86 @@ export class OfficeHoursEditorComponent {
     return this.isNew() ? 'Created' : 'Updated';
   }
 
+  toggleUpdateRecurrencePattern(checked: boolean): void {
+    this.updateRecurrencePattern = checked;
+    console.log(this.updateRecurrencePattern);
+    this.officeHoursForm.controls.recurs.setValue(
+      this.officeHours.recurrence_pattern_id !== undefined
+    );
+    if (!this.isNew() && checked) {
+      this.officeHoursForm.controls.recurs.enable();
+      this.officeHoursForm.controls.recur_end.enable();
+    } else {
+      this.officeHoursForm.controls.recurs.disable();
+      this.officeHoursForm.controls.recur_end.disable();
+    }
+  }
+
   /** Event handler to handle submitting the Update Organization Form.
    * @returns {void}
    */
   onSubmit(): void {
     if (this.officeHoursForm.valid) {
       let officeHoursToSubmit = this.officeHours;
-      Object.assign(officeHoursToSubmit, this.officeHoursForm.value);
+      let { recurs, recur_end, ...officeHoursInfo } =
+        this.officeHoursForm.value;
+      Object.assign(officeHoursToSubmit, officeHoursInfo);
+      officeHoursToSubmit.start_time = new Date(officeHoursInfo.start_time!);
+      officeHoursToSubmit.end_time = new Date(officeHoursInfo.end_time!);
 
       // Load information from the parent route
       let courseSiteId = +this.route.parent!.snapshot.params['course_site_id'];
       officeHoursToSubmit.course_site_id = courseSiteId;
 
-      let submittedOfficeHours = this.isNew()
-        ? this.myCoursesService.createOfficeHours(
-            courseSiteId,
-            officeHoursToSubmit as NewOfficeHours
-          )
-        : this.myCoursesService.updateOfficeHours(
-            courseSiteId,
-            officeHoursToSubmit
-          );
+      let submittedOfficeHours;
+      if (recurs || this.updateRecurrencePattern) {
+        let recurrencePattern = {
+          start_date: new Date(
+            new Date(officeHoursToSubmit.start_time).setHours(0, 0, 0, 0)
+          ),
+          end_date: recur_end
+            ? new Date(new Date(recur_end).setHours(0, 0, 0, 0))
+            : null,
+          recur_monday: this.days[Weekday.Monday],
+          recur_tuesday: this.days[Weekday.Tuesday],
+          recur_wednesday: this.days[Weekday.Wednesday],
+          recur_thursday: this.days[Weekday.Thursday],
+          recur_friday: this.days[Weekday.Friday],
+          recur_saturday: this.days[Weekday.Saturday],
+          recur_sunday: this.days[Weekday.Sunday]
+        };
+        submittedOfficeHours = this.isNew()
+          ? this.myCoursesService.createRecurringOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit as NewOfficeHours,
+              recurrencePattern
+            )
+          : this.myCoursesService.updateRecurringOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit,
+              recurrencePattern
+            );
 
-      submittedOfficeHours.subscribe({
-        next: (officeHours) => this.onSuccess(officeHours),
-        error: (err) => this.onError(err)
-      });
+        submittedOfficeHours.subscribe({
+          next: (officeHours) => this.onSuccess(officeHours[0]),
+          error: (err) => this.onError(err)
+        });
+      } else {
+        submittedOfficeHours = this.isNew()
+          ? this.myCoursesService.createOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit as NewOfficeHours
+            )
+          : this.myCoursesService.updateOfficeHours(
+              courseSiteId,
+              officeHoursToSubmit
+            );
+
+        submittedOfficeHours.subscribe({
+          next: (officeHours) => this.onSuccess(officeHours),
+          error: (err) => this.onError(err)
+        });
+      }
     }
   }
 
@@ -191,7 +339,7 @@ export class OfficeHoursEditorComponent {
    * @returns {void}
    */
   private onError(err: any): void {
-    this.snackBar.open(`Error: Office Hours Not ${this.action()}`, '', {
+    this.snackBar.open(`${err.error.message}`, '', {
       duration: 2000
     });
   }

@@ -7,6 +7,8 @@ from typing import Type, TypeVar
 from fastapi import Depends
 from sqlalchemy import select, exists, and_, func
 from sqlalchemy.orm import Session, joinedload, selectinload
+
+from ...models.office_hours.office_hours_details import PrimaryOfficeHoursDetails
 from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
@@ -31,7 +33,7 @@ from ...entities.office_hours.user_created_tickets_table import (
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 
-__authors__ = ["Ajay Gandecha", "Kris Jordan"]
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -373,7 +375,7 @@ class OfficeHoursService:
         self._session.delete(office_hours_entity)
         self._session.commit()
 
-    def get(self, user: User, site_id: int, event_id: int) -> OfficeHours:
+    def get(self, user: User, site_id: int, event_id: int) -> PrimaryOfficeHoursDetails:
         """
         Gets an existing office hours event.
         """
@@ -388,7 +390,7 @@ class OfficeHoursService:
         # Check permissions
         self._check_site_admin_permissions(user, site_id)
 
-        return office_hours_entity.to_model()
+        return office_hours_entity.to_primary_details_model()
 
     def _check_site_admin_permissions(self, user: User, site_id: int):
 

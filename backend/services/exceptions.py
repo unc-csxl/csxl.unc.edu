@@ -44,3 +44,9 @@ class CourseDataScrapingException(Exception):
 
     def __init__(self, reason: str):
         super().__init__(f"{reason}")
+
+class RecurringOfficeHourEventException(Exception):
+    """RecurringOfficeHourEventException is raised when an unexpected error occurs when managing recurring offiec hours events."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")

@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Delete Recurring Event</h2>
+<mat-dialog-content>
+  <mat-radio-group [(ngModel)]="deleteAll">
+    <mat-radio-button [value]="false">This event only</mat-radio-button>
+    <mat-radio-button [value]="true">This and following events</mat-radio-button>
+  </mat-radio-group>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="secondary" (click)="close()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="confirm()">
+    Ok
+  </button>
+</mat-dialog-actions>
