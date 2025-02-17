@@ -27,7 +27,7 @@ export class OfficeHoursWidget implements OnChanges {
   displayOfficeHours!: SignageOfficeHours[]; // Hours that are on display currently
   sortedHours: LocationHoursMap = {};
   columns: Column[] = [];
-  columns_to_show: number[] = []; // Index of the columns array
+  columnsToShow: number[] = []; // Index of the columns array
   private updater: undefined | (() => void) = undefined; // sets the new sortedHours and columns on change
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -35,7 +35,7 @@ export class OfficeHoursWidget implements OnChanges {
       // Compare old vs new values to see if there is a change other than queue length
       if (
         this.displayOfficeHours === undefined ||
-        this.test_OH_difference(
+        this.testOHDifference(
           changes['officeHours'].currentValue,
           this.displayOfficeHours
         )
@@ -67,13 +67,13 @@ export class OfficeHoursWidget implements OnChanges {
             this.displayOfficeHours = this.officeHours;
             this.sortedHours = newSortedHours;
             this.columns = newColumns;
-            this.reset_display_columns(newColumns.length);
+            this.resetDisplayColumns(newColumns.length);
           };
         } else {
           this.displayOfficeHours = this.officeHours;
           this.sortedHours = newSortedHours;
           this.columns = newColumns;
-          this.reset_display_columns(newColumns.length);
+          this.resetDisplayColumns(newColumns.length);
         }
       } else {
         // Update only queue values so we can just update the displayOfficeHours
@@ -82,41 +82,38 @@ export class OfficeHoursWidget implements OnChanges {
     }
   }
 
-  rotate_columns() {
+  rotateColumns() {
     // If there is an update ready, run it
     if (this.updater) {
       this.updater();
       this.updater = undefined;
     } else {
       // Otherwise just shift all columns forward by 1 using circular logic
-      this.columns_to_show[0] =
-        (this.columns_to_show[0] + 1) % this.columns.length;
-      this.columns_to_show[1] =
-        (this.columns_to_show[0] + 1) % this.columns.length;
+      this.columnsToShow[0] = (this.columnsToShow[0] + 1) % this.columns.length;
+      this.columnsToShow[1] = (this.columnsToShow[0] + 1) % this.columns.length;
     }
   }
 
-  private reset_display_columns(col_nums: number) {
+  private resetDisplayColumns(col_nums: number) {
     if (col_nums >= 2) {
-      this.columns_to_show = [0, 1];
+      this.columnsToShow = [0, 1];
     } else if (col_nums === 1) {
-      this.columns_to_show = [0];
+      this.columnsToShow = [0];
     } else {
-      this.columns_to_show = [];
+      this.columnsToShow = [];
     }
   }
 
-  private test_OH_difference(
+  /**
+   * Tests to see if the two different office hour arrays are differing in anything but the queued length
+   *
+   * @input oh1/oh2 - lists of SignageOfficeHours that will be compared. !NOTE: These must be sorted by increasing id
+   * @returns boolean - True if the lists are different in something other than queued length
+   */
+  private testOHDifference(
     oh1: SignageOfficeHours[],
     oh2: SignageOfficeHours[]
   ): boolean {
-    /**
-     * Tests to see if the two differencce office hours arrays are differing in anything but the queued length
-     *
-     * @input oh1/oh2 - lists of SignageOfficeHours that will be compared. !NOTE: These must be sorted by increasing id
-     * @returns boolean - True if the lists are different in something other than queued length
-     */
-
     if (oh1.length !== oh2.length) {
       return true;
     }
@@ -133,22 +130,21 @@ export class OfficeHoursWidget implements OnChanges {
     return false;
   }
 
+  /**
+   * Splits the locations in locationMap into enough columns with no more than
+   * maxPerCol rows per column. This is intended to be used when generating the HTML
+   * to paginate the hours.
+   *
+   * Note that a row is defined as either an office hour entry or the dividing bar between 2 locations
+   *
+   * @input locationMap: The location based map of the Office Hours
+   * @input maxPerCol: The max amount of office hours objects to have in one column
+   * @returns Column[]: Column objects containing the locations to display
+   */
   private distributeToColumns(
     locationMap: LocationHoursMap,
     maxPerCol: number
   ): Column[] {
-    /**
-     * Splits the locations in locationMap into enough columns with no more than
-     * maxPerCol rows per column. This is intended to be used when generating the HTML
-     * to paginate the hours.
-     *
-     * Note that a row is defined as either an office hour entry or the dividing bar between 2 locations
-     *
-     * @input locationMap: The location based map of the Office Hours
-     * @input maxPerCol: The max amount of office hours objects to have in one column
-     * @returns Column[]: Column objects containing the locations to display
-     */
-
     // Get each location and tally the amount of office hours at each one, then sort descending size
     const locationSizes = Object.entries(locationMap)
       .map(([location, hours]) => ({ location: location, size: hours.length }))

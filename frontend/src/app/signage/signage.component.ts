@@ -46,7 +46,7 @@ export class SignageComponent implements OnInit, OnDestroy {
 
   constructor(protected signageService: SignageService) {}
 
-  public assginWeatherIcon(weatherData: WeatherData): string {
+  public assignWeatherIcon(weatherData: WeatherData): string {
     if (weatherData.weatherCode >= 95 && weatherData.weatherCode <= 99) {
       return weather_types['stormy'];
     } else if (weatherData.weatherCode == 3) {

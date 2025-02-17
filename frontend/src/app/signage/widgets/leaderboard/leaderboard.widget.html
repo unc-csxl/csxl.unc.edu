@@ -7,7 +7,7 @@
   <!-- Coworking Information -->
   <mat-card-content class="full-size-content">
     <!-- Coworking Dropdowns -->
-    @for(i of shown_indicies; track $index) {
+    @for(i of shownIndices; track $index) {
       <mat-chip-set class="chip-margin">
         @if(i === 0) {
           <mat-list-item class="position primary-fixed-background-leaderboard">
@@ -44,7 +44,7 @@
       </mat-chip-set>
     }
     @if (profiles.length > 5) {
-      <page-spinner class="spinner" [time]="30" (timer_end)="switch_page()"></page-spinner>
+      <page-spinner class="spinner" [time]="30" (timer_end)="switchPage()"></page-spinner>
     }
     <mat-card-footer  class="title-medium font-variant footer">
       Resets at the start of each month

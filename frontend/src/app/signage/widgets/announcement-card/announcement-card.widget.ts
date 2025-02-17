@@ -24,34 +24,34 @@ const SECONDS_BETWEEN_CHANGE = 120;
 })
 export class AnnouncementCardWidget implements OnChanges, OnDestroy {
   @Input() announcements!: string[];
-  announcement_to_display = 0;
-  rotating_subscription: Subscription | null = null;
+  announcementToDisplay = 0;
+  rotatingSubscription: Subscription | null = null;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['announcements']) {
-      this.announcement_to_display = 0;
+      this.announcementToDisplay = 0;
       // Handle rotating between multiple announcements
-      if (this.announcements.length > 1 && this.rotating_subscription == null) {
-        this.rotating_subscription = timer(
+      if (this.announcements.length > 1 && this.rotatingSubscription == null) {
+        this.rotatingSubscription = timer(
           0,
           SECONDS_BETWEEN_CHANGE * 1000
         ).subscribe(() => {
-          this.announcement_to_display =
-            (this.announcement_to_display + 1) % this.announcements.length;
+          this.announcementToDisplay =
+            (this.announcementToDisplay + 1) % this.announcements.length;
         });
       } else if (
         this.announcements.length <= 1 &&
-        this.rotating_subscription != null
+        this.rotatingSubscription != null
       ) {
-        this.rotating_subscription.unsubscribe();
-        this.rotating_subscription = null;
+        this.rotatingSubscription.unsubscribe();
+        this.rotatingSubscription = null;
       }
     }
   }
 
   ngOnDestroy(): void {
-    if (this.rotating_subscription) {
-      this.rotating_subscription.unsubscribe();
+    if (this.rotatingSubscription) {
+      this.rotatingSubscription.unsubscribe();
     }
   }
 }

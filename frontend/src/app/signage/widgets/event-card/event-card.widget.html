@@ -6,31 +6,31 @@
     <mat-card-header class="header-margin">
       <div class="header-row">
         <div class="header-column">
-          <mat-card-title class="headline-large">{{ events[shown_event].name }}</mat-card-title>
+          <mat-card-title class="headline-large">{{ events[shownEvent].name }}</mat-card-title>
 
           <div class="links-row">
             <div class="row">
               <mat-icon class="secondary-icon">schedule</mat-icon>
               <p>
-                {{ events[shown_event].start | date: 'MMM d' }}
-                {{ events[shown_event].start | date: 'shortTime' }} -
-                {{ events[shown_event].end | date: 'shortTime' }}
+                {{ events[shownEvent].start | date: 'MMM d' }}
+                {{ events[shownEvent].start | date: 'shortTime' }} -
+                {{ events[shownEvent].end | date: 'shortTime' }}
               </p>
             </div>
             <div class="row">
               <mat-icon class="secondary-icon">location_on</mat-icon>
-              <p>{{ events[shown_event].location }}</p>
+              <p>{{ events[shownEvent].location }}</p>
             </div>
             <div class="row">
               <mat-icon class="secondary-icon">person_outline</mat-icon>
-              @if (events[shown_event].override_registration_url) {
+              @if (events[shownEvent].override_registration_url) {
               <p>External registration</p>
-              } @else if (events[shown_event].registration_limit > 400) {
+              } @else if (events[shownEvent].registration_limit > 400) {
               <p>Open to all</p>
-              } @else if (events[shown_event].registration_limit === events[shown_event].number_registered) {
+              } @else if (events[shownEvent].registration_limit === events[shownEvent].number_registered) {
               <p><span class="tertiary-color">Filled</span></p>
               } @else {
-              <p>{{ events[shown_event].registration_limit - events[shown_event].number_registered }} left</p>
+              <p>{{ events[shownEvent].registration_limit - events[shownEvent].number_registered }} left</p>
               }
             </div>
           </div>
@@ -42,20 +42,20 @@
         <!-- Organization chip -->
         <mat-chip-row
           id="organization-chip"
-          [routerLink]="'/organizations/' + events[shown_event].organization_slug">
+          [routerLink]="'/organizations/' + events[shownEvent].organization_slug">
           <img
             class="profile-icon"
             matChipAvatar
-            [src]="events[shown_event].organization_icon" />
-          {{ events[shown_event].organization_name }}
+            [src]="events[shownEvent].organization_icon" />
+          {{ events[shownEvent].organization_name }}
         </mat-chip-row>
 
-        @if (events[shown_event].organizers.length > 0) {
+        @if (events[shownEvent].organizers.length > 0) {
         <mat-divider class="vertical-divider" [vertical]="true" />
         }
 
         <!-- Organizer Chips -->
-        @for (organizer of events[shown_event].organizers; track organizer.id) {
+        @for (organizer of events[shownEvent].organizers; track organizer.id) {
         <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
           @if (organizer.github_avatar && organizer.github_avatar !== '') {
           <img
@@ -69,10 +69,10 @@
         }
       </mat-chip-set>
       <p class="description headline-small">
-        {{ events[shown_event].description }}
+        {{ events[shownEvent].description }}
       </p>
       @if (events.length > 1) {
-        <page-spinner class="spinner" [time]="45" (timer_end)="next_event()"></page-spinner>
+        <page-spinner class="spinner" [time]="45" (timer_end)="nextEvent()"></page-spinner>
       }
     </mat-card-content>
   } @else {

@@ -7,7 +7,7 @@
         @if (columns.length == 0) {
             <p class="no_oh headline-medium font-primary">All are currently closed, please check back later.</p>
         } @else {
-            @for (col_i of columns_to_show; track $index) {
+            @for (col_i of columnsToShow; track $index) {
                 <div class="column">
                     <mat-divider class="divide"></mat-divider>
                     @for (location of columns[col_i].locations; track $index) {
@@ -32,7 +32,7 @@
                 </div>
             }
             @if (columns.length > 2) {
-                <page-spinner class="spinner" [time]="15" (timer_end)="rotate_columns()"></page-spinner>
+                <page-spinner class="spinner" [time]="15" (timer_end)="rotateColumns()"></page-spinner>
             }
         }
     </mat-card-content>

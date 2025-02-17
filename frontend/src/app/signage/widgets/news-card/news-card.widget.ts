@@ -16,15 +16,15 @@ import { ArticleOverview } from '../../../welcome/welcome.model';
 })
 export class NewsCardWidget implements OnChanges {
   @Input() articles!: ArticleOverview[];
-  shown_article = 0;
+  shownArticle = 0;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['articles']) {
-      this.shown_article = 0;
+      this.shownArticle = 0;
     }
   }
 
-  next_event() {
-    this.shown_article = (this.shown_article + 1) % this.articles.length;
+  nextArticle() {
+    this.shownArticle = (this.shownArticle + 1) % this.articles.length;
   }
 }

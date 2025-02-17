@@ -17,15 +17,15 @@ import { EventOverview } from '../../../event/event.model';
 })
 export class EventCardWidget implements OnChanges {
   @Input() events!: EventOverview[];
-  shown_event = 0;
+  shownEvent = 0;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events']) {
-      this.shown_event = 0;
+      this.shownEvent = 0;
     }
   }
 
-  next_event() {
-    this.shown_event = (this.shown_event + 1) % this.events.length;
+  nextEvent() {
+    this.shownEvent = (this.shownEvent + 1) % this.events.length;
   }
 }

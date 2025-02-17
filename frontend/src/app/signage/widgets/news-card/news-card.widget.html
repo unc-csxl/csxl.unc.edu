@@ -4,40 +4,40 @@
   </mat-card-header>
   @if (articles.length > 0) {
   <div class="row">
-    <img class="news-feature-image" [src]="articles[shown_article].image_url" />
+    <img class="news-feature-image" [src]="articles[shownArticle].image_url" />
     <div class="column">
       <mat-card-header>
         <mat-card-title class="headline-large">{{
-          articles[shown_article].title
+          articles[shownArticle].title
         }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <p class="headline-small">
-          {{ articles[shown_article].published | date: 'mediumDate' }}
+          {{ articles[shownArticle].published | date: 'mediumDate' }}
         </p>
 
         <mat-chip-set class="organization-chip-set">
           <!-- Organization chip -->
-          @if(articles[shown_article].organization_slug) {
+          @if(articles[shownArticle].organization_slug) {
           <mat-chip-row
             id="organization-chip"
-            [routerLink]="'/organizations/' + articles[shown_article].organization_slug">
+            [routerLink]="'/organizations/' + articles[shownArticle].organization_slug">
             <img
               class="profile-icon"
               matChipAvatar
-              [src]="articles[shown_article].organization_logo" />
-            {{ articles[shown_article].organization_name }}
+              [src]="articles[shownArticle].organization_logo" />
+            {{ articles[shownArticle].organization_name }}
           </mat-chip-row>
           }
         </mat-chip-set>
         <p class="description headline-small">
-          {{ articles[shown_article].synopsis }}
+          {{ articles[shownArticle].synopsis }}
         </p>
       </mat-card-content>
     </div>
   </div>
   @if (articles.length > 1) {
-    <page-spinner class="spinner" [time]="90" (timer_end)="next_event()"></page-spinner>
+    <page-spinner class="spinner" [time]="90" (timer_end)="nextArticle()"></page-spinner>
   }
   <mat-card-footer class="title-medium font-variant news-footer">
     Read more at csxl.unc.edu/welcome
