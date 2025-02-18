@@ -25,6 +25,7 @@ from .api.academics import section_member, term, course, section, my_courses, hi
 from .api.office_hours import (
     office_hours as office_hours_event,
     ticket as office_hours_ticket,
+    queue as office_hours_queue,
 )
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
@@ -97,6 +98,7 @@ feature_apis = [
     health,
     office_hours_event,
     office_hours_ticket,
+    office_hours_queue,
     hiring,
     admin_facts,
     article,
