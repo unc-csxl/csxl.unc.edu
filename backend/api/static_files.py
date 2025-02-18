@@ -13,7 +13,7 @@ class StaticFileMiddleware(StaticFiles):
         super().__init__(directory=directory, packages=None, html=True, check_dir=True)
 
     async def __call__(self, scope, receive, send):  # type: ignore
-        if scope["type"] != "websocket":
+        if scope["type"] == "websocket":
             websocket = WebSocket(scope, receive=receive, send=send)
             await websocket.accept()
         else:
