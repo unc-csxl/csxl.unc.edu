@@ -23,14 +23,18 @@ export interface SignageOfficeHoursJSON {
   queued: number;
 }
 
-export interface SlowSignageDataJson {
+export interface SignageAnnouncementJSON {
+  title: string;
+}
+
+export interface SlowSignageDataJSON {
   newest_news: ArticleOverviewJson[];
   events: EventOverviewJson[];
   top_users: PublicProfile[];
-  announcement_titles: string[];
+  announcements: SignageAnnouncementJSON[];
 }
 
-export interface FastSignageDataJson {
+export interface FastSignageDataJSON {
   active_office_hours: SignageOfficeHoursJSON[];
   available_rooms: string[];
   seat_availability: SeatAvailabilityJSON[];
@@ -43,11 +47,15 @@ export interface SignageOfficeHours {
   queued: number;
 }
 
+export interface SignageAnnouncement {
+  title: string;
+}
+
 export interface SlowSignageData {
   newest_news: ArticleOverview[];
   newest_events: EventOverview[];
   top_users: PublicProfile[];
-  announcement_titles: string[];
+  announcements: SignageAnnouncement[];
 }
 
 export interface FastSignageData {
@@ -74,19 +82,19 @@ export const parseSignageOfficeHoursJson = (
   };
 };
 
-export const parseSlowSignageDataJson = (
-  json: SlowSignageDataJson
+export const parseSlowSignageDataJSON = (
+  json: SlowSignageDataJSON
 ): SlowSignageData => {
   return {
     newest_news: json.newest_news.map(parseArticleOverviewJson),
     newest_events: json.events.map(parseEventOverviewJson),
     top_users: json.top_users,
-    announcement_titles: json.announcement_titles
+    announcements: json.announcements
   };
 };
 
-export const parseFastSignageDataJson = (
-  json: FastSignageDataJson
+export const parseFastSignageDataJSON = (
+  json: FastSignageDataJSON
 ): FastSignageData => {
   return {
     active_office_hours: json.active_office_hours.map(

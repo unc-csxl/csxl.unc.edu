@@ -14,6 +14,7 @@ import {
   OnDestroy
 } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
+import { SignageAnnouncement } from '../../signage.model';
 
 const SECONDS_BETWEEN_CHANGE = 120;
 
@@ -23,7 +24,7 @@ const SECONDS_BETWEEN_CHANGE = 120;
   styleUrls: ['announcement-card.widget.css']
 })
 export class AnnouncementCardWidget implements OnChanges, OnDestroy {
-  @Input() announcements!: string[];
+  @Input() announcements!: SignageAnnouncement[];
   announcementToDisplay = 0;
   rotatingSubscription: Subscription | null = null;
 

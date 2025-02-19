@@ -13,12 +13,12 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 import { map } from 'rxjs';
 import {
   FastSignageData,
-  FastSignageDataJson,
+  FastSignageDataJSON,
   SlowSignageData,
-  SlowSignageDataJson,
+  SlowSignageDataJSON,
   WeatherData,
-  parseFastSignageDataJson,
-  parseSlowSignageDataJson
+  parseFastSignageDataJSON,
+  parseSlowSignageDataJSON
 } from './signage.model';
 import { fetchWeatherApi } from 'openmeteo';
 
@@ -49,7 +49,7 @@ export class SignageService {
     newest_news: [],
     newest_events: [],
     top_users: [],
-    announcement_titles: []
+    announcements: []
   });
   public slowData = this.slowDataSignal.asReadonly();
 
@@ -74,8 +74,8 @@ export class SignageService {
    */
   getSlowData() {
     return this.http
-      .get<SlowSignageDataJson>(`/api/signage/slow`)
-      .pipe(map(parseSlowSignageDataJson))
+      .get<SlowSignageDataJSON>(`/api/signage/slow`)
+      .pipe(map(parseSlowSignageDataJSON))
       .subscribe((slowSignageData) => {
         this.slowDataSignal.set(slowSignageData);
       });
@@ -88,8 +88,8 @@ export class SignageService {
    */
   getFastData() {
     return this.http
-      .get<FastSignageDataJson>(`/api/signage/fast`)
-      .pipe(map(parseFastSignageDataJson))
+      .get<FastSignageDataJSON>(`/api/signage/fast`)
+      .pipe(map(parseFastSignageDataJSON))
       .subscribe((fastSignageData) => {
         this.fastDataSignal.set(fastSignageData);
       });

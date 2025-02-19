@@ -20,13 +20,19 @@ class SignageOfficeHours(BaseModel):
     queued: int
 
 
+class SignageAnnouncement(BaseModel):
+    """Stores all fields sent as announcment data"""
+
+    title: str
+
+
 class SignageOverviewSlow(BaseModel):
     """Encapsulates less frequent data for the tv."""
 
     newest_news: list[ArticleOverview]
     events: list[EventOverview]
     top_users: list[PublicUser]
-    announcement_titles: list[str] | None
+    announcements: list[SignageAnnouncement]
 
 
 class SignageOverviewFast(BaseModel):

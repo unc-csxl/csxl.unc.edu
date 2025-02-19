@@ -18,6 +18,7 @@ from ..models.signage import (
     SignageOverviewFast,
     SignageOverviewSlow,
     SignageOfficeHours,
+    SignageAnnouncement,
 )
 from ..services.coworking import ReservationService, SeatService
 from ..services import RoomService
@@ -187,8 +188,8 @@ class SignageService:
             .limit(MAX_ANNOUCEMENTS)
         )
         announcement_entities = self._session.scalars(announcement_query).all()
-        announcement_titles = [
-            announcement.to_overview_model().title
+        announcements = [
+            SignageAnnouncement(title=announcement.title)
             for announcement in announcement_entities
         ]
 
@@ -196,5 +197,5 @@ class SignageService:
             newest_news=newest_news,
             events=events,
             top_users=top_users,
-            announcement_titles=announcement_titles,
+            announcements=announcements,
         )

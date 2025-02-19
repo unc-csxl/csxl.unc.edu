@@ -81,5 +81,5 @@ def test_get_slow_data(signage_svc: SignageService):
     assert slow_data.top_users[1].id == user_data.root.id
     assert slow_data.top_users[2].id == user_data.user.id
 
-    assert len(slow_data.announcement_titles) == 1
-    assert slow_data.announcement_titles[0] == "Sample Announcement"
+    assert len(slow_data.announcements) == 1
+    assert slow_data.announcements[0].title == "Sample Announcement"
