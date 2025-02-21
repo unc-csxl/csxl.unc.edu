@@ -1,5 +1,5 @@
 /**
- * The TV Service abstracts HTTP requests to the backend
+ * The Signage Service abstracts HTTP requests to the backend
  * from the components.
  *
  * @author Will Zahrt
@@ -70,7 +70,7 @@ export class SignageService {
   /**
    * Fetches the slow data from the backend, parses the JSON into the frontend model, and updates the signals
    *
-   * @returns SlowData Subscription
+   * @return SlowData Subscription
    */
   getSlowData() {
     return this.http
@@ -84,7 +84,7 @@ export class SignageService {
   /**
    * Fetches the fast data from the backend, parses JSON into frontend model, and updates fast data signal
    *
-   * @returns FastData Subscription
+   * @return FastData Subscription
    */
   getFastData() {
     return this.http
@@ -96,7 +96,7 @@ export class SignageService {
   }
 
   /**
-   * Fetches weather data from open mateo using params defined above, and updates the weather signal
+   * Fetches weather data from Open-Meteo using params defined above, and updates the weather signal
    *
    * Gets the temperature, day/night distinction, weather code (cloudy/rainy/etc.), and wind speed for Sitterson Hall
    */

@@ -46,27 +46,46 @@ export class SignageComponent implements OnInit, OnDestroy {
 
   constructor(protected signageService: SignageService) {}
 
+  /**
+   * Weather icons are assigned based on WMO Weather Codes.
+   *
+   * Here is a table showing all of them:
+   *
+   * https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM
+   *
+   * @param weatherData The weather data retrieved from Open-Meteo.
+   * @return The path to the correct .png weather icon.
+   */
   public assignWeatherIcon(weatherData: WeatherData): string {
     if (weatherData.weatherCode >= 95 && weatherData.weatherCode <= 99) {
+      // Codes 95-99 indicate thunderstorms.
       return weather_types['stormy'];
     } else if (weatherData.weatherCode == 3) {
+      // Code 3 indicates overcast clouds.
       return weather_types['overcast'];
     } else if (weatherData.weatherCode >= 40 && weatherData.weatherCode <= 49) {
+      // Codes 40-49 indicate fog.
       return weather_types['foggy'];
     } else if (
       (weatherData.weatherCode >= 60 && weatherData.weatherCode <= 66) ||
       (weatherData.weatherCode >= 80 && weatherData.weatherCode <= 82)
     ) {
+      // Codes 60-66 indicate non-freezing rain.
+      // Codes 80-82 indicate different rain shower types.
       return weather_types['rainy'];
     } else if (
       (weatherData.weatherCode >= 70 && weatherData.weatherCode <= 75) ||
       weatherData.weatherCode == 85 ||
       weatherData.weatherCode == 86
     ) {
+      // Codes 70-75 indicate snowflake fall.
+      // Codes 85-86 indicate snow showers.
       return weather_types['snowy'];
     } else if (weatherData.isDay == 0) {
+      // isDay == 0 indicates night time.
       return weather_types['night'];
     } else if (weatherData.weatherCode == 2) {
+      // Code 2 indicates partly cloudy.
       if (weatherData.windSpeed10m >= 15) {
         return weather_types['partly_cloudy_windy'];
       } else {
@@ -75,6 +94,7 @@ export class SignageComponent implements OnInit, OnDestroy {
     } else if (weatherData.windSpeed10m >= 15) {
       return weather_types['sunny_windy'];
     } else {
+      // Default to sunny weather icon.
       return weather_types['sunny'];
     }
   }

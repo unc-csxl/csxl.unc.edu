@@ -20,10 +20,6 @@ class SeatCategory {
   public next_available?: SeatAvailability;
   public seats_available_soon: SeatAvailability[] = [];
 
-  // TODO: Handle edge case where only openings are < 1hr
-  // public truncated: boolean = false;
-  // public truncated_at?: Date;
-
   constructor(title: string) {
     this.title = title;
   }
