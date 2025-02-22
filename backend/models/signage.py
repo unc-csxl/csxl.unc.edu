@@ -26,12 +26,20 @@ class SignageAnnouncement(BaseModel):
     title: str
 
 
+class SignageProfile(BaseModel):
+    """Stores all fields needed to display a person on the leaderboard"""
+
+    first_name: str
+    last_name: str
+    github_avatar: str | None = None
+
+
 class SignageOverviewSlow(BaseModel):
     """Encapsulates less frequent data for the tv."""
 
     newest_news: list[ArticleOverview]
     events: list[EventOverview]
-    top_users: list[PublicUser]
+    top_users: list[SignageProfile]
     announcements: list[SignageAnnouncement]
 
 

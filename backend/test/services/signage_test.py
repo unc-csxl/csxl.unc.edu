@@ -77,9 +77,12 @@ def test_get_slow_data(signage_svc: SignageService):
     assert len(slow_data.events) == 3
 
     assert len(slow_data.top_users) == 3
-    assert slow_data.top_users[0].id == user_data.ambassador.id
-    assert slow_data.top_users[1].id == user_data.root.id
-    assert slow_data.top_users[2].id == user_data.user.id
+    assert slow_data.top_users[0].first_name == user_data.ambassador.first_name
+    assert slow_data.top_users[0].last_name == user_data.ambassador.last_name
+    assert slow_data.top_users[1].first_name == user_data.root.first_name
+    assert slow_data.top_users[1].last_name == user_data.root.last_name
+    assert slow_data.top_users[2].first_name == user_data.user.first_name
+    assert slow_data.top_users[2].last_name == user_data.user.last_name
 
     assert len(slow_data.announcements) == 1
     assert slow_data.announcements[0].title == "Sample Announcement"

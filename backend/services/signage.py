@@ -19,6 +19,7 @@ from ..models.signage import (
     SignageOverviewSlow,
     SignageOfficeHours,
     SignageAnnouncement,
+    SignageProfile,
 )
 from ..services.coworking import ReservationService, SeatService
 from ..services import RoomService
@@ -55,7 +56,7 @@ class SignageService:
         self._seat_svc = seat_svc
         self.room_svc = room_svc
 
-    def office_hours_to_signage_model(
+    def to_signage_office_hours_model(
         self, entity: OfficeHoursEntity
     ) -> SignageOfficeHours:
         """Converts OfficeHoursEntity into the SignageOfficeHours model"""
@@ -81,6 +82,19 @@ class SignageService:
             ),
         )
 
+    def to_signage_announcements_model(
+        self, announcement_entity: ArticleEntity
+    ) -> SignageAnnouncement:
+        """Converts an ArticleEntity into the model used to send announcements to signage"""
+        return SignageAnnouncement(title=announcement_entity.title)
+
+    def to_signage_profile_model(self, user_entity: UserEntity) -> SignageProfile:
+        return SignageProfile(
+            first_name=user_entity.first_name,
+            last_name=user_entity.last_name,
+            github_avatar=user_entity.github_avatar,
+        )
+
     def get_fast_data(self) -> SignageOverviewFast:
         """
         Gets the data for the fast API route
@@ -96,7 +110,7 @@ class SignageService:
         )
         active_office_hours_entities = self._session.scalars(office_hours_query).all()
         active_office_hours = [
-            self.office_hours_to_signage_model(office_hours)
+            self.to_signage_office_hours_model(office_hours)
             for office_hours in active_office_hours_entities
         ]
 
@@ -169,8 +183,8 @@ class SignageService:
             .limit(MAX_LEADERBOARD_SLOTS)
         )
 
-        user_entities = self._session.scalars(top_users_query).all()
-        top_users = [user.to_public_model() for user in user_entities]
+        user_entities: list[UserEntity] = self._session.scalars(top_users_query).all()
+        top_users = [self.to_signage_profile_model(user) for user in user_entities]
 
         # Newest Events
         events_query = (
@@ -189,7 +203,7 @@ class SignageService:
         )
         announcement_entities = self._session.scalars(announcement_query).all()
         announcements = [
-            SignageAnnouncement(title=announcement.title)
+            self.to_signage_announcements_model(announcement)
             for announcement in announcement_entities
         ]
 

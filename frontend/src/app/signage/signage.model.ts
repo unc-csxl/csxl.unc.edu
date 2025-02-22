@@ -8,7 +8,6 @@ import {
   parseEventOverviewJson,
   EventOverviewJson
 } from '../event/event.model';
-import { PublicProfile } from '../profile/profile.service';
 import {
   ArticleOverviewJson,
   ArticleOverview,
@@ -27,10 +26,16 @@ export interface SignageAnnouncementJSON {
   title: string;
 }
 
+export interface SignageProfileJSON {
+  first_name: string;
+  last_name: string;
+  github_avatar: string;
+}
+
 export interface SlowSignageDataJSON {
   newest_news: ArticleOverviewJson[];
   events: EventOverviewJson[];
-  top_users: PublicProfile[];
+  top_users: SignageProfileJSON[];
   announcements: SignageAnnouncementJSON[];
 }
 
@@ -51,10 +56,16 @@ export interface SignageAnnouncement {
   title: string;
 }
 
+export interface SignageProfile {
+  first_name: string;
+  last_name: string;
+  github_avatar: string;
+}
+
 export interface SlowSignageData {
   newest_news: ArticleOverview[];
   newest_events: EventOverview[];
-  top_users: PublicProfile[];
+  top_users: SignageProfile[];
   announcements: SignageAnnouncement[];
 }
 
@@ -71,7 +82,7 @@ export interface WeatherData {
   windSpeed10m: number;
 }
 
-export const parseSignageOfficeHoursJson = (
+export const parseSignageOfficeHoursJSON = (
   json: SignageOfficeHoursJSON
 ): SignageOfficeHours => {
   return {
@@ -82,13 +93,23 @@ export const parseSignageOfficeHoursJson = (
   };
 };
 
+export const parseSignageProfileJSON = (
+  json: SignageProfileJSON
+): SignageProfile => {
+  return {
+    first_name: json.first_name,
+    last_name: json.last_name,
+    github_avatar: json.github_avatar
+  };
+};
+
 export const parseSlowSignageDataJSON = (
   json: SlowSignageDataJSON
 ): SlowSignageData => {
   return {
     newest_news: json.newest_news.map(parseArticleOverviewJson),
     newest_events: json.events.map(parseEventOverviewJson),
-    top_users: json.top_users,
+    top_users: json.top_users.map(parseSignageProfileJSON),
     announcements: json.announcements
   };
 };
@@ -98,7 +119,7 @@ export const parseFastSignageDataJSON = (
 ): FastSignageData => {
   return {
     active_office_hours: json.active_office_hours.map(
-      parseSignageOfficeHoursJson
+      parseSignageOfficeHoursJSON
     ),
     available_rooms: json.available_rooms,
     seat_availability: json.seat_availability.map(parseSeatAvailabilityJSON)

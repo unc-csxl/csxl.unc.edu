@@ -8,7 +8,7 @@
  */
 
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { PublicProfile } from 'src/app/profile/profile.service';
+import { SignageProfile } from '../../signage.model';
 
 @Component({
   selector: 'leaderboard',
@@ -17,7 +17,7 @@ import { PublicProfile } from 'src/app/profile/profile.service';
 })
 export class LeaderboardWidget implements OnChanges {
   /** Inputs and outputs go here */
-  @Input() profiles: PublicProfile[] = []; // Should be a max of 10 elements
+  @Input() profiles: SignageProfile[] = []; // Should be a max of 10 elements
   shownIndices: number[] = [...Array(Math.min(5, this.profiles.length)).keys()];
 
   ngOnChanges(changes: SimpleChanges): void {
