@@ -11,8 +11,6 @@
 
 .full-size-content {
   height: 20vh;
-  /* text-align: center; */
-  /* justify-content: center; */
 }
 
 .sub-header {
@@ -31,7 +29,6 @@
 }
 
 .profile-chip-container {
-  /* display: flex; */
   width: 186px !important;
   height: 44px !important;
   margin-left: auto;
@@ -43,7 +40,6 @@
 .profile-chip {
   width: 186px !important;
   height: 44px !important;
-  /* text-align: center !important; */
 }
 
 .position {
@@ -65,11 +61,6 @@
   padding-left: 5%;
 }
 
-.account-circle-icon {
-  /* width: 34px !important;
-  height: 33px !important; */
-}
-
 .spinner {
   position: absolute;
   right: 4%;
@@ -87,7 +78,6 @@
 
 .footer {
   font-style: italic;
-  /* margin-left: 22px; */
   position: absolute;
   bottom: 26px;
 }

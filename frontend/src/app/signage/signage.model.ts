@@ -62,6 +62,16 @@ export interface SignageProfile {
   github_avatar: string;
 }
 
+export enum AvailabeRoom {
+  SN139,
+  SN144,
+  SN146,
+  SN135,
+  SN137,
+  SN141,
+  SN147
+}
+
 export interface SlowSignageData {
   newest_news: ArticleOverview[];
   newest_events: EventOverview[];
@@ -71,7 +81,7 @@ export interface SlowSignageData {
 
 export interface FastSignageData {
   active_office_hours: SignageOfficeHours[];
-  available_rooms: string[];
+  available_rooms: AvailabeRoom[];
   seat_availability: SeatAvailability[];
 }
 
@@ -103,6 +113,10 @@ export const parseSignageProfileJSON = (
   };
 };
 
+export const parseAvailableRoomJSON = (json: string): AvailabeRoom => {
+  return AvailabeRoom[json as keyof typeof AvailabeRoom];
+};
+
 export const parseSlowSignageDataJSON = (
   json: SlowSignageDataJSON
 ): SlowSignageData => {
@@ -121,7 +135,7 @@ export const parseFastSignageDataJSON = (
     active_office_hours: json.active_office_hours.map(
       parseSignageOfficeHoursJSON
     ),
-    available_rooms: json.available_rooms,
+    available_rooms: json.available_rooms.map(parseAvailableRoomJSON),
     seat_availability: json.seat_availability.map(parseSeatAvailabilityJSON)
   };
 };

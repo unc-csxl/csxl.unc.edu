@@ -9,20 +9,20 @@
     <!-- Coworking Dropdowns -->
     <h3 class="headline-medium font-on-surface room-title-margins">Pairing</h3>
     <mat-chip-set>
-      @for (room of ['SN139', 'SN144', 'SN146']; track room) {
-        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{room}}</mat-chip>
+      @for (room of pairingRooms; track room) {
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{toRoomName(room)}}</mat-chip>
       }
     </mat-chip-set>
     <h3 class="headline-medium font-on-surface room-title-margins">Small Group (5)</h3>
     <mat-chip-set>
-      @for (room of ['SN135', 'SN137']; track room) {
-        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{room}}</mat-chip>
+      @for (room of smallGroupRooms; track room) {
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{toRoomName(room)}}</mat-chip>
       }
     </mat-chip-set>
     <h3 class="headline-medium font-on-surface room-title-margins">Large Group (7)</h3>
     <mat-chip-set>
-      @for (room of ['SN141', 'SN147']; track room) {
-        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{room}}</mat-chip>
+      @for (room of largeGroupRooms; track room) {
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{toRoomName(room)}}</mat-chip>
       }
     </mat-chip-set>
   </mat-card-content>

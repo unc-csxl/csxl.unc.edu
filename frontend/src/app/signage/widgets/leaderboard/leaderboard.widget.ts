@@ -26,11 +26,15 @@ export class LeaderboardWidget implements OnChanges {
       !this.shownIndices.includes(5) &&
       this.shownIndices.length < 5
     ) {
-      // Only run this if there is less than 5 on the leaderboard right now
+      // Set shownIndicies to length of profiles if there is less than 5 on the leaderboard right now
       this.shownIndices = [...Array(Math.min(5, this.profiles.length)).keys()];
     }
   }
 
+  /**
+   * Switches the page of leaderboard that is currently in view.
+   * Accomplished by setting shownIndicies to 1-5 or 6-(length of profiles)
+   */
   switchPage() {
     if (this.shownIndices.includes(1)) {
       // Generates an array of numbers 5 to length of profile
@@ -40,6 +44,25 @@ export class LeaderboardWidget implements OnChanges {
     } else {
       // At this point we can assume that the array is larger than 5 elements
       this.shownIndices = [...Array(5).keys()];
+    }
+  }
+
+  /**
+   * Gets the class name for the background color of the leaderboard positions
+   * @param position position on the leaderboard
+   * @returns class name for the background colors
+   */
+  getBackgroundClass(position: number): string {
+    switch (position) {
+      case 1:
+        return 'primary-fixed-background-leaderboard';
+      case 2:
+        return 'primary-background';
+      case 3:
+        return 'primary-fixed-dim-background-leaderboard';
+
+      default:
+        return 'secondary-container-background';
     }
   }
 }

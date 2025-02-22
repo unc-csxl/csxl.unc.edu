@@ -9,26 +9,9 @@
     <!-- Coworking Dropdowns -->
     @for(i of shownIndices; track $index) {
       <mat-chip-set class="chip-margin">
-        @if(i === 0) {
-          <mat-list-item class="position primary-fixed-background-leaderboard">
-            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
-          </mat-list-item>
-        }
-        @else if(i === 1) {
-          <mat-list-item class="position primary-background">
-            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
-          </mat-list-item>
-        }
-        @else if(i === 2) {
-          <mat-list-item class="position primary-fixed-dim-background-leaderboard">
-            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
-          </mat-list-item>
-        }
-        @else {
-          <mat-list-item class="position secondary-container-background">
-            <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
-          </mat-list-item>
-        }
+        <mat-list-item class="position {{getBackgroundClass(i+1)}}">
+          <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
+        </mat-list-item>
         <mat-chip class="leaderboard-chips label-large">
           @if(profiles[i].github_avatar) {
             <img class="account-circle-icon" matChipAvatar [src]="profiles[i].github_avatar" alt="GitHub Avatar"/>

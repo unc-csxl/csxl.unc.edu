@@ -8,6 +8,7 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { AvailabeRoom } from '../../signage.model';
 
 @Component({
   selector: 'rooms',
@@ -15,20 +16,17 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./rooms.widget.css']
 })
 export class RoomsWidget {
-  @Input() availableRooms: string[] = [];
-  allRooms: string[] = [
-    'SN139',
-    'SN144',
-    'SN146',
-    'SN135',
-    'SN137',
-    'SN141',
-    'SN147'
-  ];
+  @Input() availableRooms: AvailabeRoom[] = [];
 
-  constructor() {}
+  pairingRooms = [AvailabeRoom.SN139, AvailabeRoom.SN144, AvailabeRoom.SN146];
+  smallGroupRooms = [AvailabeRoom.SN135, AvailabeRoom.SN137];
+  largeGroupRooms = [AvailabeRoom.SN141, AvailabeRoom.SN147];
 
-  isRoomAvailable(room: string): boolean {
+  isRoomAvailable(room: AvailabeRoom): boolean {
     return this.availableRooms.includes(room);
+  }
+
+  toRoomName(room: AvailabeRoom): string {
+    return AvailabeRoom[room];
   }
 }
