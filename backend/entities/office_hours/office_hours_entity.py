@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Self
 from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from ...models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ...models.office_hours.office_hours_details import (
     OfficeHoursDetails,

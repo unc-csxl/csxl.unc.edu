@@ -1,0 +1,12 @@
+.container {
+  width: 42px;
+  height: 42px;
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  top: 22.5%;
+  left: 22.5%;
+  font-size: 24px;
+}

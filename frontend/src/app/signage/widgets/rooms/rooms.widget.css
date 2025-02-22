@@ -1,0 +1,27 @@
+.full-size-pane {
+  min-height: 100% !important;
+  width: 100% !important;
+  border-color: transparent !important;
+  margin: 0px !important;
+}
+
+.room-title {
+  justify-content: left;
+  padding-left: 24px;
+}
+
+.full-size-content {
+  height: 20vh;
+  padding-left: 24px;
+}
+
+.footer {
+  font-style: italic;
+  margin-left: 22px;
+  position: absolute;
+  bottom: 26px;
+}
+
+.room-title-margins {
+  margin-top: 15px;
+}

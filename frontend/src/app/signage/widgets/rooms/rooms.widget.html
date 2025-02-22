@@ -1,0 +1,33 @@
+<mat-card appearance="outlined" class="full-size-pane">
+  <!-- Coworking Card Header -->
+  <mat-card-header class="dropin-header room-title">
+    <mat-card-title class="display-medium">Rooms</mat-card-title>
+  </mat-card-header>
+
+  <!-- Coworking Information -->
+  <mat-card-content class="full-size-content">
+    <!-- Coworking Dropdowns -->
+    <h3 class="headline-medium font-on-surface room-title-margins">Pairing</h3>
+    <mat-chip-set>
+      @for (room of pairingRooms; track room) {
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{toRoomName(room)}}</mat-chip>
+      }
+    </mat-chip-set>
+    <h3 class="headline-medium font-on-surface room-title-margins">Small Group (5)</h3>
+    <mat-chip-set>
+      @for (room of smallGroupRooms; track room) {
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{toRoomName(room)}}</mat-chip>
+      }
+    </mat-chip-set>
+    <h3 class="headline-medium font-on-surface room-title-margins">Large Group (7)</h3>
+    <mat-chip-set>
+      @for (room of largeGroupRooms; track room) {
+        <mat-chip [ngClass]="{ 'tertiary-container-background': !isRoomAvailable(room) }">{{toRoomName(room)}}</mat-chip>
+      }
+    </mat-chip-set>
+  </mat-card-content>
+
+  <mat-card-footer  class="title-medium font-variant footer">
+    Red rooms are currently reserved
+  </mat-card-footer>
+</mat-card>
