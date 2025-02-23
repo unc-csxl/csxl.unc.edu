@@ -64,7 +64,7 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
     this.ohEventId = this.route.snapshot.params['event_id'];
     // Load the web socket
     this.webSocketSubject$ = webSocket({
-      url: `ws://${window.location.host}/ws/office-hours/${this.ohEventId}/queue?token=${localStorage.getItem('bearerToken')}`
+      url: `wss://${window.location.host}/ws/office-hours/${this.ohEventId}/queue?token=${localStorage.getItem('bearerToken')}`
     });
   }
 
