@@ -326,20 +326,9 @@ export interface GetHelpWebSocketData {
   new_ticket: TicketDraft | null;
 }
 
-export enum QueueWebSocketAction {
-  CALL = 'CALL',
-  CLOSE = 'CLOSE',
-  CANCEL = 'CANCEL'
-}
-
 export interface QueueWebSocketData {
   action: QueueWebSocketAction;
   id: number;
-}
-
-export enum GetHelpWebSocketAction {
-  CREATE = 'CREATE',
-  CANCEL = 'CANCEL'
 }
 
 export interface GetHelpWebSocketData {
