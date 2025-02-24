@@ -53,6 +53,8 @@ class OrganizationEntity(EntityBase):
     join_type: Mapped[OrganizationJoinType] = mapped_column(
         SQLAlchemyEnum(OrganizationJoinType)
     )
+    # Application link for an organization with APPLY join_type
+    application: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
 
     # NOTE: This field establishes a one-to-many relationship between the organizations and events table.
     events: Mapped[list["EventEntity"]] = relationship(

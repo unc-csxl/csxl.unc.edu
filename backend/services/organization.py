@@ -9,9 +9,11 @@ from sqlalchemy.orm import Session
 from ..database import db_session
 from ..models import User, Organization
 from ..models.organization_details import OrganizationDetails
-from ..models.organization_membership import OrganizationMembership
+from ..models.organization_membership import (
+    OrganizationMembership,
+    OrganizationMembershipRegistration,
+)
 from ..models.organization_join_type import OrganizationJoinType
-from ..models.organization_role import OrganizationRole
 from ..entities.organization_entity import OrganizationEntity
 from ..entities.organization_membership_entity import OrganizationMembershipEntity
 from ..entities.user_entity import UserEntity
@@ -203,15 +205,18 @@ class OrganizationService:
         self._session.commit()
 
     def add_membership(
-        self, subject: User, slug: str, membership: OrganizationMembership
+        self,
+        subject: User,
+        slug: str,
+        membership_registration: OrganizationMembershipRegistration,
     ) -> OrganizationMembership | None:
         """
         Add a new organization membership
-        If either user or organization don't exist, a debug message is displayed
+        If user or organization don't exist or a membership already exists, a debug message is displayed
 
         Parameters:
             slug: a string representing a unique organization slug
-            user_id: an int representing a unique user id
+            membership_registration: an OrganizationMembershipRegistration used to create a new OrganizationMembership
 
         Returns:
             OrganizationMembership: Object added to table
@@ -220,56 +225,58 @@ class OrganizationService:
             ResourceNotFoundException if no organization is found with the corresponding slug
             ResourceExistsException if user is already in the organization
         """
-        # Query the organization with matching slug
-        organization = (
-            self._session.query(OrganizationEntity)
-            .filter(OrganizationEntity.slug == membership.organization_slug)
-            .one_or_none()
-        )
+        # Query the organization with matching slug and check if null
+        organization = self.get_by_slug(slug)
 
-        # Check if result is null
-        if organization is None:
-            raise ResourceNotFoundException(
-                f"No organization found with matching slug: {membership.organization_slug}"
-            )
-
-        # Check if user has permissions to add new memberships (organization or CSXL admin)
-        subject_user_membership = (
+        # Check if subject has permissions to add new memberships (organization or CSXL admin)
+        subject_membership = (
             self._session.query(OrganizationMembershipEntity).filter(
                 OrganizationMembershipEntity.user_id == subject.id,
-                OrganizationMembershipEntity.organization_id
-                == membership.organization_id,
+                OrganizationMembershipEntity.organization_id == organization.id,
             )
         ).one_or_none()
-        if subject_user_membership is None or not subject_user_membership.is_admin:
+
+        if subject_membership is None or not subject_membership.is_admin:
             # Check if user is CSXL admin
             self._permission.enforce(
                 subject, "organization.update", f"organization/{slug}"
+            )
+
+        # Query the user with matching id and check if null
+        user = (
+            self._session.query(UserEntity)
+            .filter(UserEntity.id == membership_registration.user_id)
+            .one_or_none()
+        )
+
+        if user is None:
+            raise ResourceNotFoundException(
+                f"No user found with matching id: {membership_registration.user_id}"
             )
 
         # Check if membership already exists for this organization
         check_existing_membership = (
             self._session.query(OrganizationMembershipEntity)
             .filter(
-                OrganizationMembershipEntity.user_id == membership.user.id,
-                OrganizationMembershipEntity.organization_id
-                == membership.organization_id,
+                OrganizationMembershipEntity.user_id == membership_registration.user_id,
+                OrganizationMembershipEntity.organization_id == organization.id,
             )
             .one_or_none()
         )
+
         if check_existing_membership:
             raise ResourceExistsException(
-                f"User with id {membership.user.id} already in the organization with slug: {slug}"
+                f"User with id {membership_registration.user_id} already in the organization with slug: {slug}"
             )
 
-        membership.id = None
-
-        if organization.join_type.name == OrganizationJoinType.APPLY.name:
-            membership.title = "Membership pending"
-
+        # Create new OrganizationMembershipEntity object
         organization_membership_entity = OrganizationMembershipEntity.from_model(
-            membership
+            membership_registration
         )
+        organization_membership_entity.id = None
+        if organization.join_type.name == OrganizationJoinType.APPLY.name:
+            organization_membership_entity.title = "Membership pending"
+            organization_membership_entity.is_admin = False
 
         # Add new object to table and commit changes
         self._session.add(organization_membership_entity)
@@ -278,9 +285,7 @@ class OrganizationService:
         # Return added object
         return organization_membership_entity.to_model()
 
-    def get_roster(
-        self, subject: User, organization_slug: str
-    ) -> list[OrganizationMembership]:
+    def get_roster(self, slug: str) -> list[OrganizationMembership]:
         """
         Get an organization roster
         If the organization doesn't exist, a debug message is displayed
@@ -294,19 +299,8 @@ class OrganizationService:
         Raises:
             ResourceNotFoundException if no organization is found with the corresponding slug
         """
-
-        # Query the organization with matching slug
-        organization = (
-            self._session.query(OrganizationEntity)
-            .filter(OrganizationEntity.slug == organization_slug)
-            .one_or_none()
-        )
-
-        # Check if result is null
-        if organization is None:
-            raise ResourceNotFoundException(
-                f"No organization found with matching slug: {organization_slug}"
-            )
+        # Query the organization with matching slug and check if null
+        organization = self.get_by_slug(slug)
 
         # Select all entries in `Organization` table
         query = select(OrganizationMembershipEntity).filter(
@@ -326,7 +320,7 @@ class OrganizationService:
         """
         Update a member's role in an organization
         """
-        # Check if user has permissions to add edit memberships (organization or CSXL admin)
+        # Check if user has permissions to edit memberships (organization or CSXL admin)
         subject_user_membership = (
             self._session.query(OrganizationMembershipEntity).filter(
                 OrganizationMembershipEntity.user_id == subject.id,
@@ -334,12 +328,14 @@ class OrganizationService:
                 == membership.organization_id,
             )
         ).one_or_none()
+
         if subject_user_membership is None or not subject_user_membership.is_admin:
             # Check if user is CSXL admin
             self._permission.enforce(
                 subject, "organization.update", f"organization/{slug}"
             )
 
+        # Query the membership to update
         query = select(OrganizationMembershipEntity).where(
             OrganizationMembershipEntity.id == membership.id
         )
@@ -350,13 +346,16 @@ class OrganizationService:
                 f"No organization membership found with id: {membership.id}"
             )
 
+        entity.user_id = membership.user.id
+        entity.organization_id = membership.organization_id
         entity.title = membership.title
         entity.is_admin = membership.is_admin
+        entity.term_id = membership.term.id
 
         self._session.commit()
         return entity.to_model()
 
-    def remove_membership(self, subject: User, slug: str, membership_id: int) -> None:
+    def delete_membership(self, subject: User, slug: str, membership_id: int) -> None:
         """
         Remove an existing organization membership
         If the user isn't a part of the organization, a debug message is displayed
@@ -368,6 +367,25 @@ class OrganizationService:
         Raises:
             ResourceNotFoundException if no organization membership is found with the corresponding slug and membership id
         """
+        # Query the organization with matching slug and check if null
+        organization = self.get_by_slug(slug)
+
+        # Check if user has permissions to remove memberships (organization or CSXL admin, user is subject)
+        subject_user_membership = (
+            self._session.query(OrganizationMembershipEntity).filter(
+                OrganizationMembershipEntity.user_id == subject.id,
+                OrganizationMembershipEntity.organization_id == organization.id,
+            )
+        ).one_or_none()
+        if subject_user_membership is None or (
+            membership_id != subject_user_membership.id
+            and not subject_user_membership.is_admin
+        ):
+            # Check if user is CSXL admin
+            self._permission.enforce(
+                subject, "organization.update", f"organization/{slug}"
+            )
+
         former_membership = (
             self._session.query(OrganizationMembershipEntity)
             .filter(OrganizationMembershipEntity.id == membership_id)
@@ -378,12 +396,6 @@ class OrganizationService:
         if former_membership is None:
             raise ResourceNotFoundException(
                 f"No organization membership found with id {membership_id}"
-            )
-
-        membership_user_id = former_membership.user_id
-        if membership_user_id != subject.id:
-            self._permission.enforce(
-                subject, "organization.update", f"organization/{slug}"
             )
 
         self._session.delete(former_membership)
