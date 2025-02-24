@@ -283,7 +283,11 @@ class SectionService:
         # Currently active terms.
         # This is hard-coded based on the availability and representation
         # of course enrollment data from UNC's course database.
-        AVAILABLE_TERMS = {"2024+Summer+II": "24SSII", "2024+Fall": "24F"}
+        AVAILABLE_TERMS = {
+            "2024+Summer+II": "24SSII",
+            "2024+Fall": "24F",
+            "2025+Spring": "25S",
+        }
 
         # Store updates to make.
         updates: dict[tuple[str, str], SectionEnrollmentData] = {}

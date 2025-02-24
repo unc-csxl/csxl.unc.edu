@@ -73,6 +73,8 @@ export interface EditedSection {
 export interface Term extends TimeRange {
   id: string;
   name: string;
+  applications_open: Date;
+  applications_close: Date;
 }
 
 /** Defines a Section Member */

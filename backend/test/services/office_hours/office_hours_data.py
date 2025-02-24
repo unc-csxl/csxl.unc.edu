@@ -14,8 +14,15 @@ from ....entities.office_hours.office_hours_entity import OfficeHoursEntity
 from ....entities.office_hours.course_site_entity import CourseSiteEntity
 from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ....entities.academics.section_entity import SectionEntity
+from ....entities.office_hours.office_hours_recurrence_pattern_entity import (
+    OfficeHoursRecurrencePatternEntity,
+)
 
 
+from ....models.office_hours.office_hours_recurrence_pattern import (
+    NewOfficeHoursRecurrencePattern,
+    OfficeHoursRecurrencePattern,
+)
 from ....models.office_hours.office_hours import OfficeHours, NewOfficeHours
 from ....models.office_hours.event_type import (
     OfficeHoursEventModeType,
@@ -73,6 +80,7 @@ comp_110_current_office_hours = OfficeHours(
     end_time=datetime.now() + timedelta(hours=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_pattern_id=None,
 )
 comp_110_future_office_hours = OfficeHours(
     id=2,
@@ -84,6 +92,7 @@ comp_110_future_office_hours = OfficeHours(
     end_time=datetime.now() + timedelta(days=1, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_pattern_id=None,
 )
 comp_110_past_office_hours = OfficeHours(
     id=3,
@@ -95,6 +104,105 @@ comp_110_past_office_hours = OfficeHours(
     end_time=datetime.now() - timedelta(days=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_pattern_id=None,
+)
+
+# Recurring Office Hours
+recurrence_pattern = OfficeHoursRecurrencePattern(
+    id=1,
+    start_date=datetime.now(),
+    end_date=datetime.now() + timedelta(days=7),
+    recur_monday=True,
+    recur_tuesday=True,
+    recur_wednesday=True,
+    recur_thursday=True,
+    recur_friday=True,
+    recur_saturday=True,
+    recur_sunday=True,
+)
+first_recurring_event = OfficeHours(
+    id=4,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now(),
+    end_time=datetime.now() + timedelta(hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+    recurrence_pattern_id=1,
+)
+second_recurring_event = OfficeHours(
+    id=5,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=1),
+    end_time=datetime.now() + timedelta(days=1, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+    recurrence_pattern_id=1,
+)
+third_recurring_event = OfficeHours(
+    id=6,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=2),
+    end_time=datetime.now() + timedelta(days=2, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+    recurrence_pattern_id=1,
+)
+fourth_recurring_event = OfficeHours(
+    id=7,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=3),
+    end_time=datetime.now() + timedelta(days=3, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+    recurrence_pattern_id=1,
+)
+fifth_recurring_event = OfficeHours(
+    id=8,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=4),
+    end_time=datetime.now() + timedelta(days=4, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+    recurrence_pattern_id=1,
+)
+sixth_recurring_event = OfficeHours(
+    id=9,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=5),
+    end_time=datetime.now() + timedelta(days=5, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+    recurrence_pattern_id=1,
+)
+seventh_recurring_event = OfficeHours(
+    id=10,
+    type=OfficeHoursEventType.OFFICE_HOURS,
+    mode=OfficeHoursEventModeType.IN_PERSON,
+    description="CAMP 110 office hours",
+    location_description="In the downstairs closet : )",
+    start_time=datetime.now() + timedelta(days=6),
+    end_time=datetime.now() + timedelta(days=6, hours=3),
+    course_site_id=comp_110_site.id,
+    room_id=room_data.group_a.id,
+    recurrence_pattern_id=1,
 )
 
 # Tickets
@@ -161,10 +269,19 @@ comp_110_ticket_creators = [
 sites = [comp_110_site, comp_301_site]
 section_pairings = [comp_110_sections, comp_301_sections]
 
+recurrence_patterns = [recurrence_pattern]
+
 office_hours = [
     comp_110_current_office_hours,
     comp_110_future_office_hours,
     comp_110_past_office_hours,
+    first_recurring_event,
+    second_recurring_event,
+    third_recurring_event,
+    fourth_recurring_event,
+    fifth_recurring_event,
+    sixth_recurring_event,
+    seventh_recurring_event,
 ]
 
 oh_tickets = [
@@ -202,7 +319,6 @@ def insert_fake_data(session: Session):
     session.commit()
 
     # Step 3: Add office hours to database
-
     for oh in office_hours:
         office_hours_entity = OfficeHoursEntity.from_model(oh)
         session.add(office_hours_entity)
@@ -212,6 +328,21 @@ def insert_fake_data(session: Session):
         OfficeHoursEntity,
         OfficeHoursEntity.id,
         len(office_hours) + 1,
+    )
+
+    session.commit()
+
+    for pattern in recurrence_patterns:
+        recurrence_pattern_entity = OfficeHoursRecurrencePatternEntity.from_model(
+            pattern
+        )
+        session.add(recurrence_pattern_entity)
+
+    reset_table_id_seq(
+        session,
+        OfficeHoursRecurrencePatternEntity,
+        OfficeHoursRecurrencePatternEntity.id,
+        len(recurrence_patterns) + 1,
     )
 
     session.commit()
@@ -387,9 +518,58 @@ new_event = NewOfficeHours(
     description="Sample",
     location_description="Sample",
     start_time=datetime.now(),
-    end_time=datetime.now(),
+    end_time=datetime.now() + timedelta(hours=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_pattern_id=None,
+)
+
+new_recurrence_pattern = NewOfficeHoursRecurrencePattern(
+    start_date=datetime.now(),
+    end_date=datetime.now() + timedelta(days=14),
+    recur_monday=True,
+    recur_tuesday=True,
+    recur_wednesday=True,
+    recur_thursday=True,
+    recur_friday=True,
+    recur_saturday=True,
+    recur_sunday=True,
+)
+
+updated_recurrence_pattern = NewOfficeHoursRecurrencePattern(
+    start_date=datetime.now(),
+    end_date=datetime.now() + timedelta(days=14),
+    recur_monday=True,
+    recur_tuesday=False,
+    recur_wednesday=True,
+    recur_thursday=False,
+    recur_friday=True,
+    recur_saturday=True,
+    recur_sunday=True,
+)
+
+invalid_recurrence_pattern_days = NewOfficeHoursRecurrencePattern(
+    start_date=datetime.now(),
+    end_date=datetime.now() + timedelta(days=14),
+    recur_monday=False,
+    recur_tuesday=False,
+    recur_wednesday=False,
+    recur_thursday=False,
+    recur_friday=False,
+    recur_saturday=False,
+    recur_sunday=False,
+)
+
+invalid_recurrence_pattern_end = NewOfficeHoursRecurrencePattern(
+    start_date=datetime.now() - timedelta(days=14),
+    end_date=datetime.now() - timedelta(days=13),
+    recur_monday=True,
+    recur_tuesday=False,
+    recur_wednesday=False,
+    recur_thursday=False,
+    recur_friday=False,
+    recur_saturday=False,
+    recur_sunday=False,
 )
 
 new_event_site_not_found = NewOfficeHours(
@@ -398,9 +578,10 @@ new_event_site_not_found = NewOfficeHours(
     description="Sample",
     location_description="Sample",
     start_time=datetime.now(),
-    end_time=datetime.now(),
+    end_time=datetime.now() + timedelta(hours=1),
     course_site_id=404,
     room_id=room_data.group_a.id,
+    recurrence_pattern_id=None,
 )
 
 updated_future_event = OfficeHours(
@@ -413,6 +594,7 @@ updated_future_event = OfficeHours(
     end_time=datetime.now() + timedelta(days=1, hours=3),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_pattern_id=None,
 )
 
 nonexistent_event = OfficeHours(
@@ -422,7 +604,8 @@ nonexistent_event = OfficeHours(
     description="Sample",
     location_description="Sample",
     start_time=datetime.now(),
-    end_time=datetime.now(),
+    end_time=datetime.now() + timedelta(hours=1),
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
+    recurrence_pattern_id=None,
 )

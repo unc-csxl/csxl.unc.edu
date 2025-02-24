@@ -60,29 +60,84 @@
           name="description"></textarea>
       </mat-form-field>
 
-      <!-- Start Time -->
-      <mat-form-field appearance="outline" color="accent">
-        <mat-label>Office Hours Event Start Time</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          placeholder="Start Time"
-          formControlName="start_time"
-          name="start_time"
-          required />
+      <div class="time-form-fields-container">
+        <!-- Start Time -->
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Office Hours Event Start Time</mat-label>
+          <input
+            matInput
+            type="datetime-local"
+            placeholder="Start Time"
+            formControlName="start_time"
+            name="start_time"
+            required />
+        </mat-form-field>
+
+        <!-- End Time -->
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Office Hours Event End Time</mat-label>
+          <input
+            matInput
+            type="datetime-local"
+            placeholder="End Time"
+            formControlName="end_time"
+            name="end_time"
+            required />
+        </mat-form-field>
+      </div>
+
+      <!-- Recurrence Pattern Update Options -->
+      @if (!isNew()) {
+        <mat-checkbox className="recurrence-update-toggle" (change)="this.toggleUpdateRecurrencePattern($event.checked)">Update future events in recurrence pattern.</mat-checkbox>
+      }
+
+      <!-- Recurrence Pattern Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Recurrence Pattern</mat-label>
+        <mat-select formControlName="recurs">
+          @for(recur of [false, true]; track recur) {
+          <mat-option [value]="recur">{{ recur ? 'Weekly' : 'Does not repeat' }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
 
-      <!-- End Time -->
-      <mat-form-field appearance="outline" color="accent">
-        <mat-label>Office Hours Event End Time</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          placeholder="End Time"
-          formControlName="end_time"
-          name="end_time"
-          required />
-      </mat-form-field>
+      <!-- Recurrence Pattern Day Options -->
+      @if (officeHoursForm.getRawValue().recurs) {
+        <mat-button-toggle-group
+          name="days"
+          aria-label="Days to Recur"
+          [hideMultipleSelectionIndicator]="true"
+          multiple
+        >
+          @for (day of this.days | keyvalue: maintainOriginalOrder; track day.key) {
+            <mat-button-toggle (change)="toggleDay(day.key)" value="{{day.key}}" [checked]="this.days[day.key]" [disabled]="!this.isNew() && !this.updateRecurrencePattern">{{day.key}}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+
+        <!-- Recurrence End Date -->
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Recurrence End Date</mat-label>
+          <input
+            matInput 
+            formControlName="recur_end" 
+            name="recur_end"
+            [max]="this.myCoursesService.currentTerms()[0].end"
+            [matDatepicker]="endDatePicker" 
+            (click)="endDatePicker.open()"
+            required
+          >
+          <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #endDatePicker></mat-datepicker>
+        </mat-form-field>
+      }
+      
+      <!-- Date Range Validation Error -->
+      @if (officeHoursForm.hasError('dateRangeInvalid')) {
+        <mat-error>This event's end time must be after its start time.</mat-error>
+      }
+      @if (officeHoursForm.value.recurs && officeHoursForm.hasError('recurEndDateInvalid')) {
+        <mat-error>This event's recurrence end date must be after the original event end date.</mat-error>
+      }
     </mat-card-content>
     <mat-card-actions>
       <button

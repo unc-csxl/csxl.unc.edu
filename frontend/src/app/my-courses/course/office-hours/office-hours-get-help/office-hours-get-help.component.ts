@@ -78,8 +78,7 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
     // Load the web socket connection
-    const url = `ws://localhost:1561/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
-    console.log(url);
+    const url = `wss://${window.location.host}/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
     this.webSocketSubject$ = webSocket({
       url: url
     });
@@ -120,7 +119,7 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
   isFormValid(): boolean {
     let contentFieldsValid =
-      this.ticketForm.controls['type'].value === 0
+      this.ticketForm.controls['type'].value === 1
         ? this.ticketForm.controls['assignmentSection'].value !== '' &&
           this.ticketForm.controls['codeSection'].value !== '' &&
           this.ticketForm.controls['conceptsSection'].value !== '' &&
@@ -158,7 +157,7 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     /* Below is logic for checking form values and assigning the correct
       TicketType and ticket description accordingly
     */
-    if (this.ticketForm.controls['type'].value === 1) {
+    if (this.ticketForm.controls['type'].value === 0) {
       form_description =
         '**Conceptual Question**:  \n' +
         (this.ticketForm.controls['description'].value ?? '');
