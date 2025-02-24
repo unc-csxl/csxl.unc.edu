@@ -96,27 +96,6 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     this.webSocketSubject$.complete();
   }
 
-  /** Create a timer subscription to poll office hour data at an interval at view initalization */
-  // ngOnInit(): void {
-  //   this.timer = timer(0, 10000).subscribe(() => {
-  //     this.pollData();
-  //   });
-  // }
-
-  /** Remove the timer subscription when the view is destroyed so polling does not persist on other pages */
-  // ngOnDestroy(): void {
-  //   this.timer.unsubscribe();
-  // }
-
-  /** Loads office hours data */
-  // pollData(): void {
-  //   this.myCoursesService
-  //     .getOfficeHoursHelpOverview(this.ohEventId)
-  //     .subscribe((getHelpData) => {
-  //       this.data.set(getHelpData);
-  //     });
-  // }
-
   isFormValid(): boolean {
     let contentFieldsValid =
       this.ticketForm.controls['type'].value === 1
@@ -141,13 +120,6 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       new_ticket: null
     };
     this.webSocketSubject$.next(action);
-    // this.myCoursesService.cancelTicket(ticket.id).subscribe({
-    //   next: (_) => {
-    //     this.pollData();
-    //     this.snackBar.open('Ticket cancelled', '', { duration: 5000 });
-    //   },
-    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    // });
   }
 
   submitTicketForm() {
@@ -197,16 +169,5 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     };
 
     this.webSocketSubject$.next(action);
-
-    // this.myCoursesService.createTicket(ticketDraft).subscribe({
-    //   next: (_) => {
-    //     this.pollData();
-    //   },
-    //   error: (_) => {
-    //     this.snackBar.open(`Could not create a ticket at this time.`, '', {
-    //       duration: 2000
-    //     });
-    //   }
-    // });
   }
 }
