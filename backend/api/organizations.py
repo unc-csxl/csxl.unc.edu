@@ -3,8 +3,10 @@
 Organization routes are used to create, retrieve, and update Organizations."""
 
 from fastapi import APIRouter, Depends, Body
+from typing import Annotated
 
 from ..services import OrganizationService, RoleService
+from ..services.academics import TermService
 from ..models.organization import Organization
 from ..models.organization_membership import (
     OrganizationMembership,
@@ -13,6 +15,7 @@ from ..models.organization_membership import (
 from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
 from ..models.user import User
+from datetime import datetime
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
@@ -155,8 +158,30 @@ def delete_organization(
 )
 def add_membership(
     slug: str,
-    membership: OrganizationMembershipRegistration = Body(...),
+    membership: Annotated[
+        OrganizationMembershipRegistration,
+        Body(
+            description="Details to create a new organization membership",
+            openapi_examples={
+                "default": {
+                    "summary": "Default",
+                    "value": {"user_id": 0, "organization_id": 0},
+                },
+                "custom": {
+                    "summary": "Specific",
+                    "value": {
+                        "user_id": 0,
+                        "organization_id": 0,
+                        "title": "Member",
+                        "is_admin": False,
+                        "term_id": "25S",
+                    },
+                },
+            },
+        ),
+    ],
     organization_service: OrganizationService = Depends(),
+    term_service: TermService = Depends(),
     subject: User = Depends(registered_user),
 ) -> OrganizationMembership:
     """
@@ -173,6 +198,8 @@ def add_membership(
     Raises:
         HTTPException 404 if add_member() raises an Exception
     """
+    if membership.term_id is None:
+        membership.term_id = term_service.get_by_date(datetime.today()).id
     return organization_service.add_membership(subject, slug, membership)
 
 
@@ -209,7 +236,24 @@ def get_roster_by_slug(
 )
 def update_membership(
     slug: str,
-    membership: OrganizationMembership = Body(...),
+    membership: Annotated[
+        OrganizationMembershipRegistration,
+        Body(
+            description="Details to create a new organization membership",
+            openapi_examples={
+                "model": {
+                    "summary": "Model",
+                    "value": {
+                        "user_id": 0,
+                        "organization_id": 0,
+                        "title": "Member",
+                        "is_admin": False,
+                        "term_id": "25S",
+                    },
+                },
+            },
+        ),
+    ],
     subject: User = Depends(registered_user),
     organization_service: OrganizationService = Depends(),
 ) -> OrganizationMembership:

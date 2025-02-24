@@ -28,4 +28,4 @@ class OrganizationMembershipRegistration(BaseModel):
     organization_id: int
     title: str = "Member"
     is_admin: bool = False
-    term_id: str
+    term_id: str | None = None

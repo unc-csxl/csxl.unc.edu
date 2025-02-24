@@ -71,7 +71,9 @@ class OrganizationEntity(EntityBase):
         back_populates="organization", cascade="all,delete"
     )
     users: Mapped[list["UserEntity"]] = relationship(
-        secondary="organization_membership", back_populates="organizations"
+        secondary="organization_membership",
+        back_populates="organizations",
+        viewonly=True,
     )
 
     @classmethod

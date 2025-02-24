@@ -95,7 +95,7 @@ class UserEntity(EntityBase):
         back_populates="user"
     )
     organizations: Mapped[list["OrganizationEntity"]] = relationship(
-        secondary="organization_membership", back_populates="users"
+        secondary="organization_membership", back_populates="users", viewonly=True
     )
 
     def full_name(self) -> str:
