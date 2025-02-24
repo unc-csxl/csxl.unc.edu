@@ -79,7 +79,6 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     this.ohEventId = this.route.snapshot.params['event_id'];
     // Load the web socket connection
     const url = `wss://${window.location.host}/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
-    console.log(url);
     this.webSocketSubject$ = webSocket({
       url: url
     });
