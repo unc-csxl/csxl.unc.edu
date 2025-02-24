@@ -23,7 +23,7 @@
       <mat-divider />
       @for (term of this.myCoursesService.currentTerms(); track term.id) {
         @if (hasInstructorCourses(term)) {
-          <h2 class="title-medium term-header">{{ "Instructor Courses" }}</h2>
+          <h2 class="title-medium term-header">Instructor Courses</h2>
           <div class="course-card-container">
             @for (course of term.sites; track course.id) {
               @if(course.role != "Student") {
@@ -33,7 +33,7 @@
           </div>
         }
         @if (hasStudentCourses(term)) {
-          <h2 class="title-medium term-header">{{ "Student Courses" }}</h2>
+          <h2 class="title-medium term-header">Student Courses</h2>
           <div class="course-card-container">
             @for (course of term.sites; track course.id) {
               @if(course.role == "Student") {
