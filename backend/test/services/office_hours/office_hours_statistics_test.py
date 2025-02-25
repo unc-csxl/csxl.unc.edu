@@ -48,3 +48,88 @@ def test_get_paginated_tickets(oh_statistics_svc: OfficeHoursStatisticsService):
     )
 
     assert len(ticket_history.items) == 1
+
+
+def test_get_paginated_tickets_student_filter(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that filtering by student works correctly."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[user_data.student.id],
+        staff_ids=[],
+    )
+
+    ticket_history = oh_statistics_svc.get_paginated_tickets(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert (
+        len(ticket_history.items) == 1
+        and ticket_history.items[0].creators[0].id == user_data.student.id
+    )
+
+
+def test_get_paginated_tickets_staff_filter(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that filtering by staff works correctly."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[],
+        staff_ids=[user_data.instructor.id],
+    )
+
+    ticket_history = oh_statistics_svc.get_paginated_tickets(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert (
+        len(ticket_history.items) == 1
+        and ticket_history.items[0].caller.id == user_data.instructor.id
+    )
+
+
+def test_get_paginated_tickets_date_filter(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that filtering by date works correctly."""
+    ticket_params = TicketPaginationParams(
+        range_start=date_maker(-2, 0, 0).isoformat(),
+        range_end=date_maker(1, 0, 0).isoformat(),
+        student_ids=[],
+        staff_ids=[],
+    )
+
+    ticket_history = oh_statistics_svc.get_paginated_tickets(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert len(ticket_history.items) == 1
+
+
+def test_get_paginated_tickets_unauthenticated(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that filtering by date works correctly."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[],
+        staff_ids=[],
+    )
+
+    with pytest.raises(CoursePermissionException):
+        oh_statistics_svc.get_paginated_tickets(
+            user_data.student,
+            office_hours_data.comp_110_site.id,
+            ticket_params,
+        )

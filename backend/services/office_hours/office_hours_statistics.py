@@ -69,8 +69,9 @@ class OfficeHoursStatisticsService:
             range_start = pagination_params.range_start
             range_end = pagination_params.range_end
             criteria = and_(
-                OfficeHoursTicketEntity.start >= datetime.fromisoformat(range_start),
-                OfficeHoursTicketEntity.start <= datetime.fromisoformat(range_end),
+                OfficeHoursTicketEntity.created_at
+                >= datetime.fromisoformat(range_start),
+                OfficeHoursTicketEntity.created_at <= datetime.fromisoformat(range_end),
             )
             statement = statement.where(criteria)
             length_statement = length_statement.where(criteria)

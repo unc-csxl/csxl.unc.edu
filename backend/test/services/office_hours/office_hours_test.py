@@ -119,7 +119,7 @@ def test_get_oh_event_role_not_member(oh_svc: OfficeHoursService):
 
 
 def test_create_oh_event_instructor(oh_svc: OfficeHoursService):
-    """Ensures that instructors can create office hour events."""
+    """Ensures that instructrors can create office hour events."""
     new_event = oh_svc.create(
         user_data.instructor,
         office_hours_data.comp_110_site.id,

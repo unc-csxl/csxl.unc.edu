@@ -95,7 +95,7 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def cancel_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
         """
@@ -140,7 +140,7 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def close_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
         """
@@ -189,7 +189,7 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def create_ticket(
         self, user: User, ticket: NewOfficeHoursTicket
@@ -281,4 +281,4 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return details model
-        return self._to_oh_ticket_overview(oh_ticket_entity)
+        return oh_ticket_entity.to_overview_model()
