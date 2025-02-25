@@ -61,11 +61,8 @@ member_2 = OrganizationMembershipRegistration(
 )
 
 member_to_add = OrganizationMembershipRegistration(
-    id=3,
     user_id=user.id,
     organization_id=appteam.id,
-    title="Membership pending",
-    is_admin=True,
     term_id=term_data.current_term.id,
 )
 

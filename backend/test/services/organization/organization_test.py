@@ -114,10 +114,23 @@ def test_create_organization_as_user(organization_svc_integration: OrganizationS
 # Test Organization Management (roster) begin
 
 
-def test_add_membership(
+def test_add_membership_to_open_org(
     organization_svc_integration: OrganizationService,
 ):
-    """Test that member can be added to database"""
+    """Test that member can be added to open organization"""
+    added_member = organization_svc_integration.add_membership(
+        root, cads.slug, member_to_add
+    )
+    assert added_member is not None
+    assert added_member.id is not None
+    assert added_member.title == "Member"
+    assert added_member.is_admin == False
+
+
+def test_add_membership_to_apply_org(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that member can be added to application-based organization"""
     added_member = organization_svc_integration.add_membership(
         root, appteam.slug, member_to_add
     )
@@ -125,6 +138,14 @@ def test_add_membership(
     assert added_member.id is not None
     assert added_member.title == "Membership pending"
     assert added_member.is_admin == False
+
+
+def test_add_membership_to_closed_org(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that members cannot be added to a closed organization"""
+    with pytest.raises(Exception):
+        organization_svc_integration.add_membership(root, queerhack.slug, member_to_add)
 
 
 def test_add_member_to_nonexistent_organization(
