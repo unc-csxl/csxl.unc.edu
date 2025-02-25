@@ -93,6 +93,11 @@ class OfficeHourTicketOverview(BaseModel):
     caller: PublicUser | None
 
 
+class OfficeHourStatisticsOverview(BaseModel):
+    # add more
+    history: list[OfficeHourTicketOverview]
+
+
 class OfficeHourQueueOverview(BaseModel):
     id: int
     type: str
