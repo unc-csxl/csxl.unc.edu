@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { EventOverview } from '../../../event/event.model';
 
 @Component({
@@ -15,17 +15,23 @@ import { EventOverview } from '../../../event/event.model';
   templateUrl: './event-card.widget.html',
   styleUrl: './event-card.widget.css'
 })
-export class EventCardWidget implements OnChanges {
-  @Input() events!: EventOverview[];
+export class EventCardWidget {
+  events = input<EventOverview[]>([]);
   shownEvent = 0;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['events']) {
+  constructor() {
+    effect(() => {
+      /**
+       * Reset shown event when events change
+       * This prevents edge case where events changes to be shorter and the
+       * shown event index is now longer than the new length of events
+       */
+      this.events();
       this.shownEvent = 0;
-    }
+    });
   }
 
   nextEvent() {
-    this.shownEvent = (this.shownEvent + 1) % this.events.length;
+    this.shownEvent = (this.shownEvent + 1) % this.events().length;
   }
 }

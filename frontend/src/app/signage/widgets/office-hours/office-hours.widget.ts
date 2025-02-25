@@ -6,7 +6,7 @@
  * @license MIT
  */
 
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { SignageOfficeHours } from '../../signage.model';
 
 type LocationHoursMap = { [location: string]: number[] }; // maps locations to index of the officeHours input
@@ -22,33 +22,38 @@ interface Column {
   templateUrl: './office-hours.widget.html',
   styleUrl: './office-hours.widget.css'
 })
-export class OfficeHoursWidget implements OnChanges {
-  @Input() officeHours!: SignageOfficeHours[];
+export class OfficeHoursWidget {
+  officeHours = input<SignageOfficeHours[]>([]);
   displayOfficeHours!: SignageOfficeHours[]; // Hours that are on display currently
   sortedHours: LocationHoursMap = {};
   columns: Column[] = [];
   columnsToShow: number[] = []; // Index of the columns array
   private updater: undefined | (() => void) = undefined; // sets the new sortedHours and columns on change
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['officeHours']) {
+  constructor() {
+    effect(() => {
+      /**
+       * This effect function handles when new officeHours data is handled in this component
+       *
+       * If there are no changes besides queue length, then we can just pass on the array to be shown instantly,
+       * this is done by setting displayOfficeHours to it. Otherwise, we need to calculate new columns and pass
+       * that update through the updater.
+       */
       // Compare old vs new values to see if there is a change other than queue length
       if (
         this.displayOfficeHours === undefined ||
-        this.testOHDifference(
-          changes['officeHours'].currentValue,
-          this.displayOfficeHours
-        )
+        this.testOHDifference(this.officeHours(), this.displayOfficeHours)
       ) {
         let newSortedHours: LocationHoursMap;
         let newColumns: Column[];
 
-        // Handle no current office hours case
-        if (changes['officeHours'].currentValue.length === 0) {
+        // Handle the case where we have no officeHours right now
+        if (this.officeHours().length === 0) {
           newSortedHours = {};
           newColumns = [];
         } else {
-          newSortedHours = this.officeHours.reduce((acc, curr, ind) => {
+          // Need to sort into locations "dictionary"
+          newSortedHours = this.officeHours().reduce((acc, curr, ind) => {
             if (!acc[curr.location]) {
               acc[curr.location] = [];
             }
@@ -61,27 +66,33 @@ export class OfficeHoursWidget implements OnChanges {
           newColumns = this.distributeToColumns(newSortedHours, 8);
         }
 
-        // If we currently have more than 2 columns, we will run this update in sync with the page spinner
+        // If we currently have more than 2 columns, we will run this update in sync with the page spinner via the "updater" variable
         if (this.columns.length > 2) {
           this.updater = () => {
-            this.displayOfficeHours = this.officeHours;
+            this.displayOfficeHours = this.officeHours();
             this.sortedHours = newSortedHours;
             this.columns = newColumns;
             this.resetDisplayColumns(newColumns.length);
           };
         } else {
-          this.displayOfficeHours = this.officeHours;
+          // Otherwise we can just update it right now
+          this.displayOfficeHours = this.officeHours();
           this.sortedHours = newSortedHours;
           this.columns = newColumns;
           this.resetDisplayColumns(newColumns.length);
         }
       } else {
         // Update only queue values so we can just update the displayOfficeHours
-        this.displayOfficeHours = this.officeHours;
+        this.displayOfficeHours = this.officeHours();
       }
-    }
+    });
   }
 
+  /**
+   * Runs when the page spinner completes one revolution
+   *
+   * It will either run an update if one is ready, or shift both columns forward by 1
+   */
   rotateColumns() {
     // If there is an update ready, run it
     if (this.updater) {
@@ -94,6 +105,10 @@ export class OfficeHoursWidget implements OnChanges {
     }
   }
 
+  /**
+   * Resets the columns currently on display to their first values
+   * @param col_nums the number of columns we have currently
+   */
   private resetDisplayColumns(col_nums: number) {
     if (col_nums >= 2) {
       this.columnsToShow = [0, 1];

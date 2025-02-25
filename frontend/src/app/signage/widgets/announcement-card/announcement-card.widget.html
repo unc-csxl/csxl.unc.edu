@@ -1,8 +1,8 @@
-@if (announcements.length > 0) {
+@if (announcements().length > 0) {
     <mat-card appearance="outlined" class="full-size-pane secondary-container-background">
         <mat-card-content class="content">
             <mat-icon class="icon secondary-container-background">chat_bubble</mat-icon>
-            <p class="secondary-container-background headline-small text">{{announcements[announcementToDisplay].title}}</p>
+            <p class="secondary-container-background headline-small text">{{announcements()[announcementToDisplay].title}}</p>
         </mat-card-content>
     </mat-card>
 }

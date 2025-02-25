@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { SignageProfile } from '../../signage.model';
 
 @Component({
@@ -15,20 +15,25 @@ import { SignageProfile } from '../../signage.model';
   templateUrl: './leaderboard.widget.html',
   styleUrls: ['./leaderboard.widget.css']
 })
-export class LeaderboardWidget implements OnChanges {
-  /** Inputs and outputs go here */
-  @Input() profiles: SignageProfile[] = []; // Should be a max of 10 elements
-  shownIndices: number[] = [...Array(Math.min(5, this.profiles.length)).keys()];
+export class LeaderboardWidget {
+  profiles = input<SignageProfile[]>([]); // This array should have at most 10 elements
+  shownIndices: number[] = [
+    ...Array(Math.min(5, this.profiles().length)).keys()
+  ]; // Stores what indicies of profiles we should show in array. Defaults to 1..min(5, profiles.length)
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes['profiles'] &&
-      !this.shownIndices.includes(5) &&
-      this.shownIndices.length < 5
-    ) {
-      // Set shownIndicies to length of profiles if there is less than 5 on the leaderboard right now
-      this.shownIndices = [...Array(Math.min(5, this.profiles.length)).keys()];
-    }
+  constructor() {
+    effect(() => {
+      /**
+       * When we get new profiles from the backend, and the page spinner isn't running yet (we have less than 5 shown rn),
+       * then we need to update the shown indicies to include the new amount.
+       */
+      if (!this.shownIndices.includes(5) && this.shownIndices.length < 5) {
+        // Set shownIndicies to length of profiles if there is less than 5 on the leaderboard right now
+        this.shownIndices = [
+          ...Array(Math.min(5, this.profiles().length)).keys()
+        ];
+      }
+    });
   }
 
   /**
@@ -39,7 +44,7 @@ export class LeaderboardWidget implements OnChanges {
     if (this.shownIndices.includes(1)) {
       // Generates an array of numbers 5 to length of profile
       this.shownIndices = [
-        ...Array(Math.min(5, this.profiles.length - 5)).keys()
+        ...Array(Math.min(5, this.profiles().length - 5)).keys()
       ].map((i) => i + 5);
     } else {
       // At this point we can assume that the array is larger than 5 elements

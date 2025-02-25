@@ -13,21 +13,21 @@
           <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
         </mat-list-item>
         <mat-chip class="leaderboard-chips label-large">
-          @if(profiles[i].github_avatar) {
-            <img class="account-circle-icon" matChipAvatar [src]="profiles[i].github_avatar" alt="GitHub Avatar"/>
+          @if(profiles()[i].github_avatar) {
+            <img class="account-circle-icon" matChipAvatar [src]="profiles()[i].github_avatar" alt="GitHub Avatar"/>
           } @else {
             <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
           }
-          @if (profiles[i].first_name.length + profiles[i].last_name.length > 20){
-          {{ profiles[i].first_name !== '' ? profiles[i].first_name + ' ' + profiles[i].last_name[0] : 'Profile' }}
+          @if (profiles()[i].first_name.length + profiles()[i].last_name.length > 20){
+          {{ profiles()[i].first_name !== '' ? profiles()[i].first_name + ' ' + profiles()[i].last_name[0] : 'Profile' }}
           } @else {
-          {{ profiles[i].first_name !== '' ? profiles[i].first_name + ' ' + profiles[i].last_name : 'Profile' }}
+          {{ profiles()[i].first_name !== '' ? profiles()[i].first_name + ' ' + profiles()[i].last_name : 'Profile' }}
           }
         </mat-chip>
       </mat-chip-set>
     }
-    @if (profiles.length > 5) {
-      <page-spinner class="spinner" [time]="30" (timer_end)="switchPage()"></page-spinner>
+    @if (profiles().length > 5) {
+      <page-spinner class="spinner" [time]="30" (timerEnd)="switchPage()"></page-spinner>
     }
     <mat-card-footer  class="title-medium font-variant footer">
       Resets at the start of each month

@@ -6,13 +6,7 @@
  * @copyright 2025
  *
  */
-import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  OnDestroy
-} from '@angular/core';
+import { Component, OnDestroy, input, effect } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
 import { SignageAnnouncement } from '../../signage.model';
 
@@ -23,31 +17,40 @@ const SECONDS_BETWEEN_CHANGE = 120;
   templateUrl: 'announcement-card.widget.html',
   styleUrls: ['announcement-card.widget.css']
 })
-export class AnnouncementCardWidget implements OnChanges, OnDestroy {
-  @Input() announcements!: SignageAnnouncement[];
+export class AnnouncementCardWidget implements OnDestroy {
+  announcements = input<SignageAnnouncement[]>([]);
   announcementToDisplay = 0;
   rotatingSubscription: Subscription | null = null;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['announcements']) {
+  constructor() {
+    effect(() => {
+      /**
+       * Setup rotation functionality to support displaying multiple announcements
+       * Creates a rotating subscription only if there is more than 1 announcement
+       * Uses a timer observable that sets the index announcement to display
+       *
+       * This is run every time that announcements is changed in case we need to setup/destroy the rotation timer
+       */
       this.announcementToDisplay = 0;
-      // Handle rotating between multiple announcements
-      if (this.announcements.length > 1 && this.rotatingSubscription == null) {
+      if (
+        this.announcements().length > 1 &&
+        this.rotatingSubscription == null
+      ) {
         this.rotatingSubscription = timer(
           0,
           SECONDS_BETWEEN_CHANGE * 1000
         ).subscribe(() => {
           this.announcementToDisplay =
-            (this.announcementToDisplay + 1) % this.announcements.length;
+            (this.announcementToDisplay + 1) % this.announcements().length;
         });
       } else if (
-        this.announcements.length <= 1 &&
+        this.announcements().length <= 1 &&
         this.rotatingSubscription != null
       ) {
         this.rotatingSubscription.unsubscribe();
         this.rotatingSubscription = null;
       }
-    }
+    });
   }
 
   ngOnDestroy(): void {

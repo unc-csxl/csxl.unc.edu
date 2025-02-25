@@ -10,12 +10,11 @@
  */
 import {
   Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
+  input,
   OnInit,
   OnDestroy,
-  output
+  output,
+  effect
 } from '@angular/core';
 import { Subscription, interval, map } from 'rxjs';
 
@@ -24,17 +23,22 @@ import { Subscription, interval, map } from 'rxjs';
   templateUrl: './page-spinner.widget.html',
   styleUrls: ['./page-spinner.widget.css']
 })
-export class PageSpinnerWidget implements OnChanges, OnInit, OnDestroy {
-  @Input() time!: number;
+export class PageSpinnerWidget implements OnInit, OnDestroy {
+  time = input.required<number>();
   timerEnd = output<void>();
   timerSubscription!: Subscription;
   timeLeft = -1;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['time'] && this.time > 0) {
-      // Multiplied by 10 so we can have a 10x smoother progress indicator
-      this.timeLeft = this.time * 10;
-    }
+  constructor() {
+    effect(() => {
+      /**
+       * Resets timeLeft if the time input is changed
+       */
+      if (this.time() > 0) {
+        // Multiplied by 10 so we can have a 10x smoother progress indicator
+        this.timeLeft = this.time() * 10;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -45,8 +49,8 @@ export class PageSpinnerWidget implements OnChanges, OnInit, OnDestroy {
             this.timeLeft--;
           } else {
             this.timerEnd.emit();
-            if (this.time) {
-              this.timeLeft = this.time * 10;
+            if (this.time()) {
+              this.timeLeft = this.time() * 10;
             }
           }
         })
