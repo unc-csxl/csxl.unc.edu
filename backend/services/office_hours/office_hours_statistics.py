@@ -4,6 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy import func, select, and_, func
 
+from ...models.office_hours.ticket_state import TicketState
+
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...entities.office_hours import user_created_tickets_table
 from ...entities.office_hours.course_site_entity import CourseSiteEntity
@@ -23,7 +25,7 @@ __copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
 
-class OfficeHourStatisticsService:
+class OfficeHoursStatisticsService:
     """
     Service that performs all of the actions for office hour tickets.
     """
@@ -39,9 +41,9 @@ class OfficeHourStatisticsService:
         self._session = session
         self._office_hours_svc = _office_hours_svc
 
-    def get_paginated_ticket_history(
+    def get_paginated_tickets(
         self, user: User, site_id: int, pagination_params: TicketPaginationParams
-    ) -> list[OfficeHourTicketOverview]:
+    ) -> Paginated[OfficeHourTicketOverview]:
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
@@ -50,6 +52,7 @@ class OfficeHourStatisticsService:
             .join(OfficeHoursEntity)
             .join(CourseSiteEntity)
             .where(CourseSiteEntity.id == site_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
         )
 
         length_statement = (
@@ -58,6 +61,7 @@ class OfficeHourStatisticsService:
             .join(OfficeHoursEntity)
             .join(CourseSiteEntity)
             .where(CourseSiteEntity.id == site_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
         )
 
         # Filter by Start/End Range
@@ -72,7 +76,7 @@ class OfficeHourStatisticsService:
             length_statement = length_statement.where(criteria)
 
         # Filter by student who created ticket
-        if pagination_params.student_ids.length != 0:
+        if len(pagination_params.student_ids) != 0:
             statement = (
                 statement.join(user_created_tickets_table)
                 .join(SectionMemberEntity)
@@ -85,12 +89,12 @@ class OfficeHourStatisticsService:
             )
 
         # Filter by staff member who called ticket
-        if pagination_params.staff_ids.length != 0:
-            statement = statement.where(
-                OfficeHoursTicketEntity.caller_id.in_(pagination_params.student_ids)
+        if len(pagination_params.staff_ids) != 0:
+            statement = statement.join(SectionMemberEntity).where(
+                SectionMemberEntity.user_id.in_(pagination_params.staff_ids)
             )
-            length_statement = length_statement.where(
-                OfficeHoursTicketEntity.caller_id.in_(pagination_params.student_ids)
+            length_statement = length_statement.join(SectionMemberEntity).where(
+                SectionMemberEntity.user_id.in_(pagination_params.staff_ids)
             )
 
         # Calculate where to begin retrieving rows and how many to retrieve
