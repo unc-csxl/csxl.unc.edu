@@ -1,7 +1,7 @@
 """
 This file contains exceptions found in the service layer.
 
-These custom exceptions can then be handled peoperly
+These custom exceptions can then be handled properly
 at the API level.
 """
 
@@ -44,6 +44,7 @@ class CourseDataScrapingException(Exception):
 
     def __init__(self, reason: str):
         super().__init__(f"{reason}")
+
 
 class RecurringOfficeHourEventException(Exception):
     """RecurringOfficeHourEventException is raised when an unexpected error occurs when managing recurring offiec hours events."""

@@ -228,18 +228,10 @@ class OrganizationService:
         # Query the organization with matching slug and check if null
         organization = self.get_by_slug(slug)
 
-        # Check if subject has permissions to add new memberships (organization or CSXL admin)
-        subject_membership = (
-            self._session.query(OrganizationMembershipEntity).filter(
-                OrganizationMembershipEntity.user_id == subject.id,
-                OrganizationMembershipEntity.organization_id == organization.id,
-            )
-        ).one_or_none()
-
-        if subject_membership is None or not subject_membership.is_admin:
-            # Check if user is CSXL admin
-            self._permission.enforce(
-                subject, "organization.update", f"organization/{slug}"
+        # Raise exception if organization isn't allowing new memberships
+        if organization.join_type.name == OrganizationJoinType.CLOSED.name:
+            raise Exception(
+                f"Organization with slug {slug} is not currently open to new memberships"
             )
 
         # Query the user with matching id and check if null
@@ -346,8 +338,6 @@ class OrganizationService:
                 f"No organization membership found with id: {membership.id}"
             )
 
-        entity.user_id = membership.user.id
-        entity.organization_id = membership.organization_id
         entity.title = membership.title
         entity.is_admin = membership.is_admin
         entity.term_id = membership.term.id
