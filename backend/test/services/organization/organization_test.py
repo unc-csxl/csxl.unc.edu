@@ -12,7 +12,7 @@ from backend.services.exceptions import (
 )
 
 # Tested Dependencies
-from ....models import Organization
+from ....models import Organization, User
 from ....models.organization_membership import (
     OrganizationMembership,
     OrganizationMembershipRegistration,
@@ -209,6 +209,26 @@ def test_add_existing_member_to_organization(
     """Test that member cannot be added to an organization multiple times"""
     with pytest.raises(ResourceExistsException):
         organization_svc_integration.add_membership(root, cads.slug, member_1)
+
+
+def test_add_different_user_to_organization(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that member cannot be added to an organization by non-admin member"""
+    with pytest.raises(OrganizationPermissionException):
+        organization_svc_integration.add_membership(member_2, cads.slug, non_member)
+
+
+def test_add_nonexistent_user_to_organization(
+    organization_svc_integration: OrganizationService,
+):
+    """Test that nonexistent user cannot be added to an organization"""
+    fake_user = User(id=100)
+    member_to_add = OrganizationMembershipRegistration(
+        user_id=fake_user.id, organization_id=cads.id
+    )
+    with pytest.raises(ResourceNotFoundException):
+        organization_svc_integration.add_membership(root, cads.slug, member_to_add)
 
 
 def test_get_roster_by_slug(organization_svc_integration: OrganizationService):
