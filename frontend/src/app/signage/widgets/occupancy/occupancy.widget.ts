@@ -7,107 +7,82 @@
  * @license MIT
  */
 
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { SeatAvailability } from 'src/app/coworking/coworking.models';
 
-class SeatCategory {
-  public title: string;
-
-  public reservable_now: boolean = false;
-  public seats_available_now: SeatAvailability[] = [];
-
-  public reservable_soon: boolean = false;
-  public next_available?: SeatAvailability;
-  public seats_available_soon: SeatAvailability[] = [];
-
-  constructor(title: string) {
-    this.title = title;
-  }
-
-  push(seat: SeatAvailability) {
-    const epsilon = 59 /* seconds */ * 1000; /* milliseconds */
-    /* We use an epsilon of ~1 min to combat the potential for clock drift on
-           devices relative to the server's time. Difficult to reproduce in dev due
-           to server and client sharing the same system clock, but experienced in
-           prod on day 0 with many laptops having slightly drifted system clocks. */
-    const now = new Date(Date.now() + epsilon);
-    const preReservableAt = new Date(
-      Date.now() + 10 /*minutes*/ * 60 /*seconds*/ * 1000 /*milliseconds*/
-    ); // Currently set by backend/services/coworking/policy.py
-    if (seat.availability[0].start <= now) {
-      this.seats_available_now.push(seat);
-      if (this.seats_available_now.length === 1) {
-        this.reservable_now = true;
-        this.next_available = seat;
-      }
-    } else if (seat.availability[0].start <= preReservableAt) {
-      this.seats_available_soon.push(seat);
-      if (!this.reservable_now && this.seats_available_soon.length === 1) {
-        this.reservable_soon = true;
-        this.next_available = seat;
-      }
-    } else {
-      // Ignore seats that are not pre-reservable
-    }
-  }
-
-  availabilityString(): string {
-    let result = 'Available ';
-    if (this.reservable_now) {
-      result += 'now';
-    } else if (this.reservable_soon) {
-      result += ' in ';
-      let now = new Date();
-      let start = this.seats_available_soon[0].availability[0].start;
-      let delta = Math.ceil((start.getTime() - now.getTime()) / (60 * 1000));
-      result += ` ${delta} minutes`;
-    } else {
-      return 'None available';
-    }
-    return result;
-  }
+interface SeatCategory {
+  title: string;
+  seats_available_now: number;
 }
 
-const SITTING_BENCH = 0;
-const STANDING_BENCH = 1;
-const COLLAB_AREA = 2;
+enum SeatTypes {
+  SITTING_MONITOR,
+  STANDING_MONITOR,
+  COLLAB_SEAT
+}
 
 @Component({
   selector: 'occupancy',
   templateUrl: './occupancy.widget.html',
   styleUrls: ['./occupancy.widget.css']
 })
-export class OccupancyWidget implements OnChanges {
+export class OccupancyWidget {
   /** Inputs and outputs go here */
-  @Input() seat_availability!: SeatAvailability[];
+  seat_availability = input<SeatAvailability[]>([]);
 
-  public categories: SeatCategory[];
+  public categories: SeatCategory[] = [
+    {
+      title: 'Sitting Desk with Monitor',
+      seats_available_now: 0
+    },
+    {
+      title: 'Standing Desk with Monitor',
+      seats_available_now: 0
+    },
+    {
+      title: 'Communal Area',
+      seats_available_now: 0
+    }
+  ];
+
   /** Constructor */
   constructor() {
-    this.categories = this.initCategories();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.seat_availability = changes['seat_availability'].currentValue;
-    this.categories = this.initCategories();
-    for (let seat of this.seat_availability) {
-      if (seat.has_monitor) {
-        if (seat.sit_stand) {
-          this.categories[STANDING_BENCH].push(seat);
-        } else {
-          this.categories[SITTING_BENCH].push(seat);
+    effect(() => {
+      /**
+       * Reset the seat categories and count new seat availability as received
+       * from the backend
+       *
+       * Seats will be regarded as availabile if they are reservable 1 minute from now.
+       * This is noted as the epsilon of 59000 milliseconds, and is used to combat
+       * clock drift as noted in dropin-availability-card widget in the coworking module
+       */
+      this.resetCategories();
+      const now = new Date(Date.now() + /* epsilon */ 59000 /*milliseconds*/);
+      for (let seat of this.seat_availability()) {
+        if (seat.availability[0].start <= now) {
+          if (seat.has_monitor) {
+            if (seat.sit_stand) {
+              this.categories[SeatTypes.STANDING_MONITOR].seats_available_now +=
+                1;
+            } else {
+              this.categories[SeatTypes.SITTING_MONITOR].seats_available_now +=
+                1;
+            }
+          } else {
+            this.categories[SeatTypes.COLLAB_SEAT].seats_available_now += 1;
+          }
         }
-      } else {
-        this.categories[COLLAB_AREA].push(seat);
       }
-    }
+    });
   }
 
-  private initCategories(): SeatCategory[] {
-    return [
-      new SeatCategory('Sitting Desk with Monitor'),
-      new SeatCategory('Standing Desk with Monitor'),
-      new SeatCategory('Communal Area')
-    ];
+  /**
+   * Resets the seats_available_now field in each seat category in the categories
+   * array to be 0
+   */
+  private resetCategories() {
+    for (let category of this.categories) {
+      category.seats_available_now = 0;
+    }
   }
 }

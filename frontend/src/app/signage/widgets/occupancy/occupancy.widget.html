@@ -7,11 +7,11 @@
   <!-- Coworking Information -->
   <mat-card-content class="full-size-content">
       @for (category of categories; track category) { @if
-      (category.reservable_now) {
+      (category.seats_available_now > 0) {
       <mat-list-item>
         <span matListItemTitle class="headline-large">{{ category.title }}</span>
         <span matListItemIcon class="display-small primary-background"><div>{{
-          category.seats_available_now.length
+          category.seats_available_now
         }}</div></span>
       </mat-list-item>
       } @else {
