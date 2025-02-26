@@ -133,3 +133,23 @@ def test_get_paginated_tickets_unauthenticated(
             office_hours_data.comp_110_site.id,
             ticket_params,
         )
+
+
+def test_get_paginated_tickets_multiple_filters(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that multiple filters can be applied at the same time."""
+    ticket_params = TicketPaginationParams(
+        range_start=date_maker(-2, 0, 0).isoformat(),
+        range_end=date_maker(1, 0, 0).isoformat(),
+        student_ids=[user_data.student.id],
+        staff_ids=[user_data.instructor.id],
+    )
+
+    ticket_history = oh_statistics_svc.get_paginated_tickets(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert len(ticket_history.items) == 1
