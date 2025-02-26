@@ -95,6 +95,8 @@ class OfficeHourTicketOverview(BaseModel):
 
 class OfficeHourStatisticsOverview(BaseModel):
     # add more
+    average_minutes: int
+    total_tickets_called: int
     history: list[OfficeHourTicketOverview]
 
 
