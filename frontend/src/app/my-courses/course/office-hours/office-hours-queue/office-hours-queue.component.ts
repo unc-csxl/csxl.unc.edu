@@ -90,6 +90,7 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
      * a notification. If not, stop the flashing subscription (if it exists).
      */
     let notify: boolean = false;
+    /* Test notification condition and store result in notify */
     if (!queue.active && queue.queue.length > 0) {
       if (!this.queue() || this.queue()!.queue.length === 0) {
         notify = true;
@@ -103,6 +104,7 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
         }
       }
     }
+    /* Notification behavior based on result stored in notify */
     if (notify) {
       CHIME.play();
       this.titleFlashTimer = timer(0, 1000).subscribe(() => {

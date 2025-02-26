@@ -104,10 +104,12 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
      * (if the flashing existed).
      */
     let notify: boolean = false;
+    /* Test notification condition and store result in notify */
     if (getHelpData.ticket && getHelpData.ticket.state === 'Called' &&
       this.data() && this.data()!.ticket && this.data()!.ticket!.state === 'Queued') {
       notify = true;
     }
+    /* Notification behavior based on result stored in notify */
     if (notify) {
       CHIME.play();
       this.titleFlashTimer = timer(0, 1000).subscribe(() => {
