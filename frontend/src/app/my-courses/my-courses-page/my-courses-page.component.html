@@ -39,7 +39,7 @@
         }
       
       @if (showPreviousCourses()) {
-        @for (term of this.myCoursesService.currentTerms(); track term.id) {
+        @for (term of this.myCoursesService.pastTerms(); track term.id) {
           <h3 class="title-medium term-header">{{ term.name }}</h3>
           <div class="course-card-container">
             @for (course of getPastCourses(term); track course.id) {    
