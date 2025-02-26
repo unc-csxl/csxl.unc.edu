@@ -25,6 +25,20 @@ export type MatFilterChipSearchableItem<SelectItemT> = {
   displayText: string;
 };
 
+/**
+ * Defines a functional type to be used to check whether any filterable item
+ * matches the text query. This is generic so that it can be applied to any
+ * type of item input.
+ *
+ * @params item The item to check against the query.
+ * @params query The text query to check against the item.
+ * @returns boolean Whether or not the item matches the query.
+ */
+export type MatFilterChipFilterLogic<SelectItemT> = (
+  item: MatFilterChipSearchableItem<SelectItemT>,
+  query: string
+) => boolean;
+
 @Component({
   selector: 'mat-filter-chip',
   templateUrl: './filter-chip.component.html',
@@ -42,6 +56,9 @@ export class MatFilterChipComponent<SelectItemT> {
   selectedItems = model<MatFilterChipSearchableItem<SelectItemT>[]>([]);
   // Input used for the list of items that can be selected.
   searchableItems = input<MatFilterChipSearchableItem<SelectItemT>[]>([]);
+
+  // Stores the logic for how to apply filters based on the search query
+  filterLogic!: MatFilterChipFilterLogic<SelectItemT>;
 
   // Stores whether or not the dropdown is open.
   dropdownOpen = signal<boolean>(false);
@@ -94,6 +111,7 @@ export class MatFilterChipComponent<SelectItemT> {
 
     // Pass data directly to the component instance.
     dialogRef.componentInstance.searchableItems = this.searchableItems();
+    dialogRef.componentInstance.filterLogic = this.filterLogic;
     dialogRef.componentInstance.selectedItems.next(this.selectedItems());
     // Listen for changes in the list of selected items and update accordingly.
     const selectedItemsSubscription =
