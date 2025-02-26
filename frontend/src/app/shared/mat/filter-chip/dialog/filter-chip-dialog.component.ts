@@ -8,8 +8,11 @@
  */
 
 import { Component, computed, model } from '@angular/core';
-import { MatFilterChipSearchableItem } from '../filter-chip.component';
-import { ReplaySubject, Subject } from 'rxjs';
+import {
+  MatFilterChipFilterLogic,
+  MatFilterChipSearchableItem
+} from '../filter-chip.component';
+import { filter, ReplaySubject, Subject } from 'rxjs';
 import { MatListOption } from '@angular/material/list';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -30,12 +33,13 @@ export class MatFilterChipDialog<SelectItemT> {
 
   // Store the current search query
   searchQuery = model<string>('');
+  // Stores the logic for how to apply filters based on the search query
+  filterLogic!: MatFilterChipFilterLogic<SelectItemT>;
+
   // Filter the items based on the search query
   searchResults = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    return this.searchableItems.filter((item) =>
-      item.displayText.toLowerCase().startsWith(query)
-    );
+    return this.searchableItems.filter((item) => this.filterLogic(item, query));
   });
 
   // Handle the event for when the selected items change.
