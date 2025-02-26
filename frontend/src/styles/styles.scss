@@ -474,7 +474,7 @@ body {
 
   mat-filter-chip-dialog {
     @include mat.form-field-overrides((
-      container-color: transparent,
+      container-color: mat.get-theme-color($theme, surface-container-high),
       hover-state-layer-opacity: 0
   ));
   }

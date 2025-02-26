@@ -66,13 +66,14 @@ export class MatFilterChipComponent<SelectItemT> {
     const height = 300;
     const width = 300;
     const borderRadiusOffset = 16;
+    const topOffset = 8;
     // Determine the absolute position of the dialog, which should be
     // underneath the filter chip. The alignment option should position
     // the dialog to be aligned with the left or right side of the chip.
     const elementBounds = (
       event.currentTarget as HTMLElement
     ).getBoundingClientRect();
-    const topPosition = elementBounds.bottom;
+    const topPosition = elementBounds.bottom + topOffset;
     const leftPosition =
       this.dropdownAlignment() === 'left'
         ? elementBounds.left - borderRadiusOffset
