@@ -42,10 +42,10 @@ const weather_types: { [weather: string]: string } = {
 })
 export class WeatherService {
   private weatherDataSignal: WritableSignal<WeatherData> = signal({
-    temperature2m: 100,
+    temperature2m: 100, // 2m meaning 2 meters above ground is standard for temperature readings.
     isDay: 1,
     weatherCode: 0,
-    windSpeed10m: 0
+    windSpeed10m: 0 // 10m meaning 10 meters above ground is standard for wind readings.
   });
   public weatherData = this.weatherDataSignal.asReadonly();
 
@@ -58,9 +58,9 @@ export class WeatherService {
     this.fetchWeatherData();
   }
   /**
-   * Fetches weather data from open mateo using params defined above, and updates the weather signal
+   * Fetches weather data from open mateo using params defined above, and updates the weather signal.
    *
-   * Gets the temperature, day/night distinction, weather code (cloudy/rainy/etc.), and wind speed for Sitterson Hall
+   * Gets the temperature, day/night distinction, weather code (cloudy/rainy/etc.), and wind speed for Sitterson Hall.
    */
   fetchWeatherData() {
     fetchWeatherApi(url, params).then((responses) => {
