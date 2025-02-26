@@ -80,6 +80,7 @@ export class MyCoursesPageComponent {
     });
   }
 
+  /** Returns a user's courses in a term sorted by instructor/student status */
   getPastCourses(term: TermOverview) {
     return term.sites
       .sort((a, b) => {
@@ -96,8 +97,6 @@ export class MyCoursesPageComponent {
         termId: term.id
       }));
   }
-
-  
 }
 
 
