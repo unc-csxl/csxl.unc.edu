@@ -1,8 +1,15 @@
 <mat-dialog-content class="dialog surface-container-high">
     <mat-form-field class="search-field">
         <input matInput type="text">
-          <button matSuffix mat-icon-button aria-label="Clear">
+          <button matSuffix mat-icon-button>
             <mat-icon>close</mat-icon>
           </button>
       </mat-form-field>
+      <mat-selection-list #list (selectionChange)="onSelectionChange(list.selectedOptions.selected)">
+        @for(item of searchableItems; track item) {
+            <mat-list-option togglePosition="before" [value]="item">
+                {{ item.displayText }}
+            </mat-list-option>
+        }
+      </mat-selection-list>
 </mat-dialog-content>

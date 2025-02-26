@@ -9,9 +9,21 @@
  * @copyright 2025
  */
 
-import { Component, input, Input, model, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  Input,
+  model,
+  signal
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFilterChipDialog } from './dialog/filter-chip-dialog.component';
+
+export type MatFilterChipSearchableItem<SelectItemT> = {
+  item: SelectItemT;
+  displayText: string;
+};
 
 @Component({
   selector: 'mat-filter-chip',
@@ -19,22 +31,33 @@ import { MatFilterChipDialog } from './dialog/filter-chip-dialog.component';
   styleUrl: './filter-chip.component.css'
 })
 export class MatFilterChipComponent<SelectItemT> {
+  // Placeholder text for the filter input when no items are selected.
+  placeholder = input<string>('Filter');
   // Leading icon to show when the chip is in the default state
   leadingIcon = input<string | null>(null);
   // Whether or not the dropdown should be left or right aligned.
   dropdownAlignment = input<'left' | 'right'>('left');
 
   // Two-way binding for the chip's selected items.
-  selectedItems = model<SelectItemT[]>([]);
+  selectedItems = model<MatFilterChipSearchableItem<SelectItemT>[]>([]);
   // Input used for the list of items that can be selected.
-  searchableItems = input<SelectItemT[]>([]);
+  searchableItems = input<MatFilterChipSearchableItem<SelectItemT>[]>([]);
 
   // Stores whether or not the dropdown is open.
   dropdownOpen = signal<boolean>(false);
   toggleDropdown = () => this.dropdownOpen.set(!this.dropdownOpen());
 
-  // Search query for the search bar in the dialog.
-  searchQuery = signal<string>('');
+  // Determine the display text
+  displayText = computed(() => {
+    if (this.selectedItems().length === 0) {
+      return this.placeholder();
+    }
+    if ((this, this.selectedItems().length === 1)) {
+      return this.selectedItems()[0].displayText;
+    } else {
+      return `${this.selectedItems()[0].displayText}, +${this.selectedItems().length - 1}`;
+    }
+  });
 
   constructor(protected dialog: MatDialog) {}
 
@@ -55,17 +78,34 @@ export class MatFilterChipComponent<SelectItemT> {
         ? elementBounds.left - borderRadiusOffset
         : elementBounds.left - 300 + elementBounds.width + borderRadiusOffset;
 
-    this.dialog.open(MatFilterChipDialog<SelectItemT>, {
+    const dialogRef = this.dialog.open(MatFilterChipDialog<SelectItemT>, {
       height: height + 'px',
       width: width + 'px',
       position: {
         top: topPosition + 'px',
         left: leftPosition + 'px'
       },
-      // Hides the backdrop so that the dialog can be displayed directly
-      // over the content. This is standard in M3's use of dialogs
+      // Makes the backdrop transparent so that the dialog can be displayed
+      // directly over the content. This is standard in M3's use of dialogs
       // in Google Calendar and other projects.
-      hasBackdrop: false
+      backdropClass: 'mat-filter-chip-dialog-backdrop'
     });
+
+    // Pass data directly to the component instance.
+    dialogRef.componentInstance.searchableItems = this.searchableItems();
+    dialogRef.componentInstance.selectedItems.next(this.selectedItems());
+    // Listen for changes in the list of selected items and update accordingly.
+    const selectedItemsSubscription =
+      dialogRef.componentInstance.selectedItems$.subscribe((items) => {
+        this.selectedItems.set(items);
+      });
+    // Unsubscribe from the selected items subscription when the dialog is closed.
+    dialogRef.afterClosed().subscribe(() => {
+      selectedItemsSubscription.unsubscribe();
+    });
+  }
+
+  clearSelections() {
+    this.selectedItems.set([]);
   }
 }
