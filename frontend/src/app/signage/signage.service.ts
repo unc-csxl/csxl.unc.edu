@@ -16,23 +16,9 @@ import {
   FastSignageDataJSON,
   SlowSignageData,
   SlowSignageDataJSON,
-  WeatherData,
   parseFastSignageDataJSON,
   parseSlowSignageDataJSON
 } from './signage.model';
-import { fetchWeatherApi } from 'openmeteo';
-
-const url = 'https://api.open-meteo.com/v1/forecast';
-const params = {
-  latitude: 35.910259,
-  longitude: -79.055473,
-  current: ['temperature_2m', 'is_day', 'weather_code', 'wind_speed_10m'],
-  temperature_unit: 'fahrenheit',
-  wind_speed_unit: 'mph',
-  precipitation_unit: 'inch',
-  timezone: 'America/New_York',
-  forecast_days: 1
-};
 
 @Injectable({
   providedIn: 'root'
@@ -53,18 +39,9 @@ export class SignageService {
   });
   public slowData = this.slowDataSignal.asReadonly();
 
-  private weatherDataSignal: WritableSignal<WeatherData> = signal({
-    temperature2m: 100,
-    isDay: 1,
-    weatherCode: 0,
-    windSpeed10m: 0
-  });
-  public weatherData = this.weatherDataSignal.asReadonly();
-
   constructor(protected http: HttpClient) {
     this.getSlowData();
     this.getFastData();
-    this.fetchWeatherData();
   }
 
   /**
@@ -93,25 +70,5 @@ export class SignageService {
       .subscribe((fastSignageData) => {
         this.fastDataSignal.set(fastSignageData);
       });
-  }
-
-  /**
-   * Fetches weather data from Open-Meteo using params defined above, and updates the weather signal
-   *
-   * Gets the temperature, day/night distinction, weather code (cloudy/rainy/etc.), and wind speed for Sitterson Hall
-   */
-  fetchWeatherData() {
-    fetchWeatherApi(url, params).then((responses) => {
-      const response = responses[0];
-      const current = response.current()!;
-
-      // Process the weather data
-      this.weatherDataSignal.set({
-        temperature2m: current.variables(0)!.value(),
-        isDay: current.variables(1)!.value(),
-        weatherCode: current.variables(2)!.value(),
-        windSpeed10m: current.variables(3)!.value()
-      });
-    });
   }
 }

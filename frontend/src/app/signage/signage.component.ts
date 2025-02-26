@@ -8,24 +8,11 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SignageService } from './signage.service';
+import { WeatherService } from './weather.service';
 import { Subscription, timer, delay } from 'rxjs';
-import { WeatherData } from './signage.model';
 
 const REFRESH_FAST_SECONDS = 20;
 const REFRESH_SLOW_MINUTES = 20;
-
-const weather_types: { [weather: string]: string } = {
-  sunny: '/assets/sunny.png',
-  sunny_windy: '/assets/sunny-windy.png',
-  partly_cloudy: '/assets/partly-cloudy.png',
-  partly_cloudy_windy: '/assets/partly-cloudy-windy.png',
-  rainy: '/assets/rainy.png',
-  stormy: '/assets/stormy.png',
-  overcast: '/assets/overcast.png',
-  snowy: '/assets/snowy.png',
-  foggy: '/assets/foggy.png',
-  night: '/assets/night.png'
-};
 
 @Component({
   selector: 'app-signage',
@@ -44,60 +31,10 @@ export class SignageComponent implements OnInit, OnDestroy {
   private dateSubscription!: Subscription;
   private weatherSubscription!: Subscription;
 
-  constructor(protected signageService: SignageService) {}
-
-  /**
-   * Weather icons are assigned based on WMO Weather Codes.
-   *
-   * Here is a table showing all of them:
-   *
-   * https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM
-   *
-   * @param weatherData The weather data retrieved from Open-Meteo.
-   * @return The path to the correct .png weather icon.
-   */
-  public assignWeatherIcon(weatherData: WeatherData): string {
-    if (weatherData.weatherCode >= 95 && weatherData.weatherCode <= 99) {
-      // Codes 95-99 indicate thunderstorms.
-      return weather_types['stormy'];
-    } else if (weatherData.weatherCode == 3) {
-      // Code 3 indicates overcast clouds.
-      return weather_types['overcast'];
-    } else if (weatherData.weatherCode >= 40 && weatherData.weatherCode <= 49) {
-      // Codes 40-49 indicate fog.
-      return weather_types['foggy'];
-    } else if (
-      (weatherData.weatherCode >= 60 && weatherData.weatherCode <= 66) ||
-      (weatherData.weatherCode >= 80 && weatherData.weatherCode <= 82)
-    ) {
-      // Codes 60-66 indicate non-freezing rain.
-      // Codes 80-82 indicate different rain shower types.
-      return weather_types['rainy'];
-    } else if (
-      (weatherData.weatherCode >= 70 && weatherData.weatherCode <= 75) ||
-      weatherData.weatherCode == 85 ||
-      weatherData.weatherCode == 86
-    ) {
-      // Codes 70-75 indicate snowflake fall.
-      // Codes 85-86 indicate snow showers.
-      return weather_types['snowy'];
-    } else if (weatherData.isDay == 0) {
-      // isDay == 0 indicates night time.
-      return weather_types['night'];
-    } else if (weatherData.weatherCode == 2) {
-      // Code 2 indicates partly cloudy.
-      if (weatherData.windSpeed10m >= 15) {
-        return weather_types['partly_cloudy_windy'];
-      } else {
-        return weather_types['partly_cloudy'];
-      }
-    } else if (weatherData.windSpeed10m >= 15) {
-      return weather_types['sunny_windy'];
-    } else {
-      // Default to sunny weather icon.
-      return weather_types['sunny'];
-    }
-  }
+  constructor(
+    protected signageService: SignageService,
+    protected weatherService: WeatherService
+  ) {}
 
   ngOnInit(): void {
     this.fastSubscription = timer(0, REFRESH_FAST_SECONDS * 1000).subscribe(
@@ -114,7 +51,7 @@ export class SignageComponent implements OnInit, OnDestroy {
 
     this.weatherSubscription = timer(0, REFRESH_SLOW_MINUTES * 60000).subscribe(
       () => {
-        this.signageService.fetchWeatherData();
+        this.weatherService.fetchWeatherData();
       }
     );
 
