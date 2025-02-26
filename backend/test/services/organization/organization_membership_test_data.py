@@ -60,21 +60,19 @@ member_2 = OrganizationMembershipRegistration(
     term_id=term_data.current_term.id,
 )
 
-member_to_add = OrganizationMembershipRegistration(
+non_member = OrganizationMembershipRegistration(
     user_id=user.id,
     organization_id=appteam.id,
     term_id=term_data.current_term.id,
 )
 
-cads_membership = OrganizationMembership(
+edit_member_2 = OrganizationMembershipRegistration(
     id=2,
-    user=ambassador,
+    user_id=ambassador.id,
     organization_id=cads.id,
-    organization_name=cads.name,
-    organization_slug=cads.slug,
     title="Treasurer",
     is_admin=True,
-    term=term_data.current_term,
+    term_id=term_data.current_term.id,
 )
 
 bad_membership = OrganizationMembership(

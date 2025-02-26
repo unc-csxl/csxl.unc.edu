@@ -19,7 +19,11 @@ from ..entities.organization_membership_entity import OrganizationMembershipEnti
 from ..entities.user_entity import UserEntity
 from .permission import PermissionService
 
-from .exceptions import ResourceNotFoundException, ResourceExistsException
+from .exceptions import (
+    ResourceNotFoundException,
+    ResourceExistsException,
+    OrganizationPermissionException,
+)
 
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
@@ -215,6 +219,7 @@ class OrganizationService:
         If user or organization don't exist or a membership already exists, a debug message is displayed
 
         Parameters:
+            subject: a valid User model representing the currently logged in User
             slug: a string representing a unique organization slug
             membership_registration: an OrganizationMembershipRegistration used to create a new OrganizationMembership
 
@@ -228,12 +233,6 @@ class OrganizationService:
         # Query the organization with matching slug and check if null
         organization = self.get_by_slug(slug)
 
-        # Raise exception if organization isn't allowing new memberships
-        if organization.join_type.name == OrganizationJoinType.CLOSED.name:
-            raise Exception(
-                f"Organization with slug {slug} is not currently open to new memberships"
-            )
-
         # Query the user with matching id and check if null
         user = (
             self._session.query(UserEntity)
@@ -244,6 +243,33 @@ class OrganizationService:
         if user is None:
             raise ResourceNotFoundException(
                 f"No user found with matching id: {membership_registration.user_id}"
+            )
+
+        # Check if subject has permission to create membership for given user
+        subject_user_membership = (
+            self._session.query(OrganizationMembershipEntity).filter(
+                OrganizationMembershipEntity.user_id == subject.id,
+                OrganizationMembershipEntity.organization_id == organization.id,
+            )
+        ).one_or_none()
+
+        # Flag denoting if subject is an organization or CSXL admin
+        subject_is_admin = (
+            subject_user_membership is not None and subject_user_membership.is_admin
+        ) or self._permission.check(
+            subject, "organization.update", f"organization/{slug}"
+        )
+
+        if organization.join_type.name == OrganizationJoinType.CLOSED.name:
+            # Raise exception if organization isn't allowing new memberships
+            if not subject_is_admin:
+                raise Exception(
+                    f"Organization with slug {slug} is not currently open to new memberships"
+                )
+
+        if not subject_is_admin and subject.id != user.id:
+            raise OrganizationPermissionException(
+                f"Not authorized to create a membership for another user in organization: {slug}"
             )
 
         # Check if membership already exists for this organization
@@ -266,9 +292,15 @@ class OrganizationService:
             membership_registration
         )
         organization_membership_entity.id = None
-        if organization.join_type.name == OrganizationJoinType.APPLY.name:
-            organization_membership_entity.title = "Membership pending"
+        organization_membership_entity.organization_id = organization.id
+
+        # Set default membership values if subject is lacking admin permissions
+        if not subject_is_admin:
             organization_membership_entity.is_admin = False
+            if organization.join_type.name == OrganizationJoinType.APPLY.name:
+                organization_membership_entity.title = "Membership pending"
+            else:
+                organization_membership_entity.title = "Member"
 
         # Add new object to table and commit changes
         self._session.add(organization_membership_entity)
@@ -307,25 +339,32 @@ class OrganizationService:
         self,
         subject: User,
         slug: str,
-        membership: OrganizationMembership,
+        membership: OrganizationMembershipRegistration,
     ) -> OrganizationMembership:
         """
-        Update a member's role in an organization
+        Update an organization membership
+        If the membership doesn't exist, a debug message is displayed
+
+        Parameters:
+            subject: a valid User model representing the currently logged in User
+            slug: a string representing a unique organization slug
+            membership: an OrganizationMembershipRegistration representing a membership
+
+        Returns:
+            OrganizationMembership: updated OrganizationMembership object
+
+        Raises:
+            ResourceNotFoundException if no membership is found with the corresponding id
         """
-        # Check if user has permissions to edit memberships (organization or CSXL admin)
-        subject_user_membership = (
+        # Query the organization with matching slug and check if null
+        organization = self.get_by_slug(slug)
+
+        subject_membership = (
             self._session.query(OrganizationMembershipEntity).filter(
                 OrganizationMembershipEntity.user_id == subject.id,
-                OrganizationMembershipEntity.organization_id
-                == membership.organization_id,
+                OrganizationMembershipEntity.organization_id == organization.id,
             )
         ).one_or_none()
-
-        if subject_user_membership is None or not subject_user_membership.is_admin:
-            # Check if user is CSXL admin
-            self._permission.enforce(
-                subject, "organization.update", f"organization/{slug}"
-            )
 
         # Query the membership to update
         query = select(OrganizationMembershipEntity).where(
@@ -338,9 +377,17 @@ class OrganizationService:
                 f"No organization membership found with id: {membership.id}"
             )
 
-        entity.title = membership.title
-        entity.is_admin = membership.is_admin
-        entity.term_id = membership.term.id
+        # Check if subject has permission to edit the membership
+        if self.subject_has_organization_permission(
+            subject, subject_membership, entity
+        ):
+            entity.title = membership.title
+            entity.is_admin = membership.is_admin
+            entity.term_id = membership.term_id
+        else:
+            raise OrganizationPermissionException(
+                f"User is not authorized to edit the given membership in organization: {slug}"
+            )
 
         self._session.commit()
         return entity.to_model()
@@ -351,30 +398,23 @@ class OrganizationService:
         If the user isn't a part of the organization, a debug message is displayed
 
         Parameters:
+            subject: a valid User model representing the currently logged in User
             slug: a string representing a unique organization slug
-            user_id: an int representing a unique membership id
+            membership_id: an int representing a unique membership id
 
         Raises:
-            ResourceNotFoundException if no organization membership is found with the corresponding slug and membership id
+            ResourceNotFoundException if no organization membership is found with given membership_id
         """
         # Query the organization with matching slug and check if null
         organization = self.get_by_slug(slug)
 
         # Check if user has permissions to remove memberships (organization or CSXL admin, user is subject)
-        subject_user_membership = (
+        subject_membership = (
             self._session.query(OrganizationMembershipEntity).filter(
                 OrganizationMembershipEntity.user_id == subject.id,
                 OrganizationMembershipEntity.organization_id == organization.id,
             )
         ).one_or_none()
-        if subject_user_membership is None or (
-            membership_id != subject_user_membership.id
-            and not subject_user_membership.is_admin
-        ):
-            # Check if user is CSXL admin
-            self._permission.enforce(
-                subject, "organization.update", f"organization/{slug}"
-            )
 
         former_membership = (
             self._session.query(OrganizationMembershipEntity)
@@ -388,5 +428,46 @@ class OrganizationService:
                 f"No organization membership found with id {membership_id}"
             )
 
-        self._session.delete(former_membership)
-        self._session.commit()
+        # Check if subject has permission to delete the membership
+        if (
+            self.subject_has_organization_permission(
+                subject, subject_membership, former_membership
+            )
+            or subject.id == former_membership.user_id
+        ):
+            self._session.delete(former_membership)
+            self._session.commit()
+        else:
+            raise OrganizationPermissionException(
+                f"User is not authorized to delete the given membership in organization: {slug}"
+            )
+
+    def subject_has_organization_permission(
+        self,
+        subject: User,
+        subject_membership: OrganizationMembershipEntity,
+        membership: OrganizationMembershipEntity,
+    ) -> bool:
+        """
+        Helper method that determines if the subject can perform actions on the specified membership
+
+        Parameters:
+            subject: the currently logged in User
+            subject_membership: the currently logged in User's membership
+            membership: the  membership targeted for edit or delete
+
+        Returns:
+            bool: flag for the statement "subject has permission to act on the membership"
+        """
+
+        subject_is_organization_admin = (
+            subject_membership is not None and subject_membership.is_admin
+        )
+        subject_is_csxl_admin = self._permission.check(
+            subject, "organization.update", "organization/*"
+        )
+
+        # CSXL admin > organization admin > general user
+        return subject_is_csxl_admin or (
+            not membership.is_admin and subject_is_organization_admin
+        )

@@ -15,7 +15,15 @@ class ResourceNotFoundException(Exception):
 class ResourceExistsException(Exception):
     """ResourceExistsException is raised when a user attempts to create an already existing resource."""
 
-    ...
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")
+
+
+class OrganizationPermissionException(Exception):
+    """OrganizationPermissionException is raised when a user attempts to perform an action on organization memberships they are not authorized to perform."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")
 
 
 class UserPermissionException(Exception):

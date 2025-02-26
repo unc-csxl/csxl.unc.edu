@@ -158,7 +158,7 @@ def delete_organization(
 )
 def add_membership(
     slug: str,
-    membership: Annotated[
+    membership_registration: Annotated[
         OrganizationMembershipRegistration,
         Body(
             description="Details to create a new organization membership",
@@ -168,7 +168,7 @@ def add_membership(
                     "value": {"user_id": 0, "organization_id": 0},
                 },
                 "custom": {
-                    "summary": "Specific",
+                    "summary": "Custom",
                     "value": {
                         "user_id": 0,
                         "organization_id": 0,
@@ -185,10 +185,11 @@ def add_membership(
     subject: User = Depends(registered_user),
 ) -> OrganizationMembership:
     """
-    Add member
+    Add membership to organization with matching slug
 
     Parameters:
-        user_id: new member id, passed in from frontend
+        slug: a string representing a unique identifier for an Organization
+        membership_registration: an OrganizationMembershipRegistration object with info for a new OrganizationMembership
         organization_service: a valid OrganizationService
         subject: a valid User model representing the currently logged in User
 
@@ -198,9 +199,9 @@ def add_membership(
     Raises:
         HTTPException 404 if add_member() raises an Exception
     """
-    if membership.term_id is None:
-        membership.term_id = term_service.get_by_date(datetime.today()).id
-    return organization_service.add_membership(subject, slug, membership)
+    if membership_registration.term_id is None:
+        membership_registration.term_id = term_service.get_by_date(datetime.today()).id
+    return organization_service.add_membership(subject, slug, membership_registration)
 
 
 @api.get(
@@ -239,11 +240,12 @@ def update_membership(
     membership: Annotated[
         OrganizationMembershipRegistration,
         Body(
-            description="Details to create a new organization membership",
+            description="Details to modify an organization membership",
             openapi_examples={
                 "model": {
-                    "summary": "Model",
+                    "summary": "Default",
                     "value": {
+                        "id": 0,
                         "user_id": 0,
                         "organization_id": 0,
                         "title": "Member",
@@ -258,7 +260,7 @@ def update_membership(
     organization_service: OrganizationService = Depends(),
 ) -> OrganizationMembership:
     """
-    Update membership role
+    Update membership details
 
     Parameters:
         slug: a string representing a unique identifier for an Organization
@@ -279,12 +281,12 @@ def delete_membership(
     organization_service: OrganizationService = Depends(),
 ):
     """
-    Delete user based on membership_id
+    Delete membership based on membership_id
 
     Parameters:
         slug: a string representing a unique identifier for an Organization
         membership_id: a unique OrganizationMembership id
-        organization_service: a valid OrganizationService
         subject: a valid User model representing the currently logged in User
+        organization_service: a valid OrganizationService
     """
     organization_service.delete_membership(subject, slug, membership_id)
