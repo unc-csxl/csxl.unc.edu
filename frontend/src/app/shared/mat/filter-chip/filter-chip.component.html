@@ -1,0 +1,7 @@
+<mat-chip #chip (click)="openDialog($event)">
+    @if(leadingIcon()) {
+        <mat-icon matChipAvatar>{{ leadingIcon() }}</mat-icon>
+    }
+    Test
+    <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
+</mat-chip>
