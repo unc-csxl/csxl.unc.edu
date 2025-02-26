@@ -62,18 +62,18 @@ def test_create_as_root(term_svc: TermService):
     permission_svc = create_autospec(PermissionService)
     term_svc._permission_svc = permission_svc
 
-    term = term_svc.create(user_data.root, term_data.s25)
+    term = term_svc.create(user_data.root, term_data.new_term)
 
     permission_svc.enforce.assert_called_with(
         user_data.root, "academics.term.create", "term/"
     )
     assert isinstance(term, TermDetails)
-    assert term.id == term_data.s25.id
+    assert term.id == term_data.new_term.id
 
 
 def test_create_as_user(term_svc: TermService):
     with pytest.raises(UserPermissionException):
-        term = term_svc.create(user_data.user, term_data.s25)
+        term = term_svc.create(user_data.user, term_data.new_term)
         pytest.fail()
 
 
@@ -95,7 +95,7 @@ def test_update_as_root_not_found(term_svc: TermService):
     term_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        term = term_svc.update(user_data.root, term_data.s25)
+        term = term_svc.update(user_data.root, term_data.new_term)
         pytest.fail()
 
 
@@ -124,7 +124,7 @@ def test_delete_as_root_not_found(term_svc: TermService):
     term_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        term = term_svc.delete(user_data.root, term_data.s25.id)
+        term = term_svc.delete(user_data.root, term_data.new_term.id)
         pytest.fail()
 
 
