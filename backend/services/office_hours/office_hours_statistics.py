@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 from sqlalchemy import func, select, and_, func
 
 from ...models.office_hours.ticket_state import TicketState
@@ -47,6 +47,13 @@ class OfficeHoursStatisticsService:
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
+        # Alias the section member entity so that we can join to this table
+        # multiple times. The `CreatorEntity` alias will be used for filtering
+        # based on the ticket creators, and the `CallerEntity` alias will
+        # be used for filtering staff members.
+        CreatorEntity = aliased(SectionMemberEntity)
+        CallerEntity = aliased(SectionMemberEntity)
+
         statement = (
             select(OfficeHoursTicketEntity)
             .join(OfficeHoursEntity)
@@ -80,23 +87,31 @@ class OfficeHoursStatisticsService:
         if len(pagination_params.student_ids) != 0:
             statement = (
                 statement.join(user_created_tickets_table)
-                .join(SectionMemberEntity)
-                .where(SectionMemberEntity.user_id.in_(pagination_params.student_ids))
+                .join(
+                    CreatorEntity,
+                    CreatorEntity.id == user_created_tickets_table.c.member_id,
+                )
+                .where(CreatorEntity.user_id.in_(pagination_params.student_ids))
             )
             length_statement = (
                 length_statement.join(user_created_tickets_table)
-                .join(SectionMemberEntity)
-                .where(SectionMemberEntity.user_id.in_(pagination_params.student_ids))
+                .join(
+                    CreatorEntity,
+                    CreatorEntity.id == user_created_tickets_table.c.member_id,
+                )
+                .where(CreatorEntity.user_id.in_(pagination_params.student_ids))
             )
 
         # Filter by staff member who called ticket
         if len(pagination_params.staff_ids) != 0:
-            statement = statement.join(SectionMemberEntity).where(
-                SectionMemberEntity.user_id.in_(pagination_params.staff_ids)
-            )
-            length_statement = length_statement.join(SectionMemberEntity).where(
-                SectionMemberEntity.user_id.in_(pagination_params.staff_ids)
-            )
+            statement = statement.join(
+                CallerEntity,
+                CallerEntity.id == OfficeHoursTicketEntity.caller_id,
+            ).where(CallerEntity.user_id.in_(pagination_params.staff_ids))
+            length_statement = length_statement.join(
+                CallerEntity,
+                CallerEntity.id == OfficeHoursTicketEntity.caller_id,
+            ).where(CallerEntity.user_id.in_(pagination_params.staff_ids))
 
         # Calculate where to begin retrieving rows and how many to retrieve
         offset = pagination_params.page * pagination_params.page_size
