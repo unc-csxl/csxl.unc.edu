@@ -64,7 +64,7 @@ export class MatFilterChipComponent<SelectItemT> {
   openDialog(event: MouseEvent) {
     // Constants to save the height and width of the dialog
     const height = 300;
-    const width = 300;
+    const width = 200;
     const borderRadiusOffset = 16;
     const topOffset = 8;
     // Determine the absolute position of the dialog, which should be
@@ -77,7 +77,7 @@ export class MatFilterChipComponent<SelectItemT> {
     const leftPosition =
       this.dropdownAlignment() === 'left'
         ? elementBounds.left - borderRadiusOffset
-        : elementBounds.left - 300 + elementBounds.width + borderRadiusOffset;
+        : elementBounds.left - width + borderRadiusOffset;
 
     const dialogRef = this.dialog.open(MatFilterChipDialog<SelectItemT>, {
       height: height + 'px',
