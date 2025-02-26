@@ -3,7 +3,11 @@ import { MyCoursesService } from '../my-courses.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateCourseSiteDialog } from '../dialogs/create-course-site/create-course-site.dialog';
-import { TermOverview } from '../my-courses.model';
+import { TermOverview, CourseSiteOverview } from '../my-courses.model';
+
+interface CourseInformation extends CourseSiteOverview {
+  termId: string
+}
 
 @Component({
   selector: 'app-my-courses-page',
@@ -20,8 +24,6 @@ export class MyCoursesPageComponent {
 
   /** Whether or not to show the previous courses */
   showPreviousCourses: WritableSignal<boolean> = signal(false);
-  instructorCourses: any[] = [];
-  studentCourses: any[] = [];
 
   constructor(
     protected myCoursesService: MyCoursesService,
@@ -61,7 +63,7 @@ export class MyCoursesPageComponent {
   }
 
   /** Returns the courses where the user is an instructor during the current terms */
-  getInstructorCourses(): any[] {
+  getInstructorCourses(): CourseInformation[] {
     return this.myCoursesService.currentTerms().flatMap((term) => {
       return term.sites.filter(course => course.role !== 'Student').map(course => ({
         ...course,
@@ -71,7 +73,7 @@ export class MyCoursesPageComponent {
   }
 
   /** Returns the courses where the user is a student during the current terms */
-  getStudentCourses(): any[] {
+  getStudentCourses(): CourseInformation[] {
     return this.myCoursesService.currentTerms().flatMap((term) => {
       return term.sites.filter(course => course.role === 'Student').map(course => ({
         ...course,
