@@ -3,7 +3,7 @@
 <div class="container">  
   <mat-pane>
     <mat-card-header id="pane-header">
-      <mat-card-title>My Courses</mat-card-title>
+      <mat-card-title>{{ getActiveTermNames() }}</mat-card-title>      
       <div class="header-buttons">
         <button mat-stroked-button color="secondary" routerLink="/catalog/offerings">
           <!-- <mat-icon>search</mat-icon> -->
@@ -19,20 +19,31 @@
     </mat-card-header>
     <mat-card-content>
       <mat-divider />
-      @for (term of this.myCoursesService.currentTerms(); track term.id) {
-        <h3 class="title-medium term-header">{{ term.name }}</h3>
-        <div class="course-card-container">
-          @for (course of term.sites; track course.id) {
-            <course-card [termId]="term.id" [course]="course" />
-          }
-        </div>
-      }
+        @if (hasInstructorCourses()) {
+          <h2 class="title-medium term-header">Instructor Courses</h2>
+          <div class="course-card-container">
+            @for (course of getInstructorCourses(); track course.id) {
+                <course-card [termId]="course.termId" [course]="course" />
+              
+            }
+          </div>
+        }
+        @if (hasStudentCourses()) {
+          <h2 class="title-medium term-header">Student Courses</h2>
+          <div class="course-card-container">
+            @for (course of getStudentCourses(); track course.id) {
+                <course-card [termId]="course.termId" [course]="course" />
+              
+            }
+          </div>
+        }
+      
       @if (showPreviousCourses()) {
         @for (term of this.myCoursesService.pastTerms(); track term.id) {
           <h3 class="title-medium term-header">{{ term.name }}</h3>
           <div class="course-card-container">
-            @for (course of term.sites; track course.id) {
-              <course-card [course]="course" />
+            @for (course of getPastCourses(term); track course.id) {    
+              <course-card [termId]="term.id" [course]="course" />    
             }
           </div>
         }
