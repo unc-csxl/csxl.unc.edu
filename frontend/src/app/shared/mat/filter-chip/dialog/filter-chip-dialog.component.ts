@@ -7,15 +7,7 @@
  * @copyright 2025
  */
 
-import {
-  Component,
-  effect,
-  EventEmitter,
-  input,
-  model,
-  signal,
-  WritableSignal
-} from '@angular/core';
+import { Component, computed, model } from '@angular/core';
 import { MatFilterChipSearchableItem } from '../filter-chip.component';
 import { ReplaySubject, Subject } from 'rxjs';
 import { MatListOption } from '@angular/material/list';
@@ -36,9 +28,24 @@ export class MatFilterChipDialog<SelectItemT> {
   // Input used for the list of items that can be selected.
   searchableItems: MatFilterChipSearchableItem<SelectItemT>[] = [];
 
+  // Store the current search query
+  searchQuery = model<string>('');
+  // Filter the items based on the search query
+  searchResults = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    return this.searchableItems.filter((item) =>
+      item.displayText.toLowerCase().startsWith(query)
+    );
+  });
+
   // Handle the event for when the selected items change.
   onSelectionChange(newItems: MatListOption[]) {
     this.selectedItems.next(newItems.map((item) => item.value));
+  }
+
+  // Clears the current search query.
+  onQueryClear() {
+    this.searchQuery.set('');
   }
 
   constructor(
