@@ -80,6 +80,23 @@ export class MyCoursesPageComponent {
     });
   }
 
+  getPastCourses(term: TermOverview) {
+    return term.sites
+      .sort((a, b) => {
+        if (a.role !== 'Student' && b.role === 'Student') {
+          return -1;
+        }
+        if (a.role === 'Student' && b.role !== 'Student') {
+          return 1;
+        }
+        return 0;
+      })
+      .map(course => ({
+        ...course,
+        termId: term.id
+      }));
+  }
+
   
 }
 
