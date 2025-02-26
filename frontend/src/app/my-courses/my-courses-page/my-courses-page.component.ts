@@ -20,6 +20,8 @@ export class MyCoursesPageComponent {
 
   /** Whether or not to show the previous courses */
   showPreviousCourses: WritableSignal<boolean> = signal(false);
+  instructorCourses: any[] = [];
+  studentCourses: any[] = [];
 
   constructor(
     protected myCoursesService: MyCoursesService,
@@ -36,6 +38,7 @@ export class MyCoursesPageComponent {
     });
   }
 
+  /** Returns names of active terms in comma separated format */
   getActiveTermNames(): string {
     return this.myCoursesService
       .currentTerms()
@@ -43,15 +46,41 @@ export class MyCoursesPageComponent {
       .join(', ');
   }
 
-  /** Returns whether or not user has a non-student role in a course during a term */
-  hasInstructorCourses(term: TermOverview): boolean {
-    return term.sites.some(course => course.role !== 'Student');
+  /** Returns whether or not user has a non-student role in a course during the current terms */
+  hasInstructorCourses(): boolean {
+    return this.myCoursesService.currentTerms().some((term) => {
+      return term.sites.some(course => course.role !== 'Student');
+    });
   }
   
-    /** Returns whether or not user has a student role in a course during a term */
-  hasStudentCourses(term: TermOverview): boolean {
-    return term.sites.some(course => course.role === 'Student');
+    /** Returns whether or not user has a student role in a course during the current terms */
+  hasStudentCourses(): boolean {
+    return this.myCoursesService.currentTerms().some((term) => {
+      return term.sites.some(course => course.role === 'Student');
+    });
   }
+
+  /** Returns the courses where the user is an instructor during the current terms */
+  getInstructorCourses(): any[] {
+    return this.myCoursesService.currentTerms().flatMap((term) => {
+      return term.sites.filter(course => course.role !== 'Student').map(course => ({
+        ...course,
+        termId: term.id
+      }));
+    });
+  }
+
+  /** Returns the courses where the user is a student during the current terms */
+  getStudentCourses(): any[] {
+    return this.myCoursesService.currentTerms().flatMap((term) => {
+      return term.sites.filter(course => course.role === 'Student').map(course => ({
+        ...course,
+        termId: term.id
+      }));
+    });
+  }
+
+  
 }
 
 

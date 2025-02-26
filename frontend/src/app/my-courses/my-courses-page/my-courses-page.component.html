@@ -19,28 +19,25 @@
     </mat-card-header>
     <mat-card-content>
       <mat-divider />
-      @for (term of this.myCoursesService.currentTerms(); track term.id) {
-        @if (hasInstructorCourses(term)) {
+        @if (hasInstructorCourses()) {
           <h2 class="title-medium term-header">Instructor Courses</h2>
           <div class="course-card-container">
-            @for (course of term.sites; track course.id) {
-              @if(course.role != "Student") {
-                <course-card [termId]="term.id" [course]="course" />
-              }
+            @for (course of getInstructorCourses(); track course.id) {
+                <course-card [termId]="course.termId" [course]="course" />
+              
             }
           </div>
         }
-        @if (hasStudentCourses(term)) {
+        @if (hasStudentCourses()) {
           <h2 class="title-medium term-header">Student Courses</h2>
           <div class="course-card-container">
-            @for (course of term.sites; track course.id) {
-              @if(course.role == "Student") {
-                <course-card [termId]="term.id" [course]="course" />
-              }
+            @for (course of getStudentCourses(); track course.id) {
+                <course-card [termId]="course.termId" [course]="course" />
+              
             }
           </div>
         }
-      }
+      
       @if (showPreviousCourses()) {
         @for (term of this.myCoursesService.pastTerms(); track term.id) {
           <h3 class="title-medium term-header">{{ term.name }}</h3>
