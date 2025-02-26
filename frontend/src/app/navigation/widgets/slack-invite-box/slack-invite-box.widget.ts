@@ -28,7 +28,7 @@ export class SlackInviteBox {
 
   public openSlackInvite() {
     window.open(
-      'https://join.slack.com/t/csxl/shared_invite/zt-1mvfaiqme-fXXw9cKjaXOfhXVBfgXVCA',
+      'https://join.slack.com/t/csxl/shared_invite/zt-2zco2tt81-JWX7_x8bBa3ZIxRAUFYjnQ',
       '_blank'
     );
   }
