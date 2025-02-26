@@ -57,7 +57,6 @@ with Session(engine) as session:
     user_data.insert_fake_data(session)
     permission_data.insert_fake_data(session)
     organization_demo_data.insert_fake_data(session)
-    organization_membership_test_data.insert_fake_data(session)
     event_demo_data.insert_fake_data(session)
     operating_hours_data.insert_fake_data(session, time)
     seat_data.insert_fake_data(session)

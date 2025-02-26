@@ -30,3 +30,4 @@ class Organization(BaseModel):
     heel_life: str
     public: bool
     join_type: OrganizationJoinType
+    application: str | None = None
