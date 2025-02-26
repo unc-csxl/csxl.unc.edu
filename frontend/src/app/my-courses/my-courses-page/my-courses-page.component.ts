@@ -36,6 +36,13 @@ export class MyCoursesPageComponent {
     });
   }
 
+  getActiveTermNames(): string {
+    return this.myCoursesService
+      .currentTerms()
+      .map(term => term.name)
+      .join(', ');
+  }
+
   /** Returns whether or not user has a non-student role in a course during a term */
   hasInstructorCourses(term: TermOverview): boolean {
     return term.sites.some(course => course.role !== 'Student');

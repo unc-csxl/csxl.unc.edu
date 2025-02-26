@@ -3,9 +3,7 @@
 <div class="container">  
   <mat-pane>
     <mat-card-header id="pane-header">
-      @for (term of this.myCoursesService.currentTerms(); track term.name) {
-        <mat-card-title>{{term.name}}</mat-card-title>
-      }
+      <mat-card-title>{{ getActiveTermNames() }}</mat-card-title>      
       <div class="header-buttons">
         <button mat-stroked-button color="secondary" routerLink="/catalog/offerings">
           <!-- <mat-icon>search</mat-icon> -->
