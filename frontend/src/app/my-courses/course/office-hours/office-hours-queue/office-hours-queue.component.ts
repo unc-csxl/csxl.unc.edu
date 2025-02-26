@@ -24,6 +24,13 @@ import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { officeHourPageGuard } from '../office-hours.guard';
 import { Title } from '@angular/platform-browser';
 
+/** Store both possible titles as strings to flash between them easily */
+const ORIGINAL_TITLE: string = 'Office Hours Queue';
+const NOTIFICATION_TITLE: string = 'Queued Ticket!';
+
+/** Store notification audio */
+const CHIME = new Audio('assets/office-hours-notif.wav');
+
 @Component({
   selector: 'app-office-hours-queue',
   templateUrl: './office-hours-queue.component.html',
@@ -50,13 +57,6 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
 
   /** Stores subscription to a timer observable for flashing the title for notifications */
   titleFlashTimer: Subscription | undefined;
-
-  /** Store both possible titles as strings to flash between them easily */
-  originalTitle: string = 'Office Hours Queue';
-  notificationTitle: string = 'Queued Ticket!';
-
-  /** Store notification audio */
-  chime = new Audio('assets/office-hours-notif.wav');
 
   constructor(
     private route: ActivatedRoute,
@@ -104,15 +104,15 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
       }
     }
     if (notify) {
-      this.chime.play();
+      CHIME.play();
       this.titleFlashTimer = timer(0, 1000).subscribe(() => {
         this.titleService.setTitle(
-          this.titleService.getTitle() === this.notificationTitle ?
-            this.originalTitle : this.notificationTitle);
+          this.titleService.getTitle() === NOTIFICATION_TITLE ?
+            ORIGINAL_TITLE : NOTIFICATION_TITLE);
       })
     } else {
       this.titleFlashTimer?.unsubscribe();
-      this.titleService.setTitle(this.originalTitle);
+      this.titleService.setTitle(ORIGINAL_TITLE);
     }
   }
 
