@@ -44,9 +44,81 @@ class OfficeHoursStatisticsService:
         self._session = session
         self._office_hours_svc = _office_hours_svc
 
-    def get_statistics(
-        self, user: User, site_id: int, filters: dict = None
-    ) -> OfficeHoursTicketStatistics:
+    def create_ticket_query(
+        self, site_id: int, pagination_params: TicketPaginationParams
+    ) -> tuple:
+        """
+        Create the ticket query based on the filters selected.
+        """
+        # Alias the section member entity so that we can join to this table
+        # multiple times. The `CreatorEntity` alias will be used for filtering
+        # based on the ticket creators, and the `CallerEntity` alias will
+        # be used for filtering staff members.
+        CreatorEntity = aliased(SectionMemberEntity)
+        CallerEntity = aliased(SectionMemberEntity)
+
+        statement = (
+            select(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(CourseSiteEntity)
+            .where(CourseSiteEntity.id == site_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+        )
+
+        length_statement = (
+            select(func.count())
+            .select_from(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(CourseSiteEntity)
+            .where(CourseSiteEntity.id == site_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+        )
+
+        # Filter by Start/End Range
+        if pagination_params.range_start != "":
+            range_start = pagination_params.range_start
+            range_end = pagination_params.range_end
+            criteria = and_(
+                OfficeHoursTicketEntity.created_at
+                >= datetime.fromisoformat(range_start),
+                OfficeHoursTicketEntity.created_at <= datetime.fromisoformat(range_end),
+            )
+            statement = statement.where(criteria)
+            length_statement = length_statement.where(criteria)
+
+        # Filter by student who created ticket
+        if len(pagination_params.student_ids) != 0:
+            statement = (
+                statement.join(user_created_tickets_table)
+                .join(
+                    CreatorEntity,
+                    CreatorEntity.id == user_created_tickets_table.c.member_id,
+                )
+                .where(CreatorEntity.user_id.in_(pagination_params.student_ids))
+            )
+            length_statement = (
+                length_statement.join(user_created_tickets_table)
+                .join(
+                    CreatorEntity,
+                    CreatorEntity.id == user_created_tickets_table.c.member_id,
+                )
+                .where(CreatorEntity.user_id.in_(pagination_params.student_ids))
+            )
+
+        # Filter by staff member who called ticket
+        if len(pagination_params.staff_ids) != 0:
+            statement = statement.join(
+                CallerEntity,
+                CallerEntity.id == OfficeHoursTicketEntity.caller_id,
+            ).where(CallerEntity.user_id.in_(pagination_params.staff_ids))
+            length_statement = length_statement.join(
+                CallerEntity,
+                CallerEntity.id == OfficeHoursTicketEntity.caller_id,
+            ).where(CallerEntity.user_id.in_(pagination_params.staff_ids))
+
+        return statement, length_statement
+
+    def get_statistics(self, user: User, site_id: int) -> OfficeHoursTicketStatistics:
         """
         Retrieve various statistics for a course site.
         """
