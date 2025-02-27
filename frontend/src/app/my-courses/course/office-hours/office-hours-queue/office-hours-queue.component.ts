@@ -22,6 +22,14 @@ import {
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { officeHourPageGuard } from '../office-hours.guard';
+import { Title } from '@angular/platform-browser';
+
+/** Store both possible titles as strings to flash between them easily */
+const ORIGINAL_TITLE: string = 'Office Hours Queue';
+const NOTIFICATION_TITLE: string = 'Queued Ticket!';
+
+/** Store notification audio */
+const CHIME = new Audio('assets/office-hours-notif.wav');
 
 @Component({
   selector: 'app-office-hours-queue',
@@ -47,10 +55,14 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   /** Stores subscription to the timer observable that refreshes data every 10s */
   timer!: Subscription;
 
+  /** Stores subscription to a timer observable for flashing the title for notifications */
+  titleFlashTimer: Subscription | undefined;
+
   constructor(
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    protected myCoursesService: MyCoursesService
+    protected myCoursesService: MyCoursesService,
+    private titleService: Title
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
@@ -63,9 +75,47 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Remove the timer subscription when the view is destroyed so polling does not persist on other pages */
+  /** Remove the timer subscriptions when the view is destroyed so polling/flashing does not persist on other pages */
   ngOnDestroy(): void {
     this.timer.unsubscribe();
+    this.titleFlashTimer?.unsubscribe();
+  }
+
+  /** Sends a notification if necessary on each pollQueue call */
+  handleNotification(queue: OfficeHourQueueOverview): void {
+    /**
+     * If you have no active/called ticket and the new queue has some ticket
+     * queued and either the old queue doesn't exist, it has a length of zero,
+     * or the new queue has a ticket that wasn't in the old queue, then send
+     * a notification. If not, stop the flashing subscription (if it exists).
+     */
+    let notify: boolean = false;
+    /* Test notification condition and store result in notify */
+    if (!queue.active && queue.queue.length > 0) {
+      if (!this.queue() || this.queue()!.queue.length === 0) {
+        notify = true;
+      } else {
+        for (const new_ticket of queue.queue) {
+          if (!(this.queue()!.queue.some((old_ticket) =>
+            new_ticket.id === old_ticket.id))) {
+            notify = true;
+            break;
+          }
+        }
+      }
+    }
+    /* Notification behavior based on result stored in notify */
+    if (notify) {
+      CHIME.play();
+      this.titleFlashTimer = timer(0, 1000).subscribe(() => {
+        this.titleService.setTitle(
+          this.titleService.getTitle() === NOTIFICATION_TITLE ?
+            ORIGINAL_TITLE : NOTIFICATION_TITLE);
+      })
+    } else {
+      this.titleFlashTimer?.unsubscribe();
+      this.titleService.setTitle(ORIGINAL_TITLE);
+    }
   }
 
   /** Loads office hours queue data */
@@ -73,6 +123,7 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
     this.myCoursesService
       .getOfficeHoursQueue(this.ohEventId)
       .subscribe((queue) => {
+        this.handleNotification(queue);
         this.queue.set(queue);
       });
   }

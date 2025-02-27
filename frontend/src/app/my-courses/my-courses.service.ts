@@ -337,6 +337,29 @@ export class MyCoursesService {
   }
 
   /**
+   * Update recurring office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to update.
+   * @param recurrencePattern: NewOfficeHoursRecurrencePattern
+   * @returns {Observable<OfficeHours>}
+   */
+  updateRecurringOfficeHours(
+    siteId: number,
+    officeHours: OfficeHours,
+    recurrencePattern: NewOfficeHoursRecurrencePattern
+  ): Observable<OfficeHours[]> {
+    return this.http
+      .put<
+        OfficeHoursJson[]
+      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrencePattern })
+      .pipe(
+        map((officeHoursJSON) => {
+          return officeHoursJSON.map(parseOfficeHoursJson);
+        })
+      );
+  }
+
+  /**
    * Delete office hours.
    * @param siteId: ID of the site to look for office hours.
    * @param officeHoursId: ID of the office hours.
