@@ -58,7 +58,7 @@ export class MatFilterChipComponent<SelectItemT> {
   searchableItems = input<MatFilterChipSearchableItem<SelectItemT>[]>([]);
 
   // Stores the logic for how to apply filters based on the search query
-  filterLogic!: MatFilterChipFilterLogic<SelectItemT>;
+  filterLogic = input<MatFilterChipFilterLogic<SelectItemT>>(() => true);
 
   // Stores whether or not the dropdown is open.
   dropdownOpen = signal<boolean>(false);
@@ -111,7 +111,7 @@ export class MatFilterChipComponent<SelectItemT> {
 
     // Pass data directly to the component instance.
     dialogRef.componentInstance.searchableItems = this.searchableItems();
-    dialogRef.componentInstance.filterLogic = this.filterLogic;
+    dialogRef.componentInstance.filterLogic = this.filterLogic();
     dialogRef.componentInstance.selectedItems.next(this.selectedItems());
     // Listen for changes in the list of selected items and update accordingly.
     const selectedItemsSubscription =

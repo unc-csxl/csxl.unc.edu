@@ -8,6 +8,7 @@
  */
 
 import { Component } from '@angular/core';
+import { MatFilterChipFilterLogic } from 'src/app/shared/mat/filter-chip/filter-chip.component';
 
 @Component({
   selector: 'app-statistics',
@@ -20,5 +21,9 @@ export class StatisticsComponent {
     path: 'statistics',
     title: 'Course',
     component: StatisticsComponent
+  };
+
+  filterLogic: MatFilterChipFilterLogic<string> = (item, query) => {
+    return item.displayText.toLowerCase().includes(query.toLowerCase());
   };
 }

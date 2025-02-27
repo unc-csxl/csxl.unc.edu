@@ -11,8 +11,9 @@
             <mat-filter-chip
               placeholder="Filter"
               leadingIcon="person_raised_hand"
-              dropdownAlignment="right" 
+              dropdownAlignment="right"
               [searchableItems]="[{displayText: 'Item 1', item: 'item1'}, {displayText: 'Item 2', item: 'item2'}, {displayText: 'Item 3', item: 'item3'}, {displayText: 'Item 4', item: 'item4'}, {displayText: 'Item 5', item: 'item5'}]"
+              [filterLogic]="filterLogic"
             />
           </div>
         </div>
