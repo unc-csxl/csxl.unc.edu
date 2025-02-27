@@ -3,17 +3,13 @@ div {
   width: 100%;
 }
 
-.mat-mdc-card-header {
+.title {
   margin-left: 2.03%;
   padding-top: 1.15%;
   padding-bottom: 1.35%;
-  padding-left: 0%;
-  padding-right: 0%;
-}
-
-.title {
-  font-size: 6vh;
-  line-height: 6vh;
+  margin-right: 1%;
+  display: flex;
+  width: fit-content;
 }
 
 .header {
