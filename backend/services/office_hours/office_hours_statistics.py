@@ -80,7 +80,7 @@ class OfficeHoursStatisticsService:
         week_tickets = self._session.execute(week_tickets_statement).scalar()
         return week_tickets
 
-    def get_average_wait(self, user: User, site_id: int) -> tuple[float, float]:
+    def get_average_wait(self, user: User, site_id: int) -> int:
         """
         Retrieve the average wait time and average duration of tickets for a course site.
         """
@@ -107,7 +107,7 @@ class OfficeHoursStatisticsService:
         avg_wait_time_minutes = avg_wait_time / 60 if avg_wait_time else 0
         return avg_wait_time_minutes
 
-    def get_average_duration(self, user: User, site_id: int) -> tuple[float, float]:
+    def get_average_duration(self, user: User, site_id: int) -> int:
         """
         Retrieve the average wait time and average duration of tickets for a course site.
         """
