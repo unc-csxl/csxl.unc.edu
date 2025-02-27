@@ -42,10 +42,10 @@ const weather_types: { [weather: string]: string } = {
 })
 export class WeatherService {
   private weatherDataSignal: WritableSignal<WeatherData> = signal({
-    temperature2m: 100, // 2m meaning 2 meters above ground is standard for temperature readings.
+    temperature: 100,
     isDay: 1,
     weatherCode: 0,
-    windSpeed10m: 0 // 10m meaning 10 meters above ground is standard for wind readings.
+    windSpeed: 0
   });
   public weatherData = this.weatherDataSignal.asReadonly();
 
@@ -69,10 +69,10 @@ export class WeatherService {
 
       // Process the weather data
       this.weatherDataSignal.set({
-        temperature2m: current.variables(0)!.value(),
+        temperature: current.variables(0)!.value(),
         isDay: current.variables(1)!.value(),
         weatherCode: current.variables(2)!.value(),
-        windSpeed10m: current.variables(3)!.value()
+        windSpeed: current.variables(3)!.value()
       });
       this.weatherIconSignal.set(this.assignWeatherIcon(this.weatherData()));
     });
@@ -118,12 +118,12 @@ export class WeatherService {
       return weather_types['night'];
     } else if (weatherData.weatherCode == 2) {
       // Code 2 indicates partly cloudy.
-      if (weatherData.windSpeed10m >= 15) {
+      if (weatherData.windSpeed >= 15) {
         return weather_types['partly_cloudy_windy'];
       } else {
         return weather_types['partly_cloudy'];
       }
-    } else if (weatherData.windSpeed10m >= 15) {
+    } else if (weatherData.windSpeed >= 15) {
       return weather_types['sunny_windy'];
     } else {
       // Default to sunny weather icon.

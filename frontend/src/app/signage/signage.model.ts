@@ -86,10 +86,10 @@ export interface FastSignageData {
 }
 
 export interface WeatherData {
-  temperature2m: number;
+  temperature: number;
   isDay: number;
   weatherCode: number;
-  windSpeed10m: number;
+  windSpeed: number;
 }
 
 export const parseSignageOfficeHoursJSON = (
