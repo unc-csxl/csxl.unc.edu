@@ -39,6 +39,7 @@ import {
   NewOfficeHoursRecurrencePattern
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
+import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
 
 /** Enum for days of the week */
 export enum Weekday {
@@ -92,7 +93,8 @@ export class MyCoursesService {
   /** Constructor */
   constructor(
     protected http: HttpClient,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected gearService: NagivationAdminGearService
   ) {
     this.getTermOverviews();
   }
