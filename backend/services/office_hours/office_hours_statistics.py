@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, aliased
 from sqlalchemy import func, select, and_, func
 
+from backend.models.office_hours.ticket_statistics import OfficeHoursTicketStatistics
 from backend.models.office_hours.ticket_type import TicketType
 
 from ...models.office_hours.ticket_state import TicketState
@@ -43,13 +44,16 @@ class OfficeHoursStatisticsService:
         self._session = session
         self._office_hours_svc = _office_hours_svc
 
-    def get_number_tickets(self, user: User, site_id: int) -> int:
+    def get_statistics(
+        self, user: User, site_id: int, filters: dict = None
+    ) -> OfficeHoursTicketStatistics:
         """
-        Retrieve the total number of tickets created for a course site.
+        Retrieve various statistics for a course site.
         """
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
+        # Total tickets
         total_tickets_statement = (
             select(func.count())
             .select_from(OfficeHoursTicketEntity)
@@ -58,15 +62,8 @@ class OfficeHoursStatisticsService:
             .where(CourseSiteEntity.id == site_id)
         )
         total_tickets = self._session.execute(total_tickets_statement).scalar()
-        return total_tickets
 
-    def get_week_number_tickets(self, user: User, site_id: int) -> int:
-        """
-        Retrieve the total number of tickets, for the current week, created for a course site.
-        """
-        # Check permissions
-        self._office_hours_svc._check_site_admin_permissions(user, site_id)
-
+        # Total tickets per week
         today = datetime.today()
         start_of_week = today - timedelta(days=today.weekday())
         week_tickets_statement = (
@@ -78,15 +75,8 @@ class OfficeHoursStatisticsService:
             .where(OfficeHoursTicketEntity.created_at >= start_of_week)
         )
         week_tickets = self._session.execute(week_tickets_statement).scalar()
-        return week_tickets
 
-    def get_average_wait(self, user: User, site_id: int) -> int:
-        """
-        Retrieve the average wait time and average duration of tickets for a course site.
-        """
-        # Check permissions
-        self._office_hours_svc._check_site_admin_permissions(user, site_id)
-
+        # Avg wait time
         avg_wait_time_statement = (
             select(
                 func.avg(
@@ -105,15 +95,8 @@ class OfficeHoursStatisticsService:
         )
         avg_wait_time = self._session.execute(avg_wait_time_statement).scalar()
         avg_wait_time_minutes = avg_wait_time / 60 if avg_wait_time else 0
-        return avg_wait_time_minutes
 
-    def get_average_duration(self, user: User, site_id: int) -> int:
-        """
-        Retrieve the average wait time and average duration of tickets for a course site.
-        """
-        # Check permissions
-        self._office_hours_svc._check_site_admin_permissions(user, site_id)
-
+        # Avg duration
         avg_duration_statement = (
             select(
                 func.avg(
@@ -132,35 +115,8 @@ class OfficeHoursStatisticsService:
         )
         avg_duration = self._session.execute(avg_duration_statement).scalar()
         avg_duration_minutes = avg_duration / 60 if avg_duration else 0
-        return avg_duration_minutes
 
-    def total_assignment_help(self, user: User, site_id: int) -> int:
-        """
-        Retrieve the total number of 'Assignment Help' tickets for a course site.
-        """
-        # Check permissions
-        self._office_hours_svc._check_site_admin_permissions(user, site_id)
-
-        assignment_help_statement = (
-            select(func.count())
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
-            .where(OfficeHoursTicketEntity.type == TicketType.ASSIGNMENT_HELP)
-        )
-        total_assignment_help = self._session.execute(
-            assignment_help_statement
-        ).scalar()
-        return total_assignment_help
-
-    def total_conceptual_help(self, user: User, site_id: int) -> int:
-        """
-        Retrieve the total number of 'Conceptual Help' tickets for a course site.
-        """
-        # Check permissions
-        self._office_hours_svc._check_site_admin_permissions(user, site_id)
-
+        # Total conceptual
         conceptual_help_statement = (
             select(func.count())
             .select_from(OfficeHoursTicketEntity)
@@ -172,7 +128,28 @@ class OfficeHoursStatisticsService:
         total_conceptual_help = self._session.execute(
             conceptual_help_statement
         ).scalar()
-        return total_conceptual_help
+
+        # Total assignment
+        assignment_help_statement = (
+            select(func.count())
+            .select_from(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(CourseSiteEntity)
+            .where(CourseSiteEntity.id == site_id)
+            .where(OfficeHoursTicketEntity.type == TicketType.ASSIGNMENT_HELP)
+        )
+        total_assignment_help = self._session.execute(
+            assignment_help_statement
+        ).scalar()
+
+        return OfficeHoursTicketStatistics(
+            total_tickets=total_tickets,
+            total_tickets_weekly=week_tickets,
+            average_wait_time=avg_wait_time_minutes,
+            average_duration=avg_duration_minutes,
+            total_conceptual=total_conceptual_help,
+            total_assignment=total_assignment_help,
+        )
 
     def get_paginated_tickets(
         self, user: User, site_id: int, pagination_params: TicketPaginationParams

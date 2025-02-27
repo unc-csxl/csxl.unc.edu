@@ -19,9 +19,9 @@ class OfficeHoursTicketStatistics(BaseModel):
     of the `OfficeHoursTicket` database in the PostgreSQL database.
     """
 
+    total_tickets: int
+    total_tickets_weekly: int
     average_wait_time: int
     average_duration: int
     total_conceptual: int
     total_assignment: int
-    total_tickets: int
-    total_tickets_weekly: int
