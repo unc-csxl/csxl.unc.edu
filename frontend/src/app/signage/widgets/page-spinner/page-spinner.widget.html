@@ -1,0 +1,6 @@
+<div class="container">
+    @if(this.timeLeft >= 0) {
+        <mat-spinner [diameter]="42" [value]="100 - (timeLeft/(time() * 10) * 100)" mode="determinate" class="spinner"></mat-spinner>
+        <mat-icon class="icon">arrow_forward</mat-icon>
+    }
+</div>
