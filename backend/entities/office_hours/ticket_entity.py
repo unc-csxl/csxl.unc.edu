@@ -8,6 +8,7 @@ from ...models.office_hours.ticket_state import TicketState
 from ...models.office_hours.ticket_type import TicketType
 from ...models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
+from ...models.academics.my_courses import OfficeHourTicketOverview
 from .user_created_tickets_table import user_created_tickets_table
 
 
@@ -137,6 +138,18 @@ class OfficeHoursTicketEntity(EntityBase):
             caller_notes=self.caller_notes,
             office_hours_id=self.office_hours_id,
             caller_id=self.caller_id,
+        )
+
+    def to_overview_model(self) -> OfficeHourTicketOverview:
+        return OfficeHourTicketOverview(
+            id=self.id,
+            created_at=self.created_at,
+            called_at=self.called_at,
+            state=self.state.to_string(),
+            type=self.type.to_string(),
+            description=self.description,
+            creators=[creator.user.to_public_model() for creator in self.creators],
+            caller=(self.caller.user.to_public_model() if self.caller else None),
         )
 
     def to_details_model(self) -> OfficeHoursTicketDetails:
