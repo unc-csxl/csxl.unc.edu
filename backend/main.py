@@ -19,6 +19,7 @@ from .api import (
     room,
     application,
     article,
+    websocket,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import section_member, term, course, section, my_courses, hiring
@@ -100,6 +101,7 @@ feature_apis = [
     hiring,
     admin_facts,
     article,
+    websocket,
 ]
 
 for feature_api in feature_apis:
@@ -107,6 +109,9 @@ for feature_api in feature_apis:
 
 # Static file mount used for serving Angular front-end in production, as well as static assets
 app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
+
+# Register WebSocket middleware
+app.mount("/", websocket.WebSocketMiddleware)
 
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions

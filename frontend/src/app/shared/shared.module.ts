@@ -43,6 +43,8 @@ import {
 import { MarkdownDirective } from './directives/markdown.directive';
 import { EventRegistrationCardWidget } from './event-registration-card/event-registration-card.widget';
 import { AboutPaneWidget } from './about-pane/about-pane.widget';
+import { MatFilterChipComponent } from './mat/filter-chip/filter-chip.component';
+import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,9 @@ import { AboutPaneWidget } from './about-pane/about-pane.widget';
     OperatingHoursCapitalizationPipe,
     MarkdownDirective,
     EventRegistrationCardWidget,
-    AboutPaneWidget
+    AboutPaneWidget,
+    MatFilterChipComponent,
+    MatFilterChipDialog
   ],
   imports: [
     CommonModule,
@@ -96,7 +100,8 @@ import { AboutPaneWidget } from './about-pane/about-pane.widget';
     CoworkingHoursCard,
     MarkdownDirective,
     EventRegistrationCardWidget,
-    AboutPaneWidget
+    AboutPaneWidget,
+    MatFilterChipComponent
   ],
   providers: [GroupEventsPipe]
 })

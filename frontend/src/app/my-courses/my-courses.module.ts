@@ -51,6 +51,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { DeleteRecurringEventDialog } from './dialogs/delete-recurring-event/delete-recurring-event.dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { StatisticsComponent } from './course/statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +67,7 @@ import { MatRadioModule } from '@angular/material/radio';
     OfficeHoursGetHelpComponent,
     OfficeHoursEditorComponent,
     SettingsComponent,
+    StatisticsComponent,
     CourseCardWidget,
     OfficeHourEventCardWidget,
     CalledTicketCardWidget,
@@ -97,7 +100,8 @@ import { MatRadioModule } from '@angular/material/radio';
     MatListModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatRadioModule
+    MatRadioModule,
+    MatCheckbox
   ],
   providers: [MatDatepickerModule]
 })

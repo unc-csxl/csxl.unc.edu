@@ -30,7 +30,8 @@ export const officeHoursResolver: ResolveFn<OfficeHours | undefined> = (
       end_time: new Date(),
       course_site_id: +route.paramMap.get('course_site_id')!,
       room_id: '',
-      recurrence_pattern_id: null
+      recurrence_pattern_id: null,
+      recurrence_pattern: null
     };
   }
 

@@ -21,6 +21,7 @@ import {
 } from '../my-courses.model';
 import { map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-course',
@@ -38,6 +39,11 @@ export class CourseComponent {
           label: 'Office Hours',
           path: `/course/${this.route.snapshot.params['course_site_id']}/office-hours`,
           icon: 'person_raised_hand'
+        },
+        {
+          label: 'Statistics',
+          path: `/course/${this.route.snapshot.params['course_site_id']}/statistics`,
+          icon: 'analytics'
         },
         {
           label: 'Roster',
@@ -69,7 +75,8 @@ export class CourseComponent {
   constructor(
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService,
-    protected http: HttpClient
+    protected http: HttpClient,
+    protected gearService: NagivationAdminGearService
   ) {
     let id = +this.route.snapshot.params['course_site_id'];
     this.http
@@ -81,6 +88,13 @@ export class CourseComponent {
             ?.role == 'Instructor';
 
         this.isInstructor.set(isInstructor);
+
+        if (isInstructor) {
+          this.gearService.showAdminGear(
+            'Course Settings',
+            `/course/${id}/settings`
+          );
+        }
       });
   }
 }

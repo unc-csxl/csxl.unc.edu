@@ -39,6 +39,7 @@ import {
   NewOfficeHoursRecurrencePattern
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
+import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
 
 /** Enum for days of the week */
 export enum Weekday {
@@ -92,7 +93,8 @@ export class MyCoursesService {
   /** Constructor */
   constructor(
     protected http: HttpClient,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected gearService: NagivationAdminGearService
   ) {
     this.getTermOverviews();
   }
@@ -334,6 +336,29 @@ export class MyCoursesService {
     return this.http
       .put<OfficeHoursJson>(`/api/office-hours/${siteId}`, officeHours)
       .pipe(map(parseOfficeHoursJson));
+  }
+
+  /**
+   * Update recurring office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to update.
+   * @param recurrencePattern: NewOfficeHoursRecurrencePattern
+   * @returns {Observable<OfficeHours>}
+   */
+  updateRecurringOfficeHours(
+    siteId: number,
+    officeHours: OfficeHours,
+    recurrencePattern: NewOfficeHoursRecurrencePattern
+  ): Observable<OfficeHours[]> {
+    return this.http
+      .put<
+        OfficeHoursJson[]
+      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrencePattern })
+      .pipe(
+        map((officeHoursJSON) => {
+          return officeHoursJSON.map(parseOfficeHoursJson);
+        })
+      );
   }
 
   /**
