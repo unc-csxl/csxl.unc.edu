@@ -51,21 +51,21 @@
         </mat-chip-row>
 
         @if (events()[shownEvent].organizers.length > 0) {
-        <mat-divider class="vertical-divider" [vertical]="true" />
-        }
+          <mat-divider class="vertical-divider" [vertical]="true" />
 
-        <!-- Organizer Chips -->
-        @for (organizer of events()[shownEvent].organizers; track organizer.id) {
-        <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
-          @if (organizer.github_avatar && organizer.github_avatar !== '') {
-          <img
-            class="profile-icon"
-            matChipAvatar
-            [src]="organizer.github_avatar" />
+          <!-- Organizer Chips -->
+          @for (organizer of events()[shownEvent].organizers; track organizer.id) {
+          <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
+            @if (organizer.github_avatar && organizer.github_avatar !== '') {
+            <img
+              class="profile-icon"
+              matChipAvatar
+              [src]="organizer.github_avatar" />
+            }
+
+            {{ organizer.first_name }} {{ organizer.last_name }}
+          </mat-chip-row> 
           }
-
-          {{ organizer.first_name }} {{ organizer.last_name }}
-        </mat-chip-row>
         }
       </mat-chip-set>
       <p class="description headline-small">
