@@ -7,7 +7,7 @@
 <mat-dialog-content class="dialog surface-container-high">
       <mat-selection-list #list (selectionChange)="onSelectionChange(list.selectedOptions.selected)">
         @for(item of searchResults(); track item) {
-            <mat-list-option togglePosition="before" [value]="item">
+            <mat-list-option togglePosition="before" [value]="item" [selected]="((selectedItems$ | async) ?? []).includes(item)">
                 {{ item.displayText }}
             </mat-list-option>
         }
