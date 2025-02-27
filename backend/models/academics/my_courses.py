@@ -94,10 +94,12 @@ class OfficeHourTicketOverview(BaseModel):
 
 
 class OfficeHourStatisticsOverview(BaseModel):
-    # add more
-    average_minutes: int
-    total_tickets_called: int
-    history: list[OfficeHourTicketOverview]
+    average_wait_time: int
+    average_duration: int
+    total_conceptual: int
+    total_assignment: int
+    total_tickets: int
+    total_tickets_weekly: int
 
 
 class OfficeHourQueueOverview(BaseModel):
