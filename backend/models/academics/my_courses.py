@@ -94,8 +94,8 @@ class OfficeHourTicketOverview(BaseModel):
 
 
 class OfficeHourStatisticsOverview(BaseModel):
-    average_wait_time: int
-    average_duration: int
+    average_wait_time: float
+    average_duration: float
     total_conceptual: int
     total_assignment: int
     total_tickets: int
