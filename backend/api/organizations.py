@@ -11,6 +11,8 @@ from ..models.organization import Organization
 from ..models.organization_membership import (
     OrganizationMembership,
     OrganizationMembershipRegistration,
+    OrganizationPermissionLevel,
+    OrganizationMembershipStatus,
 )
 from ..models.organization_details import OrganizationDetails
 from ..api.authentication import registered_user
@@ -173,7 +175,8 @@ def add_membership(
                         "user_id": 0,
                         "organization_id": 0,
                         "title": "Member",
-                        "is_admin": False,
+                        "permission_level": OrganizationPermissionLevel.MEMBER,
+                        "status": OrganizationMembershipStatus.ACTIVE,
                         "term_id": "25S",
                     },
                 },
@@ -249,7 +252,8 @@ def update_membership(
                         "user_id": 0,
                         "organization_id": 0,
                         "title": "Member",
-                        "is_admin": False,
+                        "permission_level": OrganizationPermissionLevel.MEMBER,
+                        "status": OrganizationMembershipStatus.ACTIVE,
                         "term_id": "25S",
                     },
                 },

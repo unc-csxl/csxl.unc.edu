@@ -1,12 +1,14 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Organization Members."""
 
-from sqlalchemy import Integer, Boolean, String, ForeignKey
+from sqlalchemy import Integer, Boolean, String, ForeignKey, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
 from ..models.organization_membership import (
     OrganizationMembership,
     OrganizationMembershipRegistration,
+    OrganizationPermissionLevel,
+    OrganizationMembershipStatus,
 )
 
 
@@ -31,8 +33,16 @@ class OrganizationMembershipEntity(EntityBase):
     # Membership title, default value of "Member"
     title: Mapped[str] = mapped_column(String, default="Member")
 
-    # Flag enabling organization administrative privileges
-    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Level of administrative privileges in organization
+    permission_level: Mapped["OrganizationPermissionLevel"] = mapped_column(
+        SQLAlchemyEnum(OrganizationPermissionLevel),
+        default=OrganizationPermissionLevel.MEMBER,
+    )
+
+    # Membership status
+    status: Mapped["OrganizationMembershipStatus"] = mapped_column(
+        SQLAlchemyEnum(OrganizationMembershipStatus)
+    )
 
     # Membership term, default value of the current academic term
     # NOTE: This defines a one-to-many relationship between the term and organization membership tables.
@@ -50,7 +60,8 @@ class OrganizationMembershipEntity(EntityBase):
                 user_id=model.user.id,
                 organization_id=model.organization_id,
                 title=model.title,
-                is_admin=model.is_admin,
+                permission_level=model.permission_level,
+                status=model.status,
                 term_id=model.term.id,
             )
         else:
@@ -59,7 +70,8 @@ class OrganizationMembershipEntity(EntityBase):
                 user_id=model.user_id,
                 organization_id=model.organization_id,
                 title=model.title,
-                is_admin=model.is_admin,
+                permission_level=model.permission_level,
+                status=model.status,
                 term_id=model.term_id,
             )
 
@@ -72,6 +84,7 @@ class OrganizationMembershipEntity(EntityBase):
             organization_name=self.organization.name,
             organization_slug=self.organization.slug,
             title=self.title,
-            is_admin=self.is_admin,
+            permission_level=self.permission_level,
+            status=self.status,
             term=self.term.to_model(),
         )

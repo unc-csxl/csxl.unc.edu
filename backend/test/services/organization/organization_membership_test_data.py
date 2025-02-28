@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from ....models.organization_membership import (
     OrganizationMembership,
     OrganizationMembershipRegistration,
+    OrganizationPermissionLevel,
+    OrganizationMembershipStatus,
 )
 from ....entities.organization_membership_entity import OrganizationMembershipEntity
 from ....models.public_user import PublicUser
@@ -47,7 +49,8 @@ member_1 = OrganizationMembershipRegistration(
     user_id=root.id,
     organization_id=cads.id,
     title="President",
-    is_admin=True,
+    permission_level=OrganizationPermissionLevel.ADMIN,
+    status=OrganizationMembershipStatus.ACTIVE,
     term_id=term_data.current_term.id,
 )
 
@@ -56,7 +59,17 @@ member_2 = OrganizationMembershipRegistration(
     user_id=ambassador.id,
     organization_id=cads.id,
     title="Ambassador",
-    is_admin=False,
+    permission_level=OrganizationPermissionLevel.MEMBER,
+    status=OrganizationMembershipStatus.ACTIVE,
+    term_id=term_data.current_term.id,
+)
+
+member_to_add = OrganizationMembershipRegistration(
+    user_id=user.id,
+    organization_id=cads.id,
+    title="Non-default title",
+    permission_level=OrganizationPermissionLevel.ADMIN,
+    status=OrganizationMembershipStatus.ACTIVE,
     term_id=term_data.current_term.id,
 )
 
@@ -71,7 +84,8 @@ edit_member_2 = OrganizationMembershipRegistration(
     user_id=ambassador.id,
     organization_id=cads.id,
     title="Treasurer",
-    is_admin=True,
+    permission_level=OrganizationPermissionLevel.ADMIN,
+    status=OrganizationMembershipStatus.ACTIVE,
     term_id=term_data.current_term.id,
 )
 
@@ -82,7 +96,8 @@ bad_membership = OrganizationMembership(
     organization_name=cads.name,
     organization_slug=cads.slug,
     title="Treasurer",
-    is_admin=True,
+    permission_level=OrganizationPermissionLevel.ADMIN,
+    status=OrganizationMembershipStatus.ACTIVE,
     term=term_data.current_term,
 )
 

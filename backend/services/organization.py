@@ -7,13 +7,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..database import db_session
-from ..models import User, Organization
+from ..models import User
+from ..models.organization import Organization, OrganizationJoinType
 from ..models.organization_details import OrganizationDetails
 from ..models.organization_membership import (
     OrganizationMembership,
     OrganizationMembershipRegistration,
+    OrganizationPermissionLevel,
+    OrganizationMembershipStatus,
 )
-from ..models.organization_join_type import OrganizationJoinType
 from ..entities.organization_entity import OrganizationEntity
 from ..entities.organization_membership_entity import OrganizationMembershipEntity
 from ..entities.user_entity import UserEntity
@@ -168,6 +170,7 @@ class OrganizationService:
         obj.heel_life = organization.heel_life
         obj.public = organization.public
         obj.join_type = organization.join_type
+        obj.application_url = organization.application_url
 
         # Save changes
         self._session.commit()
@@ -254,20 +257,22 @@ class OrganizationService:
         ).one_or_none()
 
         # Flag denoting if subject is an organization or CSXL admin
-        subject_is_admin = (
-            subject_user_membership is not None and subject_user_membership.is_admin
+        subject_has_permission = (
+            subject_user_membership is not None
+            and subject_user_membership.permission_level
+            == OrganizationPermissionLevel.ADMIN
         ) or self._permission.check(
             subject, "organization.update", f"organization/{slug}"
         )
 
         if organization.join_type.name == OrganizationJoinType.CLOSED.name:
             # Raise exception if organization isn't allowing new memberships
-            if not subject_is_admin:
+            if not subject_has_permission:
                 raise Exception(
                     f"Organization with slug {slug} is not currently open to new memberships"
                 )
 
-        if not subject_is_admin and subject.id != user.id:
+        if not (subject_has_permission or subject.id == user.id):
             raise OrganizationPermissionException(
                 f"Not authorized to create a membership for another user in organization: {slug}"
             )
@@ -295,12 +300,19 @@ class OrganizationService:
         organization_membership_entity.organization_id = organization.id
 
         # Set default membership values if subject is lacking admin permissions
-        if not subject_is_admin:
-            organization_membership_entity.is_admin = False
+        if not subject_has_permission:
+            organization_membership_entity.permission_level = (
+                OrganizationPermissionLevel.MEMBER
+            )
+            organization_membership_entity.title = "Member"
             if organization.join_type.name == OrganizationJoinType.APPLY.name:
-                organization_membership_entity.title = "Membership pending"
+                organization_membership_entity.status = (
+                    OrganizationMembershipStatus.PENDING
+                )
             else:
-                organization_membership_entity.title = "Member"
+                organization_membership_entity.status = (
+                    OrganizationMembershipStatus.ACTIVE
+                )
 
         # Add new object to table and commit changes
         self._session.add(organization_membership_entity)
@@ -382,7 +394,8 @@ class OrganizationService:
             subject, subject_membership, entity
         ):
             entity.title = membership.title
-            entity.is_admin = membership.is_admin
+            entity.permission_level = membership.permission_level
+            entity.status = membership.status
             entity.term_id = membership.term_id
         else:
             raise OrganizationPermissionException(
@@ -461,7 +474,8 @@ class OrganizationService:
         """
 
         subject_is_organization_admin = (
-            subject_membership is not None and subject_membership.is_admin
+            subject_membership is not None
+            and subject_membership.permission_level == OrganizationPermissionLevel.ADMIN
         )
         subject_is_csxl_admin = self._permission.check(
             subject, "organization.update", "organization/*"
@@ -469,5 +483,6 @@ class OrganizationService:
 
         # CSXL admin > organization admin > general user
         return subject_is_csxl_admin or (
-            not membership.is_admin and subject_is_organization_admin
+            not membership.permission_level == OrganizationPermissionLevel.ADMIN
+            and subject_is_organization_admin
         )

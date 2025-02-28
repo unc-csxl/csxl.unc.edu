@@ -2,8 +2,7 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from ....models.organization import Organization
-from ....models.organization_join_type import OrganizationJoinType
+from ....models.organization import Organization, OrganizationJoinType
 from ....entities.organization_entity import OrganizationEntity
 
 from ..reset_table_id_seq import reset_table_id_seq
