@@ -12,6 +12,7 @@ from ...services.office_hours.office_hours_statistics import (
 from ...models.user import User
 
 from ...models.academics.my_courses import (
+    OfficeHourStatisticsOverview,
     TermOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
@@ -181,6 +182,25 @@ def update_course_site(
         CourseSite: Course updated
     """
     return course_site_svc.update(subject, course_site)
+
+
+@api.get("/{course_site_id}/statistics/ticket-statistics", tags=["My Courses"])
+def get_ticket_statistics(
+    course_site_id: int,
+    student_ids: str = "",
+    staff_ids: str = "",
+    range_start: str = "",
+    range_end: str = "",
+    subject: User = Depends(registered_user),
+    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
+) -> OfficeHourStatisticsOverview:
+    """
+    Gets the ticket statistics for a given class.
+
+    Returns:
+        OfficeHoursTicketStatistics
+    """
+    return oh_statistics_svc.get_statistics(subject, course_site_id)
 
 
 @api.get("/{course_site_id}/statistics/ticket-history", tags=["My Courses"])

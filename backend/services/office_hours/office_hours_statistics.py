@@ -118,22 +118,20 @@ class OfficeHoursStatisticsService:
 
         return statement, length_statement
 
-    def get_statistics(self, user: User, site_id: int) -> OfficeHoursTicketStatistics:
+    def get_statistics(
+        self, user: User, site_id: int, pagination_params: TicketPaginationParams
+    ) -> OfficeHoursTicketStatistics:
         """
         Retrieve various statistics for a course site.
         """
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
-        # Total tickets
-        total_tickets_statement = (
-            select(func.count())
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
+        statement, length_statement = self.create_ticket_query(
+            site_id, pagination_params
         )
-        total_tickets = self._session.execute(total_tickets_statement).scalar()
+
+        total_tickets = self._session.execute(length_statement).scalar()
 
         # Total tickets per week
         today = datetime.today()

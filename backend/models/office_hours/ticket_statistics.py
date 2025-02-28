@@ -1,9 +1,4 @@
 from pydantic import BaseModel
-from datetime import datetime
-
-from .ticket_type import TicketType
-from .ticket_state import TicketState
-from .ticket_details import OfficeHoursTicketDetails
 
 __authors__ = ["Mira Mohan", "Lauren Ferlito"]
 
