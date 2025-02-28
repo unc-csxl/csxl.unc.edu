@@ -127,22 +127,19 @@ class OfficeHoursStatisticsService:
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
+        # Call create_ticket_query to get the statements
         statement, length_statement = self.create_ticket_query(
             site_id, pagination_params
         )
 
+        # Total tickets
         total_tickets = self._session.execute(length_statement).scalar()
 
         # Total tickets per week
         today = datetime.today()
         start_of_week = today - timedelta(days=today.weekday())
-        week_tickets_statement = (
-            select(func.count())
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
-            .where(OfficeHoursTicketEntity.created_at >= start_of_week)
+        week_tickets_statement = statement.where(
+            OfficeHoursTicketEntity.created_at >= start_of_week
         )
         week_tickets = self._session.execute(week_tickets_statement).scalar()
 
@@ -187,26 +184,16 @@ class OfficeHoursStatisticsService:
         avg_duration_minutes = avg_duration / 60 if avg_duration else 0
 
         # Total conceptual
-        conceptual_help_statement = (
-            select(func.count())
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
-            .where(OfficeHoursTicketEntity.type == TicketType.CONCEPTUAL_HELP)
+        conceptual_help_statement = statement.where(
+            OfficeHoursTicketEntity.type == TicketType.CONCEPTUAL_HELP
         )
         total_conceptual_help = self._session.execute(
             conceptual_help_statement
         ).scalar()
 
         # Total assignment
-        assignment_help_statement = (
-            select(func.count())
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
-            .where(OfficeHoursTicketEntity.type == TicketType.ASSIGNMENT_HELP)
+        assignment_help_statement = statement.where(
+            OfficeHoursTicketEntity.type == TicketType.ASSIGNMENT_HELP
         )
         total_assignment_help = self._session.execute(
             assignment_help_statement
