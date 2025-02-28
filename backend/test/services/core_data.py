@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from .organization import organization_test_data, organization_membership_test_data
 from .event import event_test_data
 from . import permission_data, role_data, user_data
+from .academics import term_data
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -19,6 +20,7 @@ __license__ = "MIT"
 def setup_insert_data_fixture(session: Session):
     role_data.insert_fake_data(session)
     user_data.insert_fake_data(session)
+    term_data.insert_fake_data(session)
     permission_data.insert_fake_data(session)
     organization_test_data.insert_fake_data(session)
     organization_membership_test_data.insert_fake_data(session)

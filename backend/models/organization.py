@@ -1,10 +1,17 @@
 from pydantic import BaseModel
-from .user import User
-from .organization_join_type import OrganizationJoinType
+from enum import Enum
 
 __authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
+
+
+class OrganizationJoinType(Enum):
+    """Enum to represent the join type of an organization."""
+
+    OPEN = "Open"
+    APPLY = "Apply"
+    CLOSED = "Closed"
 
 
 class Organization(BaseModel):
@@ -30,3 +37,4 @@ class Organization(BaseModel):
     heel_life: str
     public: bool
     join_type: OrganizationJoinType
+    application_url: str | None = None
