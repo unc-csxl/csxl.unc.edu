@@ -36,7 +36,9 @@ import {
   parseOfficeHoursJson,
   NewOfficeHours,
   UpdatedCourseSite,
-  NewOfficeHoursRecurrencePattern
+  NewOfficeHoursRecurrencePattern,
+  parseOfficeHourStatisticsFilterDataJson,
+  OfficeHourStatisticsFilterDataJson
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
 import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
@@ -379,5 +381,18 @@ export class MyCoursesService {
     return this.http.delete(
       `/api/office-hours/${siteId}/${officeHoursId}/recurring`
     );
+  }
+
+  /**
+   * Loads the filter options for the office hours statistics page.
+   * @param courseSiteId: ID of the course site to get the filter options for
+   * @returns {Observable<>}
+   */
+  getOfficeHoursStatisticsFilterOptions(courseSiteId: number) {
+    return this.http
+      .get<OfficeHourStatisticsFilterDataJson>(
+        `/api/my-courses/${courseSiteId}/statistics/filter-data`
+      )
+      .pipe(map(parseOfficeHourStatisticsFilterDataJson));
   }
 }

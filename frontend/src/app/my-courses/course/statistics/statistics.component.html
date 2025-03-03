@@ -9,11 +9,18 @@
           <mat-card-subtitle>Happening Now</mat-card-subtitle>
           <div class="ticket-history-toolbar-options">
             <mat-filter-chip
-              placeholder="Filter"
+              placeholder="Students"
               leadingIcon="person_raised_hand"
               dropdownAlignment="right"
-              [searchableItems]="[{displayText: 'Item 1', item: 'item1'}, {displayText: 'Item 2', item: 'item2'}, {displayText: 'Item 3', item: 'item3'}, {displayText: 'Item 4', item: 'item4'}, {displayText: 'Item 5', item: 'item5'}]"
-              [filterLogic]="filterLogic"
+              [searchableItems]="studentFilterOptions()"
+              [filterLogic]="profileFilterLogic"
+            />
+            <mat-filter-chip
+              placeholder="Staff"
+              leadingIcon="person_raised_hand"
+              dropdownAlignment="right"
+              [searchableItems]="staffFilterOptions()"
+              [filterLogic]="profileFilterLogic"
             />
           </div>
         </div>

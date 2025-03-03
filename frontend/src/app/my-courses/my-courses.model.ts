@@ -304,6 +304,20 @@ export interface OfficeHours {
   recurrence_pattern: OfficeHoursRecurrencePattern | null;
 }
 
+export interface OfficeHourStatisticsFilterDataJson {
+  students: PublicProfile[];
+  staff: PublicProfile[];
+  term_start: string;
+  term_end: string;
+}
+
+export interface OfficeHourStatisticsFilterData {
+  students: PublicProfile[];
+  staff: PublicProfile[];
+  term_start: string;
+  term_end: string;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.
@@ -397,5 +411,14 @@ export const parseOfficeHoursJson = (
   return Object.assign({}, responseModel, {
     start_time: new Date(responseModel.start_time),
     end_time: new Date(responseModel.end_time)
+  });
+};
+
+export const parseOfficeHourStatisticsFilterDataJson = (
+  responseModel: OfficeHourStatisticsFilterDataJson
+): OfficeHourStatisticsFilterData => {
+  return Object.assign({}, responseModel, {
+    term_start: new Date(responseModel.term_start),
+    term_end: new Date(responseModel.term_end)
   });
 };
