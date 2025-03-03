@@ -27,7 +27,7 @@
               [filterLogic]="profileFilterLogic"
             />
             <!-- Date picker -->
-            <div>
+            <div class="date-picker-container">
               <mat-chip disableRipple>
                 <div class="mat-filter-chip-content">
                     <div class="mat-filter-chip-main-content" (click)="datePicker.open()" >
@@ -43,8 +43,11 @@
                     } -->
                 </div>
             </mat-chip>
-            <input matInput [class.cdk-visually-hidden]="true" class="date-input" [matDatepicker]="datePicker">
-            <mat-datepicker #datePicker></mat-datepicker>       
+            <mat-date-range-input [rangePicker]="datePicker"  [class.cdk-visually-hidden]="true" class="date-input">
+              <input matStartDate [class.cdk-visually-hidden]="true">
+              <input matEndDate [class.cdk-visually-hidden]="true">
+            </mat-date-range-input>
+            <mat-date-range-picker #datePicker></mat-date-range-picker>       
           </div>
             <!-- Download button -->
             <button

@@ -66,3 +66,8 @@
     margin-top: auto;
     margin-bottom: -10px;
 }
+
+.date-picker-container {
+    padding-top: -12px;
+    height: 32px;
+}
