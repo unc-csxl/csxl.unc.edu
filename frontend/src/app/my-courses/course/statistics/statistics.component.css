@@ -71,3 +71,7 @@
     padding-top: -12px;
     height: 32px;
 }
+
+.mat-filter-chip-divider {
+    height: 30px;
+}

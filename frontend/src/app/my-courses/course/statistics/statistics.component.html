@@ -7,56 +7,71 @@
       <mat-card-content>
         <div class="ticket-history-toolbar">
           <mat-card-subtitle>Happening Now</mat-card-subtitle>
-          <div class="ticket-history-toolbar-options">
-            <!-- Students chip -->
-            <mat-filter-chip
-              placeholder="Students"
-              leadingIcon="person_raised_hand"
-              dropdownAlignment="right"
-              [searchableItems]="studentFilterOptions()"
-              [(selectedItems)]="selectedStudentFilterOptions"
-              [filterLogic]="profileFilterLogic"
-            />
-            <!-- Staff chip -->
-            <mat-filter-chip
-              placeholder="Staff"
-              leadingIcon="group"
-              dropdownAlignment="right"
-              [searchableItems]="staffFilterOptions()"
-              [(selectedItems)]="selectedStaffFilterOptions"
-              [filterLogic]="profileFilterLogic"
-            />
-            <!-- Date picker -->
-            <div class="date-picker-container">
-              <mat-chip disableRipple>
-                <div class="mat-filter-chip-content">
-                    <div class="mat-filter-chip-main-content" (click)="datePicker.open()" >
-                        <mat-icon matChipTrailingIcon class="font-primary mat-filter-chip-leading-icon">date_range</mat-icon>
-                        Date Range
-                        <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
-                    </div>
-                    <!-- @if(selectedItems().length > 0) {
-                        <div class="mat-filter-chip-accessory" (click)="clearSelections()">
-                            <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
-                            <mat-icon matChipTrailingIcon>close</mat-icon>    
-                        </div>
-                    } -->
-                </div>
-            </mat-chip>
-            <mat-date-range-input [rangePicker]="datePicker"  [class.cdk-visually-hidden]="true" class="date-input">
-              <input matStartDate [class.cdk-visually-hidden]="true">
-              <input matEndDate [class.cdk-visually-hidden]="true">
-            </mat-date-range-input>
-            <mat-date-range-picker #datePicker></mat-date-range-picker>       
-          </div>
-            <!-- Download button -->
-            <button
-              mat-flat-button
-              class="secondary-button"
-            >
-              <mat-icon id="download-button-icon">download</mat-icon>
-            </button>
-          </div>
+          @if(filterOptions()) {
+            <div class="ticket-history-toolbar-options">
+              <!-- Students chip -->
+              <mat-filter-chip
+                placeholder="Students"
+                leadingIcon="person_raised_hand"
+                dropdownAlignment="right"
+                [searchableItems]="studentFilterOptions()"
+                [(selectedItems)]="selectedStudentFilterOptions"
+                [filterLogic]="profileFilterLogic"
+              />
+              <!-- Staff chip -->
+              <mat-filter-chip
+                placeholder="Staff"
+                leadingIcon="group"
+                dropdownAlignment="right"
+                [searchableItems]="staffFilterOptions()"
+                [(selectedItems)]="selectedStaffFilterOptions"
+                [filterLogic]="profileFilterLogic"
+              />
+              <!-- Date picker -->
+              <div class="date-picker-container">
+                <mat-chip disableRipple [highlighted]="selectedStartDate() || selectedEndDate()" >
+                  <div class="mat-filter-chip-content">
+                      <div class="mat-filter-chip-main-content" (click)="datePicker.open()" >
+                          <mat-icon matChipTrailingIcon class="font-primary mat-filter-chip-leading-icon">date_range</mat-icon>
+                          @if(selectedStartDate() || selectedEndDate()) {
+                              <span>{{ selectedStartDate() | date: 'shortDate' }} </span>
+                              @if(selectedEndDate()) {
+                                  <span> - {{ selectedEndDate() | date: 'shortDate' }}</span>
+                              }
+                          } @else {
+                              <span>Date</span>
+                          }
+                          <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
+                      </div>
+                      @if(selectedStartDate()|| selectedEndDate()) {
+                          <div class="mat-filter-chip-accessory" (click)="clearFilters()">
+                              <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
+                              <mat-icon matChipTrailingIcon>close</mat-icon>    
+                          </div>
+                      }
+                  </div>
+              </mat-chip>
+              <mat-date-range-input 
+                class="date-input"
+                [rangePicker]="datePicker" 
+                [class.cdk-visually-hidden]="true"
+                [min]="filterOptions()?.term_start"
+                [max]="filterOptions()?.term_end"
+              >
+                <input matStartDate [class.cdk-visually-hidden]="true" [(ngModel)]="selectedStartDate">
+                <input matEndDate [class.cdk-visually-hidden]="true" [(ngModel)]="selectedEndDate">
+              </mat-date-range-input>
+              <mat-date-range-picker #datePicker></mat-date-range-picker>       
+            </div>
+              <!-- Download button -->
+              <button
+                mat-flat-button
+                class="secondary-button"
+              >
+                <mat-icon id="download-button-icon">download</mat-icon>
+              </button>
+            </div>
+          }
         </div>
       </mat-card-content>
     </mat-pane> 

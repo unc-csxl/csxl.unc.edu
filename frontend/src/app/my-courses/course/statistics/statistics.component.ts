@@ -10,6 +10,7 @@
 import {
   Component,
   computed,
+  model,
   signal,
   Signal,
   WritableSignal
@@ -76,6 +77,10 @@ export class StatisticsComponent {
     return item.displayText.toLowerCase().includes(query.toLowerCase());
   };
 
+  /** Filtering options for the date. */
+  selectedStartDate = model<Date | undefined>(undefined);
+  selectedEndDate = model<Date | undefined>(undefined);
+
   constructor(
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService
@@ -88,5 +93,12 @@ export class StatisticsComponent {
       .subscribe((data) => {
         this.filterOptions.set(data);
       });
+  }
+
+  clearFilters() {
+    this.selectedStudentFilterOptions = [];
+    this.selectedStaffFilterOptions = [];
+    this.selectedStartDate.set(undefined);
+    this.selectedEndDate.set(undefined);
   }
 }
