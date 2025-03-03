@@ -6,11 +6,11 @@
     background-color: transparent;
 }
 
-.mat-filter-chip-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+
+.mat-mdc-dialog-surface {
+    border-radius: 8px !important;
 }
+
 
 .mat-filter-chip-main-content {
     display: flex;

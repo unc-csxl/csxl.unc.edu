@@ -66,9 +66,3 @@
     margin-top: auto;
     margin-bottom: -10px;
 }
-
-.date-picker-chip-container {
-    display: flex;
-    flex-direction: column;
-
-}
