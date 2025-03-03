@@ -164,13 +164,15 @@ class OfficeHoursStatisticsService:
             .options(joinedload(SectionMemberEntity.section))
             .options(joinedload(SectionMemberEntity.user))
         )
-        staff = students = self._session.scalars(staff_query).unique().all()
+        staff = self._session.scalars(staff_query).unique().all()
 
         term = self._session.get(CourseSiteEntity, site_id).term
 
         return StatisticsFilterData(
-            students=[student.to_model() for student in students],
-            staff=[member.to_model() for member in staff],
+            students=list(
+                set([student.user.to_public_model() for student in students])
+            ),
+            staff=list(set([member.user.to_public_model() for member in staff])),
             term_start=term.start,
             term_end=term.end,
         )

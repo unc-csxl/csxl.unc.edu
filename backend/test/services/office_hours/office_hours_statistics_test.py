@@ -153,3 +153,27 @@ def test_get_paginated_tickets_multiple_filters(
     )
 
     assert len(ticket_history.items) == 1
+
+
+def test_get_statistics_filter_options(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that instructors can get the filter options for the statistics page."""
+    filter_data = oh_statistics_svc.get_filter_data(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+    )
+
+    assert len(filter_data.students) == 2
+    assert len(filter_data.staff) == 3
+
+
+def test_get_statistics_filter_options_no_permissions(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that students are not able to get the filter options for the statistics page."""
+    with pytest.raises(CoursePermissionException):
+        oh_statistics_svc.get_filter_data(
+            user_data.student,
+            office_hours_data.comp_110_site.id,
+        )
