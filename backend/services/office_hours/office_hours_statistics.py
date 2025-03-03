@@ -1,8 +1,14 @@
 from datetime import datetime
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.orm import Session, aliased
+from sqlalchemy.orm import Session, aliased, joinedload
 from sqlalchemy import func, select, and_, func
+
+from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.user_entity import UserEntity
+from backend.models.roster_role import RosterRole
+
+from ...models.office_hours.office_hours_statistics import StatisticsFilterData
 
 from ...models.office_hours.ticket_state import TicketState
 
@@ -129,4 +135,42 @@ class OfficeHoursStatisticsService:
             items=[entity.to_overview_model() for entity in entities],
             length=length,
             params=pagination_params,
+        )
+
+    def get_filter_data(self, user: User, site_id: int) -> StatisticsFilterData:
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        student_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .join(UserEntity)
+            .where(SectionEntity.course_site_id == site_id)
+            .where(SectionMemberEntity.member_role == RosterRole.STUDENT)
+            .options(joinedload(SectionMemberEntity.section))
+            .options(joinedload(SectionMemberEntity.user))
+        )
+        students = self._session.scalars(student_query).unique().all()
+
+        staff_query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .join(UserEntity)
+            .where(SectionEntity.course_site_id == site_id)
+            .where(
+                SectionMemberEntity.member_role.in_(
+                    [RosterRole.UTA, RosterRole.GTA, RosterRole.INSTRUCTOR]
+                )
+            )
+            .options(joinedload(SectionMemberEntity.section))
+            .options(joinedload(SectionMemberEntity.user))
+        )
+        staff = students = self._session.scalars(staff_query).unique().all()
+
+        term = self._session.get(CourseSiteEntity, site_id).term
+
+        return StatisticsFilterData(
+            students=[student.to_model() for student in students],
+            staff=[member.to_model() for member in staff],
+            term_start=term.start,
+            term_end=term.end,
         )

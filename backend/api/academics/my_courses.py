@@ -214,3 +214,12 @@ def get_paginated_ticket_history(
     return oh_statistics_svc.get_paginated_tickets(
         subject, course_site_id, ticket_pagination_params
     )
+
+
+@api.get("/{course_site_id}/statistics/filter-data", tags=["My Courses"])
+def get_statistics_filter_data(
+    course_site_id: int,
+    subject: User = Depends(),
+    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
+):
+    return oh_statistics_svc.get_filter_data(subject, course_site_id)
