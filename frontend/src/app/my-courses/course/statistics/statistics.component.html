@@ -8,20 +8,52 @@
         <div class="ticket-history-toolbar">
           <mat-card-subtitle>Happening Now</mat-card-subtitle>
           <div class="ticket-history-toolbar-options">
+            <!-- Students chip -->
             <mat-filter-chip
               placeholder="Students"
               leadingIcon="person_raised_hand"
               dropdownAlignment="right"
               [searchableItems]="studentFilterOptions()"
+              [(selectedItems)]="selectedStudentFilterOptions"
               [filterLogic]="profileFilterLogic"
             />
+            <!-- Staff chip -->
             <mat-filter-chip
               placeholder="Staff"
-              leadingIcon="person_raised_hand"
+              leadingIcon="group"
               dropdownAlignment="right"
               [searchableItems]="staffFilterOptions()"
+              [(selectedItems)]="selectedStaffFilterOptions"
               [filterLogic]="profileFilterLogic"
             />
+            <!-- Date picker -->
+            <div>
+              <mat-chip disableRipple>
+                <div class="mat-filter-chip-content">
+                    <div class="mat-filter-chip-main-content" (click)="datePicker.open()" >
+                        <mat-icon matChipTrailingIcon class="font-primary mat-filter-chip-leading-icon">date_range</mat-icon>
+                        Date Range
+                        <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
+                    </div>
+                    <!-- @if(selectedItems().length > 0) {
+                        <div class="mat-filter-chip-accessory" (click)="clearSelections()">
+                            <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
+                            <mat-icon matChipTrailingIcon>close</mat-icon>    
+                        </div>
+                    } -->
+                </div>
+            </mat-chip>
+            <input matInput [class.cdk-visually-hidden]="true" class="date-input" [matDatepicker]="datePicker">
+            <mat-datepicker #datePicker></mat-datepicker>       
+
+          </div>
+            <!-- Download button -->
+            <button
+              mat-flat-button
+              class="secondary-button"
+            >
+              <mat-icon id="download-button-icon">download</mat-icon>
+            </button>
           </div>
         </div>
       </mat-card-content>

@@ -23,11 +23,52 @@
     width: 100%;
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
 }
 
 .ticket-history-toolbar-options {
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 16px;
+}
+
+#download-button-icon {
+    margin-right: -8px;
+}
+
+.mat-filter-chip-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mat-filter-chip-main-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mat-filter-chip-leading-icon {
+    padding-left: 0 !important;
+}
+
+.mat-filter-chip-accessory {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.date-input {
+    position: relative;
+    float:bottom;
+    margin-top: auto;
+    margin-bottom: -10px;
+}
+
+.date-picker-chip-container {
+    display: flex;
+    flex-direction: column;
+
 }

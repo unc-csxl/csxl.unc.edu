@@ -53,6 +53,8 @@ export class StatisticsComponent {
         })) ?? []
       );
     });
+  selectedStudentFilterOptions: MatFilterChipSearchableItem<PublicProfile>[] =
+    [];
 
   /** Staff filter options for the filter dropdown based on the filter options. */
   staffFilterOptions: Signal<MatFilterChipSearchableItem<PublicProfile>[]> =
@@ -64,6 +66,7 @@ export class StatisticsComponent {
         })) ?? []
       );
     });
+  selectedStaffFilterOptions: MatFilterChipSearchableItem<PublicProfile>[] = [];
 
   /** Logic for filtering profiles. */
   profileFilterLogic: MatFilterChipFilterLogic<PublicProfile> = (
