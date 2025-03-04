@@ -144,7 +144,11 @@ class OfficeHoursStatisticsService:
 
         # Total tickets per week
         today = datetime.today()
-        start_of_week = today - timedelta(days=7)
+        start_of_week = (
+            today - timedelta(days=today.weekday() + 1)
+            if today.weekday() != 6
+            else today
+        )
 
         week_tickets_statement = (
             select(func.count())
@@ -168,11 +172,10 @@ class OfficeHoursStatisticsService:
             .where(ticket_alias.called_at.isnot(None))
         )
 
-        avg_wait_time = 0
         result = self._session.execute(avg_wait_time_statement).scalar()
         avg_wait_time = float(result) if result is not None else 0
 
-        avg_wait_time_minutes = avg_wait_time // 60 if avg_wait_time else 0
+        avg_wait_time_minutes = round(avg_wait_time / 60, 1) if avg_wait_time else 0
 
         # Avg duration
         avg_duration_statement = (
@@ -190,7 +193,7 @@ class OfficeHoursStatisticsService:
         result = self._session.execute(avg_duration_statement).scalar()
         avg_duration = float(result) if result is not None else 0
 
-        avg_duration_minutes = avg_duration // 60 if avg_duration else 0
+        avg_duration_minutes = round(avg_duration / 60, 1) if avg_duration else 0
 
         # Total conceptual
         conceptual_help_statement = (

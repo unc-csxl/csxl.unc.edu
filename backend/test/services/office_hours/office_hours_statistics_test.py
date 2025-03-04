@@ -120,12 +120,8 @@ def test_get_statistics_student_filter(oh_statistics_svc: OfficeHoursStatisticsS
 
     assert statistics.total_tickets == 1
     assert statistics.total_tickets_weekly == 1
-    assert (
-        statistics.average_wait_time == 1
-    )  # only works if you do int division. 1.0000000166666667 otherwise
-    assert (
-        statistics.average_duration == 1
-    )  # only works if you do int division. 1.0000000166666667 otherwise
+    assert statistics.average_wait_time == 1.0
+    assert statistics.average_duration == 1.0
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
 

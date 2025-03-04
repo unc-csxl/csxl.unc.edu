@@ -185,7 +185,7 @@ def update_course_site(
     return course_site_svc.update(subject, course_site)
 
 
-@api.get("/{course_site_id}/statistics/ticket-statistics", tags=["My Courses"])
+@api.get("/{course_site_id}/statistics", tags=["My Courses"])
 def get_ticket_statistics(
     course_site_id: int,
     student_ids: str = "",
@@ -197,7 +197,7 @@ def get_ticket_statistics(
 ) -> OfficeHoursTicketStatistics:
     """
     Gets the ticket statistics for a given class.
-    
+
     Returns:
         OfficeHoursTicketStatistics
     """
@@ -209,7 +209,9 @@ def get_ticket_statistics(
         range_end=range_end,
     )
 
-    return oh_statistics_svc.get_statistics(subject, course_site_id, ticket_statistics_params)
+    return oh_statistics_svc.get_statistics(
+        subject, course_site_id, ticket_statistics_params
+    )
 
 
 @api.get("/{course_site_id}/statistics/ticket-history", tags=["My Courses"])
