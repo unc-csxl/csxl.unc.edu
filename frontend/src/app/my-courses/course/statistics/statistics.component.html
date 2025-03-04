@@ -6,7 +6,7 @@
       </mat-card-header>
       <mat-card-content>
         <div class="ticket-history-toolbar">
-          <mat-card-subtitle>Happening Now</mat-card-subtitle>
+          <mat-card-subtitle>Summary</mat-card-subtitle>
           @if(filterOptions()) {
             <div class="ticket-history-toolbar-options">
               <!-- Students chip -->
@@ -72,6 +72,12 @@
               </button>
             </div>
           }
+        </div>
+        <!-- Ticket data cards -->
+        <div class="statistics-row">
+          <office-hours-statistics-card title="Total Tickets" [leftStatistic]="'---'" leftStatisticLabel="this week" [rightStatistic]="'---'" rightStatisticLabel="overall" />
+          <office-hours-statistics-card title="Queue Statistics" [leftStatistic]="'---'" leftStatisticLabel="average wait" [rightStatistic]="'---'" rightStatisticLabel="average duration" />
+          <office-hours-statistics-card title="Concerns" [leftStatistic]="'---'" leftStatisticLabel="concerning" />
         </div>
       </mat-card-content>
     </mat-pane> 

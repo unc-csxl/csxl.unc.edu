@@ -53,6 +53,7 @@ import { DeleteRecurringEventDialog } from './dialogs/delete-recurring-event/del
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { StatisticsComponent } from './course/statistics/statistics.component';
+import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statistics-card/office-hours-statistics-card.widget';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { StatisticsComponent } from './course/statistics/statistics.component';
     QueuedTicketCardWidget,
     CreateCourseSiteDialog,
     ImportRosterDialog,
-    DeleteRecurringEventDialog
+    DeleteRecurringEventDialog,
+    OfficeHoursStatisticsCardWidget
   ],
   imports: [
     CommonModule,
