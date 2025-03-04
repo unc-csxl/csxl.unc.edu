@@ -6,12 +6,6 @@
     background-color: transparent;
 }
 
-
-.mat-mdc-dialog-surface {
-    border-radius: 8px !important;
-}
-
-
 .mat-filter-chip-main-content {
     display: flex;
     flex-direction: row;
@@ -30,4 +24,9 @@
 
 .mat-filter-chip-leading-icon {
     padding-left: 0 !important;
+}
+
+.mat-filter-chip-content {
+    display: flex;
+    flex-direction: row;
 }
