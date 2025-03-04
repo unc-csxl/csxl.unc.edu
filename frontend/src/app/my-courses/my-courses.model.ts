@@ -329,6 +329,14 @@ export interface OfficeHourStatisticsPaginationParams extends URLSearchParams {
   range_end: string;
 }
 
+export const DefaultOfficeHourStatisticsPaginationParams = {
+  page: 0,
+  page_size: 25,
+  student_ids: '',
+  staff_ids: '',
+  range_start: '',
+  range_end: ''
+} as OfficeHourStatisticsPaginationParams;
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.

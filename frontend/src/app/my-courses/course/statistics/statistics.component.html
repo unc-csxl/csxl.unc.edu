@@ -80,15 +80,37 @@
           <office-hours-statistics-card title="Concerns" [leftStatistic]="'---'" leftStatisticLabel="concerning" />
         </div>
         <!-- Ticket history -->
-        <mat-card class="ticket-history-card" appearance="outlined">
-          <mat-card-content>
-            <!-- [length]="eventRegistrationsPage()!.length"
-            [pageSize]="eventRegistrationsPage()!.params.page_size"
-            [pageIndex]="eventRegistrationsPage()!.params.page"
-            (page)="handlePageEvent($event)" -->
-            <mat-paginator />
-          </mat-card-content>
-        </mat-card>
+         @if(paginatedTickets()) {
+          <mat-card class="ticket-history-card" appearance="outlined">
+            <mat-card-content>
+              <div class="ticket-list">
+                @for(item of paginatedTickets()?.items ?? []; track item.id) {
+                  <div class="ticket-row">
+                    <div class="ticket-row-leading-content">
+                      <p>{{ item.called_at | date: 'EEE, M/d' }}<br>{{ item.called_at | date: 'shortTime' }}</p>
+                      <p><span class="semibold">{{ item.type }}</span><br>Short summary...</p>
+                      <div class="ticket-row-user-chips">
+                        <user-chip-list [users]="item.creators"></user-chip-list>
+                        <user-chip-list [users]="item.caller? [item.caller] : []"></user-chip-list>
+                      </div>
+                    </div>
+                    <div class="ticket-row-trailing-content">
+                      <button mat-icon-button>
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+              <mat-paginator
+                [length]="paginatedTickets()!.length"
+                [pageSize]="paginatedTickets()!.params.page_size"
+                [pageIndex]="paginatedTickets()!.params.page"
+                (page)="handlePageEvent($event)"
+              />
+            </mat-card-content>
+          </mat-card>
+         }
       </mat-card-content>
     </mat-pane> 
 </div>

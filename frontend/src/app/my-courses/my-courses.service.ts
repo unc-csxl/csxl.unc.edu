@@ -43,6 +43,7 @@ import {
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
 import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
+import { Paginated } from '../pagination';
 
 /** Enum for days of the week */
 export enum Weekday {
@@ -408,6 +409,8 @@ export class MyCoursesService {
       '?' +
       query.toString();
 
-    return this.http.get<OfficeHourTicketOverview[]>(route);
+    return this.http.get<
+      Paginated<OfficeHourTicketOverview, OfficeHourStatisticsPaginationParams>
+    >(route);
   }
 }

@@ -23,11 +23,14 @@ import {
 import { MyCoursesService } from '../../my-courses.service';
 import { ActivatedRoute } from '@angular/router';
 import {
+  DefaultOfficeHourStatisticsPaginationParams,
   OfficeHourStatisticsFilterData,
   OfficeHourStatisticsPaginationParams,
   OfficeHourTicketOverview
 } from '../../my-courses.model';
 import { PublicProfile } from 'src/app/profile/profile.service';
+import { Paginated } from 'src/app/pagination';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-statistics',
@@ -90,25 +93,46 @@ export class StatisticsComponent {
   selectedEndDate = model<Date | undefined>(undefined);
 
   /** Store the filtered ticket data. */
-  tickets: WritableSignal<OfficeHourTicketOverview[]> = signal([]);
+  paginatedTickets: WritableSignal<
+    | Paginated<OfficeHourTicketOverview, OfficeHourStatisticsPaginationParams>
+    | undefined
+  > = signal(undefined);
+  previousPaginationParams: OfficeHourStatisticsPaginationParams =
+    DefaultOfficeHourStatisticsPaginationParams;
+
+  /** Helper function that helps to load the paginated data. */
+  loadPaginatedData(params: OfficeHourStatisticsPaginationParams) {
+    this.myCoursesService
+      .getPaginatedOfficeHoursStatisticsTicketHistory(this.courseSiteId, params)
+      .subscribe((data) => {
+        this.paginatedTickets.set(data);
+        this.previousPaginationParams = data.params;
+      });
+  }
 
   /** Effect that handles filter changes and updates the data accordingly. */
   filterEffect = effect(() => {
-    return this.myCoursesService
-      .getPaginatedOfficeHoursStatisticsTicketHistory(this.courseSiteId, {
-        student_ids: JSON.stringify(
-          this.selectedStudentFilterOptions().map((student) => student.item.id)
-        ),
-        staff_ids: JSON.stringify(
-          this.selectedStaffFilterOptions().map((staff) => staff.item.id)
-        ),
-        range_start: this.selectedStartDate()?.toISOString() ?? '',
-        range_end: this.selectedEndDate()?.toISOString() ?? ''
-      } as OfficeHourStatisticsPaginationParams)
-      .subscribe((data) => {
-        this.tickets.set(data);
-      });
+    this.loadPaginatedData({
+      page: 0,
+      page_size: 25,
+      student_ids: JSON.stringify(
+        this.selectedStudentFilterOptions().map((student) => student.item.id)
+      ),
+      staff_ids: JSON.stringify(
+        this.selectedStaffFilterOptions().map((staff) => staff.item.id)
+      ),
+      range_start: this.selectedStartDate()?.toISOString() ?? '',
+      range_end: this.selectedEndDate()?.toISOString() ?? ''
+    } as OfficeHourStatisticsPaginationParams);
   });
+
+  /** Handler for the Material pagination stepper. */
+  handlePageEvent(e: PageEvent) {
+    let paginationParams = this.previousPaginationParams;
+    paginationParams.page = e.pageIndex;
+    paginationParams.page_size = e.pageSize;
+    this.loadPaginatedData(paginationParams);
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -124,6 +148,7 @@ export class StatisticsComponent {
       });
   }
 
+  /** Clear all currently-set filters when needed */
   clearFilters() {
     this.selectedStudentFilterOptions.set([]);
     this.selectedStaffFilterOptions.set([]);
