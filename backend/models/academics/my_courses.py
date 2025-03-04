@@ -93,15 +93,6 @@ class OfficeHourTicketOverview(BaseModel):
     caller: PublicUser | None
 
 
-class OfficeHourStatisticsOverview(BaseModel):
-    total_tickets: int
-    total_tickets_weekly: int
-    average_wait_time: int
-    average_duration: int
-    total_conceptual: int
-    total_assignment: int
-
-
 class OfficeHourQueueOverview(BaseModel):
     id: int
     type: str

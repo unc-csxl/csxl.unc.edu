@@ -4,6 +4,8 @@ APIs relative to a specific user."""
 
 import json
 from fastapi import APIRouter, Depends
+
+from backend.models.office_hours.ticket_statistics import OfficeHoursTicketStatistics
 from ..authentication import registered_user
 from ...services.academics.course_site import CourseSiteService
 from ...services.office_hours.office_hours_statistics import (
@@ -193,7 +195,7 @@ def get_ticket_statistics(
     range_end: str = "",
     subject: User = Depends(registered_user),
     oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
-) -> OfficeHourStatisticsOverview:
+) -> OfficeHoursTicketStatistics:
     """
     Gets the ticket statistics for a given class.
 

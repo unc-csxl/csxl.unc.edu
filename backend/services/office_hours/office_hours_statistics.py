@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import Select, select
 from sqlalchemy.orm import Session, aliased
 from sqlalchemy import func, select, and_, func
 
@@ -46,7 +46,7 @@ class OfficeHoursStatisticsService:
 
     def create_ticket_query(
         self, site_id: int, pagination_params: TicketPaginationParams
-    ) -> tuple:
+    ) -> tuple[Select, Select]:
         """
         Create the ticket query based on the filters selected.
         """
@@ -154,10 +154,7 @@ class OfficeHoursStatisticsService:
                     )
                 )
             )
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
+            .select_from(statement.subquery())
             .where(OfficeHoursTicketEntity.called_at.isnot(None))
         )
         avg_wait_time = self._session.execute(avg_wait_time_statement).scalar()
@@ -174,10 +171,7 @@ class OfficeHoursStatisticsService:
                     )
                 )
             )
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
+            .select_from(statement.subquery())
             .where(OfficeHoursTicketEntity.closed_at.isnot(None))
         )
         avg_duration = self._session.execute(avg_duration_statement).scalar()
