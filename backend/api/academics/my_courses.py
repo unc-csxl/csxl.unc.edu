@@ -14,7 +14,6 @@ from ...services.office_hours.office_hours_statistics import (
 from ...models.user import User
 
 from ...models.academics.my_courses import (
-    OfficeHourStatisticsOverview,
     TermOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
@@ -198,11 +197,19 @@ def get_ticket_statistics(
 ) -> OfficeHoursTicketStatistics:
     """
     Gets the ticket statistics for a given class.
-
+    
     Returns:
         OfficeHoursTicketStatistics
     """
-    return oh_statistics_svc.get_statistics(subject, course_site_id)
+
+    ticket_statistics_params = TicketPaginationParams(
+        student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
+        staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
+        range_start=range_start,
+        range_end=range_end,
+    )
+
+    return oh_statistics_svc.get_statistics(subject, course_site_id, ticket_statistics_params)
 
 
 @api.get("/{course_site_id}/statistics/ticket-history", tags=["My Courses"])

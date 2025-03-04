@@ -50,6 +50,29 @@ def test_get_paginated_tickets(oh_statistics_svc: OfficeHoursStatisticsService):
     assert len(ticket_history.items) == 1
 
 
+def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
+    """Ensures that users with the appropriate site permissions can get statistics."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[],
+        staff_ids=[],
+    )
+
+    statistics = oh_statistics_svc.get_statistics(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert statistics.total_tickets == 1
+    assert statistics.total_tickets_weekly == 1
+    assert statistics.average_wait_time == 1 # only works if you do int division. 1.0000000166666667 otherwise
+    assert statistics.average_duration == 1 # only works if you do int division. 1.0000000166666667 otherwise
+    assert statistics.total_conceptual == 1
+    assert statistics.total_assignment == 0
+
+
 def test_get_paginated_tickets_student_filter(
     oh_statistics_svc: OfficeHoursStatisticsService,
 ):
@@ -71,6 +94,29 @@ def test_get_paginated_tickets_student_filter(
         len(ticket_history.items) == 1
         and ticket_history.items[0].creators[0].id == user_data.student.id
     )
+
+def test_get_statistics_student_filter(oh_statistics_svc: OfficeHoursStatisticsService):
+    """Ensures that filtering by student returns corrcet statistcs."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[user_data.student.id], # filter by Stewie, only person with a CLOSED ticket right now
+        # student_ids=[0], # filter by NOT Stewie, so should expect no ticket stats - THIS WORKS 
+        staff_ids=[],
+    )
+
+    statistics = oh_statistics_svc.get_statistics(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert statistics.total_tickets == 1
+    assert statistics.total_tickets_weekly == 1
+    assert statistics.average_wait_time == 1 # only works if you do int division. 1.0000000166666667 otherwise
+    assert statistics.average_duration == 1 # only works if you do int division. 1.0000000166666667 otherwise
+    assert statistics.total_conceptual == 1
+    assert statistics.total_assignment == 0
 
 
 def test_get_paginated_tickets_staff_filter(
@@ -95,6 +141,28 @@ def test_get_paginated_tickets_staff_filter(
         and ticket_history.items[0].caller.id == user_data.instructor.id
     )
 
+def test_get_statistics_staff_filter(oh_statistics_svc: OfficeHoursStatisticsService):
+    """Ensures that filtering by student returns corrcet statistcs."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[],
+        staff_ids=[user_data.instructor.id], # filter by Ina, only person with a CLOSED ticket right now
+        # staff_ids=[0], # filter by NOT Ina, so should expect no ticket stats - THIS WORKS
+    )
+
+    statistics = oh_statistics_svc.get_statistics(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert statistics.total_tickets == 1
+    assert statistics.total_tickets_weekly == 1
+    assert statistics.average_wait_time == 1 
+    assert statistics.average_duration == 1 
+    assert statistics.total_conceptual == 1
+    assert statistics.total_assignment == 0
 
 def test_get_paginated_tickets_date_filter(
     oh_statistics_svc: OfficeHoursStatisticsService,
@@ -115,11 +183,35 @@ def test_get_paginated_tickets_date_filter(
 
     assert len(ticket_history.items) == 1
 
+def test_get_statistics_date_filter(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that filtering by date returns correct statistics."""
+    ticket_params = TicketPaginationParams(
+        range_start=date_maker(-2, 0, 0).isoformat(), # two years ago
+        range_end=date_maker(1, 0, 0).isoformat(), # one year from now - THIS SHOULD WORK
+        # range_end=date_maker(-1, 0, 0).isoformat(), # one ago - THIS SHOULD FAIL
+        student_ids=[],
+        staff_ids=[],
+    )
+
+    statistics = oh_statistics_svc.get_statistics(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert statistics.total_tickets == 1
+    assert statistics.total_tickets_weekly == 1
+    assert statistics.average_wait_time == 1 
+    assert statistics.average_duration == 1 
+    assert statistics.total_conceptual == 1
+    assert statistics.total_assignment == 0
 
 def test_get_paginated_tickets_unauthenticated(
     oh_statistics_svc: OfficeHoursStatisticsService,
 ):
-    """Ensures that filtering by date works correctly."""
+    """Ensures that filtering by date works correctly.""" 
     ticket_params = TicketPaginationParams(
         range_start="",
         range_end="",
@@ -134,6 +226,23 @@ def test_get_paginated_tickets_unauthenticated(
             ticket_params,
         )
 
+def test_get_statistics_unauthenticated(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that students cannot view statistics."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[],
+        staff_ids=[],
+    )
+
+    with pytest.raises(CoursePermissionException):
+        oh_statistics_svc.get_statistics(
+            user_data.student,
+            office_hours_data.comp_110_site.id,
+            ticket_params,
+        )
 
 def test_get_paginated_tickets_multiple_filters(
     oh_statistics_svc: OfficeHoursStatisticsService,
@@ -153,3 +262,28 @@ def test_get_paginated_tickets_multiple_filters(
     )
 
     assert len(ticket_history.items) == 1
+
+def test_get_paginated_tickets_multiple_filters(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that multiple filters can be applied at the same time."""
+    ticket_params = TicketPaginationParams(
+        range_start=date_maker(-2, 0, 0).isoformat(),
+        range_end=date_maker(1, 0, 0).isoformat(),
+        student_ids=[user_data.student.id],
+        # student_ids=[0], # filter by NOT Stewie, so should expect no ticket stats - THIS WORKS
+        staff_ids=[user_data.instructor.id],
+    )
+
+    statistics = oh_statistics_svc.get_statistics(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert statistics.total_tickets == 1
+    assert statistics.total_tickets_weekly == 1
+    assert statistics.average_wait_time == 1 
+    assert statistics.average_duration == 1 
+    assert statistics.total_conceptual == 1
+    assert statistics.total_assignment == 0

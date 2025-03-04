@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import string
 from fastapi import Depends
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session, aliased
@@ -131,17 +132,30 @@ class OfficeHoursStatisticsService:
         statement, length_statement = self.create_ticket_query(
             site_id, pagination_params
         )
+        # Create a subquery from statement
+        stmt_subquery = statement.subquery()
+
+        # Create an alias to reference the subquery's columns
+        ticket_alias = aliased(OfficeHoursTicketEntity, stmt_subquery)
+
+        print(statement)
 
         # Total tickets
-        total_tickets = self._session.execute(length_statement).scalar()
+        result = self._session.execute(length_statement).scalar()
+        total_tickets = float(result) if result is not None else 0
+        print(total_tickets)
 
         # Total tickets per week
         today = datetime.today()
-        start_of_week = today - timedelta(days=today.weekday())
-        week_tickets_statement = statement.where(
-            OfficeHoursTicketEntity.created_at >= start_of_week
+        start_of_week = today - timedelta(days=7)
+
+        week_tickets_statement = (
+            select(func.count())
+            .select_from(stmt_subquery)
+            .where(ticket_alias.created_at >= start_of_week)
         )
-        week_tickets = self._session.execute(week_tickets_statement).scalar()
+        result = self._session.execute(week_tickets_statement).scalar()
+        week_tickets = float(result) if result is not None else 0
 
         # Avg wait time
         avg_wait_time_statement = (
@@ -149,16 +163,19 @@ class OfficeHoursStatisticsService:
                 func.avg(
                     func.extract(
                         "epoch",
-                        OfficeHoursTicketEntity.called_at
-                        - OfficeHoursTicketEntity.created_at,
+                        ticket_alias.called_at - ticket_alias.created_at,
                     )
                 )
             )
-            .select_from(statement.subquery())
-            .where(OfficeHoursTicketEntity.called_at.isnot(None))
+            .select_from(stmt_subquery)
+            .where(ticket_alias.called_at.isnot(None))
         )
-        avg_wait_time = self._session.execute(avg_wait_time_statement).scalar()
-        avg_wait_time_minutes = avg_wait_time / 60 if avg_wait_time else 0
+
+        avg_wait_time = 0
+        result = self._session.execute(avg_wait_time_statement).scalar()
+        avg_wait_time = float(result) if result is not None else 0
+
+        avg_wait_time_minutes = avg_wait_time // 60 if avg_wait_time else 0
 
         # Avg duration
         avg_duration_statement = (
@@ -166,32 +183,35 @@ class OfficeHoursStatisticsService:
                 func.avg(
                     func.extract(
                         "epoch",
-                        OfficeHoursTicketEntity.closed_at
-                        - OfficeHoursTicketEntity.called_at,
+                        ticket_alias.closed_at - ticket_alias.called_at,
                     )
                 )
             )
-            .select_from(statement.subquery())
-            .where(OfficeHoursTicketEntity.closed_at.isnot(None))
+            .select_from(stmt_subquery)
+            .where(ticket_alias.closed_at.isnot(None))
         )
-        avg_duration = self._session.execute(avg_duration_statement).scalar()
-        avg_duration_minutes = avg_duration / 60 if avg_duration else 0
+        result = self._session.execute(avg_duration_statement).scalar()
+        avg_duration = float(result) if result is not None else 0
+
+        avg_duration_minutes = avg_duration // 60 if avg_duration else 0
 
         # Total conceptual
-        conceptual_help_statement = statement.where(
-            OfficeHoursTicketEntity.type == TicketType.CONCEPTUAL_HELP
+        conceptual_help_statement = (
+            select(func.count())
+            .select_from(stmt_subquery)
+            .where(ticket_alias.type == TicketType.CONCEPTUAL_HELP)
         )
-        total_conceptual_help = self._session.execute(
-            conceptual_help_statement
-        ).scalar()
+        result = self._session.execute(conceptual_help_statement).scalar()
+        total_conceptual_help = float(result) if result is not None else 0
 
         # Total assignment
-        assignment_help_statement = statement.where(
-            OfficeHoursTicketEntity.type == TicketType.ASSIGNMENT_HELP
+        assignment_help_statement = (
+            select(func.count())
+            .select_from(stmt_subquery)
+            .where(ticket_alias.type == TicketType.ASSIGNMENT_HELP)
         )
-        total_assignment_help = self._session.execute(
-            assignment_help_statement
-        ).scalar()
+        result = self._session.execute(assignment_help_statement).scalar()
+        total_assignment_help = float(result) if result is not None else 0
 
         return OfficeHoursTicketStatistics(
             total_tickets=total_tickets,
@@ -208,71 +228,9 @@ class OfficeHoursStatisticsService:
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
-        # Alias the section member entity so that we can join to this table
-        # multiple times. The `CreatorEntity` alias will be used for filtering
-        # based on the ticket creators, and the `CallerEntity` alias will
-        # be used for filtering staff members.
-        CreatorEntity = aliased(SectionMemberEntity)
-        CallerEntity = aliased(SectionMemberEntity)
-
-        statement = (
-            select(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
-            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+        statement, length_statement = self.create_ticket_query(
+            site_id, pagination_params
         )
-
-        length_statement = (
-            select(func.count())
-            .select_from(OfficeHoursTicketEntity)
-            .join(OfficeHoursEntity)
-            .join(CourseSiteEntity)
-            .where(CourseSiteEntity.id == site_id)
-            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
-        )
-
-        # Filter by Start/End Range
-        if pagination_params.range_start != "":
-            range_start = pagination_params.range_start
-            range_end = pagination_params.range_end
-            criteria = and_(
-                OfficeHoursTicketEntity.created_at
-                >= datetime.fromisoformat(range_start),
-                OfficeHoursTicketEntity.created_at <= datetime.fromisoformat(range_end),
-            )
-            statement = statement.where(criteria)
-            length_statement = length_statement.where(criteria)
-
-        # Filter by student who created ticket
-        if len(pagination_params.student_ids) != 0:
-            statement = (
-                statement.join(user_created_tickets_table)
-                .join(
-                    CreatorEntity,
-                    CreatorEntity.id == user_created_tickets_table.c.member_id,
-                )
-                .where(CreatorEntity.user_id.in_(pagination_params.student_ids))
-            )
-            length_statement = (
-                length_statement.join(user_created_tickets_table)
-                .join(
-                    CreatorEntity,
-                    CreatorEntity.id == user_created_tickets_table.c.member_id,
-                )
-                .where(CreatorEntity.user_id.in_(pagination_params.student_ids))
-            )
-
-        # Filter by staff member who called ticket
-        if len(pagination_params.staff_ids) != 0:
-            statement = statement.join(
-                CallerEntity,
-                CallerEntity.id == OfficeHoursTicketEntity.caller_id,
-            ).where(CallerEntity.user_id.in_(pagination_params.staff_ids))
-            length_statement = length_statement.join(
-                CallerEntity,
-                CallerEntity.id == OfficeHoursTicketEntity.caller_id,
-            ).where(CallerEntity.user_id.in_(pagination_params.staff_ids))
 
         # Calculate where to begin retrieving rows and how many to retrieve
         offset = pagination_params.page * pagination_params.page_size
