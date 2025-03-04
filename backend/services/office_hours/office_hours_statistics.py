@@ -78,7 +78,7 @@ class OfficeHoursStatisticsService:
         )
 
         # Filter by Start/End Range
-        if pagination_params.range_start != "":
+        if pagination_params.range_start != "" and pagination_params.range_end != "":
             range_start = pagination_params.range_start
             range_end = pagination_params.range_end
             criteria = and_(

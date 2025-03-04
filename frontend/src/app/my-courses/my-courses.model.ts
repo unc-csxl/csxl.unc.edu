@@ -318,6 +318,17 @@ export interface OfficeHourStatisticsFilterData {
   term_end: string;
 }
 
+/** Defines the general model for statistics pagination parameters expected by the backend. */
+export interface OfficeHourStatisticsPaginationParams extends URLSearchParams {
+  page: number;
+  page_size: number;
+  filter: string;
+  student_ids: string;
+  staff_ids: string;
+  range_start: string;
+  range_end: string;
+}
+
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.

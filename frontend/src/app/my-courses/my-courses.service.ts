@@ -38,7 +38,8 @@ import {
   UpdatedCourseSite,
   NewOfficeHoursRecurrencePattern,
   parseOfficeHourStatisticsFilterDataJson,
-  OfficeHourStatisticsFilterDataJson
+  OfficeHourStatisticsFilterDataJson,
+  OfficeHourStatisticsPaginationParams
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
 import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
@@ -394,5 +395,19 @@ export class MyCoursesService {
         `/api/my-courses/${courseSiteId}/statistics/filter-data`
       )
       .pipe(map(parseOfficeHourStatisticsFilterDataJson));
+  }
+
+  getPaginatedOfficeHoursStatisticsTicketHistory(
+    courseSiteId: number,
+    params: OfficeHourStatisticsPaginationParams
+  ) {
+    // Determines the query for the URL based on the new paramateres.
+    let query = new URLSearchParams(params);
+    let route =
+      `/api/my-courses/${courseSiteId}/statistics/ticket-history` +
+      '?' +
+      query.toString();
+
+    return this.http.get<OfficeHourTicketOverview[]>(route);
   }
 }

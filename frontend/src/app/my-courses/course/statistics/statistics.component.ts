@@ -10,6 +10,7 @@
 import {
   Component,
   computed,
+  effect,
   model,
   signal,
   Signal,
@@ -21,7 +22,11 @@ import {
 } from 'src/app/shared/mat/filter-chip/filter-chip.component';
 import { MyCoursesService } from '../../my-courses.service';
 import { ActivatedRoute } from '@angular/router';
-import { OfficeHourStatisticsFilterData } from '../../my-courses.model';
+import {
+  OfficeHourStatisticsFilterData,
+  OfficeHourStatisticsPaginationParams,
+  OfficeHourTicketOverview
+} from '../../my-courses.model';
 import { PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
@@ -54,8 +59,9 @@ export class StatisticsComponent {
         })) ?? []
       );
     });
-  selectedStudentFilterOptions: MatFilterChipSearchableItem<PublicProfile>[] =
-    [];
+  selectedStudentFilterOptions: WritableSignal<
+    MatFilterChipSearchableItem<PublicProfile>[]
+  > = signal([]);
 
   /** Staff filter options for the filter dropdown based on the filter options. */
   staffFilterOptions: Signal<MatFilterChipSearchableItem<PublicProfile>[]> =
@@ -67,7 +73,9 @@ export class StatisticsComponent {
         })) ?? []
       );
     });
-  selectedStaffFilterOptions: MatFilterChipSearchableItem<PublicProfile>[] = [];
+  selectedStaffFilterOptions: WritableSignal<
+    MatFilterChipSearchableItem<PublicProfile>[]
+  > = signal([]);
 
   /** Logic for filtering profiles. */
   profileFilterLogic: MatFilterChipFilterLogic<PublicProfile> = (
@@ -80,6 +88,27 @@ export class StatisticsComponent {
   /** Filtering options for the date. */
   selectedStartDate = model<Date | undefined>(undefined);
   selectedEndDate = model<Date | undefined>(undefined);
+
+  /** Store the filtered ticket data. */
+  tickets: WritableSignal<OfficeHourTicketOverview[]> = signal([]);
+
+  /** Effect that handles filter changes and updates the data accordingly. */
+  filterEffect = effect(() => {
+    return this.myCoursesService
+      .getPaginatedOfficeHoursStatisticsTicketHistory(this.courseSiteId, {
+        student_ids: JSON.stringify(
+          this.selectedStudentFilterOptions().map((student) => student.item.id)
+        ),
+        staff_ids: JSON.stringify(
+          this.selectedStaffFilterOptions().map((staff) => staff.item.id)
+        ),
+        range_start: this.selectedStartDate()?.toISOString() ?? '',
+        range_end: this.selectedEndDate()?.toISOString() ?? ''
+      } as OfficeHourStatisticsPaginationParams)
+      .subscribe((data) => {
+        this.tickets.set(data);
+      });
+  });
 
   constructor(
     private route: ActivatedRoute,
@@ -96,8 +125,8 @@ export class StatisticsComponent {
   }
 
   clearFilters() {
-    this.selectedStudentFilterOptions = [];
-    this.selectedStaffFilterOptions = [];
+    this.selectedStudentFilterOptions.set([]);
+    this.selectedStaffFilterOptions.set([]);
     this.selectedStartDate.set(undefined);
     this.selectedEndDate.set(undefined);
   }

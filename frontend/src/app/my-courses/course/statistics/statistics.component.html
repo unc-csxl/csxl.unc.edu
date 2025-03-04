@@ -6,7 +6,7 @@
       </mat-card-header>
       <mat-card-content>
         <div class="ticket-history-toolbar">
-          <mat-card-subtitle>Summary</mat-card-subtitle>
+          <mat-card-subtitle>Ticket History</mat-card-subtitle>
           @if(filterOptions()) {
             <div class="ticket-history-toolbar-options">
               <!-- Students chip -->
@@ -79,6 +79,16 @@
           <office-hours-statistics-card title="Queue Statistics" [leftStatistic]="'---'" leftStatisticLabel="average wait" [rightStatistic]="'---'" rightStatisticLabel="average duration" />
           <office-hours-statistics-card title="Concerns" [leftStatistic]="'---'" leftStatisticLabel="concerning" />
         </div>
+        <!-- Ticket history -->
+        <mat-card class="ticket-history-card" appearance="outlined">
+          <mat-card-content>
+            <!-- [length]="eventRegistrationsPage()!.length"
+            [pageSize]="eventRegistrationsPage()!.params.page_size"
+            [pageIndex]="eventRegistrationsPage()!.params.page"
+            (page)="handlePageEvent($event)" -->
+            <mat-paginator />
+          </mat-card-content>
+        </mat-card>
       </mat-card-content>
     </mat-pane> 
 </div>
