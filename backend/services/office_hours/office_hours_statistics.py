@@ -24,7 +24,7 @@ from ...models.academics.my_courses import OfficeHourTicketOverview
 from ...services.office_hours.office_hours import OfficeHoursService
 
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan"]
+__authors__ = ["Ajay Gandecha", "Jade Keegan", "Mira Mohan", "Lauren Ferlito"]
 __copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
@@ -138,12 +138,9 @@ class OfficeHoursStatisticsService:
         # Create an alias to reference the subquery's columns
         ticket_alias = aliased(OfficeHoursTicketEntity, stmt_subquery)
 
-        print(statement)
-
         # Total tickets
         result = self._session.execute(length_statement).scalar()
         total_tickets = float(result) if result is not None else 0
-        print(total_tickets)
 
         # Total tickets per week
         today = datetime.today()
