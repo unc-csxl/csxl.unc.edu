@@ -14,7 +14,7 @@ import {
   parseArticleOverviewJson
 } from '../welcome/welcome.model';
 
-export interface SignageOfficeHoursJSON {
+export interface SignageOfficeHoursJson {
   id: number;
   mode: string;
   course: string;
@@ -22,25 +22,25 @@ export interface SignageOfficeHoursJSON {
   queued: number;
 }
 
-export interface SignageAnnouncementJSON {
+export interface SignageAnnouncementJson {
   title: string;
 }
 
-export interface SignageProfileJSON {
+export interface SignageProfileJson {
   first_name: string;
   last_name: string;
   github_avatar: string;
 }
 
-export interface SlowSignageDataJSON {
+export interface SlowSignageDataJson {
   newest_news: ArticleOverviewJson[];
   events: EventOverviewJson[];
-  top_users: SignageProfileJSON[];
-  announcements: SignageAnnouncementJSON[];
+  top_users: SignageProfileJson[];
+  announcements: SignageAnnouncementJson[];
 }
 
-export interface FastSignageDataJSON {
-  active_office_hours: SignageOfficeHoursJSON[];
+export interface FastSignageDataJson {
+  active_office_hours: SignageOfficeHoursJson[];
   available_rooms: string[];
   seat_availability: SeatAvailabilityJSON[];
 }
@@ -92,8 +92,8 @@ export interface WeatherData {
   windSpeed: number;
 }
 
-export const parseSignageOfficeHoursJSON = (
-  json: SignageOfficeHoursJSON
+export const parseSignageOfficeHoursJson = (
+  json: SignageOfficeHoursJson
 ): SignageOfficeHours => {
   return {
     id: json.id,
@@ -103,8 +103,8 @@ export const parseSignageOfficeHoursJSON = (
   };
 };
 
-export const parseSignageProfileJSON = (
-  json: SignageProfileJSON
+export const parseSignageProfileJson = (
+  json: SignageProfileJson
 ): SignageProfile => {
   return {
     first_name: json.first_name,
@@ -113,29 +113,29 @@ export const parseSignageProfileJSON = (
   };
 };
 
-export const parseAvailableRoomJSON = (json: string): AvailabeRoom => {
+export const parseAvailableRoomJson = (json: string): AvailabeRoom => {
   return AvailabeRoom[json as keyof typeof AvailabeRoom];
 };
 
-export const parseSlowSignageDataJSON = (
-  json: SlowSignageDataJSON
+export const parseSlowSignageDataJson = (
+  json: SlowSignageDataJson
 ): SlowSignageData => {
   return {
     newest_news: json.newest_news.map(parseArticleOverviewJson),
     newest_events: json.events.map(parseEventOverviewJson),
-    top_users: json.top_users.map(parseSignageProfileJSON),
+    top_users: json.top_users.map(parseSignageProfileJson),
     announcements: json.announcements
   };
 };
 
-export const parseFastSignageDataJSON = (
-  json: FastSignageDataJSON
+export const parseFastSignageDataJson = (
+  json: FastSignageDataJson
 ): FastSignageData => {
   return {
     active_office_hours: json.active_office_hours.map(
-      parseSignageOfficeHoursJSON
+      parseSignageOfficeHoursJson
     ),
-    available_rooms: json.available_rooms.map(parseAvailableRoomJSON),
+    available_rooms: json.available_rooms.map(parseAvailableRoomJson),
     seat_availability: json.seat_availability.map(parseSeatAvailabilityJSON)
   };
 };

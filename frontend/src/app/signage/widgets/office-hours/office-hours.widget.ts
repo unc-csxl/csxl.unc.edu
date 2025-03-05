@@ -133,16 +133,12 @@ export class OfficeHoursWidget {
       return true;
     }
 
-    for (let i = 0; i < oh1.length; i++) {
-      if (
-        oh1[i].id !== oh2[i].id ||
-        oh1[i].course !== oh2[i].course ||
-        oh1[i].location !== oh2[i].location
-      ) {
-        return true;
-      }
-    }
-    return false;
+    return oh1.some(
+      (oh, i) =>
+        oh.id !== oh2[i].id ||
+        oh.course !== oh2[i].course ||
+        oh.location !== oh2[i].location
+    );
   }
 
   /**

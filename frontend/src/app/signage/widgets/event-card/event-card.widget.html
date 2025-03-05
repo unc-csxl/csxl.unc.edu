@@ -55,7 +55,7 @@
 
           <!-- Organizer Chips -->
           @for (organizer of events()[shownEvent].organizers; track organizer.id) {
-          <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
+          <mat-chip-row>
             @if (organizer.github_avatar && organizer.github_avatar !== '') {
             <img
               class="profile-icon"

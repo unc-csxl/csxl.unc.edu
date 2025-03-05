@@ -13,11 +13,11 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 import { map } from 'rxjs';
 import {
   FastSignageData,
-  FastSignageDataJSON,
+  FastSignageDataJson,
   SlowSignageData,
-  SlowSignageDataJSON,
-  parseFastSignageDataJSON,
-  parseSlowSignageDataJSON
+  SlowSignageDataJson,
+  parseFastSignageDataJson,
+  parseSlowSignageDataJson
 } from './signage.model';
 
 @Injectable({
@@ -45,28 +45,28 @@ export class SignageService {
   }
 
   /**
-   * Fetches the slow data from the backend, parses the JSON into the frontend model, and updates the signals
+   * Fetches the slow data from the backend, parses the Json into the frontend model, and updates the signals
    *
    * @return SlowData Subscription
    */
   getSlowData() {
     return this.http
-      .get<SlowSignageDataJSON>(`/api/signage/slow`)
-      .pipe(map(parseSlowSignageDataJSON))
+      .get<SlowSignageDataJson>(`/api/signage/slow`)
+      .pipe(map(parseSlowSignageDataJson))
       .subscribe((slowSignageData) => {
         this.slowDataSignal.set(slowSignageData);
       });
   }
 
   /**
-   * Fetches the fast data from the backend, parses JSON into frontend model, and updates fast data signal
+   * Fetches the fast data from the backend, parses Json into frontend model, and updates fast data signal
    *
    * @return FastData Subscription
    */
   getFastData() {
     return this.http
-      .get<FastSignageDataJSON>(`/api/signage/fast`)
-      .pipe(map(parseFastSignageDataJSON))
+      .get<FastSignageDataJson>(`/api/signage/fast`)
+      .pipe(map(parseFastSignageDataJson))
       .subscribe((fastSignageData) => {
         this.fastDataSignal.set(fastSignageData);
       });
