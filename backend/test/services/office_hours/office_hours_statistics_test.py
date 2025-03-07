@@ -1,6 +1,7 @@
 """Tests for the OfficeHoursStatisticsService."""
 
 import pytest
+from pytest import approx
 
 from ....services.exceptions import (
     CoursePermissionException,
@@ -68,11 +69,11 @@ def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
     assert statistics.total_tickets == 1
     assert statistics.total_tickets_weekly == 1
     assert (
-        statistics.average_wait_time == 1
-    )  # only works if you do int division. 1.0000000166666667 otherwise
+        statistics.average_wait_time == approx(1.0) # 1.0000000166666667
+    ) 
     assert (
-        statistics.average_duration == 1
-    )  # only works if you do int division. 1.0000000166666667 otherwise
+        statistics.average_duration == approx(1.0)  # 1.0000000166666667
+    ) 
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
 
@@ -120,8 +121,8 @@ def test_get_statistics_student_filter(oh_statistics_svc: OfficeHoursStatisticsS
 
     assert statistics.total_tickets == 1
     assert statistics.total_tickets_weekly == 1
-    assert statistics.average_wait_time == 1.0
-    assert statistics.average_duration == 1.0
+    assert statistics.average_wait_time == approx(1.0)
+    assert statistics.average_duration == approx(1.0)
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
 
@@ -169,8 +170,8 @@ def test_get_statistics_staff_filter(oh_statistics_svc: OfficeHoursStatisticsSer
 
     assert statistics.total_tickets == 1
     assert statistics.total_tickets_weekly == 1
-    assert statistics.average_wait_time == 1
-    assert statistics.average_duration == 1
+    assert statistics.average_wait_time == approx(1.0)
+    assert statistics.average_duration == approx(1.0)
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
 
@@ -217,8 +218,8 @@ def test_get_statistics_date_filter(
 
     assert statistics.total_tickets == 1
     assert statistics.total_tickets_weekly == 1
-    assert statistics.average_wait_time == 1
-    assert statistics.average_duration == 1
+    assert statistics.average_wait_time == approx(1.0)
+    assert statistics.average_duration == approx(1.0)
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
 
@@ -301,7 +302,7 @@ def test_get_paginated_tickets_multiple_filters(
 
     assert statistics.total_tickets == 1
     assert statistics.total_tickets_weekly == 1
-    assert statistics.average_wait_time == 1
-    assert statistics.average_duration == 1
+    assert statistics.average_wait_time == approx(1.0)
+    assert statistics.average_duration == approx(1.0)
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
