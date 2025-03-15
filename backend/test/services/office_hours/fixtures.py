@@ -8,7 +8,11 @@ from ....services.office_hours.office_hours_recurrence import (
     OfficeHoursRecurrenceService,
 )
 from ....services import PermissionService
-from ....services.office_hours import OfficeHourTicketService, OfficeHoursService
+from ....services.office_hours import (
+    OfficeHourTicketService,
+    OfficeHoursService,
+    OfficeHoursStatisticsService,
+)
 
 __authors__ = ["Meghan Sun", "Jade Keegan"]
 __copyright__ = "Copyright 2024"
@@ -43,3 +47,9 @@ def oh_ticket_svc(session: Session):
 def oh_recurrence_svc(session: Session):
     """OfficeHoursRecurrenceService fixture."""
     return OfficeHoursRecurrenceService(session, OfficeHoursService(session))
+
+
+@pytest.fixture()
+def oh_statistics_svc(session: Session):
+    """OfficeHoursStatisticsService fixture."""
+    return OfficeHoursStatisticsService(session, OfficeHoursService(session))

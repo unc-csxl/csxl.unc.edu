@@ -2,10 +2,15 @@
 
 APIs relative to a specific user."""
 
+import json
 from fastapi import APIRouter, Depends
+
+from backend.models.office_hours.ticket_statistics import OfficeHoursTicketStatistics
 from ..authentication import registered_user
 from ...services.academics.course_site import CourseSiteService
-
+from ...services.office_hours.office_hours_statistics import (
+    OfficeHoursStatisticsService,
+)
 from ...models.user import User
 
 from ...models.academics.my_courses import (
@@ -13,6 +18,7 @@ from ...models.academics.my_courses import (
     CourseMemberOverview,
     OfficeHoursOverview,
     CourseSiteOverview,
+    OfficeHourTicketOverview,
 )
 from ...models.office_hours.course_site import (
     NewCourseSite,
@@ -20,7 +26,7 @@ from ...models.office_hours.course_site import (
     UpdatedCourseSite,
 )
 from ...models.office_hours.course_site_details import CourseSiteDetails
-from ...models.pagination import PaginationParams, Paginated
+from ...models.pagination import PaginationParams, Paginated, TicketPaginationParams
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -177,3 +183,65 @@ def update_course_site(
         CourseSite: Course updated
     """
     return course_site_svc.update(subject, course_site)
+
+
+@api.get("/{course_site_id}/statistics", tags=["My Courses"])
+def get_ticket_statistics(
+    course_site_id: int,
+    student_ids: str = "",
+    staff_ids: str = "",
+    range_start: str = "",
+    range_end: str = "",
+    subject: User = Depends(registered_user),
+    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
+) -> OfficeHoursTicketStatistics:
+    """
+    Gets the ticket statistics for a given class.
+
+    Returns:
+        OfficeHoursTicketStatistics
+    """
+
+    ticket_statistics_params = TicketPaginationParams(
+        student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
+        staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
+        range_start=range_start,
+        range_end=range_end,
+    )
+
+    return oh_statistics_svc.get_statistics(
+        subject, course_site_id, ticket_statistics_params
+    )
+
+
+@api.get("/{course_site_id}/statistics/ticket-history", tags=["My Courses"])
+def get_paginated_ticket_history(
+    course_site_id: int,
+    page: int = 0,
+    page_size: int = 10,
+    student_ids: str = "",
+    staff_ids: str = "",
+    range_start: str = "",
+    range_end: str = "",
+    subject: User = Depends(registered_user),
+    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
+) -> Paginated[OfficeHourTicketOverview]:
+    """
+    Gets the past office hour event overviews for a given class.
+
+    Returns:
+        Paginated[OfficeHoursOverview]
+    """
+
+    ticket_pagination_params = TicketPaginationParams(
+        page=page,
+        page_size=page_size,
+        student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
+        staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
+        range_start=range_start,
+        range_end=range_end,
+    )
+
+    return oh_statistics_svc.get_paginated_tickets(
+        subject, course_site_id, ticket_pagination_params
+    )
