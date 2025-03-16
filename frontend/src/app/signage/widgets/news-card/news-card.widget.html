@@ -1,41 +1,41 @@
 <mat-card appearance="outlined" class="full-size-pane">
   <mat-card-header class="news-header">
-    <mat-card-title class="display-medium">Recent News</mat-card-title>
+    <mat-card-title class="display-small">Recent News</mat-card-title>
   </mat-card-header>
   @if (articles().length > 0) {
-  <div class="row">
-    <img class="news-feature-image" [src]="articles()[shownArticle].image_url" />
-    <div class="column">
-      <mat-card-header>
-        <mat-card-title class="headline-large">{{
-          articles()[shownArticle].title
-        }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="headline-small">
-          {{ articles()[shownArticle].published | date: 'mediumDate' }}
-        </p>
-
-        <mat-chip-set class="organization-chip-set">
-          <!-- Organization chip -->
-          @if(articles()[shownArticle].organization_slug) {
-          <mat-chip-row
-            id="organization-chip"
-            [routerLink]="'/organizations/' + articles()[shownArticle].organization_slug">
-            <img
-              class="profile-icon"
-              matChipAvatar
-              [src]="articles()[shownArticle].organization_logo" />
-            {{ articles()[shownArticle].organization_name }}
-          </mat-chip-row>
-          }
-        </mat-chip-set>
-        <p class="description headline-small">
-          {{ articles()[shownArticle].synopsis }}
-        </p>
-      </mat-card-content>
-    </div>
-  </div>
+    <mat-card-content>
+      <div class="row">
+        <img class="news-feature-image" [src]="articles()[shownArticle].image_url" />
+        <div class="column">
+            
+            <p class="headline-medium">
+              {{ articles()[shownArticle].title }}
+            </p>
+            <p class="title-medium">
+              {{ articles()[shownArticle].published | date: 'mediumDate' }}
+            </p>
+    
+            <mat-chip-set class="organization-chip-set">
+              <!-- Organization chip -->
+              @if(articles()[shownArticle].organization_slug) {
+              <mat-chip-row
+                id="organization-chip"
+                [routerLink]="'/organizations/' + articles()[shownArticle].organization_slug">
+                <img
+                  class="profile-icon"
+                  matChipAvatar
+                  [src]="articles()[shownArticle].organization_logo" />
+                {{ articles()[shownArticle].organization_name }}
+              </mat-chip-row>
+              }
+            </mat-chip-set>
+            <p class="description title-large">
+              {{ articles()[shownArticle].synopsis }}
+            </p>
+        </div>
+      </div>
+    </mat-card-content>
+  
   @if (articles().length > 1) {
     <page-spinner class="spinner" [time]="90" (timerEnd)="nextArticle()"></page-spinner>
   }
