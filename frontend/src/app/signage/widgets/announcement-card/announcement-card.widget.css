@@ -1,22 +1,17 @@
 .full-size-pane {
-  height: 100%;
-  width: 100%;
-  border-color: transparent !important;
+  min-width: 400px !important;
+  min-height: 72px !important;
   margin: 0px !important;
-  max-width: none;
-  display: flex;
-  flex-direction: row;
+  margin-right: 72px !important;
+  border-color: transparent !important;
 }
 
 .icon {
   font-variation-settings: 'FILL' 1;
-  float: left;
-  padding-right: 2.5%;
-  padding-top: 0.95%;
+  padding-top: 2px; /* for alignment with text */
 }
 
 .text {
-  width: 88%;
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
@@ -24,10 +19,9 @@
 }
 
 .content {
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  padding: 0 2.5% !important;
-  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
 }

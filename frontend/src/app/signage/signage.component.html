@@ -1,14 +1,18 @@
 <div class="mat-sidenav big-div">
     <div class='header'>
-        <div class="title display-large font-on-surface">{{date | date:'EEEE MMMM d, h:mm aaa'}}  |</div>
-        <div class="weather">
-            <img
-            class="weather-image"
-            src="{{weatherService.weatherIcon()}}"
-            alt="Weather Icon" />
-            <div class="title display-large font-on-surface">{{weatherService.weatherData().temperature | number: '1.0-0'}}°F</div>
+        <div class="left-header">
+            <p class="title display-small font-on-surface">{{date | date:'EEEE, MMMM d'}}{{dateOrdinal(date)}}</p>
+            <p class="title headline-large font-on-surface">{{date | date:'h:mm aaa'}}</p>
+
         </div>
-        <div class="announcement">
+        <div class="right-header">
+            <div class="weather">
+                <img
+                class="weather-image"
+                src="{{weatherService.weatherIcon()}}"
+                alt="Weather Icon" />
+                <p class="title headline-medium font-on-surface">{{weatherService.weatherData().temperature | number: '1.0-0'}}°F</p>    
+            </div>
             <announcement-card [announcements]="signageService.slowData().announcements"></announcement-card>
         </div>
     </div>
