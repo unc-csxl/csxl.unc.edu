@@ -1,17 +1,17 @@
 <mat-card appearance="outlined" class="full-size-pane">
   <mat-card-header class="events-header">
-    <mat-card-title class="display-medium">Upcoming Events</mat-card-title>
+    <mat-card-title class="display-small">Upcoming Events</mat-card-title>
   </mat-card-header>
   @if (events().length > 0) {
     <mat-card-header class="header-margin">
       <div class="header-row">
         <div class="header-column">
-          <mat-card-title class="headline-large">{{ events()[shownEvent].name }}</mat-card-title>
+          <mat-card-title class="headline-small">{{ events()[shownEvent].name }}</mat-card-title>
 
           <div class="links-row">
             <div class="row">
               <mat-icon class="secondary-icon">schedule</mat-icon>
-              <p>
+              <p class="title-medium">
                 {{ events()[shownEvent].start | date: 'MMM d' }}
                 {{ events()[shownEvent].start | date: 'shortTime' }} -
                 {{ events()[shownEvent].end | date: 'shortTime' }}
@@ -19,18 +19,18 @@
             </div>
             <div class="row">
               <mat-icon class="secondary-icon">location_on</mat-icon>
-              <p>{{ events()[shownEvent].location }}</p>
+              <p class="title-medium">{{ events()[shownEvent].location }}</p>
             </div>
             <div class="row">
               <mat-icon class="secondary-icon">person_outline</mat-icon>
               @if (events()[shownEvent].override_registration_url) {
-              <p>External registration</p>
+              <p class="title-medium">External registration</p>
               } @else if (events()[shownEvent].registration_limit > 400) {
-              <p>Open to all</p>
+              <p class="title-medium">Open to all</p>
               } @else if (events()[shownEvent].registration_limit === events()[shownEvent].number_registered) {
-              <p><span class="tertiary-color">Filled</span></p>
+              <p class="title-medium"><span class="tertiary-color">Filled</span></p>
               } @else {
-              <p>{{ events()[shownEvent].registration_limit - events()[shownEvent].number_registered }} left</p>
+              <p class="title-medium">{{ events()[shownEvent].registration_limit - events()[shownEvent].number_registered }} left</p>
               }
             </div>
           </div>
@@ -40,22 +40,20 @@
     <mat-card-content class="content-margin">
       <mat-chip-set>
         <!-- Organization chip -->
-        <mat-chip-row
-          id="organization-chip"
-          [routerLink]="'/organizations/' + events()[shownEvent].organization_slug">
+        <mat-chip>
           <img
             class="profile-icon"
             matChipAvatar
             [src]="events()[shownEvent].organization_icon" />
           {{ events()[shownEvent].organization_name }}
-        </mat-chip-row>
+        </mat-chip>
 
         @if (events()[shownEvent].organizers.length > 0) {
           <mat-divider class="vertical-divider" [vertical]="true" />
 
           <!-- Organizer Chips -->
           @for (organizer of events()[shownEvent].organizers; track organizer.id) {
-          <mat-chip-row>
+          <mat-chip>
             @if (organizer.github_avatar && organizer.github_avatar !== '') {
             <img
               class="profile-icon"
@@ -64,11 +62,11 @@
             }
 
             {{ organizer.first_name }} {{ organizer.last_name }}
-          </mat-chip-row> 
+          </mat-chip> 
           }
         }
       </mat-chip-set>
-      <p class="description headline-small">
+      <p class="description title-large">
         {{ events()[shownEvent].description }}
       </p>
       @if (events().length > 1) {
