@@ -102,7 +102,7 @@
                       <p><span class="semibold">{{ item.type }}</span><br>Short summary...</p>
                       <div class="ticket-row-user-chips">
                         <user-chip-list [users]="item.creators"></user-chip-list>
-                        <user-chip-list [users]="item.caller? [item.caller] : []"></user-chip-list>
+                        <user-chip-list [users]="item.caller? [item.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
                       </div>
                     </div>
                     <div class="ticket-row-trailing-content">
