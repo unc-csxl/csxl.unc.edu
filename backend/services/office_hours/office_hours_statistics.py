@@ -49,12 +49,6 @@ class OfficeHoursStatisticsService:
         self._session = session
         self._office_hours_svc = _office_hours_svc
 
-    def get_paginated_tickets(
-        self, user: User, site_id: int, pagination_params: TicketPaginationParams
-    ) -> Paginated[OfficeHourTicketOverview]:
-        # Check permissions
-        self._office_hours_svc._check_site_admin_permissions(user, site_id)
-
     def create_ticket_query(
         self, site_id: int, pagination_params: TicketPaginationParams
     ) -> tuple[Select, Select]:

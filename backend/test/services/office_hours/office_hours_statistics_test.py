@@ -51,6 +51,25 @@ def test_get_paginated_tickets(oh_statistics_svc: OfficeHoursStatisticsService):
     assert len(ticket_history.items) == 1
 
 
+def test_get_paginated_tickets_not_staff(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that users without the appropriate site permissions cannot get paginated tickets."""
+    with pytest.raises(CoursePermissionException):
+        ticket_params = TicketPaginationParams(
+            range_start="",
+            range_end="",
+            student_ids=[],
+            staff_ids=[],
+        )
+
+        oh_statistics_svc.get_paginated_tickets(
+            user_data.student,
+            office_hours_data.comp_110_site.id,
+            ticket_params,
+        )
+
+
 def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
     """Ensures that users with the appropriate site permissions can get statistics."""
     ticket_params = TicketPaginationParams(
@@ -262,7 +281,7 @@ def test_get_statistics_filter_options(
     )
 
     assert len(filter_data.students) == 2
-    assert len(filter_data.staff) == 3
+    assert len(filter_data.staff) == 2
 
 
 def test_get_statistics_filter_options_no_permissions(
