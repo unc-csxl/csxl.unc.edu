@@ -1,36 +1,28 @@
 <mat-card appearance="outlined" class="full-size-pane">
   <!-- Coworking Card Header -->
   <mat-card-header class="dropin-header leaderboard-title">
-    <mat-card-title class="display-medium">Leaderboard</mat-card-title>
+    <mat-card-title class="display-small">Leaderboard</mat-card-title>
   </mat-card-header>
 
   <!-- Coworking Information -->
-  <mat-card-content class="full-size-content">
+  <mat-card-content>
     <!-- Coworking Dropdowns -->
-    @for(i of shownIndices; track $index) {
-      <mat-chip-set class="chip-margin">
-        <mat-list-item class="position {{getBackgroundClass(i+1)}}">
-          <span matListItemIcon class="label-large"><div class="item-div">{{i + 1}}</div></span>
-        </mat-list-item>
-        <mat-chip class="leaderboard-chips label-large">
-          @if(profiles()[i].github_avatar) {
-            <img class="account-circle-icon" matChipAvatar [src]="profiles()[i].github_avatar" alt="GitHub Avatar"/>
-          } @else {
-            <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
-          }
-          @if (profiles()[i].first_name.length + profiles()[i].last_name.length > 20){
-          {{ profiles()[i].first_name !== '' ? profiles()[i].first_name + ' ' + profiles()[i].last_name[0] : 'Profile' }}
-          } @else {
-          {{ profiles()[i].first_name !== '' ? profiles()[i].first_name + ' ' + profiles()[i].last_name : 'Profile' }}
-          }
-        </mat-chip>
-      </mat-chip-set>
-    }
+     <div class="leaderboard-list">
+      @for(i of shownIndices; track $index) {
+        <div class="leaderboard-list-item">
+          <span class="leaderboard-placement body-large font-semibold {{getBackgroundClass(i+1)}}">{{i + 1}}</span>
+          <span class="title-large">
+            {{ profiles()[i].first_name + ' ' + profiles()[i].last_name }}
+          </span>
+        </div>
+      }
+     </div>
+
     @if (profiles().length > 5) {
       <page-spinner class="spinner" [time]="30" (timerEnd)="switchPage()"></page-spinner>
     }
-    <mat-card-footer  class="title-medium font-variant footer">
-      Resets at the start of each month
-    </mat-card-footer>
   </mat-card-content>
+  <mat-card-footer  class="title-medium footer font-variant">
+    Resets at the start of each month
+  </mat-card-footer>
 </mat-card>
