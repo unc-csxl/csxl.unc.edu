@@ -408,6 +408,10 @@ body {
   .font-on-surface {
     color: mat.get-theme-color($theme, on-surface) !important;
   }
+
+  .font-on-secondary-fixed-variant {
+    color: mat.get-theme-color($theme, on-secondary-fixed-variant) !important;
+  }
 }
 
 /// Defines a mixin that applies custom widgets to material text field components

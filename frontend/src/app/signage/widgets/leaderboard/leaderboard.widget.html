@@ -11,7 +11,7 @@
       @for(i of shownIndices; track $index) {
         <div class="leaderboard-list-item">
           <span class="leaderboard-placement body-large font-semibold {{getBackgroundClass(i+1)}}">{{i + 1}}</span>
-          <span class="title-large">
+          <span class="title-large font-on-secondary-fixed-variant">
             {{ profiles()[i].first_name + ' ' + profiles()[i].last_name }}
           </span>
         </div>
