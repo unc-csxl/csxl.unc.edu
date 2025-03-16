@@ -3,14 +3,9 @@ div {
   width: 100%;
 }
 
-/* .title {
-  margin-left: 2.03%;
-  padding-top: 1.15%;
-  padding-bottom: 1.35%;
-  margin-right: 1%;
-  display: flex;
-  width: fit-content;
-} */
+.big-div {
+  overflow: hidden;
+}
 
 p {
   margin-bottom: 0;
