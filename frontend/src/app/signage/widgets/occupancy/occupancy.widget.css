@@ -8,32 +8,38 @@
 
 .full-size-content {
   padding-left: 24px;
+  flex-grow: 1;
 }
 
 .news-footer {
-  font-style: italic;
-  padding-left: 24px;
-  position: absolute;
-  bottom: 26px;
+  padding: 24px;
+
 }
 
 /* Begin Action List Styling */
+.occupancy-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 .mdc-list-item__content {
   align-items: center;
 }
 
 .mat-mdc-list-item {
-  margin-bottom: 8%;
+  align-items: center !important;
+  display: flex !important;
+  flex-direction: row !important;
 }
 
 .mdc-list-item--with-leading-icon .mdc-list-item__start {
-  font-size: 36px;
+  font-size: 32px;
   background: #4786c6;
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   margin-left: 6px;
   margin-right: 12px;
-  line-height: 36px;
+  line-height: 32px;
   border-radius: 100%;
 }
 
@@ -75,9 +81,4 @@
 
 .mat-mdc-list-base {
   padding: 0;
-}
-
-.occupancy-title {
-  font-size: 2.4vw;
-  white-space: nowrap;
 }
