@@ -9,75 +9,46 @@
   padding-left: 24px;
 }
 
-.full-size-content {
-  height: 20vh;
-}
-
-.sub-header {
-  margin: 0px;
-}
-
-.news-footer {
-  font-style: italic;
-  margin-left: 22px;
-  position: absolute;
-  bottom: 26px;
-}
-
-.room-title-margins {
-  margin-top: 15px;
-}
-
-.profile-chip-container {
-  width: 186px !important;
-  height: 44px !important;
-  margin-left: auto;
-  margin-top: auto;
-  margin-bottom: auto;
-  border-radius: 100%;
-}
-
-.profile-chip {
-  width: 186px !important;
-  height: 44px !important;
-}
-
-.position {
-  font-size: 12px;
-  width: 37px;
-  height: 37px;
-  margin-right: 5%;
-  margin-top: 1%;
-  border-radius: 100%;
-}
-
-.item-div {
-  text-align: center;
-  margin-top: 9px;
-}
-
-.chip-margin {
-  margin-top: 6%;
-  padding-left: 5%;
-}
-
 .spinner {
   position: absolute;
   right: 4%;
   bottom: 2%;
 }
 
-.leaderboard-chips {
-  display: flex;
-  --mdc-chip-container-shape-family: rounded !important;
-  --mdc-chip-container-shape-radius: 20px !important;
-  width: 66%;
-  height: 37px;
-  align-items: left;
-}
-
 .footer {
   font-style: italic;
-  position: absolute;
-  bottom: 26px;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+.leaderboard-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.leaderboard-placement {
+  width: 36px;
+  height: 36px;
+  line-height: 36px !important;
+  text-align: center;
+  border-radius: 100%;
+}
+
+.font-semibold {
+  font-weight: 500 !important;
+}
+
+mat-card-content {
+  flex-grow: 1;
+}
+
+mat-card-footer {
+  padding: 24px;
 }

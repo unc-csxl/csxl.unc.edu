@@ -1,3 +1,7 @@
+p {
+  margin-bottom: 0;
+}
+
 .full-size-pane {
   min-height: 100% !important;
   width: 100% !important;
@@ -11,17 +15,21 @@
 }
 
 .full-size-content {
-  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-grow: 1;
+  padding-top: 12px;
   padding-left: 24px;
 }
 
 .footer {
   font-style: italic;
-  margin-left: 22px;
-  position: absolute;
-  bottom: 26px;
+  padding: 24px;
 }
 
-.room-title-margins {
-  margin-top: 15px;
+.room-category {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }

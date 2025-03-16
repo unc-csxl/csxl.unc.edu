@@ -79,4 +79,21 @@ export class SignageComponent implements OnInit, OnDestroy {
       this.weatherSubscription.unsubscribe();
     }
   }
+
+  dateOrdinal(date: number): string {
+    const day = new Date(date).getDate();
+    if (day > 3 && day < 21) {
+      return 'th';
+    }
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  }
 }

@@ -52,17 +52,14 @@
   margin-left: auto;
 }
 
-.mat-mdc-chip {
-  height: 26px;
-}
-
 .description {
   max-height: 82%;
   max-width: 90%;
   padding-top: 8px;
   display: -webkit-box; /* This is needed for the 5 line ellipsis cutoff */
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 6;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
