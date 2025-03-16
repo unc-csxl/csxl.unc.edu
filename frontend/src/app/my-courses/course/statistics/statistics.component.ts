@@ -26,6 +26,7 @@ import {
   DefaultOfficeHourStatisticsPaginationParams,
   OfficeHourStatisticsFilterData,
   OfficeHourStatisticsPaginationParams,
+  OfficeHoursTicketStatistics,
   OfficeHourTicketOverview
 } from '../../my-courses.model';
 import { PublicProfile } from 'src/app/profile/profile.service';
@@ -100,6 +101,10 @@ export class StatisticsComponent {
   previousPaginationParams: OfficeHourStatisticsPaginationParams =
     DefaultOfficeHourStatisticsPaginationParams;
 
+  /** Store the statistics data */
+  ticketStatistics: WritableSignal<OfficeHoursTicketStatistics | undefined> =
+    signal(undefined);
+
   /** Helper function that helps to load the paginated data. */
   loadPaginatedData(params: OfficeHourStatisticsPaginationParams) {
     this.myCoursesService
@@ -107,6 +112,11 @@ export class StatisticsComponent {
       .subscribe((data) => {
         this.paginatedTickets.set(data);
         this.previousPaginationParams = data.params;
+      });
+    this.myCoursesService
+      .getOfficeHoursTicketStatistics(this.courseSiteId, params)
+      .subscribe((data) => {
+        this.ticketStatistics.set(data);
       });
   }
 

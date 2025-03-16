@@ -75,9 +75,20 @@
         </div>
         <!-- Ticket data cards -->
         <div class="statistics-row">
-          <office-hours-statistics-card title="Total Tickets" [leftStatistic]="'---'" leftStatisticLabel="this week" [rightStatistic]="'---'" rightStatisticLabel="overall" />
-          <office-hours-statistics-card title="Queue Statistics" [leftStatistic]="'---'" leftStatisticLabel="average wait" [rightStatistic]="'---'" rightStatisticLabel="average duration" />
-          <office-hours-statistics-card title="Concerns" [leftStatistic]="'---'" leftStatisticLabel="concerning" />
+          <office-hours-statistics-card
+            title="Total Tickets"
+            [leftStatistic]="ticketStatistics()?.total_tickets_weekly?.toFixed(0) ?? '---'"
+            leftStatisticLabel="this week"
+            [rightStatistic]="ticketStatistics()?.total_tickets?.toFixed(0) ?? '---'"
+            rightStatisticLabel="overall"
+          />
+          <office-hours-statistics-card
+          title="Queue Statistics"
+          [leftStatistic]="ticketStatistics()?.average_wait_time?.toFixed(2) ?? '---'"
+          leftStatisticLabel="average wait (m)"
+          [rightStatistic]="ticketStatistics()?.average_duration?.toFixed(2) ?? '---'"
+          rightStatisticLabel="average duration (m)"
+          />
         </div>
         <!-- Ticket history -->
          @if(paginatedTickets()) {

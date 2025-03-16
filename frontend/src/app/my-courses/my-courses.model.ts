@@ -318,6 +318,15 @@ export interface OfficeHourStatisticsFilterData {
   term_end: string;
 }
 
+export interface OfficeHoursTicketStatistics {
+  total_tickets: number;
+  total_tickets_weekly: number;
+  average_wait_time: number;
+  average_duration: number;
+  total_conceptual: number;
+  total_assignment: number;
+}
+
 /** Defines the general model for statistics pagination parameters expected by the backend. */
 export interface OfficeHourStatisticsPaginationParams extends URLSearchParams {
   page: number;
