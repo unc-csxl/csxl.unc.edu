@@ -1,0 +1,39 @@
+<mat-card appearance="outlined" class="full-size-pane">
+    <mat-card-header class="office-hours-title">
+        <mat-card-title class="display-medium">Office Hours</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="full-size-content">
+        @if (columns.length == 0) {
+            <p class="no_oh headline-medium font-primary">All are currently closed, please check back later.</p>
+        } @else {
+            @for (col_i of columnsToShow; track $index) {
+                <div class="column">
+                    <mat-divider class="divide"></mat-divider>
+                    @for (location of columns[col_i].locations; track $index) {
+                        <div class="location">
+                            <div class="floated">
+                                <p class="location-name headline-medium font-primary">{{location}}</p>
+                            </div>
+                            @for (oh_i of sortedHours[location]; track $index) {
+                                <div class="office-hour">
+                                    <p class="oh-name body-large font-secondary">{{displayOfficeHours[oh_i].course}}</p>
+                                    <mat-icon class="icon">person_raised_hand</mat-icon>
+                                    @if (displayOfficeHours[oh_i].queued == 0) {
+                                        <div class="queue body-large primary-background">0</div>
+                                    } @else {
+                                        <div class="queue body-large tertiary-background">{{displayOfficeHours[oh_i].queued}}</div>
+                                    }
+                                </div>
+                            }
+                            <mat-divider class="divide"></mat-divider>
+                        </div>
+                    }
+                </div>
+            }
+            @if (columns.length > 2) {
+                <page-spinner class="spinner" [time]="15" (timerEnd)="rotateColumns()"></page-spinner>
+            }
+        }
+    </mat-card-content>
+</mat-card>

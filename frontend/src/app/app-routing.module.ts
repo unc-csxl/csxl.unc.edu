@@ -4,11 +4,17 @@ import { AppTitleStrategy } from './app-title.strategy';
 import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
+import { SignageComponent } from './signage/signage.component';
 
 const routes: Routes = [
   HomeComponent.Route,
   AboutComponent.Route,
   GateComponent.Route,
+  { path: 'signage',
+    title: 'XL Signage',
+    loadChildren: () =>
+      import('./signage/signage.module').then((m) => m.SignageModule)
+  },
   {
     path: 'coworking',
     title: 'Cowork in the XL',

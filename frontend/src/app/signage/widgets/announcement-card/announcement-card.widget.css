@@ -1,0 +1,33 @@
+.full-size-pane {
+  height: 100%;
+  width: 100%;
+  border-color: transparent !important;
+  margin: 0px !important;
+  max-width: none;
+  display: flex;
+  flex-direction: row;
+}
+
+.icon {
+  font-variation-settings: 'FILL' 1;
+  float: left;
+  padding-right: 2.5%;
+  padding-top: 0.95%;
+}
+
+.text {
+  width: 88%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
+}
+
+.content {
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  padding: 0 2.5% !important;
+  width: 100% !important;
+}
