@@ -304,6 +304,48 @@ export interface OfficeHours {
   recurrence_pattern: OfficeHoursRecurrencePattern | null;
 }
 
+export interface OfficeHourStatisticsFilterDataJson {
+  students: PublicProfile[];
+  staff: PublicProfile[];
+  term_start: string;
+  term_end: string;
+}
+
+export interface OfficeHourStatisticsFilterData {
+  students: PublicProfile[];
+  staff: PublicProfile[];
+  term_start: string;
+  term_end: string;
+}
+
+export interface OfficeHoursTicketStatistics {
+  total_tickets: number;
+  total_tickets_weekly: number;
+  average_wait_time: number;
+  average_duration: number;
+  total_conceptual: number;
+  total_assignment: number;
+}
+
+/** Defines the general model for statistics pagination parameters expected by the backend. */
+export interface OfficeHourStatisticsPaginationParams extends URLSearchParams {
+  page: number;
+  page_size: number;
+  filter: string;
+  student_ids: string;
+  staff_ids: string;
+  range_start: string;
+  range_end: string;
+}
+
+export const DefaultOfficeHourStatisticsPaginationParams = {
+  page: 0,
+  page_size: 25,
+  student_ids: '',
+  staff_ids: '',
+  range_start: '',
+  range_end: ''
+} as OfficeHourStatisticsPaginationParams;
 /**
  * Function that converts an TermOverviewJson response model to a
  * TermOverview model.
@@ -397,5 +439,14 @@ export const parseOfficeHoursJson = (
   return Object.assign({}, responseModel, {
     start_time: new Date(responseModel.start_time),
     end_time: new Date(responseModel.end_time)
+  });
+};
+
+export const parseOfficeHourStatisticsFilterDataJson = (
+  responseModel: OfficeHourStatisticsFilterDataJson
+): OfficeHourStatisticsFilterData => {
+  return Object.assign({}, responseModel, {
+    term_start: new Date(responseModel.term_start),
+    term_end: new Date(responseModel.term_end)
   });
 };

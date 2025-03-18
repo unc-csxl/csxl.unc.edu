@@ -36,9 +36,15 @@ import {
   parseOfficeHoursJson,
   NewOfficeHours,
   UpdatedCourseSite,
-  NewOfficeHoursRecurrencePattern
+  NewOfficeHoursRecurrencePattern,
+  parseOfficeHourStatisticsFilterDataJson,
+  OfficeHourStatisticsFilterDataJson,
+  OfficeHourStatisticsPaginationParams,
+  OfficeHoursTicketStatistics
 } from './my-courses.model';
 import { Observable, map } from 'rxjs';
+import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
+import { Paginated } from '../pagination';
 
 /** Enum for days of the week */
 export enum Weekday {
@@ -92,7 +98,8 @@ export class MyCoursesService {
   /** Constructor */
   constructor(
     protected http: HttpClient,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected gearService: NagivationAdminGearService
   ) {
     this.getTermOverviews();
   }
@@ -377,5 +384,46 @@ export class MyCoursesService {
     return this.http.delete(
       `/api/office-hours/${siteId}/${officeHoursId}/recurring`
     );
+  }
+
+  /**
+   * Loads the filter options for the office hours statistics page.
+   * @param courseSiteId: ID of the course site to get the filter options for
+   * @returns {Observable<>}
+   */
+  getOfficeHoursStatisticsFilterOptions(courseSiteId: number) {
+    return this.http
+      .get<OfficeHourStatisticsFilterDataJson>(
+        `/api/my-courses/${courseSiteId}/statistics/filter-data`
+      )
+      .pipe(map(parseOfficeHourStatisticsFilterDataJson));
+  }
+
+  getPaginatedOfficeHoursStatisticsTicketHistory(
+    courseSiteId: number,
+    params: OfficeHourStatisticsPaginationParams
+  ) {
+    // Determines the query for the URL based on the new paramateres.
+    let query = new URLSearchParams(params);
+    let route =
+      `/api/my-courses/${courseSiteId}/statistics/ticket-history` +
+      '?' +
+      query.toString();
+
+    return this.http.get<
+      Paginated<OfficeHourTicketOverview, OfficeHourStatisticsPaginationParams>
+    >(route);
+  }
+
+  getOfficeHoursTicketStatistics(
+    courseSiteId: number,
+    params: OfficeHourStatisticsPaginationParams
+  ) {
+    // Determines the query for the URL based on the new paramateres.
+    let query = new URLSearchParams(params);
+    let route =
+      `/api/my-courses/${courseSiteId}/statistics` + '?' + query.toString();
+
+    return this.http.get<OfficeHoursTicketStatistics>(route);
   }
 }

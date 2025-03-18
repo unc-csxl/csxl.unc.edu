@@ -51,6 +51,25 @@ def test_get_paginated_tickets(oh_statistics_svc: OfficeHoursStatisticsService):
     assert len(ticket_history.items) == 1
 
 
+def test_get_paginated_tickets_not_staff(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that users without the appropriate site permissions cannot get paginated tickets."""
+    with pytest.raises(CoursePermissionException):
+        ticket_params = TicketPaginationParams(
+            range_start="",
+            range_end="",
+            student_ids=[],
+            staff_ids=[],
+        )
+
+        oh_statistics_svc.get_paginated_tickets(
+            user_data.student,
+            office_hours_data.comp_110_site.id,
+            ticket_params,
+        )
+
+
 def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
     """Ensures that users with the appropriate site permissions can get statistics."""
     ticket_params = TicketPaginationParams(
@@ -68,12 +87,8 @@ def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
 
     assert statistics.total_tickets == 1
     assert statistics.total_tickets_weekly == 1
-    assert (
-        statistics.average_wait_time == approx(1.0) # 1.0000000166666667
-    ) 
-    assert (
-        statistics.average_duration == approx(1.0)  # 1.0000000166666667
-    ) 
+    assert statistics.average_wait_time == approx(1.0)  # 1.0000000166666667
+    assert statistics.average_duration == approx(1.0)  # 1.0000000166666667
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
 
@@ -99,32 +114,6 @@ def test_get_paginated_tickets_student_filter(
         len(ticket_history.items) == 1
         and ticket_history.items[0].creators[0].id == user_data.student.id
     )
-
-
-def test_get_statistics_student_filter(oh_statistics_svc: OfficeHoursStatisticsService):
-    """Ensures that filtering by student returns corrcet statistcs."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[
-            user_data.student.id
-        ],  # filter by Stewie, only person with a CLOSED ticket right now
-        # student_ids=[0], # filter by NOT Stewie, so should expect no ticket stats - THIS WORKS
-        staff_ids=[],
-    )
-
-    statistics = oh_statistics_svc.get_statistics(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
-        ticket_params,
-    )
-
-    assert statistics.total_tickets == 1
-    assert statistics.total_tickets_weekly == 1
-    assert statistics.average_wait_time == approx(1.0)
-    assert statistics.average_duration == approx(1.0)
-    assert statistics.total_conceptual == 1
-    assert statistics.total_assignment == 0
 
 
 def test_get_paginated_tickets_staff_filter(
@@ -280,6 +269,30 @@ def test_get_paginated_tickets_multiple_filters(
     )
 
     assert len(ticket_history.items) == 1
+
+
+def test_get_statistics_filter_options(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that instructors can get the filter options for the statistics page."""
+    filter_data = oh_statistics_svc.get_filter_data(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+    )
+
+    assert len(filter_data.students) == 2
+    assert len(filter_data.staff) == 2
+
+
+def test_get_statistics_filter_options_no_permissions(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that students are not able to get the filter options for the statistics page."""
+    with pytest.raises(CoursePermissionException):
+        oh_statistics_svc.get_filter_data(
+            user_data.student,
+            office_hours_data.comp_110_site.id,
+        )
 
 
 def test_get_paginated_tickets_multiple_filters(

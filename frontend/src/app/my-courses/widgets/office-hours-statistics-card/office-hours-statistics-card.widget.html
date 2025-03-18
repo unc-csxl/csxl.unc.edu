@@ -1,0 +1,19 @@
+<mat-card class="statistics-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title class="title-medium">{{ title() }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="statistics-card-content">
+      <p class="statistics-card-statistic">
+        <span class="text-badge inverse-primary-background-color label-large"
+          >{{ leftStatistic() }}</span
+        >{{ leftStatisticLabel() }}
+      </p>
+      @if(rightStatistic() && rightStatisticLabel()) {
+        <p class="statistics-card-statistic">
+          <span class="text-badge surface-background label-large"
+            >{{ rightStatistic() }}</span
+          >{{ rightStatisticLabel() }}
+        </p>
+      }
+    </mat-card-content>
+  </mat-card>
