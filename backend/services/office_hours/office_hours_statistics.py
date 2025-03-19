@@ -24,7 +24,10 @@ from ...database import db_session
 from ...entities.office_hours.ticket_entity import OfficeHoursTicketEntity
 from ...models.pagination import Paginated, TicketPaginationParams
 from ...models.user import User
-from ...models.academics.my_courses import OfficeHourTicketOverview
+from ...models.academics.my_courses import (
+    CourseMemberOverview,
+    OfficeHourTicketOverview,
+)
 from ...services.office_hours.office_hours import OfficeHoursService
 
 

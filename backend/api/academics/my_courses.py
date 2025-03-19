@@ -5,6 +5,7 @@ APIs relative to a specific user."""
 import json
 from fastapi import APIRouter, Depends
 
+from backend.entities.user_entity import UserEntity
 from backend.models.office_hours.ticket_statistics import OfficeHoursTicketStatistics
 from ..authentication import registered_user
 from ...services.academics.course_site import CourseSiteService
@@ -27,6 +28,7 @@ from ...models.office_hours.course_site import (
 )
 from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...models.pagination import PaginationParams, Paginated, TicketPaginationParams
+from ...services import UserService
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -286,3 +288,13 @@ def get_ticket_statistics(
     return oh_statistics_svc.get_statistics(
         subject, course_site_id, ticket_statistics_params
     )
+
+
+@api.get("/{course_site_id}/roster/student-summary", tags=["My Courses"])
+def get_user(
+    # course_site_id: int,
+    user_id: int = "",
+    # user: User = Depends(registered_user),
+    user_svc: UserService = Depends(),
+) -> User:
+    return user_svc.get_by_id(user_id)
