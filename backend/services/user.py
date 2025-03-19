@@ -87,6 +87,25 @@ class UserService:
 
         return user_entity.to_public_model()
 
+    def get_by_pid(self, subject: User, pid: str) -> PublicUser:
+        """Get a User by their pid.
+
+        Args:
+            onyen: The pid of the user.
+
+        Returns:
+            PublicUser
+
+        Raises:
+            ResourceNotFoundException if the User ID is not found
+        """
+        user_query = select(UserEntity).where(UserEntity.pid == pid)
+        user_entity = self._session.scalars(user_query).one_or_none()
+        if user_entity is None:
+            raise ResourceNotFoundException(f"User with {id} not found")
+
+        return user_entity.to_public_model()
+
     def search(self, _subject: User, query: str) -> list[User]:
         """Search for users by their name, onyen, email.
 

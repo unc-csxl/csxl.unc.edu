@@ -28,3 +28,14 @@ def get_by_onyen(
 ):
     """Search for one user by their onyen"""
     return user_svc.get_by_onyen(subject, onyen)
+    
+
+# Do we want this in the user api file or in my_courses?
+# Is it unsafe if I put the pid in the url?
+@api.get("/{pid}", tags=["Users"])
+def get_user_by_pid(
+    pid: int,
+    subject: User = Depends(registered_user),
+    user_svc: UserService = Depends(),
+) -> User:
+    return user_svc.get_by_pid(subject, pid)
