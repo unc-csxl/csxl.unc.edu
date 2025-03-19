@@ -61,19 +61,3 @@ mat-icon {
     width: 0;
   }
 }
-
-  /* .add-hours-button mat-icon{
-    padding: none !important;
-    width: none !important;
-    min-width: none !important;
-    max-width: none !important;
-  } */
-
-  /* .add-hours-button{
-    padding: none !important;
-    width: none !important;
-    min-width: none !important;
-    max-width: none !important;
-    border-radius: none;
-  } */
-}
