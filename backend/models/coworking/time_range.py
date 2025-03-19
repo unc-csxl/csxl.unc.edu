@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from pydantic import BaseModel, field_validator, ValidationInfo, validator
+from pydantic import BaseModel, field_validator, ValidationInfo
 from typing import Self
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]

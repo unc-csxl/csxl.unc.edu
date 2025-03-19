@@ -807,61 +807,68 @@ class HiringService:
     def get_hiring_summary_overview(
         self, subject: User, term_id: str, pagination_params: PaginationParams
     ) -> Paginated[HiringAssignmentSummaryOverview]:
-        """Returns the hires to show on a summary page for a given term."""
-        # 1. Check for hiring permissions.
+        """
+        Returns the hires to show on a summary page for a given term.
+
+        Args:
+            subject: The user making the request
+            term_id: The term to get assignments for
+            pagination_params: Parameters for pagination and filtering
+
+        Raises:
+            ValueError: If pagination parameters are invalid
+            PermissionError: If user lacks required permissions
+        """
+        # 1. Validate inputs
+        if pagination_params.page < 0 or pagination_params.page_size <= 0:
+            raise ValueError("Invalid pagination parameters")
+
+        # 2. Check for hiring permissions
         self._permission.enforce(subject, "hiring.summary", "*")
-        # 2. Build query
-        assignment_query = (
+
+        # 3. Build base query with consistent joins and ordering
+        SUMMARY_STATUSES = [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
+        base_query = (
             select(HiringAssignmentEntity)
+            .join(HiringAssignmentEntity.user)
             .where(HiringAssignmentEntity.term_id == term_id)
-            .where(
-                HiringAssignmentEntity.status.in_(
-                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
-                )
-            )
-        )
-        # Count the number of rows before applying pagination and filter
-        count_query = (
-            select(func.count())
-            .select_from(HiringAssignmentEntity)
-            .where(HiringAssignmentEntity.term_id == term_id)
-            .where(
-                HiringAssignmentEntity.status.in_(
-                    [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
-                )
-            )
+            .where(HiringAssignmentEntity.status.in_(SUMMARY_STATUSES))
+            .order_by(
+                UserEntity.last_name, UserEntity.first_name
+            )  # Secondary sort for stability
         )
 
-        # Filter based on search entry
-        if pagination_params.filter != "":
-            query = pagination_params.filter
+        # 4. Apply search filter if present
+        search_query = pagination_params.filter.strip()
+        if search_query:
+            # Use parameter binding for safety
+            search_pattern = f"%{search_query.lower()}%"
             criteria = or_(
-                UserEntity.first_name.ilike(f"%{query}%"),
-                UserEntity.last_name.ilike(f"%{query}%"),
+                func.lower(UserEntity.first_name).like(search_pattern),
+                func.lower(UserEntity.last_name).like(search_pattern),
             )
-            assignment_query = assignment_query.join(HiringAssignmentEntity.user).where(
-                criteria
-            )
-            count_query = count_query.join(HiringAssignmentEntity.user).where(criteria)
+            base_query = base_query.where(criteria)
 
-        # Load joined data into assignment_query
-        assignment_query = assignment_query.options(
+        # 5. Create count query from base query
+        count_query = select(func.count()).select_from(base_query.subquery())
+
+        # 6. Create assignment query with eager loading
+        assignment_query = base_query.options(
             joinedload(HiringAssignmentEntity.course_site)
             .joinedload(CourseSiteEntity.sections)
             .joinedload(SectionEntity.staff),
         )
 
-        # Calculate offset and limit for pagination
+        # 7. Apply pagination
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
-        assignment_query = (
-            assignment_query.offset(offset).limit(limit).order_by(UserEntity.last_name)
-        )
+        assignment_query = assignment_query.offset(offset).limit(limit)
 
-        # 3. Fetch data and build summary model
+        # 8. Execute queries
         length = self._session.scalar(count_query) or 0
         assignment_entities = self._session.scalars(assignment_query).unique().all()
 
+        # 9. Build and return response
         return Paginated(
             items=[
                 assignment.to_summary_overview_model()
@@ -880,12 +887,14 @@ class HiringService:
         # 2. Build query
         assignment_query = (
             select(HiringAssignmentEntity)
+            .join(HiringAssignmentEntity.user)
             .where(HiringAssignmentEntity.term_id == term_id)
             .where(
                 HiringAssignmentEntity.status.in_(
                     [HiringAssignmentStatus.COMMIT, HiringAssignmentStatus.FINAL]
                 )
             )
+            .order_by(UserEntity.last_name, UserEntity.first_name)
         )
         # 3. Return items
         assignment_entities = self._session.scalars(assignment_query).all()

@@ -19,6 +19,7 @@ from .api import (
     room,
     application,
     article,
+    websocket,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import section_member, term, course, section, my_courses, hiring
@@ -31,6 +32,7 @@ from .api.admin import roles as admin_roles
 from .api.admin import facts as admin_facts
 
 from .services.exceptions import (
+    RecurringOfficeHourEventException,
     UserPermissionException,
     ResourceNotFoundException,
     CoursePermissionException,
@@ -101,6 +103,7 @@ feature_apis = [
     hiring,
     admin_facts,
     article,
+    websocket,
 ]
 
 for feature_api in feature_apis:
@@ -108,6 +111,9 @@ for feature_api in feature_apis:
 
 # Static file mount used for serving Angular front-end in production, as well as static assets
 app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
+
+# Register WebSocket middleware
+app.mount("/", websocket.WebSocketMiddleware)
 
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
@@ -135,6 +141,13 @@ def reservation_exception_handler(request: Request, e: ReservationException):
 
 @app.exception_handler(CourseDataScrapingException)
 def course_data_scraping_exception(request: Request, e: CourseDataScrapingException):
+    return JSONResponse(status_code=500, content={"message": str(e)})
+
+
+@app.exception_handler(RecurringOfficeHourEventException)
+def recurring_office_hour_event_exception(
+    request: Request, e: RecurringOfficeHourEventException
+):
     return JSONResponse(status_code=500, content={"message": str(e)})
 
 
