@@ -6,7 +6,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...models.office_hours.ticket_state import TicketState
 from ...models.office_hours.ticket_type import TicketType
-from ...models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
+from ...models.office_hours.ticket import (
+    OfficeHoursTicket,
+    NewOfficeHoursTicket,
+    OfficeHoursTicketCsvRow,
+)
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.academics.my_courses import OfficeHourTicketOverview
 from .user_created_tickets_table import user_created_tickets_table
@@ -174,4 +178,57 @@ class OfficeHoursTicketEntity(EntityBase):
             office_hours=self.office_hours,
             creators=[creator.to_flat_model() for creator in self.creators],
             caller=(self.caller.to_flat_model() if self.caller is not None else None),
+        )
+
+    def to_csv_model(self) -> OfficeHoursTicketCsvRow:
+        """
+        Converts a `OfficeHoursTicketEntity` object into a `OfficeHoursTicketCsvRow` model object
+
+        Precondition:
+            In order for this function to work, the caller and creators must be populated via a joined load.
+
+        Returns:
+            OfficeHoursTicketCsvRow: `OfficeHoursTicketCsvRow` object from the entity
+        """
+        return OfficeHoursTicketCsvRow(
+            student=(
+                ", ".join(
+                    [
+                        section_member.user.first_name
+                        + " "
+                        + section_member.user.last_name
+                        for section_member in self.creators
+                    ]
+                )
+                if self.creators and len(self.creators) > 0
+                else "Unknown"
+            ),
+            description=self.description,
+            type=self.type.to_string(),
+            created_at=self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            called_at=(
+                self.called_at.strftime("%Y-%m-%d %H:%M:%S")
+                if self.called_at
+                else "N/A"
+            ),
+            called_by=(
+                self.caller.user.first_name + " " + self.caller.user.last_name
+                if self.caller
+                else "Unknown"
+            ),
+            closed_at=(
+                self.closed_at.strftime("%Y-%m-%d %H:%M:%S")
+                if self.closed_at
+                else "N/A"
+            ),
+            duration_minutes=(
+                (self.closed_at - self.called_at).total_seconds() // 60
+                if self.closed_at and self.called_at
+                else 0
+            ),
+            wait_time_minutes=(
+                (self.called_at - self.created_at).total_seconds() // 60
+                if self.called_at and self.created_at
+                else 0
+            ),
         )
