@@ -145,6 +145,7 @@ class OfficeHoursTicketEntity(EntityBase):
             id=self.id,
             created_at=self.created_at,
             called_at=self.called_at,
+            closed_at=self.closed_at,
             state=self.state.to_string(),
             type=self.type.to_string(),
             description=self.description,

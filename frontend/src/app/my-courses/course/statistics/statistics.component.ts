@@ -32,6 +32,8 @@ import {
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { Paginated } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { TicketDetailsDialog } from '../../dialogs/ticket-details/ticket-details.dialog';
 
 @Component({
   selector: 'app-statistics',
@@ -146,7 +148,8 @@ export class StatisticsComponent {
 
   constructor(
     private route: ActivatedRoute,
-    protected myCoursesService: MyCoursesService
+    protected myCoursesService: MyCoursesService,
+    protected dialog: MatDialog
   ) {
     // Get the course site ID from the route parameters
     this.courseSiteId = +this.route.parent!.snapshot.params['course_site_id'];
@@ -164,5 +167,13 @@ export class StatisticsComponent {
     this.selectedStaffFilterOptions.set([]);
     this.selectedStartDate.set(undefined);
     this.selectedEndDate.set(undefined);
+  }
+
+  openTicketDetails(ticket: OfficeHourTicketOverview) {
+    this.dialog.open(TicketDetailsDialog, {
+      height: '500px',
+      width: '450px',
+      data: { ticket }
+    });
   }
 }
