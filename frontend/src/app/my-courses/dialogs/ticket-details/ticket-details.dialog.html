@@ -19,17 +19,12 @@
   </p>
   
   <mat-divider />
-  <div class="ticket-users">
-    <div class="user-info">
-      <span class="semibold user-tag">Student:</span>
-      <user-chip-list [users]="data.ticket.creators"></user-chip-list>
-    </div>
-    <div class="user-info">
-      <span class="semibold user-tag">Caller:</span>
-      <user-chip-list [users]="data.ticket.caller? [data.ticket.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
-    </div>
-  </div>
+  <span class="semibold user-tag">Student:</span>
+  <user-chip-list [users]="data.ticket.creators"></user-chip-list>
   
+  <span class="semibold user-tag">Caller:</span>
+  <user-chip-list [users]="data.ticket.caller? [data.ticket.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
+
   <mat-divider />
   <p mat-card-subtitle>Description</p>
   <p>
