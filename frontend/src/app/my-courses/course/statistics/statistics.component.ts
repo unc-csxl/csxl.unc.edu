@@ -32,6 +32,8 @@ import {
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { Paginated } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { TicketDetailsDialog } from '../../dialogs/ticket-details/ticket-details.dialog';
 import saveAs from 'file-saver';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -149,6 +151,7 @@ export class StatisticsComponent {
   constructor(
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService,
+    protected dialog: MatDialog
     protected snackBar: MatSnackBar
   ) {
     // Get the course site ID from the route parameters
@@ -169,6 +172,13 @@ export class StatisticsComponent {
     this.selectedEndDate.set(undefined);
   }
 
+  openTicketDetails(ticket: OfficeHourTicketOverview) {
+    this.dialog.open(TicketDetailsDialog, {
+      height: '500px',
+      width: '450px',
+      data: { ticket }
+    });
+    
   /**
    * Downloads the ticket data as a CSV file.
    */

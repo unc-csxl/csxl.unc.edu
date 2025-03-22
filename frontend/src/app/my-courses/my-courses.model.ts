@@ -118,6 +118,7 @@ export interface OfficeHourTicketOverviewJson {
   id: number;
   created_at: string;
   called_at: string | undefined;
+  closed_at: string | undefined;
   state: string;
   type: number;
   description: string;
@@ -129,6 +130,7 @@ export interface OfficeHourTicketOverview {
   id: number;
   created_at: Date;
   called_at: Date | undefined;
+  closed_at: Date | undefined;
   state: string;
   type: number;
   description: string;
@@ -391,6 +393,9 @@ export const parseOfficeHourTicketOverviewJson = (
     created_at: new Date(responseModel.created_at),
     called_at: responseModel.called_at
       ? new Date(responseModel.called_at)
+      : undefined,
+    closed_at: responseModel.closed_at
+      ? new Date(responseModel.closed_at)
       : undefined
   });
 };

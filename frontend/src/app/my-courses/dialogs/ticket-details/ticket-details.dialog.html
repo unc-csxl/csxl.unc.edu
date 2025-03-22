@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Ticket Details</h2>
+<mat-dialog-content>
+  <p>
+    <span class="semibold">Ticket Type: </span>
+    {{ data.ticket.type }}
+  </p>
+  <p>
+    <span class="semibold">Created: </span>
+    {{ data.ticket.created_at | date:'EEEE, MMMM d, y' }} at {{ data.ticket.created_at | date:'hh:mm a' }}
+  </p>
+  <p>
+    <span class="semibold">Student Wait Time: </span>
+    {{ this.studentWaitTime.toFixed(0) }} minute{{ this.studentWaitTime > 1 ? "s" : "" }}
+  </p>
+  <p>
+    <span class="semibold">Assisted From: </span>
+    {{ data.ticket.called_at | date:'hh:mm a' }} - {{ data.ticket.closed_at | date:'hh:mm a' }}
+    ({{ this.studentWaitTime.toFixed(0) }} minute{{ this.studentWaitTime > 1 ? "s" : "" }})
+  </p>
+  
+  <mat-divider />
+  <span class="semibold user-tag">Student:</span>
+  <user-chip-list [users]="data.ticket.creators"></user-chip-list>
+  
+  <span class="semibold user-tag">Caller:</span>
+  <user-chip-list [users]="data.ticket.caller? [data.ticket.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
+
+  <mat-divider />
+  <p mat-card-subtitle>Description</p>
+  <p markdown>
+    {{ data.ticket.description }}
+  </p>
+</mat-dialog-content>
