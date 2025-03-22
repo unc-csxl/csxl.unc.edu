@@ -45,6 +45,7 @@ import {
 import { Observable, map } from 'rxjs';
 import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
 import { Paginated } from '../pagination';
+import saveAs from 'file-saver';
 
 /** Enum for days of the week */
 export enum Weekday {
@@ -425,5 +426,24 @@ export class MyCoursesService {
       `/api/my-courses/${courseSiteId}/statistics` + '?' + query.toString();
 
     return this.http.get<OfficeHoursTicketStatistics>(route);
+  }
+
+  /**
+   * Get the office hours ticket CSV file.
+   * @param courseSiteId: ID of the course site to get the ticket CSV for
+   * @param params: Pagination parameters
+   */
+  getOfficeHoursTicketCsv(
+    courseSiteId: number,
+    params: OfficeHourStatisticsPaginationParams | null
+  ) {
+    let route = params
+      ? `/api/my-courses/${courseSiteId}/statistics/csv` +
+        '?' +
+        new URLSearchParams(params).toString()
+      : `/api/my-courses/${courseSiteId}/statistics/csv`;
+    return this.http.get(route, {
+      responseType: 'blob'
+    });
   }
 }

@@ -34,6 +34,8 @@ import { Paginated } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { TicketDetailsDialog } from '../../dialogs/ticket-details/ticket-details.dialog';
+import saveAs from 'file-saver';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-statistics',
@@ -150,6 +152,7 @@ export class StatisticsComponent {
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService,
     protected dialog: MatDialog
+    protected snackBar: MatSnackBar
   ) {
     // Get the course site ID from the route parameters
     this.courseSiteId = +this.route.parent!.snapshot.params['course_site_id'];
@@ -175,5 +178,38 @@ export class StatisticsComponent {
       width: '450px',
       data: { ticket }
     });
+    
+  /**
+   * Downloads the ticket data as a CSV file.
+   */
+  downloadTicketData() {
+    this.myCoursesService
+      .getOfficeHoursTicketCsv(this.courseSiteId, {
+        student_ids: JSON.stringify(
+          this.selectedStudentFilterOptions().map((student) => student.item.id)
+        ),
+        staff_ids: JSON.stringify(
+          this.selectedStaffFilterOptions().map((staff) => staff.item.id)
+        ),
+        range_start: this.selectedStartDate()?.toISOString() ?? '',
+        range_end: this.selectedEndDate()?.toISOString() ?? ''
+      } as OfficeHourStatisticsPaginationParams)
+      .subscribe({
+        next: (response) => {
+          saveAs(response, 'ticket-data.csv');
+          this.snackBar.open('Office hours data downloaded.', '', {
+            duration: 2000
+          });
+        },
+        error: () => {
+          this.snackBar.open(
+            'There was an error downloading office hours data.',
+            '',
+            {
+              duration: 2000
+            }
+          );
+        }
+      });
   }
 }
