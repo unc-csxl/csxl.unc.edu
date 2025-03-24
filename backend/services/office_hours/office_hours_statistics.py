@@ -296,3 +296,28 @@ class OfficeHoursStatisticsService:
             term_start=term.start,
             term_end=term.end,
         )
+
+    def get_ticket_csv(
+        self, user: User, site_id: int, pagination_params: TicketPaginationParams
+    ):
+        """
+        Get a CSV of the tickets for a given course site.
+        """
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        # Create query to load all ticket data
+        statement, _ = self.create_ticket_query(site_id, pagination_params)
+
+        # Perform a joined load so that caller and creators data are populated for the
+        # resulting ticket entities
+        statement = statement.options(
+            joinedload(OfficeHoursTicketEntity.caller),
+            joinedload(OfficeHoursTicketEntity.creators),
+        )
+
+        # Load entities
+        entities = self._session.execute(statement).unique().scalars()
+
+        # Convert entities to CSV format with expected data
+        return [entity.to_csv_model() for entity in entities]

@@ -65,7 +65,7 @@
             </div>
               <!-- Download button -->
               <button
-                mat-flat-button
+                mat-flat-button (click)="downloadTicketData()"
                 class="secondary-button"
               >
                 <mat-icon id="download-button-icon">download</mat-icon>
@@ -106,7 +106,7 @@
                       </div>
                     </div>
                     <div class="ticket-row-trailing-content">
-                      <button mat-icon-button>
+                      <button mat-icon-button (click)="openTicketDetails(item)">
                         <mat-icon>more_vert</mat-icon>
                       </button>
                     </div>

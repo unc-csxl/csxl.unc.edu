@@ -149,21 +149,21 @@ body {
 
   .primary-button {
     .mat-icon {
-      color: white !important;
+      color: mat.get-theme-color($theme, on-primary) !important;
     }
     @include mat.button-color($theme, $color-variant: primary);
   }
 
   .secondary-button {
     .mat-icon {
-      color: white !important;
+      color: mat.get-theme-color($theme, on-secondary) !important;
     }
     @include mat.button-color($theme, $color-variant: secondary);
   }
 
   .tertiary-button {
     .mat-icon {
-      color: white !important;
+      color: mat.get-theme-color($theme, on-tertiary) !important;
     }
     @include mat.button-color($theme, $color-variant: tertiary);
   }
