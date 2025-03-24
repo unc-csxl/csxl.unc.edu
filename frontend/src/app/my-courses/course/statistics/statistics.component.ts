@@ -151,7 +151,7 @@ export class StatisticsComponent {
   constructor(
     private route: ActivatedRoute,
     protected myCoursesService: MyCoursesService,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
     protected snackBar: MatSnackBar
   ) {
     // Get the course site ID from the route parameters
@@ -172,13 +172,15 @@ export class StatisticsComponent {
     this.selectedEndDate.set(undefined);
   }
 
+  /** Open the ticket details dialog */
   openTicketDetails(ticket: OfficeHourTicketOverview) {
     this.dialog.open(TicketDetailsDialog, {
       height: '500px',
       width: '450px',
       data: { ticket }
     });
-    
+  }
+
   /**
    * Downloads the ticket data as a CSV file.
    */
