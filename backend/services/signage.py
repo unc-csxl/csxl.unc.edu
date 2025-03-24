@@ -64,14 +64,20 @@ class SignageService:
             map(lambda section: section.number, entity.course_site.sections)
         )
 
+        course_entity = entity.course_site.sections[0].course
+
         return SignageOfficeHours(
             id=entity.id,
             mode=entity.mode.to_string(),
             location=entity.room.id,
             course=(
-                entity.course_site.title
+                course_entity.subject_code + " " + course_entity.number
                 if min_section_num == "001"
-                else entity.course_site.title + "-" + min_section_num
+                else course_entity.subject_code
+                + " "
+                + course_entity.number
+                + "-"
+                + min_section_num
             ),
             queued=len(
                 [
@@ -188,7 +194,10 @@ class SignageService:
 
         # Newest Events
         events_query = (
-            select(EventEntity).order_by(EventEntity.start.desc()).limit(MAX_EVENTS)
+            select(EventEntity)
+            .where(EventEntity.end >= datetime.now())
+            .order_by(EventEntity.start.desc())
+            .limit(MAX_EVENTS)
         )
         event_entities = self._session.scalars(events_query).all()
         events = [event.to_overview_model() for event in event_entities]
