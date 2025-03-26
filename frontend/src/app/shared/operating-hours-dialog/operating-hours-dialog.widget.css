@@ -1,6 +1,5 @@
 .dialog-calendar {
-    width: min(500px, 100cqw);
+    width: 100%;
     height: 500px;
     display: flex;
-    
 }

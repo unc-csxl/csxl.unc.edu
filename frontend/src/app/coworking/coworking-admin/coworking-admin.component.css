@@ -18,7 +18,8 @@
 }
 
 .open-hours-calendar-card {
-  width: 100%;
+  /* Using calc here to account for the 1em of margin on each side */
+  width: calc(100% - 2em);
   max-width: 1000px;
 }
 
