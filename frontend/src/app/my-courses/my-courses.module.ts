@@ -55,6 +55,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { StatisticsComponent } from './course/statistics/statistics.component';
 import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statistics-card/office-hours-statistics-card.widget';
 import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dialog';
+import { StudentSummaryDialog } from './dialogs/student-summary/student-summary.dialog';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dia
     ImportRosterDialog,
     DeleteRecurringEventDialog,
     TicketDetailsDialog,
-    OfficeHoursStatisticsCardWidget
+    OfficeHoursStatisticsCardWidget,
+    StudentSummaryDialog
   ],
   imports: [
     CommonModule,

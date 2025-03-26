@@ -339,10 +339,10 @@ def get_ticket_statistics_csv(
 
 
 @api.get("/{course_site_id}/roster/student-summary", tags=["My Courses"])
-def get_user(
-    # course_site_id: int,
-    user_id: int = "",
-    # user: User = Depends(registered_user),
-    user_svc: UserService = Depends(),
-) -> User:
-    return user_svc.get_by_id(user_id)
+def get_user_summary(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    pid: int = "",
+    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
+) -> CourseMemberOverview:
+    return oh_statistics_svc.get_course_member(subject, course_site_id, pid)

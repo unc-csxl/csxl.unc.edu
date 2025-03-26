@@ -321,3 +321,43 @@ class OfficeHoursStatisticsService:
 
         # Convert entities to CSV format with expected data
         return [entity.to_csv_model() for entity in entities]
+
+    def get_course_member(
+        self, user: User, site_id: int, pid: int
+    ) -> CourseMemberOverview | None:
+        """Get a Course Member by PID.
+
+        Args:
+            pid: The PID of the user.
+
+        Returns:
+            CourseMemberOverview | None: The course member overview or None if not found.
+        """
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        # Query to find the user by PID
+        query = (
+            select(SectionMemberEntity)
+            .join(SectionEntity)
+            .join(UserEntity)
+            .where(UserEntity.pid == pid)
+            .options(joinedload(SectionMemberEntity.section))
+            .options(joinedload(SectionMemberEntity.user))
+        )
+        section_member_entity: SectionMemberEntity | None = self._session.scalar(query)
+
+        if section_member_entity is None:
+            return None
+
+        # Map the SectionMemberEntity to a CourseMemberOverview
+        return CourseMemberOverview(
+            pid=section_member_entity.user.pid,
+            first_name=section_member_entity.user.first_name,
+            last_name=section_member_entity.user.last_name,
+            email=section_member_entity.user.email,
+            pronouns=section_member_entity.user.pronouns,
+            section_number=section_member_entity.section.number,
+            role=section_member_entity.member_role.value,
+            github_avatar=section_member_entity.user.github_avatar or None,
+        )

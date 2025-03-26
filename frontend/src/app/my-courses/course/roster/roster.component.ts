@@ -25,6 +25,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { ImportRosterDialog } from '../../dialogs/import-roster/import-roster.dialog';
 import { MyCoursesService } from '../../my-courses.service';
+import { StudentSummaryDialog } from '../../dialogs/student-summary/student-summary.dialog';
 
 @Component({
   selector: 'app-roster',
@@ -120,6 +121,15 @@ export class RosterComponent {
       this.rosterPaginator.loadPage(this.previousParams).subscribe((page) => {
         this.rosterPage.set(page);
       });
+    });
+  }
+
+  /** Open the student summary dialog */
+  openStudentSummary(student: CourseMemberOverview) {
+    this.dialog.open(StudentSummaryDialog, {
+      height: '300px',
+      width: '450px',
+      data: { student }
     });
   }
 }
