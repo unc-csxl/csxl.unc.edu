@@ -1,0 +1,12 @@
+.semibold {
+  font-weight: 500;
+}
+
+.mat-divider {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.user-tag {
+  margin-right: 8px;
+}

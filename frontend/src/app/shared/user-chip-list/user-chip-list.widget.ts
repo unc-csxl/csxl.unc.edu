@@ -17,6 +17,7 @@ import { PublicProfile } from 'src/app/profile/profile.service';
 })
 export class UserChipList {
   @Input() users!: PublicProfile[];
+  @Input() nameSuffix?: string = '';
   @Input() enableMailTo!: boolean;
   @Input() clickable?: boolean = true;
   constructor() {}

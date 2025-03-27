@@ -25,10 +25,10 @@
       *ngIf="enableMailTo; else disableMailTo"
       class="user-email-link"
       href="mailto:{{ user.email }}">
-      {{ user.first_name + ' ' + user.last_name }}
+      {{ user.first_name + ' ' + user.last_name + nameSuffix }}
     </a>
     <ng-template #disableMailTo>
-      {{ user.first_name + ' ' + user.last_name }}
+      {{ user.first_name + ' ' + user.last_name + nameSuffix }}
     </ng-template>
   </mat-chip-row>
   } } @else {
@@ -43,10 +43,10 @@
         *ngIf="enableMailTo; else disableMailTo"
         class="user-email-link"
         href="mailto:{{ user.email }}">
-        {{ user.first_name + ' ' + user.last_name }}
+        {{ user.first_name + ' ' + user.last_name + nameSuffix }}
       </a>
       <ng-template #disableMailTo>
-        {{ user.first_name + ' ' + user.last_name }}
+        {{ user.first_name + ' ' + user.last_name + nameSuffix }}
       </ng-template>
     </mat-chip>
   </div>

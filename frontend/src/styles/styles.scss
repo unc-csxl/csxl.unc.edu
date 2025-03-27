@@ -49,6 +49,12 @@ body {
     color: mat.get-theme-color($theme, on-primary) !important;
   }
 
+  .inverse-primary-background-color {
+    background-color: mat.get-theme-color($theme, inverse-primary) !important;
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
+
+
   .primary-color {
     color: mat.get-theme-color($theme, primary) !important;
   }
@@ -116,6 +122,16 @@ body {
     color: mat.get-theme-color($theme, secondary) !important;
   }
 
+  .surface-container-high {
+    background-color: mat.get-theme-color($theme, surface-container-high) !important;
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
+
+  .surface-background {
+    background: #E6E0E9 !important; // Surface background color is broken in Angular M3 at the moment.
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
+
   /// Ensures that all tables are horizontally scrollable.
   /// All tables have to be wrapped by a div with the
   /// `table-responsive` class.
@@ -143,21 +159,21 @@ body {
 
   .primary-button {
     .mat-icon {
-      color: white !important;
+      color: mat.get-theme-color($theme, on-primary) !important;
     }
     @include mat.button-color($theme, $color-variant: primary);
   }
 
   .secondary-button {
     .mat-icon {
-      color: white !important;
+      color: mat.get-theme-color($theme, on-secondary) !important;
     }
     @include mat.button-color($theme, $color-variant: secondary);
   }
 
   .tertiary-button {
     .mat-icon {
-      color: white !important;
+      color: mat.get-theme-color($theme, on-tertiary) !important;
     }
     @include mat.button-color($theme, $color-variant: tertiary);
   }
@@ -405,6 +421,8 @@ body {
   .font-variant {
     color: mat.get-theme-color($theme, on-surface-variant) !important;
   }
+  .label-large {
+    font: mat.get-theme-typography($theme, label-large, font);
   .font-on-surface {
     color: mat.get-theme-color($theme, on-surface) !important;
   }
@@ -505,6 +523,14 @@ body {
       $theme,
       secondary-container
     ) !important;
+  }
+
+  mat-filter-chip-dialog {
+    @include mat.form-field-overrides((
+      container-color: mat.get-theme-color($theme, surface-container-high),
+      hover-state-layer-opacity: 0
+  ));
+
   }
 }
 .mdc-notched-outline__notch {
