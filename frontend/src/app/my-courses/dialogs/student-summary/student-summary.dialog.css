@@ -1,0 +1,38 @@
+.user-avatar {
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    background-color: #4786c6;
+    line-height: 40px;
+    border-radius: 100%;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.header-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 8px;
+    margin-left: 8px;
+}
+
+.section-and-email-row {
+    display: flex;
+    align-items: center;
+    margin-top: 8px; 
+    column-gap: 8px;
+}
+
+.section {
+    margin: 0;
+    margin-left: 75px;
+    font-size: 14px;
+}
+  
+.email-button {
+    vertical-align: middle;
+    display: flex;
+}

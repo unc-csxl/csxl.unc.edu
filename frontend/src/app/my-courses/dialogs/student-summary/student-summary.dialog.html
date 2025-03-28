@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Student Summary</h2>
+<mat-dialog-content>
+  <mat-card-header>
+    @if (data.student.github_avatar) {
+    <img mat-card-avatar class="user-avatar" [src]="data.student.github_avatar" />
+    } @else if (data.student.first_name && data.student.last_name) {
+    <p mat-card-avatar class="user-avatar secondary-background">
+      {{ data.student.first_name.charAt(0) }}{{ data.student.last_name.charAt(0) }}
+    </p>
+    }
+
+    <div class="header-row">
+      <mat-card-title>
+        {{ data.student.first_name }} {{ data.student.last_name }}
+      </mat-card-title>
+      <mat-chip-set class="no-hover-chipset">
+        <mat-chip disableRipple>
+          {{ data.student.pronouns }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  </mat-card-header>
+  
+  <div class="section-and-email-row">
+    <p class="section">
+      <span>Section: </span>
+      {{ data.student.section_number }}
+    </p>
+    <a [href]="'mailto:' + data.student.email" class="email-button">
+      <button mat-icon-button>
+        <mat-icon>mail_outline</mat-icon>
+      </button>
+    </a>
+  </div>
+</mat-dialog-content>

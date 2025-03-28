@@ -30,6 +30,7 @@ from ...models.office_hours.course_site import (
 )
 from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...models.pagination import PaginationParams, Paginated, TicketPaginationParams
+from ...services import UserService
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -335,3 +336,13 @@ def get_ticket_statistics_csv(
     response.headers["Content-Disposition"] = "attachment; filename=export.csv"
     # Return the response
     return response
+
+
+@api.get("/{course_site_id}/roster/student-summary", tags=["My Courses"])
+def get_user_summary(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    pid: int = "",
+    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
+) -> CourseMemberOverview:
+    return oh_statistics_svc.get_course_member(subject, course_site_id, pid)

@@ -76,6 +76,7 @@ export interface CourseMemberOverview {
   pronouns: string;
   section_number: string;
   role: string;
+  github_avatar: string | null;
 }
 
 export interface CourseRosterOverview {

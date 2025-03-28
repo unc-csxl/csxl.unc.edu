@@ -66,6 +66,7 @@ class CourseMemberOverview(BaseModel):
     pronouns: str
     section_number: str
     role: str
+    github_avatar: str | None = None
 
 
 class OfficeHoursOverview(BaseModel):
