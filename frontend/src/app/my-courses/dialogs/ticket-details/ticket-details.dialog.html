@@ -10,12 +10,12 @@
   </p>
   <p>
     <span class="semibold">Student Wait Time: </span>
-    {{ this.studentWaitTime.toFixed(0) }} minute{{ this.studentWaitTime > 1 ? "s" : "" }}
+    {{ this.studentWaitTime.toFixed(0) }} minute{{ this.studentWaitTime !== 1 ? "s" : "" }}
   </p>
   <p>
     <span class="semibold">Assisted From: </span>
     {{ data.ticket.called_at | date:'hh:mm a' }} - {{ data.ticket.closed_at | date:'hh:mm a' }}
-    ({{ this.studentWaitTime.toFixed(0) }} minute{{ this.studentWaitTime > 1 ? "s" : "" }})
+    ({{ this.ticketDuration.toFixed(0) }} minute{{ this.ticketDuration !== 1 ? "s" : "" }})
   </p>
   
   <mat-divider />
