@@ -1,0 +1,129 @@
+<div class="container">
+    <mat-pane>
+      <mat-card-header>
+        <mat-card-title>Statistics</mat-card-title>
+        <mat-divider />
+      </mat-card-header>
+      <mat-card-content>
+        <div class="ticket-history-toolbar">
+          <mat-card-subtitle>Ticket History</mat-card-subtitle>
+          @if(filterOptions()) {
+            <div class="ticket-history-toolbar-options">
+              <!-- Students chip -->
+              <mat-filter-chip
+                placeholder="Students"
+                leadingIcon="person_raised_hand"
+                dropdownAlignment="right"
+                [searchableItems]="studentFilterOptions()"
+                [(selectedItems)]="selectedStudentFilterOptions"
+                [filterLogic]="profileFilterLogic"
+              />
+              <!-- Staff chip -->
+              <mat-filter-chip
+                placeholder="Staff"
+                leadingIcon="group"
+                dropdownAlignment="right"
+                [searchableItems]="staffFilterOptions()"
+                [(selectedItems)]="selectedStaffFilterOptions"
+                [filterLogic]="profileFilterLogic"
+              />
+              <!-- Date picker -->
+              <div class="date-picker-container">
+                <mat-chip disableRipple [highlighted]="selectedStartDate() || selectedEndDate()" >
+                  <div class="mat-filter-chip-content">
+                      <div class="mat-filter-chip-main-content" (click)="datePicker.open()" >
+                          <mat-icon matChipTrailingIcon class="font-primary mat-filter-chip-leading-icon">date_range</mat-icon>
+                          @if(selectedStartDate() || selectedEndDate()) {
+                              <span>{{ selectedStartDate() | date: 'shortDate' }} </span>
+                              @if(selectedEndDate()) {
+                                  <span> - {{ selectedEndDate() | date: 'shortDate' }}</span>
+                              }
+                          } @else {
+                              <span>Date</span>
+                          }
+                          <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
+                      </div>
+                      @if(selectedStartDate()|| selectedEndDate()) {
+                          <div class="mat-filter-chip-accessory" (click)="clearFilters()">
+                              <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
+                              <mat-icon matChipTrailingIcon>close</mat-icon>    
+                          </div>
+                      }
+                  </div>
+              </mat-chip>
+              <mat-date-range-input 
+                class="date-input"
+                [rangePicker]="datePicker" 
+                [class.cdk-visually-hidden]="true"
+                [min]="filterOptions()?.term_start"
+                [max]="filterOptions()?.term_end"
+              >
+                <input matStartDate [class.cdk-visually-hidden]="true" [(ngModel)]="selectedStartDate">
+                <input matEndDate [class.cdk-visually-hidden]="true" [(ngModel)]="selectedEndDate">
+              </mat-date-range-input>
+              <mat-date-range-picker #datePicker></mat-date-range-picker>       
+            </div>
+              <!-- Download button -->
+              <button
+                mat-flat-button (click)="downloadTicketData()"
+                class="secondary-button"
+              >
+                <mat-icon id="download-button-icon">download</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+        <!-- Ticket data cards -->
+        <div class="statistics-row">
+          <office-hours-statistics-card
+            title="Total Tickets"
+            [leftStatistic]="ticketStatistics()?.total_tickets_weekly?.toFixed(0) ?? '---'"
+            leftStatisticLabel="this week"
+            [rightStatistic]="ticketStatistics()?.total_tickets?.toFixed(0) ?? '---'"
+            rightStatisticLabel="overall"
+          />
+          <office-hours-statistics-card
+          title="Queue Statistics"
+          [leftStatistic]="ticketStatistics()?.average_wait_time?.toFixed(2) ?? '---'"
+          leftStatisticLabel="average wait (m)"
+          [rightStatistic]="ticketStatistics()?.average_duration?.toFixed(2) ?? '---'"
+          rightStatisticLabel="average duration (m)"
+          />
+        </div>
+        <!-- Ticket history -->
+         @if(paginatedTickets()) {
+          <mat-card class="ticket-history-card" appearance="outlined">
+            <mat-card-content>
+              <div class="ticket-list">
+                @for(item of paginatedTickets()?.items ?? []; track item.id) {
+                  <div class="ticket-row">
+                    <div class="ticket-row-leading-content">
+                      <p>{{ item.called_at | date: 'EEE, M/d' }}<br>{{ item.called_at | date: 'shortTime' }}</p>
+                      <p><span class="semibold">{{ item.type }}</span><br>Short summary...</p>
+                      <div class="ticket-row-user-chips">
+                        <user-chip-list [users]="item.creators"></user-chip-list>
+                        <user-chip-list [users]="item.caller? [item.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
+                      </div>
+                    </div>
+                    <div class="ticket-row-trailing-content">
+                      <button mat-icon-button (click)="openTicketDetails(item)">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                } @empty {
+                  <p>No tickets yet!</p>
+                }
+              </div>
+              <mat-paginator
+                [length]="paginatedTickets()!.length"
+                [pageSize]="paginatedTickets()!.params.page_size"
+                [pageIndex]="paginatedTickets()!.params.page"
+                (page)="handlePageEvent($event)"
+              />
+            </mat-card-content>
+          </mat-card>
+         }
+      </mat-card-content>
+    </mat-pane> 
+</div>
