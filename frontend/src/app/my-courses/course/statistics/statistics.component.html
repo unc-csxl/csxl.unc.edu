@@ -99,7 +99,7 @@
                   <div class="ticket-row">
                     <div class="ticket-row-leading-content">
                       <p>{{ item.called_at | date: 'EEE, M/d' }}<br>{{ item.called_at | date: 'shortTime' }}</p>
-                      <p><span class="semibold">{{ item.type }}</span><br>Short summary...</p>
+                      <p><span class="semibold">{{ item.type }}</span></p>
                       <div class="ticket-row-user-chips">
                         <user-chip-list [users]="item.creators"></user-chip-list>
                         <user-chip-list [users]="item.caller? [item.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
