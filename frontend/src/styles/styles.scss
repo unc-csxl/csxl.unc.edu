@@ -423,6 +423,7 @@ body {
   }
   .label-large {
     font: mat.get-theme-typography($theme, label-large, font);
+  }
   .font-on-surface {
     color: mat.get-theme-color($theme, on-surface) !important;
   }
