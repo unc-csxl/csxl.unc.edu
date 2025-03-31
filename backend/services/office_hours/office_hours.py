@@ -198,7 +198,8 @@ class OfficeHoursService:
             event_location=queue_entity.room.nickname,
             event_location_description=queue_entity.location_description,
             ticket=(
-                self._to_oh_ticket_overview(active_ticket) if active_ticket else None
+                active_ticket.to_overview_model()
+                if active_ticket else None
             ),
             queue_position=queue_position,
         )
@@ -227,7 +228,7 @@ class OfficeHoursService:
         called_tickets: list[OfficeHourTicketOverview] = []
         queued_tickets: list[OfficeHourTicketOverview] = []
         for ticket in ticket_entities:
-            overview = self._to_oh_ticket_overview(ticket)
+            overview = ticket.to_overview_model()
             if ticket.state == TicketState.CALLED:
                 if ticket.caller.user_id == user.id:
                     active_tickets.append(overview)
@@ -297,20 +298,6 @@ class OfficeHoursService:
             )
 
         return OfficeHourEventRoleOverview(role=user_members[0].member_role.value)
-
-    def _to_oh_ticket_overview(
-        self, ticket: OfficeHoursTicketEntity
-    ) -> OfficeHourTicketOverview:
-        return OfficeHourTicketOverview(
-            id=ticket.id,
-            created_at=ticket.created_at,
-            called_at=ticket.called_at,
-            state=ticket.state.to_string(),
-            type=ticket.type.to_string(),
-            description=ticket.description,
-            creators=[creator.user.to_public_model() for creator in ticket.creators],
-            caller=(ticket.caller.user.to_public_model() if ticket.caller else None),
-        )
 
     def create(self, user: User, site_id: int, event: NewOfficeHours) -> OfficeHours:
         """
