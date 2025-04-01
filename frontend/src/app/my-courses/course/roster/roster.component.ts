@@ -160,11 +160,8 @@ export class RosterComponent {
 
   /** Navigate to statistics page and populate student in student filter */
   openUserStatistics(student: CourseMemberOverview): void {
-    console.log('Student object:', student); // Log the student object
-    console.log('Student ID:', student.id); // Log the student ID
-
     this.snackBar.open(
-      `Navigating to statistics for ${student.first_name} ${student.last_name} (ID: ${student.id})`,
+      `Navigating to statistics for ${student.first_name} ${student.last_name}`,
       'Close',
       {
         duration: 3000 // Snackbar will be visible for 3 seconds

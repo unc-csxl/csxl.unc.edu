@@ -59,6 +59,7 @@ class TermOverview(BaseModel):
 
 
 class CourseMemberOverview(BaseModel):
+    id: int
     pid: int
     first_name: str
     last_name: str
