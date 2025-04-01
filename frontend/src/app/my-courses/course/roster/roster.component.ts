@@ -158,19 +158,23 @@ export class RosterComponent {
     });
   }
 
-  /** Navigate to statistics page and populate student in student filter */
-  openUserStatistics(student: CourseMemberOverview): void {
+  /** Navigate to statistics page and populate student or staff in the filter */
+  openUserStatistics(member: CourseMemberOverview): void {
+    const isStudent = member.role === 'Student'; // Check if the member is a student
+    const queryParamKey = isStudent ? 'studentId' : 'staffId'; // Use appropriate query parameter
+
     this.snackBar.open(
-      `Navigating to statistics for ${student.first_name} ${student.last_name}`,
+      `Navigating to statistics for ${member.first_name} ${member.last_name}`,
       'Close',
       {
         duration: 3000 // Snackbar will be visible for 3 seconds
       }
     );
+
     this.router.navigate(['../statistics'], {
       relativeTo: this.route,
       queryParams: {
-        studentId: student.id
+        [queryParamKey]: member.id // Pass `studentId` or `staffId` based on the role
       }
     });
   }

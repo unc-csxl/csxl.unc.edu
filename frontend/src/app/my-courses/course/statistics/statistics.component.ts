@@ -164,16 +164,29 @@ export class StatisticsComponent {
 
         // Read the query parameters
         const studentId = this.route.snapshot.queryParamMap.get('studentId');
+        const staffId = this.route.snapshot.queryParamMap.get('staffId');
 
         // If a student ID is provided, find and pre-select it in the filter
         if (studentId) {
           const student = data.students.find((s) => s.id === +studentId);
-
           if (student) {
             this.selectedStudentFilterOptions.set([
               {
                 displayText: `${student.first_name} ${student.last_name}`,
                 item: student
+              }
+            ]);
+          }
+        }
+
+        // If a staff ID is provided, find and pre-select it in the staff filter
+        if (staffId) {
+          const staff = data.staff.find((s) => s.id === +staffId);
+          if (staff) {
+            this.selectedStaffFilterOptions.set([
+              {
+                displayText: `${staff.first_name} ${staff.last_name}`,
+                item: staff
               }
             ]);
           }
