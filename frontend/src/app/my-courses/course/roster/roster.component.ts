@@ -131,7 +131,7 @@ export class RosterComponent {
   /** Copies student email to clipboard */
   copyToClipboard(email: string): void {
     navigator.clipboard.writeText(email).then(() => {
-      this.snackBar.open('Copied to clipboard.', '', {
+      this.snackBar.open('Copied to clipboard', '', {
         duration: 2000
       });
     });
@@ -142,7 +142,7 @@ export class RosterComponent {
     this.myCoursesService.getCourseRosterCsv(this.courseSiteId).subscribe({
       next: (response) => {
         saveAs(response, 'course-roster.csv');
-        this.snackBar.open('Course roster downloaded.', '', {
+        this.snackBar.open('Course roster downloaded', '', {
           duration: 2000
         });
       },
@@ -159,9 +159,17 @@ export class RosterComponent {
   }
 
   /** Navigate to statistics page and populate student in student filter */
-  openUserStatistics(student: PublicProfile): void {
-    // thought PublicProfile because we need to query on id not pid i think (might need to take in CourseMemberOverview not sure tho)
-    // it currently navigates to statistics but still trying to figure out how to add the params in based row of the roster
+  openUserStatistics(student: CourseMemberOverview): void {
+    console.log('Student object:', student); // Log the student object
+    console.log('Student ID:', student.id); // Log the student ID
+
+    this.snackBar.open(
+      `Navigating to statistics for ${student.first_name} ${student.last_name} (ID: ${student.id})`,
+      'Close',
+      {
+        duration: 3000 // Snackbar will be visible for 3 seconds
+      }
+    );
     this.router.navigate(['../statistics'], {
       relativeTo: this.route,
       queryParams: {

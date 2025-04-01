@@ -252,6 +252,7 @@ class CourseSiteService:
         self, section_member: SectionMemberEntity, is_student: bool
     ) -> CourseMemberOverview:
         return CourseMemberOverview(
+            id=section_member.user.id,
             pid=section_member.user.pid,
             first_name=section_member.user.first_name,
             last_name=section_member.user.last_name,

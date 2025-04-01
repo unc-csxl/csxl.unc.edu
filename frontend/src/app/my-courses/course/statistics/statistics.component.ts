@@ -161,6 +161,23 @@ export class StatisticsComponent {
       .getOfficeHoursStatisticsFilterOptions(this.courseSiteId)
       .subscribe((data) => {
         this.filterOptions.set(data);
+
+        // Read the query parameters
+        const studentId = this.route.snapshot.queryParamMap.get('studentId');
+
+        // If a student ID is provided, find and pre-select it in the filter
+        if (studentId) {
+          const student = data.students.find((s) => s.id === +studentId);
+
+          if (student) {
+            this.selectedStudentFilterOptions.set([
+              {
+                displayText: `${student.first_name} ${student.last_name}`,
+                item: student
+              }
+            ]);
+          }
+        }
       });
   }
 
