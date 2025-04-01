@@ -29,7 +29,8 @@ const ORIGINAL_TITLE: string = 'Office Hours Queue';
 const NOTIFICATION_TITLE: string = 'Queued Ticket!';
 
 /** Store notification audio */
-const CHIME = new Audio('assets/office-hours-notif.wav');
+const CHIME_ONE = new Audio('assets/office-hours-notif.wav');
+const CHIME_TWO = new Audio('assets/oh-notif.wav');
 
 @Component({
   selector: 'app-office-hours-queue',
@@ -105,8 +106,14 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
       }
     }
     /* Notification behavior based on result stored in notify */
+
+
     if (notify) {
-      CHIME.play();
+      if (Math.random() < 1 / 20) {
+        CHIME_ONE.play();
+      } else {
+        CHIME_TWO.play();
+      }
       this.titleFlashTimer = timer(0, 1000).subscribe(() => {
         this.titleService.setTitle(
           this.titleService.getTitle() === NOTIFICATION_TITLE ?
