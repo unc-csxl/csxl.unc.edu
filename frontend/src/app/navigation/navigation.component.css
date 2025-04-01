@@ -1,7 +1,8 @@
 .mdc-list-item.mdc-list-item--with-one-line.logo-item {
   height: 64px;
   padding: 0;
-  margin: -8px 0 0 0;
+  /* margin: -8px 0 0 0; */
+  margin: 0 0 -12px 0;
   text-align: center;
 }
 
@@ -16,16 +17,10 @@
 
 /* Left align the logo. */
 .logo-item {
-  text-align: left !important;
-  padding-left: 16px !important;
-  margin-bottom: 12px !important;
-}
-
-.logo-icon {
-  display: block;
-  /* margin-left: auto;
-  margin-right: auto; */
-  width: 90%;
+  text-align: center !important;
+  /* margin-top: 12px; */
+  /* padding-left: 16px !important; */
+  /* margin-bottom: 12px !important; */
 }
 
 .logo {
@@ -58,7 +53,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 }
 
 .mat-drawer {

@@ -10,25 +10,26 @@
     [opened]="isHandset === false">
     <div class="inner-sidenav-container">
       <mat-nav-list (click)="hideMobileSidenav(drawer)">
-        <a
+        <div>
+          <a
           mat-list-item
           class="logo-item"
           routerLink="/"
-          routerLinkActive="active">
+          routerLinkActive="active"
+          >
           <picture>
             <source
               class="logo"
-              srcset="/assets/lil-logo.png"
+              srcset="/assets/csxl-mini-logo.svg"
               media="(prefers-color-scheme: dark)"
               alt="Computer Science Experience Labs Logo" />
             <img
               class="logo"
-              src="/assets/lil-logo-light.png"
+              src="/assets/csxl-mini-logo.svg"
               alt="Computer Science Experience Labs Logo" />
           </picture>
         </a>
-        <div>
-          
+
           <!-- Administration -->
           @if (profile$ | async; as profile) {
             @if ((adminPermission$ | async) || (ambassadorPermission$ | async)) {
