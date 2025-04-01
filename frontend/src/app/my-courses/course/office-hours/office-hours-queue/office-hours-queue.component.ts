@@ -109,7 +109,7 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
 
 
     if (notify) {
-      if (Math.random() < 1 / 20) {
+      if (Math.random() < 1 / 4) {
         CHIME_ONE.play();
       } else {
         CHIME_TWO.play();
