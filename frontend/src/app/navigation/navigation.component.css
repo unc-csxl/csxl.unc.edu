@@ -1,7 +1,6 @@
 .mdc-list-item.mdc-list-item--with-one-line.logo-item {
   height: 64px;
   padding: 0;
-  /* margin: -8px 0 0 0; */
   margin: 0 0 -12px 0;
   text-align: center;
 }
@@ -18,9 +17,6 @@
 /* Left align the logo. */
 .logo-item {
   text-align: center !important;
-  /* margin-top: 12px; */
-  /* padding-left: 16px !important; */
-  /* margin-bottom: 12px !important; */
 }
 
 .logo {
