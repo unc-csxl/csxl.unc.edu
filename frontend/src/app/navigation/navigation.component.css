@@ -1,7 +1,7 @@
 .mdc-list-item.mdc-list-item--with-one-line.logo-item {
-  height: 64px;
+  height: 56px;
   padding: 0;
-  margin: 0 0 -12px 0;
+  margin: 0 0 12px 0;
   text-align: center;
 }
 

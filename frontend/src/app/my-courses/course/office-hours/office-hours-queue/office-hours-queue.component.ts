@@ -30,7 +30,7 @@ const NOTIFICATION_TITLE: string = 'Queued Ticket!';
 
 /** Store notification audio */
 const CHIME_ONE = new Audio('assets/office-hours-notif.wav');
-const CHIME_TWO = new Audio('assets/oh-notif.wav');
+const CHIME_TWO = new Audio('assets/updated-oh-notif.wav');
 
 @Component({
   selector: 'app-office-hours-queue',
