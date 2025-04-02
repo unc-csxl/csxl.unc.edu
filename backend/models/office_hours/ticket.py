@@ -44,3 +44,18 @@ class OfficeHoursTicket(NewOfficeHoursTicket):
     have_concerns: bool = False
     caller_notes: str = ""
     caller_id: int | None
+
+class OfficeHoursTicketCsvRow(BaseModel):
+    """
+    Pydantic model to represent a user's ticket in CSV format, which is used for
+    exporting ticket data to a CSV file in the ticket statistics feature.
+    """
+    student: str
+    description: str
+    type: str
+    created_at: str
+    called_at: str
+    called_by: str
+    closed_at: str
+    duration_minutes: int
+    wait_time_minutes: int

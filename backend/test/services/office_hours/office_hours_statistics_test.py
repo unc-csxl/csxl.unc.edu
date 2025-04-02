@@ -319,3 +319,62 @@ def test_get_paginated_tickets_multiple_filters(
     assert statistics.average_duration == approx(1.0)
     assert statistics.total_conceptual == 1
     assert statistics.total_assignment == 0
+
+
+def test_get_ticket_csv(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that the CSV file is generated correctly."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[],
+        staff_ids=[],
+    )
+
+    ticket_csv = oh_statistics_svc.get_ticket_csv(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert len(ticket_csv) == 1
+
+
+def test_get_ticket_csv_unauthenticated(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that students cannot view the CSV file."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[],
+        staff_ids=[],
+    )
+
+    with pytest.raises(CoursePermissionException):
+        oh_statistics_svc.get_ticket_csv(
+            user_data.student,
+            office_hours_data.comp_110_site.id,
+            ticket_params,
+        )
+
+
+def test_get_ticket_csv_with_filters(
+    oh_statistics_svc: OfficeHoursStatisticsService,
+):
+    """Ensures that the CSV file is generated correctly with filters."""
+    ticket_params = TicketPaginationParams(
+        range_start="",
+        range_end="",
+        student_ids=[user_data.student.id],
+        staff_ids=[user_data.instructor.id],
+    )
+
+    ticket_csv = oh_statistics_svc.get_ticket_csv(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        ticket_params,
+    )
+
+    assert len(ticket_csv) == 1

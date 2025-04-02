@@ -59,6 +59,7 @@ class TermOverview(BaseModel):
 
 
 class CourseMemberOverview(BaseModel):
+    id: int
     pid: int
     first_name: str
     last_name: str
@@ -86,6 +87,7 @@ class OfficeHourTicketOverview(BaseModel):
     id: int
     created_at: datetime
     called_at: datetime | None
+    closed_at: datetime | None
     state: str
     type: str
     description: str

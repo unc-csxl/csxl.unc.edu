@@ -4,7 +4,10 @@ APIs relative to a specific user."""
 
 import json
 from fastapi import APIRouter, Depends
+import io
+import csv
 
+from fastapi.responses import StreamingResponse
 from backend.models.office_hours.ticket_statistics import OfficeHoursTicketStatistics
 from ..authentication import registered_user
 from ...services.academics.course_site import CourseSiteService
@@ -286,3 +289,87 @@ def get_ticket_statistics(
     return oh_statistics_svc.get_statistics(
         subject, course_site_id, ticket_statistics_params
     )
+
+
+@api.get("/{course_site_id}/statistics/csv", tags=["My Courses"])
+def get_ticket_statistics_csv(
+    course_site_id: int,
+    student_ids: str = "",
+    staff_ids: str = "",
+    range_start: str = "",
+    range_end: str = "",
+    subject: User = Depends(registered_user),
+    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
+) -> OfficeHoursTicketStatistics:
+    """
+    Gets the ticket statistics for a given class.
+    Returns:
+        OfficeHoursTicketStatistics
+    """
+
+    # Generate pagination params
+    ticket_statistics_params = TicketPaginationParams(
+        student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
+        staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
+        range_start=range_start,
+        range_end=range_end,
+    )
+
+    # Load CSV data
+    csv_data = oh_statistics_svc.get_ticket_csv(
+        subject, course_site_id, ticket_statistics_params
+    )
+
+    # Create IO Stream
+    stream = io.StringIO()
+    # Create dictionary writer to convert objects to CSV rows
+    # Note: __dict__ converts the Pydantic model into a dictionary of key-value
+    # pairs, enabling access of the object's keys.
+    wr = csv.DictWriter(
+        stream, delimiter=",", fieldnames=list(csv_data[0].__dict__.keys())
+    )
+    wr.writeheader()
+    wr.writerows([d.__dict__ for d in csv_data])
+    # Create HTTP response of type `text/csv`
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    # Return the response
+    return response
+
+
+@api.get("/{course_site_id}/roster/csv", tags=["My Courses"])
+def get_course_site_roster_csv(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    course_site_svc: CourseSiteService = Depends(),
+) -> StreamingResponse:
+    """
+    Get the roster overview for a course.
+
+    Returns:
+        CourseRosterOverview
+    """
+    # Fetch the roster data
+    paginated_roster = course_site_svc.get_course_site_roster(
+        subject, course_site_id, PaginationParams(page=0, page_size=1000)
+    )
+
+    # Extract the items (list of CourseMemberOverview objects)
+    roster_data = paginated_roster.items
+
+    # Create IO Stream
+    stream = io.StringIO()
+    # Create dictionary writer to convert objects to CSV rows
+    # Note: __dict__ converts the Pydantic model into a dictionary of key-value
+    # pairs, enabling access of the object's keys.
+    wr = csv.DictWriter(
+        stream, delimiter=",", fieldnames=list(roster_data[0].__dict__.keys())
+    )
+    wr.writeheader()
+    wr.writerows(
+        [member.__dict__ for member in roster_data]
+    )  # Create HTTP response of type `text/csv`
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=course-roster.csv"
+    # Return the response
+    return response

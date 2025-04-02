@@ -54,6 +54,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { StatisticsComponent } from './course/statistics/statistics.component';
 import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statistics-card/office-hours-statistics-card.widget';
+import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dialog';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -76,6 +78,7 @@ import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statisti
     CreateCourseSiteDialog,
     ImportRosterDialog,
     DeleteRecurringEventDialog,
+    TicketDetailsDialog,
     OfficeHoursStatisticsCardWidget
   ],
   imports: [
@@ -84,6 +87,7 @@ import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statisti
     RouterModule,
     SharedModule,
     MatCardModule,
+    MatMenuModule,
     MatDividerModule,
     MatButtonModule,
     MatIconModule,
