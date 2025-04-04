@@ -1,0 +1,32 @@
+::ng-deep .mat-filter-chip-content:hover, mat-icon {
+    cursor: pointer;
+}
+
+.mat-filter-chip-dialog-backdrop {
+    background-color: transparent;
+}
+
+.mat-filter-chip-main-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mat-filter-chip-accessory {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mat-filter-chip-divider {
+    height: 30px;
+}
+
+.mat-filter-chip-leading-icon {
+    padding-left: 0 !important;
+}
+
+.mat-filter-chip-content {
+    display: flex;
+    flex-direction: row;
+}

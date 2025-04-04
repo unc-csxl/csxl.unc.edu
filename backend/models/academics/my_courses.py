@@ -86,11 +86,19 @@ class OfficeHourTicketOverview(BaseModel):
     id: int
     created_at: datetime
     called_at: datetime | None
+    closed_at: datetime | None
     state: str
     type: str
     description: str
     creators: list[PublicUser]
     caller: PublicUser | None
+
+
+class OfficeHourStatisticsOverview(BaseModel):
+    # add more
+    average_minutes: int
+    total_tickets_called: int
+    history: list[OfficeHourTicketOverview]
 
 
 class OfficeHourQueueOverview(BaseModel):

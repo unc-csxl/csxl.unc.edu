@@ -19,6 +19,15 @@ class PaginationParams(BaseModel):
     filter: str = ""
 
 
+class TicketPaginationParams(PaginationParams):
+    """Parameters passed from the client to paginate ticket results."""
+
+    range_start: str = ""
+    range_end: str = ""
+    student_ids: list[int]
+    staff_ids: list[int]
+
+
 class EventPaginationParams(PaginationParams):
     """Parameters passed from the client to paginate event results."""
 

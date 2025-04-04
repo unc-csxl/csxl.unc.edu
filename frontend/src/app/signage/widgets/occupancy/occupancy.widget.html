@@ -1,0 +1,27 @@
+<mat-card appearance="outlined" class="full-size-pane">
+  <!-- Coworking Card Header -->
+  <mat-card-header class="occupancy-header">
+    <mat-card-title class="display-medium occupancy-title">SN156 Availability</mat-card-title>
+  </mat-card-header>
+
+  <!-- Coworking Information -->
+  <mat-card-content class="full-size-content">
+      @for (category of categories; track category) { @if
+      (category.seats_available_now > 0) {
+      <mat-list-item>
+        <span matListItemTitle class="headline-large">{{ category.title }}</span>
+        <span matListItemIcon class="display-small primary-background"><div>{{
+          category.seats_available_now
+        }}</div></span>
+      </mat-list-item>
+      } @else {
+      <mat-list-item>
+        <span matListItemTitle class="headline-large">{{ category.title }}</span>
+        <span matListItemIcon class="display-small unavailable tertiary-background"><div>0</div></span>
+      </mat-list-item>
+      } }
+  </mat-card-content>
+  <mat-card-footer  class="title-medium font-variant news-footer">
+    Reserve at csxl.unc.edu/coworking
+  </mat-card-footer>
+</mat-card>
