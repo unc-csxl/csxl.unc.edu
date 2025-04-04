@@ -33,10 +33,10 @@ def test_all(term_svc: TermService):
 
 
 def test_get_by_id(term_svc: TermService):
-    term = term_svc.get_by_id(term_data.sp_23.id)
+    term = term_svc.get_by_id(term_data.previous_term.id)
 
     assert isinstance(term, Term)
-    assert term.id == term_data.sp_23.id
+    assert term.id == term_data.previous_term.id
 
 
 def test_get_by_id_not_found(term_svc: TermService):
@@ -49,7 +49,7 @@ def test_get_by_date(term_svc: TermService):
     term = term_svc.get_by_date(term_data.today)
 
     assert isinstance(term, Term)
-    assert term.id == term_data.f_23.id
+    assert term.id == term_data.current_term.id
 
 
 def test_get_by_date_not_found(term_svc: TermService):
@@ -62,18 +62,18 @@ def test_create_as_root(term_svc: TermService):
     permission_svc = create_autospec(PermissionService)
     term_svc._permission_svc = permission_svc
 
-    term = term_svc.create(user_data.root, term_data.new_term)
+    term = term_svc.create(user_data.root, term_data.future_term)
 
     permission_svc.enforce.assert_called_with(
         user_data.root, "academics.term.create", "term/"
     )
     assert isinstance(term, TermDetails)
-    assert term.id == term_data.new_term.id
+    assert term.id == term_data.future_term.id
 
 
 def test_create_as_user(term_svc: TermService):
     with pytest.raises(UserPermissionException):
-        term = term_svc.create(user_data.user, term_data.new_term)
+        term = term_svc.create(user_data.user, term_data.future_term)
         pytest.fail()
 
 
@@ -81,13 +81,13 @@ def test_update_as_root(term_svc: TermService):
     permission_svc = create_autospec(PermissionService)
     term_svc._permission_svc = permission_svc
 
-    term = term_svc.update(user_data.root, term_data.edited_f_23)
+    term = term_svc.update(user_data.root, term_data.current_term_edited)
 
     permission_svc.enforce.assert_called_with(
         user_data.root, "academics.term.update", f"term/{term.id}"
     )
     assert isinstance(term, TermDetails)
-    assert term.id == term_data.edited_f_23.id
+    assert term.id == term_data.current_term_edited.id
 
 
 def test_update_as_root_not_found(term_svc: TermService):
@@ -95,13 +95,13 @@ def test_update_as_root_not_found(term_svc: TermService):
     term_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        term = term_svc.update(user_data.root, term_data.new_term)
+        term = term_svc.update(user_data.root, term_data.future_term)
         pytest.fail()
 
 
 def test_update_as_user(term_svc: TermService):
     with pytest.raises(UserPermissionException):
-        term = term_svc.create(user_data.user, term_data.edited_f_23)
+        term = term_svc.create(user_data.user, term_data.current_term_edited)
         pytest.fail()
 
 
@@ -109,10 +109,10 @@ def test_delete_as_root(term_svc: TermService):
     permission_svc = create_autospec(PermissionService)
     term_svc._permission_svc = permission_svc
 
-    term_svc.delete(user_data.root, term_data.f_23.id)
+    term_svc.delete(user_data.root, term_data.current_term.id)
 
     permission_svc.enforce.assert_called_with(
-        user_data.root, "academics.term.delete", f"term/{term_data.f_23.id}"
+        user_data.root, "academics.term.delete", f"term/{term_data.current_term.id}"
     )
 
     terms = term_svc.all()
@@ -124,11 +124,11 @@ def test_delete_as_root_not_found(term_svc: TermService):
     term_svc._permission_svc = permission_svc
 
     with pytest.raises(ResourceNotFoundException):
-        term = term_svc.delete(user_data.root, term_data.new_term.id)
+        term = term_svc.delete(user_data.root, term_data.future_term.id)
         pytest.fail()
 
 
 def test_delete_as_user(term_svc: TermService):
     with pytest.raises(UserPermissionException):
-        term = term_svc.delete(user_data.user, term_data.f_23.id)
+        term = term_svc.delete(user_data.user, term_data.current_term.id)
         pytest.fail()

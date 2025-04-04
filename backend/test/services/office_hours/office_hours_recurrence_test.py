@@ -40,7 +40,26 @@ def test_create_recurring_oh_event_instructor(
         office_hours_data.new_event,
         office_hours_data.new_recurrence_pattern,
     )
-    assert len(new_events) == 15
+
+    new_recurrence_pattern_array = [
+        office_hours_data.new_recurrence_pattern.recur_monday,
+        office_hours_data.new_recurrence_pattern.recur_tuesday,
+        office_hours_data.new_recurrence_pattern.recur_wednesday,
+        office_hours_data.new_recurrence_pattern.recur_thursday,
+        office_hours_data.new_recurrence_pattern.recur_friday,
+        office_hours_data.new_recurrence_pattern.recur_saturday,
+        office_hours_data.new_recurrence_pattern.recur_sunday,
+    ]
+    new_recurrence_time_delta = (
+        office_hours_data.new_recurrence_pattern.end_date
+        - office_hours_data.new_recurrence_pattern.start_date
+    )
+    expected_new_events_length = 0
+    for i in range(new_recurrence_time_delta.days + 1):
+        if new_recurrence_pattern_array[i % len(new_recurrence_pattern_array)]:
+            expected_new_events_length += 1
+
+    assert len(new_events) == expected_new_events_length
     assert new_events[0].recurrence_pattern_id is not None
 
 
@@ -97,7 +116,25 @@ def test_update_recurring_oh_event_instructor(
         office_hours_data.updated_recurrence_pattern,
     )
 
-    assert len(modified_events) == 10
+    updated_recurrence_pattern_array = [
+        office_hours_data.updated_recurrence_pattern.recur_monday,
+        office_hours_data.updated_recurrence_pattern.recur_tuesday,
+        office_hours_data.updated_recurrence_pattern.recur_wednesday,
+        office_hours_data.updated_recurrence_pattern.recur_thursday,
+        office_hours_data.updated_recurrence_pattern.recur_friday,
+        office_hours_data.updated_recurrence_pattern.recur_saturday,
+        office_hours_data.updated_recurrence_pattern.recur_sunday,
+    ]
+    updated_recurrence_time_delta = (
+        office_hours_data.updated_recurrence_pattern.end_date
+        - office_hours_data.updated_recurrence_pattern.start_date
+    )
+    expected_modified_events_length = 0
+    for i in range(updated_recurrence_time_delta.days + 1):
+        if updated_recurrence_pattern_array[i % len(updated_recurrence_pattern_array)]:
+            expected_modified_events_length += 1
+
+    assert len(modified_events) == expected_modified_events_length
     assert modified_events[0].recurrence_pattern_id is not None
 
 
