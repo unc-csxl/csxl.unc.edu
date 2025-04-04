@@ -403,7 +403,7 @@ new_course_site = NewCourseSite(
 
 new_course_site_term_mismatch = NewCourseSite(
     title="Ina's COMP 301",
-    term_id=term_data.f_23.id,
+    term_id=term_data.previous_term.id,
     section_ids=[
         section_data.comp_301_002_current_term.id,
     ],
