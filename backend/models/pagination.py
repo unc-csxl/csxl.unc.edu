@@ -43,4 +43,4 @@ class Paginated(BaseModel, Generic[T]):
 
     items: list[T]
     length: int
-    params: PaginationParams | EventPaginationParams
+    params: PaginationParams | EventPaginationParams | TicketPaginationParams
