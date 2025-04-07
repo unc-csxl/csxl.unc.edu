@@ -194,7 +194,9 @@ def test_query_xl_reservations_by_date_for_user(
 
 
 def test_get_map_reserved_times_by_date(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    reservation_svc: ReservationService,
+    time: dict[str, datetime],
+    policy_svc: PolicyService,
 ):
     """Test for getting a dictionary where keys are room ids and time slots array are values.
 
@@ -203,6 +205,17 @@ def test_get_map_reserved_times_by_date(
     multiple edge cases that arise out of it. I recommend setting a breakpoint and looking at
     the reserved_date_map in the debugger.
     """
+    policy_svc.office_hours = MagicMock(
+        return_value={
+            "SN135": [],
+            "SN137": [],
+            "SN139": [],
+            "SN141": [],
+            "SN144": [],
+            "SN146": [],
+            "SN147": [],
+        }
+    )
     test_time = time[NOW] + timedelta(days=2)
     reservation_details = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.user
