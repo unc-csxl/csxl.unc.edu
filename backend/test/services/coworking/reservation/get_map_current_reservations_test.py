@@ -2,9 +2,9 @@
 
 from backend.models.coworking.availability import RoomState
 from backend.models.coworking.reservation import ReservationState
-from datetime import date
+from datetime import date, time as Time
 
-from .....services.coworking import ReservationService
+from .....services.coworking import ReservationService, PolicyService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 # Dependent fixtures (seat_svc) are required to be imported in the testing module.
@@ -15,6 +15,7 @@ from ..fixtures import (
     policy_svc,
     operating_hours_svc,
 )
+
 from ..time import *
 
 # Import the setup_teardown fixture explicitly to load entities in database.
@@ -31,6 +32,8 @@ from .reservation_data import fake_data_fixture as insert_order_4
 from ...core_data import user_data
 from .. import seat_data
 from . import reservation_data
+
+from unittest.mock import MagicMock
 
 __authors__ = [
     "Nick Wherthey",
@@ -87,11 +90,22 @@ def test_transform_date_map_for_unavailable_complex(
     assert expected_transformed_date_map_2 == sample_date_map_2
 
 
-"""This test has an error due to demo data that has been buried,
-many have tried to find it to no luck. Commenting out until the correct
-expected map can be found. This is due to bad structuring of test data.
-This is included in issue #760
-def test_transform_date_map_for_office_hours(reservation_svc: ReservationService):
+def test_transform_date_map_for_office_hours(
+    reservation_svc: ReservationService, policy_svc: PolicyService
+):
+    """Tests to make sure that office hours events in rooms
+    are marked unavailable (3)"""
+    policy_svc.office_hours = MagicMock(
+        return_value={
+            "SN135": [],
+            "SN137": [(Time(hour=15), Time(hour=16))],
+            "SN139": [],
+            "SN141": [(Time(hour=10), Time(hour=16))],
+            "SN144": [],
+            "SN146": [],
+            "SN147": [],
+        }
+    )
     date = datetime(year=2024, month=5, day=1)
     start = datetime(year=2024, month=5, day=1, hour=10, minute=0)
     reserved_date_map = {
@@ -110,7 +124,6 @@ def test_transform_date_map_for_office_hours(reservation_svc: ReservationService
         date, reserved_date_map, start, 16
     )
     assert reserved_date_map == expected_transformed_date_map
-"""
 
 
 def test_idx_calculation(reservation_svc: ReservationService):
