@@ -118,10 +118,8 @@ def instantiate_global_models(time: dict[str, datetime]):
     # Confirm Room Reservation
     reservation_6 = Reservation(
         id=6,
-        start=operating_hours_data.tomorrow.start
-        + timedelta(hours=25),
-        end=operating_hours_data.tomorrow.start
-        + timedelta(hours=26, minutes=30),
+        start=operating_hours_data.tomorrow.start + timedelta(hours=25),
+        end=operating_hours_data.tomorrow.start + timedelta(hours=26, minutes=30),
         created_at=time[NOW],
         updated_at=time[NOW],
         walkin=False,
@@ -141,9 +139,8 @@ def instantiate_global_models(time: dict[str, datetime]):
         room=room_data.group_a,
         state=ReservationState.CONFIRMED,
         users=[user_data.root],
-        seats=[]
+        seats=[],
     )
-
 
     active_reservations = [reservation_1]
     confirmed_reservations = [reservation_4]

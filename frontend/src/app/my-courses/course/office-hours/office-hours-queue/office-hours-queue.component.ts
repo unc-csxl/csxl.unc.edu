@@ -29,7 +29,7 @@ const ORIGINAL_TITLE: string = 'Office Hours Queue';
 const NOTIFICATION_TITLE: string = 'Queued Ticket!';
 
 /** Store notification audio */
-const CHIME = new Audio('assets/office-hours-notif.wav');
+const CHIME = new Audio('assets/updated-oh-notif.wav');
 
 @Component({
   selector: 'app-office-hours-queue',
@@ -96,8 +96,11 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
         notify = true;
       } else {
         for (const new_ticket of queue.queue) {
-          if (!(this.queue()!.queue.some((old_ticket) =>
-            new_ticket.id === old_ticket.id))) {
+          if (
+            !this.queue()!.queue.some(
+              (old_ticket) => new_ticket.id === old_ticket.id
+            )
+          ) {
             notify = true;
             break;
           }
@@ -105,13 +108,16 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
       }
     }
     /* Notification behavior based on result stored in notify */
+
     if (notify) {
       CHIME.play();
       this.titleFlashTimer = timer(0, 1000).subscribe(() => {
         this.titleService.setTitle(
-          this.titleService.getTitle() === NOTIFICATION_TITLE ?
-            ORIGINAL_TITLE : NOTIFICATION_TITLE);
-      })
+          this.titleService.getTitle() === NOTIFICATION_TITLE
+            ? ORIGINAL_TITLE
+            : NOTIFICATION_TITLE
+        );
+      });
     } else {
       this.titleFlashTimer?.unsubscribe();
       this.titleService.setTitle(ORIGINAL_TITLE);

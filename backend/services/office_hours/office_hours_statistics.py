@@ -68,6 +68,9 @@ class OfficeHoursStatisticsService:
             .join(CourseSiteEntity)
             .where(CourseSiteEntity.id == site_id)
             .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+            .order_by(
+                OfficeHoursTicketEntity.created_at.desc(),
+            )
         )
 
         length_statement = (
