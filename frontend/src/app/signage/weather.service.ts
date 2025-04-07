@@ -99,11 +99,11 @@ export class WeatherService {
       // Codes 40-49 indicate fog.
       return weather_types['foggy'];
     } else if (
-      (weatherData.weatherCode >= 60 && weatherData.weatherCode <= 66) ||
-      (weatherData.weatherCode >= 80 && weatherData.weatherCode <= 82)
+      (weatherData.weatherCode >= 50 && weatherData.weatherCode <= 69) ||
+      (weatherData.weatherCode >= 80 && weatherData.weatherCode <= 84)
     ) {
-      // Codes 60-66 indicate non-freezing rain.
-      // Codes 80-82 indicate different rain shower types.
+      // Codes 50-69 indicate drizzle, rain, and freezing rain.
+      // Codes 80-84 indicate different rain shower types (mixed w/ snow)
       return weather_types['rainy'];
     } else if (
       (weatherData.weatherCode >= 70 && weatherData.weatherCode <= 75) ||
