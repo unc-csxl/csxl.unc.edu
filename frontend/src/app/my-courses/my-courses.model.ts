@@ -69,6 +69,7 @@ export interface TermOverviewJson {
 }
 
 export interface CourseMemberOverview {
+  id: number;
   pid: number;
   first_name: string;
   last_name: string;
