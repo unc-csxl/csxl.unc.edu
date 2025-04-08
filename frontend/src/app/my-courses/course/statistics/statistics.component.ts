@@ -21,7 +21,7 @@ import {
   MatFilterChipSearchableItem
 } from 'src/app/shared/mat/filter-chip/filter-chip.component';
 import { MyCoursesService } from '../../my-courses.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   DefaultOfficeHourStatisticsPaginationParams,
   OfficeHourStatisticsFilterData,
@@ -150,6 +150,7 @@ export class StatisticsComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     protected myCoursesService: MyCoursesService,
     protected dialog: MatDialog,
     protected snackBar: MatSnackBar
@@ -244,4 +245,26 @@ export class StatisticsComponent {
         }
       });
   }
+
+  // urlUpdateEffect = effect(() => {
+  //   const studentIds = this.selectedStudentFilterOptions()
+  //     .map((student) => student.item.id)
+  //     .join(',');
+  //   const staffIds = this.selectedStaffFilterOptions()
+  //     .map((staff) => staff.item.id)
+  //     .join(',');
+  //   const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
+  //   const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
+
+  //   this.router.navigate([], {
+  //     relativeTo: this.route,
+  //     queryParams: {
+  //       studentId: studentIds || null,
+  //       staffId: staffIds || null,
+  //       range_start: rangeStart || null,
+  //       range_end: rangeEnd || null
+  //     },
+  //     queryParamsHandling: 'merge'
+  //   });
+  // });
 }
