@@ -34,3 +34,18 @@
 #download-button-icon {
     margin-right: -8px;
 }
+
+.email-container {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+    gap: 8px; /* Add spacing between the email and the icon */
+  }
+
+.copy-icon {
+    opacity: 0; /* Hide the icon by default */
+    transition: opacity 0.2s ease-in-out; /* Smooth transition for visibility */
+}
+
+.email-container:hover .copy-icon {
+    opacity: 1; /* Show the icon when the container is hovered */
+}
