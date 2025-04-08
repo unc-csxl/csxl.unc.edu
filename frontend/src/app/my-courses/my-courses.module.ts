@@ -47,6 +47,14 @@ import { SettingsComponent } from './course/settings/settings.component';
 import { ImportRosterDialog } from './dialogs/import-roster/import-roster.dialog';
 import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
 import { MatListModule } from '@angular/material/list';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { DeleteRecurringEventDialog } from './dialogs/delete-recurring-event/delete-recurring-event.dialog';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { StatisticsComponent } from './course/statistics/statistics.component';
+import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statistics-card/office-hours-statistics-card.widget';
+import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dialog';
 import {
   MatSlideToggle,
   MatSlideToggleModule
@@ -66,12 +74,16 @@ import { MatSliderModule } from '@angular/material/slider';
     OfficeHoursGetHelpComponent,
     OfficeHoursEditorComponent,
     SettingsComponent,
+    StatisticsComponent,
     CourseCardWidget,
     OfficeHourEventCardWidget,
     CalledTicketCardWidget,
     QueuedTicketCardWidget,
     CreateCourseSiteDialog,
-    ImportRosterDialog
+    ImportRosterDialog,
+    DeleteRecurringEventDialog,
+    TicketDetailsDialog,
+    OfficeHoursStatisticsCardWidget
   ],
   imports: [
     CommonModule,
@@ -95,8 +107,13 @@ import { MatSliderModule } from '@angular/material/slider';
     MatInputModule,
     MatAutocompleteModule,
     MatListModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatRadioModule,
+    MatCheckbox,
     MatSlideToggleModule,
     MatSliderModule
-  ]
+  ],
+  providers: [MatDatepickerModule]
 })
 export class MyCoursesModule {}

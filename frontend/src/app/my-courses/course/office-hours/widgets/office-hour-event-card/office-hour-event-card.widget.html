@@ -11,6 +11,7 @@
       {{ event.end_time | date: 'shortTime' }}
     </p>
     <p>{{ event.location }}</p>
+    <p>{{ event.description }}</p>
   </mat-card-content>
   <mat-card-actions class="office-hours-event-card-actions">
     @if ((role$ | async) !== 'Student') {

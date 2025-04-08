@@ -23,7 +23,6 @@ import {
   OfficeHourTicketOverviewJson,
   TermOverview,
   TermOverviewJson,
-  parseOfficeHourEventOverviewJson,
   parseOfficeHourEventOverviewJsonList,
   parseOfficeHourGetHelpOverviewJson,
   parseOfficeHourQueueOverview,
@@ -37,10 +36,27 @@ import {
   parseOfficeHoursJson,
   NewOfficeHours,
   UpdatedCourseSite,
-  CourseSiteOverview
+  NewOfficeHoursRecurrencePattern,
+  parseOfficeHourStatisticsFilterDataJson,
+  OfficeHourStatisticsFilterDataJson,
+  OfficeHourStatisticsPaginationParams,
+  OfficeHoursTicketStatistics
 } from './my-courses.model';
-import { Observable, map, tap } from 'rxjs';
-import { Paginator } from '../pagination';
+import { Observable, map } from 'rxjs';
+import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
+import { Paginated } from '../pagination';
+import saveAs from 'file-saver';
+
+/** Enum for days of the week */
+export enum Weekday {
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday'
+}
 
 @Injectable({
   providedIn: 'root'
@@ -83,7 +99,8 @@ export class MyCoursesService {
   /** Constructor */
   constructor(
     protected http: HttpClient,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected gearService: NagivationAdminGearService
   ) {
     this.getTermOverviews();
   }
@@ -112,9 +129,9 @@ export class MyCoursesService {
     courseSiteId: string
   ): Observable<OfficeHourEventOverview[]> {
     return this.http
-      .get<OfficeHourEventOverviewJson[]>(
-        `/api/my-courses/${courseSiteId}/oh-events/current`
-      )
+      .get<
+        OfficeHourEventOverviewJson[]
+      >(`/api/my-courses/${courseSiteId}/oh-events/current`)
       .pipe(map(parseOfficeHourEventOverviewJsonList));
   }
 
@@ -291,6 +308,28 @@ export class MyCoursesService {
   }
 
   /**
+   * Create office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to create.
+   * @returns {Observable<OfficeHours>}
+   */
+  createRecurringOfficeHours(
+    siteId: number,
+    officeHours: NewOfficeHours,
+    recurrencePattern: NewOfficeHoursRecurrencePattern
+  ): Observable<OfficeHours[]> {
+    return this.http
+      .post<
+        OfficeHoursJson[]
+      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrencePattern })
+      .pipe(
+        map((officeHoursJSON) => {
+          return officeHoursJSON.map(parseOfficeHoursJson);
+        })
+      );
+  }
+
+  /**
    * Update office hours.
    * @param siteId: ID of the site to look for office hours.
    * @param officeHours: Office hours object to update.
@@ -306,11 +345,105 @@ export class MyCoursesService {
   }
 
   /**
+   * Update recurring office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHours: Office hours object to update.
+   * @param recurrencePattern: NewOfficeHoursRecurrencePattern
+   * @returns {Observable<OfficeHours>}
+   */
+  updateRecurringOfficeHours(
+    siteId: number,
+    officeHours: OfficeHours,
+    recurrencePattern: NewOfficeHoursRecurrencePattern
+  ): Observable<OfficeHours[]> {
+    return this.http
+      .put<
+        OfficeHoursJson[]
+      >(`/api/office-hours/${siteId}/recurring`, { oh: officeHours, recur: recurrencePattern })
+      .pipe(
+        map((officeHoursJSON) => {
+          return officeHoursJSON.map(parseOfficeHoursJson);
+        })
+      );
+  }
+
+  /**
    * Delete office hours.
    * @param siteId: ID of the site to look for office hours.
    * @param officeHoursId: ID of the office hours.
    */
   deleteOfficeHours(siteId: number, officeHoursId: number) {
     return this.http.delete(`/api/office-hours/${siteId}/${officeHoursId}`);
+  }
+
+  /**
+   * Delete office hours.
+   * @param siteId: ID of the site to look for office hours.
+   * @param officeHoursId: ID of the office hours.
+   */
+  deleteRecurringOfficeHours(siteId: number, officeHoursId: number) {
+    return this.http.delete(
+      `/api/office-hours/${siteId}/${officeHoursId}/recurring`
+    );
+  }
+
+  /**
+   * Loads the filter options for the office hours statistics page.
+   * @param courseSiteId: ID of the course site to get the filter options for
+   * @returns {Observable<>}
+   */
+  getOfficeHoursStatisticsFilterOptions(courseSiteId: number) {
+    return this.http
+      .get<OfficeHourStatisticsFilterDataJson>(
+        `/api/my-courses/${courseSiteId}/statistics/filter-data`
+      )
+      .pipe(map(parseOfficeHourStatisticsFilterDataJson));
+  }
+
+  getPaginatedOfficeHoursStatisticsTicketHistory(
+    courseSiteId: number,
+    params: OfficeHourStatisticsPaginationParams
+  ) {
+    // Determines the query for the URL based on the new paramateres.
+    let query = new URLSearchParams(params);
+    let route =
+      `/api/my-courses/${courseSiteId}/statistics/ticket-history` +
+      '?' +
+      query.toString();
+
+    return this.http.get<
+      Paginated<OfficeHourTicketOverview, OfficeHourStatisticsPaginationParams>
+    >(route);
+  }
+
+  getOfficeHoursTicketStatistics(
+    courseSiteId: number,
+    params: OfficeHourStatisticsPaginationParams
+  ) {
+    // Determines the query for the URL based on the new paramateres.
+    let query = new URLSearchParams(params);
+    let route =
+      `/api/my-courses/${courseSiteId}/statistics` + '?' + query.toString();
+
+    return this.http.get<OfficeHoursTicketStatistics>(route);
+  }
+
+  /**
+   * Get the office hours ticket CSV file.
+   * @param courseSiteId: ID of the course site to get the ticket CSV for
+   * @param params: Pagination parameters
+   */
+  getOfficeHoursTicketCsv(
+    courseSiteId: number,
+    params: OfficeHourStatisticsPaginationParams | null
+  ) {
+    let route = params
+      ? `/api/my-courses/${courseSiteId}/statistics/csv` +
+        '?' +
+        new URLSearchParams(params).toString()
+      : `/api/my-courses/${courseSiteId}/statistics/csv`;
+    return this.http.get(route, {
+      responseType: 'blob'
+    });
   }
 }

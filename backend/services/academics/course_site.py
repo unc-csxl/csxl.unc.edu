@@ -384,24 +384,27 @@ class CourseSiteService:
     def _create_oh_event_query(self, user: User, site_id: int):
         # Start building the query
         event_query = (
-            select(OfficeHoursEntity)
-            .where(OfficeHoursEntity.course_site_id == site_id)
-            .options(joinedload(OfficeHoursEntity.room))
-            .options(joinedload(OfficeHoursEntity.tickets))
-            .options(
-                joinedload(OfficeHoursEntity.course_site)
-                .joinedload(CourseSiteEntity.sections)
-                .joinedload(SectionEntity.members)
-            )
+            select(OfficeHoursEntity).where(OfficeHoursEntity.course_site_id == site_id)
+            # .options(joinedload(OfficeHoursEntity.room))
+            # .options(joinedload(OfficeHoursEntity.tickets))
+            # .options(
+            #     joinedload(OfficeHoursEntity.course_site)
+            #     .joinedload(CourseSiteEntity.sections)
+            #     .joinedload(SectionEntity.members)
+            # )
         )
 
         # Create query off of the member query for just the members matching
         # with the current user (used to determine permissions)
         user_member_query = (
             select(SectionMemberEntity)
-            .join(SectionEntity)
-            .join(UserEntity)
-            .where(SectionEntity.course_site_id == site_id)
+            .where(
+                SectionMemberEntity.section_id.in_(
+                    select(SectionEntity.id).where(
+                        SectionEntity.course_site_id == site_id
+                    )
+                )
+            )
             .where(SectionMemberEntity.user_id == user.id)
         )
         user_members = self._session.scalars(user_member_query).unique().all()
@@ -414,8 +417,9 @@ class CourseSiteService:
 
         # In the cases where sections are taught by different instructors, ensure that
         # the roster data only includes sections that the user has permissions for.
-        section_ids = [member.section_id for member in user_members]
-        event_query = event_query.where(SectionEntity.id.in_(section_ids))
+        # TODO: Evaluate whether we think this is ever a concern? It seems more likely
+        # that two different instructors will have two different course sites. Removing
+        # for now, but there was some code here in first implementation.
 
         return event_query
 
@@ -437,6 +441,7 @@ class CourseSiteService:
                 ]
             ),
             total_tickets=len(oh_event.tickets),
+            recurrence_pattern_id=oh_event.recurrence_pattern_id,
         )
 
     def create(self, user: User, new_site: NewCourseSite) -> CourseSite:
@@ -722,16 +727,24 @@ class CourseSiteService:
             title=course_site_entity.title,
             term_id=course_site_entity.term_id,
             section_ids=[section.id for section in course_site_entity.sections],
-            gtas=[
-                staff.user.to_public_model()
-                for staff in staff_entities
-                if staff.member_role == RosterRole.GTA
-            ],
-            utas=[
-                staff.user.to_public_model()
-                for staff in staff_entities
-                if staff.member_role == RosterRole.UTA
-            ],
+            gtas=list(
+                set(
+                    [
+                        staff.user.to_public_model()
+                        for staff in staff_entities
+                        if staff.member_role == RosterRole.GTA
+                    ]
+                )
+            ),
+            utas=list(
+                set(
+                    [
+                        staff.user.to_public_model()
+                        for staff in staff_entities
+                        if staff.member_role == RosterRole.UTA
+                    ]
+                )
+            ),
             minimum_ticket_cooldown=course_site_entity.minimum_ticket_cooldown,
             max_tickets_per_day=course_site_entity.max_tickets_per_day,
         )

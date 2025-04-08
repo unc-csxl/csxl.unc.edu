@@ -1,0 +1,34 @@
+::ng-deep .statistics-card {
+    max-width: max-content !important;
+    margin: 0px !important;
+}
+
+.statistics-row {
+    margin-top: 16px;
+}
+
+.text-badge {
+    height: 32px;
+    width: 48px;
+    text-align: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-radius: 14px;
+    margin-right: 8px;
+    line-height: 32px;
+    color: white;
+}
+
+.statistics-card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+    padding-top: 12px;
+}
+
+.statistics-card-statistic {
+    margin-bottom: 0;
+}

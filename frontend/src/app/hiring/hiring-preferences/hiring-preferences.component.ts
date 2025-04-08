@@ -2,6 +2,7 @@
  * Enables instructors to rank hiring choices.
  *
  * @author Ajay Gandecha <agandecha@unc.edu>
+ * @author Kris Jordan <kris@cs.unc.edu>
  * @copyright 2024
  * @license MIT
  */
@@ -20,7 +21,9 @@ import {
 import { HiringService } from '../hiring.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicationDialog } from '../dialogs/application-dialog/application-dialog.dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-hiring-preferences',
@@ -42,11 +45,14 @@ export class HiringPreferencesComponent {
 
   courseSiteId: number;
 
+  isDropProcessing: boolean = false;
+
   /** Constructor */
   constructor(
     private route: ActivatedRoute,
     protected hiringService: HiringService,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
     // Load route data
     this.courseSiteId = this.route.parent!.snapshot.params['courseSiteId'];
@@ -61,6 +67,7 @@ export class HiringPreferencesComponent {
   }
 
   drop(event: CdkDragDrop<ApplicationReviewOverview[]>) {
+    this.isDropProcessing = true;
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -103,11 +110,37 @@ export class HiringPreferencesComponent {
         not_processed: this.notProcessed,
         preferred: this.preferred
       })
-      .subscribe((hiringStatus) => {
-        this.notPreferred = hiringStatus.not_preferred;
-        this.notProcessed = hiringStatus.not_processed;
-        this.preferred = hiringStatus.preferred;
+      .subscribe({
+        next: (hiringStatus) => {
+          this.notPreferred = hiringStatus.not_preferred;
+          this.notProcessed = hiringStatus.not_processed;
+          this.preferred = hiringStatus.preferred;
+          this.isDropProcessing = false;
+        },
+        error: (error) => {
+          this.saveErrorSnackBar(error);
+          this.isDropProcessing = false;
+        }
       });
+  }
+
+  private saveErrorSnackBar(error: Error) {
+    let message = 'Error Saving Preferences: ';
+    if (error instanceof HttpErrorResponse) {
+      if (error.status == 403) {
+        message +=
+          "Request payload blocked by UNC's firewall. Be sure you are connected to Eduroam or via VPN, reload the page, and try again.";
+      } else {
+        message += `${error.status} ${error.statusText}`;
+      }
+    } else {
+      message += `Unknown error (${error})`;
+    }
+    this.snackBar.open(message, 'OK', {
+      duration: 0,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
   }
 
   /** Opens the dialog for importing the roster */

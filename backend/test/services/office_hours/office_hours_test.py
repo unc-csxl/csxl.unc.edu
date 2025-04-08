@@ -120,6 +120,7 @@ def test_get_oh_event_role_not_member(oh_svc: OfficeHoursService):
 
 def test_create_oh_event_instructor(oh_svc: OfficeHoursService):
     """Ensures that instructors can create office hour events."""
+    office_hours_data.new_event.recurrence_pattern_id = None
     new_event = oh_svc.create(
         user_data.instructor,
         office_hours_data.comp_110_site.id,

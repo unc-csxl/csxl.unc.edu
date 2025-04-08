@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from fastapi import Depends
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
+
 from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
@@ -16,7 +17,6 @@ from ...models.academics.my_courses import (
 from ...models.office_hours.ticket import (
     TicketState,
     NewOfficeHoursTicket,
-    OfficeHoursTicket,
 )
 
 from ...entities.academics.section_entity import SectionEntity
@@ -44,20 +44,6 @@ class OfficeHourTicketService:
         Initializes the database session.
         """
         self._session = session
-
-    def _to_oh_ticket_overview(
-        self, ticket: OfficeHoursTicketEntity
-    ) -> OfficeHourTicketOverview:
-        return OfficeHourTicketOverview(
-            id=ticket.id,
-            created_at=ticket.created_at,
-            called_at=ticket.called_at,
-            state=ticket.state.to_string(),
-            type=ticket.type.to_string(),
-            description=ticket.description,
-            creators=[creator.user.to_public_model() for creator in ticket.creators],
-            caller=(ticket.caller.user.to_public_model() if ticket.caller else None),
-        )
 
     def call_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
         """
@@ -110,7 +96,7 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def cancel_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
         """
@@ -155,7 +141,7 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def close_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
         """
@@ -204,7 +190,7 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def create_ticket(
         self, user: User, ticket: NewOfficeHoursTicket
@@ -360,4 +346,4 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return details model
-        return self._to_oh_ticket_overview(oh_ticket_entity)
+        return oh_ticket_entity.to_overview_model()

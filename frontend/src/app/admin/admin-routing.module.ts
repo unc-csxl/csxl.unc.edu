@@ -12,7 +12,7 @@ const routes: Routes = [
     path: '',
     title: 'Site Administration',
     component: AdminComponent,
-    canActivate: [permissionGuard('*', '*')]
+    canActivate: [permissionGuard('admin.*', '*')]
   },
   {
     path: 'accounts',
