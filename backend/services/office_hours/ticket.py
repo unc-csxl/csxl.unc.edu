@@ -3,7 +3,7 @@ APIs for academics for office hour tickets.
 """
 
 import math
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from fastapi import Depends
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
@@ -271,10 +271,8 @@ class OfficeHourTicketService:
                 "Cannot create a ticket for a course that does not exist."
             )
 
-        # Check if tickets exceed maximum in 24hrs.
-        days_cutoff = datetime.now() + timedelta(days=-1)
-
-        num_tickets_in_last_day_query = (
+        # Check number of tickets for current date
+        num_tickets_for_today_query = (
             select(func.count())
             .select_from(OfficeHoursTicketEntity)
             .join(OfficeHoursEntity)
@@ -283,15 +281,15 @@ class OfficeHourTicketService:
             .where(OfficeHoursEntity.id == ticket.office_hours_id)
             .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
             .where(SectionMemberEntity.user_id == user.id)
-            .where(OfficeHoursTicketEntity.closed_at > days_cutoff)
+            .where(func.date(OfficeHoursTicketEntity.closed_at) == date.today())
         )
-        num_tickets_in_last_day = self._session.execute(
-            num_tickets_in_last_day_query
+        num_tickets_for_today = self._session.execute(
+            num_tickets_for_today_query
         ).scalar()
 
-        if num_tickets_in_last_day >= course_entity.max_tickets_per_day:
+        if num_tickets_for_today >= course_entity.max_tickets_per_day:
             raise CoursePermissionException(
-                f"You have created the maximum number of tickets you can for this course in 24 hours. Please come back later."
+                f"You have created the maximum number of tickets today. Please come back tomorrow."
             )
 
         # Check if the user is within the ticket cooldown time.

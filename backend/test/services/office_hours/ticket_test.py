@@ -200,3 +200,15 @@ def test_create_ticket_not_student(oh_ticket_svc: OfficeHourTicketService):
     with pytest.raises(CoursePermissionException):
         oh_ticket_svc.create_ticket(user_data.instructor, office_hours_data.new_ticket)
         pytest.fail()
+
+def test_create_ticket_with_cooldown(oh_ticket_svc: OfficeHourTicketService):
+    """Ensures that users cannot create a ticket if they are on cooldown."""
+    with pytest.raises(CoursePermissionException):
+        oh_ticket_svc.create_ticket(user_data.student, office_hours_data.new_ticket_with_cooldown)
+        pytest.fail()
+
+def test_create_ticket_with_maximum(oh_ticket_svc: OfficeHourTicketService):
+    """Ensures that users cannot create a ticket if they have exceeded the maximum."""
+    with pytest.raises(CoursePermissionException):
+        oh_ticket_svc.create_ticket(user_data.student, office_hours_data.new_ticket_with_maximum)
+        pytest.fail()
