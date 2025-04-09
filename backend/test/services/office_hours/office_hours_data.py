@@ -54,6 +54,24 @@ __license__ = "MIT"
 # Site
 comp_110_site = CourseSite(id=1, title="COMP 110", term_id=term_data.current_term.id)
 comp_301_site = CourseSite(id=2, title="COMP 301", term_id=term_data.current_term.id)
+updated_course_site_ticket_cooldown = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_110_001_current_term.id],
+    utas=[],
+    gtas=[],
+    minimum_ticket_cooldown=5,
+)
+updated_course_site_ticket_maximum = UpdatedCourseSite(
+    id=1,
+    title="New Course Site",
+    term_id=term_data.current_term.id,
+    section_ids=[section_data.comp_110_001_current_term.id],
+    utas=[],
+    gtas=[],
+    maximum_tickets_per_day=1,
+)
 
 # Sections
 comp_110_sections = (
@@ -258,12 +276,50 @@ comp_110_closed_ticket = OfficeHoursTicket(
     office_hours_id=comp_110_current_office_hours.id,
     caller_id=section_data.comp110_instructor.id,
 )
+ticket_cooldown_closed_ticket = OfficeHoursTicket(
+    id=5,
+    description="How do I turn on my computer?",
+    type=TicketType.CONCEPTUAL_HELP,
+    state=TicketState.CLOSED,
+    created_at=datetime.now() - timedelta(minutes=2),
+    called_at=datetime.now() - timedelta(minutes=1),
+    closed_at=datetime.now(),
+    have_concerns=True,
+    caller_notes="Student could not find the power button on their laptop.",
+    office_hours_id=updated_course_site_ticket_cooldown.id,
+    caller_id=section_data.comp110_instructor.id,
+)
+ticket_maximum_closed_ticket = OfficeHoursTicket(
+    id=6,
+    description="How do I turn on my computer?",
+    type=TicketType.CONCEPTUAL_HELP,
+    state=TicketState.CLOSED,
+    created_at=datetime.now() - timedelta(minutes=2),
+    called_at=datetime.now() - timedelta(minutes=1),
+    closed_at=datetime.now(),
+    have_concerns=True,
+    caller_notes="Student could not find the power button on their laptop.",
+    office_hours_id=updated_course_site_ticket_maximum.id,
+    caller_id=section_data.comp110_instructor.id,
+)
 comp_110_ticket_creators = [
     (comp_110_queued_ticket, [section_data.comp110_student_1.id]),
     (comp_110_cancelled_ticket, [section_data.comp110_student_1.id]),
     (comp_110_called_ticket, [section_data.comp110_student_1.id]),
     (comp_110_closed_ticket, [section_data.comp110_student_1.id]),
+    (ticket_cooldown_closed_ticket, [section_data.comp110_student_1.id]),
+    (ticket_maximum_closed_ticket, [section_data.comp110_student_1.id]),
 ]
+new_ticket_with_cooldown = NewOfficeHoursTicket(
+    description="Help me!",
+    type=TicketType.ASSIGNMENT_HELP,
+    office_hours_id=updated_course_site_ticket_cooldown.id,
+)
+new_ticket_with_maximum = NewOfficeHoursTicket(
+    description="Help me!",
+    type=TicketType.ASSIGNMENT_HELP,
+    office_hours_id=updated_course_site_ticket_maximum.id,
+)
 
 # All
 sites = [comp_110_site, comp_301_site]
@@ -289,6 +345,8 @@ oh_tickets = [
     comp_110_cancelled_ticket,
     comp_110_called_ticket,
     comp_110_closed_ticket,
+    ticket_cooldown_closed_ticket,
+    ticket_maximum_closed_ticket
 ]
 ticket_user_pairings = [comp_110_ticket_creators]
 
@@ -418,6 +476,7 @@ new_course_site_term_nonmember = NewCourseSite(
         section_data.comp_311_001_current_term.id,
     ],
 )
+
 new_course_site_term_noninstructor = NewCourseSite(
     title="Ina's COMP 3x1",
     term_id=term_data.current_term.id,
@@ -426,7 +485,6 @@ new_course_site_term_noninstructor = NewCourseSite(
         section_data.comp_311_002_current_term.id,
     ],
 )
-
 
 new_course_site_term_already_in_site = NewCourseSite(
     title="Ina's COMP courses",

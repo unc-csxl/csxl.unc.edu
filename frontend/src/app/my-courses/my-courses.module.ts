@@ -55,6 +55,11 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { StatisticsComponent } from './course/statistics/statistics.component';
 import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statistics-card/office-hours-statistics-card.widget';
 import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dialog';
+import {
+  MatSlideToggle,
+  MatSlideToggleModule
+} from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -105,7 +110,9 @@ import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dia
     MatDatepickerModule,
     MatNativeDateModule,
     MatRadioModule,
-    MatCheckbox
+    MatCheckbox,
+    MatSlideToggleModule,
+    MatSliderModule
   ],
   providers: [MatDatepickerModule]
 })

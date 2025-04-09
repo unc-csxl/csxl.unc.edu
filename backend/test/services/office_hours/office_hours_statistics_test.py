@@ -48,7 +48,7 @@ def test_get_paginated_tickets(oh_statistics_svc: OfficeHoursStatisticsService):
         ticket_params,
     )
 
-    assert len(ticket_history.items) == 1
+    assert len(ticket_history.items) == 3
 
 
 def test_get_paginated_tickets_not_staff(
@@ -85,11 +85,11 @@ def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
         ticket_params,
     )
 
-    assert statistics.total_tickets == 1
-    assert statistics.total_tickets_weekly == 1
+    assert statistics.total_tickets == 3
+    assert statistics.total_tickets_weekly == 3
     assert statistics.average_wait_time == approx(1.0)  # 1.0000000166666667
     assert statistics.average_duration == approx(1.0)  # 1.0000000166666667
-    assert statistics.total_conceptual == 1
+    assert statistics.total_conceptual == 3
     assert statistics.total_assignment == 0
 
 
@@ -111,7 +111,7 @@ def test_get_paginated_tickets_student_filter(
     )
 
     assert (
-        len(ticket_history.items) == 1
+        len(ticket_history.items) == 3
         and ticket_history.items[0].creators[0].id == user_data.student.id
     )
 
@@ -134,7 +134,7 @@ def test_get_paginated_tickets_staff_filter(
     )
 
     assert (
-        len(ticket_history.items) == 1
+        len(ticket_history.items) == 3
         and ticket_history.items[0].caller.id == user_data.instructor.id
     )
 
@@ -157,11 +157,11 @@ def test_get_statistics_staff_filter(oh_statistics_svc: OfficeHoursStatisticsSer
         ticket_params,
     )
 
-    assert statistics.total_tickets == 1
-    assert statistics.total_tickets_weekly == 1
+    assert statistics.total_tickets == 3
+    assert statistics.total_tickets_weekly == 3
     assert statistics.average_wait_time == approx(1.0)
     assert statistics.average_duration == approx(1.0)
-    assert statistics.total_conceptual == 1
+    assert statistics.total_conceptual == 3
     assert statistics.total_assignment == 0
 
 
@@ -182,7 +182,7 @@ def test_get_paginated_tickets_date_filter(
         ticket_params,
     )
 
-    assert len(ticket_history.items) == 1
+    assert len(ticket_history.items) == 3
 
 
 def test_get_statistics_date_filter(
@@ -205,11 +205,11 @@ def test_get_statistics_date_filter(
         ticket_params,
     )
 
-    assert statistics.total_tickets == 1
-    assert statistics.total_tickets_weekly == 1
+    assert statistics.total_tickets == 3
+    assert statistics.total_tickets_weekly == 3
     assert statistics.average_wait_time == approx(1.0)
     assert statistics.average_duration == approx(1.0)
-    assert statistics.total_conceptual == 1
+    assert statistics.total_conceptual == 3
     assert statistics.total_assignment == 0
 
 
@@ -313,11 +313,11 @@ def test_get_paginated_tickets_multiple_filters(
         ticket_params,
     )
 
-    assert statistics.total_tickets == 1
-    assert statistics.total_tickets_weekly == 1
+    assert statistics.total_tickets == 3
+    assert statistics.total_tickets_weekly == 3
     assert statistics.average_wait_time == approx(1.0)
     assert statistics.average_duration == approx(1.0)
-    assert statistics.total_conceptual == 1
+    assert statistics.total_conceptual == 3
     assert statistics.total_assignment == 0
 
 
@@ -338,7 +338,7 @@ def test_get_ticket_csv(
         ticket_params,
     )
 
-    assert len(ticket_csv) == 1
+    assert len(ticket_csv) == 3
 
 
 def test_get_ticket_csv_unauthenticated(
@@ -377,4 +377,4 @@ def test_get_ticket_csv_with_filters(
         ticket_params,
     )
 
-    assert len(ticket_csv) == 1
+    assert len(ticket_csv) == 3
