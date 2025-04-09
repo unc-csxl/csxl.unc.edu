@@ -342,6 +342,7 @@ class OperatingHoursService:
                     operating_hours_draft,
                     start_date,
                     operating_hours_draft.recurrence.end_date,
+                    # Bitwise & an inversion of the original bitmask with the new bitmask to get the newly added days
                     (operating_hours_entity.recurrence.recurs_on ^ 0b11111)
                     & operating_hours_draft.recurrence.recurs_on,
                     operating_hours_entity.recurrence,
@@ -357,6 +358,7 @@ class OperatingHoursService:
                     )
                     .all()
                 ):
+                    # Bitwise & an inversion of the original bitmask with a bitmask of the given weekday to see if the day has been removed
                     if 1 << entity.start.weekday() & (
                         operating_hours_draft.recurrence.recurs_on ^ 0b11111
                     ):

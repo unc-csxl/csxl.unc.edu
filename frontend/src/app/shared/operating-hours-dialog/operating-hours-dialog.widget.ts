@@ -17,8 +17,4 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class OperatingHoursDialog {
   constructor(public dialogRef: MatDialogRef<OperatingHoursDialog>) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 }

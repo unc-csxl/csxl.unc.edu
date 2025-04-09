@@ -128,7 +128,6 @@ def test_recurring_create(
         .all()
     )
 
-    print(len(hours_in_future_week))
     assert len(hours_in_future_week) == 2
 
     for operating_hours in hours_in_future_week:

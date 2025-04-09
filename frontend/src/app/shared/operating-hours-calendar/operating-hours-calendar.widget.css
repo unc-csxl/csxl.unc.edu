@@ -59,8 +59,10 @@
   justify-content: center;
   align-items: center;
 
-  padding: 4px;
-  aspect-ratio: 1 / 1;
+  padding: 0px;
+  width: 1.3em;
+  height: 1.3em;
+  aspect-ratio: 1/1;
   text-align: center;
 }
 
@@ -77,6 +79,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  text-align: center;
 }
 
 .calendar-day-outline {

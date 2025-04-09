@@ -7,7 +7,13 @@
  * @copyright 2024
  * @license MIT
  */
-import { Component, effect, Input, WritableSignal } from '@angular/core';
+import {
+  Component,
+  effect,
+  Input,
+  OnInit,
+  WritableSignal
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -26,12 +32,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
 import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/operating-hours-calendar.widget';
 import { DatePipe } from '@angular/common';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { RecurringModifyDialog } from '../recurring-hours-modify-dialog/recurring-hours-modify.dialog';
 import { Observable, share } from 'rxjs';
 import { RecurringModifyConfirmDialog } from '../recurring-hours-modify-confirm-dialog/recurring-hours-modify-confirm.dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Term } from 'src/app/academics/academics.models';
+import { OperatingHoursMobileEditorDialog } from '../coworking-operating-hours-mobile-dialog/coworking-operating-hours-mobile.dialog';
 
 @Component({
   selector: 'coworking-operating-hours-editor',
@@ -40,7 +47,8 @@ import { Term } from 'src/app/academics/academics.models';
 })
 export class CoworkingOperatingHoursEditorComponent {
   @Input() operatingHoursSignal!: WritableSignal<OperatingHoursDraft | null>;
-  @Input() isPanelVisible!: WritableSignal<boolean>;
+  @Input() isPanelVisible?: WritableSignal<boolean>;
+  @Input() holdingDialog?: MatDialogRef<OperatingHoursMobileEditorDialog>;
   @Input() calendar?: OperatingHoursCalendar;
   public operatingHoursForm: FormGroup;
 
@@ -57,6 +65,7 @@ export class CoworkingOperatingHoursEditorComponent {
     const data = this.route.snapshot.data as {
       currentTerm: Term | undefined;
     };
+
     this.operatingHoursForm = this.fb.group(
       {
         selected_date: [null, Validators.required],
@@ -128,7 +137,7 @@ export class CoworkingOperatingHoursEditorComponent {
     return null;
   };
 
-  /** Custom date range validator. */
+  /** Custom recurrence validator. */
   recurrenceValidator: ValidatorFn = (
     control: AbstractControl
   ): ValidationErrors | null => {
@@ -149,7 +158,7 @@ export class CoworkingOperatingHoursEditorComponent {
 
     return null;
   };
-
+  /** Handle canceling of editor function. */
   onCancel(): void {
     this.operatingHoursForm.reset({
       selected_date: null,
@@ -160,7 +169,12 @@ export class CoworkingOperatingHoursEditorComponent {
       recurrence_end: null
     });
 
-    this.isPanelVisible.set(false);
+    if (this.isPanelVisible) {
+      this.isPanelVisible.set(false);
+    }
+    if (this.holdingDialog) {
+      this.holdingDialog.close();
+    }
     this.operatingHoursSignal.set(null);
   }
 
@@ -194,6 +208,15 @@ export class CoworkingOperatingHoursEditorComponent {
     }
   }
 
+  /** Helper function that actually does the deletion of the Operating Hours
+   *
+   * We use this to allow dialog boxes to trigger the deletion process
+   *
+   * @param {number} id - The ID of the Operating Hours to delete.
+   * @param {boolean} [cascade=false] - Whether or not to delete recurrences of the deleted Operating Hours.
+   *
+   * @returns {void}
+   */
   doDelete(id: number, cascade: boolean = false): Observable<void> {
     let observable = this.coworkingService
       .deleteOperatingHours(id, cascade)
@@ -213,7 +236,12 @@ export class CoworkingOperatingHoursEditorComponent {
           recurrence_end: null
         });
 
-        this.isPanelVisible.set(false);
+        if (this.isPanelVisible) {
+          this.isPanelVisible.set(false);
+        }
+        if (this.holdingDialog) {
+          this.holdingDialog.close();
+        }
         this.operatingHoursSignal.set(null);
       },
       /** Opens a snackbar for delete error. */
@@ -232,7 +260,8 @@ export class CoworkingOperatingHoursEditorComponent {
    * @returns {boolean}
    */
   isNew(): boolean {
-    return !!!this.operatingHoursSignal()?.id;
+    // This code is copied in coworking-operating-hours-mobile.dialog.ts
+    return !!!this.operatingHoursSignal?.()?.id;
   }
 
   /** Shorthand for determining the action being performed on operating hours.
@@ -242,7 +271,7 @@ export class CoworkingOperatingHoursEditorComponent {
     return this.isNew() ? 'Created' : 'Updated';
   }
 
-  /** Event handler to handle submitting the Update Operating Hours Form.
+  /** Event handler to prepare submitting the Update Operating Hours Form.
    * @returns {void}
    */
   onSubmit(): void {
@@ -298,6 +327,8 @@ export class CoworkingOperatingHoursEditorComponent {
           this.operatingHoursSignal()?.recurrence.recurs_on !=
             operatingHoursToSubmit.recurrence.recurs_on)
       ) {
+        // Ask for confirmation when modifying recurrence information of a recurring operating hour
+        // We just ask for confirmation here as there is no way to do this action without modifying recurrences.
         this.dialog.open(RecurringModifyConfirmDialog, {
           height: '300px',
           width: '300px',
@@ -307,6 +338,7 @@ export class CoworkingOperatingHoursEditorComponent {
           }
         });
       } else if (this.operatingHoursSignal()?.recurrence) {
+        // Ask if we should update just this event or recurring hours when modifying operating hours that recurs
         this.dialog.open(RecurringModifyDialog, {
           height: '300px',
           width: '300px',
@@ -316,11 +348,21 @@ export class CoworkingOperatingHoursEditorComponent {
           }
         });
       } else {
+        // If not a recurring operating hours, simply submit the new hours.
         this.doSubmit(operatingHoursToSubmit);
       }
     }
   }
 
+  /** Helper function that actually does the submission of the Operating Hours
+   *
+   * We use this to allow dialog boxes to trigger the actual submission process
+   *
+   * @param {OperatingHoursDraft} operatingHours - Draft version of the Operating Hours to submit.
+   * @param {boolean} [cascade=false] - Whether or not changes to the Operating Hours should update recurrences.
+   *
+   * @returns {void}
+   */
   private doSubmit(
     operatingHours: OperatingHoursDraft,
     cascade: boolean = false
@@ -330,19 +372,22 @@ export class CoworkingOperatingHoursEditorComponent {
       : this.coworkingService.updateOperatingHours(operatingHours, cascade);
 
     submittedOperatingHours.subscribe({
-      next: (operatingHours) => {
-        console.log('SUCCESS');
-        this.onSuccess(operatingHours);
+      next: () => {
+        this.onSuccess();
       },
       error: (err) => this.onError(err)
     });
   }
 
   /** Opens a confirmation snackbar when an operating hours is successfully created/updated.
+   *
    * @returns {void}
    */
-  private onSuccess(operatingHours: OperatingHours): void {
+  private onSuccess(): void {
     this.calendar?.update();
+    if (this.holdingDialog) {
+      this.holdingDialog.close();
+    }
     this.snackBar.open(`Operating Hours ${this.action()}`, '', {
       duration: 2000
     });

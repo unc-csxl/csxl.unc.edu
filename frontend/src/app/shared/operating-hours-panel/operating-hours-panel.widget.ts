@@ -24,6 +24,10 @@ export class CoworkingHoursCard {
 
   constructor(public dialog: MatDialog) {}
 
+  /** Opens the Operating hours dialog
+   *
+   * @returns {void}
+   */
   openDialog(): void {
     const dialogRef = this.dialog.open(OperatingHoursDialog, {
       autoFocus: false

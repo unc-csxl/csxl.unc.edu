@@ -37,6 +37,11 @@ export class RecurringModifyConfirmDialog {
     @Inject(MAT_DIALOG_DATA) public data: RecurringModifyDialogData
   ) {}
 
+  /** Confirms the modification action
+   *
+   *
+   * @returns {void}
+   */
   confirm(): void {
     this.data.actionFunction(this.data.id, true).subscribe({
       next: () => {

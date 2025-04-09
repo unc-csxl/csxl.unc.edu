@@ -44,6 +44,10 @@ export class RecurringModifyDialog {
     });
   }
 
+  /** Confirms the modification action
+   *
+   * @returns {void}
+   */
   confirm(): void {
     this.data.actionFunction(this.cascades.value == 'true').subscribe({
       next: () => {

@@ -98,6 +98,7 @@ def insert_fake_data(
         entity = OperatingHoursEntity.from_model(operating_hours)
         session.add(entity)
 
+        # TODO: Remove reliance on _create_recurring_hours for this
         if operating_hours.recurrence:
             operating_hours_svc._create_recurring_hours(
                 operating_hours, entity.recurrence
