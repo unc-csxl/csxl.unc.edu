@@ -1,3 +1,4 @@
+import { CalendarEvent } from '../calendar-event';
 import { Profile } from '../models.module';
 import { TimeRangeJSON, TimeRange } from '../time-range';
 
@@ -37,9 +38,7 @@ export interface OperatingHoursJSON extends TimeRangeJSON {
   recurrence: OperatingHoursRecurrenceJSON;
 }
 
-export interface OperatingHours extends TimeRange {
-  id: number;
-
+export interface OperatingHours extends CalendarEvent {
   recurrence: OperatingHoursRecurrence;
 }
 

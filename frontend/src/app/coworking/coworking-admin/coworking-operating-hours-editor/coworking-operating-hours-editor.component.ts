@@ -30,7 +30,6 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
-import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/operating-hours-calendar.widget';
 import { DatePipe } from '@angular/common';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { RecurringModifyDialog } from '../recurring-hours-modify-dialog/recurring-hours-modify.dialog';
@@ -39,6 +38,7 @@ import { RecurringModifyConfirmDialog } from '../recurring-hours-modify-confirm-
 import { ActivatedRoute } from '@angular/router';
 import { Term } from 'src/app/academics/academics.models';
 import { OperatingHoursMobileEditorDialog } from '../coworking-operating-hours-mobile-dialog/coworking-operating-hours-mobile.dialog';
+import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/operating-hours-calendar.widget';
 
 @Component({
   selector: 'coworking-operating-hours-editor',

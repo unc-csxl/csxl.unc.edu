@@ -2,7 +2,7 @@
  * The Coworking Admin Component provides the functionality for managing operating hours
  *
  * @author David Foss, Ella Gonzales, Francine Wei, Tobenna Okoli
- * @copyright 2024
+ * @copyright 2024 - 2025
  * @license MIT
  */
 

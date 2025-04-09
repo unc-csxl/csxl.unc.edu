@@ -10,8 +10,8 @@
 import { Component, Inject, ViewChild, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { OperatingHours } from '../../coworking.models';
-import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/operating-hours-calendar.widget';
 import { CoworkingOperatingHoursEditorComponent } from '../coworking-operating-hours-editor/coworking-operating-hours-editor.component';
+import { OperatingHoursCalendar } from 'src/app/shared/operating-hours-calendar/operating-hours-calendar.widget';
 
 export interface OperatingHoursMobileDialogData {
   selectedOperatingHours: WritableSignal<OperatingHours | null>;
