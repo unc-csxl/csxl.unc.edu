@@ -1,7 +1,7 @@
 /**
  * The News Card displays details for events in the paginated list.
  *
- * @author Ajay Gandecha <agandecha@unc.edu>
+ * @author Will Zahrt <wzahrt@unc.edu>
  * @copyright 2024
  * @license MIT
  */

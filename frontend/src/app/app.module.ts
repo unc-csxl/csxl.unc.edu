@@ -56,7 +56,7 @@ import { MatChipsModule } from '@angular/material/chips';
     ErrorDialogComponent,
     HomeComponent,
     AboutComponent,
-    GateComponent
+    GateComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -90,13 +90,13 @@ import { MatChipsModule } from '@angular/material/chips';
     RouterModule,
     SharedModule,
     JwtModule.forRoot({
-      config: {
-        tokenGetter: () => {
-          return localStorage.getItem('bearerToken');
+        config: {
+            tokenGetter: () => {
+                return localStorage.getItem('bearerToken');
+            }
         }
-      }
     })
-  ],
+],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

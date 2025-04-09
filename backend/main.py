@@ -19,6 +19,7 @@ from .api import (
     room,
     application,
     article,
+    signage,
     websocket,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
@@ -71,6 +72,7 @@ app = FastAPI(
         hiring.openapi_tags,
         admin_facts.openapi_tags,
         article.openapi_tags,
+        signage.openapi_tags,
     ],
 )
 
@@ -103,6 +105,7 @@ feature_apis = [
     hiring,
     admin_facts,
     article,
+    signage,
     websocket,
 ]
 
