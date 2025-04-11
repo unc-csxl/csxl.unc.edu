@@ -138,3 +138,17 @@
     flex-direction: column;
     gap: 12px;
 }
+
+.text-badge {
+    height: 20px;
+    width: 76px;
+    text-align: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-radius: 14px;
+    margin-right: 8px;
+    line-height: 32px;
+    color: white;
+}

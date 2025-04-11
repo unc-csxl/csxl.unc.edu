@@ -155,6 +155,8 @@ class OfficeHoursTicketEntity(EntityBase):
             description=self.description,
             creators=[creator.user.to_public_model() for creator in self.creators],
             caller=(self.caller.user.to_public_model() if self.caller else None),
+            has_concerns=self.have_concerns,
+            caller_notes=self.caller_notes,
         )
 
     def to_details_model(self) -> OfficeHoursTicketDetails:

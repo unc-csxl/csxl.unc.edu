@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Close Ticket</h2>
+<mat-dialog-content>
+    <p>Please leave feedback below.</p>
+    <mat-slide-toggle
+    [formControl]="hasConcerns">
+        I have concerns about this ticket.  
+    </mat-slide-toggle>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Notes</mat-label>
+        <textarea
+          matInput
+          placeholder="Please leave any notes here."
+          [formControl]="notes"
+          required></textarea>
+      </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="submit()"
+    >
+      Close Ticket
+    </button>
+</mat-dialog-actions>

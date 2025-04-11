@@ -46,6 +46,7 @@ import { Observable, map } from 'rxjs';
 import { NagivationAdminGearService } from '../navigation/navigation-admin-gear.service';
 import { Paginated } from '../pagination';
 import saveAs from 'file-saver';
+import { consumerPollProducersForChange } from '@angular/core/primitives/signals';
 
 /** Enum for days of the week */
 export enum Weekday {
@@ -184,11 +185,15 @@ export class MyCoursesService {
    * @param ticketId: ID of the ticket to close
    * @returns { Observable<OfficeHourTicketOverview> }
    */
-  closeTicket(ticketId: number): Observable<OfficeHourTicketOverview> {
+  closeTicket(
+    ticketId: number,
+    hasConcerns: boolean,
+    notes: string
+  ): Observable<OfficeHourTicketOverview> {
     return this.http
       .put<OfficeHourTicketOverviewJson>(
         `/api/office-hours/ticket/${ticketId}/close`,
-        {}
+        { has_concerns: hasConcerns, caller_notes: notes }
       )
       .pipe(map(parseOfficeHourTicketOverviewJson));
   }

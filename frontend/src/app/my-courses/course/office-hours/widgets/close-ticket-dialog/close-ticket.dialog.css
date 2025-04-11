@@ -1,0 +1,8 @@
+mat-form-field {
+    width: 100%;
+}
+
+mat-slide-toggle {
+    padding-top: 12px;
+    padding-bottom: 18px;
+}
