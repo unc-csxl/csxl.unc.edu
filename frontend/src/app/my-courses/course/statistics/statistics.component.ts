@@ -246,25 +246,26 @@ export class StatisticsComponent {
       });
   }
 
-  // urlUpdateEffect = effect(() => {
-  //   const studentIds = this.selectedStudentFilterOptions()
-  //     .map((student) => student.item.id)
-  //     .join(',');
-  //   const staffIds = this.selectedStaffFilterOptions()
-  //     .map((staff) => staff.item.id)
-  //     .join(',');
-  //   const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
-  //   const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
-
-  //   this.router.navigate([], {
-  //     relativeTo: this.route,
-  //     queryParams: {
-  //       studentId: studentIds || null,
-  //       staffId: staffIds || null,
-  //       range_start: rangeStart || null,
-  //       range_end: rangeEnd || null
-  //     },
-  //     queryParamsHandling: 'merge'
-  //   });
-  // });
+  urlUpdateEffect = effect(() => {
+    const studentIds = this.selectedStudentFilterOptions()
+      .map((student) => student.item.id)
+      .join(',');
+    const staffIds = this.selectedStaffFilterOptions()
+      .map((staff) => staff.item.id)
+      .join(',');
+    const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
+    const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
+    if (studentIds || staffIds || rangeStart || rangeEnd) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          studentId: studentIds || null,
+          staffId: staffIds || null,
+          range_start: rangeStart || null,
+          range_end: rangeEnd || null
+        },
+        queryParamsHandling: 'merge'
+      });
+    }
+  });
 }
