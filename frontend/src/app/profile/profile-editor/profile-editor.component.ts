@@ -7,6 +7,7 @@ import { profileResolver } from '../profile.resolver';
 import { Profile, ProfileService } from '../profile.service';
 import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-profile-editor',

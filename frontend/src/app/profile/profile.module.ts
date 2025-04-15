@@ -35,6 +35,7 @@ import { ProfileEditorComponent } from './profile-editor/profile-editor.componen
 import { ProfileRoutingModule } from './profile-routing.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { PublicProfilePageComponent } from './public-profile-page/public-profile-page.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { PublicProfilePageComponent } from './public-profile-page/public-profile
     ProfileRoutingModule,
     RouterModule,
     SharedModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSlideToggleModule,
   ]
 })
 export class ProfileModule {}
