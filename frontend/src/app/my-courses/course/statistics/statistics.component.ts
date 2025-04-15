@@ -21,7 +21,7 @@ import {
   MatFilterChipSearchableItem
 } from 'src/app/shared/mat/filter-chip/filter-chip.component';
 import { MyCoursesService } from '../../my-courses.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   DefaultOfficeHourStatisticsPaginationParams,
   OfficeHourStatisticsFilterData,
@@ -150,6 +150,7 @@ export class StatisticsComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     protected myCoursesService: MyCoursesService,
     protected dialog: MatDialog,
     protected snackBar: MatSnackBar
@@ -161,6 +162,36 @@ export class StatisticsComponent {
       .getOfficeHoursStatisticsFilterOptions(this.courseSiteId)
       .subscribe((data) => {
         this.filterOptions.set(data);
+
+        // Read the query parameters
+        const studentId = this.route.snapshot.queryParamMap.get('studentId');
+        const staffId = this.route.snapshot.queryParamMap.get('staffId');
+
+        // If a student ID is provided, find and pre-select it in the filter
+        if (studentId) {
+          const student = data.students.find((s) => s.id === +studentId);
+          if (student) {
+            this.selectedStudentFilterOptions.set([
+              {
+                displayText: `${student.first_name} ${student.last_name}`,
+                item: student
+              }
+            ]);
+          }
+        }
+
+        // If a staff ID is provided, find and pre-select it in the staff filter
+        if (staffId) {
+          const staff = data.staff.find((s) => s.id === +staffId);
+          if (staff) {
+            this.selectedStaffFilterOptions.set([
+              {
+                displayText: `${staff.first_name} ${staff.last_name}`,
+                item: staff
+              }
+            ]);
+          }
+        }
       });
   }
 
@@ -214,4 +245,27 @@ export class StatisticsComponent {
         }
       });
   }
+
+  urlUpdateEffect = effect(() => {
+    const studentIds = this.selectedStudentFilterOptions()
+      .map((student) => student.item.id)
+      .join(',');
+    const staffIds = this.selectedStaffFilterOptions()
+      .map((staff) => staff.item.id)
+      .join(',');
+    const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
+    const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
+    if (studentIds || staffIds || rangeStart || rangeEnd) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          studentId: studentIds || null,
+          staffId: staffIds || null,
+          range_start: rangeStart || null,
+          range_end: rangeEnd || null
+        },
+        queryParamsHandling: 'merge'
+      });
+    }
+  });
 }
