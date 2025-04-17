@@ -22,9 +22,16 @@ mat-form-field {
 }
 
 .privacy-slider {
-  display: flex;
   width: 100%;
+  display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
+.privacy-ui {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
