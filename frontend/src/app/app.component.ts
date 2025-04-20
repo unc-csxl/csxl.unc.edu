@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
       .subscribe(() => {
         // When the route navigation is completed, get the child
         this.childRoute =
-          this.route.firstChild?.snapshot.url[0].path || 'root';
+          this.route.firstChild?.snapshot.url[0]?.path || 'root'; // removed an error here by adding second '?'
       });
   }
 }
