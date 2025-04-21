@@ -87,6 +87,20 @@ def new_oh_ticket(
     """
     return oh_ticket_svc.create_ticket(subject, ticket)
 
+@api.get("/{site_id}/tag", tags=["Office Hours"])
+def get_ticket_tags(
+    site_id: int,
+    subject: User = Depends(registered_user),
+    oh_ticket_tag_svc: OfficeHourTicketTagService = Depends(),
+) -> list[OfficeHoursTicketTag]:
+    """
+    Get all ticket tags for the course site.
+
+    Returns:
+        list[OfficeHoursTicketTagDetails]: List of ticket tags
+    """
+    return oh_ticket_tag_svc.get_course_site_tags(subject, site_id)
+
 @api.post("/{site_id}/tag", tags=["Office Hours"])
 def new_ticket_tag(
     site_id: int,
@@ -98,7 +112,7 @@ def new_ticket_tag(
     Create a new ticket tag for the course site.
 
     Returns:
-        OfficeHoursTicketTagDetails: Ticket tag created
+        OfficeHoursTicketTag: Ticket tag created
     """
     return oh_ticket_tag_svc.create(subject, site_id, tag)
 
@@ -113,18 +127,18 @@ def update_ticket_tag(
     Update an existing ticket tag.
 
     Returns:
-        OfficeHoursTicketTagDetails: Updated ticket tag
+        OfficeHoursTicketTag: Updated ticket tag
     """
     return oh_ticket_tag_svc.update(subject, site_id, tag)
 
-@api.delete("/{site_id}/tag", tags=["Office Hours"])
+@api.delete("/{site_id}/tag/{tag_id}", tags=["Office Hours"])
 def delete_ticket_tag(
     site_id: int,
     tag_id: int,
     subject: User = Depends(registered_user),
     oh_ticket_tag_svc: OfficeHourTicketTagService = Depends(),
-) -> OfficeHoursTicketTag:
+):
     """
     Delete an existing ticket tag.
     """
-    oh_ticket_tag_svc.update(subject, site_id, tag_id)
+    oh_ticket_tag_svc.delete(subject, site_id, tag_id)

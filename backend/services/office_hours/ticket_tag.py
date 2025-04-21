@@ -33,6 +33,25 @@ class OfficeHourTicketTagService:
         self._session = session
         self._office_hours_svc = _office_hours_svc
 
+    def get_course_site_tags(self, user: User, site_id: int) -> list[OfficeHoursTicketTag]:
+        """
+        Returns all office hour ticket tags for a course site.
+
+        Returns:
+            list[OfficeHoursTicketTag]
+        """
+        
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        # Get all ticket tags
+        ticket_tags = self._session.query(OfficeHoursTicketTagEntity).filter(
+            OfficeHoursTicketTagEntity.course_site_id == site_id
+        ).all()
+
+        # Return models
+        return [tag.to_model() for tag in ticket_tags]
+
     def create(self, user: User, site_id: int, tag: NewOfficeHoursTicketTag) -> OfficeHoursTicketTag:
         """
         Creates a new office hour ticket tag for a course site.
@@ -45,7 +64,7 @@ class OfficeHourTicketTagService:
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
         # Create ticket tag
-        ticket_tag_entity = OfficeHoursTicketTag.from_new_model(tag)
+        ticket_tag_entity = OfficeHoursTicketTagEntity.from_new_model(tag)
         self._session.add(ticket_tag_entity)
         self._session.commit()
 
@@ -57,6 +76,9 @@ class OfficeHourTicketTagService:
         """
         Updates an existing office hours event.
         """
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
         # Find existing tag
         ticket_tag_entity = self._session.get(OfficeHoursTicketTagEntity, tag.id)
 
@@ -64,9 +86,6 @@ class OfficeHourTicketTagService:
             raise ResourceNotFoundException(
                 "Office hours ticket tag with id: {tag.id} does not exist."
             )
-
-        # Check permissions
-        self._check_site_admin_permissions(user, site_id)
 
         # Update
         ticket_tag_entity.name = tag.name
@@ -80,6 +99,9 @@ class OfficeHourTicketTagService:
         """
         Deletes an existing office hours event.
         """
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
         # Find existing tag
         ticket_tag_entity = self._session.get(OfficeHoursTicketTagEntity, tag_id)
 
@@ -87,9 +109,6 @@ class OfficeHourTicketTagService:
             raise ResourceNotFoundException(
                 "Office hours ticket tag with id: {tag_id} does not exist."
             )
-
-        # Check permissions
-        self._check_site_admin_permissions(user, site_id)
 
         self._session.delete(ticket_tag_entity)
         self._session.commit()

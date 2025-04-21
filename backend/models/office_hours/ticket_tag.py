@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .office_hours import CourseSite
+from ...models.office_hours.course_site import CourseSite
 
 __authors__ = ["Jade Keegan"]
 __copyright__ = "Copyright 2025"

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ...models.office_hours.ticket_tag import (
     OfficeHoursTicketTag,
     NewOfficeHoursTicketTag,
-    OfficeHourTicketTagDetails,
+    OfficeHoursTicketTagDetails,
 )
 
 
@@ -36,7 +36,7 @@ class OfficeHoursTicketTagEntity(EntityBase):
         ForeignKey("course_site.id"), nullable=False
     )
     course_site: Mapped["CourseSiteEntity"] = relationship(
-        back_populates="office_hours__ticket_tag"
+        back_populates="ticket_tags"
     )
 
 
@@ -73,10 +73,10 @@ class OfficeHoursTicketTagEntity(EntityBase):
 
     def to_model(self) -> OfficeHoursTicketTag:
         """
-        Converts a `OfficeHoursTicketEntity` object into a `OfficeHoursTicket` model object
+        Converts a `OfficeHoursTicketTagEntity` object into a `OfficeHoursTicketTag` model object
 
         Returns:
-            OfficeHoursTicket: `OfficeHoursTicket` object from the entity
+            OfficeHoursTicketTag: `OfficeHoursTicketTag` object from the entity
         """
         return OfficeHoursTicketTag(
             id=self.id,
@@ -84,8 +84,8 @@ class OfficeHoursTicketTagEntity(EntityBase):
             course_site_id=self.course_site_id,
         )
 
-    def to_details_model(self) -> OfficeHourTicketTagDetails:
-        return OfficeHourTicketTagDetails(
+    def to_details_model(self) -> OfficeHoursTicketTagDetails:
+        return OfficeHoursTicketTagDetails(
             id=self.id,
             name=self.name,
             course_site_id=self.course_site_id,
