@@ -4,15 +4,19 @@ APIs handling office hours.
 """
 
 from fastapi import APIRouter, Depends
+
 from ..authentication import registered_user
 from ...services.office_hours.ticket import OfficeHourTicketService
+from ...services.office_hours.ticket_tag import OfficeHourTicketTagService
 from ...models.user import User
 from ...models.office_hours.ticket import NewOfficeHoursTicket
+from ...models.office_hours.ticket_tag import NewOfficeHoursTicketTag, OfficeHoursTicketTag, OfficeHoursTicketTagDetails
 
 from ...models.academics.my_courses import OfficeHourTicketOverview
 
 __authors__ = [
     "Ajay Gandecha",
+    "Jade Keegan",
     "Sadie Amato",
     "Bailey DeSouza",
     "Meghan Sun",
@@ -82,3 +86,45 @@ def new_oh_ticket(
         OfficeHoursTicketDetails: OH Ticket created
     """
     return oh_ticket_svc.create_ticket(subject, ticket)
+
+@api.post("/{site_id}/tag", tags=["Office Hours"])
+def new_ticket_tag(
+    site_id: int,
+    tag: NewOfficeHoursTicketTag,
+    subject: User = Depends(registered_user),
+    oh_ticket_tag_svc: OfficeHourTicketTagService = Depends(),
+) -> OfficeHoursTicketTag:
+    """
+    Create a new ticket tag for the course site.
+
+    Returns:
+        OfficeHoursTicketTagDetails: Ticket tag created
+    """
+    return oh_ticket_tag_svc.create(subject, site_id, tag)
+
+@api.put("/{site_id}/tag", tags=["Office Hours"])
+def update_ticket_tag(
+    site_id: int,
+    tag: OfficeHoursTicketTag,
+    subject: User = Depends(registered_user),
+    oh_ticket_tag_svc: OfficeHourTicketTagService = Depends(),
+) -> OfficeHoursTicketTag:
+    """
+    Update an existing ticket tag.
+
+    Returns:
+        OfficeHoursTicketTagDetails: Updated ticket tag
+    """
+    return oh_ticket_tag_svc.update(subject, site_id, tag)
+
+@api.delete("/{site_id}/tag", tags=["Office Hours"])
+def delete_ticket_tag(
+    site_id: int,
+    tag_id: int,
+    subject: User = Depends(registered_user),
+    oh_ticket_tag_svc: OfficeHourTicketTagService = Depends(),
+) -> OfficeHoursTicketTag:
+    """
+    Delete an existing ticket tag.
+    """
+    oh_ticket_tag_svc.update(subject, site_id, tag_id)
