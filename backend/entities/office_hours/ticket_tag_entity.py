@@ -9,13 +9,10 @@ from ...models.office_hours.ticket_tag import (
     OfficeHoursTicketTagDetails,
 )
 
-
 from ..entity_base import EntityBase
 from typing import Self
 
-__authors__ = [
-    "Jade Keegan"
-]
+__authors__ = ["Jade Keegan"]
 __copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
