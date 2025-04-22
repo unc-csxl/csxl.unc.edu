@@ -164,34 +164,49 @@ export class StatisticsComponent {
         this.filterOptions.set(data);
 
         // Read the query parameters
-        const studentId = this.route.snapshot.queryParamMap.get('studentId');
-        const staffId = this.route.snapshot.queryParamMap.get('staffId');
+        const studentIds = this.route.snapshot.queryParamMap
+          .get('studentId')
+          ?.split(',');
+        const staffIds = this.route.snapshot.queryParamMap
+          .get('staffId')
+          ?.split(',');
 
-        // If a student ID is provided, find and pre-select it in the filter
-        if (studentId) {
-          const student = data.students.find((s) => s.id === +studentId);
-          if (student) {
-            this.selectedStudentFilterOptions.set([
-              {
+        // Add students to the filter
+        const studentsToAdd: MatFilterChipSearchableItem<PublicProfile>[] = (
+          studentIds ?? []
+        ).reduce<MatFilterChipSearchableItem<PublicProfile>[]>(
+          (studentsToAdd, studentId) => {
+            const student = data.students.find((s) => s.id === +studentId);
+            if (student) {
+              studentsToAdd.push({
                 displayText: `${student.first_name} ${student.last_name}`,
                 item: student
-              }
-            ]);
-          }
-        }
+              });
+            }
+            return studentsToAdd;
+          },
+          []
+        );
 
-        // If a staff ID is provided, find and pre-select it in the staff filter
-        if (staffId) {
-          const staff = data.staff.find((s) => s.id === +staffId);
-          if (staff) {
-            this.selectedStaffFilterOptions.set([
-              {
+        // Add staff to the filter
+        const staffToAdd: MatFilterChipSearchableItem<PublicProfile>[] = (
+          staffIds ?? []
+        ).reduce<MatFilterChipSearchableItem<PublicProfile>[]>(
+          (staffToAdd, staffId) => {
+            const staff = data.staff.find((s) => s.id === +staffId);
+            if (staff) {
+              staffToAdd.push({
                 displayText: `${staff.first_name} ${staff.last_name}`,
                 item: staff
-              }
-            ]);
-          }
-        }
+              });
+            }
+            return staffToAdd;
+          },
+          []
+        );
+
+        this.selectedStudentFilterOptions.set(studentsToAdd);
+        this.selectedStaffFilterOptions.set(staffToAdd);
       });
   }
 
@@ -246,26 +261,29 @@ export class StatisticsComponent {
       });
   }
 
-  urlUpdateEffect = effect(() => {
-    const studentIds = this.selectedStudentFilterOptions()
-      .map((student) => student.item.id)
-      .join(',');
-    const staffIds = this.selectedStaffFilterOptions()
-      .map((staff) => staff.item.id)
-      .join(',');
-    const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
-    const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
-    if (studentIds || staffIds || rangeStart || rangeEnd) {
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: {
-          studentId: studentIds || null,
-          staffId: staffIds || null,
-          range_start: rangeStart || null,
-          range_end: rangeEnd || null
-        },
-        queryParamsHandling: 'merge'
-      });
-    }
-  });
+  urlUpdateEffect = effect(
+    () => {
+      const studentIds = this.selectedStudentFilterOptions()
+        .map((student) => student.item.id)
+        .join(',');
+      const staffIds = this.selectedStaffFilterOptions()
+        .map((staff) => staff.item.id)
+        .join(',');
+      const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
+      const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
+      if (studentIds || staffIds || rangeStart || rangeEnd) {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: {
+            studentId: studentIds || null,
+            staffId: staffIds || null,
+            range_start: rangeStart || null,
+            range_end: rangeEnd || null
+          },
+          queryParamsHandling: 'merge'
+        });
+      }
+    },
+    { allowSignalWrites: true }
+  ); // Allow signal writes to update the URL with the selected filters
 }
