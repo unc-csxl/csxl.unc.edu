@@ -23,6 +23,8 @@ import {
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { officeHourPageGuard } from '../office-hours.guard';
 import { Title } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material/dialog';
+import { CloseTicketDialog } from '../widgets/close-ticket-dialog/close-ticket.dialog';
 
 /** Store both possible titles as strings to flash between them easily */
 const ORIGINAL_TITLE: string = 'Office Hours Queue';
@@ -62,7 +64,8 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     protected myCoursesService: MyCoursesService,
-    private titleService: Title
+    private titleService: Title,
+    protected dialog: MatDialog
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
@@ -152,9 +155,14 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
 
   /** Closes a ticket and reloads the queue data */
   closeTicket(ticket: OfficeHourTicketOverview): void {
-    this.myCoursesService.closeTicket(ticket.id).subscribe({
-      next: (_) => this.pollQueue(),
-      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    let dialogRef = this.dialog.open(CloseTicketDialog, {
+      height: '400px',
+      width: '500px',
+      data: ticket.id
+    });
+    dialogRef.afterClosed().subscribe((_) => {
+      // Update the data.
+      this.pollQueue();
     });
   }
 }
