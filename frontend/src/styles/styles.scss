@@ -414,6 +414,9 @@ body {
   .font-secondary {
     color: mat.get-theme-color($theme, secondary) !important;
   }
+  .font-error {
+    color: mat.get-theme-color($theme, error) !important;
+  }
   .font-tertiary {
     color: mat.get-theme-color($theme, tertiary) !important;
   }
