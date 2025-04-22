@@ -9,7 +9,7 @@ from ...services.office_hours.ticket import OfficeHourTicketService
 from ...models.user import User
 from ...models.office_hours.ticket import (
     NewOfficeHoursTicket,
-    OfficeHoursTicketDeletePayload,
+    OfficeHoursTicketClosePayload,
 )
 
 from ...models.academics.my_courses import OfficeHourTicketOverview
@@ -60,7 +60,7 @@ def cancel_ticket(
 @api.put("/{id}/close", tags=["Office Hours"])
 def close_ticket(
     id: int,
-    payload: OfficeHoursTicketDeletePayload,
+    payload: OfficeHoursTicketClosePayload,
     subject: User = Depends(registered_user),
     oh_ticket_svc: OfficeHourTicketService = Depends(),
 ) -> OfficeHourTicketOverview:

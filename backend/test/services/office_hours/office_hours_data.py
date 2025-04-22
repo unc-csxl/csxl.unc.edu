@@ -36,7 +36,7 @@ from ....models.office_hours.course_site import (
 from ....models.office_hours.ticket import (
     OfficeHoursTicket,
     NewOfficeHoursTicket,
-    OfficeHoursTicketDeletePayload,
+    OfficeHoursTicketClosePayload,
 )
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
@@ -614,7 +614,7 @@ nonexistent_event = OfficeHours(
     recurrence_pattern_id=None,
 )
 
-sample_delete_payload = OfficeHoursTicketDeletePayload(
+sample_delete_payload = OfficeHoursTicketClosePayload(
     has_concerns=True,
     caller_notes="I have concerns.",
 )

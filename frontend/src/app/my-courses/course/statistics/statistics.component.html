@@ -106,8 +106,8 @@
                       </div>
                     </div>
                     <div class="ticket-row-trailing-content">
-                      @if(item.has_concerns) {
-                        <span class="text-badge tertiary-background label-large">! Concern</span>
+                      @if(item.has_concerns || (item.caller_notes && item.caller_notes != "")) {
+                        <mat-icon [color]="item.has_concerns ? 'warn' : 'secondary'" class="feedback-indicator">feedback</mat-icon>
                       }
                       <button mat-icon-button (click)="openTicketDetails(item)">
                         <mat-icon>more_vert</mat-icon>

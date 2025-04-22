@@ -16,7 +16,7 @@ from ...models.academics.my_courses import (
 from ...models.office_hours.ticket import (
     TicketState,
     NewOfficeHoursTicket,
-    OfficeHoursTicketDeletePayload,
+    OfficeHoursTicketClosePayload,
 )
 
 from ...entities.academics.section_entity import SectionEntity
@@ -144,7 +144,7 @@ class OfficeHourTicketService:
         return ticket_entity.to_overview_model()
 
     def close_ticket(
-        self, user: User, ticket_id: int, payload: OfficeHoursTicketDeletePayload
+        self, user: User, ticket_id: int, payload: OfficeHoursTicketClosePayload
     ) -> OfficeHourTicketOverview:
         """
         Closes a ticket in an office hour queue.

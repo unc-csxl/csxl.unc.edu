@@ -63,7 +63,7 @@ class OfficeHoursTicketCsvRow(BaseModel):
     wait_time_minutes: int
 
 
-class OfficeHoursTicketDeletePayload(BaseModel):
+class OfficeHoursTicketClosePayload(BaseModel):
     """
     Pydantic model to represent a payload for deleting a ticket.
     """
