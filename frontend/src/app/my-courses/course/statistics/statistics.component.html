@@ -106,6 +106,9 @@
                       </div>
                     </div>
                     <div class="ticket-row-trailing-content">
+                      @if(item.has_concerns || (item.caller_notes && item.caller_notes != "")) {
+                        <mat-icon [class]="'feedback-indicator ' + (item.has_concerns ? 'font-error' : 'font-secondary')">feedback</mat-icon>
+                      }
                       <button mat-icon-button (click)="openTicketDetails(item)">
                         <mat-icon>more_vert</mat-icon>
                       </button>
