@@ -31,7 +31,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonToggleModule } from '@angular/material/button-toggle'
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { OrganizationPageComponent } from './organization-page/organization-page.component';
 import { OrganizationRoutingModule } from './organization-routing.module';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
@@ -48,6 +48,8 @@ import { OrganizationDetailsInfoCard } from './widgets/organization-details-info
 import { OrganizationEditorComponent } from '/workspace/frontend/src/app/organization/organization-editor/organization-editor.component';
 import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/organization-not-found-card.widget';
 import { OrganizationRoster } from './widgets/organization-roster/organization-roster.widget';
+import { EventModule } from '../event/event.module';
+import { OrganizationEventCardWidget } from './widgets/organization-event-card/organization-event-card.widget';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { OrganizationRoster } from './widgets/organization-roster/organization-r
     OrganizationCard,
     OrganizationDetailsInfoCard,
     OrganizationNotFoundCard,
-    OrganizationRoster
+    OrganizationRoster,
+    OrganizationEventCardWidget
   ],
   imports: [
     CommonModule,
@@ -90,7 +93,8 @@ import { OrganizationRoster } from './widgets/organization-roster/organization-r
     MatTooltipModule,
     OrganizationRoutingModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    EventModule
   ]
 })
 export class OrganizationModule {}

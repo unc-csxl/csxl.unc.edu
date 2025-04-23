@@ -24,6 +24,13 @@ import { Observable } from 'rxjs';
 import { PermissionService } from '../../permission.service';
 import { GroupEventsPipe } from '../../event/pipes/group-events.pipe';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { EventOverview, EventStatusOverview } from 'src/app/event/event.model';
+import {
+  TimeRangePaginationParams,
+  DEFAULT_TIME_RANGE_PARAMS,
+  Paginated
+} from 'src/app/pagination';
+import { signal, WritableSignal, computed } from '@angular/core';
 
 /** Injects the organization's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -54,6 +61,21 @@ export class OrganizationDetailsComponent implements OnInit {
     ]
   };
 
+  public eventStatus: WritableSignal<EventStatusOverview | undefined> =
+    signal(undefined);
+  public page: WritableSignal<
+    Paginated<EventOverview, TimeRangePaginationParams> | undefined
+  > = signal(undefined);
+  private previousParams: TimeRangePaginationParams = DEFAULT_TIME_RANGE_PARAMS;
+
+  protected eventsByDate = computed(() => {
+    const items = this.page()?.items ?? [];
+    // 👇 Replace 'event.organization.slug' with the actual key from your model
+    const filtered = items.filter(
+      (event) => event.organization_slug === this.organization?.slug
+    );
+    return this.groupEventsPipe.transform(filtered);
+  });
   /** Store the currently-logged-in user's profile.  */
   public profile: Profile;
 
@@ -95,6 +117,20 @@ export class OrganizationDetailsComponent implements OnInit {
       'organization.*',
       `organization/${this.organization?.slug ?? '*'}`
     );
+
+    // TEST START
+    this.eventService
+      .getEvents(this.previousParams, this.profile !== undefined)
+      .subscribe((events) => {
+        this.page.set(events);
+      });
+
+    this.eventService
+      .getEventStatus(this.profile !== undefined)
+      .subscribe((status) => {
+        this.eventStatus.set(status);
+      });
+    // TEST END
   }
 
   ngOnInit(): void {
@@ -136,4 +172,17 @@ export class OrganizationDetailsComponent implements OnInit {
         }
       });
   };
+
+  reloadPage() {
+    this.eventService
+      .getEvents(this.previousParams, this.profile !== undefined)
+      .subscribe((events) => {
+        this.page.set(events);
+      });
+    this.eventService
+      .getEventStatus(this.profile !== undefined)
+      .subscribe((status) => {
+        this.eventStatus.set(status);
+      });
+  }
 }

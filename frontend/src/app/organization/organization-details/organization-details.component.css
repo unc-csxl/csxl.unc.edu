@@ -6,7 +6,7 @@
 *
 */
 
-.event-listing-container {
+.event-listing-container { 
   padding-left: 16px;
   padding-right: 16px;
 }
@@ -20,10 +20,42 @@
   height: 100%; /* Ensure full height for proper positioning */
 }
 
+
 .right-column {
   display: flex;
   flex-direction: column;
   width: 70%;
   padding-right: 16px;
   height: 91.5vh;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  height: 91.5vh;
+  max-width: 670px;
+}
+
+.left-column.no-events {
+  height: auto; /* Set height to auto to prevent white space */
+}
+
+.events-pane {
+  flex: 1 1 auto; 
+  min-height: 0;
+  max-height: 100%;
+  max-width: 100%;
+  border-color: transparent !important;
+  margin-top: 0;
+}
+
+.events-pane-content {
+  overflow-y: auto;
+  height: 100%;
+}
+
+mat-divider {
+  margin-top: 12px;
+  padding-bottom: 8px;
 }

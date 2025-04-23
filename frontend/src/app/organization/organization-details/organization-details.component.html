@@ -4,13 +4,37 @@
 <organization-not-found-card />
 } @else {
   <div class="container">
-    <!-- Main Organization Details -->
-    <organization-details-info-card
+     <div class="left-column" [ngClass]="{ 'no-events': eventsByDate().length === 0 }"> <!-- Conditional css application-->
+      <!-- Main Organization Details -->
+      <organization-details-info-card
       [organization]="organization"
       [profile]="profile"
       [eventCreationPermissions]="eventCreationPermission$ | async"
       [joinOrganizationMethod]="joinOrganization"
-    ></organization-details-info-card>
+      ></organization-details-info-card>
+      <mat-card appearance="outlined" class="events-pane">
+        <mat-card-header>
+          <mat-card-title>Events</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-divider />
+        </mat-card-content>
+        <mat-card-content class="events-pane-content">
+          @if (eventsByDate().length === 0) {
+          <p class="no-events-text">This organization has no upcoming events.</p>
+          } @for (eventGroup of eventsByDate(); track eventGroup) {
+          <mat-card-subtitle class="date-header">
+            {{ eventGroup[0] }}
+          </mat-card-subtitle>
+          @for (event of eventGroup[1]; track event.id) {
+          <new-event-card
+            [event]="event"
+            [profile]="profile"
+            (registrationChange)="reloadPage()" />
+          } }
+        </mat-card-content>
+      </mat-card>
+    </div>
     @if (organizationRoster != undefined) {
       <!-- Right Column -->
       <div class="right-column">
