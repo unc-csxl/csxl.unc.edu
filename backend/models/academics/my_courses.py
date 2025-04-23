@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-from backend.models.office_hours.ticket_tag import OfficeHoursTicketTag
+from ...models.office_hours.ticket_tag import OfficeHoursTicketTag
 from ...models.public_user import PublicUser
 
 

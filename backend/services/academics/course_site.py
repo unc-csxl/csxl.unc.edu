@@ -7,6 +7,7 @@ from itertools import groupby
 from fastapi import Depends
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session, joinedload
+
 from ...database import db_session
 from ...models.user import User
 from ...models.pagination import PaginationParams, Paginated
@@ -17,7 +18,6 @@ from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
-    TicketState,
     TeachingSectionOverview,
 )
 from ...models.office_hours.course_site import (
@@ -25,7 +25,7 @@ from ...models.office_hours.course_site import (
     NewCourseSite,
     UpdatedCourseSite,
 )
-from ...models.office_hours.course_site_details import CourseSiteDetails
+from ...models.office_hours.ticket_state import TicketState
 from ...models.academics.section_member import SectionMemberDraft
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
