@@ -3,6 +3,7 @@
 import pytest
 from datetime import datetime, date, timedelta
 from sqlalchemy.orm import Session
+
 from ...services.reset_table_id_seq import reset_table_id_seq
 
 from ....test.services import user_data, room_data
@@ -40,6 +41,7 @@ from ....models.office_hours.ticket import (
 )
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
+from ....models.office_hours.ticket_tag import OfficeHoursTicketTag
 
 __authors__ = [
     "Ajay Gandecha",
@@ -614,7 +616,14 @@ nonexistent_event = OfficeHours(
     recurrence_pattern_id=None,
 )
 
+sample_ticket_tag = OfficeHoursTicketTag(
+    id=1,
+    name="Sample Tag",
+    course_site_id=comp_110_site.id,
+)
+
 sample_delete_payload = OfficeHoursTicketClosePayload(
     has_concerns=True,
     caller_notes="I have concerns.",
+    tags=[sample_ticket_tag],
 )

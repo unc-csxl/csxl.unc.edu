@@ -28,8 +28,9 @@ from ...entities.office_hours import (
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 from ...entities.office_hours import user_created_tickets_table
+from ...entities.office_hours import event_ticket_tags_table
 
-__authors__ = ["Ajay Gandecha"]
+__authors__ = ["Ajay Gandecha", "Jade Keegan"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
@@ -189,6 +190,17 @@ class OfficeHourTicketService:
         ticket_entity.state = TicketState.CLOSED
         ticket_entity.have_concerns = payload.has_concerns
         ticket_entity.caller_notes = payload.caller_notes
+
+        # Associate tags with ticket
+        for tag in payload.tags:
+            self._session.execute(
+               event_ticket_tags_table.insert().values(
+                    {
+                        "ticket_id": ticket_id,
+                        "ticket_tag_id": tag.id,
+                    }
+                )
+            )
 
         # Save changes
         self._session.commit()

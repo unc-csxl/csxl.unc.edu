@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+from ...models.office_hours.ticket_tag import OfficeHoursTicketTag
+
 from .ticket_type import TicketType
 from .ticket_state import TicketState
 
@@ -10,6 +12,7 @@ __authors__ = [
     "Bailey DeSouza",
     "Meghan Sun",
     "Maddy Andrews",
+    "Jade Keegan"
 ]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -70,3 +73,4 @@ class OfficeHoursTicketClosePayload(BaseModel):
 
     has_concerns: bool
     caller_notes: str
+    tags: list[OfficeHoursTicketTag]

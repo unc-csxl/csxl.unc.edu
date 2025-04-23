@@ -1,6 +1,8 @@
 from ..academics.section_member import SectionMember
 from .office_hours import OfficeHours
+
 from .ticket import OfficeHoursTicket
+from .ticket_tag import OfficeHoursTicketTag
 
 __authors__ = ["Sadie Amato, Bailey DeSouza, Meghan Sun, Maddy Andrews"]
 __copyright__ = "Copyright 2024"
@@ -19,3 +21,4 @@ class OfficeHoursTicketDetails(OfficeHoursTicket):
     office_hours: OfficeHours
     creators: list[SectionMember]
     caller: SectionMember
+    tags: list[OfficeHoursTicketTag]
