@@ -7,7 +7,7 @@ from ....models.academics.my_courses import OfficeHourTicketOverview
 from ....models.office_hours.ticket import TicketState
 
 from ....services.office_hours import OfficeHourTicketTagService
-from ....services.exceptions import CoursePermissionException, ResourceNotFoundException
+from ....services.exceptions import CoursePermissionException, DuplicateResourceException, ResourceNotFoundException
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 from .fixtures import oh_ticket_tag_svc
@@ -86,12 +86,25 @@ def test_create_ticket_tag(oh_ticket_tag_svc: OfficeHourTicketTagService):
     # Check the created tag
     assert created_tag.name == new_tag.name
 
+def test_create_ticket_tag_duplicate_name(oh_ticket_tag_svc: OfficeHourTicketTagService):
+    """
+    Test creating a new ticket tag with a duplicate name.
+    """
+    # Create a new ticket tag with a duplicate name
+    new_tag = office_hours_data.duplicate_ticket_tag
+
+    # Attempt to create the ticket tag
+    with pytest.raises(DuplicateResourceException):
+        oh_ticket_tag_svc.create(
+            user_data.instructor, office_hours_data.comp_110_site.id, new_tag
+        )
+
 def test_create_ticket_tag_unauthenticated(oh_ticket_tag_svc: OfficeHourTicketTagService):
     """
     Test creating a new ticket tag with an unauthenticated user.
     """
     # Create a new ticket tag
-    new_tag = office_hours_data.sample_ticket_tag
+    new_tag = office_hours_data.new_ticket_tag
 
     # Attempt to create the ticket tag
     with pytest.raises(CoursePermissionException):
@@ -111,6 +124,16 @@ def test_update_ticket_tag(oh_ticket_tag_svc: OfficeHourTicketTagService):
     assert updated_tag.id == office_hours_data.updated_ticket_tag_1.id
     # Check the updated tag name
     assert updated_tag.name == office_hours_data.updated_ticket_tag_1.name
+
+def test_update_ticket_tag_does_not_exist(oh_ticket_tag_svc: OfficeHourTicketTagService):
+    """
+    Test updating a ticket tag that does not exist.
+    """
+    # Attempt to update a non-existent ticket tag
+    with pytest.raises(ResourceNotFoundException):
+        oh_ticket_tag_svc.update(
+            user_data.instructor, office_hours_data.comp_110_site.id, office_hours_data.new_ticket_tag
+        )
 
 def test_update_ticket_tag_unauthenticated(oh_ticket_tag_svc: OfficeHourTicketTagService):
     """
@@ -135,6 +158,16 @@ def test_delete_ticket_tag(oh_ticket_tag_svc: OfficeHourTicketTagService):
     with pytest.raises(ResourceNotFoundException):
         oh_ticket_tag_svc.get_tag_by_id(
             user_data.instructor, office_hours_data.comp_110_site.id, office_hours_data.ticket_tag_1.id
+        )
+
+def test_delete_ticket_tag_does_not_exist(oh_ticket_tag_svc: OfficeHourTicketTagService):
+    """
+    Test deleting a ticket tag that does not exist.
+    """
+    # Attempt to delete a non-existent ticket tag
+    with pytest.raises(ResourceNotFoundException):
+        oh_ticket_tag_svc.delete(
+            user_data.instructor, office_hours_data.comp_110_site.id, office_hours_data.new_ticket_tag.id
         )
 
 def test_delete_ticket_tag_unauthenticated(oh_ticket_tag_svc: OfficeHourTicketTagService):

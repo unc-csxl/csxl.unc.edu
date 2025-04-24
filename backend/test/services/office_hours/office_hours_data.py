@@ -683,6 +683,12 @@ new_ticket_tag = OfficeHoursTicketTag(
     course_site_id=comp_110_site.id,
 )
 
+duplicate_ticket_tag = OfficeHoursTicketTag(
+    id=4,
+    name="SP01",
+    course_site_id=comp_110_site.id,
+)
+
 sample_delete_payload = OfficeHoursTicketClosePayload(
     has_concerns=True,
     caller_notes="I have concerns.",
