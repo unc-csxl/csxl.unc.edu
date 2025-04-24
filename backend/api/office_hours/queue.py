@@ -113,14 +113,20 @@ class QueueConnectionManager:
         # Send new queue to all staff
         for connection in self._active_staff_connections.get(office_hours_id, []):
             queue = oh_event_svc.get_office_hour_queue(connection.user, office_hours_id)
-            await connection.socket.send_json(queue.model_dump_json())
+            try:
+                await connection.socket.send_json(queue.model_dump_json())
+            finally:
+                ...
 
         # Send new queue data to all students
         for connection in self._active_student_connections.get(office_hours_id, []):
             overview = oh_event_svc.get_office_hour_get_help_overview(
                 connection.user, office_hours_id
             )
-            await connection.socket.send_json(overview.model_dump_json())
+            try:
+                await connection.socket.send_json(overview.model_dump_json())
+            finally:
+                ...
 
 
 # Create the queue connection manager object
