@@ -1,12 +1,12 @@
 """Test Data for Office Hours."""
 
 import pytest
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 
 from ...services.reset_table_id_seq import reset_table_id_seq
 
-from ....test.services import user_data, room_data
+from ....test.services import room_data
 from ..academics import section_data
 from ..academics import term_data
 
@@ -18,6 +18,8 @@ from ....entities.academics.section_entity import SectionEntity
 from ....entities.office_hours.office_hours_recurrence_pattern_entity import (
     OfficeHoursRecurrencePatternEntity,
 )
+from ....entities.office_hours import event_ticket_tags_table
+from ....entities.office_hours.ticket_tag_entity import OfficeHoursTicketTagEntity
 
 
 from ....models.office_hours.office_hours_recurrence_pattern import (
@@ -49,6 +51,7 @@ __authors__ = [
     "Sadie Amato",
     "Bailey DeSouza",
     "Meghan Sun",
+    "Jade Keegan"
 ]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
@@ -271,6 +274,27 @@ comp_110_ticket_creators = [
     (comp_110_closed_ticket, [section_data.comp110_student_1.id]),
 ]
 
+# Ticket Tags
+ticket_tag_1 = OfficeHoursTicketTag(
+    id=1,
+    name="A05",
+    course_site_id=comp_110_site.id,
+)
+ticket_tag_2 = OfficeHoursTicketTag(
+    id=2,
+    name="SP01",
+    course_site_id=comp_110_site.id,
+)
+comp_110_ticket_tags = [
+    (comp_110_closed_ticket, [ticket_tag_1.id]),
+]
+
+updated_ticket_tag_1 = OfficeHoursTicketTag(
+  id=1,
+  name="A06",
+  course_site_id=comp_110_site.id,
+)
+
 # All
 sites = [comp_110_site, comp_301_site]
 section_pairings = [comp_110_sections, comp_301_sections]
@@ -296,7 +320,14 @@ oh_tickets = [
     comp_110_called_ticket,
     comp_110_closed_ticket,
 ]
+
 ticket_user_pairings = [comp_110_ticket_creators]
+
+ticket_tags = [
+    ticket_tag_1,
+    ticket_tag_2
+]
+ticket_tag_pairings = [comp_110_ticket_tags]
 
 
 def insert_fake_data(session: Session):
@@ -380,6 +411,36 @@ def insert_fake_data(session: Session):
                         }
                     )
                 )
+    
+    session.commit()
+
+    # Step 6: Add ticket tags
+    for tag in ticket_tags:
+        tag_entity = OfficeHoursTicketTagEntity.from_model(tag)
+        session.add(tag_entity)
+
+    reset_table_id_seq(
+        session,
+        OfficeHoursTicketTagEntity,
+        OfficeHoursTicketTagEntity.id,
+        len(ticket_tags) + 1,
+    )
+    
+    session.commit()
+
+    # Step 7: Add tags to tickets
+    for pairing in ticket_tag_pairings:
+        for ticket, tag_ids in pairing:
+            for tag_id in tag_ids:
+                session.execute(
+                    event_ticket_tags_table.insert().values(
+                        {
+                            "ticket_id": ticket.id,
+                            "ticket_tag_id": tag_id,
+                        }
+                    )
+                )
+
 
     session.commit()
 
@@ -616,8 +677,8 @@ nonexistent_event = OfficeHours(
     recurrence_pattern_id=None,
 )
 
-sample_ticket_tag = OfficeHoursTicketTag(
-    id=1,
+new_ticket_tag = OfficeHoursTicketTag(
+    id=3,
     name="Sample Tag",
     course_site_id=comp_110_site.id,
 )
@@ -625,5 +686,5 @@ sample_ticket_tag = OfficeHoursTicketTag(
 sample_delete_payload = OfficeHoursTicketClosePayload(
     has_concerns=True,
     caller_notes="I have concerns.",
-    tags=[sample_ticket_tag],
+    tags=[ticket_tag_1],
 )

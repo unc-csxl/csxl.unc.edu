@@ -33,6 +33,28 @@ class OfficeHourTicketTagService:
         self._session = session
         self._office_hours_svc = _office_hours_svc
 
+    def get_tag_by_id(self, user: User, site_id: int, tag_id: int) -> OfficeHoursTicketTag:
+        """
+        Returns an office hour ticket tag by ID.
+
+        Returns:
+            OfficeHourTicketTag
+        """
+        
+        # Check permissions
+        self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        # Get ticket tag
+        ticket_tag = self._session.get(OfficeHoursTicketTagEntity, tag_id)
+
+        if ticket_tag is None:
+            raise ResourceNotFoundException(
+                "Office hours ticket tag with id: {tag_id} does not exist."
+            )
+
+        # Return model
+        return ticket_tag.to_model()
+
     def get_course_site_tags(self, user: User, site_id: int) -> list[OfficeHoursTicketTag]:
         """
         Returns all office hour ticket tags for a course site.

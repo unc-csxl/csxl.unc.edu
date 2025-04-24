@@ -13,5 +13,5 @@ event_ticket_tags_table = Table(
     "office_hours__event_ticket_tags",
     EntityBase.metadata,
     Column("ticket_id", ForeignKey("office_hours__ticket.id"), primary_key=True),
-    Column("ticket_tag_id", ForeignKey("office_hours__ticket_tag.id"), primary_key=True),
+    Column("ticket_tag_id", ForeignKey("office_hours__ticket_tag.id", ondelete="CASCADE"), primary_key=True),
 )
