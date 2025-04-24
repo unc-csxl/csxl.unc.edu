@@ -4,6 +4,7 @@ Implements the office hours queue using websocket functionality.
 
 from typing import Optional
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from fastapi.websockets import WebSocketState
 from enum import Enum
 from pydantic import BaseModel
 from ..authentication import registered_user_from_websocket
@@ -113,20 +114,16 @@ class QueueConnectionManager:
         # Send new queue to all staff
         for connection in self._active_staff_connections.get(office_hours_id, []):
             queue = oh_event_svc.get_office_hour_queue(connection.user, office_hours_id)
-            try:
+            if connection.socket.client_state == WebSocketState.CONNECTED:
                 await connection.socket.send_json(queue.model_dump_json())
-            finally:
-                ...
 
         # Send new queue data to all students
         for connection in self._active_student_connections.get(office_hours_id, []):
             overview = oh_event_svc.get_office_hour_get_help_overview(
                 connection.user, office_hours_id
             )
-            try:
+            if connection.socket.client_state == WebSocketState.CONNECTED:
                 await connection.socket.send_json(overview.model_dump_json())
-            finally:
-                ...
 
 
 # Create the queue connection manager object
