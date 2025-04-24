@@ -59,9 +59,6 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   queue: WritableSignal<OfficeHourQueueOverview | undefined> =
     signal(undefined);
 
-  /** Stores subscription to the timer observable that refreshes data every 10s */
-  timer!: Subscription;
-
   /** Connection to the office hours get help websocket */
   webSocketSubject$: WebSocketSubject<any>;
   /** Stores subscription to a timer observable for flashing the title for notifications */
@@ -95,7 +92,6 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   /** Remove the timer subscriptions when the view is destroyed so polling/flashing does not persist on other pages */
   ngOnDestroy(): void {
     this.webSocketSubject$.complete();
-    this.timer.unsubscribe();
     this.titleFlashTimer?.unsubscribe();
   }
 

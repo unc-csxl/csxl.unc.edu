@@ -60,9 +60,6 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   data: WritableSignal<OfficeHourGetHelpOverview | undefined> =
     signal(undefined);
 
-  /** Stores subscription to the timer observable that refreshes data every 10s */
-  timer!: Subscription;
-
   /** Stores subscription to a timer observable for flashing the title for notifications */
   titleFlashTimer: Subscription | undefined;
 
@@ -113,7 +110,6 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   /** Remove the timer subscriptions when the view is destroyed so polling/flashing does not persist on other pages */
   ngOnDestroy(): void {
     this.webSocketSubject$.complete();
-    this.timer.unsubscribe();
     this.titleFlashTimer?.unsubscribe();
   }
 
