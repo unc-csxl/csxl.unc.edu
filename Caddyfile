@@ -12,6 +12,8 @@ reverse_proxy /ws http://localhost:1561
 reverse_proxy /ws/* http://localhost:1561
 reverse_proxy /api http://localhost:1561
 reverse_proxy /api/* http://localhost:1561
+reverse_proxy /ws http://localhost:1561
+reverse_proxy /ws/* http://localhost:1561
 reverse_proxy /docs http://localhost:1561
 reverse_proxy /docs/* http://localhost:1561
 reverse_proxy /auth http://localhost:1561
