@@ -8,6 +8,8 @@
 
 http://localhost:1560
 
+reverse_proxy /ws http://localhost:1561
+reverse_proxy /ws/* http://localhost:1561
 reverse_proxy /api http://localhost:1561
 reverse_proxy /api/* http://localhost:1561
 reverse_proxy /ws http://localhost:1561
