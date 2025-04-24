@@ -20,7 +20,6 @@ from ...models.academics.my_courses import (
     TermOverview,
     CourseMemberOverview,
     OfficeHoursOverview,
-    CourseSiteOverview,
     OfficeHourTicketOverview,
 )
 from ...models.office_hours.course_site import (
@@ -28,7 +27,6 @@ from ...models.office_hours.course_site import (
     CourseSite,
     UpdatedCourseSite,
 )
-from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...models.pagination import PaginationParams, Paginated, TicketPaginationParams
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
@@ -195,6 +193,7 @@ def get_paginated_ticket_history(
     page_size: int = 10,
     student_ids: str = "",
     staff_ids: str = "",
+    tag_ids: str = "",
     range_start: str = "",
     range_end: str = "",
     subject: User = Depends(registered_user),
@@ -212,6 +211,7 @@ def get_paginated_ticket_history(
         page_size=page_size,
         student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
         staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
+        tag_ids=json.loads(tag_ids) if len(tag_ids) > 0 else [],
         range_start=range_start,
         range_end=range_end,
     )
@@ -230,44 +230,12 @@ def get_statistics_filter_data(
     return oh_statistics_svc.get_filter_data(subject, course_site_id)
 
 
-@api.get("/{course_site_id}/statistics/ticket-history", tags=["My Courses"])
-def get_paginated_ticket_history(
-    course_site_id: int,
-    page: int = 0,
-    page_size: int = 10,
-    student_ids: str = "",
-    staff_ids: str = "",
-    range_start: str = "",
-    range_end: str = "",
-    subject: User = Depends(registered_user),
-    oh_statistics_svc: OfficeHoursStatisticsService = Depends(),
-) -> Paginated[OfficeHourTicketOverview]:
-    """
-    Gets the past office hour event overviews for a given class.
-
-    Returns:
-        Paginated[OfficeHoursOverview]
-    """
-
-    ticket_pagination_params = TicketPaginationParams(
-        page=page,
-        page_size=page_size,
-        student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
-        staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
-        range_start=range_start,
-        range_end=range_end,
-    )
-
-    return oh_statistics_svc.get_paginated_tickets(
-        subject, course_site_id, ticket_pagination_params
-    )
-
-
 @api.get("/{course_site_id}/statistics", tags=["My Courses"])
 def get_ticket_statistics(
     course_site_id: int,
     student_ids: str = "",
     staff_ids: str = "",
+    tag_ids: str = "",
     range_start: str = "",
     range_end: str = "",
     subject: User = Depends(registered_user),
@@ -282,6 +250,7 @@ def get_ticket_statistics(
     ticket_statistics_params = TicketPaginationParams(
         student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
         staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
+        tag_ids=json.loads(tag_ids) if len(tag_ids) > 0 else [],
         range_start=range_start,
         range_end=range_end,
     )
@@ -296,6 +265,7 @@ def get_ticket_statistics_csv(
     course_site_id: int,
     student_ids: str = "",
     staff_ids: str = "",
+    tag_ids: str = "",
     range_start: str = "",
     range_end: str = "",
     subject: User = Depends(registered_user),
@@ -311,6 +281,7 @@ def get_ticket_statistics_csv(
     ticket_statistics_params = TicketPaginationParams(
         student_ids=json.loads(student_ids) if len(student_ids) > 0 else [],
         staff_ids=json.loads(staff_ids) if len(staff_ids) > 0 else [],
+        tag_ids=json.loads(tag_ids) if len(tag_ids) > 0 else [],
         range_start=range_start,
         range_end=range_end,
     )

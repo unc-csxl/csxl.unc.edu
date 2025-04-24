@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from ...entities.office_hours.ticket_tag_entity import OfficeHoursTicketTagEntity
 from ...services.office_hours.office_hours import OfficeHoursService
-from ...services.exceptions import ResourceNotFoundException
+from ...services.exceptions import DuplicateResourceException, ResourceNotFoundException
 
 from ...models.office_hours.ticket_tag import NewOfficeHoursTicketTag, OfficeHoursTicketTag
 
@@ -84,6 +84,16 @@ class OfficeHourTicketTagService:
         
         # Check permissions
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
+
+        # Fetch existing tags
+        existing_tags = self._session.query(OfficeHoursTicketTagEntity).filter(
+            OfficeHoursTicketTagEntity.course_site_id == site_id
+        ).all()
+
+        if (any(tag.name == existing_tag.name for existing_tag in existing_tags)):
+            raise DuplicateResourceException(
+                "Office hours ticket tag with name: {tag.name} already exists for this course site."
+            )
 
         # Create ticket tag
         ticket_tag_entity = OfficeHoursTicketTagEntity.from_new_model(tag)

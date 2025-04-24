@@ -40,6 +40,7 @@ def test_get_paginated_tickets(oh_statistics_svc: OfficeHoursStatisticsService):
         range_end="",
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     ticket_history = oh_statistics_svc.get_paginated_tickets(
@@ -61,6 +62,7 @@ def test_get_paginated_tickets_not_staff(
             range_end="",
             student_ids=[],
             staff_ids=[],
+            tag_ids=[]
         )
 
         oh_statistics_svc.get_paginated_tickets(
@@ -77,6 +79,7 @@ def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
         range_end="",
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     statistics = oh_statistics_svc.get_statistics(
@@ -102,6 +105,7 @@ def test_get_paginated_tickets_student_filter(
         range_end="",
         student_ids=[user_data.student.id],
         staff_ids=[],
+        tag_ids=[]
     )
 
     ticket_history = oh_statistics_svc.get_paginated_tickets(
@@ -125,6 +129,7 @@ def test_get_paginated_tickets_staff_filter(
         range_end="",
         student_ids=[],
         staff_ids=[user_data.instructor.id],
+        tag_ids=[]
     )
 
     ticket_history = oh_statistics_svc.get_paginated_tickets(
@@ -149,6 +154,7 @@ def test_get_statistics_staff_filter(oh_statistics_svc: OfficeHoursStatisticsSer
             user_data.instructor.id
         ],  # filter by Ina, only person with a CLOSED ticket right now
         # staff_ids=[0], # filter by NOT Ina, so should expect no ticket stats - THIS WORKS
+        tag_ids=[]
     )
 
     statistics = oh_statistics_svc.get_statistics(
@@ -174,6 +180,7 @@ def test_get_paginated_tickets_date_filter(
         range_end=date_maker(1, 0, 0).isoformat(),
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     ticket_history = oh_statistics_svc.get_paginated_tickets(
@@ -197,6 +204,7 @@ def test_get_statistics_date_filter(
         # range_end=date_maker(-1, 0, 0).isoformat(), # one ago - THIS SHOULD FAIL
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     statistics = oh_statistics_svc.get_statistics(
@@ -222,6 +230,7 @@ def test_get_paginated_tickets_unauthenticated(
         range_end="",
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     with pytest.raises(CoursePermissionException):
@@ -241,6 +250,7 @@ def test_get_statistics_unauthenticated(
         range_end="",
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     with pytest.raises(CoursePermissionException):
@@ -260,6 +270,7 @@ def test_get_paginated_tickets_multiple_filters(
         range_end=date_maker(1, 0, 0).isoformat(),
         student_ids=[user_data.student.id],
         staff_ids=[user_data.instructor.id],
+        tag_ids=[]
     )
 
     ticket_history = oh_statistics_svc.get_paginated_tickets(
@@ -305,6 +316,7 @@ def test_get_paginated_tickets_multiple_filters(
         student_ids=[user_data.student.id],
         # student_ids=[0], # filter by NOT Stewie, so should expect no ticket stats - THIS WORKS
         staff_ids=[user_data.instructor.id],
+        tag_ids=[]
     )
 
     statistics = oh_statistics_svc.get_statistics(
@@ -330,6 +342,7 @@ def test_get_ticket_csv(
         range_end="",
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     ticket_csv = oh_statistics_svc.get_ticket_csv(
@@ -350,6 +363,7 @@ def test_get_ticket_csv_unauthenticated(
         range_end="",
         student_ids=[],
         staff_ids=[],
+        tag_ids=[]
     )
 
     with pytest.raises(CoursePermissionException):
@@ -369,6 +383,7 @@ def test_get_ticket_csv_with_filters(
         range_end="",
         student_ids=[user_data.student.id],
         staff_ids=[user_data.instructor.id],
+        tag_ids=[]
     )
 
     ticket_csv = oh_statistics_svc.get_ticket_csv(
