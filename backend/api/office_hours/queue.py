@@ -2,6 +2,7 @@
 Implements the office hours queue using websocket functionality.
 """
 
+from typing import Optional
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from enum import Enum
 from pydantic import BaseModel
@@ -10,7 +11,10 @@ from ...services.office_hours.office_hours import OfficeHoursService
 from ...services.office_hours.ticket import OfficeHourTicketService
 from ...services.user import UserService
 from ...models.user import User
-from ...models.office_hours.ticket import NewOfficeHoursTicket
+from ...models.office_hours.ticket import (
+    NewOfficeHoursTicket,
+    OfficeHoursTicketClosePayload,
+)
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2024"
@@ -137,6 +141,7 @@ class QueueWebSocketData(BaseModel):
     """Model to represent the data sent to the queue websocket."""
 
     action: QueueWebSocketAction
+    close_payload: Optional[OfficeHoursTicketClosePayload] = {}
     id: int
 
 
@@ -172,7 +177,7 @@ async def queue_websocket(
                 await manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
             elif data.action == QueueWebSocketAction.CLOSE:
                 # Close a ticket
-                oh_ticket_svc.close_ticket(subject, data.id)
+                oh_ticket_svc.close_ticket(subject, data.id, data.close_payload)
                 # Broadcast the changes using the mamanger.
                 await manager.broadcast_queue_changes(office_hours_id, oh_event_svc)
             elif data.action == QueueWebSocketAction.CANCEL:

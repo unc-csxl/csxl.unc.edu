@@ -90,17 +90,23 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
     // Load the web socket connection
-    const url = `wss://${window.location.host}/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const url = `${protocol}://${window.location.host}/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
     this.webSocketSubject$ = webSocket({
       url: url
     });
   }
 
   ngOnInit(): void {
-    this.webSocketSubject$.subscribe((value) => {
-      const json: OfficeHourGetHelpOverviewJson = JSON.parse(value);
-      const overview = parseOfficeHourGetHelpOverviewJson(json);
-      this.data.set(overview);
+    console.log('Attempt to connect');
+    this.webSocketSubject$.subscribe({
+      next: (value) => {
+        const json: OfficeHourGetHelpOverviewJson = JSON.parse(value);
+        const overview = parseOfficeHourGetHelpOverviewJson(json);
+        console.log(overview);
+        this.handleNotification(overview);
+        this.data.set(overview);
+      }
     });
   }
 
@@ -144,16 +150,6 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       this.titleFlashTimer?.unsubscribe();
       this.titleService.setTitle(ORIGINAL_TITLE);
     }
-  }
-
-  /** Loads office hours data */
-  pollData(): void {
-    this.myCoursesService
-      .getOfficeHoursHelpOverview(this.ohEventId)
-      .subscribe((getHelpData) => {
-        this.handleNotification(getHelpData);
-        this.data.set(getHelpData);
-      });
   }
 
   isFormValid(): boolean {

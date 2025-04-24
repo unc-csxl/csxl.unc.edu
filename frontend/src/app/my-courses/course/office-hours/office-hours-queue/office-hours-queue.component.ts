@@ -77,7 +77,8 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
     // Load the web socket
-    const url = `wss://${window.location.host}/ws/office-hours/${this.ohEventId}/queue?token=${localStorage.getItem('bearerToken')}`;
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const url = `${protocol}://${window.location.host}/ws/office-hours/${this.ohEventId}/queue?token=${localStorage.getItem('bearerToken')}`;
     this.webSocketSubject$ = webSocket({
       url: url
     });
@@ -90,13 +91,6 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
       this.queue.set(overview);
     });
   }
-
-  /** Create a timer subscription to poll office hour queue data at an interval at view initalization */
-  // ngOnInit(): void {
-  //   this.timer = timer(0, 10000).subscribe(() => {
-  //     this.pollQueue();
-  //   });
-  // }
 
   /** Remove the timer subscriptions when the view is destroyed so polling/flashing does not persist on other pages */
   ngOnDestroy(): void {
@@ -166,11 +160,6 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
       id: ticket.id
     };
     this.webSocketSubject$.next(action);
-
-    // this.myCoursesService.callTicket(ticket.id).subscribe({
-    //   next: (_) => this.pollQueue(),
-    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    // });
   }
 
   /** Cancels a ticket and reloads the queue data */
@@ -181,35 +170,17 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
       id: ticket.id
     };
     this.webSocketSubject$.next(action);
-
-    // this.myCoursesService.cancelTicket(ticket.id).subscribe({
-    //   next: (_) => this.pollQueue(),
-    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    // });
   }
 
   /** Closes a ticket and reloads the queue data */
   closeTicket(ticket: OfficeHourTicketOverview): void {
-    // Create the web socket object
-    const action: QueueWebSocketData = {
-      action: QueueWebSocketAction.CLOSE,
-      id: ticket.id
-    };
-    this.webSocketSubject$.next(action);
-
-    // this.myCoursesService.closeTicket(ticket.id).subscribe({
-    //   next: (_) => this.pollQueue(),
-    //   error: (err) => this.snackBar.open(err, '', { duration: 2000 })
-    // });
-
-    // let dialogRef = this.dialog.open(CloseTicketDialog, {
-    //   height: '400px',
-    //   width: '500px',
-    //   data: ticket.id
-    // });
-    // dialogRef.afterClosed().subscribe((_) => {
-    //   // Update the data.
-    //   this.pollQueue();
-    // });
+    this.dialog.open(CloseTicketDialog, {
+      height: '400px',
+      width: '500px',
+      data: {
+        ticketId: ticket.id,
+        socketConnection: this.webSocketSubject$
+      }
+    });
   }
 }

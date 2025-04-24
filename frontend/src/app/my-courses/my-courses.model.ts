@@ -318,6 +318,10 @@ export enum QueueWebSocketAction {
 
 export interface QueueWebSocketData {
   action: QueueWebSocketAction;
+  close_payload?: {
+    has_concerns: boolean;
+    caller_notes: string;
+  };
   id: number;
 }
 
