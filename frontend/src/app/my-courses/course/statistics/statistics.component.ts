@@ -210,6 +210,19 @@ export class StatisticsComponent {
       });
   }
 
+  clearStudentFilter() {
+    this.selectedStudentFilterOptions.set([]);
+  }
+
+  clearStaffFilter() {
+    this.selectedStaffFilterOptions.set([]);
+  }
+
+  clearDateRangeFilter() {
+    this.selectedStartDate.set(undefined);
+    this.selectedEndDate.set(undefined);
+  }
+
   /** Clear all currently-set filters when needed */
   clearFilters() {
     this.selectedStudentFilterOptions.set([]);

@@ -17,7 +17,16 @@
                 [searchableItems]="studentFilterOptions()"
                 [(selectedItems)]="selectedStudentFilterOptions"
                 [filterLogic]="profileFilterLogic"
-              />
+              >
+                @if(studentFilterOptions().length) {
+                  <div class="mat-filter-chip-accessory" (click)="clearStudentFilter()">
+                    <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
+                    <mat-icon matChipTrailingIcon>close</mat-icon>    
+                  </div>
+                }
+              </mat-filter-chip>
+
+
               <!-- Staff chip -->
               <mat-filter-chip
                 placeholder="Staff"
@@ -26,7 +35,16 @@
                 [searchableItems]="staffFilterOptions()"
                 [(selectedItems)]="selectedStaffFilterOptions"
                 [filterLogic]="profileFilterLogic"
-              />
+              >
+                @if(staffFilterOptions().length) {
+                  <div class="mat-filter-chip-accessory" (click)="clearStaffFilter()">
+                    <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
+                    <mat-icon matChipTrailingIcon>close</mat-icon>    
+                  </div>
+                }
+              </mat-filter-chip>
+
+
               <!-- Date picker -->
               <div class="date-picker-container">
                 <mat-chip disableRipple [highlighted]="selectedStartDate() || selectedEndDate()" >
@@ -44,13 +62,14 @@
                           <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
                       </div>
                       @if(selectedStartDate()|| selectedEndDate()) {
-                          <div class="mat-filter-chip-accessory" (click)="clearFilters()">
+                          <div class="mat-filter-chip-accessory" (click)="clearDateRangeFilter()">
                               <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
                               <mat-icon matChipTrailingIcon>close</mat-icon>    
                           </div>
                       }
                   </div>
               </mat-chip>
+              
               <mat-date-range-input 
                 class="date-input"
                 [rangePicker]="datePicker" 
