@@ -310,32 +310,6 @@ export interface OfficeHours {
   recurrence_pattern: OfficeHoursRecurrencePattern | null;
 }
 
-export enum QueueWebSocketAction {
-  CALL = 'CALL',
-  CLOSE = 'CLOSE',
-  CANCEL = 'CANCEL'
-}
-
-export interface QueueWebSocketData {
-  action: QueueWebSocketAction;
-  close_payload?: {
-    has_concerns: boolean;
-    caller_notes: string;
-  };
-  id: number;
-}
-
-export enum GetHelpWebSocketAction {
-  CREATE = 'CREATE',
-  CANCEL = 'CANCEL'
-}
-
-export interface GetHelpWebSocketData {
-  action: GetHelpWebSocketAction;
-  id: number | null;
-  new_ticket: TicketDraft | null;
-}
-
 export interface OfficeHourStatisticsFilterDataJson {
   students: PublicProfile[];
   staff: PublicProfile[];
