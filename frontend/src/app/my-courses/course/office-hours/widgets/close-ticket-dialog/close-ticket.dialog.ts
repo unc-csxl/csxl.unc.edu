@@ -3,17 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { WebSocketSubject } from 'rxjs/webSocket';
-import {
-  QueueWebSocketAction,
-  QueueWebSocketData
-} from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
-
-interface CloseTicketDialogData {
-  ticketId: number;
-  socketConnection: WebSocketSubject<any>;
-}
 
 @Component({
   selector: 'dialog-close-ticket',
@@ -26,7 +16,7 @@ export class CloseTicketDialog {
 
   constructor(
     protected dialogRef: MatDialogRef<CloseTicketDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: CloseTicketDialogData,
+    @Inject(MAT_DIALOG_DATA) public ticketId: number,
     protected myCoursesService: MyCoursesService,
     private router: Router,
     private snackBar: MatSnackBar
@@ -36,16 +26,18 @@ export class CloseTicketDialog {
    * Submits the form and closes a ticket.
    */
   submit(): void {
-    const action: QueueWebSocketData = {
-      action: QueueWebSocketAction.CLOSE,
-      close_payload: {
-        has_concerns: this.hasConcerns.value ?? false,
-        caller_notes: this.notes.value ?? ''
-      },
-      id: this.data.ticketId
-    };
-    this.data.socketConnection.next(action);
-    this.close();
+    this.myCoursesService
+      .closeTicket(
+        this.ticketId,
+        this.hasConcerns.value ?? false,
+        this.notes.value ?? ''
+      )
+      .subscribe({
+        next: () => {
+          this.close();
+        },
+        error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+      });
   }
 
   /** Closes the dialog */

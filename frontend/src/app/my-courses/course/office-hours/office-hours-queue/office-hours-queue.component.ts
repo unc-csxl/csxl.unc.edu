@@ -18,15 +18,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, timer } from 'rxjs';
 import {
   OfficeHourQueueOverview,
-  OfficeHourQueueOverviewJson,
-  OfficeHourTicketOverview,
-  parseOfficeHourQueueOverview,
-  QueueWebSocketAction,
-  QueueWebSocketData
+  OfficeHourTicketOverview
 } from 'src/app/my-courses/my-courses.model';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { officeHourPageGuard } from '../office-hours.guard';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Title } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { CloseTicketDialog } from '../widgets/close-ticket-dialog/close-ticket.dialog';
@@ -59,8 +54,9 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   queue: WritableSignal<OfficeHourQueueOverview | undefined> =
     signal(undefined);
 
-  /** Connection to the office hours get help websocket */
-  webSocketSubject$: WebSocketSubject<any>;
+  /** Stores subscription to the timer observable that refreshes data every 10s */
+  timer!: Subscription;
+
   /** Stores subscription to a timer observable for flashing the title for notifications */
   titleFlashTimer: Subscription | undefined;
 
@@ -73,25 +69,18 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
-    // Load the web socket
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${protocol}://${window.location.host}/ws/office-hours/${this.ohEventId}/queue?token=${localStorage.getItem('bearerToken')}`;
-    this.webSocketSubject$ = webSocket({
-      url: url
-    });
   }
 
+  /** Create a timer subscription to poll office hour queue data at an interval at view initalization */
   ngOnInit(): void {
-    this.webSocketSubject$.subscribe((value) => {
-      const json: OfficeHourQueueOverviewJson = JSON.parse(value);
-      const overview = parseOfficeHourQueueOverview(json);
-      this.queue.set(overview);
+    this.timer = timer(0, 10000).subscribe(() => {
+      this.pollQueue();
     });
   }
 
   /** Remove the timer subscriptions when the view is destroyed so polling/flashing does not persist on other pages */
   ngOnDestroy(): void {
-    this.webSocketSubject$.complete();
+    this.timer.unsubscribe();
     this.titleFlashTimer?.unsubscribe();
   }
 
@@ -150,33 +139,30 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
 
   /** Calls a ticket and reloads the queue data */
   callTicket(ticket: OfficeHourTicketOverview): void {
-    // Create the web socket object
-    const action: QueueWebSocketData = {
-      action: QueueWebSocketAction.CALL,
-      id: ticket.id
-    };
-    this.webSocketSubject$.next(action);
+    this.myCoursesService.callTicket(ticket.id).subscribe({
+      next: (_) => this.pollQueue(),
+      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    });
   }
 
   /** Cancels a ticket and reloads the queue data */
   cancelTicket(ticket: OfficeHourTicketOverview): void {
-    // Create the web socket object
-    const action: QueueWebSocketData = {
-      action: QueueWebSocketAction.CANCEL,
-      id: ticket.id
-    };
-    this.webSocketSubject$.next(action);
+    this.myCoursesService.cancelTicket(ticket.id).subscribe({
+      next: (_) => this.pollQueue(),
+      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    });
   }
 
   /** Closes a ticket and reloads the queue data */
   closeTicket(ticket: OfficeHourTicketOverview): void {
-    this.dialog.open(CloseTicketDialog, {
+    let dialogRef = this.dialog.open(CloseTicketDialog, {
       height: '400px',
       width: '500px',
-      data: {
-        ticketId: ticket.id,
-        socketConnection: this.webSocketSubject$
-      }
+      data: ticket.id
+    });
+    dialogRef.afterClosed().subscribe((_) => {
+      // Update the data.
+      this.pollQueue();
     });
   }
 }

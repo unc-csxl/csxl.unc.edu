@@ -17,19 +17,13 @@ import { officeHourPageGuard } from '../office-hours.guard';
 import { ActivatedRoute } from '@angular/router';
 import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import {
-  GetHelpWebSocketAction,
-  GetHelpWebSocketData,
   OfficeHourGetHelpOverview,
-  OfficeHourGetHelpOverviewJson,
   OfficeHourTicketOverview,
-  parseOfficeHourGetHelpOverviewJson,
   TicketDraft
 } from 'src/app/my-courses/my-courses.model';
 import { Subscription, timer } from 'rxjs';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { LocationStrategy } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 
 /** Store both possible titles as strings to flash between them easily */
@@ -60,6 +54,9 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   data: WritableSignal<OfficeHourGetHelpOverview | undefined> =
     signal(undefined);
 
+  /** Stores subscription to the timer observable that refreshes data every 10s */
+  timer!: Subscription;
+
   /** Stores subscription to a timer observable for flashing the title for notifications */
   titleFlashTimer: Subscription | undefined;
 
@@ -74,9 +71,6 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     link: new FormControl('', [Validators.required])
   });
 
-  /** Connection to the office hours get help websocket */
-  webSocketSubject$: WebSocketSubject<any>;
-
   constructor(
     private route: ActivatedRoute,
     protected formBuilder: FormBuilder,
@@ -86,30 +80,18 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   ) {
     // Load information from the parent route
     this.ohEventId = this.route.snapshot.params['event_id'];
-    // Load the web socket connection
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${protocol}://${window.location.host}/ws/office-hours/${this.ohEventId}/get-help?token=${localStorage.getItem('bearerToken')}`;
-    this.webSocketSubject$ = webSocket({
-      url: url
-    });
   }
 
+  /** Create a timer subscription to poll office hour data at an interval at view initalization */
   ngOnInit(): void {
-    console.log('Attempt to connect');
-    this.webSocketSubject$.subscribe({
-      next: (value) => {
-        const json: OfficeHourGetHelpOverviewJson = JSON.parse(value);
-        const overview = parseOfficeHourGetHelpOverviewJson(json);
-        console.log(overview);
-        this.handleNotification(overview);
-        this.data.set(overview);
-      }
+    this.timer = timer(0, 10000).subscribe(() => {
+      this.pollData();
     });
   }
 
   /** Remove the timer subscriptions when the view is destroyed so polling/flashing does not persist on other pages */
   ngOnDestroy(): void {
-    this.webSocketSubject$.complete();
+    this.timer.unsubscribe();
     this.titleFlashTimer?.unsubscribe();
   }
 
@@ -123,13 +105,8 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
      */
     let notify: boolean = false;
     /* Test notification condition and store result in notify */
-    if (
-      getHelpData.ticket &&
-      getHelpData.ticket.state === 'Called' &&
-      this.data() &&
-      this.data()!.ticket &&
-      this.data()!.ticket!.state === 'Queued'
-    ) {
+    if (getHelpData.ticket && getHelpData.ticket.state === 'Called' &&
+      this.data() && this.data()!.ticket && this.data()!.ticket!.state === 'Queued') {
       notify = true;
     }
     /* Notification behavior based on result stored in notify */
@@ -137,24 +114,32 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       CHIME.play();
       this.titleFlashTimer = timer(0, 1000).subscribe(() => {
         this.titleService.setTitle(
-          this.titleService.getTitle() === NOTIFICATION_TITLE
-            ? ORIGINAL_TITLE
-            : NOTIFICATION_TITLE
-        );
-      });
+          this.titleService.getTitle() === NOTIFICATION_TITLE ?
+            ORIGINAL_TITLE : NOTIFICATION_TITLE);
+      })
     } else {
       this.titleFlashTimer?.unsubscribe();
       this.titleService.setTitle(ORIGINAL_TITLE);
     }
   }
 
+  /** Loads office hours data */
+  pollData(): void {
+    this.myCoursesService
+      .getOfficeHoursHelpOverview(this.ohEventId)
+      .subscribe((getHelpData) => {
+        this.handleNotification(getHelpData);
+        this.data.set(getHelpData);
+      });
+  }
+
   isFormValid(): boolean {
     let contentFieldsValid =
       this.ticketForm.controls['type'].value === 1
         ? this.ticketForm.controls['assignmentSection'].value !== '' &&
-          this.ticketForm.controls['codeSection'].value !== '' &&
-          this.ticketForm.controls['conceptsSection'].value !== '' &&
-          this.ticketForm.controls['attemptSection'].value !== ''
+        this.ticketForm.controls['codeSection'].value !== '' &&
+        this.ticketForm.controls['conceptsSection'].value !== '' &&
+        this.ticketForm.controls['attemptSection'].value !== ''
         : this.ticketForm.controls['description'].value !== '';
 
     let linkFieldValid =
@@ -166,12 +151,13 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
 
   /** Cancels a ticket and reloads the queue data */
   cancelTicket(ticket: OfficeHourTicketOverview): void {
-    let action: GetHelpWebSocketData = {
-      action: GetHelpWebSocketAction.CANCEL,
-      id: ticket.id,
-      new_ticket: null
-    };
-    this.webSocketSubject$.next(action);
+    this.myCoursesService.cancelTicket(ticket.id).subscribe({
+      next: (_) => {
+        this.pollData();
+        this.snackBar.open('Ticket cancelled', '', { duration: 5000 });
+      },
+      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+    });
   }
 
   submitTicketForm() {
@@ -213,13 +199,15 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       type: form_type
     };
 
-    // Create the web socket object
-    const action: GetHelpWebSocketData = {
-      action: GetHelpWebSocketAction.CREATE,
-      id: null,
-      new_ticket: ticketDraft
-    };
-
-    this.webSocketSubject$.next(action);
+    this.myCoursesService.createTicket(ticketDraft).subscribe({
+      next: (_) => {
+        this.pollData();
+      },
+      error: (_) => {
+        this.snackBar.open(`Could not create a ticket at this time.`, '', {
+          duration: 2000
+        });
+      }
+    });
   }
 }
