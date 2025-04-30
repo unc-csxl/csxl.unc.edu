@@ -92,6 +92,8 @@ class OfficeHourTicketOverview(BaseModel):
     description: str
     creators: list[PublicUser]
     caller: PublicUser | None
+    has_concerns: bool | None
+    caller_notes: str | None
 
 
 class OfficeHourStatisticsOverview(BaseModel):

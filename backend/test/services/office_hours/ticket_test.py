@@ -128,7 +128,9 @@ def test_cancel_ticket_student(oh_ticket_svc: OfficeHourTicketService):
 def test_close_ticket(oh_ticket_svc: OfficeHourTicketService):
     """Ensures that instructors can close tickets."""
     called = oh_ticket_svc.close_ticket(
-        user_data.instructor, office_hours_data.comp_110_called_ticket.id
+        user_data.instructor,
+        office_hours_data.comp_110_called_ticket.id,
+        office_hours_data.sample_delete_payload,
     )
     assert called.state == TicketState.CLOSED.to_string()
 
@@ -137,13 +139,19 @@ def test_close_ticket_not_called(oh_ticket_svc: OfficeHourTicketService):
     """Ensures that only called tickets can be closed."""
     with pytest.raises(CoursePermissionException):
         oh_ticket_svc.close_ticket(
-            user_data.instructor, office_hours_data.comp_110_queued_ticket.id
+            user_data.instructor,
+            office_hours_data.comp_110_queued_ticket.id,
+            office_hours_data.sample_delete_payload,
         )
         oh_ticket_svc.close_ticket(
-            user_data.instructor, office_hours_data.comp_110_closed_ticket.id
+            user_data.instructor,
+            office_hours_data.comp_110_closed_ticket.id,
+            office_hours_data.sample_delete_payload,
         )
         oh_ticket_svc.close_ticket(
-            user_data.instructor, office_hours_data.comp_110_cancelled_ticket.id
+            user_data.instructor,
+            office_hours_data.comp_110_cancelled_ticket.id,
+            office_hours_data.sample_delete_payload,
         )
         pytest.fail()
 
@@ -151,7 +159,9 @@ def test_close_ticket_not_called(oh_ticket_svc: OfficeHourTicketService):
 def test_close_ticket_not_found(oh_ticket_svc: OfficeHourTicketService):
     """Ensures that an error is thrown if attempting to close a ticket that does not exist."""
     with pytest.raises(ResourceNotFoundException):
-        oh_ticket_svc.close_ticket(user_data.instructor, 404)
+        oh_ticket_svc.close_ticket(
+            user_data.instructor, 404, office_hours_data.sample_delete_payload
+        )
         pytest.fail()
 
 
@@ -159,7 +169,9 @@ def test_close_ticket_not_member(oh_ticket_svc: OfficeHourTicketService):
     """Ensures that non-members cannot close tickets."""
     with pytest.raises(CoursePermissionException):
         oh_ticket_svc.close_ticket(
-            user_data.ambassador, office_hours_data.comp_110_called_ticket.id
+            user_data.ambassador,
+            office_hours_data.comp_110_called_ticket.id,
+            office_hours_data.sample_delete_payload,
         )
         pytest.fail()
 
@@ -168,7 +180,9 @@ def test_close_ticket_not_staff(oh_ticket_svc: OfficeHourTicketService):
     """Ensures that non-staff members cannot close tickets."""
     with pytest.raises(CoursePermissionException):
         oh_ticket_svc.close_ticket(
-            user_data.student, office_hours_data.comp_110_called_ticket.id
+            user_data.student,
+            office_hours_data.comp_110_called_ticket.id,
+            office_hours_data.sample_delete_payload,
         )
         pytest.fail()
 
