@@ -176,12 +176,11 @@ export class StatisticsComponent {
           studentIds ?? []
         ).reduce<MatFilterChipSearchableItem<PublicProfile>[]>(
           (studentsToAdd, studentId) => {
-            const student = data.students.find((s) => s.id === +studentId);
+            const student = this.studentFilterOptions().find(
+              (s) => s.item.id === +studentId
+            );
             if (student) {
-              studentsToAdd.push({
-                displayText: `${student.first_name} ${student.last_name}`,
-                item: student
-              });
+              studentsToAdd.push(student);
             }
             return studentsToAdd;
           },
@@ -193,12 +192,11 @@ export class StatisticsComponent {
           staffIds ?? []
         ).reduce<MatFilterChipSearchableItem<PublicProfile>[]>(
           (staffToAdd, staffId) => {
-            const staff = data.staff.find((s) => s.id === +staffId);
+            const staff = this.staffFilterOptions().find(
+              (s) => s.item.id === +staffId
+            );
             if (staff) {
-              staffToAdd.push({
-                displayText: `${staff.first_name} ${staff.last_name}`,
-                item: staff
-              });
+              staffToAdd.push(staff);
             }
             return staffToAdd;
           },
