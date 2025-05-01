@@ -1,12 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-from ...models.office_hours.office_hours_recurrence_pattern import (
-    OfficeHoursRecurrencePattern,
-)
-from ...models import Paginated
-from ...models.office_hours.ticket_state import TicketState
-from ...models.office_hours.ticket_type import TicketType
+from ...models.office_hours.ticket_tag import OfficeHoursTicketTag
 from ...models.public_user import PublicUser
 
 
@@ -94,6 +89,7 @@ class OfficeHourTicketOverview(BaseModel):
     caller: PublicUser | None
     has_concerns: bool | None
     caller_notes: str | None
+    tags: list[OfficeHoursTicketTag]
 
 
 class OfficeHourStatisticsOverview(BaseModel):

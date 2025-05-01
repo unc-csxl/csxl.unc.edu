@@ -26,6 +26,7 @@ class TicketPaginationParams(PaginationParams):
     range_end: str = ""
     student_ids: list[int]
     staff_ids: list[int]
+    tag_ids: list[int]
 
 
 class EventPaginationParams(PaginationParams):

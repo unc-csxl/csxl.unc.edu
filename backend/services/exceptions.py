@@ -11,6 +11,11 @@ class ResourceNotFoundException(Exception):
 
     ...
 
+class DuplicateResourceException(Exception):
+    """DuplicateResourceException is raised when a user attempts to create a resource that already exists."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"{reason}")
 
 class UserPermissionException(Exception):
     """UserPermissionException is raised when a user attempts to perform an action they are not authorized to perform."""

@@ -186,7 +186,6 @@ def test_close_ticket_not_staff(oh_ticket_svc: OfficeHourTicketService):
         )
         pytest.fail()
 
-
 def test_create_ticket(oh_ticket_svc: OfficeHourTicketService):
     """Ensurs that students can create new tickets."""
     created = oh_ticket_svc.create_ticket(user_data.user, office_hours_data.new_ticket)

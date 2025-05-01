@@ -3,3 +3,5 @@ from .office_hours_recurrence_pattern_entity import OfficeHoursRecurrencePattern
 from .course_site_entity import CourseSiteEntity
 from .ticket_entity import OfficeHoursTicketEntity
 from .user_created_tickets_table import user_created_tickets_table
+from .ticket_tag_entity import OfficeHoursTicketTagEntity
+from .event_ticket_tags_table import event_ticket_tags_table

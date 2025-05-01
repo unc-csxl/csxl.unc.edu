@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session, aliased, joinedload
 from sqlalchemy import func, select, and_, func, Select
 
 from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.office_hours.ticket_tag_entity import OfficeHoursTicketTagEntity
 from backend.entities.user_entity import UserEntity
 from backend.models.roster_role import RosterRole
 
@@ -123,6 +124,15 @@ class OfficeHoursStatisticsService:
                 CallerEntity,
                 CallerEntity.id == OfficeHoursTicketEntity.caller_id,
             ).where(CallerEntity.user_id.in_(pagination_params.staff_ids))
+
+        # Filter by ticket tags
+        if len(pagination_params.tag_ids) != 0:
+            statement = (
+                statement.where(OfficeHoursTicketEntity.tags.any(OfficeHoursTicketTagEntity.id.in_(pagination_params.tag_ids)))
+            )
+            length_statement = (
+                length_statement.where(OfficeHoursTicketEntity.tags.any(OfficeHoursTicketTagEntity.id.in_(pagination_params.tag_ids)))
+            )
 
         return statement, length_statement
 
@@ -260,6 +270,7 @@ class OfficeHoursStatisticsService:
     def get_filter_data(self, user: User, site_id: int) -> StatisticsFilterData:
         self._office_hours_svc._check_site_admin_permissions(user, site_id)
 
+        # Get students for course site
         student_query = (
             select(SectionMemberEntity)
             .join(SectionEntity)
@@ -271,6 +282,7 @@ class OfficeHoursStatisticsService:
         )
         students = self._session.scalars(student_query).unique().all()
 
+        # Get staff for course site
         staff_query = (
             select(SectionMemberEntity)
             .join(SectionEntity)
@@ -286,6 +298,14 @@ class OfficeHoursStatisticsService:
         )
         staff = self._session.scalars(staff_query).unique().all()
 
+        # Get tags for course site
+        tag_query = (
+            select(OfficeHoursTicketTagEntity)
+            .where(OfficeHoursTicketTagEntity.course_site_id == site_id)
+        )
+        tags = self._session.scalars(tag_query).unique().all()
+
+        # Get term dates
         term = self._session.get(CourseSiteEntity, site_id).term
 
         return StatisticsFilterData(
@@ -293,6 +313,7 @@ class OfficeHoursStatisticsService:
                 set([student.user.to_public_model() for student in students])
             ),
             staff=list(set([member.user.to_public_model() for member in staff])),
+            tags=[tag.to_model() for tag in tags],
             term_start=term.start,
             term_end=term.end,
         )

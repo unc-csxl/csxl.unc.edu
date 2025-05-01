@@ -14,6 +14,7 @@ from ...models.office_hours.ticket import (
 from ...models.office_hours.ticket_details import OfficeHoursTicketDetails
 from ...models.academics.my_courses import OfficeHourTicketOverview
 from .user_created_tickets_table import user_created_tickets_table
+from .event_ticket_tags_table import event_ticket_tags_table
 
 
 from ..entity_base import EntityBase
@@ -73,6 +74,11 @@ class OfficeHoursTicketEntity(EntityBase):
     # One-to-many relationship of OfficeHoursTicket to section member(s)
     creators: Mapped[list["SectionMemberEntity"]] = relationship(
         secondary=user_created_tickets_table
+    )
+
+    # One-to-many relationship of OfficeHoursTicket to ticket tags
+    tags: Mapped[list["OfficeHoursTicketTagEntity"]] = relationship(
+        secondary=event_ticket_tags_table
     )
 
     # One-to-one relationship of OfficeHoursTicket to UTA that has called it; optional field
@@ -157,6 +163,7 @@ class OfficeHoursTicketEntity(EntityBase):
             caller=(self.caller.user.to_public_model() if self.caller else None),
             has_concerns=self.have_concerns,
             caller_notes=self.caller_notes,
+            tags=[tag.to_model() for tag in self.tags],
         )
 
     def to_details_model(self) -> OfficeHoursTicketDetails:
@@ -181,6 +188,7 @@ class OfficeHoursTicketEntity(EntityBase):
             office_hours=self.office_hours,
             creators=[creator.to_flat_model() for creator in self.creators],
             caller=(self.caller.to_flat_model() if self.caller is not None else None),
+            tags=[tag.to_model() for tag in self.tags],
         )
 
     def to_csv_model(self) -> OfficeHoursTicketCsvRow:

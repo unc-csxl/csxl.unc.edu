@@ -4,6 +4,7 @@ import pytest
 from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
 
+from ....services.office_hours.ticket_tag import OfficeHourTicketTagService
 from ....services.office_hours.office_hours_recurrence import (
     OfficeHoursRecurrenceService,
 )
@@ -39,8 +40,13 @@ def oh_svc_mock():
 
 @pytest.fixture()
 def oh_ticket_svc(session: Session):
-    """OfficeHoursEventService fixture."""
+    """OfficeHoursTicketService fixture."""
     return OfficeHourTicketService(session)
+
+@pytest.fixture()
+def oh_ticket_tag_svc(session: Session):
+    """OfficeHoursTicketTagService fixture."""
+    return OfficeHourTicketTagService(session, OfficeHoursService(session))
 
 
 @pytest.fixture()

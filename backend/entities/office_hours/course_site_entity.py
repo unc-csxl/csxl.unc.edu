@@ -13,6 +13,7 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 
 __authors__ = [
     "Ajay Gandecha",
+    "Jade Keegan",
     "Madelyn Andrews",
     "Sadie Amato",
     "Bailey DeSouza",
@@ -55,6 +56,11 @@ class CourseSiteEntity(EntityBase):
 
     # NOTE: One-to-many relationship between course sites and hiring assignments
     hiring_assignments: Mapped[list["HiringAssignmentEntity"]] = relationship(
+        back_populates="course_site", cascade="all, delete"
+    )
+
+    # NOTE: One-to-many relationship between course sites and ticket tags
+    ticket_tags: Mapped[list["OfficeHoursTicketTagEntity"]] = relationship(
         back_populates="course_site", cascade="all, delete"
     )
 
