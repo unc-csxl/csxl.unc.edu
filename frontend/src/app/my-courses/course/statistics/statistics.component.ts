@@ -282,6 +282,7 @@ export class StatisticsComponent {
         .join(',');
       const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
       const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
+
       if (studentIds || staffIds || rangeStart || rangeEnd) {
         this.router.navigate([], {
           relativeTo: this.route,
@@ -290,9 +291,20 @@ export class StatisticsComponent {
             staffId: staffIds || null,
             range_start: rangeStart || null,
             range_end: rangeEnd || null
-          },
-          queryParamsHandling: 'merge'
+          }
+          //#queryParamsHandling: 'merge'
         });
+        // } else {
+        //   this.router.navigate([], {
+        //     relativeTo: this.route,
+        //     queryParams: {
+        //       studentId: null,
+        //       staffId: null,
+        //       range_start: null,
+        //       range_end: null
+        //     },
+        //     queryParamsHandling: 'merge'
+        //   });
       }
     },
     { allowSignalWrites: true }
