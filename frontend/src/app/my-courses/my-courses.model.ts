@@ -125,6 +125,8 @@ export interface OfficeHourTicketOverviewJson {
   description: string;
   creators: PublicProfile[];
   caller: PublicProfile | undefined;
+  has_concerns: boolean | undefined;
+  caller_notes: string | undefined;
 }
 
 export interface OfficeHourTicketOverview {
@@ -137,6 +139,8 @@ export interface OfficeHourTicketOverview {
   description: string;
   creators: PublicProfile[];
   caller: PublicProfile | undefined;
+  has_concerns: boolean | undefined;
+  caller_notes: string | undefined;
 }
 
 export interface OfficeHourQueueOverviewJson {
