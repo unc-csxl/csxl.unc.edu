@@ -57,6 +57,7 @@ import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statisti
 import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dialog';
 import { CloseTicketDialog } from './course/office-hours/widgets/close-ticket-dialog/close-ticket.dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatNativeDateModule,
     MatRadioModule,
     MatCheckbox,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatSliderModule
   ],
   providers: [MatDatepickerModule]
 })

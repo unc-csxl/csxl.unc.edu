@@ -2,9 +2,10 @@
 APIs for academics for office hour tickets.
 """
 
-from datetime import datetime
+import math
+from datetime import date, datetime, timedelta
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from ...database import db_session
@@ -261,6 +262,68 @@ class OfficeHourTicketService:
         if len(queued_tickets_entities) > 0:
             raise CoursePermissionException(
                 "You cannot create multiple tickets at once."
+            )
+
+        course_query = (
+            select(CourseSiteEntity)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
+        )
+        course_entity = self._session.scalars(course_query).one_or_none()
+
+        if course_entity is None:
+            raise CoursePermissionException(
+                "Cannot create a ticket for a course that does not exist."
+            )
+
+        # Check number of tickets for current date
+        num_tickets_for_today_query = (
+            select(func.count())
+            .select_from(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(user_created_tickets_table)
+            .join(SectionMemberEntity)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(func.date(OfficeHoursTicketEntity.closed_at) == date.today())
+        )
+        num_tickets_for_today = self._session.execute(
+            num_tickets_for_today_query
+        ).scalar()
+
+        if num_tickets_for_today >= course_entity.max_tickets_per_day:
+            raise CoursePermissionException(
+                f"You have created the maximum number of tickets today. Please come back tomorrow."
+            )
+
+        # Check if the user is within the ticket cooldown time.
+        cooldown_time_cutoff = datetime.now() + timedelta(
+            minutes=-course_entity.minimum_ticket_cooldown
+        )
+
+        cooldown_tickets_query = (
+            select(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(user_created_tickets_table)
+            .join(SectionMemberEntity)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(OfficeHoursTicketEntity.closed_at > cooldown_time_cutoff)
+        )
+
+        ticket_within_cooldown_range = self._session.scalars(
+            cooldown_tickets_query
+        ).one_or_none()
+
+        if ticket_within_cooldown_range is not None:
+            time_remaining = (
+                cooldown_time_cutoff - ticket_within_cooldown_range.closed_at
+            )
+            minutes_remaining = math.ceil(-(time_remaining.total_seconds() / 60))
+            raise CoursePermissionException(
+                f"You must wait {minutes_remaining} minute{'' if minutes_remaining == 1 else 's'} before creating another ticket."
             )
 
         # Create entity
