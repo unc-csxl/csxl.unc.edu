@@ -30,4 +30,9 @@
   <p markdown>
     {{ data.ticket.description }}
   </p>
+  <mat-divider />
+  <p mat-card-subtitle>Caller Notes</p>
+  <p markdown>
+    {{ data.ticket.caller_notes ?? 'None'}}
+  </p>
 </mat-dialog-content>

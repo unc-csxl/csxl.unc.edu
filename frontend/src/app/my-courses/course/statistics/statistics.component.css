@@ -1,140 +1,157 @@
 ::ng-deep .mat-pane {
-    margin-right: 32px !important;
+  margin-right: 32px !important;
 }
 
 .container {
-    height: 100%;
+  height: 100%;
 
-    ::ng-deep .mat-pane {
-        max-width: 100% !important;
-        min-height: 73vh;
-        margin-bottom: 32px !important;
-    }
+  ::ng-deep .mat-pane {
+    max-width: 100% !important;
+    min-height: 73vh;
+    margin-bottom: 32px !important;
+  }
 }
 
 .mat-mdc-card-header {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 16px;
 }
 
 .ticket-history-toolbar {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .ticket-history-toolbar-options {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
 }
 
 #download-button-icon {
-    margin-right: -8px;
+  margin-right: -8px;
 }
 
 .mat-filter-chip-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .mat-filter-chip-main-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .mat-filter-chip-leading-icon {
-    padding-left: 0 !important;
+  padding-left: 0 !important;
 }
 
 .mat-filter-chip-accessory {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .date-input {
-    position: relative;
-    float:bottom;
-    margin-top: auto;
-    margin-bottom: -10px;
+  position: relative;
+  float: bottom;
+  margin-top: auto;
+  margin-bottom: -10px;
 }
 
 .date-picker-container {
-    padding-top: -12px;
-    height: 32px;
+  padding-top: -12px;
+  height: 32px;
 }
 
 .mat-filter-chip-divider {
-    height: 30px;
+  height: 30px;
 }
 
 .statistics-row {
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
-    margin-top: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  margin-top: 16px;
 }
 
 ::ng-deep .ticket-history-card {
-    max-width: 100% !important;
-    max-height: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    margin-top: 16px;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 16px;
 }
 
 .ticket-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 
-    p {
-        margin-bottom: 0;
-    }
+  p {
+    margin-bottom: 0;
+  }
 }
 
 .semibold {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .ticket-row-user-chips {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    padding-left: 16px;
-    padding-bottom: -8px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding-left: 16px;
+  padding-bottom: -8px;
 }
 
-::ng-deep .ticket-row-user-chips >  .user-chips {
-    margin-bottom: 0 !important;
+::ng-deep .ticket-row-user-chips > .user-chips {
+  margin-bottom: 0 !important;
 }
 
 .ticket-row-leading-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
 }
 
 .ticket-row-trailing-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.feedback-indicator {
+  margin-top: 4px;
 }
 
 .ticket-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.text-badge {
+  height: 20px;
+  width: 76px;
+  text-align: center;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-radius: 14px;
+  margin-right: 8px;
+  line-height: 32px;
+  color: white;
 }

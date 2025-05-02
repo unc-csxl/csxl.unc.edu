@@ -54,7 +54,6 @@ body {
     color: mat.get-theme-color($theme, on-surface) !important;
   }
 
-
   .primary-color {
     color: mat.get-theme-color($theme, primary) !important;
   }
@@ -414,6 +413,9 @@ body {
   }
   .font-secondary {
     color: mat.get-theme-color($theme, secondary) !important;
+  }
+  .font-error {
+    color: mat.get-theme-color($theme, error) !important;
   }
   .font-tertiary {
     color: mat.get-theme-color($theme, tertiary) !important;

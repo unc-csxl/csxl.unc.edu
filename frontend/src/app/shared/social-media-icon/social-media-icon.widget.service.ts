@@ -30,9 +30,7 @@ export class SocialMediaIconWidgetService {
     );
     iconRegistry.addSvgIcon(
       'linkedin',
-      sanitizer.bypassSecurityTrustResourceUrl(
-        'https://simpleicons.org/icons/linkedin.svg'
-      )
+      sanitizer.bypassSecurityTrustResourceUrl('/assets/linkedin-logo.svg')
     );
     iconRegistry.addSvgIcon(
       'youtube',
