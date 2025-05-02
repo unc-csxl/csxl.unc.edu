@@ -49,7 +49,6 @@ import { Calendar } from './calendar/calendar.widget';
 import { OperatingHoursCalendar } from './operating-hours-calendar/operating-hours-calendar.widget';
 import { OperatingHoursDialog } from './operating-hours-dialog/operating-hours-dialog.widget';
 import { MatRippleModule } from '@angular/material/core';
-import { OperatingHoursCalendar } from './operating-hours-calendar/operating-hours-calendar.widget';
 
 @NgModule({
   declarations: [
