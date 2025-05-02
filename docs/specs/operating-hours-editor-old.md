@@ -1,8 +1,6 @@
-# Open Hours Editor Technical Specification
+# Operating Hours Editor Technical Specification
 
-> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6)  
-> [GitHub Repository](https://github.com/comp423-24f/csxl-team-a8)  
-> _Last Updated: 12/08/2024_
+> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) > _Last Updated: 05/02/2025_
 
 This document outlines the technical specifications for the Open Hours Editor feature of the CSXL web application. This feature adds functionality to manage open hours directly through a user-friendly interface, improving administrative efficiency. The project introduces several new frontend components and utilizes existing API routes with minimal modifications to achieve its goals.
 
@@ -104,7 +102,7 @@ The `OperatingHoursRecurrenceEntity` entity is used to track recurrence informat
 
 ### User Experience Design Trade-Off: Sidebar vs. Pop-Up
 
-- **Decision**: We implemented adding and edditing as a sidebar instead of a pop-up.
+- **Decision**: We implemented adding and editing as a sidebar instead of a pop-up.
 - **Reasoning**: The sidebar leaves the administrator's view of the calendar unobstructed while adding and editing.
 - **Trade-Off**: A pop-up would have likely been more mobile-friendly at the cost of reduced calendar visibility.
 
@@ -156,46 +154,15 @@ The `OperatingHoursRecurrenceEntity` entity is used to track recurrence informat
 
 ### Default View
 
-![Default View](https://github.com/comp423-24f/csxl-team-a8/blob/stage/docs/images/defaultView.png)  
+![Default View](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/defaultView.png)  
 **Description**: Displays the weekly open hours with buttons to add or edit hours.
 
 ### Add Hours Pop-Up
 
-![Add Hours View](https://github.com/comp423-24f/csxl-team-a8/blob/stage/docs/images/addHoursView.png)  
+![Add Hours View](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/addHoursView.png)  
 **Description**: The "Add Hours" button triggers this panel for creating new open hours.
 
 ### Edit Hours Pop-Up
 
-![Edit Hours View](https://github.com/comp423-24f/csxl-team-a8/blob/stage/docs/images/editHoursView.png)  
+![Edit Hours View](https://github.com/unc-csxl/csxl.unc.edu/blob/main/docs/images/editHoursView.png)  
 **Description**: Selecting an existing hour block highlights it and opens this panel for edits.
-
----
-
-## Future Considerations<a name="future-considerations"></a>
-
-1. **Direct Calendar Interaction**:
-
-   - Enable users to click directly on a day to add hours, complementing the "Add Hours" button.
-
-2. **Mobile Optimization**:
-
-   - Refactor components to improve mobile usability, including touch-friendly interactions.
-
-3. **Expanded Time Range**:
-
-   - Consider extending calendar hours and days for special events or unique schedules.
-
-4. **Enhanced Styling**:
-
-   - Incorporate additional visual cues and animations to improve accessibility and aesthetics.
-
-5. **Historical Rescheduling**:
-
-   - Allow admins to copy historical schedules to the present.
-
-6. **Prevent Editing the Past**:
-
-   - Prevent admins from editing/deleting hours that have already passed.
-
-7. **Better Error Messaging**:
-   - Give users better error messages when their creation/updates are rejected due to overlaps, as they are currently 500 errors.
