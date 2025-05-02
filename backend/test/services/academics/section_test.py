@@ -38,7 +38,7 @@ def test_get_by_term(section_svc: SectionService):
 
 
 def test_get_by_term_not_found(section_svc: SectionService):
-    sections = section_svc.get_by_term(term_data.sp_23.id)
+    sections = section_svc.get_by_term(term_data.future_term.id)
 
     assert len(sections) == 0
 

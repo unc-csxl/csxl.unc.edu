@@ -43,6 +43,8 @@ import {
 import { MarkdownDirective } from './directives/markdown.directive';
 import { EventRegistrationCardWidget } from './event-registration-card/event-registration-card.widget';
 import { AboutPaneWidget } from './about-pane/about-pane.widget';
+import { MatFilterChipComponent } from './mat/filter-chip/filter-chip.component';
+import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog.component';
 import { OperatingHoursCalendar } from './operating-hours-calendar/operating-hours-calendar.widget';
 import { OperatingHoursDialog } from './operating-hours-dialog/operating-hours-dialog.widget';
 import { MatRippleModule } from '@angular/material/core';
@@ -64,7 +66,9 @@ import { MatRippleModule } from '@angular/material/core';
     OperatingHoursCapitalizationPipe,
     MarkdownDirective,
     EventRegistrationCardWidget,
-    AboutPaneWidget
+    AboutPaneWidget,
+    MatFilterChipComponent,
+    MatFilterChipDialog
   ],
   imports: [
     CommonModule,
@@ -104,7 +108,8 @@ import { MatRippleModule } from '@angular/material/core';
     CoworkingHoursCard,
     MarkdownDirective,
     EventRegistrationCardWidget,
-    AboutPaneWidget
+    AboutPaneWidget,
+    MatFilterChipComponent
   ],
   providers: [GroupEventsPipe]
 })

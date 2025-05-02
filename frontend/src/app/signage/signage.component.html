@@ -1,0 +1,27 @@
+<div class="mat-sidenav big-div">
+    <div class='header'>
+        <div class="title display-large font-on-surface">{{date | date:'EEEE MMMM d, h:mm aaa'}}  |</div>
+        <div class="weather">
+            <img
+            class="weather-image"
+            src="{{weatherService.weatherIcon()}}"
+            alt="Weather Icon" />
+            <div class="title display-large font-on-surface">{{weatherService.weatherData().temperature | number: '1.0-0'}}°F</div>
+        </div>
+        <div class="announcement">
+            <announcement-card [announcements]="signageService.slowData().announcements"></announcement-card>
+        </div>
+    </div>
+    <div class='column'>
+        <div class='row'>
+            <occupancy [seat_availability]="signageService.fastData().seat_availability" class='occupancy'></occupancy>
+            <rooms [availableRooms]="signageService.fastData().available_rooms" class='rooms'></rooms>
+            <news-card [articles]="signageService.slowData().newest_news" class='news'></news-card>
+        </div>
+        <div class='row'>
+            <event-card [events]="signageService.slowData().newest_events" class='events'></event-card>
+            <leaderboard [profiles]="signageService.slowData().top_users" class='leaderboard'></leaderboard>
+            <office-hours-display [officeHours]="signageService.fastData().active_office_hours" class="office-hours"></office-hours-display>
+        </div>
+    </div>
+</div>

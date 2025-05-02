@@ -33,7 +33,11 @@ from ....models.office_hours.course_site import (
     NewCourseSite,
     UpdatedCourseSite,
 )
-from ....models.office_hours.ticket import OfficeHoursTicket, NewOfficeHoursTicket
+from ....models.office_hours.ticket import (
+    OfficeHoursTicket,
+    NewOfficeHoursTicket,
+    OfficeHoursTicketClosePayload,
+)
 from ....models.office_hours.ticket_type import TicketType
 from ....models.office_hours.ticket_state import TicketState
 
@@ -403,7 +407,7 @@ new_course_site = NewCourseSite(
 
 new_course_site_term_mismatch = NewCourseSite(
     title="Ina's COMP 301",
-    term_id=term_data.f_23.id,
+    term_id=term_data.previous_term.id,
     section_ids=[
         section_data.comp_301_002_current_term.id,
     ],
@@ -608,4 +612,9 @@ nonexistent_event = OfficeHours(
     course_site_id=comp_110_site.id,
     room_id=room_data.group_a.id,
     recurrence_pattern_id=None,
+)
+
+sample_delete_payload = OfficeHoursTicketClosePayload(
+    has_concerns=True,
+    caller_notes="I have concerns.",
 )

@@ -1,0 +1,108 @@
+.full-size-pane {
+    min-height: 100% !important;
+    min-width: 100% !important;
+    border-color: transparent !important;
+    margin: 0px !important;
+  }
+
+.article-title {
+    cursor: pointer !important;
+}
+
+.mat-mdc-chip {
+    height: 26px;
+}
+
+.mat-mdc-card-image {
+    height: 180px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+
+.featured-chipset {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    border-color: transparent !important;
+    outline: 0 !important;
+    z-index: 1;
+    --mdc-chip-focus-state-layer-color: transparent !important;
+    --mdc-chip-hover-state-layer-color: transparent !important;
+    --mdc-chip-outline-color: transparent !important;
+}
+
+.featured-chip {
+    height: 28px;
+}
+
+mat-card-actions {
+    gap: 8px;
+    margin-bottom: 8px;
+    justify-content: flex-end;
+}
+
+
+.description {
+    max-height: 80%;
+    max-width: 90%;
+    padding-top: 8px;
+    display: -webkit-box;           /* This is needed for the 5 line ellipsis cutoff */
+    -webkit-box-orient: vertical;   
+    -webkit-line-clamp: 6;          
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+
+.news-header {
+    display: flex;
+    margin-bottom: 0.5rem;
+    align-items: center;
+    justify-content: left;
+    padding-left: 24px
+  }
+
+.vertical-divider {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-left: 8px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.news-feature-image {
+    height: 300px;
+    border-radius: 12px;
+    margin-top: 12px;
+    margin-left: 24px;
+    aspect-ratio: 0.67;
+    object-fit: cover;
+}
+
+.news-footer {
+    font-style: italic;
+    margin-top: 36px;
+    margin-left: 24px;
+    position: absolute;
+    bottom: 26px;
+
+}
+
+.empty-text {
+    padding-left: 24px;
+}
+
+.spinner {
+    position: absolute;
+    right: 2.5%;
+    bottom: 2.5%;
+}
