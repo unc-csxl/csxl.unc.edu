@@ -2,7 +2,7 @@
 
 > [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) > _Last Updated: 05/03/2025_
 
-This document outlines the technical specifications for the Open Hours Editor feature of the CSXL web application. This feature adds functionality to manage open hours directly through a user-friendly interface, improving administrative efficiency. The project introduces several new frontend components and utilizes existing API routes with minimal modifications to achieve its goals.
+This document outlines the technical specifications for the Operating Hours Editor feature of the CSXL web application. This feature adds functionality to manage operating hours directly through a user-friendly interface, improving administrative efficiency. The project introduces several new frontend components and utilizes existing API routes with minimal modifications to achieve its goals.
 
 ## Table of Contents
 
@@ -10,9 +10,10 @@ This document outlines the technical specifications for the Open Hours Editor fe
   - [User Features](#UserFeatures)
     - [Operating Hours Calendar](#OperatingHoursCalendar)
   - [Admin Features](#AdminFeatures)
-    - [Gear Icon to Access Admin Features](#GearIcontoAccessAdminFeatures)
-    - [Academics Admin Tabbed Page](#AcademicsAdminTabbedPage)
-    - [Academics Admin Editor Pages](#AcademicsAdminEditorPages)
+    - [Calendar View](#CalendarView)
+    - [Add Hours View](#AddHoursView)
+    - [Edit Hours View](#EditHoursView)
+    - [Mobile Editor Dialog](#MobileEditorDialog)
   - [Conclusion](#Conclusion)
 - [Backend Design and Implementation](#BackendDesignandImplementation)
   - [Entity Design](#EntityDesign)
@@ -20,6 +21,11 @@ This document outlines the technical specifications for the Open Hours Editor fe
   - [API Implementation](#APIImplementation)
   - [Permission Summary](#PermissionSummary)
   - [Testing](#Testing)
+- [Design Choices](#DesignChoices)
+  - [Technical Design Choices](#TechnicalDesignChoices)
+  - [User Experience Design Choices](#UXDesign)
+  - [Design Trade-Offs](#TradeOffs)
+- [Future Considerations](#FutureConsiderations)
 
 ## Frontend Features<a name='FrontendFeatures'></a>
 
@@ -31,182 +37,192 @@ The following feature has been added and is available for all users of the CSXL 
 
 #### Operating Hours Calendar<a name='OperatingHoursCalendar'></a>
 
-![Operating Hours Calendar](../images/specs/academics/academics-home.png)
+![Operating Hours Calendar](../images/specs/operating-hours/home-calendar.png)
 
-The home page for the new Academics feature is available on the side navigation toolbar at `/academics`. The home page contains links to both the _course catalog_ and the _section offerings_ page.
-
-In the future, this page will be heavily extended to add personalized academics features for users of the CSXL web app. For now, this page will remain static and exist merely for informational and navigational purposes.
-
-#### Course Catalog<a name='CourseCatalog'></a>
-
-![Course catalog](../images/specs/academics/course-catalog.png)
-
-The course catalog page serves as the main hub for students to learn more about COMP courses at UNC. The page exists at the `/academics/catalog` route. The course page shows the courses available in the backend. Right now, the course page shows this data in a simple table. Users can click on courses to see a dropdown to learn more about a course's _credit hours_ and _description_.
-
-In the future, when more courses outside of just COMP courses are added here, this page will include a dropdown in the top right that allows users to switch the course subject they look for courses on.
-
-#### Section Offerings<a name='SectionOfferings'></a>
-
-![Section offerings](../images/specs/academics/section-offerings.png)
-
-The section offerings page serves as the main hub for students to view offerings of COMP courses by semester / term. The page exists at the `/academics/offerings` route. The section page shows this data in a table. Users can click on courses to see a dropdown to learn more about a course. There is also a dropdown in the top right that allows users to view course offerings based on all of the semesters / terms saved in the database.
-
-In the future, when more courses outside of just COMP courses are added here, this page will include another dropdown in the top right that allows users to switch the course subject they look for courses on.
+A new display for operating hours is available from the home and coworking pages from the "All Hours" page. Users can navigate between weeks to see past and future operating hours.
 
 ### Admin Features<a name='AdminFeatures'></a>
 
-In order to support admin features for term, course, and section data, many components were added. In addition, the existing `NavigationComponent` was modified to enable better navigation to admin pages.
+The admin features can be broken down into four elements: the calendar view, add hours menu, edit hours menu, and mobile dialog.
 
-#### Gear Icon to Access Admin Features<a name='GearIcontoAccessAdminFeatures'></a>
+#### Calendar View<a name='CalendarView'></a>
 
-![Admin Gear](../images/specs/academics/admin-gear.png)
+![Calendar View](../images/specs/operating-hours/admin-calendar.png)
 
-The Academics feature adds a gear icon to the top right of the Navigation toolbar exposing the admin page to users with the correct permissions. This gear icon links to the admin page.
+The calendar view allows admins to see the currently scheduled operating hours for past, current, and future weeks, just as public users can.
 
-To implement this, a new frontend service called the `NagivationAdminGearService` manages when to show the gear. Upon redirect, the navigation component clears gear data, and on initialization, components use the `NagivationAdminGearService.showAdminGear(permissionAction: string, permissionResource: string, tooltip: string, targetUrl: string)` to conditionally show the gear on the navigation bar if the permissions are met.
+To implement this, we use the new `Calendar` component to present the operating hours in a human-readable format.
 
-This feature can easily be added throughout the CSXL application. For now, the functionality is only used in the academics admin features.
+The calendar feature can easily be added throughout the CSXL application. For now, the functionality is only used for operating hours.
 
-#### Academics Admin Tabbed Page<a name='AcademicsAdminTabbedPage'></a>
+#### Add Hours View<a name='AddHoursView'></a>
 
-![Academics Admin Tabs](../images/specs/academics/term-admin.png)
+![Add Hours View](../images/specs/operating-hours/admin-add-view.png)
 
-Once the admin clicks on the gear icon shown previously, they are redirected to the Acadmics Admin page. This page contains four subcomponents accessible by tags - admin pages to modify _terms_, _courses_, _sections_, and _rooms_ in the backend database.
+Once the admin presses the Add Hours button, a new add hours panel opens up with a form inside with everything needed to create a new operating hours.
 
-All of the pages look similar - they display a table with current data and enable creating, editing, and deleting items. All four pages implement their own versions of `RxObject` to ensure that the view updates automatically when data is removed from the table.
+#### Edit Hours View<a name='EditHoursView'></a>
 
-#### Academics Admin Editor Pages<a name='AcademicsAdminEditorPages'></a>
+![Edit Hours View](../images/specs/operating-hours/admin-edit-view.png)
 
-![Academics Editor](../images/specs/academics/editor.png)
+Once the admin selects an operating hours block in the calendar view, a panel opens up on the right-hand side allowing them to edit the details of the operating hours block.
 
-Upon creation or modification of a new item, the admin user is redirected to an editor for the respective data. If editing an item, the editor page is automatically preopopulated to include previous data.
+#### Mobile Editor Dialog<a name='MobileEditorDialog'></a>
+
+![Mobile Editor Dialog](../images/specs/operating-hours/admin-mobile-editor.png)
+
+If the admin is on a mobile device, the add and edit hours views are replaced by a dialog that is more mobile-friendly.
 
 ### Conclusion<a name='Conclusion'></a>
 
 In total, the following components have been added:
 
-| Name                              | Route                                                                | Description                                                               |
-| --------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **Coworking Admin**               | `/coworking/coworking-admin`                                         | Admin-only page enabling operating hours                                  |
-| **Operating Hours Editor**        | `/coworking/coworking-admin/coworking-operating-hours-editor`        | Form with all the necessary fields for creating/updating operating hours. |
-| **Operating Hours Mobile Dialog** | `/coworking/coworking-admin/coworking-operating-hours-mobile-dialog` | Dialog container for the editor form designed for use on mobile devices.  |
-
-4. `/coworking/coworking-admin/recurring-hours-modify-confirm-dialog` - Confirmation dialog used when modifying an operating hour with recurrence in a way that must modify the recurring events.
-5. `/coworking/coworking-admin/recurring-hours-modify-dialog` - Selection dialog used when modifying an operating hour with recurrence, allowing user to select whether or not to modify the recurring events.
-6. `/shared/calendar` - Calendar widget that can be passed various events to be displayed.
-7. `/shared/operating-hours-calendar` - Operating hours calendar widget that automatically pulls in the operating hours for the selected week
-   | **Academics Home** | `/academics` | Main home page for the academics feature. |
-   | **Course Catalog** | `/academics/catalog` | Displays all COMP courses and their details. |
-   | **Section Offerings** | `/academics/offerings` | Displays offerings for COMP courses by term. |
-   | **Academics Admin Home** | `/academics/admin` | Exposes the academics admin features. |
-   | **Term Admin** | `/academics/admin/term` | Shows all term data and exposes CRUD functionality. |
-   | **Course Admin** | `/academics/admin/course` | Shows all course data and exposes CRUD functionality. |
-   | **Section Admin** | `/academics/admin/section` | Shows all section data and exposes CRUD functionality. |
-   | **Room Admin** | `/academics/admin/room` | Shows all room data and exposes CRUD functionality. |
-   | **Term Editor** | `/academics/term/edit/:id` | Form to show when terms are to be created and edited. |
-   | **Course Editor** | `/academics/course/edit/:id` | Form to show when courses are to be created and edited. |
-   | **Section Editor** | `/academics/section/edit/:id` | Form to show when sections are to be created and edited. |
-   | **Room Editor** | `/academics/room/edit/:id` | Form to show when room are to be created and edited. |
+| Name                                      | Route                                                                | Description                                                                                                                                    |
+| ----------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Coworking Admin**                       | `/coworking/coworking-admin`                                         | Admin-only page enabling operating hours                                                                                                       |
+| **Operating Hours Editor**                | `/coworking/coworking-admin/coworking-operating-hours-editor`        | Form with all the necessary fields for creating/updating operating hours.                                                                      |
+| **Operating Hours Mobile Dialog**         | `/coworking/coworking-admin/coworking-operating-hours-mobile-dialog` | Dialog container for the editor form designed for use on mobile devices.                                                                       |
+| **Modify Recurrence Confirmation Dialog** | `/coworking/coworking-admin/recurring-hours-modify-confirm-dialog`   | Confirmation dialog used when modifying an operating hour with recurrence in a way that must modify the recurring events.                      |
+| **Modify Recurring Selection Dialog**     | `/coworking/coworking-admin/recurring-hours-modify-dialog`           | Selection dialog used when modifying an operating hour with recurrence, allowing user to select whether or not to modify the recurring events. |
+| **Calendar**                              | `/shared/calendar`                                                   | Calendar widget that can be passed various events to be displayed.                                                                             |
+| **Operating Hours Calendar**              | `/shared/operating-hours-calendar`                                   | Operating hours calendar widget that automatically pulls in the operating hours for the selected week.                                         |
 
 ## Backend Design and Implementation<a name='BackendDesignandImplementation'></a>
 
-The academics feature ultimately adds _5_ new database tables and _25_ new API routes.
+The Operating Hours Editor feature adds _1_ new database tables and modifies _1_ existing table.
 
 ### Entity Design<a name='EntityDesign'></a>
 
-The Academics Feature adds five new database tables and entities. They are as follows:
+The Operating Hours Editor feature adds one new database table and entity:
 
-| Table Name                | Entity              | Description                                                |
-| ------------------------- | ------------------- | ---------------------------------------------------------- |
-| `academics__term`         | `TermEntity`        | Stores terms / semesters.                                  |
-| `academics__courses`      | `CourseEntity`      | Stores courses.                                            |
-| `academics__sections`     | `SectionEntity`     | Stores section offerings for a given course.               |
-| `academics__section_user` | `SectionUserEntity` | Stores instructors, TAs, and students of a course section. |
-| `academics__section_room` | `SectionRoomEntity` | Stores lecture and office hours rooms of a course section. |
+| Table Name                              | Entity                           | Description                    |
+| --------------------------------------- | -------------------------------- | ------------------------------ |
+| `coworking__operating_hours_recurrence` | `OperatingHoursRecurrenceEntity` | Stores recurrence information. |
 
-The fields and relationships between these entities are shown below:
+OperatingHoursRecurrenceEntity is defined with the following columns:
 
-![Entity Design](../images/specs/academics/backend-entity.png)
+| Column Name | Type       | Description                                                                                                            |
+| ----------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `id`        | `int`      | Unique ID for each operating hours recurrence.                                                                         |
+| `end_date`  | `datetime` | Date on which the recurrence ends, which is not included in recurrence.                                                |
+| `recurs_on` | `int`      | Recurrence pattern for the operating hours recurrence, stored as a bitmask in an int. More informtion available below. |
 
-As you can see, the two association tables defined by `SectionUserEntity` and `SectionRoomEntity` relate to (and therefore add relationship fields to) the existing `user` and `room` tables.
+The recurrence pattern is stored as a bitmask in an int, with the 0 bitmask being Monday, following python's datetime standard. Some example patterns are listed below:
+
+| Binary  | Integer | Pattern          |
+| ------- | ------- | ---------------- |
+| 0000001 | 1       | Monday           |
+| 0001001 | 9       | Monday, Thursday |
+| 0011111 | 31      | Monday - Friday  |
+
+The feature also modifies the existing `coworking__operating_hours_recurrence` table, adding a `recurrence_id` column of foreign keys to `coworking__operating_hours_recurrence.id`, allowing operating hours to be matched to a recurrence.
 
 ### Pydantic Model Implementation<a name='PydanticModelImplementation'></a>
 
-The Pydantic models for terms and courses are nearly one-to-one with their entity counterparts. However, sections utilize a more custom model structure, as shown below:
-
-<table>
-<tr><th width="520">`Section` and `SectionDetail` Models</th></tr>
-<tr>
-<td>
- 
-```py
-# Both models are slightly simplified for better
-# comprehensibility here.
-class Section(BaseModel):
-    id: int | None
-    course_id: str
-    number: str
-    term_id: str
-    meeting_pattern: str
-    staff: list[SectionMember]
-    lecture_room: Room | None
-    office_hour_rooms: list[Room]
-
-class SectionDetails(Section):
-course: Course
-term: Term
-
-```
-
-</td>
-</tr>
-</table>
-
-As you can see, the room relation is split up into `lecture_room` and `office_hour_rooms` respectively. This helps to simplify frontend logic and prevent numerous filtering calls having to be made. The data is automatically updated in the API.
-
-The user relation is also stripped down to just `staff`, which contains only *instructors* and *TAs* and excludes students. This is done for security purposes. The public GET API should not expose entire student rosters.
+The Pydantic models for operating hours and their recurrences are one-to-one with their entity couterparts.
 
 ### API Implementation<a name='APIImplementation'></a>
 
-The Academics feature adds 25 new API routes to handle CRUD operations on terms, courses, sections, and room data.
-
-Here is a summary of the APIs added:
-
-#### Room APIs:
-
-![Room APIs](../images/specs/academics/room-api.png)
-
-#### Academics APIs:
-
-![Academics APIs](../images/specs/academics/academics-api.png)
+The Operating Hours Editor feature adds one new API route to handle updating operating hours. Additionally, the delete route was modified to include a new cascade option, allowing the user to specify whether or not to delete recurrences of the operating hours.
 
 ### Permission Summary<a name='PermissionSummary'></a>
 
-All of these API routes call on **backend service functions** to perform these operations. These backend services are protected by permissions. Here is a summary of the permissions that this feature added:
+All of these API routes call on **backend service functions** to perform these operations. These backend services are protected by permissions. Here is a summary of the permissions for the feature:
 
-| Action | Resource | Description |
-| ---- | ---- | -------- |
-| `"academics.term.create"` | `"term"` | Gives the user permission to create terms in the database. |
-| `"academics.term.update"` | `"term/{id}"` | Gives the user permission to update a term in the database. |
-| `"academics.term.delete"` | `"term/{id}"` | Gives the user permission to delete a term in the database. |
-| `"academics.course.create"` | `"course"` | Gives the user permission to create courses in the database. |
-| `"academics.course.update"` | `"course/{id}"` | Gives the user permission to update a course in the database. |
-| `"academics.course.delete"` | `"course/{id}"` | Gives the user permission to delete a course in the database. |
-| `"academics.section.create"` | `"section"` | Gives the user permission to create sections in the database. |
-| `"academics.section.update"` | `"section/{id}"` | Gives the user permission to update a section in the database. |
-| `"academics.section.delete"` | `"section/{id}"` | Gives the user permission to delete a section in the database. |
-| `"room.create"` | `"room"` | Gives the user permission to create rooms in the database. |
-| `"room.update"` | `"room/{id}"` | Gives the user permission to update a room in the database. |
-| `"room.delete"` | `"room/{id}"` | Gives the user permission to delete a room in the database. |
+| Action                                 | Resource                           | Description                                          |
+| -------------------------------------- | ---------------------------------- | ---------------------------------------------------- |
+| `"coworking.operating_hours.create"`\* | `"coworking/operating_hours"`      | Gives the user permission to create operating hours. |
+| `"coworking.operating_hours.update"`   | `"coworking/operating_hours/{id}"` | Gives the user permission to update operating hours. |
+| `"coworking.operating_hours.delete"`\* | `"coworking/operating_hours/{id}"` | Gives the user permission to delete operating hours. |
+
+\*These permissions already existed in the existing solution
 
 ### Testing<a name='Testing'></a>
 
-The Academics feature adds full, thorough testing to every new service function added in the course, section, term, and room services. All tests pass, and all services created or modified have 100% test coverage.
+The Operating Hours Editor feature adds full, thorough testing to every new and modified service function added in the operating hours service. All tests pass, and all services created or modified have 100% test coverage.
+
+## Design Choices
+
+### Technical Design Choices<a name="TechnicalDesign"></a>
+
+1. **Recurrence as Generated Hours Connected by ID**:
+
+   - We implemented recurrence by creating the hours at modification-time in order to take advantage of pre-existing systems for getting a schedule and identifying Operating Hours by ID.
+   - We considered generating hours when the user requested a schedule based on a collection of recurrences, however we decided against it due to anticipated difficulties selecting hours.
+
+2. **Maintaining Recurrence Connection Over Gaps**
+
+   - We decided to make sure that we maintained existing recurrence relationships between Operating Hours even when hours in the middle get deleted.
+   - This was done since the update system had support for gaps in the recurrence and breaking the relationships can harm the user experience.
+
+---
+
+### User Experience Design Choices<a name="UXDesign"></a>
+
+1. **Hidden Panels for Add/Edit Hours**:
+
+   - The Add/Edit actions are handled through a panel that only shows while adding or editing, keeping the main calendar view uncluttered.
+
+2. **Simplified Calendar View**:
+
+   - The calendar normally only displays Monday through Friday and hours from 8 AM to 10 PM, reflecting current CSXL operating hours.
+
+3. **Dynamic Calendar Adjustments**:
+
+   - The calendar adjusts dynamically to display scheduled hours even if they fall outside the typical 8 AM–10 PM range.
+
+4. **Sidebar Editing**:
+
+   - A sidebar was chosen for editing hours, allowing users to see the full calendar while managing operating hours.
+
+5. **Highlighting Selected Hour Blocks**:
+   - The selected hour block changes color during editing, providing clear visual feedback to the user.
+
+---
+
+### Design Trade-Offs<a name="TradeOffs"></a>
+
+#### User Experience Design Trade-Off: Sidebar vs. Persistent Panel
+
+- **Decision**: We implemented a pop-up sidebar for editing instead of a persistent panel.
+- **Reasoning**: The sidebar ensures the UI remains uncluttered, while allowing administrators to view the calendar as they manage open hours.
+- **Trade-Off**: A persistent panel would have streamlined the workflow slightly but at the cost of reduced calendar visibility.
+
+#### User Experience Design Trade-Off: Sidebar vs. Pop-Up
+
+- **Decision**: We implemented adding and editing as a sidebar instead of a pop-up.
+- **Reasoning**: The sidebar leaves the administrator's view of the calendar unobstructed while adding and editing.
+- **Trade-Off**: A pop-up would have likely been more mobile-friendly at the cost of reduced calendar visibility.
+
+#### User Experience Design Trade-Off: Add Hours Button vs. Direct Calendar Interaction
+
+- **Decision**: We opted for an "Add Hours" button instead of direct calendar interaction for adding hours.
+- **Reasoning**: The button simplifies interactions and prevents accidental scheduling errors.
+- **Trade-Off**: While direct calendar interaction would be faster for experienced users, it could confuse new users and increase UI complexity.
+
+#### Technical Design Trade-Off: Generating Recurrence at Modification-Time vs. User Request-Time
+
+- **Decision**: We decided to generate recurring events when the administration creates/updates them instead of when the user requests a schedule.
+- **Reasoning**: This simplifies selecting hours and viewing schedules, and the main benefit of request-time generation is unlikely to be used much.
+- **Trade-Off**: Creating hours when the user requests a schedule would allow for recurrence without a defined end date, and could in theory reduce storage usage.
+
+---
 
 ## Future Considerations<a name='FutureConsiderations'></a>
 
-* If we begin to add more course types to the page, I would love to switch the input select for course subject codes to use the material chip components.
-* We can now implement the gear icon for other admin features and refactor the folder structure - notably, for organizations.
-* We may want a separate `Academics` page specifically for unauthenticated users.
-* We can consider creating detail pages for courses and terms. At the moment though, it does not seem necessary.
-```
+1. **Direct Calendar Interaction**:
+
+- Enable users to click directly on a day to add hours, complementing the "Add Hours" button.
+
+2. **Historical Rescheduling**:
+
+- Allow admins to copy historical schedules to the present.
+
+3. **Prevent Editing the Past**:
+
+- Prevent admins from editing/deleting hours that have already passed.
+
+4. **Reservation Interaction**:
+
+- Cancel reservations if operating hours are deleted or updated such that the CSXL is no longer open during the reservation.
+- If we have notifications of some kind set up, notify users of the cancelation.
