@@ -207,7 +207,9 @@ class OperatingHoursService:
             OperatingHours: The persisted object.
         """
         self._permission_svc.enforce(
-            subject, "coworking.operating_hours.update", "coworking/operating_hours"
+            subject,
+            "coworking.operating_hours.update",
+            f"coworking/operating_hours/{operating_hours_draft.id}",
         )
 
         new_time_range = TimeRange(
