@@ -1,6 +1,6 @@
 # Academics Feature Technical Specification
 
-> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) > _Last Updated: 05/02/2025_
+> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) > _Last Updated: 05/03/2025_
 
 This document outlines the technical specifications for the Open Hours Editor feature of the CSXL web application. This feature adds functionality to manage open hours directly through a user-friendly interface, improving administrative efficiency. The project introduces several new frontend components and utilizes existing API routes with minimal modifications to achieve its goals.
 
@@ -8,9 +8,7 @@ This document outlines the technical specifications for the Open Hours Editor fe
 
 - [Frontend Features](#FrontendFeatures)
   - [User Features](#UserFeatures)
-    - [Academics Home](#AcademicsHome)
-    - [Course Catalog](#CourseCatalog)
-    - [Section Offerings](#SectionOfferings)
+    - [Operating Hours Calendar](#OperatingHoursCalendar)
   - [Admin Features](#AdminFeatures)
     - [Gear Icon to Access Admin Features](#GearIcontoAccessAdminFeatures)
     - [Academics Admin Tabbed Page](#AcademicsAdminTabbedPage)
@@ -25,15 +23,15 @@ This document outlines the technical specifications for the Open Hours Editor fe
 
 ## Frontend Features<a name='FrontendFeatures'></a>
 
-The frontend features add _12_ new Angular components, all at the `/academics` route.
+The frontend features add _7_ new Angular components.
 
 ### User Features<a name='UserFeatures'></a>
 
-The following pages have been added and are available for all users of the CSXL site. These pages are ultimately powered by new Angular service functions connected to new backend APIs.
+The following feature has been added and is available for all users of the CSXL site. This feature is ultimately powered by new Angular service functions connected to new backend APIs.
 
-#### Academics Home<a name='AcademicsHome'></a>
+#### Operating Hours Calendar<a name='OperatingHoursCalendar'></a>
 
-![Academics home page](../images/specs/academics/academics-home.png)
+![Operating Hours Calendar](../images/specs/academics/academics-home.png)
 
 The home page for the new Academics feature is available on the side navigation toolbar at `/academics`. The home page contains links to both the _course catalog_ and the _section offerings_ page.
 
@@ -87,20 +85,28 @@ Upon creation or modification of a new item, the admin user is redirected to an 
 
 In total, the following components have been added:
 
-| Name                     | Route                         | Description                                              |
-| ------------------------ | ----------------------------- | -------------------------------------------------------- |
-| **Academics Home**       | `/academics`                  | Main home page for the academics feature.                |
-| **Course Catalog**       | `/academics/catalog`          | Displays all COMP courses and their details.             |
-| **Section Offerings**    | `/academics/offerings`        | Displays offerings for COMP courses by term.             |
-| **Academics Admin Home** | `/academics/admin`            | Exposes the academics admin features.                    |
-| **Term Admin**           | `/academics/admin/term`       | Shows all term data and exposes CRUD functionality.      |
-| **Course Admin**         | `/academics/admin/course`     | Shows all course data and exposes CRUD functionality.    |
-| **Section Admin**        | `/academics/admin/section`    | Shows all section data and exposes CRUD functionality.   |
-| **Room Admin**           | `/academics/admin/room`       | Shows all room data and exposes CRUD functionality.      |
-| **Term Editor**          | `/academics/term/edit/:id`    | Form to show when terms are to be created and edited.    |
-| **Course Editor**        | `/academics/course/edit/:id`  | Form to show when courses are to be created and edited.  |
-| **Section Editor**       | `/academics/section/edit/:id` | Form to show when sections are to be created and edited. |
-| **Room Editor**          | `/academics/room/edit/:id`    | Form to show when room are to be created and edited.     |
+| Name                              | Route                                                                | Description                                                               |
+| --------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Coworking Admin**               | `/coworking/coworking-admin`                                         | Admin-only page enabling operating hours                                  |
+| **Operating Hours Editor**        | `/coworking/coworking-admin/coworking-operating-hours-editor`        | Form with all the necessary fields for creating/updating operating hours. |
+| **Operating Hours Mobile Dialog** | `/coworking/coworking-admin/coworking-operating-hours-mobile-dialog` | Dialog container for the editor form designed for use on mobile devices.  |
+
+4. `/coworking/coworking-admin/recurring-hours-modify-confirm-dialog` - Confirmation dialog used when modifying an operating hour with recurrence in a way that must modify the recurring events.
+5. `/coworking/coworking-admin/recurring-hours-modify-dialog` - Selection dialog used when modifying an operating hour with recurrence, allowing user to select whether or not to modify the recurring events.
+6. `/shared/calendar` - Calendar widget that can be passed various events to be displayed.
+7. `/shared/operating-hours-calendar` - Operating hours calendar widget that automatically pulls in the operating hours for the selected week
+   | **Academics Home** | `/academics` | Main home page for the academics feature. |
+   | **Course Catalog** | `/academics/catalog` | Displays all COMP courses and their details. |
+   | **Section Offerings** | `/academics/offerings` | Displays offerings for COMP courses by term. |
+   | **Academics Admin Home** | `/academics/admin` | Exposes the academics admin features. |
+   | **Term Admin** | `/academics/admin/term` | Shows all term data and exposes CRUD functionality. |
+   | **Course Admin** | `/academics/admin/course` | Shows all course data and exposes CRUD functionality. |
+   | **Section Admin** | `/academics/admin/section` | Shows all section data and exposes CRUD functionality. |
+   | **Room Admin** | `/academics/admin/room` | Shows all room data and exposes CRUD functionality. |
+   | **Term Editor** | `/academics/term/edit/:id` | Form to show when terms are to be created and edited. |
+   | **Course Editor** | `/academics/course/edit/:id` | Form to show when courses are to be created and edited. |
+   | **Section Editor** | `/academics/section/edit/:id` | Form to show when sections are to be created and edited. |
+   | **Room Editor** | `/academics/room/edit/:id` | Form to show when room are to be created and edited. |
 
 ## Backend Design and Implementation<a name='BackendDesignandImplementation'></a>
 

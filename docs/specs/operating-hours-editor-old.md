@@ -1,6 +1,6 @@
 # Operating Hours Editor Technical Specification
 
-> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) > _Last Updated: 05/02/2025_
+> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) > _Last Updated: 05/03/2025_
 
 This document outlines the technical specifications for the Open Hours Editor feature of the CSXL web application. This feature adds functionality to manage open hours directly through a user-friendly interface, improving administrative efficiency. The project introduces several new frontend components and utilizes existing API routes with minimal modifications to achieve its goals.
 
@@ -32,7 +32,7 @@ The Open Hours Editor provides a calendar-based interface for administrators to 
   A new `PUT` operation was added to edit open hours (`/api/openhours/edit`).
 
 - **Models**:  
-  Two new models were created:
+  Six new models were created:
 
   - `OperatingHoursRecurrenceDraft`: Represents a draft version of the recurrence for a single set of Operating Hours, used for creation and editing.
   - `OperatingHoursRecurrenceJSON`: Handles JSON serialization for operating hour recurrence drafts.
