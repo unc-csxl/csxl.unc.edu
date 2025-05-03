@@ -1,6 +1,6 @@
 # Academics Feature Technical Specification
 
-> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) > _Last Updated: 05/03/2025_
+> [David Foss](https://github.com/fossinating), [Ella Gonzales](https://github.com/ellagonzales), [Tobenna Okoli](https://github.com/TJOKOLI17), [Francine Wei](https://github.com/francinew6) </br> > _Last Updated: 05/03/2025_
 
 This document outlines the technical specifications for the Operating Hours Editor feature of the CSXL web application. This feature adds functionality to manage operating hours directly through a user-friendly interface, improving administrative efficiency. The project introduces several new frontend components and utilizes existing API routes with minimal modifications to achieve its goals.
 
@@ -155,8 +155,6 @@ The Operating Hours Editor feature adds full, thorough testing to every new and 
    - We decided to make sure that we maintained existing recurrence relationships between Operating Hours even when hours in the middle get deleted.
    - This was done since the update system had support for gaps in the recurrence and breaking the relationships can harm the user experience.
 
----
-
 ### User Experience Design Choices<a name="UXDesign"></a>
 
 1. **Hidden Panels for Add/Edit Hours**:
@@ -205,8 +203,6 @@ The Operating Hours Editor feature adds full, thorough testing to every new and 
 - **Decision**: We decided to generate recurring events when the administration creates/updates them instead of when the user requests a schedule.
 - **Reasoning**: This simplifies selecting hours and viewing schedules, and the main benefit of request-time generation is unlikely to be used much.
 - **Trade-Off**: Creating hours when the user requests a schedule would allow for recurrence without a defined end date, and could in theory reduce storage usage.
-
----
 
 ## Future Considerations<a name='FutureConsiderations'></a>
 
