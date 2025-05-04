@@ -397,8 +397,15 @@ export class CoworkingOperatingHoursEditorComponent {
    * @returns {void}
    */
   private onError(err: any): void {
-    this.snackBar.open(`Error: Operating Hours Not ${this.action()}`, '', {
-      duration: 2000
-    });
+    console.error(err);
+    this.snackBar.open(
+      err?.error.message
+        ? `Error: ${err.error.message}`
+        : `Error: Operating Hours Not ${this.action()}`,
+      '',
+      {
+        duration: 2000
+      }
+    );
   }
 }

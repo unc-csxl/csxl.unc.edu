@@ -143,7 +143,7 @@ class OperatingHoursService:
             conflicts = self.schedule(operating_hours)
             if len(conflicts) > 0:
                 raise OperatingHoursCannotOverlapException(
-                    f"Conflicts in the range of {str(operating_hours)}"
+                    f"New hours would overlap with existing hours"
                 )
 
         entities = [
@@ -173,7 +173,7 @@ class OperatingHoursService:
 
         if len(self.schedule(operating_hours_draft)) > 0:
             raise OperatingHoursCannotOverlapException(
-                f"Conflicts in the range of {str(operating_hours_draft)}"
+                f"New hours would overlap with existing hours"
             )
 
         operating_hours = OperatingHoursEntity.from_draft(operating_hours_draft)
@@ -225,7 +225,7 @@ class OperatingHoursService:
         ]
         if len(conflicts) > 0:
             raise OperatingHoursCannotOverlapException(
-                f"Conflicts in the range of {str(new_time_range)}"
+                f"New hours would overlap with existing hours"
             )
 
         operating_hours_entity = self._session.get(
