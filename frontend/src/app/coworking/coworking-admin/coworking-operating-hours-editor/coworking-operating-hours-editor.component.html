@@ -64,6 +64,7 @@
     @if (operatingHoursForm.get('recurrence')?.value == 'Weekly') { @if
     (!holdingDialog) {
     <mat-button-toggle-group
+      required
       [formGroup]="operatingHoursForm"
       formControlName="recurrence_days"
       multiple>
@@ -84,7 +85,14 @@
         }
       </mat-select>
     </mat-form-field>
-    } }
+    }
+  }
+    @if (operatingHoursForm.errors?.["recurrenceInvalid"]) {
+      <mat-error>You must select the recurrence days.</mat-error>
+    }
+    @if (operatingHoursForm.errors?.["dateRangeInvalid"]) {
+      <mat-error>End time must be after start time.</mat-error>
+    }
   </mat-card-content>
 
   @if (!holdingDialog) {
