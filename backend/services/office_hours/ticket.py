@@ -2,10 +2,12 @@
 APIs for academics for office hour tickets.
 """
 
-from datetime import datetime
+import math
+from datetime import date, datetime, timedelta
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
+
 from ...database import db_session
 from ...models.user import User
 from ...models.academics.section_member import RosterRole
@@ -15,7 +17,7 @@ from ...models.academics.my_courses import (
 from ...models.office_hours.ticket import (
     TicketState,
     NewOfficeHoursTicket,
-    OfficeHoursTicket,
+    OfficeHoursTicketClosePayload,
 )
 
 from ...entities.academics.section_entity import SectionEntity
@@ -43,20 +45,6 @@ class OfficeHourTicketService:
         Initializes the database session.
         """
         self._session = session
-
-    def _to_oh_ticket_overview(
-        self, ticket: OfficeHoursTicketEntity
-    ) -> OfficeHourTicketOverview:
-        return OfficeHourTicketOverview(
-            id=ticket.id,
-            created_at=ticket.created_at,
-            called_at=ticket.called_at,
-            state=ticket.state.to_string(),
-            type=ticket.type.to_string(),
-            description=ticket.description,
-            creators=[creator.user.to_public_model() for creator in ticket.creators],
-            caller=(ticket.caller.user.to_public_model() if ticket.caller else None),
-        )
 
     def call_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
         """
@@ -109,7 +97,7 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def cancel_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
         """
@@ -154,9 +142,11 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
-    def close_ticket(self, user: User, ticket_id: int) -> OfficeHourTicketOverview:
+    def close_ticket(
+        self, user: User, ticket_id: int, payload: OfficeHoursTicketClosePayload
+    ) -> OfficeHourTicketOverview:
         """
         Closes a ticket in an office hour queue.
 
@@ -198,12 +188,14 @@ class OfficeHourTicketService:
         # Close the ticket
         ticket_entity.closed_at = datetime.now()
         ticket_entity.state = TicketState.CLOSED
+        ticket_entity.have_concerns = payload.has_concerns
+        ticket_entity.caller_notes = payload.caller_notes
 
         # Save changes
         self._session.commit()
 
         # Return the changed ticket
-        return self._to_oh_ticket_overview(ticket_entity)
+        return ticket_entity.to_overview_model()
 
     def create_ticket(
         self, user: User, ticket: NewOfficeHoursTicket
@@ -272,6 +264,68 @@ class OfficeHourTicketService:
                 "You cannot create multiple tickets at once."
             )
 
+        course_query = (
+            select(CourseSiteEntity)
+            .join(OfficeHoursEntity)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
+        )
+        course_entity = self._session.scalars(course_query).one_or_none()
+
+        if course_entity is None:
+            raise CoursePermissionException(
+                "Cannot create a ticket for a course that does not exist."
+            )
+
+        # Check number of tickets for current date
+        num_tickets_for_today_query = (
+            select(func.count())
+            .select_from(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(user_created_tickets_table)
+            .join(SectionMemberEntity)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(func.date(OfficeHoursTicketEntity.closed_at) == date.today())
+        )
+        num_tickets_for_today = self._session.execute(
+            num_tickets_for_today_query
+        ).scalar()
+
+        if num_tickets_for_today >= course_entity.max_tickets_per_day:
+            raise CoursePermissionException(
+                f"You have created the maximum number of tickets today. Please come back tomorrow."
+            )
+
+        # Check if the user is within the ticket cooldown time.
+        cooldown_time_cutoff = datetime.now() + timedelta(
+            minutes=-course_entity.minimum_ticket_cooldown
+        )
+
+        cooldown_tickets_query = (
+            select(OfficeHoursTicketEntity)
+            .join(OfficeHoursEntity)
+            .join(user_created_tickets_table)
+            .join(SectionMemberEntity)
+            .where(OfficeHoursEntity.id == ticket.office_hours_id)
+            .where(OfficeHoursTicketEntity.state == TicketState.CLOSED)
+            .where(SectionMemberEntity.user_id == user.id)
+            .where(OfficeHoursTicketEntity.closed_at > cooldown_time_cutoff)
+        )
+
+        ticket_within_cooldown_range = self._session.scalars(
+            cooldown_tickets_query
+        ).one_or_none()
+
+        if ticket_within_cooldown_range is not None:
+            time_remaining = (
+                cooldown_time_cutoff - ticket_within_cooldown_range.closed_at
+            )
+            minutes_remaining = math.ceil(-(time_remaining.total_seconds() / 60))
+            raise CoursePermissionException(
+                f"You must wait {minutes_remaining} minute{'' if minutes_remaining == 1 else 's'} before creating another ticket."
+            )
+
         # Create entity
         oh_ticket_entity = OfficeHoursTicketEntity.from_new_model(ticket)
 
@@ -295,4 +349,4 @@ class OfficeHourTicketService:
         self._session.commit()
 
         # Return details model
-        return self._to_oh_ticket_overview(oh_ticket_entity)
+        return oh_ticket_entity.to_overview_model()

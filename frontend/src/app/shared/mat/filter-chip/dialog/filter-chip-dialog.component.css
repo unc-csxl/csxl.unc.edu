@@ -1,0 +1,11 @@
+
+.dialog {
+    padding-top: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.search-field {
+    width: 100%;
+    margin-bottom: -1.25em;
+}

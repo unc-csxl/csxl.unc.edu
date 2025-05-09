@@ -5,66 +5,55 @@ from sqlalchemy.orm import Session
 from ....entities.academics import TermEntity
 from ....models.academics import Term
 from ..reset_table_id_seq import reset_table_id_seq
-from datetime import datetime
+from datetime import datetime, timedelta
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+TERM_LENGTH = timedelta(weeks=17)
+TERM_GAP = timedelta(weeks=1)
 
-sp_23 = Term(
-    id="23S", name="Spring 2023", start=datetime(2023, 1, 10), end=datetime(2023, 5, 10)
+previous_term = Term(
+    id="Prev",
+    name="Previous Term",
+    start=datetime.now() - TERM_GAP - TERM_LENGTH,
+    end=datetime.now() - TERM_GAP,
+    applications_open=datetime.now() - TERM_GAP - TERM_LENGTH,
+    applications_close=datetime.now() - TERM_GAP,
 )
 
-f_23 = Term(
-    id="23F", name="Fall 2023", start=datetime(2023, 8, 20), end=datetime(2023, 12, 15)
+current_term = Term(
+    id="Curr",
+    name="Current Term",
+    start=datetime.now(),
+    end=datetime.now() + TERM_LENGTH,
+    applications_open=datetime.now(),
+    applications_close=datetime.now() + TERM_LENGTH,
 )
 
-edited_f_23 = Term(
-    id="23F",
-    name="Best Semester Ever",
-    start=datetime(2023, 8, 20),
-    end=datetime(2023, 12, 15),
+current_term_edited = Term(
+    id="Curr",
+    name="Current Term Edited",
+    start=datetime.now(),
+    end=datetime.now() + TERM_LENGTH,
+    applications_open=datetime.now(),
+    applications_close=datetime.now() + TERM_LENGTH,
 )
 
-sp_24 = Term(
-    id="24S", name="Spring 2024", start=datetime(2024, 1, 10), end=datetime(2024, 5, 10)
+future_term = Term(
+    id="Future",
+    name="Future Term",
+    start=current_term.end + TERM_GAP,
+    end=current_term.end + TERM_GAP + TERM_LENGTH,
+    applications_open=current_term.applications_open + TERM_GAP,
+    applications_close=current_term.applications_close + TERM_GAP + TERM_LENGTH,
 )
 
-ss1_24 = Term(
-    id="24SuI",
-    name="Summer Session I 2024",
-    start=datetime(2024, 5, 13),
-    end=datetime(2024, 6, 23),
-)
+terms = [previous_term, current_term]
 
-ss2_24 = Term(
-    id="SuII24",
-    name="Summer Session II 2024",
-    start=datetime(2024, 6, 23),
-    end=datetime(2024, 8, 30),
-    applications_open=datetime(2024, 6, 30),
-    applications_close=datetime(2024, 8, 30),
-)
-
-f24 = Term(
-    id="24F", name="Fall 2024", start=datetime(2024, 8, 20), end=datetime(2024, 12, 31)
-)
-
-s25 = Term(
-    id="25S", name="Spring 2025", start=datetime(2025, 1, 1), end=datetime(2025, 5, 31)
-)
-
-new_term = Term(
-    id="XXX", name="New Term", start=datetime(3000, 8, 20), end=datetime(3000, 12, 31)
-)
-
-terms = [sp_23, f_23, sp_24, ss1_24, ss2_24, f24, s25]
-
-current_term = s25
-
-today = datetime(2023, 12, 1)
-bad_day = datetime(3000, 1, 1)
+today = datetime.now()
+bad_day = datetime.max
 
 
 def insert_fake_data(session: Session):

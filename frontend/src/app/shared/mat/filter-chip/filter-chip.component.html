@@ -1,0 +1,17 @@
+<mat-chip #chip [highlighted]="selectedItems().length > 0"  disableRipple>
+    <div class="mat-filter-chip-content">
+        <div class="mat-filter-chip-main-content" (click)="openDialog($event)" >
+            @if(leadingIcon()) {
+                <mat-icon matChipTrailingIcon class="font-primary mat-filter-chip-leading-icon">{{ leadingIcon() }}</mat-icon>
+            }
+            {{ displayText() }}
+            <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
+        </div>
+        @if(selectedItems().length > 0) {
+            <div class="mat-filter-chip-accessory" (click)="clearSelections()">
+                <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
+                <mat-icon matChipTrailingIcon>close</mat-icon>    
+            </div>
+        }
+    </div>
+</mat-chip>
