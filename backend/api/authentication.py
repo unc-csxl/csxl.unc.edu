@@ -252,9 +252,7 @@ def _handle_auth_in_production(
     else:
         # Development Authentication Request (origin is app in development)
         if origin.startswith("localhost"):
-            target = (
-                "http://localhost:1560/auth"  # TODO: Make this port an env variable
-            )
+            target = f"http://{origin}/auth"  # TODO: Make this port an env variable
         else:
             target = f"https://{origin}/auth"
         return RedirectResponse(
