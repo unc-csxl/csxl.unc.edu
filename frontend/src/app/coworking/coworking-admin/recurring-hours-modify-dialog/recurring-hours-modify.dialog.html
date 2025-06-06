@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>{{this.data.actionName}} Recurring Operating Hours</h2>
+<mat-dialog-content>
+  <form [formGroup]="recurringEffectForm">
+    <mat-radio-group formControlName="cascades" class="cascadesGroup">
+        <mat-radio-button value="false">This event</mat-radio-button>
+        <mat-radio-button value="true">This and following events</mat-radio-button>
+    </mat-radio-group>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="secondary" (click)="close()">Cancel</button>
+  <button
+    mat-flat-button
+    mat-dialog-close
+    (click)="confirm()">
+    Confirm
+  </button>
+</mat-dialog-actions>

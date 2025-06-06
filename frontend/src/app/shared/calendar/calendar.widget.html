@@ -1,0 +1,74 @@
+<div class="calendar-display">
+  <div class="week-picker">
+    <button mat-icon-button (click)="previousWeek()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-icon-button (click)="nextWeek()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+    <h2 class="week-selection">
+      {{startDate() | date: "LLLL y"}}{{startDate().getMonth() ===
+      dates()[6].getMonth() ? '' : (' - ' + (dates()[6] | date: "LLLL y"))}}
+    </h2>
+  </div>
+  <div
+    class="calendar-container"
+    [style]="
+    'grid-template-columns: 50px ' + 
+    (earliestDay() > 0 ? 'repeat(' + earliestDay().toString() + ', 0) ' : '') + 
+    'repeat(' + (latestDay()-earliestDay()+1).toString() + ', 1fr) ' + 
+    (latestDay() < 6 ? 'repeat(' + (6-latestDay()).toString() + ', 0)' : '') + ';'">
+    @for (day of dates().slice(earliestDay(),latestDay()+1); track day) {
+    <div [class]="'date-label ' + (day | date: 'EEEE')">
+      <p>{{day | date: 'EEE' | uppercase}}</p>
+      <p
+        [class]="'date-number-label ' + ((day.getDate() == currentDate().getDate() && day.getFullYear() == currentDate().getFullYear() && day.getMonth() == currentDate().getMonth()) ? 'current-date' : '')">
+        {{day | date: 'd'}}
+      </p>
+    </div>
+    }
+    <div
+      class="calendar"
+      [style]="'grid-template-rows: repeat(' + ((latestHour() - earliestHour()  + 1)*60).toString() + ', minmax(0, 1fr));' + 
+      'grid-template-columns: 50px ' + 
+      (earliestDay() > 0 ? 'repeat(' + earliestDay().toString() + ', 0) ' : '') + 
+      'repeat(' + (latestDay()-earliestDay()+1).toString() + ', 1fr) ' + 
+      (latestDay() < 6 ? 'repeat(' + (6-latestDay()).toString() + ', 0)' : '') + ';'">
+      @if (calendarEvents().length !== 0) { @for (day of
+      dates().slice(earliestDay(),latestDay()+1); track day) {
+      <div [class]="'calendar-day-outline ' + (day | date: 'EEEE')"></div>
+      } }
+      <div class="calendar-outline"></div>
+      @for (hour of hourLabels(); track hour; let i = $index) {
+      <p
+        class="hour-label"
+        [style]="'grid-row: ' + (i * 60 + 1).toString() + '/' + ((i+1) * 60 + 1).toString()">
+        {{hour}}
+      </p>
+      @if (calendarEvents().length !== 0) {
+      <div
+        class="calendar-hour-outline"
+        [style]="'grid-row: ' + (i * 60 + 1).toString() + '/' + ((i+1) * 60 + 1).toString()"></div>
+      } } @if (calendarEvents().length === 0) {
+      <p class="no-hours-message">
+        Please check back later to see upcoming hours!
+      </p>
+      } @else { @for(hours of calendarEvents(); track hours.id) {
+      <div
+        matRipple
+        [matRippleDisabled]="selectEvent == null"
+        (click)="clickCalendarEvent(hours)"
+        [class]="'hour-block ' + (hours.start | date: 'EEEE')
+         + (selectEvent == null ? '' : ' clickable') + (selectedEvent?.id == hours.id ? ' primary-background' : ' primary-container-background')"
+        [style]="'grid-row-start: ' + ((hours.start.getHours() - earliestHour())*60 + hours.start.getMinutes() + 1).toString() + ';grid-row-end: ' + ((hours.end.getHours() - earliestHour())*60 + hours.end.getMinutes() + 1).toString()">
+        <p [class]="'semibold ' + (selectedEvent?.id == hours.id ? 'primary-background' : 'primary-container-background')">Open Hours</p>
+        <p [class]="'hours-text ' + (selectedEvent?.id == hours.id ? 'primary-background' : 'primary-container-background')">
+          {{ hours.start | date: (hours.start.getMinutes() == 0 ? 'h a' : 'h:mm\
+          a') | lowercase }} - {{ hours.end | date: (hours.end.getMinutes() == 0
+          ? 'h a' : 'h:mm a') | lowercase }}
+        </p>
+      </div>
+      } }
+    </div>
+  </div>
+</div>

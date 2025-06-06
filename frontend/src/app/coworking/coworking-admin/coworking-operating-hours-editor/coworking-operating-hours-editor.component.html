@@ -1,0 +1,109 @@
+<form [formGroup]="operatingHoursForm" (ngSubmit)="onSubmit()">
+  @if (!holdingDialog) {
+  <mat-card-header>
+    <mat-card-title>
+      {{isNew() ? "Create" : "Update"}} Operating Hours
+    </mat-card-title>
+  </mat-card-header>
+  }
+
+  <mat-card-content>
+    <!-- Date Selector -->
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Select Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        formControlName="selected_date" />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="horizontal-wrapper">
+      <!-- Start Time Selector -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Start Time</mat-label>
+        <input matInput type="time" formControlName="start_time" />
+      </mat-form-field>
+
+      <!-- End Time Selector -->
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>End Time</mat-label>
+        <input matInput type="time" formControlName="end_time" />
+      </mat-form-field>
+    </div>
+
+    <!-- Recurrence Pattern -->
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Recurrence Pattern</mat-label>
+      <mat-select formControlName="recurrence">
+        <mat-option value="None">None</mat-option>
+        <mat-option value="Daily">Daily</mat-option>
+        <mat-option value="Weekly">Weekly</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Recur Until -->
+    @if (operatingHoursForm.get('recurrence')?.value != 'None') {
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Repeat Until</mat-label>
+      <input
+        matInput
+        [matDatepicker]="recurrenceDatePicker"
+        formControlName="recurrence_end" />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="recurrenceDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #recurrenceDatePicker></mat-datepicker>
+    </mat-form-field>
+    }
+
+    <!-- Recurrence Days -->
+    @if (operatingHoursForm.get('recurrence')?.value == 'Weekly') { @if
+    (!holdingDialog) {
+    <mat-button-toggle-group
+      required
+      [formGroup]="operatingHoursForm"
+      formControlName="recurrence_days"
+      multiple>
+      @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      track day) {
+      <mat-button-toggle [value]="day">
+        {{ day.substring(0, 3) }}
+      </mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+    } @else {
+    <mat-form-field appearance="outline" color="accent">
+      <mat-label>Recurrence Pattern</mat-label>
+      <mat-select formControlName="recurrence_days" multiple>
+        @for(day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        track day) {
+        <mat-option [value]="day">{{ day.substring(0, 3) }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    }
+  }
+    @if (operatingHoursForm.errors?.["recurrenceInvalid"]) {
+      <mat-error>You must select the recurrence days.</mat-error>
+    }
+    @if (operatingHoursForm.errors?.["dateRangeInvalid"]) {
+      <mat-error>End time must be after start time.</mat-error>
+    }
+  </mat-card-content>
+
+  @if (!holdingDialog) {
+  <mat-card-actions>
+    <button mat-stroked-button (click)="onCancel()" type="button">
+      Cancel
+    </button>
+    <button mat-flat-button type="submit">Save</button>
+    @if (!isNew()) {
+    <button mat-flat-button type="button" (click)="onDelete()">Delete</button>
+    }
+  </mat-card-actions>
+  }
+</form>

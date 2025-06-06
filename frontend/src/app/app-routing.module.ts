@@ -89,7 +89,13 @@ const routes: Routes = [
       import('./applications/applications.module').then(
         (m) => m.ApplicationsModule
       )
-  }
+  },
+  {
+    path: 'calendar',
+    title: 'CSXL Open Hours',
+    loadChildren: () =>
+      import('./coworking/coworking.module').then((m) => m.CoworkingModule)
+  },
 ];
 
 @NgModule({

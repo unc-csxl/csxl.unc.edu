@@ -16,6 +16,7 @@ from .operating_hours_data import fake_data_fixture as insert_order_1
 from ..room_data import fake_data_fixture as insert_order_2
 from .seat_data import fake_data_fixture as insert_order_3
 from .reservation.reservation_data import fake_data_fixture as insert_order_4
+from .fixtures import permission_svc, operating_hours_svc
 
 
 def test_status_dispatch(status_svc: StatusService):

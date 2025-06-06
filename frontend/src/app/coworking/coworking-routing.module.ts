@@ -4,6 +4,7 @@ import { CoworkingPageComponent } from './coworking-home/coworking-home.componen
 import { ReservationComponent } from './reservation/reservation.component';
 import { NewReservationPageComponent } from './room-reservation/new-reservation-page/new-reservation-page.component';
 import { ConfirmReservationComponent } from './room-reservation/confirm-reservation/confirm-reservation.component';
+import { CoworkingAdminComponent } from './coworking-admin/coworking-admin.component';
 
 const routes: Routes = [
   CoworkingPageComponent.Route,
@@ -17,7 +18,8 @@ const routes: Routes = [
       import('./ambassador-home/ambassador-home.module').then(
         (m) => m.AmbassadorHomeModule
       )
-  }
+  },
+  CoworkingAdminComponent.Route
 ];
 
 @NgModule({
