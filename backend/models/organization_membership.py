@@ -4,7 +4,7 @@ from .public_user import PublicUser
 from .academics import Term
 
 __authors__ = ["Alanna Zhang, Alexander Feng"]
-__copyright__ = "Copyright 2024"
+__copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
 

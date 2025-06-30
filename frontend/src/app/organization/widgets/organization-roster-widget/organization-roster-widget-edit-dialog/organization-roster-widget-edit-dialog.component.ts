@@ -1,3 +1,13 @@
+/**
+ * The Organization Roster Widget Edit Dialog
+ * is responsible for tracking the edited state of a single membership
+ * before either staging or cancelling the edit.
+ *
+ * @author Amy Xu
+ * @copyright 2025
+ * @license MIT
+ */
+
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {

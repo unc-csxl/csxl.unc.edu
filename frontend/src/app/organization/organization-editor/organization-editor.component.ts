@@ -2,8 +2,8 @@
  * The Organization Editor Component allows organization managers to edit information
  * about their organization which is publically displayed on the organizations page.
  *
- * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2024
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney, Anika Ahmed, Alanna Zhang
+ * @copyright 2025
  * @license MIT
  */
 

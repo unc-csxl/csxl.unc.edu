@@ -7,8 +7,14 @@ from typing import Self
 from ..models.organization import Organization, OrganizationJoinType
 from ..models.organization_details import OrganizationDetails
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
-__copyright__ = "Copyright 2023"
+__authors__ = [
+    "Ajay Gandecha",
+    "Jade Keegan",
+    "Brianna Ta",
+    "Audrey Toney",
+    "Alanna Zhang",
+]
+__copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
 

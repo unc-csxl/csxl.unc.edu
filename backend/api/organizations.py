@@ -19,8 +19,14 @@ from ..api.authentication import registered_user
 from ..models.user import User
 from datetime import datetime
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
-__copyright__ = "Copyright 2023"
+__authors__ = [
+    "Ajay Gandecha",
+    "Jade Keegan",
+    "Brianna Ta",
+    "Audrey Toney",
+    "Alanna Zhang",
+]
+__copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
 api = APIRouter(prefix="/api/organizations")

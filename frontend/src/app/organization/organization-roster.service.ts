@@ -1,5 +1,12 @@
-// Service for direct CRUD operations on an organization's roster.
-// Located in the base organization directory since it is used by both roster widget and details card.
+/**
+ * The Organization Roster Service performs direct HTTP CRUD operations on an organization's memberships.
+ * The service is used by the detail card (joining/leaving, displaying exec board) as well as the roster (managing memberships).
+ *
+ * @author Anika Ahmed, Alex Feng, Amy Xu, Alanna Zhang, Anika Ahmed, Alex Feng, Amy Xu, Alanna Zhang
+ * @copyright 2025
+ * @license MIT
+ */
+
 import { Observable } from 'rxjs';
 import {
   OrganizationMembership,

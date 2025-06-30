@@ -2,7 +2,8 @@
  * The Event Card displays details for events in the paginated list.
  *
  * @author Ajay Gandecha <agandecha@unc.edu>
- * @copyright 2024
+ * @author Alex Feng
+ * @copyright 2025
  * @license MIT
  */
 

@@ -11,6 +11,12 @@ from ..models.organization_membership import (
     OrganizationMembershipStatus,
 )
 
+__authors__ = [
+    "Alanna Zhang",
+]
+__copyright__ = "Copyright 2025"
+__license__ = "MIT"
+
 
 class OrganizationMembershipEntity(EntityBase):
 

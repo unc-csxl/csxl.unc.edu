@@ -1,10 +1,18 @@
+/**
+ * The Organization Roster widget is responsible for displaying a club's roster for general users
+ * as well as an interface for privileged users to accept/reject and edit memberships.
+ *
+ * @author Anika Ahmed, Alex Feng, Amy Xu, Alanna Zhang
+ * @copyright 2025
+ * @license MIT
+ */
+
 import { Component, Input, SimpleChanges } from '@angular/core';
 import {
   Organization,
   OrganizationMembership,
   OrganizationJoinType,
-  OrganizationMembershipStatus,
-  OrganizationMembershipPermissionLevel
+  OrganizationMembershipStatus
 } from '../../organization.model';
 import { Profile } from 'src/app/models.module';
 import { OrganizationRosterService } from '../../organization-roster.service';

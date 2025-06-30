@@ -2,8 +2,8 @@
  * The Organization Details Info Card widget abstracts the implementation of each
  * individual organization detail card from the whole organization detail page.
  *
- * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2024
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney, Anika Ahmed, Alex Feng, Amy Xu, Alanna Zhang
+ * @copyright 2025
  * @license MIT
  */
 
