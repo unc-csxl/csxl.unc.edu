@@ -122,6 +122,33 @@ export class OrganizationDetailsInfoCard {
     }
   }
 
+  /** Returns an ordered list of memberships to display as exec board */
+  getExecBoardMembers(): OrganizationMembership[] {
+    if (!this.organization || !this.organizationRoster) return [];
+    // Filter out members with no special title
+    const execs = this.organizationRoster.filter(
+      (m) => m.title && m.title.trim().toLowerCase() !== 'member'
+    );
+    // Sort according to priority
+    const priority = [
+      'president',
+      'co-president',
+      'vice president',
+      'treasurer',
+      'secretary'
+    ];
+    return execs.sort((a, b) => {
+      const aTitle = (a.title || '').toLowerCase();
+      const bTitle = (b.title || '').toLowerCase();
+      const aIndex = priority.findIndex((p) => aTitle.includes(p));
+      const bIndex = priority.findIndex((p) => bTitle.includes(p));
+      if (aIndex !== bIndex) {
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+      }
+      // If no priority specified, sort alphabetically
+      return aTitle.localeCompare(bTitle);
     });
   }
 }
