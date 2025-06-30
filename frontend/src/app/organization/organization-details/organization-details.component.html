@@ -10,7 +10,11 @@
       [organization]="organization"
       [profile]="profile"
       [eventCreationPermissions]="eventCreationPermission$ | async"
-      [joinOrganizationMethod]="joinOrganization"
+      [organizationRosterService]="organizationRosterService"
+      [organizationRoster]="organizationRoster"
+      [snackBar]="snackBar"
+      [membership]="organizationMembership"
+      (membershipChanged)="onMembershipChanged()"
       ></organization-details-info-card>
       <mat-card appearance="outlined" class="events-pane">
         <mat-card-header>
@@ -35,7 +39,7 @@
         </mat-card-content>
       </mat-card>
     </div>
-    @if (organizationRoster != undefined) {
+    @if (organizationRoster && organizationRoster.length > 0) {
       <!-- Right Column -->
       <div class="right-column">
         <organization-roster

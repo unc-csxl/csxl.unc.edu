@@ -7,14 +7,17 @@
  * @license MIT
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {
   Organization,
   OrganizationJoinType,
-  OrganizationMembership
+  OrganizationMembership,
+  OrganizationMembershipStatus
 } from '../../organization.model';
 import { Profile } from '../../../profile/profile.service';
 import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { OrganizationRosterService } from '../../organization-roster.service';
 
 @Component({
   selector: 'organization-details-info-card',
@@ -28,17 +31,23 @@ export class OrganizationDetailsInfoCard {
   @Input() profile?: Profile;
   /** Whether or not the user has permission to create events */
   @Input() eventCreationPermissions!: boolean | null;
-  /** The parent's join org method */
-  @Input() joinOrganizationMethod!: (
-    slug: string,
-    user_id: number,
-    onSuccess: () => void
-  ) => void;
+
+  /** The snackbar from parent component, used to display join/leave status */
+  @Input() snackBar: MatSnackBar | undefined;
+
+  /** The user's membership, passed in from roster */
+  @Input() membership?: OrganizationMembership;
+
+  @Input() organizationRoster?: OrganizationMembership[] | undefined;
+
+  @Input() organizationRosterService: OrganizationRosterService | undefined;
+
+  /** Emits when the user joins or leaves the organization */
+  @Output() membershipChanged = new EventEmitter<void>();
 
   /** Constructs the organization detail info card widget */
   constructor(private icons: SocialMediaIconWidgetService) {}
 
-  justJoined: boolean = false;
   isinOrganization() {
     if (
       this.profile &&
@@ -54,24 +63,65 @@ export class OrganizationDetailsInfoCard {
     return false;
   }
 
-  getJoinButtonText(joinType: OrganizationJoinType | null): string {
-    return joinType === 'Open' ? 'Join' : joinType === 'Apply' ? 'Apply' : '';
+  checkActiveStatus(): boolean {
+    return this.membership?.status === OrganizationMembershipStatus.ACTIVE;
   }
 
-  getJoinedButtonText(joinType: OrganizationJoinType | null): string {
+  checkPendingStatus(): boolean {
+    return this.membership?.status === OrganizationMembershipStatus.PENDING;
+  }
+
+  getJoinButtonText(joinType: OrganizationJoinType | null): string {
     return joinType === 'Open'
-      ? 'Joined'
+      ? 'Join'
       : joinType === 'Apply'
-        ? 'Applied'
+        ? 'Apply'
         : 'Closed';
   }
 
   handleJoinOrganization(slug: string, profile_id: number) {
-    this.joinOrganizationMethod(slug, profile_id, () => {
-      this.justJoined = true;
-      if (this.organization)
-        // Cannot refresh profile due to access, workaround for now
-        this.profile?.organizations.push(this.organization.name);
+    this.organizationRosterService
+      ?.addOrganizationMembership(slug, profile_id, this.organization?.id ?? 0)
+      .subscribe({
+        complete: () => {
+          if (this.organization) {
+            this.profile?.organizations.push(this.organization.name);
+          }
+          this.membershipChanged.emit();
+        },
+        error: () => {
+          this.snackBar?.open('Unable to join organization', 'Close', {
+            duration: 5000
+          });
+        }
+      });
+  }
+
+  handleLeaveOrganization(slug: string) {
+    if (this.membership) {
+      this.organizationRosterService
+        ?.deleteOrganizationMembership(slug, this.membership.id)
+        .subscribe({
+          complete: () => {
+            if (this.organization) {
+              const index = this.profile?.organizations.findIndex(
+                (org) => org === this.organization?.name
+              );
+              if (index !== -1 && index != null) {
+                this.profile?.organizations.splice(index, 1);
+              }
+            }
+            this.membershipChanged.emit();
+          },
+          error: () => {
+            this.snackBar?.open('Unable to leave organization', 'Close', {
+              duration: 5000
+            });
+          }
+        });
+    }
+  }
+
     });
   }
 }

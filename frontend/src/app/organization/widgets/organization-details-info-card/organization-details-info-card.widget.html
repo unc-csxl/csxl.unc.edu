@@ -74,7 +74,24 @@
   </mat-card-header>
   <mat-card-content>
     <p>{{ organization.long_description || organization.short_description }}</p>
-    @if(eventCreationPermissions) {
+    @if(getExecBoardMembers().length > 0) {
+    <div class="exec-board-section">
+      <mat-chip-set>
+        @for (membership of getExecBoardMembers(); track membership.id) {
+        <mat-chip class="exec-chip">
+          <mat-icon matChipAvatar>person</mat-icon>
+          <div class="exec-chip-content">
+            <span class="exec-title">{{ membership.title }}</span>
+            <span class="exec-name"
+              >{{ membership.user.first_name + ' ' + membership.user.last_name
+              }}</span
+            >
+          </div>
+        </mat-chip>
+        }
+      </mat-chip-set>
+    </div>
+    } @if(eventCreationPermissions) {
     <mat-divider />
     }
   </mat-card-content>
@@ -93,25 +110,25 @@
       [routerLink]="'/organizations/' + this.organization.slug + '/edit'">
       Edit
     </button>
-    }
-    @if(profile && profile.id != null) {
-        @if (!isinOrganization() && !justJoined && organization.join_type !== 'Closed') {
-          <button mat-flat-button
-          class="primary-button"
-          (click)="handleJoinOrganization(this.organization.slug, this.profile.id)"
-          >
-          {{ getJoinButtonText(organization.join_type) }}
-          </button>
-        }
-        @else {
-          <button mat-flat-button
-          class="primary-button"
-          disabled
-          >
-          {{ getJoinedButtonText(organization.join_type) }}
-        </button>
-        }
-    }
+    } @if(profile && profile.id != null) { @if (membership &&
+    checkActiveStatus()) {
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      (click)="handleLeaveOrganization(this.organization.slug)">
+      Leave
+    </button>
+    } @else if (membership && checkPendingStatus()) {
+    <button mat-flat-button class="primary-button" disabled>Applied</button>
+    } @else {
+    <button
+      mat-flat-button
+      class="primary-button"
+      (click)="handleJoinOrganization(this.organization.slug, this.profile.id)"
+      [disabled]="organization.join_type === 'Closed'">
+      {{ getJoinButtonText(organization.join_type) }}
+    </button>
+    } }
   </mat-card-actions>
 </mat-pane>
 }

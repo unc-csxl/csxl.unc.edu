@@ -16,7 +16,7 @@ import {
 } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Organization, OrganizationMembership } from '../organization.model';
-import { OrganizationRosterService } from '../widgets/organization-roster/organization-roster.widget.service';
+import { OrganizationRosterService } from '../organization-roster.service';
 import { Profile, ProfileService } from '../../profile/profile.service';
 import { organizationResolver } from '../organization.resolver';
 import { EventService } from '../../event/event.service';
@@ -85,6 +85,9 @@ export class OrganizationDetailsComponent implements OnInit {
   /** The organization's roster to show */
   public organizationRoster: OrganizationMembership[] | undefined;
 
+  /** The current user's membership details if they are in the club */
+  public organizationMembership?: OrganizationMembership;
+
   // TODO: Refactor once the event feature is refactored.
   /** Whether or not the user has permission to update events. */
   public eventCreationPermission$: Observable<boolean>;
@@ -145,33 +148,25 @@ export class OrganizationDetailsComponent implements OnInit {
   private getRoster(slug: string): void {
     this.organizationRosterService.getOrganizationRoster(slug).subscribe({
       next: (roster) => {
-        if (roster?.length !== 0) {
-          this.organizationRoster = roster;
-        }
+        this.organizationRoster = roster;
+        this.organizationMembership = this.getMembershipForOrg(
+          this.organization?.id
+        );
       }
     });
   }
 
-  // Arrow function is necessary to make sure "this.service" is still passed with child
-  protected joinOrganization = (
-    slug: string,
-    user_id: number,
-    onSuccess: () => void
-  ): void => {
-    this.organizationRosterService
-      .addOrganizationMembership(slug, user_id)
-      .subscribe({
-        complete: () => {
-          this.getRoster(slug);
-          onSuccess();
-        },
-        error: (error) => {
-          this.snackBar.open('Unable to join organization', 'Close', {
-            duration: 5000
-          });
-        }
-      });
-  };
+  private getMembershipForOrg(
+    org_id: number | null | undefined
+  ): OrganizationMembership | undefined {
+    if (!this.profile) return undefined;
+
+    return this.organizationRoster?.find(
+      (membership) =>
+        membership.organization_id === org_id &&
+        membership.user.id === this.profile!.id
+    );
+  }
 
   reloadPage() {
     this.eventService
@@ -184,5 +179,11 @@ export class OrganizationDetailsComponent implements OnInit {
       .subscribe((status) => {
         this.eventStatus.set(status);
       });
+  }
+
+  onMembershipChanged() {
+    if (this.organization) {
+      this.getRoster(this.organization.slug);
+    }
   }
 }
