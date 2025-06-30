@@ -7,6 +7,7 @@
  * @license MIT
  */
 
+import { Term } from '../academics/academics.models';
 import { Profile } from '../profile/profile.service';
 
 /** Interface for Organization Type (used on frontend for organization detail) */
@@ -32,21 +33,28 @@ export interface Organization {
 
 /** Interface for Organization Membership (used in roster widget) */
 export interface OrganizationMembership {
-  id: number | null;
+  id: number;
   user: Profile;
   organization_id: number;
   organization_slug: string;
-  organization_role: OrganizationRole;
-  selected_role?: OrganizationRole;
-  checked?: boolean;
+
+  title: string;
+  permission_level: OrganizationMembershipPermissionLevel;
+  status: OrganizationMembershipStatus;
+  term: Term;
+  selected_title?: string; // For editing purposes
+  selected_permission_level?: OrganizationMembershipPermissionLevel; // For editing purposes
+  checked?: boolean; // For editing purposes
 }
 
-export enum OrganizationRole {
-  PRESIDENT = 'President',
-  OFFICER = 'Officer',
-  MEMBER = 'Member',
-  ADMIN = 'Member with Admin',
+export enum OrganizationMembershipStatus {
+  ACTIVE = 'Active',
   PENDING = 'Membership pending'
+}
+
+export enum OrganizationMembershipPermissionLevel {
+  MEMBER = 'Member',
+  ADMIN = 'Admin'
 }
 
 export enum OrganizationJoinType {
