@@ -3,8 +3,8 @@
  * organizations at UNC. Students are also able to join public organizations, filter
  * based on interests, and access social media pages of organizations to stay up-to-date.
  *
- * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney
- * @copyright 2024
+ * @author Ajay Gandecha, Jade Keegan, Brianna Ta, Audrey Toney, Anika Ahmed, Alex Feng, Amy Xu, Alanna Zhang
+ * @copyright 2025
  * @license MIT
  */
 

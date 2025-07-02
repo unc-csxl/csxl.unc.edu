@@ -1,3 +1,5 @@
+import { Organization } from './organization/organization.model';
+
 /** Interface for Permission Type */
 export interface Permission {
   id?: number;
@@ -24,6 +26,7 @@ export interface Profile {
   bio: string | null;
   linkedin: string | null;
   website: string | null;
+  organizations: string[];
 }
 
 /** Interface for UserSummary Type (used on frontend for user requests) */
