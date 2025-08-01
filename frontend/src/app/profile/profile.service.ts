@@ -27,6 +27,7 @@ export interface Profile {
   bio: string | null;
   linkedin: string | null;
   website: string | null;
+  organizations: string[];
 }
 
 export interface PublicProfile {

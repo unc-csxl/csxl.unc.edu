@@ -47,6 +47,7 @@ class UserService:
             user = user_entity.to_model()
             user_fields = user.model_dump()
             user_fields["permissions"] = self._permission.get_permissions(user)
+            user_fields["organizations"] = user.organizations
             user_details = UserDetails(**user_fields)
             return user_details
 

@@ -2,7 +2,7 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from ....models.organization import Organization
+from ....models.organization import Organization, OrganizationJoinType
 from ....entities.organization_entity import OrganizationEntity
 
 from ..reset_table_id_seq import reset_table_id_seq
@@ -28,6 +28,7 @@ cads = Organization(
     youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
     heel_life="https://heellife.unc.edu/organization/carolinadatascience",
     public=True,
+    join_type=OrganizationJoinType.OPEN,
 )
 
 cssg = Organization(
@@ -45,6 +46,7 @@ cssg = Organization(
     youtube="",
     heel_life="https://heellife.unc.edu/organization/cssg",
     public=False,
+    join_type=OrganizationJoinType.APPLY,
 )
 
 appteam = Organization(
@@ -62,9 +64,28 @@ appteam = Organization(
     youtube="",
     heel_life="https://heellife.unc.edu/organization/appteamcarolina",
     public=False,
+    join_type=OrganizationJoinType.APPLY,
 )
 
-organizations = [cads, cssg, appteam]
+queerhack = Organization(
+    id=16,
+    name="queer_hack",
+    shorthand="queer_hack",
+    slug="queer-hack",
+    logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/queerhack.jpg",
+    short_description="A community for LGBTQ+ students in tech.",
+    long_description="Vision: We envision a future with a tech culture that is inclusive and accessible for LGBTQ+ people. \nMission: We aim to empower LGBTQ+ students in tech by fostering peer connections and curating opportunities to grow as a programmer. Our event programming includes skill-building workshops, weekly study groups, social events, career networking opportunities, and an annual hackathon.\nWhether you're already a Computer Science major or just interested in exploring coding, we'd love for you to join the community.",
+    website="http://queerhack.com/",
+    email="uncqueerhack@gmail.com",
+    instagram="",
+    linked_in="",
+    youtube="",
+    heel_life="https://heellife.unc.edu/organization/queer_hack",
+    public=False,
+    join_type=OrganizationJoinType.CLOSED,
+)
+
+organizations = [cads, cssg, appteam, queerhack]
 organization_names = [cads.name, cssg.name, appteam.name]
 
 to_add = Organization(
@@ -81,6 +102,7 @@ to_add = Organization(
     youtube="",
     heel_life="",
     public=True,
+    join_type=OrganizationJoinType.APPLY,
 )
 
 to_add_conflicting_id = Organization(
@@ -98,6 +120,7 @@ to_add_conflicting_id = Organization(
     youtube="",
     heel_life="",
     public=True,
+    join_type=OrganizationJoinType.APPLY,
 )
 
 new_cads = Organization(
@@ -115,6 +138,7 @@ new_cads = Organization(
     youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
     heel_life="https://heellife.unc.edu/organization/carolinadatascience",
     public=True,
+    join_type=OrganizationJoinType.OPEN,
 )
 
 # Data Functions
