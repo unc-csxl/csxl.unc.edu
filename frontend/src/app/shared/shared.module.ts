@@ -45,6 +45,10 @@ import { EventRegistrationCardWidget } from './event-registration-card/event-reg
 import { AboutPaneWidget } from './about-pane/about-pane.widget';
 import { MatFilterChipComponent } from './mat/filter-chip/filter-chip.component';
 import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog.component';
+import { Calendar } from './calendar/calendar.widget';
+import { OperatingHoursCalendar } from './operating-hours-calendar/operating-hours-calendar.widget';
+import { OperatingHoursDialog } from './operating-hours-dialog/operating-hours-dialog.widget';
+import { MatRippleModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -58,6 +62,9 @@ import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog
     AdminFabComponent,
     TabContainerWidget,
     CoworkingHoursCard,
+    Calendar,
+    OperatingHoursCalendar,
+    OperatingHoursDialog,
     OperatingHoursCapitalizationPipe,
     MarkdownDirective,
     EventRegistrationCardWidget,
@@ -73,6 +80,7 @@ import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog
     MatCardModule,
     MatDialogModule,
     MatButtonModule,
+    MatRippleModule,
     MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
@@ -97,6 +105,8 @@ import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog
     BannerCardComponent,
     AdminFabComponent,
     TabContainerWidget,
+    OperatingHoursCalendar,
+    OperatingHoursDialog,
     CoworkingHoursCard,
     MarkdownDirective,
     EventRegistrationCardWidget,
