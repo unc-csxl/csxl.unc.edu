@@ -1147,61 +1147,50 @@ class HiringService:
                 assignments_parts.append(part)
             assignments_field = ", ".join(assignments_parts)
 
-            # Preferred sections (ordered by preference ascending)
+            # Preferred sections (ordered by student preference asc), formatted as COURSEID.SECTION
             pref_q = (
                 select(
                     section_application_table.c.preference,
-                    SectionEntity.number.label("section_number"),
-                    CourseEntity.subject_code,
-                    CourseEntity.number.label("course_number"),
+                    SectionEntity.course_id,
+                    SectionEntity.number,
                 )
                 .join(
                     SectionEntity,
                     SectionEntity.id == section_application_table.c.section_id,
                 )
-                .join(CourseEntity, CourseEntity.id == SectionEntity.course_id)
                 .where(section_application_table.c.application_id == app_id)
                 .order_by(section_application_table.c.preference.asc())
             )
-            preferences = self._session.execute(pref_q).all()
-            # Build mapping course_id -> min preference for ordering instructor selections later
-            course_min_pref: dict[str, int] = {}
             preferred_sections_list: list[str] = []
-            for pref, section_number, subj, course_num in preferences:
-                preferred_sections_list.append(f"{subj}{course_num}-{section_number}")
-                course_key = f"{subj}{course_num}"
-                if (
-                    course_key not in course_min_pref
-                    or pref < course_min_pref[course_key]
-                ):
-                    course_min_pref[course_key] = pref
+            for pref, course_id, section_number in self._session.execute(pref_q).all():
+                preferred_sections_list.append(f"{course_id}.{section_number}")
 
-            # Instructor selections (PREFERRED reviews) ordered by student's section preference
-            reviews_q = select(ApplicationReviewEntity).where(
-                ApplicationReviewEntity.application_id == app_id,
-                ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
+            # Instructor selections (PREFERRED reviews) ordered by review.preference,
+            # formatted as "(preference) COURSEID.SECTION"
+            reviews_q = (
+                select(ApplicationReviewEntity)
+                .where(
+                    ApplicationReviewEntity.application_id == app_id,
+                    ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
+                )
+                .order_by(ApplicationReviewEntity.preference)
+                .options(
+                    joinedload(ApplicationReviewEntity.course_site).joinedload(
+                        CourseSiteEntity.sections
+                    )
+                )
             )
-            review_entities = self._session.scalars(reviews_q).all()
-            # For each review, find a representative course (subject+number) from its course_site (first section)
-            selected_courses: set[str] = set()
+            review_entities = self._session.execute(reviews_q).unique().scalars().all()
+            instructor_selection_list: list[str] = []
             for rev in review_entities:
-                if rev.course_site_id is None:
+                cs = rev.course_site
+                if cs is None or len(cs.sections) == 0:
                     continue
-                course_row = self._session.execute(
-                    select(CourseEntity.subject_code, CourseEntity.number)
-                    .join(SectionEntity, SectionEntity.course_id == CourseEntity.id)
-                    .where(SectionEntity.course_site_id == rev.course_site_id)
-                    .limit(1)
-                ).first()
-                if course_row is not None:
-                    subj, num = course_row
-                    selected_courses.add(f"{subj}{num}")
-
-            # Sort selected courses by student's min preference for that course
-            ordered_courses = sorted(
-                list(selected_courses), key=lambda cid: course_min_pref.get(cid, 10**9)
-            )
-            instructor_selections_field = ", ".join(ordered_courses)
+                sec = cs.sections[0]
+                instructor_selection_list.append(
+                    f"({rev.preference}) {sec.course_id}.{sec.number}"
+                )
+            instructor_selections_field = ", ".join(instructor_selection_list)
 
             yield {
                 "type": application.type,
