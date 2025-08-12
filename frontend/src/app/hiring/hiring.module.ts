@@ -30,6 +30,7 @@ import { HiringRoutingModule } from './hiring-routing.module';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { HiringPreferencesComponent } from './hiring-preferences/hiring-preferences.component';
+import { MatMenuModule } from '@angular/material/menu';
 import {
   CdkDrag,
   CdkDragPlaceholder,
@@ -88,6 +89,7 @@ import { HiringPageComponent } from './hiring-page/hiring-page.component';
     ReactiveFormsModule,
     MatIconModule,
     MatTooltipModule,
+    MatMenuModule,
     HiringRoutingModule,
     RouterModule,
     SharedModule,
