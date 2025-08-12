@@ -237,7 +237,7 @@ def get_applicants_for_site_csv(
 
 
 @api.get("/summary/{term_id}/phd_applicants", tags=["Hiring"])
-def get_hiring_summary_csv(
+def get_phd_applicants_csv(
     term_id: str,
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
@@ -362,3 +362,48 @@ def conflict_check(
     hiring_service: HiringService = Depends(),
 ) -> ConflictCheck:
     return hiring_service.conflict_check(subject, application_id)
+
+
+# New: applicants export for a term (streaming)
+@api.get("/admin/{term_id}/csv", tags=["Hiring"])
+def get_applicants_for_term_csv(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> StreamingResponse:
+    """Stream a CSV of all applicants for a term."""
+    fieldnames = [
+        "type",
+        "assignments",
+        "first_name",
+        "last_name",
+        "pid",
+        "email",
+        "pronouns",
+        "program_pursued",
+        "comp_227",
+        "intro_video_url",
+        "prior_experience",
+        "advisor",
+        "preferred_sections",
+        "instructor_selections",
+    ]
+
+    def row_iter():
+        # header
+        header_buf = io.StringIO()
+        header_writer = csv.DictWriter(header_buf, delimiter=",", fieldnames=fieldnames)
+        header_writer.writeheader()
+        yield header_buf.getvalue()
+        # rows
+        for row in hiring_service.iter_applicants_for_term_csv(subject, term_id):
+            buf = io.StringIO()
+            writer = csv.DictWriter(buf, delimiter=",", fieldnames=fieldnames)
+            writer.writerow(row)
+            yield buf.getvalue()
+
+    response = StreamingResponse(row_iter(), media_type="text/csv")
+    response.headers["Content-Disposition"] = (
+        f"attachment; filename=applicants_{term_id}.csv"
+    )
+    return response

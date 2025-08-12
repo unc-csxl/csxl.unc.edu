@@ -210,4 +210,11 @@ export class HiringAdminComponent {
       this.reloadData();
     });
   }
+
+  /** Download applicants CSV for selected term */
+  downloadApplicantsCsv() {
+    if (this.selectedTermId()) {
+      this.hiringService.downloadApplicantsCsv(this.selectedTermId()!);
+    }
+  }
 }
