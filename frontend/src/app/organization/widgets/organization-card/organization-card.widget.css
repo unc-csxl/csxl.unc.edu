@@ -1,44 +1,42 @@
-
 /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 .card {
-    ::ng-deep .mat-mdc-card {
-        width: 360px !important;
-        height: 186px !important;
-        margin: 0 !important;
-        row-gap: 0.6rem !important;
-    }
+  ::ng-deep .mat-mdc-card {
+    width: 360px !important;
+    height: 186px !important;
+    margin: 0 !important;
+    row-gap: 0.6rem !important;
+  }
 }
 
-
 .mdc-card__media:first-child {
-    border-radius: 100%;
+  border-radius: 100%;
 }
 
 .left-container {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .logo {
-    height: auto;
-    max-width: 2.5rem;
-    max-height: 2.5rem;
-    margin-right: 1rem;
-    margin-bottom: 0;
-    border-radius: 2.5rem;
+  height: auto;
+  max-width: 2.5rem;
+  max-height: 2.5rem;
+  margin-right: 1rem;
+  margin-bottom: 0;
+  border-radius: 2.5rem;
 }
 
 .name {
-    height: 2.5rem;
-    margin: 0;
-    font-size: 1.15rem;
-    font-weight: 500;
-    line-height: 2.5rem;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-    -webkit-box-orient: vertical;
+  height: 2.5rem;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 2.5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 /* .description {
@@ -49,44 +47,51 @@
 } */
 
 .description p {
-    width: 100%;
-    height: 2.5rem;
-    line-height: 1.25rem;
-    margin: 0;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
+  width: 100%;
+  height: 2.5rem;
+  line-height: 1.25rem;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 #website-button {
-    margin-right: auto;
+  margin-right: auto;
 }
 
 #events-button {
-    margin-left: auto;
-    margin-right: 8px;
+  margin-left: auto;
+  margin-right: 8px;
 }
 
 .link-icons {
-    width: 144px;
-    height: 48px;
-    overflow: hidden;
-    display: -webkit-box;
+  width: 144px;
+  height: 48px;
+  overflow: hidden;
+  display: -webkit-box;
 }
 
 .mat-mdc-card-actions {
-    display: flex;
-    flex-direction: row-reverse;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 /* Override Mat UI's preset z-index for button */
 .mat-mdc-outlined-button {
-    z-index: 0 !important;
+  z-index: 0 !important;
 }
 
 .details-link {
-    text-decoration: none;
-    margin-right: 0px;
+  text-decoration: none;
+  margin-right: 0px;
+}
+
+.registration-type-label {
+  display: block;
+  font-size: 0.8em;
+  margin-bottom: 4px;
+  margin-right: auto;
 }

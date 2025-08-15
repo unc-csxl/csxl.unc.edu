@@ -93,7 +93,25 @@
       [routerLink]="'/organizations/' + this.organization.slug + '/edit'">
       Edit
     </button>
-    }
+    } @if(profile && profile.id != null) { @if (membership &&
+    checkActiveStatus()) {
+    <button
+      mat-flat-button
+      class="tertiary-button"
+      (click)="handleLeaveOrganization(this.organization.slug)">
+      Leave
+    </button>
+    } @else if (membership && checkPendingStatus()) {
+    <button mat-flat-button class="primary-button" disabled>Applied</button>
+    } @else {
+    <button
+      mat-flat-button
+      class="primary-button"
+      (click)="handleJoinOrganization(this.organization.slug, this.profile.id)"
+      [disabled]="organization.join_type === 'Closed'">
+      {{ getJoinButtonText(organization.join_type) }}
+    </button>
+    } }
   </mat-card-actions>
 </mat-pane>
 }

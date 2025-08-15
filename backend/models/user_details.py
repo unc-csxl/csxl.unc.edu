@@ -1,4 +1,5 @@
 from backend.models.academics.section import Section
+from backend.models.organization import Organization
 from .application import Application
 from .permission import Permission
 from .user import User
@@ -17,6 +18,7 @@ class UserDetails(User):
     of the `Event` database in the PostgreSQL database.
     """
 
+    organizations: list[str] = []
     permissions: list["Permission"] = []
     applications: list[Application] = []
     sections: list[Section] = []

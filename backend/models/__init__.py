@@ -9,6 +9,7 @@ from .unregistered_user import UnregisteredUser
 from .role import Role
 from .role_details import RoleDetails
 from .organization import Organization
+from .organization_membership import OrganizationMembership
 from .event import EventOverview, EventDraft
 from .public_user import PublicUser
 from .room import Room
