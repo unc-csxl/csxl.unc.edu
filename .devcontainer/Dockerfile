@@ -73,6 +73,10 @@ RUN git config --system core.editor "code --wait"
 # Set Safe Directory
 RUN git config --system safe.directory '/workspace'
 
+# Make node_modules for monorepo volume (includes commitlint config)
+RUN mkdir -p /workspace/node_modules && chown $USERNAME /workspace/node_modules
+VOLUME /workspace/node_modules
+
 # Make frontend node_modules
 RUN mkdir -p /workspace/frontend/node_modules && chown $USERNAME /workspace/frontend/node_modules
 VOLUME /workspace/frontend/node_modules

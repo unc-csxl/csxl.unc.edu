@@ -8,6 +8,7 @@
         1561,
         1562
     ],
+    "postCreateCommand": "npm install && npm run prepare && cd frontend && npm install",
     "customizations": {
         "vscode": {
             "extensions": [
