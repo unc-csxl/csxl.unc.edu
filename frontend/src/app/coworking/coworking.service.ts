@@ -1,12 +1,12 @@
 /**
- * @author Kris Jordan, Ajay Gandecha, John Schachte
+ * @author Kris Jordan, Ajay Gandecha, John Schachte, Tobenna Okoli, Francine Wei
  * @copyright 2024
  * @license MIT
  */
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy, WritableSignal, signal } from '@angular/core';
-import { Subscription, map, BehaviorSubject } from 'rxjs';
+import { Subscription, map, BehaviorSubject, Observable } from 'rxjs';
 import {
   CoworkingStatus,
   CoworkingStatusJSON,
@@ -15,7 +15,11 @@ import {
   parseCoworkingStatusJSON,
   parseReservationJSON,
   Reservation,
-  EMPTY_COWORKING_STATUS
+  EMPTY_COWORKING_STATUS,
+  OperatingHoursDraft,
+  OperatingHours,
+  OperatingHoursJSON,
+  parseOperatingHoursJSON
 } from './coworking.models';
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
@@ -104,5 +108,49 @@ export class CoworkingService implements OnDestroy {
    */
   toggleCancelExpansion(): void {
     this.isCancelExpanded.next(!this.isCancelExpanded.value);
+  }
+
+  /**
+   * Create operating hours.
+   * @param operatingHours: Operating hours object to create.
+   * @returns {Observable<OperatingHours>}
+   */
+  createOperatingHours(
+    operatingHours: OperatingHoursDraft
+  ): Observable<OperatingHours> {
+    return this.http
+      .post<OperatingHoursJSON>(
+        '/api/coworking/operating_hours',
+        operatingHours
+      )
+      .pipe(map(parseOperatingHoursJSON));
+  }
+
+  /**
+   * Update operating hours.
+   * @param operatingHours: Operating hours object to update.
+   * @returns {Observable<OperatingHours>}
+   */
+  updateOperatingHours(
+    operatingHours: OperatingHoursDraft,
+    cascade: boolean = false
+  ): Observable<OperatingHours> {
+    return this.http
+      .put<OperatingHoursJSON>(
+        `/api/coworking/operating_hours?cascade=${cascade}`,
+        operatingHours
+      )
+      .pipe(map(parseOperatingHoursJSON));
+  }
+
+  /**
+   * Delete operating hours.
+   * @param id: id of the operating hours to delete.
+   * @returns {Observable<void>}
+   */
+  deleteOperatingHours(id: number, cascade: boolean = false): Observable<void> {
+    return this.http.delete<void>(
+      `/api/coworking/operating_hours/${id}?cascade=${cascade}`
+    );
   }
 }
