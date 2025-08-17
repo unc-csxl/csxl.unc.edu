@@ -6,13 +6,7 @@
  * @license MIT
  */
 
-import {
-  Component,
-  Signal,
-  WritableSignal,
-  effect,
-  signal
-} from '@angular/core';
+import { Component, WritableSignal, effect, signal } from '@angular/core';
 import {
   DEFAULT_PAGINATION_PARAMS,
   Paginated,
@@ -27,7 +21,6 @@ import { ImportRosterDialog } from '../../dialogs/import-roster/import-roster.di
 import { MyCoursesService } from '../../my-courses.service';
 import { saveAs } from 'file-saver';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
   selector: 'app-roster',
@@ -49,7 +42,7 @@ export class RosterComponent {
   > = signal(undefined);
   private previousParams: PaginationParams = DEFAULT_PAGINATION_PARAMS;
 
-  public displayedColumns: string[] = ['section', 'name'];
+  public displayedColumns: string[] = ['section', 'name', 'role'];
 
   /** Current search bar query */
   public searchBarQuery: WritableSignal<string> = signal('');
@@ -97,7 +90,14 @@ export class RosterComponent {
         .flatMap((term) => term.sites)
         .find((site) => site.id == +this.courseSiteId);
       if (courseSite?.role !== 'Student') {
-        this.displayedColumns = ['section', 'name', 'pid', 'email', 'actions'];
+        this.displayedColumns = [
+          'section',
+          'name',
+          'pid',
+          'email',
+          'role',
+          'actions'
+        ];
       }
     });
   }

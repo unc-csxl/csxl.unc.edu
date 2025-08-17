@@ -5,7 +5,7 @@ APIs for working with course sites.
 from datetime import datetime
 from itertools import groupby
 from fastapi import Depends
-from sqlalchemy import select, or_, func
+from sqlalchemy import select, or_, func, case
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
@@ -188,6 +188,20 @@ class CourseSiteService:
             member_query = member_query.order_by(
                 getattr(UserEntity, pagination_params.order_by)
             )
+        # If no order by is provided, sort based on role in the order of:
+        # Instructors -> GTAs -> UTAs -> Students
+        # Then within each role, sort by section number
+        else:
+            member_query = member_query.order_by(
+                case(
+                    (SectionMemberEntity.member_role == RosterRole.INSTRUCTOR, 1),
+                    (SectionMemberEntity.member_role == RosterRole.GTA, 2),
+                    (SectionMemberEntity.member_role == RosterRole.UTA, 3),
+                    (SectionMemberEntity.member_role == RosterRole.STUDENT, 4),
+                    else_=5,
+                ),
+                SectionEntity.number,
+            )
 
         # Create query off of the member query for just the members matching
         # with the current user (used to determine permissions)
@@ -220,37 +234,68 @@ class CourseSiteService:
             )
             member_query = member_query.where(criteria)
 
-        # Count the number of rows before applying pagination and filter.
-        count_query = select(func.count()).select_from(member_query.subquery())
-        length = self._session.scalar(count_query)
+        # Load all entities first to handle deduplication properly
+        all_member_entities = self._session.scalars(member_query).all()
 
-        # Calculate offset and limit for pagination
-        offset = pagination_params.page * pagination_params.page_size
-        limit = pagination_params.page_size
-        member_query = (
-            member_query.offset(offset)
-            .limit(limit)
-            .order_by(SectionEntity.id)
-            .order_by(UserEntity.first_name)
-            .order_by(SectionMemberEntity.member_role)
+        # Deduplicate staff members (Instructors, GTAs, UTAs) while keeping students per section
+        seen_staff = set()
+        deduplicated_entities = []
+
+        for member in all_member_entities:
+            if member.member_role == RosterRole.STUDENT:
+                # Keep all students (they're already per section)
+                deduplicated_entities.append(member)
+            else:
+                # For staff, only keep the first occurrence
+                staff_key = (member.user_id, member.member_role)
+                if staff_key not in seen_staff:
+                    seen_staff.add(staff_key)
+                    deduplicated_entities.append(member)
+
+        # Apply the role-based ordering to deduplicated entities
+        deduplicated_entities.sort(
+            key=lambda x: (
+                # Primary sort: role priority
+                {
+                    RosterRole.INSTRUCTOR: 1,
+                    RosterRole.GTA: 2,
+                    RosterRole.UTA: 3,
+                    RosterRole.STUDENT: 4,
+                }.get(x.member_role, 5),
+                # Secondary sort: section number (only for students)
+                x.section.number if x.member_role == RosterRole.STUDENT else "",
+            )
         )
 
-        # Load the final query
-        section_member_entities = self._session.scalars(member_query).all()
+        # Calculate the correct total length after deduplication
+        total_length = len(deduplicated_entities)
+
+        # Apply pagination to the deduplicated and sorted list
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        paginated_entities = deduplicated_entities[offset : offset + limit]
 
         # Create paginated representation of data and return
         return Paginated(
             items=[
                 self._to_course_member_overview(member, is_student)
-                for member in section_member_entities
+                for member in paginated_entities
             ],
-            length=length,
+            length=total_length,
             params=pagination_params,
         )
 
     def _to_course_member_overview(
         self, section_member: SectionMemberEntity, is_student: bool
     ) -> CourseMemberOverview:
+        # For staff members (Instructors, GTAs, UTAs), don't show section number
+        # since they may be in multiple sections
+        section_number = (
+            section_member.section.number
+            if section_member.member_role == RosterRole.STUDENT
+            else ""
+        )
+
         return CourseMemberOverview(
             id=section_member.user.id,
             pid=section_member.user.pid,
@@ -259,7 +304,7 @@ class CourseSiteService:
             email=section_member.user.email,
             pronouns=section_member.user.pronouns,
             role=section_member.member_role.value,
-            section_number=section_member.section.number,
+            section_number=section_number,
         )
 
     def get_current_office_hour_events(
