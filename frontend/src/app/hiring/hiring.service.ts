@@ -160,6 +160,17 @@ export class HiringService {
       });
   }
 
+  downloadApplicantsCsv(termId: string) {
+    const params = new HttpParams();
+    return this.http
+      .get(`/api/hiring/admin/${termId}/csv`, {
+        responseType: 'blob'
+      })
+      .subscribe((response) => {
+        saveAs(response, `applicants-${termId}.csv`);
+      });
+  }
+
   conflictCheck(applicationId: number) {
     const params = new HttpParams();
     return this.http.get<ConflictCheck>(
