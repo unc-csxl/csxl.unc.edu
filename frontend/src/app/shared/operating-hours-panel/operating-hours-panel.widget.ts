@@ -30,6 +30,7 @@ export class CoworkingHoursCard {
    */
   openDialog(): void {
     const dialogRef = this.dialog.open(OperatingHoursDialog, {
+      minWidth: '600px',
       autoFocus: false
     });
   }
