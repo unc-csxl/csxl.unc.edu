@@ -40,6 +40,8 @@ from .services.exceptions import (
     CourseDataScrapingException,
 )
 
+from .services.coworking.exceptions import OperatingHoursCannotOverlapException
+
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
@@ -153,9 +155,9 @@ def recurring_office_hour_event_exception(
 
 
 # Add feature-specific exception handling middleware
-from .api import events
+from .api import events, coworking
 
-feature_exception_handlers = [events.exception_handlers]
+feature_exception_handlers = [events.exception_handlers, coworking.exception_handlers]
 
 for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:

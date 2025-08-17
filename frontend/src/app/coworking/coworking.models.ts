@@ -1,12 +1,45 @@
+import { CalendarEvent } from '../calendar-event';
 import { Profile } from '../models.module';
 import { TimeRangeJSON, TimeRange } from '../time-range';
 
-export interface OperatingHoursJSON extends TimeRangeJSON {
-  id: number;
+export interface OperatingHoursRecurrenceDraft {
+  id?: number | null;
+
+  end_date: Date;
+
+  recurs_on: number;
 }
 
-export interface OperatingHours extends TimeRange {
+export interface OperatingHoursRecurrenceJSON {
   id: number;
+
+  end_date: string;
+
+  recurs_on: number;
+}
+
+export interface OperatingHoursRecurrence {
+  id: number;
+
+  end_date: Date;
+
+  recurs_on: number;
+}
+
+export interface OperatingHoursDraft extends TimeRange {
+  id: number | null;
+
+  recurrence: OperatingHoursRecurrenceDraft;
+}
+
+export interface OperatingHoursJSON extends TimeRangeJSON {
+  id: number;
+
+  recurrence: OperatingHoursRecurrenceJSON;
+}
+
+export interface OperatingHours extends CalendarEvent {
+  recurrence: OperatingHoursRecurrence;
 }
 
 export const parseTimeRange = (json: TimeRangeJSON): TimeRange => {
@@ -16,10 +49,28 @@ export const parseTimeRange = (json: TimeRangeJSON): TimeRange => {
   };
 };
 
+export const parseRecurrenceJSON = (
+  json: OperatingHoursRecurrenceJSON
+): OperatingHoursRecurrence => {
+  return {
+    id: json.id,
+    end_date: new Date(json.end_date),
+    recurs_on: json.recurs_on
+  };
+};
+
 export const parseOperatingHoursJSON = (
   json: OperatingHoursJSON
 ): OperatingHours => {
-  return Object.assign({}, json, parseTimeRange(json));
+  return Object.assign({}, json, parseTimeRange(json), {
+    recurrence: json.recurrence ? parseRecurrenceJSON(json.recurrence) : null
+  });
+};
+
+export const parseOperatingHoursJSONArray = (
+  json: OperatingHoursJSON[]
+): OperatingHours[] => {
+  return json.map((jsonItem) => parseOperatingHoursJSON(jsonItem));
 };
 
 export interface Seat {
