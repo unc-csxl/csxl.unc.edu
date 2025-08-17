@@ -49,3 +49,15 @@
 .email-container:hover .copy-icon {
     opacity: 1; /* Show the icon when the container is hovered */
 }
+
+.more-items-cell {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 52px;
+}
+
+.more-items-action {
+    margin-left: auto;
+}
