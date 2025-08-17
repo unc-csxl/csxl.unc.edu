@@ -569,6 +569,8 @@ class CourseSiteService:
 
         # Complete the updates
         course_site_entity.title = updated_site.title
+        course_site_entity.max_tickets_per_day = updated_site.max_tickets_per_day if updated_site.max_tickets_per_day else 100
+        course_site_entity.minimum_ticket_cooldown = updated_site.minimum_ticket_cooldown if updated_site.minimum_ticket_cooldown else 0
 
         # Edit the selected sections
         for section in old_section_entities:
@@ -742,4 +744,6 @@ class CourseSiteService:
                     ]
                 )
             ),
+            minimum_ticket_cooldown=course_site_entity.minimum_ticket_cooldown,
+            max_tickets_per_day=course_site_entity.max_tickets_per_day,
         )

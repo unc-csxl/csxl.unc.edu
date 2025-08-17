@@ -7,6 +7,7 @@ from operator import attrgetter
 from fastapi import Depends
 from sqlalchemy import String, func, or_, select, update
 from sqlalchemy.orm import Session, joinedload, with_polymorphic, selectinload
+from datetime import datetime
 
 from backend.models.pagination import Paginated, PaginationParams
 from ...database import db_session
@@ -17,6 +18,7 @@ from ...entities import UserEntity
 from ...models.application import ApplicationUnderReview, ApplicationOverview
 from ...models.academics.hiring.conflict_check import ApplicationPriority, ConflictCheck
 from ...entities.academics import SectionEntity, TermEntity
+from ...entities.academics.course_entity import CourseEntity
 from ...entities.office_hours import CourseSiteEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
 from ...entities.application_entity import ApplicationEntity
@@ -646,7 +648,7 @@ class HiringService:
         return HiringAdminOverview(sites=hiring_course_site_overviews)
 
     def get_hiring_admin_course_overview(
-        self, subject: User, course_site_id: str
+        self, subject: User, course_site_id: int
     ) -> HiringAdminCourseOverview:
         self._permission.enforce(subject, "hiring.admin", "*")
         course_site_entity = self._session.get(CourseSiteEntity, course_site_id)
@@ -1006,9 +1008,7 @@ class HiringService:
             for assignment_entity in assignment_entities
         ]
 
-    def conflict_check(
-        self, subject: User, application_id: int
-    ) -> list[ApplicationPriority]:
+    def conflict_check(self, subject: User, application_id: int) -> ConflictCheck:
         self._permission.enforce(subject, "hiring.conflict_check", "*")
         from sqlalchemy import func, and_
 
@@ -1082,3 +1082,133 @@ class HiringService:
             ],
             priorities=priorities,
         )
+
+    # New: Generate applicant CSV rows for a term with minimal memory use
+    def iter_applicants_for_term_csv(self, subject: User, term_id: str):
+        """
+        Yields dict rows for all applicants in a term. Designed to minimize memory usage by
+        iterating over applications and issuing small, targeted queries per applicant.
+        """
+        # Permissions: admin-level export
+        self._permission.enforce(subject, "hiring.admin", "*")
+
+        # Get application IDs for the term (avoid loading whole objects at once)
+        app_ids = self._session.scalars(
+            select(ApplicationEntity.id).where(ApplicationEntity.term_id == term_id)
+        ).all()
+
+        for app_id in app_ids:
+            application = self._session.get(ApplicationEntity, app_id)
+            if application is None:
+                continue
+            user = application.user
+
+            # Assignments for this applicant in this term (by user_id + term), include sections and course
+            assignment_q = (
+                select(HiringAssignmentEntity)
+                .where(
+                    HiringAssignmentEntity.user_id == user.id,
+                    HiringAssignmentEntity.term_id == application.term_id,
+                )
+                .options(
+                    joinedload(HiringAssignmentEntity.hiring_level),
+                    joinedload(HiringAssignmentEntity.course_site)
+                    .joinedload(CourseSiteEntity.sections)
+                    .joinedload(SectionEntity.course),
+                    joinedload(HiringAssignmentEntity.course_site)
+                    .joinedload(CourseSiteEntity.sections)
+                    .joinedload(SectionEntity.staff)
+                    .joinedload(SectionMemberEntity.user),
+                )
+            )
+            assignment_rows = self._session.scalars(assignment_q).unique().all()
+            assignments_parts: list[str] = []
+            for a in assignment_rows:
+                section = (
+                    a.course_site.sections[0]
+                    if len(a.course_site.sections) > 0
+                    else None
+                )
+                if section is None:
+                    continue
+                course = section.course
+                course_code = f"{course.subject_code}{course.number}-{section.number}"
+                instructors = [
+                    sm.user.last_name
+                    for sm in getattr(section, "staff", [])
+                    if sm.member_role == RosterRole.INSTRUCTOR
+                ]
+                instructors_text = (
+                    ", ".join(sorted(set(instructors))) if instructors else ""
+                )
+                part = f"{a.hiring_level.title} ({a.hiring_level.load}) {course_code}"
+                if instructors_text:
+                    part += f" ({instructors_text})"
+                assignments_parts.append(part)
+            assignments_field = ", ".join(assignments_parts)
+
+            # Preferred sections (ordered by student preference asc), formatted as COURSEID.SECTION
+            pref_q = (
+                select(
+                    section_application_table.c.preference,
+                    SectionEntity.course_id,
+                    SectionEntity.number,
+                )
+                .join(
+                    SectionEntity,
+                    SectionEntity.id == section_application_table.c.section_id,
+                )
+                .where(section_application_table.c.application_id == app_id)
+                .order_by(section_application_table.c.preference.asc())
+            )
+            preferred_sections_list: list[str] = []
+            for pref, course_id, section_number in self._session.execute(pref_q).all():
+                preferred_sections_list.append(f"{course_id}.{section_number}")
+
+            # Instructor selections (PREFERRED reviews) ordered by review.preference,
+            # formatted as "(preference) COURSEID.SECTION"
+            reviews_q = (
+                select(ApplicationReviewEntity)
+                .where(
+                    ApplicationReviewEntity.application_id == app_id,
+                    ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
+                )
+                .order_by(ApplicationReviewEntity.preference)
+                .options(
+                    joinedload(ApplicationReviewEntity.course_site).joinedload(
+                        CourseSiteEntity.sections
+                    )
+                )
+            )
+            review_entities = self._session.execute(reviews_q).unique().scalars().all()
+            instructor_selection_list: list[str] = []
+            for rev in review_entities:
+                cs = rev.course_site
+                if cs is None or len(cs.sections) == 0:
+                    continue
+                sec = cs.sections[0]
+                instructor_selection_list.append(
+                    f"({rev.preference}) {sec.course_id}.{sec.number}"
+                )
+            instructor_selections_field = ", ".join(instructor_selection_list)
+
+            yield {
+                "type": application.type,
+                "assignments": assignments_field,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "pid": str(user.pid),
+                "email": user.email,
+                "pronouns": user.pronouns,
+                "program_pursued": application.program_pursued or "",
+                "comp_227": (
+                    application.comp_227.value
+                    if application.comp_227 is not None
+                    else ""
+                ),
+                "intro_video_url": application.intro_video_url or "",
+                "prior_experience": application.prior_experience or "",
+                "advisor": application.advisor or "",
+                "preferred_sections": ", ".join(preferred_sections_list),
+                "instructor_selections": instructor_selections_field,
+            }

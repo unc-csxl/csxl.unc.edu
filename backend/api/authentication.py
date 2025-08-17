@@ -40,21 +40,21 @@ In development, the proxy is not present. Instead, there are two options for aut
 1. If an unauthenticated user visits /auth in development, or staging, they are redirected
    to the production `csxl.unc.edu/auth` route with an additional query parameter `origin`.
     A. The production server authentication works as usual, but if the `origin` parameter is
-       detected alongside the SSO headers, the user will be redirected back to the `origin` 
+       detected alongside the SSO headers, the user will be redirected back to the `origin`
        server with a JWT `token` query parameter. This token is signed by the production server.
     B. Back on the development/staging server, we need to verify that the token given to the route
        was actually signed by the production server. If we did not do this, a malicious user could
        simply generate a token and pass it to the development server to gain access. Thus, an HTTP
        request from the development/stage server is made to the production server's `/auth/verify` route
-       to verify the token's validity. If the token is valid, the development/staging server then 
-       issues a new `token` to the client that is signed by the development/staging server. 
+       to verify the token's validity. If the token is valid, the development/staging server then
+       issues a new `token` to the client that is signed by the development/staging server.
        This token is then used for all subsequent requests.
 2. If an unauthenticated user visits /auth/as/{uid}/{pid} in development, they are authenticated
-    as the user with the given `uid` and `pid`, which are their ONYEN and PID, respectively. 
+    as the user with the given `uid` and `pid`, which are their ONYEN and PID, respectively.
     This route is only available in development mode.
 
-Finally, the `authenticated_pid` function ensures a user is authenticated with PID and Onyen, 
-but does not require that the user be registered in the database. This is only really useful 
+Finally, the `authenticated_pid` function ensures a user is authenticated with PID and Onyen,
+but does not require that the user be registered in the database. This is only really useful
 for routes used in the process of registering a user.
 """
 
@@ -220,8 +220,9 @@ def github_unlink(
 
 
 def _delegate_to_auth_server(continue_to: str):
+    host_origin = f"{HOST}/auth"
     return RedirectResponse(
-        f"https://{AUTH_SERVER_HOST}/auth?origin={HOST}&continue_to={continue_to}"
+        f"https://{AUTH_SERVER_HOST}/auth?origin={host_origin}&continue_to={continue_to}"
     )
 
 
@@ -252,11 +253,9 @@ def _handle_auth_in_production(
     else:
         # Development Authentication Request (origin is app in development)
         if origin.startswith("localhost"):
-            target = (
-                "http://localhost:1560/auth"  # TODO: Make this port an env variable
-            )
+            target = f"http://{origin}"  # TODO: Make this port an env variable
         else:
-            target = f"https://{origin}/auth"
+            target = f"https://{origin}"
         return RedirectResponse(
             f"{target}?token={token}&continue_to={continue_to}",
             headers={"Cache-Control": "no-cache"},

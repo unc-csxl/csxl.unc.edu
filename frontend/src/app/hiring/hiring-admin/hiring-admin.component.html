@@ -3,13 +3,25 @@
   <mat-card-header>
     <mat-card-title>{{ selectedTerm().name }} Hiring</mat-card-title>
     <div class="header-actions">
-      <button mat-stroked-button (click)="updateEnrollmentTotals()">
-        Enrollments
+      <button mat-stroked-button [matMenuTriggerFor]="actionsMenu">
+        Actions
+        <mat-icon>expand_more</mat-icon>
       </button>
-      <button mat-stroked-button routerLink="/hiring/levels">
-        Levels
-      </button>
-      <button mat-flat-button routerLink="/hiring/summary">Onboarding</button>
+      <mat-menu #actionsMenu="matMenu">
+        <button mat-menu-item (click)="downloadApplicantsCsv()">
+          <mat-icon>download</mat-icon>
+          <span>Export Applicants CSV</span>
+        </button>
+        <button mat-menu-item (click)="updateEnrollmentTotals()">
+          <mat-icon>update</mat-icon>
+          <span>Update Enrollments</span>
+        </button>
+        <button mat-menu-item [routerLink]="'/hiring/levels'">
+          <mat-icon>tune</mat-icon>
+          <span>Edit Hiring Levels</span>
+        </button>
+      </mat-menu>
+      <button mat-flat-button routerLink="/hiring/summary">HR Onboarding</button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
         <mat-select
