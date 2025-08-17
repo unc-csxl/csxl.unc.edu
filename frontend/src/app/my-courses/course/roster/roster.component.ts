@@ -163,14 +163,6 @@ export class RosterComponent {
     const isStudent = member.role === 'Student'; // Check if the member is a student
     const queryParamKey = isStudent ? 'studentId' : 'staffId'; // Use appropriate query parameter
 
-    this.snackBar.open(
-      `Navigating to statistics for ${member.first_name} ${member.last_name}`,
-      'Close',
-      {
-        duration: 3000 // Snackbar will be visible for 3 seconds
-      }
-    );
-
     this.router.navigate(['../statistics'], {
       relativeTo: this.route,
       queryParams: {
