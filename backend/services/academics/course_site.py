@@ -264,6 +264,8 @@ class CourseSiteService:
                 }.get(x.member_role, 5),
                 # Secondary sort: section number (only for students)
                 x.section.number if x.member_role == RosterRole.STUDENT else "",
+                # Third sort: last name (A->Z)
+                x.user.last_name,
             )
         )
 
@@ -614,8 +616,16 @@ class CourseSiteService:
 
         # Complete the updates
         course_site_entity.title = updated_site.title
-        course_site_entity.max_tickets_per_day = updated_site.max_tickets_per_day if updated_site.max_tickets_per_day else 100
-        course_site_entity.minimum_ticket_cooldown = updated_site.minimum_ticket_cooldown if updated_site.minimum_ticket_cooldown else 0
+        course_site_entity.max_tickets_per_day = (
+            updated_site.max_tickets_per_day
+            if updated_site.max_tickets_per_day
+            else 100
+        )
+        course_site_entity.minimum_ticket_cooldown = (
+            updated_site.minimum_ticket_cooldown
+            if updated_site.minimum_ticket_cooldown
+            else 0
+        )
 
         # Edit the selected sections
         for section in old_section_entities:
