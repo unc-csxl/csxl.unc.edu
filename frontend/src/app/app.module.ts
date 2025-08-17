@@ -47,6 +47,11 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { SharedModule } from './shared/shared.module';
 import { MatChipsModule } from '@angular/material/chips';
+import { SamplePageComponent } from './sample/page/sample.component';
+import {
+  provideTanStackQuery,
+  QueryClient
+} from '@tanstack/angular-query-experimental';
 
 @NgModule({
   declarations: [
@@ -57,6 +62,7 @@ import { MatChipsModule } from '@angular/material/chips';
     HomeComponent,
     AboutComponent,
     GateComponent,
+    SamplePageComponent
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -90,13 +96,13 @@ import { MatChipsModule } from '@angular/material/chips';
     RouterModule,
     SharedModule,
     JwtModule.forRoot({
-        config: {
-            tokenGetter: () => {
-                return localStorage.getItem('bearerToken');
-            }
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem('bearerToken');
         }
+      }
     })
-],
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -104,7 +110,8 @@ import { MatChipsModule } from '@angular/material/chips';
       multi: true
     },
     DatePipe,
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    provideTanStackQuery(new QueryClient())
   ]
 })
 export class AppModule {}

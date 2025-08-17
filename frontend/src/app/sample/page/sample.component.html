@@ -1,0 +1,15 @@
+<div>
+    @if(query.isLoading()) {
+        <p>Loading...</p>
+    }
+    @if(query.error(); as error) {
+        <p>Error: {{ error.message }}</p>
+    }
+    @if(query.data(); as data) {
+       @for(item of data.items; track item.id) {
+        <p><strong>{{ item.name }}</strong> ({{ item.price }})</p>
+       } @empty {
+        <p>No items found.</p>
+       }
+    }
+</div>
