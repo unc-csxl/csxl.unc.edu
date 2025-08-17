@@ -97,13 +97,15 @@
 
   @if (!holdingDialog) {
   <mat-card-actions>
-    <button mat-stroked-button (click)="onCancel()" type="button">
-      Cancel
-    </button>
-    <button mat-flat-button type="submit">Save</button>
     @if (!isNew()) {
-    <button mat-flat-button type="button" (click)="onDelete()">Delete</button>
+      <button mat-flat-button class="tertiary-button" (click)="onDelete()">Delete</button>
     }
+    <div class="footer-modify-buttons">
+      <button mat-stroked-button (click)="onCancel()" type="button">
+        Cancel
+      </button>
+      <button mat-flat-button type="submit">Save</button>
+    </div>
   </mat-card-actions>
   }
 </form>

@@ -43,3 +43,13 @@ mat-card-actions {
   }
 }
 
+mat-card-actions {
+  padding-bottom: 8px;
+}
+
+.footer-modify-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-left: auto;
+}
