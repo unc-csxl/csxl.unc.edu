@@ -57,6 +57,7 @@ import { OfficeHoursStatisticsCardWidget } from './widgets/office-hours-statisti
 import { TicketDetailsDialog } from './dialogs/ticket-details/ticket-details.dialog';
 import { CloseTicketDialog } from './course/office-hours/widgets/close-ticket-dialog/close-ticket.dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
@@ -90,6 +91,7 @@ import { MatSliderModule } from '@angular/material/slider';
     RouterModule,
     SharedModule,
     MatCardModule,
+    MatMenuModule,
     MatDividerModule,
     MatButtonModule,
     MatIconModule,

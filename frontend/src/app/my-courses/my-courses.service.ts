@@ -451,4 +451,15 @@ export class MyCoursesService {
       responseType: 'blob'
     });
   }
+
+  /**
+   * Get the course roster CSV file.
+   * @param courseSiteId: ID of the course site to get the roster CSV for
+   */
+  getCourseRosterCsv(courseSiteId: number) {
+    const route = `/api/my-courses/${courseSiteId}/roster/csv`;
+    return this.http.get(route, {
+      responseType: 'blob'
+    });
+  }
 }
