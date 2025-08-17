@@ -51,7 +51,7 @@
 }
 
 .date-number-label {
-  font-size: 2em;
+  font-size: 1.8em;
 
   display: flex;
   flex-direction: column;
@@ -67,6 +67,9 @@
 }
 
 .current-date {
+  font-size: 1.6em;
+  padding: 4px;
+  margin-top: 2px;
   border-radius: 50%;
 }
 
