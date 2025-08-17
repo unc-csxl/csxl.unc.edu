@@ -10,11 +10,11 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   @if (!isNew()) {
-  <button mat-stroked-button (click)="editor.onDelete()" type="button">
+  <button mat-stroked-button (click)="editor.onDelete()" class="tertiary-button">
     Delete
   </button>
   }
-  <button mat-flat-button (click)="editor.onSubmit()" type="button">
+  <button mat-flat-button (click)="editor.onSubmit()" type="button" class="save-button">
     Save
   </button>
 </mat-dialog-actions>
