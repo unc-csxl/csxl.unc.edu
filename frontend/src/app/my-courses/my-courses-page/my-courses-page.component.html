@@ -37,7 +37,14 @@
             }
           </div>
         }
-      
+
+      @if(!hasInstructorCourses() && !hasStudentCourses()) {
+        <div class="no-courses-content">
+          <p class="tertiary-color"><strong>You are not in any courses yet!</strong></p>
+          <p>If you are a student enrolled in a course that uses the CSXL site for office hours, please contact your instructor to be added into the course.</p>
+        </div>
+      }
+
       @if (showPreviousCourses()) {
         @for (term of this.myCoursesService.pastTerms(); track term.id) {
           <h3 class="title-medium term-header">{{ term.name }}</h3>
