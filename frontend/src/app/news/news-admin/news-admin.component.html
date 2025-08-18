@@ -20,10 +20,10 @@
                   [class]="
                     'text-badge ' +
                     (element.state === articleState.DRAFT
-                      ? 'tertiary-container-background'
-                      : element.state === articleState.PUBLISHED
                       ? 'secondary-container-background'
-                      : 'primary-fixed-dim-background')
+                      : element.state === articleState.PUBLISHED
+                      ? 'primary-fixed-dim-background'
+                      : 'tertiary-container-background')
                   ">
                   {{ element.state }}
                 </span>
