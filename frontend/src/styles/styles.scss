@@ -24,6 +24,10 @@ body {
     font: mat.get-theme-typography($theme, body-medium, font);
   }
 
+  a {
+    color: mat.get-theme-color($theme, primary);
+  }
+
   body {
     ::-webkit-scrollbar {
       width: 3px;
