@@ -54,3 +54,9 @@
         align-items: start !important;
     }
 }
+
+.no-courses-content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
