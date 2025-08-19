@@ -182,11 +182,11 @@
     <mat-progress-bar
       *ngIf="navigationService.loading$ | async"
       mode="query"
-      color="accent"></mat-progress-bar>
+    ></mat-progress-bar>
     <mat-progress-bar
       *ngIf="navigationService.sending$ | async"
       mode="indeterminate"
-      color="accent"></mat-progress-bar>
+    ></mat-progress-bar>
     <div>
       <router-outlet></router-outlet>
     </div>
