@@ -268,6 +268,7 @@ class OfficeHoursStatisticsService:
             .where(SectionMemberEntity.member_role == RosterRole.STUDENT)
             .options(joinedload(SectionMemberEntity.section))
             .options(joinedload(SectionMemberEntity.user))
+            .order_by(UserEntity.last_name, UserEntity.first_name)
         )
         students = self._session.scalars(student_query).unique().all()
 
@@ -283,6 +284,7 @@ class OfficeHoursStatisticsService:
             )
             .options(joinedload(SectionMemberEntity.section))
             .options(joinedload(SectionMemberEntity.user))
+            .order_by(UserEntity.last_name, UserEntity.first_name)
         )
         staff = self._session.scalars(staff_query).unique().all()
 
