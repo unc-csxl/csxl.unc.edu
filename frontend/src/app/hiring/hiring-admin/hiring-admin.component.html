@@ -88,11 +88,11 @@
               <p>
                 <span class="text-badge secondary-background"
                   >{{ element.assignments.length }}</span
-                >&nbsp;hires
+                >&nbsp;hire{{ element.assignments.length !== 1 ? "s" : ""}}
               </p>
               <p>
                 <span class="text-badge secondary-background"
-                  >${{ element.total_cost }}</span
+                  >{{ element.total_cost | currency:'USD':'symbol':'1.2-2' }}</span
                 >&nbsp;cost
               </p>
               <div class="row">
