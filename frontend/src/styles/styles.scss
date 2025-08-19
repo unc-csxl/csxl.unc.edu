@@ -20,6 +20,28 @@ body {
 ///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin global-styles($theme) {
+
+  // NOTE: Refactor this to use css variables on m3 v20 upgrade
+  .mdc-linear-progress__primary-bar {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  .mdc-linear-progress__secondary-bar {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  .mdc-linear-progress__buffer-bar {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  .mdc-linear-progress--indeterminate {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  // *yes, this is really how it is implemented........*
+  .mdc-linear-progress__bar-inner {
+    border-top-color: mat.get-theme-color($theme, primary-container) !important;
+    border-left-color: mat.get-theme-color($theme, primary-container) !important;
+    border-right-color: mat.get-theme-color($theme, primary-container) !important;
+    border-bottom-color: mat.get-theme-color($theme, primary-container) !important;
+  }
+
   p {
     font: mat.get-theme-typography($theme, body-medium, font);
   }
@@ -127,6 +149,11 @@ body {
 
   .surface-container-high {
     background-color: mat.get-theme-color($theme, surface-container-high) !important;
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
+
+  .surface-container {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
     color: mat.get-theme-color($theme, on-surface) !important;
   }
 
