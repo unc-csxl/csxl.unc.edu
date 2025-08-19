@@ -335,6 +335,10 @@ body {
     margin-left: 16px;
     margin-right: 16px;
   }
+
+  .mat-divider {
+    border-top-color: var(--mdc-outlined-card-outline-color)
+  }
 }
 
 /// Defines a mixin that applies custom styles to material switch components
