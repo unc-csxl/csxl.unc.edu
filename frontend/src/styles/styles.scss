@@ -361,6 +361,20 @@ body {
   }
 }
 
+// Defines a mixin that applies custom styles to material table components
+/// to better conform to Material 3 standards.
+///
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin mat-table-styles($theme) {
+  .mat-mdc-cell {
+    border-bottom-color: var(--mdc-outlined-card-outline-color)
+  }
+
+  .mat-mdc-header-cell {
+    border-bottom-color: var(--mdc-outlined-card-outline-color)
+  }
+}
+
 /// Defines a mixim that applies custom styles for fonts based on Material 3 standards.
 ///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
@@ -557,6 +571,7 @@ body {
   @include mat-icon-styles($theme);
   @include mat-switch-styles($theme);
   @include mat-text-field-styles($theme);
+  @include mat-table-styles($theme);
   @include font-styles($theme);
   @include widget-styles($theme);
   @include global-styles($theme);
