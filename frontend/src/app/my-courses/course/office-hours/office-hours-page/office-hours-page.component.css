@@ -66,3 +66,15 @@
     gap: 6px;
     margin-left: auto;
 }
+
+.fallback-text-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    gap: 4px;
+
+    p {
+        margin-bottom: 0;
+    }
+}
