@@ -31,10 +31,11 @@
   @if (viewState === ViewState.Scheduled) {
   <mat-card-content class="pane-content">
     <mat-card-subtitle>Happening Now</mat-card-subtitle>
+  <search-bar class="roster-search-bar mat-csxl-search-bar" [searchBarQuery]="searchBarQuery()" (searchBarQueryChange)="searchBarQuery.set($event)" />
     <div class="card-container">
-      @if (currentOfficeHourEvents().length === 0) {
+      @if (filteredCurrentOfficeHourEvents().length === 0) {
       <p>Office hours are currently closed.</p>
-      } @for (event of currentOfficeHourEvents(); track event.id) {
+      } @for (event of filteredCurrentOfficeHourEvents(); track event.id) {
       <office-hour-event-card
         [event]="event"
         [editRoute]="event.id + '/edit'" />

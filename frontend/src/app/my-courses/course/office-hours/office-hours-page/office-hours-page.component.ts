@@ -7,7 +7,7 @@
  */
 
 import { DialogRef } from '@angular/cdk/dialog';
-import { Component, WritableSignal, signal } from '@angular/core';
+import { Component, WritableSignal, effect, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -66,9 +66,25 @@ export class OfficeHoursPageComponent {
   private previousPastOfficeHourEventParams: PaginationParams =
     DEFAULT_PAGINATION_PARAMS;
 
+  public searchBarQuery: WritableSignal<string> = signal('');
+
   public pastOhDisplayedColumns: string[] = ['date', 'type'];
 
   courseSiteId: string;
+
+  /**
+   * Filters the current office hour events based on the search bar query.
+   * @returns Filtered list of current office hour events
+   */
+  filteredCurrentOfficeHourEvents(): OfficeHourEventOverview[] {
+    const query = this.searchBarQuery().toLowerCase();
+    if (!query) {
+      return this.currentOfficeHourEvents();
+    }
+    return this.currentOfficeHourEvents().filter((event) =>
+      event.location?.toLowerCase().includes(query)
+    );
+  }
 
   constructor(
     private route: ActivatedRoute,
