@@ -1,14 +1,19 @@
 """Entity for Operating Hours.""" ""
 
-from sqlalchemy import Integer, DateTime, Index
+from sqlalchemy import ForeignKey, Integer, DateTime, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from backend.entities.coworking.operating_hours_recurrence_entity import (
+    OperatingHoursRecurrenceEntity,
+)
+from backend.models.coworking.operating_hours import OperatingHoursDraft
 from ..entity_base import EntityBase
 from ...models.coworking import OperatingHours
 from datetime import datetime
 from typing import Self
 
-__authors__ = ["Kris Jordan"]
-__copyright__ = "Copyright 2023"
+__authors__ = ["Kris Jordan", "David Foss"]
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 
@@ -24,12 +29,23 @@ class OperatingHoursEntity(EntityBase):
     start: Mapped[datetime] = mapped_column(DateTime, index=True)
     end: Mapped[datetime] = mapped_column(DateTime, index=True)
 
+    recurrence_id: Mapped[int] = mapped_column(
+        ForeignKey("coworking__operating_hours_recurrence.id"), nullable=True
+    )
+    recurrence: Mapped[OperatingHoursRecurrenceEntity] = relationship()
+
     def to_model(self) -> OperatingHours:
         """Converts the entity to a model.
 
         Returns:
             OperatingHours: The model representation of the entity."""
-        return OperatingHours(id=self.id, start=self.start, end=self.end)
+        return OperatingHours(
+            id=self.id,
+            start=self.start,
+            end=self.end,
+            recurrence_id=self.recurrence_id if self.recurrence_id else None,
+            recurrence=self.recurrence.to_model() if self.recurrence else None,
+        )
 
     @classmethod
     def from_model(cls, model: OperatingHours) -> Self:
@@ -40,4 +56,34 @@ class OperatingHoursEntity(EntityBase):
 
         Returns:
             Self: The entity (not yet persisted)."""
-        return cls(id=model.id, start=model.start, end=model.end)
+        return cls(
+            id=model.id,
+            start=model.start,
+            end=model.end,
+            recurrence_id=model.recurrence_id if model.recurrence_id else None,
+            recurrence=(
+                OperatingHoursRecurrenceEntity.from_model(model.recurrence)
+                if model.recurrence
+                else None
+            ),
+        )
+
+    @classmethod
+    def from_draft(cls, model: OperatingHoursDraft) -> Self:
+        """Create an OperatingHoursEntity from a OperatingHoursDraft model.
+
+        Args:
+            model (OperatingHoursDraft): The model to create the entity from.
+
+        Returns:
+            Self: The entity (not yet persisted)."""
+        return cls(
+            id=model.id,
+            start=model.start,
+            end=model.end,
+            recurrence=(
+                OperatingHoursRecurrenceEntity.from_model(model.recurrence)
+                if model.recurrence
+                else None
+            ),
+        )

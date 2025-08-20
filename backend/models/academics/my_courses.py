@@ -104,6 +104,13 @@ class OfficeHourStatisticsOverview(BaseModel):
     history: list[OfficeHourTicketOverview]
 
 
+class OfficeHourStatisticsOverview(BaseModel):
+    # add more
+    average_minutes: int
+    total_tickets_called: int
+    history: list[OfficeHourTicketOverview]
+
+
 class OfficeHourQueueOverview(BaseModel):
     id: int
     type: str

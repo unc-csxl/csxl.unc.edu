@@ -1,7 +1,16 @@
+/**
+ * The Operating Hours Panel Widget provides quick access to information about
+ * the operating hours to users.
+ *
+ * @author Kris Jordan, Ajay Gandecha, David Foss
+ * @copyright 2024
+ * @license MIT
+ */
+
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OperatingHours } from 'src/app/coworking/coworking.models';
-import { OperatingHoursDialog } from '../../coworking/widgets/operating-hours-dialog/operating-hours-dialog.widget';
+import { OperatingHoursDialog } from '../operating-hours-dialog/operating-hours-dialog.widget';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Component({
@@ -15,10 +24,14 @@ export class CoworkingHoursCard {
 
   constructor(public dialog: MatDialog) {}
 
+  /** Opens the Operating hours dialog
+   *
+   * @returns {void}
+   */
   openDialog(): void {
     const dialogRef = this.dialog.open(OperatingHoursDialog, {
-      width: '400px',
-      data: this.operatingHours
+      minWidth: '600px',
+      autoFocus: false
     });
   }
 }

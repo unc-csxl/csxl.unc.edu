@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>
+  {{data ? (isNew() ? "Create" : "Update") : ""}} Operating Hours
+</h2>
+<mat-dialog-content>
+  <coworking-operating-hours-editor
+    #editor
+    [operatingHoursSignal]="data.selectedOperatingHours"
+    [holdingDialog]="dialogRef"
+    [calendar]="data.calendar" />
+</mat-dialog-content>
+<mat-dialog-actions>
+  @if (!isNew()) {
+  <button mat-stroked-button (click)="editor.onDelete()" class="tertiary-button">
+    Delete
+  </button>
+  }
+  <button mat-flat-button (click)="editor.onSubmit()" type="button" class="save-button">
+    Save
+  </button>
+</mat-dialog-actions>
