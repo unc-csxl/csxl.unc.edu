@@ -18,12 +18,11 @@ from .fixtures import application_svc
 
 # Import the setup_teardown fixture explicitly to load entities in database
 from .core_data import setup_insert_data_fixture as insert_order_0
-from .academics.term_data import fake_data_fixture as insert_order_1
-from .academics.course_data import fake_data_fixture as insert_order_2
-from .academics.section_data import fake_data_fixture as insert_order_3
-from .room_data import fake_data_fixture as insert_order_4
-from .office_hours.office_hours_data import fake_data_fixture as insert_order_5
-from .academics.hiring.hiring_data import fake_data_fixture as insert_order_6
+from .academics.course_data import fake_data_fixture as insert_order_1
+from .academics.section_data import fake_data_fixture as insert_order_2
+from .room_data import fake_data_fixture as insert_order_3
+from .office_hours.office_hours_data import fake_data_fixture as insert_order_4
+from .academics.hiring.hiring_data import fake_data_fixture as insert_order_5
 
 # Data Models for Fake Data Inserted in Setup
 from . import user_data

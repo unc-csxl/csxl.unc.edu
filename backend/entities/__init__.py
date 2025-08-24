@@ -22,6 +22,7 @@ from .user_role_table import user_role_table
 from .room_entity import RoomEntity
 
 from .organization_entity import OrganizationEntity
+from .organization_membership_entity import OrganizationMembershipEntity
 from .event_entity import EventEntity
 from .event_registration_entity import EventRegistrationEntity
 

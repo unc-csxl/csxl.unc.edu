@@ -10,7 +10,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { Organization } from './organization.model';
-import { catchError, map, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { OrganizationService } from './organization.service';
 
 // TODO: Explore if this can be replaced by a signal.
@@ -36,7 +36,9 @@ export const organizationResolver: ResolveFn<Organization | undefined> = (
       youtube: '',
       heel_life: '',
       public: false,
-      events: null
+      join_type: null,
+      events: null,
+      members: null
     };
   }
 
