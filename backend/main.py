@@ -21,6 +21,7 @@ from .api import (
     article,
     signage,
     websocket,
+    sample,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.academics import section_member, term, course, section, my_courses, hiring
@@ -71,6 +72,7 @@ app = FastAPI(
         admin_facts.openapi_tags,
         article.openapi_tags,
         signage.openapi_tags,
+        sample.openapi_tags,
     ],
 )
 
@@ -105,6 +107,7 @@ feature_apis = [
     article,
     signage,
     websocket,
+    sample,
 ]
 
 for feature_api in feature_apis:
