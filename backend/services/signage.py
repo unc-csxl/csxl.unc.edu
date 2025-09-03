@@ -177,15 +177,25 @@ class SignageService:
         start_of_month = datetime.today().replace(
             day=1, hour=0, minute=0, second=0, microsecond=0
         )
+
+        # Creates a function that sums up all of the seconds elapsed during a reservation
+        # for a given aggregate. Since we group by users, this function will calculate
+        # the total time in seconds that a user has been checked in to the XL since
+        # the start of the month.
+        reservation_length_sum_fn = func.sum(
+            func.extract("epoch", ReservationEntity.end - ReservationEntity.start)
+        )
+
         top_users_query = (
             select(
-                UserEntity, func.count(ReservationEntity.id).label("reservation_count")
+                UserEntity,
+                reservation_length_sum_fn.label("total_time_seconds"),
             )
             .join(ReservationEntity.users)
             .where(ReservationEntity.end >= start_of_month)
             .where(ReservationEntity.state == ReservationState.CHECKED_OUT)
             .group_by(UserEntity.id)
-            .order_by(func.count(ReservationEntity.id).desc())
+            .order_by(reservation_length_sum_fn.desc())
             .limit(MAX_LEADERBOARD_SLOTS)
         )
 
