@@ -5,12 +5,15 @@ import { GateComponent } from './gate/gate.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { SignageComponent } from './signage/signage.component';
+import { SamplePageComponent } from './sample/page/sample.component';
 
 const routes: Routes = [
+  SamplePageComponent.Route,
   HomeComponent.Route,
   AboutComponent.Route,
   GateComponent.Route,
-  { path: 'signage',
+  {
+    path: 'signage',
     title: 'XL Signage',
     loadChildren: () =>
       import('./signage/signage.module').then((m) => m.SignageModule)
