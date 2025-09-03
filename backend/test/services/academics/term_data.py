@@ -8,7 +8,7 @@ from ..reset_table_id_seq import reset_table_id_seq
 from datetime import datetime, timedelta
 
 __authors__ = ["Ajay Gandecha"]
-__copyright__ = "Copyright 2023"
+__copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 TERM_LENGTH = timedelta(weeks=17)

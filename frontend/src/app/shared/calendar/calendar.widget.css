@@ -1,0 +1,168 @@
+.calendar-display {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.week-picker {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+
+  margin-bottom: 7px;
+}
+
+.week-selection {
+  margin: 0;
+}
+
+.hours-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.hour-label {
+  grid-column: 1/2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  margin-right: 5px;
+}
+
+.date-label {
+  grid-row: 1/2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 5px;
+}
+
+.date-label p {
+  margin: 0;
+}
+
+.date-number-label {
+  font-size: 1.8em;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  padding: 0px;
+  width: 1.3em;
+  height: 1.3em;
+  aspect-ratio: 1/1;
+  text-align: center;
+}
+
+.current-date {
+  font-size: 1.6em;
+  padding: 4px;
+  margin-top: 2px;
+  border-radius: 50%;
+}
+
+.no-hours-message {
+  grid-row: 1 / -1;
+  grid-column: 2 / -1;
+  margin-left: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.calendar-day-outline {
+  grid-row: 1/-1;
+}
+
+.calendar-hour-outline {
+  grid-column: 2 / -1;
+}
+
+.calendar-container {
+  display: grid;
+
+  height: 100%;
+  width: 100%;
+  max-height: 100%;
+
+  grid-template-rows: 4em 1fr;
+  overflow: hidden;
+}
+
+.calendar-outline {
+  grid-row: 1 / -1;
+  grid-column: 2 / -1;
+}
+
+.calendar {
+  grid-row: 2 / 3;
+  grid-column: 1 / 10;
+  display: grid;
+  
+  /* Hacky fix for the scroll bar */
+  height: calc(100% - 4px);
+  overflow-y: auto;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.hour-block {
+  display: flex;
+  flex-direction: column;
+
+  margin: 0 2px;
+  padding: 4px;
+  border-radius: 10px;
+
+  text-align: left;
+}
+
+.semibold {
+  font-weight: 500;
+}
+
+.Sunday {
+  grid-column: 2/3;
+}
+
+.Monday {
+  grid-column: 3/4;
+}
+
+.Tuesday {
+  grid-column: 4/5;
+}
+
+.Wednesday {
+  grid-column: 5/6;
+}
+
+.Thursday {
+  grid-column: 6/7;
+}
+
+.Friday {
+  grid-column: 7/8;
+}
+
+.Saturday {
+  grid-column: 8/9;
+}

@@ -14,6 +14,9 @@ import sys
 import subprocess
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+
+from backend.services.coworking.operating_hours import OperatingHoursService
+from backend.services.permission import PermissionService
 from ..database import engine
 from ..env import getenv
 from .. import entities
@@ -28,7 +31,7 @@ from ..test.services.office_hours import office_hours_data
 from ..test.services.academics.hiring import hiring_data
 from ..test.services.articles import article_data
 
-__authors__ = ["Kris Jordan", "Ajay Gandecha"]
+__authors__ = ["Kris Jordan", "Ajay Gandecha", "David Foss"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -55,7 +58,9 @@ with Session(engine) as session:
     permission_data.insert_fake_data(session)
     organization_demo_data.insert_fake_data(session)
     event_demo_data.insert_fake_data(session)
-    operating_hours_data.insert_fake_data(session, time)
+    operating_hours_data.insert_fake_data(
+        session, time, OperatingHoursService(session, PermissionService(session))
+    )
     seat_data.insert_fake_data(session)
     room_data.insert_fake_data(session)
     reservation_data.insert_fake_data(session, time)
