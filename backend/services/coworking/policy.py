@@ -53,7 +53,7 @@ OH_HOURS = {
         "SN141": [(time(hour=15), time(hour=17))],
         "SN144": [],
         "SN146": [],
-        "SN147": [(time(hour=0), time(hour=23))],
+        "SN147": [(time(hour=14), time(hour=16))],
     },
     FRIDAY: {
         "SN135": [(time(hour=15), time(hour=18))],
@@ -62,7 +62,7 @@ OH_HOURS = {
         "SN141": [(time(hour=12), time(hour=14))],
         "SN144": [],
         "SN146": [],
-        "SN147": [(time(hour=14), time(hour=16))],
+        "SN147": [],
     },
     SATURDAY: {},
     SUNDAY: {},
