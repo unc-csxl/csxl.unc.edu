@@ -13,9 +13,14 @@ import { Observable } from 'rxjs';
 export class NewRoomReservationService {
   protected http = inject(HttpClient);
 
-  getAvailability(): Observable<GetRoomAvailabilityResponse> {
+  getAvailability(date?: Date): Observable<GetRoomAvailabilityResponse> {
+    const params: { [key: string]: string } = {};
+    if (date) {
+      params['date'] = date.toISOString();
+    }
     return this.http.get<GetRoomAvailabilityResponse>(
-      '/api/coworking/rooms/availability'
+      '/api/coworking/rooms/availability',
+      { params }
     );
   }
 

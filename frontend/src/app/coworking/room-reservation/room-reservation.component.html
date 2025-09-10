@@ -3,14 +3,33 @@
         <mat-card-title>Reserve a Room</mat-card-title>
         <div class="date-selector">
             <!-- <date-selector></date-selector> -->
+            <mat-form-field class="mb-[-16px]" appearance="outline">
+                <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
         </div>
     </mat-card-header>
-    
     <mat-card-content class="flex-1">
         @if(availability) {
-            <div class="flex flex-col gap-1 mt-8">
+            <div class="flex flex-col gap-1">
+                <!-- Legend -->
+                <div class="flex flex-row gap-6 items-center mt-2">
+                    <div class="flex flex-row items-center gap-2">
+                        <span class="size-5 rounded-full bg-[#bfcbad] dark:bg-[#404a33]"></span>
+                        <span class="pt-0.5">Available</span>
+                    </div>
+                    <div class="flex flex-row items-center gap-2">
+                        <span class="size-5 rounded-full bg-[#aac7ff] dark:bg-[#415f91]"></span>
+                        <span class="pt-0.5">Your Reservations</span>
+                    </div>
+                    <div class="flex flex-row items-center gap-2">
+                        <span class="size-5 rounded-full tertiary-container-background"></span>
+                        <span class="pt-0.5">Reserved</span>
+                    </div>
+                </div>
                 <!-- Timeslots row -->
-                 <div class="flex flex-row ml-32">
+                 <div class="flex flex-row ml-32 mt-8">
                     @for(slot of availability.slot_labels; track slot; let onTheHour = $even) {
                         @if(onTheHour) {
                             <div class="flex flex-row items-center w-32 h-8 p-2 border-l border-l-[var(--mat-card-outlined-outline-color)]">
@@ -59,6 +78,8 @@
                     </div>
                  }
             </div>
+        } @else {
+            <p class="body-large my-3">You cannot reserve rooms for the selected date at this time.</p>
         }
     </mat-card-content>
     @let room = selectedRoom();

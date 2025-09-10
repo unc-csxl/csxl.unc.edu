@@ -1,5 +1,6 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { CoworkingRoutingModule } from './coworking-routing.module';
 import { CoworkingPageComponent } from './coworking-home/coworking-home.component';
@@ -44,6 +45,7 @@ import { NewRoomReservationComponent } from './room-reservation/room-reservation
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
     MatDividerModule,

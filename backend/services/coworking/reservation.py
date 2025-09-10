@@ -1232,6 +1232,9 @@ class ReservationService:
         self, subject: User, date: datetime | None
     ) -> GetRoomAvailabilityResponse:
         """Determines the room availability for a given user."""
+        # Determine whether or not the user is an instructor
+        is_instructor = self._user_is_instructor(subject)
+
         # Convenience functions to get the start and end of either the selected date
         # or the current date if no selection was provided.
         today = date.date() if date else datetime.now().date()
@@ -1246,8 +1249,13 @@ class ReservationService:
         operating_hours = self._session.scalars(operating_hours_query).all()
 
         # If no operating hours exist, return no available slots for the day.
-        if len(operating_hours) == 0:
-            return GetRoomAvailabilityResponse(slots=[], rooms=[])
+        if (
+            len(operating_hours) == 0
+            or datetime.combine(datetime.now().date(), time.max) > end_of_day
+        ):
+            return GetRoomAvailabilityResponse(
+                is_instructor=is_instructor, slot_labels=[], slots={}, rooms=[]
+            )
 
         # Determine all of the possible reservations slots between the start and end
         # of the operating hours
@@ -1494,9 +1502,6 @@ class ReservationService:
             slot_data[slot_label] = GetRoomAvailabilityResponse_Slot(
                 start_time=slot_start, end_time=slot_end
             )
-
-        # Determine whether or not the user is an instructor
-        is_instructor = self._user_is_instructor(subject)
 
         return GetRoomAvailabilityResponse(
             is_instructor=is_instructor,

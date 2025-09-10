@@ -96,8 +96,9 @@ def get_total_hours_study_room_reservations(
 
 @api.get("/rooms/availability", tags=["Coworking"])
 def get_room_availability(
+    date: datetime | None = None,
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
 ) -> GetRoomAvailabilityResponse:
     """Determines the room availability at a given time for a user."""
-    return reservation_svc.get_room_availability(subject, date=None)
+    return reservation_svc.get_room_availability(subject, date=date)

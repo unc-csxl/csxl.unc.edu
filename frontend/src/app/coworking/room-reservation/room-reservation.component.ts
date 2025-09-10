@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { NewRoomReservationService } from './room-reservation.service';
@@ -11,6 +11,7 @@ import { Profile } from 'src/app/models.module';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { TimeRange } from 'src/app/time-range';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl } from '@angular/forms';
 
 type SlotSelection = { room: string; slot: string };
 
@@ -36,6 +37,8 @@ export class NewRoomReservationComponent {
   public selectedSlots: SlotSelection[] = [];
   public selectedUsers: PublicProfile[] = [];
 
+  dateControl = new FormControl<Date>(new Date());
+
   constructor(
     protected route: ActivatedRoute,
     protected router: Router,
@@ -48,6 +51,23 @@ export class NewRoomReservationComponent {
     };
     this.profile = data.profile as PublicProfile;
     this.selectedUsers = [this.profile];
+
+    // Connect form control to signal
+    this.dateControl.valueChanges.subscribe((date) => {
+      if (date) {
+        // Refresh availability when date changes
+        this.roomReservationService
+          .getAvailability(date)
+          .subscribe((result) => {
+            this.availability =
+              result.slot_labels.length > 0 ? result : undefined;
+            this.selectedSlots = [];
+            this.selectedUsers = [];
+          });
+      }
+    });
+
+    // Initial load
     this.roomReservationService.getAvailability().subscribe((result) => {
       this.availability = result;
     });
