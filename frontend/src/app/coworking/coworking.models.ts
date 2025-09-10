@@ -180,3 +180,27 @@ export interface ReservationMapDetails {
   operating_hours_end: string;
   number_of_time_slots: number;
 }
+
+/** New room reservation models */
+
+export type RoomAvailabilityState =
+  | 'AVAILABLE'
+  | 'RESERVED'
+  | 'YOUR_RESERVATION'
+  | 'UNAVAILABLE';
+
+export type GetRoomAvailabilityResponse_RoomAvailability = {
+  state: RoomAvailabilityState;
+  description?: string | undefined;
+};
+
+export type GetRoomAvailabilityResponse_Room = {
+  room: string;
+  capacity: number;
+  availability: Record<string, GetRoomAvailabilityResponse_RoomAvailability>;
+};
+
+export type GetRoomAvailabilityResponse = {
+  slots: string[];
+  rooms: GetRoomAvailabilityResponse_Room[];
+};

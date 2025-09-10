@@ -7,50 +7,38 @@
     </mat-card-header>
     
     <mat-card-content>
-        <div class="flex flex-row">
-            <div class="flex flex-col  gap-1 first:mt-13">
-                <div class="flex flex-row items-center justify-between w-32 h-12 bg-amber-600">
-                    <span class="font-medium body-large">SN136</span>
-                    <div class="flex flex-row gap-1 items-center">
-                        <span class="pt-0.5">5</span>
-                        <mat-icon>chair_alt</mat-icon>
+        @if(availability) {
+            <div class="flex flex-col gap-1">
+                <!-- Timeslots row -->
+                 <div class="flex flex-row ml-32">
+                    @for(slot of availability.slots; track slot; let onTheHour = $even) {
+                        @if(onTheHour) {
+                            <div class="flex flex-row items-center w-32 h-12 p-2 border-l">
+                                <span class="font-medium body-large">{{ slot }}</span>
+                            </div>
+                        }
+                    }
+                </div>
+                <!-- Row for each room -->
+                 @for(roomAvailability of availability.rooms; track roomAvailability.room) {
+                    <div class="flex flex-row">
+                        <!-- Room header -->
+                        <div class="flex flex-row items-center justify-between w-32 h-12">
+                            <span class="font-medium body-large">{{ roomAvailability.room }}</span>
+                            <div class="flex flex-row gap-1 items-center">
+                                <span class="pt-0.5">{{ roomAvailability.capacity }}</span>
+                                <mat-icon>chair_alt</mat-icon>
+                            </div>
+                        </div>
+                        <!-- Availability for each time slot -->
+                        @for(slot of availability.slots; track slot) {
+                            @let slotAvailability = roomAvailability.availability[slot];
+                            <!-- <span>{{ slotAvailability.state }}</span> -->
+                            <div class="bg-green-500 h-12 w-[60px] mx-0.5 rounded"></div>
+                        }
                     </div>
-                </div>
-                <div class="flex flex-row items-center justify-between w-32 h-12 bg-amber-600">
-                    <span class="font-medium body-large">SN136</span>
-                    <div class="flex flex-row gap-1 items-center">
-                        <span class="pt-0.5">5</span>
-                        <mat-icon>chair_alt</mat-icon>
-                    </div>
-                </div>
+                 }
             </div>
-            <div class="flex flex-col border-l gap-1">
-                <div class="flex flex-row items-center w-32 h-12 p-2">
-                    <span class="font-medium body-large">10:00am</span>
-                </div>
-                <div class="flex flex-row gap-1 px-0.5 items-center w-32 h-12">
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                </div>
-                <div class="flex flex-row gap-1 px-0.5 items-center w-32 h-12">
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                </div>
-            </div>
-            <div class="flex flex-col border-l gap-1">
-                <div class="flex flex-row items-center w-32 h-12 p-2">
-                    <span class="font-medium body-large">10:00am</span>
-                </div>
-                <div class="flex flex-row gap-1 px-0.5 items-center w-32 h-12">
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                </div>
-                <div class="flex flex-row gap-1 px-0.5 items-center w-32 h-12">
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                    <div class="bg-green-500 h-12 rounded flex-1"></div>
-                </div>
-            </div>
-        </div>
-      </mat-card-content>
-      
+        }
+    </mat-card-content>
 </mat-card>

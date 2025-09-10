@@ -1412,7 +1412,9 @@ class ReservationService:
                 )
             # Finalize the availability for the room
             room = GetRoomAvailabilityResponse_Room(
-                room=reservable_room.id, availability=room_availability
+                room=reservable_room.id,
+                capacity=reservable_room.capacity,
+                availability=room_availability,
             )
             rooms.append(room)
 

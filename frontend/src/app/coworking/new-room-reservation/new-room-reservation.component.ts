@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
+import { NewRoomReservationService } from './new-room-reservation.service';
+import { GetRoomAvailabilityResponse } from '../coworking.models';
 
 @Component({
   selector: 'app-new-room-reservation',
@@ -15,4 +17,12 @@ export class NewRoomReservationComponent {
     canActivate: [isAuthenticated],
     resolve: { profile: profileResolver }
   };
+
+  availability: GetRoomAvailabilityResponse | undefined = undefined;
+
+  constructor(private roomReservationService: NewRoomReservationService) {
+    this.roomReservationService.getAvailability().subscribe((result) => {
+      this.availability = result;
+    });
+  }
 }
