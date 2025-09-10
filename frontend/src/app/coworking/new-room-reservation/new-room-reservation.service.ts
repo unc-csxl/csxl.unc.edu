@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { GetRoomAvailabilityResponse } from '../coworking.models';
+import {
+  GetRoomAvailabilityResponse,
+  Reservation,
+  ReservationRequest
+} from '../coworking.models';
 import { Observable } from 'rxjs';
+import { PublicProfile } from 'src/app/profile/profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,5 +18,9 @@ export class NewRoomReservationService {
     return this.http.get<GetRoomAvailabilityResponse>(
       '/api/coworking/rooms/availability'
     );
+  }
+
+  draftRoomReservation(request: ReservationRequest) {
+    return this.http.post<Reservation>(`/api/coworking/reservation`, request);
   }
 }

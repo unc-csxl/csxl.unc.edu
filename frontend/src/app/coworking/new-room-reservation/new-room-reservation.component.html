@@ -80,7 +80,7 @@
                     />
                 </div>
                 <div class="flex flex-row gap-3 items-center">
-                    <button matButton="filled" [disabled]="!canDraftReservation()">
+                    <button matButton="filled" (click)="draftReservation()" [disabled]="!canDraftReservation()">
                         Reserve
                     </button>
                     <button matButton="outlined" class="tertiary-button" (click)="clearSelections()">

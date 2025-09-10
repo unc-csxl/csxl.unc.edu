@@ -787,8 +787,10 @@ class ReservationService:
         # For the time being, reservations are limited to one user. As soon as
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
-        if len(request.users) > 1:
-            raise NotImplementedError("Multi-user reservations not yet supproted.")
+        if len(request.users) > 1 and len(request.seats) > 0:
+            raise NotImplementedError(
+                "Multi-user reservations for seats not yet supproted."
+            )
 
         # Enforce Reservation Draft Permissions
         if subject.id not in [user.id for user in request.users]:
@@ -1256,7 +1258,13 @@ class ReservationService:
             )
             end_time = current_time + timedelta(minutes=minutes_adjustment)
             # Add the slot
-            slots.append((slot_label, current_time, end_time))
+            slots.append(
+                (
+                    slot_label,
+                    current_time.replace(second=0, microsecond=0),
+                    end_time.replace(second=0, microsecond=0),
+                )
+            )
             # Adjust the current time for the next iteration
             current_time = end_time
 
@@ -1285,6 +1293,13 @@ class ReservationService:
             )
             .where(
                 ReservationEntity.room_id.in_(room_ids),
+                ReservationEntity.state.in_(
+                    [
+                        ReservationState.CONFIRMED,
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                    ]
+                ),
                 reservation_user_table.c.user_id == subject.id,
                 or_(
                     *[
@@ -1302,6 +1317,13 @@ class ReservationService:
         # Second query: Get all general reservations across all rooms and time slots
         general_reservations_query = select(ReservationEntity).where(
             ReservationEntity.room_id.in_(room_ids),
+            ReservationEntity.state.in_(
+                [
+                    ReservationState.CONFIRMED,
+                    ReservationState.CHECKED_IN,
+                    ReservationState.CHECKED_OUT,
+                ]
+            ),
             or_(
                 *[
                     and_(
@@ -1342,7 +1364,10 @@ class ReservationService:
         # Build up user reservations lookup table
         for reservation, _ in user_reservation_results:
             for slot_label, slot_start, slot_end in slots:
-                if reservation.start < slot_end and reservation.end > slot_start:
+                if (
+                    reservation.start.replace(second=0, microsecond=0) < slot_end
+                    and reservation.end.replace(second=0, microsecond=0) > slot_start
+                ):
                     room_slot_key = (reservation.room_id, slot_label)
                     user_reservations_lookup[room_slot_key] = reservation
                     user_reservations_timeslots.add(slot_label)
@@ -1350,7 +1375,10 @@ class ReservationService:
         # Build up general reservations lookup table
         for reservation in general_reservation_results:
             for slot_label, slot_start, slot_end in slots:
-                if reservation.start < slot_end and reservation.end > slot_start:
+                if (
+                    reservation.start.replace(second=0, microsecond=0) < slot_end
+                    and reservation.end.replace(second=0, microsecond=0) > slot_start
+                ):
                     room_slot_key = (reservation.room_id, slot_label)
                     general_reservations_lookup[room_slot_key] = reservation
 

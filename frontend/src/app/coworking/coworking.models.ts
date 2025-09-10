@@ -112,7 +112,7 @@ export const parseCoworkingStatusJSON = (
 };
 
 export interface ReservationRequest extends TimeRange {
-  users: Profile[] | null;
+  users: Profile[] | { id: number }[] | null;
   seats: Seat[] | null;
   room: { id: string };
 }

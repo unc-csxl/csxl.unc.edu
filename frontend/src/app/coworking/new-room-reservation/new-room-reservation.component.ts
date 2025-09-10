@@ -6,10 +6,11 @@ import {
   GetRoomAvailabilityResponse,
   GetRoomAvailabilityResponse_Room
 } from '../coworking.models';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Profile } from 'src/app/models.module';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { TimeRange } from 'src/app/time-range';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 type SlotSelection = { room: string; slot: string };
 
@@ -37,6 +38,8 @@ export class NewRoomReservationComponent {
 
   constructor(
     protected route: ActivatedRoute,
+    protected router: Router,
+    protected snackBar: MatSnackBar,
     private roomReservationService: NewRoomReservationService
   ) {
     /** Initialize data from resolvers. */
@@ -191,5 +194,35 @@ export class NewRoomReservationComponent {
 
   onUsersChanged(users: PublicProfile[]) {
     this.selectedUsers = users;
+  }
+
+  draftReservation() {
+    const timeRange = this.selectedSlotTimeRange();
+    if (this.canDraftReservation() && timeRange) {
+      this.roomReservationService
+        .draftRoomReservation({
+          users: this.selectedUsers.map((publicProfile) => {
+            return {
+              id: publicProfile.id
+            };
+          }),
+          seats: [],
+          room: { id: this.selectedRoom()!.room },
+          start: timeRange.start,
+          end: timeRange.end
+        })
+        .subscribe({
+          next: (draftReservation) => {
+            this.router.navigateByUrl(
+              `/coworking/reservation/${draftReservation.id}`
+            );
+          },
+          error: (error) => {
+            this.snackBar.open(`${error.message}`, '', {
+              duration: 2000
+            });
+          }
+        });
+    }
   }
 }
