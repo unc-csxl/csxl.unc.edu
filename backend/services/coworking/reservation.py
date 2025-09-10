@@ -17,6 +17,7 @@ from ...models.coworking.reservation import (
     GetRoomAvailabilityResponse,
     GetRoomAvailabilityResponse_Room,
     GetRoomAvailabilityResponse_RoomAvailability,
+    GetRoomAvailabilityResponse_Slot,
     RoomAvailabilityState,
 )
 from backend.models.room_details import RoomDetails
@@ -1333,6 +1334,7 @@ class ReservationService:
         # exists for a combination of a room and timeslot, we will create a lookup dictionary.
         # Key format: (room_id, slot_label) : ReservationEntity
         user_reservations_lookup: dict[tuple[str, str], ReservationEntity] = {}
+        user_reservations_timeslots: set[str] = set()
         general_reservations_lookup: dict[tuple[str, str], ReservationEntity] = {}
         office_hours_lookup: dict[tuple[str, str], ReservationEntity] = {}
 
@@ -1342,6 +1344,7 @@ class ReservationService:
                 if reservation.start < slot_end and reservation.end > slot_start:
                     room_slot_key = (reservation.room_id, slot_label)
                     user_reservations_lookup[room_slot_key] = reservation
+                    user_reservations_timeslots.add(slot_label)
 
         # Build up general reservations lookup table
         for reservation in general_reservation_results:
@@ -1391,6 +1394,15 @@ class ReservationService:
                     )
                     continue
 
+                # Check if a user has a reservation for another room in the timeslot
+                if slot_label in user_reservations_timeslots:
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.UNAVAILABLE
+                        )
+                    )
+                    continue
+
                 # Check if any reservation exists for this room and time slot or
                 # if office hours exists
                 if (
@@ -1419,5 +1431,14 @@ class ReservationService:
             rooms.append(room)
 
         # Parse the slot labels
-        slot_labels = [slot_label for slot_label, _, _ in slots]
-        return GetRoomAvailabilityResponse(slots=slot_labels, rooms=rooms)
+        slot_labels = []
+        slot_data: dict[str, GetRoomAvailabilityResponse_Slot] = {}
+        for slot_label, slot_start, slot_end in slots:
+            slot_labels.append(slot_label)
+            slot_data[slot_label] = GetRoomAvailabilityResponse_Slot(
+                start_time=slot_start, end_time=slot_end
+            )
+
+        return GetRoomAvailabilityResponse(
+            slot_labels=slot_labels, slots=slot_data, rooms=rooms
+        )

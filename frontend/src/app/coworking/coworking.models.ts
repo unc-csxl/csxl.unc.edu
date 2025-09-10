@@ -183,15 +183,14 @@ export interface ReservationMapDetails {
 
 /** New room reservation models */
 
-export type RoomAvailabilityState =
-  | 'AVAILABLE'
-  | 'RESERVED'
-  | 'YOUR_RESERVATION'
-  | 'UNAVAILABLE';
-
 export type GetRoomAvailabilityResponse_RoomAvailability = {
-  state: RoomAvailabilityState;
+  state: 'AVAILABLE' | 'RESERVED' | 'YOUR_RESERVATION' | 'UNAVAILABLE';
   description?: string | undefined;
+};
+
+export type GetRoomAvailabilityResponse_Slot = {
+  start_time: string;
+  end_time: string;
 };
 
 export type GetRoomAvailabilityResponse_Room = {
@@ -201,6 +200,7 @@ export type GetRoomAvailabilityResponse_Room = {
 };
 
 export type GetRoomAvailabilityResponse = {
-  slots: string[];
+  slot_labels: string[];
+  slots: Record<string, GetRoomAvailabilityResponse_Slot>;
   rooms: GetRoomAvailabilityResponse_Room[];
 };

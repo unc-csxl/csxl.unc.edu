@@ -80,6 +80,11 @@ class RoomAvailabilityState(str, Enum):
     UNAVAILABLE = "UNAVAILABLE"
 
 
+class GetRoomAvailabilityResponse_Slot(BaseModel):
+    start_time: datetime
+    end_time: datetime
+
+
 class GetRoomAvailabilityResponse_RoomAvailability(BaseModel):
     state: RoomAvailabilityState
     description: str | None = None
@@ -94,5 +99,6 @@ class GetRoomAvailabilityResponse_Room(BaseModel):
 
 
 class GetRoomAvailabilityResponse(BaseModel):
-    slots: list[str]
+    slot_labels: list[str]
+    slots: dict[str, GetRoomAvailabilityResponse_Slot]  # [timeslot : availability]
     rooms: list[GetRoomAvailabilityResponse_Room]

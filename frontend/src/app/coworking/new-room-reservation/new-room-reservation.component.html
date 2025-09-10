@@ -1,4 +1,4 @@
- <mat-card class="max-w-full! border-transparent! min-h-[calc(100vh-112px)]" appearance="outlined">
+ <mat-card class="flex flex-col max-w-full! border-transparent! min-h-[calc(100vh-112px)]" appearance="outlined">
     <mat-card-header class="flex flex-row items-center justify-between p-4">
         <mat-card-title>Reserve a Room</mat-card-title>
         <div class="date-selector">
@@ -6,14 +6,14 @@
         </div>
     </mat-card-header>
     
-    <mat-card-content>
+    <mat-card-content class="flex-1">
         @if(availability) {
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 mt-8">
                 <!-- Timeslots row -->
                  <div class="flex flex-row ml-32">
-                    @for(slot of availability.slots; track slot; let onTheHour = $even) {
+                    @for(slot of availability.slot_labels; track slot; let onTheHour = $even) {
                         @if(onTheHour) {
-                            <div class="flex flex-row items-center w-32 h-12 p-2 border-l">
+                            <div class="flex flex-row items-center w-32 h-8 p-2 border-l border-l-[var(--mat-card-outlined-outline-color)]">
                                 <span class="font-medium body-large">{{ slot }}</span>
                             </div>
                         }
@@ -31,14 +31,53 @@
                             </div>
                         </div>
                         <!-- Availability for each time slot -->
-                        @for(slot of availability.slots; track slot) {
+                        @for(slot of availability.slot_labels; track slot) {
                             @let slotAvailability = roomAvailability.availability[slot];
+                                @switch (slotAvailability.state) {
+                                    @case('AVAILABLE') {
+                                        <!-- primary-container-background -->
+                                        @if(isSlotSelected(roomAvailability, slot)) {
+                                            <div class="primary-container-background h-12 w-[60px] mx-0.5 rounded" (click)="selectSlot(roomAvailability, slot)"></div>
+                                        } @else {
+                                            <div class="bg-[#bfcbad] dark:bg-[#404a33] h-12 w-[60px] mx-0.5 rounded" (click)="selectSlot(roomAvailability, slot)"></div>
+                                        }
+                                        
+                                    }
+                                    @case('YOUR_RESERVATION') {
+                                        <div class="bg-[#aac7ff] dark:bg-[#415f91] h-12 w-[60px] mx-0.5 rounded"></div>
+                                    }
+                                    @case('RESERVED') {
+                                        <!-- opacity-60 -->
+                                        <div class="tertiary-container-background h-12 w-[60px] mx-0.5 rounded"></div>
+                                    }
+                                    @case('UNAVAILABLE') {
+                                        <div class="surface-container-low h-12 w-[60px] mx-0.5 rounded"></div>
+                                    }
+                            }
                             <!-- <span>{{ slotAvailability.state }}</span> -->
-                            <div class="bg-green-500 h-12 w-[60px] mx-0.5 rounded"></div>
                         }
                     </div>
                  }
             </div>
         }
     </mat-card-content>
+    @if(selectedSlots.length > 0) {
+        <mat-card-footer class="flex flex-col w-full items-center px-8">
+            <div class="flex flex-row w-full items-center justify-between gap-12 border-t border-t-[var(--mat-card-outlined-outline-color)] py-6">
+                <div class="flex flex-row gap-8 flex-1 items-center">
+                    <p class="body-large mb-0!"><strong>Selected:</strong> SN135 from 10:00a to 11:00a</p>
+                    <p class="body-large mb-0!"><strong>Reserving For:</strong></p>
+                    <user-lookup class="mb-[-16px] flex-1" />
+                </div>
+                <div class="flex flex-row gap-3 items-center">
+                    <button matButton="filled" (click)="printSelected()">
+                        Reserve
+                    </button>
+                    <button matButton="outlined" class="tertiary-button" (click)="clearSelections()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </mat-card-footer>
+    }
 </mat-card>
