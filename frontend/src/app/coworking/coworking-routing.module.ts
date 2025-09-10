@@ -2,15 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CoworkingPageComponent } from './coworking-home/coworking-home.component';
 import { ReservationComponent } from './reservation/reservation.component';
-import { NewReservationPageComponent } from './room-reservation/new-reservation-page/new-reservation-page.component';
-import { ConfirmReservationComponent } from './room-reservation/confirm-reservation/confirm-reservation.component';
-import { NewRoomReservationComponent } from './new-room-reservation/new-room-reservation.component';
+import { NewRoomReservationComponent } from './room-reservation/room-reservation.component';
 
 const routes: Routes = [
   CoworkingPageComponent.Route,
   ReservationComponent.Route,
-  NewReservationPageComponent.Route,
-  ConfirmReservationComponent.Route,
   NewRoomReservationComponent.Route,
   {
     path: 'ambassador',

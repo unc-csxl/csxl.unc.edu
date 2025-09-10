@@ -827,6 +827,20 @@ class ReservationService:
                 raise ReservationException(
                     "Oops! Looks like you've reached your weekly study room reservation limit"
                 )
+            room = self._session.get(RoomEntity, request.room.id)
+            if not room:
+                raise ReservationException(
+                    "You cannot create a reservation for a room that does not exist."
+                )
+            minimum_reservers = math.ceil(room.capacity / 2)
+            if len(request.users) < minimum_reservers:
+                raise ReservationException(
+                    f"You must reserve this room for at least {minimum_reservers} people."
+                )
+            if len(request.users) > room.capacity:
+                raise ReservationException(
+                    f"You must reserve this room for at most {room.capacity} people."
+                )
 
         # Fetch User entities for all requested in reservation
         user_entities = (

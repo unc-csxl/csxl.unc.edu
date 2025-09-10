@@ -8,15 +8,15 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Reservation } from 'src/app/coworking/coworking.models';
 import { Observable, map, timer } from 'rxjs';
 import { Router } from '@angular/router';
-import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
+import { ReservationService } from '../../reservation/reservation.service';
 
 @Component({
-    selector: 'coworking-reservation-card',
-    templateUrl: './coworking-reservation-card.html',
-    styleUrls: ['./coworking-reservation-card.css'],
-    standalone: false
+  selector: 'coworking-reservation-card',
+  templateUrl: './coworking-reservation-card.html',
+  styleUrls: ['./coworking-reservation-card.css'],
+  standalone: false
 })
 export class CoworkingReservationCard implements OnInit {
   @Input() reservation!: Reservation;
@@ -31,7 +31,7 @@ export class CoworkingReservationCard implements OnInit {
 
   constructor(
     public router: Router,
-    public roomReservationService: RoomReservationService,
+    public reservationService: ReservationService,
     protected snackBar: MatSnackBar,
     public coworkingService: CoworkingService
   ) {
@@ -61,7 +61,7 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   cancel() {
-    this.roomReservationService.cancel(this.reservation).subscribe({
+    this.reservationService.cancel(this.reservation).subscribe({
       next: () => {
         this.refreshCoworkingHome();
       },
@@ -78,7 +78,7 @@ export class CoworkingReservationCard implements OnInit {
 
   confirm() {
     this.isConfirmed.emit(true);
-    this.roomReservationService.confirm(this.reservation).subscribe({
+    this.reservationService.confirm(this.reservation).subscribe({
       next: () => {
         this.refreshCoworkingHome();
         // this.router.navigateByUrl('/coworking');
@@ -95,7 +95,7 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   checkout() {
-    this.roomReservationService.checkout(this.reservation).subscribe({
+    this.reservationService.checkout(this.reservation).subscribe({
       next: () => this.refreshCoworkingHome(),
       error: (error: Error) => {
         this.snackBar.open(
@@ -109,7 +109,7 @@ export class CoworkingReservationCard implements OnInit {
   }
 
   checkin(): void {
-    this.roomReservationService.checkin(this.reservation).subscribe({
+    this.reservationService.checkin(this.reservation).subscribe({
       next: () => {
         this.refreshCoworkingHome();
       },

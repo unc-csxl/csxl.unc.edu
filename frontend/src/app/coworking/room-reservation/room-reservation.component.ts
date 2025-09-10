@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { NewRoomReservationService } from './new-room-reservation.service';
+import { NewRoomReservationService } from './room-reservation.service';
 import {
   GetRoomAvailabilityResponse,
   GetRoomAvailabilityResponse_Room
@@ -15,9 +15,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 type SlotSelection = { room: string; slot: string };
 
 @Component({
-  selector: 'app-new-room-reservation',
-  templateUrl: './new-room-reservation.component.html',
-  styleUrl: './new-room-reservation.component.css',
+  selector: 'app-room-reservation',
+  templateUrl: './room-reservation.component.html',
+  styleUrl: './room-reservation.component.css',
   standalone: false
 })
 export class NewRoomReservationComponent {

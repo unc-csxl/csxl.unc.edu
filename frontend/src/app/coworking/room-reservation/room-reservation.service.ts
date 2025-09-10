@@ -1,31 +1,25 @@
-/**
- * The Room Reservation Service abstracts HTTP requests to the backend
- * from the components.
- *
- * @author Aarjav Jain, John Schachte, Nick Wherthey, Yuvraj Jain
- * @copyright 2023
- * @license MIT
- */
-
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import {
-  parseReservationJSON,
+  GetRoomAvailabilityResponse,
   Reservation,
-  ReservationJSON
+  ReservationRequest
 } from '../coworking.models';
-import { ReservationService } from '../reservation/reservation.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoomReservationService extends ReservationService {
-  constructor(http: HttpClient) {
-    super(http);
+export class NewRoomReservationService {
+  protected http = inject(HttpClient);
+
+  getAvailability(): Observable<GetRoomAvailabilityResponse> {
+    return this.http.get<GetRoomAvailabilityResponse>(
+      '/api/coworking/rooms/availability'
+    );
   }
 
-  getNumHoursStudyRoomReservations(): Observable<string> {
-    return this.http.get<string>('/api/coworking/user-reservations/');
+  draftRoomReservation(request: ReservationRequest) {
+    return this.http.post<Reservation>(`/api/coworking/reservation`, request);
   }
 }
