@@ -17,9 +17,10 @@ import { OrganizationService } from '../organization.service';
 import { PermissionService } from '../../permission.service';
 
 @Component({
-  selector: 'app-organization-admin',
-  templateUrl: './organization-admin.component.html',
-  styleUrls: ['./organization-admin.component.css']
+    selector: 'app-organization-admin',
+    templateUrl: './organization-admin.component.html',
+    styleUrls: ['./organization-admin.component.css'],
+    standalone: false
 })
 export class OrganizationAdminComponent {
   /** Organizations List */

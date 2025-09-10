@@ -22,9 +22,10 @@ enum SeatTypes {
 }
 
 @Component({
-  selector: 'occupancy',
-  templateUrl: './occupancy.widget.html',
-  styleUrls: ['./occupancy.widget.css']
+    selector: 'occupancy',
+    templateUrl: './occupancy.widget.html',
+    styleUrls: ['./occupancy.widget.css'],
+    standalone: false
 })
 export class OccupancyWidget {
   /** Inputs and outputs go here */

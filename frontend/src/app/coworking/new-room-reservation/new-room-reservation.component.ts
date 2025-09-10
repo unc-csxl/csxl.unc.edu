@@ -5,9 +5,10 @@ import { NewRoomReservationService } from './new-room-reservation.service';
 import { GetRoomAvailabilityResponse } from '../coworking.models';
 
 @Component({
-  selector: 'app-new-room-reservation',
-  templateUrl: './new-room-reservation.component.html',
-  styleUrl: './new-room-reservation.component.css'
+    selector: 'app-new-room-reservation',
+    templateUrl: './new-room-reservation.component.html',
+    styleUrl: './new-room-reservation.component.css',
+    standalone: false
 })
 export class NewRoomReservationComponent {
   public static Route = {

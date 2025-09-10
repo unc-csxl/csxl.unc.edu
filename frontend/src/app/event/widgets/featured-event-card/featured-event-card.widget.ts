@@ -13,9 +13,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Profile } from 'src/app/models.module';
 
 @Component({
-  selector: 'featured-event-card',
-  templateUrl: './featured-event-card.widget.html',
-  styleUrl: './featured-event-card.widget.css'
+    selector: 'featured-event-card',
+    templateUrl: './featured-event-card.widget.html',
+    styleUrl: './featured-event-card.widget.css',
+    standalone: false
 })
 export class FeaturedEventCardWidget {
   @Input() profile: Profile | undefined;

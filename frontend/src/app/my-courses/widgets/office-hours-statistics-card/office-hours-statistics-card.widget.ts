@@ -9,9 +9,10 @@
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'office-hours-statistics-card',
-  templateUrl: './office-hours-statistics-card.widget.html',
-  styleUrl: './office-hours-statistics-card.widget.css'
+    selector: 'office-hours-statistics-card',
+    templateUrl: './office-hours-statistics-card.widget.html',
+    styleUrl: './office-hours-statistics-card.widget.css',
+    standalone: false
 })
 export class OfficeHoursStatisticsCardWidget {
   title = input<string>('');

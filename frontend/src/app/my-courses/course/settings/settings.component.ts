@@ -17,9 +17,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { myCoursesInstructorGuard } from '../../my-courses.guard';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrl: './settings.component.css',
+    standalone: false
 })
 export class SettingsComponent {
   [x: string]: any;

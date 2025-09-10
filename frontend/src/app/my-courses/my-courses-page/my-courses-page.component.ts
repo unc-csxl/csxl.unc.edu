@@ -10,9 +10,10 @@ interface CourseInformation extends CourseSiteOverview {
 }
 
 @Component({
-  selector: 'app-my-courses-page',
-  templateUrl: './my-courses-page.component.html',
-  styleUrl: './my-courses-page.component.css'
+    selector: 'app-my-courses-page',
+    templateUrl: './my-courses-page.component.html',
+    styleUrl: './my-courses-page.component.css',
+    standalone: false
 })
 export class MyCoursesPageComponent {
   /** Route information to be used in the routing module */

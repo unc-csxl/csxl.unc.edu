@@ -19,9 +19,10 @@ import {
 import { Subscription, interval, map } from 'rxjs';
 
 @Component({
-  selector: 'page-spinner',
-  templateUrl: './page-spinner.widget.html',
-  styleUrls: ['./page-spinner.widget.css']
+    selector: 'page-spinner',
+    templateUrl: './page-spinner.widget.html',
+    styleUrls: ['./page-spinner.widget.css'],
+    standalone: false
 })
 export class PageSpinnerWidget implements OnInit, OnDestroy {
   time = input.required<number>();

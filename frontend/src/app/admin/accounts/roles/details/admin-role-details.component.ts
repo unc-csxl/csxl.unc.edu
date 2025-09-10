@@ -25,9 +25,10 @@ import { RoleDetails } from 'src/app/role';
 import { RoleAdminService } from '../role-admin.service';
 
 @Component({
-  selector: 'app-admin-role-details',
-  templateUrl: './admin-role-details.component.html',
-  styleUrls: ['./admin-role-details.component.css']
+    selector: 'app-admin-role-details',
+    templateUrl: './admin-role-details.component.html',
+    styleUrls: ['./admin-role-details.component.css'],
+    standalone: false
 })
 export class AdminRoleDetailsComponent implements OnInit {
   public role: RoleDetails;

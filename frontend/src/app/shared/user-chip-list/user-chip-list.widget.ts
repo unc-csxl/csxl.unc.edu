@@ -11,9 +11,10 @@ import { Component, Input } from '@angular/core';
 import { PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
-  selector: 'user-chip-list',
-  templateUrl: './user-chip-list.widget.html',
-  styleUrls: ['./user-chip-list.widget.css']
+    selector: 'user-chip-list',
+    templateUrl: './user-chip-list.widget.html',
+    styleUrls: ['./user-chip-list.widget.css'],
+    standalone: false
 })
 export class UserChipList {
   @Input() users!: PublicProfile[];

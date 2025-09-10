@@ -11,9 +11,10 @@ import { Component, effect, input } from '@angular/core';
 import { SignageProfile } from '../../signage.model';
 
 @Component({
-  selector: 'leaderboard',
-  templateUrl: './leaderboard.widget.html',
-  styleUrls: ['./leaderboard.widget.css']
+    selector: 'leaderboard',
+    templateUrl: './leaderboard.widget.html',
+    styleUrls: ['./leaderboard.widget.css'],
+    standalone: false
 })
 export class LeaderboardWidget {
   profiles = input<SignageProfile[]>([]); // This array should have at most 10 elements

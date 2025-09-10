@@ -33,9 +33,10 @@ export interface EditAssignmentDialogData {
 }
 
 @Component({
-  selector: 'app-edit-assignment-dialog',
-  templateUrl: './edit-assignment.dialog.html',
-  styleUrl: './edit-assignment.dialog.css'
+    selector: 'app-edit-assignment-dialog',
+    templateUrl: './edit-assignment.dialog.html',
+    styleUrl: './edit-assignment.dialog.css',
+    standalone: false
 })
 export class EditAssignmentDialog {
   hiringAssignmentStatus = HiringAssignmentStatus;

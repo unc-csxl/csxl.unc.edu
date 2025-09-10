@@ -5,8 +5,9 @@ import { SlackInviteBox } from '../navigation/widgets/slack-invite-box/slack-inv
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-about',
-  templateUrl: './about.component.html'
+    selector: 'app-about',
+    templateUrl: './about.component.html',
+    standalone: false
 })
 export class AboutComponent implements OnInit, OnDestroy {
   private socket$: WebSocketSubject<any>;
