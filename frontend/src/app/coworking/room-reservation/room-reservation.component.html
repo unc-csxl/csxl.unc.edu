@@ -56,7 +56,7 @@
                                     @case('AVAILABLE') {
                                         <!-- primary-container-background -->
                                         @if(isSlotSelected(roomAvailability, slot)) {
-                                            <div class="primary-container-background h-12 w-[60px] mx-0.5 rounded" (click)="selectSlot(roomAvailability, slot)"></div>
+                                            <div class="primary-background h-12 w-[60px] mx-0.5 rounded" (click)="selectSlot(roomAvailability, slot)"></div>
                                         } @else {
                                             <div class="bg-[#bfcbad] dark:bg-[#404a33] h-12 w-[60px] mx-0.5 rounded" (click)="selectSlot(roomAvailability, slot)"></div>
                                         }
@@ -66,7 +66,7 @@
                                         <div class="bg-[#aac7ff] dark:bg-[#415f91] h-12 w-[60px] mx-0.5 rounded"></div>
                                     }
                                     @case('RESERVED') {
-                                        <!-- opacity-60 -->
+                                        <!-- opacity-60 tertiary-container-background-->
                                         <div class="tertiary-container-background h-12 w-[60px] mx-0.5 rounded"></div>
                                     }
                                     @case('UNAVAILABLE') {

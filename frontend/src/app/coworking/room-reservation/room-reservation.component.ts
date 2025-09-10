@@ -52,7 +52,6 @@ export class NewRoomReservationComponent {
     this.profile = data.profile as PublicProfile;
     this.selectedUsers = [this.profile];
 
-    // Connect form control to signal
     this.dateControl.valueChanges.subscribe((date) => {
       if (date) {
         // Refresh availability when date changes
@@ -62,7 +61,7 @@ export class NewRoomReservationComponent {
             this.availability =
               result.slot_labels.length > 0 ? result : undefined;
             this.selectedSlots = [];
-            this.selectedUsers = [];
+            this.selectedUsers = [this.profile];
           });
       }
     });
@@ -238,8 +237,8 @@ export class NewRoomReservationComponent {
               `/coworking/reservation/${draftReservation.id}`
             );
           },
-          error: (error) => {
-            this.snackBar.open(`${error.message}`, '', {
+          error: (err) => {
+            this.snackBar.open(`${err.error.message}`, '', {
               duration: 2000
             });
           }
