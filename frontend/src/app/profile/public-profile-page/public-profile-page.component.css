@@ -52,8 +52,8 @@ p {
 }
 
 .no-hover-chipset {
-  --mdc-chip-focus-state-layer-color: transparent !important;
-  --mdc-chip-hover-state-layer-color: transparent !important;
+  --mat-chip-focus-state-layer-color: transparent !important;
+  --mat-chip-hover-state-layer-color: transparent !important;
 }
 
 .mat-mdc-chip {
