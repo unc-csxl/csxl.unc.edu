@@ -14,7 +14,7 @@
                     @for(slot of availability.slot_labels; track slot; let onTheHour = $even) {
                         @if(onTheHour) {
                             <div class="flex flex-row items-center w-32 h-8 p-2 border-l border-l-[var(--mat-card-outlined-outline-color)]">
-                                <span class="font-medium body-large">{{ slot }}</span>
+                                <span class="font-medium body-medium">{{ slot }}</span>
                             </div>
                         }
                     }
@@ -24,10 +24,10 @@
                     <div class="flex flex-row">
                         <!-- Room header -->
                         <div class="flex flex-row items-center justify-between w-32 h-12">
-                            <span class="font-medium body-large">{{ roomAvailability.room }}</span>
-                            <div class="flex flex-row gap-1 items-center">
+                            <span class="font-medium! body-large">{{ roomAvailability.room }}</span>
+                            <div class="flex flex-row gap-1 items-center pr-2">
                                 <span class="pt-0.5">{{ roomAvailability.capacity }}</span>
-                                <mat-icon>chair_alt</mat-icon>
+                                <mat-icon class="secondary-icon size-3">chair_alt</mat-icon>
                             </div>
                         </div>
                         <!-- Availability for each time slot -->
@@ -71,7 +71,7 @@
                     <p class="body-large mb-0!"><strong>Reserving For:</strong></p>
                     <user-lookup
                         class="mb-[-16px] flex-1"
-                        [label]="`Select at least ${room.minimum_reservers} users to reserve ${room.room}`"
+                        [label]="availability?.is_instructor ? `Select other users to reserve ${room.room}` : `Select at least ${room.minimum_reservers} users to reserve ${room.room}`"
                         [maxSelected]="room.capacity"
                         [initialUser]="profile"
                         [initialUserImmutable]="true"

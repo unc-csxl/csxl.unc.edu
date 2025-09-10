@@ -201,6 +201,7 @@ export type GetRoomAvailabilityResponse_Room = {
 };
 
 export type GetRoomAvailabilityResponse = {
+  is_instructor: boolean;
   slot_labels: string[];
   slots: Record<string, GetRoomAvailabilityResponse_Slot>;
   rooms: GetRoomAvailabilityResponse_Room[];

@@ -8,7 +8,11 @@ from typing import Sequence
 from sqlalchemy import func, or_, and_, select
 from sqlalchemy.orm import Session, joinedload
 
+from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.academics.section_member_entity import SectionMemberEntity
+from backend.entities.academics.term_entity import TermEntity
 from backend.models.coworking import availability
+from backend.models.roster_role import RosterRole
 from ...entities.coworking.operating_hours_entity import OperatingHoursEntity
 from ...entities.coworking.reservation_user_table import reservation_user_table
 from ...entities.office_hours.office_hours_entity import OfficeHoursEntity
@@ -821,8 +825,12 @@ class ReservationService:
         # Enforce request range is within bounds of walkin vs. pre-reserved policies
         bounds = TimeRange(start=start, end=end)
 
+        # Determine whether or not the user is an instructor
+        is_instructor = self._user_is_instructor(subject)
+
         # Check if user has exceeded reservation limit
-        if request.room:
+        # Note: If the user is an instructor, no limits should be placed.
+        if request.room and not is_instructor:
             if not self._check_user_reservation_duration(request.users[0], bounds):
                 raise ReservationException(
                     "Oops! Looks like you've reached your weekly study room reservation limit"
@@ -1414,11 +1422,15 @@ class ReservationService:
                 str, GetRoomAvailabilityResponse_RoomAvailability
             ] = {}
             for slot_label, slot_start, slot_end in slots:
+                now = datetime.now()
                 # First, make sure that the time slot is within valid operating hours -
                 # otherwise, the reservation should be made unavailable.
-                if not any(
-                    oh.start <= slot_start and oh.end >= slot_end
-                    for oh in operating_hours
+                if (
+                    not any(
+                        oh.start <= slot_start and oh.end >= slot_end
+                        for oh in operating_hours
+                    )
+                    or now >= slot_start
                 ):
                     room_availability[slot_label] = (
                         GetRoomAvailabilityResponse_RoomAvailability(
@@ -1483,6 +1495,30 @@ class ReservationService:
                 start_time=slot_start, end_time=slot_end
             )
 
+        # Determine whether or not the user is an instructor
+        is_instructor = self._user_is_instructor(subject)
+
         return GetRoomAvailabilityResponse(
-            slot_labels=slot_labels, slots=slot_data, rooms=rooms
+            is_instructor=is_instructor,
+            slot_labels=slot_labels,
+            slots=slot_data,
+            rooms=rooms,
         )
+
+    def _user_is_instructor(self, subject: User) -> bool:
+        # Determine whether or not the subject is an instructor
+        now = datetime.now()
+        instructor_query = (
+            select(SectionMemberEntity)
+            .join(SectionMemberEntity.section)
+            .join(SectionEntity.term)
+            .where(
+                SectionMemberEntity.user_id == subject.id,
+                SectionMemberEntity.member_role == RosterRole.INSTRUCTOR,
+                TermEntity.start <= now,
+                TermEntity.end >= now,
+            )
+        )
+        instructor_query_result = self._session.scalars(instructor_query).all()
+        is_instructor = len(instructor_query_result) > 0
+        return is_instructor

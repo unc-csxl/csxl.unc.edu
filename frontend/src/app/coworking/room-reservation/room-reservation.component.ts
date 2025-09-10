@@ -170,8 +170,9 @@ export class NewRoomReservationComponent {
     if (!room) return false;
     const numSelectedUsers = this.selectedUsers.length;
     return (
-      numSelectedUsers >= room.minimum_reservers &&
-      numSelectedUsers <= room.capacity
+      this.availability!.is_instructor ||
+      (numSelectedUsers >= room.minimum_reservers &&
+        numSelectedUsers <= room.capacity)
     );
   }
 

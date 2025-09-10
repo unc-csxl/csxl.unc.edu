@@ -100,6 +100,7 @@ class GetRoomAvailabilityResponse_Room(BaseModel):
 
 
 class GetRoomAvailabilityResponse(BaseModel):
+    is_instructor: bool
     slot_labels: list[str]
     slots: dict[str, GetRoomAvailabilityResponse_Slot]  # [timeslot : availability]
     rooms: list[GetRoomAvailabilityResponse_Room]
