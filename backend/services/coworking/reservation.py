@@ -1,5 +1,6 @@
 """Service that manages reservations in the coworking space."""
 
+import math
 from fastapi import Depends
 from datetime import datetime, timedelta, time
 from random import random
@@ -1426,6 +1427,7 @@ class ReservationService:
             room = GetRoomAvailabilityResponse_Room(
                 room=reservable_room.id,
                 capacity=reservable_room.capacity,
+                minimum_reservers=math.ceil(reservable_room.capacity / 2),
                 availability=room_availability,
             )
             rooms.append(room)

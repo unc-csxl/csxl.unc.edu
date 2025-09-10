@@ -93,6 +93,7 @@ class GetRoomAvailabilityResponse_RoomAvailability(BaseModel):
 class GetRoomAvailabilityResponse_Room(BaseModel):
     room: str
     capacity: int
+    minimum_reservers: int
     availability: dict[
         str, GetRoomAvailabilityResponse_RoomAvailability
     ]  # [timeslot : availability]

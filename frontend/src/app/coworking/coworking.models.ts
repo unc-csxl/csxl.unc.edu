@@ -196,6 +196,7 @@ export type GetRoomAvailabilityResponse_Slot = {
 export type GetRoomAvailabilityResponse_Room = {
   room: string;
   capacity: number;
+  minimum_reservers: number;
   availability: Record<string, GetRoomAvailabilityResponse_RoomAvailability>;
 };
 

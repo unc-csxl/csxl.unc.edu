@@ -6,6 +6,10 @@ import {
   GetRoomAvailabilityResponse,
   GetRoomAvailabilityResponse_Room
 } from '../coworking.models';
+import { ActivatedRoute } from '@angular/router';
+import { Profile } from 'src/app/models.module';
+import { PublicProfile } from 'src/app/profile/profile.service';
+import { TimeRange } from 'src/app/time-range';
 
 type SlotSelection = { room: string; slot: string };
 
@@ -24,11 +28,23 @@ export class NewRoomReservationComponent {
     resolve: { profile: profileResolver }
   };
 
+  profile: PublicProfile;
+
   availability: GetRoomAvailabilityResponse | undefined = undefined;
 
-  selectedSlots: SlotSelection[] = [];
+  public selectedSlots: SlotSelection[] = [];
+  public selectedUsers: PublicProfile[] = [];
 
-  constructor(private roomReservationService: NewRoomReservationService) {
+  constructor(
+    protected route: ActivatedRoute,
+    private roomReservationService: NewRoomReservationService
+  ) {
+    /** Initialize data from resolvers. */
+    const data = this.route.snapshot.data as {
+      profile: Profile;
+    };
+    this.profile = data.profile as PublicProfile;
+    this.selectedUsers = [this.profile];
     this.roomReservationService.getAvailability().subscribe((result) => {
       this.availability = result;
     });
@@ -53,6 +69,7 @@ export class NewRoomReservationComponent {
     // If existing slots are for a different room, clear the selection and select.
     if (this.selectedSlots[0].room !== room.room) {
       this.selectedSlots = [{ room: room.room, slot }];
+      this.selectedUsers = this.selectedUsers.slice(0, room.capacity);
       return;
     }
 
@@ -71,7 +88,6 @@ export class NewRoomReservationComponent {
     // If the clicked slot is already selected:
     //    - If the slot is at the start or end, remove just the slot
     //    - Otherwise, start over selection
-    console.log(this.selectedSlots);
     if (
       this.selectedSlots.find((v) => v.room === room.room && v.slot === slot)
     ) {
@@ -127,6 +143,14 @@ export class NewRoomReservationComponent {
     }
   }
 
+  selectedRoom(): GetRoomAvailabilityResponse_Room | null {
+    if (!this.availability || this.selectedSlots.length === 0) return null;
+    const room = this.availability!.rooms.find(
+      (v) => v.room === this.selectedSlots[0].room
+    );
+    return room ? room : null;
+  }
+
   isSlotSelected(room: GetRoomAvailabilityResponse_Room, slot: string) {
     return !!this.selectedSlots.find(
       (v) => v.room === room.room && v.slot === slot
@@ -137,7 +161,35 @@ export class NewRoomReservationComponent {
     this.selectedSlots = [];
   }
 
-  printSelected() {
-    console.log(this.selectedSlots);
+  canDraftReservation() {
+    if (this.selectedSlots.length === 0) return false;
+    const room = this.selectedRoom();
+    if (!room) return false;
+    const numSelectedUsers = this.selectedUsers.length;
+    return (
+      numSelectedUsers >= room.minimum_reservers &&
+      numSelectedUsers <= room.capacity
+    );
+  }
+
+  selectedSlotTimeRange(): TimeRange | null {
+    if (!this.availability || this.selectedSlots.length === 0) return null;
+    const selectedSlotIndexes = Array.from(this.selectedSlots).map(
+      (selectedSlot) => {
+        return this.availability!.slot_labels.indexOf(selectedSlot.slot);
+      }
+    );
+    const earliestSlotIndex = Math.min(...selectedSlotIndexes);
+    const latestSlotIndex = Math.max(...selectedSlotIndexes);
+    const earliestSlot = this.availability.slot_labels[earliestSlotIndex];
+    const latestSlot = this.availability.slot_labels[latestSlotIndex];
+    return {
+      start: new Date(this.availability!.slots[earliestSlot].start_time),
+      end: new Date(this.availability!.slots[latestSlot].end_time)
+    };
+  }
+
+  onUsersChanged(users: PublicProfile[]) {
+    this.selectedUsers = users;
   }
 }

@@ -61,16 +61,26 @@
             </div>
         }
     </mat-card-content>
-    @if(selectedSlots.length > 0) {
+    @let room = selectedRoom();
+    @let selectedTimeslotRange = selectedSlotTimeRange();
+    @if(selectedSlots.length > 0 && !!room && !!selectedTimeslotRange) {
         <mat-card-footer class="flex flex-col w-full items-center px-8">
             <div class="flex flex-row w-full items-center justify-between gap-12 border-t border-t-[var(--mat-card-outlined-outline-color)] py-6">
                 <div class="flex flex-row gap-8 flex-1 items-center">
-                    <p class="body-large mb-0!"><strong>Selected:</strong> SN135 from 10:00a to 11:00a</p>
+                    <p class="body-large mb-0!"><strong>Selected:</strong> {{ room.room }} from {{ selectedTimeslotRange.start | date:'h:mma' }} to {{ selectedTimeslotRange.end | date:'h:mma' }}</p>
                     <p class="body-large mb-0!"><strong>Reserving For:</strong></p>
-                    <user-lookup class="mb-[-16px] flex-1" />
+                    <user-lookup
+                        class="mb-[-16px] flex-1"
+                        [label]="`Select at least ${room.minimum_reservers} users to reserve ${room.room}`"
+                        [maxSelected]="room.capacity"
+                        [initialUser]="profile"
+                        [initialUserImmutable]="true"
+                        [users]="selectedUsers"
+                        (usersChanged)="onUsersChanged($event)"
+                    />
                 </div>
                 <div class="flex flex-row gap-3 items-center">
-                    <button matButton="filled" (click)="printSelected()">
+                    <button matButton="filled" [disabled]="!canDraftReservation()">
                         Reserve
                     </button>
                     <button matButton="outlined" class="tertiary-button" (click)="clearSelections()">
