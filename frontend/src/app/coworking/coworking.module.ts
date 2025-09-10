@@ -33,6 +33,7 @@ import { AmbassadorRoomComponent } from './ambassador-home/ambassador-room/ambas
 import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-facts.widget';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
+import { NewRoomReservationComponent } from './new-room-reservation/new-room-reservation.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     NewReservationPageComponent,
     DateSelector,
     OperatingHoursDialog,
-    ReservationFactsWidget
+    ReservationFactsWidget,
+    NewRoomReservationComponent
   ],
   imports: [
     CommonModule,

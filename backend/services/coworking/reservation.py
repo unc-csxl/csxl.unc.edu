@@ -1,13 +1,24 @@
 """Service that manages reservations in the coworking space."""
 
 from fastapi import Depends
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from random import random
 from typing import Sequence
-from sqlalchemy import or_, and_
+from sqlalchemy import func, or_, and_, select
 from sqlalchemy.orm import Session, joinedload
+
+from backend.models.coworking import availability
+from ...entities.coworking.operating_hours_entity import OperatingHoursEntity
+from ...entities.coworking.reservation_user_table import reservation_user_table
+from ...entities.office_hours.office_hours_entity import OfficeHoursEntity
 from backend.entities.room_entity import RoomEntity
 
+from ...models.coworking.reservation import (
+    GetRoomAvailabilityResponse,
+    GetRoomAvailabilityResponse_Room,
+    GetRoomAvailabilityResponse_RoomAvailability,
+    RoomAvailabilityState,
+)
 from backend.models.room_details import RoomDetails
 from ...database import db_session
 from ...models.user import User, UserIdentity
@@ -1188,3 +1199,223 @@ class ReservationService:
             )
             .all()
         )
+
+    # New room reservation functionality
+
+    def get_room_availability(
+        self, subject: User, date: datetime | None
+    ) -> GetRoomAvailabilityResponse:
+        """Determines the room availability for a given user."""
+        # Convenience functions to get the start and end of either the selected date
+        # or the current date if no selection was provided.
+        today = date.date() if date else datetime.now().date()
+        start_of_day = datetime.combine(today, time.min)
+        end_of_day = datetime.combine(today, time.max)
+
+        # Get the operating hours for the current day.
+        operating_hours_query = select(OperatingHoursEntity).where(
+            OperatingHoursEntity.start < end_of_day,
+            OperatingHoursEntity.end > start_of_day,
+        )
+        operating_hours = self._session.scalars(operating_hours_query).all()
+
+        # If no operating hours exist, return no available slots for the day.
+        if len(operating_hours) == 0:
+            return GetRoomAvailabilityResponse(slots=[], rooms=[])
+
+        # Determine all of the possible reservations slots between the start and end
+        # of the operating hours
+        operating_hours_open = min(oh.start for oh in operating_hours)
+        operating_hours_close = max(oh.end for oh in operating_hours)
+
+        # Generate 30-minute time slots between open and close times
+        # Note: `slots` are stored in the format (label, start_time, end_time)
+        slots: list[tuple[str, datetime, datetime]] = []
+        # Note: The current time is either the start of the day (if a reservation is
+        # overlapping from a previous day) or is the opening time rounded back to the
+        # start of the hour.
+        current_time = max(operating_hours_open.replace(minute=0), start_of_day)
+        end_time_cutoff = min(end_of_day, operating_hours_close)
+        while current_time < end_time_cutoff:
+            # Determine the readable label for the slot
+            hour = (
+                current_time.hour if current_time.hour <= 12 else current_time.hour - 12
+            )
+            hour = 12 if hour == 0 else hour
+            minute = current_time.minute
+            period = "a" if current_time.hour < 12 else "p"
+            slot_label = f"{hour}:{minute:02d}{period}"
+            # If the current time is somewhere between a 30min interval, we want to adjust
+            # the current time so that it is exactly on the next 30min mark for the next
+            # iteration. Otherwise, we can just move the time by 30min.
+            offset_from_half_hr = current_time.minute % 30
+            minutes_adjustment = (
+                30 if offset_from_half_hr == 0 else 30 - offset_from_half_hr
+            )
+            end_time = current_time + timedelta(minutes=minutes_adjustment)
+            # Add the slot
+            slots.append((slot_label, current_time, end_time))
+            # Adjust the current time for the next iteration
+            current_time = end_time
+
+        # Get all reservable rooms
+        reservable_rooms = self._get_reservable_rooms()
+
+        # Keep track of room reservation data
+        rooms: list[GetRoomAvailabilityResponse_Room] = []
+
+        # We now want to determine the availability for all reservable rooms over every timeslot.
+        # The traditional solution to this problem would produce O(rooms * slots) number of queries
+        # for reservations, so the solution below optimizes this by fetching all reservations that
+        # might match the timeslot range at once in buld, reducing the number of queries to just 3.
+        # The rest of the logic is completed in memory.
+
+        # Prepare data for bulk queries
+        room_ids = [room.id for room in reservable_rooms]
+        slot_time_ranges = [(slot_start, slot_end) for _, slot_start, slot_end in slots]
+
+        # First query: Get all user reservations for the current user across all rooms and time slots
+        user_reservations_query = (
+            select(ReservationEntity, reservation_user_table.c.user_id)
+            .join(
+                reservation_user_table,
+                ReservationEntity.id == reservation_user_table.c.reservation_id,
+            )
+            .where(
+                ReservationEntity.room_id.in_(room_ids),
+                reservation_user_table.c.user_id == subject.id,
+                or_(
+                    *[
+                        and_(
+                            ReservationEntity.start < slot_end,
+                            ReservationEntity.end > slot_start,
+                        )
+                        for slot_start, slot_end in slot_time_ranges
+                    ]
+                ),
+            )
+        )
+        user_reservation_results = self._session.execute(user_reservations_query).all()
+
+        # Second query: Get all general reservations across all rooms and time slots
+        general_reservations_query = select(ReservationEntity).where(
+            ReservationEntity.room_id.in_(room_ids),
+            or_(
+                *[
+                    and_(
+                        ReservationEntity.start < slot_end,
+                        ReservationEntity.end > slot_start,
+                    )
+                    for slot_start, slot_end in slot_time_ranges
+                ]
+            ),
+        )
+        general_reservation_results = self._session.scalars(
+            general_reservations_query
+        ).all()
+
+        # Third query: Get all of the office hours across all rooms and time slots
+        office_hours_query = select(OfficeHoursEntity).where(
+            OfficeHoursEntity.room_id.in_(room_ids),
+            or_(
+                *[
+                    and_(
+                        OfficeHoursEntity.start_time < slot_end,
+                        OfficeHoursEntity.end_time > slot_start,
+                    )
+                    for slot_start, slot_end in slot_time_ranges
+                ]
+            ),
+        )
+        office_hours_results = self._session.scalars(office_hours_query).all()
+
+        # Now, to make checking for whether or not a user reservation or general reservation
+        # exists for a combination of a room and timeslot, we will create a lookup dictionary.
+        # Key format: (room_id, slot_label) : ReservationEntity
+        user_reservations_lookup: dict[tuple[str, str], ReservationEntity] = {}
+        general_reservations_lookup: dict[tuple[str, str], ReservationEntity] = {}
+        office_hours_lookup: dict[tuple[str, str], ReservationEntity] = {}
+
+        # Build up user reservations lookup table
+        for reservation, _ in user_reservation_results:
+            for slot_label, slot_start, slot_end in slots:
+                if reservation.start < slot_end and reservation.end > slot_start:
+                    room_slot_key = (reservation.room_id, slot_label)
+                    user_reservations_lookup[room_slot_key] = reservation
+
+        # Build up general reservations lookup table
+        for reservation in general_reservation_results:
+            for slot_label, slot_start, slot_end in slots:
+                if reservation.start < slot_end and reservation.end > slot_start:
+                    room_slot_key = (reservation.room_id, slot_label)
+                    general_reservations_lookup[room_slot_key] = reservation
+
+        # Build up office hours lookup table
+        for office_hours in office_hours_results:
+            for slot_label, slot_start, slot_end in slots:
+                if (
+                    office_hours.start_time < slot_end
+                    and office_hours.end_time > slot_start
+                ):
+                    room_slot_key = (office_hours.room_id, slot_label)
+                    office_hours_lookup[room_slot_key] = office_hours
+
+        # For each reservable room and each timeslot, determine whether or not the room
+        # is available for the timeslot.
+        for reservable_room in reservable_rooms:
+            # Availability for the room, stored in the form [timeslot : avilability]
+            room_availability: dict[
+                str, GetRoomAvailabilityResponse_RoomAvailability
+            ] = {}
+            for slot_label, slot_start, slot_end in slots:
+                # First, make sure that the time slot is within valid operating hours -
+                # otherwise, the reservation should be made unavailable.
+                if not any(
+                    oh.start <= slot_start and oh.end >= slot_end
+                    for oh in operating_hours
+                ):
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.UNAVAILABLE
+                        )
+                    )
+                    continue
+
+                # Check if user has a reservation for this room and time slot
+                room_slot_key = (reservable_room.id, slot_label)
+                if room_slot_key in user_reservations_lookup:
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.YOUR_RESERVATION
+                        )
+                    )
+                    continue
+
+                # Check if any reservation exists for this room and time slot or
+                # if office hours exists
+                if (
+                    room_slot_key in general_reservations_lookup
+                    or room_slot_key in office_hours_lookup
+                ):
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.RESERVED
+                        )
+                    )
+                    continue
+
+                # Otherwise, the room should be available.
+                room_availability[slot_label] = (
+                    GetRoomAvailabilityResponse_RoomAvailability(
+                        state=RoomAvailabilityState.AVAILABLE
+                    )
+                )
+            # Finalize the availability for the room
+            room = GetRoomAvailabilityResponse_Room(
+                room=reservable_room.id, availability=room_availability
+            )
+            rooms.append(room)
+
+        # Parse the slot labels
+        slot_labels = [slot_label for slot_label, _, _ in slots]
+        return GetRoomAvailabilityResponse(slots=slot_labels, rooms=rooms)

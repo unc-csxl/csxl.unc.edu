@@ -27,8 +27,8 @@
             ],
             "styles": [
               "node_modules/@angular/material/prebuilt-themes/magenta-violet.css",
-              "src/styles/styles.scss"
-              
+              "src/styles/styles.scss",
+              "src/styles/tailwind.css"
             ],
             "scripts": [],
             "browser": "src/main.ts"

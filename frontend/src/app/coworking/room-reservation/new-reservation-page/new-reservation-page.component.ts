@@ -20,7 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class NewReservationPageComponent implements OnInit {
   public static Route = {
-    path: 'new-reservation',
+    path: 'old-new-reservation',
     title: 'New Reservation',
     component: NewReservationPageComponent,
     canActivate: [isAuthenticated],
