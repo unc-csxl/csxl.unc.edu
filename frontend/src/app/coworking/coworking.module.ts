@@ -29,6 +29,9 @@ import { AmbassadorRoomComponent } from './ambassador-home/ambassador-room/ambas
 import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-facts.widget';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NewRoomReservationComponent } from './room-reservation/room-reservation.component';
+import { OperatingHoursComponent } from './operating-hours/operating-hours.component';
+import { OperatingHoursEditorComponent } from './operating-hours/editor/operating-hours-editor.component';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,9 @@ import { NewRoomReservationComponent } from './room-reservation/room-reservation
     CoworkingReservationCard,
     OperatingHoursDialog,
     ReservationFactsWidget,
-    NewRoomReservationComponent
+    NewRoomReservationComponent,
+    OperatingHoursComponent,
+    OperatingHoursEditorComponent
   ],
   imports: [
     CommonModule,
@@ -70,7 +75,8 @@ import { NewRoomReservationComponent } from './room-reservation/room-reservation
     MatFormFieldModule,
     MatTooltipModule,
     MatTabsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTimepickerModule
   ]
 })
 export class CoworkingModule {}
