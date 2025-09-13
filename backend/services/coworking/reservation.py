@@ -914,10 +914,21 @@ class ReservationService:
             seat_entities = [self._session.get(SeatEntity, seat_availability[0].id)]
             bounds = seat_availability[0].availability[0]
         else:
-            # Prevent double booking a room
+            # Handle room reservations conflicts
             conflicts = self._fetch_conflicting_room_reservations(request)
             if len(conflicts) > 0:
                 raise ReservationException("The requested room is no longer available.")
+            # Check against existing office hours
+            office_hours_query = select(OfficeHoursEntity).where(
+                OfficeHoursEntity.room_id == request.room.id,
+                OfficeHoursEntity.start_time < bounds.end,
+                OfficeHoursEntity.end_time > bounds.start,
+            )
+            office_hours_results = self._session.scalars(office_hours_query).all()
+            if len(office_hours_results) > 0:
+                raise ReservationException(
+                    "Cannot reserve a room used for office hours."
+                )
 
         draft = ReservationEntity(
             state=ReservationState.DRAFT,
