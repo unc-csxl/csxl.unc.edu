@@ -92,7 +92,7 @@
                     <p class="body-large mb-0!"><strong>Reserving For:</strong></p>
                     <user-lookup
                         class="mb-[-16px] w-full lg:flex-1"
-                        [label]="availability?.is_instructor ? `Select other users to reserve ${room.room}` : `Select at least ${room.minimum_reservers} users to reserve ${room.room}`"
+                        [label]="availability?.is_instructor ? `Select other users to reserve ${room.room}` : `Select at least ${room.minimum_reservers} user${room.minimum_reservers === 1 ? '' : 's'} to reserve ${room.room}`"
                         [maxSelected]="room.capacity"
                         [initialUser]="profile"
                         [initialUserImmutable]="true"
@@ -101,7 +101,14 @@
                     />
                 </div>
                 <div class="flex flex-row-reverse md:flex-row gap-3 items-center">
-                    <button matButton="filled" (click)="draftReservation()" [disabled]="!canDraftReservation()">
+                    @let remainingNeededUsers = room.minimum_reservers - selectedUsers.length;
+                    <button
+                        matButton="filled"
+                        (click)="draftReservation()"
+                        [disabled]="!canDraftReservation()"
+                        disabledInteractive
+                        [matTooltip]="canDraftReservation() ? undefined : `Select ${remainingNeededUsers} more user${remainingNeededUsers === 1 ? '' : 's'}.`"
+                    >
                         Reserve
                     </button>
                     <button matButton="outlined" class="tertiary-button" (click)="clearSelections()">
