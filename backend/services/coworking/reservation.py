@@ -45,7 +45,7 @@ from ...models.coworking import (
 from ...entities import UserEntity
 from ...entities.coworking import ReservationEntity, SeatEntity
 from .seat import SeatService
-from .policy import PolicyService
+from .policy import OH_HOURS, PolicyService
 from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
@@ -1468,9 +1468,28 @@ class ReservationService:
 
                 # Check if any reservation exists for this room and time slot or
                 # if office hours exists
+                day_of_week = now.weekday()
+                office_hour_policy_for_day: list[tuple[time, time]] = (
+                    OH_HOURS[day_of_week][reservable_room.id]
+                    if reservable_room.id in OH_HOURS[day_of_week]
+                    else []
+                )
+
+                office_hour_policy_time_ranges = [
+                    TimeRange(
+                        start=datetime.combine(now.date(), start_time),
+                        end=datetime.combine(now.date(), end_time),
+                    )
+                    for start_time, end_time in office_hour_policy_for_day
+                ]
+                policy_conflict = any(
+                    slot_start < time_range.end and slot_end >= time_range.start
+                    for time_range in office_hour_policy_time_ranges
+                )
                 if (
                     room_slot_key in general_reservations_lookup
                     or room_slot_key in office_hours_lookup
+                    or policy_conflict
                 ):
                     room_availability[slot_label] = (
                         GetRoomAvailabilityResponse_RoomAvailability(
