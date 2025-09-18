@@ -1,7 +1,8 @@
 @use '@angular/material' as mat;
 @use './theme.scss' as csxl-theme;
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 /** Global CSS Styles */
 
@@ -364,7 +365,7 @@ body {
   }
 
   .mat-divider {
-    border-top-color: var(--mdc-outlined-card-outline-color)
+    border-top-color: var(--mat-card-outlined-outline-color)
   }
 }
 
@@ -398,11 +399,11 @@ body {
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-table-styles($theme) {
   .mat-mdc-cell {
-    border-bottom-color: var(--mdc-outlined-card-outline-color)
+    border-bottom-color: var(--mat-card-outlined-outline-color)
   }
 
   .mat-mdc-header-cell {
-    border-bottom-color: var(--mdc-outlined-card-outline-color)
+    border-bottom-color: var(--mat-card-outlined-outline-color)
   }
 }
 
@@ -579,7 +580,7 @@ body {
 
   mat-filter-chip-dialog {
     @include mat.form-field-overrides((
-      container-color: mat.get-theme-color($theme, surface-container-high),
+      filled-container-color: mat.get-theme-color($theme, surface-container-high),
       hover-state-layer-opacity: 0
   ));
 

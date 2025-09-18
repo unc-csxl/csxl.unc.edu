@@ -6,8 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Profile } from '../models.module';
 
 @Component({
-  selector: 'app-home',
-  template: ''
+    selector: 'app-home',
+    template: '',
+    standalone: false
 })
 export class HomeComponent {
   public static Route = {

@@ -11,9 +11,10 @@ import { Component, effect, input } from '@angular/core';
 import { EventOverview } from '../../../event/event.model';
 
 @Component({
-  selector: 'event-card',
-  templateUrl: './event-card.widget.html',
-  styleUrl: './event-card.widget.css'
+    selector: 'event-card',
+    templateUrl: './event-card.widget.html',
+    styleUrl: './event-card.widget.css',
+    standalone: false
 })
 export class EventCardWidget {
   events = input<EventOverview[]>([]);

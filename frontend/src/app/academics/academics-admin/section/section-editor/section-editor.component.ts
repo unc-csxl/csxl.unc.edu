@@ -62,9 +62,10 @@ const canActivateEditor: CanActivateFn = (
   }
 };
 @Component({
-  selector: 'app-section-editor',
-  templateUrl: './section-editor.component.html',
-  styleUrls: ['./section-editor.component.css']
+    selector: 'app-section-editor',
+    templateUrl: './section-editor.component.html',
+    styleUrls: ['./section-editor.component.css'],
+    standalone: false
 })
 export class SectionEditorComponent {
   /** Route information to be used in the Routing Module */

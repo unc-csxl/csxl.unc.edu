@@ -124,7 +124,7 @@ a {
 
 /* Round the border for the profile image chip */
 .mat-mdc-standard-chip {
-  --mdc-chip-container-shape-radius: 16px;
+  --mat-chip-container-shape-radius: 16px;
 }
 
 ::ng-deep #profile-icon {

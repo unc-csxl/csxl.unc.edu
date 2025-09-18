@@ -13,9 +13,10 @@ import { RoomReservationService } from '../../room-reservation/room-reservation.
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'room-reservation-table',
-  templateUrl: './room-reservation-table.widget.html',
-  styleUrls: ['./room-reservation-table.widget.css']
+    selector: 'room-reservation-table',
+    templateUrl: './room-reservation-table.widget.html',
+    styleUrls: ['./room-reservation-table.widget.css'],
+    standalone: false
 })
 export class RoomReservationWidgetComponent {
   timeSlots: string[] = [];

@@ -44,9 +44,10 @@ const canActivateEditor: CanActivateFn = (
   }
 };
 @Component({
-  selector: 'app-room-editor',
-  templateUrl: './room-editor.component.html',
-  styleUrls: ['./room-editor.component.css']
+    selector: 'app-room-editor',
+    templateUrl: './room-editor.component.html',
+    styleUrls: ['./room-editor.component.css'],
+    standalone: false
 })
 export class RoomEditorComponent {
   /** Route information to be used in the Routing Module */

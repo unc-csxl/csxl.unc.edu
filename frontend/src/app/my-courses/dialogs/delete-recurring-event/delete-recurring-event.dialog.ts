@@ -4,9 +4,10 @@ import { MyCoursesService } from '../../my-courses.service';
 import { OfficeHourEventOverview } from '../../my-courses.model';
 
 @Component({
-  selector: 'dialog-delete-recurring-event',
-  templateUrl: './delete-recurring-event.dialog.html',
-  styleUrl: './delete-recurring-event.dialog.css'
+    selector: 'dialog-delete-recurring-event',
+    templateUrl: './delete-recurring-event.dialog.html',
+    styleUrl: './delete-recurring-event.dialog.css',
+    standalone: false
 })
 export class DeleteRecurringEventDialog {
   /** Delete one vs. delete all */

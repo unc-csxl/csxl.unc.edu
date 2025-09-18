@@ -26,9 +26,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-coworking-home',
-  templateUrl: './coworking-home.component.html',
-  styleUrls: ['./coworking-home.component.css']
+    selector: 'app-coworking-home',
+    templateUrl: './coworking-home.component.html',
+    styleUrls: ['./coworking-home.component.css'],
+    standalone: false
 })
 export class CoworkingPageComponent implements OnInit, OnDestroy {
   public status: Signal<CoworkingStatus>;

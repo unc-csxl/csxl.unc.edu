@@ -5,9 +5,10 @@ import { HiringService } from '../hiring.service';
 import { HiringLevel } from '../hiring.models';
 
 @Component({
-  selector: 'app-levels-admin',
-  templateUrl: './levels-admin.component.html',
-  styleUrl: './levels-admin.component.css'
+    selector: 'app-levels-admin',
+    templateUrl: './levels-admin.component.html',
+    styleUrl: './levels-admin.component.css',
+    standalone: false
 })
 export class LevelsAdminComponent {
   /** Route for the routing module */

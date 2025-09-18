@@ -25,9 +25,10 @@ export interface ApplicationDialogData {
 }
 
 @Component({
-  selector: 'app-application-dialog',
-  templateUrl: './application-dialog.dialog.html',
-  styleUrl: './application-dialog.dialog.css'
+    selector: 'app-application-dialog',
+    templateUrl: './application-dialog.dialog.html',
+    styleUrl: './application-dialog.dialog.css',
+    standalone: false
 })
 export class ApplicationDialog implements OnInit, OnDestroy {
   notes = new FormControl('');

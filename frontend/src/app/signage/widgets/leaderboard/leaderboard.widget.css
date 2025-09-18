@@ -69,8 +69,8 @@
 
 .leaderboard-chips {
   display: flex;
-  --mdc-chip-container-shape-family: rounded !important;
-  --mdc-chip-container-shape-radius: 20px !important;
+  --mat-chip-container-shape-family: rounded !important;
+  --mat-chip-container-shape-radius: 20px !important;
   width: 66%;
   height: 37px;
   align-items: left;

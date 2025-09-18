@@ -32,9 +32,10 @@ import { roomsResolver } from 'src/app/academics/academics.resolver';
 import { Room } from 'src/app/coworking/coworking.models';
 
 @Component({
-  selector: 'app-office-hours-editor',
-  templateUrl: './office-hours-editor.component.html',
-  styleUrl: './office-hours-editor.component.css'
+    selector: 'app-office-hours-editor',
+    templateUrl: './office-hours-editor.component.html',
+    styleUrl: './office-hours-editor.component.css',
+    standalone: false
 })
 export class OfficeHoursEditorComponent {
   /** Route information to be used in the routing module */

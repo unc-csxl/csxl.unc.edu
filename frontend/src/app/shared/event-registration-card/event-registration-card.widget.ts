@@ -12,9 +12,10 @@ import { EventOverview } from 'src/app/event/event.model';
 import { EventService } from 'src/app/event/event.service';
 
 @Component({
-  selector: 'event-registration-card',
-  templateUrl: './event-registration-card.widget.html',
-  styleUrl: './event-registration-card.widget.css'
+    selector: 'event-registration-card',
+    templateUrl: './event-registration-card.widget.html',
+    styleUrl: './event-registration-card.widget.css',
+    standalone: false
 })
 export class EventRegistrationCardWidget {
   @Input() event!: EventOverview;

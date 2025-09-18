@@ -26,9 +26,10 @@ import { ApplicationDialog } from '../dialogs/application-dialog/application-dia
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-hiring-preferences',
-  templateUrl: './hiring-preferences.component.html',
-  styleUrl: './hiring-preferences.component.css'
+    selector: 'app-hiring-preferences',
+    templateUrl: './hiring-preferences.component.html',
+    styleUrl: './hiring-preferences.component.css',
+    standalone: false
 })
 export class HiringPreferencesComponent {
   /** Route for the routing module */

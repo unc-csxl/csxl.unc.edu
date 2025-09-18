@@ -6,9 +6,10 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-level-editor',
-  templateUrl: './level-editor.component.html',
-  styleUrl: './level-editor.component.css'
+    selector: 'app-level-editor',
+    templateUrl: './level-editor.component.html',
+    styleUrl: './level-editor.component.css',
+    standalone: false
 })
 export class LevelEditorComponent {
   /** Route for the routing module */

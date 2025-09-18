@@ -93,8 +93,8 @@ mat-card-header {
 }
 
 .no-hover-chip-container {
-  --mdc-chip-focus-state-layer-color: transparent !important;
-  --mdc-chip-hover-state-layer-color: transparent !important;
+  --mat-chip-focus-state-layer-color: transparent !important;
+  --mat-chip-hover-state-layer-color: transparent !important;
 }
 
 .coworking-pane {

@@ -13,15 +13,16 @@ import { ApplicationSectionChoice } from '../../applications.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
-  selector: 'application-form-field',
-  templateUrl: './application-form-field.widget.html',
-  styleUrl: './application-form-field.widget.css',
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      useExisting: FormGroupDirective
-    }
-  ]
+    selector: 'application-form-field',
+    templateUrl: './application-form-field.widget.html',
+    styleUrl: './application-form-field.widget.css',
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            useExisting: FormGroupDirective
+        }
+    ],
+    standalone: false
 })
 export class ApplicationFormFieldWidget {
   fieldType = FormFieldType;

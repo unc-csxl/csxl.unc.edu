@@ -12,9 +12,10 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'slack-invite-box',
-  templateUrl: './slack-invite-box.widget.html',
-  styleUrls: ['./slack-invite-box.widget.css']
+    selector: 'slack-invite-box',
+    templateUrl: './slack-invite-box.widget.html',
+    styleUrls: ['./slack-invite-box.widget.css'],
+    standalone: false
 })
 export class SlackInviteBox {
   public realName: boolean = false;
