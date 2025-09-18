@@ -26,9 +26,10 @@ export interface CreateAssignmentDialogData {
 }
 
 @Component({
-  selector: 'app-create-assignment-dialog',
-  templateUrl: './create-assignment.dialog.html',
-  styleUrl: './create-assignment.dialog.css'
+    selector: 'app-create-assignment-dialog',
+    templateUrl: './create-assignment.dialog.html',
+    styleUrl: './create-assignment.dialog.css',
+    standalone: false
 })
 export class CreateAssignmentDialog {
   hiringAssignmentStatus = HiringAssignmentStatus;

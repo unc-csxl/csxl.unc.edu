@@ -17,9 +17,10 @@ import { AcademicsService } from '../../academics.service';
 import { RxCourseList } from '../rx-academics-admin';
 
 @Component({
-  selector: 'app-admin-course',
-  templateUrl: './admin-course.component.html',
-  styleUrls: ['./admin-course.component.css']
+    selector: 'app-admin-course',
+    templateUrl: './admin-course.component.html',
+    styleUrls: ['./admin-course.component.css'],
+    standalone: false
 })
 export class AdminCourseComponent {
   public static Route = {

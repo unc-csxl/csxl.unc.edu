@@ -13,9 +13,10 @@ import { SignageAnnouncement } from '../../signage.model';
 const SECONDS_BETWEEN_CHANGE = 120;
 
 @Component({
-  selector: 'announcement-card',
-  templateUrl: 'announcement-card.widget.html',
-  styleUrls: ['announcement-card.widget.css']
+    selector: 'announcement-card',
+    templateUrl: 'announcement-card.widget.html',
+    styleUrls: ['announcement-card.widget.css'],
+    standalone: false
 })
 export class AnnouncementCardWidget implements OnDestroy {
   announcements = input<SignageAnnouncement[]>([]);

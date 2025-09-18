@@ -16,9 +16,10 @@ import { ProfileService } from 'src/app/profile/profile.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'community-agreement',
-  templateUrl: './community-agreement.widget.html',
-  styleUrls: ['./community-agreement.widget.css']
+    selector: 'community-agreement',
+    templateUrl: './community-agreement.widget.html',
+    styleUrls: ['./community-agreement.widget.css'],
+    standalone: false
 })
 export class CommunityAgreement {
   public hasUserAgreed: boolean | undefined = false;

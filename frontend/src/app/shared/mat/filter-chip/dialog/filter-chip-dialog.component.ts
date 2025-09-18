@@ -17,9 +17,10 @@ import { MatListOption } from '@angular/material/list';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'mat-filter-chip-dialog',
-  templateUrl: './filter-chip-dialog.component.html',
-  styleUrl: './filter-chip-dialog.component.css'
+    selector: 'mat-filter-chip-dialog',
+    templateUrl: './filter-chip-dialog.component.html',
+    styleUrl: './filter-chip-dialog.component.css',
+    standalone: false
 })
 export class MatFilterChipDialog<SelectItemT> {
   // Chip's selected items.

@@ -23,9 +23,10 @@ import {
 import { RxTermList } from '../rx-academics-admin';
 
 @Component({
-  selector: 'app-admin-section',
-  templateUrl: './admin-section.component.html',
-  styleUrls: ['./admin-section.component.css']
+    selector: 'app-admin-section',
+    templateUrl: './admin-section.component.html',
+    styleUrls: ['./admin-section.component.css'],
+    standalone: false
 })
 export class AdminSectionComponent {
   public static Route = {

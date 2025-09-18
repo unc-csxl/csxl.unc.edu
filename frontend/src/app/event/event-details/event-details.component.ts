@@ -30,9 +30,10 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 };
 
 @Component({
-  selector: 'app-event-details',
-  templateUrl: './event-details.component.html',
-  styleUrls: ['./event-details.component.css']
+    selector: 'app-event-details',
+    templateUrl: './event-details.component.html',
+    styleUrls: ['./event-details.component.css'],
+    standalone: false
 })
 export class EventDetailsComponent implements OnInit {
   /** Route information to be used in Event Routing Module */

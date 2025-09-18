@@ -38,9 +38,10 @@ import saveAs from 'file-saver';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-statistics',
-  templateUrl: './statistics.component.html',
-  styleUrl: './statistics.component.css'
+    selector: 'app-statistics',
+    templateUrl: './statistics.component.html',
+    styleUrl: './statistics.component.css',
+    standalone: false
 })
 export class StatisticsComponent {
   /** Route information to be used in the routing module */

@@ -16,9 +16,10 @@ import { CoworkingService } from '../../coworking.service';
 const FIVE_SECONDS = 5 * 1000;
 
 @Component({
-  selector: 'app-ambassador-xl',
-  templateUrl: './ambassador-xl.component.html',
-  styleUrls: ['./ambassador-xl.component.css']
+    selector: 'app-ambassador-xl',
+    templateUrl: './ambassador-xl.component.html',
+    styleUrls: ['./ambassador-xl.component.css'],
+    standalone: false
 })
 export class AmbassadorXLComponent implements OnDestroy, OnInit {
   /** Route information to be used in App Routing Module */

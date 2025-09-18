@@ -14,7 +14,10 @@ import { Profile } from '../profile/profile.service';
 import { profileResolver } from '../profile/profile.resolver';
 import { isAuthenticated } from './gate.guard';
 
-@Component({ template: '' })
+@Component({
+    template: '',
+    standalone: false
+})
 export class GateComponent {
   public static Route = {
     path: 'gate',

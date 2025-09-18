@@ -34,9 +34,10 @@ const NOTIFICATION_TITLE: string = 'Queued Ticket!';
 const CHIME = new Audio('assets/office-hours-notif.wav');
 
 @Component({
-  selector: 'app-office-hours-queue',
-  templateUrl: './office-hours-queue.component.html',
-  styleUrl: './office-hours-queue.component.css'
+    selector: 'app-office-hours-queue',
+    templateUrl: './office-hours-queue.component.html',
+    styleUrl: './office-hours-queue.component.css',
+    standalone: false
 })
 export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   /** Route information to be used in the routing module */

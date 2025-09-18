@@ -44,9 +44,10 @@ const canActivateEditor: CanActivateFn = (
 };
 
 @Component({
-  selector: 'app-course-editor',
-  templateUrl: './course-editor.component.html',
-  styleUrls: ['./course-editor.component.css']
+    selector: 'app-course-editor',
+    templateUrl: './course-editor.component.html',
+    styleUrls: ['./course-editor.component.css'],
+    standalone: false
 })
 export class CourseEditorComponent {
   /** Route information to be used in the Routing Module */
