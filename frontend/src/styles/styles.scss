@@ -365,7 +365,7 @@ body {
   }
 
   .mat-divider {
-    border-top-color: var(--mdc-outlined-card-outline-color)
+    border-top-color: var(--mat-card-outlined-outline-color)
   }
 }
 
@@ -399,11 +399,11 @@ body {
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-table-styles($theme) {
   .mat-mdc-cell {
-    border-bottom-color: var(--mdc-outlined-card-outline-color)
+    border-bottom-color: var(--mat-card-outlined-outline-color)
   }
 
   .mat-mdc-header-cell {
-    border-bottom-color: var(--mdc-outlined-card-outline-color)
+    border-bottom-color: var(--mat-card-outlined-outline-color)
   }
 }
 
