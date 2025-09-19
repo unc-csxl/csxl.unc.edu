@@ -6,7 +6,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { courseSitePageGuard } from '../office-hours.guard';
 import { officeHoursResolver } from '../office-hours.resolver';
 import {
@@ -30,6 +30,8 @@ import {
 import { DatePipe } from '@angular/common';
 import { roomsResolver } from 'src/app/academics/academics.resolver';
 import { Room } from 'src/app/coworking/coworking.models';
+import { map, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-office-hours-editor',
@@ -144,6 +146,9 @@ export class OfficeHoursEditorComponent {
     }
   );
 
+  @ViewChild('roomInput') input: ElementRef<HTMLInputElement> | undefined;
+  public filteredRooms: Room[];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -212,6 +217,8 @@ export class OfficeHoursEditorComponent {
       this.officeHoursForm.controls.recurs.disable();
       this.officeHoursForm.controls.recur_end.disable();
     }
+
+    this.filteredRooms = this.rooms;
   }
 
   /** "Null" comparator function to prevent keyvalue pipe from sorting
@@ -382,5 +389,12 @@ export class OfficeHoursEditorComponent {
     if (mode === 1) return 'Virtual - Student Link';
     if (mode === 2) return 'Virtual - Our Link';
     return '';
+  }
+
+  filterRooms() {
+    const filterValue = this.input?.nativeElement.value.toLowerCase();
+    this.filteredRooms = this.rooms.filter((room) =>
+      room.id?.toLowerCase().includes(filterValue?.toLowerCase() || '')
+    );
   }
 }
