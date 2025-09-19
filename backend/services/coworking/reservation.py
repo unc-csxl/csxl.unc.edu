@@ -1474,8 +1474,12 @@ class ReservationService:
                     )
                     continue
 
-                # Check if a user has a reservation for another room in the timeslot
-                if slot_label in user_reservations_timeslots:
+                # Check if a user has a reservation for another room in the timeslot or if
+                # office hours are occurring in that timeslot
+                if (
+                    slot_label in user_reservations_timeslots
+                    or room_slot_key in office_hours_lookup
+                ):
                     room_availability[slot_label] = (
                         GetRoomAvailabilityResponse_RoomAvailability(
                             state=RoomAvailabilityState.UNAVAILABLE
@@ -1483,8 +1487,7 @@ class ReservationService:
                     )
                     continue
 
-                # Check if any reservation exists for this room and time slot or
-                # if office hours exists
+                # Check if any reservation exists for this room and time slot
                 day_of_week = now.weekday()
                 office_hour_policy_for_day: list[tuple[time, time]] = (
                     OH_HOURS[day_of_week][reservable_room.id]
@@ -1503,11 +1506,7 @@ class ReservationService:
                     slot_start < time_range.end and slot_end >= time_range.start
                     for time_range in office_hour_policy_time_ranges
                 )
-                if (
-                    room_slot_key in general_reservations_lookup
-                    or room_slot_key in office_hours_lookup
-                    or policy_conflict
-                ):
+                if room_slot_key in general_reservations_lookup or policy_conflict:
                     room_availability[slot_label] = (
                         GetRoomAvailabilityResponse_RoomAvailability(
                             state=RoomAvailabilityState.RESERVED
