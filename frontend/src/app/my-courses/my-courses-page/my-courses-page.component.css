@@ -1,62 +1,62 @@
 ::ng-deep .mat-pane {
-    margin-right: 32px !important;
+  margin-right: 32px !important;
 }
 
 .container {
-    height: 100%;
-
-    ::ng-deep .mat-pane {
-        max-width: 100% !important;
-        min-height: calc(100vh - 112px);
-        margin-bottom: 32px !important;
-    }
+  height: 100%;
+  min-width: 100%;
+  ::ng-deep .mat-pane {
+    max-width: 100% !important;
+    min-height: calc(100vh - 112px);
+    margin-bottom: 32px !important;
+  }
 }
 
 #pane-header {
-    align-items: center !important;
-    padding-bottom: 16px !important;
+  align-items: center !important;
+  padding-bottom: 16px !important;
 }
 
 .header-buttons {
-    display: flex;
-    flex-direction: row;
-    margin-left: auto;
-    gap: 12px;
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  gap: 12px;
 }
 
 .course-card-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    row-gap: 24px;
-    column-gap: 24px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  row-gap: 24px;
+  column-gap: 24px;
 }
 
 #more-courses-button {
-    margin-top: 12px;
+  margin-top: 12px;
 }
 
 .term-header {
-    margin-top: 16px;
-    margin-bottom: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 @media only screen and (max-width: 640px) {
-    #pane-header {
-        display: flex;
-        flex-direction: column;
-        align-items: start !important;
-    }
-    .header-buttons {
-        margin-left: 0;
-        margin-top: 8px;
-        flex-direction: column;
-        align-items: start !important;
-    }
+  #pane-header {
+    display: flex;
+    flex-direction: column;
+    align-items: start !important;
+  }
+  .header-buttons {
+    margin-left: 0;
+    margin-top: 8px;
+    flex-direction: column;
+    align-items: start !important;
+  }
 }
 
 .no-courses-content {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }

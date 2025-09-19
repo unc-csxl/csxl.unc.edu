@@ -1,13 +1,30 @@
 """Service that manages reservations in the coworking space."""
 
+import math
 from fastapi import Depends
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from random import random
 from typing import Sequence
-from sqlalchemy import or_, and_
+from sqlalchemy import func, or_, and_, select
 from sqlalchemy.orm import Session, joinedload
+
+from backend.entities.academics.section_entity import SectionEntity
+from backend.entities.academics.section_member_entity import SectionMemberEntity
+from backend.entities.academics.term_entity import TermEntity
+from backend.models.coworking import availability
+from backend.models.roster_role import RosterRole
+from ...entities.coworking.operating_hours_entity import OperatingHoursEntity
+from ...entities.coworking.reservation_user_table import reservation_user_table
+from ...entities.office_hours.office_hours_entity import OfficeHoursEntity
 from backend.entities.room_entity import RoomEntity
 
+from ...models.coworking.reservation import (
+    GetRoomAvailabilityResponse,
+    GetRoomAvailabilityResponse_Room,
+    GetRoomAvailabilityResponse_RoomAvailability,
+    GetRoomAvailabilityResponse_Slot,
+    RoomAvailabilityState,
+)
 from backend.models.room_details import RoomDetails
 from ...database import db_session
 from ...models.user import User, UserIdentity
@@ -28,7 +45,7 @@ from ...models.coworking import (
 from ...entities import UserEntity
 from ...entities.coworking import ReservationEntity, SeatEntity
 from .seat import SeatService
-from .policy import PolicyService
+from .policy import OH_HOURS, PolicyService
 from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
@@ -121,10 +138,12 @@ class ReservationService:
                 f"user/{focus.id}",
             )
 
+        coworking_policy = self._policy_svc.policy_for_user(subject)
+
         now = datetime.now()
         time_range = TimeRange(
             start=now - timedelta(days=1),
-            end=now + self._policy_svc.reservation_window(focus),
+            end=now + coworking_policy.reservation_window,
         )
 
         if state:
@@ -202,6 +221,7 @@ class ReservationService:
             True if a user has >= 6 total hours reserved
             False if a user has exceeded the limit
         """
+        coworking_policy = self._policy_svc.policy_for_user(user)
         reservations = self.get_current_reservations_for_user(user, user)
         total_duration = timedelta()
         total_duration += bounds.end - bounds.start
@@ -209,7 +229,7 @@ class ReservationService:
         for reservation in reservations:
             if reservation.room:
                 total_duration += reservation.end - reservation.start
-        if total_duration > self._policy_svc.room_reservation_weekly_limit():
+        if total_duration > coworking_policy.room_reservation_weekly_limit:
             return False
         return True
 
@@ -627,20 +647,21 @@ class ReservationService:
         Returns:
             Sequence[ReservationEntity] - All ReservationEntities that were not state transitioned.
         """
+        # TODO: Potentially refactor to avoid using a default policy
+        coworking_policy = self._policy_svc.default_policy()
         valid: list[ReservationEntity] = []
         dirty = False
         for reservation in reservations:
             if (
                 reservation.state == ReservationState.DRAFT
-                and reservation.created_at
-                + self._policy_svc.reservation_draft_timeout()
+                and reservation.created_at + coworking_policy.reservation_draft_timeout
                 < cutoff
             ):
                 reservation.state = ReservationState.CANCELLED
                 dirty = True
             elif (
                 reservation.state == ReservationState.CONFIRMED
-                and reservation.start + self._policy_svc.reservation_checkin_timeout()
+                and reservation.start + coworking_policy.reservation_checkin_timeout
                 < cutoff
             ):
                 reservation.state = ReservationState.CANCELLED
@@ -671,6 +692,9 @@ class ReservationService:
         Returns:
             Sequence[SeatAvailability]: All seat availability ordered by nearest and longest available.
         """
+        # TODO: Potentially refactor to avoid using a default policy
+        coworking_policy = self._policy_svc.default_policy()
+
         # No seats are available in the past
         now = datetime.now()
         if bounds.end <= now:
@@ -684,7 +708,7 @@ class ReservationService:
         MINUMUM_RESERVATION_EPSILON = timedelta(minutes=1)
         if (
             bounds.duration()
-            < self._policy_svc.minimum_reservation_duration()
+            < coworking_policy.minimum_reservation_duration
             - MINUMUM_RESERVATION_EPSILON
         ):
             return []
@@ -725,7 +749,7 @@ class ReservationService:
         available_seats: list[SeatAvailability] = list(
             self._prune_seats_below_availability_threshold(
                 list(seat_availability_dict.values()),
-                self._policy_svc.minimum_reservation_duration()
+                coworking_policy.minimum_reservation_duration
                 - MINUMUM_RESERVATION_EPSILON,
             )
         )
@@ -771,11 +795,16 @@ class ReservationService:
                 * Limit users and seats counts to policy
             * Clean-up / Refactor Implementation
         """
+        # Determine the coworking policy to use based on the subject
+        coworking_policy = self._policy_svc.policy_for_user(subject)
+
         # For the time being, reservations are limited to one user. As soon as
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
-        if len(request.users) > 1:
-            raise NotImplementedError("Multi-user reservations not yet supproted.")
+        if len(request.users) > 1 and len(request.seats) > 0:
+            raise NotImplementedError(
+                "Multi-user reservations for seats not yet supproted."
+            )
 
         # Enforce Reservation Draft Permissions
         if subject.id not in [user.id for user in request.users]:
@@ -793,13 +822,13 @@ class ReservationService:
         now = datetime.now()
         start = request.start if request.start >= now else now
 
-        is_walkin = abs(start - now) < self._policy_svc.walkin_window(subject)
+        is_walkin = abs(start - now) < coworking_policy.walkin_window
 
         # Bound end to policy limits for duration of a reservation
         if is_walkin:
-            max_length = self._policy_svc.walkin_initial_duration(subject)
+            max_length = coworking_policy.walkin_initial_duration
         else:
-            max_length = self._policy_svc.maximum_initial_reservation_duration(subject)
+            max_length = coworking_policy.maximum_initial_reservation_duration
         end_limit = start + max_length
         end = request.end if request.end <= end_limit else end_limit
 
@@ -811,6 +840,20 @@ class ReservationService:
             if not self._check_user_reservation_duration(request.users[0], bounds):
                 raise ReservationException(
                     "Oops! Looks like you've reached your weekly study room reservation limit"
+                )
+            room = self._session.get(RoomEntity, request.room.id)
+            if not room:
+                raise ReservationException(
+                    "You cannot create a reservation for a room that does not exist."
+                )
+            minimum_reservers = math.floor(room.capacity / 2)
+            if len(request.users) < minimum_reservers:
+                raise ReservationException(
+                    f"You must reserve this room for at least {minimum_reservers} people."
+                )
+            if len(request.users) > room.capacity:
+                raise ReservationException(
+                    f"You must reserve this room for at most {room.capacity} people."
                 )
 
         # Fetch User entities for all requested in reservation
@@ -834,7 +877,10 @@ class ReservationService:
                 )
 
             nonconflicting = bounds.subtract(conflict)
-            if len(nonconflicting) >= 1:
+            if (
+                len(nonconflicting) >= 1
+                or coworking_policy.allow_overlapping_room_reservations
+            ):
                 bounds = nonconflicting[0]
             else:
                 raise ReservationException(
@@ -877,10 +923,21 @@ class ReservationService:
             seat_entities = [self._session.get(SeatEntity, seat_availability[0].id)]
             bounds = seat_availability[0].availability[0]
         else:
-            # Prevent double booking a room
+            # Handle room reservations conflicts
             conflicts = self._fetch_conflicting_room_reservations(request)
             if len(conflicts) > 0:
                 raise ReservationException("The requested room is no longer available.")
+            # Check against existing office hours
+            office_hours_query = select(OfficeHoursEntity).where(
+                OfficeHoursEntity.room_id == request.room.id,
+                OfficeHoursEntity.start_time < bounds.end,
+                OfficeHoursEntity.end_time > bounds.start,
+            )
+            office_hours_results = self._session.scalars(office_hours_query).all()
+            if len(office_hours_results) > 0:
+                raise ReservationException(
+                    "Cannot reserve a room used for office hours."
+                )
 
         draft = ReservationEntity(
             state=ReservationState.DRAFT,
@@ -1188,3 +1245,323 @@ class ReservationService:
             )
             .all()
         )
+
+    # New room reservation functionality
+
+    def get_room_availability(
+        self, subject: User, date: datetime | None
+    ) -> GetRoomAvailabilityResponse:
+        """Determines the room availability for a given user."""
+        # Determine whether or not the user is an instructor
+        is_instructor = self._user_is_instructor(subject)
+
+        # Convenience functions to get the start and end of either the selected date
+        # or the current date if no selection was provided.
+        today = date.date() if date else datetime.now().date()
+        start_of_day = datetime.combine(today, time.min)
+        end_of_day = datetime.combine(today, time.max)
+
+        # Get the operating hours for the current day.
+        operating_hours_query = select(OperatingHoursEntity).where(
+            OperatingHoursEntity.start < end_of_day,
+            OperatingHoursEntity.end > start_of_day,
+        )
+        operating_hours = self._session.scalars(operating_hours_query).all()
+
+        # If no operating hours exist, return no available slots for the day.
+        if (
+            len(operating_hours) == 0
+            or datetime.combine(datetime.now().date(), time.max) > end_of_day
+        ):
+            return GetRoomAvailabilityResponse(
+                is_instructor=is_instructor, slot_labels=[], slots={}, rooms=[]
+            )
+
+        # Determine all of the possible reservations slots between the start and end
+        # of the operating hours
+        operating_hours_open = min(oh.start for oh in operating_hours)
+        operating_hours_close = max(oh.end for oh in operating_hours)
+
+        # Generate 30-minute time slots between open and close times
+        # Note: `slots` are stored in the format (label, start_time, end_time)
+        slots: list[tuple[str, datetime, datetime]] = []
+        # Note: The current time is either the start of the day (if a reservation is
+        # overlapping from a previous day) or is the opening time rounded back to the
+        # start of the hour.
+        current_time = max(operating_hours_open.replace(minute=0), start_of_day)
+        end_time_cutoff = min(end_of_day, operating_hours_close)
+        while current_time < end_time_cutoff:
+            # Determine the readable label for the slot
+            hour = (
+                current_time.hour if current_time.hour <= 12 else current_time.hour - 12
+            )
+            hour = 12 if hour == 0 else hour
+            minute = current_time.minute
+            period = "a" if current_time.hour < 12 else "p"
+            slot_label = f"{hour}:{minute:02d}{period}"
+            # If the current time is somewhere between a 30min interval, we want to adjust
+            # the current time so that it is exactly on the next 30min mark for the next
+            # iteration. Otherwise, we can just move the time by 30min.
+            offset_from_half_hr = current_time.minute % 30
+            minutes_adjustment = (
+                30 if offset_from_half_hr == 0 else 30 - offset_from_half_hr
+            )
+            end_time = current_time + timedelta(minutes=minutes_adjustment)
+            # Add the slot
+            slots.append(
+                (
+                    slot_label,
+                    current_time.replace(second=0, microsecond=0),
+                    end_time.replace(second=0, microsecond=0),
+                )
+            )
+            # Adjust the current time for the next iteration
+            current_time = end_time
+
+        # Get all reservable rooms
+        reservable_rooms = self._get_reservable_rooms()
+
+        # Keep track of room reservation data
+        rooms: list[GetRoomAvailabilityResponse_Room] = []
+
+        # We now want to determine the availability for all reservable rooms over every timeslot.
+        # The traditional solution to this problem would produce O(rooms * slots) number of queries
+        # for reservations, so the solution below optimizes this by fetching all reservations that
+        # might match the timeslot range at once in buld, reducing the number of queries to just 3.
+        # The rest of the logic is completed in memory.
+
+        # Prepare data for bulk queries
+        room_ids = [room.id for room in reservable_rooms]
+        slot_time_ranges = [(slot_start, slot_end) for _, slot_start, slot_end in slots]
+
+        # First query: Get all user reservations for the current user across all rooms and time slots
+        user_reservations_query = (
+            select(ReservationEntity, reservation_user_table.c.user_id)
+            .join(
+                reservation_user_table,
+                ReservationEntity.id == reservation_user_table.c.reservation_id,
+            )
+            .where(
+                ReservationEntity.room_id.in_(room_ids),
+                ReservationEntity.state.in_(
+                    [
+                        ReservationState.CONFIRMED,
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                    ]
+                ),
+                reservation_user_table.c.user_id == subject.id,
+                or_(
+                    *[
+                        and_(
+                            ReservationEntity.start < slot_end,
+                            ReservationEntity.end > slot_start,
+                        )
+                        for slot_start, slot_end in slot_time_ranges
+                    ]
+                ),
+            )
+        )
+        user_reservation_results = self._session.execute(user_reservations_query).all()
+
+        # Second query: Get all general reservations across all rooms and time slots
+        general_reservations_query = select(ReservationEntity).where(
+            ReservationEntity.room_id.in_(room_ids),
+            ReservationEntity.state.in_(
+                [
+                    ReservationState.CONFIRMED,
+                    ReservationState.CHECKED_IN,
+                    ReservationState.CHECKED_OUT,
+                ]
+            ),
+            or_(
+                *[
+                    and_(
+                        ReservationEntity.start < slot_end,
+                        ReservationEntity.end > slot_start,
+                    )
+                    for slot_start, slot_end in slot_time_ranges
+                ]
+            ),
+        )
+        general_reservation_results = self._session.scalars(
+            general_reservations_query
+        ).all()
+
+        # Third query: Get all of the office hours across all rooms and time slots
+        office_hours_query = select(OfficeHoursEntity).where(
+            OfficeHoursEntity.room_id.in_(room_ids),
+            or_(
+                *[
+                    and_(
+                        OfficeHoursEntity.start_time < slot_end,
+                        OfficeHoursEntity.end_time > slot_start,
+                    )
+                    for slot_start, slot_end in slot_time_ranges
+                ]
+            ),
+        )
+        office_hours_results = self._session.scalars(office_hours_query).all()
+
+        # Now, to make checking for whether or not a user reservation or general reservation
+        # exists for a combination of a room and timeslot, we will create a lookup dictionary.
+        # Key format: (room_id, slot_label) : ReservationEntity
+        user_reservations_lookup: dict[tuple[str, str], ReservationEntity] = {}
+        user_reservations_timeslots: set[str] = set()
+        general_reservations_lookup: dict[tuple[str, str], ReservationEntity] = {}
+        office_hours_lookup: dict[tuple[str, str], ReservationEntity] = {}
+
+        # Build up user reservations lookup table
+        for reservation, _ in user_reservation_results:
+            for slot_label, slot_start, slot_end in slots:
+                if (
+                    reservation.start.replace(second=0, microsecond=0) < slot_end
+                    and reservation.end.replace(second=0, microsecond=0) > slot_start
+                ):
+                    room_slot_key = (reservation.room_id, slot_label)
+                    user_reservations_lookup[room_slot_key] = reservation
+                    user_reservations_timeslots.add(slot_label)
+
+        # Build up general reservations lookup table
+        for reservation in general_reservation_results:
+            for slot_label, slot_start, slot_end in slots:
+                if (
+                    reservation.start.replace(second=0, microsecond=0) < slot_end
+                    and reservation.end.replace(second=0, microsecond=0) > slot_start
+                ):
+                    room_slot_key = (reservation.room_id, slot_label)
+                    general_reservations_lookup[room_slot_key] = reservation
+
+        # Build up office hours lookup table
+        for office_hours in office_hours_results:
+            for slot_label, slot_start, slot_end in slots:
+                if (
+                    office_hours.start_time < slot_end
+                    and office_hours.end_time > slot_start
+                ):
+                    room_slot_key = (office_hours.room_id, slot_label)
+                    office_hours_lookup[room_slot_key] = office_hours
+
+        # For each reservable room and each timeslot, determine whether or not the room
+        # is available for the timeslot.
+        for reservable_room in reservable_rooms:
+            # Availability for the room, stored in the form [timeslot : avilability]
+            room_availability: dict[
+                str, GetRoomAvailabilityResponse_RoomAvailability
+            ] = {}
+            for slot_label, slot_start, slot_end in slots:
+                now = datetime.now()
+                # First, make sure that the time slot is within valid operating hours -
+                # otherwise, the reservation should be made unavailable.
+                if (
+                    not any(
+                        oh.start <= slot_start and oh.end >= slot_end
+                        for oh in operating_hours
+                    )
+                    or now >= slot_start
+                ):
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.UNAVAILABLE
+                        )
+                    )
+                    continue
+
+                # Check if user has a reservation for this room and time slot
+                room_slot_key = (reservable_room.id, slot_label)
+                if room_slot_key in user_reservations_lookup:
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.YOUR_RESERVATION
+                        )
+                    )
+                    continue
+
+                # Check if a user has a reservation for another room in the timeslot or if
+                # office hours are occurring in that timeslot
+                if (
+                    slot_label in user_reservations_timeslots
+                    or room_slot_key in office_hours_lookup
+                ):
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.UNAVAILABLE
+                        )
+                    )
+                    continue
+
+                # Check if any reservation exists for this room and time slot
+                day_of_week = now.weekday()
+                office_hour_policy_for_day: list[tuple[time, time]] = (
+                    OH_HOURS[day_of_week][reservable_room.id]
+                    if reservable_room.id in OH_HOURS[day_of_week]
+                    else []
+                )
+
+                office_hour_policy_time_ranges = [
+                    TimeRange(
+                        start=datetime.combine(now.date(), start_time),
+                        end=datetime.combine(now.date(), end_time),
+                    )
+                    for start_time, end_time in office_hour_policy_for_day
+                ]
+                policy_conflict = any(
+                    slot_start < time_range.end and slot_end >= time_range.start
+                    for time_range in office_hour_policy_time_ranges
+                )
+                if room_slot_key in general_reservations_lookup or policy_conflict:
+                    room_availability[slot_label] = (
+                        GetRoomAvailabilityResponse_RoomAvailability(
+                            state=RoomAvailabilityState.RESERVED
+                        )
+                    )
+                    continue
+
+                # Otherwise, the room should be available.
+                room_availability[slot_label] = (
+                    GetRoomAvailabilityResponse_RoomAvailability(
+                        state=RoomAvailabilityState.AVAILABLE
+                    )
+                )
+            # Finalize the availability for the room
+            room = GetRoomAvailabilityResponse_Room(
+                room=reservable_room.id,
+                capacity=reservable_room.capacity,
+                minimum_reservers=math.ceil(reservable_room.capacity / 2),
+                availability=room_availability,
+            )
+            rooms.append(room)
+
+        # Parse the slot labels
+        slot_labels = []
+        slot_data: dict[str, GetRoomAvailabilityResponse_Slot] = {}
+        for slot_label, slot_start, slot_end in slots:
+            slot_labels.append(slot_label)
+            slot_data[slot_label] = GetRoomAvailabilityResponse_Slot(
+                start_time=slot_start, end_time=slot_end
+            )
+
+        return GetRoomAvailabilityResponse(
+            is_instructor=is_instructor,
+            slot_labels=slot_labels,
+            slots=slot_data,
+            rooms=rooms,
+        )
+
+    def _user_is_instructor(self, subject: User) -> bool:
+        # Determine whether or not the subject is an instructor
+        now = datetime.now()
+        instructor_query = (
+            select(SectionMemberEntity)
+            .join(SectionMemberEntity.section)
+            .join(SectionEntity.term)
+            .where(
+                SectionMemberEntity.user_id == subject.id,
+                SectionMemberEntity.member_role == RosterRole.INSTRUCTOR,
+                TermEntity.start <= now,
+                TermEntity.end >= now,
+            )
+        )
+        instructor_query_result = self._session.scalars(instructor_query).all()
+        is_instructor = len(instructor_query_result) > 0
+        return is_instructor

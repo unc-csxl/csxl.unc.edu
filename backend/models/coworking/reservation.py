@@ -70,3 +70,37 @@ class ReservationDetails(Reservation):
     extendable: bool = False
     extendable_at: datetime | None
     extendable_until: datetime | None
+
+
+# New models for room reservations
+class RoomAvailabilityState(str, Enum):
+    AVAILABLE = "AVAILABLE"
+    RESERVED = "RESERVED"
+    YOUR_RESERVATION = "YOUR_RESERVATION"
+    UNAVAILABLE = "UNAVAILABLE"
+
+
+class GetRoomAvailabilityResponse_Slot(BaseModel):
+    start_time: datetime
+    end_time: datetime
+
+
+class GetRoomAvailabilityResponse_RoomAvailability(BaseModel):
+    state: RoomAvailabilityState
+    description: str | None = None
+
+
+class GetRoomAvailabilityResponse_Room(BaseModel):
+    room: str
+    capacity: int
+    minimum_reservers: int
+    availability: dict[
+        str, GetRoomAvailabilityResponse_RoomAvailability
+    ]  # [timeslot : availability]
+
+
+class GetRoomAvailabilityResponse(BaseModel):
+    is_instructor: bool
+    slot_labels: list[str]
+    slots: dict[str, GetRoomAvailabilityResponse_Slot]  # [timeslot : availability]
+    rooms: list[GetRoomAvailabilityResponse_Room]

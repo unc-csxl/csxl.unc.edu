@@ -1,0 +1,59 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-pane>
+        <mat-card-header>
+            <mat-card-title>New Operating Hours</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="flex flex-col gap-3 mt-4">
+            <!-- Date -->
+            <mat-form-field class="w-full" appearance="outline" color="accent">
+                <mat-label>Date</mat-label>
+                <input
+                matInput
+                placeholder="Date"
+                formControlName="date"
+                [matDatepicker]="picker"
+                name="start"
+                required />
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Start Time -->
+            <mat-form-field class="w-full" appearance="outline" color="accent">
+                <mat-label>Start Time</mat-label>
+                <input
+                matInput
+                placeholder="Start Time"
+                formControlName="start"
+                name="start"
+                [matTimepicker]="startTimePicker"
+                required />
+                <mat-timepicker-toggle matIconSuffix [for]="startTimePicker"/>
+                <mat-timepicker #startTimePicker interval="30min"/>
+            </mat-form-field>
+    
+          <!-- End Time -->
+          <mat-form-field class="w-full" appearance="outline" color="accent">
+            <mat-label>End Time</mat-label>
+            <input
+              matInput
+              placeholder="End Time"
+              formControlName="end"
+              name="end"
+              [matTimepicker]="endTimePicker"
+              required />
+              <mat-timepicker-toggle matIconSuffix [for]="endTimePicker"/>
+                <mat-timepicker #endTimePicker interval="30min"/>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions class="flex flex-row w-full justify-end mb-4">
+            <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="form.invalid">
+            Save
+            </button>
+        </mat-card-actions>
+    </mat-pane>
+</form>

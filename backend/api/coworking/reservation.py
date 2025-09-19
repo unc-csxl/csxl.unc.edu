@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import Sequence
 from datetime import datetime
 
+from ...models.coworking.reservation import GetRoomAvailabilityResponse
 from backend.models.room import Room
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationException, ReservationService
@@ -15,7 +16,7 @@ from ...models.coworking import (
     ReservationRequest,
     ReservationPartial,
     ReservationState,
-    ReservationMapDetails
+    ReservationMapDetails,
 )
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
@@ -91,3 +92,13 @@ def get_total_hours_study_room_reservations(
 ) -> str:
     """Allows a user to know how many hours they have reserved in all study rooms (Excludes CSXL)."""
     return reservation_svc.get_total_time_user_reservations(subject)
+
+
+@api.get("/rooms/availability", tags=["Coworking"])
+def get_room_availability(
+    date: datetime | None = None,
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends(),
+) -> GetRoomAvailabilityResponse:
+    """Determines the room availability at a given time for a user."""
+    return reservation_svc.get_room_availability(subject, date=date)

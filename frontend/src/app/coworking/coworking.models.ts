@@ -112,7 +112,7 @@ export const parseCoworkingStatusJSON = (
 };
 
 export interface ReservationRequest extends TimeRange {
-  users: Profile[] | null;
+  users: Profile[] | { id: number }[] | null;
   seats: Seat[] | null;
   room: { id: string };
 }
@@ -180,3 +180,29 @@ export interface ReservationMapDetails {
   operating_hours_end: string;
   number_of_time_slots: number;
 }
+
+/** New room reservation models */
+
+export type GetRoomAvailabilityResponse_RoomAvailability = {
+  state: 'AVAILABLE' | 'RESERVED' | 'YOUR_RESERVATION' | 'UNAVAILABLE';
+  description?: string | undefined;
+};
+
+export type GetRoomAvailabilityResponse_Slot = {
+  start_time: string;
+  end_time: string;
+};
+
+export type GetRoomAvailabilityResponse_Room = {
+  room: string;
+  capacity: number;
+  minimum_reservers: number;
+  availability: Record<string, GetRoomAvailabilityResponse_RoomAvailability>;
+};
+
+export type GetRoomAvailabilityResponse = {
+  is_instructor: boolean;
+  slot_labels: string[];
+  slots: Record<string, GetRoomAvailabilityResponse_Slot>;
+  rooms: GetRoomAvailabilityResponse_Room[];
+};

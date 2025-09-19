@@ -25,7 +25,6 @@
       </p>
     </div>
   </div>
-
   }
 
   <!-- Time Section -->
@@ -54,4 +53,14 @@
       }
     </div>
   </div>
+
+  <!-- Users Section -->
+  @if (reservation.users.length > 0) {
+    <div class="list-item">
+      <mat-icon>person</mat-icon>
+      <div class="list-item-text">
+        <user-chip-list [users]="usersList()" />
+      </div>
+    </div>
+  }
 </div>

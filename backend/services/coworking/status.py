@@ -33,6 +33,8 @@ class StatusService:
 
     def get_coworking_status(self, subject: User) -> Status:
         """All-in-one endpoint for a user to simultaneously get their own upcoming reservations and current status of the XL."""
+        coworking_policy = self._policies_svc.policy_for_user(subject)
+
         my_reservations = self._reservation_svc.get_current_reservations_for_user(
             subject, subject
         )
@@ -41,8 +43,8 @@ class StatusService:
         walkin_window = TimeRange(
             start=now,
             end=now
-            + self._policies_svc.walkin_window(subject)
-            + 3 * self._policies_svc.walkin_initial_duration(subject),
+            + coworking_policy.walkin_window
+            + 3 * coworking_policy.walkin_initial_duration,
             # We triple walkin duration for end bounds to find seats not pre-reserved later. If XL stays
             # relatively open, the walkin could then more likely be extended while it is not busy.
             # This also prioritizes _not_ placing walkins in reservable seats.
@@ -53,9 +55,7 @@ class StatusService:
         )
 
         operating_hours = self._operating_hours_svc.schedule(
-            TimeRange(
-                start=now, end=now + self._policies_svc.reservation_window(subject)
-            )
+            TimeRange(start=now, end=now + coworking_policy.reservation_window)
         )
 
         return Status(

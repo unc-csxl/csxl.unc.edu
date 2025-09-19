@@ -13,23 +13,19 @@ import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingService } from '../coworking.service';
 import { Profile } from 'src/app/models.module';
-import { ProfileService } from 'src/app/profile/profile.service';
 import {
   CoworkingStatus,
   Reservation,
   SeatAvailability
 } from '../coworking.models';
 import { Subscription, timer } from 'rxjs';
-import { RoomReservationService } from '../room-reservation/room-reservation.service';
-import { ReservationService } from '../reservation/reservation.service';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-    selector: 'app-coworking-home',
-    templateUrl: './coworking-home.component.html',
-    styleUrls: ['./coworking-home.component.css'],
-    standalone: false
+  selector: 'app-coworking-home',
+  templateUrl: './coworking-home.component.html',
+  styleUrls: ['./coworking-home.component.css'],
+  standalone: false
 })
 export class CoworkingPageComponent implements OnInit, OnDestroy {
   public status: Signal<CoworkingStatus>;
@@ -82,11 +78,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     public coworkingService: CoworkingService,
     private router: Router,
     private route: ActivatedRoute,
-    private reservationService: ReservationService,
-    protected snackBar: MatSnackBar,
-    private roomReservationService: RoomReservationService,
-    private profileService: ProfileService,
-    private dialog: MatDialog
+    protected snackBar: MatSnackBar
   ) {
     this.status = coworkingService.status;
 
@@ -118,11 +110,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   reserve(seatSelection: SeatAvailability[]) {
     this.coworkingService.draftReservation(seatSelection).subscribe({
       error: (response) => {
-        this.snackBar.open(
-          response.error.message,
-          '',
-          { duration: 8000 }
-        );
+        this.snackBar.open(response.error.message, '', { duration: 8000 });
       },
       next: (reservation) => {
         this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);

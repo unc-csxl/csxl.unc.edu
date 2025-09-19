@@ -51,9 +51,9 @@ def seat_svc(session: Session):
 
 
 @pytest.fixture()
-def policy_svc():
+def policy_svc(session: Session):
     """CoworkingPolicyService fixture."""
-    return PolicyService()
+    return PolicyService(session)
 
 
 @pytest.fixture()
