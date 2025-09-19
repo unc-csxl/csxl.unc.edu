@@ -6,9 +6,10 @@ import { RoleAdminService } from '../role-admin.service';
 import { NavigationService } from 'src/app/navigation/navigation.service';
 
 @Component({
-  selector: 'app-admin-roles-list',
-  templateUrl: './admin-roles-list.component.html',
-  styleUrls: ['./admin-roles-list.component.css']
+    selector: 'app-admin-roles-list',
+    templateUrl: './admin-roles-list.component.html',
+    styleUrls: ['./admin-roles-list.component.css'],
+    standalone: false
 })
 export class AdminRolesListComponent {
   public roles: Role[];

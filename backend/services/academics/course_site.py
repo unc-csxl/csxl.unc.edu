@@ -28,6 +28,7 @@ from ...models.office_hours.course_site import (
 from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...models.academics.section_member import SectionMemberDraft
 from ...entities.academics.section_entity import SectionEntity
+from ...entities.academics.course_entity import CourseEntity
 from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -92,7 +93,8 @@ class CourseSiteService:
             # into a standard list so that we can iterate over it twice.
             memberships = list(term_memberships)
 
-            course_sites = []
+            # Determine the courses where the user is an instructor for the course but no
+            # course site yet exists for the course
             teaching_no_site = [
                 self._to_teaching_section_overview(membership.section)
                 for membership in memberships
@@ -100,26 +102,70 @@ class CourseSiteService:
                 and membership.section.course_site_id == None
             ]
 
-            for (course_site, course), course_memberships in groupby(
-                memberships,
-                lambda membership: (
-                    membership.section.course_site,
-                    membership.section.course,
-                ),
-            ):
+            # Otherwise, determine the course sites for the term by finding the unique course sites
+            # associated with each section.
+            course_sites: list[CourseSiteOverview] = []
+
+            # To start, find all of the sections that a member is in and the role they have for
+            # the section.
+            member_sections: list[tuple[SectionEntity, RosterRole]] = [
+                (membership.section, membership.member_role)
+                for membership in memberships
+            ]
+
+            # Create lookup tables indexed by a course site ID to look up:
+            # - Course site for a given course site ID
+            # - Sections for a given course site ID
+            # - Course for a given course site ID
+            # - Membership for a given course site ID
+            # Note that this can all be found in one pass for efficiency sake.
+            course_site_ids: set[int] = set()
+            course_site_for_id: dict[int, CourseSiteEntity] = {}
+            sections_for_course_site_id: dict[int, list[SectionEntity]] = {}
+            course_for_course_site_id: dict[int, CourseEntity] = {}
+            member_role_for_course_site_id: dict[int, RosterRole] = {}
+
+            for section, section_membership in member_sections:
+                course_site_id = section.course_site_id
+                course_site_ids.add(course_site_id)
+                # Fill in course sites lookup
+                if section.course_site_id not in course_site_for_id:
+                    course_site_for_id[course_site_id] = section.course_site
+                # Fill in section lookup
+                sections_for_course_site_id[course_site_id] = (
+                    sections_for_course_site_id.get(course_site_id, []) + [section]
+                )
+                # Fill in course lookup
+                if course_site_id not in course_for_course_site_id:
+                    course_for_course_site_id[course_site_id] = section.course
+                # Fill in membership lookup
+                # Note: There should be an invariant that members for sections within the same
+                # course should all have the same role.
+                if course_site_id not in member_role_for_course_site_id:
+                    member_role_for_course_site_id[course_site_id] = section_membership
+
+            # Create course site overviews for this mapping
+            for course_site_id in list(course_site_ids):
+                # Look up data from the tables
+                course_site: CourseSiteEntity = course_site_for_id[course_site_id]
                 if course_site:
-                    memberships = list(course_memberships)
+                    sections: list[SectionEntity] = sections_for_course_site_id[
+                        course_site_id
+                    ]
+                    course: CourseEntity = course_for_course_site_id[course_site_id]
+                    role: RosterRole = member_role_for_course_site_id[course_site_id]
+                    # Construct the course site overview
                     course_sites.append(
                         CourseSiteOverview(
-                            id=course_site.id,
+                            id=course_site_id,
                             term_id=course_site.term_id,
                             subject_code=course.subject_code,
                             number=course.number,
-                            title=memberships[0].section.override_title or course.title,
-                            role=memberships[0].member_role.value,
+                            title=sections[0].override_title or course.title,
+                            role=role,
                             sections=[
-                                self._to_section_overview(membership.section)
-                                for membership in memberships
+                                self._to_section_overview(section)
+                                for section in sections
                             ],
                             gtas=[],
                             utas=[],

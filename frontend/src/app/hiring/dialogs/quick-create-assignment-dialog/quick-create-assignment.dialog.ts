@@ -34,9 +34,10 @@ export interface QuickCreateAssignmentDialogData {
 }
 
 @Component({
-  selector: 'app-quick-create-assignment-dialog',
-  templateUrl: './quick-create-assignment.dialog.html',
-  styleUrl: './quick-create-assignment.dialog.css'
+    selector: 'app-quick-create-assignment-dialog',
+    templateUrl: './quick-create-assignment.dialog.html',
+    styleUrl: './quick-create-assignment.dialog.css',
+    standalone: false
 })
 export class QuickCreateAssignmentDialog {
   hiringAssignmentStatus = HiringAssignmentStatus;

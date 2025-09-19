@@ -30,9 +30,10 @@ import { Profile } from 'src/app/models.module';
 import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
-  selector: 'user-lookup',
-  templateUrl: './user-lookup.widget.html',
-  styleUrls: ['./user-lookup.widget.css']
+    selector: 'user-lookup',
+    templateUrl: './user-lookup.widget.html',
+    styleUrls: ['./user-lookup.widget.css'],
+    standalone: false
 })
 export class UserLookup implements OnInit {
   @Input() label: string = 'Users';

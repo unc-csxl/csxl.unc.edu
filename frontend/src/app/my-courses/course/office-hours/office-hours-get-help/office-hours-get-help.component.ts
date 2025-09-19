@@ -34,9 +34,10 @@ const NOTIFICATION_TITLE: string = 'Ticket Called!';
 const CHIME = new Audio('assets/office-hours-notif.wav');
 
 @Component({
-  selector: 'app-office-hours-get-help',
-  templateUrl: './office-hours-get-help.component.html',
-  styleUrl: './office-hours-get-help.component.css'
+    selector: 'app-office-hours-get-help',
+    templateUrl: './office-hours-get-help.component.html',
+    styleUrl: './office-hours-get-help.component.css',
+    standalone: false
 })
 export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   /** Route information to be used in the routing module */

@@ -14,9 +14,10 @@ import { ReservationTableService } from '../../room-reservation/reservation-tabl
  * @title Date Selector
  */
 @Component({
-  selector: 'date-selector',
-  templateUrl: './date-selector.widget.html',
-  styleUrls: ['./date-selector.widget.css']
+    selector: 'date-selector',
+    templateUrl: './date-selector.widget.html',
+    styleUrls: ['./date-selector.widget.css'],
+    standalone: false
 })
 export class DateSelector {
   @Output() dateSelected = new EventEmitter<Date>();

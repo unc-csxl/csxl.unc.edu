@@ -6,9 +6,10 @@ export enum BannerType {
 }
 
 @Component({
-  selector: 'banner-card',
-  templateUrl: './banner-card.component.html',
-  styleUrl: './banner-card.component.css'
+    selector: 'banner-card',
+    templateUrl: './banner-card.component.html',
+    styleUrl: './banner-card.component.css',
+    standalone: false
 })
 export class BannerCardComponent {
   @Input() type!: string;

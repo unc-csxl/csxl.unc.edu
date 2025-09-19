@@ -9,8 +9,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'about-pane-content',
-  templateUrl: './about-pane.widget.html',
-  styleUrl: './about-pane.widget.css'
+    selector: 'about-pane-content',
+    templateUrl: './about-pane.widget.html',
+    styleUrl: './about-pane.widget.css',
+    standalone: false
 })
 export class AboutPaneWidget {}

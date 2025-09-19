@@ -13,9 +13,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
 
 @Component({
-  selector: 'coworking-reservation-card',
-  templateUrl: './coworking-reservation-card.html',
-  styleUrls: ['./coworking-reservation-card.css']
+    selector: 'coworking-reservation-card',
+    templateUrl: './coworking-reservation-card.html',
+    styleUrls: ['./coworking-reservation-card.css'],
+    standalone: false
 })
 export class CoworkingReservationCard implements OnInit {
   @Input() reservation!: Reservation;

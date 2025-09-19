@@ -15,9 +15,10 @@ import { SlackInviteBox } from './widgets/slack-invite-box/slack-invite-box.widg
 import { SocialMediaIconWidgetService } from '../shared/social-media-icon/social-media-icon.widget.service';
 
 @Component({
-  selector: 'app-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.css']
+    selector: 'app-navigation',
+    templateUrl: './navigation.component.html',
+    styleUrls: ['./navigation.component.css'],
+    standalone: false
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   private errorDialogSubscription!: Subscription;

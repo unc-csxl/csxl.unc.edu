@@ -21,9 +21,10 @@ import { PageEvent } from '@angular/material/paginator';
 import { tap } from 'rxjs';
 
 @Component({
-  selector: 'app-news-admin',
-  templateUrl: './news-admin.component.html',
-  styleUrl: './news-admin.component.css'
+    selector: 'app-news-admin',
+    templateUrl: './news-admin.component.html',
+    styleUrl: './news-admin.component.css',
+    standalone: false
 })
 export class NewsAdminComponent {
   /** Articles List */

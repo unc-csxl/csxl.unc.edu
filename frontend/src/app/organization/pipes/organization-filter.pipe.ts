@@ -10,7 +10,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Organization } from '../organization.model';
 
 @Pipe({
-  name: 'organizationFilter'
+    name: 'organizationFilter',
+    standalone: false
 })
 export class OrganizationFilterPipe implements PipeTransform {
   /** Returns a mapped array of organizations that start with the input string (if search query provided).

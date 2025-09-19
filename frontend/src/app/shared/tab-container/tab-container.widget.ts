@@ -6,9 +6,10 @@ export interface TabLink {
   icon: string;
 }
 @Component({
-  selector: 'tab-container',
-  templateUrl: './tab-container.widget.html',
-  styleUrls: ['./tab-container.widget.css']
+    selector: 'tab-container',
+    templateUrl: './tab-container.widget.html',
+    styleUrls: ['./tab-container.widget.css'],
+    standalone: false
 })
 export class TabContainerWidget {
   @Input() links: TabLink[] = [];

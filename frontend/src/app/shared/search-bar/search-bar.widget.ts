@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'search-bar',
-  templateUrl: './search-bar.widget.html',
-  styleUrls: ['./search-bar.widget.css']
+    selector: 'search-bar',
+    templateUrl: './search-bar.widget.html',
+    styleUrls: ['./search-bar.widget.css'],
+    standalone: false
 })
 export class SearchBar {
   @Input() searchBarQuery: string = '';

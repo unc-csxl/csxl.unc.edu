@@ -10,9 +10,10 @@ import { Component, Input } from '@angular/core';
 import { ArticleOverview } from '../../welcome.model';
 
 @Component({
-  selector: 'news-card',
-  templateUrl: './news-card.widget.html',
-  styleUrl: './news-card.widget.css'
+    selector: 'news-card',
+    templateUrl: './news-card.widget.html',
+    styleUrl: './news-card.widget.css',
+    standalone: false
 })
 export class NewsCardWidget {
   @Input() article!: ArticleOverview;

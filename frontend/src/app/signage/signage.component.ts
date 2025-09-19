@@ -15,9 +15,10 @@ const REFRESH_FAST_SECONDS = 20;
 const REFRESH_SLOW_MINUTES = 20;
 
 @Component({
-  selector: 'app-signage',
-  templateUrl: './signage.component.html',
-  styleUrl: './signage.component.css'
+    selector: 'app-signage',
+    templateUrl: './signage.component.html',
+    styleUrl: './signage.component.css',
+    standalone: false
 })
 export class SignageComponent implements OnInit, OnDestroy {
   public static Route = {

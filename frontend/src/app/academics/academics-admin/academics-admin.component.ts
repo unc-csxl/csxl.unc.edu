@@ -13,9 +13,10 @@ import { Profile } from 'src/app/models.module';
 import { ProfileService } from 'src/app/profile/profile.service';
 
 @Component({
-  selector: 'app-academics-admin',
-  templateUrl: './academics-admin.component.html',
-  styleUrls: ['./academics-admin.component.css']
+    selector: 'app-academics-admin',
+    templateUrl: './academics-admin.component.html',
+    styleUrls: ['./academics-admin.component.css'],
+    standalone: false
 })
 export class AcademicsAdminComponent {
   public profile$: Observable<Profile | undefined>;

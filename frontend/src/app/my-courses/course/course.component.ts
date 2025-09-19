@@ -24,9 +24,10 @@ import { HttpClient } from '@angular/common/http';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
-  selector: 'app-course',
-  templateUrl: './course.component.html',
-  styleUrls: ['./course.component.css']
+    selector: 'app-course',
+    templateUrl: './course.component.html',
+    styleUrls: ['./course.component.css'],
+    standalone: false
 })
 export class CourseComponent {
   /** Links for the tab bar */

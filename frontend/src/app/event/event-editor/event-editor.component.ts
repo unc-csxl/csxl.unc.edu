@@ -24,9 +24,10 @@ import { eventEditorGuard } from './event-editor.guard';
 import { EventOverview, eventOverviewToDraft } from '../event.model';
 
 @Component({
-  selector: 'app-event-editor',
-  templateUrl: './event-editor.component.html',
-  styleUrls: ['./event-editor.component.css']
+    selector: 'app-event-editor',
+    templateUrl: './event-editor.component.html',
+    styleUrls: ['./event-editor.component.css'],
+    standalone: false
 })
 export class EventEditorComponent {
   /** Route information to be used in Event Routing Module */

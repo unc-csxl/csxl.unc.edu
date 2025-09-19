@@ -40,9 +40,10 @@ export type MatFilterChipFilterLogic<SelectItemT> = (
 ) => boolean;
 
 @Component({
-  selector: 'mat-filter-chip',
-  templateUrl: './filter-chip.component.html',
-  styleUrl: './filter-chip.component.css'
+    selector: 'mat-filter-chip',
+    templateUrl: './filter-chip.component.html',
+    styleUrl: './filter-chip.component.css',
+    standalone: false
 })
 export class MatFilterChipComponent<SelectItemT> {
   // Placeholder text for the filter input when no items are selected.

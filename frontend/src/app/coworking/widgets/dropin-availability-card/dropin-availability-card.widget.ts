@@ -75,9 +75,10 @@ const STANDING_BENCH = 1;
 const COLLAB_AREA = 2;
 
 @Component({
-  selector: 'coworking-dropin-availability-card',
-  templateUrl: './dropin-availability-card.widget.html',
-  styleUrls: ['./dropin-availability-card.widget.css']
+    selector: 'coworking-dropin-availability-card',
+    templateUrl: './dropin-availability-card.widget.html',
+    styleUrls: ['./dropin-availability-card.widget.css'],
+    standalone: false
 })
 export class CoworkingDropInCard implements OnChanges {
   @Input() seat_availability!: SeatAvailability[];
