@@ -28,13 +28,17 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { OrganizationPageComponent } from './organization-page/organization-page.component';
 import { OrganizationRoutingModule } from './organization-routing.module';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 import { OrganizationAdminComponent } from './organization-admin/organization-admin.component';
 
 import { OrganizationFilterPipe } from './pipes/organization-filter.pipe';
+import { RosterFilterPipe } from './pipes/roster-filter.pipe';
 
 /* UI Widgets */
 import { OrganizationCard } from './widgets/organization-card/organization-card.widget';
@@ -43,6 +47,10 @@ import { SharedModule } from '../shared/shared.module';
 import { OrganizationDetailsInfoCard } from './widgets/organization-details-info-card/organization-details-info-card.widget';
 import { OrganizationEditorComponent } from '/workspace/frontend/src/app/organization/organization-editor/organization-editor.component';
 import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/organization-not-found-card.widget';
+import { OrganizationRoster } from './widgets/organization-roster-widget/organization-roster.widget';
+import { OrganizationRosterEditDialogComponent } from './widgets/organization-roster-widget/organization-roster-widget-edit-dialog/organization-roster-widget-edit-dialog.component';
+import { EventModule } from '../event/event.module';
+import { OrganizationEventCardWidget } from './widgets/organization-event-card/organization-event-card.widget';
 
 @NgModule({
   declarations: [
@@ -53,24 +61,33 @@ import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/
 
     // Pipes
     OrganizationFilterPipe,
+    RosterFilterPipe,
 
     // UI Widgets
     OrganizationCard,
     OrganizationDetailsInfoCard,
-    OrganizationNotFoundCard
+    OrganizationNotFoundCard,
+    OrganizationRoster,
+    OrganizationRosterEditDialogComponent,
+    OrganizationEventCardWidget
   ],
   imports: [
     CommonModule,
     MatTabsModule,
     MatTableModule,
+    MatButtonToggleModule,
     MatCardModule,
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
     MatPaginatorModule,
+    MatCheckboxModule,
     MatListModule,
+    MatChipsModule,
+    MatMenuModule,
     MatAutocompleteModule,
     FormsModule,
     ReactiveFormsModule,
@@ -78,7 +95,8 @@ import { OrganizationNotFoundCard } from './widgets/organization-not-found-card/
     MatTooltipModule,
     OrganizationRoutingModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    EventModule
   ]
 })
 export class OrganizationModule {}

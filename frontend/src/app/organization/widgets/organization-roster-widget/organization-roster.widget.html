@@ -1,0 +1,170 @@
+<mat-pane class="card" appearance="outlined">
+  <!-- Card Header Row (Roster) -->
+  <mat-card-header class="header">
+    <div class="header-row">
+      <mat-card-title>Roster</mat-card-title>
+      @if (adminPermissions(this.organization?.slug) | async) { @if
+      (inEditing()) {
+      <button
+        mat-stroked-button
+        color="secondary"
+        class="edit-button"
+        (click)="cancelEditing()">
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        class="edit-button"
+        (click)="confirmUpdate()"
+        [disabled]="!hasUnsavedChanges">
+        Save
+      </button>
+      @if(hasUnsavedChanges) {
+        <p class="changes-count">{{ getTotalChangesCount() }} change{{ getTotalChangesCount() === 1 ? '' : 's' }} pending</p>
+      }
+      } @else {
+      <button
+        mat-flat-button
+        color="primary"
+        class="edit-button"
+        (click)="startEditing()">
+        Edit
+      </button>
+      } }
+    </div>
+    <!-- Search Bar -->
+    <search-bar
+      placeholder="Search for members"
+      class="organization-search-bar mat-csxl-search-bar"
+      [(searchBarQuery)]="searchBarQuery" />
+  </mat-card-header>
+  <mat-card-content>
+    <!-- Organization Roster -->
+    <!-- Admin Interface -->
+    @if(adminPermissions(this.organization?.slug)){ @if(inEditing()){
+    <mat-list style="height: 450px; overflow: auto">
+      @for(membership of organizationRoster | rosterFilter: searchBarQuery;
+      track membership.user){ @if(!checkPendingStatus(membership.status)){
+      <mat-list-item style="height: 70px">
+        <div class="item-content">
+          <!-- Icon -->
+          <div matListItemIcon class="upcoming secondary-background">
+            {{ membership.user.first_name | slice:0:1 }}
+          </div>
+          <!-- Name/Title -->
+          <div class="text-content">
+            <p matListItemTitle>
+              {{ membership.user.first_name + ' ' + membership.user.last_name }}
+            </p>
+            <p matListItemLine>
+              {{ membership.selected_title ?? membership.title }}
+              {{
+                (membership.selected_permission_level ?? membership.permission_level) === 'Admin'
+                  ? ' (Admin)'
+                  : ''
+              }}
+            </p>
+          </div>
+          <!-- Edit Button -->
+          <button
+            mat-icon-button
+            (click)="openEditDialog(membership)"
+            class="edit-btn-far-right">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <!-- Selection Checkbox -->
+          @if(editingMembershipId === null){
+          <mat-checkbox
+            class="checkbox-right"
+            [checked]="selectedMemberships.includes(membership)"
+            style="padding: 0px"
+            (change)="toggleSelectedMembership(membership, $event.checked)" />
+          }
+        </div>
+      </mat-list-item>
+      } }
+    </mat-list>
+    <mat-divider></mat-divider>
+    <div class="remove-content">
+      <button
+        (click)="stageDeletes(selectedMemberships)"
+        mat-stroked-button
+        [disabled]="!selectedMemberships.length">
+        Remove
+      </button>
+      <p>{{ checkCount() }} selected</p>
+    </div>
+    } @else{
+    <mat-tab-group>
+      <mat-tab label="Roster">
+        <mat-list style="height: 450px; overflow: auto">
+          @for(membership of organizationRoster | rosterFilter: searchBarQuery;
+          track membership.user){ @if(!checkPendingStatus(membership.status)){
+          <mat-list-item style="height: 70px">
+            <div matListItemIcon class="upcoming secondary-background">
+              {{ membership.user.first_name | slice:0:1 }}
+            </div>
+            <span matListItemTitle
+              >{{ membership.user.first_name + ' ' +
+              membership.user.last_name}}</span
+            >
+            <p matListItemLine>{{ membership.title }}</p>
+          </mat-list-item>
+          } }
+        </mat-list>
+      </mat-tab>
+      @if (adminPermissions(this.organization?.slug) | async) {
+      <mat-tab label="Requests">
+        <mat-list style="height: 450px; overflow: auto">
+          @for(membership of organizationRoster | rosterFilter: searchBarQuery;
+          track membership.user){ @if(checkPendingStatus(membership.status)){
+          <mat-list-item style="height: 70px">
+            <div matListItemIcon class="upcoming secondary-background">A</div>
+            <div class="item-content">
+              <div class="text-content" style="margin-top: -35px">
+                <span matListItemTitle
+                  >{{ membership.user.first_name + ' ' +
+                  membership.user.last_name}}</span
+                >
+              </div>
+              <div class="accept-reject-buttons">
+                <button
+                  mat-flat-button
+                  color="primary"
+                  class="accept-button"
+                  (click)="acceptRequest(membership)">
+                  Accept
+                </button>
+                <button
+                  mat-flat-button
+                  color="error"
+                  class="reject-button"
+                  (click)="rejectRequest(membership)">
+                  Reject
+                </button>
+              </div>
+            </div>
+          </mat-list-item>
+          } }
+        </mat-list>
+      </mat-tab>
+      }
+    </mat-tab-group>
+    } } @else{
+    <mat-list style="height: 450px; overflow: auto">
+      @for(membership of organizationRoster | rosterFilter: searchBarQuery;
+      track membership.user){ @if(!checkPendingStatus(membership.status)){
+      <mat-list-item style="height: 70px">
+        <div matListItemIcon class="upcoming secondary-background">A</div>
+        <span matListItemTitle
+          >{{ membership.user.first_name + ' ' +
+          membership.user.last_name}}</span
+        >
+        <p matListItemLine>{{ membership.status }}</p>
+      </mat-list-item>
+      }}
+    </mat-list>
+    }
+  </mat-card-content>
+</mat-pane>

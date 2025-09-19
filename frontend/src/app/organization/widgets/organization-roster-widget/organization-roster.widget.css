@@ -1,0 +1,160 @@
+mat-card-header {
+  flex-direction: column;
+  width: 100%;
+}
+
+[matListItemIcon] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  background-color: #4786c6;
+  flex-shrink: 0;
+}
+
+.item-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  flex: 1;
+}
+
+.text-content {
+  width: 200px;
+  flex: 1;
+}
+
+.edit-btn-far-right {
+  margin-left: auto;
+}
+
+p {
+  margin-bottom: 0;
+}
+
+.mat-mdc-card-avatar {
+  margin-bottom: 0 !important;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.links-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  align-items: center;
+  margin-bottom: 12px;
+  margin-left: 48px;
+  margin-right: 32px;
+  gap: 12px;
+}
+
+.link-icons {
+  width: 22px;
+  height: 22px;
+}
+
+mat-divider {
+  margin-top: 12px;
+  padding-bottom: 4px;
+}
+
+mat-card-actions {
+  padding-bottom: 12px;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.organization-search-bar {
+  ::ng-deep .mat-mdc-card {
+    max-width: 100% !important;
+    max-height: 90% !important;
+    margin-right: 10% !important;
+  }
+}
+mat-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 48px !important;
+  height: auto !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  margin-top: 0px !important;
+}
+
+mat-checkbox {
+  padding: 0;
+}
+
+.text-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.title-form-field {
+  width: 150px;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: fit-content;
+  gap: 8px;
+}
+
+.remove-content {
+  display: flex;
+  margin-top: 8px;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+}
+
+.remove-content button {
+  color: salmon;
+}
+
+.accept-reject-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.accept-button,
+.reject-button {
+  flex-shrink: 0;
+}
+
+.reject-button {
+  background-color: #b3261e;
+  color: white;
+}
+
+.changes-count {
+  margin: 4px 0 0 8px;
+  font-size: 0.9em;
+  color: #666;
+  font-style: italic;
+}

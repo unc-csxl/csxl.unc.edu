@@ -1,55 +1,71 @@
-
 mat-card-header {
-    flex-direction: column;
-    width: 100%;
+  flex-direction: column;
+  width: 100%;
 }
 
 p {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .mat-mdc-card-avatar {
-    margin-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .header-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
 }
 
 .row {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
 }
 
 .links-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-top: 4px;
-    align-items: center;
-    margin-bottom: 12px;
-    margin-left: 48px;
-    margin-right: 32px;
-    gap: 12px;
-  }
-  
-  .link-icons {
-    width: 22px;
-    height: 22px;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  align-items: center;
+  margin-bottom: 12px;
+  margin-left: 48px;
+  margin-right: 32px;
+  gap: 12px;
+}
+
+.link-icons {
+  width: 22px;
+  height: 22px;
+}
 
 mat-divider {
-    margin-top: 12px;
-    padding-bottom: 4px;
+  margin-top: 12px;
+  padding-bottom: 4px;
 }
 
 mat-card-actions {
-    padding-bottom: 12px;
-    justify-content: flex-end;
-    gap: 8px;
+  padding-bottom: 12px;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.exec-board-section {
+  margin: 16px 0;
+}
+.exec-chip {
+  height: 3em;
+}
+
+.exec-chip-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+.exec-title {
+  font-weight: bold;
 }

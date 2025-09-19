@@ -18,30 +18,28 @@
       </mat-card-title>
     </div>
   </mat-card-header>
-
   <!-- Organization Description -->
   <mat-card-content class="description">
-    <p>
-      {{ organization.short_description }}
-    </p>
+    <p>{{ organization.short_description }}</p>
   </mat-card-content>
 
   <mat-card-actions>
     <a
-    class="details-link"
-    [routerLink]="['/organizations', organization.slug]">
-    <button mat-flat-button>Details</button>
-  </a>
-  
-  <!-- <button mat-icon-button class="mat-csxl-stroked-icon-button" id="events-button" color="basic">
-    <mat-icon>event</mat-icon>
-  </button> -->
+      class="details-link"
+      [routerLink]="['/organizations', organization.slug]">
+      <button mat-flat-button>Details</button>
+    </a>
 
-  @if (organization.website !== '') {
-    <social-media-icon id="events-button" [fontIcon]="'link'" [href]="organization.website" />
-  }
-
-
-
+    @if (organization.website !== '') {
+    <social-media-icon
+      id="events-button"
+      [fontIcon]="'link'"
+      [href]="organization.website" />
+    }
+    <!-- Organization Registration Type -->
+    <span class="registration-type-label">
+      {{ organization.join_type === 'Open' ? '' : organization.join_type ===
+      'Apply' ? 'Application-based' : 'Closed registration' }}
+    </span>
   </mat-card-actions>
 </mat-pane>

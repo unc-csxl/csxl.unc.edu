@@ -89,6 +89,15 @@ class UserEntity(EntityBase):
         back_populates="user"
     )
 
+    # All of the organization membership the user is under
+    # NOTE: This field establishes a one-to-many relationship between the users and organization_member table.
+    memberships: Mapped[list["OrganizationMembershipEntity"]] = relationship(
+        back_populates="user"
+    )
+    organizations: Mapped[list["OrganizationEntity"]] = relationship(
+        secondary="organization_membership", back_populates="users", viewonly=True
+    )
+
     def full_name(self) -> str:
         """
         Returns the full name of the user.
@@ -148,6 +157,11 @@ class UserEntity(EntityBase):
             bio=self.bio,
             linkedin=self.linkedin,
             website=self.website,
+            organizations=(
+                [org.name for org in self.organizations if org.name]
+                if self.organizations
+                else []
+            ),
         )
 
     def update(self, model: User) -> None:
@@ -185,4 +199,9 @@ class UserEntity(EntityBase):
             bio=self.bio,
             linkedin=self.linkedin,
             website=self.website,
+            organizations=(
+                [org.name for org in self.organizations if org.name]
+                if self.organizations
+                else []
+            ),
         )

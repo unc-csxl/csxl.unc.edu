@@ -1,14 +1,20 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Organizations."""
 
-from sqlalchemy import Integer, String, Boolean
+from sqlalchemy import Integer, String, Boolean, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .entity_base import EntityBase
 from typing import Self
-from ..models.organization import Organization
+from ..models.organization import Organization, OrganizationJoinType
 from ..models.organization_details import OrganizationDetails
 
-__authors__ = ["Ajay Gandecha", "Jade Keegan", "Brianna Ta", "Audrey Toney"]
-__copyright__ = "Copyright 2023"
+__authors__ = [
+    "Ajay Gandecha",
+    "Jade Keegan",
+    "Brianna Ta",
+    "Audrey Toney",
+    "Alanna Zhang",
+]
+__copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
 
@@ -48,6 +54,14 @@ class OrganizationEntity(EntityBase):
     heel_life: Mapped[str] = mapped_column(String)
     # Whether the organization can be joined by anyone or not
     public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    # Whether the organization is open, application-based, or closed
+    join_type: Mapped[OrganizationJoinType] = mapped_column(
+        SQLAlchemyEnum(OrganizationJoinType)
+    )
+    # Application link for an organization with APPLY join_type
+    application_url: Mapped[str | None] = mapped_column(
+        String, nullable=True, default=None
+    )
 
     # NOTE: This field establishes a one-to-many relationship between the organizations and events table.
     events: Mapped[list["EventEntity"]] = relationship(
@@ -57,6 +71,16 @@ class OrganizationEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the organizations and articles table.
     articles: Mapped[list["ArticleEntity"]] = relationship(
         back_populates="organization", cascade="all,delete"
+    )
+
+    # NOTE: This field establishes a one-to-many relationship between the organizations and organization_member table.
+    members: Mapped[list["OrganizationMembershipEntity"]] = relationship(
+        back_populates="organization", cascade="all,delete"
+    )
+    users: Mapped[list["UserEntity"]] = relationship(
+        secondary="organization_membership",
+        back_populates="organizations",
+        viewonly=True,
     )
 
     @classmethod
@@ -84,6 +108,8 @@ class OrganizationEntity(EntityBase):
             youtube=model.youtube,
             heel_life=model.heel_life,
             public=model.public,
+            join_type=model.join_type,
+            application_url=model.application_url,
         )
 
     def to_model(self) -> Organization:
@@ -108,6 +134,8 @@ class OrganizationEntity(EntityBase):
             youtube=self.youtube,
             heel_life=self.heel_life,
             public=self.public,
+            join_type=self.join_type,
+            application_url=self.application_url,
         )
 
     def to_details_model(self) -> OrganizationDetails:
@@ -132,5 +160,7 @@ class OrganizationEntity(EntityBase):
             youtube=self.youtube,
             heel_life=self.heel_life,
             public=self.public,
+            join_type=self.join_type,
+            application_url=self.application_url,
             events=[event.to_overview_model() for event in self.events],
         )

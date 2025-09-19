@@ -59,6 +59,11 @@ class TermEntity(EntityBase):
         back_populates="term", cascade="all, delete"
     )
 
+    # NOTE: This field establishes a one-to-many relationship between the term and organization membership tables.
+    organization_memberships: Mapped[list["OrganizationMembershipEntity"]] = (
+        relationship(back_populates="term", cascade="all, delete")
+    )
+
     @classmethod
     def from_model(cls, model: Term) -> Self:
         """

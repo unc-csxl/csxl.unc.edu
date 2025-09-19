@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Edit Membership - {{ membership.user.first_name }} {{ membership.user.last_name }}</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="title-form-field">
+    <mat-label>Position title</mat-label>
+    <input
+      matInput
+      placeholder="Member"
+      [(ngModel)]="localTitle"
+    />
+  </mat-form-field>
+  <div class="term-info">
+    <p>Term: {{ membership.term.name || 'Current Term' }}</p>
+  </div>
+  <div class="admin-permissions-section">
+    <span>Admin:</span>
+    <mat-checkbox
+      [(ngModel)]="isAdmin"
+      (ngModelChange)="onAdminChange($event)">
+    </mat-checkbox>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="onCancel()">
+    Cancel
+  </button>
+  <button mat-flat-button color="primary" (click)="onConfirm()">
+    Confirm
+  </button>
+</mat-dialog-actions>

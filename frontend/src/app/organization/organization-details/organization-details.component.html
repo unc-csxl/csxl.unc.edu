@@ -3,9 +3,52 @@
 @if (organization === undefined) {
 <organization-not-found-card />
 } @else {
-<organization-details-info-card
-  [organization]="organization"
-  [profile]="profile"
-  [eventCreationPermissions]="eventCreationPermission$ | async"
-/>
+  <div class="container">
+     <div class="left-column" [ngClass]="{ 'no-events': eventsByDate().length === 0 }"> <!-- Conditional css application-->
+      <!-- Main Organization Details -->
+      <organization-details-info-card
+      [organization]="organization"
+      [profile]="profile"
+      [eventCreationPermissions]="eventCreationPermission$ | async"
+      [organizationRosterService]="organizationRosterService"
+      [organizationRoster]="organizationRoster"
+      [snackBar]="snackBar"
+      [membership]="organizationMembership"
+      (membershipChanged)="onMembershipChanged()"
+      ></organization-details-info-card>
+      <mat-card appearance="outlined" class="events-pane">
+        <mat-card-header>
+          <mat-card-title>Events</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-divider />
+        </mat-card-content>
+        <mat-card-content class="events-pane-content">
+          @if (eventsByDate().length === 0) {
+          <p class="no-events-text">This organization has no upcoming events.</p>
+          } @for (eventGroup of eventsByDate(); track eventGroup) {
+          <mat-card-subtitle class="date-header">
+            {{ eventGroup[0] }}
+          </mat-card-subtitle>
+          @for (event of eventGroup[1]; track event.id) {
+          <new-event-card
+            [event]="event"
+            [profile]="profile"
+            (registrationChange)="reloadPage()" />
+          } }
+        </mat-card-content>
+      </mat-card>
+    </div>
+    @if (organizationRoster && organizationRoster.length > 0) {
+      <!-- Right Column -->
+      <div class="right-column">
+        <organization-roster
+          [organizationRoster]="organizationRoster"
+          [organization]="organization"
+          [profile]="profile"
+          [organizationRosterService]="organizationRosterService"
+        ></organization-roster>
+      </div>
+    }
+  </div>
 }
