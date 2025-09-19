@@ -30,8 +30,6 @@ import {
 import { DatePipe } from '@angular/common';
 import { roomsResolver } from 'src/app/academics/academics.resolver';
 import { Room } from 'src/app/coworking/coworking.models';
-import { map, startWith } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-office-hours-editor',
