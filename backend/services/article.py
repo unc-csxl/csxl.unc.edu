@@ -84,10 +84,9 @@ class ArticleService:
 
         # Load operating hours
         now = datetime.now()
+        coworking_policy = self._policies_svc.policy_for_user(subject)
         operating_hours = self._operating_hours_svc.schedule(
-            TimeRange(
-                start=now, end=now + self._policies_svc.reservation_window(subject)
-            )
+            TimeRange(start=now, end=now + coworking_policy.reservation_window)
         )
 
         # Load future reservations for a given user.

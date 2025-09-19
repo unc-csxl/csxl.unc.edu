@@ -75,6 +75,7 @@ def test_draft_reservation_in_past(
 
 def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationService):
     """Walkin time limit should be bounded by PolicyService#walkin_initial_duration"""
+    coworking_policy = reservation_svc._policy_svc.policy_for_user(user_data.user)
     reservation = reservation_svc.draft_reservation(
         user_data.user,
         reservation_data.test_request(
@@ -82,15 +83,14 @@ def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationServi
                 "users": [UserIdentity(**user_data.user.model_dump())],
                 "start": reservation_data.reservation_1.end,
                 "end": reservation_data.reservation_1.end
-                + reservation_svc._policy_svc.walkin_initial_duration(user_data.user)
+                + coworking_policy.walkin_initial_duration
                 + timedelta(minutes=10),
             }
         ),
     )
     assert_equal_times(reservation_data.reservation_1.end, reservation.start)
     assert_equal_times(
-        reservation_data.reservation_1.end
-        + reservation_svc._policy_svc.walkin_initial_duration(user_data.user),
+        reservation_data.reservation_1.end + coworking_policy.walkin_initial_duration,
         reservation.end,
     )
 
@@ -138,9 +138,8 @@ def test_draft_reservation_seat_availability_truncated(
 
 def test_draft_reservation_future(reservation_svc: ReservationService):
     """When a reservation is in the future, it has longer limits."""
-    future_reservation_limit = (
-        reservation_svc._policy_svc.maximum_initial_reservation_duration(user_data.user)
-    )
+    coworking_policy = reservation_svc._policy_svc.policy_for_user(user_data.user)
+    future_reservation_limit = coworking_policy.maximum_initial_reservation_duration
     start = operating_hours_data.future.start
     end = operating_hours_data.future.start + future_reservation_limit
     reservation = reservation_svc.draft_reservation(
@@ -367,7 +366,7 @@ def test_draft_reservation_room_no_time_conflict_before(
     end = reservation_data.reservation_6.start
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_b,
+        room=room_data.pair_a,
         start=start,
         end=end,
         users=[user_data.ambassador],
@@ -386,7 +385,7 @@ def test_draft_reservation_room_no_time_conflict_after(
     end = reservation_data.reservation_6.end + timedelta(minutes=30)
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_b,
+        room=room_data.pair_a,
         start=start,
         end=end,
         users=[user_data.ambassador],
@@ -405,7 +404,7 @@ def test_draft_reservation_different_room_time_conflict(
     end = reservation_data.reservation_6.end
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_b,  # Existing test reservation is group_a
+        room=room_data.pair_a,  # Existing test reservation is group_a
         start=start,
         end=end,
         users=[user_data.ambassador],
@@ -420,7 +419,7 @@ def test_draft_reservation_crosses_weekly_limit(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     user_data.user.accepted_community_agreement = True
-    
+
     # Make filler reservations to reach weekly limit
     temp_draft_1 = ReservationRequest(
         seats=[],
@@ -430,9 +429,7 @@ def test_draft_reservation_crosses_weekly_limit(
         users=[user_data.user],
     )
 
-    reservation_svc.draft_reservation(
-        user_data.user, temp_draft_1
-    )
+    reservation_svc.draft_reservation(user_data.user, temp_draft_1)
 
     temp_draft_2 = ReservationRequest(
         seats=[],
@@ -442,9 +439,7 @@ def test_draft_reservation_crosses_weekly_limit(
         users=[user_data.user],
     )
 
-    reservation_svc.draft_reservation(
-        user_data.user, temp_draft_2
-    )
+    reservation_svc.draft_reservation(user_data.user, temp_draft_2)
 
     exceed_limit_draft = ReservationRequest(
         seats=[],
@@ -455,6 +450,4 @@ def test_draft_reservation_crosses_weekly_limit(
     )
 
     with pytest.raises(ReservationException):
-        reservation_svc.draft_reservation(
-            user_data.user, exceed_limit_draft
-        )
+        reservation_svc.draft_reservation(user_data.user, exceed_limit_draft)

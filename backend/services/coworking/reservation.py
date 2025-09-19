@@ -138,10 +138,12 @@ class ReservationService:
                 f"user/{focus.id}",
             )
 
+        coworking_policy = self._policy_svc.policy_for_user(subject)
+
         now = datetime.now()
         time_range = TimeRange(
             start=now - timedelta(days=1),
-            end=now + self._policy_svc.reservation_window(focus),
+            end=now + coworking_policy.reservation_window,
         )
 
         if state:
@@ -219,6 +221,7 @@ class ReservationService:
             True if a user has >= 6 total hours reserved
             False if a user has exceeded the limit
         """
+        coworking_policy = self._policy_svc.policy_for_user(user)
         reservations = self.get_current_reservations_for_user(user, user)
         total_duration = timedelta()
         total_duration += bounds.end - bounds.start
@@ -226,7 +229,7 @@ class ReservationService:
         for reservation in reservations:
             if reservation.room:
                 total_duration += reservation.end - reservation.start
-        if total_duration > self._policy_svc.room_reservation_weekly_limit():
+        if total_duration > coworking_policy.room_reservation_weekly_limit:
             return False
         return True
 
@@ -644,20 +647,21 @@ class ReservationService:
         Returns:
             Sequence[ReservationEntity] - All ReservationEntities that were not state transitioned.
         """
+        # TODO: Potentially refactor to avoid using a default policy
+        coworking_policy = self._policy_svc.default_policy()
         valid: list[ReservationEntity] = []
         dirty = False
         for reservation in reservations:
             if (
                 reservation.state == ReservationState.DRAFT
-                and reservation.created_at
-                + self._policy_svc.reservation_draft_timeout()
+                and reservation.created_at + coworking_policy.reservation_draft_timeout
                 < cutoff
             ):
                 reservation.state = ReservationState.CANCELLED
                 dirty = True
             elif (
                 reservation.state == ReservationState.CONFIRMED
-                and reservation.start + self._policy_svc.reservation_checkin_timeout()
+                and reservation.start + coworking_policy.reservation_checkin_timeout
                 < cutoff
             ):
                 reservation.state = ReservationState.CANCELLED
@@ -688,6 +692,9 @@ class ReservationService:
         Returns:
             Sequence[SeatAvailability]: All seat availability ordered by nearest and longest available.
         """
+        # TODO: Potentially refactor to avoid using a default policy
+        coworking_policy = self._policy_svc.default_policy()
+
         # No seats are available in the past
         now = datetime.now()
         if bounds.end <= now:
@@ -701,7 +708,7 @@ class ReservationService:
         MINUMUM_RESERVATION_EPSILON = timedelta(minutes=1)
         if (
             bounds.duration()
-            < self._policy_svc.minimum_reservation_duration()
+            < coworking_policy.minimum_reservation_duration
             - MINUMUM_RESERVATION_EPSILON
         ):
             return []
@@ -742,7 +749,7 @@ class ReservationService:
         available_seats: list[SeatAvailability] = list(
             self._prune_seats_below_availability_threshold(
                 list(seat_availability_dict.values()),
-                self._policy_svc.minimum_reservation_duration()
+                coworking_policy.minimum_reservation_duration
                 - MINUMUM_RESERVATION_EPSILON,
             )
         )
@@ -788,6 +795,9 @@ class ReservationService:
                 * Limit users and seats counts to policy
             * Clean-up / Refactor Implementation
         """
+        # Determine the coworking policy to use based on the subject
+        coworking_policy = self._policy_svc.policy_for_user(subject)
+
         # For the time being, reservations are limited to one user. As soon as
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
@@ -812,25 +822,21 @@ class ReservationService:
         now = datetime.now()
         start = request.start if request.start >= now else now
 
-        is_walkin = abs(start - now) < self._policy_svc.walkin_window(subject)
+        is_walkin = abs(start - now) < coworking_policy.walkin_window
 
         # Bound end to policy limits for duration of a reservation
         if is_walkin:
-            max_length = self._policy_svc.walkin_initial_duration(subject)
+            max_length = coworking_policy.walkin_initial_duration
         else:
-            max_length = self._policy_svc.maximum_initial_reservation_duration(subject)
+            max_length = coworking_policy.maximum_initial_reservation_duration
         end_limit = start + max_length
         end = request.end if request.end <= end_limit else end_limit
 
         # Enforce request range is within bounds of walkin vs. pre-reserved policies
         bounds = TimeRange(start=start, end=end)
 
-        # Determine whether or not the user is an instructor
-        is_instructor = self._user_is_instructor(subject)
-
         # Check if user has exceeded reservation limit
-        # Note: If the user is an instructor, no limits should be placed.
-        if request.room and not is_instructor:
+        if request.room:
             if not self._check_user_reservation_duration(request.users[0], bounds):
                 raise ReservationException(
                     "Oops! Looks like you've reached your weekly study room reservation limit"
@@ -840,7 +846,7 @@ class ReservationService:
                 raise ReservationException(
                     "You cannot create a reservation for a room that does not exist."
                 )
-            minimum_reservers = math.ceil(room.capacity / 2)
+            minimum_reservers = math.floor(room.capacity / 2)
             if len(request.users) < minimum_reservers:
                 raise ReservationException(
                     f"You must reserve this room for at least {minimum_reservers} people."
