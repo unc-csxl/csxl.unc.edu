@@ -877,7 +877,10 @@ class ReservationService:
                 )
 
             nonconflicting = bounds.subtract(conflict)
-            if len(nonconflicting) >= 1:
+            if (
+                len(nonconflicting) >= 1
+                or coworking_policy.allow_overlapping_room_reservations
+            ):
                 bounds = nonconflicting[0]
             else:
                 raise ReservationException(

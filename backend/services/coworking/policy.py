@@ -115,6 +115,9 @@ class CoworkingPolicy(BaseModel):
     room_reservation_weekly_limit: timedelta
     """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
 
+    allow_overlapping_room_reservations: bool
+    """Whether or not to allow the user to reserve two rooms at the same time (useful for instructors)"""
+
 
 class PolicyService:
     """RoleService is the access layer to the role data model, its members, and permissions.
@@ -136,6 +139,7 @@ class PolicyService:
                 reservation_draft_timeout=timedelta(minutes=5),
                 reservation_checkin_timeout=timedelta(minutes=10),
                 room_reservation_weekly_limit=timedelta(hours=6),
+                allow_overlapping_room_reservations=False,
             ),
             CoworkingPolicyType.INSTRUCTOR: CoworkingPolicy(
                 walkin_window=timedelta(minutes=10),
@@ -146,6 +150,7 @@ class PolicyService:
                 reservation_draft_timeout=timedelta(minutes=5),
                 reservation_checkin_timeout=timedelta(minutes=10),
                 room_reservation_weekly_limit=timedelta(hours=168),  # 24hrs * 7days
+                allow_overlapping_room_reservations=True,
             ),
         }
 
