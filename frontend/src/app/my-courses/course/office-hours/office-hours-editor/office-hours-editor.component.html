@@ -31,11 +31,19 @@
       <!-- Room -->
       <mat-form-field appearance="outline">
         <mat-label>Room</mat-label>
-        <mat-select formControlName="room_id">
-          @for(room of rooms; track room.id) {
-          <mat-option [value]="room.id">{{ room.id }}</mat-option>
+        <input
+          #roomInput
+          type="text"
+          matInput
+          formControlName="room_id"
+          [matAutocomplete]="auto"
+          (input)="filterRooms()"
+          (focus)="filterRooms()" />
+        <mat-autocomplete #auto="matAutocomplete" requireSelection>
+          @for (room of filteredRooms; track room.id) {
+          <mat-option [value]="room.id">{{room.id}}</mat-option>
           }
-        </mat-select>
+        </mat-autocomplete>
       </mat-form-field>
 
       }
