@@ -1,6 +1,7 @@
 """User model serves as the data object for representing registered users across application layers."""
 
 from pydantic import BaseModel
+from datetime import datetime
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -39,6 +40,8 @@ class User(UserIdentity, BaseModel):
     bio: str | None = None
     linkedin: str | None = None
     website: str | None = None
+    profile_emoji: str | None = None
+    emoji_expiration: datetime | None = None
 
 
 class NewUser(User, BaseModel):
@@ -69,3 +72,5 @@ class ProfileForm(BaseModel):
     bio: str | None = None
     linkedin: str | None = None
     website: str | None = None
+    profile_emoji: str | None = None
+    emoji_expiration: datetime | None = None

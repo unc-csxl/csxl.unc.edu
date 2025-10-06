@@ -34,7 +34,9 @@ export class ProfileEditorComponent implements OnInit {
     website: '',
     linkedin: '',
     pronouns: '',
-    bio: ''
+    bio: '',
+    profile_emoji: '',
+    emoji_expiration: ''
   });
 
   constructor(
@@ -73,13 +75,25 @@ export class ProfileEditorComponent implements OnInit {
       pronouns: profile.pronouns,
       bio: profile.bio,
       linkedin: profile.linkedin,
-      website: profile.website
+      website: profile.website,
+      profile_emoji: profile.profile_emoji,
+      emoji_expiration: profile.emoji_expiration
+        ? new Date(profile.emoji_expiration).toISOString().slice(0, 16)
+        : ''
     });
   }
 
   onSubmit(): void {
     if (this.profileForm.valid) {
       Object.assign(this.profile, this.profileForm.value);
+      // Convert emoji_expiration string to Date if provided
+      if (this.profileForm.value.emoji_expiration) {
+        this.profile.emoji_expiration = new Date(
+          this.profileForm.value.emoji_expiration
+        );
+      } else {
+        this.profile.emoji_expiration = null;
+      }
       if (!this.profile.accepted_community_agreement) {
         const dialogRef = this.dialog.open(CommunityAgreement, {
           disableClose: true,

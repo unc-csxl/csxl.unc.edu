@@ -30,10 +30,10 @@ import { Profile } from 'src/app/models.module';
 import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
-    selector: 'user-lookup',
-    templateUrl: './user-lookup.widget.html',
-    styleUrls: ['./user-lookup.widget.css'],
-    standalone: false
+  selector: 'user-lookup',
+  templateUrl: './user-lookup.widget.html',
+  styleUrls: ['./user-lookup.widget.css'],
+  standalone: false
 })
 export class UserLookup implements OnInit {
   @Input() label: string = 'Users';
@@ -85,7 +85,9 @@ export class UserLookup implements OnInit {
         github: user.github,
         bio: user.bio,
         linkedin: user.linkedin,
-        website: user.website
+        website: user.website,
+        profile_emoji: user.profile_emoji,
+        emoji_expiration: user.emoji_expiration
       };
       this.users.push(organizer);
     }
@@ -99,5 +101,21 @@ export class UserLookup implements OnInit {
     this.users.splice(this.users.indexOf(person), 1);
     this.userLookup.setValue('');
     this.usersChanged.emit(this.users);
+  }
+
+  /** Check if emoji should be displayed for a user (not expired) */
+  shouldDisplayEmoji(user: Profile | PublicProfile): boolean {
+    if (!user.profile_emoji) return false;
+    if (!user.emoji_expiration) return true;
+    return new Date(user.emoji_expiration) > new Date();
+  }
+
+  /** Get display name with emoji if applicable */
+  getDisplayName(user: Profile | PublicProfile): string {
+    const name = `${user.first_name} ${user.last_name}`;
+    if (this.shouldDisplayEmoji(user)) {
+      return `${name} ${user.profile_emoji}`;
+    }
+    return name;
   }
 }

@@ -81,6 +81,29 @@
           formControlName="bio"
           name="bio"></textarea>
       </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Profile Emoji</mat-label>
+        <input
+          matInput
+          placeholder="Enter an emoji (e.g., 🎉)"
+          formControlName="profile_emoji"
+          name="profile_emoji"
+          maxlength="10" />
+        <mat-hint
+          >Add an emoji to display next to your name (optional)</mat-hint
+        >
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Emoji Expiration</mat-label>
+        <input
+          matInput
+          type="datetime-local"
+          formControlName="emoji_expiration"
+          name="emoji_expiration" />
+        <mat-hint
+          >Set when the emoji should stop displaying (optional)</mat-hint
+        >
+      </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button routerLink="/profile">Cancel</button>

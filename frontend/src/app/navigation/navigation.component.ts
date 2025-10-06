@@ -104,4 +104,21 @@ export class NavigationComponent implements OnInit, OnDestroy {
   openLink(link: string) {
     window.open(link ?? '', '_blank');
   }
+
+  /** Check if emoji should be displayed for a profile (not expired) */
+  shouldDisplayEmoji(profile: Profile): boolean {
+    if (!profile.profile_emoji) return false;
+    if (!profile.emoji_expiration) return true;
+    return new Date(profile.emoji_expiration) > new Date();
+  }
+
+  /** Get display name with emoji if applicable */
+  getDisplayName(profile: Profile): string {
+    if (profile.first_name === '') return 'Profile';
+    const name = `${profile.first_name} ${profile.last_name}`;
+    if (this.shouldDisplayEmoji(profile)) {
+      return `${name} ${profile.profile_emoji}`;
+    }
+    return name;
+  }
 }

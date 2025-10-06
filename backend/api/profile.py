@@ -69,6 +69,8 @@ def update_profile(
             bio=profile.bio,
             linkedin=profile.linkedin,
             website=profile.website,
+            profile_emoji=profile.profile_emoji,
+            emoji_expiration=profile.emoji_expiration,
         )
         user = user_svc.create(user, user)
     else:
@@ -81,6 +83,8 @@ def update_profile(
         user.bio = profile.bio
         user.linkedin = profile.linkedin
         user.website = profile.website
+        user.profile_emoji = profile.profile_emoji
+        user.emoji_expiration = profile.emoji_expiration
         user = user_svc.update(user, user)
 
     user_details = user_svc.get(user.pid)

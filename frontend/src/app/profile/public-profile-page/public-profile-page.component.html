@@ -11,6 +11,9 @@
     <div class="header-row">
       <mat-card-title>
         {{ profile.first_name }} {{ profile.last_name }}
+        @if (shouldDisplayEmoji()) {
+        <span>{{ profile.profile_emoji }}</span>
+        }
       </mat-card-title>
       <mat-chip-set class="no-hover-chipset">
         <mat-chip disableRipple>

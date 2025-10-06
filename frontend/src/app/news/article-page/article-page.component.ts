@@ -12,6 +12,7 @@ import { NewsService } from '../news.service';
 import { ArticleOverview } from 'src/app/welcome/welcome.model';
 import { newsResolver } from '../news.resolver';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
+import { PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
     selector: 'app-article-page',
@@ -52,5 +53,21 @@ export class ArticlePageComponent implements OnInit {
       '',
       `/article/${this.article().slug}/edit`
     );
+  }
+
+  /** Check if emoji should be displayed for an author (not expired) */
+  shouldDisplayEmoji(author: PublicProfile): boolean {
+    if (!author.profile_emoji) return false;
+    if (!author.emoji_expiration) return true;
+    return new Date(author.emoji_expiration) > new Date();
+  }
+
+  /** Get display name with emoji if applicable */
+  getAuthorDisplayName(author: PublicProfile): string {
+    const name = `${author.first_name} ${author.last_name}`;
+    if (this.shouldDisplayEmoji(author)) {
+      return `${name} ${author.profile_emoji}`;
+    }
+    return name;
   }
 }

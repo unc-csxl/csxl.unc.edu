@@ -9,7 +9,7 @@
 
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { eventResolver } from '../event.resolver';
-import { Profile, ProfileService } from 'src/app/profile/profile.service';
+import { Profile, ProfileService, PublicProfile } from 'src/app/profile/profile.service';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -177,5 +177,21 @@ export class EventDetailsComponent implements OnInit {
     this.eventService
       .getRegisteredUsersForEvent(this.event(), paginationParams)
       .subscribe((page) => this.eventRegistrationsPage.set(page));
+  }
+
+  /** Check if emoji should be displayed for a user (not expired) */
+  shouldDisplayEmoji(user: PublicProfile): boolean {
+    if (!user.profile_emoji) return false;
+    if (!user.emoji_expiration) return true;
+    return new Date(user.emoji_expiration) > new Date();
+  }
+
+  /** Get display name with emoji if applicable */
+  getDisplayName(user: PublicProfile): string {
+    const name = `${user.first_name} ${user.last_name}`;
+    if (this.shouldDisplayEmoji(user)) {
+      return `${name} ${user.profile_emoji}`;
+    }
+    return name;
   }
 }

@@ -1,8 +1,9 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Users."""
 
-from sqlalchemy import Boolean, Integer, String
+from sqlalchemy import Boolean, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
+from datetime import datetime
 
 from backend.entities.academics.section_member_entity import SectionMemberEntity
 from backend.models.academics.section_member import SectionMember
@@ -54,6 +55,10 @@ class UserEntity(EntityBase):
     linkedin: Mapped[str | None] = mapped_column(String(), nullable=True)
     # Website of the user
     website: Mapped[str | None] = mapped_column(String(), nullable=True)
+    # Profile emoji for the user
+    profile_emoji: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    # Expiration time for the profile emoji
+    emoji_expiration: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     # All of the roles for the given user.
     # NOTE: This field establishes a many-to-many relationship between the users and roles table.
@@ -124,6 +129,8 @@ class UserEntity(EntityBase):
             bio=model.bio,
             linkedin=model.linkedin,
             website=model.website,
+            profile_emoji=model.profile_emoji,
+            emoji_expiration=model.emoji_expiration,
         )
 
     def to_model(self) -> User:
@@ -148,6 +155,8 @@ class UserEntity(EntityBase):
             bio=self.bio,
             linkedin=self.linkedin,
             website=self.website,
+            profile_emoji=self.profile_emoji,
+            emoji_expiration=self.emoji_expiration,
         )
 
     def update(self, model: User) -> None:
@@ -171,6 +180,8 @@ class UserEntity(EntityBase):
         self.bio = model.bio
         self.linkedin = model.linkedin
         self.website = model.website
+        self.profile_emoji = model.profile_emoji
+        self.emoji_expiration = model.emoji_expiration
 
     def to_public_model(self) -> PublicUser:
         return PublicUser(
@@ -185,4 +196,6 @@ class UserEntity(EntityBase):
             bio=self.bio,
             linkedin=self.linkedin,
             website=self.website,
+            profile_emoji=self.profile_emoji,
+            emoji_expiration=self.emoji_expiration,
         )

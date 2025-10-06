@@ -98,4 +98,11 @@ export class ProfilePageComponent {
     this.profileService.profile$.subscribe();
     dialogRef.afterClosed().subscribe();
   }
+
+  /** Check if emoji should be displayed (not expired) */
+  shouldDisplayEmoji(): boolean {
+    if (!this.profile.profile_emoji) return false;
+    if (!this.profile.emoji_expiration) return true;
+    return new Date(this.profile.emoji_expiration) > new Date();
+  }
 }

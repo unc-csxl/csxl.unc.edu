@@ -34,4 +34,11 @@ export class PublicProfilePageComponent {
     };
     this.profile = data.profile;
   }
+
+  /** Check if emoji should be displayed (not expired) */
+  shouldDisplayEmoji(): boolean {
+    if (!this.profile.profile_emoji) return false;
+    if (!this.profile.emoji_expiration) return true;
+    return new Date(this.profile.emoji_expiration) > new Date();
+  }
 }
