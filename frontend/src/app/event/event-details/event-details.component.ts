@@ -16,7 +16,6 @@ import {
   ResolveFn
 } from '@angular/router';
 import { EventOverview, RegistrationType } from '../event.model';
-import { Observable, of } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -30,10 +29,9 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 };
 
 @Component({
-    selector: 'app-event-details',
-    templateUrl: './event-details.component.html',
-    styleUrls: ['./event-details.component.css'],
-    standalone: false
+  selector: 'app-event-details',
+  templateUrl: './event-details.component.html',
+  standalone: false
 })
 export class EventDetailsComponent implements OnInit {
   /** Route information to be used in Event Routing Module */

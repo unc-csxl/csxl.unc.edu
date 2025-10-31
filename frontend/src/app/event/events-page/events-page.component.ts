@@ -30,10 +30,9 @@ import { GroupEventsPipe } from '../pipes/group-events.pipe';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 
 @Component({
-    selector: 'app-events-page',
-    templateUrl: './events-page.component.html',
-    styleUrl: './events-page.component.css',
-    standalone: false
+  selector: 'app-events-page',
+  templateUrl: './events-page.component.html',
+  standalone: false
 })
 export class EventsPageComponent {
   /** Route information to be used in App Routing Module */
