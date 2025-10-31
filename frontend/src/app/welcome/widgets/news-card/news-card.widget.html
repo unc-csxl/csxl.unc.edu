@@ -1,7 +1,7 @@
-<mat-card appearance="outlined" class="featured-pane">
-  <div class="row">
-    <img class="news-feature-image" [src]="article.image_url" />
-    <div class="column">
+<mat-card appearance="outlined" class="ml-0 max-w-full! max-h-fit!">
+  <div class="flex flex-col md:flex-row">
+    <img class="h-44 rounded-xl mt-3 ml-3 mr-3 md:mr-0 aspect-square object-cover" [src]="article.image_url" />
+    <div class="flex flex-col">
       <mat-card-header>
         <mat-card-title [routerLink]="'/article/' + article.slug">{{
           article.title
@@ -11,12 +11,11 @@
         <p>
           {{ article.published | date: 'mediumDate' }}
         </p>
-
-        <mat-chip-set class="organization-chip-set">
+        <mat-chip-set>
           <!-- Organization chip -->
           @if(article.organization_slug) {
           <mat-chip-row
-            id="organization-chip"
+            class="h-7!"
             [routerLink]="'/organizations/' + article.organization_slug">
             <img
               class="profile-icon"
@@ -27,13 +26,13 @@
           }
         </mat-chip-set>
 
-        <p class="description">
+        <p class="py-2">
           {{ article.synopsis }}
         </p>
       </mat-card-content>
     </div>
   </div>
-  <mat-card-actions>
+  <mat-card-actions class="w-full gap-2 mb-2 justify-end">
     <button mat-flat-button [routerLink]="'/article/' + article.slug">
       Read
     </button>
