@@ -10,17 +10,16 @@ import {
   UpdatedCourseSite
 } from '../../my-courses.model';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { myCoursesInstructorGuard } from '../../my-courses.guard';
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.component.html',
-    styleUrl: './settings.component.css',
-    standalone: false
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  standalone: false
 })
 export class SettingsComponent {
   [x: string]: any;

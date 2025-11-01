@@ -23,10 +23,9 @@ import { saveAs } from 'file-saver';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-    selector: 'app-roster',
-    templateUrl: './roster.component.html',
-    styleUrl: './roster.component.css',
-    standalone: false
+  selector: 'app-roster',
+  templateUrl: './roster.component.html',
+  standalone: false
 })
 export class RosterComponent {
   /** Route information to be used in the routing module */

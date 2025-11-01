@@ -1,6 +1,6 @@
 <mat-card
   [class]="
-    'course-card ' + (course.role !== 'Student' && 'surface-container-card')
+    'max-w-[300px]! min-h-[174px]! m-0! ' + (course.role !== 'Student' && 'surface-container-card')
   "
   appearance="outlined">
   <mat-card-header>
@@ -8,19 +8,19 @@
       {{ course.subject_code }} {{ course.number
       }}{{ course.role === 'Student' ? '-' + course.sections[0].number : '' }}
     </mat-card-title>
-    <mat-card-subtitle class="title-small course-title">{{
+    <mat-card-subtitle class="title-small w-[268px] whitespace-nowrap overflow-hidden text-ellipsis">{{
       course.title
     }}</mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content>
+  <mat-card-content class="grow">
     @for (section of course.sections; track section.number) {
-    <p class="meeting-pattern-text">
+    <p class="my-0">
       {{ course.sections.length > 1 ? 'Sec ' + section.number + ': ' : ''
       }}{{ section.meeting_pattern }}
     </p>
     }
   </mat-card-content>
-  <mat-card-actions class="course-card-actions">
+  <mat-card-actions class="flex! flex-row! gap-2! justify-end! py-4!">
     @if (course.role === 'Student') {
     <!-- <button mat-stroked-button color="secondary" type="submit">Details</button> -->
     <button

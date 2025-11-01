@@ -1,14 +1,14 @@
 <div class="container">
-    <mat-pane>
-      <mat-card-header>
+    <mat-card appearance="outlined" class="border-transparent! max-w-full! min-h-[73vh]! mb-8! mr-8!">
+      <mat-card-header class="flex! flex-col! gap-4! pb-4!">
         <mat-card-title>Statistics</mat-card-title>
         <mat-divider />
       </mat-card-header>
       <mat-card-content>
-        <div class="ticket-history-toolbar">
+        <div class="flex flex-row items-center justify-between w-full">
           <mat-card-subtitle>Ticket History</mat-card-subtitle>
           @if(filterOptions()) {
-            <div class="ticket-history-toolbar-options">
+            <div class="flex flex-row items-center gap-4">
               <!-- Students chip -->
               <mat-filter-chip
                 placeholder="Students"
@@ -19,8 +19,8 @@
                 [filterLogic]="profileFilterLogic"
               >
                 @if(studentFilterOptions().length) {
-                  <div class="mat-filter-chip-accessory" (click)="clearStudentFilter()">
-                    <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
+                  <div class="flex flex-row items-center" (click)="clearStudentFilter()">
+                    <mat-divider [vertical]="true" class="h-[30px]"></mat-divider>
                     <mat-icon matChipTrailingIcon>close</mat-icon>    
                   </div>
                 }
@@ -37,7 +37,7 @@
                 [filterLogic]="profileFilterLogic"
               >
                 @if(staffFilterOptions().length) {
-                  <div class="mat-filter-chip-accessory" (click)="clearStaffFilter()">
+                  <div class="flex flex-row items-center" (click)="clearStaffFilter()">
                     <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
                     <mat-icon matChipTrailingIcon>close</mat-icon>    
                   </div>
@@ -46,11 +46,11 @@
 
 
               <!-- Date picker -->
-              <div class="date-picker-container">
+              <div class="-pt-3 h-8">
                 <mat-chip disableRipple [highlighted]="selectedStartDate() || selectedEndDate()" >
-                  <div class="mat-filter-chip-content">
-                      <div class="mat-filter-chip-main-content" (click)="datePicker.open()" >
-                          <mat-icon matChipTrailingIcon class="font-primary mat-filter-chip-leading-icon">date_range</mat-icon>
+                  <div class="flex flex-row items-center">
+                      <div class="flex flex-row items-center" (click)="datePicker.open()" >
+                          <mat-icon matChipTrailingIcon class="font-primary pl-0!">date_range</mat-icon>
                           @if(selectedStartDate() || selectedEndDate()) {
                               <span>{{ selectedStartDate() | date: 'shortDate' }} </span>
                               @if(selectedEndDate()) {
@@ -62,7 +62,7 @@
                           <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
                       </div>
                       @if(selectedStartDate()|| selectedEndDate()) {
-                          <div class="mat-filter-chip-accessory" (click)="clearDateRangeFilter()">
+                          <div class="flex flex-row items-center" (click)="clearDateRangeFilter()">
                               <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
                               <mat-icon matChipTrailingIcon>close</mat-icon>    
                           </div>
@@ -70,8 +70,9 @@
                   </div>
               </mat-chip>
 
+              <!--[TODO] For some reason, styles only worked when inlined or in the css file like so.... very suspicious...-->
               <mat-date-range-input 
-                class="date-input"
+                style="position: relative; float: bottom; margin-top: auto; margin-bottom: -10px;"
                 [rangePicker]="datePicker" 
                 [class.cdk-visually-hidden]="true"
                 [min]="filterOptions()?.term_start"
@@ -87,13 +88,13 @@
                 mat-flat-button (click)="downloadTicketData()"
                 class="secondary-button"
               >
-                <mat-icon id="download-button-icon">download</mat-icon>
+                <mat-icon class="mr-[-8px]!">download</mat-icon>
               </button>
             </div>
           }
         </div>
         <!-- Ticket data cards -->
-        <div class="statistics-row">
+        <div class="flex flex-row gap-6 mt-4">
           <office-hours-statistics-card
             title="Total Tickets"
             [leftStatistic]="ticketStatistics()?.total_tickets_weekly?.toFixed(0) ?? '---'"
@@ -111,22 +112,22 @@
         </div>
         <!-- Ticket history -->
          @if(paginatedTickets()) {
-          <mat-card class="ticket-history-card" appearance="outlined">
+          <mat-card class="max-w-full! max-h-full! mx-0! mt-4!" appearance="outlined">
             <mat-card-content>
-              <div class="ticket-list">
+              <div class="flex flex-col gap-3">
                 @for(item of paginatedTickets()?.items ?? []; track item.id) {
-                  <div class="ticket-row">
-                    <div class="ticket-row-leading-content">
+                  <div class="flex flex-row items-center justify-between gap-4">
+                    <div class="flex flex-row items-center gap-4">
                       <p>{{ item.called_at | date: 'EEE, M/d' }}<br>{{ item.called_at | date: 'shortTime' }}</p>
-                      <p><span class="semibold">{{ item.type }}</span></p>
-                      <div class="ticket-row-user-chips">
+                      <p><span class="font-medium">{{ item.type }}</span></p>
+                      <div class="flex flex-row gap-2 pl-4 -pb-2">
                         <user-chip-list [users]="item.creators"></user-chip-list>
                         <user-chip-list [users]="item.caller? [item.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
                       </div>
                     </div>
-                    <div class="ticket-row-trailing-content">
+                    <div class="flex flex-row items-center">
                       @if(item.has_concerns || (item.caller_notes && item.caller_notes != "")) {
-                        <mat-icon [class]="'feedback-indicator ' + (item.has_concerns ? 'font-error' : 'font-secondary')">feedback</mat-icon>
+                        <mat-icon [class]="'mt-1 ' + (item.has_concerns ? 'font-error' : 'font-secondary')">feedback</mat-icon>
                       }
                       <button mat-icon-button (click)="openTicketDetails(item)">
                         <mat-icon>more_vert</mat-icon>
@@ -147,5 +148,5 @@
           </mat-card>
          }
       </mat-card-content>
-    </mat-pane> 
+    </mat-card> 
 </div>

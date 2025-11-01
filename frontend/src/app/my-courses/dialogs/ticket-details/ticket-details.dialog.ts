@@ -4,10 +4,9 @@ import { MyCoursesService } from '../../my-courses.service';
 import { OfficeHourTicketOverview } from '../../my-courses.model';
 
 @Component({
-    selector: 'dialog-ticket-details',
-    templateUrl: './ticket-details.dialog.html',
-    styleUrl: './ticket-details.dialog.css',
-    standalone: false
+  selector: 'dialog-ticket-details',
+  templateUrl: './ticket-details.dialog.html',
+  standalone: false
 })
 export class TicketDetailsDialog {
   studentWaitTime = 0;
