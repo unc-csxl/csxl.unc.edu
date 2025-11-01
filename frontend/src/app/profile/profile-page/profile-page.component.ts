@@ -18,10 +18,9 @@ import { AuthenticationService } from 'src/app/authentication.service';
 import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
 
 @Component({
-    selector: 'app-profile-page',
-    templateUrl: './profile-page.component.html',
-    styleUrls: ['./profile-page.component.css'],
-    standalone: false
+  selector: 'app-profile-page',
+  templateUrl: './profile-page.component.html',
+  standalone: false
 })
 export class ProfilePageComponent {
   public static Route: Route = {
