@@ -21,10 +21,9 @@ import { AcademicsService } from 'src/app/academics/academics.service';
 import { Observable } from 'rxjs';
 
 @Component({
-    selector: 'app-application-form',
-    templateUrl: './application-form.component.html',
-    styleUrl: './application-form.component.css',
-    standalone: false
+  selector: 'app-application-form',
+  templateUrl: './application-form.component.html',
+  standalone: false
 })
 export class ApplicationFormComponent {
   /** Route information to be used in the routing module */
