@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AcademicsHomeComponent } from './academics-home/academics-home.component';
 import { AcademicsAdminComponent } from './academics-admin/academics-admin.component';
 import { AdminTermComponent } from './academics-admin/term/admin-term.component';
 import { AdminCourseComponent } from './academics-admin/course/admin-course.component';
@@ -22,7 +21,6 @@ const routes: Routes = [
       AdminRoomComponent.Route
     ]
   },
-  AcademicsHomeComponent.Route,
   CourseEditorComponent.Route,
   TermEditorComponent.Route,
   SectionEditorComponent.Route,

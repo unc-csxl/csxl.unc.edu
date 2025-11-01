@@ -1,5 +1,5 @@
 <!-- HTML Structure of Admin Terms List -->
-<mat-pane>
+<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
   <mat-card-content>
     @if(terms()) {
     <div class="content">
@@ -7,17 +7,17 @@
         <table mat-table [dataSource]="terms()">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
-              <div class="header">
+              <div class="flex items-center justify-between">
                 Terms
                 <button mat-stroked-button (click)="createTerm()">Create</button>
               </div>
             </th>
-            <td mat-cell *matCellDef="let element">
-              <div class="row" (click)="updateTerm(element)">
+            <td class="border-0! border-transparent! hover:cursor-pointer! hover:bg-black/5! dark:hover:bg-white/5! hover:rounded-xl" mat-cell *matCellDef="let element">
+              <div class="flex flex-row w-full justify-between items-center" (click)="updateTerm(element)">
                 <p>
                   {{ element.name }}
                 </p>
-                <div clas="modify-buttons">
+                <div clas="ml-auto">
                   <button
                     mat-stroked-button
                     (click)="deleteTerm(element, $event)">
@@ -34,4 +34,4 @@
     </div>
     }
   </mat-card-content>
-</mat-pane>
+</mat-card>
