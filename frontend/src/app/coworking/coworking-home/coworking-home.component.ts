@@ -26,10 +26,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-    selector: 'app-coworking-home',
-    templateUrl: './coworking-home.component.html',
-    styleUrls: ['./coworking-home.component.css'],
-    standalone: false
+  selector: 'app-coworking-home',
+  templateUrl: './coworking-home.component.html',
+  standalone: false
 })
 export class CoworkingPageComponent implements OnInit, OnDestroy {
   public status: Signal<CoworkingStatus>;
@@ -118,11 +117,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   reserve(seatSelection: SeatAvailability[]) {
     this.coworkingService.draftReservation(seatSelection).subscribe({
       error: (response) => {
-        this.snackBar.open(
-          response.error.message,
-          '',
-          { duration: 8000 }
-        );
+        this.snackBar.open(response.error.message, '', { duration: 8000 });
       },
       next: (reservation) => {
         this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);

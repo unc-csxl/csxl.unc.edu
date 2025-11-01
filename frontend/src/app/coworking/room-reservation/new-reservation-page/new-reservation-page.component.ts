@@ -14,10 +14,9 @@ import { RoomReservationService } from '../room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-    selector: 'app-new-reservation-page',
-    templateUrl: './new-reservation-page.component.html',
-    styleUrls: ['./new-reservation-page.component.css'],
-    standalone: false
+  selector: 'app-new-reservation-page',
+  templateUrl: './new-reservation-page.component.html',
+  standalone: false
 })
 export class NewReservationPageComponent implements OnInit {
   public static Route = {
