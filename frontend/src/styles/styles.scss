@@ -13,9 +13,19 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+p {
+  margin-bottom: 0;
+}
+
 .no-hover-chip-container {
   --mat-chip-focus-state-layer-color: transparent !important;
   --mat-chip-hover-state-layer-color: transparent !important;
+}
+
+.no-hover-no-outline-chip-container {
+  --mat-chip-focus-state-layer-color: transparent !important;
+  --mat-chip-hover-state-layer-color: transparent !important;
+  --mat-chip-outline-color: transparent !important;
 }
 
 /** Custom Material Component Styling Mixins */

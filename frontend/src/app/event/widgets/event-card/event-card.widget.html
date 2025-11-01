@@ -1,23 +1,23 @@
-<mat-card appearance="outlined">
+<mat-card appearance="outlined" class="ml-0 max-w-full! max-h-fit">
   <mat-card-header>
-    <div class="header-row">
-      <div class="header-column">
+    <div class="flex flex-row w-full">
+      <div class="flex flex-col justify-center">
         <mat-card-title>{{ event.name }}</mat-card-title>
 
-        <div class="links-row">
-          <div class="row">
+        <div class="flex flex-row flex-wrap my-1 items-center gap-4">
+          <div class="flex flex-row gap-1 items-center">
             <mat-icon class="secondary-icon">schedule</mat-icon>
             <p>
               {{ event.start | date: 'shortTime' }} -
               {{ event.end | date: 'shortTime' }}
             </p>
           </div>
-          <div class="row">
+          <div class="flex flex-row gap-1 items-center">
             <mat-icon class="secondary-icon">location_on</mat-icon>
             <p>{{ event.location }}</p>
           </div>
           @if(profile) {
-          <div class="row">
+          <div class="flex flex-row gap-1 items-center">
             <mat-icon class="secondary-icon">person_outline</mat-icon>
             @if (event.override_registration_url) {
             <p>External registration</p>
@@ -38,25 +38,25 @@
     <mat-chip-set>
       <!-- Organization chip -->
       <mat-chip-row
-        id="organization-chip"
+        class="hover:cursor-pointer h-7!"
         [routerLink]="'/organizations/' + event.organization_slug">
         <img
-          class="profile-icon"
+          class="rounded-full!"
           matChipAvatar
           [src]="event.organization_icon" />
         {{ event.organization_name }}
       </mat-chip-row>
 
       @if (event.organizers.length > 0) {
-      <mat-divider class="vertical-divider" [vertical]="true" />
+      <mat-divider class="ml2! my-[6px]!" [vertical]="true" />
       }
 
       <!-- Organizer Chips -->
       @for (organizer of event.organizers; track organizer.id) {
-      <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
+      <mat-chip-row [routerLink]="'/profile/' + organizer.onyen" class="h-7!">
         @if (organizer.github_avatar && organizer.github_avatar !== '') {
         <img
-          class="profile-icon"
+          class="rounded-full!"
           matChipAvatar
           [src]="organizer.github_avatar" />
         }
@@ -65,11 +65,11 @@
       </mat-chip-row>
       }
     </mat-chip-set>
-    <p markdown class="description">
+    <p markdown class="my-2!">
       {{ event.description }}
     </p>
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="gap-2! mb-2! justify-end">
     @if(profile) {
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
