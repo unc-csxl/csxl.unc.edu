@@ -1,17 +1,17 @@
 <mat-pane>
   <mat-card-content>
-    <div class="row">
-      <div class="content">
+    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+      <div class="flex flex-col">
         <mat-card-title>Users and Roles</mat-card-title>
-        <div class="font-variant facts">
+        <div class="font-variant mt-2 flex flex-row flex-wrap gap-2 w-full">
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.users
             }}</span
             >&nbsp;users
           </p>
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.roles
             }}</span
             >&nbsp;roles
@@ -19,7 +19,7 @@
         </div>
       </div>
       <button
-        class="manage-button"
+        class="mt-2 ml-auto"
         mat-flat-button
         color="primary"
         routerLink="/admin/accounts/users">
@@ -31,30 +31,30 @@
 
 <mat-pane>
   <mat-card-content>
-    <div class="row">
-      <div class="content">
+    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+      <div class="flex flex-col">
         <mat-card-title>Academics</mat-card-title>
-        <div class="font-variant facts">
+        <div class="font-variant flex flex-row flex-wrap gap-2 w-full">
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.terms
             }}</span
             >&nbsp;terms
           </p>
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.courses
             }}</span
             >&nbsp;courses
           </p>
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.sections
             }}</span
             >&nbsp;sections
           </p>
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.rooms
             }}</span
             >&nbsp;rooms
@@ -63,7 +63,7 @@
       </div>
 
       <button
-        class="manage-button"
+        class="mt-2 ml-auto"
         mat-flat-button
         color="primary"
         routerLink="/academics/admin/section">
@@ -75,12 +75,12 @@
 
 <mat-pane>
   <mat-card-content>
-    <div class="row">
-      <div class="content">
+    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+      <div class="flex flex-col">
         <mat-card-title>Organizations</mat-card-title>
-        <div class="font-variant facts">
+        <div class="font-variant flex flex-row flex-wrap gap-2 w-full">
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.organizations
             }}</span
             >&nbsp;organizations
@@ -89,7 +89,7 @@
       </div>
 
       <button
-        class="manage-button"
+        class="mt-2 ml-auto"
         mat-flat-button
         color="primary"
         routerLink="/organizations/admin">
@@ -101,12 +101,12 @@
 
 <mat-pane>
   <mat-card-content>
-    <div class="row">
-      <div class="content">
+    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+      <div class="flex flex-col">
         <mat-card-title>Articles</mat-card-title>
-        <div class="font-variant facts">
+        <div class="font-variant flex flex-row flex-wrap gap-2 w-full">
           <p>
-            <span class="text-badge secondary-background">{{
+            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
               (facts$ | async)?.articles
             }}</span
             >&nbsp;articles
@@ -114,7 +114,7 @@
         </div>
       </div>
       <button
-        class="manage-button"
+        class="mt-2 ml-auto"
         mat-flat-button
         color="primary"
         routerLink="/article/admin">
