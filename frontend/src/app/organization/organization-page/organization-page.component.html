@@ -1,12 +1,14 @@
 <!-- HTML Structure of Organizations Page -->
 
 <!-- Search Bar -->
-<search-bar
-  class="organization-search-bar mat-csxl-search-bar"
+ <div class="max-w-full! mx-[10%]!">
+  <search-bar
+  class="mat-csxl-search-bar"
   [(searchBarQuery)]="searchBarQuery" />
+ </div>
 
 <!-- Organizations -->
-<div class="organization-cards">
+<div class="flex flex-row flex-wrap items-center justify-center gap-4 p-4">
   <!-- Display card for each organization, potentially filtered based on the search query. -->
   @for (organization of organizations() | organizationFilter: searchBarQuery;
   track organization.id) {

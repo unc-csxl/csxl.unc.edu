@@ -9,9 +9,9 @@
         {{ this.isNew() ? 'Create' : 'Update' }} Organization
       </mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="flex! flex-col! gap-4! pt-4!">
       <!-- Organization Name Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Organization Name</mat-label>
         <input
           matInput
@@ -22,8 +22,8 @@
           required />
       </mat-form-field>
       <!-- Shorthand Field -->
-      <div class="horizontal-wrapper">
-        <mat-form-field appearance="outline" color="accent">
+      <div class="flex flex-row gap-4">
+        <mat-form-field appearance="outline" color="accent" class="w-full">
           <mat-label>Shorthand</mat-label>
           <input
             matInput
@@ -34,6 +34,7 @@
         </mat-form-field>
         <!-- Slug Field -->
         <mat-form-field
+          class="w-full"
           hintLabel="Lowercase letters, numbers, or dashes"
           appearance="outline"
           color="accent">
@@ -42,12 +43,13 @@
         </mat-form-field>
       </div>
       <!-- Logo Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent"  class="w-full">
         <mat-label>Logo Link</mat-label>
         <input matInput placeholder="" formControlName="logo" name="logo" />
       </mat-form-field>
       <!-- Short Description Field -->
       <mat-form-field
+        class="w-full"
         hintLabel="Max 150 characters"
         appearance="outline"
         color="accent">
@@ -60,6 +62,7 @@
       </mat-form-field>
       <!-- Long Description Field -->
       <mat-form-field
+        class="w-full"
         hintLabel="Max 2000 characters"
         appearance="outline"
         color="accent">
@@ -71,7 +74,7 @@
           name="long_description"></textarea>
       </mat-form-field>
       <!-- Website Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Website</mat-label>
         <input
           matInput
@@ -80,7 +83,7 @@
           name="website" />
       </mat-form-field>
       <!-- Email Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Email</mat-label>
         <input matInput placeholder="" formControlName="email" name="email" />
         @if (organizationForm.controls['email'].invalid) {
@@ -90,7 +93,7 @@
         }
       </mat-form-field>
       <!-- Instagram Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Instagram</mat-label>
         <input
           matInput
@@ -99,7 +102,7 @@
           name="instagram" />
       </mat-form-field>
       <!-- LinkedIn Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>LinkedIn</mat-label>
         <input
           matInput
@@ -108,7 +111,7 @@
           name="linked_in" />
       </mat-form-field>
       <!-- YouTube Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>YouTube</mat-label>
         <input
           matInput
@@ -117,7 +120,7 @@
           name="youtube" />
       </mat-form-field>
       <!-- HeelLife Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>HeelLife</mat-label>
         <input
           matInput
@@ -126,7 +129,7 @@
           name="heel_life" />
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions class="pb-4! justify-end gap-3!">
       <button
         mat-stroked-button
         color="secondary"

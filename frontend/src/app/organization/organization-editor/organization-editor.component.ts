@@ -18,10 +18,9 @@ import { OrganizationService } from '../organization.service';
 import { organizationEditorGuard } from './organization-editor.guard';
 
 @Component({
-    selector: 'app-organization-editor',
-    templateUrl: './organization-editor.component.html',
-    styleUrls: ['./organization-editor.component.css'],
-    standalone: false
+  selector: 'app-organization-editor',
+  templateUrl: './organization-editor.component.html',
+  standalone: false
 })
 export class OrganizationEditorComponent {
   /** Route information to be used in Organization Routing Module */
