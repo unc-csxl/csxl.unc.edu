@@ -115,9 +115,14 @@
       [formControl]="notes"
       name="notes"></textarea>
   </mat-form-field>
+
+  <div class="row">
+    <p mat-card-subtitle>Preferred Hiring Level</p>
+  </div>
+
   <mat-form-field appearance="outline">
     <mat-label>Select Preferred Level</mat-label>
-    <mat-select formControlName="level">
+    <mat-select [formControl]="preferredLevel">
       @for(level of hiringService.activeHiringlevels(); track level.id) {
       <mat-option [value]="level">{{ level.title }}</mat-option>
       }

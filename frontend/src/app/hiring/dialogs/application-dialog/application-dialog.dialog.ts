@@ -11,6 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   ApplicationReviewOverview,
   ApplicationReviewStatus,
+  HiringLevel,
   HiringStatus
 } from '../../hiring.models';
 import { FormControl } from '@angular/forms';
@@ -33,6 +34,8 @@ export interface ApplicationDialogData {
 export class ApplicationDialog implements OnInit, OnDestroy {
   notes = new FormControl('');
   notesSubcription!: Subscription;
+  preferredLevel = new FormControl<HiringLevel | undefined>(undefined);
+  preferredLevelSubscription!: Subscription;
 
   constructor(
     protected hiringService: HiringService,
@@ -50,12 +53,18 @@ export class ApplicationDialog implements OnInit, OnDestroy {
         .subscribe((_) => {
           this.saveData();
         });
+      this.preferredLevel.setValue(this.data.review.level);
+      this.preferredLevelSubscription = this.preferredLevel.valueChanges
+        .subscribe((_) => {
+          this.saveData();
+        });
     }
   }
 
   /** Unsubsribe from the notes subscription when the page is closed. */
   ngOnDestroy(): void {
     this.notesSubcription.unsubscribe();
+    this.preferredLevelSubscription.unsubscribe();
   }
 
   youtubeVideoId(): string | undefined {
@@ -68,14 +77,20 @@ export class ApplicationDialog implements OnInit, OnDestroy {
     if (this.data.review.status == ApplicationReviewStatus.NOT_PREFERRED) {
       this.data.status!.not_preferred[this.data.review.preference].notes =
         this.notes.value ?? '';
+      this.data.status!.not_preferred[this.data.review.preference].level =
+        this.preferredLevel.value ?? null;
     }
     if (this.data.review.status == ApplicationReviewStatus.NOT_PROCESSED) {
       this.data.status!.not_processed[this.data.review.preference].notes =
         this.notes.value ?? '';
+      this.data.status!.not_processed[this.data.review.preference].level =
+        this.preferredLevel.value ?? null;
     }
     if (this.data.review.status == ApplicationReviewStatus.PREFERRED) {
       this.data.status!.preferred[this.data.review.preference].notes =
         this.notes.value ?? '';
+      this.data.status!.preferred[this.data.review.preference].level =
+        this.preferredLevel.value ?? null;
     }
 
     // Persist the data

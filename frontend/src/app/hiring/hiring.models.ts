@@ -40,6 +40,7 @@ export interface ApplicationReviewOverview {
   preference: number;
   notes: string;
   applicant_course_ranking: number;
+  level: HiringLevel | null;
 }
 
 export interface HiringStatus {

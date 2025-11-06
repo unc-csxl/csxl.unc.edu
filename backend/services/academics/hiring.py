@@ -130,13 +130,16 @@ class HiringService:
                 persisted.status != request.status
                 or persisted.preference != request.preference
                 or persisted.notes != request.notes
+                or persisted.level != request.level,
             ):
+                print("update", request.level, persisted.level)
                 updates.append(
                     {
                         "id": persisted.id,
                         "status": request.status,
                         "preference": request.preference,
                         "notes": request.notes,
+                        "level": request.level,
                     }
                 )
 
