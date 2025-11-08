@@ -138,7 +138,6 @@ class HiringService:
                 request.notes,
                 requested_level_id,
             ):
-                print("update", requested_level_id, persisted.level_id)
                 updates.append(
                     {
                         "id": persisted.id,
