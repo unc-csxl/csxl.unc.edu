@@ -43,6 +43,7 @@ export class ApplicationDialog implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: ApplicationDialogData
   ) {
     this.notes.setValue(data.review.notes);
+    this.preferredLevel.setValue(data.review.level);
   }
 
   /** Save the notes data as the user types, with a debounce of 200ms. */
@@ -66,6 +67,10 @@ export class ApplicationDialog implements OnInit, OnDestroy {
     this.notesSubcription.unsubscribe();
     this.preferredLevelSubscription.unsubscribe();
   }
+
+  /** Compare hiring levels by their ID. */
+  compareLevels = (a?: HiringLevel | null, b?: HiringLevel | null) =>
+    (a?.id ?? null) === (b?.id ?? null);
 
   youtubeVideoId(): string | undefined {
     let splitUrl = this.data.review.application.intro_video_url?.split('?v=');
