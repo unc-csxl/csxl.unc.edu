@@ -126,20 +126,26 @@ class HiringService:
         updates: list[dict] = []
         for persisted in site_entity.application_reviews:
             request = hiring_status_reviews_by_id[persisted.id]
+            requested_level_id = request.level.id if request.level else None
             if (
-                persisted.status != request.status
-                or persisted.preference != request.preference
-                or persisted.notes != request.notes
-                or persisted.level != request.level,
+                persisted.status,
+                persisted.preference,
+                persisted.notes,
+                persisted.level_id,
+            ) != (
+                request.status,
+                request.preference,
+                request.notes,
+                requested_level_id,
             ):
-                print("update", request.level, persisted.level)
+                print("update", requested_level_id, persisted.level_id)
                 updates.append(
                     {
                         "id": persisted.id,
                         "status": request.status,
                         "preference": request.preference,
                         "notes": request.notes,
-                        "level": request.level,
+                        "level_id": requested_level_id,
                     }
                 )
 
@@ -488,6 +494,7 @@ class HiringService:
                 status=review.status,
                 preference=review.preference,
                 notes=review.notes,
+                level=(review.level.to_model() if review.level else None),
                 applicant_course_ranking=applicant_preferences.get(
                     review.application_id, 999
                 ),

@@ -58,6 +58,11 @@ class ApplicationReviewEntity(EntityBase):
     preference: Mapped[int] = mapped_column(Integer)
     # Notes
     notes: Mapped[str] = mapped_column(String)
+    # Level
+    level_id: Mapped[int | None] = mapped_column(
+        ForeignKey("academics__hiring__level.id"), nullable=True
+    )
+    level: Mapped["HiringLevelEntity"] = relationship(back_populates="hiring_reviews")
 
     @classmethod
     def from_model(cls, model: ApplicationReview) -> Self:
@@ -76,6 +81,7 @@ class ApplicationReviewEntity(EntityBase):
             status=model.status,
             preference=model.preference,
             notes=model.notes,
+            level_id=(model.level.id if model.level else None),
         )
 
     def to_overview_model(self) -> ApplicationReviewOverview:
@@ -133,6 +139,7 @@ class ApplicationReviewEntity(EntityBase):
             applicant_id=self.application.user_id,
             applicant_course_ranking=applicant_preference_for_course
             + 1,  # Increment since starting index is 0.
+            level=(self.level.to_model() if self.level else None),
         )
 
     def to_csv_row(self) -> ApplicationReviewCsvRow:
@@ -177,4 +184,5 @@ class ApplicationReviewEntity(EntityBase):
             status=self.status,
             preference=self.preference,
             notes=self.notes,
+            level=(self.level.title if self.level else None),
         )
