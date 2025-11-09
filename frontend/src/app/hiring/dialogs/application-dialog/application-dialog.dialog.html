@@ -99,10 +99,14 @@
   <mat-divider />
 
   @if(data.viewOnly) {
-  <div class="row">
-    <p mat-card-subtitle>Instructor's Notes</p>
+    <div class="row">
+      <p mat-card-subtitle>Instructor's Notes</p>
+    </div>
     <p markdown>{{ data.review.notes }}</p>
+  <div class="row">
+    <p mat-card-subtitle>Preferred Hiring Level</p>
   </div>
+  <p>{{ data.review.level ? data.review.level.title : 'None' }}</p>
   } @else {
   <div class="row">
     <p mat-card-subtitle>Your Notes</p>
