@@ -1,3 +1,19 @@
+.header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-top: 8px;
+  padding-left: 24px;
+
+  ::ng-deep .mat-pane {
+    max-width: 80vw !important;
+    height: 20vh;
+    /* margin-bottom: 32px !important; */
+    margin: 0px !important;
+  }
+}
+
 .container {
   display: flex;
   flex-direction: row;

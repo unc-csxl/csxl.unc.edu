@@ -16,9 +16,13 @@ import { Component, WritableSignal, signal } from '@angular/core';
 import {
   ApplicationReviewOverview,
   ApplicationReviewStatus,
-  HiringStatus
+  HiringStatus,
+  HiringLevelClassification
 } from '../hiring.models';
 import { HiringService } from '../hiring.service';
+import { MyCoursesService } from '../../my-courses/my-courses.service';
+import { AcademicsService } from '../../academics/academics.service';
+import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -48,10 +52,14 @@ export class HiringPreferencesComponent {
 
   isDropProcessing: boolean = false;
 
+  coverage: number = 0;
+
   /** Constructor */
   constructor(
     private route: ActivatedRoute,
     protected hiringService: HiringService,
+    protected myCoursesService: MyCoursesService,
+    protected academicsService: AcademicsService,
     protected dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {
@@ -64,7 +72,10 @@ export class HiringPreferencesComponent {
         this.notPreferred = hiringStatus.not_preferred;
         this.notProcessed = hiringStatus.not_processed;
         this.preferred = hiringStatus.preferred;
+        this.recomputeEstimatedCoverage();
       });
+    // Load enrollment for this course site (sum of section enrollments)
+    this.loadEnrollment();
   }
 
   drop(event: CdkDragDrop<ApplicationReviewOverview[]>) {
@@ -116,6 +127,7 @@ export class HiringPreferencesComponent {
           this.notPreferred = hiringStatus.not_preferred;
           this.notProcessed = hiringStatus.not_processed;
           this.preferred = hiringStatus.preferred;
+          this.recomputeEstimatedCoverage();
           this.isDropProcessing = false;
         },
         error: (error) => {
@@ -123,6 +135,51 @@ export class HiringPreferencesComponent {
           this.isDropProcessing = false;
         }
       });
+  }
+
+  /** Sum enrolled students across all sections in this course site. */
+  private totalEnrollment: number = 0;
+  private loadEnrollment() {
+    this.myCoursesService.getCourseSite(this.courseSiteId).subscribe((site) => {
+      const sectionIds = site.section_ids ?? [];
+      if (sectionIds.length === 0) {
+        this.totalEnrollment = 0;
+        this.recomputeEstimatedCoverage();
+        return;
+      }
+      forkJoin(sectionIds.map((id) => this.academicsService.getSection(id))).subscribe(
+        (sections) => {
+          this.totalEnrollment = sections.reduce(
+            (sum, s) => sum + (s.enrolled ?? 0),
+            0
+          );
+          this.recomputeEstimatedCoverage();
+        }
+      );
+    });
+  }
+
+  /** Estimate coverage from preferred applicants using selected levels. */
+  private recomputeEstimatedCoverage() {
+    let assignedLoad = 0;
+    for (const review of this.preferred) {
+      const level = review.level;
+      if (!level) {
+        continue;
+      }
+      if (
+        level.classification === HiringLevelClassification.MS ||
+        level.classification === HiringLevelClassification.PHD
+      ) {
+        assignedLoad += level.load;
+      } else if (level.classification === HiringLevelClassification.UG) {
+        assignedLoad += level.load * 0.25;
+      } else {
+        // IOR or unknown classification contributes 0 in this estimate
+      }
+    }
+    // Mirror admin calculation: (enrollment / 60) - assigned load
+    this.coverage = this.totalEnrollment / 60.0 - assignedLoad;
   }
 
   private saveErrorSnackBar(error: Error) {
@@ -167,6 +224,7 @@ export class HiringPreferencesComponent {
           this.notPreferred = hiringStatus.not_preferred;
           this.notProcessed = hiringStatus.not_processed;
           this.preferred = hiringStatus.preferred;
+          this.recomputeEstimatedCoverage();
         });
     });
   }
