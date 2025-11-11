@@ -674,7 +674,8 @@ class HiringService:
             .options(
                 joinedload(ApplicationReviewEntity.application).joinedload(
                     ApplicationEntity.user
-                )
+                ),
+                joinedload(ApplicationReviewEntity.level),
             )
         )
         preferred_review_entities = self._session.scalars(preferred_review_query).all()
@@ -690,6 +691,7 @@ class HiringService:
                 application=review.application.to_review_overview_model(),
                 applicant_id=review.application.user_id,
                 applicant_course_ranking=0,
+                level=(review.level.to_model() if review.level else None),
             )
 
         reviews = [

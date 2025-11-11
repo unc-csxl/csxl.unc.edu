@@ -16,12 +16,20 @@ mat-form-field {
     margin-bottom: 16px;
 }
 
-table.priorities > tbody > tr > td.studentPriority, 
-table.priorities > tbody > tr > td.instructorPriority {
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+}
+
+table.priorities>tbody>tr>td.studentPriority,
+table.priorities>tbody>tr>td.instructorPriority {
     text-align: center;
 }
 
-table > tbody>  tr.selected {
+table>tbody>tr.selected {
     color: green;
     font-weight: bold;
 }

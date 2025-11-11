@@ -169,6 +169,13 @@ export class QuickCreateAssignmentDialog {
     );
   }
 
+  /** Returns true if the given level matches the instructor's preferred level for this applicant. */
+  isInstructorPreferred(level: HiringLevel): boolean {
+    const app = this.getApplication();
+    const preferredId = app?.level?.id ?? null;
+    return preferredId != null && level.id === preferredId;
+  }
+
   openApplicationDialog(): void {
     this.dialog.open(ApplicationDialog, {
       height: '600px',

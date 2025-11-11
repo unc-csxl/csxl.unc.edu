@@ -7,6 +7,7 @@
       <button
         mat-button
         class="primary-button"
+        type="button"
         (click)="openApplicationDialog()">
         View Application
       </button>
@@ -15,8 +16,23 @@
     <mat-form-field appearance="outline">
       <mat-label>Select Level</mat-label>
       <mat-select formControlName="level">
+        <mat-select-trigger>
+          {{ editAssignmentForm.get('level')?.value?.title }}
+        </mat-select-trigger>
         @for(level of hiringService.activeHiringlevels(); track level.id) {
-        <mat-option [value]="level">{{ level.title }}</mat-option>
+        <mat-option [value]="level">
+          <span class="option">
+            <span>{{ level.title }}</span>
+            @if(isInstructorPreferred(level)) {
+            <mat-icon
+              class="font-primary"
+              matTooltip="Instructor preferred level"
+              matTooltipPosition="right"
+              >recommend</mat-icon
+            >
+            }
+          </span>
+        </mat-option>
         }
       </mat-select>
     </mat-form-field>
