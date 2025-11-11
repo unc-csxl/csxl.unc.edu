@@ -64,8 +64,8 @@ export class ApplicationDialog implements OnInit, OnDestroy {
 
   /** Unsubsribe from the notes subscription when the page is closed. */
   ngOnDestroy(): void {
-    this.notesSubcription.unsubscribe();
-    this.preferredLevelSubscription.unsubscribe();
+    this.notesSubcription?.unsubscribe();
+    this.preferredLevelSubscription?.unsubscribe();
   }
 
   /** Compare hiring levels by their ID. */
