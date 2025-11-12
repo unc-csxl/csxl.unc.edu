@@ -22,7 +22,6 @@ import {
 import { HiringService } from '../hiring.service';
 import { MyCoursesService } from '../../my-courses/my-courses.service';
 import { AcademicsService } from '../../academics/academics.service';
-import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -53,6 +52,7 @@ export class HiringPreferencesComponent {
   isDropProcessing: boolean = false;
 
   coverage: number = 0;
+  totalEnrollment: number = 0;
 
   /** Constructor */
   constructor(
@@ -65,6 +65,12 @@ export class HiringPreferencesComponent {
   ) {
     // Load route data
     this.courseSiteId = this.route.parent!.snapshot.params['courseSiteId'];
+    // Load the total enrollment for this course site.
+    this.hiringService
+    .getCourseSiteEnrollment(this.courseSiteId)
+    .subscribe((total) => {
+      this.totalEnrollment = total ?? 0;
+    });
     // Load the initial hiring status.
     this.hiringService
       .getStatus(this.courseSiteId)
@@ -74,8 +80,6 @@ export class HiringPreferencesComponent {
         this.preferred = hiringStatus.preferred;
         this.recomputeEstimatedCoverage();
       });
-    // Load enrollment for this course site (sum of section enrollments)
-    this.loadEnrollment();
   }
 
   drop(event: CdkDragDrop<ApplicationReviewOverview[]>) {
@@ -137,28 +141,6 @@ export class HiringPreferencesComponent {
       });
   }
 
-  /** Sum enrolled students across all sections in this course site. */
-  private totalEnrollment: number = 0;
-  private loadEnrollment() {
-    this.myCoursesService.getCourseSite(this.courseSiteId).subscribe((site) => {
-      const sectionIds = site.section_ids ?? [];
-      if (sectionIds.length === 0) {
-        this.totalEnrollment = 0;
-        this.recomputeEstimatedCoverage();
-        return;
-      }
-      forkJoin(sectionIds.map((id) => this.academicsService.getSection(id))).subscribe(
-        (sections) => {
-          this.totalEnrollment = sections.reduce(
-            (sum, s) => sum + (s.enrolled ?? 0),
-            0
-          );
-          this.recomputeEstimatedCoverage();
-        }
-      );
-    });
-  }
-
   /** Estimate coverage from preferred applicants using selected levels. */
   private recomputeEstimatedCoverage() {
     let assignedLoad = 0;
@@ -175,10 +157,10 @@ export class HiringPreferencesComponent {
       } else if (level.classification === HiringLevelClassification.UG) {
         assignedLoad += level.load * 0.25;
       } else {
-        // IOR or unknown classification contributes 0 in this estimate
+        // IOR
+        assignedLoad += 0;
       }
     }
-    // Mirror admin calculation: (enrollment / 60) - assigned load
     this.coverage = this.totalEnrollment / 60.0 - assignedLoad;
   }
 

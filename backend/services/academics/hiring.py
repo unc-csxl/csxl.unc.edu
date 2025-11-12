@@ -990,6 +990,26 @@ class HiringService:
             params=pagination_params,
         )
 
+    def get_course_site_total_enrollment(
+        self, subject: User, course_site_id: int
+    ) -> int:
+        """
+        Returns the sum of enrolled students across all sections in a course site.
+        """
+        site_entity = self._load_course_site(course_site_id)
+        if not self._is_instructor(subject, site_entity):
+            self._permission.enforce(
+                subject, "hiring.get_status", f"course_site/{course_site_id}"
+            )
+
+        sections_query = select(SectionEntity).where(
+            SectionEntity.course_site_id == course_site_id
+        )
+        total_enrollment = 0
+        for section in self._session.scalars(sections_query).all():
+            total_enrollment += section.enrolled
+        return total_enrollment
+
     def get_assignment_summary_for_instructors_csv(
         self, subject: User, course_site_id: int
     ) -> list[HiringAssignmentSummaryCsvRow]:
