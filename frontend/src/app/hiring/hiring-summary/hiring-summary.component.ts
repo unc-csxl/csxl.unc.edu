@@ -162,6 +162,7 @@ export class HiringSummaryComponent {
       epar: assignment.epar,
       i9: assignment.i9,
       notes: assignment.notes,
+      flagged: assignment.flagged,
       created: new Date(), // will be overrided
       modified: new Date()
     };

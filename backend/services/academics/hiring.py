@@ -739,6 +739,7 @@ class HiringService:
         assignment_entity.epar = assignment.epar
         assignment_entity.i9 = assignment.i9
         assignment_entity.notes = assignment.notes
+        assignment_entity.flagged = assignment.flagged
         assignment_entity.modified = datetime.now()
 
         self._session.commit()

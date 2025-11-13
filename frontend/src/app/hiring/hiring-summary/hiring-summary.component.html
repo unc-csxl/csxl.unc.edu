@@ -28,9 +28,27 @@
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">Name</div>
           </th>
-          <td mat-cell *matCellDef="let element">
-            <div class="row">
-              <p>{{ element.user.first_name }} {{ element.user.last_name }}<br>{{ element.user.pid }}</p>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <div class="row" style="display:flex; align-items:center; gap:8px;">
+              <!-- Flag button at start of row -->
+              <button
+                class="flag-btn"
+                mat-icon-button
+                type="button"
+                aria-label="Toggle flag"
+                (click)="
+                  (assignmentsPage()?.items ?? [])[i].flagged =
+                    !(assignmentsPage()?.items ?? [])[i].flagged;
+                  updateAssignment(i)
+                ">
+                <span [title]="(assignmentsPage()?.items ?? [])[i].flagged ? 'Unflag' : 'Flag'">
+                  {{ (assignmentsPage()?.items ?? [])[i].flagged ? '🚩' : '⚐' }}
+                </span>
+              </button>
+
+              <p style="margin:0;">
+                {{ element.user.first_name }} {{ element.user.last_name }}<br>{{ element.user.pid }}
+              </p>
             </div>
           </td>
         </ng-container>

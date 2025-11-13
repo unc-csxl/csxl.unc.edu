@@ -31,6 +31,7 @@ class HiringAssignmentDraft(BaseModel):
     epar: str
     i9: bool
     notes: str
+    flagged: bool
     created: datetime
     modified: datetime
 
@@ -44,6 +45,7 @@ class HiringAssignmentOverview(BaseModel):
     epar: str
     i9: bool
     notes: str
+    flagged: bool
 
 
 class HiringAssignmentSummaryOverview(BaseModel):
@@ -61,6 +63,7 @@ class HiringAssignmentSummaryOverview(BaseModel):
     epar: str
     i9: bool
     notes: str
+    flagged: bool
 
 
 class HiringAssignmentCsvRow(BaseModel):
@@ -80,6 +83,7 @@ class HiringAssignmentCsvRow(BaseModel):
     level_title: str
     level_load: str
     level_salary: str
+    flagged: bool
 
 
 class HiringAssignmentSummaryCsvRow(BaseModel):

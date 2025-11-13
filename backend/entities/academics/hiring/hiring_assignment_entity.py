@@ -106,6 +106,9 @@ class HiringAssignmentEntity(EntityBase):
     # Stores the timestamp for the last time the assignment was updated.
     modified: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
+    # Stores whether the assignment is flagged for further review in the summary.
+    flagged: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
     @classmethod
     def from_draft_model(cls, overview: HiringAssignmentDraft) -> Self:
         return cls(
@@ -119,6 +122,7 @@ class HiringAssignmentEntity(EntityBase):
             position_number=overview.position_number,
             epar=overview.epar,
             i9=overview.i9,
+            flagged=overview.flagged,
             notes=overview.notes,
             created=overview.created,
             modified=overview.modified,
@@ -134,6 +138,7 @@ class HiringAssignmentEntity(EntityBase):
             epar=self.epar,
             i9=self.i9,
             notes=self.notes,
+            flagged=self.flagged,
         )
 
     def to_summary_overview_model(self) -> HiringAssignmentSummaryOverview:
@@ -159,6 +164,7 @@ class HiringAssignmentEntity(EntityBase):
             epar=self.epar,
             i9=self.i9,
             notes=self.notes,
+            flagged=self.flagged,
         )
 
     def to_csv_row(self) -> HiringAssignmentCsvRow:
@@ -181,6 +187,7 @@ class HiringAssignmentEntity(EntityBase):
             epar=self.epar,
             position_number=self.position_number,
             i9=self.i9,
+            flagged=self.flagged,
             notes=self.notes,
             status=self.status,
             level_title=self.hiring_level.title,
