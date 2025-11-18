@@ -6,10 +6,9 @@ import { PublicProfile } from '../profile.service';
 import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
 
 @Component({
-    selector: 'app-public-profile-page',
-    templateUrl: './public-profile-page.component.html',
-    styleUrl: './public-profile-page.component.css',
-    standalone: false
+  selector: 'app-public-profile-page',
+  templateUrl: './public-profile-page.component.html',
+  standalone: false
 })
 export class PublicProfilePageComponent {
   public static Route: Route = {

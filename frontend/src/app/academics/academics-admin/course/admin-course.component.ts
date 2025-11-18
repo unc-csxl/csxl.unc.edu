@@ -8,19 +8,16 @@
  */
 
 import { Component, WritableSignal, inject, signal } from '@angular/core';
-import { Observable } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Course } from '../../academics.models';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from '../../academics.service';
-import { RxCourseList } from '../rx-academics-admin';
 
 @Component({
-    selector: 'app-admin-course',
-    templateUrl: './admin-course.component.html',
-    styleUrls: ['./admin-course.component.css'],
-    standalone: false
+  selector: 'app-admin-course',
+  templateUrl: './admin-course.component.html',
+  standalone: false
 })
 export class AdminCourseComponent {
   public static Route = {

@@ -35,6 +35,7 @@
                 },
                 "[html]": {
                     "editor.formatOnSave": false,
+                    "editor.defaultFormatter": "esbenp.prettier-vscode"
                 },
                 "python.analysis.extraPaths": [
                     "/backend/"

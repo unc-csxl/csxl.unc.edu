@@ -13,10 +13,9 @@ import { Profile } from '../../../profile/profile.service';
 import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/social-media-icon.widget.service';
 
 @Component({
-    selector: 'organization-details-info-card',
-    templateUrl: './organization-details-info-card.widget.html',
-    styleUrls: ['./organization-details-info-card.widget.css'],
-    standalone: false
+  selector: 'organization-details-info-card',
+  templateUrl: './organization-details-info-card.widget.html',
+  standalone: false
 })
 export class OrganizationDetailsInfoCard {
   /** The organization to show */

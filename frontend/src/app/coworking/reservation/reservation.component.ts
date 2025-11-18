@@ -34,10 +34,9 @@ const titleResolver: ResolveFn<string> = (
 };
 
 @Component({
-    selector: 'app-coworking-reservation',
-    templateUrl: './reservation.component.html',
-    styleUrls: ['./reservation.component.css'],
-    standalone: false
+  selector: 'app-coworking-reservation',
+  templateUrl: './reservation.component.html',
+  standalone: false
 })
 export class ReservationComponent {
   public static Route: Route = {

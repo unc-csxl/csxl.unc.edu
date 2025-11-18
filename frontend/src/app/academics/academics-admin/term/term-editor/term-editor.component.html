@@ -10,9 +10,10 @@
         <mat-card-title> Update Term </mat-card-title>
       </ng-template>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="flex! flex-col! gap-3! pt-4!">
       <!-- Term ID Field -->
       <mat-form-field
+        class="w-full"
         appearance="outline"
         color="accent"
         *ngIf="termId === 'new'">
@@ -25,7 +26,7 @@
           required />
       </mat-form-field>
       <!-- Term Name Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Term Name</mat-label>
         <input
           matInput
@@ -35,7 +36,7 @@
           required />
       </mat-form-field>
       <!-- Term Start Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Term Start Date</mat-label>
         <input
           matInput
@@ -46,7 +47,7 @@
           required />
       </mat-form-field>
       <!-- Term End Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Term End Date</mat-label>
         <input
           matInput
@@ -57,7 +58,7 @@
           required />
       </mat-form-field>
       <!-- Term Applications Open Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Term Applications Open Date</mat-label>
         <input
           matInput
@@ -68,7 +69,7 @@
           required />
       </mat-form-field>
       <!-- Term Applications Close Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Term Applications Close Date</mat-label>
         <input
           matInput
@@ -79,13 +80,15 @@
           required />
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-stroked-button routerLink="/academics/admin/term">
-        Cancel
-      </button>
-      <button mat-stroked-button type="submit" [disabled]="termForm.invalid">
-        Save
-      </button>
+    <mat-card-actions class="flex! flex-row! justify-end! mb-2!">
+      <div class="flex flex-row gap-2">
+        <button mat-stroked-button routerLink="/academics/admin/term">
+          Cancel
+        </button>
+        <button mat-flat-button type="submit" [disabled]="termForm.invalid">
+          Save
+        </button>
+      </div>
     </mat-card-actions>
   </mat-pane>
 </form>

@@ -21,17 +21,19 @@ import {
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
-    selector: 'app-courses-home',
-    templateUrl: './course-catalog.component.html',
-    styleUrls: ['./course-catalog.component.css'],
-    animations: [
-        trigger('detailExpand', [
-            state('collapsed,void', style({ height: '0px', minHeight: '0' })),
-            state('expanded', style({ height: '*' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-        ])
-    ],
-    standalone: false
+  selector: 'app-courses-home',
+  templateUrl: './course-catalog.component.html',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      )
+    ])
+  ],
+  standalone: false
 })
 export class AllCoursesComponent implements OnInit {
   /** Route information to be used in Course Routing Module */

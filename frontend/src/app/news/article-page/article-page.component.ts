@@ -14,10 +14,9 @@ import { newsResolver } from '../news.resolver';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
-    selector: 'app-article-page',
-    templateUrl: './article-page.component.html',
-    styleUrl: './article-page.component.css',
-    standalone: false
+  selector: 'app-article-page',
+  templateUrl: './article-page.component.html',
+  standalone: false
 })
 export class ArticlePageComponent implements OnInit {
   /** Route information to be used in the routing module */

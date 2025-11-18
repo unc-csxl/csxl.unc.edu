@@ -18,7 +18,6 @@ import { Observable, map, of } from 'rxjs';
 @Component({
   selector: 'office-hour-event-card',
   templateUrl: './office-hour-event-card.widget.html',
-  styleUrls: ['./office-hour-event-card.widget.css'],
   standalone: false
 })
 export class OfficeHourEventCardWidget implements OnInit {

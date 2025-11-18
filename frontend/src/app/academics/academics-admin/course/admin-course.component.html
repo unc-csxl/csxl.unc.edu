@@ -1,5 +1,5 @@
 <!-- HTML Structure of Admin Course List -->
-<mat-pane>
+<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
   <mat-card-content>
     @if (courses()) {
     <div class="content">
@@ -7,20 +7,20 @@
         <table mat-table [dataSource]="courses()">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
-              <div class="header">
+              <div class="flex items-center justify-between">
                 Courses
                 <button mat-stroked-button (click)="createCourse()">
                   Create
                 </button>
               </div>
             </th>
-            <td mat-cell *matCellDef="let element">
-              <div class="row" (click)="updateCourse(element)">
+            <td class="border-0! border-transparent! hover:cursor-pointer hover:bg-black/5! dark:hover:bg-white/5! hover:rounded-xl" mat-cell *matCellDef="let element">
+              <div class="flex flex-row w-full items-center justify-between" (click)="updateCourse(element)">
                 <p>
                   {{ element.subject_code }}{{ element.number }}:
                   {{ element.title }}
                 </p>
-                <div clas="modify-buttons">
+                <div clas="ml-auto">
                   <button
                     mat-stroked-button
                     (click)="deleteCourse(element, $event)">
@@ -37,4 +37,4 @@
     </div>
     }
   </mat-card-content>
-</mat-pane>
+</mat-card>

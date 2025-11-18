@@ -12,7 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AcademicsHomeComponent } from './academics-home/academics-home.component';
 import { AcademicsAdminComponent } from './academics-admin/academics-admin.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AdminSectionComponent } from './academics-admin/section/admin-section.component';
@@ -30,7 +29,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
-    AcademicsHomeComponent,
     AcademicsAdminComponent,
     AdminSectionComponent,
     AdminCourseComponent,

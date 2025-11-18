@@ -1,33 +1,33 @@
 <mat-pane>
-  <mat-card-header>
+  <mat-card-header class="flex! flex-row! items-center!">
     @if (profile.github_avatar) {
-    <img mat-card-avatar class="user-avatar" [src]="profile.github_avatar" />
+    <img mat-card-avatar class="size-10! leading-10! bg-[#4786c6]! rounded! text-center!" [src]="profile.github_avatar" />
     } @else if (profile.first_name && profile.last_name) {
-    <p mat-card-avatar class="user-avatar secondary-background">
+    <p mat-card-avatar class="size-10! leading-10! rounded-full! text-center! secondary-background mb-0!">
       {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
     </p>
     }
 
-    <div class="header-row">
+    <div class="flex flex-row flex-wrap items-center gap-2 ml-2">
       <mat-card-title>
         {{ profile.first_name }} {{ profile.last_name }}
       </mat-card-title>
       <mat-chip-set class="no-hover-chipset">
-        <mat-chip disableRipple>
+        <mat-chip class="h-[26px]!" disableRipple>
           {{ profile.pronouns }}
         </mat-chip>
       </mat-chip-set>
     </div>
   </mat-card-header>
   <mat-card-content>
-    <div class="links-row">
-      <div class="row">
+    <div class="flex flex-row flex-wrap mt-1 items-center mb-3 ml-12 gap-1">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="secondary-icon">mail</mat-icon>
         <p>{{ profile.email }}</p>
       </div>
       @if (profile.website) {
-      <div class="row">
-        <mat-icon class="link-icons secondary-icon">link</mat-icon>
+      <div class="flex flex-row gap-1 items-center">
+        <mat-icon class="ml-[6px]! secondary-icon">link</mat-icon>
         <p>
           <a class="font-secondary" [href]="profile.website" target="_blank"
             >Personal Website</a
@@ -35,10 +35,9 @@
         </p>
       </div>
       } @if (profile.linkedin) {
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon
-          class="link-icons secondary-icon"
-          id="linkedin-icon"
+          class="ml-[6px]! size-[22px]! secondary-icon"
           svgIcon="linkedin" />
         <p>
           <a class="font-secondary" [href]="profile.linkedin" target="_blank"
@@ -48,16 +47,15 @@
       </div>
 
       }
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         @if (profile.github) {
         <mat-icon
-          class="link-icons secondary-icon"
+          class="ml-[6px]! secondary-icon"
           id="github-icon"
           svgIcon="github" />
         <p>
           <a
-            class="font-secondary"
-            id="github-link"
+            class="font-secondary mr-1"
             href="https://github.com/{{ profile.github }}">
             &#64;{{ profile.github }}
           </a>
@@ -65,8 +63,8 @@
         }
       </div>
     </div>
-    <mat-divider id="bio-divider" />
-    <mat-card-subtitle>Profile Bio</mat-card-subtitle>
+    <mat-divider class="my-4!" />
+    <mat-card-subtitle class="my-1!">Profile Bio</mat-card-subtitle>
     @if (profile.bio) {
     <p markdown>{{ profile.bio! }}</p>
     } @else {

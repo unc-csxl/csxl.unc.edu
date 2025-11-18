@@ -1,9 +1,9 @@
 <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
-  <mat-pane>
-    <mat-card-header>
+  <mat-card appearance="outlined" class="border-transparent! max-w-full!">
+    <mat-card-header class="flex flex-row items-center">
       <mat-card-title>{{ isNew() ? 'New' : 'Edit' }} Article</mat-card-title>
       <mat-button-toggle-group
-        class="state-buttons"
+        class="ml-auto"
         formControlName="state"
         name="state">
         <mat-button-toggle [value]="articleState.DRAFT">
@@ -17,9 +17,9 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="flex flex-col gap-4 pt-6!">
       <!-- Title Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field class="w-full" appearance="outline" color="accent">
         <mat-label>Article Title</mat-label>
         <input
           matInput
@@ -30,7 +30,7 @@
           required />
       </mat-form-field>
       <!-- Slug Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field class="w-full" appearance="outline" color="accent">
         <mat-label>Slug</mat-label>
         <input
           hintLabel="Lowercase letters, numbers, or dashes"
@@ -42,7 +42,7 @@
       </mat-form-field>
 
       <!-- Organization Selection -->
-      <mat-form-field appearance="outline">
+      <mat-form-field class="w-full" appearance="outline">
         <mat-label>Organization</mat-label>
         <mat-select formControlName="organization_id">
           @for (organization of organizationService.organizations(); track
@@ -58,7 +58,7 @@
       <user-lookup label="Authors" [users]="authors"></user-lookup>
 
       <!-- Image URL Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field class="w-full" appearance="outline" color="accent">
         <mat-label>Feature Image URL</mat-label>
         <input
           matInput
@@ -69,6 +69,7 @@
 
       <!-- Synopsis Field -->
       <mat-form-field
+        class="w-full"  
         hintLabel="Max 400 characters"
         appearance="outline"
         color="accent">
@@ -80,7 +81,7 @@
           name="synopsis"></textarea>
       </mat-form-field>
       <!-- Article Body Field -->
-      <mat-form-field appearance="outline" color="accent" id="body-form-field">
+      <mat-form-field class="w-full mt-4" appearance="outline" color="accent">
         <mat-label>Article Body (Markdown Supported)</mat-label>
         <textarea
           matInput
@@ -93,7 +94,7 @@
         This article is an announcement.
       </mat-slide-toggle>
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions class="pb-4! justify-end gap-3">
       <button
         mat-stroked-button
         color="secondary"
@@ -109,5 +110,5 @@
         Save
       </button>
     </mat-card-actions>
-  </mat-pane>
+  </mat-card>
 </form>

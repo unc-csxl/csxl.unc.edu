@@ -12,10 +12,9 @@ import { Organization } from '../../organization.model';
 import { Profile } from '../../../profile/profile.service';
 
 @Component({
-    selector: 'organization-card',
-    templateUrl: './organization-card.widget.html',
-    styleUrls: ['./organization-card.widget.css'],
-    standalone: false
+  selector: 'organization-card',
+  templateUrl: './organization-card.widget.html',
+  standalone: false
 })
 export class OrganizationCard {
   /** The organization to show */

@@ -11,10 +11,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl } from '@angular/forms';
 
 @Component({
-    selector: 'dialog-import-roster',
-    templateUrl: './import-roster.dialog.html',
-    styleUrl: './import-roster.dialog.css',
-    standalone: false
+  selector: 'dialog-import-roster',
+  templateUrl: './import-roster.dialog.html',
+  standalone: false
 })
 export class ImportRosterDialog {
   file: File | null = null;

@@ -1,12 +1,12 @@
 <!-- HTML Structure of Admin Organizations List -->
-<mat-pane>
+<mat-card appearance="outlined" class="border-transparent! max-w-full!">
   <mat-card-content>
     <div class="content">
       <div class="table-responsive">
         <table mat-table [dataSource]="this.displayedOrganizations()">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
-              <div class="header">
+              <div class="flex items-center justify-between">
                 Organizations @if (adminPermissions() | async) {
                 <button mat-stroked-button (click)="createOrganization()">
                   Create
@@ -14,21 +14,21 @@
                 }
               </div>
             </th>
-            <td mat-cell *matCellDef="let element">
-              <div class="row">
+            <td class="border-0! border-transparent! hover:cursor-pointer hover:bg-black/10! dark:hover:bg-white/10! hover:rounded-xl" mat-cell *matCellDef="let element">
+              <div class="flex items-center justify-between">
                 <p>{{ element.name }}</p>
                 <div class="button-container">
                   @if(adminPermissions() | async) {
                   <button
                     mat-stroked-button
                     (click)="deleteOrganization(element)"
-                    class="control-buttons">
+                    class="justify-between m-1">
                     Delete
                   </button>
                   }
                   <button
                     mat-stroked-button
-                    class="control-buttons"
+                    class="justify-between m-1"
                     (click)="editOrganization(element)">
                     Edit
                   </button>
@@ -42,4 +42,4 @@
       </div>
     </div>
   </mat-card-content>
-</mat-pane>
+</mat-card>

@@ -10,9 +10,9 @@
         <mat-card-title> Update Course </mat-card-title>
       </ng-template>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="flex! flex-col! gap-4! pt-4!">
       <!-- Course Subject Code Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Subject Code</mat-label>
         <input
           matInput
@@ -22,7 +22,7 @@
           required />
       </mat-form-field>
       <!-- Course Number Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Number</mat-label>
         <input
           matInput
@@ -32,7 +32,7 @@
           required />
       </mat-form-field>
       <!-- Course Title Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Title</mat-label>
         <input
           matInput
@@ -42,7 +42,7 @@
           required />
       </mat-form-field>
       <!-- Course Description Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Course Description</mat-label>
         <textarea
           matInput
@@ -52,7 +52,7 @@
           required></textarea>
       </mat-form-field>
       <!-- Credit Hours Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Credit Hours</mat-label>
         <input
           type="number"
@@ -63,13 +63,15 @@
           required />
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-stroked-button routerLink="/academics/admin/course">
-        Cancel
-      </button>
-      <button mat-stroked-button type="submit" [disabled]="courseForm.invalid">
-        Save
-      </button>
+    <mat-card-actions class="flex! flex-row! justify-end! mb-2!">
+      <div class="flex flex-row gap-2">
+        <button mat-stroked-button routerLink="/academics/admin/course">
+          Cancel
+        </button>
+        <button mat-flat-button type="submit" [disabled]="courseForm.invalid">
+          Save
+        </button>
+      </div>
     </mat-card-actions>
   </mat-pane>
 </form>

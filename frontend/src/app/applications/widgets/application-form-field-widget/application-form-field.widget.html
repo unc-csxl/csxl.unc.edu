@@ -1,11 +1,11 @@
-<div class="container">
+<div class="my-1">
   <mat-card-subtitle>{{ field.title }}</mat-card-subtitle>
   @if (field.description.length > 0) {
   <p markdown>{{ field.description }}</p>
   }
   <!-- Account for the different types of fields -->
   @if (field.fieldType === fieldType.SHORT_TEXT) {
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" class="w-full">
     <input
       matInput
       placeholder=""
@@ -14,7 +14,7 @@
       [required]="field.required" />
   </mat-form-field>
   } @if (field.fieldType === fieldType.LONG_TEXT) {
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" class="w-full">
     <textarea
       matInput
       placeholder=""
@@ -23,7 +23,7 @@
       [required]="field.required"></textarea>
   </mat-form-field>
   } @if (field.fieldType === fieldType.DROP_DOWN) {
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" class="w-full">
     <mat-select [formControlName]="field.name">
       @for(option of field.dropdownItems; track option) {
       <mat-option [value]="option">{{ option }}</mat-option>
@@ -31,7 +31,7 @@
     </mat-select>
   </mat-form-field>
   } @if (field.fieldType === fieldType.NUMBER) {
-  <mat-form-field appearance="outline" color="accent">
+  <mat-form-field appearance="outline" color="accent" class="w-full">
     <input
       type="number"
       matInput
@@ -41,7 +41,7 @@
       required />
   </mat-form-field>
   } @if (field.fieldType === fieldType.COURSE_PREFERENCE) {
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" class="w-full">
     <mat-label>Select Course Sections</mat-label>
     <mat-chip-grid #chipGrid>
       @for (section of selectedSections(); track section.id) {

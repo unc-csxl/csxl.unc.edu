@@ -1,19 +1,20 @@
-<div class="table-container">
+<div class="overflow-x-auto max-w-full">
   <div class="table-responsive">
-    <table class="table">
+    <table class="border-collapse w-full ml-[10px] whitespace-nowrap">
       <tr>
         <th></th>
         @for(timeSlot of timeSlots; track timeSlot) {
-        <th [innerHTML]="timeSlot" class="time-slot"></th>
+        <th [innerHTML]="timeSlot" class="text-xs"></th>
         }
       </tr>
       @for (record of reservationsMap | keyvalue; track record.key) {
       <tr>
-        <th>{{ record.key }}
-          <br><span class= "room-details"> {{"# seats: "}}{{capacityMap[record.key]}}
+        <th class="h-[40px] w-[30px]">{{ record.key }}
+          <br><span class= "text-sm font-light"> {{"# seats: "}}{{capacityMap[record.key]}}
           <br>{{roomTypeMap[record.key]}}</span>
         </th>
         <td
+          class="h-[40px] w-[30px]"
           *ngFor="let timeSlot of record.value; let j = index"
           [style.background]="cellPropertyMap[timeSlot].backgroundColor"
           (click)="
@@ -25,10 +26,10 @@
     </table>
   </div>
 </div>
-<div class="divider">
+<div class="mb-3">
   <button
     mat-stroked-button
-    class="button"
+    class="mt-[20px] ml-[10px]"
     (click)="draftReservation()"
     [disabled]="!selectButton">
     Reserve

@@ -11,10 +11,9 @@ import { permissionGuard } from 'src/app/permission.guard';
 import { AmbassadorRoomService } from './ambassador-room.service';
 
 @Component({
-    selector: 'app-ambassador-room',
-    templateUrl: './ambassador-room.component.html',
-    styleUrls: ['./ambassador-room.component.css'],
-    standalone: false
+  selector: 'app-ambassador-room',
+  templateUrl: './ambassador-room.component.html',
+  standalone: false
 })
 export class AmbassadorRoomComponent implements OnInit, OnDestroy {
   public static Route: Route = {

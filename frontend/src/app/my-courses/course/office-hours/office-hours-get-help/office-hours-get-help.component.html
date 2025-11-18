@@ -1,25 +1,25 @@
 @if(data()) { @if (data()!.ticket) { @if(data()!.ticket!.state === 'Queued') {
 <!-- Show the page for a ticket in the queue -->
 <mat-pane>
-  <mat-card-header class="pane-header">
+  <mat-card-header class="flex! flex-col! gap-1!">
     <mat-card-title>You're In The Queue!</mat-card-title>
     <p>
       {{ data()!.event_type }} Event:
       {{ data()!.event_start_time | date: 'shortTime' }} -
       {{ data()!.event_end_time | date: 'shortTime' }}
     </p>
-    <div class="queue-text-container">
-      <p class="font-secondary queue-text">
+    <div class="flex flex-row items-center my-3">
+      <p class="font-secondary font-medium leading-7">
         You're number
-        <span class="queue-number secondary-background">{{
+        <span class="inline-block rounded-full min-w-7 h-5 text:white w-fit items-center text-center secondary-background mx-1">{{
           data()!.queue_position
         }}</span>
         in the Queue
       </p>
     </div>
-    <mat-divider id="pane-divider" />
+    <mat-divider />
   </mat-card-header>
-  <mat-card-content class="pane-content">
+  <mat-card-content class="pt-3!">
     <mat-card-subtitle>Ticket Summary</mat-card-subtitle>
     <queued-ticket-card
       [ticket]="data()!.ticket!"
@@ -30,7 +30,7 @@
 } @else if(data()!.ticket!.state === 'Called') {
 <!-- Show a page for a called ticket -->
 <mat-pane>
-  <mat-card-header class="pane-header">
+  <mat-card-header class="flex! flex-col! gap-1!">
     <mat-card-title class="primary-color">
       Your Ticket Has Been Called!
     </mat-card-title>
@@ -39,15 +39,15 @@
       {{ data()!.event_start_time | date: 'shortTime' }} -
       {{ data()!.event_end_time | date: 'shortTime' }}
     </p>
-    <div class="queue-text-container">
-      <div class="row">
+    <div class="items-center">
+      <div class="flex flex-row items-center gap-2">
         <p class="secondary-color">
-          <span class="bold-text">Your ticket has been called by: </span>
+          <span class="font-medium">Your ticket has been called by: </span>
         </p>
         <user-chip-list [users]="[data()!.ticket!.caller!]" [clickable]="false" />
       </div>
       <p class="secondary-color">
-        <span class="bold-text">Meeting Location: <span class="font-primary">{{ data()!.event_location }}</span></span><br/>
+        <span class="font-medium">Meeting Location: <span class="font-primary">{{ data()!.event_location }}</span></span><br/>
         {{ data()!.event_location_description }}
       </p>
     </div>
@@ -57,7 +57,7 @@
 <!-- Show the ticket creation form -->
 <form [formGroup]="ticketForm" (ngSubmit)="submitTicketForm()">
   <mat-pane>
-    <mat-card-header class="pane-header">
+    <mat-card-header class="flex! flex-col! gap-1!">
       <mat-card-title>Create a Ticket</mat-card-title>
       <p>
         {{ data()!.event_type }} Event:
@@ -66,8 +66,8 @@
       </p>
       <mat-divider id="pane-divider" />
     </mat-card-header>
-    <mat-card-content class="pane-content">
-      <mat-form-field appearance="outline">
+    <mat-card-content class="pt-3!">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Ticket Type</mat-label>
         <mat-select formControlName="type" required>
           <mat-option [value]="1">Assignment Help</mat-option>
@@ -75,7 +75,7 @@
         </mat-select>
       </mat-form-field>
       @if (+ticketForm.controls['type'].value! === 1) {
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>
           What section of the assignment do you need help with?
         </mat-label>
@@ -85,7 +85,7 @@
           formControlName="assignmentSection"
           placeholder="Ex. Assignment 01, Part 2"></textarea>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>
           Describe in English what you are trying to express in code.
         </mat-label>
@@ -95,7 +95,7 @@
           formControlName="codeSection"
           placeholder="Ex. I am trying to..."></textarea>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>
           What concepts do you need to use to solve this problem?
         </mat-label>
@@ -105,7 +105,7 @@
           formControlName="conceptsSection"
           placeholder="Ex. Languages, class concepts, technologies involved"></textarea>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>
           What have you tried? Why do you suspect it didn't work?
         </mat-label>
@@ -116,7 +116,7 @@
           placeholder="Ex. I have already tried..."></textarea>
       </mat-form-field>
       } @else {
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>
           What questions or topics do you want to talk through?
         </mat-label>
@@ -127,7 +127,7 @@
           placeholder="Ex. I need help understanding adding to a binary tree"></textarea>
       </mat-form-field>
       } @if (data()!.event_mode === 'Virtual - Student Link') {
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Zoom Link</mat-label>
         <input
           matInput
@@ -136,7 +136,7 @@
       </mat-form-field>
       }
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions class="justify-end! mb-2!">
       <button
         mat-flat-button
         color="primary"

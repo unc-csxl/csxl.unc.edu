@@ -1,19 +1,19 @@
 @if (queue()) {
-  <div class="container">
-    <div class="left-column">
-      <mat-card appearance="outlined" class="queue-pane">
-        <mat-card-header class="pane-header">
+  <div class="flex flex-col lg:flex-row w-full">
+    <div class="flex flex-col w-full lg:w-[95%] h-auto lg:h-[85vh]">
+      <mat-card appearance="outlined" class="flex-auto lg:grow lg:shrink lg:basis-auto min-h-0 max-h-full! h-auto max-w-full! border-transparent!">
+        <mat-card-header class="flex! flex-col! gap-1!">
           <mat-card-title>{{ queue()!.type }} Event</mat-card-title>
           <p>
             {{ queue()!.start_time | date: 'shortTime' }} -
             {{ queue()!.end_time | date: 'shortTime' }}
           </p>
-          <mat-chip-set>
-            <mat-chip>{{ queue()!.queue.length }} waiting</mat-chip>
+          <mat-chip-set class="h-6! mt-0!">
+            <mat-chip class="h-6! mt-0!">{{ queue()!.queue.length }} waiting</mat-chip>
           </mat-chip-set>
-          <mat-divider id="pane-divider" />
+          <mat-divider class="mt-2!" />
         </mat-card-header>
-        <mat-card-content class="pane-content">
+        <mat-card-content class="pt-2! overflow-y-scroll!">
           <mat-card-subtitle>Called Tickets</mat-card-subtitle>
           @if (!queue()!.active && queue()!.other_called.length === 0) {
           <p>Nobody is being helped right now.</p>

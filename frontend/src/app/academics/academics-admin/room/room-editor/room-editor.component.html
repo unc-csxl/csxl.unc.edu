@@ -10,9 +10,10 @@
         <mat-card-title> Update Room </mat-card-title>
       </ng-template>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="flex! flex-col! gap-4! pt-4!">
       <!-- Room ID Field -->
       <mat-form-field
+        class="w-full"
         appearance="outline"
         color="accent"
         *ngIf="roomId === 'new'">
@@ -25,7 +26,7 @@
           required />
       </mat-form-field>
       <!-- Room Nickname Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Room Nickname</mat-label>
         <input
           matInput
@@ -35,7 +36,7 @@
           required />
       </mat-form-field>
       <!-- Room Building Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Room Building</mat-label>
         <input
           matInput
@@ -45,7 +46,7 @@
           required />
       </mat-form-field>
       <!-- Room Room Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Room Number</mat-label>
         <input
           matInput
@@ -55,7 +56,7 @@
           required />
       </mat-form-field>
       <!-- Room Capacity Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Room Capacity</mat-label>
         <input
           type="number"
@@ -66,17 +67,19 @@
           required />
       </mat-form-field>
       <!-- Room Reservable Field -->
-      <mat-slide-toggle formControlName="reservable">
+      <mat-slide-toggle class="pb-2!" formControlName="reservable">
         Reservable?
       </mat-slide-toggle>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-stroked-button routerLink="/academics/admin/room">
-        Cancel
-      </button>
-      <button mat-stroked-button type="submit" [disabled]="roomForm.invalid">
-        Save
-      </button>
+    <mat-card-actions class="flex! flex-row! justify-end! mb-2">
+      <div class="flex flex-row gap-2">
+        <button mat-stroked-button routerLink="/academics/admin/room">
+          Cancel
+        </button>
+        <button mat-flat-button type="submit" [disabled]="roomForm.invalid">
+          Save
+        </button>
+      </div>
     </mat-card-actions>
   </mat-pane>
 </form>

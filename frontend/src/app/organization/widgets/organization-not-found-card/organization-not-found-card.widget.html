@@ -1,4 +1,4 @@
-<mat-card class="card" appearance="outlined">
+<mat-card class="card" appearance="outlined" class="border-transparent!">
   <!-- Card Header -->
   <mat-card-header class="header">
     <mat-card-title class="name"> Organization Not Found </mat-card-title>
@@ -13,7 +13,7 @@
   </mat-card-content>
 
   <!-- Organization Links & Details -->
-  <mat-card-actions class="links">
+  <mat-card-actions class="flex! flex-row-reverse! w-full! justify-between! pb-4! pr-4!">
     <!-- Link to Organization Page -->
     <a class="details-link" [routerLink]="['/organizations']">
       <button mat-stroked-button>Back to Organizations</button>

@@ -1,10 +1,10 @@
-<div class="facts-list">
+<div class="flex flex-col gap-3 py-2">
   <!-- Location Section -->
-  <div class="list-item">
-    <mat-icon>location_on</mat-icon>
-    <div class="list-item-text">
-      <p class="header-text">
-        <strong>{{
+  <div class="flex flex-row items-center">
+    <mat-icon class="text-[34px] min-w-[34px] size-[34px]">location_on</mat-icon>
+    <div class="flex flex-col justify-center ml-[18px]">
+      <p class="text-base m-0">
+        <strong class="font-medium">{{
           reservation.room
             ? reservation.room.id
             : 'The XL Colab in Sitterson 156'
@@ -15,11 +15,11 @@
 
   <!-- What Section -->
   @if (reservation.seats.length > 0) {
-  <div class="list-item">
-    <mat-icon>chair_alt</mat-icon>
-    <div class="list-item-text">
-      <p class="header-text">
-        <strong>
+  <div class="flex flex-row items-center">
+    <mat-icon class="text-[34px] min-w-[34px] size-[34px]">chair_alt</mat-icon>
+    <div class="flex flex-col justify-center ml-[18px]">
+      <p class="text-base m-0">
+        <strong class="font-medium">
           {{ reservation.seats[0].title }}
         </strong>
       </p>
@@ -29,15 +29,15 @@
   }
 
   <!-- Time Section -->
-  <div class="list-item">
-    <mat-icon>schedule</mat-icon>
+  <div class="flex flex-row items-center">
+    <mat-icon class="text-[34px] min-w-[34px] size-[34px]">schedule</mat-icon>
 
-    <div class="list-item-text">
+    <div class="flex flex-col justify-center ml-[18px]">
       <p class="header-text">
-        <strong>{{ reservation.start | date: 'shortTime' }}</strong> to
-        <strong>{{ reservation.end | date: 'shortTime' }}</strong>
-        <strong>{{ ', ' }}</strong>
-        <strong class="date">{{
+        <strong class="font-medium">{{ reservation.start | date: 'shortTime' }}</strong> to
+        <strong class="font-medium">{{ reservation.end | date: 'shortTime' }}</strong>
+        <strong class="font-medium">{{ ', ' }}</strong>
+        <strong class="font-medium">{{
           reservation.start | date: 'dd MMM yyyy'
         }}</strong>
       </p>

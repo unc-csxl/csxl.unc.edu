@@ -14,10 +14,9 @@ import { Reservation } from '../../coworking.models';
 import { RoomReservationService } from '../room-reservation.service';
 
 @Component({
-    selector: 'app-confirm-reservation',
-    templateUrl: './confirm-reservation.component.html',
-    styleUrls: ['./confirm-reservation.component.css'],
-    standalone: false
+  selector: 'app-confirm-reservation',
+  templateUrl: './confirm-reservation.component.html',
+  standalone: false
 })
 export class ConfirmReservationComponent implements OnInit, OnDestroy {
   public static Route = {

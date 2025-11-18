@@ -1,6 +1,6 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    <div class="column-view">
+<mat-card appearance="outlined" class="my-2! mx-0!">
+  <mat-card-header class="flex! flex-row! items-center! pb-4!">
+    <div class="flex flex-col gap-0.5">
       <mat-card-subtitle>{{ ticket.type }}</mat-card-subtitle>
       @if (calledByUser) {
       <p>
@@ -15,7 +15,7 @@
       }
     </div>
     <button
-      class="view-button"
+      class="ml-auto"
       mat-stroked-button
       color="secondary"
       (click)="toggleExpanded()">
@@ -24,17 +24,17 @@
   </mat-card-header>
   @if(expanded()) {
   <mat-card-content>
-    <mat-divider class="spacing-divider" />
-    <div class="row">
-      <p><span class="semibold-text">Helping:</span></p>
+    <mat-divider class="my-3!" />
+    <div class="flex flex-row items-center gap-2">
+      <p class="mb-2!"><span class="font-medium">Helping:</span></p>
       <user-chip-list [users]="ticket.creators" [clickable]="false" />
     </div>
-    <mat-divider class="spacing-divider-bottom" />
+    <mat-divider class="mt-1! mb-3!" />
 
     <!-- <p><span class="semibold-text">Description:</span></p> -->
     <p markdown>{{ ticket.description }}</p>
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="pt-3! justify-end!">
     <button
       mat-flat-button
       class="tertiary-button"

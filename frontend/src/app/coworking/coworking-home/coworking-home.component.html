@@ -24,13 +24,13 @@
   }
 
   <mat-pane>
-    <div class="reserve-room-content">
-      <div class="reserve-room-text">
+    <div class="flex flex-row items-center my-4">
+      <div class="flex flex-col justify-center ml-4">
         <mat-card-title>Reserve a Room</mat-card-title>
         <p>Reserve a room in the XL hallway!</p>
       </div>
       <button
-        id="new-room-reservation-button"
+        class="ml-auto mr-4"
         mat-stroked-button
         type="submit"
         (click)="navigateToNewReservation()"

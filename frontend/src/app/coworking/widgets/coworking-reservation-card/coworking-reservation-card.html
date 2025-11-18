@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" [class]="isPane ? 'pane' : ''">
+<mat-card appearance="outlined" [class]="isPane ? 'border-transparent!' : ''">
   <!-- Card Header -->
   <mat-card-header>
     @switch (reservation.state) { @case ('DRAFT') {
@@ -34,7 +34,7 @@
     <coworking-reservation-facts [reservation]="reservation" />
   </mat-card-content>
 
-  <mat-card-actions>
+  <mat-card-actions class="flex! flex-col md:flex-row pb-4! gap-3! items-start md:items-stretch lg:justify-end">
     @switch (reservation.state) { @case ('DRAFT') {
     <button
       mat-flat-button

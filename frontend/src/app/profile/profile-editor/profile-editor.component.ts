@@ -9,10 +9,9 @@ import { CommunityAgreement } from 'src/app/shared/community-agreement/community
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-    selector: 'app-profile-editor',
-    templateUrl: './profile-editor.component.html',
-    styleUrls: ['./profile-editor.component.css'],
-    standalone: false
+  selector: 'app-profile-editor',
+  templateUrl: './profile-editor.component.html',
+  standalone: false
 })
 export class ProfileEditorComponent implements OnInit {
   public static Route: Route = {

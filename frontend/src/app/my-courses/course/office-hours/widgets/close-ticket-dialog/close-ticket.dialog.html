@@ -2,11 +2,12 @@
 <mat-dialog-content>
     <p>Please leave feedback below.</p>
     <mat-slide-toggle
+    class="pt-3! pb-4!"
     [formControl]="hasConcerns">
         I have concerns about this ticket.  
     </mat-slide-toggle>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="w-full">
         <mat-label>Notes</mat-label>
         <textarea
           matInput
