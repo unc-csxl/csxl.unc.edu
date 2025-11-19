@@ -252,6 +252,7 @@ hiring_assignment = HiringAssignmentDraft(
     notes="Some notes here",
     created=datetime.now(),
     modified=datetime.now(),
+    flagged=False,
 )
 
 updated_hiring_assignment = HiringAssignmentDraft(
@@ -267,6 +268,7 @@ updated_hiring_assignment = HiringAssignmentDraft(
     notes="Some notes here",
     created=datetime.now(),
     modified=datetime.now(),
+    flagged=False,
 )
 
 new_hiring_assignment = HiringAssignmentDraft(
@@ -282,6 +284,7 @@ new_hiring_assignment = HiringAssignmentDraft(
     notes="Some notes here",
     created=datetime.now(),
     modified=datetime.now(),
+    flagged=False,
 )
 
 hiring_assignments = [hiring_assignment]
