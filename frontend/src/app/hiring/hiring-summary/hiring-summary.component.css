@@ -43,14 +43,35 @@ mat-form-field.pos_number {
   }
 }
 
-.flag-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-  padding: 4px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+  transition: font-variation-settings 0.15s ease, color 0.15s ease;
+}
+
+.flag-icon-btn {
+  transition: color 0.15s ease;
+}
+
+.flag-icon-btn .mat-icon {
+  color: #ffffff;
+}
+
+.flag-icon-btn.flagged .mat-icon {
+  color: #cfbcff !important;
+}
+
+.flag-icon-btn.flagged .material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.flag-icon-btn:hover .mat-icon {
+  color: #9a83db !important;
 }

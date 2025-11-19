@@ -81,6 +81,7 @@ export class HiringSummaryComponent {
     DEFAULT_PAGINATION_PARAMS;
 
   public displayedColumns: string[] = [
+    'flagged',
     'name',
     'course',
     'level',
