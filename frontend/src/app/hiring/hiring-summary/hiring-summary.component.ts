@@ -149,8 +149,7 @@ export class HiringSummaryComponent {
   }
 
   /** Save changes */
-  updateAssignment(assignmentIndex: number) {
-    let assignment = this.assignmentsPage()!.items[assignmentIndex]!;
+  updateAssignment(assignment: HiringAssignmentSummaryOverview) {
     let draft: HiringAssignmentDraft = {
       id: assignment.id,
       user_id: assignment.user.id,
@@ -168,6 +167,17 @@ export class HiringSummaryComponent {
       modified: new Date()
     };
     this.hiringService.updateHiringAssignment(draft).subscribe((_) => {});
+  }
+
+  /** Gets ordered hiring assignments */
+  getOrderedAssignments(): HiringAssignmentSummaryOverview[] {
+    const assignments = this.assignmentsPage()?.items ?? [];
+    if (assignments.length === 0) {
+      return [];
+    }
+    let sorted_assn = [...assignments].sort((a, b) => Number(b.flagged) - Number(a.flagged));
+    console.log(sorted_assn);
+    return sorted_assn;
   }
 
   /** Export CSV button pressed */
