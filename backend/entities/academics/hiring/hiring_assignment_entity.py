@@ -107,7 +107,7 @@ class HiringAssignmentEntity(EntityBase):
     modified: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     # Stores whether the assignment is flagged for further review in the summary.
-    flagged: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    flagged: Mapped[bool] = mapped_column(Boolean, default=False)
 
     @classmethod
     def from_draft_model(cls, overview: HiringAssignmentDraft) -> Self:
@@ -187,7 +187,6 @@ class HiringAssignmentEntity(EntityBase):
             epar=self.epar,
             position_number=self.position_number,
             i9=self.i9,
-            flagged=self.flagged,
             notes=self.notes,
             status=self.status,
             level_title=self.hiring_level.title,

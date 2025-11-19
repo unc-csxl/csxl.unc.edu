@@ -83,7 +83,6 @@ class HiringAssignmentCsvRow(BaseModel):
     level_title: str
     level_load: str
     level_salary: str
-    flagged: bool
 
 
 class HiringAssignmentSummaryCsvRow(BaseModel):
