@@ -110,6 +110,9 @@ export class HiringSummaryComponent {
     });
   });
 
+  /** Current filter mode for applicants*/
+  public filterMode: WritableSignal<'all' | 'flagged' | 'not_flagged'> = signal('all');
+
   /** Constructor */
   constructor(
     private route: ActivatedRoute,
@@ -175,9 +178,17 @@ export class HiringSummaryComponent {
     if (assignments.length === 0) {
       return [];
     }
-    let sorted_assn = [...assignments].sort((a, b) => Number(b.flagged) - Number(a.flagged));
-    console.log(sorted_assn);
-    return sorted_assn;
+
+    let filtered = assignments;
+    const mode = this.filterMode();
+    if (mode === 'flagged') {
+      filtered = assignments.filter((a) => a.flagged);
+    } else if (mode === 'not_flagged') {
+      filtered = assignments.filter((a) => !a.flagged);
+    }
+
+    // Return a sorted copy with flagged items first
+    return [...filtered].sort((a, b) => Number(b.flagged) - Number(a.flagged));
   }
 
   /** Export CSV button pressed */

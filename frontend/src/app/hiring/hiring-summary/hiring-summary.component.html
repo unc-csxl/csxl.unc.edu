@@ -8,6 +8,15 @@
   <mat-card-header>
     <mat-card-title>{{ selectedTerm().name }} Onboarding</mat-card-title>
     <div class="header-actions">
+      <mat-button-toggle-group
+        class="flag-filter-group"
+        [value]="filterMode()"
+        (change)="filterMode.set($event.value)">
+        <mat-button-toggle value="all">All</mat-button-toggle>
+        <mat-button-toggle value="flagged">Flagged</mat-button-toggle>
+        <mat-button-toggle value="not_flagged">Not Flagged</mat-button-toggle>
+      </mat-button-toggle-group>
+
       <button mat-stroked-button (click)="exportCsv()">Download CSV</button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
