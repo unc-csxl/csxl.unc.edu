@@ -180,7 +180,7 @@ def get_hiring_summary_overview(
     pagination_params = PaginationParams(
         page=page, page_size=page_size, order_by=order_by, filter=filter
     )
-    return hiring_service.get_hiring_summary_overview(
+    return hiring_service.erview(
         subject, term_id, flagged, pagination_params
     )
 
