@@ -256,7 +256,7 @@ hiring_assignment = HiringAssignmentDraft(
 )
 
 hiring_assignment_flagged = HiringAssignmentDraft(
-    id=2,
+    id=1,
     user_id=user_data.student.id,
     term_id=term_data.current_term.id,
     course_site_id=office_hours_data.comp_110_site.id,
@@ -303,7 +303,7 @@ new_hiring_assignment = HiringAssignmentDraft(
     flagged=False,
 )
 
-hiring_assignments = [hiring_assignment, hiring_assignment_flagged]
+hiring_assignments = [hiring_assignment]
 
 
 def insert_fake_data(session: Session):

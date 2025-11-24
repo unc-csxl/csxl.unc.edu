@@ -207,6 +207,14 @@ def test_update_hiring_assignment_not_found(hiring_svc: HiringService):
         )
         pytest.fail()
 
+def test_update_hiring_assigment_flag(hiring_svc: HiringService):
+    """Ensures that the admin can update the flagged status of a hiring assignment."""
+    assignment = hiring_svc.update_hiring_assignment(
+        user_data.root, hiring_data.hiring_assignment_flagged
+    )
+    assert assignment is not None
+    assert assignment.flagged is True
+
 
 def test_delete_hiring_assignment(hiring_svc: HiringService):
     """Ensures that the admin can delete hiring assignments."""
