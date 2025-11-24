@@ -28,6 +28,9 @@ from ...entities.academics.hiring.application_review_entity import (
 from ...entities.section_application_table import section_application_table
 from ...entities.academics.hiring.hiring_level_entity import HiringLevelEntity
 from ...entities.academics.hiring.hiring_assignment_entity import HiringAssignmentEntity
+from ...entities.academics.hiring.hiring_assignment_audit_entity import (
+    HiringAssignmentAuditEntity,
+)
 
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 from ...services import PermissionService
@@ -731,6 +734,40 @@ class HiringService:
             raise ResourceNotFoundException(
                 f"No hiring assignment with ID: {assignment.id}"
             )
+        changes = []
+        # Check Status
+        if assignment_entity.status != assignment.status:
+            changes.append(
+                f"Status: {assignment_entity.status.name} -> {assignment.status.name}"
+            )
+        # Check Flagged
+        if assignment_entity.flagged != assignment.flagged:
+            changes.append(
+                f"Flagged: {assignment_entity.flagged} -> {assignment.flagged}"
+            )
+        # Check Position Number
+        if assignment_entity.position_number != assignment.position_number:
+            changes.append(
+                f"Pos Num: {assignment_entity.position_number} -> {assignment.position_number}"
+            )
+        # Check Notes (Only log that notes changed, not the full text, to keep logs clean)
+        if assignment_entity.notes != assignment.notes:
+            changes.append("Updated Notes")
+        # Check Hiring Level
+        if assignment_entity.hiring_level_id != assignment.level.id:
+            changes.append(
+                f"Level ID: {assignment_entity.hiring_level_id} -> {assignment.level.id}"
+            )
+        # If we detected changes, save the audit row
+        if changes:
+            audit_entry = HiringAssignmentAuditEntity(
+                hiring_assignment_id=assignment_entity.id,
+                changed_by_user_id=subject.id,
+                change_timestamp=datetime.now(),
+                change_details=", ".join(changes),
+            )
+            self._session.add(audit_entry)
+
         # 3. Update the data and commit
         assert assignment.level.id is not None
         assignment_entity.hiring_level_id = assignment.level.id
