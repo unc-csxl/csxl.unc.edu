@@ -53,22 +53,29 @@ export class HiringSummaryComponent {
     return this.terms.find((term) => term.id === this.selectedTermId())!;
   });
 
+  /** Current filter mode for applicants*/
+  public filterMode: WritableSignal<'all' | 'flagged' | 'not_flagged'> = signal('all');
+
   /** Effect that updates the hiring data when the selected term changes. */
   selectedTermEffect = effect(() => {
-    if (this.selectedTermId()) {
-      const term = this.terms.find(
-        (term) => term.id === this.selectedTermId()
-      )!;
-      // Load paginated data
-      this.assignmentsPaginator.changeApiRoute(
-        `/api/hiring/summary/${term.id}`
-      );
+    const termId = this.selectedTermId();
+    // We check for termId existence to avoid running this before data is ready
+    if (termId) {
+      // Pass the current filter mode to the URL construction
+      this.updatePaginatorUrl(termId, this.filterMode());
+      this.refreshData();
+    }
+  });
 
-      this.assignmentsPaginator
-        .loadPage(this.previousPaginationParams)
-        .subscribe((page) => {
-          this.assignmentsPage.set(page);
-        });
+  /** Effect that updates the hiring data when the filter mode changes. */
+  filterModeEffect = effect(() => {
+    const mode = this.filterMode();
+    const termId = this.selectedTermId();
+    
+    // Only update if we have a term selected
+    if (termId) {
+      this.updatePaginatorUrl(termId, mode);
+      this.refreshData();
     }
   });
 
@@ -104,14 +111,8 @@ export class HiringSummaryComponent {
     paginationParams.filter = this.searchBarQuery();
 
     // Refresh the data
-    this.assignmentsPaginator.loadPage(paginationParams).subscribe((page) => {
-      this.assignmentsPage.set(page);
-      this.previousPaginationParams = paginationParams;
-    });
+    this.refreshData(paginationParams);
   });
-
-  /** Current filter mode for applicants*/
-  public filterMode: WritableSignal<'all' | 'flagged' | 'not_flagged'> = signal('all');
 
   /** Constructor */
   constructor(
@@ -126,17 +127,37 @@ export class HiringSummaryComponent {
     };
 
     this.terms = data.terms;
-    this.selectedTermId.set(data.currentTerm?.id ?? undefined);
+    const termId = data.currentTerm?.id;
+    this.selectedTermId.set(termId);
 
     // Load paginated data
+    const initialUrl = termId 
+      ? `/api/hiring/summary/${termId}?flagged=${this.filterMode()}` 
+      : '';
+
     this.assignmentsPaginator = new Paginator<HiringAssignmentSummaryOverview>(
-      `/api/hiring/summary/${data.currentTerm!.id}`
+      initialUrl
     );
 
+    if (termId) {
+      this.refreshData();
+    }
+  }
+
+  /** Helper to update the paginator API URL with term and flag params */
+  private updatePaginatorUrl(termId: string, flagMode: string) {
+    this.assignmentsPaginator.changeApiRoute(
+        `/api/hiring/summary/${termId}?flagged=${flagMode}`
+    );
+  }
+
+  /** Helper to trigger the loadPage logic */
+  private refreshData(params: PaginationParams = this.previousPaginationParams) {
     this.assignmentsPaginator
-      .loadPage(this.previousPaginationParams)
+      .loadPage(params)
       .subscribe((page) => {
         this.assignmentsPage.set(page);
+        this.previousPaginationParams = params;
       });
   }
 
@@ -145,10 +166,7 @@ export class HiringSummaryComponent {
     let paginationParams = this.assignmentsPage()!.params;
     paginationParams.page = e.pageIndex;
     paginationParams.page_size = e.pageSize;
-    this.assignmentsPaginator.loadPage(paginationParams).subscribe((page) => {
-      this.assignmentsPage.set(page);
-      this.previousPaginationParams = paginationParams;
-    });
+    this.refreshData(paginationParams);
   }
 
   /** Save changes */
@@ -179,16 +197,7 @@ export class HiringSummaryComponent {
       return [];
     }
 
-    let filtered = assignments;
-    const mode = this.filterMode();
-    if (mode === 'flagged') {
-      filtered = assignments.filter((a) => a.flagged);
-    } else if (mode === 'not_flagged') {
-      filtered = assignments.filter((a) => !a.flagged);
-    }
-
-    // Return a sorted copy with flagged items first
-    return [...filtered].sort((a, b) => Number(b.flagged) - Number(a.flagged));
+    return [...assignments].sort((a, b) => Number(b.flagged) - Number(a.flagged));
   }
 
   /** Export CSV button pressed */

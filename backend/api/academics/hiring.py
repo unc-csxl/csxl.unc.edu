@@ -170,6 +170,7 @@ def get_hiring_summary_overview(
     page_size: int = 100,
     order_by: str = "",
     filter: str = "",
+    flagged: str = "all",
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
 ) -> Paginated[HiringAssignmentSummaryOverview]:
@@ -179,8 +180,8 @@ def get_hiring_summary_overview(
     pagination_params = PaginationParams(
         page=page, page_size=page_size, order_by=order_by, filter=filter
     )
-    return hiring_service.get_hiring_summary_overview(
-        subject, term_id, pagination_params
+    return hiring_service.erview(
+        subject, term_id, flagged, pagination_params
     )
 
 
