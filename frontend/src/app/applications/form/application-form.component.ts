@@ -21,10 +21,10 @@ import { AcademicsService } from 'src/app/academics/academics.service';
 import { Observable } from 'rxjs';
 
 @Component({
-    selector: 'app-application-form',
-    templateUrl: './application-form.component.html',
-    styleUrl: './application-form.component.css',
-    standalone: false
+  selector: 'app-application-form',
+  templateUrl: './application-form.component.html',
+  styleUrl: './application-form.component.css',
+  standalone: false
 })
 export class ApplicationFormComponent {
   /** Route information to be used in the routing module */
@@ -39,7 +39,7 @@ export class ApplicationFormComponent {
 
   // TODO: Do not hard code this logic and always remember JS months are 0 indexed (:
   showApplicationAssignmentCard =
-    new Date().getTime() > new Date(2025, 7, 15).getTime();
+    new Date().getTime() > new Date(2026, 0, 15).getTime();
 
   /** Form */
   formGroup: FormGroup;
