@@ -21,24 +21,24 @@
         </mat-card-content>
       }
     </mat-pane>
+} @else {
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <mat-pane>
+      <mat-card-header>
+        <mat-card-title>Application Form</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @for(field of fields; track field.name) {
+        <application-form-field
+          [field]="field"
+          [selectedSections]="selectedSections" />
+        }
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="submit-button" mat-flat-button color="primary">
+          Submit Application
+        </button>
+      </mat-card-actions>
+    </mat-pane>
+  </form>
 }
-
-<!-- <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <mat-pane>
-    <mat-card-header>
-      <mat-card-title>Application Form</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      @for(field of fields; track field.name) {
-      <application-form-field
-        [field]="field"
-        [selectedSections]="selectedSections" />
-      }
-    </mat-card-content>
-    <mat-card-actions>
-      <button class="submit-button" mat-flat-button color="primary">
-        Submit Application
-      </button>
-    </mat-card-actions>
-  </mat-pane>
-</form> -->
