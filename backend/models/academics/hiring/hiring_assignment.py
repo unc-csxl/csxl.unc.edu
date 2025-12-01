@@ -18,6 +18,10 @@ class HiringAssignmentStatus(Enum):
     COMMIT = "Commit"
     FINAL = "Final"
 
+class HiringAssignmentFlagFilter(Enum):
+    ALL = "all"
+    FLAGGED = "flagged"
+    NOT_FLAGGED = "not_flagged"
 
 class HiringAssignmentDraft(BaseModel):
     id: int | None = None

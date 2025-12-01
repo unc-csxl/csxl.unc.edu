@@ -170,7 +170,7 @@ def get_hiring_summary_overview(
     page_size: int = 100,
     order_by: str = "",
     filter: str = "",
-    flagged: str = "all",
+    flagged: HiringAssignmentFlagFilter = HiringAssignmentFlagFilter.ALL,
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
 ) -> Paginated[HiringAssignmentSummaryOverview]:
