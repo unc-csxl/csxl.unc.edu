@@ -19,6 +19,7 @@ import {
   HiringAssignmentSummaryOverview
 } from '../hiring.models';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const DEFAULT_PAGINATION_PARAMS = {
   page: 0,
@@ -28,10 +29,10 @@ const DEFAULT_PAGINATION_PARAMS = {
 } as PaginationParams;
 
 @Component({
-    selector: 'app-hiring-summary',
-    templateUrl: './hiring-summary.component.html',
-    styleUrl: './hiring-summary.component.css',
-    standalone: false
+  selector: 'app-hiring-summary',
+  templateUrl: './hiring-summary.component.html',
+  styleUrl: './hiring-summary.component.css',
+  standalone: false
 })
 export class HiringSummaryComponent {
   /** Route for the routing module */
@@ -54,7 +55,8 @@ export class HiringSummaryComponent {
   });
 
   /** Current filter mode for applicants*/
-  public filterMode: WritableSignal<'all' | 'flagged' | 'not_flagged'> = signal('all');
+  public filterMode: WritableSignal<'all' | 'flagged' | 'not_flagged'> =
+    signal('all');
 
   /** Effect that updates the hiring data when the selected term changes. */
   selectedTermEffect = effect(() => {
@@ -71,7 +73,7 @@ export class HiringSummaryComponent {
   filterModeEffect = effect(() => {
     const mode = this.filterMode();
     const termId = this.selectedTermId();
-    
+
     // Only update if we have a term selected
     if (termId) {
       this.updatePaginatorUrl(termId, mode);
@@ -117,6 +119,7 @@ export class HiringSummaryComponent {
   /** Constructor */
   constructor(
     private route: ActivatedRoute,
+    private snackbar: MatSnackBar,
     protected hiringService: HiringService,
     protected academicsService: AcademicsService
   ) {
@@ -131,8 +134,8 @@ export class HiringSummaryComponent {
     this.selectedTermId.set(termId);
 
     // Load paginated data
-    const initialUrl = termId 
-      ? `/api/hiring/summary/${termId}?flagged=${this.filterMode()}` 
+    const initialUrl = termId
+      ? `/api/hiring/summary/${termId}?flagged=${this.filterMode()}`
       : '';
 
     this.assignmentsPaginator = new Paginator<HiringAssignmentSummaryOverview>(
@@ -147,18 +150,18 @@ export class HiringSummaryComponent {
   /** Helper to update the paginator API URL with term and flag params */
   private updatePaginatorUrl(termId: string, flagMode: string) {
     this.assignmentsPaginator.changeApiRoute(
-        `/api/hiring/summary/${termId}?flagged=${flagMode}`
+      `/api/hiring/summary/${termId}?flagged=${flagMode}`
     );
   }
 
   /** Helper to trigger the loadPage logic */
-  private refreshData(params: PaginationParams = this.previousPaginationParams) {
-    this.assignmentsPaginator
-      .loadPage(params)
-      .subscribe((page) => {
-        this.assignmentsPage.set(page);
-        this.previousPaginationParams = params;
-      });
+  private refreshData(
+    params: PaginationParams = this.previousPaginationParams
+  ) {
+    this.assignmentsPaginator.loadPage(params).subscribe((page) => {
+      this.assignmentsPage.set(page);
+      this.previousPaginationParams = params;
+    });
   }
 
   /** Handles a pagination event for the future office hours table */
@@ -169,8 +172,27 @@ export class HiringSummaryComponent {
     this.refreshData(paginationParams);
   }
 
-  /** Save changes */
-  updateAssignment(assignment: HiringAssignmentSummaryOverview) {
+  toggleAssignmentFlag(assignment: HiringAssignmentSummaryOverview) {
+    // Optimistically update the flag state
+    assignment.flagged = !assignment.flagged;
+    // Call the service to update. If there is an error, we will rollback
+    // the optimistic update and display a snackbar notification.
+    this.updateAssignment({
+      assignment,
+      onError: () => {
+        assignment.flagged = !assignment.flagged;
+      }
+    });
+  }
+
+  /** Handles updating an assignment for all inputs */
+  updateAssignment({
+    assignment,
+    onError
+  }: {
+    assignment: HiringAssignmentSummaryOverview;
+    onError?: () => void;
+  }) {
     let draft: HiringAssignmentDraft = {
       id: assignment.id,
       user_id: assignment.user.id,
@@ -187,7 +209,18 @@ export class HiringSummaryComponent {
       created: new Date(), // will be overrided
       modified: new Date()
     };
-    this.hiringService.updateHiringAssignment(draft).subscribe((_) => {});
+    // Call the service to update. If there is an error, we will rollback
+    // the optimistic update and display a snackbar notification.
+    this.hiringService.updateHiringAssignment(draft).subscribe({
+      error: (_) => {
+        onError?.();
+        this.snackbar.open(
+          'Failed to update assignment. Please try again.',
+          'Close',
+          { duration: 5000 }
+        );
+      }
+    });
   }
 
   /** Gets ordered hiring assignments */
@@ -197,7 +230,9 @@ export class HiringSummaryComponent {
       return [];
     }
 
-    return [...assignments].sort((a, b) => Number(b.flagged) - Number(a.flagged));
+    return [...assignments].sort(
+      (a, b) => Number(b.flagged) - Number(a.flagged)
+    );
   }
 
   /** Export CSV button pressed */
