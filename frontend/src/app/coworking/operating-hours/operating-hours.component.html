@@ -1,0 +1,23 @@
+<mat-card class="flex flex-col max-w-full! border-transparent! min-h-[calc(100vh-112px)]" appearance="outlined">
+    <mat-card-header class="flex flex-row w-full items-center justify-between">
+        <mat-card-title>Operating Hours Administration</mat-card-title>
+        <button class="primary-button" matButton="filled" (click)="newOperatingHours()">
+            <mat-icon>add</mat-icon>
+            Create
+        </button>
+    </mat-card-header>
+    <mat-card-content>
+        @for(hours of operatingHours; track hours.id) {
+            <div class="flex flex-row items-center gap-3 py-4 first:mt-5 first:border-t first:border-t-[var(--mat-card-outlined-outline-color)] border-b border-b-[var(--mat-card-outlined-outline-color)]">
+                <p class="mb-0! body-large font-medium! w-8">{{ hours.start | date: 'EEE' }}</p>
+                <p class="mb-0! body-large w-16">{{ hours.start | date: 'MMM dd' }}</p>
+                <p class="mb-0! body-large">{{ hours.start | date: 'h:mma' }} - {{ hours.end | date: 'h:mma' }}</p>
+                <div class="flex flex-row gap-3 ml-auto">
+                    <button mat-icon-button (click)="deleteOperatingHours(hours.id)">
+                        <mat-icon class="font-tertiary">delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        }
+    </mat-card-content>
+</mat-card>

@@ -81,6 +81,7 @@ class OperatingHoursService:
         self._permission_svc.enforce(
             subject, "coworking.operating_hours.create", "coworking/operating_hours"
         )
+        self._session.flush()
 
         conflicts = self.schedule(time_range)
         if len(conflicts) > 0:

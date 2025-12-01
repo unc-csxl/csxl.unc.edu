@@ -30,16 +30,17 @@ import { Profile } from 'src/app/models.module';
 import { ProfileService, PublicProfile } from 'src/app/profile/profile.service';
 
 @Component({
-    selector: 'user-lookup',
-    templateUrl: './user-lookup.widget.html',
-    styleUrls: ['./user-lookup.widget.css'],
-    standalone: false
+  selector: 'user-lookup',
+  templateUrl: './user-lookup.widget.html',
+  styleUrls: ['./user-lookup.widget.css'],
+  standalone: false
 })
 export class UserLookup implements OnInit {
   @Input() label: string = 'Users';
   @Input() maxSelected: number | null = null;
   @Input() users: PublicProfile[] = [];
   @Input() initialUser?: PublicProfile;
+  @Input() initialUserImmutable?: boolean | null = false;
   @Input() disabled: boolean | null = false;
 
   @Output() usersChanged: EventEmitter<PublicProfile[]> = new EventEmitter();

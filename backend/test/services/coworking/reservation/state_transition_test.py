@@ -84,11 +84,12 @@ def test_state_transition_reservation_entities_by_time_expired_active(
 def test_state_transition_reservation_entities_by_time_active_draft(
     session: Session, reservation_svc: ReservationService, policy_svc: PolicyService
 ):
+    coworking_policy = policy_svc.default_policy()
     entities: list[ReservationEntity] = [
         session.get(ReservationEntity, reservation.id)
         for reservation in reservation_data.draft_reservations
     ]
-    cutoff = entities[0].created_at + policy_svc.reservation_draft_timeout()
+    cutoff = entities[0].created_at + coworking_policy.reservation_draft_timeout
     collected = reservation_svc._state_transition_reservation_entities_by_time(
         cutoff, entities
     )
@@ -99,9 +100,10 @@ def test_state_transition_reservation_entities_by_time_active_draft(
 def test_state_transition_reservation_entities_by_time_expired_draft(
     session: Session, reservation_svc: ReservationService, policy_svc: PolicyService
 ):
+    coworking_policy = policy_svc.default_policy()
     policy_mock = create_autospec(PolicyService)
     policy_mock.reservation_draft_timeout.return_value = (
-        policy_svc.reservation_draft_timeout()
+        coworking_policy.reservation_draft_timeout
     )
     reservation_svc._policy_svc = policy_mock
 
@@ -111,7 +113,7 @@ def test_state_transition_reservation_entities_by_time_expired_draft(
     ]
     cutoff = (
         entities[0].created_at
-        + policy_svc.reservation_draft_timeout()
+        + coworking_policy.reservation_draft_timeout
         + timedelta(seconds=1)
     )
     collected = reservation_svc._state_transition_reservation_entities_by_time(
@@ -128,9 +130,10 @@ def test_state_transition_reservation_entities_by_time_expired_draft(
 def test_state_transition_reservation_entities_by_time_checkin_timeout(
     session: Session, reservation_svc: ReservationService, policy_svc: PolicyService
 ):
+    coworking_policy = policy_svc.default_policy()
     policy_mock = create_autospec(PolicyService)
     policy_mock.reservation_checkin_timeout.return_value = (
-        policy_svc.reservation_checkin_timeout()
+        coworking_policy.reservation_checkin_timeout
     )
     reservation_svc._policy_svc = policy_mock
 
@@ -140,7 +143,7 @@ def test_state_transition_reservation_entities_by_time_checkin_timeout(
     ]
     cutoff = (
         entities[0].start
-        + policy_svc.reservation_checkin_timeout()
+        + coworking_policy.reservation_checkin_timeout
         + timedelta(seconds=1)
     )
     collected = reservation_svc._state_transition_reservation_entities_by_time(

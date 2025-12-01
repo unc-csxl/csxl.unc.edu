@@ -1,0 +1,121 @@
+ <mat-card class="flex flex-col max-w-full! border-transparent! min-h-[calc(100vh-112px)]" appearance="outlined">
+    <mat-card-header class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4">
+        <mat-card-title>Reserve a Room</mat-card-title>
+        <div class="date-selector">
+            <!-- <date-selector></date-selector> -->
+            <mat-form-field class="mb-[-16px]" appearance="outline">
+                <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+        </div>
+    </mat-card-header>
+    <mat-card-content class="flex-1 overflow-hidden">
+        @if(availability) {
+            <div class="flex flex-col gap-1 h-full pb-8 overflow-x-auto overflow-y-hidden">
+                <!-- Legend -->
+                <div class="hidden md:flex flex-row gap-6 items-center mt-2">
+                    <div class="flex flex-row items-center gap-2">
+                        <span class="size-5 rounded-full bg-[#bfcbad] dark:bg-[#404a33]"></span>
+                        <span class="pt-0.5">Available</span>
+                    </div>
+                    <div class="flex flex-row items-center gap-2">
+                        <span class="size-5 rounded-full bg-[#aac7ff] dark:bg-[#415f91]"></span>
+                        <span class="pt-0.5">Your Reservations</span>
+                    </div>
+                    <div class="flex flex-row items-center gap-2">
+                        <span class="size-5 rounded-full tertiary-container-background"></span>
+                        <span class="pt-0.5">Reserved</span>
+                    </div>
+                </div>
+                <!-- Timeslots row -->
+                 <div class="flex flex-row ml-32 mt-8 min-w-max">
+                    @for(slot of availability.slot_labels; track slot; let onTheHour = $even) {
+                        @if(onTheHour) {
+                            <div class="flex flex-row items-center w-32 h-8 p-2 border-l border-l-[var(--mat-card-outlined-outline-color)]">
+                                <span class="font-medium body-medium">{{ slot }}</span>
+                            </div>
+                        }
+                    }
+                </div>
+                <!-- Row for each room -->
+                 @for(roomAvailability of availability.rooms; track roomAvailability.room) {
+                    <div class="flex flex-row min-w-max">
+                        <!-- Room header -->
+                        <div class="flex flex-row items-center justify-between w-32 h-12">
+                            <span class="font-medium! body-large">{{ roomAvailability.room }}</span>
+                            <div class="flex flex-row gap-1 items-center pr-2">
+                                <span class="pt-0.5">{{ roomAvailability.capacity }}</span>
+                                <mat-icon class="secondary-icon size-3">chair_alt</mat-icon>
+                            </div>
+                        </div>
+                        <!-- Availability for each time slot -->
+                        @for(slot of availability.slot_labels; track slot) {
+                            @let slotAvailability = roomAvailability.availability[slot];
+                                @switch (slotAvailability.state) {
+                                    @case('AVAILABLE') {
+                                        <!-- primary-container-background -->
+                                        @if(isSlotSelected(roomAvailability, slot)) {
+                                            <div class="primary-background h-12 w-[60px] mx-0.5 rounded" (click)="selectSlot(roomAvailability, slot)"></div>
+                                        } @else {
+                                            <div class="bg-[#bfcbad] dark:bg-[#404a33] h-12 w-[60px] mx-0.5 rounded" (click)="selectSlot(roomAvailability, slot)"></div>
+                                        }
+                                        
+                                    }
+                                    @case('YOUR_RESERVATION') {
+                                        <div class="bg-[#aac7ff] dark:bg-[#415f91] h-12 w-[60px] mx-0.5 rounded"></div>
+                                    }
+                                    @case('RESERVED') {
+                                        <!-- opacity-60 tertiary-container-background-->
+                                        <div class="tertiary-container-background h-12 w-[60px] mx-0.5 rounded"></div>
+                                    }
+                                    @case('UNAVAILABLE') {
+                                        <div class="surface-container-low h-12 w-[60px] mx-0.5 rounded"></div>
+                                    }
+                            }
+                            <!-- <span>{{ slotAvailability.state }}</span> -->
+                        }
+                    </div>
+                 }
+            </div>
+        } @else {
+            <p class="body-large my-3">You cannot reserve rooms for the selected date at this time.</p>
+        }
+    </mat-card-content>
+    @let room = selectedRoom();
+    @let selectedTimeslotRange = selectedSlotTimeRange();
+    @if(selectedSlots.length > 0 && !!room && !!selectedTimeslotRange) {
+        <mat-card-footer class="flex flex-col w-full items-center px-8">
+            <div class="flex flex-col lg:flex-row w-full items-center justify-between gap-4 lg:gap-12 border-t border-t-[var(--mat-card-outlined-outline-color)] py-6">
+                <div class="flex flex-col w-full lg:flex-row gap-4 lg:gap-8 flex-1 lg:items-center">
+                    <p class="body-large mb-0!"><strong>Selected:</strong> {{ room.room }} from {{ selectedTimeslotRange.start | date:'h:mma' }} to {{ selectedTimeslotRange.end | date:'h:mma' }}</p>
+                    <p class="body-large mb-0!"><strong>Reserving For:</strong></p>
+                    <user-lookup
+                        class="mb-[-16px] w-full lg:flex-1"
+                        [label]="availability?.is_instructor ? `Select other users to reserve ${room.room}` : `Select at least ${room.minimum_reservers} user${room.minimum_reservers === 1 ? '' : 's'} to reserve ${room.room}`"
+                        [maxSelected]="room.capacity"
+                        [initialUser]="profile"
+                        [initialUserImmutable]="true"
+                        [users]="selectedUsers"
+                        (usersChanged)="onUsersChanged($event)"
+                    />
+                </div>
+                <div class="flex flex-row-reverse md:flex-row gap-3 items-center">
+                    @let remainingNeededUsers = room.minimum_reservers - selectedUsers.length;
+                    <button
+                        matButton="filled"
+                        (click)="draftReservation()"
+                        [disabled]="!canDraftReservation()"
+                        disabledInteractive
+                        [matTooltip]="canDraftReservation() ? undefined : `Select ${remainingNeededUsers} more user${remainingNeededUsers === 1 ? '' : 's'}.`"
+                    >
+                        Reserve
+                    </button>
+                    <button matButton="outlined" class="tertiary-button" (click)="clearSelections()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </mat-card-footer>
+    }
+</mat-card>

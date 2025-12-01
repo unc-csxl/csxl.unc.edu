@@ -88,7 +88,7 @@ def article_svc(session: Session):
     return ArticleService(
         session,
         PermissionService(session),
-        PolicyService(),
+        PolicyService(session),
         OperatingHoursService(session, PermissionService(session)),
     )
 

@@ -71,8 +71,9 @@ def test_seat_availability_truncate_start(
     policy_svc: PolicyService,
     time: dict[str, datetime],
 ):
+    coworking_policy = policy_svc.default_policy()
     recent_past_to_five_minutes = TimeRange(
-        start=time[NOW] - policy_svc.minimum_reservation_duration(),
+        start=time[NOW] - coworking_policy.minimum_reservation_duration,
         end=time[NOW] + FIVE_MINUTES,
     )
     available_seats = reservation_svc.seat_availability(
@@ -138,9 +139,10 @@ def test_seat_availability_xl_closing_soon(
     reservation_svc: ReservationService, policy_svc: PolicyService
 ):
     """When the XL is open and upcoming walkins are available, but the closing hour is under default walkin duration."""
+    coworking_policy = policy_svc.default_policy()
     near_closing = TimeRange(
         start=operating_hours_data.tomorrow.end
-        - (policy_svc.minimum_reservation_duration() - 2 * ONE_MINUTE),
+        - (coworking_policy.minimum_reservation_duration - 2 * ONE_MINUTE),
         end=operating_hours_data.tomorrow.end,
     )
     available_seats = reservation_svc.seat_availability(seat_data.seats, near_closing)

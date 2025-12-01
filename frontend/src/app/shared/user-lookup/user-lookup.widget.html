@@ -11,11 +11,13 @@
         matChipAvatar
         [src]="user.github_avatar" />
       {{ user.first_name + ' ' + user.last_name }}
-      <button
+      @if(!initialUserImmutable || (initialUser && user.id !== initialUser.id)) {
+        <button
         matChipRemove
         [attr.aria-label]="'remove ' + user.first_name + ' ' + user.last_name">
         <mat-icon>cancel</mat-icon>
       </button>
+      }
     </mat-chip-row>
     <input
       #usersInput

@@ -1,10 +1,17 @@
 """Service that manages policies around the reservation system."""
 
+from enum import Enum
 from fastapi import Depends
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from datetime import timedelta, datetime, time
+
+from backend.entities.academics.section_member_entity import SectionMemberEntity
+from backend.models.roster_role import RosterRole
 from ...database import db_session
 from ...models import User
+from abc import ABC, abstractmethod
+from pydantic import BaseModel
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023-24"
@@ -69,6 +76,49 @@ OH_HOURS = {
 }
 
 
+class CoworkingPolicyType(Enum):
+    """
+    Determines the different types of coworking policies.
+
+    These are mapped to numbers for comparison purposes to determine which policy to use
+    if multiple policies match, with the greatest number taking the highest priority.
+    """
+
+    STUDENT = 0
+    """Policy for regular users"""
+
+    INSTRUCTOR = 1
+    """Policy for regular instructors"""
+
+
+class CoworkingPolicy(BaseModel):
+
+    walkin_window: timedelta
+    """How far into the future can walkins be reserved?"""
+
+    walkin_initial_duration: timedelta
+    """When making a walkin, this sets how long the initial reservation is for."""
+
+    reservation_window: timedelta
+    """Returns the number of days in advance the user can make reservations."""
+
+    minimum_reservation_duration: timedelta
+    """The minimum amount of time a reservation can be made for."""
+
+    maximum_initial_reservation_duration: timedelta
+    """The maximum amount of time a reservation can be made for before extending."""
+
+    reservation_draft_timeout: timedelta
+
+    reservation_checkin_timeout: timedelta
+
+    room_reservation_weekly_limit: timedelta
+    """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
+
+    allow_overlapping_room_reservations: bool
+    """Whether or not to allow the user to reserve two rooms at the same time (useful for instructors)"""
+
+
 class PolicyService:
     """RoleService is the access layer to the role data model, its members, and permissions.
 
@@ -76,59 +126,99 @@ class PolicyService:
     for different groups of users (e.g. majors, ambassadors, LAs, etc).
     """
 
-    def __init__(self): ...
+    def __init__(self, session: Session = Depends(db_session)):
+        self._session = session
+        # Set policies here
+        self._policies: dict[CoworkingPolicyType, CoworkingPolicy] = {
+            CoworkingPolicyType.STUDENT: CoworkingPolicy(
+                walkin_window=timedelta(minutes=10),
+                walkin_initial_duration=timedelta(hours=2),
+                reservation_window=timedelta(weeks=1),
+                minimum_reservation_duration=timedelta(minutes=10),
+                maximum_initial_reservation_duration=timedelta(hours=2),
+                reservation_draft_timeout=timedelta(minutes=5),
+                reservation_checkin_timeout=timedelta(minutes=10),
+                room_reservation_weekly_limit=timedelta(hours=6),
+                allow_overlapping_room_reservations=False,
+            ),
+            CoworkingPolicyType.INSTRUCTOR: CoworkingPolicy(
+                walkin_window=timedelta(minutes=10),
+                walkin_initial_duration=timedelta(hours=2),
+                reservation_window=timedelta(weeks=8),
+                minimum_reservation_duration=timedelta(minutes=10),
+                maximum_initial_reservation_duration=timedelta(hours=2),
+                reservation_draft_timeout=timedelta(minutes=5),
+                reservation_checkin_timeout=timedelta(minutes=10),
+                room_reservation_weekly_limit=timedelta(hours=168),  # 24hrs * 7days
+                allow_overlapping_room_reservations=True,
+            ),
+        }
 
-    def walkin_window(self, _subject: User) -> timedelta:
-        """How far into the future can walkins be reserved?"""
-        return timedelta(minutes=10)
+    def default_policy(self) -> CoworkingPolicy:
+        """Returns the default policy.
+        NOTE: At some point, this likely should be phased out.
+        """
+        return self._policies[CoworkingPolicyType.STUDENT]
 
-    def walkin_initial_duration(self, _subject: User) -> timedelta:
-        """When making a walkin, this sets how long the initial reservation is for."""
-        return timedelta(hours=2)
+    def policy_for_user(self, _subject: User) -> CoworkingPolicy:
+        """Determines the coworking policy to use for a given subject."""
 
-    def reservation_window(self, _subject: User) -> timedelta:
-        """Returns the number of days in advance the user can make reservations."""
-        return timedelta(weeks=1)
+        # Determine if the user is an instructor for a course.
+        is_instructor_query = (
+            select(func.count())
+            .select_from(SectionMemberEntity)
+            .where(
+                SectionMemberEntity.user_id == _subject.id,
+                SectionMemberEntity.member_role == RosterRole.INSTRUCTOR,
+            )
+        )
+        is_instructor = self._session.execute(is_instructor_query).scalar() > 0
+        if is_instructor:
+            return self._policies[CoworkingPolicyType.INSTRUCTOR]
 
-    def minimum_reservation_duration(self) -> timedelta:
-        """The minimum amount of time a reservation can be made for."""
-        return timedelta(minutes=10)
+        # Otherwise, the user is a regular user.
+        # NOTE: In the future, this can be extended easily to add extra policies
+        # for ambassadors, etc.
+        return self._policies[CoworkingPolicyType.STUDENT]
 
-    def maximum_initial_reservation_duration(self, _subject: User) -> timedelta:
-        """The maximum amount of time a reservation can be made for before extending."""
-        return timedelta(hours=2)
+    # def walkin_window(self, policy: CoworkingPolicy) -> timedelta:
+    #     """How far into the future can walkins be reserved?"""
+    #     return self._policy(_subject).walkin_window
 
-    # Implement and involve in testing once extending a reservation functionality is added.
-    # def extend_window(self, _subject: User) -> timedelta:
-    #     """When no reservation follows a given reservation, within this period preceeding the end of a reservation the user is able to extend their reservation by an hour."""
-    #     return timedelta(minutes=15 * -1)
+    # def walkin_initial_duration(self, _subject: User) -> timedelta:
+    #     """When making a walkin, this sets how long the initial reservation is for."""
+    #     return self._policy(_subject).walkin_initial_duration
 
-    # def extend_duration(self, _subject: User) -> timedelta:
-    #     return timedelta(hours=1)
+    # def reservation_window(self, _subject: User) -> timedelta:
+    #     """Returns the number of days in advance the user can make reservations."""
+    #     return self._policy(_subject).reservation_window
 
-    def reservation_draft_timeout(self) -> timedelta:
-        return timedelta(minutes=5)
+    # def minimum_reservation_duration(self, _subject: User) -> timedelta:
+    #     """The minimum amount of time a reservation can be made for."""
+    #     return self._policy(_subject).minimum_reservation_duration
 
-    def reservation_checkin_timeout(self) -> timedelta:
-        return timedelta(minutes=10)
+    # def maximum_initial_reservation_duration(self, _subject: User) -> timedelta:
+    #     """The maximum amount of time a reservation can be made for before extending."""
+    #     return self._policy(_subject).maximum_initial_reservation_duration
 
-    def room_reservation_weekly_limit(self) -> timedelta:
-        """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
-        return timedelta(hours=6)
+    # # Implement and involve in testing once extending a reservation functionality is added.
+    # # def extend_window(self, _subject: User) -> timedelta:
+    # #     """When no reservation follows a given reservation, within this period preceeding the end of a reservation the user is able to extend their reservation by an hour."""
+    # #     return timedelta(minutes=15 * -1)
+
+    # # def extend_duration(self, _subject: User) -> timedelta:
+    # #     return timedelta(hours=1)
+
+    # def reservation_draft_timeout(self, _subject: User) -> timedelta:
+    #     return self._policy(_subject).reservation_draft_timeout
+
+    # def reservation_checkin_timeout(self, _subject: User) -> timedelta:
+    #     return self._policy(_subject).reservation_checkin_timeout
+
+    # def room_reservation_weekly_limit(self, _subject: User) -> timedelta:
+    #     """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
+    #     return self._policy(_subject).room_reservation_weekly_limit
 
     def office_hours(self, date: datetime):
         day = date.weekday()
-        if day == MONDAY:
-            return OH_HOURS[MONDAY]
-        elif day == TUESDAY:
-            return OH_HOURS[TUESDAY]
-        elif day == WEDNESDAY:
-            return OH_HOURS[WEDNESDAY]
-        elif day == THURSDAY:
-            return OH_HOURS[THURSDAY]
-        elif day == FRIDAY:
-            return OH_HOURS[FRIDAY]
-        elif day == SATURDAY:
-            return OH_HOURS[SATURDAY]
-        else:
-            return OH_HOURS[SUNDAY]
+        return OH_HOURS[day]

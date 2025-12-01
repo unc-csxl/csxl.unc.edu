@@ -148,6 +148,11 @@ body {
     color: mat.get-theme-color($theme, secondary) !important;
   }
 
+  .surface-container-low {
+    background-color: mat.get-theme-color($theme, surface-container-low) !important;
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
+
   .surface-container-high {
     background-color: mat.get-theme-color($theme, surface-container-high) !important;
     color: mat.get-theme-color($theme, on-surface) !important;
