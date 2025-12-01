@@ -17,7 +17,7 @@
         <mat-button-toggle value="not_flagged">Not Flagged</mat-button-toggle>
       </mat-button-toggle-group>
 
-      <button mat-stroked-button (click)="exportCsv()">Download CSV</button>
+      <button mat-flat-button (click)="exportCsv()">Download CSV</button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
         <mat-select
@@ -40,12 +40,11 @@
           <td mat-cell *matCellDef="let element">
             <button
               class="flag-icon-btn"
-              [class.flagged]="element.flagged" 
               mat-icon-button
               type="button"
               aria-label="Toggle flag"
-              (click)="element.flagged = !element.flagged; updateAssignment(element)">
-              <mat-icon>flag</mat-icon>
+              (click)="toggleAssignmentFlag(element)">
+              <mat-icon [class]="(element.flagged ? 'font-tertiary flag-selected' : '')">flag</mat-icon>
             </button>
           </td>
         </ng-container>
@@ -67,7 +66,7 @@
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p>{{ element.course }}<br>
+              <p style="margin:0;">{{ element.course }}<br>
                 {{ element.instructors }}</p>
             </div>
           </td>
@@ -79,7 +78,7 @@
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p>
+              <p style="margin:0;">
                 ${{
                   element.level.salary.toFixed(2)
                 }}
@@ -96,7 +95,7 @@
                 <input
                   matInput
                   [(ngModel)]="element.epar"
-                  (change)="updateAssignment(element)"
+                  (change)="updateAssignment({ assignment: element })"
                   placeholder="" />
               </mat-form-field>
             </div>
@@ -111,7 +110,7 @@
                 <input
                   matInput
                   [(ngModel)]="element.position_number"
-                  (change)="updateAssignment(element)"
+                  (change)="updateAssignment({ assignment: element })"
                   placeholder="" />
               </mat-form-field>
             </div>
@@ -127,7 +126,7 @@
                   rows="1"
                   matInput
                   [(ngModel)]="element.notes"
-                  (change)="updateAssignment(element)"></textarea>
+                  (change)="updateAssignment({ assignment: element })"></textarea>
               </mat-form-field>
             </div>
           </td>
@@ -138,7 +137,7 @@
           <td mat-cell *matCellDef="let element">
             <mat-checkbox
               [(ngModel)]="element.i9"
-              (change)="updateAssignment(element)" />
+              (change)="updateAssignment({ assignment: element })" />
           </td>
         </ng-container>
 
@@ -147,7 +146,7 @@
           <td mat-cell *matCellDef="let element">
             <mat-button-toggle-group
               [(ngModel)]="element.status"
-              (change)="updateAssignment(element)">
+              (change)="updateAssignment({ assignment: element })">
               <mat-button-toggle value="Commit">Commit</mat-button-toggle>
               <mat-button-toggle value="Final">Final</mat-button-toggle>
             </mat-button-toggle-group>
