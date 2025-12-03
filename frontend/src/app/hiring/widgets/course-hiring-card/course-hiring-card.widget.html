@@ -13,8 +13,7 @@
               class="clickable-td"
               mat-cell
               *matCellDef="let element"
-              (click)="editAssignment(element)">
-              <user-chip-list [users]="[element.user]" [clickable]="false" />
+              (click)="openAuditLog(element, $event)"> <user-chip-list [users]="[element.user]" [clickable]="false" />
             </td>
           </ng-container>
           <ng-container matColumnDef="level">
@@ -23,8 +22,7 @@
               class="clickable-td"
               mat-cell
               *matCellDef="let element"
-              (click)="editAssignment(element)">
-              {{ element.level.title }} (${{ element.level.salary.toFixed(2) }})
+              (click)="openAuditLog(element, $event)"> {{ element.level.title }} (${{ element.level.salary.toFixed(2) }})
             </td>
           </ng-container>
           <ng-container matColumnDef="position_number">
@@ -33,8 +31,7 @@
               class="clickable-td"
               mat-cell
               *matCellDef="let element"
-              (click)="editAssignment(element)">
-              {{ element.position_number }}
+              (click)="openAuditLog(element, $event)"> {{ element.position_number }}
             </td>
           </ng-container>
           <ng-container matColumnDef="epar">
@@ -43,8 +40,7 @@
               class="clickable-td"
               mat-cell
               *matCellDef="let element"
-              (click)="editAssignment(element)">
-              {{ element.epar }}
+              (click)="openAuditLog(element, $event)"> {{ element.epar }}
             </td>
           </ng-container>
           <ng-container matColumnDef="status">
@@ -67,12 +63,16 @@
                 <mat-button-toggle-group
                   class="status-toggle"
                   [(ngModel)]="element.status"
+                  (click)="$event.stopPropagation()" 
                   (change)="changeAssignmentStatus(element, $event.value)">
                   <mat-button-toggle value="Draft">Draft</mat-button-toggle>
                   <mat-button-toggle value="Commit">Commit</mat-button-toggle>
                   <mat-button-toggle value="Final">Final</mat-button-toggle>
                 </mat-button-toggle-group>
-                <button mat-icon-button (click)="deleteAssignment(element)">
+                <button mat-icon-button (click)="editAssignment(element); $event.stopPropagation()">
+                   <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteAssignment(element); $event.stopPropagation()">
                   <mat-icon class="font-tertiary">delete</mat-icon>
                 </button>
               </div>

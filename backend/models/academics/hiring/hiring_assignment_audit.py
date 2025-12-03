@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from ... import PublicUser
 
 __authors__ = ["Christian Lee"]
 __copyright__ = "Copyright 2025"
@@ -16,3 +17,15 @@ class HiringAssignmentAudit(BaseModel):
     changed_by_user_id: int
     change_timestamp: datetime
     change_details: str
+
+
+class HiringAssignmentAuditOverview(BaseModel):
+    """
+    Model for displaying audit logs in the UI.
+    Includes the full user details instead of just an ID.
+    """
+
+    id: int
+    change_timestamp: datetime
+    change_details: str
+    changed_by_user: PublicUser

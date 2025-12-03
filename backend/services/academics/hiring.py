@@ -44,6 +44,9 @@ from ...models.academics.hiring.application_review import (
 from ...models.academics.hiring.phd_application import PhDApplicationReview
 from ...models.academics.hiring.hiring_assignment import *
 from ...models.academics.hiring.hiring_level import *
+from ...models.academics.hiring.hiring_assignment_audit import (
+    HiringAssignmentAuditOverview,
+)
 
 __authors__ = ["Ajay Gandecha", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -1261,3 +1264,33 @@ class HiringService:
                 "preferred_sections": ", ".join(preferred_sections_list),
                 "instructor_selections": instructor_selections_field,
             }
+
+    def get_audit_history(
+        self, subject: User, assignment_id: int
+    ) -> list[HiringAssignmentAuditOverview]:
+        """
+        Retrieves the audit history for a specific hiring assignment.
+        """
+        # 1. Check permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+
+        # 2. Query the audit table
+        query = (
+            select(HiringAssignmentAuditEntity)
+            .where(HiringAssignmentAuditEntity.hiring_assignment_id == assignment_id)
+            .order_by(HiringAssignmentAuditEntity.change_timestamp.desc())
+            .options(joinedload(HiringAssignmentAuditEntity.changed_by_user))
+        )
+
+        audit_entities = self._session.scalars(query).all()
+
+        # 3. Convert to Pydantic models
+        return [
+            HiringAssignmentAuditOverview(
+                id=audit.id,
+                change_timestamp=audit.change_timestamp,
+                change_details=audit.change_details,
+                changed_by_user=audit.changed_by_user.to_public_model(),
+            )
+            for audit in audit_entities
+        ]

@@ -185,3 +185,10 @@ export interface ConflictCheck {
   assignments: HiringAssignmentSummaryOverview[];
   priorities: ApplicationPriority[];
 }
+
+export interface HiringAssignmentAuditOverview {
+  id: number;
+  change_timestamp: string; // Dates often come as strings from JSON
+  change_details: string;
+  changed_by_user: PublicProfile;
+}

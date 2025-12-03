@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from ...entity_base import EntityBase
 
@@ -22,6 +22,7 @@ class HiringAssignmentAuditEntity(EntityBase):
 
     # Who made the change
     changed_by_user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    changed_by_user: Mapped["UserEntity"] = relationship("UserEntity")
 
     # When it happened
     change_timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
