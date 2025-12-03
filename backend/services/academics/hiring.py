@@ -109,7 +109,32 @@ class HiringService:
                 subject, "hiring.get_status", f"course_site/{course_site_id}"
             )
 
-        # Step 2: Update the values for all reviews.
+        # Step 2: Assign default levels to preferred applications that don't have one.
+        preferred_reviews_without_level = [
+            review for review in hiring_status.preferred if review.level is None
+        ]
+        if preferred_reviews_without_level:
+            applications = {
+                app.id: app
+                for app in self._session.scalars(
+                    select(ApplicationEntity).where(
+                        ApplicationEntity.id.in_(
+                            [
+                                review.application_id
+                                for review in preferred_reviews_without_level
+                            ]
+                        )
+                    )
+                ).all()
+            }
+            for review in preferred_reviews_without_level:
+                application = applications.get(review.application_id)
+                if application:
+                    default_level = self._get_default_level_for_application(application)
+                    if default_level:
+                        review.level = default_level
+
+        # Step 3: Update the values for all reviews.
 
         # Retrieve all reviews, indexed by ID for efficient searching.
         hiring_status_reviews_by_id: dict[int, ApplicationReviewOverview] = {}
@@ -155,6 +180,49 @@ class HiringService:
 
         # Reload the data and return the hiring status.
         return self.get_status(subject, course_site_id)
+
+    def _get_default_level_for_application(
+        self, application: ApplicationEntity
+    ) -> HiringLevel | None:
+        """
+        Gets the default level for an application based on its type.
+        Finds the level that matches the classification, has load of 1.0, and is active.
+
+        Args:
+            application: The application entity to get default level for
+
+        Returns:
+            The default level model, or None if not found
+        """
+        # Determine classification based on application type
+        classification: HiringLevelClassification | None = None
+
+        if application.type == "new_uta":
+            classification = HiringLevelClassification.UG
+        elif application.type == "gta":
+            if application.program_pursued:
+                # Check if it's a PhD program
+                if application.program_pursued in ("PhD", "PhD (ABD)"):
+                    classification = HiringLevelClassification.PHD
+                # Check if it's MS or BS/MS
+                elif application.program_pursued in ("MS", "BS/MS"):
+                    classification = HiringLevelClassification.MS
+
+        if not classification:
+            return None
+
+        # Find the level that matches classification, has load 1.0, and is active
+        level_query = (
+            select(HiringLevelEntity)
+            .where(HiringLevelEntity.classification == classification)
+            .where(HiringLevelEntity.load == 1.0)
+            .where(HiringLevelEntity.is_active == True)
+        )
+        level_entity = self._session.scalar(level_query)
+
+        if level_entity:
+            return level_entity.to_model()
+        return None
 
     def create_missing_course_sites_for_term(self, subject: User, term_id: str) -> bool:
         """
