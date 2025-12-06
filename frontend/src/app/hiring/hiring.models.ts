@@ -188,7 +188,7 @@ export interface ConflictCheck {
 
 export interface HiringAssignmentAuditOverview {
   id: number;
-  change_timestamp: string; // Dates often come as strings from JSON
+  change_timestamp: Date;
   change_details: string;
   changed_by_user: PublicProfile;
 }

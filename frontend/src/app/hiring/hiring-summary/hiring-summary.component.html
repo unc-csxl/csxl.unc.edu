@@ -51,7 +51,9 @@
         
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef><div class="header">Name</div></th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let element" 
+              class="clickable-cell"
+              (click)="openAuditLog(element, $event)">
             <div class="row" style="display:flex; align-items:center; gap:8px;">
               <p style="margin:0;">
                 {{ element.user.first_name }} {{ element.user.last_name }}<br>{{ element.user.pid }}

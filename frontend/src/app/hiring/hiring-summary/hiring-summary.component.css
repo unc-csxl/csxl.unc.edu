@@ -54,3 +54,20 @@ mat-form-field.pos_number {
   font-variation-settings:
     'FILL' 1;
 }
+
+/* Add this new style for the cell */
+.clickable-cell {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--primary-color, #007bb2); /* Optional: make it look like a link */
+}
+
+.clickable-cell:hover {
+  text-decoration: underline;
+}
+
+.pid-text {
+  font-weight: normal;
+  color: black;
+  font-size: 0.9em;
+}

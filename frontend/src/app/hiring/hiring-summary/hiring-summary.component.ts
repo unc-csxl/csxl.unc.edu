@@ -20,6 +20,8 @@ import {
 } from '../hiring.models';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { AuditLogDialog } from '../dialogs/audit-log-dialog/audit-log-dialog.dialog';
 
 const DEFAULT_PAGINATION_PARAMS = {
   page: 0,
@@ -121,7 +123,8 @@ export class HiringSummaryComponent {
     private route: ActivatedRoute,
     private snackbar: MatSnackBar,
     protected hiringService: HiringService,
-    protected academicsService: AcademicsService
+    protected academicsService: AcademicsService,
+    private dialog: MatDialog
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -220,6 +223,24 @@ export class HiringSummaryComponent {
           { duration: 5000 }
         );
       }
+    });
+  }
+
+  /** Opens the audit log dialog for a specific assignment */
+  openAuditLog(
+    assignment: HiringAssignmentSummaryOverview,
+    event?: MouseEvent
+  ) {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    this.dialog.open(AuditLogDialog, {
+      data: {
+        assignmentId: assignment.id,
+        applicantName: `${assignment.user.first_name} ${assignment.user.last_name}`
+      },
+      width: '600px'
     });
   }
 
