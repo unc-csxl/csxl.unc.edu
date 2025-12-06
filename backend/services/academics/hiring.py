@@ -753,9 +753,12 @@ class HiringService:
             changes.append(
                 f"Pos Num: {assignment_entity.position_number} -> {assignment.position_number}"
             )
-        # Check Notes (Only log that notes changed, not the full text, to keep logs clean)
-        if assignment_entity.notes != assignment.notes:
-            changes.append("Updated Notes")
+        # Check Notes
+        old_notes = assignment_entity.notes or ""
+        new_notes = assignment.notes or ""
+
+        if old_notes != new_notes:
+            changes.append(f"Notes: '{old_notes}' -> '{new_notes}'")
         # Check Hiring Level
         if assignment_entity.hiring_level_id != assignment.level.id:
             changes.append(
