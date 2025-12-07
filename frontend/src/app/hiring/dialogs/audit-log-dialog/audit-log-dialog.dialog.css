@@ -1,0 +1,71 @@
+mat-form-field {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Center the loading spinner */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+}
+
+/* Center the empty state message */
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary, #666);
+  padding: 40px 0;
+  font-style: italic;
+}
+
+/* The container for the list items */
+.audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+/* Individual Log Entry */
+.audit-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Header: Puts Name on left, Date on right */
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+/* Name Style */
+.audit-user {
+  font-weight: 600; /* Semibold equivalent */
+  font-size: 1rem;
+}
+
+/* Date Badge Style */
+.audit-time {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #666);
+  background-color: #f5f5f5; /* Light gray background */
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* The actual text of what changed */
+.audit-detail {
+  margin: 0;
+  color: var(--text-primary, #333);
+  line-height: 1.4;
+  white-space: pre-wrap; /* Keeps formatting if you use newlines later */
+}
+
+/* Fix the divider spacing */
+mat-divider {
+  margin-top: 12px;
+}

@@ -90,6 +90,7 @@ export interface HiringAssignmentDraft {
   notes: string;
   created: Date;
   modified: Date;
+  flagged: boolean;
 }
 
 export interface HiringAssignmentOverview {
@@ -101,6 +102,7 @@ export interface HiringAssignmentOverview {
   epar: string;
   i9: boolean;
   notes: string;
+  flagged: boolean;
 }
 
 export const hiringAssignmentOverviewToDraft = (
@@ -121,6 +123,7 @@ export const hiringAssignmentOverviewToDraft = (
     epar: assignment.epar,
     i9: assignment.i9,
     notes: assignment.notes,
+    flagged: assignment.flagged,
     created: new Date(), // overwritten anyway
     modified: new Date() // overwritten anyway
   };
@@ -161,6 +164,7 @@ export interface HiringAssignmentSummaryOverview {
   epar: string;
   i9: boolean;
   notes: string;
+  flagged: boolean;
 }
 
 export interface ReleasedHiringAssignment {
@@ -180,4 +184,11 @@ export interface ConflictCheck {
   application_id: number;
   assignments: HiringAssignmentSummaryOverview[];
   priorities: ApplicationPriority[];
+}
+
+export interface HiringAssignmentAuditOverview {
+  id: number;
+  change_timestamp: Date;
+  change_details: string;
+  changed_by_user: PublicProfile;
 }

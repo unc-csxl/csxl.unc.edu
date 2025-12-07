@@ -15,6 +15,9 @@ from ...models.academics.hiring.application_review import HiringStatus
 from ...models.academics.hiring.hiring_assignment import *
 from ...models.academics.hiring.hiring_level import *
 from ...models.academics.hiring.conflict_check import ConflictCheck
+from ...models.academics.hiring.hiring_assignment_audit import (
+    HiringAssignmentAuditOverview,
+)
 
 from ...api.authentication import registered_user
 from ...models.user import User
@@ -170,6 +173,7 @@ def get_hiring_summary_overview(
     page_size: int = 100,
     order_by: str = "",
     filter: str = "",
+    flagged: str = "all",
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
 ) -> Paginated[HiringAssignmentSummaryOverview]:
@@ -180,7 +184,7 @@ def get_hiring_summary_overview(
         page=page, page_size=page_size, order_by=order_by, filter=filter
     )
     return hiring_service.get_hiring_summary_overview(
-        subject, term_id, pagination_params
+        subject, term_id, flagged, pagination_params
     )
 
 
@@ -407,3 +411,19 @@ def get_applicants_for_term_csv(
         f"attachment; filename=applicants_{term_id}.csv"
     )
     return response
+
+
+@api.get(
+    "/assignments/{assignment_id}/history",
+    tags=["Hiring"],
+    response_model=list[HiringAssignmentAuditOverview],
+)
+def get_assignment_history(
+    assignment_id: int,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> list[HiringAssignmentAuditOverview]:
+    """
+    Get the change history for a specific hiring assignment.
+    """
+    return hiring_service.get_audit_history(subject, assignment_id)
