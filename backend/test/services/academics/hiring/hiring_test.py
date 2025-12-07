@@ -23,8 +23,13 @@ from .....entities.academics.section_entity import SectionEntity
 from .....entities.academics.hiring.application_review_entity import (
     ApplicationReviewEntity,
 )
+from .....models.academics.hiring.hiring_assignment_audit import (
+    HiringAssignmentAuditOverview,
+)
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
 
 # Injected Service Fixtures
 from .fixtures import hiring_svc
@@ -38,6 +43,8 @@ from ...academics.section_data import fake_data_fixture as insert_order_3
 from ...room_data import fake_data_fixture as insert_order_4
 from ...office_hours.office_hours_data import fake_data_fixture as insert_order_5
 from .hiring_data import fake_data_fixture as insert_order_6
+
+from backend.models.pagination import PaginationParams
 
 
 # Test data
@@ -216,6 +223,15 @@ def test_update_hiring_assignment_not_found(hiring_svc: HiringService):
         pytest.fail()
 
 
+def test_update_hiring_assigment_flag(hiring_svc: HiringService):
+    """Ensures that the admin can update the flagged status of a hiring assignment."""
+    assignment = hiring_svc.update_hiring_assignment(
+        user_data.root, hiring_data.hiring_assignment_flagged
+    )
+    assert assignment is not None
+    assert assignment.flagged is True
+
+
 def test_delete_hiring_assignment(hiring_svc: HiringService):
     """Ensures that the admin can delete hiring assignments."""
     hiring_svc.delete_hiring_assignment(
@@ -337,3 +353,115 @@ def test_get_course_site_total_enrollment_checks_permission(hiring_svc: HiringSe
             user_data.ambassador, office_hours_data.comp_110_site.id
         )
         pytest.fail()
+def test_get_hiring_summary_overview_all(hiring_svc: HiringService):
+    """Test that the hiring summary overview returns all assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "all", pagination_params
+    )
+    assert summary is not None
+    assert len(summary.items) > 0
+    assert all(assignment.flagged in [True, False] for assignment in summary.items)
+
+
+def test_get_hiring_summary_overview_flagged(hiring_svc: HiringService):
+    """Test that the hiring summary overview filters for flagged assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "flagged", pagination_params
+    )
+    assert summary is not None
+    assert len(summary.items) > 0
+    assert all(assignment.flagged is True for assignment in summary.items)
+
+
+def test_get_hiring_summary_overview_not_flagged(hiring_svc: HiringService):
+    """Test that the hiring summary overview filters for not flagged assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "not_flagged", pagination_params
+    )
+    assert summary is not None
+    assert len(summary.items) > 0
+    assert all(assignment.flagged is False for assignment in summary.items)
+
+
+def test_get_hiring_summary_overview_invalid_flagged(hiring_svc: HiringService):
+    """Test that an invalid flagged filter returns all flagged/non-flagged assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "invalid_flagged", pagination_params
+    )
+
+    assert len(summary.items) > 0
+    assert all(assignment.flagged in [True, False] for assignment in summary.items)
+
+
+def test_update_hiring_assignment_creates_audit_log(hiring_svc: HiringService):
+    """Ensures that updating an assignment creates an audit log entry."""
+    hiring_svc.update_hiring_assignment(
+        user_data.root, hiring_data.updated_hiring_assignment
+    )
+
+    history = hiring_svc.get_audit_history(
+        user_data.root, hiring_data.hiring_assignment.id
+    )
+
+    assert len(history) == 1
+    assert history[0].changed_by_user.id == user_data.root.id
+    assert "Status: COMMIT -> FINAL" in history[0].change_details
+
+
+def test_update_hiring_assignment_audit_details_notes(hiring_svc: HiringService):
+    """Ensures notes updates are formatted correctly using the 'Old -> New' format."""
+    assignment = hiring_data.hiring_assignment.model_copy()
+    assignment.notes = "New Notes Value"
+
+    hiring_svc.update_hiring_assignment(user_data.root, assignment)
+
+    history = hiring_svc.get_audit_history(user_data.root, assignment.id)
+    assert len(history) == 1
+    assert "Notes: 'Some notes here' -> 'New Notes Value'" in history[0].change_details
+
+
+def test_update_hiring_assignment_audit_details_flagged(hiring_svc: HiringService):
+    """Ensures flagged status changes are logged."""
+    assignment = hiring_data.hiring_assignment.model_copy()
+    assignment.flagged = True
+
+    hiring_svc.update_hiring_assignment(user_data.root, assignment)
+
+    history = hiring_svc.get_audit_history(user_data.root, assignment.id)
+    assert len(history) == 1
+    assert "Flagged: False -> True" in history[0].change_details
+
+
+def test_get_audit_history_ordering(hiring_svc: HiringService):
+    """Ensures audit logs are returned in reverse chronological order (newest first)."""
+    a1 = hiring_data.hiring_assignment.model_copy()
+    a1.position_number = "update_1"
+    hiring_svc.update_hiring_assignment(user_data.root, a1)
+
+    a2 = hiring_data.hiring_assignment.model_copy()
+    a2.position_number = "update_2"
+    hiring_svc.update_hiring_assignment(user_data.root, a2)
+
+    history = hiring_svc.get_audit_history(
+        user_data.root, hiring_data.hiring_assignment.id
+    )
+
+    assert len(history) == 2
+    assert "update_2" in history[0].change_details
+    assert "update_1" in history[1].change_details
+
+
+def test_get_audit_history_permissions(hiring_svc: HiringService):
+    """Ensures that non-admins cannot view audit history."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.get_audit_history(
+            user_data.student, hiring_data.hiring_assignment.id
+        )

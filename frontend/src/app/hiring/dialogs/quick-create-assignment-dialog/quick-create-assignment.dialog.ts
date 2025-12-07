@@ -154,6 +154,7 @@ export class QuickCreateAssignmentDialog {
         epar: this.createAssignmentForm.get('epar')!.value ?? '',
         i9: this.createAssignmentForm.get('i9')!.value ?? false,
         notes: this.createAssignmentForm.get('notes')!.value ?? '',
+        flagged: false,
         created: new Date(),
         modified: new Date()
       };

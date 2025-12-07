@@ -28,6 +28,9 @@ from ...entities.academics.hiring.application_review_entity import (
 from ...entities.section_application_table import section_application_table
 from ...entities.academics.hiring.hiring_level_entity import HiringLevelEntity
 from ...entities.academics.hiring.hiring_assignment_entity import HiringAssignmentEntity
+from ...entities.academics.hiring.hiring_assignment_audit_entity import (
+    HiringAssignmentAuditEntity,
+)
 
 from ..exceptions import CoursePermissionException, ResourceNotFoundException
 from ...services import PermissionService
@@ -41,6 +44,9 @@ from ...models.academics.hiring.application_review import (
 from ...models.academics.hiring.phd_application import PhDApplicationReview
 from ...models.academics.hiring.hiring_assignment import *
 from ...models.academics.hiring.hiring_level import *
+from ...models.academics.hiring.hiring_assignment_audit import (
+    HiringAssignmentAuditOverview,
+)
 
 __authors__ = ["Ajay Gandecha", "Kris Jordan"]
 __copyright__ = "Copyright 2024"
@@ -810,6 +816,43 @@ class HiringService:
             raise ResourceNotFoundException(
                 f"No hiring assignment with ID: {assignment.id}"
             )
+        changes = []
+        # Check Status
+        if assignment_entity.status != assignment.status:
+            changes.append(
+                f"Status: {assignment_entity.status.name} -> {assignment.status.name}"
+            )
+        # Check Flagged
+        if assignment_entity.flagged != assignment.flagged:
+            changes.append(
+                f"Flagged: {assignment_entity.flagged} -> {assignment.flagged}"
+            )
+        # Check Position Number
+        if assignment_entity.position_number != assignment.position_number:
+            changes.append(
+                f"Pos Num: {assignment_entity.position_number} -> {assignment.position_number}"
+            )
+        # Check Notes
+        old_notes = assignment_entity.notes or ""
+        new_notes = assignment.notes or ""
+
+        if old_notes != new_notes:
+            changes.append(f"Notes: '{old_notes}' -> '{new_notes}'")
+        # Check Hiring Level
+        if assignment_entity.hiring_level_id != assignment.level.id:
+            changes.append(
+                f"Level ID: {assignment_entity.hiring_level_id} -> {assignment.level.id}"
+            )
+        # If we detected changes, save the audit row
+        if changes:
+            audit_entry = HiringAssignmentAuditEntity(
+                hiring_assignment_id=assignment_entity.id,
+                changed_by_user_id=subject.id,
+                change_timestamp=datetime.now(),
+                change_details=", ".join(changes),
+            )
+            self._session.add(audit_entry)
+
         # 3. Update the data and commit
         assert assignment.level.id is not None
         assignment_entity.hiring_level_id = assignment.level.id
@@ -818,6 +861,7 @@ class HiringService:
         assignment_entity.epar = assignment.epar
         assignment_entity.i9 = assignment.i9
         assignment_entity.notes = assignment.notes
+        assignment_entity.flagged = assignment.flagged
         assignment_entity.modified = datetime.now()
 
         self._session.commit()
@@ -886,7 +930,11 @@ class HiringService:
         return level_entity.to_model()
 
     def get_hiring_summary_overview(
-        self, subject: User, term_id: str, pagination_params: PaginationParams
+        self,
+        subject: User,
+        term_id: str,
+        flagged: HiringAssignmentFlagFilter,
+        pagination_params: PaginationParams,
     ) -> Paginated[HiringAssignmentSummaryOverview]:
         """
         Returns the hires to show on a summary page for a given term.
@@ -894,6 +942,7 @@ class HiringService:
         Args:
             subject: The user making the request
             term_id: The term to get assignments for
+            flagged: Filter for flagged assignments ('flagged', 'not_flagged', or 'all')
             pagination_params: Parameters for pagination and filtering
 
         Raises:
@@ -930,26 +979,32 @@ class HiringService:
             )
             base_query = base_query.where(criteria)
 
-        # 5. Create count query from base query
+        # 5. Apply flagged filter if present
+        if flagged == HiringAssignmentFlagFilter.FLAGGED:
+            base_query = base_query.where(HiringAssignmentEntity.flagged.is_(True))
+        elif flagged == HiringAssignmentFlagFilter.NOT_FLAGGED:
+            base_query = base_query.where(HiringAssignmentEntity.flagged.is_(False))
+
+        # 6. Create count query from base query
         count_query = select(func.count()).select_from(base_query.subquery())
 
-        # 6. Create assignment query with eager loading
+        # 7. Create assignment query with eager loading
         assignment_query = base_query.options(
             joinedload(HiringAssignmentEntity.course_site)
             .joinedload(CourseSiteEntity.sections)
             .joinedload(SectionEntity.staff),
         )
 
-        # 7. Apply pagination
+        # 8. Apply pagination
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
         assignment_query = assignment_query.offset(offset).limit(limit)
 
-        # 8. Execute queries
+        # 9. Execute queries
         length = self._session.scalar(count_query) or 0
         assignment_entities = self._session.scalars(assignment_query).unique().all()
 
-        # 9. Build and return response
+        # 10. Build and return response
         return Paginated(
             items=[
                 assignment.to_summary_overview_model()
@@ -1311,3 +1366,33 @@ class HiringService:
                 "preferred_sections": ", ".join(preferred_sections_list),
                 "instructor_selections": instructor_selections_field,
             }
+
+    def get_audit_history(
+        self, subject: User, assignment_id: int
+    ) -> list[HiringAssignmentAuditOverview]:
+        """
+        Retrieves the audit history for a specific hiring assignment.
+        """
+        # 1. Check permissions
+        self._permission.enforce(subject, "hiring.admin", "*")
+
+        # 2. Query the audit table
+        query = (
+            select(HiringAssignmentAuditEntity)
+            .where(HiringAssignmentAuditEntity.hiring_assignment_id == assignment_id)
+            .order_by(HiringAssignmentAuditEntity.change_timestamp.desc())
+            .options(joinedload(HiringAssignmentAuditEntity.changed_by_user))
+        )
+
+        audit_entities = self._session.scalars(query).all()
+
+        # 3. Convert to Pydantic models
+        return [
+            HiringAssignmentAuditOverview(
+                id=audit.id,
+                change_timestamp=audit.change_timestamp,
+                change_details=audit.change_details,
+                changed_by_user=audit.changed_by_user.to_public_model(),
+            )
+            for audit in audit_entities
+        ]

@@ -123,9 +123,11 @@ abstract class PaginatorAbstraction<T, Params extends URLSearchParams> {
     // Stpres the previous pagination parameters used
     this.previousParams = paramStrings;
 
+    const separator = this.api.includes('?') ? '&' : '?';
+
     // Determines the query for the URL based on the new paramateres.
     let query = new URLSearchParams(paramStrings);
-    let route = this.api + '?' + query.toString();
+    let route = this.api + separator + query.toString();
 
     // Determine if an operator function is necessary
     if (operator) {
