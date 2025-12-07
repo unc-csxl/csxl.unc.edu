@@ -19,6 +19,9 @@ from .....models.academics.hiring.application_review import (
 from .....services.academics import HiringService
 from .....services.application import ApplicationService
 from .....services.academics.course_site import CourseSiteService
+from .....models.academics.hiring.hiring_assignment_audit import (
+    HiringAssignmentAuditOverview,
+)
 
 # Injected Service Fixtures
 from .fixtures import hiring_svc
@@ -209,6 +212,7 @@ def test_update_hiring_assignment_not_found(hiring_svc: HiringService):
         )
         pytest.fail()
 
+
 def test_update_hiring_assigment_flag(hiring_svc: HiringService):
     """Ensures that the admin can update the flagged status of a hiring assignment."""
     assignment = hiring_svc.update_hiring_assignment(
@@ -324,9 +328,7 @@ def test_get_hiring_summary_overview_all(hiring_svc: HiringService):
     )
     assert summary is not None
     assert len(summary.items) > 0
-    assert all(
-        assignment.flagged in [True, False] for assignment in summary.items
-    ) 
+    assert all(assignment.flagged in [True, False] for assignment in summary.items)
 
 
 def test_get_hiring_summary_overview_flagged(hiring_svc: HiringService):
@@ -365,3 +367,67 @@ def test_get_hiring_summary_overview_invalid_flagged(hiring_svc: HiringService):
     assert all(assignment.flagged in [True, False] for assignment in summary.items)
 
 
+def test_update_hiring_assignment_creates_audit_log(hiring_svc: HiringService):
+    """Ensures that updating an assignment creates an audit log entry."""
+    hiring_svc.update_hiring_assignment(
+        user_data.root, hiring_data.updated_hiring_assignment
+    )
+
+    history = hiring_svc.get_audit_history(
+        user_data.root, hiring_data.hiring_assignment.id
+    )
+
+    assert len(history) == 1
+    assert history[0].changed_by_user.id == user_data.root.id
+    assert "Status: COMMIT -> FINAL" in history[0].change_details
+
+
+def test_update_hiring_assignment_audit_details_notes(hiring_svc: HiringService):
+    """Ensures notes updates are formatted correctly using the 'Old -> New' format."""
+    assignment = hiring_data.hiring_assignment.model_copy()
+    assignment.notes = "New Notes Value"
+
+    hiring_svc.update_hiring_assignment(user_data.root, assignment)
+
+    history = hiring_svc.get_audit_history(user_data.root, assignment.id)
+    assert len(history) == 1
+    assert "Notes: 'Some notes here' -> 'New Notes Value'" in history[0].change_details
+
+
+def test_update_hiring_assignment_audit_details_flagged(hiring_svc: HiringService):
+    """Ensures flagged status changes are logged."""
+    assignment = hiring_data.hiring_assignment.model_copy()
+    assignment.flagged = True
+
+    hiring_svc.update_hiring_assignment(user_data.root, assignment)
+
+    history = hiring_svc.get_audit_history(user_data.root, assignment.id)
+    assert len(history) == 1
+    assert "Flagged: False -> True" in history[0].change_details
+
+
+def test_get_audit_history_ordering(hiring_svc: HiringService):
+    """Ensures audit logs are returned in reverse chronological order (newest first)."""
+    a1 = hiring_data.hiring_assignment.model_copy()
+    a1.position_number = "update_1"
+    hiring_svc.update_hiring_assignment(user_data.root, a1)
+
+    a2 = hiring_data.hiring_assignment.model_copy()
+    a2.position_number = "update_2"
+    hiring_svc.update_hiring_assignment(user_data.root, a2)
+
+    history = hiring_svc.get_audit_history(
+        user_data.root, hiring_data.hiring_assignment.id
+    )
+
+    assert len(history) == 2
+    assert "update_2" in history[0].change_details
+    assert "update_1" in history[1].change_details
+
+
+def test_get_audit_history_permissions(hiring_svc: HiringService):
+    """Ensures that non-admins cannot view audit history."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.get_audit_history(
+            user_data.student, hiring_data.hiring_assignment.id
+        )
