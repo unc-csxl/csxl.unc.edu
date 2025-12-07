@@ -854,7 +854,7 @@ class HiringService:
         self,
         subject: User,
         term_id: str,
-        flagged: str,
+        flagged: HiringAssignmentFlagFilter,
         pagination_params: PaginationParams,
     ) -> Paginated[HiringAssignmentSummaryOverview]:
         """
@@ -901,9 +901,9 @@ class HiringService:
             base_query = base_query.where(criteria)
 
         # 5. Apply flagged filter if present
-        if flagged == "flagged":
+        if flagged == HiringAssignmentFlagFilter.FLAGGED:
             base_query = base_query.where(HiringAssignmentEntity.flagged.is_(True))
-        elif flagged == "not_flagged":
+        elif flagged == HiringAssignmentFlagFilter.NOT_FLAGGED:
             base_query = base_query.where(HiringAssignmentEntity.flagged.is_(False))
 
         # 6. Create count query from base query
