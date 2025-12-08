@@ -8,16 +8,7 @@
   <mat-card-header>
     <mat-card-title>{{ selectedTerm().name }} Onboarding</mat-card-title>
     <div class="header-actions">
-      <mat-button-toggle-group
-        class="flag-filter-group"
-        [value]="filterMode()"
-        (change)="filterMode.set($event.value)">
-        <mat-button-toggle value="all">All</mat-button-toggle>
-        <mat-button-toggle value="flagged">Flagged</mat-button-toggle>
-        <mat-button-toggle value="not_flagged">Not Flagged</mat-button-toggle>
-      </mat-button-toggle-group>
-
-      <button mat-flat-button (click)="exportCsv()">Download CSV</button>
+      <button mat-stroked-button (click)="exportCsv()">Download CSV</button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
         <mat-select
@@ -32,55 +23,35 @@
   </mat-card-header>
   <mat-card-content>
     <div class="table-responsive">
-      <!-- Updated dataSource to use the computed signal -->
-      <table mat-table [dataSource]="getOrderedAssignments()">
-        
-        <ng-container matColumnDef="flagged">
-          <th mat-header-cell *matHeaderCellDef><div class="header">Flagged</div></th>
-          <td mat-cell *matCellDef="let element">
-            <button
-              class="flag-icon-btn"
-              mat-icon-button
-              type="button"
-              aria-label="Toggle flag"
-              (click)="toggleAssignmentFlag(element)">
-              <mat-icon [class]="(element.flagged ? 'font-tertiary flag-selected' : '')">flag</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-        
+      <table mat-table [dataSource]="assignmentsPage()?.items ?? []">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef><div class="header">Name</div></th>
-          <td mat-cell *matCellDef="let element" 
-              class="clickable-cell"
-              (click)="openAuditLog(element, $event)">
-            <div class="row" style="display:flex; align-items:center; gap:8px;">
-              <p style="margin:0;">
-                {{ element.user.first_name }} {{ element.user.last_name }}<br>{{ element.user.pid }}
-              </p>
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header">Name</div>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="row">
+              <p>{{ element.user.first_name }} {{ element.user.last_name }}<br>{{ element.user.pid }}</p>
             </div>
           </td>
         </ng-container>
-
         <ng-container matColumnDef="course">
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">Course</div>
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p style="margin:0;">{{ element.course }}<br>
+              <p>{{ element.course }}<br>
                 {{ element.instructors }}</p>
             </div>
           </td>
         </ng-container>
-
         <ng-container matColumnDef="level">
           <th mat-header-cell *matHeaderCellDef>
             <div class="header">Hiring Level</div>
           </th>
           <td mat-cell *matCellDef="let element">
             <div class="row">
-              <p style="margin:0;">
+              <p>
                 ${{
                   element.level.salary.toFixed(2)
                 }}
@@ -88,73 +59,79 @@
             </div>
           </td>
         </ng-container>
-
         <ng-container matColumnDef="epar">
-          <th mat-header-cell *matHeaderCellDef><div class="header">Epar</div></th>
-          <td mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header">Epar</div>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
             <div class="row">
               <mat-form-field class="input-field epar" appearance="outline">
                 <input
                   matInput
-                  [(ngModel)]="element.epar"
-                  (change)="updateAssignment({ assignment: element })"
+                  [(ngModel)]="(assignmentsPage()?.items ?? [])[i].epar"
+                  (change)="updateAssignment(i)"
                   placeholder="" />
               </mat-form-field>
             </div>
           </td>
         </ng-container>
-
         <ng-container matColumnDef="position_number">
-          <th mat-header-cell *matHeaderCellDef><div class="header">Pos #</div></th>
-          <td mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header">Pos #</div>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
             <div class="row">
               <mat-form-field class="input-field pos_number" appearance="outline">
                 <input
                   matInput
-                  [(ngModel)]="element.position_number"
-                  (change)="updateAssignment({ assignment: element })"
+                  [(ngModel)]="
+                    (assignmentsPage()?.items ?? [])[i].position_number
+                  "
+                  (change)="updateAssignment(i)"
                   placeholder="" />
               </mat-form-field>
             </div>
           </td>
         </ng-container>
-
         <ng-container matColumnDef="notes">
-          <th mat-header-cell *matHeaderCellDef><div class="header">Notes</div></th>
-          <td mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header">Notes</div>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
             <div class="row">
               <mat-form-field class="input-field" appearance="outline">
                 <textarea
                   rows="1"
                   matInput
-                  [(ngModel)]="element.notes"
-                  (change)="updateAssignment({ assignment: element })"></textarea>
+                  [(ngModel)]="(assignmentsPage()?.items ?? [])[i].notes"
+                  (change)="updateAssignment(i)"></textarea>
               </mat-form-field>
             </div>
           </td>
         </ng-container>
-
         <ng-container matColumnDef="i9">
-          <th mat-header-cell *matHeaderCellDef><div class="header">I9?</div></th>
-          <td mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header">I9?</div>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
             <mat-checkbox
-              [(ngModel)]="element.i9"
-              (change)="updateAssignment({ assignment: element })" />
+              [(ngModel)]="(assignmentsPage()?.items ?? [])[i].i9"
+              (change)="updateAssignment(i)" />
           </td>
         </ng-container>
-
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef><div class="header">Status</div></th>
-          <td mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header">Status</div>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
             <mat-button-toggle-group
-              [(ngModel)]="element.status"
-              (change)="updateAssignment({ assignment: element })">
+              [(ngModel)]="(assignmentsPage()?.items ?? [])[i].status"
+              (change)="updateAssignment(i)">
               <mat-button-toggle value="Commit">Commit</mat-button-toggle>
               <mat-button-toggle value="Final">Final</mat-button-toggle>
             </mat-button-toggle-group>
           </td>
         </ng-container>
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>

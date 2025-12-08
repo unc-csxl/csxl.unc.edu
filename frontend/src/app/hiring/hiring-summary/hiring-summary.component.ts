@@ -19,9 +19,6 @@ import {
   HiringAssignmentSummaryOverview
 } from '../hiring.models';
 import { PageEvent } from '@angular/material/paginator';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
-import { AuditLogDialog } from '../dialogs/audit-log-dialog/audit-log-dialog.dialog';
 
 const DEFAULT_PAGINATION_PARAMS = {
   page: 0,
@@ -31,10 +28,10 @@ const DEFAULT_PAGINATION_PARAMS = {
 } as PaginationParams;
 
 @Component({
-  selector: 'app-hiring-summary',
-  templateUrl: './hiring-summary.component.html',
-  styleUrl: './hiring-summary.component.css',
-  standalone: false
+    selector: 'app-hiring-summary',
+    templateUrl: './hiring-summary.component.html',
+    styleUrl: './hiring-summary.component.css',
+    standalone: false
 })
 export class HiringSummaryComponent {
   /** Route for the routing module */
@@ -56,30 +53,22 @@ export class HiringSummaryComponent {
     return this.terms.find((term) => term.id === this.selectedTermId())!;
   });
 
-  /** Current filter mode for applicants*/
-  public filterMode: WritableSignal<'all' | 'flagged' | 'not_flagged'> =
-    signal('all');
-
   /** Effect that updates the hiring data when the selected term changes. */
   selectedTermEffect = effect(() => {
-    const termId = this.selectedTermId();
-    // We check for termId existence to avoid running this before data is ready
-    if (termId) {
-      // Pass the current filter mode to the URL construction
-      this.updatePaginatorUrl(termId, this.filterMode());
-      this.refreshData();
-    }
-  });
+    if (this.selectedTermId()) {
+      const term = this.terms.find(
+        (term) => term.id === this.selectedTermId()
+      )!;
+      // Load paginated data
+      this.assignmentsPaginator.changeApiRoute(
+        `/api/hiring/summary/${term.id}`
+      );
 
-  /** Effect that updates the hiring data when the filter mode changes. */
-  filterModeEffect = effect(() => {
-    const mode = this.filterMode();
-    const termId = this.selectedTermId();
-
-    // Only update if we have a term selected
-    if (termId) {
-      this.updatePaginatorUrl(termId, mode);
-      this.refreshData();
+      this.assignmentsPaginator
+        .loadPage(this.previousPaginationParams)
+        .subscribe((page) => {
+          this.assignmentsPage.set(page);
+        });
     }
   });
 
@@ -92,7 +81,6 @@ export class HiringSummaryComponent {
     DEFAULT_PAGINATION_PARAMS;
 
   public displayedColumns: string[] = [
-    'flagged',
     'name',
     'course',
     'level',
@@ -115,16 +103,17 @@ export class HiringSummaryComponent {
     paginationParams.filter = this.searchBarQuery();
 
     // Refresh the data
-    this.refreshData(paginationParams);
+    this.assignmentsPaginator.loadPage(paginationParams).subscribe((page) => {
+      this.assignmentsPage.set(page);
+      this.previousPaginationParams = paginationParams;
+    });
   });
 
   /** Constructor */
   constructor(
     private route: ActivatedRoute,
-    private snackbar: MatSnackBar,
     protected hiringService: HiringService,
-    protected academicsService: AcademicsService,
-    private dialog: MatDialog
+    protected academicsService: AcademicsService
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -133,38 +122,18 @@ export class HiringSummaryComponent {
     };
 
     this.terms = data.terms;
-    const termId = data.currentTerm?.id;
-    this.selectedTermId.set(termId);
+    this.selectedTermId.set(data.currentTerm?.id ?? undefined);
 
     // Load paginated data
-    const initialUrl = termId
-      ? `/api/hiring/summary/${termId}?flagged=${this.filterMode()}`
-      : '';
-
     this.assignmentsPaginator = new Paginator<HiringAssignmentSummaryOverview>(
-      initialUrl
+      `/api/hiring/summary/${data.currentTerm!.id}`
     );
 
-    if (termId) {
-      this.refreshData();
-    }
-  }
-
-  /** Helper to update the paginator API URL with term and flag params */
-  private updatePaginatorUrl(termId: string, flagMode: string) {
-    this.assignmentsPaginator.changeApiRoute(
-      `/api/hiring/summary/${termId}?flagged=${flagMode}`
-    );
-  }
-
-  /** Helper to trigger the loadPage logic */
-  private refreshData(
-    params: PaginationParams = this.previousPaginationParams
-  ) {
-    this.assignmentsPaginator.loadPage(params).subscribe((page) => {
-      this.assignmentsPage.set(page);
-      this.previousPaginationParams = params;
-    });
+    this.assignmentsPaginator
+      .loadPage(this.previousPaginationParams)
+      .subscribe((page) => {
+        this.assignmentsPage.set(page);
+      });
   }
 
   /** Handles a pagination event for the future office hours table */
@@ -172,30 +141,15 @@ export class HiringSummaryComponent {
     let paginationParams = this.assignmentsPage()!.params;
     paginationParams.page = e.pageIndex;
     paginationParams.page_size = e.pageSize;
-    this.refreshData(paginationParams);
-  }
-
-  toggleAssignmentFlag(assignment: HiringAssignmentSummaryOverview) {
-    // Optimistically update the flag state
-    assignment.flagged = !assignment.flagged;
-    // Call the service to update. If there is an error, we will rollback
-    // the optimistic update and display a snackbar notification.
-    this.updateAssignment({
-      assignment,
-      onError: () => {
-        assignment.flagged = !assignment.flagged;
-      }
+    this.assignmentsPaginator.loadPage(paginationParams).subscribe((page) => {
+      this.assignmentsPage.set(page);
+      this.previousPaginationParams = paginationParams;
     });
   }
 
-  /** Handles updating an assignment for all inputs */
-  updateAssignment({
-    assignment,
-    onError
-  }: {
-    assignment: HiringAssignmentSummaryOverview;
-    onError?: () => void;
-  }) {
+  /** Save changes */
+  updateAssignment(assignmentIndex: number) {
+    let assignment = this.assignmentsPage()!.items[assignmentIndex]!;
     let draft: HiringAssignmentDraft = {
       id: assignment.id,
       user_id: assignment.user.id,
@@ -208,52 +162,10 @@ export class HiringSummaryComponent {
       epar: assignment.epar,
       i9: assignment.i9,
       notes: assignment.notes,
-      flagged: assignment.flagged,
       created: new Date(), // will be overrided
       modified: new Date()
     };
-    // Call the service to update. If there is an error, we will rollback
-    // the optimistic update and display a snackbar notification.
-    this.hiringService.updateHiringAssignment(draft).subscribe({
-      error: (_) => {
-        onError?.();
-        this.snackbar.open(
-          'Failed to update assignment. Please try again.',
-          'Close',
-          { duration: 5000 }
-        );
-      }
-    });
-  }
-
-  /** Opens the audit log dialog for a specific assignment */
-  openAuditLog(
-    assignment: HiringAssignmentSummaryOverview,
-    event?: MouseEvent
-  ) {
-    if (event) {
-      event.stopPropagation();
-    }
-
-    this.dialog.open(AuditLogDialog, {
-      data: {
-        assignmentId: assignment.id,
-        applicantName: `${assignment.user.first_name} ${assignment.user.last_name}`
-      },
-      width: '600px'
-    });
-  }
-
-  /** Gets ordered hiring assignments */
-  getOrderedAssignments(): HiringAssignmentSummaryOverview[] {
-    const assignments = this.assignmentsPage()?.items ?? [];
-    if (assignments.length === 0) {
-      return [];
-    }
-
-    return [...assignments].sort(
-      (a, b) => Number(b.flagged) - Number(a.flagged)
-    );
+    this.hiringService.updateHiringAssignment(draft).subscribe((_) => {});
   }
 
   /** Export CSV button pressed */

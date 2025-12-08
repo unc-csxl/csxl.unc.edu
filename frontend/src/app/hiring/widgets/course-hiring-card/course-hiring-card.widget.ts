@@ -32,13 +32,12 @@ import {
   EditAssignmentDialogData
 } from '../../dialogs/edit-assignment-dialog/edit-assignment.dialog';
 import { ApplicationDialog } from '../../dialogs/application-dialog/application-dialog.dialog';
-import { AuditLogDialog } from '../../dialogs/audit-log-dialog/audit-log-dialog.dialog';
 
 @Component({
-  selector: 'course-hiring-card',
-  templateUrl: './course-hiring-card.widget.html',
-  styleUrl: './course-hiring-card.widget.css',
-  standalone: false
+    selector: 'course-hiring-card',
+    templateUrl: './course-hiring-card.widget.html',
+    styleUrl: './course-hiring-card.widget.css',
+    standalone: false
 })
 export class CourseHiringCardWidget implements OnInit {
   @Input() termId!: string;
@@ -164,19 +163,6 @@ export class CourseHiringCardWidget implements OnInit {
     dialogRef.afterClosed().subscribe((assignment) => {
       if (assignment) {
         this.updateData.emit();
-      }
-    });
-  }
-
-  /** Opens the audit log dialog for a specific assignment. */
-  openAuditLog(assignment: HiringAssignmentOverview, event: MouseEvent): void {
-    event.stopPropagation();
-
-    this.dialog.open(AuditLogDialog, {
-      width: '600px',
-      data: {
-        assignmentId: assignment.id,
-        applicantName: `${assignment.user.first_name} ${assignment.user.last_name}`
       }
     });
   }

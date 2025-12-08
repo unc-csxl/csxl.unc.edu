@@ -53,8 +53,6 @@ import { HiringSummaryComponent } from './hiring-summary/hiring-summary.componen
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HiringAssignmentsComponent } from './hiring-assignments/hiring-assignments.component';
 import { HiringPageComponent } from './hiring-page/hiring-page.component';
-import { AuditLogDialog } from './dialogs/audit-log-dialog/audit-log-dialog.dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /* UI Widgets */
 
@@ -72,8 +70,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     EditAssignmentDialog,
     HiringSummaryComponent,
     HiringAssignmentsComponent,
-    HiringPageComponent,
-    AuditLogDialog
+    HiringPageComponent
   ],
   imports: [
     CommonModule,
@@ -103,8 +100,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatButtonToggleModule,
     MatChipsModule,
     MatSlideToggleModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule
+    MatCheckboxModule
   ]
 })
 export class HiringModule {}

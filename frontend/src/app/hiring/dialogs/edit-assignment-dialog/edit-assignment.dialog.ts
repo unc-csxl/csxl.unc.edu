@@ -97,7 +97,6 @@ export class EditAssignmentDialog {
         epar: this.editAssignmentForm.get('epar')!.value ?? '',
         i9: this.editAssignmentForm.get('i9')!.value ?? false,
         notes: this.editAssignmentForm.get('notes')!.value ?? '',
-        flagged: false,
         created: new Date(), // Will be overwritten anyway
         modified: new Date()
       };

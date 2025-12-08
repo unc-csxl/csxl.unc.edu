@@ -16,7 +16,6 @@ import {
   HiringAdminOverview,
   HiringAssignmentDraft,
   HiringAssignmentOverview,
-  HiringAssignmentAuditOverview,
   HiringLevel,
   HiringStatus
 } from './hiring.models';
@@ -70,17 +69,6 @@ export class HiringService {
   ): Observable<HiringAdminCourseOverview> {
     return this.http.get<HiringAdminCourseOverview>(
       `/api/hiring/admin/course/${courseId}`
-    );
-  }
-
-  /**
-   * Returns recent changes made to the assignment
-   * @param assignmentId ID of the assignment to fetch history for
-   * @returns Observable list of audit logs
-   */
-  getAuditHistory(assignmentId: number) {
-    return this.http.get<HiringAssignmentAuditOverview[]>(
-      `/api/hiring/assignments/${assignmentId}/history`
     );
   }
 

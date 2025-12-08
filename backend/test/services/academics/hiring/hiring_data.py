@@ -252,23 +252,6 @@ hiring_assignment = HiringAssignmentDraft(
     notes="Some notes here",
     created=datetime.now(),
     modified=datetime.now(),
-    flagged=False,
-)
-
-hiring_assignment_flagged = HiringAssignmentDraft(
-    id=1,
-    user_id=user_data.student.id,
-    term_id=term_data.current_term.id,
-    course_site_id=office_hours_data.comp_110_site.id,
-    level=uta_level,
-    status=HiringAssignmentStatus.COMMIT,
-    position_number="sample",
-    epar="12345",
-    i9=True,
-    notes="Some notes here",
-    created=datetime.now(),
-    modified=datetime.now(),
-    flagged=True,
 )
 
 updated_hiring_assignment = HiringAssignmentDraft(
@@ -284,7 +267,6 @@ updated_hiring_assignment = HiringAssignmentDraft(
     notes="Some notes here",
     created=datetime.now(),
     modified=datetime.now(),
-    flagged=False,
 )
 
 new_hiring_assignment = HiringAssignmentDraft(
@@ -300,26 +282,9 @@ new_hiring_assignment = HiringAssignmentDraft(
     notes="Some notes here",
     created=datetime.now(),
     modified=datetime.now(),
-    flagged=False,
 )
 
-new_flagged_hiring_assignment = HiringAssignmentDraft(
-    id=3,
-    user_id=user_data.instructor.id,
-    term_id=term_data.current_term.id,
-    course_site_id=office_hours_data.comp_110_site.id,
-    level=uta_level,
-    status=HiringAssignmentStatus.FINAL,
-    position_number="sample",
-    epar="12345",
-    i9=True,
-    notes="Some notes here",
-    created=datetime.now(),
-    modified=datetime.now(),
-    flagged=True,
-)
-
-hiring_assignments = [hiring_assignment, new_flagged_hiring_assignment]
+hiring_assignments = [hiring_assignment]
 
 
 def insert_fake_data(session: Session):
