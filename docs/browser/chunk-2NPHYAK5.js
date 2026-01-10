@@ -1,0 +1,1 @@
+import{H as i,Ie as r,O as e,ec as p}from"./chunk-KVV3I3RP.js";var u=(o,n)=>e(r).profile$,y=(o,n)=>{let t=e(r),l=e(p);return t.getByOnyen(o.params.onyen).pipe(i(f=>{f.onyen==t.profile()?.onyen&&l.navigateByUrl("/profile")}))};export{u as a,y as b};

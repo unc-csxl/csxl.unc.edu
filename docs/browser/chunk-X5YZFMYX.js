@@ -1,0 +1,1 @@
+import{L as t,kd as i,ma as n,zd as o}from"./chunk-KVV3I3RP.js";var s=(()=>{class e{static \u0275fac=function(a){return new(a||e)};static \u0275mod=n({type:e});static \u0275inj=t({})}return e})();var q=(()=>{class e{static \u0275fac=function(a){return new(a||e)};static \u0275mod=n({type:e});static \u0275inj=t({imports:[o,s,i]})}return e})();export{q as a};
