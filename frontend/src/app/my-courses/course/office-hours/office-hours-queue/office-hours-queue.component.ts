@@ -142,10 +142,7 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   callTicket(ticket: OfficeHourTicketOverview): void {
     this.myCoursesService.callTicket(ticket.id).subscribe({
       next: (_) => this.pollQueue(),
-      error: (err) =>
-        this.snackBar.open(err.error?.message ?? 'Error calling ticket', '', {
-          duration: 2000
-        })
+      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
     });
   }
 
