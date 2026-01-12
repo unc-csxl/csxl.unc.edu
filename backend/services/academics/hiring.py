@@ -739,6 +739,7 @@ class HiringService:
         assignment_entity.epar = assignment.epar
         assignment_entity.i9 = assignment.i9
         assignment_entity.notes = assignment.notes
+        assignment_entity.flagged = assignment.flagged
         assignment_entity.modified = datetime.now()
 
         self._session.commit()
@@ -807,7 +808,11 @@ class HiringService:
         return level_entity.to_model()
 
     def get_hiring_summary_overview(
-        self, subject: User, term_id: str, pagination_params: PaginationParams
+        self,
+        subject: User,
+        term_id: str,
+        flagged: HiringAssignmentFlagFilter,
+        pagination_params: PaginationParams,
     ) -> Paginated[HiringAssignmentSummaryOverview]:
         """
         Returns the hires to show on a summary page for a given term.
@@ -815,6 +820,7 @@ class HiringService:
         Args:
             subject: The user making the request
             term_id: The term to get assignments for
+            flagged: Filter for flagged assignments ('flagged', 'not_flagged', or 'all')
             pagination_params: Parameters for pagination and filtering
 
         Raises:
@@ -851,26 +857,32 @@ class HiringService:
             )
             base_query = base_query.where(criteria)
 
-        # 5. Create count query from base query
+        # 5. Apply flagged filter if present
+        if flagged == HiringAssignmentFlagFilter.FLAGGED:
+            base_query = base_query.where(HiringAssignmentEntity.flagged.is_(True))
+        elif flagged == HiringAssignmentFlagFilter.NOT_FLAGGED:
+            base_query = base_query.where(HiringAssignmentEntity.flagged.is_(False))
+
+        # 6. Create count query from base query
         count_query = select(func.count()).select_from(base_query.subquery())
 
-        # 6. Create assignment query with eager loading
+        # 7. Create assignment query with eager loading
         assignment_query = base_query.options(
             joinedload(HiringAssignmentEntity.course_site)
             .joinedload(CourseSiteEntity.sections)
             .joinedload(SectionEntity.staff),
         )
 
-        # 7. Apply pagination
+        # 8. Apply pagination
         offset = pagination_params.page * pagination_params.page_size
         limit = pagination_params.page_size
         assignment_query = assignment_query.offset(offset).limit(limit)
 
-        # 8. Execute queries
+        # 9. Execute queries
         length = self._session.scalar(count_query) or 0
         assignment_entities = self._session.scalars(assignment_query).unique().all()
 
-        # 9. Build and return response
+        # 10. Build and return response
         return Paginated(
             items=[
                 assignment.to_summary_overview_model()

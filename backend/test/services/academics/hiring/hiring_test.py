@@ -33,6 +33,8 @@ from ...room_data import fake_data_fixture as insert_order_4
 from ...office_hours.office_hours_data import fake_data_fixture as insert_order_5
 from .hiring_data import fake_data_fixture as insert_order_6
 
+from backend.models.pagination import PaginationParams
+
 
 # Test data
 from ... import user_data
@@ -207,6 +209,14 @@ def test_update_hiring_assignment_not_found(hiring_svc: HiringService):
         )
         pytest.fail()
 
+def test_update_hiring_assigment_flag(hiring_svc: HiringService):
+    """Ensures that the admin can update the flagged status of a hiring assignment."""
+    assignment = hiring_svc.update_hiring_assignment(
+        user_data.root, hiring_data.hiring_assignment_flagged
+    )
+    assert assignment is not None
+    assert assignment.flagged is True
+
 
 def test_delete_hiring_assignment(hiring_svc: HiringService):
     """Ensures that the admin can delete hiring assignments."""
@@ -303,3 +313,55 @@ def test_get_phd_applicants(hiring_svc: HiringService):
     assert len(applicants) > 0
     for applicant in applicants:
         assert applicant.program_pursued in {"PhD", "PhD (ABD)"}
+
+
+def test_get_hiring_summary_overview_all(hiring_svc: HiringService):
+    """Test that the hiring summary overview returns all assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "all", pagination_params
+    )
+    assert summary is not None
+    assert len(summary.items) > 0
+    assert all(
+        assignment.flagged in [True, False] for assignment in summary.items
+    ) 
+
+
+def test_get_hiring_summary_overview_flagged(hiring_svc: HiringService):
+    """Test that the hiring summary overview filters for flagged assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "flagged", pagination_params
+    )
+    assert summary is not None
+    assert len(summary.items) > 0
+    assert all(assignment.flagged is True for assignment in summary.items)
+
+
+def test_get_hiring_summary_overview_not_flagged(hiring_svc: HiringService):
+    """Test that the hiring summary overview filters for not flagged assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "not_flagged", pagination_params
+    )
+    assert summary is not None
+    assert len(summary.items) > 0
+    assert all(assignment.flagged is False for assignment in summary.items)
+
+
+def test_get_hiring_summary_overview_invalid_flagged(hiring_svc: HiringService):
+    """Test that an invalid flagged filter returns all flagged/non-flagged assignments."""
+    term_id = term_data.current_term.id
+    pagination_params = PaginationParams(page=0, page_size=10, order_by="", filter="")
+    summary = hiring_svc.get_hiring_summary_overview(
+        user_data.root, term_id, "invalid_flagged", pagination_params
+    )
+
+    assert len(summary.items) > 0
+    assert all(assignment.flagged in [True, False] for assignment in summary.items)
+
+
