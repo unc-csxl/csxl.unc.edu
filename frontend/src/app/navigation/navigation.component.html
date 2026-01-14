@@ -154,7 +154,7 @@
                 } @else {
                   <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
                 }
-                {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
+                {{ getDisplayName(profile) }}
               </mat-chip>
               </mat-chip-set>
               <button

@@ -10,10 +10,10 @@
         *ngIf="user.github_avatar"
         matChipAvatar
         [src]="user.github_avatar" />
-      {{ user.first_name + ' ' + user.last_name }}
+      {{ getDisplayName(user) }}
       <button
         matChipRemove
-        [attr.aria-label]="'remove ' + user.first_name + ' ' + user.last_name">
+        [attr.aria-label]="'remove ' + getDisplayName(user)">
         <mat-icon>cancel</mat-icon>
       </button>
     </mat-chip-row>
@@ -35,7 +35,7 @@
       <mat-option
         *ngFor="let option of filteredUsers$ | async"
         [value]="option">
-        {{ option.first_name }} {{ option.last_name }}
+        {{ getDisplayName(option) }}
       </mat-option>
     </mat-autocomplete>
   </mat-chip-grid>

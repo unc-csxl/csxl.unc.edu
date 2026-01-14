@@ -26,4 +26,20 @@ export class UserChipList {
   emailRedirect(user: PublicProfile) {
     window.location.href = `mailto:${user.email}`;
   }
+
+  /** Check if emoji should be displayed for a user (not expired) */
+  shouldDisplayEmoji(user: PublicProfile): boolean {
+    if (!user.profile_emoji) return false;
+    if (!user.emoji_expiration) return true;
+    return new Date(user.emoji_expiration) > new Date();
+  }
+
+  /** Get display name with emoji if applicable */
+  getDisplayName(user: PublicProfile): string {
+    const name = `${user.first_name} ${user.last_name}${this.nameSuffix}`;
+    if (this.shouldDisplayEmoji(user)) {
+      return `${name} ${user.profile_emoji}`;
+    }
+    return name;
+  }
 }

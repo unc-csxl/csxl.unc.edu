@@ -24,6 +24,8 @@ export interface Profile {
   bio: string | null;
   linkedin: string | null;
   website: string | null;
+  profile_emoji: string | null;
+  emoji_expiration: Date | null;
 }
 
 /** Interface for UserSummary Type (used on frontend for user requests) */

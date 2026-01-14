@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 from .registration_type import RegistrationType
 
 
@@ -31,3 +32,5 @@ class PublicUser(BaseModel):
     bio: str | None = None
     linkedin: str | None = None
     website: str | None = None
+    profile_emoji: str | None = None
+    emoji_expiration: datetime | None = None

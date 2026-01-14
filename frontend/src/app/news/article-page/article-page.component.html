@@ -45,7 +45,7 @@
               matChipAvatar
               [src]="author.github_avatar" />
             }
-            {{ author.first_name }} {{ author.last_name }}
+            {{ getAuthorDisplayName(author) }}
           </mat-chip-row>
           }
         </mat-chip-set>

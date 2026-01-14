@@ -9,7 +9,7 @@
       *ngIf="user.github_avatar"
       matChipAvatar
       [src]="user.github_avatar" />
-    {{ user.first_name + ' ' + user.last_name }}
+    {{ getDisplayName(user) }}
   </mat-chip-row>
   } @else {
   <mat-chip-row
@@ -25,10 +25,10 @@
       *ngIf="enableMailTo; else disableMailTo"
       class="user-email-link"
       href="mailto:{{ user.email }}">
-      {{ user.first_name + ' ' + user.last_name + nameSuffix }}
+      {{ getDisplayName(user) }}
     </a>
     <ng-template #disableMailTo>
-      {{ user.first_name + ' ' + user.last_name + nameSuffix }}
+      {{ getDisplayName(user) }}
     </ng-template>
   </mat-chip-row>
   } } @else {
@@ -43,10 +43,10 @@
         *ngIf="enableMailTo; else disableMailTo"
         class="user-email-link"
         href="mailto:{{ user.email }}">
-        {{ user.first_name + ' ' + user.last_name + nameSuffix }}
+        {{ getDisplayName(user) }}
       </a>
       <ng-template #disableMailTo>
-        {{ user.first_name + ' ' + user.last_name + nameSuffix }}
+        {{ getDisplayName(user) }}
       </ng-template>
     </mat-chip>
   </div>

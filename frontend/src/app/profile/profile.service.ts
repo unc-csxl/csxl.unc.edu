@@ -27,6 +27,8 @@ export interface Profile {
   bio: string | null;
   linkedin: string | null;
   website: string | null;
+  profile_emoji: string | null;
+  emoji_expiration: Date | null;
 }
 
 export interface PublicProfile {
@@ -41,6 +43,8 @@ export interface PublicProfile {
   bio: string | null;
   linkedin: string | null;
   website: string | null;
+  profile_emoji: string | null;
+  emoji_expiration: Date | null;
 }
 
 @Injectable({
