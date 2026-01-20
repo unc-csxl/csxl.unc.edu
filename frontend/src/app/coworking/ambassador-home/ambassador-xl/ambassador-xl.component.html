@@ -1,9 +1,9 @@
 <div>
-  <mat-pane class="content" appearance="outlined">
-    <mat-card-header>
+  <mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
+    <mat-card-header class="mb-4!">
       <mat-card-title>Reserve a Drop-in at the Welcome Desk</mat-card-title>
     </mat-card-header>
-    <mat-card-content class="walkinReservation">
+    <mat-card-content class="flex! flex-col! gap-3!">
       <p>
         Create a walk-in reservation for an XL community member at the welcome
         desk.
@@ -15,6 +15,7 @@
         </em>
       </p>
       <user-lookup
+        class="mt-2!"
         label="Member Lookup"
         [maxSelected]="1"
         [users]="welcomeDeskReservationSelection"
@@ -25,12 +26,12 @@
         (seatsSelected)="onWalkinSeatSelection($event)" />
       } }
     </mat-card-content>
-  </mat-pane>
+  </mat-card>
 </div>
 
 @if (upcomingReservations()) { @if(upcomingReservations().length > 0) {
-<mat-pane class="content" appearance="outlined">
-  <mat-card-header>
+<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
+  <mat-card-header class="mb-4!">
     <mat-card-title>Upcoming Reservations</mat-card-title>
   </mat-card-header>
   <mat-card-content>
@@ -75,7 +76,7 @@
             </button>
             <button
               mat-flat-button
-              class="tertiary-button"
+              class="tertiary-button ml-3"
               (click)="this.ambassadorService.cancel(reservation)">
               Cancel
             </button>
@@ -88,16 +89,16 @@
       </table>
     </div>
   </mat-card-content>
-</mat-pane>
+</mat-card>
 } @else {
-<mat-pane class="content" appearance="outlined">
-  <mat-card-header>
+<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
+  <mat-card-header class="mb-4!">
     <mat-card-title>Upcoming Reservations</mat-card-title>
   </mat-card-header>
   <mat-card-content><p>No upcoming reservations.</p></mat-card-content>
-</mat-pane>
+</mat-card>
 } } @if (activeReservations()) { @if(activeReservations().length > 0) {
-<mat-pane class="content" appearance="outlined">
+<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
   <mat-card-header>
     <mat-card-title>Active Reservations</mat-card-title>
   </mat-card-header>
@@ -151,12 +152,12 @@
       </table>
     </div>
   </mat-card-content>
-</mat-pane>
+</mat-card>
 } @else {
-<mat-pane class="content" appearance="outlined">
-  <mat-card-header>
+<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
+  <mat-card-header class="mb-4!">
     <mat-card-title>Active Reservations</mat-card-title>
   </mat-card-header>
   <mat-card-content><p>It's lonely in here.</p></mat-card-content>
-</mat-pane>
+</mat-card>
 } }

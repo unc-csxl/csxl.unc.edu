@@ -8,10 +8,9 @@ import { Paginated, PaginationParams } from 'src/app/pagination';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
-    selector: 'app-admin-users',
-    templateUrl: './admin-users.component.html',
-    styleUrls: ['./admin-users.component.css'],
-    standalone: false
+  selector: 'app-admin-users',
+  templateUrl: './admin-users.component.html',
+  standalone: false
 })
 export class AdminUsersListComponent {
   public page: Paginated<Profile, PaginationParams>;

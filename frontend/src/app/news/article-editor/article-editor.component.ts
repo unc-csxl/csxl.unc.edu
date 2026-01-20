@@ -24,10 +24,9 @@ import { OrganizationService } from 'src/app/organization/organization.service';
 import { Organization } from 'src/app/organization/organization.model';
 
 @Component({
-    selector: 'app-article-editor',
-    templateUrl: './article-editor.component.html',
-    styleUrl: './article-editor.component.css',
-    standalone: false
+  selector: 'app-article-editor',
+  templateUrl: './article-editor.component.html',
+  standalone: false
 })
 export class ArticleEditorComponent {
   /** Route information to be used in Organization Routing Module */

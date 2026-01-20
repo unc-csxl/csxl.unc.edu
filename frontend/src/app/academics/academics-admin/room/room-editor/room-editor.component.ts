@@ -19,11 +19,8 @@ import {
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PermissionService } from 'src/app/permission.service';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import {
-  roomResolver,
-  termResolver
-} from 'src/app/academics/academics.resolver';
-import { Room, Term } from 'src/app/academics/academics.models';
+import { roomResolver } from 'src/app/academics/academics.resolver';
+import { Room } from 'src/app/academics/academics.models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Profile } from 'src/app/models.module';
@@ -44,10 +41,9 @@ const canActivateEditor: CanActivateFn = (
   }
 };
 @Component({
-    selector: 'app-room-editor',
-    templateUrl: './room-editor.component.html',
-    styleUrls: ['./room-editor.component.css'],
-    standalone: false
+  selector: 'app-room-editor',
+  templateUrl: './room-editor.component.html',
+  standalone: false
 })
 export class RoomEditorComponent {
   /** Route information to be used in the Routing Module */

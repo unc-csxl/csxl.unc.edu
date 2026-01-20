@@ -1,4 +1,4 @@
-<mat-pane appearance="outlined">
+<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
   <mat-card-header>
     <mat-card-title>Role: {{ role.name }}</mat-card-title>
   </mat-card-header>
@@ -70,15 +70,16 @@
               {{ user.first_name }} {{ user.last_name }}
             </td>
             <td mat-footer-cell *matFooterCellDef>
-              <div *ngIf="selectedUser; else search" class="selected-user">
-                <button
-                  mat-form-field
-                  mat-stroked-button
-                  (click)="changeSelectedMember()">
-                  {{ selectedUser.first_name }} {{ selectedUser.last_name }}
-                </button>
-              </div>
-              <ng-template #search>
+              @if(selectedUser) {
+                <div class="p-4">
+                  <button
+                    mat-form-field
+                    mat-stroked-button
+                    (click)="changeSelectedMember()">
+                    {{ selectedUser.first_name }} {{ selectedUser.last_name }}
+                  </button>
+                </div>
+              } @else {
                 <mat-form-field appearance="outline">
                   <mat-label>User</mat-label>
                   <input
@@ -98,7 +99,7 @@
                     </mat-option>
                   </mat-autocomplete>
                 </mat-form-field>
-              </ng-template>
+              }
             </td>
           </ng-container>
           <ng-container matColumnDef="actions">
@@ -111,7 +112,7 @@
                 Remove
               </button>
             </td>
-            <td mat-footer-cell *matFooterCellDef>
+            <td class="items-center pt-4" mat-footer-cell *matFooterCellDef>
               <button
                 mat-stroked-button
                 color="primary"
@@ -128,4 +129,4 @@
       </div>
     </form>
   </mat-card-content>
-</mat-pane>
+</mat-card>

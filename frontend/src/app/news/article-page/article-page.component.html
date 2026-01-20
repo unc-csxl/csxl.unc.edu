@@ -1,7 +1,7 @@
-<div class="container">
-  <div class="card-container">
+<div class="w-full">
+  <div class="max-w-full lg:ml-auto lg:mr-auto lg:w-3xl">
     <mat-pane>
-      <img class="feature-image" matCardImage [src]="article().image_url" />
+      <img class="max-h-48! object-cover" matCardImage [src]="article().image_url" />
     </mat-pane>
     <mat-pane>
       <mat-card-header>
@@ -26,14 +26,13 @@
             id="organization-chip"
             [routerLink]="'/organizations/' + article().organization_slug">
             <img
-              class="profile-icon"
+              class="rounded-full"
               matChipAvatar
               [src]="article().organization_logo" />
             {{ article().organization_name }}
           </mat-chip-row>
 
-          <mat-divider class="vertical-divider" [vertical]="true" />
-
+          <mat-divider class="h-6 mt-2! pl-2" [vertical]="true" />
           }
 
           <!-- Author Chips -->
@@ -41,7 +40,7 @@
           <mat-chip-row [routerLink]="'/profile/' + author.onyen">
             @if (author.github_avatar && author.github_avatar !== '') {
             <img
-              class="profile-icon"
+              class="rounded-full"
               matChipAvatar
               [src]="author.github_avatar" />
             }
@@ -50,9 +49,9 @@
           }
         </mat-chip-set>
 
-        <mat-divider />
+        <mat-divider class="my-3!" />
 
-        <p markdown class="description">
+        <p markdown>
           {{ article().body }}
         </p>
       </mat-card-content>

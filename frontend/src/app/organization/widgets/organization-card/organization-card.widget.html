@@ -1,15 +1,9 @@
-<!-- eslint-disable prettier/prettier -->
-
-<mat-pane class="card" appearance="outlined">
-  <!-- Card Header Row (Logo, Name, Members) -->
+<mat-card appearance="outlined" class="border-transparent! w-[360px]! h-[186px]! m-0! gap-2.5">
   <mat-card-header class="header">
-    <!-- Container for Logo and Name to allow for left alignment -->
-    <div class="left-container">
-      <!-- Organization Logo -->
-      <img mat-card-image src="{{ organization.logo }}" class="logo" />
-      <!-- Organization Name -->
+    <div class="flex flex-row items-center">
+      <img mat-card-image src="{{ organization.logo }}" class="size-10 rounded-full! mr-4" />
       <mat-card-title
-        class="name"
+        class="m-0 text-lg! font-medium! overflow-hidden line-clamp-1"
         [matTooltip]="organization.name"
         matTooltipPosition="above"
         [matTooltipDisabled]="organization.name.length < 25">
@@ -19,29 +13,22 @@
     </div>
   </mat-card-header>
 
-  <!-- Organization Description -->
-  <mat-card-content class="description">
-    <p>
+  <mat-card-content class="grow">
+    <p class="w-full m-0 overflow-hidden line-clamp-2">
       {{ organization.short_description }}
     </p>
   </mat-card-content>
 
-  <mat-card-actions>
-    <a
-    class="details-link"
-    [routerLink]="['/organizations', organization.slug]">
-    <button mat-flat-button>Details</button>
-  </a>
-  
-  <!-- <button mat-icon-button class="mat-csxl-stroked-icon-button" id="events-button" color="basic">
-    <mat-icon>event</mat-icon>
-  </button> -->
-
-  @if (organization.website !== '') {
-    <social-media-icon id="events-button" [fontIcon]="'link'" [href]="organization.website" />
-  }
-
-
-
+  <mat-card-actions class="flex! flex-row! justify-end">
+    <div class="flex flex-row mt-auto gap-2 items-center mb-2">
+      @if (organization.website !== '') {
+        <social-media-icon [fontIcon]="'link'" [href]="organization.website" />
+      }
+      <a
+      class="no-underline mr-0"
+      [routerLink]="['/organizations', organization.slug]">
+      <button mat-flat-button>Details</button>
+    </a>
+    </div>
   </mat-card-actions>
-</mat-pane>
+</mat-card>

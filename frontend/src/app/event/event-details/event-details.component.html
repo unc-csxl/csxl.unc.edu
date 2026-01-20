@@ -1,6 +1,6 @@
 <mat-pane>
   <img
-    class="feature-image"
+    class="max-h-52! object-cover"
     mat-card-image
     [src]="
       event().image_url !== null && event().image_url !== ''
@@ -11,20 +11,20 @@
     <mat-card-title>{{ event()!.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <div class="links-row">
-      <div class="row">
+    <div class="flex flex-row flex-wrap my-1 items-center gap-4">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="secondary-icon">schedule</mat-icon>
         <p>
           {{ event().start | date: 'shortTime' }} -
           {{ event().end | date: 'shortTime' }}
         </p>
       </div>
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="secondary-icon">location_on</mat-icon>
         <p>{{ event().location }}</p>
       </div>
       @if(profile) {
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="secondary-icon">person_outline</mat-icon>
         @if (event().override_registration_url) {
         <p>External registration</p>
@@ -42,25 +42,25 @@
     <mat-chip-set>
       <!-- Organization chip -->
       <mat-chip
-        id="organization-chip"
+        class="h-7! hover:cursor-pointer"
         [routerLink]="'/organizations/' + event().organization_slug">
         <img
-          class="profile-icon"
+          class="rounded-full!"
           matChipAvatar
           [src]="event().organization_icon" />
         {{ event().organization_name }}
       </mat-chip>
 
       @if (event().organizers.length > 0) {
-      <mat-divider class="vertical-divider" [vertical]="true" />
+      <mat-divider class="ml-2! my-2!" [vertical]="true" />
       }
 
       <!-- Organizer Chips -->
       @for (organizer of event().organizers; track organizer.id) {
-      <mat-chip>
+      <mat-chip class="h-7!">
         @if (organizer.github_avatar && organizer.github_avatar !== '') {
         <img
-          class="profile-icon"
+          class="rounded-full!"
           matChipAvatar
           [src]="organizer.github_avatar" />
         }
@@ -70,11 +70,11 @@
       }
     </mat-chip-set>
 
-    <p markdown class="description">
+    <p markdown class="py-2!">
       {{ event().description }}
     </p>
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="gap-2 mb-2! justify-end">
     @if(event().user_registration_type === registrationType.ATTENDEE) {
     <button
       mat-flat-button
@@ -111,7 +111,7 @@
   </mat-card-header>
   <mat-card-content>
     @if(eventRegistrationsPage()!.length === 0) {
-    <p id="no-registrations-label">Nobody has registered for this event yet.</p>
+    <p class="mt-2">Nobody has registered for this event yet.</p>
     } @else {
     <div class="table-responsive">
       <table mat-table [dataSource]="eventRegistrationsPage()!.items">

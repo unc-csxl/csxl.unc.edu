@@ -11,10 +11,9 @@ import { Component, Input } from '@angular/core';
 import { CourseOverview, CourseSiteOverview } from '../../my-courses.model';
 
 @Component({
-    selector: 'course-card',
-    templateUrl: './course-card.widget.html',
-    styleUrls: ['./course-card.widget.scss'],
-    standalone: false
+  selector: 'course-card',
+  templateUrl: './course-card.widget.html',
+  standalone: false
 })
 export class CourseCardWidget {
   /** Term for the course */

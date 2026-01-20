@@ -1,18 +1,18 @@
-<mat-pane>
-  <mat-card-header>
-    <div class="header-horizontal-container">
+<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+  <mat-card-header class="flex flex-col mb-4!">
+    <div class="flex flex-row items-center w-full mb-4">
       <mat-card-title>Office Hours</mat-card-title>
       @if(myCoursesService.courseOverview(+courseSiteId)?.role !== 'Student') {
       <button
         mat-flat-button
-        class="create-event-button"
+        class="ml-auto"
         color="primary"
         routerLink="new/edit">
         Create Event
       </button>
       }
     </div>
-    <div class="header-horizontal-container low-button-toggle-density">
+    <div class="flex flex-row items-center w-full mb-4 low-button-toggle-density">
       <mat-button-toggle-group
         [(ngModel)]="viewState"
         name="view"
@@ -29,9 +29,9 @@
     <mat-divider />
   </mat-card-header>
   @if (viewState === ViewState.Scheduled) {
-  <mat-card-content class="pane-content">
+  <mat-card-content class="w-full!">
     <mat-card-subtitle>Happening Now</mat-card-subtitle>
-    <div class="card-container">
+    <div class="w-full flex flex-row flex-wrap gap-6 mt-4">
       @if (currentOfficeHourEvents().length === 0) {
       <p>Office hours are currently closed.</p>
       } @for (event of currentOfficeHourEvents(); track event.id) {
@@ -40,12 +40,12 @@
         [editRoute]="event.id + '/edit'" />
       }
     </div>
-    <mat-card-subtitle class="schedule-header">
+    <mat-card-subtitle class="mt-6!">
       Future Schedule
     </mat-card-subtitle>
     @if((futureOfficeHourEventsPage()?.items ?? []).length > 0) {
-    <mat-card class="schedule-card" appearance="outlined">
-      <mat-card-content class="schedule-card-content">
+    <mat-card class="max-w-full!" appearance="outlined">
+      <mat-card-content class="pt-0!">
           <div class="table-responsive">
             <table
               mat-table
@@ -61,15 +61,15 @@
               <ng-container matColumnDef="type">
                 <th mat-header-cell *matHeaderCellDef>Type</th>
                 <td mat-cell *matCellDef="let element">
-                  <span class="semibold">{{ element.type }}</span>
+                  <span class="font-medium">{{ element.type }}</span>
                   <br />
                   {{ element.location }}
                 </td>
               </ng-container>
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef></th>
-                  <td class="future-actions-cell" mat-cell *matCellDef="let element">
-                    <div class="future-actions">
+                  <td class="flex flex-row items-center pr-0 w-full h-[52px]" mat-cell *matCellDef="let element">
+                    <div class="flex flex-row gap-[6px] ml-auto">
                       <button mat-icon-button [routerLink]="element.id + '/edit'">
                         <mat-icon class="font-secondary">edit</mat-icon>
                       </button>
@@ -93,18 +93,18 @@
       </mat-card-content>
     </mat-card>
   } @else {
-    <div class="fallback-text-container">
+    <div class="flex flex-col py-4 gap-1">
       <p class="font-tertiary"><strong>No future office hours yet!</strong></p>
       <p>To schedule office hours, press "Create Event" at the top right of the page.</p>  
     </div>
   }
   </mat-card-content>
   } @if (viewState === ViewState.History) {
-  <mat-card-content class="pane-content">
+  <mat-card-content class="w-full!">
     <mat-card-subtitle>History</mat-card-subtitle>
     @if((pastOfficeHourEventsPage()?.items ?? []).length > 0) {
-      <mat-card class="schedule-card" appearance="outlined">
-        <mat-card-content class="schedule-card-content">
+      <mat-card class="ml-0!" appearance="outlined">
+        <mat-card-content class="pt-0!">
           <div class="table-responsive">
             <table
               mat-table
@@ -120,7 +120,7 @@
               <ng-container matColumnDef="type">
                 <th mat-header-cell *matHeaderCellDef>Type</th>
                 <td mat-cell *matCellDef="let element">
-                  <span class="semibold">{{ element.type }}</span>
+                  <span class="font-medium">{{ element.type }}</span>
                   <br />
                   {{ element.location }}
                 </td>
@@ -139,15 +139,15 @@
         </mat-card-content>
       </mat-card>  
     } @else {
-      <div class="fallback-text-container">
+      <div class="flex flex-col py-4 gap-1">
         <p class="font-tertiary"><strong>No past office hours</strong></p>
         <p>Scheduled office hours will appear here once completed.</p>  
       </div>
     }
   </mat-card-content>
   } @if (viewState === ViewState.Data) {
-  <mat-card-content class="pane-content">
+  <mat-card-content class="w-full!">
     <mat-card-subtitle>More data coming soon!</mat-card-subtitle>
   </mat-card-content>
   }
-</mat-pane>
+</mat-card>

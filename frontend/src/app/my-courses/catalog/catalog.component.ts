@@ -7,10 +7,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-catalog',
-    templateUrl: './catalog.component.html',
-    styleUrls: ['./catalog.component.css'],
-    standalone: false
+  selector: 'app-catalog',
+  templateUrl: './catalog.component.html',
+  standalone: false
 })
 export class CatalogComponent {
   /** Route information to be used in the routing module */

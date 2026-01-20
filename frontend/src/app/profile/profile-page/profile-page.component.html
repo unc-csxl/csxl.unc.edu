@@ -2,33 +2,33 @@
 <mat-pane>
   <mat-card-header>
     @if (profile.github_avatar) {
-    <img mat-card-avatar class="user-avatar" [src]="profile.github_avatar" />
+    <img mat-card-avatar class="size-10! leading-10! bg-[#4786c6]! rounded! text-center!" [src]="profile.github_avatar" />
     } @else if (profile.first_name && profile.last_name) {
-    <p mat-card-avatar class="user-avatar secondary-background">
+    <p mat-card-avatar class="size-10! leading-10! rounded-full! text-center! secondary-background mb-0!">
       {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
     </p>
     }
 
-    <div class="header-row">
+    <div class="flex flex-row flex-wrap items-center gap-2 ml-2">
       <mat-card-title>
         {{ profile.first_name }} {{ profile.last_name }}
       </mat-card-title>
       <mat-chip-set class="no-hover-chipset">
-        <mat-chip disableRipple>
+        <mat-chip class="h-[26px]!" disableRipple>
           {{ profile.pronouns }}
         </mat-chip>
       </mat-chip-set>
     </div>
   </mat-card-header>
   <mat-card-content>
-    <div class="links-row">
-      <div class="row">
+    <div class="flex flex-row flex-wrap mt-1 items-center mb-3 ml-3 gap-1">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="secondary-icon">mail</mat-icon>
         <p>{{ profile.email }}</p>
       </div>
       @if (profile.website) {
-      <div class="row">
-        <mat-icon class="link-icons secondary-icon">link</mat-icon>
+      <div class="flex flex-row gap-1 items-center">
+        <mat-icon class="ml-[6px]! secondary-icon">link</mat-icon>
         <p>
           <a class="font-secondary" [href]="profile.website" target="_blank"
             >Personal Website</a
@@ -36,9 +36,9 @@
         </p>
       </div>
       } @if (profile.linkedin) {
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon
-          class="link-icons secondary-icon"
+          class="ml-[6px]! secondary-icon size-[22px]"
           id="linkedin-icon"
           svgIcon="linkedin" />
         <p>
@@ -48,31 +48,28 @@
         </p>
       </div>
       }
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon
-          class="link-icons secondary-icon"
+          class="ml-[6px]! secondary-icon"
           id="github-icon"
           svgIcon="github" />
         @if (profile.github) {
         <p>
           <a
-            class="font-secondary"
-            id="github-link"
+            class="font-secondary mr-1"
             href="https://github.com/{{ profile.github }}">
             &#64;{{ profile.github }}
           </a>
         </p>
         <button
-          class="font-secondary"
-          id="unlink-github-button"
+          class="font-secondary height-5 px-0.5 font-medium underline"
           mat-button
           (click)="unlinkGitHub()">
           Unlink
         </button>
         } @else {
         <button
-          class="font-secondary"
-          id="link-github-button"
+          class="font-secondary height-5 px-0.5 font-normal"
           mat-button
           (click)="linkWithGitHub()">
           Link with GitHub
@@ -80,15 +77,15 @@
         }
       </div>
     </div>
-    <mat-divider id="bio-divider" />
-    <mat-card-subtitle>Profile Bio</mat-card-subtitle>
+    <mat-divider class="my-4!" />
+    <mat-card-subtitle class="my-1!">Profile Bio</mat-card-subtitle>
     @if (profile.bio) {
     <p markdown>{{ profile.bio! }}</p>
     } @else {
     <p>User does not have a bio.</p>
     }
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="flex! flex-row-reverse!">
     <button class="secondary-button" mat-flat-button routerLink="/profile/edit">
       Edit
     </button>
@@ -97,24 +94,24 @@
 
 <mat-pane>
   <mat-card-header>
-    <mat-card-subtitle>Profile Actions</mat-card-subtitle>
+    <mat-card-subtitle class="my-1!">Profile Actions</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-list class="actions-list">
-      <div class="actions-row bottom-gap">
-        <mat-icon matListItemIcon>handshake</mat-icon>
+    <mat-list class="flex! flex-col!">
+      <div class="flex flex-row items-center w-full mb-4">
+        <mat-icon class="mr-4!" matListItemIcon>handshake</mat-icon>
         <div matListItemTitle>Community Agreement</div>
         <button
-          class="trailing-row-button"
+          class="ml-auto"
           mat-button
           (click)="openAgreementDialog()">
           View
         </button>
       </div>
-      <div class="actions-row">
-        <mat-icon matListItemIcon>key</mat-icon>
+      <div class="flex flex-row items-center w-full">
+        <mat-icon class="mr-4!" matListItemIcon>key</mat-icon>
         <div matListItemTitle>Bearer Token</div>
-        <button class="trailing-row-button" mat-button (click)="copyToken()">
+        <button class="ml-auto" mat-button (click)="copyToken()">
           Copy
         </button>
       </div>
@@ -123,7 +120,7 @@
 </mat-pane>
 
 <mat-pane>
-  <mat-card-actions>
+  <mat-card-actions class="flex! flex-row-reverse!">
     <button
       id="sign-out-button"
       mat-flat-button

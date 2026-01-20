@@ -1,27 +1,27 @@
-<div class="container">
-  <div class="left-column">
+<div class="flex flex-col lg:flex-row w-full">
+  <div class="flex flex-col w-full h-auto lg:w-[30%] lg:h-[91.5vh]">
     @if(eventStatus() && eventStatus()!.featured) {
     <featured-event-card
       [event]="eventStatus()!.featured!"
       [profile]="profile"
       (registrationChange)="reloadPage()" />
     }
-    <mat-card appearance="outlined" class="registrations-pane">
+    <mat-card appearance="outlined" class="hidden! lg:block! grow shrink basis-0 min-h-0 max-h-full max-w-full! border-transparent!">
       <mat-card-header>
         <mat-card-title>My Event Registrations</mat-card-title>
       </mat-card-header>
-      <mat-card-content class="registrations-pane-content">
+      <mat-card-content class="overflow-y-auto height-full">
         @if(eventStatus()) { @if (eventStatus()!.registered.length === 0) {
         @if(profile) {
-        <p class="no-events-text">You are not registered for any events.</p>
+        <p class="mt-4">You are not registered for any events.</p>
         } @else {
-        <p class="no-events-text">
+        <p class="mt-4">
           You cannot register or view details for events until you sign in to
           the CSXL site.
         </p>
         <button
           mat-button
-          class="primary-button sign-in-button"
+          class="primary-button ml-[-12px]"
           (click)="signIn()">
           Sign In
         </button>
@@ -30,22 +30,22 @@
         } }
       </mat-card-content>
     </mat-card>
-    <mat-card appearance="outlined" class="registrations-pane-mobile">
+    <mat-card appearance="outlined" class="flex! lg:hidden! border-transparent! max-w-full!">
       <mat-card-header>
         <mat-card-title>My Next Event</mat-card-title>
       </mat-card-header>
-      <mat-card-content class="registrations-pane-content">
+      <mat-card-content>
         @if(eventStatus()) { @if (eventStatus()!.registered.length === 0) {
         @if(profile) {
-        <p class="no-events-text">You are not registered for any events.</p>
+        <p class="mt-4">You are not registered for any events.</p>
         } @else {
-        <p class="no-events-text">
+        <p class="mt-4">
           You cannot register or view details for events until you sign in to
           the CSXL site.
         </p>
         <button
           mat-button
-          class="primary-button sign-in-button"
+          class="primary-button  ml-[-12px]"
           (click)="signIn()">
           Sign In
         </button>
@@ -55,24 +55,24 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <div class="right-column">
+  <div class="flex flex-col w-full h-auto lg:w-[70%] lg:pr-4 lg:h-[91.5vh]">
     <search-bar
       class="mat-csxl-search-bar"
       [searchBarQuery]="searchBarQuery"
       (searchBarQueryChange)="onSearchBarQueryChange($event)" />
 
-    <mat-card appearance="outlined" class="events-pane">
-      <mat-card-header>
+    <mat-card appearance="outlined" class="grow shrink basis-0 h-auto lg:min-h-0 lg:max-h-full max-w-full! border-transparent!">
+      <mat-card-header class="flex flex-col">
         <mat-card-title>Events</mat-card-title>
         <mat-chip-set
-          class="pagination-chip-set"
+          class="mt-1 mb-2"
           [disabled]="filterQuery().length > 0">
           <mat-chip (click)="previousPage()">
-            <mat-icon class="primary-color"> keyboard_arrow_left </mat-icon>
+            <mat-icon class="primary-color mt-1!"> keyboard_arrow_left </mat-icon>
           </mat-chip>
           <div class="no-hover-chip-container">
             <mat-chip disableRipple>
-              <mat-icon class="primary-color" matChipAvatar> today </mat-icon>
+              <mat-icon class="primary-color mt-0!" matChipAvatar> today </mat-icon>
               @if(filterQuery().length > 0) { Showing Search Results } @else {
               {{ startDate() | date: 'mediumDate' }} -
               {{ endDate() | date: 'mediumDate' }}
@@ -80,20 +80,20 @@
             </mat-chip>
           </div>
           <mat-chip (click)="nextPage()">
-            <mat-icon class="primary-color">keyboard_arrow_right</mat-icon>
+            <mat-icon class="primary-color mt-1!">keyboard_arrow_right</mat-icon>
           </mat-chip>
         </mat-chip-set>
-        <mat-divider />
+        <mat-divider class="py-2!" />
       </mat-card-header>
-      <mat-card-content class="events-pane-content">
+      <mat-card-content class="overflow-y-auto h-full">
         <!-- `eventsPerDay` is in the format of a list of tuples, where
          eventGroup[0] is the date string and eventGroup[1] is a list of events -->
         @if (eventsByDate().length === 0) {
-        <p class="no-events-text">
+        <p class="mt-4">
           There are no events for the provided time range.
         </p>
         } @for (eventGroup of eventsByDate(); track eventGroup) {
-        <mat-card-subtitle class="date-header">
+        <mat-card-subtitle class="my-2">
           {{ eventGroup[0] }}
         </mat-card-subtitle>
         @for (event of eventGroup[1]; track event.id) {

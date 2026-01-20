@@ -23,7 +23,6 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-application-form',
   templateUrl: './application-form.component.html',
-  styleUrl: './application-form.component.css',
   standalone: false
 })
 export class ApplicationFormComponent {

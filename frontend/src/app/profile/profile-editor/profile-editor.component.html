@@ -16,8 +16,8 @@
         </mat-card-subtitle>
       </mat-card-header>
     </ng-template>
-    <mat-card-content>
-      <mat-form-field appearance="outline">
+    <mat-card-content class="flex! flex-col! gap-4! pt-4!">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>First Name</mat-label>
         <input
           matInput
@@ -26,7 +26,7 @@
           name="first_name"
           required />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Last Name</mat-label>
         <input
           matInput
@@ -35,7 +35,7 @@
           name="last_name"
           required />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>UNC Email</mat-label>
         <input
           matInput
@@ -48,7 +48,7 @@
           >Must provide a valid UNC email address.</mat-error
         >
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>LinkedIn Profile Link</mat-label>
         <input
           matInput
@@ -56,7 +56,7 @@
           formControlName="linkedin"
           name="linkedin" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Personal Website Link</mat-label>
         <input
           matInput
@@ -64,7 +64,7 @@
           formControlName="website"
           name="website" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Pronouns</mat-label>
         <input
           matInput
@@ -73,7 +73,7 @@
           name="pronouns"
           required />
       </mat-form-field>
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Bio (Markdown Supported)</mat-label>
         <textarea
           matInput
@@ -82,7 +82,7 @@
           name="bio"></textarea>
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions class="pb-4! justify-end! gap-3!">
       <button mat-stroked-button routerLink="/profile">Cancel</button>
       <button
         mat-flat-button

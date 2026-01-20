@@ -1,11 +1,11 @@
-<mat-pane class="featured-pane">
-  <mat-chip-set class="featured-chipset" aria-label="Dog selection">
-    <mat-chip disableRipple class="featured-chip on-secondary-background-color">
+<mat-card appearance="outlined" class="grow-0 shrink-0 basis-auto border-transparent! max-w-full!">
+  <mat-chip-set class="absolute top-[6px] left-2 border-transparent! outline-0! z-10  no-hover-no-outline-chip-container" aria-label="Dog selection">
+    <mat-chip disableRipple class="h-7! on-secondary-background-color">
       Featured
     </mat-chip>
   </mat-chip-set>
   <img
-    class="feature-image"
+    class="h-[180px] max-h-[200px]! object-cover rounded-t-xl"
     mat-card-image
     [src]="
       event.image_url !== null && event.image_url !== ''
@@ -25,7 +25,7 @@
     <mat-chip-set>
       <!-- Organization chip -->
       <mat-chip-row
-        id="organization-chip"
+        class="h-7!"
         [routerLink]="'/organizations/' + event.organization_slug">
         <img
           class="profile-icon"
@@ -35,12 +35,12 @@
       </mat-chip-row>
 
       @if (event.organizers.length > 0) {
-      <mat-divider class="vertical-divider" [vertical]="true" />
+      <mat-divider class="my-[6px]! ml-2!" [vertical]="true" />
       }
 
       <!-- Organizer Chips -->
       @for (organizer of event.organizers; track organizer.id) {
-      <mat-chip-row [routerLink]="'/profile/' + organizer.onyen">
+      <mat-chip-row [routerLink]="'/profile/' + organizer.onyen" class="h-7!">
         @if (organizer.github_avatar && organizer.github_avatar !== '') {
         <img
           class="profile-icon"
@@ -53,11 +53,11 @@
       }
     </mat-chip-set>
 
-    <p markdown class="description">
+    <p markdown class="py-2! hidden xl:block">
       {{ event.description }}
     </p>
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="gap-2! mb-2! justify-end!">
     @if(profile) {
     <button mat-stroked-button [routerLink]="'/events/' + event.id">
       Details
@@ -83,4 +83,4 @@
     <button mat-flat-button (click)="registerForEvent()">Register</button>
     } } }
   </mat-card-actions>
-</mat-pane>
+</mat-card>
